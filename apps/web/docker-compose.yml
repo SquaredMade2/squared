@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  backend:
+    build: ../squared-server # Ensure this path is correct based on your directory structure
+    ports:
+      - '5173:5173'
+    volumes:
+      - ../squared-server:/app # Live-reload backend code
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+    command: sh -c "npx concurrently \"npx tsc --watch\" \"npx nodemon --legacy-watch dist/index.js\""
+
+  frontend:
+    build: . # The frontend is the root directory for this file
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app # Live-reload frontend code
+      - /app/node_modules
+    environment:
+      - WDS_SOCKET_HOST=127.0.0.1
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true

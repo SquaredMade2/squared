@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://develop.squaredmade.com/app/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/join/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/login/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/onboarding/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/register/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/confirmation/[token]/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/filter/[filterId]/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/password/[token]/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/password/reset/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/tasks/[taskId]/page/</loc>
+  </url>
+
+  <url>
+    <loc>https://develop.squaredmade.com/app/workspace/[workspace]/page/</loc>
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/search/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/inbox/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/_inbox/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/issue/[identifier]/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/join/[token]/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/settings/members/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/settings/github-settings/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/settings/new-team/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/settings/profile/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/settings/workspace/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/issue/[identifier]/[issue]/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/team/[identifier]/views/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/team/[identifier]/[all]/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/settings/teams/[identifier]/page/</loc
+    >
+  </url>
+
+  <url>
+    <loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/team/[identifier]/views/new/page/</loc
+    >
+  </url>
+</urlset>

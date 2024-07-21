@@ -1,0 +1,27 @@
+name: continuous-integration
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20.x
+
+      - uses: actions/checkout@v3
+
+      - name: install pnpm
+        run: npm install -g pnpm@9.3.0
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: run unit tests in jest
+        run: pnpm run jest
+
+      - name: run integration and e2e tests in cypress
+        run: pnpm run cypress:headless

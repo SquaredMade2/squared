@@ -1,21 +1,9 @@
 {
   "extends": "./base.json",
   "files": {
-    "ignore": ["node_modules"],
-    "include": ["src", "next-env.d.ts"]
+    "include": ["next-env.d.ts"]
   },
-  "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineEnding": "lf",
-    "lineWidth": 100,
-    "attributePosition": "auto"
-  },
-  "organizeImports": { "enabled": true },
   "linter": {
-    "enabled": true,
     "rules": {
       "recommended": true,
       "a11y": {
@@ -27,17 +15,6 @@
     }
   },
   "javascript": {
-    "formatter": {
-      "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded",
-      "trailingCommas": "all",
-      "semicolons": "always",
-      "arrowParentheses": "always",
-      "bracketSpacing": true,
-      "bracketSameLine": false,
-      "quoteStyle": "single",
-      "attributePosition": "auto"
-    },
     "globals": [
       "$",
       "_",
