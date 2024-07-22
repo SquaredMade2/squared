@@ -1,0 +1,393 @@
+---
+import background from '../images/setDirectionbg.png';
+import lgcalendar from '../images/calendarSetDirection.png';
+import user from '../images/multiTeam.png';
+import file from '../images/document.png';
+import fold from '../images/roadmap.png';
+import timeline from '../images/timelineView.png';
+import graph from '../images/scopecreep.png';
+import inbox from '../images/notification.png';
+import roadmapxs from '../images/roadmapxs.svg';
+import { Image } from 'astro:assets';
+---
+
+<section class="relative font-chivoMono">
+	<Image
+		class="xs:hidden xxs:hidden xxxs:hidden max-w-full w-full h-full drop-shadow-xl invisible"
+		src={background}
+		alt="background for set direction"
+	/>
+	<div
+		class="xs:hidden xxs:hidden xxxs:hidden absolute flex flex-col w-full top-0 pt-10"
+	>
+		<div class="flex flex-row">
+			<div class="w-[55%]">
+				<Image
+					class="max-w-full w-full h-full"
+					src={lgcalendar}
+					alt="large calendar"
+				/>
+			</div>
+			<div
+				class="border-gray-500 w-[45%] pl-[2.5vw] pt-[1.8vw] xxxl:pl-[50px] xxxl:pt-[40px] md:pt-[1.2vw] sm:pt-[0.6vw]"
+			>
+				<span
+					class="text-[#D8D8D8] font-chivoMono uppercase font-bold whitespace-pre-line xxxl:text-[85px] xxxl:leading-[80px] xxl:text-[4.4vw] xxl:leading-[4.2vw] xl:text-[4.3vw] xl:leading-[4vw] lg:text-[4vw] lg:leading-[4vw] md:text-[3.8vw] md:leading-[3.5vw] sm:text-[3.6vw] sm:leading-[3.1vw]"
+					>Set the path<br />with<br />Milestones
+				</span>
+				<p
+					class="text-[#D8D8D8] bg-[#0C0C0C] w-[50%] rounded-lg shadow-lg shadow-black xxxl:p-[20px] xxxl:mt-[53px] xxxl:text-[15px] p-[1vw] xxl:p-[1vw] xxl:mt-[2.8vw] xxl:text-[0.8vw] xl:mt-[2.55vw] xl:text-[0.75vw] lg:mt-[1.3vw] lg:text-[0.7vw] md:mt-[3.3vw] md:text-[0.6vw] sm:mt-[3.3vw] sm:text-[0.6vw]"
+				>
+					Implement visual planning strategies, foster cross-team collaboration,
+					and utilize progress insights for improved decision-making and project
+					updates.
+				</p>
+			</div>
+		</div>
+		<div
+			class="flex justify-center xxxl:mt-[60px] xxl:mt-[3vw] xl:mt-[3vw] lg:mt-[-1.8vw] md:mt-[-1.8vw]"
+		>
+			<div
+				class="flex flex-col w-[93%] h-[] xl:h-[45%] md:h-[45%] text-[#DDDD] bottom-[1rem] md:bottom-[2rem] sm:bottom-[0rem]"
+			>
+				<ul
+					class="flex justify-around xxxl:my-4 xxl:my-4 xl:my-4 lg:my-5 md:my-5 sm:my-0 ml-[-1rem] w-full h-full md:h-1/2 sm:h-2/4"
+				>
+					{/* buttons list 1 */}
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={user}
+										alt="user icon for set direction"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Collaborative Projects
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Collaborate across teams and departments.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+									<Image class="max-w-full" src={file} alt="document icon" />
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Project Records
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Create project specifications within Squared.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={fold}
+										alt="custom roadmap icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									CUSTOM Milestones
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Navigate projects across various milestones.
+								</p>
+							</div>
+						</button>
+					</li>
+				</ul>
+				<ul
+					class="flex justify-around xxxl:my-4 xxl:my-4 xl:my-4 lg:my-5 md:my-5 sm:my-0 ml-[1rem] w-full h-full md:h-1/2 sm:h-2/4"
+				>
+					{/* buttons list 2 */}
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={timeline}
+										alt="timeline icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Sequential Overview
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Visualize the course of the product journey.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+									<Image class="max-w-full" src={graph} alt="graph icon" />
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Project Analytics
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Observe scope velocity and progress over time.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image class="max-w-full" src={inbox} alt="inbox icon" />
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Individual Alerts
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Stay connected to project happenings.
+								</p>
+							</div>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden bg-[#0C0C0C] rounded p-4 my-4 drop-shadow-md font-chivoMono"
+	>
+		<span class="text-white">
+			<h1 class="text-[6vw] uppercase leading-[6.5vw] whitespace-pre-line pb-2">
+				Set direction with Roadmaps
+			</h1>
+			<p class="text-[3vw] leading-[3.2vw] py-2">
+				Plan visually, collaborate in cross-team projects, and make better
+				decisions with progress insights and project updates.
+			</p>
+		</span>
+	</div>
+
+	<img
+		class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden w-full -mb-[10vw]"
+		loading="lazy"
+		src={roadmapxs.src}
+		alt=""
+	/>
+	<div
+		class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden flex flex-col w-full xl:h-[45%] md:h-[45%] text-[#DDDD] bottom-[1rem] md:bottom-[2rem] sm:bottom-[0rem] gap-3 pb-4"
+	>
+		<ul class="flex flex-col justify-around w-full h-full gap-3">
+			{/* buttons list 1 */}
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+							<img
+								class="max-w-full"
+								loading="lazy"
+								src={user.src}
+								alt="user icon"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							MULTI-TEAM PROJECTS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Collaborate across teams and departments.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+							<img
+								class="max-w-full"
+								loading="lazy"
+								src={file.src}
+								alt="file"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							PROJECT DOCUMENTS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Write project briefs and specs directly in Linear.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 md:hidden sm:hidden">
+							<img
+								class="max-w-full"
+								loading="lazy"
+								src={fold.src}
+								alt="folded paper icon"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							CUSTOM ROADMAPS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Organize projects across multiple roadmaps.
+						</p>
+					</div>
+				</button>
+			</li>
+		</ul>
+		<ul
+			class="flex flex-col justify-around ml-[0] w-full h-full md:h-1/2 sm:h-2/4 gap-3"
+		>
+			{/* buttons list 2 */}
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%] gap-3"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 md:hidden sm:hidden">
+							<img
+								class="max-w-full"
+								loading="lazy"
+								src={timeline.src}
+								alt="timeline"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							TIMELINE VIEW
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Visualize the product journey ahead.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+							<img
+								class="max-w-full"
+								loading="lazy"
+								src={graph.src}
+								alt="graph"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							PROJECT INSIGHTS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Track scope velocity, and progress over time.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 md:hidden sm:hidden">
+							<img
+								class="max-w-full"
+								loading="lazy"
+								src={inbox.src}
+								alt="inbox"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							PERSONAL NOTIFICATIONS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Stay in the loop on projet activity and updates.
+						</p>
+					</div>
+				</button>
+			</li>
+		</ul>
+	</div>
+</section>

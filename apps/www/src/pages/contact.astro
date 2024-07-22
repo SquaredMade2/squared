@@ -1,0 +1,84 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TopNav from '../components/TopNav.astro';
+import Footer from '../components/Footer.astro';
+import contactUs from '../images/contactUs.png';
+import { Image } from 'astro:assets';
+---
+
+<Layout title="Contact Page for Squared">
+	<script>
+		window.addEventListener('load', function () {
+			document.querySelector('.no-fouc').classList.remove('no-fouc');
+		});
+	</script>
+	<title>Contact Page for Squared</title>
+	<main
+		class="h-screen max-w-[1920px] bg-[#000000] mx-auto overflow-y-hidden px-[8vw] overflow-x-hidden"
+	>
+		<TopNav />
+
+		<div class="flex items-center w-full h-full font-chivoMono justify-center">
+			<div
+				class="bg-[#202432] xl:mr-5 xxl:mr-5 xxxl:mr-5 h-4/5 w-10/12 xxs:h-3/5 xs:h-3/5 sm:h-3/5 md:h-3/5 lg:h-3/5 xl:h-3/6 xxl:h-3/6 xxxl:h-[416px] sm:w-[592.11px] md:w-[592.11px] lg:w-[592.11px] xl:w-[592.11px] xxl:w-[592.11px] xxxl:w-[592.11px] flex flex-col items-center rounded"
+			>
+				<div class="h-1/5 w-10/12 mt-3 flex justify-center items-center">
+					<h1
+						class="text-2xl xxs:text-3xl xs:text-3xl sm:text-4xl md:text-4xl lg:text-4xl xl:text-4xl xxl:text-4xl xxxl:text-4xl text-[#D8D8D8]"
+					>
+						Let's Get In Touch
+					</h1>
+				</div>
+				<div class="w-full flex justify-start items-start h-3/5 mt-8">
+					<form class="flex flex-col items-center justify-center h-full w-full">
+						<div
+							class="flex flex-col items-center justify-center h-full w-full"
+						>
+							<div
+								class="flex flex-col h-2/5 w-full justify-center items-center md:mb-3 lg:mb-3 xl:mb-3 xxl:mb-3 xxxl:mb-3 xl:flex-row xxl:flex-row xxxl:flex-row md:gap-3 lg:gap-3 xl:gap-5 xxl:gap-3 xxxl:gap-3"
+							>
+								<input
+									placeholder="Your Name"
+									type="text"
+									class="p-2 w-10/12 rounded h-4/5 mb-3 text-[#D8D8D8] bg-[#282E43] md:w-4/5 lg:w-4/5 xl:w-2/5 xxl:w-2/5 xxxl:w-2/5 md:mb-0 lg:mb-0 xl:mb-0 xxl:mb-0 xxxl:mb-0 md:h-5/5"
+								/>
+								<input
+									placeholder="Email address"
+									type="text"
+									class="p-2 w-10/12 rounded h-4/5 mb-3 md:mb-0 lg:mb-0 xl:mb-0 xxl:mb-0 xxxl:mb-0 text-[#D8D8D8] bg-[#282E43] md:w-4/5 lg:w-4/5 xl:w-2/5 xxl:w-2/5 xxxl:w-2/5"
+								/>
+							</div>
+							<div class="w-full h-3/5 flex items-center justify-center">
+								<textarea
+									placeholder="Your message here"
+									class="p-2 w-10/12 md:w-4/5 lg:w-4/5 rounded h-full text-[#D8D8D8] bg-[#282E43]"
+									rows="10"></textarea>
+							</div>
+						</div>
+						<div
+							class="w-full h-1/5 mt-5 mb-8 gap-2.5 xs:gap-[14px] sm:gap-[18px] md:gap-[18px] lg:gap-[18px] xl:gap-5 xxl:gap-5 xxxl:gap-5 flex items-center justify-center"
+						>
+							<button
+								class="bg-[#D8D8D8] rounded p-1 w-2/5 lg:w-[227px] md:w-[227px]"
+							>
+								<p class="text-[#0C0C0C]">Cancel</p>
+							</button>
+							<button
+								class="bg-[#174EFF] rounded p-1 w-2/5 lg:w-[227px] md:w-[227px]"
+							>
+								<p class="text-[#D8D8D8]">Send</p>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div
+				id="contact-us-image"
+				class="hidden xl:flex xxl:flex xxxl:flex md:w-5/12 lg:w-6/12 xl:w-[592.11px] xxl:w-[592.11px] xxxl:w-[592.11px] xxs:h-3/5 xs:h-3/5 sm:h-3/5 md:h-3/5 lg:h-3/5 xl:h-3/6 xxl:h-3/6 xxxl:h-[416px]"
+			>
+				<Image src={contactUs} alt="contact main image" />
+			</div>
+		</div>
+	</main>
+	<Footer />
+</Layout>

@@ -1,0 +1,403 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TopNav from '../components/TopNav.astro';
+import Footer from '../components/Footer.astro';
+import author from '../images/about/Rectangle43.svg';
+import pub1 from '../images/publication/pub1.svg';
+import pub2 from '../images/publication/pub2.svg';
+import pub3 from '../images/publication/pub3.svg';
+import blog2 from '../images/blog/Rectangle16(1).svg';
+import blog5 from '../images/blog/Rectangle16(4).svg';
+import blog7 from '../images/blog/Rectangle16(6).svg';
+import blog12 from '../images/blog/Rectangle16(11).svg';
+import { Image } from 'astro:assets';
+---
+
+<Layout title="Our Blogs">
+	<script>
+		window.addEventListener('load', function () {
+			document.querySelector('.no-fouc').classList.remove('no-fouc');
+		});
+	</script>
+	<main class="h-screen max-w-[1920px] mx-auto px-[8vw] overflow-x-hidden">
+		<TopNav />
+		<div>
+			<div class="relative">
+				<div
+					class="absolute w-1/2 h-full bg-black/90 rounded-tl-[5.5px] rounded-bl-[5.5px]"
+				>
+					<div class="absolute flex justify-center w-full">
+						<p class="text-[#797979] w-[90%] pt-[48px]">September 21, 2023</p>
+					</div>
+					<div class="flex justify-center items-center w-full h-full">
+						<div class="w-[90%]">
+							<div class="flex items-center pb-[44px]">
+								<Image src={author} alt="author" />
+
+								<h3
+									class="text-[#D8D8D8] text-[24px] font-normal leading-[24px] uppercase pl-5"
+								>
+									Michael Stone
+								</h3>
+							</div>
+							<h1 class="text-[#D8D8D8] text-[54px] leading-[64px] uppercase">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit
+							</h1>
+						</div>
+					</div>
+				</div>
+				<Image src={pub3} alt="pub3" />
+			</div>
+			<div class="flex mt-10">
+				<div class="w-[35%]">
+					<h2 class="w-[90%] font-normal text-[32px] leading-8 text-[#D8D8D8]">
+						1. Lorem ipsum dolor sit amet, consectetur
+					</h2>
+				</div>
+				<div class="w-[65%]">
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua. Viverra
+						mauris in aliquam sem fringilla ut morbi tincidunt augue. Id semper
+						risus in hendrerit gravida rutrum quisque non. Faucibus et molestie
+						ac feugiat sed. Sed vulputate odio ut enim blandit volutpat maecenas
+						volutpat. Non enim praesent elementum facilisis leo. Justo donec
+						enim diam vulputate ut pharetra sit amet aliquam. In pellentesque
+						massa placerat duis ultricies lacus. Tortor aliquam nulla facilisi
+						cras fermentum. Tincidunt praesent semper feugiat nibh sed pulvinar
+						proin. Convallis a cras semper auctor neque vitae tempus quam. Amet
+						nulla facilisi morbi tempus iaculis urna id. At lectus urna duis
+						convallis convallis tellus id interdum. Nullam ac tortor vitae purus
+						faucibus ornare. Eu scelerisque felis imperdiet proin.
+					</p>
+					<div class="h-3"></div>
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Dolor sit amet consectetur adipiscing elit duis. Aliquam sem et
+						tortor consequat id porta nibh venenatis. Vestibulum sed arcu non
+						odio euismod lacinia at quis. Ut porttitor leo a diam. Pellentesque
+						eu tincidunt tortor aliquam. In metus vulputate eu scelerisque
+						felis. Arcu ac tortor dignissim convallis aenean.
+					</p>
+					<Image class="my-10" src={pub2} alt="pub2" />
+				</div>
+			</div>
+			<div class="flex">
+				<div class="w-[35%]">
+					<h2 class="w-[90%] font-normal text-[32px] leading-8 text-[#D8D8D8]">
+						2. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+					</h2>
+				</div>
+				<div class="w-[65%]">
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Bibendum enim facilisis gravida neque convallis a. Amet consectetur
+						adipiscing elit ut aliquam purus sit. Lacus suspendisse faucibus
+						interdum posuere lorem. Diam vulputate ut pharetra sit amet aliquam.
+						Ipsum nunc aliquet bibendum enim facilisis gravida neque.
+					</p>
+					<div class="h-3"></div>
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Non pulvinar neque laoreet suspendisse interdum consectetur libero.
+						Eget dolor morbi non arcu risus. Cras pulvinar mattis nunc sed
+						blandit libero volutpat sed. Nulla at volutpat diam ut venenatis
+						tellus in metus vulputate. Adipiscing enim eu turpis egestas pretium
+						aenean pharetra magna. Nunc lobortis mattis aliquam faucibus purus.
+						Mauris ultrices eros in cursus turpis massa tincidunt. Turpis
+						egestas sed tempus urna et pharetra pharetra massa massa. Natoque
+						penatibus et magnis dis parturient montes. Vel risus commodo viverra
+						maecenas. Vitae nunc sed velit dignissim sodales ut eu sem integer.
+						Volutpat sed cras ornare arcu dui vivamus arcu felis bibendum.
+						Platea dictumst vestibulum rhoncus est. Urna duis convallis
+						convallis tellus id interdum. Condimentum lacinia quis vel eros
+						donec ac. Aliquam ut porttitor leo a diam sollicitudin tempor id eu.
+						Dolor magna eget est lorem ipsum dolor. Ornare lectus sit amet est.
+					</p>
+					<div class="h-3"></div>
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Mauris augue neque gravida in fermentum. Habitasse platea dictumst
+						quisque sagittis purus sit amet volutpat. Libero enim sed faucibus
+						turpis in. Pulvinar elementum integer enim neque volutpat ac
+						tincidunt vitae semper. Aliquet eget sit amet tellus cras adipiscing
+						enim eu. Lacus vel facilisis volutpat est velit egestas dui id.
+						Lacus suspendisse faucibus interdum posuere. Ac auctor augue mauris
+						augue neque gravida in. Sagittis orci a scelerisque purus. Dis
+						parturient montes nascetur ridiculus mus mauris vitae.
+					</p>
+					<div class="w-[80%] text-[#D8D8D8] bg-[#282E43] rounded-[8px] my-10">
+						<div class="px-[32px] pt-[32px] pb-[36px]">
+							<div class="flex items-center mb-5">
+								<Image src={author} alt="author" />
+
+								<h3
+									class="text-[#D8D8D8] text-[16px] font-normal leading-[14px] uppercase pl-5"
+								>
+									Michael Stone
+								</h3>
+							</div>
+							<p
+								class="text-[16px] text-[#D8D8D8] font-normal leading-6 border-l-4 pl-5"
+							>
+								Mauris augue neque gravida in fermentum. Habitasse platea
+								dictumst quisque sagittis purus sit amet volutpat. Libero enim
+								sed faucibus turpis in. Pulvinar elementum integer enim neque
+								volutpat ac tincidunt vitae semper. Aliquet eget sit amet tellus
+								cras adipiscing enim eu. Lacus vel facilisis volutpat est velit
+								egestas dui id. Lacus suspendisse faucibus interdum posuere. Ac
+								auctor augue mauris augue neque gravida in. Sagittis orci a
+								scelerisque purus. Dis parturient montes nascetur ridiculus mus
+								mauris vitae.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="flex">
+				<div class="w-[35%]">
+					<h2 class="w-[90%] font-normal text-[32px] leading-8 text-[#D8D8D8]">
+						3. Lorem ipsum dolor sit
+					</h2>
+				</div>
+				<div class="w-[65%]">
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Laoreet id donec ultrices tincidunt arcu non sodales. Nec feugiat in
+						fermentum posuere urna. Ultrices dui sapien eget mi proin sed
+						libero. Sed viverra ipsum nunc aliquet bibendum enim facilisis
+						gravida neque. Dignissim enim sit amet venenatis urna cursus.
+						Pharetra massa massa ultricies mi. Vel pharetra vel turpis nunc
+						eget. A arcu cursus vitae congue mauris rhoncus aenean vel elit.
+					</p>
+					<div class="h-3"></div>
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Eget nunc lobortis mattis aliquam faucibus. Nunc sed augue lacus
+						viverra vitae congue eu. A cras semper auctor neque vitae tempus
+						quam. Neque convallis a cras semper auctor neque vitae tempus quam.
+						Id aliquet lectus proin nibh. Bibendum ut tristique et egestas quis
+						ipsum suspendisse ultrices. Sit amet cursus sit amet dictum sit amet
+						justo donec. Donec pretium vulputate sapien nec. Sed sed risus
+						pretium quam vulputate dignissim suspendisse in est. Donec
+						adipiscing tristique risus nec. Sapien nec sagittis aliquam
+						malesuada bibendum arcu. Sit amet volutpat consequat mauris.
+					</p>
+					<Image class="my-10" src={pub1} alt="pub1" />
+				</div>
+			</div>
+			<div class="flex">
+				<div class="w-[35%]">
+					<h2 class="w-[90%] font-normal text-[32px] leading-8 text-[#D8D8D8]">
+						4. Lorem ipsum dolor sit amet, consectetur
+					</h2>
+				</div>
+				<div class="w-[65%]">
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua. Viverra
+						mauris in aliquam sem fringilla ut morbi tincidunt augue. Id semper
+						risus in hendrerit gravida rutrum quisque non. Faucibus et molestie
+						ac feugiat sed. Sed vulputate odio ut enim blandit volutpat maecenas
+						volutpat. Non enim praesent elementum facilisis leo. Justo donec
+						enim diam vulputate ut pharetra sit amet aliquam. In pellentesque
+						massa placerat duis ultricies lacus. Tortor aliquam nulla facilisi
+						cras fermentum. Tincidunt praesent semper feugiat nibh sed pulvinar
+						proin. Convallis a cras semper auctor neque vitae tempus quam. Amet
+						nulla facilisi morbi tempus iaculis urna id. At lectus urna duis
+						convallis convallis tellus id interdum. Nullam ac tortor vitae purus
+						faucibus ornare. Eu scelerisque felis imperdiet proin.
+					</p>
+					<div class="h-3"></div>
+					<p
+						class="w-[80%] font-normal text-[16px] leading-[24px] text-[#797979]"
+					>
+						Dolor sit amet consectetur adipiscing elit duis. Aliquam sem et
+						tortor consequat id porta nibh venenatis. Vestibulum sed arcu non
+						odio euismod lacinia at quis. Ut porttitor leo a diam. Pellentesque
+						eu tincidunt tortor aliquam. In metus vulputate eu scelerisque
+						felis. Arcu ac tortor dignissim convallis aenean.
+					</p>
+					<div class="my-10">
+						<h2
+							class="text-[#D8D8D8] text-[24px] leading-[24px] font-normal py-3"
+						>
+							TAGS
+						</h2>
+						<ul class="flex flex-wrap">
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								One
+							</li>
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								Two
+							</li>
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								Three
+							</li>
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								Four
+							</li>
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								Five
+							</li>
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								Six
+							</li>
+							<li
+								class="bg-[#282E43] py-[12px] px-[16px] m-[4px] rounded-[8px] text-[#D8D8D8]"
+							>
+								Seven
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mt-24">
+			<h2 class="uppercase text-[#D8D8D8] leading-8 text-[32px] font-normal">
+				related publications
+			</h2>
+			<div class="grid grid-cols-4 gap-4 w-[98%] pb-20">
+				<div class="text-[#D8D8D8] bg-[#282E43] w-full rounded-[8px]">
+					<div>
+						<Image src={blog7} alt="blog-image" />
+					</div>
+					<div class="px-[24px] py-[32px]">
+						<h3
+							class="text-[#D8D8D8] text-[24px] font-normal leading-6 uppercase pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur adipis...
+						</h3>
+						<p
+							class="text-[14px] text-[#797979] font-normal leading-[18px] pb-5"
+						>
+							September 21, 2023
+						</p>
+						<p
+							class="text-[16px] text-[#D8D8D8] font-normal leading-[22px] pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur ut labore et dolore magna
+							aliqua. viverra mauri...
+						</p>
+						<div class="w-full h-full text-right">
+							<a
+								class="text-[#7394FF] capitalize font-normal text-[16px] leading-[22px]"
+								href="#">view more</a
+							>
+						</div>
+					</div>
+				</div>
+				<div class="text-[#D8D8D8] bg-[#282E43] w-full rounded-[8px]">
+					<div>
+						<Image src={blog2} alt="blog-image" />
+					</div>
+					<div class="px-[24px] py-[32px]">
+						<h3
+							class="text-[#D8D8D8] text-[24px] font-normal leading-6 uppercase pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur adipis...
+						</h3>
+						<p
+							class="text-[14px] text-[#797979] font-normal leading-[18px] pb-5"
+						>
+							September 21, 2023
+						</p>
+						<p
+							class="text-[16px] text-[#D8D8D8] font-normal leading-[22px] pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur ut labore et dolore magna
+							aliqua. viverra mauri...
+						</p>
+						<div class="w-full h-full text-right">
+							<a
+								class="text-[#7394FF] capitalize font-normal text-[16px] leading-[22px]"
+								href="#">view more</a
+							>
+						</div>
+					</div>
+				</div>
+				<div class="text-[#D8D8D8] bg-[#282E43] w-full rounded-[8px]">
+					<div>
+						<Image src={blog12} alt="blog-image" />
+					</div>
+					<div class="px-[24px] py-[32px]">
+						<h3
+							class="text-[#D8D8D8] text-[24px] font-normal leading-6 uppercase pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur adipis...
+						</h3>
+						<p
+							class="text-[14px] text-[#797979] font-normal leading-[18px] pb-5"
+						>
+							September 21, 2023
+						</p>
+						<p
+							class="text-[16px] text-[#D8D8D8] font-normal leading-[22px] pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur ut labore et dolore magna
+							aliqua. viverra mauri...
+						</p>
+						<div class="w-full h-full text-right">
+							<a
+								class="text-[#7394FF] capitalize font-normal text-[16px] leading-[22px]"
+								href="#">view more</a
+							>
+						</div>
+					</div>
+				</div>
+				<div class="text-[#D8D8D8] bg-[#282E43] w-full rounded-[8px]">
+					<div>
+						<Image src={blog5} alt="blog-image" />
+					</div>
+					<div class="px-[24px] py-[32px]">
+						<h3
+							class="text-[#D8D8D8] text-[24px] font-normal leading-6 uppercase pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur adipis...
+						</h3>
+						<p
+							class="text-[14px] text-[#797979] font-normal leading-[18px] pb-5"
+						>
+							September 21, 2023
+						</p>
+						<p
+							class="text-[16px] text-[#D8D8D8] font-normal leading-[22px] pb-5"
+						>
+							lorem ipsum dolor sit amet, consectetur ut labore et dolore magna
+							aliqua. viverra mauri...
+						</p>
+						<div class="w-full h-full text-right">
+							<a
+								class="text-[#7394FF] capitalize font-normal text-[16px] leading-[22px]"
+								href="#">view more</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<Footer />
+	</main>
+</Layout>

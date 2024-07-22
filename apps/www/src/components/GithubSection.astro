@@ -1,0 +1,163 @@
+---
+import github from '../images/github.png';
+import gitlab from '../images/gitlab.png';
+import slack from '../images/slack.png';
+import discord from '../images/discord.png';
+import sentry from '../images/sentry.png';
+import airbyte from '../images/airbyte.png';
+import front from '../images/front.png';
+import inter from '../images/intercom.png';
+import zen from '../images/zendesk.png';
+import figma from '../images/figma.png';
+import { Image } from 'astro:assets';
+---
+
+<div
+	class="flex justify-center bg-radial-top from-[#1A1E2D] to bg-[#0C0C0C] rounded-xl border border-black border-opacity-20 drop-shadow-lg py-20 mt-10"
+>
+	<div
+		class="flex flex-col w-[93%] h-[] xl:h-[45%] md:h-[45%] text-[#DDDD] bottom-[1rem] md:bottom-[2rem] sm:bottom-[0rem] xxs:gap-4 xxxs:gap-4 xs:gap-4"
+	>
+		<ul
+			class="flex xxxs:flex-col xxs:flex-col xs:flex-col justify-around xxxl:my-4 xxl:my-4 xl:my-4 lg:my-5 md:my-5 sm:my-0 ml-[-1rem] xxs:ml-0 xs:ml-0 xxxs:ml-0 xxs:gap-4 xxxs:gap-4 xs:gap-4 w-full h-full md:h-1/2 sm:h-2/4"
+		>
+			{/* buttons list 1 */}
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xxxs:w-full xxs:w-full xs:w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+							<Image class="max-w-full" src={slack} alt="slack" />
+							<Image class="max-w-full" src={discord} alt="discord" />
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							Slack and Discord
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Set up notifications for issues.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xxxs:w-full xxs:w-full xs:w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+							<Image class="max-w-full" src={github} alt="github icon" />
+							<Image class="max-w-full" src={gitlab} alt="gitlab icon" />
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							Git-repo integration
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Automate issue closure with PR synchronization.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xxxs:w-full xxs:w-full xs:w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 md:hidden sm:hidden">
+							<Image class="max-w-full" src={airbyte} alt="airbyte" />
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							Airbyte
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Sync workspace data to external warehouses and databases.
+						</p>
+					</div>
+				</button>
+			</li>
+		</ul>
+		<ul
+			class="flex xxxs:flex-col xxs:flex-col xs:flex-col justify-around xxxl:my-4 xxl:my-4 xl:my-4 lg:my-5 md:my-5 sm:my-0 ml-[1rem] xxxs:ml-0 xxs:ml-0 xs:ml-0 xxxs:gap-4 xxs:gap-4 xs:gap-4 w-full h-full md:h-1/2 sm:h-2/4"
+		>
+			{/* buttons list 2 */}
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xxxs:w-full xxs:w-full xs:w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 md:hidden sm:hidden">
+							<Image class="max-w-full" src={sentry} alt="sentry" />
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							Sentry
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Auto-generate issue tickets from code errors.
+						</p>
+					</div>
+				</button>
+			</li>
+
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xxxs:w-full xxs:w-full xs:w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="flex w-[8%] pb-5 md:hidden sm:hidden">
+							<Image class="max-w-full" src={front} alt="front" />
+							<Image class="max-w-full" src={inter} alt="intercom" />
+							<Image class="max-w-full" src={zen} alt="zendesk" />
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							Front, Intercom, Zendesk
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Enstablish constant engagement with your users.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xxxs:w-full xxs:w-full xs:w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 md:hidden sm:hidden">
+							<Image class="max-w-full" src={figma} alt="figma" />
+						</div>
+						<h1
+							class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							Figma
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Enhance coordination between design and engineering teams.
+						</p>
+					</div>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>

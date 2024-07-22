@@ -1,0 +1,11 @@
+<svg width="full" height="full" viewBox="0 0 1841 488" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Define the filter -->
+    <defs>
+        <filter id="dropshadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="4" dy="4" stdDeviation="2"/>
+        </filter>
+    </defs>
+
+    <!-- Use the filter with the path -->
+    <path d="M1087 30C1087 13.4315 1073.57 0 1057 0H30C13.4315 0 0 13.4315 0 30V300C0 316.569 13.4315 330 30 330H311C327.569 330 341 343.431 341 360V375C341 391.569 354.431 405 371 405H997C1013.57 405 1027 418.431 1027 435V458C1027 474.569 1040.43 488 1057 488H1811C1827.57 488 1841 474.569 1841 458V161C1841 144.431 1827.57 131 1811 131H1117C1100.43 131 1087 117.569 1087 101V30Z" fill="#0C0C0C" filter="url(#dropshadow)"/>
+</svg>

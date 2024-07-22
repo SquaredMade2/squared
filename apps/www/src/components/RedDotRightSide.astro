@@ -1,0 +1,52 @@
+---
+import cycle from '../images/redDotrightSide.png';
+import blue2 from '../images/blue2.svg';
+import two from '../images/two.svg';
+import background from '../images/redDotbgLeft.png';
+import { Image } from 'astro:assets';
+---
+
+<div class="h-fit w-full ml-4 relative">
+	{/* background card */}
+	<Image
+		class="max-w-full w-full h-full drop-shadow-xl"
+		src={background}
+		alt="background"
+	/>
+	{/* image */}
+	<Image
+		class="w-[80%] h-[60%] absolute top-[5%]"
+		src={cycle}
+		alt="cycle image for red dot section"
+	/>
+
+	{/* top right square */}
+	<div
+		class="xxxl:w-[140px] xxxl:h-[140px] xxl:w-[120px] xxl:h-[120px] xl:w-[100px] xl:h-[100px] lg:w-[90px] lg:h-[90px] md:w-[70px] md:h-[70px] sm:w-[50px] sm:h-[50px] absolute z-20 right-0 top-0"
+	>
+		<div
+			class="bg-[#131421] w-full h-full rounded-[30px] border-white flex justify-center items-center"
+		>
+			<div class="flex flex-col items-center relative">
+				<img class="" src={blue2.src} alt="blue2" />
+				<img
+					class="absolute translate-x-4 -translate-y-0.5 lg:w-[70%] md:w-[68%] md:translate-x-3 sm:w-[70%] sm:translate-x-2"
+					src={two.src}
+					alt="two"
+				/>
+			</div>
+		</div>
+	</div>
+	<div
+		class="bg-[#0C0C0C] absolute bottom-[1vw] z-30 text-[#D8D8D8] p-5 right-[50%] translate-x-[50%] w-[92%] rounded-[10px]"
+	>
+		<h1
+			class="py-5 xl:py-3 lg:py-2 md:py-2 sm:py-1 leading-[95%] text-[3vw] xxxl:text-[50px] xxl:text-[2.5vw] xl:text-[2vw] lg:text-[2vw] md:text-[2vw] sm:text-[2vw]"
+		>
+			Crafted for today's software teams
+		</h1>
+		<p class="lg:text-[.8vw] md:text-[.8vw] sm:text-[.8vw]">
+			Provides built-in workflows for cultivating concentration and consistency
+		</p>
+	</div>
+</div>

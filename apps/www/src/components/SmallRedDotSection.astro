@@ -1,0 +1,53 @@
+---
+import dot from '../images/red-dot.svg';
+import blue2 from '../images/blue2.svg';
+import two from '../images/two.svg';
+import designxs from '../images/designxs.svg';
+import breathtakingxs from '../images/breathtakingxs.svg';
+import xsNewBreathtaking from '../images/breathtakingFast-xs.png';
+import { Image } from 'astro:assets';
+---
+
+<div class="w-full font-chivoMono mb-[-30vw]">
+	<div class="relative mb-[-30vw]">
+		<img
+			class="absolute right-0 top-0 w-[20vw]"
+			loading="lazy"
+			src={dot.src}
+			alt="red-dot"
+		/>
+		<div
+			class="absolute px-[8vw] py-[4vw] bg-[#0C0C0C] text-[#D8D8D8] z-10 bottom-[32vw] drop-shadow-md rounded-b-2xl"
+		>
+			<h1 class="text-[8vw] uppercase font-semibold leading-[8vw]">
+				Breathtakingly fast
+			</h1>
+			<p class="text-[3vw]">
+				Built for speed with 50ms interactions and real-time sync.
+			</p>
+		</div>
+		<img class="w-full z-0" src={breathtakingxs.src} alt="breathtaking fast" />
+	</div>
+
+	<div class="relative">
+		<img
+			class="absolute right-0 top-[8vw] w-[20vw]"
+			loading="lazy"
+			src={blue2.src}
+			alt="blue2"
+		/>
+
+		<div
+			class="absolute px-[8vw] py-[4vw] bg-[#0C0C0C] text-[#D8D8D8] z-10 bottom-[18vw] drop-shadow-md rounded-b-2xl"
+		>
+			<h1 class="text-[7.4vw] uppercase font-semibold leading-[8vw]">
+				Crafted for today's software teams
+			</h1>
+			<p class="text-[3vw] py-2">
+				Provides built-in workflows for cultivating concentration and
+				consistency
+			</p>
+		</div>
+		<img class="w-full z-0" loading="lazy" src={designxs.src} alt="" />
+	</div>
+</div>

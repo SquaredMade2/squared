@@ -1,0 +1,706 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import TopNav from '../components/TopNav.astro';
+import PriceCard from '../components/PriceCard/PriceCard.astro';
+import PriceCardLogo from '../components/PriceCardLogo.astro';
+import features from '../components/PriceCard/features.json';
+import PriceCardListItem from '../components/PriceCardListItem.astro';
+import pricingHeroBgImg from '../images/pricingHeroBgImg.png';
+import mainxs from '../images/mainBackgroundSquaredxs.png';
+import peopleIcon from '../images/peopleIcon.svg';
+import pricingGreenSmallLogo from '../images/pricingGreenSmallLogo.svg';
+import squaredLogoBlack from '../images/squaredLogoBlack.svg';
+import squaredLogoBlue from '../images/squaredLogoBlue.svg';
+import squaredLogoGray from '../images/squaredLogoGray.svg';
+import Footer from '../components/Footer.astro';
+
+const styles = {
+	main: 'h-screen max-w-[1920px] mx-auto px-[8vw] overflow-x-hidden',
+	desktopWrapper: 'relative mb-[8vw] flex xs:hidden xxs:hidden xxxs:hidden',
+	desktopTitle:
+		'text-[#D8D8D8] uppercase font-bold font-chivoMono z-10 top-[19.8%] leading-[98%] tracking-tight xxxl:text-[85px] xxxl:w-[640px] text-[4.4vw] w-[32vw] whitespace-pre-line',
+	desktopHeroContainer:
+		'absolute bottom-[2vw] xxxl:left-[45px] xxxl:bottom-[30px] xxl:left-[2vw] xl:left-[1.4vw] lg:left-[1.4vw] md:left-[1.0vw] sm:left-[1.0vw]',
+	desktopTextDivTop:
+		'bg-[#0C0C0C] text-[#D8D8D8] rounded-lg border-b-2 border-r-2 border-gray-500/10 shadow-xl shadow-gray-800/20 py-[1vw] font-chivoMono xxxl:py-[30px] xxxl:px-[30px] xxxl:text-[16px] xxxl:w-[385px] xxl:px-[1.1vw] xxl:text-[.85vw] xxl:w-[20vw] xxl:py-[1.5vw] xl:px-[1.1vw] xl:text-[0.85vw] xl:w-[20vw] xl:py-[1.5vw] lg:px-[1.1vw] lg:text-[0.85vw] lg:w-[20vw] l:py-[1.5vw] md:px-[1.1vw] md:text-[0.75vw] md:w-[18vw] md:py-[1.5vw] sm:px-[1.1vw] sm:text-[0.75vw] sm:w-[18vw] sm:py-[1.5vw]',
+	desktopButtonsDiv:
+		'flex flex-row text-[0.75vw] font-chivoMono gap-[1vw] pt-[1vw] xxxl:text-[0.55vw]',
+	desktopContactSales:
+		'flex justify-center items-center bg-[#174EFF] text-[#D8D8D8] text-center p-[.5vw] rounded-md w-1/2 drop-shadow-lg transition-scale duration-200 hover:scale-110',
+	desktopSignUp:
+		'flex justify-center items-center bg-[#FFFFFF] text-center rounded-md p-[.5vw] w-1/2 drop-shadow-lg transition-scale duration-200 hover:scale-110 xxxl:text-[.5vw]',
+	desktopTextDivBottom:
+		'bg-white absolute rounded-lg font-chivoMono bottom-10 right-10 p-[1.5vw] w-[35%] text-[1vw] xxxl:text-[16px] xxxl:p-[35px]',
+	mobileWrapper:
+		'relative flex flex-col sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden',
+	mobileTitle:
+		'text-[#D8D8D8] uppercase font-bold font-chivoMono z-10 leading-[0.975] text-[10vw] tracking-normal w-[32vw] mt-[22vw] xxxs:text-[32px]',
+	mobileTextDivTop:
+		'bg-white rounded-lg font-chivoMono p-[2vw] w-9/12 text-[2.8vw] tracking-wide ml-[2vw] mt-[20vw] z-10',
+	mobileTexBottomWrapper: 'w-11/12 ml-[2vw] mt-[16vw] mb-10 z-10',
+	mobileTextDivBottom:
+		'bg-[#0C0C0C] font-chivoMono text-[#D8D8D8] text-[2.8vw] tracking-wide rounded-lg border-b-2 border-r-2 border-gray-500/10 shadow-xl shadow-gray-800/20 p-[2vw] mb-2',
+	mobileButtonsDiv:
+		'flex flex-row font-chivoMono text-[2.8vw] text-center gap-[2.5vw] pt-[1.8vw]',
+	mobileContactSales:
+		'bg-[#174EFF] text-[#D8D8D8] p-[1.1vw] rounded-md w-1/2 drop-shadow-lg',
+	mobileSignUp: 'bg-[#FFFFFF] p-[1.1vw] rounded-md w-1/2 drop-shadow-lg',
+	cardsWrapper:
+		'w-full flex gap-6 justify-between relative xs:flex-col xs:items-center xxs:flex-col xxs:items-center xxxs:flex-col xxxs:items-center',
+	mainFeatures:
+		'w-10/12 min-h-[16vw] my-5 text-[2vw] sm:text-[.8vw] md:text-[.8vw] lg:text-[.8vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.55vw]',
+	greenDot:
+		'w-[.4vw] h-[.4vw] bg-[#24FF00] rounded-full drop-shadow-2xl ml-[.5vw] xxxl:w-[.3vw] xxxl:h-[.3vw] xs:w-[.8vw] xs:h-[.8vw] xxs:w-[.8vw] xxs:h-[.8vw] xxxs:w-[.8vw] xxxs:h-[.8vw]',
+	redDot:
+		'w-[.4vw] h-[.4vw] bg-[#FF003D] rounded-full drop-shadow-2xl xxxl:w-[.3vw] xxxl:h-[.3vw] xs:w-[.8vw] xs:h-[.8vw] xxs:w-[.8vw] xxs:h-[.8vw] xxxs:w-[.8vw] xxxs:h-[.8vw]',
+	getStartedButton:
+		'py-[.6vw] rounded text-[2.5vw] font-bold xxxs:px-[2.5vw] xxxs:py-[1.2vw] xxs:px-[2.5vw] xxs:py-[1.2vw] xs:px-[2.5vw] xs:py-[1.2vw] sm:text-[.8vw] md:text-[.8vw] lg:text-[.8vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.6vw]',
+
+	cardContactSales:
+		'w-1/3 bg-[#FFFFFF] text-[#0C0C0C] hover:bg-[#174EFF] hover:text-[#D8D8D8] p-[.5vw] text-[2.5vw] font-bold xxxs:px-[.5vw] xxxs:py-[.9vw] xxs:px-[.5vw] xxs:py-[.9vw] xs:px-[.5vw] xs:py-[.9vw] sm:text-[.8vw] md:text-[.8vw] lg:text-[.8vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.5vw] rounded',
+	showHideButton:
+		'text-[#7394FF] mt-8 font-bold text-[2vw] sm:text-[.8vw] md:text-[.8vw] lg:text-[.8vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.6vw] transition-scale duration-200 hover:scale-110',
+	cardAllFeatures:
+		'w-10/12 my-10 text-[2vw] sm:text-[.8vw] md:text-[.8vw] lg:text-[.8vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.55vw]',
+
+	featureTitle: 'text-[#D8D8D8] font-chivoMono',
+	freeUsageText:
+		'font-thin text-[1.8vw] sm:text-[.7vw] md:text-[.7vw] lg:text-[.7vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.5vw]',
+	ul: 'w-[100%] my-5',
+	security:
+		'flex items-center text-[1.8vw] sm:text-[.7vw] md:text-[.7vw] lg:text-[.7vw] xl:text-[.8vw] xxl:text-[.8vw] xxxl:text-[.55vw]',
+	support:
+		'flex items-center justify-between text-[#D8D8D8] bg-[#282E43] font-bold font-chivoMono p-[1vw] mb-[.6vw] xs:p-[2vw] xs:mb-[1.8vw] xxs:p-[2vw] xxs:mb-[1.8vw] xxxs:p-[2vw] xxxs:mb-[1.8vw] border border-[#363E5A] rounded',
+	bottomSectionWrapper:
+		'mt-20 text-[1.5vw] sm:text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] xxl:text-[14px] xxxl:text-[16px]',
+	bottomSectionContainer: 'flex justify-center items-center mb-[10vw]',
+	bottomSectionInnerDiv:
+		'flex items-center text-[#D8D8D8] font-light bg-[#191E2C] p-[1vw] rounded-xl text-center',
+};
+---
+
+<Layout title="Pricing for Squared">
+	<head>
+		<title>Squared Pricing</title>
+		<meta name="description" content="This is the Pricing page of Squared." />
+
+		<script>
+			const cardFree = document.getElementById('cardFree');
+			const cardStandard = document.getElementById('cardStandard');
+			const cardPlus = document.getElementById('cardPlus');
+			const showHideButtonFree = document.getElementById('showHideButtonFree');
+			const showHideButtonStandard = document.getElementById(
+				'showHideButtonStandard'
+			);
+			const showHideButtonPlus = document.getElementById('showHideButtonPlus');
+			const freeExtraElements =
+				document.getElementsByClassName('freeExtraElement');
+			const standardExtraElements = document.getElementsByClassName(
+				'standardExtraElement'
+			);
+			const plusExtraElements =
+				document.getElementsByClassName('plusExtraElement');
+
+			checkCardToggle(showHideButtonFree, freeExtraElements, cardFree);
+			checkCardToggle(
+				showHideButtonStandard,
+				standardExtraElements,
+				cardStandard
+			);
+			checkCardToggle(showHideButtonPlus, plusExtraElements, cardPlus);
+
+			showHideButtonFree.addEventListener('click', () => {
+				toggleCard(showHideButtonFree, freeExtraElements, cardFree);
+			});
+			showHideButtonStandard.addEventListener('click', () => {
+				toggleCard(showHideButtonStandard, standardExtraElements, cardStandard);
+			});
+			showHideButtonPlus.addEventListener('click', () => {
+				toggleCard(showHideButtonPlus, plusExtraElements, cardPlus);
+			});
+
+			function checkCardToggle(
+				button: HTMLElement,
+				extraElements: HTMLCollectionOf<Element>,
+				card: HTMLElement
+			) {
+				if (button.innerText === 'Show Details') {
+					for (let i = 0; i < extraElements.length; i++) {
+						extraElements[i].classList.add('invisible', 'max-h-0');
+						card.classList.add(
+							'max-h-[48.5vw]',
+							'sm:max-h-[60vw]',
+							'md:max-h-[55vw]',
+							'lg:max-h-[52vw]',
+							'xl:max-h-[50vw]',
+							'xs:max-h-[1000px]',
+							'xxs:max-h-[1000px]',
+							'xxxs:max-h-[1000px]'
+						);
+					}
+				}
+			}
+
+			function toggleCard(
+				button: HTMLElement,
+				extraElements: HTMLCollectionOf<Element>,
+				card: HTMLElement
+			) {
+				if (button.innerText === 'Show Details') {
+					button.innerText = 'Hide Details';
+					for (let i = 0; i < extraElements.length; i++) {
+						extraElements[i].classList.remove('invisible', 'max-h-0');
+						card.classList.remove(
+							'max-h-[48.5vw]',
+							'sm:max-h-[60vw]',
+							'md:max-h-[55vw]',
+							'lg:max-h-[52vw]',
+							'xl:max-h-[50vw]',
+							'xs:max-h-[1000px]',
+							'xxs:max-h-[1000px]',
+							'xxxs:max-h-[1000px]'
+						);
+					}
+				} else {
+					button.innerText = 'Show Details';
+					for (let i = 0; i < extraElements.length; i++) {
+						extraElements[i].classList.add('invisible', 'max-h-0');
+						card.classList.add(
+							'max-h-[48.5vw]',
+							'sm:max-h-[60vw]',
+							'md:max-h-[55vw]',
+							'lg:max-h-[52vw]',
+							'xl:max-h-[50vw]',
+							'xs:max-h-[1000px]',
+							'xxs:max-h-[1000px]',
+							'xxxs:max-h-[1000px]'
+						);
+					}
+				}
+			}
+
+			window.addEventListener('load', function () {
+				document.querySelector('.no-fouc').classList.remove('no-fouc');
+			});
+		</script>
+	</head>
+	<main class={styles.main}>
+		<TopNav />
+
+		<!-- desktop version -->
+
+		<div class={styles.desktopWrapper}>
+			<div class="w-[20%]">
+				<span class={`${styles.desktopTitle} absolute`}>SQUARED enterprise</span
+				>
+
+				<div class={styles.desktopHeroContainer}>
+					<div class="font-chivo">
+						<div class={styles.desktopTextDivTop}>
+							Use Squared for free with your whole team. Upgrade to enable
+							unlimited issues, enhanced security controls, and additional
+							features.
+						</div>
+						<div class={styles.desktopButtonsDiv}>
+							<a href="" class={styles.desktopContactSales}> Contact Sales</a>
+
+							<a
+								href="https://app.squaredmade.com/register"
+								class={styles.desktopSignUp}>Sign Up for Free</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="w-[80%] relative">
+				<Image
+					src={pricingHeroBgImg}
+					alt="background-image-desktop"
+					class="w-full h-full"
+				/>
+				<div class={styles.desktopTextDivBottom}>
+					Built for enterprises who want to scale with confidence, Squared
+					Enterprise offers advanced security, powerful admin controls, and
+					more.
+				</div>
+			</div>
+		</div>
+		<span class={styles.desktopTitle}>SQUARED<br /> enterprise</span>
+
+		<!-- mobile version -->
+
+		<div class={styles.mobileWrapper}>
+			<Image
+				src={mainxs}
+				class="absolute right-0 w-[60%]"
+				alt="background-image-mobile"
+			/>
+			<span class={styles.mobileTitle}>SQUARED<br /> enterprise</span>
+			<div class={styles.mobileTextDivTop}>
+				Built for enterprises who want to scale with confidence, Squared
+				Enterprise offers advanced security, powerful admin controls, and more.
+			</div>
+			<div class={styles.mobileTexBottomWrapper}>
+				<div>
+					<div class={styles.mobileTextDivBottom}>
+						Use Squared for free with your whole team. Upgrade to enable
+						unlimited issues, enhanced security controls, and additional
+						features.
+					</div>
+					<div class={styles.mobileButtonsDiv}>
+						<a href="" class={styles.mobileContactSales}>
+							<button>Contact Sales</button></a
+						>
+
+						<a
+							href="https://app.squaredmade.com/register"
+							class={styles.mobileSignUp}
+						>
+							<button>Sign Up for Free</button></a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-[6vw]">
+			<div class={styles.cardsWrapper}>
+				<PriceCard
+					subscriptionType="Free"
+					priceDescription="Free for everyone"
+					peopleIconSrc=""
+					toggleButtonText="Show Details"
+					id="cardFree"
+				>
+					<PriceCardLogo
+						alt="squared-logo-gray"
+						slot="squaredLogo"
+						src={squaredLogoGray.src}
+					/>
+					<div slot="mainFeatures" class={styles.mainFeatures}>
+						<ul class="w-[100%]">
+							{
+								features[0].main?.map((el) => (
+									<PriceCardListItem title={'Included'}>
+										<span slot="item">{el}</span>
+										<div slot="div" class={styles.greenDot} />
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+					</div>
+					<a
+						href="https://app.squaredmade.com/register"
+						class={`${styles.getStartedButton} bg-[#FFFFFF] hover:bg-[#174EFF] hover:text-[#D8D8D8] px-[2vw]`}
+						slot="buttons"
+					>
+						Get Started with Free
+					</a>
+
+					<button
+						slot="showHideButton"
+						id="showHideButtonFree"
+						class={styles.showHideButton}
+					>
+						Show Details
+					</button>
+					<div
+						slot="allFeatures"
+						class={`${styles.cardAllFeatures} freeExtraElement`}
+					>
+						<h3 class=`${styles.featureTitle} freeExtraElement`>Usage</h3>
+						<ul class=`${styles.ul} freeExtraElement`>
+							{
+								features[0].usage.map((obj, index) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										<div slot="div" class="flex items-center">
+											<h3 class={styles.freeUsageText}>
+												{index === 0
+													? 'Unlimited'
+													: index === 1
+													? '10 MB'
+													: index === 2
+													? '150 MB per month'
+													: '250'}
+											</h3>
+											<div class={`${styles.greenDot} ml-3`} />
+										</div>
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} freeExtraElement`}>Features</h3>
+						<ul class=`${styles.ul} freeExtraElement`>
+							{
+								features[0].features.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.greenDot} />
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} freeExtraElement`}>
+							Analytics & Reporting
+						</h3>
+						<ul class=`${styles.ul} freeExtraElement`>
+							{
+								features[0].analyticsAndReporting.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.greenDot} />
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} freeExtraElement`}>Security</h3>
+						<ul class=`${styles.ul} freeExtraElement`>
+							{
+								features[0].security.map((obj, index) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.security}>
+												<h3>{index === 0 ? 'G Suite' : ''}</h3>{' '}
+												<div class={styles.greenDot} />
+											</div>
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} freeExtraElement`}>Support</h3>
+						<ul class="my-5">
+							<li
+								class={`${styles.support} freeExtraElement`}
+								title="Not included"
+							>
+								{Object.keys(features[0].support)}{
+									Object.values(features[0].support)[0] ? (
+										<div class={styles.greenDot} />
+									) : (
+										<div class={styles.redDot} />
+									)
+								}
+							</li>
+						</ul>
+					</div>
+				</PriceCard>
+
+				<PriceCard
+					subscriptionType="Standard"
+					logoBackground="bg-white"
+					priceDescription="$8 per user/month"
+					oldPrice="$10"
+					peopleIconSrc={peopleIcon.src}
+					numberOfUsers="Best for 1-50 users"
+					roundedDivText="Most Popular"
+					roundedDivBg="bg-[#282E43]"
+					introductoryText="Everything in Free, plus…"
+					monthlyText="Monthly /"
+					annuallyText="Annually"
+					toggleButtonText="Show Details"
+					id="cardStandard"
+				>
+					<PriceCardLogo
+						alt="squared-logo-blue"
+						slot="squaredLogo"
+						src={squaredLogoBlue.src}
+					/>
+					<div slot="mainFeatures" class={styles.mainFeatures}>
+						<ul class="w-[100%]">
+							{
+								features[1].main?.map((el) => (
+									<PriceCardListItem title="Included">
+										<span slot="item">{el}</span>
+										<div slot="div" class={styles.greenDot} />
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+					</div>
+					<a
+						href="https://app.squaredmade.com/register"
+						slot="buttons"
+						class={`${styles.getStartedButton} bg-[#174EFF] text-[#D8D8D8] hover:bg-[#FFFFFF] hover:text-[#0C0C0C] px-[2vw]`}
+					>
+						Get Started with Standard
+					</a>
+
+					<button
+						slot="showHideButton"
+						id="showHideButtonStandard"
+						class={styles.showHideButton}
+					>
+						Show Details
+					</button>
+					<div
+						slot="allFeatures"
+						class={`${styles.cardAllFeatures} standardExtraElement`}
+					>
+						<h3 class={`${styles.featureTitle} standardExtraElement`}>Usage</h3>
+						<ul class=`${styles.ul} standardExtraElement`>
+							{
+								features[1].usage.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										<div slot="div" class={styles.greenDot} />
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} standardExtraElement`}>
+							Features
+						</h3>
+						<ul class=`${styles.ul} standardExtraElement`>
+							{
+								features[1].features.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.greenDot} />
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} standardExtraElement`}>
+							Analytics & Reporting
+						</h3>
+						<ul class=`${styles.ul} standardExtraElement`>
+							{
+								features[1].analyticsAndReporting.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.greenDot} />
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} standardExtraElement`}>
+							Security
+						</h3>
+						<ul class=`${styles.ul} standardExtraElement`>
+							{
+								features[1].security.map((obj, index) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.security}>
+												<h3>{index === 0 ? 'G Suite' : ''}</h3>
+												<div class={styles.greenDot} />
+											</div>
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} standardExtraElement`}>
+							Support
+						</h3>
+						<ul class="my-5">
+							<li
+								class={`${styles.support} standardExtraElement`}
+								title="Not included"
+							>
+								{Object.keys(features[1].support)}{
+									Object.values(features[1].support)[0] ? (
+										<div class={styles.greenDot} />
+									) : (
+										<div class={styles.redDot} />
+									)
+								}
+							</li>
+						</ul>
+					</div>
+				</PriceCard>
+
+				<PriceCard
+					subscriptionType="Plus"
+					logoBackground="bg-white"
+					priceDescription="$14 per user/month"
+					peopleIconSrc={peopleIcon.src}
+					numberOfUsers="Best for 50+ users"
+					roundedDivText="Pro"
+					roundedDivBg="bg-[#0C0C0C]"
+					introductoryText="Everything in Standard, plus…"
+					annuallyText="Annually"
+					toggleButtonText="Show Details"
+					id="cardPlus"
+				>
+					<PriceCardLogo
+						alt="squared-logo-black"
+						slot="squaredLogo"
+						src={squaredLogoBlack.src}
+					/>
+					<div slot="mainFeatures" class={styles.mainFeatures}>
+						<ul class="w-[100%]">
+							{
+								features[2].main?.map((el) => (
+									<PriceCardListItem title="Included">
+										<span slot="item">{el}</span>
+										<div slot="div" class={styles.greenDot} />
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+					</div>
+					<a
+						href="https://app.squaredmade.com/register"
+						slot="buttons"
+						class={`${styles.getStartedButton} bg-[#0C0C0C] text-[#D8D8D8] hover:bg-[#174EFF] hover:text-[#D8D8D8] px-[1vw] mr-3`}
+					>
+						Get Started with Plus</a
+					>
+					<button slot="buttons" class={styles.cardContactSales}
+						>Contact Sales</button
+					>
+					<button
+						slot="showHideButton"
+						id="showHideButtonPlus"
+						class={styles.showHideButton}
+					>
+						Show Details
+					</button>
+					<div
+						slot="allFeatures"
+						class={`${styles.cardAllFeatures} plusExtraElement`}
+					>
+						<h3 class={`${styles.featureTitle} plusExtraElement`}>Usage</h3>
+						<ul class=`${styles.ul} plusExtraElement`>
+							{
+								features[2].usage.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										<div slot="div" class={styles.greenDot} />
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} plusExtraElement`}>Features</h3>
+						<ul class=`${styles.ul} plusExtraElement`>
+							{
+								features[2].features.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.redDot} />
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} plusExtraElement`}>
+							Analytics & Reporting
+						</h3>
+						<ul class=`${styles.ul} plusExtraElement`>
+							{
+								features[2].analyticsAndReporting.map((obj) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.greenDot} />
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} plusExtraElement`}>Security</h3>
+						<ul class=`${styles.ul} plusExtraElement`>
+							{
+								features[2].security.map((obj, index) => (
+									<PriceCardListItem
+										title={Object.values(obj)[0] ? 'Included' : 'Not included'}
+									>
+										<span slot="item">{Object.keys(obj)}</span>
+										{Object.values(obj)[0] ? (
+											<div slot="div" class={styles.security}>
+												<h3>{index === 0 ? 'G Suite' : ''}</h3>{' '}
+												<div class={styles.greenDot} />
+											</div>
+										) : (
+											<div slot="div" class={styles.redDot} />
+										)}
+									</PriceCardListItem>
+								))
+							}
+						</ul>
+						<h3 class={`${styles.featureTitle} plusExtraElement`}>Support</h3>
+						<ul class="my-5">
+							<li class={`${styles.support} plusExtraElement`} title="Included">
+								{Object.keys(features[2].support)}{
+									Object.values(features[2].support)[0] ? (
+										<div class={styles.greenDot} />
+									) : (
+										<div class={styles.redDot} />
+									)
+								}
+							</li>
+						</ul>
+					</div>
+				</PriceCard>
+			</div>
+		</div>
+		<div class={styles.bottomSectionWrapper}>
+			<div class={styles.bottomSectionContainer}>
+				<div class={styles.bottomSectionInnerDiv}>
+					<img
+						alt="green-small-logo"
+						src={pricingGreenSmallLogo.src}
+						class="mr-[1vw]"
+						width="18px"
+						height="12px"
+					/>Squared contributes 1% of your subscription to remove CO₂ from
+					atmosphere through Stripe Climate.
+				</div>
+			</div>
+			<Footer />
+		</div>
+	</main>
+</Layout>; ---

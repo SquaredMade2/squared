@@ -1,0 +1,105 @@
+---
+const {
+	subscriptionType,
+	logoBackground,
+	priceDescription,
+	oldPrice,
+	peopleIconSrc,
+	numberOfUsers,
+	roundedDivBg,
+	roundedDivText,
+	introductoryText,
+	monthlyText,
+	annuallyText,
+	id,
+} = Astro.props;
+
+const styles = {
+	wrapper:
+		'w-5/12 flex flex-col items-center bg-[#191E2C] rounded-2xl xs:w-10/12 xxs:w-10/12 xxxs:w-10/12',
+	top: 'w-10/12 min-h-[12vw] mt-10 sm:mt-6 md:mt-8 lg:mt-9 xl:mt-10 xxl:mt-12 xxxl:mt-12',
+	title: 'relative flex justify-between z-10 mb-5',
+	logo: `absolute w-[8vw] h-[8vw] sm:w-8 sm:h-8 sm:top-[.5px] md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 xxl:w-12 xxl:h-12 xxxl:w-14 xxxl:h-14 ${logoBackground} -z-10 right-0 top-[2px] rounded-md`,
+	subscriptionType:
+		'text-[#D8D8D8] uppercase font-bold font-chivoMono left-5 mr-[1vw] text-[2vw] xs:text-[4.4vw] xxs:text-[4.4vw] xxxs:text-[4.4vw]',
+	priceDescription:
+		'text-[#D8D8D8] font-bold font-chivoMono text-[2.4vw] sm:text-[10px] md:text-[10px] lg:text-[14px] xl:text-[16px] xxl:text-[16px] xxxl:text-[18px] mb-1',
+	oldPrice:
+		'text-[#44486C] font-bold font-chivoMono text-[2.4vw] line-through sm:text-[10px] md:text-[10px] lg:text-[14px] xl:text-[16px] xxl:text-[16px] xxxl:text-[18px] mb-1',
+	peopleIcon:
+		'mr-4 w-[2.5vw] h-[2.5vw] sm:w-3 sm:h-3 md:w-4 md:h-4 lg:w-4 lg:h-4 xl:w-6 xl:h-6 xxl:w-6 xxl:h-6 xxxl:w-6 xxxl:h-6',
+	numberOfUsers:
+		'flex items-center text-[#D8D8D8] font-extralight text-[2.4vw] sm:text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] xxl:text-[14px] xxxl:text-[16px] mb-1',
+	roundedDiv: `${roundedDivBg} w-full h-3/4 rounded-lg shadow-2xl flex justify-center items-center p-2`,
+	roundedDivText:
+		'text-[#D8D8D8] text-[2.2vw] sm:text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px] xxl:text-[14px] xxxl:text-[16px] text-center font-light',
+	introductoryContainer: 'w-10/12 flex justify-between items-center my-5',
+	introductoryText:
+		'text-[#D8D8D8] font-bold font-chivoMono text-[2vw] sm:text-[6px] md:text-[8px] lg:text-[10px] xl:text-[12px] xxl:text-[14px] xxxl:text-[14px]',
+	priceContainer:
+		'font-chivoMono text-[2vw] sm:text-[6px] md:text-[8px] lg:text-[10px] xl:text-[12px] xxl:text-[14px] xxxl:text-[14px]',
+	buttonsContainer: 'w-10/12 flex justify-center items-center mt-5',
+};
+---
+
+<head>
+	<title>Price Card</title>
+	<meta
+		name="description"
+		content="This is the Card component that the Pricing page uses to display the different prices and subscription types."
+	/>
+</head>
+<div class={styles.wrapper} id={id}>
+	<div class={styles.top}>
+		<div class={styles.title}>
+			<div class={styles.logo}></div>
+			<h2 class={styles.subscriptionType}>
+				{subscriptionType}
+			</h2>
+			<slot name="squaredLogo" class="z-10" />
+		</div>
+		<div class="flex">
+			<div class="w-[70%]">
+				<h3 class={styles.priceDescription}>
+					<span class={styles.oldPrice}>{oldPrice}</span>
+					{priceDescription}
+				</h3>
+				<div class="flex items-center">
+					{
+						peopleIconSrc !== '' && (
+							<img
+								alt="people-icon"
+								src={peopleIconSrc}
+								class={styles.peopleIcon}
+							/>
+						)
+					}
+					<h3 class={styles.numberOfUsers}>
+						{numberOfUsers}
+					</h3>
+				</div>
+			</div>
+			<div class="w-[32%] flex items-center justify-end">
+				<div class={styles.roundedDiv}>
+					<span class={styles.roundedDivText}>{roundedDivText}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="border-b border-[#363E5A] w-10/12 my-5"></div>
+	<div class={styles.introductoryContainer}>
+		<h3 class={styles.introductoryText}>
+			{introductoryText}
+		</h3><div class={styles.priceContainer}>
+			<span class="text-[#44486C] font-thin mr-2">{monthlyText}</span><span
+				class="text-[#24FF00] font-thin font-chivoMono">{annuallyText}</span
+			>
+		</div>
+	</div>
+	<slot name="mainFeatures" />
+	<div class={styles.buttonsContainer}>
+		<slot name="buttons" />
+	</div>
+	<slot name="showHideButton" />
+	<slot name="allFeatures" />
+</div>

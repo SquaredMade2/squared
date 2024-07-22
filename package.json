@@ -1,20 +1,23 @@
 {
-  "name": "with-docker",
+  "name": "squared",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "dev": "turbo run dev",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev": "turbo run dev --filter=web --filter=api",
+    "format": "pnpm biome format --write .",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "check-types": "turbo run check-types"
+    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci",
+    "check-types": "turbo run check-types",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@commitlint/cli": "^17.8.1",
+    "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "husky": "^9.0.11",
     "turbo": "^2.0.9"
   },
   "engines": {

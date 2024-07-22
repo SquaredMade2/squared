@@ -1,0 +1,21 @@
+<svg width="full" height="full" viewBox="0 0 1841 1020" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <radialGradient id="radial-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+            <stop offset="0%" style="stop-color:#191c22" />
+            <stop offset="100%" style="stop-color:#141414" />
+        </radialGradient>
+        <filter id="dropshadow" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+            <feOffset dx="0" dy="0" result="offsetblur"/>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    <path d="M30 0H891C907.569 0 921 13.4315 921 30V399C921 415.569 934.431 429 951 429H1405C1421.57 429 1435 415.569 1435 399V277C1435 260.431 1448.43 247 1465 247H1811C1827.57 247 1841 260.431 1841 277V990C1841 1006.57 1827.57 1020 1811 1020H30C13.4315 1020 0 1006.57 0 990V795C0 778.431 13.4315 765 30 765H323C339.569 765 353 778.431 353 795V890C353 906.569 366.431 920 383 920H891C907.569 920 921 906.569 921 890V760C921 751.816 921 743.184 921 735V608C921 591.431 907.569 578 891 578H30C13.4315 578 0 564.569 0 548V30C0 13.4315 13.4315 0 30 0Z" 
+          fill="url(#radial-gradient)" 
+          stroke="black" 
+          stroke-width="2" 
+          filter="url(#dropshadow)"/>
+</svg>

@@ -1,0 +1,114 @@
+---
+import plus from '../images/plusIcon.png';
+import { Image } from 'astro:assets';
+import '@fontsource/chivo-mono';
+---
+
+{/* <!-- svg weird angles bg --> */}
+
+<div
+	class="relative bg-[#141414] xxxs:mb-[32vw] xxs:mb-[28vw] xs:mb-[23vw] xxxs:mt-[15vw] xxs:mt-[15vw] xs:mt-[15vw]"
+>
+	<svg
+		width="100%"
+		height="100%"
+		viewBox="0 0 1845 880"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<defs>
+			{/* <!-- Pattern Definition --> */}
+
+			<pattern
+				id="imgPattern"
+				patternUnits="userSpaceOnUse"
+				width="1800"
+				height="877"
+			>
+				<image
+					href="https://i.ibb.co/9TrMm7s/Asset-2-4x-2.png"
+					x="0"
+					y="0"
+					width="1616"
+					height="877"
+				/>
+			</pattern>
+			<filter
+				id="filter0_d_469_10"
+				x="0"
+				y="0"
+				width="1848"
+				height="877"
+				filterUnits="userSpaceOnUse"
+				color-interpolation-filters="sRGB"
+			>
+				<feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+				<feColorMatrix
+					in="SourceAlpha"
+					type="matrix"
+					values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+					result="hardAlpha"></feColorMatrix>
+				<feOffset dy="4"></feOffset>
+				<feGaussianBlur stdDeviation="2"></feGaussianBlur>
+				<feComposite in2="hardAlpha" operator="out"></feComposite>
+				<feColorMatrix
+					type="matrix"
+					values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"></feColorMatrix>
+				<feBlend
+					mode="normal"
+					in2="BackgroundImageFix"
+					result="effect1_dropShadow_469_10"></feBlend>
+				<feBlend
+					mode="normal"
+					in="SourceGraphic"
+					in2="effect1_dropShadow_469_10"
+					result="shape"></feBlend>
+			</filter>
+		</defs>
+
+		<g filter="url(#filter0_d_469_10)">
+			{/* <!-- Background Color Fill --> */}
+
+			<path
+				d="M34 0C17.4315 0 4 13.4315 4 30V671C4 687.569 17.4315 701 34 701H143C159.569 701 173 714.431 173 731V848C173 859.046 181.954 868 193 868H212.5C212.776 868 213 868.224 213 868.5C213 868.776 213.224 869 213.5 869H1374C1390.57 869 1404 855.569 1404 839V733C1404 716.431 1417.43 703 1434 703H1833.5C1833.78 703 1834 702.776 1834 702.5C1834 702.224 1834.22 702 1834.5 702H1839C1841.76 702 1844 699.761 1844 697V318C1844 301.431 1830.57 288 1814 288H1468C1451.43 288 1438 301.431 1438 318V356C1438 372.569 1424.57 386 1408 386H909C892.431 386 879 372.569 879 356V30C879 13.4315 865.569 0 849 0H34Z"
+				fill="#0C0C0C"></path>
+			{/* <!-- Image Fill --> */}
+
+			<path
+				d="M34 0C17.4315 0 4 13.4315 4 30V671C4 687.569 17.4315 701 34 701H143C159.569 701 173 714.431 173 731V848C173 859.046 181.954 868 193 868H212.5C212.776 868 213 868.224 213 868.5C213 868.776 213.224 869 213.5 869H1374C1390.57 869 1404 855.569 1404 839V733C1404 716.431 1417.43 703 1434 703H1833.5C1833.78 703 1834 702.776 1834 702.5C1834 702.224 1834.22 702 1834.5 702H1839C1841.76 702 1844 699.761 1844 697V318C1844 301.431 1830.57 288 1814 288H1468C1451.43 288 1438 301.431 1438 318V356C1438 372.569 1424.57 386 1408 386H909C892.431 386 879 372.569 879 356V30C879 13.4315 865.569 0 849 0H34Z"
+				fill="url(#imgPattern)"></path>
+
+			<path
+				d="M4.5 671V30C4.5 13.7076 17.7076 0.5 34 0.5H849C865.292 0.5 878.5 13.7076 878.5 30V356C878.5 372.845 892.155 386.5 909 386.5H1408C1424.84 386.5 1438.5 372.845 1438.5 356V318C1438.5 301.708 1451.71 288.5 1468 288.5H1814C1830.29 288.5 1843.5 301.708 1843.5 318V697C1843.5 699.485 1841.49 701.5 1839 701.5H1834.5C1833.95 701.5 1833.5 701.948 1833.5 702.5H1434C1417.16 702.5 1403.5 716.155 1403.5 733V839C1403.5 855.292 1390.29 868.5 1374 868.5H213.5C213.5 867.948 213.052 867.5 212.5 867.5H193C182.23 867.5 173.5 858.77 173.5 848V731C173.5 714.155 159.845 700.5 143 700.5H34C17.7076 700.5 4.5 687.292 4.5 671Z"
+				stroke="black"></path>
+		</g>
+	</svg>
+	{/* <!-- Image Fill --> */}
+
+	<path
+		d="M34 0C17.4315 0 4 13.4315 4 30V671C4 687.569 17.4315 701 34 701H143C159.569 701 173 714.431 173 731V848C173 859.046 181.954 868 193 868H212.5C212.776 868 213 868.224 213 868.5C213 868.776 213.224 869 213.5 869H1374C1390.57 869 1404 855.569 1404 839V733C1404 716.431 1417.43 703 1434 703H1833.5C1833.78 703 1834 702.776 1834 702.5C1834 702.224 1834.22 702 1834.5 702H1839C1841.76 702 1844 699.761 1844 697V318C1844 301.431 1830.57 288 1814 288H1468C1451.43 288 1438 301.431 1438 318V356C1438 372.569 1424.57 386 1408 386H909C892.431 386 879 372.569 879 356V30C879 13.4315 865.569 0 849 0H34Z"
+		fill="url(#imgPattern)"></path>
+
+	<path
+		d="M4.5 671V30C4.5 13.7076 17.7076 0.5 34 0.5H849C865.292 0.5 878.5 13.7076 878.5 30V356C878.5 372.845 892.155 386.5 909 386.5H1408C1424.84 386.5 1438.5 372.845 1438.5 356V318C1438.5 301.708 1451.71 288.5 1468 288.5H1814C1830.29 288.5 1843.5 301.708 1843.5 318V697C1843.5 699.485 1841.49 701.5 1839 701.5H1834.5C1833.95 701.5 1833.5 701.948 1833.5 702.5H1434C1417.16 702.5 1403.5 716.155 1403.5 733V839C1403.5 855.292 1390.29 868.5 1374 868.5H213.5C213.5 867.948 213.052 867.5 212.5 867.5H193C182.23 867.5 173.5 858.77 173.5 848V731C173.5 714.155 159.845 700.5 143 700.5H34C17.7076 700.5 4.5 687.292 4.5 671Z"
+		stroke="black"></path>
+
+	<Image
+		class="absolute z-10 bottom-2 w-[8%]"
+		src={plus}
+		alt="plus icon for workflow"
+	/>
+
+	<p
+		class="text-white w-2/5 leading-[75px] font-chivoMono font-semibold absolute top-0 right-0 tracking-wide xxxl:text-[85px] xxxl:right-[180px] xxl:text-[4.4vw] xxl:right-[9.2vw] xxl:leading-[3.9vw] xl:text-[4.2vw] xl:right-[9vw] xl:leading-[3.7vw] lg:text-[4vw] lg:right-[8.9vw] lg:leading-[3.5vw] md:text-[3.8vw] md:right-[8.9vw] md:leading-[3.8vw] sm:text-[4vw] sm:right-[9vw] sm:leading-[3.8vw] sm:top-[1vw] xxxs:text-[5.7vw] xxxs:leading-[6vw] xxxs:-top-[10vw] xxxs:right-[8vw] xxs:text-[5.7vw] xxs:leading-[6vw] xxs:-top-[10vw] xxs:right-[8vw] xs:text-[5.7vw] xs:leading-[6vw] xs:-top-[10vw] xs:right-[8vw]"
+	>
+		EXPONENTIAL OUTCOMES WITH SQUARED.
+	</p>
+
+	<p
+		class="text-[#D8D8D8] font-chivoMono text-lg bg-[#0C0C0C] w-[23%] py-6 px-3 rounded-lg absolute right-0 bottom-0 drop-shadow-md xxxl:text-[13px] xxxl:p-[24px] xxxl:bottom-[10px] xxxl:leading-[20px] xxl:text-[0.8vw] xxl:p-[1vw] xxl:bottom-[1vw] leading-[1.0vw] xl:text-[0.75vw] xl:p-[1vw] xl:bottom-[1vw] lg:text-[0.75vw] lg:p-[0.9vw] lg:bottom-[1vw] md:text-[0.7vw] md:p-[0.9vw] md:bottom-[1vw] sm:text-[0.67vw] sm:p-[0.85vw] sm:bottom-[1vw] xs:w-full xs:text-[4vw] xs:leading-[6vw] xs:-bottom-[21vw] xxs:w-full xxs:text-[4vw] xxs:leading-[6vw] xxs:-bottom-[25vw] xxxs:w-full xxxs:text-[4vw] xxxs:leading-[6vw] xxxs:-bottom-[90px]"
+	>
+		Drive efficiency and effectiveness in product development with Linear's
+		seamless support integrations and advanced Git automations.
+	</p>
+</div>

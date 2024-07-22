@@ -1,0 +1,84 @@
+---
+import squaredLogo from '../images/squaredLogo.png';
+import { Image } from 'astro:assets';
+import '@fontsource/chivo-mono';
+---
+
+<div
+	class="border-t border-gray-800 flex flex-row xs:flex-col xxs:flex-col xxxs:flex-col xs:gap-6 xxs:gap-6 xxxs:gap-6 justify-between sm:justify-center font-chivoMono pt-10 px-32 xs:px-2 xxs:px-2 xxxs:p-2 lg:px-0 md:px-0 sm:px-0 pb-16 sm:w-full"
+>
+	<div
+		class="flex flex-row gap-2 items-start w-1/3 xs:w-[100%] xxs:w-full xxxs:w-full xxxs:pt-4 xxs:pt-4 xs:pt-4"
+	>
+		<Image src={squaredLogo} alt="'Squared Logo" />
+		<p class="text-[#D8D8D8] md:text-sm sm:text-sm">
+			SQUARED DESIGNED IN EUROPE
+		</p>
+	</div>
+
+	<div
+		class="flex flex-row xs:flex-col xxs:flex-col xxxs:flex-col gap-16 xs:gap-8 xxs:gap-8 xxxs:gap-8 justify-center text-[#D8D8D8] w-2/3 xs:w-full"
+	>
+		<div class="flex xs:flex-row xs:w-full xxs:w-full xs:justify-between gap-8">
+			<div class="flex flex-col space-y-2 xs:w-1/2 xxs:w-1/2 min-h-[200px]">
+				<p class="pb-2 text-lg md:text-sm sm:text-sm font-semibold">PRODUCT</p>
+				{/* ATTENTION: Code commented out until pages are made */}
+				{/*  <p class="text-md md:text-sm sm:text-sm">Features</p> */}
+				<a href="/pricing/" class="text-md md:text-sm sm:text-sm">Pricing</a>
+				{
+					/* 	 <p class="text-md md:text-sm sm:text-sm">Docs</p> 
+				<p class="text-md md:text-sm sm:text-sm">Changelog</p> */
+				}
+			</div>
+
+			<div class="flex flex-col space-y-2 xs:w-1/2 xxs:w-1/2 min-h-[200px]">
+				<p class="pb-2 text-lg md:text-sm sm:text-sm font-semibold">COMPANY</p>
+
+				<a href="/about/" class="text-md md:text-sm sm:text-sm">About Us</a>
+
+				{
+					/* 	 <a href="/blog/" class="text-md md:text-sm sm:text-sm">Blog</a>
+				 <a href="/publication/" class="text-md md:text-sm sm:text-sm"
+					>Publication</a
+				>
+
+				 <p class="text-md md:text-sm sm:text-sm">Careers</p>
+				<p class="text-md md:text-sm sm:text-sm">Customers</p>
+				<p class="text-md md:text-sm sm:text-sm">Brands</p>*/
+				}
+			</div>
+		</div>
+
+		<div class="flex xs:flex-row xxs:w-full xs:w-full xs:justify-between gap-8">
+			<div class="space-y-2 xs:w-1/2 xxs:w-1/2 min-h-[200px]">
+				<p class="pb-2 text-lg md:text-sm sm:text-sm font-semibold">
+					RESOURCES
+				</p>
+				<!-- <p class="text-md md:text-sm sm:text-sm">
+					<a href="/contact/contact">Contact</a>
+				</p> -->
+				{
+					/* 	<p class="text-md md:text-sm sm:text-sm">DPA</p>
+				<p class="text-md md:text-sm sm:text-sm">Privacy Policy</p> */
+				}
+				<p class="text-md md:text-sm sm:text-sm">
+					<a href="/terms">Terms of service</a>
+				</p>
+				{
+					/*  <p class="text-md md:text-sm sm:text-sm">Report a vulnerability</p> */
+				}
+			</div>
+
+			{
+				/* 	 <div class="space-y-2 xs:w-1/2 xxs:w-1/2 min-h-[185px]">
+				<p class="pb-2 text-lg md:text-sm sm:text-sm font-semibold">
+					DEVELOPERS
+				</p>
+				<p class="text-md md:text-sm sm:text-sm">API</p>
+				<p class="text-md md:text-sm sm:text-sm">Status</p>
+				<p class="text-md md:text-sm sm:text-sm">Github</p>
+			</div> */
+			}
+		</div>
+	</div>
+</div>

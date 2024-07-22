@@ -50,6 +50,7 @@
 		"socket.io": "^4.7.4"
 	},
 	"devDependencies": {
+		"tslib": "^2.6.3",
 		"@faker-js/faker": "^8.2.0",
 		"@types/bcrypt": "^5.0.0",
 		"@types/bcryptjs": "^2.4.6",

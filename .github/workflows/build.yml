@@ -21,17 +21,23 @@ jobs:
         with:
           node-version: "${{ steps.node_version.outputs.NVMRC }}"
 
-      - name: Get pnpm cache directory path
-        id: pnpm-cache-dir-path
-        run: echo "dir=$(node_modules/.pnpm)" >> $GITHUB_OUTPUT
+      - name: Install pnpm
+        run: npm install -g pnpm
 
-      - uses: actions/cache@v1
+      - name: Get pnpm store path
+        id: pnpm-cache-dir-path
+        run: echo "storePath=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v2
         with:
-          path: ${{ steps.pnpm-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/.nvmrc') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        if: steps.pnpm-cache-dir-path.outputs.cache-hit != 'true'
         run: pnpm install
 
       # - name: Run tests

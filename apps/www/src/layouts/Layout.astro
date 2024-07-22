@@ -1,0 +1,28 @@
+---
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<title>Welcome to Squared- Landing Page</title>
+		<meta
+			name='description'
+			content='Squared2: Better way to manage tasks. Producvity squared.'
+		/>
+		<meta
+			name='viewport'
+			content='width=device-width, initial-scale=1, minimum-scale=1'
+			charset='UTF-8'
+		/>
+		<style type='text/css' is:global>
+			.no-fouc {
+				visibility: hidden;
+			}
+		</style>
+		<link rel='icon' href='/favicon.ico' type='image/x-icon' />
+	</head>
+	<body class='bg-[#141414] no-fouc'>
+		<slot />
+	</body>
+</html>

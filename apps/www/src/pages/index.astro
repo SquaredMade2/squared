@@ -1,0 +1,36 @@
+---
+import CommandlineSection from '../components/CommandlineSection.astro';
+import MakeItYours from '../components/MakeItYours.astro';
+import Layout from '../layouts/Layout.astro';
+import SampleCard from '../components/SampleCard.astro';
+import TopNav from '../components/TopNav.astro';
+import RedDotSection from '../components/RedDotSection.astro';
+import TranslucentSection from '../components/TranslucentSection.astro';
+import BuildMomentumSection from '../components/BuildMomentumSection.astro';
+import SetDirectionSection from '../components/SetDirectionSection.astro';
+import FocusBigPictureSection from '../components/FocusBigPictureSection.astro';
+import FinalSection from '../components/FinalSection.astro';
+import Footer from '../components/Footer.astro';
+import Workflow from '../components/Workflow.astro';
+import GithubSection from '../components/GithubSection.astro';
+---
+
+<Layout title="Welcome to Squared! Sqaured is a better way to build products">
+	<main
+		class="h-screen max-w-[1920px] mx-auto xxxl:px-[150px] px-[8vw] xs:overflow-x-hidden xxs:overflow-x-hidden xxxs:overflow-x-hidden"
+	>
+		<TopNav />
+		<SampleCard />
+		<RedDotSection />
+		<CommandlineSection />
+		<TranslucentSection />
+		<MakeItYours />
+		<BuildMomentumSection />
+		<SetDirectionSection />
+		<FocusBigPictureSection />
+		<Workflow />
+		<GithubSection />
+		<FinalSection />
+		<Footer />
+	</main>
+</Layout>

@@ -1,0 +1,115 @@
+[
+    {
+        "main": [
+            "Unlimited members",
+            "250 issues (+unlimited archived)",
+            "Import and export",
+            "All integrations, APIs, webhooks"
+        ],
+        "usage": [
+            {"Members": true },
+            { "File upload size": true },
+            { "File upload volume": true },
+            { "Issues (excluding Archive)": true }
+        ],
+        "features": [
+            { "Issues, projects and cycles": true },
+            { "Integrations": true },
+            { "API and Webhook access": true },
+            { "Import and export": true },
+            { "Private teams": false },
+            { "Guest accounts": false },
+            { "SLAs": false }
+        ],
+        "analyticsAndReporting": [
+            { "Progress reports": true },
+            { "Linear Insights": false },
+            { "Data warehouse sync": false }
+        ],
+        "security": [
+            { "SSO": true },
+            { "Admin tools": false },
+            { "Advanced history": false },
+            { "Advanced authentication controls": false },
+            { "Audit log": false },
+            { "Third-party app management": false },
+            { "Domain claiming": false }
+        ],
+        "support": { "Priority support": false }
+    },
+    {
+        "main": [
+            "Unlimited issues and file uploads",
+            "Guest accounts, private teams",
+            "Admin tools"
+        ],
+        "usage": [
+            { "Members": true },
+            { "File upload size": true },
+            { "File upload volume": true },
+            { "Issues (excluding Archive)": true }
+        ],
+        "features": [
+            { "Issues, projects and cycles": true },
+            { "Integrations": true },
+            { "API and Webhook access": true },
+            { "Import and export": true },
+            { "Private teams": true },
+            { "Guest accounts": true },
+            { "SLA": false }
+        ],
+        "analyticsAndReporting": [
+            { "Progress reports": true },
+            { "Linear Insights": false },
+            { "Data warehouse sync": false }
+        ],
+        "security": [
+            { "SSO": true },
+            { "Admin tools": true },
+            { "Advanced history": true },
+            { "Advanced authentication controls": false },
+            { "Audit log": false },
+            { "Third-party app management": false },
+            { "Domain claiming": false }
+        ],
+        "support": { "Priority support": false }
+    },
+    {
+        "main": [
+            "Unlimited issues and file uploads",
+            "Guest accounts, private teams",
+            "Admin tools",
+            "All integrations, APIs, webhooks"
+        ],
+        "usage": [
+            {  "Members": true },
+            { "File upload size": true },
+            { "File upload volume": true },
+            { "Issues (excluding Archive)": true }
+        ],
+        "features": [
+            { "Issues, projects and cycles": true },
+            { "Integrations": true },
+            { "API and Webhook access": true },
+            { "Import and export": true },
+            { "Private teams": true },
+            { "Guest accounts": true },
+            { "SLAs": true }
+        ],
+        "analyticsAndReporting": [
+            { "Progress reports": true },
+            { "Linear Insights": true },
+            { "Data warehouse sync": true }
+        ],
+        "security": [
+            {" SSO": true },
+            { "Admin tools": true },
+            { "Advanced history": true },
+            { "Advanced authentication controls": true },
+            { "Audit log": true },
+            { "Third-party app management": true },
+            { "Domain claiming": true }
+        ],
+        "support": { "Priority support": true }
+    }
+]
