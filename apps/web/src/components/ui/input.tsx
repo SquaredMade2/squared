@@ -1,6 +1,5 @@
+import { cn } from "@/utils/cn";
 import * as React from "react";
-
-import { cn } from "squared-ui";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 

@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { cn, DialogPrimitive } from "squared-ui";
+import * as DialogPrimitive from "@repo/ui/src/dialog";
 import { X } from "lucide-react";
+import { cn } from "@/utils/cn";
 
 const Dialog = DialogPrimitive.Root;
 

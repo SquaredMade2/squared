@@ -203,6 +203,6 @@ mongoose
 		
 		seedDB();
 	})
-	.catch((err: string): void =>
-		
-	);
+	.catch((err: string): void => {
+		// Handle the error here if needed
+	});

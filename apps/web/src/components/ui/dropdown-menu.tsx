@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { cn, DropdownMenuPrimitive } from "squared-ui";
+import * as DropdownMenuPrimitive from "@repo/ui/src/dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
+import { cn } from "@/utils/cn";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
