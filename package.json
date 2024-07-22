@@ -9,7 +9,7 @@
     "format": "pnpm biome format --write .",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "test:ci": "pnpm types:check && jest --ci && pnpm cypress:ci",
+    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci",
     "check-types": "turbo run check-types",
     "prepare": "husky install"
   },
