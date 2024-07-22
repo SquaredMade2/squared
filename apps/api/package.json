@@ -51,7 +51,6 @@
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^8.2.0",
-		"@repo/biome-config": "workspace:*",
 		"@types/bcrypt": "^5.0.0",
 		"@types/bcryptjs": "^2.4.6",
 		"@types/chai": "^4.3.11",

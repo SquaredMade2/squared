@@ -91,7 +91,6 @@
 	"devDependencies": {
 		"@chromatic-com/storybook": "^1.5.0",
 		"@commitlint/cli": "^17.8.1",
-		"@repo/biome-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@storybook/addon-essentials": "^8.1.5",
 		"@storybook/addon-interactions": "^8.1.5",
