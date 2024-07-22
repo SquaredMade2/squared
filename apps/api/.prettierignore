@@ -1,8 +1,0 @@
-node_modules
-cypress
-__tests__
-cypress.config.js
-__mocks__
-.next
-package-lock.json
-public

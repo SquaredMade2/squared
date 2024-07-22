@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
-import ITeam from "./team";
-import IUsersRoles from "./userRoles";
+import type { Types } from "mongoose";
+import type ITeam from "./team";
+import type IUsersRoles from "./userRoles";
 
 interface IWorkspace {
   id: any;
@@ -18,7 +18,7 @@ interface IWorkspace {
   githubRepoInfo: {
     repoName: string;
     owner: string;
-  }
+  };
 }
 
 export default IWorkspace;

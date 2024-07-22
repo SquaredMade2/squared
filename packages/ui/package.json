@@ -5,16 +5,94 @@
     "./button": "./src/button.tsx"
   },
   "scripts": {
-    "lint": "eslint \"**/*.ts*\" --max-warnings 0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.19",
-    "eslint": "^8.57.0",
-    "@repo/typescript-config": "workspace:*",
-    "typescript": "^5.3.3"
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format:write": "biome format --write .",
+    "format:check": "biome format .",
+    "types:check": "tsc --skipLibCheck --noEmit",
+    "test": "jest",
+    "test:ci": "pnpm types:check && jest --ci && pnpm cypress:ci",
+    "storybook": "cross-env BROWSER=none storybook dev -p 9009",
+    "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
+    "cypress:run": "cypress run",
+    "cypress:dev": "cypress open",
+    "dev": "pnpm storybook",
+    "build-storybook": "storybook build",
+    "build": "node build.mjs",
+    "publish:stable": "pnpm bump:stable && rimraf dist && pnpm build && pnpm -r publish -access public",
+    "publish:next": "pnpm bump:next && rimraf dist && pnpm build && pnpm -r publish -access public --tag next",
+    "reset": "rimraf node_modules dist",
+    "bump:stable": "pnpm version patch --no-git-tag-version",
+    "bump:next": "pnpm version prerelease --preid beta --no-git-tag-version",
+    "bump:check": "pnpm version check"
   },
   "dependencies": {
-    "react": "^18.2.0"
+    "@floating-ui/react-dom": "^2.1.1",
+    "aria-hidden": "^1.2.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "cross-env": "^7.0.3",
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.396.0",
+    "mockdate": "^3.0.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-remove-scroll": "2.5.7",
+    "tailwind-merge": "^2.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@stitches/core": "^1.2.8",
+    "@storybook/addon-essentials": "^7.6.20",
+    "@storybook/addon-storysource": "^7.6.20",
+    "@storybook/react": "^7.6.20",
+    "@storybook/react-webpack5": "^7.6.20",
+    "@storybook/test": "^7.6.20",
+    "@testing-library/cypress": "^7.0.7",
+    "@testing-library/dom": "^10.2.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^28.0.0",
+    "@types/jest-axe": "^3.5.9",
+    "@types/node": "^20.14.8",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-test-renderer": "^18.3.0",
+    "@types/resize-observer-browser": "^0.1.11",
+    "cypress": "^8.7.0",
+    "cypress-real-events": "^1.13.0",
+    "esbuild": "0.21.4",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.4.2",
+    "husky": "^4.3.8",
+    "jest": "^28.0.0",
+    "jest-axe": "^6.0.1",
+    "jest-watch-typeahead": "^1.1.0",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.8.8",
+    "pretty-quick": "^2.0.2",
+    "react-test-renderer": "^18.3.1",
+    "replace-in-files": "^3.0.0",
+    "start-server-and-test": "2.0.3",
+    "storybook": "^7.6.20",
+    "ts-jest": "^28.0.8",
+    "tsup": "8.1.0",
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
+    "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "@types/react-dom": {
+      "optional": true
+    }
   }
 }

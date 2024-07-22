@@ -158,7 +158,7 @@ const addTask = async (team: any, workspace: any, user: any) => {
 		labels: taskLabels,
 		dueDate: taskDueDate,
 		effortEstimate: taskEffortEstimate,
-		identifier: team.identifier + '-' + workspace.issuesCreated,
+		identifier: `${team.identifier}-${workspace.issuesCreated}`,
 		team,
 	});
 	await Team.findByIdAndUpdate(team._id, { $push: { tasks: task._id } });
