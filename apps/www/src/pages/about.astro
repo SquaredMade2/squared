@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TopNav from '../components/TopNav.astro';
+import Footer from '../components/Footer.astro';
+// import AboutCard from '../components/AboutCard.astro';
+import image1 from '../images/about/Rectangle18.svg';
+// import image2 from '../images/about/Rectangle18(1).svg';
+// import image3 from '../images/about/Rectangle19.svg';
+// import card from '../images/about/Frame11.svg';
+import map from '../images/about/Group.svg';
+import { Image } from 'astro:assets';
+---
+
+<Layout title="Our Blogs">
+	<script>
+		window.addEventListener('load', function () {
+			document.querySelector('.no-fouc').classList.remove('no-fouc');
+		});
+	</script>
+	<main
+		class="h-screen max-w-[1920px] font-chivoMono mx-auto px-[8vw] overflow-x-hidden"
+	>
+		<TopNav />
+		<div class="flex flex-col items-center justify-center">
+			<div class="flex items-center w-full">
+				<h1
+					class="text-[100px] text-[#D8D8D8] w-3/4 font-normal uppercase xs:text-[75px] xxs:text-[75px] xxxs:text-[75px] xs:w-full xxs:w-full xxxs:w-full"
+				>
+					About Us
+				</h1>
+			</div>
+			<div class="flex w-full pt-5 pb-16">
+				<div class="w-1/2 h-fit pr-10 xs:w-full xxs:w-full xxxs:w-full">
+					<h2 class="w-1/2 text-[32px] text-[#D8D8D8] font-normal leading-8">
+						Build Products Better With Squared
+					</h2>
+					<div class="h-10"></div>
+					<p class="w-full text-[16px] text-[#797979] font-normal">
+						Supercharge your project by using Squared to plan out your
+						development cycles. We make planning pain free by replacing clunky
+						task management apps with something easy-to-use. Get rid of
+						unecessary overhead and focus on what is important to you: building
+						products.<br />
+						<span
+							><a href="https://app.squaredmade.com/register">
+								<button
+									class="bg-[#174EFF] mt-4 rounded-lg py-0.5 px-6 mr-1 text-[#D8D8D8] font-semibold"
+									>Sign Up</button
+								>
+							</a></span
+						> for free and see what it's all about!
+					</p>
+				</div>
+
+				<div class="w-1/2 xs:hidden xxs:hidden xxxs:hidden">
+					<div class="w-full h-full rounded-[8px]">
+						<Image class="w-full h-full" src={image1} alt="image1" />
+					</div>
+				</div>
+			</div>
+			{/*ATTENTION: Code is commented out until the components are finished. */}
+			{/*  <AboutCard /> */}
+			<div class="py-16 relative">
+				<div
+					class="absolute top-[50%] left-[50%] -translate-x-[100%] -translate-y-1/2"
+				>
+					{/* <!-- <Image class="w-full h-full" src={card} alt="card" /> -->*/}
+				</div>
+				<Image class="w-full h-full" src={map} alt="map" />
+			</div>
+			<div class="flex w-full pt-5 pb-16">
+				<div class="flex w-1/2">
+					{
+						/* 
+					<!-- <div class="w-1/2 h-full rounded-[8px]">
+						<Image class="w-[95%] h-full" src={image2} alt="image1" />
+					</div> -->
+					<!-- <div class="w-1/2 h-full rounded-[8px]">
+						<Image class="w-[95%] h-full" src={image3} alt="image1" />
+					</div> -->*/
+					}
+				</div>
+				{
+					/* 
+				<!-- <div class="w-1/2 pl-10 relative">
+					<h2 class="w-1/2 text-[32px] text-[#D8D8D8] font-normal leading-8">
+						Lorem ipsum dolor sit amet, consectetur
+					</h2>
+					<div class="h-10"></div>
+					<p class="w-full text-[14px] text-[#797979] font-normal">
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+						eiusmod tempor incididunt ut labore et dolore magna aliqua. Viverra
+						mauris in aliquam sem fringilla ut morbi tincidunt augue. Id semper
+						risus in hendrerit gravida rutrum quisque non. Faucibus et molestie
+						ac feugiat sed. Sed vulputate odio ut enim blandit volutpat maecenas
+						volutpat. Non enim praesent elementum facilisis leo. Justo donec
+						enim diam vulputate ut pharetra sit amet aliquam. In pellentesque
+						massa placerat duis ultricies lacus.
+					</p>
+					<div class="h-3"></div>
+					<p class="w-full text-[14px] text-[#797979] font-normal">
+						Tortor aliquam nulla facilisi cras fermentum. Tincidunt praesent
+						semper feugiat nibh sed pulvinar proin. Convallis a cras semper
+						auctor neque vitae tempus quam. Amet nulla facilisi morbi tempus
+						iaculis urna id.
+					</p>
+					<div class="h-3"></div>
+					<p class="w-full text-[14px] text-[#797979] font-normal">
+						Convallis a cras semper auctor neque vitae tempus quam. Amet nulla
+						facilisi morbi tempus iaculis urna id. At lectus urna duis convallis
+						convallis tellus id interdum. Nullam ac tortor vitae purus faucibus
+						ornare.
+					</p>
+					<a class="absolute bottom-0" href="/contact/">
+						<button
+							class="bg-[#174EFF] text-[#D8D8D8] rounded-lg py-2 px-6 capitalize"
+							>contact</button
+						>
+					</a>
+				</div> -->*/
+				}
+			</div>
+			<Footer />
+		</div>
+	</main>
+</Layout>

@@ -1,0 +1,86 @@
+---
+import Herocard from './Herocard.astro';
+import heroBG from '../images/list-layout-task-cards.png';
+import mainBg from '../images/version2/squaredLandingPage.png';
+import mainxs from '../images/mainBackgroundSquaredxs.png';
+import { Image } from 'astro:assets';
+import '@fontsource/chivo-mono';
+---
+
+<script>
+	window.addEventListener('load', function () {
+		document.querySelector('.no-fouc').classList.remove('no-fouc');
+	});
+</script>
+{/* 	<!-- this is for dektop version, second half is move mobiel section --> */}
+
+<div
+	class="xs:hidden xxs:hidden xxxs:hidden flex max-w-[1611px] xxxl:mb-[110px] xxl:mb-[80px] xl:mb-[60px] md:mb-[60px]"
+>
+	<div class="w-[20%] xxxl:w-[322px] relative mb-2">
+		<span
+			class="text-[#D8D8D8] -top-[35px] absolute uppercase font-bold font-chivoMono z-10 leading-[98%] tracking-tight xxxl:text-[80px] xxxl:w-[640px] text-[4.4vw] w-[32vw] whitespace-pre-line"
+		>
+			Elevate your product development with SQUARED.</span
+		>
+
+		<div
+			class="absolute bottom-[.5vw] xxxl:left-[45px] xxxl:bottom-[50px] xxl:left-[2vw] xl:left-[1.4vw] lg:left-[1.4vw] md:left-[1.0vw] sm:left-[1.0vw]"
+		>
+			<Herocard
+				text="Squared the the new way to develop software. Create new tasks, plan product goals, and setup milestones using Squared."
+				buttonLText="Sign Up for Free"
+				buttonRText="Download"
+			/>
+		</div>
+	</div>
+	<div class="w-[60%] -bottom-[1.5vw] ml-auto xxxl:max-w-[1286px] relative">
+		<Image
+			src={heroBG}
+			loading="eager"
+			alt="Sqaured main section Image for landing page"
+		/>
+
+		<div
+			class="bg-white rounded-lg absolute font-chivoMono p-[1.3vw] bottom-[0.0vw] right-0 w-[25vw] text-[1vw] xxxl:w-[450px] xxxl:text-[16px] xxxl:p-[35px]"
+		>
+			Learn more about product features.
+		</div>
+	</div>
+</div>
+{/* 	<!-- mobile section --> */}
+
+<section
+	class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden w-full flex justify-end relative font-chivoMono mb-[45%]"
+>
+	<h1
+		class="uppercase absolute left-0 top-[12vw] whitespace-pre-line text-[#D8D8D8] text-[9.1vw] leading-[10.5vw] tracking-tight"
+	>
+		Squared is a better way to build products
+	</h1>
+	<p
+		class="bg-[#FFFFFF] text-[#0C0C0C] rounded-xl w-9/12 p-4 bottom-[10%] left-4 absolute text-[3.5vw]"
+	>
+		Learn more about product features.
+	</p>
+
+	<Image
+		class="w-[60%]"
+		src={mainxs}
+		alt="Sqaured main section Image for landing page -mobile version"
+	/>
+	<span
+		class="p-4 -bottom-[3vw] xxxs:-bottom-[40vw] xxs:-bottom-[36vw] xs:-bottom-[34vw] absolute"
+	>
+		<p
+			class="bg-[#0C0C0C] text-[#D8D8D8] rounded w-[95%] xs:p-[4vw] xxs:p-[4vw] xxxs:p-3 p-8 drop-shadow-md text-[3vw]"
+		>
+			Meet the new standard for modern software development. Streamline issues,
+			sprints, and product roadmaps.
+		</p>
+		<button
+			class="w-[95%] bg-[#174EFF] text-[#D8D8D8] mt-8 rounded xs:mt-[3vw] xxs:mt-[3vw] xxxs:mt-4 py-2 text-[3vw]"
+			>Signup for Free</button
+		>
+	</span>
+</section>

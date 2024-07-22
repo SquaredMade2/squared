@@ -1,0 +1,53 @@
+---
+import timeline2 from '../images/calenderTimeline.png';
+import dot from '../images/redDot.png';
+import background from '../images/redDotbgLeft.png';
+import { Image } from 'astro:assets';
+import '@fontsource/chivo-mono';
+---
+
+<div class="h-fit w-full mr-4 relative">
+	{/* background card */}
+	<Image
+		class="max-w-full w-full h-full drop-shadow-xl"
+		src={background}
+		alt="background for red dot section"
+	/>
+	{/* image */}
+	<Image
+		class="w-[80%] h-[70%] absolute top-[5%]"
+		src={timeline2}
+		alt="timeline image"
+	/>
+
+	{/* top right square */}
+	<div
+		class="xxxl:w-[140px] xxxl:h-[140px] xxl:w-[120px] xxl:h-[120px] xl:w-[100px] xl:h-[100px] lg:w-[90px] lg:h-[90px] md:w-[70px] md:h-[70px] sm:w-[50px] sm:h-[50px] absolute z-20 right-0 top-0"
+	>
+		<div
+			class="bg-[#131421] w-full h-full rounded-[30px] border-white flex justify-center items-center"
+		>
+			<div class="flex flex-col items-center">
+				<Image class="" src={dot} alt="red-dot" />
+				<p
+					class="text-[#D8D8D8] -translate-y-8 md:-translate-y-4 sm:-translate-y-3 lg:text-[.8vw] md:text-[.8vw] sm:text-[.8vw]"
+				>
+					0.050s
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="bg-[#0C0C0C] absolute bottom-[1vw] z-30 text-[#D8D8D8] p-5 right-[50%] translate-x-[50%] w-[92%] rounded-[10px]"
+	>
+		<h1
+			class="text-[3vw] xxxl:text-[59px] xxl:text-[3vw] xl:text-[2vw] lg:text-[2vw] md:text-[2vw] sm:text-[2vw]"
+		>
+			BLAZINGLY QUICK
+		</h1>
+		<p class="lg:text-[.8vw] md:text-[.8vw] sm:text-[.8vw]">
+			Prioritize swift interactions and work in real-time.
+		</p>
+	</div>
+</div>

@@ -1,0 +1,382 @@
+---
+import background from '../images/buildmomentumbg.png';
+import chart from '../images/buildmomentummain.png';
+import robot from '../images/automatictracking.png';
+import clock from '../images/scheduled.png';
+import gear from '../images/configure.png';
+import exclamation from '../images/predict.png';
+import minigraph from '../images/scopecreep.png';
+import calendar from '../images/bePrepared.png';
+import mobile1 from '../images/buildmom-mobile1.svg';
+import mobile2 from '../images/buildmom-mobile2.svg';
+import mobile3 from '../images/buildmom-mobile3.svg';
+import { Image } from 'astro:assets';
+---
+
+<div>
+	{/* <!-- pc -->*/}
+	<div
+		class="relative font-chivoMono text-white my-[4rem] xs:hidden xxs:hidden xxxs:hidden"
+	>
+		<Image src={background} alt="build momentum background" class="invisible" />
+		<div class="absolute top-0 w-full h-full flex flex-col z-10">
+			<div class="flex h-1/2">
+				<div class="w-[41%]">
+					<h1
+						class="text-[89px] xxl:text-[5vw] xl:text-[5vw] lg:text-[4.5vw] md:text-[4vw] sm:text-[4vw] font-extrabold leading-[100px] xl:leading-[5vw] lg:leading-[5vw] md:leading-[4.5vw] sm:leading-[4.5vw] mb-[2.0rem] xxl:mb-[0vw] lg:mb-[1.5vw] md:mb-[1.5vw] sm:mb-[0vw] sm:pt-3"
+					>
+						DRIVE<br />MOMENTUM IN<br />PHASES
+					</h1>
+					{/* black box */}
+					<p
+						class="w-[24%] uppercase text-[white] bg-[#0C0C0C] rounded-lg drop-shadow-md absolute border-b border-r border-gray-600 border-opacity-20 transition-transform xxxl:mt-auto xxxl:text-[13px] xxxl:p-[30px] p-[1.5vw] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.5vw] mt-[1.7vw] sm:text-[0.5vw] tracking-tighter shadow-lg shadow-black"
+					>
+						Phases Guide Your Team's Focus to Future Work.
+					</p>
+					<!-- </div> -->
+				</div>
+				{/* modal svg */}
+				<div class="w-[59%]">
+					<Image
+						class="mt-[1vw] drop-shadow-lg"
+						src={chart}
+						alt="calendar for build momentum"
+					/>
+				</div>
+			</div>
+
+			<div
+				class="flex flex-col w-[93%] h-[50%] xl:h-[45%] md:h-[45%] text-[#DDDD] absolute bottom-[1rem] md:bottom-[2rem] sm:bottom-[0rem] left-[50%] -translate-x-[50%]"
+			>
+				<ul
+					class="flex justify-around xxxl:my-4 xxl:my-4 xl:my-4 lg:my-5 md:my-5 sm:my-0 ml-[-1rem] w-full h-full md:h-1/2 sm:h-2/4"
+				>
+					{/* buttons list 1 */}
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={robot}
+										alt="automatic Tracking icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Automated Management
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									All initiated issues seamlessly integrate into the ongoing
+									Phase.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image class="max-w-full" src={clock} alt="scheduled icon" />
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Organized Tracking
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Pending tasks smoothly shift to the next Phase.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={gear}
+										alt=" fully configurable icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Completely Customizable
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Outline start date, end date, duration, and additional
+									options.
+								</p>
+							</div>
+						</button>
+					</li>
+				</ul>
+				<ul
+					class="flex justify-around xxxl:my-4 xxl:my-4 xl:my-4 lg:my-5 md:my-5 sm:my-0 ml-[1rem] w-full h-full md:h-1/2 sm:h-2/4"
+				>
+					{/* buttons list 2 */}
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={exclamation}
+										alt="predict delays icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									PREDICT SCHEDULES
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Receive alerts for vulnerable phases.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={minigraph}
+										alt="scope creep icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Scope Inflation
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Identify issues integrated midway through a cycle.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 md:hidden sm:hidden">
+									<Image
+										class="max-w-full"
+										src={calendar}
+										alt=" be prepared icon"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xxxl:text-[1vw] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									Stay prepared
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Pre-schedule tasks for upcoming phases.
+								</p>
+							</div>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- tablet & mobile -->
+	<div>
+		<section
+			class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden w-full py-3"
+		>
+			<img class="w-full h-full mb-24" src={mobile1.src} alt="" />
+			<img class="w-full h-full" src={mobile2.src} alt="" />
+			<img
+				class="w-full h-full translate-x-[55px]"
+				src={mobile3.src}
+				alt="xs image build momentum"
+			/>
+			<div
+				class="flex flex-col w-full md:h-[45%] text-[#DDDD] bottom-[6rem] md:bottom-[5rem] sm:bottom-[2rem]"
+			>
+				<ul
+					class="flex flex-col justify-around my-2 ml-[0] w-full h-full md:h-1/2 sm:h-2/4 gap-3"
+				>
+					{/* buttons list 1 */}
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 sm:hidden">
+									<Image
+										class="max-w-full"
+										loading="lazy"
+										src={robot}
+										alt="frame"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									AUTOMATIC TRACKING
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Any started issues are added to the current cycle.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 sm:hidden">
+									<Image
+										class="max-w-full"
+										loading="lazy"
+										src={clock}
+										alt="roundframe"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									SCHEDULED
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Unfinished work rolls over to the next cycle automatically.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 sm:hidden">
+									<Image
+										class="max-w-full"
+										loading="lazy"
+										src={gear}
+										alt="halfcircle"
+									/>
+								</div>
+								<h1
+									class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									FULLY CONFIGURABLE
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Define start date, end date, duration, and more.
+								</p>
+							</div>
+						</button>
+					</li>
+				</ul>
+				<ul
+					class="flex flex-col justify-around ml-[0] w-full h-full md:h-1/2 sm:h-2/4 gap-3"
+				>
+					{/* buttons list 2 */}
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 sm:hidden">
+									<Image class="max-w-full" src={exclamation} alt="stack" />
+								</div>
+								<h1
+									class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									PREDICT DELAYS
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Get warnings for at-risk cycles.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 sm:hidden">
+									<Image class="max-w-full" src={minigraph} alt="bubble" />
+								</div>
+								<h1
+									class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									SCOPE CREEP
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Understand which issues are added mid-cycle.
+								</p>
+							</div>
+						</button>
+					</li>
+					<li
+						class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+					>
+						<button class="w-full">
+							<div class="w-[75%] mx-auto py-5">
+								<div class="w-[8%] pb-5 sm:hidden">
+									<Image class="max-w-full" src={calendar} alt="file" />
+								</div>
+								<h1
+									class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+								>
+									BE PREPARED
+								</h1>
+								<p
+									class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+								>
+									Schedule work in advance with upcoming cycles.
+								</p>
+							</div>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</section>
+	</div>
+</div>

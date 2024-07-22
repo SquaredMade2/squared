@@ -1,0 +1,19 @@
+---
+import RedDotLeftSide from "./RedDotLeftSide.astro";
+import RedDotRightSide from "./RedDotRightSide.astro";
+import SmallRedDotSection from "./SmallRedDotSection.astro";
+---
+
+<div>
+  <div
+    class="flex w-[100%] xxxl:h-[62%] xxl:h-[60%] xl:h-[50%] mx-auto my-10 xs:hidden xxs:hidden xxxs:hidden"
+  >
+    <RedDotLeftSide />
+    <RedDotRightSide />
+  </div>
+  <div
+    class="flex w-[100%] xxxl:h-[62%] xxl:h-[60%] xl:h-[50%] mx-auto my-10 xxxl:hidden xxl:hidden xl:hidden lg:hidden md:hidden sm:hidden"
+  >
+    <SmallRedDotSection />
+  </div>
+</div>

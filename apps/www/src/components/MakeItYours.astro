@@ -1,0 +1,70 @@
+---
+import topLeft from '../images/grid-layout-task-cards.png'
+import botRight from '../images/layout.png';
+import background from '../images/makeItYoursbg.png';
+import SmallMakeItYours from './SmallMakeItYours.astro';
+import { Image } from 'astro:assets';
+import '@fontsource/chivo-mono';
+---
+
+<div>
+	<div
+		class="relative mt-[200px] font-chivoMono xs:hidden xxs:hidden xxxs:hidden"
+	>
+		<Image
+			class="drop-shadow-xl invisible"
+			loading="lazy"
+			src={background}
+			alt="make it yours background"
+		/>
+		<div class="absolute top-0 w-full h-full flex flex-col z-10">
+			<div
+				class="flex flex-row h-1/2 xxxl:mb-[25px] xxl:mb-[25px] xl:mb-[25px]"
+			>
+				<div class="w-1/2">
+					<Image
+						class="mt-[1vw] drop-shadow-lg"
+						alt="full board display"
+						src={topLeft}
+					/>
+				</div>
+				<div
+					class="w-1/2 text-[#D0D0D0] uppercase pl-[1.3vw] xxxl:pt-[70px] xxxl:text-[70px] xxxl:pl-[25px] xxl:pt-[3.4vw] xxl:text-[3.6vw] xl:pt-[3.4vw] xl:text-[3.6vw] lg:pt-[3.4vw] lg:text-[3.4vw] md:pt-[3.4vw] md:text-[3.2vw] sm:pt-[3.4vw] sm:text-[3.2vw]"
+				>
+					List and board Views
+					<p
+						class="w-1/4 text-[white] bg-[#0C0C0C] rounded-lg drop-shadow-md absolute border-b border-r border-gray-600 border-opacity-20 hover:bg-[#174EFF] hover:scale-105 transition-transform hover:drop-shadow-sm hover:border-blue-400/25 xxxl:mt-[10px] xxxl:text-[14px] xxxl:p-[38px] p-[2vw] mt-[10px] text-[0.7vw]"
+					>
+						Easily alternate between list and board layouts for flexible work
+						visualization.
+					</p>
+				</div>
+			</div>
+			<div class="flex flex-row h-1/2">
+				<div
+					class="w-1/2 uppercase text-[#D0D0D0] pt-[4.2vw] text-[4vw] xxxl:pt-[90px] xxxl:text-[80px]"
+				>
+					Personalize Your Workspace
+					<p
+						class="text-[white] bg-[#0C0C0C] rounded-lg drop-shadow-md absolute border-b border-r border-gray-600 border-opacity-20 hover:bg-[#174EFF] hover:scale-105 transition-transform hover:drop-shadow-sm hover:border-blue-400/25 xxxl:text-[13px] xxxl:p-[38px] xxxl:w-[450px] xxl:text-[0.7vw] xxl:p-[2vw] xxl:w-[23vw] xl:text-[0.7vw] xl:p-[1.8vw] xl:w-[22.8vw] lg:text-[0.6vw] lg:p-[1.8vw] lg:w-[21vw] md:text-[0.6vw] md:p-[1.5vw] md:w-[21vw] sm:text-[0.6vw] sm:p-[1.5vw] sm:w-[21vw]"
+					>
+						{
+							/* <!-- class="text-[white] bg-[#0C0C0C] rounded-lg drop-shadow-md absolute border-b border-r border-gray-600 border-opacity-20 hover:bg-[#174EFF] hover:scale-105 transition-transform hover:drop-shadow-sm hover:border-blue-400/25 xxxl:text-[13px] xxxl:ml-[335px] xxxl:mt-[20px] xxxl:p-[38px] xxxl:w-[450px] xxl:text-[0.7vw] xxl:ml-[17.8vw] xxl:mt-[1.5vw] xxl:p-[2vw] xxl:w-[23vw] xl:text-[0.7vw] xl:ml-[17.4vw] xl:mt-[1.3vw] xl:p-[1.8vw] xl:w-[22.8vw] lg:text-[0.6vw] lg:ml-[18vw] lg:mt-[1.2vw] lg:p-[1.8vw] lg:w-[21vw] md:text-[0.6vw] md:ml-[18vw] md:mt-[1.4vw] md:p-[1.5vw] md:w-[21vw] sm:text-[0.6vw] sm:ml-[18vw] sm:mt-[1.4vw] sm:p-[1.5vw] sm:w-[21vw]" -->	 */
+						}
+
+						Utilize Filters and Operators to Fine-Tune Your Issue Lists and
+						Shape Custom Views.
+					</p>
+				</div>
+				<div class="w-1/2">
+					<Image class="drop-shadow-lg" alt="zoomed in task" src={botRight} />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div
+		class="flex w-[100%] xxxl:h-[62%] xxl:h-[60%] xl:h-[50%] mx-auto my-10 xxxl:hidden xxl:hidden xl:hidden lg:hidden md:hidden sm:hidden"
+	>
+		<SmallMakeItYours />
+	</div>
+</div>

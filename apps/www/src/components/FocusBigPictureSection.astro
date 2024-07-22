@@ -1,0 +1,114 @@
+---
+import background from '../images/focusBigPicture.png';
+import iosapp from '../images/focusMain.png';
+import q4roadmap from '../images/projectUpdate.png';
+import projxs from '../images/projxs.svg';
+import focusxs from '../images/focusxs.svg';
+import { Image } from 'astro:assets';
+---
+
+<div
+	class="text-white w-full relative my-10 xs:hidden xxs:hidden xxxs:hidden font-chivoMono"
+>
+	<Image
+		class="invisible"
+		src={background}
+		alt="background for Focus on big picture"
+	/>
+	<div class="absolute flex top-0">
+		{/* left side */}
+		<div class="">
+			<Image
+				class="mt-[1.56vw] xxxl:mt-[25px]"
+				src={iosapp}
+				alt="iosapp image"
+			/>
+			<div class="ml-[2.81vw] xxxl:ml-[45px]">
+				<div class="">
+					<h1
+						class="font-extrabold leading-[90%] tracking-wider text-[2.5vw] -mt-[1.1vw] xxxl:text-[50px] xxxl:-mt-[5px] xxl:text-[2.5vw] xxl:-mt-[0.6vw] lg:text-[2.3vw] lg:-mt-[0.5vw] md:text-[2.1vw] md:-mt-[1.3vw] sm:text-[2.1vw] sm:-mt-[0.5vw]"
+					>
+						PROJECT MILESTONE UPDATES
+					</h1>
+					<div
+						class="bg-[#0C0C0C] w-[43%] rounded-lg mt-[2.5vw] xxxl:mt-[50px]"
+					>
+						<p
+							class="tracking-tighter shadow-black xxxl:px-[18px] xxxl:py-[34px] xxxl:text-[14px] xxl:px-[0.9vw] xxl:py-[1.8vw] xxl:text-[0.7vw] xl:px-[0.8vw] xl:py-[1.6vw] xl:text-[0.65vw] lg:px-[0.7vw] lg:py-[1.6vw] lg:text-[0.65vw] md:px-[0.6vw] md:py-[1.8vw] md:text-[0.6vw] sm:px-[0.5vw] sm:py-[1.5vw] sm:text-[0.6vw]"
+						>
+							Foster collaboration by sharing updates on project status and
+							progress.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{/* right side */}
+		<div class="flex flex-col">
+			<div
+				class="ml-[3.2vw] mt-[3.2vw] xxxl:ml-[70px] xxxl:mt-[60px] xxl:ml-[3.8vw] lg:ml-[4.2vw] lg:mt-[3.2vw] xxl:mt-[3.2vw] md:ml-[4.2vw] md:mt-[4.2vw] sm:ml-[4.2vw] sm:mt-[3.8vw]"
+			>
+				<div class="">
+					<h1
+						class="font-extrabold leading-[90%] text-[2.6vw] xxxl:text-[50px] xxl:text-[2.6vw] lg:text-[2.45vw] md:text-[2.28vw] sm:text-[2.28vw]"
+					>
+						FOCUS ON THE GREATER<br />GOAL.
+					</h1>
+
+					<div
+						class="bg-[#0C0C0C] w-[50%] rounded-lg shadow-lg mt-[3vw] xxxl:mt-[60px] xxl:mt-[3vw] lg:mt-[2.5vw] md:mt-[2vw] sm:mt-[2vw]"
+					>
+						<p
+							class="tracking-tighter p-[1.52vw] text-[0.7vw] xxxl:p-[30px] xxxl:text-[13px] xxl:p-[1.52vw] xxl:text-[0.7vw] xl:p-[1.50vw] lg:p[1.46vw] lg:text-[0.655vw] md:p-[1.38vw] md:text-[0.59vw] sm:p-[1.38vw] sm:text-[0.59vw]"
+						>
+							Review all company projects in one unified view to quickly
+							identify areas needing attention.
+						</p>
+					</div>
+				</div>
+			</div>
+			<Image
+				class="mt-[3.2vw] xxxl:mt-[60px]"
+				src={q4roadmap}
+				alt="q4roadmap image"
+			/>
+		</div>
+	</div>
+</div>
+
+<div
+	class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden font-chivoMono text-white"
+>
+	<div class="relative">
+		<img class="xs:w-full mb-[4vw]" loading="lazy" src={focusxs.src} alt="" />
+		<div class="border-[#0C0C0C] p-4 rounded bg-[#0C0C0C] absolute bottom-0">
+			<span class="">
+				<h1
+					class="whitespace-pre-wrap uppercase xs:text-[6vw] xs:font-bold xs:h-[15vw] xs:leading-[6.5vw] xxs:text-[7.7vw] xxs:font-bold xxs:h-[20vw] xxs:leading-[8.2vw] xxxs:text-[8vw] xxxs:h-[20vw] xxxs:leading-[8.5vw]"
+				>
+					Focus on the big picture
+				</h1>
+				<p class="xs:text-[2.9vw] xxs:text-[3.4vw] xxxs:text-[3.7vw]">
+					Explore every company project in one view to easily identify what
+					needs attention.
+				</p>
+			</span>
+		</div>
+	</div>
+
+	<div class="relative">
+		<img class="xs:w-full mb-[4vw]" loading="lazy" src={projxs.src} alt="" />
+		<div class="border-[#0C0C0C] p-4 rounded bg-[#0C0C0C] absolute bottom-0">
+			<span class="">
+				<h1
+					class="uppercase xs:text-[6vw] xs:font-bold xs:h-[10vw] xxs:text-[7.7vw] xxs:font-bold xxs:h-[12vw] xxs:leading-[8.2vw] xxxs:text-[8vw] xxxs:h-[12vw] xxxs:leading-[8.5vw]"
+				>
+					Project Milestone Updates
+				</h1>
+				<p class="xs:text-[2.9vw] xxs:text-[3.4vw] xxxs:text-[3.7vw]">
+					Keep everyone up-to-date on the health and progress of projects.
+				</p>
+			</span>
+		</div>
+	</div>
+</div>

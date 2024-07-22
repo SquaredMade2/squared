@@ -1,0 +1,94 @@
+---
+import commandLinebg from '../images/version2/commandLinebg.png';
+import mobilebg from '../images/commandline-mobile1.svg';
+import '@fontsource/chivo-mono';
+import { Image } from 'astro:assets';
+---
+
+<div
+	class="relative font-chivoMono text-[#D8D8D8] xxxl:mb-[150px] mb-[10vw] xs:mt-[25%] xxs:mt-[25%] xxxs:mt-[25%]"
+>
+	<Image
+		class="xs:hidden xxs:hidden xxxs:hidden w-[55%]"
+		src={commandLinebg}
+		alt="Commandline section bacground image for Squared"
+	/>
+	<img
+		class="xxxl:hidden xxl:hidden xl:hidden lg:hidden md:hidden sm:hidden w-full absolute rounded-2xl"
+		src={mobilebg.src}
+		alt=""
+	/>
+
+	<div
+		class="xs:flex xs:flex-col xxs:flex xxs:flex-col xxxs:flex xxxs:flex-col"
+	>
+		{
+			/* <!-- <div
+			class="absolute flex flex-col bg-black top-[2vw] z-10 px-[2.5vw] py-[2vw] left-[2.5vw] rounded-2xl border-b border-r border-gray-600/30 shadow-md shadow-gray-800/30 xxxl:px-[40px] xxxl:py-[40px] xxxl:top-[40px] xxxl:left-[40px] xxl:px-[2.5vw] xxl:py-[2.15vw] xxl:left-[2.1vw] xl:px-[2.5vw] xl:py-[2.15vw] xl:left-[2.1vw] lg:px-[2.2vw] lg:py-[2.15vw] lg:left-[2.1vw] md:px-[2vw] md:py-[1.5vw] md:left-[2.1vw] xs:relative xs:left-0 xs:top-0 xxs:relative xxs:left-0 xxs:top-0 xxxs:relative xxxs:left-0 xxxs:top-0"
+		>
+			<span
+				class="uppercase leading-[90%] text-[3vw] xxxl:text-[59px] xxl:text-[3vw] xl:text-[2.9vw] lg:text-[2.8vw] md:text-[2.6vw] sm:text-[2.4vw] xs:w-[60%] xs:text-[8vw] xxs:w-[60%] xxs:text-[8vw] xxxs:w-[60%] xxxs:text-[8vw] p-2"
+				>meet your command line</span
+			>
+			<span
+				class="lg:text-[1vw] md:text-[1vw] sm:text-[1vw] xs:text-[3vw] xxs:text-[3vw] xxxs:text-[3vw] p-2"
+				>Complete any action in seconds with the global command menu.</span
+			>
+		</div> -->*/
+		}
+
+		<div
+			class="xs:flex xs:justify-center xs:my-[8vw] xxs:flex xxs:justify-center xxs:my-[8vw] xxxs:flex xxxs:justify-center xxxs:my-[8vw]"
+		>
+			<div
+				class="border-l-2 border-[#123cc3] w-[30vw] absolute xxxl:w-[30vw] xxl:w-[40vw] xl:w-[30vw] xs:relative xs:w-[90%] right-0 xxxl:top-[275px] xxl:top-[230px] xl:top-[200px] lg:top-[200px] md:top-[150px] sm:top-[110px] xs:right-0 xxs:relative xxs:w-[90%] xxs:right-0 xxxs:relative xxxs:w-[90%] xxxs:right-0"
+			>
+				<!-- class="border-l-2 border-[#123cc3] w-[20vw] xxxl:-bottom-[11.5vw] xxl:-bottom-[15.5vw] xl:-bottom-[12.5vw] md:-bottom-[15.5vw] sm:-bottom-[13.5vw] right-[8vw] absolute xxxl:w-[400px] xxxl:right-[150px] xxl:w-[21vw] xl:w-[21vw] xs:relative xs:w-[90%] xs:right-0 xxs:relative xxs:w-[90%] xxs:right-0 xxxs:relative xxxs:w-[90%] xxxs:right-0" -->
+				<ul class="ml-8">
+					<li
+						class="py-4 xxl:py-[0.85vw] xl:py-[0.8vw] lg:py-[0.8vw] md:py-[0.65vw] sm:py-[0.6vw] xxl:text-[0.87vw] lg:text-[0.8vw] xl:text-[0.87vw] md:text-[0.74vw] sm:text-[0.74vw] border-t-2 border-b-2 xxs:text-[3vw] xxs:py-[2vw] xxxs:text-[3vw] xxxs:py-[2vw]"
+					>
+						Assign to...
+					</li>
+					<li
+						class="py-4 xxl:py-[0.85vw] xl:py-[0.8vw] lg:py-[0.8vw] md:py-[0.65vw] sm:py-[0.6vw] xxl:text-[0.87vw] lg:text-[0.8vw] xl:text-[0.87vw] md:text-[0.74vw] sm:text-[0.74vw] border-b-2 xxs:text-[3vw] xxs:py-[2vw] xxxs:text-[3vw] xxxs:py-[2vw]"
+					>
+						Change status...
+					</li>
+					<li
+						class="py-4 xxl:py-[0.85vw] xl:py-[0.8vw] lg:py-[0.8vw] md:py-[0.65vw] sm:py-[0.6vw] xxl:text-[0.87vw] lg:text-[0.8vw] xl:text-[0.87vw] md:text-[0.74vw] sm:text-[0.74vw] border-b-2 xxs:text-[3vw] xxs:py-[2vw] xxxs:text-[3vw] xxxs:py-[2vw]"
+					>
+						Change priority...
+					</li>
+					<li
+						class="py-4 xxl:py-[0.85vw] xl:py-[0.8vw] lg:py-[0.8vw] md:py-[0.65vw] sm:py-[0.6vw] xxl:text-[0.87vw] lg:text-[0.8vw] xl:text-[0.87vw] md:text-[0.74vw] sm:text-[0.74vw] border-b-2 xxs:text-[3vw] xxs:py-[2vw] xxxs:text-[3vw] xxxs:py-[2vw]"
+					>
+						Add labels...
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="xs:mt-20 xxs:mt-16 xxxs:mt-10">
+		<div
+			class="bg-[#174EFF] rounded-xl absolute flex flex-row items-center justify-between top-0 right-0 xxxl:w-[640px] xxxl:py-[32px] xxxl:px-[20px] xxl:w-[33.5vw] xxl:py-[1.75vw] xxl:px-[1.1vw] xl:w-[33.3vw] xl:py-[1.75vw] xl:px-[1.1vw] lg:w-[33.3vw] lg:py-[1.75vw] lg:px-[1.1vw] md:w-[33.3vw] md:py-[1.4vw] md:px-[1vw] sm:w-[33.3vw] sm:py-[1.2vw] sm:px-[1vw] xs:relative xs:flex-col xs:w-[70%] xs:mb-20 xxs:relative xxs:flex-col xxs:w-[70%] xxs:mb-20 xxxs:relative xxxs:flex-col xxxs:w-[70%] xxxs:mb-10"
+		>
+			<div
+				class="xs:py-5 xs:px-10 xs:flex xs:flex-col xxs:py-5 xxs:px-5 xxs:flex xxs:flex-col xxxs:py-5 xxxs:px-5 xxxs:flex xxxs:flex-col"
+			>
+				<span
+					class="text-white/50 tracking-tigher xxxl:text-[20px] xxxl:pl-[18px] xxl:text-[0.9vw] xxl:pl-[0.8vw] xl:text-[1vw] xl:pl-[0.9vw] lg:text-[0.7vw] lg:pl-[0.8vw] md:text-[0.75vw] md:pl-[0.8vw] sm:text-[0.8vw] sm:pl-[1vw] xs:text-[6vw] xxs:text-[6vw] xxxs:text-[6vw] leading-[100%]"
+					>Type a command or search...</span
+				>
+				<span
+					class="text-[#D8D8D8] font-chivoMono bg-black rounded shadow-black/30 shadow-xl w-[40%] xxxl:px-[20px] xxxl:py-[13px] xxxl:w-[45%] xxxl:text-[14px] xxl:px-[0.8vw] xxl:py-[0.7vw] xxl:text-[0.9vw] xxl:w-[13vw] xl:px-[0.7vw] xl:py-[0.7vw] xl:text-[0.7vw] xl:w-[13vw] lg:px-[0.8vw] lg:py-[0.7vw] lg:text-[0.9vw] lg:w-[14vw] md:px-[0.9vw] md:py-[0.7vw] md:text-[0.8vw] md:w-[13vw] sm:px-[0.8vw] sm:py-[0.7vw] sm:text-[0.9vw] sm:w-[13vw] xs:w-full xs:text-[3vw] xs:text-center xxs:w-full xxs:text-[3vw] xxs:text-center xxxs:w-full xxxs:text-[3vw] xxxs:text-center"
+					>LIN-111 Walkway lighting</span
+				>
+			</div>
+		</div>
+		<span
+			class="whitespace-pre-line font-chivoMono absolute uppercase z-10 -bottom-[18.3vw] font-bold tracking-wide leading-[100%] xxxl:w-[900px] xxxl:text-[90px] xxxl:-bottom-[320px] xxl:text-[4.7vw] xxl:w-[47vw] xxl:-bottom-[16.3vw] xl:text-[4.7vw] xl:w-[48vw] xl:-bottom-[16.3vw] lg:text-[4.6vw] lg:w-[46vw] lg:-bottom-[17.3vw] md:text-[4.4vw] md:w-[44vw] md:-bottom-[16.3vw] sm:text-[4.3vw] sm:w-[47vw] xs:w-[42vw] sm:-bottom-[15.3vw] xs:text-[9vw] xs:relative xxs:text-[9vw] xxs:relative xxxs:text-[9vw] xxxs:relative"
+			>An Engaging Issue Tracking Interface</span
+		>
+	</div>
+</div>

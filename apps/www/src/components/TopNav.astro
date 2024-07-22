@@ -1,0 +1,21 @@
+---
+import squaredLogo from "../images/squaredLogo.png";
+import { Image } from "astro:assets";
+---
+
+<div class="flex flex-row justify-between text-[#D8D8D8] py-4 font-semibold">
+  <div class="flex flex-row gap-2 items-center">
+    <Image src={squaredLogo} alt="'Squared Logo" />
+    <p>SQUARED</p>
+  </div>
+  <div
+    class="xxxs:hidden xxs:hidden xs:hidden flex flex-row gap-2 items-center"
+  >
+    <a href="https://app.squaredmade.com/login">
+      <button>Log In</button>
+    </a>
+    <a href="https://app.squaredmade.com/register">
+      <button class="bg-[#174EFF] rounded-lg py-2 px-6">Sign Up</button>
+    </a>
+  </div>
+</div>

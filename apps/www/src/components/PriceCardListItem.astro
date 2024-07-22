@@ -1,0 +1,11 @@
+---
+const { title } = Astro.props;
+---
+
+<li
+	class="flex items-center justify-between text-[#D8D8D8] bg-[#282E43] font-bold font-chivoMono border border-[#363E5A] rounded p-[1vw] mb-[.6vw] xs:p-[2vw] xs:mb-[1.8vw] xxs:p-[2vw] xxs:mb-[1.8vw] xxxs:p-[2vw] xxxs:mb-[1.8vw]"
+	title={title}
+>
+	<slot name="item" />
+	<slot name="div" />
+</li>

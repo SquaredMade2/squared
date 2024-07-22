@@ -1,0 +1,24 @@
+---
+const { text, buttonLText, buttonRText } = Astro.props;
+import "@fontsource/chivo-mono";
+
+---
+
+<div class="font-chivoMono">
+  <div
+    class="bg-[#0C0C0C] text-[#D8D8D8] rounded-lg border-b-2 border-r-2 border-gray-500/10 shadow-xl shadow-gray-800/20 py-[1vw] xxxl:py-[30px] xxxl:px-[30px] xxxl:text-[16px] xxxl:w-[385px] xxl:px-[1.1vw] xxl:text-[.85vw] xxl:w-[20vw] xxl:py-[1.5vw] xl:px-[1.1vw] xl:text-[0.85vw] xl:w-[20vw] xl:py-[1.5vw] lg:px-[1.1vw] lg:text-[0.85vw] lg:w-[20vw] l:py-[1.5vw] md:px-[1.1vw] md:text-[0.75vw] md:w-[18vw] md:py-[1.5vw] sm:px-[1.1vw] sm:text-[0.75vw] sm:w-[18vw] sm:py-[1.5vw]"
+  >
+    {text}
+  </div>
+  <div
+    class="flex flex-row text-[0.75vw] xxxl:text-[14.5px] gap-[1vw] xxxl:pt-[19px] pt-[1vw]"
+  >
+   <a href="https://app.squaredmade.com/register" class="w-full">
+
+    <button class="bg-[#174EFF] text-[#D8D8D8] rounded-md w-full py-1 drop-shadow-lg"
+      >{buttonLText}</button
+    >
+  </a>
+  
+  </div>
+</div>

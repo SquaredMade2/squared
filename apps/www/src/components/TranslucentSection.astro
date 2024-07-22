@@ -1,0 +1,406 @@
+---
+import translucent from '../images/version2/translucent.png';
+import newIssueModal from '../images/new-issue-modal.png'
+import parentIssue from '../images/parentIssue.png';
+import roundframe from '../images/automatedBacklog.png';
+import halfcircle from '../images/customWorkFlow.png';
+import stack from '../images/filterViews.png';
+import bubble from '../images/discussion.png';
+import file from '../images/issueTemplate.png';
+import background from '../images/translucentSectionBg.png';
+import translucentxs from '../images/translucentxs.svg';
+import { Image } from 'astro:assets';
+---
+
+<div
+	class="xs:hidden xxs:hidden xxxs:hidden relative font-chivoMono xxxl:mt-[230px] xxl:mt-[230px] xxxl:mb-[600px] xxl:mb-[500px] xl:mb-[280px] lg:mb-[250px] md:mb-[100px] sm:mb-[80px]"
+>
+	<Image
+		src={background}
+		alt="background for translucent section in Squared"
+		height="690"
+		class="drop-shadow-xl invisible"
+	/>
+	<div class="absolute top-0 w-full h-full flex flex-col z-10 left-0">
+		<div class="flex flex-row w-full left-0">
+			{/* modal svg */}
+			<div
+				class="h-full sm:w-full md:w-full md:flex md:justify-items-center w-full mt-[50px] lg:mt-[120px] xl:mt-[140px] xxl:mt-[140px] xxxl:mt-[140px] md:mt-[80px]"
+			>
+				{
+					/* 	<!-- mt-[50px] lg:mt-[120px] md:mt-[80px] md:ml-[40px] sm:ml-[20px] h-[300px] w-[2000px] --> */
+				}
+
+				<Image
+					class="drop-shadow-lg top-25 absolute w-full"
+					src={newIssueModal}
+					alt="Create New Issue Pop-Up"
+				/>
+				{/* black box */}
+				<div
+					class="relative w-[full] h-[full] text-[#D0D0D0] uppercase xxxl:text-[70px] xxl:pt-[5.3vw] xxl:text-[3.6vw] xl:text-[3.6vw] lg:text-[3.4vw] md:text-[3.2vw] sm:text-[3.2vw]"
+				>
+					{
+						/* 	<!-- class="w-[full] text-[#D0D0D0] uppercase xxxl:pt-[70px] xxxl:text-[70px] xxl:pt-[5.3vw] xxl:text-[3.6vw] xl:pt-[3.4vw] xl:text-[3.6vw] lg:pt-[3.4vw] lg:text-[3.4vw] md:pt-[3.4vw] md:text-[3.2vw] sm:pt-[3.4vw] sm:text-[3.2vw] flex justify-center" --> */
+					}
+
+					<p
+						class="w-[20%] right-24 top-10 z-10 md:hidden sm:hidden text-[white] bg-[#0C0C0C] rounded-lg drop-shadow-md absolute border-b border-r border-gray-600 border-opacity-20 hover:bg-[#174EFF] p-[1.5vw] hover:scale-105 transition-transform hover:drop-shadow-sm hover:border-blue-400/25 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.7vw] sm:text-[0.7vw]"
+					>
+						{
+							/* 		<!-- ml-[9vw] xxxl:ml-[173px] xxxl:mt-[86px]  xxxl:p-[28px] p-[1.5vw] xxl:mt-[2.5vw] xxl:ml-[8.5vw]xl:mt-[4.5vw] xl:ml-[8.5vw] lg:mt-[4.5vw] lg:ml-[8.5vw] md:mt-[4.5vw] md:ml-[8vw] sm:mt-[4.5vw] sm:ml-[7vw]--> */
+						}
+
+						EFFORTLESSLY GENERATE TASKS IN SECONDS, ENGAGE IN CONTEXTUAL ISSUE
+						DISCUSSIONS, AND SEAMLESSLY NAVIGATE YOUR WORK WITH CUSTOMIZED VIEWS
+						TAILORED TO BOTH YOU AND YOUR TEAM.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div
+			class="flex flex-col w-[93%] h-[50%] text-[#DDDD] absolute bottom-[1rem] md:bottom-[5rem] sm:bottom-[2rem] left-[50%] -translate-x-[52.8%]"
+		>
+			<ul
+				class="xxxl:mt-[500px] xxl:mt-[500px] xl:mt-[350px] lg:mt-[300px] md:mt-[230px] sm:mt-[130px] flex justify-around my-2 sm:my-0 ml-[-1rem] sm:ml-[-0.3rem] w-full h-full md:h-1/2 sm:h-2/4"
+			>
+				{/* buttons list 1 */}
+				<li
+					class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+				>
+					<button class="w-full">
+						<div class="w-[75%] mx-auto py-5">
+							<div class="w-[8%] pb-5 sm:hidden">
+								<Image
+									class="max-w-full"
+									src={parentIssue}
+									alt="PARENT AND SUB-ISSUES div"
+								/>
+							</div>
+							<h1
+								class="text-[24px] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+							>
+								Primary and Secondary Issues
+							</h1>
+							<p
+								class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+							>
+								Split large tasks into manageable issues.
+							</p>
+						</div>
+					</button>
+				</li>
+				<li
+					class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-[32%] xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+				>
+					<button class="w-full">
+						<div class="w-[75%] mx-auto py-5">
+							<div class="w-[8%] pb-5 sm:hidden">
+								<Image
+									class="max-w-full"
+									src={roundframe}
+									alt="automated backlog for Squared"
+								/>
+							</div>
+							<h1
+								class="text-[24px] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+							>
+								Automated Task Pool
+							</h1>
+							<p
+								class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+							>
+								Automation for closing and archiving issues.
+							</p>
+						</div>
+					</button>
+				</li>
+				<li
+					class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+				>
+					<button class="w-full">
+						<div class="w-[75%] mx-auto py-5">
+							<div class="w-[8%] pb-5 sm:hidden">
+								<Image
+									class="max-w-full"
+									src={halfcircle}
+									alt="custom workflow image for Squared"
+								/>
+							</div>
+							<h1
+								class="text-[24px] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+							>
+								Personalized Workflows
+							</h1>
+							<p
+								class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+							>
+								Customize issue state definitions for each team.
+							</p>
+						</div>
+					</button>
+				</li>
+			</ul>
+			<ul
+				class="flex justify-around my-4 sm:my-0 ml-[3.8rem] w-full h-full md:h-1/2 sm:h-2/4"
+			>
+				{/* buttons list 2 */}
+				<li
+					class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+				>
+					<button class="w-full">
+						<div class="w-[75%] mx-auto py-5">
+							<div class="w-[8%] pb-5 sm:hidden">
+								<Image
+									class="max-w-full"
+									src={stack}
+									alt="custom filter for squared"
+								/>
+							</div>
+							<h1
+								class="text-[24px] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+							>
+								Precision Filtering
+							</h1>
+							<p
+								class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+							>
+								Your customized view, tailored to your needs.
+							</p>
+						</div>
+					</button>
+				</li>
+				<li
+					class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+				>
+					<button class="w-full">
+						<div class="w-[75%] mx-auto py-5">
+							<div class="w-[8%] pb-5 sm:hidden">
+								<Image
+									class="max-w-full"
+									src={bubble}
+									alt="discussion board for Squared"
+								/>
+							</div>
+							<h1
+								class="text-[24px] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+							>
+								Engage in Dialogue
+							</h1>
+							<p
+								class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+							>
+								Collaborate while keeping context intact
+							</p>
+						</div>
+					</button>
+				</li>
+				<li
+					class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-[32%] xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+				>
+					<button class="w-full">
+						<div class="w-[75%] mx-auto py-5">
+							<div class="w-[8%] pb-5 sm:hidden">
+								<Image
+									class="max-w-full"
+									src={file}
+									alt="issue template icon"
+								/>
+							</div>
+							<h1
+								class="text-[24px] xxl:text-[1vw] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+							>
+								Template-driven Issue Management
+							</h1>
+							<p
+								class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+							>
+								Empower Your team to draft impactful issues
+							</p>
+						</div>
+					</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<section
+	class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden w-full py-3"
+>
+	<img
+		class="w-[105%]"
+		loading="lazy"
+		src={translucentxs.src}
+		alt="translucent image xs"
+	/>
+	<div
+		class="flex flex-col w-full md:h-[45%] text-[#DDDD] bottom-[6rem] md:bottom-[5rem] sm:bottom-[2rem]"
+	>
+		<ul class="flex flex-col justify-around my-2 ml-[0] w-full h-full gap-3">
+			{/* buttons list 1 */}
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 sm:hidden">
+							<Image
+								class="max-w-full"
+								loading="lazy"
+								src={parentIssue}
+								alt="parent and issue div for mobile"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							PARENT AND SUB-ISSUES
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Break larger tasks into smaller issues.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg hover:border hover:border-blue-300/25 w-full xl:h-fit transition-transform flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 sm:hidden">
+							<Image
+								class="max-w-full"
+								loading="lazy"
+								src={roundframe}
+								alt="mobile- automated backlog for Squared"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							AUTOMATED BACKLOG
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Linear will auto-close and auto-archive issues.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:z-10 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 sm:hidden">
+							<Image
+								class="max-w-full"
+								loading="lazy"
+								src={halfcircle}
+								alt="mobile - custom flow for Squared"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							CUSTOM WORKFLOWS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Define unique issue states for each team.
+						</p>
+					</div>
+				</button>
+			</li>
+		</ul>
+		<ul
+			class="flex flex-col justify-around ml-[0] w-full h-full md:h-1/2 sm:h-2/4 gap-3"
+		>
+			{/* buttons list 2 */}
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 border border-black border-opacity-20 drop-shadow-lg transition-transform hover:border hover:border-blue-300/25 w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 sm:hidden">
+							<Image
+								class="max-w-full"
+								loading="lazy"
+								src={stack}
+								alt="custom filter for squared"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							FILTERS AND CUSTOM VIEWS
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							See only what's relevant for you.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-105 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 sm:hidden">
+							<Image
+								class="max-w-full"
+								loading="lazy"
+								src={bubble}
+								alt="discussion board for Squared"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							DISCUSSION
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Collaborate on issues witout losing context.
+						</p>
+					</div>
+				</button>
+			</li>
+			<li
+				class="bg-[#14161b] hover:bg-[#174EFF] hover:scale-110 hover:border hover:border-blue-300/25 border border-black border-opacity-20 drop-shadow-lg transition-transform w-full xl:h-fit flex justify-center rounded-[10px] sm:h-[80%]"
+			>
+				<button class="w-full">
+					<div class="w-[75%] mx-auto py-5">
+						<div class="w-[8%] pb-5 sm:hidden">
+							<Image
+								class="max-w-full"
+								loading="lazy"
+								src={file}
+								alt="issue template icon"
+							/>
+						</div>
+						<h1
+							class="text-[24px] xl:text-[.9vw] lg:text-[.9vw] md:text-[.9vw] sm:text-[.9vw] text-left uppercase"
+						>
+							ISSUE TEMPLATES
+						</h1>
+						<p
+							class="text-left py-3 xxxl:text-[13px] xxl:text-[0.7vw] xl:text-[0.6vw] lg:text-[0.6vw] md:text-[0.6vw] sm:text-[0.6vw]"
+						>
+							Guide your team to write effective issues.
+						</p>
+					</div>
+				</button>
+			</li>
+		</ul>
+	</div>
+</section>

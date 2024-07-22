@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TopNav from '../components/TopNav.astro';
+import Footer from '../components/Footer.astro';
+import down from '../images/blog/triangle.svg';
+import BlogCard from '../components/BlogCard.astro';
+import { Image } from 'astro:assets';
+---
+
+<Layout title="Our Blogs">
+	<script>
+		window.addEventListener('load', function () {
+			document.querySelector('.no-fouc').classList.remove('no-fouc');
+		});
+	</script>
+	<main class="h-screen max-w-[1920px] mx-auto px-[8vw] overflow-x-hidden">
+		<TopNav />
+		<div class="flex flex-col items-center justify-center">
+			<div class="flex items-center w-full">
+				<h1 class="text-[100px] text-[#D8D8D8] w-3/4 font-normal">OUR BLOG</h1>
+				<div class="w-1/4 h-full">
+					<button
+						class="flex justify-between items-center text-[#D8D8D8] bg-[#282E43] px-[24px] py-[32px] w-full h-[76px] rounded-[8px]"
+					>
+						<p>Sort by default</p>
+						<Image
+							class="w-[24px] h-[24px] rotate-180"
+							src={down}
+							alt="down-chevron"
+						/>
+					</button>
+				</div>
+			</div>
+			<div class="flex w-full">
+				<div class="w-3/4">
+					<BlogCard />
+				</div>
+				<div class="w-1/4">
+					<div
+						class="text-[#D8D8D8] bg-[#282E43] px-[24px] py-[32px] rounded-[8px]"
+					>
+						<div>
+							<h2 class="text-[24px] leading-[24px] font-normal py-3">
+								EXPLORE
+							</h2>
+							<ul>
+								<li class="w-full py-1">
+									<button
+										class="text-left w-full py-[12px] px-[16px] hover:bg-[#174EFF] rounded-[8px]"
+										>All publications</button
+									>
+								</li>
+								<li class="w-full py-1">
+									<button
+										class="text-left w-full py-[12px] px-[16px] hover:bg-[#174EFF] rounded-[8px]"
+										>The first topic</button
+									>
+								</li>
+								<li class="w-full py-1">
+									<button
+										class="text-left w-full py-[12px] px-[16px] hover:bg-[#174EFF] rounded-[8px]"
+										>The second topic</button
+									>
+								</li>
+								<li class="w-full py-1">
+									<button
+										class="text-left w-full py-[12px] px-[16px] hover:bg-[#174EFF] rounded-[8px]"
+										>The third theme</button
+									>
+								</li>
+								<li class="w-full py-1">
+									<button
+										class="text-left w-full py-[12px] px-[16px] hover:bg-[#174EFF] rounded-[8px]"
+										>The fourth theme</button
+									>
+								</li>
+							</ul>
+						</div>
+						<div>
+							<h2 class="text-[24px] leading-[24px] font-normal py-3">TAGS</h2>
+							<ul class="flex flex-wrap">
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									One
+								</li>
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									Two
+								</li>
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									Three
+								</li>
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									Four
+								</li>
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									Five
+								</li>
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									Six
+								</li>
+								<li
+									class="bg-[#141414] py-[12px] px-[16px] m-[4px] rounded-[8px]"
+								>
+									Seven
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<Footer />
+	</main>
+</Layout>
