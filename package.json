@@ -5,7 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter=web --filter=api",
     "format": "pnpm biome format --write .",
     "lint": "turbo run lint",
     "test": "turbo run test",

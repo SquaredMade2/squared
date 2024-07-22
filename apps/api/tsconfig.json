@@ -2,10 +2,12 @@
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "target": "es2016",
+    "module": "commonjs",
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "sourceMap": true,
