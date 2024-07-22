@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: "${{ steps.node_version.outputs.NVMRC }}"
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Get pnpm store path
         id: pnpm-cache-dir-path
         run: echo "storePath=$(pnpm store path)" >> $GITHUB_OUTPUT
@@ -29,8 +32,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/.nvmrc') }}
           restore-keys: |
+            ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
             ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
