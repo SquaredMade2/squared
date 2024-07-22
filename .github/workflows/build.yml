@@ -23,16 +23,17 @@ jobs:
 
       - name: Get pnpm cache directory path
         id: pnpm-cache-dir-path
-        run: echo "dir=$(node_modules/.pnpm)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ${{ steps.pnpm-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        if: steps.pnpm-cache-dir-path.outputs.cache-hit != 'true'
         run: pnpm install
 
-      # - name: Run tests
-      #   run: pnpm test:ci
+      - name: Run tests
+        run: pnpm test:ci
