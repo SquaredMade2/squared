@@ -1,11 +1,7 @@
 import "dotenv/config";
-process.env.NODE_ENV = "test";
-const chai = require("chai");
-const expect = chai.expect;
-const chaiHttp = require("chai-http");
-chai.use(chaiHttp);
-const server = require("../index");
 import mongoose from "mongoose";
+import chai from "chai";
+import chaiHttp from "chai-http";
 import Workspace from "../models/workspace";
 import User from "../models/user";
 import Task from "../models/task";
@@ -14,6 +10,11 @@ import PageFilter from "../models/pageFilter";
 import { CommentModel as Comment } from "../models/events";
 import { hashPassword } from "../helpers/auth";
 import { after, before, describe, it } from "node:test";
+import server from "../index";
+
+process.env.NODE_ENV = "test";
+chai.use(chaiHttp);
+const { expect } = chai;
 const MONGO_URL = process.env.MONGO_URL;
 
 const setTestingInfo = async () => {
@@ -75,7 +76,7 @@ const setTestingInfo = async () => {
     _id: "65a053d2a99e9497371d77d3",
   });
 
-  const filter = await PageFilter.create({
+  await PageFilter.create({
     filterTitle: "test filter",
     filterOption: {
       status: ["Todo"],
@@ -86,26 +87,21 @@ const setTestingInfo = async () => {
     _id: "65a411380ed4475ce1ddeb81",
   });
 };
-const clearDB = () => {
-  return mongoose
-    .connect(MONGO_URL, { dbName: "testing" })
-    .then(
-      (): Promise<boolean> => mongoose.connection.db.dropDatabase()
-    );
+
+const clearDB = async () => {
+  await mongoose.connect(MONGO_URL, { dbName: "testing" });
+  await mongoose.connection.db.dropDatabase();
 };
 
 before(async () => {
-  // runs once before the first test
   await clearDB();
-  setTestingInfo();
+  await setTestingInfo();
 });
+
 after(async () => {
-  // runs once after the last test
-
   await clearDB();
 });
 
-// test cases
 describe("Auth Routes", () => {
   const userInfo = {
     name: "test User",
@@ -113,33 +109,34 @@ describe("Auth Routes", () => {
     email: "testing@email.com",
     password: "testing123",
   };
+
   describe("/Post register", () => {
-    it("register without name", (done) => {
-      chai
+    it("register without name", () => {
+      return chai
         .request(server)
         .post("/register")
         .type("json")
         .send({ email: "testing@email.com" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(422);
           expect(res.body.error).to.equal("name is required");
-          done();
         });
     });
-    it("register without email", (done) => {
-      chai
+
+    it("register without email", () => {
+      return chai
         .request(server)
         .post("/register")
         .type("json")
         .send({ name: "testing" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(422);
           expect(res.body.error).to.equal("Email is required");
-          done();
         });
     });
-    it("register without password", (done) => {
-      chai
+
+    it("register without password", () => {
+      return chai
         .request(server)
         .post("/register")
         .type("json")
@@ -147,33 +144,33 @@ describe("Auth Routes", () => {
           name: "testing",
           email: "testing@email.com",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(422);
           expect(res.body.error).to.equal(
             "Password is required. It should be at least 6 characters long"
           );
-          done();
         });
     });
-    it("testing the register endpoint", (done) => {
-      chai
+
+    it("testing the register endpoint", () => {
+      return chai
         .request(server)
         .post("/register")
         .type("json")
         .send(userInfo)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(201);
           expect(res.body.success).to.equal(true);
           expect(res.body.message).to.equal(
             `Sent a verification email to ${userInfo.email}`
           );
-          done();
         });
     });
   });
+
   describe("/Post login", () => {
-    it("testing login", (done) => {
-      chai
+    it("testing login", () => {
+      return chai
         .request(server)
         .post("/login")
         .type("json")
@@ -181,36 +178,35 @@ describe("Auth Routes", () => {
           email: "test@email.com",
           password: "test123",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Get User", () => {
-    it("testing getUser", (done) => {
-      chai
+    it("testing getUser", () => {
+      return chai
         .request(server)
         .get("/user")
         .query({ id: "659efc7faa55abcd43812566" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Put updateProfile", () => {
-    it("testing update Profile", (done) => {
-      chai
+    it("testing update Profile", () => {
+      return chai
         .request(server)
         .put("/updateProfile")
         .query({ id: "659efc7faa55abcd43812566" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
@@ -223,52 +219,53 @@ describe("Workspace Routes", () => {
     companySize: "100",
     users: "659efc7faa55abcd43812566",
   };
+
   describe("/Post /create", () => {
-    it("testing the Create worksace endpoint", (done) => {
-      chai
+    it("testing the Create workspace endpoint", () => {
+      return chai
         .request(server)
         .post("/workspace/create")
         .type("json")
         .send(workspaceInfo)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(201);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/get /read", () => {
-    it("testing the get single workspace route", (done) => {
-      chai
+    it("testing the get single workspace route", () => {
+      return chai
         .request(server)
         .get("/workspace/read")
         .query({
           id: "659efc7faa55abcd4381256d",
           user: "659efc7faa55abcd43812566",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Get /read-all", () => {
-    it("testing the get all workspaces for a user route", (done) => {
-      chai
+    it("testing the get all workspaces for a user route", () => {
+      return chai
         .request(server)
         .get("/workspace/read-all")
         .query({ id: "659efc7faa55abcd43812566" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });
+
   describe("/Put /update", () => {
-    it("testing the update workspace route", (done) => {
-      chai
+    it("testing the update workspace route", () => {
+      return chai
         .request(server)
         .put("/workspace/update")
         .query({
@@ -276,16 +273,17 @@ describe("Workspace Routes", () => {
           name: "updated",
           url: "updated-url",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
-          done();
         });
     });
   });
+
   describe("/Delete /delete", () => {
-    let deleteId: any;
-    it("creating workspace to be deleted", (done) => {
-      chai
+    let deleteId: string;
+
+    it("creating workspace to be deleted", () => {
+      return chai
         .request(server)
         .post("/workspace/create")
         .type("json")
@@ -295,50 +293,49 @@ describe("Workspace Routes", () => {
           companySize: "100",
           users: "659efc7faa55abcd43812566",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(201);
           expect(res.body).to.be.a("object");
           deleteId = res.body.workspace._id;
-          done();
         });
     });
-    it("testing delete workspace", (done) => {
-      chai
+
+    it("testing delete workspace", () => {
+      return chai
         .request(server)
         .delete("/workspace/delete")
         .type("json")
         .send({
           id: deleteId,
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
-          done();
         });
     });
   });
+
   describe("/Get /exists", () => {
-    it("testing if workspace exists", (done) => {
-      chai
+    it("testing if workspace exists", () => {
+      return chai
         .request(server)
         .get("/workspace/exists")
         .query({
           url: "updated-url",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(404);
-          done();
         });
     });
-    it("testing if workspace doesn't exists", (done) => {
-      chai
+
+    it("testing if workspace doesn't exist", () => {
+      return chai
         .request(server)
         .get("/workspace/exists")
         .query({
           url: "doesNotExist",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
-          done();
         });
     });
   });
@@ -350,23 +347,24 @@ describe("Team Routes", () => {
     identifier: "NT",
     workspace: "659efc7faa55abcd4381256d",
   };
+
   describe("/Post /create", () => {
-    it("testing create team", (done) => {
-      chai
+    it("testing create team", () => {
+      return chai
         .request(server)
         .post("/team/create")
         .type("json")
         .send(teamInfo)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/get /read", () => {
-    it("testing get team", (done) => {
-      chai
+    it("testing get team", () => {
+      return chai
         .request(server)
         .get("/team/read")
         .query({
@@ -374,16 +372,16 @@ describe("Team Routes", () => {
           identifier: teamInfo.identifier,
           workspace: teamInfo.workspace,
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Get /update", () => {
-    it("testing update team", (done) => {
-      chai
+    it("testing update team", () => {
+      return chai
         .request(server)
         .put("/team/update")
         .type("json")
@@ -393,19 +391,19 @@ describe("Team Routes", () => {
           id: "65a053666de690077195c018",
           workspaceId: "659efc7faa55abcd4381256d",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
           expect(res.body.message).to.equal(
             "Team updated successfully"
           );
-          done();
         });
     });
   });
+
   describe("/Get /exists", () => {
-    it("testing if team exists", (done) => {
-      chai
+    it("testing if team exists", () => {
+      return chai
         .request(server)
         .post("/team/exists")
         .type("json")
@@ -414,13 +412,13 @@ describe("Team Routes", () => {
           identifier: "UT",
           workspace: "659efc7faa55abcd4381256d",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(409);
-          done();
         });
     });
-    it("testing if team doesn't exists", (done) => {
-      chai
+
+    it("testing if team doesn't exist", () => {
+      return chai
         .request(server)
         .post("/team/exists")
         .type("json")
@@ -429,16 +427,17 @@ describe("Team Routes", () => {
           identifier: "DNE",
           workspace: "659efc7faa55abcd4381256d",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(204);
-          done();
         });
     });
   });
+
   describe("/Delete /delete", () => {
-    let deleteId: any;
-    it("creating team to be deleted", (done) => {
-      chai
+    let deleteId: string;
+
+    it("creating team to be deleted", () => {
+      return chai
         .request(server)
         .post("/team/create")
         .type("json")
@@ -447,24 +446,23 @@ describe("Team Routes", () => {
           identifier: "toBeDeleted",
           workspace: "659efc7faa55abcd4381256d",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
           deleteId = res.body._id;
-          done();
         });
     });
-    it("testing delete team", (done) => {
-      chai
+
+    it("testing delete team", () => {
+      return chai
         .request(server)
         .delete("/team/delete")
         .type("json")
         .send({
           id: deleteId,
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
-          done();
         });
     });
   });
@@ -480,63 +478,65 @@ describe("Task Routes", () => {
     labels: "Test",
     team: "65a053666de690077195c018",
   };
+
   describe("/Post /create", () => {
-    it("testing create task", (done) => {
-      chai
+    it("testing create task", () => {
+      return chai
         .request(server)
         .post("/task/create")
         .type("json")
         .send(taskInfo)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/get /read", () => {
-    it("testing get all tasks for a team", (done) => {
-      chai
+    it("testing get all tasks for a team", () => {
+      return chai
         .request(server)
         .get("/task/read")
         .query({ team: "65a053666de690077195c018" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });
+
   describe("/Get /read/:id", () => {
-    it("testing get single task", (done) => {
-      chai
+    it("testing get single task", () => {
+      return chai
         .request(server)
         .get(`/task/read/${"65a053d2a99e9497371d77cc"}`)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Put /update/:id", () => {
-    it("testing update task", (done) => {
-      chai
+    it("testing update task", () => {
+      return chai
         .request(server)
         .put(`/task/update/${"65a053d2a99e9497371d77cc"}`)
         .type("json")
         .send({ title: "updated task", description: "updated task" })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Delete /delete", () => {
-    let deleteId: any;
-    it("creating task to be deleted", (done) => {
-      chai
+    let deleteId: string;
+
+    it("creating task to be deleted", () => {
+      return chai
         .request(server)
         .post("/task/create")
         .type("json")
@@ -549,24 +549,23 @@ describe("Task Routes", () => {
           labels: "Test",
           team: "65a053666de690077195c018",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
           deleteId = res.body._id;
-          done();
         });
     });
-    it("testing delete task", (done) => {
-      chai
+
+    it("testing delete task", () => {
+      return chai
         .request(server)
         .delete("/task/delete")
         .type("json")
         .send({
           id: deleteId,
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
-          done();
         });
     });
   });
@@ -578,35 +577,36 @@ describe("Event Routes", () => {
     author: "659efc7faa55abcd43812566",
     task: "65a053d2a99e9497371d77cc",
   };
+
   describe("/Post /comment/create", () => {
-    it("testing create comment", (done) => {
-      chai
+    it("testing create comment", () => {
+      return chai
         .request(server)
         .post("/event/comment/create")
         .type("json")
         .send(comment)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(201);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/get /comment/read/:taskId", () => {
-    it("testing get comments for task", (done) => {
-      chai
+    it("testing get comments for task", () => {
+      return chai
         .request(server)
         .get(`/event/comment/read/${"65a053d2a99e9497371d77cc"}`)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });
+
   describe("/Put /comment/update", () => {
-    it("testing update comment", (done) => {
-      chai
+    it("testing update comment", () => {
+      return chai
         .request(server)
         .put("/event/comment/update")
         .type("json")
@@ -614,18 +614,19 @@ describe("Event Routes", () => {
           _id: "65a053d2a99e9497371d77d3",
           comment: "updated comment",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
           expect(res.body.comment).to.equal("updated comment");
-          done();
         });
     });
   });
+
   describe("/Delete /comment/delete/:id", () => {
-    let deleteId: any;
-    it("creating task to be deleted", (done) => {
-      chai
+    let deleteId: string;
+
+    it("creating task to be deleted", () => {
+      return chai
         .request(server)
         .post("/event/comment/create")
         .type("json")
@@ -634,21 +635,20 @@ describe("Event Routes", () => {
           author: "659efc7faa55abcd43812566",
           task: "65a053d2a99e9497371d77cc",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(201);
           expect(res.body).to.be.a("object");
           deleteId = res.body._id;
-          done();
         });
     });
-    it("testing delete comment", (done) => {
-      chai
+
+    it("testing delete comment", () => {
+      return chai
         .request(server)
         .delete(`/event/comment/delete/${deleteId}`)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
@@ -661,90 +661,91 @@ describe("Page Filter Routes", () => {
     filterDescription: "new filter",
     teamId: "65a053666de690077195c018",
   };
+
   describe("/Post /create", () => {
-    it("testing create filter", (done) => {
-      chai
+    it("testing create filter", () => {
+      return chai
         .request(server)
         .post("/filter/create")
         .type("json")
         .send(filterInfo)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
-          done();
         });
     });
   });
+
   describe("/Post /tasks/:teamId/:filterId", () => {
-    it("testing get filtered task", (done) => {
-      chai
+    it("testing get filtered task", () => {
+      return chai
         .request(server)
         .post(
           `/filter/tasks/${"65a053666de690077195c018"}/${"65a411380ed4475ce1ddeb81"}`
         )
         .type("json")
         .send({ status: ["Todo"], priority: ["Urgent"] })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });
+
   describe("/Get /read/:teamId", () => {
-    it("testing get filters for a team", (done) => {
-      chai
+    it("testing get filters for a team", () => {
+      return chai
         .request(server)
         .get(`/filter/read/${"65a053666de690077195c018"}`)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });
+
   describe("/Get /tasks/:teamId/:filterId", () => {
-    it("testing get filtered task", (done) => {
-      chai
+    it("testing get filtered task", () => {
+      return chai
         .request(server)
         .get(
           `/filter/tasks/${"65a053666de690077195c018"}/${"65a411380ed4475ce1ddeb81"}`
         )
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });
+
   describe("/Delete /delete/", () => {
-    let deleteId: any;
-    it("creating filter to be deleted", (done) => {
-      chai
+    let deleteId: string;
+
+    it("creating filter to be deleted", () => {
+      return chai
         .request(server)
         .post("/filter/create")
         .type("json")
         .send(filterInfo)
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("object");
           deleteId = res.body._id;
-          done();
         });
     });
-    it("testing delete comment", (done) => {
-      chai
+
+    it("testing delete comment", () => {
+      return chai
         .request(server)
-        .delete(`/filter/delete`)
+        .delete("/filter/delete")
         .type("json")
         .send({
           filterId: deleteId,
           teamId: "65a053666de690077195c018",
         })
-        .end((err: any, res: any) => {
+        .then((res) => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.a("array");
-          done();
         });
     });
   });

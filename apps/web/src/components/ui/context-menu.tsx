@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import * as ContextMenuPrimitive from "@repo/ui/src/context-menu";
+import * as ContextMenuPrimitive from "@repo/ui/context-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 import { cn } from "@/utils/cn";
 

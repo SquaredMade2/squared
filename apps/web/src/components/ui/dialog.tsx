@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import * as DialogPrimitive from "@repo/ui/src/dialog";
+import * as DialogPrimitive from "@repo/ui/dialog";
 import { X } from "lucide-react";
 import { cn } from "@/utils/cn";
 

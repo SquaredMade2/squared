@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { DialogProps } from "@repo/ui/src/dialog";
+import type { DialogProps } from "@repo/ui/dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 

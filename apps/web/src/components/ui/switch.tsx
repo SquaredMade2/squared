@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import * as SwitchPrimitives from "@repo/ui/src/switch";
+import * as SwitchPrimitives from "@repo/ui/switch";
 import { cn } from "@/utils/cn";
 
 const Switch = React.forwardRef<
