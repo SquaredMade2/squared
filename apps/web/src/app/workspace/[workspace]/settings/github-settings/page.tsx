@@ -1,17 +1,19 @@
-'use client';
-import { useEffect } from 'react';
-import SettingsTopNavBar from '@/components/SettingsTopNavBar';
-import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { getGithubUserData } from '@/store/userSettings/thunks';
-import GithubSettings from '@/components/GithubSettings';
-import { navBarToggle } from '@/store/userSettings';
+"use client";
+import { useEffect } from "react";
+import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { getGithubUserData } from "@/store/userSettings/thunks";
+import GithubSettings from "@/components/GithubSettings";
+import { navBarToggle } from "@/store/userSettings";
 
 const styles = {
-  mainContainer: 'flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full',
+  mainContainer:
+    "flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full",
   pageContainer:
-    'flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ',
-  TopNavbar: 'lg:hidden mdsm:visible bg-background',
-  navbarWrapper: 'relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10',
+    "flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ",
+  TopNavbar: "lg:hidden mdsm:visible bg-background",
+  navbarWrapper:
+    "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
 };
 
 const GithubIntegrationSettings: React.FC = () => {

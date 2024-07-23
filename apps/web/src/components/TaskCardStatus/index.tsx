@@ -1,35 +1,33 @@
-import React, { useState, useEffect, type ReactNode } from 'react';
+import React, { useState, useEffect, type ReactNode } from "react";
 import {
-  todoIcon,
-  filterBacklog,
   filterInProgress,
   filterDone,
-  filterCancelled,
-} from '@/components/Svg';
-import type { TaskCardStatusProps } from '@/app/interfaces/Tasks.interfaces';
+} from "@/components/Svg";
+import type { TaskCardStatusProps } from "@/app/interfaces/Tasks.interfaces";
+import { Circle, CircleDashed, CircleX } from "lucide-react";
 
 const TaskCardStatus = ({ task }: TaskCardStatusProps) => {
   const [svg, setSvg] = useState<ReactNode>();
 
   useEffect(() => {
     switch (task.status) {
-      case 'Todo':
-        setSvg(todoIcon({}));
+      case "Todo":
+        setSvg(<Circle className="size-4" />);
         break;
-      case 'In Progress':
+      case "In Progress":
         setSvg(filterInProgress);
         break;
-      case 'Backlog':
-        setSvg(filterBacklog);
+      case "Backlog":
+        setSvg(<CircleDashed className="size-4" />);
         break;
-      case 'Done':
+      case "Done":
         setSvg(filterDone);
         break;
-      case 'Canceled':
-        setSvg(filterCancelled);
+      case "Canceled":
+        setSvg(<CircleX className="size-4" />);
         break;
       default:
-        setSvg(todoIcon({}));
+        setSvg(<Circle className="size-4" />);
     }
   }, [task.status]);
   return (

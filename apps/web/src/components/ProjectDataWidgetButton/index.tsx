@@ -1,8 +1,8 @@
-import { ClosedHeroIcon, OpenedHeroIcon } from '@/components/Svg';
-import type { ProjectDataWidgetButtonProps } from './ProjectDataWidgetButton.interfaces';
+import type { ProjectDataWidgetButtonProps } from "./ProjectDataWidgetButton.interfaces";
+import { PanelLeftOpen, PanelRightOpen } from "lucide-react";
 
 const styles = {
-  mainButton: 'flex items-center ml-5 cursor-pointer',
+  mainButton: "flex items-center ml-5 cursor-pointer",
 };
 
 export const ProjectDataWidgetButton = ({
@@ -11,14 +11,16 @@ export const ProjectDataWidgetButton = ({
 }: ProjectDataWidgetButtonProps): React.ReactElement => {
   return (
     <button
+      title="title"
       className={styles.mainButton}
       onClick={() => setToggleWidget(!toggleWidget)}
       type="button"
     >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="#858699">
-        <title>Icon</title>
-        {toggleWidget ? <ClosedHeroIcon /> : <OpenedHeroIcon />}
-      </svg>
+      {toggleWidget ? (
+        <PanelRightOpen className="size-5 text-[#858699]" />
+      ) : (
+        <PanelLeftOpen className="size-5 text-[#858699]" />
+      )}
     </button>
   );
 };

@@ -1,11 +1,11 @@
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { UnassignedSVGInDropdown } from '@/components/Svg';
-import ProfileImage from '@/components/ProfileImage';
-import type { AssigneeButtonProps } from './AssigneeButton.interfaces';
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import ProfileImage from "@/components/ProfileImage";
+import type { AssigneeButtonProps } from "./AssigneeButton.interfaces";
+import { UserSearch } from "lucide-react";
 
 const styles = {
-  assigneeButton: 'flex flex-row items-center text-foreground cursor-pointer',
-  labelStyles: 'cursor-pointer',
+  assigneeButton: "flex flex-row items-center text-foreground cursor-pointer",
+  labelStyles: "cursor-pointer",
 };
 
 export const AssigneeButton = ({
@@ -16,14 +16,14 @@ export const AssigneeButton = ({
 
   const handleAssigneeDisplay: () => React.JSX.Element = () => {
     return assignee && assignee.name !== null ? (
-      <ProfileImage profileName={assignee.name} location={'assigneeDropdown'} />
+      <ProfileImage profileName={assignee.name} location={"assigneeDropdown"} />
     ) : (
-      UnassignedSVGInDropdown()
+      <UserSearch className="size-5 text-[#9597AD]" />
     );
   };
 
   const handleAssigneeNameDisplay: () => string = () => {
-    return assignee && assignee.name !== null ? assignee.name : 'Unassigned';
+    return assignee && assignee.name !== null ? assignee.name : "Unassigned";
   };
 
   const toggleAssigneeDropdown: () => void = () => {
@@ -31,9 +31,16 @@ export const AssigneeButton = ({
   };
 
   return (
-    <button type="button" className={styles.assigneeButton} onClick={toggleAssigneeDropdown}>
+    <button
+      type="button"
+      className={styles.assigneeButton}
+      onClick={toggleAssigneeDropdown}
+    >
       {handleAssigneeDisplay()}
-      <label className={styles.labelStyles}> {handleAssigneeNameDisplay()} </label>
+      <label className={styles.labelStyles}>
+        {" "}
+        {handleAssigneeNameDisplay()}{" "}
+      </label>
     </button>
   );
 };

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { settingsIcon } from '@/components/Svg';
-import HideTaskStatusDropdown from '@/components/HideTaskSectionDropdown';
-import type { HideStatusProps } from './HideStatusProps';
+import React, { useState } from "react";
+import HideTaskStatusDropdown from "@/components/HideTaskSectionDropdown";
+import type { HideStatusProps } from "./HideStatusProps";
+import { EllipsisVertical } from "lucide-react";
 
 const style = {
   hideStatusBg:
-    'border bg-card px-3 py-1 rounded absolute  top-9 right-1 shadow-xs hover:bg-gray-50 hover:shadow active:shadow-xs active:bg-gray-40',
-  container: 'relative flex items-center',
+    "border bg-card px-3 py-1 rounded absolute  top-9 right-1 shadow-xs hover:bg-gray-50 hover:shadow active:shadow-xs active:bg-gray-40",
+  container: "relative flex items-center",
 };
 
 const HideStatus = ({ toggleShowTasks, showTasks }: HideStatusProps) => {
@@ -19,8 +19,8 @@ const HideStatus = ({ toggleShowTasks, showTasks }: HideStatusProps) => {
   return (
     <>
       <div className={style.container}>
-        <button type="button" onClick={toggleHideDropdown}>
-          {settingsIcon()}
+        <button type="button" onClick={toggleHideDropdown} title="Title">
+          <EllipsisVertical className="cursor-pointer size-5" />
         </button>
         {showHideDropdown && (
           <HideTaskStatusDropdown

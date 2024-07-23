@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import type { UsersInWorkspace } from '@/store/taskData/taskData.interfaces';
-import ProfileImage from '../ProfileImage';
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
-import { UnassignedSVGInDropdown } from '../Svg';
-import useLogTaskEvent from '@/hooks/useLogTaskEvent';
-import { EventType, type Assignee } from '@/interfaces/event.interfaces';
-import type { AssigneeDropdownProps } from './AssigneeDropdown.interfaces';
+import { useState } from "react";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import type { UsersInWorkspace } from "@/store/taskData/taskData.interfaces";
+import ProfileImage from "../ProfileImage";
+import { ClickAwayListener } from "@mui/base/ClickAwayListener";
+import useLogTaskEvent from "@/hooks/useLogTaskEvent";
+import { EventType, type Assignee } from "@/interfaces/event.interfaces";
+import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
+import { UserSearch } from "lucide-react";
 
 export const AssigneeDropdown = ({
   taskId,
@@ -14,19 +14,28 @@ export const AssigneeDropdown = ({
   setShowAssigneeDropdown,
   handleAssigneeChange,
 }: AssigneeDropdownProps) => {
-  const [userFilter, setUserFilter] = useState('');
+  const [userFilter, setUserFilter] = useState("");
   const theme = useAppSelector((state) => state.userSettings.theme);
-  const allUsers = useAppSelector((state) => state.taskData.allUsersInWorkspace);
+  const allUsers = useAppSelector(
+    (state) => state.taskData.allUsersInWorkspace
+  );
 
-  const currentAssignee = useAppSelector((state) => state.singleTask?.data?.assignee) || null;
+  const currentAssignee =
+    useAppSelector((state) => state.singleTask?.data?.assignee) || null;
 
-  const taskDataReceived = useAppSelector((state) => state.singleTask?.data) || null;
+  const taskDataReceived =
+    useAppSelector((state) => state.singleTask?.data) || null;
 
-  const { author, storeCommonFields, storeTaskAssignee, storeType, updateTaskAssignee } =
-    useLogTaskEvent();
+  const {
+    author,
+    storeCommonFields,
+    storeTaskAssignee,
+    storeType,
+    updateTaskAssignee,
+  } = useLogTaskEvent();
 
   const preventDefault: (e: React.MouseEvent<HTMLDivElement>) => void = (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLDivElement>
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -34,29 +43,29 @@ export const AssigneeDropdown = ({
 
   const styles = {
     dropdownWrapperGrid: `absolute top-10 right-1 flex flex-col ${
-      theme === 'dark' ? 'bg-card' : 'bg-gray-50'
+      theme === "dark" ? "bg-card" : "bg-gray-50"
     } click-event-none border border-border rounded-lg overflow-hidden z-30 w-50 h-60 flex flex-col`,
     dropdownWrapperDashboard: `absolute flex flex-col ${
-      theme === 'dark' ? 'bg-card' : 'bg-gray-50'
+      theme === "dark" ? "bg-card" : "bg-gray-50"
     } click-event-none border border-border rounded-lg overflow-hidden ml-auto z-30 flex-end col-span-6 flex flex-col`,
-    assignButton: 'flex flex-row items-center mx-1',
-    inputFilter: 'bg-card h-10 p-1 border-b border-border',
-    overflowHandler: 'overflow-scroll-y',
+    assignButton: "flex flex-row items-center mx-1",
+    inputFilter: "bg-card h-10 p-1 border-b border-border",
+    overflowHandler: "overflow-scroll-y",
     taskPage: `flex flex-col text-foreground ${
-      theme === 'dark' ? 'bg-card' : 'bg-gray-50'
+      theme === "dark" ? "bg-card" : "bg-gray-50"
     } border border-border rounded-lg overflow-hidden ml-20 flex-end col-span-6 flex flex-col`,
   };
 
   const handleLocation: () => string = () => {
     switch (location) {
-      case 'Grid':
+      case "Grid":
         return styles.dropdownWrapperGrid;
-      case 'Dashboard':
+      case "Dashboard":
         return styles.dropdownWrapperDashboard;
-      case 'taskPage':
+      case "taskPage":
         return styles.taskPage;
       default:
-        return '';
+        return "";
     }
   };
 
@@ -76,8 +85,8 @@ export const AssigneeDropdown = ({
     if (taskDataReceived) {
       if (noUserAssigned) {
         const assignee = {
-          id: '',
-          name: 'not Assigned',
+          id: "",
+          name: "not Assigned",
         };
         storeTaskAssignee(assignee);
       } else {
@@ -100,7 +109,7 @@ export const AssigneeDropdown = ({
     if (userIsAssigned) {
       updateTaskAssignee(newAssignee);
     } else {
-      updateTaskAssignee({ id: '', name: 'not Assigned' });
+      updateTaskAssignee({ id: "", name: "not Assigned" });
     }
   };
 
@@ -108,6 +117,7 @@ export const AssigneeDropdown = ({
     <ClickAwayListener onClickAway={handleClickOffDropdown}>
       <div onClick={(e) => preventDefault(e)} className={handleLocation()}>
         <input
+          title="title"
           className={styles.inputFilter}
           type="text"
           onChange={(e) => setUserFilter(e.target.value)}
@@ -117,7 +127,7 @@ export const AssigneeDropdown = ({
           className={styles.assignButton}
           onClick={() => handleClickAssignee(taskId, { id: null, name: null })}
         >
-          <UnassignedSVGInDropdown />
+          <UserSearch className="size-5 text-[#9597AD]" />
           Unassign
         </button>
         <ul className={styles.overflowHandler}>
@@ -135,7 +145,10 @@ export const AssigneeDropdown = ({
                     className={styles.assignButton}
                     onClick={() => handleClickAssignee(taskId, assignee)}
                   >
-                    <ProfileImage profileName={user.username} location={'assigneeDropdown'} />
+                    <ProfileImage
+                      profileName={user.username}
+                      location={"assigneeDropdown"}
+                    />
                     {user.username}
                   </button>
                 </li>

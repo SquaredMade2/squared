@@ -1,25 +1,25 @@
-import type React from 'react';
-import { useEffect, useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import type { FilterType } from '@/store/filterPage/types';
-import { setFilterType } from '@/store/filterPage/actions';
-import { saveView, plusIcon } from '@/components/Svg';
-import SelectedFilter from '@/components/SelectedFilter';
-import FilterDropDown from '@/components/FilterDropdown';
-import type { SelectedFiltersBarProps } from './SelectedFiltersBar.interfaces';
-import type { DateFilter } from '@/store/filterPage';
+import type React from "react";
+import { useEffect, useState, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import type { FilterType } from "@/store/filterPage/types";
+import { setFilterType } from "@/store/filterPage/actions";
+import SelectedFilter from "@/components/SelectedFilter";
+import FilterDropDown from "@/components/FilterDropdown";
+import type { SelectedFiltersBarProps } from "./SelectedFiltersBar.interfaces";
+import type { DateFilter } from "@/store/filterPage";
+import { Layers2, Plus } from "lucide-react";
 
 const styles = {
-  main: 'grid grid-cols-6 h-full text-foreground border-border bg-card border-t',
-  leftSide: 'flex items-center ml-5 col-span-4 flex-wrap mb-1',
-  rightSide: 'flex justify-end pr-5 text-foreground bg-card col-span-2',
+  main: "grid grid-cols-6 h-full text-foreground border-border bg-card border-t",
+  leftSide: "flex items-center ml-5 col-span-4 flex-wrap mb-1",
+  rightSide: "flex justify-end pr-5 text-foreground bg-card col-span-2",
   saveButton:
-    'flex mt-[7px] h-5 items-center ml-1.5 cursor-pointer border p-3 rounded border-border bg-background hover:bg-accent',
-  issueCount: 'mt-[7px] text-muted-foreground',
-  savePadding: 'pl-1',
+    "flex mt-[7px] h-5 items-center ml-1.5 cursor-pointer border p-3 rounded border-border bg-background hover:bg-accent",
+  issueCount: "mt-[7px] text-muted-foreground",
+  savePadding: "pl-1",
   filterType:
-    'mx-2 px-1 bg-card border border-border rounded-md text-muted-foreground cursor-pointer select-no-arrow',
+    "mx-2 px-1 bg-card border border-border rounded-md text-muted-foreground cursor-pointer select-no-arrow",
 };
 
 const SelectedFiltersBar = ({
@@ -30,11 +30,15 @@ const SelectedFiltersBar = ({
   const dispatch = useDispatch();
   const [showFilterDropDown, setShowFilterDropDown] = useState<boolean>(false);
   const [taskAttributeTitles] = useState<
-    Array<'status' | 'priority' | 'labels' | 'dueDate' | 'effortEstimate'>
-  >(['status', 'priority', 'labels', 'dueDate', 'effortEstimate']);
+    Array<"status" | "priority" | "labels" | "dueDate" | "effortEstimate">
+  >(["status", "priority", "labels", "dueDate", "effortEstimate"]);
   const [filterSelected, setFilterSelected] = useState<boolean>(false);
-  const currentFilters = useAppSelector((state) => state.filterPage.currentFilters);
-  const filteredTaskList = useAppSelector((state) => state.filterPage.filteredTaskList);
+  const currentFilters = useAppSelector(
+    (state) => state.filterPage.currentFilters
+  );
+  const filteredTaskList = useAppSelector(
+    (state) => state.filterPage.filteredTaskList
+  );
   const filterType = useAppSelector((state) => state.filterPage.filterType);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -51,14 +55,16 @@ const SelectedFiltersBar = ({
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent): void => {
-      const clickOutsideDropdown = !dropdownRef.current?.contains(e.target as HTMLElement);
+      const clickOutsideDropdown = !dropdownRef.current?.contains(
+        e.target as HTMLElement
+      );
       if (clickOutsideDropdown) {
         setShowFilterDropDown(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   });
 
@@ -93,18 +99,19 @@ const SelectedFiltersBar = ({
                       handleFilter={handleFilter}
                     />
                   );
-                },
+                }
               );
             })}
           <div>
             <button
+              title="Title"
               type="button"
               onClick={() => {
                 setShowFilterDropDown(true);
               }}
               className="ml-3 p-0.5 w-5 h-5 flex items-center cursor-pointer justify-center hover:bg-background "
             >
-              <p>{plusIcon()}</p>
+              <Plus className="size-4 text-[#858699]" />
             </button>
             <div ref={dropdownRef} className="relative left-3">
               <FilterDropDown
@@ -119,6 +126,7 @@ const SelectedFiltersBar = ({
           <p className={styles.issueCount}>
             Showing issues that match
             <select
+              title="Title"
               className={styles.filterType}
               onChange={handleFilterTypeChange}
               value={filterType}
@@ -128,8 +136,12 @@ const SelectedFiltersBar = ({
             </select>
             filters | {filteredTaskList.length} |
           </p>
-          <button type="button" className={styles.saveButton} onClick={handleFilterSave}>
-            {saveView()}
+          <button
+            type="button"
+            className={styles.saveButton}
+            onClick={handleFilterSave}
+          >
+            <Layers2 className="size-4 text-[#858699]" />
             <p className={styles.savePadding}>Save</p>
           </button>
         </div>

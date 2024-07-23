@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
+import { useEffect, useState } from "react";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type {
   Color,
   RightClickMenuProps,
-} from '@/components/RightClickMenu/RightClickMenu.interfaces';
-import { TrashCan, Pencil } from '@/components/Svg';
+} from "@/components/RightClickMenu/RightClickMenu.interfaces";
+import { Pencil, Trash2 } from "lucide-react";
 
 const styles = {
-  main: ' bg-popover text-popover-foreground fixed border border-border z-10 cursor-default rounded',
-  mainWrapper: 'w-full h-full p-1.5',
-  itemWrapper: 'flex items-center hover:bg-popoverHover py-1 pr-3 pl-1 rounded',
-  svg: 'mr-2',
+  main: " bg-popover text-popover-foreground fixed border border-border z-10 cursor-default rounded",
+  mainWrapper: "w-full h-full p-1.5",
+  itemWrapper: "flex items-center hover:bg-popoverHover py-1 pr-3 pl-1 rounded",
+  svg: "mr-2",
 };
 
 const RightClickMenu = ({
@@ -24,17 +24,17 @@ const RightClickMenu = ({
 }: RightClickMenuProps) => {
   const theme = useAppSelector((state) => state.userSettings.theme);
   const [fillColor, setFillColor] = useState<Color>({
-    hover: '',
-    color: '',
+    hover: "",
+    color: "",
   });
 
   const handleThemeSVG = (): void => {
-    theme === 'light'
+    theme === "light"
       ? setFillColor({
-          hover: 'group-hover:fill-black',
-          color: 'fill-gray-500',
+          hover: "group-hover:fill-black",
+          color: "fill-gray-500",
         })
-      : setFillColor({ ...fillColor, hover: 'group-hover:fill-white' });
+      : setFillColor({ ...fillColor, hover: "group-hover:fill-white" });
   };
 
   useEffect(() => {
@@ -47,9 +47,12 @@ const RightClickMenu = ({
       <div className={styles.mainWrapper}>
         <ul>
           {setShowRenameModal && (
-            <li onClick={() => setShowRenameModal(true)} className={`${styles.itemWrapper} group`}>
+            <li
+              onClick={() => setShowRenameModal(true)}
+              className={`${styles.itemWrapper} group`}
+            >
               <span className={styles.svg}>
-                {<Pencil className={`${fillColor.color} ${fillColor.hover}`} />}
+                <Pencil className="size-4" />
               </span>
               <p>Rename...</p>
             </li>
@@ -61,7 +64,7 @@ const RightClickMenu = ({
             }}
           >
             <span className={styles.svg}>
-              {<TrashCan className={`${fillColor.hover} ${fillColor.color}`} />}
+              <Trash2 className="size-4" />
             </span>
             <p>Delete</p>
           </li>
