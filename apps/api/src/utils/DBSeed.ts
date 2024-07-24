@@ -9,6 +9,10 @@ import NotificationModel from '../models/notification';
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 const MONGO_URL = process.env.MONGO_URL;
+import type IUser  from '../interface/user'
+import type IWorkspace from '../interface/workspace'
+import type ITeam from '../interface/team';
+import type ITask from '../interface/task';
 
 export const seedDB = async () => {
 	const num = faker.number.int({ min: 5, max: 10 });
@@ -47,7 +51,7 @@ export const seedDB = async () => {
 const addUser = async () => {
 	const firstName = faker.person.firstName();
 	const lastName = faker.person.lastName();
-	const fullName = firstName + ' ' + lastName;
+	const fullName = `${firstName} ${lastName}`;
 	const username = faker.internet.userName({
 		firstName: firstName,
 		lastName: lastName,
@@ -69,15 +73,15 @@ const addUser = async () => {
 	return user;
 };
 
-const addWorkspace = async (user: any) => {
+const addWorkspace = async (user: IUser) => {
 	const num = faker.number.int({ min: 1, max: 5 });
 	const workspaceName = faker.internet.domainWord();
 	const workspaceCompanySize = faker.number.int({ max: 1000 });
-	let users = [{ user: user, role: 'owner' }];
+	const users = [{ user: user, role: 'owner' }];
 
 	for (let i = 0; i < num; i++) {
-		let role = faker.helpers.arrayElement(['Admin', 'Member']);
-		let newUser = await addUser();
+		const role = faker.helpers.arrayElement(['Admin', 'Member']);
+		const newUser = await addUser();
 		users.push({ user: newUser, role: role });
 	}
 	const workspace = await Workspace.create({
@@ -88,7 +92,7 @@ const addWorkspace = async (user: any) => {
 		issuesCreated: 1,
 	});
 
-	users.forEach(async (user: any) => {
+	for await (const user of users){
 		await User.findByIdAndUpdate(
 			user.user,
 			{
@@ -97,11 +101,22 @@ const addWorkspace = async (user: any) => {
 			},
 			{ new: true }
 		);
-	});
+	}
+
+	// users.forEach(async (user: {user:IUser, role: string}) => {
+	// 	await User.findByIdAndUpdate(
+	// 		user.user,
+	// 		{
+	// 			$push: { workspaces: workspace._id },
+	// 			on_boarding: true,
+	// 		},
+	// 		{ new: true }
+	// 	);
+	// });
 	return workspace;
 };
 
-const addTeam = async (workspace: any, user: any) => {
+const addTeam = async (workspace: IWorkspace, user: IUser) => {
 	const teamName = faker.internet.domainWord();
 	const teamIdentifier = faker.string.alpha({
 		length: { min: 3, max: 3 },
@@ -114,17 +129,17 @@ const addTeam = async (workspace: any, user: any) => {
 		users: [user],
 	});
 
-	await Workspace.findByIdAndUpdate(workspace._id, {
+	await Workspace.findByIdAndUpdate(workspace.id, {
 		$push: { teams: team._id },
 	});
-	await User.findByIdAndUpdate(user._id, {
+	await User.findByIdAndUpdate(user.id, {
 		$push: { teams: team._id },
 	});
 
 	return team;
 };
 
-const addTask = async (team: any, workspace: any, user: any) => {
+const addTask = async (team: ITeam, workspace: IWorkspace, user: IUser) => {
 	const taskTitle = faker.lorem.words({ min: 1, max: 3 });
 	const taskDescription = faker.lorem.words({ min: 3, max: 5 });
 	const taskStatus = faker.helpers.arrayElement([
@@ -150,7 +165,7 @@ const addTask = async (team: any, workspace: any, user: any) => {
 		1, 2, 3, 5, 8, 13, 21,
 	]);
 	const task = await Task.create({
-		authorId: user._id,
+		authorId: user.id,
 		title: taskTitle,
 		status: taskStatus,
 		description: taskDescription,
@@ -162,7 +177,7 @@ const addTask = async (team: any, workspace: any, user: any) => {
 		team,
 	});
 	await Team.findByIdAndUpdate(team._id, { $push: { tasks: task._id } });
-	await Workspace.findByIdAndUpdate(workspace._id, {
+	await Workspace.findByIdAndUpdate(workspace.id, {
 		$inc: { issuesCreated: 1 },
 	});
 
@@ -172,7 +187,7 @@ const addTask = async (team: any, workspace: any, user: any) => {
 	return task;
 };
 
-const addComment = async (user: any, task: any) => {
+const addComment = async (user: IUser, task: ITask) => {
 	const commentContent = faker.lorem.words({ min: 3, max: 5 });
 	const commentJson = `{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"${commentContent}","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}`;
 	const comment = await Comment.create({
@@ -184,10 +199,10 @@ const addComment = async (user: any, task: any) => {
 	return comment;
 };
 
-const addNotification = async (user: any, task: any) => {
+const addNotification = async (user: IUser, task: ITask) => {
 	const notification = await NotificationModel.create({
-		user: user._id,
-		task: [task._id],
+		user: user.id,
+		task: [task.id],
 		read: faker.datatype.boolean(),
 		description: faker.lorem.sentence(),
 		createdAt: faker.date.past(),

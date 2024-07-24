@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import ITask from "./task";
+import type { Types } from "mongoose";
+import type ITask from "./task";
 
 interface ITeam {
   _id: Types.ObjectId;

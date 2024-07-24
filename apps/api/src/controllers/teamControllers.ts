@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { Types } from 'mongoose';
 import Team from "../models/team";
 import Workspace from "../models/workspace";
@@ -40,9 +40,8 @@ const getTeam = async (
     ]);
     if (!team) {
       return next(new AppError("$$$ Team not found $$$", 404));
-    } else {
-      res.json(team[0]);
     }
+    res.json(team[0]);
   } else if (identifier) {  
     const team = await Team.aggregate([
       {
@@ -57,9 +56,8 @@ const getTeam = async (
     
     if (!team) {
       return next(new AppError("$$$ Team not found $$$", 404));
-    } else {
-      res.json(team[0]);
     }
+    res.json(team[0]);
   }
 };
 
@@ -148,7 +146,7 @@ const teamExists = async (
     const findName = currentWorkspace.teams.find(
       (value) => value.name.toLowerCase() === name.toLowerCase()
     );
-    findName ? (nameExists = true) : (nameExists = false);
+    findName ? nameExists = true : nameExists = false;
   } else {
     return next(new AppError("No workspace found", 500));
   }

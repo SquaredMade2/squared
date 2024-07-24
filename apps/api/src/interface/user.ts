@@ -1,8 +1,9 @@
-import { Types } from "mongoose";
-import IWorkspace from "./workspace";
-import ITask from "./task";
+import type { Types } from "mongoose";
+import type IWorkspace from "./workspace";
+import type ITask from "./task";
 
 interface IUser {
+  id: Types.ObjectId,
   name: string;
   username: string;
   email: string;

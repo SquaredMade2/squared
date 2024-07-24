@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import AppError from '../utils/AppError';
 import Workspace from '../models/workspace';
@@ -7,16 +7,16 @@ import Task from '../models/task';
 import Team from '../models/team';
 import { sendMail } from '../helpers/transporter';
 import jwt from 'jsonwebtoken';
-import JWTPayload from '../interface/JWTPayload';
+import type JWTPayload from '../interface/JWTPayload';
 import { getLookup, tasksOfTeamFields, userOfWorkspaceField, workspaceGroup } from '../utils/aggregationUtils';
-import IWorkspace from '../interface/workspace';
-const crypto = require('crypto');
+import type IWorkspace from '../interface/workspace';
+const crypto = require('node:crypto');
 
 const addWorkspace = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<Response | AppError | void> => {
+): Promise<void> => {
 	try {
 		const { name, url, companySize, users, username } = req.body;
 		// Create new workspace
@@ -41,7 +41,7 @@ const addWorkspace = async (
 		if (!user) {
 			return next(new AppError('$$$ User not found $$$', 404));
 		}
-		return res.status(201).json({ workspace, user });
+		res.status(201).json({ workspace, user });
 	} catch (error) {
 		
 		return next(
@@ -59,7 +59,8 @@ const getWorkspace = async (
 	let workspace;
 	if (!url && !id) {
 		return next(new AppError('$$$ No workspace id or url provided $$$', 404));
-	} else if (!id && typeof user === 'string' && typeof url === 'string') {
+	}
+	if (!id && typeof user === 'string' && typeof url === 'string') {
 		workspace = await Workspace.aggregate([
 			{ 
 				$match: {
@@ -84,9 +85,9 @@ const getWorkspace = async (
 		  ]);
 		if (!workspace) {
 			return next(new AppError('$$$ Workspace not found $$$', 404));
-		} else {
-			res.json(workspace[0]);
 		}
+		res.json(workspace[0]);
+
 	} else if (typeof id === 'string' && typeof user === 'string') {
 		workspace = await Workspace.aggregate([
 			{ 
@@ -111,9 +112,8 @@ const getWorkspace = async (
 			]);
 		if (!workspace) {
 			return next(new AppError('$$$ Workspace not found $$$', 404));
-		} else {
-			res.json(workspace[0]);
 		}
+		res.json(workspace[0]);
 	}
 };
 
@@ -121,7 +121,7 @@ const createTokenLink = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<Response | void> => {
+): Promise<void> => {
 	const { id } = req.body;
 
 	try {
@@ -150,7 +150,7 @@ const enableUniversalLink = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<Response | void> => {
+): Promise<void> => {
 	const { enabled, workspaceId } = req.body;
 	try {
 		const workspace = await Workspace.findByIdAndUpdate(
@@ -254,7 +254,7 @@ const joinWorkspace = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<Response | void> => {
+) => {
 	const { id, email } = req.body;
 	try {
 		const user = await User.findOne({ email });
@@ -308,7 +308,7 @@ const verifyTokenToJoinWorkspace = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
-): Promise<Response | void> => {
+)=> {
 	const { token } = req.params;
 	if (!token) {
 		return res.status(422).send({ message: 'Missing token' });
@@ -442,9 +442,9 @@ const workspaceExists = async (
 	const exists = await Workspace.findOne({ url });
 	if (exists) {
 		return next(new AppError('$$$ Workspace already exists. $$$', 404));
-	} else {
-		res.sendStatus(200);
 	}
+	res.sendStatus(200);
+
 };
 
 const updateUserRoles = async (
@@ -550,7 +550,7 @@ const searchQuery = async (req: Request, res: Response) => {
 			team.tasks.filter((task) => task.title.toLowerCase().includes(query))
 		)
 	);
-	const flattenedData = processedData.flat(Infinity);
+	const flattenedData = processedData.flat(Number.POSITIVE_INFINITY);
 	res.json(flattenedData);
 };
 

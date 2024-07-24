@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import ITeam from "../interface/team";
+import type ITeam from "../interface/team";
 /**
  * @openapi
  * components:

@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import multer from "multer";
-import { S3 } from "aws-sdk";
+import type { S3 } from "aws-sdk";
 import sharp from "sharp";
 import heicConvert from "heic-convert";
 import s3 from "../utils/s3Client";
@@ -23,7 +23,7 @@ const uploadSingleFile = async (
 
     const fileName = req.file.originalname;
     let fileBuffer = req.file.buffer;
-    let lastDotIndex = fileName.lastIndexOf(".");
+    const lastDotIndex = fileName.lastIndexOf(".");
     const fileExtension = fileName.substring(lastDotIndex + 1);
     const baseName = fileName.substring(0, lastDotIndex);
     const newFileName = `${baseName}.webp`;
@@ -100,7 +100,7 @@ const deleteSingleFile = (fileKey: string) => {
       Key: fileKey,
     };
 
-    s3.deleteObject(deleteParams, function (err, data) {
+    s3.deleteObject(deleteParams, (err, data) => {
       if (err) {
         
         reject(err);

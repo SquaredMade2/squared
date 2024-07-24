@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IWorkspace from "../interface/workspace";
+import type IWorkspace from "../interface/workspace";
 
 /**
  * @openapi

@@ -52,7 +52,6 @@ export const tasksOfTeamFieldsDirect =  {
             dueDate: {
               $cond: {
                 if: { $eq: ['$$task.dueDate', null] },
-                then: null,
                 else: { $dateToString: { format: "%Y-%m-%dT%H:%M:%S.%LZ", date: '$$task.dueDate' } }
               }
             },
@@ -61,7 +60,6 @@ export const tasksOfTeamFieldsDirect =  {
             dateCreated: {
               $cond: {
                 if: { $eq: ['$$task.dateCreated', null] },
-                then: null,
                 else: { $dateToString: { format: "%Y-%m-%dT%H:%M:%S.%LZ", date: '$$task.dateCreated' } }
               }
             },

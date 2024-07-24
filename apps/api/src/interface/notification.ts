@@ -1,10 +1,10 @@
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
 interface INotification {
 	user: Types.ObjectId;
 	task: Types.ObjectId;
-	read: Boolean;
-	description: String;
+	read: boolean;
+	description: string;
 }
 
 export default INotification;

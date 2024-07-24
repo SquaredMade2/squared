@@ -2,8 +2,8 @@ import Task from "../models/task";
 import User from "../models/user";
 import Notification from "../models/notification";
 import { sendMentionedUserMail } from "../helpers/transporter";
-import { UserSocket } from "./notification.interface";
-import { Server } from "socket.io";
+import type { UserSocket } from "./notification.interface";
+import type { Server } from "socket.io";
 
 async function getUsersNotification(
   userSocketId: UserSocket,

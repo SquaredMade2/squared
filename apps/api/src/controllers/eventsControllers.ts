@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import {
   CommentModel as Comment,
   TaskEventModel as TaskEvent,
   TaskEventLogModel as TaskEventLog,
 } from '../models/events';
+import type { TaskEvent as ITaskEvent } from '../interface/events';
 
 export const addComment = async (
   req: Request,
@@ -77,7 +78,7 @@ export const createTaskEvent = async (req: Request, res: Response) => {
       eventsLog: [],
     });
 
-    delete taskEventLog.__v;
+    taskEventLog.__v === undefined;
 
     res.status(200).json(taskEventLog);
   } catch (error) {
@@ -101,7 +102,7 @@ export const addTaskEvent = async (
       amendedByUser: req.body.amendedByUser,
     };
     if (req.body.type === 'labelsUpdated') {
-      newEvent = await TaskEvent.create({
+        newEvent = await TaskEvent.create({
         ...commonFields,
         originalLabels: req.body.originalLabels || [],
         updatedLabels: req.body.updatedLabels || [],

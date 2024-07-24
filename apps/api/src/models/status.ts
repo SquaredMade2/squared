@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IStatus from "../interface/status";
+import type IStatus from "../interface/status";
 
 /**
  * @openapi

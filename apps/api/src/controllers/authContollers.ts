@@ -1,11 +1,11 @@
 import 'dotenv/config';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { hashPassword, comparePassword } from '../helpers/auth';
 import AppError from '../utils/AppError';
 import User from '../models/user';
-import JwtPayload from '../interface/JWTPayload';
+import type JwtPayload from '../interface/JWTPayload';
 import { sendMail } from '../helpers/transporter';
 import Workspace from '../models/workspace';
 
@@ -16,7 +16,7 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const registerUser = async (
 	req: Request,
 	res: Response
-): Promise<Response | void> => {
+): Promise<Response | undefined> => {
 	try {
 		const { name, email, password, username } = req.body;
 		if (!name) {
@@ -78,10 +78,9 @@ const registerUser = async (
 const loginUser = async (
 	req: Request,
 	res: Response
-): Promise<Response | void> => {
+): Promise<Response | undefined> => {
 	try {
 		const { email, password } = req.body;
-		let passwordMatch;
 
 		if (!email || !password) {
 			return res.status(422).json({
@@ -93,9 +92,10 @@ const loginUser = async (
 			return res.status(422).json({
 				error: 'No user found, please register.',
 			});
-		} else {
-			passwordMatch = await comparePassword(password, user.password);
 		}
+
+		const passwordMatch = await comparePassword(password, user.password);
+		
 
 		if (!user.verified) {
 			jwt.sign(
@@ -136,31 +136,29 @@ const loginUser = async (
 							user,
 							redirectTo: '/onboarding',
 						});
-					} else {
-						//otherwise look for workspace, all the workspaces are deleted, send back to /onboarding
-						await user.populate('workspaces');
-						const workspace = user.workspaces[0];
-						if (!workspace) {
-							return res.json({
-								user,
-								redirectTo: '/onboarding',
-							});
-						}
+					}
+					//otherwise look for workspace, all the workspaces are deleted, send back to /onboarding
+					await user.populate('workspaces');
+					const workspace = user.workspaces[0];
+					if (!workspace) {
 						return res.json({
 							user,
-							redirectTo: workspace.url,
+							redirectTo: '/onboarding',
 						});
 					}
+					return res.json({
+						user,
+						redirectTo: workspace.url,
+					});
 				}
 			);
 			return;
-		} else {
-			res.status(422).json({
-				error: 'Incorrect Password',
-			});
 		}
-	} catch (error) {
+		res.status(422).json({
+			error: 'Incorrect Password',
+		});
 		
+	} catch (error) {
 		return res.status(500).json({ error: 'Server Error' });
 	}
 };
@@ -168,7 +166,7 @@ const loginUser = async (
 const verifyEmail = async (
 	req: Request,
 	res: Response
-): Promise<Response | void> => {
+): Promise<Response | undefined> => {
 	const { token } = req.params;
 	if (!token) {
 		res.status(422).send({ message: 'Missing token' });
@@ -194,7 +192,7 @@ const verifyEmail = async (
 const signInUsingNextAuth = async (
 	req: Request,
 	res: Response
-): Promise<Response | void> => {
+): Promise<Response | undefined> => {
 	try {
 		const { email } = req.body;
 		const user = await User.findOne({ email });
@@ -239,20 +237,19 @@ const signInUsingNextAuth = async (
 						user,
 						redirectTo: '/onboarding',
 					});
-				} else {
-					await user.populate('workspaces');
-					const workspace = user.workspaces[0];
-					if (!workspace) {
-						return res.json({
-							redirectTo: '/onboarding',
-							user,
-						});
-					}
+				}
+				await user.populate('workspaces');
+				const workspace = user.workspaces[0];
+				if (!workspace) {
 					return res.json({
-						redirectTo: workspace.url,
+						redirectTo: '/onboarding',
 						user,
 					});
 				}
+				return res.json({
+					redirectTo: workspace.url,
+					user,
+				});
 			}
 		);
 	} catch (error) {
@@ -304,7 +301,7 @@ const getUser = async (
 ): Promise<void> => {
 	const id = req.query.id;
 	try {
-		if (!id || id == '') {
+		if (!id || id === '') {
 			return next(new AppError('No user found', 500));
 		}
 		const data = await User.findOne({ _id: id }).populate('workspaces');
@@ -345,7 +342,7 @@ const logoutUser = async (req: Request, res: Response): Promise<void> => {
 const forgotPassword = async (
 	req: Request,
 	res: Response
-): Promise<Response | void> => {
+): Promise<Response | undefined> => {
 	const { email } = req.body;
 
 	if (!email) {
@@ -385,7 +382,7 @@ const forgotPassword = async (
 const resetPassword = async (
 	req: Request,
 	res: Response
-): Promise<Response | void> => {
+): Promise<Response | undefined> => {
 	const { token } = req.params;
 	const { newPassword } = req.body;
 

@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
 export enum Status {
   backlog = 'backlog',
@@ -63,7 +63,7 @@ export interface TaskEvent {
 }
 
 export interface Comment {
-  comment: String;
+  comment: string;
   author: Types.ObjectId;
   date: Date;
   task: Types.ObjectId;

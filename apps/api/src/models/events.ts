@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
-import { TaskEventLog, TaskEvent, Comment, Labels } from '../interface/events';
+import  type { TaskEventLog, TaskEvent, Comment } from '../interface/events';
+import { Labels } from '../interface/events';
 
 /**
  * @openapi
