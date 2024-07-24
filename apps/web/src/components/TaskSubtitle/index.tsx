@@ -5,8 +5,8 @@ import { setStatus } from "@/store/taskData";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { ReactElement } from "react";
 import type { TaskSubtitleProps } from "./TaskSubtitle.interfaces";
-import { Circle, CircleDashed, CirclePlus, CircleX, Copy } from "lucide-react";
-import { filterDone, inProgress } from "../Svg";
+import { Circle, CircleCheckBig, CircleDashed, CirclePlus, CircleX, Copy } from "lucide-react";
+import {  inProgress } from "../Svg";
 const TaskSubtitle = ({ title }: TaskSubtitleProps) => {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.userSettings.theme);
@@ -22,7 +22,7 @@ const TaskSubtitle = ({ title }: TaskSubtitleProps) => {
       case "In Progress":
         return inProgress();
       case "Done":
-        return filterDone();
+        return <CircleCheckBig className="size-4 text-[#7394FF]" />;
       case "Canceled":
         return <CircleX className="size-4" />;
       case "Duplicate":

@@ -2,10 +2,10 @@ import { Fragment, useState, useRef, useEffect } from "react";
 import { setCurrentFilter } from "@/store/filterPage/actions";
 import { Combobox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { urgent, high, medium, low } from "@/components/Svg";
+import { high, medium, low } from "@/components/Svg";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { PriorityFilterDropDownProps } from "./PriorityFilterDropDown.interfaces";
-import { Ellipsis } from "lucide-react";
+import { CircleAlert, Ellipsis } from "lucide-react";
 
 const groupPriority = [
   {
@@ -19,7 +19,7 @@ const groupPriority = [
     id: 1,
     name: "Urgent",
     border: false,
-    svg: urgent(),
+    svg: <CircleAlert className="size-4 text-[#F2994A]" />,
     group: "priority",
   },
   {

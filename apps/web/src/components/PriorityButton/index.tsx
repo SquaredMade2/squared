@@ -1,10 +1,10 @@
 import { type ReactElement, useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { urgent, high, medium, low } from "@/components/Svg";
+import { high, medium, low } from "@/components/Svg";
 import PriorityDropdown from "@/components/PriorityDropdown";
 import { setBackgroundColor } from "../DesignationsContainer";
 import type { PriorityButtonProps } from "./PriorityButton.interfaces";
-import { Ellipsis } from "lucide-react";
+import { CircleAlert, Ellipsis } from "lucide-react";
 
 const PriorityButton = ({ location }: PriorityButtonProps) => {
   const styles = {
@@ -107,7 +107,7 @@ const PriorityButton = ({ location }: PriorityButtonProps) => {
       case "No priority":
         return <Ellipsis className="size-4" />;
       case "Urgent":
-        return urgent();
+        return <CircleAlert className="size-4 text-[#F2994A]" />;
       case "High":
         return high();
       case "Medium":

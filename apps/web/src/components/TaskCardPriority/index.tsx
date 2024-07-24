@@ -1,8 +1,8 @@
 import React, { useState, useEffect, type ReactNode } from "react";
-import { urgent, high, medium, low } from "@/components/Svg";
+import { high, medium, low } from "@/components/Svg";
 import type { TaskCardPriorityProps } from "./TaskCardPriority.interfaces";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { Ellipsis } from "lucide-react";
+import { CircleAlert, Ellipsis } from "lucide-react";
 
 const styles = {
   mainBorder:
@@ -30,7 +30,7 @@ const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
         setSvg(high);
         break;
       case "Urgent":
-        setSvg(urgent);
+        setSvg(<CircleAlert className="size-4 text-[#F2994A]" />);
         break;
       default:
         setSvg(<Ellipsis className="size-4" />);

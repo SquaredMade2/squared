@@ -4,14 +4,11 @@ import { setCurrentFilter } from "@/store/filterPage/actions";
 import { Combobox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
-import {
-  filterInProgress,
-  filterDone,
-} from "@/components/Svg";
+import { filterInProgress } from "@/components/Svg";
 import type { clearFilterType } from "@/app/interfaces/Filter.interfaces";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { StatusFilterDropDownProps } from "./StatusFilterDropDown.interfaces";
-import { Circle, CircleDashed, CircleX } from "lucide-react";
+import { Circle, CircleCheckBig, CircleDashed, CircleX } from "lucide-react";
 
 const groupStatus = [
   {
@@ -35,7 +32,13 @@ const groupStatus = [
     svg: filterInProgress(),
     group: "status",
   },
-  { id: 3, name: "Done", border: false, svg: filterDone(), group: "status" },
+  {
+    id: 3,
+    name: "Done",
+    border: false,
+    svg: <CircleCheckBig className="size-4 text-[#7394FF]" />,
+    group: "status",
+  },
   {
     id: 4,
     name: "Cancelled",

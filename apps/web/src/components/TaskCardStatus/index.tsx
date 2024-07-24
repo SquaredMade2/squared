@@ -1,10 +1,7 @@
 import React, { useState, useEffect, type ReactNode } from "react";
-import {
-  filterInProgress,
-  filterDone,
-} from "@/components/Svg";
+import { filterInProgress } from "@/components/Svg";
 import type { TaskCardStatusProps } from "@/app/interfaces/Tasks.interfaces";
-import { Circle, CircleDashed, CircleX } from "lucide-react";
+import { Circle, CircleCheckBig, CircleDashed, CircleX } from "lucide-react";
 
 const TaskCardStatus = ({ task }: TaskCardStatusProps) => {
   const [svg, setSvg] = useState<ReactNode>();
@@ -21,7 +18,7 @@ const TaskCardStatus = ({ task }: TaskCardStatusProps) => {
         setSvg(<CircleDashed className="size-4" />);
         break;
       case "Done":
-        setSvg(filterDone);
+        setSvg(<CircleCheckBig className="size-4 text-[#7394FF]" />);
         break;
       case "Canceled":
         setSvg(<CircleX className="size-4" />);

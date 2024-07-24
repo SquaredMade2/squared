@@ -3,8 +3,14 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import StatusDropdown from "@/components/StatusDropdown";
 import { setBackgroundColor } from "../DesignationsContainer";
 import type { StatusButtonProps } from "./StatusButton.interfaces";
-import { Circle, CircleDashed, CircleX, Copy } from "lucide-react";
-import { filterDone, inProgress } from "../Svg";
+import {
+  Circle,
+  CircleCheckBig,
+  CircleDashed,
+  CircleX,
+  Copy,
+} from "lucide-react";
+import { inProgress } from "../Svg";
 
 const styles = {
   newIssueContainer: "relative",
@@ -49,7 +55,7 @@ const StatusButton = ({ location }: StatusButtonProps) => {
       case "In Progress":
         return inProgress();
       case "Done":
-        return filterDone();
+        return <CircleCheckBig className="size-4 text-[#7394FF]" />;
       case "Canceled":
         return <CircleX className="size-4" />;
       case "Duplicate":

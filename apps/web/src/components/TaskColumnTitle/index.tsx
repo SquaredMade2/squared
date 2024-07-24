@@ -6,12 +6,13 @@ import { setStatus } from "@/store/taskData";
 import {
   ChevronDown,
   Circle,
+  CircleCheckBig,
   CircleDashed,
   CirclePlus,
   CircleX,
   Copy,
 } from "lucide-react";
-import { filterDone, inProgress } from "../Svg";
+import { inProgress } from "../Svg";
 
 const style = {
   columnTitle: "flex items-center gap-4 text-foreground text-sm pr-8",
@@ -50,7 +51,7 @@ const TaskColumnTitle = ({
       case "In Progress":
         return inProgress();
       case "Done":
-        return filterDone();
+        return <CircleCheckBig className="size-4 text-[#7394FF]" />;
       case "Canceled":
         return <CircleX className="size-4" />;
       case "Duplicate":
