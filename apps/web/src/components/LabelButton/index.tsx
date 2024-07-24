@@ -152,7 +152,7 @@ const LabelButton = ({ location }: LabelButtonProps) => {
           onClick={handleButtonClick}
         >
           <span className={styles.svgAdd}>
-            <Plus className="size-5 cursor-pointer" />
+            <Plus className="size-4 cursor-pointer mr-2" />
           </span>
           <span className={styles.textAddLabel}>Add label</span>
         </button>

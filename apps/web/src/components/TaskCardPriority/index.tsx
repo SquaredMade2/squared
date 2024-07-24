@@ -30,7 +30,7 @@ const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
         setSvg(high);
         break;
       case "Urgent":
-        setSvg(<CircleAlert className="size-4 text-[#F2994A]" />);
+        setSvg(<CircleAlert className="size-4 fill-destructive" />);
         break;
       default:
         setSvg(<Ellipsis className="size-4" />);

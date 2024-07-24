@@ -12,7 +12,7 @@ const HelpButton: React.FC<HelpButtonProps> = ({ onClick }) => {
     >
       {" "}
       <span className={styles.svg}>
-        <CircleHelp className="size-5 fill-[#808080] text-[#ffffff]" />
+        <CircleHelp className="size-4 fill-muted text-muted-foreground" />
       </span>
     </button>
   );

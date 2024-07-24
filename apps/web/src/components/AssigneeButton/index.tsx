@@ -18,7 +18,7 @@ export const AssigneeButton = ({
     return assignee && assignee.name !== null ? (
       <ProfileImage profileName={assignee.name} location={"assigneeDropdown"} />
     ) : (
-      <UserSearch className="size-5 text-[#9597AD]" />
+      <UserSearch className="size-4 mr-2" />
     );
   };
 

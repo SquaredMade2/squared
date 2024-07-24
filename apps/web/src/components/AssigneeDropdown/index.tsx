@@ -127,7 +127,7 @@ export const AssigneeDropdown = ({
           className={styles.assignButton}
           onClick={() => handleClickAssignee(taskId, { id: null, name: null })}
         >
-          <UserSearch className="size-5 text-[#9597AD]" />
+          <UserSearch className="size-4 mr-2" />
           Unassign
         </button>
         <ul className={styles.overflowHandler}>

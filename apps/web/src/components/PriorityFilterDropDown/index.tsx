@@ -19,7 +19,7 @@ const groupPriority = [
     id: 1,
     name: "Urgent",
     border: false,
-    svg: <CircleAlert className="size-4 text-[#F2994A]" />,
+    svg: <CircleAlert className="size-4 fill-destructive" />,
     group: "priority",
   },
   {

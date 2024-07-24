@@ -107,7 +107,7 @@ const PriorityButton = ({ location }: PriorityButtonProps) => {
       case "No priority":
         return <Ellipsis className="size-4" />;
       case "Urgent":
-        return <CircleAlert className="size-4 text-[#F2994A]" />;
+        return <CircleAlert className="size-4 fill-destructive" />;
       case "High":
         return high();
       case "Medium":
