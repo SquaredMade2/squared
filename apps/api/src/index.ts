@@ -90,8 +90,12 @@ if (process.env.NODE_ENV === "test") {
 mongoose.set("strictQuery", false);
 mongoose
   .connect(MONGO_URL, { dbName: dbname })
-  .then((): void => {})
-  .catch((err: string): void => {});
+  .then((): void => {
+    console.log("Database Connected");
+  })
+  .catch((err: string): void => {
+    console.log("Database Connection Error", err);
+  });
 
 const whitelist = [
   "http://localhost:3000",
