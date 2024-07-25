@@ -1,11 +1,11 @@
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
 import {
   CommentModel as Comment,
   TaskEventModel as TaskEvent,
   TaskEventLogModel as TaskEventLog,
-} from '../models/events';
-import type { TaskEvent as ITaskEvent } from '../interface/events';
-import type { Model } from 'mongoose';
+} from "../models/events";
+import type { TaskEvent as ITaskEvent } from "../interface/events";
+import type { Model } from "mongoose";
 
 export const addComment = async (
   req: Request,
@@ -23,8 +23,7 @@ export const addComment = async (
 
     res.status(201).json(comment);
   } catch (error) {
-    
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
@@ -36,8 +35,7 @@ export const getComments = async (
     const comments = await Comment.find({ task: req.params.taskId });
     res.json(comments);
   } catch (error) {
-    
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
@@ -54,11 +52,10 @@ export const updateComment = async (
     if (newComment) {
       res.json(newComment);
     } else {
-      res.status(404).json({ error: 'Comment not found' });
+      res.status(404).json({ error: "Comment not found" });
     }
   } catch (error) {
-    
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
@@ -66,11 +63,16 @@ export const deleteComment = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const confirmDeleted = await Comment.deleteOne({ _id: req.params.id });
+  const confirmDeleted = await Comment.deleteOne({
+    _id: req.params.id,
+  });
   res.json(confirmDeleted);
 };
 
-export const createTaskEvent = async (req: Request, res: Response) => {
+export const createTaskEvent = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const taskEventLog = await TaskEventLog.create({
       author: req.body.author,
@@ -83,9 +85,7 @@ export const createTaskEvent = async (req: Request, res: Response) => {
 
     res.status(200).json(taskEventLog);
   } catch (error) {
-    
-
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
@@ -94,7 +94,6 @@ export const addTaskEvent = async (
   res: Response
 ): Promise<void> => {
   try {
-    let newEvent;
     const commonFields = {
       type: req.body.type,
       author: req.body.author,
@@ -102,15 +101,15 @@ export const addTaskEvent = async (
       updatedAt: new Date(),
       amendedByUser: req.body.amendedByUser,
     };
-    if (req.body.type === 'labelsUpdated') {
-        newEvent = await TaskEvent.create({
+    if (req.body.type === "labelsUpdated") {
+      const newEvent = await TaskEvent.create({
         ...commonFields,
         originalLabels: req.body.originalLabels || [],
         updatedLabels: req.body.updatedLabels || [],
       });
-
-    } else if (req.body.type === 'assigneeUpdated') {
-      newEvent = await TaskEvent.create({
+      res.status(200).json(newEvent);
+    } else if (req.body.type === "assigneeUpdated") {
+      const newEvent = await TaskEvent.create({
         ...commonFields,
         originalAssignee: req.body.originalAssignee,
         updatedAssignee: req.body.updatedAssignee,
@@ -119,8 +118,9 @@ export const addTaskEvent = async (
       newEvent.originalLabels = undefined;
       newEvent.updatedLabels = undefined;
       await newEvent.save();
+      res.status(200).json(newEvent);
     } else {
-      newEvent = await TaskEvent.create({
+      const newEvent = await TaskEvent.create({
         ...commonFields,
         originalValue: req.body.originalValue,
         updatedValue: req.body.updatedValue,
@@ -129,11 +129,10 @@ export const addTaskEvent = async (
       newEvent.originalLabels = undefined;
       newEvent.updatedLabels = undefined;
       await newEvent.save();
+      res.status(200).json(newEvent);
     }
-    res.status(200).json(newEvent);
   } catch (error) {
-    
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
@@ -142,11 +141,12 @@ export const getTaskEvents = async (
   res: Response
 ): Promise<void> => {
   try {
-    const taskEvents = await TaskEvent.find({ taskId: req.params.taskId });
+    const taskEvents = await TaskEvent.find({
+      taskId: req.params.taskId,
+    });
     res.json(taskEvents);
   } catch (error) {
-    
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
 
@@ -155,12 +155,13 @@ export const getTaskEventLog = async (
   res: Response
 ): Promise<void> => {
   try {
-    const taskEventLog = await TaskEventLog.find({ taskId: req.params.taskId });
+    const taskEventLog = await TaskEventLog.find({
+      taskId: req.params.taskId,
+    });
     if (taskEventLog.length > 0) {
       res.json(taskEventLog);
     }
   } catch (error) {
-    
-    res.status(500).json({ error: 'Server Error' });
+    res.status(500).json({ error: "Server Error" });
   }
 };
