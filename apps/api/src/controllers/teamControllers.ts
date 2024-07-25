@@ -140,13 +140,13 @@ const teamExists = async (
     "teams"
   );
 
-  let nameExists = false;
+  let nameExists:boolean;
 
   if (currentWorkspace) {
     const findName = currentWorkspace.teams.find(
       (value) => value.name.toLowerCase() === name.toLowerCase()
     );
-    findName ? nameExists = true : nameExists = false;
+    nameExists = !!findName;
   } else {
     return next(new AppError("No workspace found", 500));
   }

@@ -102,7 +102,7 @@ export const getFilteredTasks = async (
 				delete filters.filterOption[filter];
 			}
 		}
-        const formattedFilter = Object.entries(filters.filterOption).map(
+        const formatted = Object.entries(filters.filterOption).map(
             (filter) => {
                 const [key, value] = filter;
 
@@ -120,9 +120,10 @@ export const getFilteredTasks = async (
                 return { [key]: { $in: value } };
 
             }
-        ).flat();
+        );
+		const formattedFilter = formatted.flat();
 
-		const mongoDBFilter: any = { $or: [], team: teamId };
+		const mongoDBFilter:{$or:object[],team:string} = { $or: [], team: teamId };
 
 		for (let i = 0; i <= formattedFilter.length - 1; i++) {
 			mongoDBFilter.$or.push(formattedFilter[i]);

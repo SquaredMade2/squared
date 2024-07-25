@@ -5,6 +5,7 @@ import {
   TaskEventLogModel as TaskEventLog,
 } from '../models/events';
 import type { TaskEvent as ITaskEvent } from '../interface/events';
+import type { Model } from 'mongoose';
 
 export const addComment = async (
   req: Request,

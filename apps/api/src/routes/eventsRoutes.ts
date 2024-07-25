@@ -1,5 +1,4 @@
 import { Router } from "express";
-import catchAsync from "../utils/catchAsync";
 import {
   addComment,
   getComments,
@@ -52,7 +51,7 @@ const router: Router = Router();
  *                 error:
  *                   type: string
  */
-router.get("/comment/read/:taskId", catchAsync(getComments));
+router.get("/comment/read/:taskId", getComments);
 
 /**
  * @openapi
@@ -94,7 +93,7 @@ router.get("/comment/read/:taskId", catchAsync(getComments));
  *                 error:
  *                   type: string
  */
-router.post("/comment/create", catchAsync(addComment));
+router.post("/comment/create", addComment);
 
 /**
  * @openapi
@@ -141,7 +140,7 @@ router.post("/comment/create", catchAsync(addComment));
  *                 error:
  *                   type: string
  */
-router.put("/comment/update", catchAsync(updateComment));
+router.put("/comment/update", updateComment);
 
 /**
  * @openapi
@@ -179,12 +178,12 @@ router.put("/comment/update", catchAsync(updateComment));
  *                 error:
  *                   type: string
  */
-router.delete("/comment/delete/:id", catchAsync(deleteComment));
+router.delete("/comment/delete/:id", deleteComment);
 
 
-router.post("/create-log", catchAsync(createTaskEvent));
-router.post("/add", catchAsync(addTaskEvent));
-router.get("/read/log/:taskId", catchAsync(getTaskEventLog));
-router.get("/read/events/:taskId", catchAsync(getTaskEvents));
+router.post("/create-log", createTaskEvent);
+router.post("/add", addTaskEvent);
+router.get("/read/log/:taskId", getTaskEventLog);
+router.get("/read/events/:taskId", getTaskEvents);
 
 export default router;

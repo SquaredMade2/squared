@@ -1,5 +1,4 @@
 import { Router } from "express";
-import catchAsync from "../utils/catchAsync";
 import {
   addTask,
   getTask,
@@ -54,7 +53,7 @@ const router: Router = Router();
  *                 error:
  *                   type: string
  */
-router.get("/read", catchAsync(getTask));
+router.get("/read", getTask);
 /**
  * @openapi
  * /task/read/{id}:
@@ -95,7 +94,7 @@ router.get("/read", catchAsync(getTask));
  *                 error:
  *                   type: string
  */
-router.get("/read/:id", catchAsync(getSingleTask));
+router.get("/read/:id", getSingleTask);
 /**
  * @openapi
  * /task/readreadIdentifier:
@@ -141,7 +140,7 @@ router.get("/read/:id", catchAsync(getSingleTask));
  *                 error:
  *                   type: string
  */
-router.get("/readIdentifier", catchAsync(getSingleTaskIdentifier));
+router.get("/readIdentifier", getSingleTaskIdentifier);
 
 /**
  * @openapi
@@ -187,7 +186,7 @@ router.get("/readIdentifier", catchAsync(getSingleTaskIdentifier));
  *                 error:
  *                   type: string
  */
-router.post("/create", catchAsync(addTask));
+router.post("/create", addTask);
 
 /**
  * @openapi
@@ -250,7 +249,7 @@ router.post("/create", catchAsync(addTask));
  *                 error:
  *                   type: string
  */
-router.put("/update/:id", catchAsync(updateTask));
+router.put("/update/:id", updateTask);
 /**
  * @openapi
  * /task/update-drag:
@@ -296,7 +295,7 @@ router.put("/update/:id", catchAsync(updateTask));
  *                 error:
  *                   type: string
  */
-router.put("/update-drag/", catchAsync(updateTaskAfterDrag));
+router.put("/update-drag/", updateTaskAfterDrag);
 /**
  * @openapi
  * /task/update-assignee:
@@ -340,7 +339,7 @@ router.put("/update-drag/", catchAsync(updateTaskAfterDrag));
  *                 error:
  *                   type: string
  */
-router.put("/update-assignee", catchAsync(updateTaskAssignee));
+router.put("/update-assignee", updateTaskAssignee);
 
 /**
  * @openapi
@@ -378,5 +377,5 @@ router.put("/update-assignee", catchAsync(updateTaskAssignee));
  *                 error:
  *                   type: string
  */
-router.delete("/delete", catchAsync(deleteTask));
+router.delete("/delete", deleteTask);
 export default router;

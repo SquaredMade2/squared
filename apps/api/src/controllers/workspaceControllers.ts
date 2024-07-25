@@ -56,7 +56,7 @@ const getWorkspace = async (
 	next: NextFunction
 ) => {
 	const { url, id, user } = req.query;
-	let workspace;
+	let workspace:IWorkspace[];
 	if (!url && !id) {
 		return next(new AppError('$$$ No workspace id or url provided $$$', 404));
 	}
