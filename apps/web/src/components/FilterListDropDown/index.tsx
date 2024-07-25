@@ -15,6 +15,7 @@ import {
 import { TrashCan } from "../Svg";
 import type { FilterListDropDownProps } from "./FilterListDropDown.interfaces";
 import type { AppDispatch, RootState } from "@/store";
+import { useTheme } from "next-themes";
 
 const styles = {
 	main: "relative w-10 text-right mr-5",
@@ -45,7 +46,7 @@ const FilterListDropDown = ({
 		color: "",
 	});
 	const [isLinkCopied, setIsLinkCopied] = useState(false);
-	const theme = useSelector((state: RootState) => state.userSettings.theme);
+	const { theme } = useTheme();
 	const dispatch = useDispatch<AppDispatch>();
 
 	const handleThemeSVG = () => {

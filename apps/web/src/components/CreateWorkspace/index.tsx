@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { getUser } from "@/store/userSettings/thunks";
 import type { CreateWorkspaceProps } from "./CreateWorkspace.interfaces";
 import type { AppDispatch, RootState } from "@/store";
+import { Button } from "../ui/button";
 // import { linkTo } from "@storybook/addon-links/*";
 
 const styles = {
@@ -31,10 +32,6 @@ const styles = {
 	input:
 		"h-12 rounded-md border border-border text-sm pl-[192px] bg-card xs:pl-0 xs:indent-2 focus:outline-none focus:ring-1 relative",
 	urlWrapper: "absolute z-10 bottom-3 left-2 text-muted-foreground xs:hidden",
-	submitButtonDark:
-		"w-11/12 max-w-xs h-12 rounded-md text-foreground text-sm bg-purpleButton hover:bg-purpleButtonHover transition ease-out duration-100 mt-10",
-	submitButtonLight:
-		"w-11/12 max-w-xs h-12 rounded-md text-foreground text-sm bg-purpleButtonHover hover:bg-purpleButton transition ease-out duration-100 mt-10",
 	backLink: "flex items-center space-x-1 text-foreground",
 	userEmail: "text-foreground",
 };
@@ -56,7 +53,6 @@ const CreateWorkspace = ({
 	const taskDataLoadingState = useSelector(
 		(state: RootState) => state.taskData.isLoading,
 	);
-	const theme = useSelector((state: RootState) => state.userSettings.theme);
 	const user = useSelector((state: RootState) => state.userSettings.user);
 
 	const checkUrl = (str: string) => {
@@ -167,9 +163,7 @@ const CreateWorkspace = ({
 					</span>
 				</div>
 				<form className={styles.form} onSubmit={handleSubmit}>
-					<div
-						className={`${styles.shadowBox} ${theme !== "light" ? "bg-accent" : ""}`}
-					>
+					<div className={`${styles.shadowBox} bg-accent`}>
 						<div className={styles.inputCont}>
 							<label className={styles.smallText}>Workspace Name</label>
 							<input
@@ -195,12 +189,7 @@ const CreateWorkspace = ({
 							</div>
 						</div>
 					</div>
-					<button
-						type="submit"
-						className={`${theme !== "light" ? styles.submitButtonDark : styles.submitButtonLight}`}
-					>
-						Create workspace
-					</button>
+					<Button type="submit">Create workspace</Button>
 				</form>
 			</div>
 		</div>

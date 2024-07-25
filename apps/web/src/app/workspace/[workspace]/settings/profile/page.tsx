@@ -11,6 +11,7 @@ import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
 import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
+import { useTheme } from "next-themes";
 
 const styles = {
 	mainContainer: "flex mdsm:flex-col bg-card h-screen min-h-screen w-full",
@@ -44,7 +45,7 @@ export default function Profile(): ReactElement {
 	const dispatch = useAppDispatch();
 
 	const user = useSelector((state: RootState) => state.userSettings.user);
-	const theme = useSelector((state: RootState) => state.userSettings.theme);
+	const { theme } = useTheme();
 
 	const [fullName, setFullName] = useState<string>(user.name);
 	const [username, setUsername] = useState<string>(user.username);
@@ -104,7 +105,7 @@ export default function Profile(): ReactElement {
 						<p className={styles.fullNameTitle}>Full name</p>
 						<input
 							type="text"
-							className={`${styles.input} ${theme === "dark" ? "bg-background" : "bg-card"}`}
+							className={`${styles.input} bg-background`}
 							value={fullName}
 							onChange={handlefullNameChange}
 						/>
@@ -119,7 +120,7 @@ export default function Profile(): ReactElement {
 						</div>
 						<input
 							type="text"
-							className={`${styles.input} ${theme === "dark" ? "bg-background" : "bg-card"}`}
+							className={`${styles.input} bg-background`}
 							value={username}
 							onChange={handleUsernameChange}
 						/>

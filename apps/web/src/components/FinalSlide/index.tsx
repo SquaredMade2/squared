@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
+import { Button } from "../ui/button";
 
 const styles = {
 	mainContainer:
@@ -9,10 +10,6 @@ const styles = {
 	title: "text-foreground font-medium text-3xl mb-3",
 	description:
 		"text-muted-foreground font-medium mb-8 flex items-center justify-center",
-	continueButtonDark:
-		"w-11/12 max-w-xs h-12 bg-purpleButton hover:bg-purpleButtonHover rounded text-foreground font-medium transition ease-out duration-100 box-content xs:w-11/12",
-	continueButtonLight:
-		"w-11/12 max-w-xs h-12 bg-purpleButtonHover hover:bg-purpleButton rounded text-foreground font-medium transition ease-out duration-100 box-content xs:w-11/12",
 	// customLetter:
 	// 	'bg-accent font-normal text-lg flex px-3 pb-1 text-foreground mx-1.5 inline-block rounded', commented out until feature added.
 };
@@ -23,7 +20,6 @@ const FinalSlide = () => {
 	const workspace = useSelector(
 		(state: RootState) => state.taskData.workspaces,
 	);
-	const theme = useSelector((state: RootState) => state.userSettings.theme);
 
 	const handleClick = () => {
 		router.push(`/workspace/${workspace[0].url}`);
@@ -39,13 +35,9 @@ const FinalSlide = () => {
 			<p className={styles.description}>
 				Next explore Squared and begin creating issues in the app!
 			</p>
-			<button
-				type="button"
-				className={`${theme === "light" ? styles.continueButtonLight : styles.continueButtonDark}`}
-				onClick={handleClick}
-			>
+			<Button type="button" onClick={handleClick}>
 				Open Squared
-			</button>
+			</Button>
 		</div>
 	);
 };

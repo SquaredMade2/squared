@@ -4,6 +4,7 @@ import { lightMode, darkMode } from "@/components/Svg";
 import { handleTheme } from "@/store/userSettings";
 import type { ThemeModeTextProps } from "./ThemeModeText.interfaces";
 import type { RootState } from "@/store";
+import { useTheme } from "next-themes";
 
 const styles = {
 	container:
@@ -26,7 +27,7 @@ const styles = {
 const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
 	const dispatch = useDispatch();
 
-	const theme = useSelector((state: RootState) => state.userSettings.theme);
+	const { theme } = useTheme();
 	const selected = "border-solid border-2 border-onboardingTheme rounded";
 
 	return (

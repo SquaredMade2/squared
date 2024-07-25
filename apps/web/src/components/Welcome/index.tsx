@@ -1,7 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import type { UserSettingsState } from "@/store/userSettings/userSettings.interfaces";
 import type { WelcomeProps } from "./Welcome.interfaces";
+import { Button } from "../ui/button";
 
 const styles = {
 	mainContainer: "h-screen w-full flex items-center justify-center bg-card",
@@ -15,8 +14,6 @@ const styles = {
 };
 
 const Welcome = ({ handleNextPage }: WelcomeProps) => {
-	const theme = useSelector((state: UserSettingsState) => state.theme);
-
 	return (
 		<div className={styles.mainContainer}>
 			<div className={styles.mainWrapper}>
@@ -24,17 +21,9 @@ const Welcome = ({ handleNextPage }: WelcomeProps) => {
 				<p className={styles.description}>
 					Squared optimizes software development, iterations, and bug fixes.
 				</p>
-				<button
-					type="button"
-					className={`${
-						theme === "light"
-							? styles.continueButtonLight
-							: styles.continueButtonDark
-					}`}
-					onClick={handleNextPage}
-				>
+				<Button type="button" onClick={handleNextPage}>
 					Get started
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
