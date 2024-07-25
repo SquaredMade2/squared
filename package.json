@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "start": "turbo run start",
     "clean": "turbo run clean",
     "dev": "turbo run dev --filter=web --filter=api",
     "format": "pnpm biome format --write .",
