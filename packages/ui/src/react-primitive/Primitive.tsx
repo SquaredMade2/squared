@@ -1,57 +1,60 @@
-import * as React from 'react';
+import * as React from "react";
 
-import * as ReactDOM from 'react-dom';
+import * as ReactDOM from "react-dom";
 
-import { Slot } from '../slot';
+import { Slot } from "../slot";
 
 const NODES = [
-  'a',
-  'button',
-  'div',
-  'form',
-  'h2',
-  'h3',
-  'img',
-  'input',
-  'label',
-  'li',
-  'nav',
-  'ol',
-  'p',
-  'span',
-  'svg',
-  'ul',
+	"a",
+	"button",
+	"div",
+	"form",
+	"h2",
+	"h3",
+	"img",
+	"input",
+	"label",
+	"li",
+	"nav",
+	"ol",
+	"p",
+	"span",
+	"svg",
+	"ul",
 ] as const;
 
 type Primitives = {
-  [E in (typeof NODES)[number]]: PrimitiveForwardRefComponent<E>;
+	[E in (typeof NODES)[number]]: PrimitiveForwardRefComponent<E>;
 };
-type PrimitivePropsWithRef<E extends React.ElementType> = React.ComponentPropsWithRef<E> & {
-  asChild?: boolean;
-};
+type PrimitivePropsWithRef<E extends React.ElementType> =
+	React.ComponentPropsWithRef<E> & {
+		asChild?: boolean;
+	};
 
 interface PrimitiveForwardRefComponent<E extends React.ElementType>
-  extends React.ForwardRefExoticComponent<PrimitivePropsWithRef<E>> {}
+	extends React.ForwardRefExoticComponent<PrimitivePropsWithRef<E>> {}
 
 /* -------------------------------------------------------------------------------------------------
  * Primitive
  * -----------------------------------------------------------------------------------------------*/
 
 const Primitive = NODES.reduce((primitive, node) => {
-  const Node = React.forwardRef((props: PrimitivePropsWithRef<typeof node>, forwardedRef: any) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp: any = asChild ? Slot : node;
+	const Node = React.forwardRef(
+		(props: PrimitivePropsWithRef<typeof node>, forwardedRef: any) => {
+			const { asChild, ...primitiveProps } = props;
+			const Comp: any = asChild ? Slot : node;
 
-    if (typeof window !== 'undefined') {
-      (window as any)[Symbol.for('sandy-ui')] = true;
-    }
+			if (typeof window !== "undefined") {
+				(window as any)[Symbol.for("squared-ui")] = true;
+			}
 
-    return <Comp {...primitiveProps} ref={forwardedRef} />;
-  });
+			return <Comp {...primitiveProps} ref={forwardedRef} />;
+		},
+	);
 
-  Node.displayName = `Primitive.${node}`;
+	Node.displayName = `Primitive.${node}`;
 
-  return { ...primitive, [node]: Node };
+	return { ...primitive, [node]: Node };
 }, {} as Primitives);
 
 /* -------------------------------------------------------------------------------------------------
@@ -60,7 +63,7 @@ const Primitive = NODES.reduce((primitive, node) => {
 
 /**
  * Flush custom event dispatch
- * https://github.com/THEjacob1000/sandy-ui/pull/1378
+ * https://github.com/THEjacob1000/squared-ui/pull/1378
  *
  * React batches *all* event handlers since version 18, this introduces certain considerations when using custom event types.
  *
@@ -95,8 +98,11 @@ const Primitive = NODES.reduce((primitive, node) => {
  * e.g. when focus is within a component as it is unmounted, or when managing focus on mount.
  */
 
-function dispatchDiscreteCustomEvent<E extends CustomEvent>(target: E['target'], event: E) {
-  if (target) ReactDOM.flushSync(() => target.dispatchEvent(event));
+function dispatchDiscreteCustomEvent<E extends CustomEvent>(
+	target: E["target"],
+	event: E,
+) {
+	if (target) ReactDOM.flushSync(() => target.dispatchEvent(event));
 }
 
 /* -----------------------------------------------------------------------------------------------*/
@@ -104,10 +110,10 @@ function dispatchDiscreteCustomEvent<E extends CustomEvent>(target: E['target'],
 const Root = Primitive;
 
 export {
-  Primitive,
-  //
-  Root,
-  //
-  dispatchDiscreteCustomEvent,
+	Primitive,
+	//
+	Root,
+	//
+	dispatchDiscreteCustomEvent,
 };
 export type { PrimitivePropsWithRef };
