@@ -26,7 +26,7 @@ import { deleteTaskCard } from "@/api/taskApi";
 import { ScrollArea } from "../ui/scroll-area";
 
 const styles = {
-	taskCardContainer: "relative mb-3",
+	taskCardContainer: "relative mb-3 w-[300px]",
 	taskCard:
 		" cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow-lg border border-border hover:bg-accent space-y-4",
 	main: "relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent",
