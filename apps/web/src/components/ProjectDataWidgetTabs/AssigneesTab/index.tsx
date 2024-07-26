@@ -1,39 +1,43 @@
-import { useState } from 'react';
-import { ClickAwayListener } from '@mui/base';
-import type { SetFilter } from '@/app/interfaces/ProjectDataWidget.interfaces';
-import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { AddIcon, UnassignedSVGInDropdown } from '../../Svg';
-import ProfileImage from '../../ProfileImage';
-import { setCurrentFilter } from '@/store/filterPage/actions';
-import WidgetAssigneeDropdown from '../../WidgetAssigneeDropdown';
-import type { AssigneesTabProps } from './AssigneesTab.interfaces';
+import { useState } from "react";
+import { ClickAwayListener } from "@mui/base";
+import type { SetFilter } from "@/app/interfaces/ProjectDataWidget.interfaces";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import ProfileImage from "../../ProfileImage";
+import { setCurrentFilter } from "@/store/filterPage/actions";
+import WidgetAssigneeDropdown from "../../WidgetAssigneeDropdown";
+import type { AssigneesTabProps } from "./AssigneesTab.interfaces";
+import { Plus, UserSearch } from "lucide-react";
 
-export const AssigneesTab = ({ assigneesData }: AssigneesTabProps): React.ReactElement => {
+export const AssigneesTab = ({
+  assigneesData,
+}: AssigneesTabProps): React.ReactElement => {
   const dispatch = useAppDispatch();
   const lightSettings = useAppSelector((state) => state.userSettings).theme;
   const currentAssigneeFilters = useAppSelector(
-    (state) => state.filterPage.currentFilters,
+    (state) => state.filterPage.currentFilters
   ).assignee;
 
   const [toggleDropdown, setToggleDropdown] = useState(true);
 
   const styles = {
-    tabContainer: 'flex flex-col items-center mt-10 m-5 w-full max-h-80',
+    tabContainer: "flex flex-col items-center mt-10 m-5 w-full max-h-80",
     tabLabel: `mr-auto mr-2 my-2 font-light text-lg ${
-      lightSettings === 'dark' ? 'text-muted-foreground' : ''
+      lightSettings === "dark" ? "text-muted-foreground" : ""
     } h-8`,
     dropdownButton: `flex flex-row items-center w-full h-12 border border-border bg-textField px-4 rounded-xl border outline-none ${
-      lightSettings === 'dark'
-        ? `${toggleDropdown === true ? 'border-slate-100' : 'border-slate-600'}`
-        : ''
+      lightSettings === "dark"
+        ? `${toggleDropdown === true ? "border-slate-100" : "border-slate-600"}`
+        : ""
     } cursor-pointer`,
-    buttonWrapper: 'flex flex-row w-full items-center justify-end overflow-x-scroll',
-    addIconWrapper: 'absolute m-5',
+    buttonWrapper:
+      "flex flex-row w-full items-center justify-end overflow-x-scroll",
+    addIconWrapper: "absolute m-5",
     assigneesWrapper: `absolute bg-card z-30 mt-24 flex flex-col ${
-      toggleDropdown === true ? '' : 'hidden'
+      toggleDropdown === true ? "" : "hidden"
     } border border-slate-600 w-5/6 h-auto max-h-60 rounded-lg p-3 overflow-y-auto`,
-    currentFilters: 'flex flex-row w-60 overflow-scroll',
-    eachFilter: 'flex h-1/2 flex-row justify-center items-center text-nowrap mx-1',
+    currentFilters: "flex flex-row w-60 overflow-scroll",
+    eachFilter:
+      "flex h-1/2 flex-row justify-center items-center text-nowrap mx-1",
   };
 
   const assigneesDataArray = Object.entries(assigneesData);
@@ -44,17 +48,22 @@ export const AssigneesTab = ({ assigneesData }: AssigneesTabProps): React.ReactE
         id: 1,
         name: filterAssignee,
         border: false,
-        svg: <ProfileImage profileName={filterAssignee} location={'assigneeDropdown'} />,
-        group: 'assignee',
+        svg: (
+          <ProfileImage
+            profileName={filterAssignee}
+            location={"assigneeDropdown"}
+          />
+        ),
+        group: "assignee",
       };
       dispatch(setCurrentFilter(filterReq));
     } else {
       const filterReq = {
         id: 0,
-        name: 'none',
+        name: "none",
         border: false,
-        svg: UnassignedSVGInDropdown(),
-        group: 'assignee',
+        svg: <UserSearch className="size-5 text-[#9597AD]" />,
+        group: "assignee",
       };
       dispatch(setCurrentFilter(filterReq));
     }
@@ -75,22 +84,30 @@ export const AssigneesTab = ({ assigneesData }: AssigneesTabProps): React.ReactE
                 return (
                   <li className={styles.eachFilter} key={assignee}>
                     {assignee === null ? (
-                      <UnassignedSVGInDropdown />
+                      <UserSearch className="size-5 text-[#9597AD]" />
                     ) : (
-                      <ProfileImage profileName={assignee} location={'assigneeDropdown'} />
+                      <ProfileImage
+                        profileName={assignee}
+                        location={"assigneeDropdown"}
+                      />
                     )}
                   </li>
                 );
               })}
             </ul>
           </button>
-          <div className={styles.addIconWrapper}>{AddIcon()}</div>
+          <div className={styles.addIconWrapper}>
+            <Plus className="size-5 cursor-pointer" />
+          </div>
         </div>
         <div className={styles.assigneesWrapper}>
           {assigneesDataArray.map((assignee) => {
             return (
               <div key={assignee[0]}>
-                <WidgetAssigneeDropdown assignee={assignee} setFilter={setFilter} />
+                <WidgetAssigneeDropdown
+                  assignee={assignee}
+                  setFilter={setFilter}
+                />
               </div>
             );
           })}

@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, Fragment } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { Dialog, Combobox, Transition } from '@headlessui/react';
-import { SearchIcon } from '@/components/Svg';
-import { setIsCmdPalette } from '@/store/isCmdPalette';
+import React, { useState, useEffect, Fragment } from "react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { Dialog, Combobox, Transition } from "@headlessui/react";
+import { setIsCmdPalette } from "@/store/isCmdPalette";
 // Line 10 setTaskPage should be set to getSingleTask I think
-import { setTaskPage } from '@/store/taskData';
-import { styles } from './CommandPalette.styles';
-import type { Task } from '@/store/taskData/taskData.interfaces';
+import { setTaskPage } from "@/store/taskData";
+import { styles } from "./CommandPalette.styles";
+import type { Task } from "@/store/taskData/taskData.interfaces";
+import { Search } from "lucide-react";
 
 const CommandPalette = () => {
   const dispatch = useAppDispatch();
@@ -17,10 +17,12 @@ const CommandPalette = () => {
   const { isCmdPalette } = useAppSelector((state) => state.isCmdPalette);
   const taskList = useAppSelector((state) => state.taskData.taskList);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const filteredTaskTitle = query
-    ? taskList?.filter((task) => task?.taskName?.toLowerCase().includes(query.toLowerCase()))
+    ? taskList?.filter((task) =>
+        task?.taskName?.toLowerCase().includes(query.toLowerCase())
+      )
     : [];
   const router = useRouter();
 
@@ -33,14 +35,14 @@ const CommandPalette = () => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent): void => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         dispatch(setIsCmdPalette(false));
       }
     };
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
     };
 
     // eslint-disable-next-line
@@ -51,7 +53,7 @@ const CommandPalette = () => {
       show={isCmdPalette}
       as={Fragment}
       afterLeave={() => {
-        setQuery('');
+        setQuery("");
       }}
     >
       <Dialog onClose={setIsCmdPalette} className={styles.dialog}>
@@ -72,9 +74,13 @@ const CommandPalette = () => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Combobox onChange={handleChange} as="div" className={styles.comboBox}>
+              <Combobox
+                onChange={handleChange}
+                as="div"
+                className={styles.comboBox}
+              >
                 <div className={styles.searchIcon}>
-                  {SearchIcon()}
+                  <Search className="size-4 text-[#999999]" />
                   <Combobox.Input
                     onChange={(e) => {
                       setQuery(e.target.value);
@@ -86,19 +92,33 @@ const CommandPalette = () => {
                 {filteredTaskTitle?.length > 0 && (
                   <div className={styles.optionWrapper}>
                     {filteredTaskTitle?.map((task) => (
-                      <Combobox.Option className="list-none" key={task._id} value={task}>
+                      <Combobox.Option
+                        className="list-none"
+                        key={task._id}
+                        value={task}
+                      >
                         {({ active }) => (
                           <div
-                            className={active ? styles.optionDiv.active : styles.optionDiv.inactive}
+                            className={
+                              active
+                                ? styles.optionDiv.active
+                                : styles.optionDiv.inactive
+                            }
                           >
                             <span
-                              className={active ? styles.taskName.active : styles.taskName.inactive}
+                              className={
+                                active
+                                  ? styles.taskName.active
+                                  : styles.taskName.inactive
+                              }
                             >
                               {task.taskName?.toUpperCase()}
                             </span>
                             <span
                               className={
-                                active ? styles.taskStatus.active : styles.taskStatus.inactive
+                                active
+                                  ? styles.taskStatus.active
+                                  : styles.taskStatus.inactive
                               }
                             >
                               in {task.status}

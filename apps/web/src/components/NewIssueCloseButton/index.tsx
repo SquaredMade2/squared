@@ -1,8 +1,8 @@
-import NewIssuePopUpCloseModal from '@/components/NewIssuePopUpCloseModal';
-import { deleteIcon } from '@/components/Svg';
-import type { NewIssueCloseButtonProps } from './NewIssueCloseButton.interfaces';
+import NewIssuePopUpCloseModal from "@/components/NewIssuePopUpCloseModal";
+import type { NewIssueCloseButtonProps } from "./NewIssueCloseButton.interfaces";
+import { X } from "lucide-react";
 
-const styles = { button: 'hover:bg-accent rounded cursor-pointer' };
+const styles = { button: "hover:bg-accent rounded cursor-pointer" };
 
 const NewIssueCloseButton = ({
   showCloseModal,
@@ -12,8 +12,13 @@ const NewIssueCloseButton = ({
 }: NewIssueCloseButtonProps) => {
   return (
     <>
-      <button className={styles.button} onClick={handleCloseClick} type="button">
-        {deleteIcon()}
+      <button
+        className={styles.button}
+        onClick={handleCloseClick}
+        type="button"
+        title="Title"
+      >
+        <X className="size-5 cursor-pointer" />
       </button>
       <NewIssuePopUpCloseModal
         showCloseModal={showCloseModal}

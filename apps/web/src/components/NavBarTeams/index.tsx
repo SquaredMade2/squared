@@ -1,29 +1,34 @@
-import type React from 'react';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { motion, useAnimation } from 'framer-motion';
-import type { getTeamInfoType, handleActiveParamsType } from '@/app/interfaces/Navbars.interfaces';
+import type React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { motion, useAnimation } from "framer-motion";
+import type {
+  getTeamInfoType,
+  handleActiveParamsType,
+} from "@/app/interfaces/Navbars.interfaces";
 
-import type { Team as TaskDataTeam } from '@/store/taskData/taskData.interfaces';
+import type { Team as TaskDataTeam } from "@/store/taskData/taskData.interfaces";
 
-import { DropdownTriangle, TeamIcon, IssuesIcon, ViewsStackIcon } from '@/components/Svg';
-import { useRouter } from 'next/navigation';
-import { getTeam } from '@/store/taskData/thunks';
-import type { NavBarTeamProps } from './NavBarTeams.interfaces';
+import { useRouter } from "next/navigation";
+import { getTeam } from "@/store/taskData/thunks";
+import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
+import { ChevronRight, Copy, Layers3, LayoutGrid } from "lucide-react";
 
 const styles = {
-  wrapper: 'w-60 h-64',
-  container: 'pl-8 w-full bg-accent overflow-hidden',
-  row: 'w-full flex items-center my-1.5 hover:bg-secondary rounded-md pl-0.5',
-  listSpan: 'flex items-center',
-  innerDiv: 'w-full border-y-0 border-r-0 border-l border-l-slate-600 pl-2 ml-1.5 my-0.5',
-  innerDivSpan: 'pl-2 cursor-pointer',
-  button: 'flex items-center cursor-pointer',
-  svg: 'mr-2 p-0.5 rounded',
-  triangle: 'transition-all 0.2s ease-in-out ml-1',
-  listWrapper: 'w-full bg-accent z-10',
-  viewsButton: 'w-full',
+  wrapper: "w-60 h-64",
+  container: "pl-8 w-full bg-accent overflow-hidden",
+  row: "w-full flex items-center my-1.5 hover:bg-secondary rounded-md pl-0.5",
+  listSpan: "flex items-center",
+  innerDiv:
+    "w-full border-y-0 border-r-0 border-l border-l-slate-600 pl-2 ml-1.5 my-0.5",
+  innerDivSpan: "pl-2 cursor-pointer",
+  button: "flex items-center cursor-pointer",
+  svg: "mr-2 p-0.5 rounded",
+  chevronRight:
+    "transition-all 0.2s ease-in-out ml-1 size-4 text-[#858699] mt-[2px] ",
+  listWrapper: "w-full bg-accent z-10",
+  viewsButton: "w-full",
 };
 
 const NavBarTeams = ({
@@ -35,16 +40,22 @@ const NavBarTeams = ({
   const dispatch = useAppDispatch();
   const controls = useAnimation();
   const [tasklistToggle, setTasklistToggle] = useState(false);
-  const [isHovered, setIsHovered] = useState<string>('#858699');
+  const [isHovered, setIsHovered] = useState<string>("text-[#858699]");
+  const [isHoveredViewSvg, setIsHoveredViewSvg] =
+    useState<string>("text-[#858699]");
   const theme = useAppSelector((state) => state.userSettings.theme);
-  const currentWorkspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const currentWorkspace = useAppSelector(
+    (state) => state.taskData.currentWorkspace
+  );
   const router = useRouter();
 
   const handleActiveParams: handleActiveParamsType = (param: string): void => {
     if (teamIdentifier) {
-      router.push(`/workspace/${currentWorkspace.url}/team/${teamIdentifier}/${param}`);
+      router.push(
+        `/workspace/${currentWorkspace.url}/team/${teamIdentifier}/${param}`
+      );
     } else {
-      console.error('Team identifier not found');
+      console.error("Team identifier not found");
     }
   };
 
@@ -52,23 +63,27 @@ const NavBarTeams = ({
     if (tasklistToggle) {
       controls.start({ height: 0 });
     } else {
-      controls.start({ height: 'auto' });
+      controls.start({ height: "auto" });
     }
     setTasklistToggle(!tasklistToggle);
   };
 
   const handleMouseEnter = () => {
-    theme === 'light' ? setIsHovered('black') : setIsHovered('white');
+    theme === "light"
+      ? setIsHovered("text-[black]")
+      : setIsHovered("text-[white]");
   };
 
   const handleMouseLeave = () => {
-    setIsHovered('#858699');
+    setIsHovered("text-[#858699]");
   };
 
-  const getTeamInfo: getTeamInfoType = async (teamIdArray: TaskDataTeam[]): Promise<void> => {
+  const getTeamInfo: getTeamInfoType = async (
+    teamIdArray: TaskDataTeam[]
+  ): Promise<void> => {
     try {
       await axios({
-        method: 'GET',
+        method: "GET",
         url: `${process.env.NEXT_PUBLIC_SERVER}/team/getTeamInfo`,
         withCredentials: true,
         params: {
@@ -83,7 +98,7 @@ const NavBarTeams = ({
   };
 
   const handleViewsButtonClick: () => void = () => {
-    handleActiveParams('views');
+    handleActiveParams("views");
     getTeamOnSelect();
   };
 
@@ -95,10 +110,12 @@ const NavBarTeams = ({
     <li key={id} className={styles.listWrapper}>
       <div className={styles.row} onClick={() => handleToggle()}>
         <div className={styles.row}>
-          <div className={styles.svg}>{<TeamIcon />}</div>
+          <div className={styles.svg}>
+            <LayoutGrid className="text-[#9577FF] size-4" />
+          </div>
           <span className={styles.button}>{teamName}</span>
-          <DropdownTriangle
-            className={tasklistToggle ? `rotate-90 ${styles.triangle}` : styles.triangle}
+          <ChevronRight
+            className={`${styles.chevronRight} ${tasklistToggle ? "rotate-90" : ""}`}
           />
         </div>
       </div>
@@ -115,7 +132,9 @@ const NavBarTeams = ({
           onMouseLeave={handleMouseLeave}
         >
           <button className={styles.button} type="button">
-            <div className={`${styles.svg}`}>{<IssuesIcon fill={isHovered} />}</div>
+            <div className={`${styles.svg}`}>
+              <Copy className={`size-4 ${isHovered}`} />
+            </div>
             <p>Issues</p>
           </button>
           {/* </Link> */}
@@ -125,12 +144,18 @@ const NavBarTeams = ({
 					these links will take a while. ---> Pinak */}
         <div className="ml-2">
           <div className={styles.innerDiv}>
-            <div className={styles.row} onClick={() => handleActiveParams('active')}>
+            <div
+              className={styles.row}
+              onClick={() => handleActiveParams("active")}
+            >
               <div>
                 <span className={styles.innerDivSpan}>Active</span>
               </div>
             </div>
-            <div className={styles.row} onClick={() => handleActiveParams('backlog')}>
+            <div
+              className={styles.row}
+              onClick={() => handleActiveParams("backlog")}
+            >
               <div>
                 <span className={styles.innerDivSpan}>Backlog</span>
               </div>
@@ -151,13 +176,23 @@ const NavBarTeams = ({
 						</button>
 						</Link>
 					</div> */}
-        <button className={styles.viewsButton} onClick={handleViewsButtonClick} type="button">
-          <div className={`${styles.row} group`}>
+        <button
+          className={styles.viewsButton}
+          onClick={handleViewsButtonClick}
+          type="button"
+        >
+          <div
+            className={`${styles.row} group`}
+            onMouseEnter={() =>
+              setIsHoveredViewSvg(
+                theme === "light" ? "text-[black]" : "text-[white]"
+              )
+            }
+            onMouseLeave={() => setIsHoveredViewSvg("text-[#858699]")}
+          >
             <div className={styles.button}>
               <div className={styles.svg}>
-                <ViewsStackIcon
-                  className={`group-hover:${theme === 'light' ? 'fill-black' : 'fill-white'}`}
-                />
+                <Layers3 className={`size-4 ${isHoveredViewSvg}`} />
               </div>
               <p>Views</p>
             </div>

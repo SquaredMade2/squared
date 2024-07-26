@@ -1,54 +1,52 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from "react";
 
-import { deleteAllCurrentFilters } from '@/store/filterPage/actions';
-import { useAppSelector, useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import { getNotifications, newNotification } from '@/store/notifications';
-import ViewButton from '@/components/ViewButton';
-import TopNavBarDisplay from '@/components/TopNavBarDisplay';
-import FilterDropDown from '@/components/FilterDropdown';
-import SelectedFiltersBar from '@/components/SelectedFiltersBar';
-import {
-  newFilter,
-  //  BellIcon -- this has been disabled until a suitable icon has been found. The current icon does not match the design theme
-} from '@/components/Svg';
-import type { TopNavBarProps } from '@/components/TopNavBar/TopNavBar.interfaces';
-import { ProjectDataWidget } from '@/components/ProjectDataWidget';
-import { SocketContext } from '@/app/SocketProvider';
-import NotificationsList from '@/components/NotificationsList';
-import type { AnyAction } from '@reduxjs/toolkit';
-import ToggleNavBar from '../ToggleNavBar';
+import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { getNotifications, newNotification } from "@/store/notifications";
+import ViewButton from "@/components/ViewButton";
+import TopNavBarDisplay from "@/components/TopNavBarDisplay";
+import FilterDropDown from "@/components/FilterDropdown";
+import SelectedFiltersBar from "@/components/SelectedFiltersBar";
+import type { TopNavBarProps } from "@/components/TopNavBar/TopNavBar.interfaces";
+import { ProjectDataWidget } from "@/components/ProjectDataWidget";
+import { SocketContext } from "@/app/SocketProvider";
+import NotificationsList from "@/components/NotificationsList";
+import type { AnyAction } from "@reduxjs/toolkit";
+import ToggleNavBar from "../ToggleNavBar";
+import { Filter } from "lucide-react";
 
 const style = {
-  header: 'max-w-screen',
-  nav: ' bg-background h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]',
-  leftSide: 'bg-linearPurple-600 flex flex-none justify-start items-center',
-  leftButtonContainer: ' w-full flex flex-none justify-start items-center',
-  toggleNavBar: 'lg:hidden cursor-pointer mr-2',
+  header: "max-w-screen",
+  nav: " bg-background h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]",
+  leftSide: "bg-linearPurple-600 flex flex-none justify-start items-center",
+  leftButtonContainer: " w-full flex flex-none justify-start items-center",
+  toggleNavBar: "lg:hidden cursor-pointer mr-2",
   activeIssues:
-    'w-22 text-sm rounded flex justify-center items-center text-foreground h-full flex-row',
-  star: 'flex items-center justify-center ml-4 py-2 text-xs px-2 xs:hidden sm:hidden md:block rounded hover:bg-accent',
-  starFill: 'fill-gray-500',
+    "w-22 text-sm rounded flex justify-center items-center text-foreground h-full flex-row",
+  star: "flex items-center justify-center ml-4 py-2 text-xs px-2 xs:hidden sm:hidden md:block rounded hover:bg-accent",
+  starFill: "fill-gray-500",
   filterDiv:
-    'relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent',
+    "relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent",
   filter:
-    'text-xs w-full flex items-center justify-center h-10 mr-2 p-0.5 border-border bg-card text-foreground cursor-pointer hover:bg-accent',
-  rightSide: 'bg-linearPurple-600 flex flex-none sm:justify-end items-center xs:grid-cols-2',
-  rightButtonContainer: 'flex gap-6 flex-none justify-start items-center',
+    "text-xs w-full flex items-center justify-center h-10 mr-2 p-0.5 border-border bg-card text-foreground cursor-pointer hover:bg-accent",
+  rightSide:
+    "bg-linearPurple-600 flex flex-none sm:justify-end items-center xs:grid-cols-2",
+  rightButtonContainer: "flex gap-6 flex-none justify-start items-center",
   viewButtonContainer:
-    'bg-card h-full w-32 mr-5 flex justify-center items-center rounded-sm xs:hidden sm:hidden md:flex',
-  xsFilter: 'xs:w-full',
-  notificationContainer: 'flex items-center mr-6 mt-2 relative ',
-  notificationBtn: 'cursor-pointer',
+    "bg-card h-full w-32 mr-5 flex justify-center items-center rounded-sm xs:hidden sm:hidden md:flex",
+  xsFilter: "xs:w-full",
+  notificationContainer: "flex items-center mr-6 mt-2 relative ",
+  notificationBtn: "cursor-pointer",
   amountOfNotifications:
-    'absolute -top-3 -right-2 text-white bg-destructive rounded-full px-1 text-xs',
+    "absolute -top-3 -right-2 text-white bg-destructive rounded-full px-1 text-xs",
 };
 
 export const setFillColor = (theme: string): undefined | string => {
   switch (true) {
-    case theme === 'light':
-      return 'black';
-    case theme === 'dark':
-      return 'white';
+    case theme === "light":
+      return "black";
+    case theme === "dark":
+      return "white";
     default:
       return;
   }
@@ -63,7 +61,9 @@ const TopNavBar = ({
   const [showFilterDropDown, setShowFilterDropDown] = useState(false);
   const [showFilterStatusBar, setShowFilterStatusBar] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const currentFilters = useAppSelector((state) => state.filterPage.currentFilters);
+  const currentFilters = useAppSelector(
+    (state) => state.filterPage.currentFilters
+  );
 
   const menuRef = useRef<HTMLDivElement>(null);
   const notificationButtonRef = useRef(null);
@@ -94,10 +94,10 @@ const TopNavBar = ({
     const updateDimension = (): void => {
       setScreenSize(getCurrentDimension());
     };
-    window.addEventListener('resize', updateDimension);
+    window.addEventListener("resize", updateDimension);
 
     return () => {
-      window.removeEventListener('resize', updateDimension);
+      window.removeEventListener("resize", updateDimension);
     };
   }, [screenSize]);
 
@@ -112,36 +112,41 @@ const TopNavBar = ({
 
   useEffect(() => {
     const handler = (e: MouseEvent): void => {
-      if (menuRef.current != null && !menuRef.current.contains(e.target as HTMLElement)) {
+      if (
+        menuRef.current != null &&
+        !menuRef.current.contains(e.target as HTMLElement)
+      ) {
         setShowFilterDropDown(false);
       }
     };
 
-    document.addEventListener('mousedown', handler);
+    document.addEventListener("mousedown", handler);
 
     return () => {
-      document.removeEventListener('mousedown', handler);
+      document.removeEventListener("mousedown", handler);
     };
   });
 
   useEffect(() => {
-    socket.emit('socketId', user._id);
-    socket.emit('getUser', user._id);
-    socket.on('send_notification', (data: unknown) => {
-      const notificationData = typeof data === 'string' ? JSON.parse(data) : data;
+    socket.emit("socketId", user._id);
+    socket.emit("getUser", user._id);
+    socket.on("send_notification", (data: unknown) => {
+      const notificationData =
+        typeof data === "string" ? JSON.parse(data) : data;
       dispatch(getNotifications(notificationData));
     });
-    socket.on('new_notification', (data: unknown) => {
-      const notificationData = typeof data === 'string' ? JSON.parse(data) : data;
+    socket.on("new_notification", (data: unknown) => {
+      const notificationData =
+        typeof data === "string" ? JSON.parse(data) : data;
       dispatch(newNotification(notificationData));
     });
-    socket.on('notification_removed', (data: AnyAction) => {
+    socket.on("notification_removed", (data: AnyAction) => {
       dispatch(getNotifications(data));
     });
     return () => {
-      socket.off('send_notification');
-      socket.off('new_notification');
-      socket.off('notification_removed');
+      socket.off("send_notification");
+      socket.off("new_notification");
+      socket.off("notification_removed");
     };
   }, [socket.id, dispatch]);
 
@@ -195,8 +200,10 @@ const TopNavBar = ({
                   }
                   className={`${style.filter} group-hover:bg-accent`}
                 >
-                  <div className="mr-2">{newFilter()}</div>
-                  <p>{showFilterStatusBar ? 'Clear Filters x' : 'Filter'}</p>
+                  <div className="mr-2">
+                    <Filter className="size-5" />
+                  </div>
+                  <p>{showFilterStatusBar ? "Clear Filters x" : "Filter"}</p>
                 </button>
                 <FilterDropDown
                   showFilterDropDown={showFilterDropDown} // used to keep track of filter being show or not
@@ -229,7 +236,7 @@ const TopNavBar = ({
                   }
                   className={style.filter}
                 >
-                  <p>{showFilterStatusBar ? 'Clear Filters x' : '+ Filter'}</p>
+                  <p>{showFilterStatusBar ? "Clear Filters x" : "+ Filter"}</p>
                 </button>
                 <FilterDropDown
                   showFilterDropDown={showFilterDropDown} // used to keep track of filter being show or not
@@ -271,7 +278,7 @@ const TopNavBar = ({
         </div>
       </nav>
 
-      <div className={`${showFilterStatusBar ? 'block' : 'hidden'} w-full`}>
+      <div className={`${showFilterStatusBar ? "block" : "hidden"} w-full`}>
         <SelectedFiltersBar
           filterOption={filterOption}
           showFilterSaveForm={showFilterSaveForm}

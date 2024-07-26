@@ -1,15 +1,15 @@
-'use client';
-import './globals.css';
-import { Providers } from '@/store/provider';
-import { useSelector } from 'react-redux';
-import CommandPalette from '@/components/CommandPalette';
-import { ToastContainer, Slide } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import CurrentNavbar from '@/components/CurrentNavbar';
-import type { RootState } from '@/store';
+"use client";
+import "./globals.css";
+import { Providers } from "@/store/provider";
+import { useSelector } from "react-redux";
+import CommandPalette from "@/components/CommandPalette";
+import { ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CurrentNavbar from "@/components/CurrentNavbar";
+import type { RootState } from "@/store";
 
 const styles = {
-  currentNavBar: 'h-full flex flex-row overflow-hidden',
+  currentNavBar: "h-full flex flex-row overflow-hidden",
 };
 
 export default function RootLayout({

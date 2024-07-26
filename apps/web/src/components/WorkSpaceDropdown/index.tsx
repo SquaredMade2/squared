@@ -1,36 +1,39 @@
-import axios from 'axios';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { useEffect, useState, useRef } from 'react';
-import { useAppSelector, useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import { getAllWorkspaces } from '@/store/taskData/thunks';
-import { clearUser } from '@/store/userSettings';
-import WorkspaceInitials from '@/components/WorkspaceImage';
-import ProfileImage from '../ProfileImage';
-import { menuCheckMark } from '@/components/Svg';
-import { handleWorkspaceNameOverflow } from '@/utils/formatting';
+import axios from "axios";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useEffect, useState, useRef } from "react";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { getAllWorkspaces } from "@/store/taskData/thunks";
+import { clearUser } from "@/store/userSettings";
+import WorkspaceInitials from "@/components/WorkspaceImage";
+import ProfileImage from "../ProfileImage";
+import { handleWorkspaceNameOverflow } from "@/utils/formatting";
+import { Check } from "lucide-react";
 
 const styles = {
-  main: 'xs:pt-2 sm:pt-3 lg:pt-0 z-40 ',
-  email: 'mb-3 text-muted-foreground text-sm',
-  workspacesWrapper: 'py-3 px-3.5',
+  main: "xs:pt-2 sm:pt-3 lg:pt-0 z-40 ",
+  email: "mb-3 text-muted-foreground text-sm",
+  workspacesWrapper: "py-3 px-3.5",
   workspaces:
-    ' py-1.5 text-popover-foreground flex items-center hover:bg-accent rounded text-sm font-medium cursor-default justify-start',
-  title: 'flex items-center text-popover-foreground hover:bg-secondary pr-1.5 py-1.5 rounded',
-  titleWrapper: 'flex items-center w-full justify-between',
+    " py-1.5 text-popover-foreground flex items-center hover:bg-accent rounded text-sm font-medium cursor-default justify-start",
+  title:
+    "flex items-center text-popover-foreground hover:bg-secondary pr-1.5 py-1.5 rounded",
+  titleWrapper: "flex items-center w-full justify-between",
   dropDownWrapper:
-    'w-64 mt-3 border border-border bg-popover z-40 rounded-lg pb-1 absolute transition-all duration-100',
-  menuOpen: 'transform translate-y-0 scale-100 opacity-100 pointer-events-auto',
-  menuClosed: 'transform -translate-y-6 scale-95 opacity-0 pointer-events-none',
-  menuItemsWrapper: 'px-1.5',
-  menuItems: 'px-2 py-1.5 hover:bg-accent rounded text-sm text-popover-foreground cursor-pointer',
-  span: 'w-full border-t border-border block pb-1',
-  spanTwo: 'w-full border-t border-border block my-1',
-  cursorDefault: 'cursor-default',
-  flex: 'flex',
-  paddingLeft: 'pl-1 pb-0.5 ',
+    "w-64 mt-3 border border-border bg-popover z-40 rounded-lg pb-1 absolute transition-all duration-100",
+  menuOpen: "transform translate-y-0 scale-100 opacity-100 pointer-events-auto",
+  menuClosed: "transform -translate-y-6 scale-95 opacity-0 pointer-events-none",
+  menuItemsWrapper: "px-1.5",
+  menuItems:
+    "px-2 py-1.5 hover:bg-accent rounded text-sm text-popover-foreground cursor-pointer",
+  span: "w-full border-t border-border block pb-1",
+  spanTwo: "w-full border-t border-border block my-1",
+  cursorDefault: "cursor-default",
+  flex: "flex justify-between items-center",
+  paddingLeft: "pl-1 pb-0.5 ",
+  flexJustifyBetween: "flex justify-between items-center",
 };
 
 const WorkSpaceDropDown = () => {
@@ -39,7 +42,9 @@ const WorkSpaceDropDown = () => {
 
   const user = useAppSelector((state) => state.userSettings.user);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const currentWorkspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const currentWorkspace = useAppSelector(
+    (state) => state.taskData.currentWorkspace
+  );
 
   useEffect(() => {
     dispatch(getAllWorkspaces());
@@ -56,17 +61,19 @@ const WorkSpaceDropDown = () => {
 
   const signOutHandler = async () => {
     await signOut({ redirect: false }).then(() => {
-      router.push('/login');
+      router.push("/login");
     });
   };
 
-  const index: number = allWorkspaces.findIndex((item) => item._id === currentWorkspace._id);
+  const index: number = allWorkspaces.findIndex(
+    (item) => item._id === currentWorkspace._id
+  );
 
   const handleLogout = async (): Promise<void> => {
     await signOutHandler();
     try {
       const response = await axios({
-        method: 'POST',
+        method: "POST",
         url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
         withCredentials: true,
       });
@@ -92,9 +99,9 @@ const WorkSpaceDropDown = () => {
       }
     }
 
-    document.addEventListener('mousedown', handleClickAway);
+    document.addEventListener("mousedown", handleClickAway);
     return () => {
-      document.removeEventListener('mousedown', handleClickAway);
+      document.removeEventListener("mousedown", handleClickAway);
     };
   }, []);
 
@@ -103,7 +110,7 @@ const WorkSpaceDropDown = () => {
       <div className={styles.main}>
         <div className={styles.titleWrapper}>
           <div
-            className={`${styles.title} ${menuOpen ? 'bg-popover' : ''}`}
+            className={`${styles.title} ${menuOpen ? "bg-popover" : ""}`}
             onClick={handleMenu}
             ref={titleRef}
           >
@@ -114,7 +121,9 @@ const WorkSpaceDropDown = () => {
             />
             {handleWorkspaceNameOverflow(currentWorkspace.name)}
           </div>
-          {user && <ProfileImage profileName={user.name} location="dropdownMenu" />}
+          {user && (
+            <ProfileImage profileName={user.name} location="dropdownMenu" />
+          )}
         </div>
         {user && (
           <div
@@ -134,7 +143,7 @@ const WorkSpaceDropDown = () => {
                     className={styles.workspaces}
                     key={workspace._id}
                   >
-                    <>
+                    <div className={styles.flexJustifyBetween}>
                       <div className={styles.flex}>
                         <WorkspaceInitials
                           workspaceName={workspace.name}
@@ -145,10 +154,10 @@ const WorkSpaceDropDown = () => {
                       </div>
                       {workspace.name === currentWorkspace.name && (
                         <div className={styles.paddingLeft}>
-                          <span>{menuCheckMark('#575BC7')}</span>
+                          <Check className="text-[#575BC7] size-5" />
                         </div>
                       )}
-                    </>
+                    </div>
                   </Link>
                 ))}
               </ul>
@@ -156,18 +165,21 @@ const WorkSpaceDropDown = () => {
             <span className={styles.span} />
             <ul className={styles.menuItemsWrapper}>
               <li
-                onClick={() => router.push(workspaceSettings('workspace'))}
+                onClick={() => router.push(workspaceSettings("workspace"))}
                 className={styles.menuItems}
               >
                 Workspace settings
               </li>
               <li
-                onClick={() => router.push(workspaceSettings('members'))}
+                onClick={() => router.push(workspaceSettings("members"))}
                 className={styles.menuItems}
               >
                 Invite & manage members
               </li>
-              <li onClick={() => router.push('/join')} className={styles.menuItems}>
+              <li
+                onClick={() => router.push("/join")}
+                className={styles.menuItems}
+              >
                 Create or join a workspace
               </li>
             </ul>

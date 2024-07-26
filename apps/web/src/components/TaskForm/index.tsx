@@ -1,18 +1,18 @@
 // This is obsolete and the file can be deleted when agreed upon - comment by Ed.
 
-import type React from 'react';
-import { useState } from 'react';
-import SubTaskList from '@/components/SubTaskList';
-import type { TaskFormProps } from './TaskForm.interfaces';
+import type React from "react";
+import { useState } from "react";
+import SubTaskList from "@/components/SubTaskList";
+import type { TaskFormProps } from "./TaskForm.interfaces";
 
 const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
-  const [inputTask, setInputTask] = useState('');
-  const [inputDate, setInputDate] = useState('');
-  const [inputTime, setInputTime] = useState('');
+  const [inputTask, setInputTask] = useState("");
+  const [inputDate, setInputDate] = useState("");
+  const [inputTime, setInputTime] = useState("");
   const [priority, setPriority] = useState(null);
   const [complexity, setComplexity] = useState(null);
-  const [inputTags, setInputTags] = useState('');
-  const [status, setStatus] = useState('');
+  const [inputTags, setInputTags] = useState("");
+  const [status, setStatus] = useState("");
   const [subTaskList, setSubTaskList] = useState<string[]>([]);
 
   const handleChangeTask = (e: {
@@ -81,12 +81,12 @@ const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
       };
 
       setSubTaskList([]);
-      setInputTask('');
-      setInputDate('');
-      setInputTime('');
+      setInputTask("");
+      setInputDate("");
+      setInputTime("");
       setPriority(null);
       setComplexity(null);
-      setInputTags('');
+      setInputTags("");
 
       onSave(taskItem);
       onClose();
@@ -127,8 +127,9 @@ const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
                     value={inputDate}
                     onChange={handleChangeDate}
                     className=" bg-white dateClass rounded-full p-1 text-sm "
-                    style={{ paddingLeft: '10px' }}
+                    style={{ paddingLeft: "10px" }}
                     type="date"
+                    title="Title"
                   />
                 </span>
               </div>
@@ -139,8 +140,9 @@ const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
                   value={inputTime}
                   onChange={handleChangeTime}
                   className="bg-white rounded-full p-1 text-sm"
-                  style={{ paddingLeft: '10px' }}
+                  style={{ paddingLeft: "10px" }}
                   type="time"
+                  title="Title"
                 />
               </div>
             </div>
@@ -151,7 +153,10 @@ const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
                 {subTaskList.map((taskItem, index) => {
                   const taskIndex = index;
                   return (
-                    <li className="bg-white rounded-full py-1 pl-4 pr-2 my-2" key={taskIndex}>
+                    <li
+                      className="bg-white rounded-full py-1 pl-4 pr-2 my-2"
+                      key={taskIndex}
+                    >
                       {taskItem}
                     </li>
                   );
@@ -172,6 +177,7 @@ const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
             <div className="flex flex-col gap-2">
               <span>Select Status</span>
               <select
+                title="Title"
                 name="status"
                 value={status}
                 onChange={handleStatusChange}
@@ -188,7 +194,7 @@ const TaskForm = ({ onDiscard, onSave, onClose }: TaskFormProps) => {
                 onClick={handleDiscard}
                 className=" w-40 rounded-full text-muted-foreground bg-muted hover:bg-destructive hover:shadow-lg"
               >
-                {' '}
+                {" "}
                 Discard
               </button>
               <button

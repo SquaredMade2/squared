@@ -1,23 +1,26 @@
-'use client';
+"use client";
 
-import type { RefObject } from 'react';
-import IssueSidebarContainer from '@/components/IssueSidebarContainer';
-import TaskCardTop from '../TaskCardTop';
-import TaskPageTitle from '../taskPageTitle';
-import EventTabs from '../TaskPageActivityTimeline/EventTabs';
-import { toggleNavRight } from '../Svg';
-import type { SingleTaskDataInterface } from '@/store/task';
-import LoadingBar from '../LoadingBar';
-import ButtonIcon from '../ButtonIcon';
+import type { RefObject } from "react";
+import IssueSidebarContainer from "@/components/IssueSidebarContainer";
+import TaskCardTop from "../TaskCardTop";
+import TaskPageTitle from "../taskPageTitle";
+import EventTabs from "../TaskPageActivityTimeline/EventTabs";
+import type { SingleTaskDataInterface } from "@/store/task";
+import LoadingBar from "../LoadingBar";
+import ButtonIcon from "../ButtonIcon";
+import { PanelRight } from "lucide-react";
 
 const styles = {
   pageWrapper:
-    ' w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto overflow-x-hidden',
-  contents: 'overflow-auto scrollbar-thin-transparent h-[calc(100vh-5rem)]',
+    " w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto overflow-x-hidden",
+  contents: "overflow-auto scrollbar-thin-transparent h-[calc(100vh-5rem)]",
 
-  sideNavWrapper: 'absolute z-20 md:top-5 transition-all duration-300 ease-in-out',
-  sideNavBackdrop: 'w-full h-screen absolute top-0 left-0 bg-gray-500 z-10 bg-opacity-40',
-  navBackdrop: 'w-full h-screen top-0 left-0 absolute bg-gray-500 z-10 bg-opacity-40',
+  sideNavWrapper:
+    "absolute z-20 md:top-5 transition-all duration-300 ease-in-out",
+  sideNavBackdrop:
+    "w-full h-screen absolute top-0 left-0 bg-gray-500 z-10 bg-opacity-40",
+  navBackdrop:
+    "w-full h-screen top-0 left-0 absolute bg-gray-500 z-10 bg-opacity-40",
 };
 type Props = {
   task: SingleTaskDataInterface;
@@ -52,7 +55,7 @@ const MailTask: React.FC<Props> = ({
                     </div>
                     <div className="absolute right-1 sm:right-5 cursor-pointer">
                       <ButtonIcon
-                        icon={toggleNavRight({})}
+                        icon={<PanelRight className="text-[#6B6F76] size-5" />}
                         handleClick={toggleSideNav}
                         hoverBg="bg-accent"
                       />
@@ -69,7 +72,7 @@ const MailTask: React.FC<Props> = ({
 
                 <div
                   className={`${styles.sideNavWrapper} ${
-                    showSideNav ? 'right-1 sm:right-5' : '-right-[600px]'
+                    showSideNav ? "right-1 sm:right-5" : "-right-[600px]"
                   }`}
                 >
                   <div className="" ref={sideNav}>

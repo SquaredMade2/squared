@@ -1,5 +1,5 @@
-import React from 'react';
-import type { TaskCardDateProps } from './TaskCardDate.interfaces';
+import React from "react";
+import type { TaskCardDateProps } from "./TaskCardDate.interfaces";
 
 const TaskCardInfo = ({ children, icon }: TaskCardDateProps) => {
   return (

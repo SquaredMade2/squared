@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import { setCurrentFilter } from '@/store/filterPage/actions';
-import { leftBracket, rightBracket } from '@/components/Svg';
+import { useState, useEffect, useRef } from "react";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { setCurrentFilter } from "@/store/filterPage/actions";
 import {
   format,
   startOfMonth,
@@ -16,32 +15,37 @@ import {
   startOfDay,
   isBefore,
   endOfDay,
-} from 'date-fns';
-import type { DueDateFilterDropDownProps, FilterOption } from '@/app/interfaces/Filter.interfaces';
-import { DAYS_OF_WEEK } from '@/constants/app_constants';
+} from "date-fns";
+import type {
+  DueDateFilterDropDownProps,
+  FilterOption,
+} from "@/app/interfaces/Filter.interfaces";
+import { DAYS_OF_WEEK } from "@/constants/app_constants";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const styles = {
-  main: 'absolute z-50 top-5 -left-1 w-72',
-  container: 'border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72',
-  header: 'flex justify-between items-center text-foreground mb-4',
-  grid: 'grid grid-cols-7 gap-1',
-  day: 'cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg',
-  dayNotCurrentMonth: 'text-muted-foreground',
-  dayNameContainer: 'grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent',
-  dayName: 'font-semibold text-muted-foreground text-center',
+  main: "absolute z-50 top-5 -left-1 w-72",
+  container:
+    "border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72",
+  header: "flex justify-between items-center text-foreground mb-4",
+  grid: "grid grid-cols-7 gap-1",
+  day: "cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg",
+  dayNotCurrentMonth: "text-muted-foreground",
+  dayNameContainer: "grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent",
+  dayName: "font-semibold text-muted-foreground text-center",
   selectedDay:
-    'text-[#174EFF] hover:bg-blueGlow border border-transparent hover:border-blueGlow focus:outline-none focus:shadow-sm active:shadow-lg',
-  disabledDay: 'cursor-not-allowed pointer-events-none text-muted-foreground',
-  svg: 'cursor-pointer',
-  dateContainer: 'mt-4 flex flex-col text-foreground',
-  inputRow: 'flex items-center justify-between gap-3 w-full',
-  input: 'flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10',
-  buttonContainer: 'mt-10 flex justify-end gap-3',
-  button: 'cursor-pointer p-2.5 rounded-md text-foreground',
-  toggleContainer: 'flex gap-2 mb-4',
-  toggleButton: 'flex-1 p-2 rounded-md text-center cursor-pointer',
-  selectedToggleButton: 'bg-[#123abc] text-white',
-  unselectedToggleButton: 'bg-gray-400 text-black',
+    "text-[#174EFF] hover:bg-blueGlow border border-transparent hover:border-blueGlow focus:outline-none focus:shadow-sm active:shadow-lg",
+  disabledDay: "cursor-not-allowed pointer-events-none text-muted-foreground",
+  svg: "cursor-pointer",
+  dateContainer: "mt-4 flex flex-col text-foreground",
+  inputRow: "flex items-center justify-between gap-3 w-full",
+  input: "flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10",
+  buttonContainer: "mt-10 flex justify-end gap-3",
+  button: "cursor-pointer p-2.5 rounded-md text-foreground",
+  toggleContainer: "flex gap-2 mb-4",
+  toggleButton: "flex-1 p-2 rounded-md text-center cursor-pointer",
+  selectedToggleButton: "bg-[#123abc] text-white",
+  unselectedToggleButton: "bg-gray-400 text-black",
 };
 
 const DueDateFilterDropDown = ({
@@ -53,18 +57,22 @@ const DueDateFilterDropDown = ({
   const [showFilterDropDown, setShowFilterDropDown] = useState(false);
   const filterDropDownRef = useRef<HTMLButtonElement | null>(null);
   const initialDate = new Date();
-  const initialTime = initialDate ? format(new Date(initialDate), 'HH:mm') : '12:00';
+  const initialTime = initialDate
+    ? format(new Date(initialDate), "HH:mm")
+    : "12:00";
   const [selectedTime, setSelectedTime] = useState(initialTime);
   const [selectedDate, setSelectedDate] = useState(
-    initialDate ? new Date(initialDate) : new Date(),
+    initialDate ? new Date(initialDate) : new Date()
   );
   const [currentMonth, setCurrentMonth] = useState(startOfMonth(selectedDate));
-  const [selectedToggle, setSelectedToggle] = useState<'before' | 'after' | null>(null);
+  const [selectedToggle, setSelectedToggle] = useState<
+    "before" | "after" | null
+  >(null);
 
   const isDateInPast = (date: Date) => isBefore(endOfDay(date), new Date());
 
   const updateDateTime = (date: Date, time: string) => {
-    const [hours, minutes] = time.split(':').map(Number);
+    const [hours, minutes] = time.split(":").map(Number);
     const updatedDateTime = new Date(date);
     updatedDateTime.setHours(hours, minutes);
     setSelectedDate(updatedDateTime);
@@ -88,7 +96,7 @@ const DueDateFilterDropDown = ({
         name: selectedDate.toISOString(),
         border: false,
         svg: {},
-        group: 'dueDate',
+        group: "dueDate",
         comparison: selectedToggle,
       };
       handleFilter(filterOption);
@@ -99,7 +107,7 @@ const DueDateFilterDropDown = ({
     }
   };
 
-  const handleToggleClick = (type: 'before' | 'after') => {
+  const handleToggleClick = (type: "before" | "after") => {
     if (selectedToggle === type) {
       setSelectedToggle(null);
     } else {
@@ -127,33 +135,53 @@ const DueDateFilterDropDown = ({
     end: endOfWeek(endOfMonth(currentMonth)),
   });
 
-  const toggleButtonClass = (type: 'before' | 'after') =>
+  const toggleButtonClass = (type: "before" | "after") =>
     `${styles.toggleButton} ${
-      selectedToggle === type ? styles.selectedToggleButton : styles.unselectedToggleButton
+      selectedToggle === type
+        ? styles.selectedToggleButton
+        : styles.unselectedToggleButton
     }`;
 
   return (
     <div
-      className={` ${styles.main} ${showFilterDropDown ? 'h-10 mt-[20%]' : 'h-0 hidden'} transition-all duration-300 opacity-100' 
+      className={` ${styles.main} ${showFilterDropDown ? "h-10 mt-[20%]" : "h-0 hidden"} transition-all duration-300 opacity-100' 
 			}`}
       // Please do not move styles to styles object. The props cannot be read in styles object.
     >
       <div className={styles.container}>
         <div className={styles.toggleContainer}>
-          <div className={toggleButtonClass('before')} onClick={() => handleToggleClick('before')}>
+          <div
+            className={toggleButtonClass("before")}
+            onClick={() => handleToggleClick("before")}
+          >
             Before Date
           </div>
-          <div className={toggleButtonClass('after')} onClick={() => handleToggleClick('after')}>
+          <div
+            className={toggleButtonClass("after")}
+            onClick={() => handleToggleClick("after")}
+          >
             After Date
           </div>
         </div>
         <div className={styles.header}>
-          <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} type="button">
-            <span className={styles.svg}>{leftBracket()}</span>
+          <button
+            title="title"
+            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+            type="button"
+          >
+            <span className={styles.svg}>
+              <ChevronLeft className="size-5 text-[#6b6f76]" />
+            </span>
           </button>
-          <span>{format(currentMonth, 'MMMM yyyy')}</span>
-          <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} type="button">
-            <span className={styles.svg}>{rightBracket()}</span>
+          <span>{format(currentMonth, "MMMM yyyy")}</span>
+          <button
+            title="title"
+            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+            type="button"
+          >
+            <span className={styles.svg}>
+              <ChevronRight className="size-5 text-[#6b6f76]" />
+            </span>
           </button>
         </div>
         <div className={styles.dayNameContainer}>
@@ -166,20 +194,22 @@ const DueDateFilterDropDown = ({
         <div className={styles.grid}>
           {days.map((day) => {
             const isPast = isDateInPast(day);
-            const isSelected = selectedDate && isSameDay(day, startOfDay(new Date(selectedDate)));
+            const isSelected =
+              selectedDate &&
+              isSameDay(day, startOfDay(new Date(selectedDate)));
             return (
               <button
                 key={day.toString()}
                 className={`${styles.day} ${
                   !isSameMonth(day, currentMonth) && styles.dayNotCurrentMonth
-                } ${isSelected ? styles.selectedDay : 'text-foreground'} ${
+                } ${isSelected ? styles.selectedDay : "text-foreground"} ${
                   isPast && styles.disabledDay
                 }`}
                 onClick={() => handleSelectDate(day)}
                 disabled={isPast}
                 type="button"
               >
-                {format(day, 'd')}
+                {format(day, "d")}
               </button>
             );
           })}
@@ -188,10 +218,13 @@ const DueDateFilterDropDown = ({
           Due date
           <div className={styles.inputRow}>
             {selectedDate && (
-              <span className={styles.input}>{format(new Date(selectedDate), 'M/dd/yy')}</span>
+              <span className={styles.input}>
+                {format(new Date(selectedDate), "M/dd/yy")}
+              </span>
             )}
             <input
               type="time"
+              title="title"
               className={styles.input}
               value={selectedTime}
               onChange={handleSelectTime}

@@ -1,26 +1,28 @@
-import { type ReactElement, useState } from 'react';
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import EffortEstimateDropdown from '@/components/EffortEstimateDropdown';
-import { high, medium, low } from '@/components/Svg';
-import { setBackgroundColor } from '../DesignationsContainer';
-import type { EffortEstimateButtonProps } from './EffortEstimateButton.interfaces';
+import { type ReactElement, useState } from "react";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import EffortEstimateDropdown from "@/components/EffortEstimateDropdown";
+import { high, medium, low } from "@/components/Svg";
+import { setBackgroundColor } from "../DesignationsContainer";
+import type { EffortEstimateButtonProps } from "./EffortEstimateButton.interfaces";
 
 const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
   const styles = {
-    newIssueContainer: 'relative flex items-center',
-    issueSidebarContainer: 'relative grow mr-12',
-    svg: 'w-4 h-4 mr-2 inline-block cursor-pointer',
-    text: 'text-sm flex font-semibold text-foreground cursor-pointer',
+    newIssueContainer: "relative flex items-center",
+    issueSidebarContainer: "relative grow mr-12",
+    svg: "w-4 h-4 mr-2 inline-block cursor-pointer",
+    text: "text-sm flex font-semibold text-foreground cursor-pointer",
     smallButton:
-      'flex cursor-pointer items-center border border-[0.8px] border-border rounded py-1 px-2 mr-2 h-7 shadow-md',
+      "flex cursor-pointer items-center border border-[0.8px] border-border rounded py-1 px-2 mr-2 h-7 shadow-md",
     buttonNewIssue:
-      'flex cursor-pointer items-center justify-center border-[0.8px] border border-border rounded py-1 px-2 mr-2 h-7 text-foreground text-sm shadow-md',
+      "flex cursor-pointer items-center justify-center border-[0.8px] border border-border rounded py-1 px-2 mr-2 h-7 text-foreground text-sm shadow-md",
     buttonSidebar:
-      'grow flex flex-row items-center border-[0.8px] border border-transparent hover:border-border rounded px-2 py-2 mr-2 text-foreground text-sm',
+      "grow flex flex-row items-center border-[0.8px] border border-transparent hover:border-border rounded px-2 py-2 mr-2 text-foreground text-sm",
   };
-  const newIssueEffortEstimate = useAppSelector((state) => state.taskData.effortEstimate);
+  const newIssueEffortEstimate = useAppSelector(
+    (state) => state.taskData.effortEstimate
+  );
   const sidebarEffortEstimate: number | undefined = useAppSelector((state) => {
-    if (location === 'issueSidebar') {
+    if (location === "issueSidebar") {
       return state.singleTask.data?.effortEstimate;
     }
     return undefined;
@@ -29,9 +31,9 @@ const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleBackground = () => {
-    return theme === 'light'
-      ? 'bg-popover hover:bg-popoverHover'
-      : 'bg-popoverHover hover:bg-popover';
+    return theme === "light"
+      ? "bg-popover hover:bg-popoverHover"
+      : "bg-popoverHover hover:bg-popover";
   };
 
   const newIssueButton = (): ReactElement => {
@@ -48,7 +50,9 @@ const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
         <span className={styles.svg}>
           {newIssueEffortEstimate ? showIcon(newIssueEffortEstimate) : medium()}
         </span>
-        <span className={styles.text}>{newIssueEffortEstimate || 'Effort'}</span>
+        <span className={styles.text}>
+          {newIssueEffortEstimate || "Effort"}
+        </span>
       </button>
     );
   };
@@ -63,7 +67,7 @@ const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
         <span className={styles.svg}>
           {sidebarEffortEstimate ? showIcon(sidebarEffortEstimate) : medium()}
         </span>
-        <span className={styles.text}>{sidebarEffortEstimate || 'Effort'}</span>
+        <span className={styles.text}>{sidebarEffortEstimate || "Effort"}</span>
       </button>
     );
   };
@@ -91,11 +95,13 @@ const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
     <>
       <div
         className={
-          location === 'newIssue' ? styles.newIssueContainer : styles.issueSidebarContainer
+          location === "newIssue"
+            ? styles.newIssueContainer
+            : styles.issueSidebarContainer
         }
       >
-        {location === 'newIssue' && newIssueButton()}
-        {location === 'issueSidebar' && issueSidebarButton()}
+        {location === "newIssue" && newIssueButton()}
+        {location === "issueSidebar" && issueSidebarButton()}
         {showDropdown && (
           <EffortEstimateDropdown
             location={location}

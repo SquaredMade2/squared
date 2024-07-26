@@ -1,34 +1,35 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import useSearchParams from '@/hooks/typeScriptReduxHooks';
-import { useAppSelector, useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import type { FormSubmitEvent, InputChangeEvent } from '@/types';
+import { useState, useRef, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import useSearchParams from "@/hooks/typeScriptReduxHooks";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 // An error is thrown if I import the below like @/store/taskData/thunks
-import { searchTasks } from '@/store/taskData/thunks';
-import type { Task } from '@/store/taskData/taskData.interfaces';
-import TaskCard from '@/components/TaskCard';
+import { searchTasks } from "@/store/taskData/thunks";
+import type { Task } from "@/store/taskData/taskData.interfaces";
+import TaskCard from "@/components/TaskCard";
 // An error is thrown if I import the below like @/store/taskData/thunks
-import { NavSearchIcon } from '@/components/Svg';
-import RenameModal from '@/components/RenameModal';
-import { toggleNavBar } from '@/components/Svg';
-import type { RootState } from '@/store';
-import { useSelector } from 'react-redux';
+import RenameModal from "@/components/RenameModal";
+import type { RootState } from "@/store";
+import { useSelector } from "react-redux";
+import { PanelLeft, Search as SearchIcon } from "lucide-react";
 
 const styles = {
-  main: 'h-screen w-full bg-card flex',
-  input: 'w-full bg-accent focus:outline-none placeholder-gray-500 rounded',
-  mainWrapper: 'w-full flex flex-col items-center',
-  tasksWrapper: 'flex flex-col w-full border-t border-border mt-3',
-  task: 'text-foreground',
-  form: 'w-full flex relative',
+  main: "h-screen w-full bg-card flex",
+  input: "w-full bg-accent focus:outline-none placeholder-gray-500 rounded",
+  mainWrapper: "w-full flex flex-col items-center",
+  tasksWrapper: "flex flex-col w-full border-t border-border mt-3",
+  task: "text-foreground",
+  form: "w-full flex relative",
   inputWrapper:
-    'flex items-relative mx-auto h-10 mt-3 w-11/12 xs:w-10/12 rounded bg-accent pl-10 relative text-foreground',
-  searchIcon: 'absolute left-1 top-1 stroke-gray-500 fill-transparent cursor-pointer h-5 w-5',
-  highlight: 'bg-green-700',
-  navbarWrapper: 'relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10',
-  toggleNav: 'lg:hidden mdsm:visible absolute top-6 left-2',
+    "flex items-relative mx-auto h-10 mt-3 w-11/12 xs:w-10/12 rounded bg-accent pl-10 relative text-foreground",
+  searchIcon:
+    "absolute left-1 top-1 stroke-gray-500 fill-transparent cursor-pointer h-5 w-5",
+  highlight: "bg-green-700",
+  navbarWrapper:
+    "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
+  toggleNav: "lg:hidden mdsm:visible absolute top-6 left-2",
 };
 
 function Search() {
@@ -38,8 +39,8 @@ function Search() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const [inputValue, setInputValue] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [taskData, setTaskData] = useState<Task | null>(null);
   const [showRenameModal, setShowRenameModal] = useState<boolean>(false);
   const [filteredTasks, setFilteredTasks] = useState<Array<Task>>([]);
@@ -60,11 +61,11 @@ function Search() {
     if (inputValue.length === 0) {
       router.push(`workspace/${workspaceUrl}`);
     } else {
-      params.set('query', inputValue);
+      params.set("query", inputValue);
       replace(`${pathname}?${params.toString()}`);
       setSearchQuery(inputValue);
       const searchedItems = await dispatch(
-        searchTasks({ query: inputValue, workspace: workspace._id }),
+        searchTasks({ query: inputValue, workspace: workspace._id })
       );
       setFilteredTasks(searchedItems.payload);
     }
@@ -79,7 +80,7 @@ function Search() {
   const highlightText = (text: string) => {
     if (!searchQuery) return text;
 
-    const words = text.split(' ');
+    const words = text.split(" ");
     const parts: Array<React.ReactNode> = [];
 
     words.forEach((word, index) => {
@@ -90,7 +91,7 @@ function Search() {
         parts.push(
           <span key={partsKey} className={styles.highlight}>
             {word}
-          </span>,
+          </span>
         );
       } else {
         // Just add the word as it is
@@ -99,7 +100,7 @@ function Search() {
 
       // Add a space after each word, except for the last word
       if (index < words.length - 1) {
-        parts.push(' ');
+        parts.push(" ");
       }
     });
 
@@ -125,21 +126,21 @@ function Search() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickAway);
+    document.addEventListener("mousedown", handleClickAway);
     return () => {
-      document.removeEventListener('mousedown', handleClickAway);
+      document.removeEventListener("mousedown", handleClickAway);
     };
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('query') !== searchQuery) {
+    if (searchParams.get("query") !== searchQuery) {
       const fetchData = async () => {
-        setSearchQuery(searchParams.get('query')?.toString() as string);
+        setSearchQuery(searchParams.get("query")?.toString() as string);
         const tasks = await dispatch(
           searchTasks({
-            query: searchParams.get('query')?.toString() as string,
+            query: searchParams.get("query")?.toString() as string,
             workspace: workspace._id,
-          }),
+          })
         );
         setFilteredTasks(tasks.payload);
       };
@@ -151,15 +152,17 @@ function Search() {
     <div className={styles.main}>
       <div
         ref={navbarRef}
-        className={`${styles.navbarWrapper} ${showNavBar ? 'mdsm:-left-0' : 'mdsm:-left-[500px]'}`}
+        className={`${styles.navbarWrapper} ${showNavBar ? "mdsm:-left-0" : "mdsm:-left-[500px]"}`}
       />
       <div className={styles.mainWrapper}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.toggleNav} onClick={handleNavToggle}>
-            {!showNavBar && toggleNavBar({})}
+            {!showNavBar && <PanelLeft className="text-[#6B6F76] size-5" />}
           </div>
           <div className={styles.inputWrapper}>
-            <div className={styles.searchIcon}>{NavSearchIcon(styles.searchIcon, theme)}</div>
+            <div className={styles.searchIcon}>
+              <SearchIcon className={` text-[#999999] ${styles.searchIcon}`} />
+            </div>
             <input
               type="text"
               ref={inputRef}

@@ -1,59 +1,67 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { addWorkspace, getAllWorkspaces } from '@/store/taskData/thunks';
-import { toast } from 'react-toastify';
-import { miniBackChevron } from '../Svg';
-import 'react-toastify/dist/ReactToastify.css';
-import { getUser } from '@/store/userSettings/thunks';
-import type { CreateWorkspaceProps } from './CreateWorkspace.interfaces';
-import type { AppDispatch, RootState } from '@/store';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { addWorkspace, getAllWorkspaces } from "@/store/taskData/thunks";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getUser } from "@/store/userSettings/thunks";
+import type { CreateWorkspaceProps } from "./CreateWorkspace.interfaces";
+import type { AppDispatch, RootState } from "@/store";
+import { ChevronLeft } from "lucide-react";
 // import { linkTo } from "@storybook/addon-links/*";
 
 const styles = {
-  page: 'h-screen w-full bg-card relative flex flex-col items-center justify-center',
-  nav: 'w-screen absolute top-0 p-10 flex justify-between',
-  user: 'flex flex-col text-sm',
-  userLabel: 'text-xs text-muted-foreground',
-  smallText: 'text-sm',
-  textCenter: 'text-center',
-  main: 'p-8 flex flex-col space-y-6',
-  header: 'text-2xl text-foreground font-medium',
-  description: 'text-muted-foreground text-md',
-  form: 'flex flex-col space-y-6 text-foreground items-center',
-  shadowBox: 'w-full shadow-[0_3px_15px_5px_rgb(0,0,0,0.1)] p-7 rounded-xl flex flex-col space-y-7',
-  inputCont: 'flex flex-col space-y-1 text-foreground relative',
+  page: "h-screen w-full bg-card relative flex flex-col items-center justify-center",
+  nav: "w-screen absolute top-0 p-10 flex justify-between",
+  user: "flex flex-col text-sm",
+  userLabel: "text-xs text-muted-foreground",
+  smallText: "text-sm",
+  textCenter: "text-center",
+  main: "p-8 flex flex-col space-y-6",
+  header: "text-2xl text-foreground font-medium",
+  description: "text-muted-foreground text-md",
+  form: "flex flex-col space-y-6 text-foreground items-center",
+  shadowBox:
+    "w-full shadow-[0_3px_15px_5px_rgb(0,0,0,0.1)] p-7 rounded-xl flex flex-col space-y-7",
+  inputCont: "flex flex-col space-y-1 text-foreground relative",
   inputWrapper:
-    'h-12 rounded-md border border-border text-sm bg-card indent-2 focus:outline-none focus:ring-1 relative',
+    "h-12 rounded-md border border-border text-sm bg-card indent-2 focus:outline-none focus:ring-1 relative",
   input:
-    'h-12 rounded-md border border-border text-sm pl-[192px] bg-card xs:pl-0 xs:indent-2 focus:outline-none focus:ring-1 relative',
-  urlWrapper: 'absolute z-10 bottom-3 left-2 text-muted-foreground xs:hidden',
+    "h-12 rounded-md border border-border text-sm pl-[192px] bg-card xs:pl-0 xs:indent-2 focus:outline-none focus:ring-1 relative",
+  urlWrapper: "absolute z-10 bottom-3 left-2 text-muted-foreground xs:hidden",
   submitButtonDark:
-    'w-11/12 max-w-xs h-12 rounded-md text-white text-sm bg-purpleButton hover:bg-purpleButtonHover transition ease-out duration-100 mt-10',
+    "w-11/12 max-w-xs h-12 rounded-md text-white text-sm bg-purpleButton hover:bg-purpleButtonHover transition ease-out duration-100 mt-10",
   submitButtonLight:
-    'w-11/12 max-w-xs h-12 rounded-md text-white text-sm bg-purpleButtonHover hover:bg-purpleButton transition ease-out duration-100 mt-10',
-  backLink: 'flex items-center space-x-1 text-foreground',
-  userEmail: 'text-foreground',
+    "w-11/12 max-w-xs h-12 rounded-md text-white text-sm bg-purpleButtonHover hover:bg-purpleButton transition ease-out duration-100 mt-10",
+  backLink: "flex items-center space-x-1 text-foreground",
+  userEmail: "text-foreground",
 };
 
-const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) => {
+const CreateWorkspace = ({
+  onboarding,
+  handleNextPage,
+}: CreateWorkspaceProps) => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const [inputValue, setInputValue] = useState('');
-  const [urlInputValue, setUrlInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [urlInputValue, setUrlInputValue] = useState("");
   const urlRegex = /^[a-z0-9-]*$/;
   const nameRegex = /^[a-zA-Z0-9-& ']+$/;
-  const workspaceList = useSelector((state: RootState) => state.taskData.workspaces);
-  const taskDataLoadingState = useSelector((state: RootState) => state.taskData.isLoading);
+  const workspaceList = useSelector(
+    (state: RootState) => state.taskData.workspaces
+  );
+  const taskDataLoadingState = useSelector(
+    (state: RootState) => state.taskData.isLoading
+  );
   const theme = useSelector((state: RootState) => state.userSettings.theme);
   const user = useSelector((state: RootState) => state.userSettings.user);
 
   const checkUrl = (str: string) => {
     const newStr = str.trim();
-    if (newStr === '') {
+    if (newStr === "") {
       return false;
     }
     return urlRegex.test(newStr);
@@ -61,30 +69,38 @@ const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) =
 
   const checkName = (str: string) => {
     const newStr = str.trim();
-    if (newStr === '') {
+    if (newStr === "") {
       return false;
     }
     return nameRegex.test(newStr);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
 
     if (!checkName(inputValue)) {
-      toast.error('Invalid workspace name. Name must not be empty and follow the format.');
+      toast.error(
+        "Invalid workspace name. Name must not be empty and follow the format."
+      );
       return;
     }
 
-    const finalWorkspaceUrl: string = (urlInputValue.length > 0 ? urlInputValue : inputValue)
+    const finalWorkspaceUrl: string = (
+      urlInputValue.length > 0 ? urlInputValue : inputValue
+    )
       .trim()
       .toLowerCase()
-      .replace(/&/g, 'and')
-      .replace(/'/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '');
+      .replace(/&/g, "and")
+      .replace(/'/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
     if (!checkUrl(finalWorkspaceUrl)) {
-      toast.error('Invalid workspace URL. URL must be in the format workspace-url-format.');
+      toast.error(
+        "Invalid workspace URL. URL must be in the format workspace-url-format."
+      );
       return;
     }
 
@@ -96,12 +112,12 @@ const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) =
     const createWorkspace = await dispatch(addWorkspace(workspaceData));
 
     if (!createWorkspace) {
-      toast.error('Workspace Url already exists.');
+      toast.error("Workspace Url already exists.");
     } else {
       dispatch(getUser());
-      setInputValue('');
-      setUrlInputValue('');
-      toast.success('Workspace created successfully!');
+      setInputValue("");
+      setUrlInputValue("");
+      toast.success("Workspace created successfully!");
       !onboarding || !handleNextPage
         ? router.push(`/workspace/${finalWorkspaceUrl}`)
         : handleNextPage();
@@ -112,10 +128,10 @@ const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) =
     const formattedUrlInput = inputValue
       .trim()
       .toLowerCase()
-      .replace(/&/g, 'and')
-      .replace(/'/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '');
+      .replace(/&/g, "and")
+      .replace(/'/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
     setUrlInputValue(formattedUrlInput);
   }, [inputValue]);
@@ -135,7 +151,9 @@ const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) =
             <span className={styles.userEmail}>{user.email}</span>
           </div>
           <div className={styles.backLink}>
-            <span>{miniBackChevron()}</span>
+            <span>
+              <ChevronLeft className="text-[#858699] size-5" />
+            </span>
             <a href={`/workspace/${workspaceList[0].url}`}>Back to Squared</a>
           </div>
         </div>
@@ -146,11 +164,14 @@ const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) =
         </div>
         <div className={styles.textCenter}>
           <span className={styles.description}>
-            Workspaces are shared environments where teams can work on projects, cycles and tasks.
+            Workspaces are shared environments where teams can work on projects,
+            cycles and tasks.
           </span>
         </div>
         <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={`${styles.shadowBox} ${theme !== 'light' ? 'bg-accent' : ''}`}>
+          <div
+            className={`${styles.shadowBox} ${theme !== "light" ? "bg-accent" : ""}`}
+          >
             <div className={styles.inputCont}>
               <label className={styles.smallText}>Workspace Name</label>
               <input
@@ -178,7 +199,7 @@ const CreateWorkspace = ({ onboarding, handleNextPage }: CreateWorkspaceProps) =
           </div>
           <button
             type="submit"
-            className={`${theme !== 'light' ? styles.submitButtonDark : styles.submitButtonLight}`}
+            className={`${theme !== "light" ? styles.submitButtonDark : styles.submitButtonLight}`}
           >
             Create workspace
           </button>

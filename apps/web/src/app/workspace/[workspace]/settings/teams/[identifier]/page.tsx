@@ -1,51 +1,56 @@
-'use client';
+"use client";
 
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState, useRef } from 'react';
-import axios, { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
-import { useAppSelector, useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import { deleteTeam, getTeam, getWorkspace } from '@/store/taskData/thunks';
-import SettingsTopNavBar from '@/components/SettingsTopNavBar';
-import type { TeamData } from '@/app/workspace/[workspace]/settings/teams/[identifier]/teams.interfaces';
-import type { FormSubmitEvent } from '@/types';
-import { closeButton } from '@/components/Svg';
-import BlueButton from '@/components/BlueButton';
-import DeleteButton from '@/components/DeleteButton';
-import { navBarToggle } from '@/store/userSettings';
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+import axios, { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { deleteTeam, getTeam, getWorkspace } from "@/store/taskData/thunks";
+import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import type { TeamData } from "@/app/workspace/[workspace]/settings/teams/[identifier]/teams.interfaces";
+import type { FormSubmitEvent } from "@/types";
+import BlueButton from "@/components/BlueButton";
+import DeleteButton from "@/components/DeleteButton";
+import { navBarToggle } from "@/store/userSettings";
+import { X } from "lucide-react";
 
 const styles = {
-  container: 'flex bg-background text-foreground mdsm:flex-col min-h-screen w-full',
-  mainContainer: 'flex flex-col h-screen xs:h-full w-full items-center pt-20',
-  NavbarWrapper: 'relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out',
-  pageWrapper: 'w-1/3 mdsm:w-3/4',
-  dialog: 'w-84 bg-background text-foreground rounded-lg cursor-default border border-border',
-  dialogTextWrapper: 'h-full w-full flex flex-col items-center mt-5 py-2 px-8',
-  dialogButtonsWrapper: 'flex mb-5',
+  container:
+    "flex bg-background text-foreground mdsm:flex-col min-h-screen w-full",
+  mainContainer: "flex flex-col h-screen xs:h-full w-full items-center pt-20",
+  NavbarWrapper:
+    "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out",
+  pageWrapper: "w-1/3 mdsm:w-3/4",
+  dialog:
+    "w-84 bg-background text-foreground rounded-lg cursor-default border border-border",
+  dialogTextWrapper: "h-full w-full flex flex-col items-center mt-5 py-2 px-8",
+  dialogButtonsWrapper: "flex mb-5",
   dialogDeleteButton:
-    'mt-3 bg-destructive hover:bg-destructive/80 w-full px-8 py-2 rounded text-destructive-foreground',
-  dialogVerify: 'w-full flex items-center justify-between py-4 px-8 border-b border-border',
-  line: 'block w-full border-t border-border my-6',
-  inputLabel: 'text-sm mb-1.5',
-  dialogCancelButton: 'mr-5 cursor-pointer',
-  description: 'text-muted-foreground text-sm',
-  cursorPointer: 'cursor-pointer',
-  identifierDescription: 'text-muted-foreground',
-  form: 'flex flex-col',
-  title: 'text-2xl text-foreground mb-1 font-medium',
-  MarginTop: 'mt-6',
+    "mt-3 bg-destructive hover:bg-destructive/80 w-full px-8 py-2 rounded text-destructive-foreground",
+  dialogVerify:
+    "w-full flex items-center justify-between py-4 px-8 border-b border-border",
+  line: "block w-full border-t border-border my-6",
+  inputLabel: "text-sm mb-1.5",
+  dialogCancelButton: "mr-5 cursor-pointer",
+  description: "text-muted-foreground text-sm",
+  cursorPointer: "cursor-pointer",
+  identifierDescription: "text-muted-foreground",
+  form: "flex flex-col",
+  title: "text-2xl text-foreground mb-1 font-medium",
+  MarginTop: "mt-6",
   input:
-    'border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded pl-0.5 xs:w-3/4 bg-textField',
-  errorContainer: 'flex bg-card text-foreground',
-  errorMessageWrapper: 'flex flex-col h-screen w-full items-center justify-center',
-  text3xl: 'text-3xl',
-  TopNavbar: 'lg:hidden mdsm:visible',
-  visible: 'opacity-0 transition-all duration-300 ease-in-out',
-  notVisible: 'opacity-100 transition-all duration-300 ease-in-out',
-  deleteTitle: 'text-lg font-medium mb-3',
-  warningWrapper: 'text-muted-foreground text-sm mb-3',
-  warning: 'font-medium',
-  titleLoading: 'h-9 w-36 bg-popover rounded-lg',
+    "border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded pl-0.5 xs:w-3/4 bg-textField",
+  errorContainer: "flex bg-card text-foreground",
+  errorMessageWrapper:
+    "flex flex-col h-screen w-full items-center justify-center",
+  text3xl: "text-3xl",
+  TopNavbar: "lg:hidden mdsm:visible",
+  visible: "opacity-0 transition-all duration-300 ease-in-out",
+  notVisible: "opacity-100 transition-all duration-300 ease-in-out",
+  deleteTitle: "text-lg font-medium mb-3",
+  warningWrapper: "text-muted-foreground text-sm mb-3",
+  warning: "font-medium",
+  titleLoading: "h-9 w-36 bg-popover rounded-lg",
 };
 
 export default function TeamsSetting() {
@@ -53,13 +58,17 @@ export default function TeamsSetting() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { currentTeam, access, error } = useAppSelector((state) => state.taskData);
+  const { currentTeam, access, error } = useAppSelector(
+    (state) => state.taskData
+  );
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
   const [teamName, setTeamName] = useState<string>(currentTeam.name);
-  const [teamIdentifier, setTeamIdentifier] = useState<string>(currentTeam.identifier);
+  const [teamIdentifier, setTeamIdentifier] = useState<string>(
+    currentTeam.identifier
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
-  const [fillColor, setFillColor] = useState<string>('#9c9eac');
+  const [fillColor, setFillColor] = useState<string>("text-[#9c9eac]");
   const { user, theme } = useAppSelector((state) => state.userSettings);
 
   const workspaceUrl = params.workspace as string;
@@ -67,11 +76,12 @@ export default function TeamsSetting() {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const prevName = currentTeam.name;
   const prevIdentifier = currentTeam.identifier;
-  const valueChanged = (prevName !== teamName || prevIdentifier !== teamIdentifier) && !loading;
+  const valueChanged =
+    (prevName !== teamName || prevIdentifier !== teamIdentifier) && !loading;
   const userHasAccess =
-    typeof access === 'object' &&
+    typeof access === "object" &&
     access &&
-    'id' in access &&
+    "id" in access &&
     access.id === user?._id &&
     workspaceUrl === workspace?.url;
 
@@ -97,12 +107,12 @@ export default function TeamsSetting() {
 
   const handleDelete = (): void => {
     if (workspace.teams.length === 1) {
-      toast.error('this is your only team, it cannot be deleted.');
+      toast.error("this is your only team, it cannot be deleted.");
     } else {
       dispatch(deleteTeam(currentTeam._id));
       handleClose();
       router.push(`/workspace/${workspaceUrl}`);
-      toast.success('team deleted');
+      toast.success("team deleted");
     }
   };
 
@@ -114,11 +124,11 @@ export default function TeamsSetting() {
   const handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault();
     if (!teamName && !teamIdentifier) {
-      toast.error('Both Name and Identifier required');
+      toast.error("Both Name and Identifier required");
     } else if (!teamIdentifier) {
-      toast.error('Identifier is required');
+      toast.error("Identifier is required");
     } else if (!teamName) {
-      toast.error('Name is required');
+      toast.error("Name is required");
     } else if (valueChanged) {
       try {
         const update = await updateTeam({
@@ -140,7 +150,7 @@ export default function TeamsSetting() {
   const updateTeam = async (teamData: TeamData): Promise<boolean> => {
     try {
       const update = await axios({
-        method: 'PUT',
+        method: "PUT",
         url: `${process.env.NEXT_PUBLIC_SERVER}/team/update`,
         withCredentials: true,
         data: {
@@ -188,16 +198,19 @@ export default function TeamsSetting() {
                   <h1>Verify team deletion</h1>
                   <div
                     onClick={handleClose}
-                    onMouseEnter={() => setFillColor('#BDBFC5')}
-                    onMouseLeave={() => setFillColor('#9c9eac')}
+                    onMouseEnter={() => setFillColor("text-[#BDBFC5]")}
+                    onMouseLeave={() => setFillColor("text-[#9c9eac]")}
                   >
-                    {closeButton(fillColor)}
+                    <X className={`cursor-pointer ${fillColor}`} />
                   </div>
                 </div>
                 <div className={styles.dialogTextWrapper}>
                   <h1>Are you sure you want to delete this team?</h1>
                   <div className={styles.dialogButtonsWrapper}>
-                    <DeleteButton description="Delete my team" handleAction={handleDelete} />
+                    <DeleteButton
+                      description="Delete my team"
+                      handleAction={handleDelete}
+                    />
                   </div>
                 </div>
               </dialog>
@@ -212,8 +225,9 @@ export default function TeamsSetting() {
                     <p className={styles.inputLabel}>Name</p>
                     <input
                       type="text"
+                      aria-label="Team"
                       className={`${styles.input} ${
-                        theme === 'dark' ? 'bg-background' : 'bg-card'
+                        theme === "dark" ? "bg-background" : "bg-card"
                       }`}
                       onChange={(e) => setTeamName(e.target.value)}
                       value={teamName}
@@ -222,19 +236,24 @@ export default function TeamsSetting() {
                   <div className={styles.MarginTop}>
                     <p className={styles.inputLabel}>
                       Identifier
-                      <span className={styles.identifierDescription}> - Used in issue IDs</span>
+                      <span className={styles.identifierDescription}>
+                        {" "}
+                        - Used in issue IDs
+                      </span>
                     </p>
                     <input
                       type="text"
                       maxLength={5}
                       className={`${styles.input} ${
-                        theme === 'dark' ? 'bg-background' : 'bg-card'
+                        theme === "dark" ? "bg-background" : "bg-card"
                       }`}
                       onChange={(e) => identifierInputFilter(e.target.value)}
                       value={teamIdentifier}
                     />
                   </div>
-                  <div className={`${valueChanged ? styles.notVisible : styles.visible}`}>
+                  <div
+                    className={`${valueChanged ? styles.notVisible : styles.visible}`}
+                  >
                     <BlueButton description="Save" />
                   </div>
                 </div>
@@ -242,11 +261,15 @@ export default function TeamsSetting() {
               <div>
                 <h3 className={styles.deleteTitle}>Delete team</h3>
                 <p className={styles.warningWrapper}>
-                  <span className={styles.warning}>Warning: </span>Deleting the team will also
-                  permanently delete any issues associated with it. This can&apos;t be undone and
-                  your data cannot be recovered by Squared.
+                  <span className={styles.warning}>Warning: </span>Deleting the
+                  team will also permanently delete any issues associated with
+                  it. This can&apos;t be undone and your data cannot be
+                  recovered by Squared.
                 </p>
-                <DeleteButton description="Delete Team" handleAction={handleOpen} />
+                <DeleteButton
+                  description="Delete Team"
+                  handleAction={handleOpen}
+                />
               </div>
             </div>
           </div>
