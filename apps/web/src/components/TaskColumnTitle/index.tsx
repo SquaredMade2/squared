@@ -1,26 +1,33 @@
-import { additionIcon, downArrow } from '@/components/Svg';
-import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { backlog, todo, inProgress, done, canceled, duplicate } from '@/components/Svg';
-import type { TaskColumnTitleProps } from './TaskColumnTitle.interfaces';
-import HideStatus from '@/components/HideStatus/HideStatus';
-import { setShowNewIssue } from '@/store/showNewIssue';
-import { setStatus } from '@/store/taskData';
+import { additionIcon, downArrow } from "@/components/Svg";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import {
+  backlog,
+  todo,
+  inProgress,
+  done,
+  canceled,
+  duplicate,
+} from "@/components/Svg";
+import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
+import HideStatus from "@/components/HideStatus/HideStatus";
+import { setShowNewIssue } from "@/store/showNewIssue";
+import { setStatus } from "@/store/taskData";
 
 const style = {
-  columnTitle: 'flex items-center gap-4 text-foreground text-sm pr-8',
-  columnTitleList: 'flex items-center  text-foreground text-sm',
-  svg: 'w-4 lg:mr-2 mr-1.5',
+  columnTitle: "flex items-center gap-4 text-foreground text-sm pr-8",
+  columnTitleList: "flex items-center text-foreground text-sm",
+  svg: "w-4 lg:mr-2 mr-1.5",
   collapseArrow:
-    'flex justify-center items-center transform transition-transform duration-300 lg:mr-2 mr-1.5',
-  numOfTasks: 'ml-2 text-muted-foreground',
+    "flex justify-center items-center transform transition-transform duration-300 lg:mr-2 mr-1.5",
+  numOfTasks: "ml-2 text-muted-foreground",
   subTitleSpacing:
-    'flex flex-row w-full justify-between bg-secondary rounded-lg  px-2 h-10 mb-3 font-bold',
+    "flex flex-row w-full justify-between bg-secondary dark:bg-accent rounded-lg px-2 h-10 mb-2 font-bold",
 
   subTitleSpacingList:
-    'flex w-full bg-secondary items-center justify-between rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2 font-medium transition-all',
+    "flex w-full bg-secondary dark:bg-accent items-center justify-between rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2 font-medium transition-all",
 
-  subIconContainer: 'flex flex-row gap-2 items-center text-foreground',
-  subIconContainerList: 'flex bg-secondary gap-2 text-foreground',
+  subIconContainer: "flex flex-row gap-2 items-center text-foreground",
+  subIconContainerList: "flex  gap-2 text-foreground",
 };
 
 const TaskColumnTitle = ({
@@ -32,21 +39,21 @@ const TaskColumnTitle = ({
 }: TaskColumnTitleProps) => {
   const theme = useAppSelector((state) => state.userSettings.theme);
   const dispatch = useAppDispatch();
-  const arrowColor = theme === 'light' ? 'black' : 'white';
+  const arrowColor = theme === "light" ? "black" : "white";
 
   const showIcon = (name: string): React.ReactNode => {
     switch (name) {
-      case 'Backlog':
+      case "Backlog":
         return backlog();
-      case 'Todo':
+      case "Todo":
         return todo();
-      case 'In Progress':
+      case "In Progress":
         return inProgress();
-      case 'Done':
+      case "Done":
         return done();
-      case 'Canceled':
+      case "Canceled":
         return canceled();
-      case 'Duplicate':
+      case "Duplicate":
         return duplicate();
     }
   };
@@ -68,14 +75,16 @@ const TaskColumnTitle = ({
     >
       {!isListView && (
         <div
-          className={`${style.collapseArrow} ${showTasks ? 'absolute opacity-0' : '-rotate-90'}`}
+          className={`${style.collapseArrow} ${showTasks ? "absolute opacity-0" : "-rotate-90"}`}
         >
           {downArrow(arrowColor, 15, 10)}
         </div>
       )}
       {!isListView ? (
         showTasks && (
-          <div className={isListView ? style.columnTitleList : style.columnTitle}>
+          <div
+            className={isListView ? style.columnTitleList : style.columnTitle}
+          >
             <div className={style.svg}>{showIcon(title)}</div>
             <span>{title}</span>
             <span className={style.numOfTasks}>{numberOfTasks}</span>
@@ -88,7 +97,11 @@ const TaskColumnTitle = ({
           <span className={style.numOfTasks}>{numberOfTasks}</span>
         </div>
       )}
-      <div className={isListView ? style.subIconContainerList : style.subIconContainer}>
+      <div
+        className={
+          isListView ? style.subIconContainerList : style.subIconContainer
+        }
+      >
         <div className="cursor-pointer" onClick={handleClick}>
           <div className="group cursor-pointer">{additionIcon(theme)}</div>
         </div>
