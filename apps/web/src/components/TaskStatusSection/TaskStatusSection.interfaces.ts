@@ -1,4 +1,4 @@
-import type { Task } from '@/store/taskData/taskData.interfaces';
+import type { Task } from "@/store/taskData/taskData.interfaces";
 
 export interface TaskStatusSectionProps {
   isListView: boolean;
@@ -6,4 +6,5 @@ export interface TaskStatusSectionProps {
   setShowRenameModal?: (value: boolean) => void;
   setTaskData?: (taskData: Task) => void;
   showTasks: boolean;
+  title: string;
 }
