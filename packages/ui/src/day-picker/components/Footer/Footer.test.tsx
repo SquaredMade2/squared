@@ -1,27 +1,29 @@
-import { customRender } from '../../test/render';
-import { getTableFooter, queryTableFooter } from '../../test/selectors';
+import "@testing-library/jest-dom";
 
-import { Footer } from './Footer';
+import { customRender } from "../../test/render";
+import { getTableFooter, queryTableFooter } from "../../test/selectors";
+
+import { Footer } from "./Footer";
 
 customRender(
   <table role="grid">
     <Footer />
-  </table>,
+  </table>
 );
-test('should not render anything as default', () => {
+test("should not render anything as default", () => {
   expect(queryTableFooter()).toBeNull();
 });
 
-describe('when using the `footer` prop', () => {
+describe("when using the `footer` prop", () => {
   beforeEach(() => {
     customRender(
       <table role="grid">
         <Footer />
       </table>,
-      { footer: 'footer_foo' },
+      { footer: "footer_foo" }
     );
   });
-  test('should render the table footer', () => {
-    expect(getTableFooter()).toHaveTextContent('footer_foo');
+  test("should render the table footer", () => {
+    expect(getTableFooter()).toHaveTextContent("footer_foo");
   });
 });

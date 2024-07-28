@@ -1,16 +1,16 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { FocusScope } from '../focus-scope';
-import { render, waitFor } from '@testing-library/react';
-import type { RenderResult } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { FocusScope } from "../focus-scope";
+import { render, waitFor } from "@testing-library/react";
+import type { RenderResult } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-const INNER_NAME_INPUT_LABEL = 'Name';
-const INNER_EMAIL_INPUT_LABEL = 'Email';
-const INNER_SUBMIT_LABEL = 'Submit';
+const INNER_NAME_INPUT_LABEL = "Name";
+const INNER_EMAIL_INPUT_LABEL = "Email";
+const INNER_SUBMIT_LABEL = "Submit";
 
-describe('FocusScope', () => {
-  describe('given a default FocusScope', () => {
+describe("FocusScope", () => {
+  describe("given a default FocusScope", () => {
     let rendered: RenderResult;
     let tabbableFirst: HTMLInputElement;
     let tabbableSecond: HTMLInputElement;
@@ -28,33 +28,39 @@ describe('FocusScope', () => {
           </FocusScope>
           <TestField label="other" />
           <button>some outer button</button>
-        </div>,
+        </div>
       );
-      tabbableFirst = rendered.getByLabelText(INNER_NAME_INPUT_LABEL) as HTMLInputElement;
-      tabbableSecond = rendered.getByLabelText(INNER_EMAIL_INPUT_LABEL) as HTMLInputElement;
-      tabbableLast = rendered.getByText(INNER_SUBMIT_LABEL) as HTMLButtonElement;
+      tabbableFirst = rendered.getByLabelText(
+        INNER_NAME_INPUT_LABEL
+      ) as HTMLInputElement;
+      tabbableSecond = rendered.getByLabelText(
+        INNER_EMAIL_INPUT_LABEL
+      ) as HTMLInputElement;
+      tabbableLast = rendered.getByText(
+        INNER_SUBMIT_LABEL
+      ) as HTMLButtonElement;
     });
 
-    it('should focus the next element in the scope on tab', () => {
+    it("should focus the next element in the scope on tab", () => {
       tabbableFirst.focus();
       userEvent.tab();
       waitFor(() => expect(tabbableSecond).toHaveFocus());
     });
 
-    it('should focus the last element in the scope on shift+tab from the first element in scope', () => {
+    it("should focus the last element in the scope on shift+tab from the first element in scope", () => {
       tabbableFirst.focus();
       userEvent.tab({ shift: true });
       waitFor(() => expect(tabbableLast).toHaveFocus());
     });
 
-    it('should focus the first element in scope on tab from the last element in scope', async () => {
+    it("should focus the first element in scope on tab from the last element in scope", async () => {
       tabbableLast.focus();
       userEvent.tab();
       waitFor(() => expect(tabbableFirst).toHaveFocus());
     });
   });
 
-  describe('given a FocusScope where the first focusable has a negative tabindex', () => {
+  describe("given a FocusScope where the first focusable has a negative tabindex", () => {
     let rendered: RenderResult;
     let tabbableSecond: HTMLInputElement;
     let tabbableLast: HTMLButtonElement;
@@ -71,26 +77,30 @@ describe('FocusScope', () => {
           </FocusScope>
           <TestField label="other" />
           <button>some outer button</button>
-        </div>,
+        </div>
       );
-      tabbableSecond = rendered.getByLabelText(INNER_EMAIL_INPUT_LABEL) as HTMLInputElement;
-      tabbableLast = rendered.getByText(INNER_SUBMIT_LABEL) as HTMLButtonElement;
+      tabbableSecond = rendered.getByLabelText(
+        INNER_EMAIL_INPUT_LABEL
+      ) as HTMLInputElement;
+      tabbableLast = rendered.getByText(
+        INNER_SUBMIT_LABEL
+      ) as HTMLButtonElement;
     });
 
-    it('should skip the element with a negative tabindex on tab', () => {
+    it("should skip the element with a negative tabindex on tab", () => {
       tabbableLast.focus();
       userEvent.tab();
       waitFor(() => expect(tabbableSecond).toHaveFocus());
     });
 
-    it('should skip the element with a negative tabindex on shift+tab', () => {
+    it("should skip the element with a negative tabindex on shift+tab", () => {
       tabbableSecond.focus();
       userEvent.tab({ shift: true });
       waitFor(() => expect(tabbableLast).toHaveFocus());
     });
   });
 
-  describe('given a FocusScope with internal focus handlers', () => {
+  describe("given a FocusScope with internal focus handlers", () => {
     const handleLastFocusableElementBlur = jest.fn();
     let rendered: RenderResult;
     let tabbableFirst: HTMLInputElement;
@@ -100,25 +110,34 @@ describe('FocusScope', () => {
           <FocusScope asChild loop trapped>
             <form>
               <TestField label={INNER_NAME_INPUT_LABEL} />
-              <button onBlur={handleLastFocusableElementBlur}>{INNER_SUBMIT_LABEL}</button>
+              <button onBlur={handleLastFocusableElementBlur}>
+                {INNER_SUBMIT_LABEL}
+              </button>
             </form>
           </FocusScope>
-        </div>,
+        </div>
       );
-      tabbableFirst = rendered.getByLabelText(INNER_NAME_INPUT_LABEL) as HTMLInputElement;
+      tabbableFirst = rendered.getByLabelText(
+        INNER_NAME_INPUT_LABEL
+      ) as HTMLInputElement;
     });
 
-    it('should properly blur the last element in the scope before cycling back', async () => {
+    it("should properly blur the last element in the scope before cycling back", async () => {
       // Tab back and then tab forward to cycle through the scope
       tabbableFirst.focus();
       userEvent.tab({ shift: true });
       userEvent.tab();
-      waitFor(() => expect(handleLastFocusableElementBlur).toHaveBeenCalledTimes(1));
+      waitFor(() =>
+        expect(handleLastFocusableElementBlur).toHaveBeenCalledTimes(1)
+      );
     });
   });
 });
 
-function TestField({ label, ...props }: { label: string } & React.ComponentProps<'input'>) {
+function TestField({
+  label,
+  ...props
+}: { label: string } & React.ComponentProps<"input">) {
   return (
     <label>
       <span>{label}</span>

@@ -1,8 +1,8 @@
-import { getUnixTime } from 'date-fns';
+import { getUnixTime } from "date-fns";
 
-import { Day } from '../Day';
-import { WeekNumber } from '../WeekNumber';
-import { useDayPicker } from '../../contexts/DayPicker';
+import { Day } from "../Day";
+import { WeekNumber } from "../WeekNumber";
+import { useDayPicker } from "../../contexts/DayPicker";
 
 /**
  * The props for the {@link Row} component.

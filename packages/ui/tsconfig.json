@@ -1,7 +1,10 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "jsx": "react",
+    "types": ["node"],
+    "importHelpers": true,
+    "lib": ["es2017", "DOM"],
+    "jsx": "react-jsx",
     "paths": {
       "number": ["./src/number"],
       "primitive": ["./src/primitive"],
