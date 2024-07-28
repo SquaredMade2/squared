@@ -32,7 +32,7 @@ const TaskStatusSection = ({
           highlightText={highlightText}
         />
       )}
-      <GridColumnNewIssueButton status={title} />
+      {!isListView && <GridColumnNewIssueButton status={title} />}
     </div>
   );
 };
