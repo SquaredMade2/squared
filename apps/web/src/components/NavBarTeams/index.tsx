@@ -2,20 +2,12 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { motion, useAnimation } from "framer-motion";
 import type {
 	getTeamInfoType,
 	handleActiveParamsType,
 } from "@/app/interfaces/Navbars.interfaces";
-
 import type { Team as TaskDataTeam } from "@/store/taskData/taskData.interfaces";
-
-import {
-	DropdownTriangle,
-	TeamIcon,
-	IssuesIcon,
-	ViewsStackIcon,
-} from "@/components/Svg";
+import { IssuesIcon, ViewsStackIcon } from "@/components/Svg";
 import { useRouter } from "next/navigation";
 import { getTeam } from "@/store/taskData/thunks";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
@@ -23,7 +15,7 @@ import { useTheme } from "next-themes";
 
 const styles = {
 	wrapper: "w-60 h-64",
-	container: "pl-8 w-full bg-accent overflow-hidden",
+	container: "pl-8 w-full overflow-hidden",
 	row: "w-full flex items-center my-1.5 hover:bg-secondary rounded-md pl-0.5",
 	listSpan: "flex items-center",
 	innerDiv:
@@ -32,7 +24,7 @@ const styles = {
 	button: "flex items-center cursor-pointer",
 	svg: "mr-2 p-0.5 rounded",
 	triangle: "transition-all 0.2s ease-in-out ml-1",
-	listWrapper: "w-full bg-accent z-10",
+	listWrapper: "w-full z-10",
 	viewsButton: "w-full",
 };
 
@@ -43,8 +35,6 @@ const NavBarTeams = ({
 	teamIdentifier,
 }: NavBarTeamProps): React.ReactElement => {
 	const dispatch = useAppDispatch();
-	const controls = useAnimation();
-	const [tasklistToggle, setTasklistToggle] = useState(false);
 	const [isHovered, setIsHovered] = useState<string>("#858699");
 	const { theme } = useTheme();
 	const currentWorkspace = useAppSelector(
@@ -60,15 +50,6 @@ const NavBarTeams = ({
 		} else {
 			console.error("Team identifier not found");
 		}
-	};
-
-	const handleToggle = (): void => {
-		if (tasklistToggle) {
-			controls.start({ height: 0 });
-		} else {
-			controls.start({ height: "auto" });
-		}
-		setTasklistToggle(!tasklistToggle);
 	};
 
 	const handleMouseEnter = () => {
@@ -108,91 +89,73 @@ const NavBarTeams = ({
 	}, []);
 
 	return (
-		<li key={id} className={styles.listWrapper}>
-			<div className={styles.row} onClick={() => handleToggle()}>
-				<div className={styles.row}>
-					<div className={styles.svg}>{<TeamIcon />}</div>
-					<span className={styles.button}>{teamName}</span>
-					<DropdownTriangle
-						className={
-							tasklistToggle ? `rotate-90 ${styles.triangle}` : styles.triangle
-						}
-					/>
+		<div className={styles.listWrapper}>
+			<div
+				className={`${styles.row} group`}
+				onClick={onDropdownClick}
+				onMouseEnter={handleMouseEnter}
+				onMouseLeave={handleMouseLeave}
+			>
+				<button className={styles.button} type="button">
+					<div className={`${styles.svg}`}>
+						{<IssuesIcon fill={isHovered} />}
+					</div>
+					<p>Issues</p>
+				</button>
+			</div>
+
+			<div className="ml-2">
+				<div className={styles.innerDiv}>
+					<div
+						className={styles.row}
+						onClick={() => handleActiveParams("active")}
+					>
+						<div>
+							<span className={styles.innerDivSpan}>Active</span>
+						</div>
+					</div>
+					<div
+						className={styles.row}
+						onClick={() => handleActiveParams("backlog")}
+					>
+						<div>
+							<span className={styles.innerDivSpan}>Backlog</span>
+						</div>
+					</div>
 				</div>
 			</div>
-			<motion.div
-				className={styles.container}
-				initial={{ height: 0 }}
-				animate={controls}
-				transition={{ duration: 0.2 }}
+
+			{/*
+    			Commented out broken links until all bugs are fixed and app is launched. Implementing
+    			these links will take a while. ---> Pinak
+    			<div className={`${styles.row} group`}>
+    				<Link href={`/projects`}>
+    				<button className={styles.button}>
+    					<div className={styles.svg}>
+    						{<ProjectSquaresSub className={`group-hover:fill-white`} />}
+    					</div>
+    					<p>Projects</p>
+    				</button>
+    				</Link>
+    			</div> */}
+
+			<button
+				className={styles.viewsButton}
+				onClick={handleViewsButtonClick}
+				type="button"
 			>
-				<div
-					className={`${styles.row} group`}
-					onClick={onDropdownClick}
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={handleMouseLeave}
-				>
-					<button className={styles.button} type="button">
-						<div className={`${styles.svg}`}>
-							{<IssuesIcon fill={isHovered} />}
+				<div className={`${styles.row} group`}>
+					<div className={styles.button}>
+						<div className={styles.svg}>
+							<ViewsStackIcon
+								className={`group-hover:${theme === "light" ? "fill-black" : "fill-white"}`}
+							/>
 						</div>
-						<p>Issues</p>
-					</button>
-					{/* </Link> */}
-				</div>
-
-				{/* Commented out unused links until all bugs are fixed and app is launched. Implementing 
-					these links will take a while. ---> Pinak */}
-				<div className="ml-2">
-					<div className={styles.innerDiv}>
-						<div
-							className={styles.row}
-							onClick={() => handleActiveParams("active")}
-						>
-							<div>
-								<span className={styles.innerDivSpan}>Active</span>
-							</div>
-						</div>
-						<div
-							className={styles.row}
-							onClick={() => handleActiveParams("backlog")}
-						>
-							<div>
-								<span className={styles.innerDivSpan}>Backlog</span>
-							</div>
-						</div>
+						<p>Views</p>
 					</div>
 				</div>
-
-				{/*
-					Commented out broken links until all bugs are fixed and app is launched. Implementing 
-					these links will take a while. ---> Pinak
-					<div className={`${styles.row} group`}>
-						<Link href={`/projects`}>
-						<button className={styles.button}>
-							<div className={styles.svg}>
-								{<ProjectSquaresSub className={`group-hover:fill-white`} />}
-							</div>
-							<p>Projects</p>
-						</button>
-						</Link>
-					</div> */}
-				<button
-					className={styles.viewsButton}
-					onClick={handleViewsButtonClick}
-					type="button"
-				>
-					<div className={`${styles.row} group`}>
-						<div className={styles.button}>
-							<div className={styles.svg}>
-								<ViewsStackIcon className={"group-hover:fill-foreground"} />
-							</div>
-							<p>Views</p>
-						</div>
-					</div>
-				</button>
-			</motion.div>
-		</li>
+			</button>
+		</div>
 	);
 };
 
