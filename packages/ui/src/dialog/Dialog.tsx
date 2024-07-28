@@ -21,6 +21,7 @@ import { toHaveNoViolations } from "jest-axe";
 
 expect.extend(toHaveNoViolations);
 
+
 /* -------------------------------------------------------------------------------------------------
  * Dialog
  * -----------------------------------------------------------------------------------------------*/
@@ -31,27 +32,29 @@ type ScopedProps<P> = P & { __scopeDialog?: Scope };
 const [createDialogContext, createDialogScope] =
   createContextScope(DIALOG_NAME);
 
+
 type DialogContextValue = {
-  triggerRef: React.RefObject<HTMLButtonElement>;
-  contentRef: React.RefObject<DialogContentElement>;
-  contentId: string;
-  titleId: string;
-  descriptionId: string;
-  open: boolean;
-  onOpenChange(open: boolean): void;
-  onOpenToggle(): void;
-  modal: boolean;
+	triggerRef: React.RefObject<HTMLButtonElement>;
+	contentRef: React.RefObject<DialogContentElement>;
+	contentId: string;
+	titleId: string;
+	descriptionId: string;
+	open: boolean;
+	onOpenChange(open: boolean): void;
+	onOpenToggle(): void;
+	modal: boolean;
 };
 
 const [DialogProvider, useDialogContext] =
   createDialogContext<DialogContextValue>(DIALOG_NAME);
 
+
 interface DialogProps {
-  children?: React.ReactNode;
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?(open: boolean): void;
-  modal?: boolean;
+	children?: React.ReactNode;
+	open?: boolean;
+	defaultOpen?: boolean;
+	onOpenChange?(open: boolean): void;
+	modal?: boolean;
 }
 
 const Dialog: React.FC<DialogProps> = (props: ScopedProps<DialogProps>) => {
@@ -103,6 +106,7 @@ const TRIGGER_NAME = "DialogTrigger";
 type DialogTriggerElement = React.ElementRef<typeof Primitive.button>;
 type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
   typeof Primitive.button
+
 >;
 interface DialogTriggerProps extends PrimitiveButtonProps {}
 
@@ -125,6 +129,7 @@ const DialogTrigger = React.forwardRef<
       onClick={composeEventHandlers(props.onClick, context.onOpenToggle)}
     />
   );
+
 });
 
 DialogTrigger.displayName = TRIGGER_NAME;
@@ -171,6 +176,7 @@ const DialogPortal: React.FC<DialogPortalProps> = (
       ))}
     </PortalProvider>
   );
+
 };
 
 DialogPortal.displayName = PORTAL_NAME;
@@ -183,11 +189,11 @@ const OVERLAY_NAME = "DialogOverlay";
 
 type DialogOverlayElement = DialogOverlayImplElement;
 interface DialogOverlayProps extends DialogOverlayImplProps {
-  /**
-   * Used to force mounting when more control is needed. Useful when
-   * controlling animation with React animation libraries.
-   */
-  forceMount?: true;
+	/**
+	 * Used to force mounting when more control is needed. Useful when
+	 * controlling animation with React animation libraries.
+	 */
+	forceMount?: true;
 }
 
 const DialogOverlay = React.forwardRef<
@@ -202,6 +208,7 @@ const DialogOverlay = React.forwardRef<
       <DialogOverlayImpl {...overlayProps} ref={forwardedRef} />
     </Presence>
   ) : null;
+
 });
 
 DialogOverlay.displayName = OVERLAY_NAME;
@@ -239,11 +246,11 @@ const CONTENT_NAME = "DialogContent";
 
 type DialogContentElement = DialogContentTypeElement;
 interface DialogContentProps extends DialogContentTypeProps {
-  /**
-   * Used to force mounting when more control is needed. Useful when
-   * controlling animation with React animation libraries.
-   */
-  forceMount?: true;
+	/**
+	 * Used to force mounting when more control is needed. Useful when
+	 * controlling animation with React animation libraries.
+	 */
+	forceMount?: true;
 }
 
 const DialogContent = React.forwardRef<
@@ -262,6 +269,7 @@ const DialogContent = React.forwardRef<
       )}
     </Presence>
   );
+
 });
 
 DialogContent.displayName = CONTENT_NAME;
@@ -481,6 +489,7 @@ const TITLE_NAME = "DialogTitle";
 type DialogTitleElement = React.ElementRef<typeof Primitive.h2>;
 type PrimitiveHeading2Props = React.ComponentPropsWithoutRef<
   typeof Primitive.h2
+
 >;
 interface DialogTitleProps extends PrimitiveHeading2Props {}
 
@@ -505,6 +514,7 @@ const DESCRIPTION_NAME = "DialogDescription";
 type DialogDescriptionElement = React.ElementRef<typeof Primitive.p>;
 type PrimitiveParagraphProps = React.ComponentPropsWithoutRef<
   typeof Primitive.p
+
 >;
 interface DialogDescriptionProps extends PrimitiveParagraphProps {}
 
@@ -570,29 +580,29 @@ const [WarningProvider, useWarningContext] = createContext(TITLE_WARNING_NAME, {
 type TitleWarningProps = { titleId?: string };
 
 const TitleWarning: React.FC<TitleWarningProps> = ({ titleId }) => {
-  const titleWarningContext = useWarningContext(TITLE_WARNING_NAME);
+	const titleWarningContext = useWarningContext(TITLE_WARNING_NAME);
 
-  const MESSAGE = `\`${titleWarningContext.contentName}\` requires a \`${titleWarningContext.titleName}\` for the component to be accessible for screen reader users.
+	const MESSAGE = `\`${titleWarningContext.contentName}\` requires a \`${titleWarningContext.titleName}\` for the component to be accessible for screen reader users.
 
 If you want to hide the \`${titleWarningContext.titleName}\`, you can wrap it with our VisuallyHidden component.
 
-For more information, see https://sandy-ui.com/primitives/docs/components/${titleWarningContext.docsSlug}`;
+For more information, see https://squared-ui.com/primitives/docs/components/${titleWarningContext.docsSlug}`;
 
-  React.useEffect(() => {
-    if (titleId) {
-      const hasTitle = document.getElementById(titleId);
-      if (!hasTitle) console.error(MESSAGE);
-    }
-  }, [MESSAGE, titleId]);
+	React.useEffect(() => {
+		if (titleId) {
+			const hasTitle = document.getElementById(titleId);
+			if (!hasTitle) console.error(MESSAGE);
+		}
+	}, [MESSAGE, titleId]);
 
-  return null;
+	return null;
 };
 
 const DESCRIPTION_WARNING_NAME = "DialogDescriptionWarning";
 
 type DescriptionWarningProps = {
-  contentRef: React.RefObject<DialogContentElement>;
-  descriptionId?: string;
+	contentRef: React.RefObject<DialogContentElement>;
+	descriptionId?: string;
 };
 
 const DescriptionWarning: React.FC<DescriptionWarningProps> = ({
@@ -624,35 +634,35 @@ const Description = DialogDescription;
 const Close = DialogClose;
 
 export {
-  createDialogScope,
-  //
-  Dialog,
-  DialogTrigger,
-  DialogPortal,
-  DialogOverlay,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-  //
-  Root,
-  Trigger,
-  Portal,
-  Overlay,
-  Content,
-  Title,
-  Description,
-  Close,
-  //
-  WarningProvider,
+	createDialogScope,
+	//
+	Dialog,
+	DialogTrigger,
+	DialogPortal,
+	DialogOverlay,
+	DialogContent,
+	DialogTitle,
+	DialogDescription,
+	DialogClose,
+	//
+	Root,
+	Trigger,
+	Portal,
+	Overlay,
+	Content,
+	Title,
+	Description,
+	Close,
+	//
+	WarningProvider,
 };
 export type {
-  DialogProps,
-  DialogTriggerProps,
-  DialogPortalProps,
-  DialogOverlayProps,
-  DialogContentProps,
-  DialogTitleProps,
-  DialogDescriptionProps,
-  DialogCloseProps,
+	DialogProps,
+	DialogTriggerProps,
+	DialogPortalProps,
+	DialogOverlayProps,
+	DialogContentProps,
+	DialogTitleProps,
+	DialogDescriptionProps,
+	DialogCloseProps,
 };
