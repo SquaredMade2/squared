@@ -1,14 +1,14 @@
 ---
-import background from '../images/focusBigPicture.png';
-import iosapp from '../images/focusMain.png';
-import q4roadmap from '../images/projectUpdate.png';
-import projxs from '../images/projxs.svg';
-import focusxs from '../images/focusxs.svg';
-import { Image } from 'astro:assets';
+import background from "../images/focusBigPicture.png";
+import iosapp from "../images/focusMain.png";
+import q4roadmap from "../images/projectUpdate.png";
+import projxs from "../images/projxs.svg";
+import focusxs from "../images/focusxs.svg";
+import { Image } from "astro:assets";
 ---
 
 <div
-	class="text-white w-full relative my-10 xs:hidden xxs:hidden xxxs:hidden font-chivoMono"
+	class="text-foreground w-full relative my-10 xs:hidden xxs:hidden xxxs:hidden font-chivoMono"
 >
 	<Image
 		class="invisible"
@@ -77,7 +77,7 @@ import { Image } from 'astro:assets';
 </div>
 
 <div
-	class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden font-chivoMono text-white"
+	class="sm:hidden md:hidden lg:hidden xl:hidden xxl:hidden xxxl:hidden font-chivoMono text-foreground"
 >
 	<div class="relative">
 		<img class="xs:w-full mb-[4vw]" loading="lazy" src={focusxs.src} alt="" />

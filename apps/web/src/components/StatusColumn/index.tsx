@@ -56,6 +56,7 @@ const StatusColumn = ({
               showTasks={showTasks}
               setShowRenameModal={setShowRenameModal}
               setTaskData={setTaskData}
+              title={columnType}
             />
 
             {provided.placeholder}

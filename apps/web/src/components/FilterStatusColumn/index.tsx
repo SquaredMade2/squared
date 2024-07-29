@@ -1,20 +1,26 @@
-import React from 'react';
-import { Droppable } from '@hello-pangea/dnd';
-import { useSelector } from 'react-redux';
-import TaskStatusSection from '@/components/TaskStatusSection';
-import type { FilterStatusColumnProps } from './FilterStatusColumn.interfaces';
-import type { RootState } from '@/store';
-import type { Task } from '@/store/taskData/taskData.interfaces';
+import React from "react";
+import { Droppable } from "@hello-pangea/dnd";
+import { useSelector } from "react-redux";
+import TaskStatusSection from "@/components/TaskStatusSection";
+import type { FilterStatusColumnProps } from "./FilterStatusColumn.interfaces";
+import type { RootState } from "@/store";
+import type { Task } from "@/store/taskData/taskData.interfaces";
 
 const StatusColumn = ({ columnType }: FilterStatusColumnProps) => {
-  const filteredTaskList = useSelector((state: RootState) => state.filterPage.filteredTaskList);
+  const filteredTaskList = useSelector(
+    (state: RootState) => state.filterPage.filteredTaskList
+  );
   const taskList = useSelector((state: RootState) => state.taskData.taskList);
 
   const matchedTasks = taskList.filter((task: Task) =>
-    filteredTaskList.some((filteredTask) => filteredTask._id.toString() === task._id),
+    filteredTaskList.some(
+      (filteredTask) => filteredTask._id.toString() === task._id
+    )
   );
 
-  const column = matchedTasks.filter((task: Task) => task.status === columnType);
+  const column = matchedTasks.filter(
+    (task: Task) => task.status === columnType
+  );
 
   return (
     <>
@@ -23,7 +29,7 @@ const StatusColumn = ({ columnType }: FilterStatusColumnProps) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`${snapshot.isDraggingOver ? 'bg-accent' : ''} w-[100%]`}
+            className={`${snapshot.isDraggingOver ? "bg-accent" : ""} w-[100%]`}
           >
             <TaskStatusSection
               key={columnType}

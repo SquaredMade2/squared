@@ -11,6 +11,7 @@ import { IssuesIcon, ViewsStackIcon } from "@/components/Svg";
 import { useRouter } from "next/navigation";
 import { getTeam } from "@/store/taskData/thunks";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
+import { useTheme } from "next-themes";
 
 const styles = {
 	wrapper: "w-60 h-64",
@@ -35,7 +36,7 @@ const NavBarTeams = ({
 }: NavBarTeamProps): React.ReactElement => {
 	const dispatch = useAppDispatch();
 	const [isHovered, setIsHovered] = useState<string>("#858699");
-	const theme = useAppSelector((state) => state.userSettings.theme);
+	const { theme } = useTheme();
 	const currentWorkspace = useAppSelector(
 		(state) => state.taskData.currentWorkspace,
 	);

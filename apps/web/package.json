@@ -69,6 +69,7 @@
 		"lucide-react": "^0.396.0",
 		"mongoose": "^7.6.13",
 		"next-auth": "^4.24.7",
+		"next-themes": "^0.3.0",
 		"octokit": "^3.2.1",
 		"postcss-nesting": "^12.1.5",
 		"query-string": "^9.0.0",

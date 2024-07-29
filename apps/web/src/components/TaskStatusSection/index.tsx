@@ -1,5 +1,7 @@
 import TaskCard from "@/components/TaskCard";
 import type { TaskStatusSectionProps } from "./TaskStatusSection.interfaces";
+import { Button } from "../ui/button";
+import { GridColumnNewIssueButton } from "../NewIssueButton";
 
 const style = {
   subTitleBgGrid:
@@ -13,6 +15,7 @@ const TaskStatusSection = ({
   setShowRenameModal,
   setTaskData,
   showTasks,
+  title,
 }: TaskStatusSectionProps) => {
   const location = "dashboard";
   const highlightText = (taskTitle: string) => taskTitle;
@@ -28,6 +31,7 @@ const TaskStatusSection = ({
           highlightText={highlightText}
         />
       )}
+      {!isListView && <GridColumnNewIssueButton status={title} />}
     </div>
   );
 };

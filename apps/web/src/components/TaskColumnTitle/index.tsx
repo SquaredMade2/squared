@@ -1,5 +1,5 @@
 import { additionIcon, downArrow } from "@/components/Svg";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import {
   backlog,
   todo,
@@ -12,6 +12,7 @@ import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
 import HideStatus from "@/components/HideStatus/HideStatus";
 import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
+import { useTheme } from "next-themes";
 
 const style = {
   columnTitle: "flex items-center gap-4 text-foreground text-sm pr-8",
@@ -37,7 +38,7 @@ const TaskColumnTitle = ({
   numberOfTasks,
   toggleShowTasks,
 }: TaskColumnTitleProps) => {
-  const theme = useAppSelector((state) => state.userSettings.theme);
+  const { theme } = useTheme();
   const dispatch = useAppDispatch();
   const arrowColor = theme === "light" ? "black" : "white";
 
@@ -103,7 +104,9 @@ const TaskColumnTitle = ({
         }
       >
         <div className="cursor-pointer" onClick={handleClick}>
-          <div className="group cursor-pointer">{additionIcon(theme)}</div>
+          <div className="group cursor-pointer">
+            {additionIcon(theme as string)}
+          </div>
         </div>
 
         <HideStatus toggleShowTasks={toggleShowTasks} showTasks={showTasks} />
