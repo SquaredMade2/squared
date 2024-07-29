@@ -16,12 +16,11 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 
 const styles = {
-  container: "flex flex-row relative w-[calc(100%-296px)] mdsm:w-full",
-  homeBackground: "flex items-center flex-col w-screen h-full bg-background ",
-  homeBackgroundWrapper: "w-full snap-x overflow-y-hidden relative",
-  navbarDivParent:
-    "bg-background w-[calc(100vw-296px)] flex flex-col items-center justify-between mb-2 mdsm:w-[100vw]",
-  navBarDiv: "w-full px-8",
+  container: `flex flex-row relative lg:w-[calc(100%-296px)] `,
+  homeBackground: `flex items-center flex-col w-screen h-full bg-background `,
+  homeBackgroundWrapper: "w-full snap-x overflow-hidden relative",
+  navbarDivParent: `bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between`,
+  navBarDiv: "w-full px-2 sm:px-5",
   showTaskForm: "fixed inset-0 flex justify-center items-center z-50",
   filterStatusBar: "w-full",
   filterSaveForm: "w-[98%] m-3",
@@ -151,7 +150,7 @@ export default function Home() {
           <div className={styles.homeBackground}>
             <div
               className={`${styles.homeBackgroundWrapper} ${
-                view === "grid" ? "h-full" : "h-[calc(100vh-24px)]"
+                view === "grid" ? "h-[calc(100vh)]" : "h-[calc(100vh)]"
               }`}
             >
               <div className={styles.navbarDivParent}>

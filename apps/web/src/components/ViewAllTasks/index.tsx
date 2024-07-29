@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getAllTasks } from '@/store/taskData/thunks';
-import { DragDropContext } from '@hello-pangea/dnd';
-import type { OnDragEndResponder } from '@hello-pangea/dnd';
-import StatusColumn from '@/components/StatusColumn';
-import RenameModal from '@/components/RenameModal';
-import { getFilteredTasks } from '@/store/filterPage/actions';
-import type { RootState } from '@/store';
-import { useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import type { Status } from '@/interfaces/event.interfaces';
-import type { Task } from '@/store/taskData/taskData.interfaces';
-import { ScrollArea } from '../ui/scroll-area';
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { getAllTasks } from "@/store/taskData/thunks";
+import { DragDropContext } from "@hello-pangea/dnd";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import StatusColumn from "@/components/StatusColumn";
+import RenameModal from "@/components/RenameModal";
+import { getFilteredTasks } from "@/store/filterPage/actions";
+import type { RootState } from "@/store";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import type { Status } from "@/interfaces/event.interfaces";
+import type { Task } from "@/store/taskData/taskData.interfaces";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const style = {
-  tasksBackgroundGrid: 'flex flex-row h-full w-full snap-start',
-  tasksBackgroundList: 'flex flex-col w-full h-full',
+  tasksBackgroundGrid: `flex gap-2  snap-start`,
+  tasksBackgroundList: `flex flex-col hover:pr-3 transition-all duration-500 ease-in-out`,
 };
 
 const ViewAllTasks = ({
@@ -32,15 +32,23 @@ const ViewAllTasks = ({
   const dispatch = useAppDispatch();
   const view = useSelector((state: RootState) => state.userSettings.view);
   const team = useSelector((state: RootState) => state.taskData.currentTeam);
-  const teamId = useSelector((state: RootState) => state.taskData.currentTeam._id);
+  const teamId = useSelector(
+    (state: RootState) => state.taskData.currentTeam._id
+  );
   const [loading, setLoading] = useState(true);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [taskData, setTaskData] = useState<Task | null>(null);
   const taskList = useSelector((state: RootState) => state.taskData.taskList);
   const [showFilteredView, setShowFilteredView] = useState(false);
-  const filteredTaskList = useSelector((state: RootState) => state.filterPage.filteredTaskList);
-  const currentFilters = useSelector((state: RootState) => state.filterPage.currentFilters);
-  const filterType = useSelector((state: RootState) => state.filterPage.filterType);
+  const filteredTaskList = useSelector(
+    (state: RootState) => state.filterPage.filteredTaskList
+  );
+  const currentFilters = useSelector(
+    (state: RootState) => state.filterPage.currentFilters
+  );
+  const filterType = useSelector(
+    (state: RootState) => state.filterPage.filterType
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,7 +68,7 @@ const ViewAllTasks = ({
       currentFilters.effortEstimate.length !== 0
     ) {
       const dashboardPage = true;
-      const filterId = 'dashboardPage';
+      const filterId = "dashboardPage";
       dispatch(getFilteredTasks(teamId, filterId, dashboardPage, filterType));
 
       setShowFilteredView(true);
@@ -70,19 +78,21 @@ const ViewAllTasks = ({
   }, [dispatch, teamId, currentFilters, filterType]);
 
   const titleArr = [
-    { value: 'Backlog', id: 1 },
-    { value: 'Todo', id: 2 },
-    { value: 'In Progress', id: 3 },
-    { value: 'Done', id: 4 },
-    { value: 'Canceled', id: 5 },
+    { value: "Backlog", id: 1 },
+    { value: "Todo", id: 2 },
+    { value: "In Progress", id: 3 },
+    { value: "Done", id: 4 },
+    { value: "Canceled", id: 5 },
   ];
   const getFilteredStatuses = () => {
     const allStatuses = titleArr.map((t) => t.value);
     if (activeSelected) {
-      return allStatuses.filter((status) => status === 'Todo' || status === 'In Progress');
+      return allStatuses.filter(
+        (status) => status === "Todo" || status === "In Progress"
+      );
     }
     if (backlogSelected) {
-      return allStatuses.filter((status) => status === 'Backlog');
+      return allStatuses.filter((status) => status === "Backlog");
     }
     return allStatuses;
   };
@@ -122,23 +132,26 @@ const ViewAllTasks = ({
             taskData={taskData ? taskData : ({} as Task)}
           />
           <DragDropContext onDragEnd={handleDragEnd}>
-            <ScrollArea
-              className={` px-8 ${
-                view === 'list'
-                  ? 'h-[92%] flex items-center justify-center w-full'
-                  : 'h-[95%] overflow-x-auto w-[calc(100vw-296px)]'
+            <div
+              className={` px-2 sm:px-5  ${
+                view === "list"
+                  ? "h-[85%] sm:h-[93%] flex items-center justify-center w-full"
+                  : " lg:w-[calc(100vw-296px)]"
               }`}
             >
-              <div
-                className={view === 'list' ? style.tasksBackgroundList : style.tasksBackgroundGrid}
-              >
-                {view === 'list' ? (
-                  <div className="mr-1">{filteredColumns()}</div>
-                ) : (
-                  filteredColumns()
-                )}
-              </div>
-            </ScrollArea>
+              <ScrollArea className="w-full h-full">
+                <div
+                  className={
+                    view === "list"
+                      ? style.tasksBackgroundList
+                      : style.tasksBackgroundGrid
+                  }
+                >
+                  {filteredColumns()}
+                </div>
+                {view === "grid" && <ScrollBar orientation="horizontal" />}
+              </ScrollArea>
+            </div>
           </DragDropContext>
         </>
       )}
