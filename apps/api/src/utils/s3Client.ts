@@ -1,4 +1,4 @@
-import AWS, { ConfigurationOptions } from "aws-sdk";
+import AWS, { type ConfigurationOptions } from "aws-sdk";
 
 if (process.env.NODE_ENV === "development") {
 	AWS.config.update({

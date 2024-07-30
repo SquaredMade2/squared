@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IProject from "../interface/project";
+import type IProject from "../interface/project";
 
 /**
  * @openapi

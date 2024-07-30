@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import ITag from "../interface/tag";
+import type ITag from "../interface/tag";
 
 /**
  * @openapi

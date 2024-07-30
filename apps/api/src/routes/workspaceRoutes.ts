@@ -17,7 +17,6 @@ import {
 	incrementWorkspaceCreatedIssues,
 	setGithubRepo,
 } from "../controllers/workspaceControllers";
-// import catchAsync from "../utils/catchAsync";
 const router: Router = Router();
 
 /**

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { Commits } from "../interface/commits";
+import type { Commits } from "../interface/commits";
 
 const commitSchema = new Schema<Commits>({
 	id: {

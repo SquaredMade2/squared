@@ -1,6 +1,5 @@
 import { Router } from "express";
 
-import catchAsync from "../utils/catchAsync";
 import {
 	addFilter,
 	getSelectedFilters,
@@ -50,7 +49,7 @@ const router: Router = Router();
  *                 error:
  *                   type: string
  */
-router.get("/read/:teamId", catchAsync(getSelectedFilters));
+router.get("/read/:teamId", getSelectedFilters);
 /**
  * @openapi
  * /filter/tasks/{teamId}/{filterId}:
@@ -98,7 +97,7 @@ router.get("/read/:teamId", catchAsync(getSelectedFilters));
  *                 error:
  *                   type: string
  */
-router.get("/tasks/:teamId/:filterId", catchAsync(getFilteredTasks));
+router.get("/tasks/:teamId/:filterId", getFilteredTasks);
 
 /**
  * @openapi
@@ -140,7 +139,7 @@ router.get("/tasks/:teamId/:filterId", catchAsync(getFilteredTasks));
  *                 error:
  *                   type: string
  */
-router.post("/create", catchAsync(addFilter));
+router.post("/create", addFilter);
 /**
  * @openapi
  * /tasks/{teamId}/{filterId}:
@@ -194,7 +193,7 @@ router.post("/create", catchAsync(addFilter));
  *                 error:
  *                   type: string
  */
-router.post("/tasks/:teamId/:filterId", catchAsync(getFilteredTasks));
+router.post("/tasks/:teamId/:filterId", getFilteredTasks);
 
 /**
  * @openapi
@@ -243,6 +242,6 @@ router.post("/tasks/:teamId/:filterId", catchAsync(getFilteredTasks));
  *                 error:
  *                   type: string
  */
-router.delete("/delete/", catchAsync(deleteView));
+router.delete("/delete/", deleteView);
 
 export default router;

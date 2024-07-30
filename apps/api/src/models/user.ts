@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IUser from "../interface/user";
+import type IUser from "../interface/user";
 /**
  * @openapi
  * components:

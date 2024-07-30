@@ -1,5 +1,4 @@
 import { Router } from "express";
-import catchAsync from "../utils/catchAsync";
 import {
 	addTeam,
 	getTeam,
@@ -93,7 +92,7 @@ router.get("/read", getTeam);
  *                 error:
  *                   type: string
  */
-router.get("/getTeamInfo", catchAsync(getTeamInfo));
+router.get("/getTeamInfo", getTeamInfo);
 
 /**
  * @openapi

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import ITask from "../interface/task";
+import type ITask from "../interface/task";
 
 /**
  * @openapi
