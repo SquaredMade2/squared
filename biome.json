@@ -1,39 +1,54 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-	"files": {
-		"ignore": ["node_modules"],
-		"include": ["src"]
-	},
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"a11y": {
-				"useKeyWithClickEvents": "off"
-			},
-			"correctness": {
-				"useExhaustiveDependencies": "off"
-			}
-		}
-	},
-	"javascript": {
-		"globals": [
-			"$",
-			"_",
-			"externalVariable",
-			"cypress",
-			"it",
-			"expect",
-			"cy",
-			"describe",
-			"beforeEach",
-			"jest",
-			"React",
-			"afterEach",
-			"Cypress"
-		]
-	}
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "files": {
+    "ignore": ["node_modules"],
+    "include": ["src"]
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "useKeyWithClickEvents": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "include": ["packages/ui/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ],
+  "javascript": {
+    "globals": [
+      "$",
+      "_",
+      "externalVariable",
+      "cypress",
+      "it",
+      "expect",
+      "cy",
+      "describe",
+      "beforeEach",
+      "jest",
+      "React",
+      "afterEach",
+      "Cypress"
+    ]
+  }
 }
