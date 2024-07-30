@@ -1,7 +1,7 @@
 import React from "react";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { smallDeleteIcon } from "@/components/Svg";
+import { X } from "lucide-react";
 import type { MembersModalProp } from "@/components/InviteMembersModal/members-modal.interace";
 import type { Workspace } from "@/store/taskData/taskData.interfaces";
 const styles = {
@@ -44,7 +44,7 @@ const InviteMembersModal = ({
 						onClick={() => setOpenModal(false)}
 						className="text-[#DCD8FE93] ml-auto"
 					>
-						{smallDeleteIcon()}
+						<X className="size-4 cursor-pointer" />
 					</span>
 				</div>
 				<form onSubmit={handleSubmit} className={styles.form}>

@@ -1,3 +1,3 @@
 export interface CommandMenuProps {
-  handleNextPage: () => void;
+	handleNextPage: () => void;
 }

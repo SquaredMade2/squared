@@ -1,13 +1,13 @@
-import 'dotenv/config';
-import { hashPassword, comparePassword } from '../helpers/auth';
-import { CommentModel as Comment } from '../models/events';
-import Workspace from '../models/workspace';
-import User from '../models/user';
-import Task from '../models/task';
-import Team from '../models/team';
-import NotificationModel from '../models/notification';
-import { faker } from '@faker-js/faker';
-import mongoose from 'mongoose';
+import "dotenv/config";
+import { hashPassword, comparePassword } from "../helpers/auth";
+import { CommentModel as Comment } from "../models/events";
+import Workspace from "../models/workspace";
+import User from "../models/user";
+import Task from "../models/task";
+import Team from "../models/team";
+import NotificationModel from "../models/notification";
+import { faker } from "@faker-js/faker";
+import mongoose from "mongoose";
 const MONGO_URL = process.env.MONGO_URL;
 
 export const seedDB = async () => {
@@ -40,14 +40,14 @@ export const seedDB = async () => {
 			}
 		}
 	}
-	
+
 	process.exit();
 };
 
 const addUser = async () => {
 	const firstName = faker.person.firstName();
 	const lastName = faker.person.lastName();
-	const fullName = firstName + ' ' + lastName;
+	const fullName = firstName + " " + lastName;
 	const username = faker.internet.userName({
 		firstName: firstName,
 		lastName: lastName,
@@ -73,10 +73,10 @@ const addWorkspace = async (user: any) => {
 	const num = faker.number.int({ min: 1, max: 5 });
 	const workspaceName = faker.internet.domainWord();
 	const workspaceCompanySize = faker.number.int({ max: 1000 });
-	let users = [{ user: user, role: 'owner' }];
+	let users = [{ user: user, role: "owner" }];
 
 	for (let i = 0; i < num; i++) {
-		let role = faker.helpers.arrayElement(['Admin', 'Member']);
+		let role = faker.helpers.arrayElement(["Admin", "Member"]);
 		let newUser = await addUser();
 		users.push({ user: newUser, role: role });
 	}
@@ -95,7 +95,7 @@ const addWorkspace = async (user: any) => {
 				$push: { workspaces: workspace._id },
 				on_boarding: true,
 			},
-			{ new: true }
+			{ new: true },
 		);
 	});
 	return workspace;
@@ -105,7 +105,7 @@ const addTeam = async (workspace: any, user: any) => {
 	const teamName = faker.internet.domainWord();
 	const teamIdentifier = faker.string.alpha({
 		length: { min: 3, max: 3 },
-		casing: 'upper',
+		casing: "upper",
 	});
 	const team = await Team.create({
 		name: teamName,
@@ -128,22 +128,22 @@ const addTask = async (team: any, workspace: any, user: any) => {
 	const taskTitle = faker.lorem.words({ min: 1, max: 3 });
 	const taskDescription = faker.lorem.words({ min: 3, max: 5 });
 	const taskStatus = faker.helpers.arrayElement([
-		'Backlog',
-		'Todo',
-		'In Progress',
-		'Done',
-		'Canceled',
+		"Backlog",
+		"Todo",
+		"In Progress",
+		"Done",
+		"Canceled",
 	]);
 	const taskPriority = faker.helpers.arrayElement([
-		'Urgent',
-		'High',
-		'Medium',
-		'Low',
-		'No priority',
+		"Urgent",
+		"High",
+		"Medium",
+		"Low",
+		"No priority",
 	]);
 	const taskLabels = faker.helpers.arrayElements(
-		['Bug', 'Feature', 'Improvement', 'Red', 'Test'],
-		{ min: 0, max: 5 }
+		["Bug", "Feature", "Improvement", "Red", "Test"],
+		{ min: 0, max: 5 },
 	);
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([
@@ -196,11 +196,10 @@ const addNotification = async (user: any, task: any) => {
 	return notification;
 };
 
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 mongoose
-	.connect(MONGO_URL, { dbName: 'test' })
+	.connect(MONGO_URL, { dbName: "test" })
 	.then((): void => {
-		
 		seedDB();
 	})
 	.catch((err: string): void => {

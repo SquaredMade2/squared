@@ -7,7 +7,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import { SqLogo, backChevron } from "@/components/Svg";
+import { SqLogo } from "@/components/Svg";
+import { ChevronLeft } from "lucide-react";
 
 const styles = {
 	mainbg: "w-full flex items-center h-[100vh] bg-[#141414]",
@@ -68,7 +69,7 @@ export default function ResetPasswordRequest() {
 					Squared
 				</div>
 				<Link href={"/login"} className={styles.returnWrapper}>
-					<span>{backChevron()}</span>
+					<ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
 					<h2 className={styles.return}>Back to Log in</h2>
 				</Link>
 				<div className={styles.titleWrapper}>

@@ -1,3 +1,4 @@
+import "@testing-library/jest-dom";
 import * as React from "react";
 
 import { hideOthers } from "aria-hidden";
@@ -16,6 +17,9 @@ import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
 import { Slot } from "../slot";
 import { useControllableState } from "../use-controllable-state";
+import { toHaveNoViolations } from "jest-axe";
+
+expect.extend(toHaveNoViolations);
 
 /* -------------------------------------------------------------------------------------------------
  * Dialog

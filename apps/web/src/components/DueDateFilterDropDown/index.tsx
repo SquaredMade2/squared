@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { setCurrentFilter } from "@/store/filterPage/actions";
-import { leftBracket, rightBracket } from "@/components/Svg";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
 	format,
 	startOfMonth,
@@ -168,14 +168,18 @@ const DueDateFilterDropDown = ({
 						onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
 						type="button"
 					>
-						<span className={styles.svg}>{leftBracket()}</span>
+						<span className={styles.svg}>
+							<ChevronLeft className="size-5 text-[#6b6f76]" />
+						</span>
 					</button>
 					<span>{format(currentMonth, "MMMM yyyy")}</span>
 					<button
 						onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
 						type="button"
 					>
-						<span className={styles.svg}>{rightBracket()}</span>
+						<span className={styles.svg}>
+							<ChevronRight className="size-5 text-[#6b6f76]" />
+						</span>
 					</button>
 				</div>
 				<div className={styles.dayNameContainer}>

@@ -3,16 +3,16 @@ import { Fragment, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteView } from "@/store/filterPage/actions";
 import {
-	ellipsisTwo,
-	editView,
-	duplicateView,
-	changeViewOwner,
-	rightArrow,
-	viewVisibility,
-	favoriteView,
-	copyShareLink,
-} from "@/components/Svg";
-import { TrashCan } from "../Svg";
+	BookUser,
+	ChevronRight,
+	CircleUser,
+	Copy,
+	Ellipsis,
+	Link,
+	Pencil,
+	Star,
+	Trash2,
+} from "lucide-react";
 import type { FilterListDropDownProps } from "./FilterListDropDown.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import { useTheme } from "next-themes";
@@ -55,7 +55,10 @@ const FilterListDropDown = ({
 					hover: "group-hover:fill-black",
 					color: "fill-gray-500",
 				})
-			: setFillColor({ ...fillColor, hover: "group-hover:fill-white" });
+			: setFillColor({
+					...fillColor,
+					hover: "group-hover:fill-white",
+				});
 	};
 
 	const handleCopyShareLink = async () => {
@@ -80,7 +83,9 @@ const FilterListDropDown = ({
 			<Menu as="div" className={styles.menu}>
 				<div>
 					<Menu.Button className={styles.menuButton}>
-						{ellipsisTwo()}
+						<Ellipsis
+							className={`size-4 cursor-pointer ${theme === "light" ? "text-[black]" : "text-[white]"} `}
+						/>
 					</Menu.Button>
 				</div>
 				<Transition
@@ -104,7 +109,7 @@ const FilterListDropDown = ({
 												: "text-foreground"
 										} ${styles.menuItem}`}
 									>
-										<div>{editView()}</div>
+										<Pencil className="size-4" />
 										<p className={styles.paddingLeft}>Edit</p>
 									</button>
 								)}
@@ -119,7 +124,7 @@ const FilterListDropDown = ({
 												: "text-foreground"
 										} ${styles.menuItem}`}
 									>
-										<div>{duplicateView()}</div>
+										<Copy className="size-4" />
 										<p className={styles.paddingLeft}>Duplicate</p>
 									</button>
 								)}
@@ -134,9 +139,11 @@ const FilterListDropDown = ({
 												: "text-foreground"
 										} ${styles.menuItem}`}
 									>
-										<div>{changeViewOwner()}</div>
+										<CircleUser className="size-4" />
 										<p className={styles.paddingLeft}>Change View Owner</p>
-										<div className={styles.rightArrow}>{rightArrow()}</div>
+										<div className={styles.rightArrow}>
+											<ChevronRight className="size-3" />
+										</div>
 									</button>
 								)}
 							</Menu.Item>
@@ -150,11 +157,13 @@ const FilterListDropDown = ({
 												: "text-foreground"
 										} ${styles.menuItem}`}
 									>
-										<div>{viewVisibility()}</div>
+										<BookUser className="size-4" />
 										<p className={styles.paddingLeft}>
 											Change View Visibility{" "}
 										</p>
-										<div className={styles.paddingLeft}>{rightArrow()}</div>
+										<div className={styles.paddingLeft}>
+											<ChevronRight className="size-3" />
+										</div>
 									</button>
 								)}
 							</Menu.Item>
@@ -170,7 +179,7 @@ const FilterListDropDown = ({
 												: "text-foreground"
 										} ${styles.menuItem}`}
 									>
-										<div>{favoriteView()}</div>
+										<Star className="size-4" />
 										<p className={styles.paddingLeft}>Favorite View</p>
 									</button>
 								)}
@@ -186,7 +195,7 @@ const FilterListDropDown = ({
 										} ${styles.menuItem}`}
 										onClick={handleCopyShareLink}
 									>
-										<div>{copyShareLink()}</div>
+										<Link className="size-4" />
 										<p className={styles.paddingLeft}>Copy share link</p>
 									</button>
 								)}
@@ -207,11 +216,7 @@ const FilterListDropDown = ({
 										}}
 									>
 										<div>
-											{
-												<TrashCan
-													className={`${fillColor.hover} ${fillColor.color}`}
-												/>
-											}
+											<Trash2 className="size-4" />
 										</div>
 										<p className={styles.paddingLeft}>Delete</p>
 									</button>

@@ -8,7 +8,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import { SqLogo, backChevron } from "@/components/Svg";
+import { SqLogo } from "@/components/Svg";
+import { ChevronLeft } from "lucide-react";
 
 const styles = {
 	mainbg: "w-full flex items-center h-[100vh] bg-[#141414]",
@@ -16,7 +17,7 @@ const styles = {
 		"flex flex-row justify-center items-center uppercase text-[#D8D8D8] gap-2 text-lg font-semibold",
 	mainContainer:
 		"flex  flex-1 flex-col justify-center space-y-6 px-24 py-16 max-w-fit mx-auto bg-gradient-to-b from-[#17181c] to-[#23293b] align-middle rounded-lg",
-	returnWrapper: "text-foreground flex items-center space-x-2",
+	returnWrapper: "text-white flex items-center space-x-2",
 	return: "text-sm",
 	titleWrapper: "sm:mx-auto sm:w-full",
 	title:
@@ -30,7 +31,7 @@ const styles = {
 		"bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-3 shadow-sm  placeholder:text-gray-400 focus:ring-2  sm:text-sm sm:leading-6",
 	labelWrapper: "flex items-center justify-between",
 	submitButton:
-		"flex w-full justify-center rounded-md bg-[#174EFF] px-3 py-2 text-sm font-semibold leading-6 text-foreground shadow-sm hover:bg-indigo-500 hover:cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+		"flex w-full justify-center rounded-md bg-[#174EFF] px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 hover:cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
 };
 
 export default function ResetPassword() {
@@ -77,7 +78,7 @@ export default function ResetPassword() {
 					Squared
 				</div>
 				<Link href={"/login"} className={styles.returnWrapper}>
-					<span>{backChevron()}</span>
+					<ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
 					<h2 className={styles.return}>Back to Log in</h2>
 				</Link>
 				<div className={styles.titleWrapper}>

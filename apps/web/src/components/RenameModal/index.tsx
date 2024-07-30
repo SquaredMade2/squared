@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { RenameModalProps } from "@/components/RenameModal/RenameModal.interfaces";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import { Pencil } from "@/components/Svg";
+import { Pencil } from "lucide-react";
 import { updateTitle } from "@/api/taskApi";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { useTheme } from "next-themes";
@@ -106,7 +106,7 @@ const RenameModal = ({
 						<div className={styles.renameContainer}>
 							<button className={styles.renameButton} type="button">
 								<span className={styles.pencil}>
-									{<Pencil className={`${fillColor}`} />}
+									<Pencil className="size-4" />
 								</span>
 								<p>
 									Rename issue to{" "}

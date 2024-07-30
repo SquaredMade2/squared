@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { githubSettingsLogo } from "../Svg";
+import { Github } from "lucide-react";
 import GithubIfAuthedDisplaySettings from "../GithubIfAuthedDisplaySettings";
 import RepositoryDropdown from "../RepositoryDropdown";
 import {
@@ -75,7 +75,11 @@ const GithubSettings = () => {
 		workspaceId: string,
 	) => void = (ghToken, ghUser, ghRepo, workspaceId) => {
 		dispatch(
-			setRepo({ workspaceId: workspaceId, repoName: ghRepo, owner: ghUser }),
+			setRepo({
+				workspaceId: workspaceId,
+				repoName: ghRepo,
+				owner: ghUser,
+			}),
 		);
 		dispatch(createGhWebhook({ ghToken, ghUser, ghRepo, workspaceId }));
 		dispatch(clearCommits());
@@ -92,7 +96,9 @@ const GithubSettings = () => {
 	return (
 		<div className={styles.pageWrapper}>
 			<div className={styles.headerWrapper}>
-				<div className={styles.githubLogoWrapper}>{githubSettingsLogo()}</div>
+				<div className={styles.githubLogoWrapper}>
+					<Github className="size-8" />
+				</div>
 				<div className={styles.headerText}>
 					<h3 className={styles.title}>Github</h3>
 					<header className={styles.subtitle}>

@@ -1,3 +1,3 @@
 export interface StatusButtonProps {
-  location: string;
+	location: string;
 }

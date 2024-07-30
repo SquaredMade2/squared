@@ -1,5 +1,5 @@
-import type { Team as TaskDataTeam } from '@/store/taskData/taskData.interfaces';
-import type { ChangeEvent } from 'react';
+import type { Team as TaskDataTeam } from "@/store/taskData/taskData.interfaces";
+import type { ChangeEvent } from "react";
 
 export type handleTeamClickNavbar = (team: TaskDataTeam) => void;
 

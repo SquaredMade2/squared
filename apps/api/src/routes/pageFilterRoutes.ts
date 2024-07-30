@@ -2,10 +2,10 @@ import { Router } from "express";
 
 import catchAsync from "../utils/catchAsync";
 import {
-  addFilter,
-  getSelectedFilters,
-  getFilteredTasks,
-  deleteView,
+	addFilter,
+	getSelectedFilters,
+	getFilteredTasks,
+	deleteView,
 } from "../controllers/pageFilterControllers";
 
 const router: Router = Router();

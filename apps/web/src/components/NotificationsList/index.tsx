@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { BellIcon, checkMark, TrashCan } from "@/components/Svg";
+import { Bell, Check, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { SocketContext } from "@/app/SocketProvider";
@@ -118,7 +118,9 @@ function NotificationsList({
 		>
 			<div className={styles.headerContainer}>
 				<div className={styles.notificationTextContainer}>
-					<span>{BellIcon(theme)}</span>
+					<Bell
+						className={`size-5 ${theme === "dark" ? "text-[#EEEFFC]" : "text-[#3C4149]"}`}
+					/>
 					<span className="text-foreground">Notifications</span>
 				</div>
 				<div className={styles.markAllBtnContainer}>
@@ -129,13 +131,19 @@ function NotificationsList({
 					>
 						Mark all as read
 					</button>
-					<span>{allNotificationRead ? checkMark("limegreen") : ""}</span>
+					<Check
+						className={`size-5 ${allNotificationRead ? "text-[limegreen]" : ""}`}
+					/>
 				</div>
 			</div>
 			{notifications.length > 0 ? (
 				notifications.map((noti: NotificationProps) =>
 					noti.task.map(
-						(t: { title: string; description: string; _id: string }) => (
+						(t: {
+							title: string;
+							description: string;
+							_id: string;
+						}) => (
 							<div
 								key={`${noti._id}`}
 								className={` ${handleConfirmedNotificationColor(
@@ -168,7 +176,7 @@ function NotificationsList({
 											className="cursor-pointer"
 											onClick={() => handleRemoveNotification(t._id)}
 										>
-											<TrashCan className="fill-[#9CA6C9]" />
+											<Trash2 className="size-4" />
 										</button>
 									</div>
 									<Link

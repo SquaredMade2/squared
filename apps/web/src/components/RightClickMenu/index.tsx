@@ -6,7 +6,7 @@ import type {
 	Color,
 	RightClickMenuProps,
 } from "@/components/RightClickMenu/RightClickMenu.interfaces";
-import { TrashCan, Pencil } from "@/components/Svg";
+import { Pencil, Trash2 } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const styles = {
@@ -35,7 +35,10 @@ const RightClickMenu = ({
 					hover: "group-hover:fill-black",
 					color: "fill-gray-500",
 				})
-			: setFillColor({ ...fillColor, hover: "group-hover:fill-white" });
+			: setFillColor({
+					...fillColor,
+					hover: "group-hover:fill-white",
+				});
 	};
 
 	useEffect(() => {
@@ -53,7 +56,7 @@ const RightClickMenu = ({
 							className={`${styles.itemWrapper} group`}
 						>
 							<span className={styles.svg}>
-								{<Pencil className={`${fillColor.color} ${fillColor.hover}`} />}
+								<Pencil className="size-4" />
 							</span>
 							<p>Rename...</p>
 						</li>
@@ -65,7 +68,7 @@ const RightClickMenu = ({
 						}}
 					>
 						<span className={styles.svg}>
-							{<TrashCan className={`${fillColor.hover} ${fillColor.color}`} />}
+							<Trash2 className="size-4" />
 						</span>
 						<p>Delete</p>
 					</li>

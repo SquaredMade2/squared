@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import type { CommandMenuProps } from "./CommandMenu.interfaces";
 import type { RootState } from "@/store";
-import { cmdIcon } from "../Svg";
+import { Command } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const styles = {
@@ -40,7 +40,7 @@ const CommandMenu = ({ handleNextPage }: CommandMenuProps) => {
 				</span>
 				<div className={styles.iconWrapper}>
 					<div className={styles.commandWrapper}>
-						<span>{cmdIcon(theme ?? "dark")}</span>
+						<Command className={"text-[#EEEFFC] dark:text-[#3C4149]"} />
 					</div>
 
 					<div className={styles.kWrapper}>

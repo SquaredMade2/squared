@@ -1,21 +1,26 @@
-import { Request, Response, NextFunction } from 'express';
-import { Types } from 'mongoose';
-import AppError from '../utils/AppError';
-import Workspace from '../models/workspace';
-import User from '../models/user';
-import Task from '../models/task';
-import Team from '../models/team';
-import { sendMail } from '../helpers/transporter';
-import jwt from 'jsonwebtoken';
-import JWTPayload from '../interface/JWTPayload';
-import { getLookup, tasksOfTeamFields, userOfWorkspaceField, workspaceGroup } from '../utils/aggregationUtils';
-import IWorkspace from '../interface/workspace';
-const crypto = require('crypto');
+import { Request, Response, NextFunction } from "express";
+import { Types } from "mongoose";
+import AppError from "../utils/AppError";
+import Workspace from "../models/workspace";
+import User from "../models/user";
+import Task from "../models/task";
+import Team from "../models/team";
+import { sendMail } from "../helpers/transporter";
+import jwt from "jsonwebtoken";
+import JWTPayload from "../interface/JWTPayload";
+import {
+	getLookup,
+	tasksOfTeamFields,
+	userOfWorkspaceField,
+	workspaceGroup,
+} from "../utils/aggregationUtils";
+import IWorkspace from "../interface/workspace";
+const crypto = require("crypto");
 
 const addWorkspace = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<Response | AppError | void> => {
 	try {
 		const { name, url, companySize, users, username } = req.body;
@@ -24,7 +29,7 @@ const addWorkspace = async (
 			name,
 			url,
 			companySize,
-			users: { username, user: users, role: 'owner' },
+			users: { username, user: users, role: "owner" },
 			issuesCreated: 1,
 		});
 		// Update user with new workspace make onboarding true and return updated user
@@ -36,16 +41,15 @@ const addWorkspace = async (
 				},
 				on_boarding: true,
 			},
-			{ new: true }
+			{ new: true },
 		);
 		if (!user) {
-			return next(new AppError('$$$ User not found $$$', 404));
+			return next(new AppError("$$$ User not found $$$", 404));
 		}
 		return res.status(201).json({ workspace, user });
 	} catch (error) {
-		
 		return next(
-			new AppError('$$$ An error occurred while adding the workspace.', 500)
+			new AppError("$$$ An error occurred while adding the workspace.", 500),
 		);
 	}
 };
@@ -53,64 +57,64 @@ const addWorkspace = async (
 const getWorkspace = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
 	const { url, id, user } = req.query;
 	let workspace;
 	if (!url && !id) {
-		return next(new AppError('$$$ No workspace id or url provided $$$', 404));
-	} else if (!id && typeof user === 'string' && typeof url === 'string') {
+		return next(new AppError("$$$ No workspace id or url provided $$$", 404));
+	} else if (!id && typeof user === "string" && typeof url === "string") {
 		workspace = await Workspace.aggregate([
-			{ 
+			{
 				$match: {
 					url: url,
-					'users.user': new Types.ObjectId(user)
-				} 
+					"users.user": new Types.ObjectId(user),
+				},
 			},
 
-			getLookup('teams', 'teams', '_id', 'teams'),
-			
-			{ $unwind: { path: '$teams', preserveNullAndEmptyArrays: true } },
+			getLookup("teams", "teams", "_id", "teams"),
 
-			getLookup('tasks', 'teams.tasks', '_id', 'teams.tasks'),
-			
+			{ $unwind: { path: "$teams", preserveNullAndEmptyArrays: true } },
+
+			getLookup("tasks", "teams.tasks", "_id", "teams.tasks"),
+
 			tasksOfTeamFields,
-	
+
 			workspaceGroup,
 
-			getLookup('users', 'users.user', '_id', 'userDetails'),
-		
+			getLookup("users", "users.user", "_id", "userDetails"),
+
 			userOfWorkspaceField,
-		  ]);
+		]);
 		if (!workspace) {
-			return next(new AppError('$$$ Workspace not found $$$', 404));
+			return next(new AppError("$$$ Workspace not found $$$", 404));
 		} else {
 			res.json(workspace[0]);
 		}
-	} else if (typeof id === 'string' && typeof user === 'string') {
+	} else if (typeof id === "string" && typeof user === "string") {
 		workspace = await Workspace.aggregate([
-			{ 
-				$match: { 
+			{
+				$match: {
 					_id: new Types.ObjectId(id),
-					'users.user': new Types.ObjectId(user)
-				} 
+					"users.user": new Types.ObjectId(user),
+				},
 			},
-			getLookup('teams', 'teams', '_id', 'teams'),
-			
-			{ $unwind: { path: '$teams', preserveNullAndEmptyArrays: true } },
-			
-			getLookup('tasks', 'teams.tasks', '_id', 'teams.tasks'),
-			
+			getLookup("teams", "teams", "_id", "teams"),
+
+			{ $unwind: { path: "$teams", preserveNullAndEmptyArrays: true } },
+
+			getLookup("tasks", "teams.tasks", "_id", "teams.tasks"),
+
 			tasksOfTeamFields,
 
 			workspaceGroup,
 
-			getLookup('users', 'users.user', '_id', 'userDetails'),
-		
+			getLookup("users", "users.user", "_id", "userDetails"),
+
 			userOfWorkspaceField,
-			]);
+		]);
 		if (!workspace) {
-			return next(new AppError('$$$ Workspace not found $$$', 404));
+			return next(new AppError("$$$ Workspace not found $$$", 404));
 		} else {
 			res.json(workspace[0]);
 		}
@@ -120,27 +124,27 @@ const getWorkspace = async (
 const createTokenLink = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<Response | void> => {
 	const { id } = req.body;
 
 	try {
 		const workspace = await Workspace.findOne({ _id: id });
 		if (!id) {
-			return next(new AppError('User with that email does not exist', 422));
+			return next(new AppError("User with that email does not exist", 422));
 		}
 		if (!workspace) {
-			return next(new AppError('Workspace does not exist', 404));
+			return next(new AppError("Workspace does not exist", 404));
 		}
 		workspace.universalTokenLink.token = await crypto
 			.randomBytes(16)
-			.toString('hex')
-			.replace(/-/g, '')
+			.toString("hex")
+			.replace(/-/g, "")
 			.substring(0, 16);
 		await workspace.save();
 		res.json({
 			success: true,
-			message: 'Successfully created new token',
+			message: "Successfully created new token",
 			workspace: workspace.universalTokenLink.token,
 		});
 	} catch (error) {}
@@ -149,61 +153,60 @@ const createTokenLink = async (
 const enableUniversalLink = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<Response | void> => {
 	const { enabled, workspaceId } = req.body;
 	try {
 		const workspace = await Workspace.findByIdAndUpdate(
 			workspaceId,
-			{ 'universalTokenLink.isEnabled': enabled },
-			{ new: true }
+			{ "universalTokenLink.isEnabled": enabled },
+			{ new: true },
 		);
 		if (!workspace) {
-			return next(new AppError('Could not find workspace.', 404));
+			return next(new AppError("Could not find workspace.", 404));
 		}
 		res.json({ success: true, isEnabled: enabled });
 	} catch (error) {
-		
-		return next(new AppError('Internal Server Error', 500));
+		return next(new AppError("Internal Server Error", 500));
 	}
 };
 
 const joinWorkspaceThroughUniversalLink = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
 	const { token } = req.params;
 	try {
 		const userToken = req.cookies.token;
 		if (!userToken) {
-			return next(new AppError('User is not logged in', 404));
+			return next(new AppError("User is not logged in", 404));
 		}
 		const decoded = jwt.verify(
 			userToken,
-			process.env.JWT_SECRECT
+			process.env.JWT_SECRECT,
 		) as JWTPayload;
 
 		const user = await User.findById({ _id: decoded.id });
 		const workspace = await Workspace.findOne({
-			'universalTokenLink.token': token,
+			"universalTokenLink.token": token,
 		});
 		const userExists = workspace?.users.some(
-			(u) => u.user.toString() === user?._id.toString()
+			(u) => u.user.toString() === user?._id.toString(),
 		);
 		if (userExists) {
-			return next(new AppError('User already exists in workspace', 404));
+			return next(new AppError("User already exists in workspace", 404));
 		}
 
 		if (!workspace) {
-			return next(new AppError('Workspace not found', 404));
+			return next(new AppError("Workspace not found", 404));
 		}
 		if (!user) {
-			return next(new AppError('User is not logged in', 404));
+			return next(new AppError("User is not logged in", 404));
 		}
 		if (!workspace.universalTokenLink.isEnabled) {
 			return next(
-				new AppError('Invitation link is not enabled currently', 404)
+				new AppError("Invitation link is not enabled currently", 404),
 			);
 		}
 
@@ -211,22 +214,22 @@ const joinWorkspaceThroughUniversalLink = async (
 			workspace._id,
 			{
 				$push: {
-					users: { username: user.username, user: user._id, role: 'member' },
+					users: { username: user.username, user: user._id, role: "member" },
 				},
 			},
-			{ new: true }
-		).populate({ path: 'teams', populate: { path: 'tasks' } });
+			{ new: true },
+		).populate({ path: "teams", populate: { path: "tasks" } });
 
 		if (updatedWorkspace) {
 			const updatedWorkspaceWithTransformedDates = await Workspace.aggregate([
-			  { $match: { _id: updatedWorkspace._id } },
-			  getLookup('teams', 'teams', '_id', 'teams'),
-			  { $unwind: { path: '$teams', preserveNullAndEmptyArrays: true } },
-			  getLookup('tasks', 'teams.tasks', '_id', 'teams.tasks'),
-			  tasksOfTeamFields,
-			  workspaceGroup,
-			  getLookup('users', 'users.user', '_id', 'userDetails'),
-			  userOfWorkspaceField,
+				{ $match: { _id: updatedWorkspace._id } },
+				getLookup("teams", "teams", "_id", "teams"),
+				{ $unwind: { path: "$teams", preserveNullAndEmptyArrays: true } },
+				getLookup("tasks", "teams.tasks", "_id", "teams.tasks"),
+				tasksOfTeamFields,
+				workspaceGroup,
+				getLookup("users", "users.user", "_id", "userDetails"),
+				userOfWorkspaceField,
 			]);
 
 			await User.findByIdAndUpdate(
@@ -234,44 +237,43 @@ const joinWorkspaceThroughUniversalLink = async (
 				{
 					$push: { workspaces: updatedWorkspace },
 				},
-				{ new: true }
+				{ new: true },
 			);
-	
+
 			res.json({
 				success: true,
-				message: 'Accepted workspace',
+				message: "Accepted workspace",
 				updatedWorkspaceWithTransformedDates,
 			});
 			await user.save();
-
 		}
 	} catch (error) {
-		return next(new AppError('Internal Server Error', 500));
+		return next(new AppError("Internal Server Error", 500));
 	}
 };
 
 const joinWorkspace = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<Response | void> => {
 	const { id, email } = req.body;
 	try {
 		const user = await User.findOne({ email });
 		if (!id || !user) {
-			return next(new AppError('User with that email does not exist', 422));
+			return next(new AppError("User with that email does not exist", 422));
 		}
 		if (user.workspaces.includes(id)) {
-			return res.json({ error: 'User is already a member of workspace' });
+			return res.json({ error: "User is already a member of workspace" });
 		}
 		const workspace = await Workspace.findOne({ _id: id });
 		const token = jwt.sign(
 			{ user: user._id, workspaceId: id },
 			process.env.JWT_SECRECT,
-			{ expiresIn: '1h' }
+			{ expiresIn: "1h" },
 		);
 		if (!workspace) {
-			return next(new AppError('Workspace does not exist', 404));
+			return next(new AppError("Workspace does not exist", 404));
 		}
 
 		let tokenExistsInWorkspace = false;
@@ -293,54 +295,54 @@ const joinWorkspace = async (
 		}
 		await workspace.save();
 		await user.save();
-		sendMail(email, user.username, token, 'join', 'workspace', workspace?.name);
+		sendMail(email, user.username, token, "join", "workspace", workspace?.name);
 		res.json({
 			success: true,
-			message: 'Workspace Invitation sent!',
+			message: "Workspace Invitation sent!",
 			token,
 		});
 	} catch (error) {
-		res.status(500).json({ error: 'Internal Server Error' });
+		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
 
 const verifyTokenToJoinWorkspace = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<Response | void> => {
 	const { token } = req.params;
 	if (!token) {
-		return res.status(422).send({ message: 'Missing token' });
+		return res.status(422).send({ message: "Missing token" });
 	}
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_SECRECT) as JWTPayload;
 		const user = await User.findById(decoded.user);
 		if (!user) {
-			return next(new AppError('No User is found with that email', 422));
+			return next(new AppError("No User is found with that email", 422));
 		}
 		const tokenIndex = user.join_workspace.indexOf(token);
 		if (tokenIndex === -1) {
 			return next(
-				new AppError('Link has been expired. Please try a new invitation', 498)
+				new AppError("Link has been expired. Please try a new invitation", 498),
 			);
 		}
 		const workspaceId = decoded.workspaceId;
 		const workspace = await Workspace.findOne({ _id: workspaceId });
 		if (!workspace) {
-			return next(new AppError('No workspace found', 404));
+			return next(new AppError("No workspace found", 404));
 		}
 		const updatedWorkspace = await Workspace.findByIdAndUpdate(
 			workspace.id,
 			{
 				$push: {
-					users: { username: user.username, user: user._id, role: 'member' },
+					users: { username: user.username, user: user._id, role: "member" },
 				},
 			},
-			{ new: true }
+			{ new: true },
 		).populate({
-			path: 'teams',
-			populate: { path: 'tasks' },
+			path: "teams",
+			populate: { path: "tasks" },
 		});
 
 		user.join_workspace.splice(Number(tokenIndex), 1);
@@ -350,33 +352,32 @@ const verifyTokenToJoinWorkspace = async (
 				$push: { workspaces: updatedWorkspace },
 				on_boarding: true,
 			},
-			{ new: true }
+			{ new: true },
 		);
 
 		if (updatedWorkspace) {
 			const updatedWorkspaceWithTransformedDates = await Workspace.aggregate([
 				{ $match: { _id: updatedWorkspace._id } },
-				getLookup('teams', 'teams', '_id', 'teams'),
-				{ $unwind: { path: '$teams', preserveNullAndEmptyArrays: true } },
-				getLookup('tasks', 'teams.tasks', '_id', 'teams.tasks'),
+				getLookup("teams", "teams", "_id", "teams"),
+				{ $unwind: { path: "$teams", preserveNullAndEmptyArrays: true } },
+				getLookup("tasks", "teams.tasks", "_id", "teams.tasks"),
 				tasksOfTeamFields,
 				workspaceGroup,
-				getLookup('users', 'users.user', '_id', 'userDetails'),
+				getLookup("users", "users.user", "_id", "userDetails"),
 				userOfWorkspaceField,
-			  ]);
-			  res.json({
+			]);
+			res.json({
 				success: true,
-				message: 'Workspace joined successfully',
+				message: "Workspace joined successfully",
 				workspace: updatedWorkspaceWithTransformedDates,
 			});
 		}
 		await user.save();
 	} catch (err) {
-		
 		if (err instanceof jwt.TokenExpiredError) {
-			res.status(401).json({ error: 'Token has been expired' });
+			res.status(401).json({ error: "Token has been expired" });
 		}
-		res.status(500).json({ error: 'Internal Server Error' });
+		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
 
@@ -385,35 +386,34 @@ const deleteWorkspace = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const workspace = await Workspace.findOne({ _id: id });
 		if (!workspace) {
-			res.status(404).send('Workspace not found');
+			res.status(404).send("Workspace not found");
 			return;
 		}
 		const isWorkspaceOwner = workspace.users.some(
 			(user) =>
-				user.user.toString() === userId.toString() && user.role === 'owner'
+				user.user.toString() === userId.toString() && user.role === "owner",
 		);
 		if (isWorkspaceOwner) {
 			await Task.deleteMany({ team: { $in: teamIds } });
 			await Team.deleteMany({ workspace: id });
 			await Workspace.deleteOne({ _id: id });
 			await User.updateMany({}, { $pull: { workspaces: id } });
-			res.json({ success: true, message: 'Successfully deleted workspace!' });
+			res.json({ success: true, message: "Successfully deleted workspace!" });
 		} else {
 			await Workspace.findByIdAndUpdate(id, {
 				$pull: { users: { user: userId } },
 			});
 			await User.findByIdAndUpdate(userId, { $pull: { workspaces: id } });
-			res.json({ success: true, message: 'Successfully left the workspace!' });
+			res.json({ success: true, message: "Successfully left the workspace!" });
 		}
 	} catch (error) {
-		
-		res.status(500).send('Internal Server Error');
+		res.status(500).send("Internal Server Error");
 	}
 };
 
 const getAllWorkspaces = async (req: Request, res: Response): Promise<void> => {
 	const id = req.query.id;
-	const workspaceData = await User.find({ _id: id }).populate('workspaces');
+	const workspaceData = await User.find({ _id: id }).populate("workspaces");
 	const workspace = workspaceData[0].workspaces;
 	res.json(workspace);
 };
@@ -426,7 +426,7 @@ const updateWorkspace = async (req: Request, res: Response): Promise<void> => {
 
 const incrementWorkspaceCreatedIssues = async (
 	req: Request,
-	res: Response
+	res: Response,
 ): Promise<void> => {
 	const { id } = req.query;
 	await Workspace.updateOne({ _id: id }, { $inc: { issuesCreated: 1 } });
@@ -436,12 +436,12 @@ const incrementWorkspaceCreatedIssues = async (
 const workspaceExists = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
 	const { url } = req.query;
 	const exists = await Workspace.findOne({ url });
 	if (exists) {
-		return next(new AppError('$$$ Workspace already exists. $$$', 404));
+		return next(new AppError("$$$ Workspace already exists. $$$", 404));
 	} else {
 		res.sendStatus(200);
 	}
@@ -450,13 +450,13 @@ const workspaceExists = async (
 const updateUserRoles = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	const { userId, workspaceId, role } = req.body;
 	try {
 		const workspace = await Workspace.findOne({ _id: workspaceId });
 		if (!workspace) {
-			return next(new AppError('$$$ No Workspace found $$$', 404));
+			return next(new AppError("$$$ No Workspace found $$$", 404));
 		}
 		const updatedUserWorkspace = workspace?.users.map((user) => {
 			if (user.user.toString() === userId.toString()) {
@@ -470,35 +470,35 @@ const updateUserRoles = async (
 			{
 				$set: { users: updatedUserWorkspace },
 			},
-			{ new: true }
+			{ new: true },
 		);
 		res.json({
 			success: true,
-			message: 'Updated the role',
+			message: "Updated the role",
 			updatedUserWorkspace,
 		});
 	} catch (err) {
-		return next(new AppError('Internal Server Error', 500));
+		return next(new AppError("Internal Server Error", 500));
 	}
 };
 
 const removeUserFromWorkspace = async (
 	req: Request,
-	res: Response
+	res: Response,
 ): Promise<void> => {
 	const { workspaceId, userId } = req.body;
 	try {
 		const workspace = await Workspace.findById(workspaceId);
 		if (!workspace) {
-			res.status(404).send('Workspace not found');
+			res.status(404).send("Workspace not found");
 		}
 
 		if (
 			!workspace?.users.some(
-				(user) => user.user.toString() === userId.toString()
+				(user) => user.user.toString() === userId.toString(),
 			)
 		) {
-			res.status(404).send('User not part of workspace');
+			res.status(404).send("User not part of workspace");
 		}
 
 		const updatedWorkspace = await Workspace.findByIdAndUpdate(
@@ -506,19 +506,17 @@ const removeUserFromWorkspace = async (
 			{
 				$pull: { users: { user: userId } },
 			},
-			{ new: true }
+			{ new: true },
 		);
 		await User.findByIdAndUpdate(userId, {
 			$pull: { workspaces: workspaceId },
 		});
 		res.json({
 			success: true,
-			message: 'User successfully removed from workspace',
+			message: "User successfully removed from workspace",
 		});
-		
 	} catch (error) {
-		
-		res.status(500).send('Internal Server Error');
+		res.status(500).send("Internal Server Error");
 	}
 };
 const searchQuery = async (req: Request, res: Response) => {
@@ -527,28 +525,31 @@ const searchQuery = async (req: Request, res: Response) => {
 
 	const workspaceLookup: IWorkspace[] = await Workspace.aggregate([
 		{
-		  $match: {
-			_id: typeof workspace === 'string' ? new Types.ObjectId(workspace) : workspace,
-		  },
+			$match: {
+				_id:
+					typeof workspace === "string"
+						? new Types.ObjectId(workspace)
+						: workspace,
+			},
 		},
-		getLookup('teams', 'teams', '_id', 'teams'),
-			
-		{ $unwind: { path: '$teams', preserveNullAndEmptyArrays: true } },
-		
-		getLookup('tasks', 'teams.tasks', '_id', 'teams.tasks'),
-		
+		getLookup("teams", "teams", "_id", "teams"),
+
+		{ $unwind: { path: "$teams", preserveNullAndEmptyArrays: true } },
+
+		getLookup("tasks", "teams.tasks", "_id", "teams.tasks"),
+
 		tasksOfTeamFields,
 
 		workspaceGroup,
 
-		getLookup('users', 'users.user', '_id', 'userDetails'),
-	
+		getLookup("users", "users.user", "_id", "userDetails"),
+
 		userOfWorkspaceField,
-	  ]);
+	]);
 	const processedData = workspaceLookup.map((workspace) =>
 		workspace.teams.map((team) =>
-			team.tasks.filter((task) => task.title.toLowerCase().includes(query))
-		)
+			team.tasks.filter((task) => task.title.toLowerCase().includes(query)),
+		),
 	);
 	const flattenedData = processedData.flat(Infinity);
 	res.json(flattenedData);
@@ -561,12 +562,10 @@ const setGithubRepo = async (req: Request, res: Response): Promise<void> => {
 			{ _id: workspaceId },
 			{
 				$set: { githubRepoInfo: { repoName, owner } },
-			}
+			},
 		);
 		res.json({ repoName, owner });
-	} catch (error) {
-		
-	}
+	} catch (error) {}
 };
 
 export {

@@ -1,4 +1,4 @@
 export interface Props {
-  description: string;
-  handleAction?: () => void;
+	description: string;
+	handleAction?: () => void;
 }

@@ -7,10 +7,7 @@ import ViewButton from "@/components/ViewButton";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdown";
 import SelectedFiltersBar from "@/components/SelectedFiltersBar";
-import {
-	newFilter,
-	//  BellIcon -- this has been disabled until a suitable icon has been found. The current icon does not match the design theme
-} from "@/components/Svg";
+import { Filter } from "lucide-react";
 import type { TopNavBarProps } from "@/components/TopNavBar/TopNavBar.interfaces";
 import { ProjectDataWidget } from "@/components/ProjectDataWidget";
 import { SocketContext } from "@/app/SocketProvider";
@@ -203,7 +200,9 @@ const TopNavBar = ({
 									}
 									className={`${style.filter} group-hover:bg-accent`}
 								>
-									<div className="mr-2">{newFilter()}</div>
+									<div className="mr-2">
+										<Filter className="size-5" />
+									</div>
 									<p>{showFilterStatusBar ? "Clear Filters x" : "Filter"}</p>
 								</button>
 								<FilterDropDown

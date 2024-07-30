@@ -3,7 +3,7 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { UsersInWorkspace } from "@/store/taskData/taskData.interfaces";
 import ProfileImage from "../ProfileImage";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
-import { UnassignedSVGInDropdown } from "../Svg";
+import { UserSearch } from "lucide-react";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType, type Assignee } from "@/interfaces/event.interfaces";
 import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
@@ -124,7 +124,7 @@ export const AssigneeDropdown = ({
 					className={styles.assignButton}
 					onClick={() => handleClickAssignee(taskId, { id: null, name: null })}
 				>
-					<UnassignedSVGInDropdown />
+					<UserSearch className="size-4 mr-2" />
 					Unassign
 				</button>
 				<ul className={styles.overflowHandler}>

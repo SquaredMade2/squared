@@ -1,3 +1,3 @@
 export interface UserSocket {
-  [key: string]: string;
+	[key: string]: string;
 }

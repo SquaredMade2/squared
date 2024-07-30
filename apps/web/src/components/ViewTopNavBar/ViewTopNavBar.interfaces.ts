@@ -1,3 +1,3 @@
 export interface ViewTopNavBarProps {
-  setSearchInput: (searchInput: string) => void;
+	setSearchInput: (searchInput: string) => void;
 }

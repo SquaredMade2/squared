@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { ProjectDataLabel } from "../../Svg";
+import { LayoutGrid } from "lucide-react";
 import type { ProjectsTabProps } from "./ProjectsTabProps";
 
 export const ProjectsTab = ({ tasksList }: ProjectsTabProps) => {
@@ -20,7 +20,7 @@ export const ProjectsTab = ({ tasksList }: ProjectsTabProps) => {
 		<div className={styles.tabContainer}>
 			<div className={styles.tab}>
 				<div className={styles.projectDataLabelWrapper}>
-					{ProjectDataLabel()}
+					<LayoutGrid className="text-[#9577FF] size-4" />
 				</div>
 				<p>No Project</p>
 				<header className={styles.tabAmount}>{tasksList.length}</header>

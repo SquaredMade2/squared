@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { handleTheme } from "@/store/userSettings";
 import {
-	backChevron,
-	AddIcon,
-	personIcon,
-	teams,
-	workSpaceLogo,
-} from "@/components/Svg";
+	BriefcaseBusiness,
+	ChevronLeft,
+	CircleUser,
+	Plus,
+	Users,
+} from "lucide-react";
 import { setCurrentTeam } from "@/store/taskData";
 import type { RootState } from "@/store";
 import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces";
@@ -75,11 +75,13 @@ const SettingsNavBar = ({
 						className={styles.title}
 						onClick={() => router.push(`/workspace/${workspace.url}`)}
 					>
-						<span className={styles.backSvg}>{backChevron()}</span>
+						<span className={styles.backSvg}>
+							<ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
+						</span>
 						<h1 className={styles.settingText}>Settings</h1>
 					</div>
 					<div className={styles.myAccountDiv}>
-						<div>{workSpaceLogo()}</div>
+						<BriefcaseBusiness className="size-4 text-[#6A6F75]" />
 						<p className={styles.myAccountText}>Workspace</p>
 					</div>
 					<button
@@ -104,7 +106,7 @@ const SettingsNavBar = ({
 						Github Settings
 					</button>
 					<div className={styles.myAccountDiv}>
-						<div>{personIcon({})}</div>
+						<CircleUser className="size-4 text-[#6A6F75]" />
 						<p className={styles.myAccountText}>My Account</p>
 					</div>
 					<div>
@@ -117,7 +119,7 @@ const SettingsNavBar = ({
 						</button>
 					</div>
 					<div className={styles.teamsDiv}>
-						<div>{teams()}</div>
+						<Users className="size-4 text-[#858699]" />
 						<p className={styles.teamsDivText}>Teams</p>
 					</div>
 					{workspace && (
@@ -137,7 +139,9 @@ const SettingsNavBar = ({
 						className={styles.addTeam}
 						onClick={() => router.push(addTeamUrl)}
 					>
-						<span className={styles.teamSvg}>{AddIcon()}</span>
+						<span className={styles.teamSvg}>
+							<Plus className="size-5 cursor-pointer" />
+						</span>
 						<p className={styles.pointer}>Add team</p>
 					</div>
 					<div className={styles.lightButton}>

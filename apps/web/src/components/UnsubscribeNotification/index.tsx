@@ -1,7 +1,7 @@
-import React from 'react';
-import ButtonIcon from '../ButtonIcon';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBellSlash } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import ButtonIcon from "../ButtonIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBellSlash } from "@fortawesome/free-solid-svg-icons";
 
 const unsubscribeIcon = <FontAwesomeIcon icon={faBellSlash} />;
 

@@ -1,4 +1,4 @@
 export interface DeleteButtonProps {
-  description: string;
-  handleAction: () => void;
+	description: string;
+	handleAction: () => void;
 }

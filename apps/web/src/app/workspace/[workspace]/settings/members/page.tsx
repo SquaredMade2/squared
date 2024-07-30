@@ -3,12 +3,7 @@ import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import {
-	SearchIcon,
-	threeDotOption,
-	refreshIcon,
-	copyLink,
-} from "@/components/Svg";
+import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
 import { getListOfUsers } from "@/store/userSettings/thunks";
 import {
 	joinWorkspace,
@@ -449,7 +444,7 @@ export default function Members() {
 											onClick={createWorkspaceLink}
 											className={styles.createLinkButton}
 										>
-											{refreshIcon()}
+											<RefreshCw className="size-4 text-[#858699]" />
 										</button>
 									</div>
 									<button
@@ -457,7 +452,12 @@ export default function Members() {
 										onClick={() => navigator.clipboard.writeText(workspaceLink)}
 										className={`${handleButtonStyle()} flex items-center gap-1 font-semibold`}
 									>
-										{copyLink(theme ?? "")}Copy
+										<Copy
+											className={
+												"size-4 cursor-pointer text-white dark:text-[#174eff]"
+											}
+										/>
+										Copy
 									</button>
 								</div>
 							</>
@@ -490,7 +490,9 @@ export default function Members() {
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 							/>
-							<span className={styles.searchIcon}>{SearchIcon()}</span>
+							<span className={styles.searchIcon}>
+								<Search className="size-4 text-[#999999]" />
+							</span>
 						</div>
 						<div>
 							<button
@@ -523,7 +525,7 @@ export default function Members() {
 											commandOptions[_id] ? "focus:bg-[#333]" : ""
 										}  block px-1 py-0.5 rounded`}
 									>
-										{threeDotOption()}
+										<Ellipsis className="cursor-pointer size-4 text-[#858699]" />
 									</button>
 									<div
 										className={`${

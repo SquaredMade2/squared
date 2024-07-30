@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ClickAwayListener } from "@mui/base";
 import type { SetFilter } from "@/app/interfaces/ProjectDataWidget.interfaces";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { AddIcon } from "../../Svg";
+import { Plus } from "lucide-react";
 import { setCurrentFilter } from "@/store/filterPage/actions";
 import WidgetLabelDropdown from "../../WidgetLabelDropdown";
 import type { LabelsTabProps } from "./LabelsTab.interfaces";
@@ -73,7 +73,9 @@ export const LabelsTab = ({ labelsData }: LabelsTabProps) => {
 				svg: (
 					<div
 						className={styles.colorIcon}
-						style={{ backgroundColor: getColorFromLabel(filterLabel) }}
+						style={{
+							backgroundColor: getColorFromLabel(filterLabel),
+						}}
 					/>
 				),
 				group: "labels",
@@ -98,7 +100,9 @@ export const LabelsTab = ({ labelsData }: LabelsTabProps) => {
 									<li className={styles.eachFilter} key={label}>
 										<div
 											className={styles.colorIcon}
-											style={{ backgroundColor: getColorFromLabel(label) }}
+											style={{
+												backgroundColor: getColorFromLabel(label),
+											}}
 										/>
 										<header>{label}</header>
 									</li>
@@ -106,7 +110,9 @@ export const LabelsTab = ({ labelsData }: LabelsTabProps) => {
 							})}
 						</ul>
 					</button>
-					<div className={styles.addIconWrapper}>{AddIcon()}</div>
+					<div className={styles.addIconWrapper}>
+						<Plus className="size-5 cursor-pointer" />
+					</div>
 				</div>
 				<div className={styles.labelsWrapper}>
 					{labelsRenderData.map((label) => {

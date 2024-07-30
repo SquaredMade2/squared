@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { addWorkspace, getAllWorkspaces } from "@/store/taskData/thunks";
 import { toast } from "react-toastify";
-import { miniBackChevron } from "../Svg";
+import { ChevronLeft } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 import { getUser } from "@/store/userSettings/thunks";
 import type { CreateWorkspaceProps } from "./CreateWorkspace.interfaces";
@@ -147,7 +147,7 @@ const CreateWorkspace = ({
 						<span className={styles.userEmail}>{user.email}</span>
 					</div>
 					<div className={styles.backLink}>
-						<span>{miniBackChevron()}</span>
+						<ChevronLeft className="text-[#858699] size-5" />
 						<a href={`/workspace/${workspaceList[0].url}`}>Back to Squared</a>
 					</div>
 				</div>

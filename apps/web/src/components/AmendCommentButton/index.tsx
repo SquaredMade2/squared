@@ -1,8 +1,7 @@
 import { useContext } from "react";
 import UserNotAllowedModal from "@/components/UserNotAllowedModal";
 import AmendCommentDropdown from "@/components/AmendCommentDropdown";
-import { Ellipsis } from "@/components/Svg";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { Ellipsis } from "lucide-react";
 import { EditorContext } from "@/components/EditorContext";
 import { useTheme } from "next-themes";
 

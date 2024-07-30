@@ -1,7 +1,7 @@
 import { useState } from "react";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { smallDeleteIcon } from "@/components/Svg";
+import { X } from "lucide-react";
 import type {
 	MemberDetails,
 	UpdateMemberProps,
@@ -48,7 +48,7 @@ const UpdateMembersInfoModal = ({
 						onClick={() => setOpenUserUpdateModal(false)}
 						className="text-[#DCD8FE93] ml-auto"
 					>
-						{smallDeleteIcon()}
+						<X className="size-4 cursor-pointer" />
 					</span>
 				</div>
 				<form

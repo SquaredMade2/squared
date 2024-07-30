@@ -1,14 +1,14 @@
 import { Router } from "express";
 import catchAsync from "../utils/catchAsync";
 import {
-  addComment,
-  getComments,
-  updateComment,
-  deleteComment,
-  createTaskEvent,
-  addTaskEvent,
-  getTaskEvents,
-  getTaskEventLog
+	addComment,
+	getComments,
+	updateComment,
+	deleteComment,
+	createTaskEvent,
+	addTaskEvent,
+	getTaskEvents,
+	getTaskEventLog,
 } from "../controllers/eventsControllers";
 
 const router: Router = Router();
@@ -180,7 +180,6 @@ router.put("/comment/update", catchAsync(updateComment));
  *                   type: string
  */
 router.delete("/comment/delete/:id", catchAsync(deleteComment));
-
 
 router.post("/create-log", catchAsync(createTaskEvent));
 router.post("/add", catchAsync(addTaskEvent));

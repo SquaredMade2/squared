@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
-import { close, rightChevron } from "@/components/Svg";
+import { ChevronRight, X } from "lucide-react";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import type { ViewNewTopNavBarProps } from "@/components/ViewNewTopNavBar/ViewNewTopNavBar.interfaces";
 
@@ -29,7 +29,9 @@ const ViewNewTopNavBar = ({ showFilterSaveForm }: ViewNewTopNavBarProps) => {
 			<p>navbar</p>
 			{!showFilterSaveForm && (
 				<div className={styles.container}>
-					<Link href="/views">{close()}</Link>
+					<Link href="/views">
+						<X className="text-[#bababa] size-5" />
+					</Link>
 					<div className={styles.workspace}>
 						<WorkspaceInitials
 							workspaceName={currentWorkspace.name}
@@ -38,11 +40,15 @@ const ViewNewTopNavBar = ({ showFilterSaveForm }: ViewNewTopNavBarProps) => {
 						/>
 						{handleWorkspaceNameOverflow(currentWorkspace.name)}
 					</div>
-					<div>{rightChevron()}</div>
+					<div>
+						<ChevronRight className="size-4 stroke-gray-500" />
+					</div>
 					<Link href="/views">
 						<div className={styles.newViewText}>Views</div>
 					</Link>
-					<div>{rightChevron()}</div>
+					<div>
+						<ChevronRight className="size-4 stroke-gray-500" />
+					</div>
 					<div className={styles.newViewText}>New View</div>
 				</div>
 			)}

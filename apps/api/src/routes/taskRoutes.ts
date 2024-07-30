@@ -1,14 +1,14 @@
 import { Router } from "express";
 import catchAsync from "../utils/catchAsync";
 import {
-  addTask,
-  getTask,
-  deleteTask,
-  updateTask,
-  getSingleTask,
-  updateTaskAfterDrag,
-  updateTaskAssignee,
-  getSingleTaskIdentifier,
+	addTask,
+	getTask,
+	deleteTask,
+	updateTask,
+	getSingleTask,
+	updateTaskAfterDrag,
+	updateTaskAssignee,
+	getSingleTaskIdentifier,
 } from "../controllers/taskControllers";
 
 const router: Router = Router();

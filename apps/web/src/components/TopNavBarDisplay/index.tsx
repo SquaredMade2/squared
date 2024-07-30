@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { setView } from "@/store/userSettings";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
-import { displayIcon, downIcon } from "@/components/Svg";
+import { ChevronDown, SlidersVertical } from "lucide-react";
 import PurpleToggle from "@/components/PurpleToggle";
 import {
 	setShowPriority,
@@ -80,9 +80,9 @@ const TopNavBarDisplay = () => {
 		<div className={style.main}>
 			<div className={style.group} onClick={handleDropDown}>
 				<button type="button" className={style.buttonBg}>
-					{displayIcon()}
+					<SlidersVertical className="size-4" />
 					<span className={style.displaySpan}> Display</span>
-					{downIcon()}
+					<ChevronDown className="size-4" />
 				</button>
 			</div>
 			<AnimatePresence>

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 export {
-  FocusGuards,
-  //
-  Root,
-  //
-  useFocusGuards,
-} from './FocusGuards';
+	FocusGuards,
+	//
+	Root,
+	//
+	useFocusGuards,
+} from "./FocusGuards";

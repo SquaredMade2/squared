@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getFilteredViews } from "@/store/filterPage/actions";
 import FilterListDropDown from "@/components/FilterListDropDown";
 
-import { stackIcon, personIcon } from "@/components/Svg";
+import { CircleUser, Layers3 } from "lucide-react";
 import type { FilterListProps } from "./FilterList.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import { useTheme } from "next-themes";
@@ -59,7 +59,9 @@ const FilterList = ({ searchInput }: FilterListProps) => {
 									<div key={filter._id.toString()} className={styles.itemMain}>
 										<Link href={`/filter/${filter._id}`}>
 											<div className={styles.leftSide}>
-												<div className={styles.stackIcon}>{stackIcon()}</div>
+												<div className={styles.stackIcon}>
+													<Layers3 className="size-4 text-[#858699]" />
+												</div>
 												<div className={styles.filterTitle}>
 													{filters.length > 0
 														? filter.filterTitle.toString()
@@ -73,7 +75,7 @@ const FilterList = ({ searchInput }: FilterListProps) => {
 												className={styles.rightSideLink}
 											>
 												<div className={styles.personIcon}>
-													{personIcon({})}
+													<CircleUser className="size-4 text-[#6A6F75]" />
 												</div>
 												<div className={styles.userName}>
 													<p>{userName.name}</p>
