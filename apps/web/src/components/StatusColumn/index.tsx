@@ -7,70 +7,64 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { HideStatusProps } from "../HideStatus/HideStatusProps";
 import type { StatusColumnProps } from "./StatusColumn.interfaces";
+import { ScrollArea } from "../ui/scroll-area";
 
 const StatusColumn = ({
-  columnType,
-  title,
-  setShowRenameModal,
-  setTaskData,
-  tasks,
+	columnType,
+	title,
+	setShowRenameModal,
+	setTaskData,
+	tasks,
 }: StatusColumnProps) => {
-  const [showTasks, setShowTasks] = useState(true);
-  const view = useAppSelector((state: RootState) => state.userSettings.view);
-  const numberOfTasks = tasks.filter(
-    (task: Task) => task.status === title
-  ).length;
-  const isListView = view === "list";
+	const [showTasks, setShowTasks] = useState(true);
+	const view = useAppSelector((state: RootState) => state.userSettings.view);
+	const numberOfTasks = tasks.filter(
+		(task: Task) => task.status === title,
+	).length;
+	const isListView = view === "list";
 
-  const toggleShowTasks: HideStatusProps["toggleShowTasks"] = () => {
-    setShowTasks((prevState) => !prevState);
-  };
+	const toggleShowTasks: HideStatusProps["toggleShowTasks"] = () => {
+		setShowTasks((prevState) => !prevState);
+	};
 
-  return (
-    <div
-      className={`flex-col						
-			${view === "grid" && columnType === "Canceled" ? "ml-[15px] " : ""}
-			${view === "grid" && columnType === "Backlog" ? "mr-[15px] " : ""}
-			${view === "grid" && columnType === "In Progress" ? "mx-[15px] " : ""}
-			${view === "grid" && columnType === "Todo" ? "mx-[15px] " : ""}
-			${view === "grid" && columnType === "Done" ? "mx-[15px] " : ""}`}
-    >
-      <TaskColumnTitle
-        isListView={isListView}
-        showTasks={showTasks}
-        numberOfTasks={numberOfTasks}
-        title={title}
-        toggleShowTasks={toggleShowTasks}
-      />
-      <Droppable droppableId={columnType}>
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className={`
+	return (
+		<div className={view === "list" ? "mb-5" : "pb-4"}>
+			<TaskColumnTitle
+				isListView={isListView}
+				showTasks={showTasks}
+				numberOfTasks={numberOfTasks}
+				title={title}
+				toggleShowTasks={toggleShowTasks}
+			/>
+			<Droppable droppableId={columnType}>
+				{(provided, snapshot) => (
+					<ScrollArea
+						ref={provided.innerRef}
+						{...provided.droppableProps}
+						className={`
 						${snapshot.isDraggingOver ? " h-full" : ""}${
-              snapshot.isDraggingOver && view === "grid"
-                ? ""
-                : `overflow-y-auto ${view === "grid" && "h-[85vh]"}`
-            } 
+							snapshot.isDraggingOver && view === "grid"
+								? ""
+								: `${view === "grid" && "h-[77vh] sm:h-[84vh] rounded-lg hover:pr-1 transition-all duration-500 ease-in-out"}`
+						} 
 						`}
-          >
-            <TaskStatusSection
-              key={columnType}
-              isListView={isListView}
-              filteredTasks={tasks}
-              showTasks={showTasks}
-              setShowRenameModal={setShowRenameModal}
-              setTaskData={setTaskData}
-              title={columnType}
-            />
+					>
+						<TaskStatusSection
+							key={columnType}
+							isListView={isListView}
+							filteredTasks={tasks}
+							showTasks={showTasks}
+							setShowRenameModal={setShowRenameModal}
+							setTaskData={setTaskData}
+							title={columnType}
+						/>
 
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </div>
-  );
+						{provided.placeholder}
+					</ScrollArea>
+				)}
+			</Droppable>
+		</div>
+	);
 };
 
 export default StatusColumn;

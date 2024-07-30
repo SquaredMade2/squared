@@ -1,7 +1,7 @@
-import type { FilterOption } from '@/app/interfaces/Filter.interfaces';
+import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 
 export interface SelectedFilterProps {
-  handleFilter: (filterValue: FilterOption | null) => void;
-  taskAttribute: string;
-  taskAttributeTitle: string;
+	handleFilter: (filterValue: FilterOption | null) => void;
+	taskAttribute: string;
+	taskAttributeTitle: string;
 }

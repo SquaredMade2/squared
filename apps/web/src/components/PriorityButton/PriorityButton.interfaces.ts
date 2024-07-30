@@ -1,3 +1,3 @@
 export interface PriorityButtonProps {
-  location: string;
+	location: string;
 }

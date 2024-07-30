@@ -1,7 +1,7 @@
 export {
-  useDirection,
-  //
-  Provider,
-  //
-  DirectionProvider,
-} from './Direction';
+	useDirection,
+	//
+	Provider,
+	//
+	DirectionProvider,
+} from "./Direction";

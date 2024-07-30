@@ -116,7 +116,7 @@ const WorkSpaceDropDown = () => {
 							<li>{handleWorkspaceNameOverflow(workspace.name)}</li>
 							{workspace.name === currentWorkspace.name && (
 								<div className={styles.paddingLeft}>
-									 <Check className="text-[#575BC7] size-5" />
+									<Check className="text-[#575BC7] size-5" />
 								</div>
 							)}
 						</DropdownMenuItem>

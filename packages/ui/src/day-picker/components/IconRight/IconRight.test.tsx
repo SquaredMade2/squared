@@ -7,14 +7,14 @@ import { IconRight } from "./IconRight";
 let root: HTMLElement;
 
 beforeEach(() => {
-  const view = customRender(
-    <IconRight className="foo" style={{ color: "red" }} />
-  );
-  root = view.container.firstChild as HTMLElement;
+	const view = customRender(
+		<IconRight className="foo" style={{ color: "red" }} />,
+	);
+	root = view.container.firstChild as HTMLElement;
 });
 test("should add the class name", () => {
-  expect(root).toHaveClass("foo");
+	expect(root).toHaveClass("foo");
 });
 test("should apply the style", () => {
-  expect(root).toHaveStyle({ color: "red" });
+	expect(root).toHaveStyle({ color: "red" });
 });

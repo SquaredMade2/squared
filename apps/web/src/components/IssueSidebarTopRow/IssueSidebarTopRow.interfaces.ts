@@ -1,6 +1,6 @@
-import type { RefObject } from 'react';
+import type { RefObject } from "react";
 
 export interface IssueSidebarTopRowProps {
-  setShowSideNav: () => void;
-  svgRef: RefObject<HTMLElement>;
+	setShowSideNav: () => void;
+	svgRef: RefObject<HTMLElement>;
 }

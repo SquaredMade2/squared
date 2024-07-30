@@ -1,15 +1,15 @@
-import { Root } from './components/Root';
-import { RootProvider } from './contexts/RootProvider';
-import type { DayPickerDefaultProps } from './types/DayPickerDefault';
-import type { DayPickerMultipleProps } from './types/DayPickerMultiple';
-import type { DayPickerRangeProps } from './types/DayPickerRange';
-import type { DayPickerSingleProps } from './types/DayPickerSingle';
+import { Root } from "./components/Root";
+import { RootProvider } from "./contexts/RootProvider";
+import type { DayPickerDefaultProps } from "./types/DayPickerDefault";
+import type { DayPickerMultipleProps } from "./types/DayPickerMultiple";
+import type { DayPickerRangeProps } from "./types/DayPickerRange";
+import type { DayPickerSingleProps } from "./types/DayPickerSingle";
 
 export type DayPickerProps =
-  | DayPickerDefaultProps
-  | DayPickerSingleProps
-  | DayPickerMultipleProps
-  | DayPickerRangeProps;
+	| DayPickerDefaultProps
+	| DayPickerSingleProps
+	| DayPickerMultipleProps
+	| DayPickerRangeProps;
 
 /**
  * DayPicker render a date picker component to let users pick dates from a
@@ -99,15 +99,15 @@ export type DayPickerProps =
  * ```
  */
 export function DayPicker(
-  props:
-    | DayPickerDefaultProps
-    | DayPickerSingleProps
-    | DayPickerMultipleProps
-    | DayPickerRangeProps,
+	props:
+		| DayPickerDefaultProps
+		| DayPickerSingleProps
+		| DayPickerMultipleProps
+		| DayPickerRangeProps,
 ): JSX.Element {
-  return (
-    <RootProvider {...props}>
-      <Root initialProps={props} />
-    </RootProvider>
-  );
+	return (
+		<RootProvider {...props}>
+			<Root initialProps={props} />
+		</RootProvider>
+	);
 }

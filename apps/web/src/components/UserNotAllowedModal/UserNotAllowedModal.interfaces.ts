@@ -1,3 +1,3 @@
 export interface UserNotAllowedModalProps {
-  handleShowDropdown: () => void;
+	handleShowDropdown: () => void;
 }

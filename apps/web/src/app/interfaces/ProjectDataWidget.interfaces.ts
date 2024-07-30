@@ -1,4 +1,4 @@
-import type React from 'react';
+import type React from "react";
 
 export type RenderTabsType = () => React.JSX.Element;
 
@@ -11,12 +11,12 @@ export type FavoritedType = () => React.JSX.Element;
 export type NotFavoritedType = () => React.JSX.Element;
 
 export interface AssigneesDataInterface {
-  unassigned: number;
-  [key: string]: number;
+	unassigned: number;
+	[key: string]: number;
 }
 
 export interface LabelsDataInterface {
-  [key: string]: number;
+	[key: string]: number;
 }
 
 export type SetFilter = (filterAssignee: string) => void;

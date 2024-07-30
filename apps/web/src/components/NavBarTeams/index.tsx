@@ -2,17 +2,16 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import {  Copy, Layers3 } from "lucide-react";
-
 import type {
 	getTeamInfoType,
 	handleActiveParamsType,
 } from "@/app/interfaces/Navbars.interfaces";
 import type { Team as TaskDataTeam } from "@/store/taskData/taskData.interfaces";
-import { IssuesIcon, ViewsStackIcon } from "@/components/Svg";
+import { Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getTeam } from "@/store/taskData/thunks";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
+import { useTheme } from "next-themes";
 
 const styles = {
 	wrapper: "w-60 h-64",
@@ -37,9 +36,8 @@ const NavBarTeams = ({
 }: NavBarTeamProps): React.ReactElement => {
 	const dispatch = useAppDispatch();
 	const [isHovered, setIsHovered] = useState<string>("#858699");
-  const [isHoveredViewSvg, setIsHoveredViewSvg] = useState<string>("text-[#858699]");
-
-	const theme = useAppSelector((state) => state.userSettings.theme);
+	const [isHoveredViewSvg, setIsHoveredViewSvg] = useState<string>("#858699");
+	const { theme } = useTheme();
 	const currentWorkspace = useAppSelector(
 		(state) => state.taskData.currentWorkspace,
 	);
@@ -101,7 +99,7 @@ const NavBarTeams = ({
 			>
 				<button className={styles.button} type="button">
 					<div className={`${styles.svg}`}>
-              <Copy className={`size-4 ${isHovered}`} />
+						<Copy className={`size-4 ${isHovered}`} />
 					</div>
 					<p>Issues</p>
 				</button>
@@ -147,17 +145,18 @@ const NavBarTeams = ({
 				onClick={handleViewsButtonClick}
 				type="button"
 			>
-				<div className={`${styles.row} group`}
-          onMouseEnter={() =>
-              setIsHoveredViewSvg(
-                theme === "light" ? "text-[black]" : "text-[white]"
-              )
-            }
-            onMouseLeave={() => setIsHoveredViewSvg("text-[#858699]")}
-          >
+				<div
+					className={`${styles.row} group`}
+					onMouseEnter={() =>
+						setIsHoveredViewSvg(
+							theme === "light" ? "text-[black]" : "text-[white]",
+						)
+					}
+					onMouseLeave={() => setIsHoveredViewSvg("text-[#858699]")}
+				>
 					<div className={styles.button}>
 						<div className={styles.svg}>
-              <Layers3 className={`size-4 ${isHoveredViewSvg}`} />
+							<Layers3 className={`size-4 ${isHoveredViewSvg}`} />
 						</div>
 						<p>Views</p>
 					</div>

@@ -1,8 +1,8 @@
 interface TaskDataType {
-  taskList: Array<unknown>;
+	taskList: Array<unknown>;
 }
 
 export interface MiniStateType {
-  isCmdPalette: boolean;
-  taskData: TaskDataType;
+	isCmdPalette: boolean;
+	taskData: TaskDataType;
 }

@@ -1,17 +1,17 @@
 import { Router } from "express";
 import {
-  registerUser,
-  loginUser,
-  getProfile,
-  logoutUser,
-  getUser,
-  updateProfile,
-  verifyEmail,
-  signInUsingNextAuth,
-  getAllUsers,
-  forgotPassword,
-  resetPassword,
-  // getGithubAccessToken,
+	registerUser,
+	loginUser,
+	getProfile,
+	logoutUser,
+	getUser,
+	updateProfile,
+	verifyEmail,
+	signInUsingNextAuth,
+	getAllUsers,
+	forgotPassword,
+	resetPassword,
+	// getGithubAccessToken,
 } from "../controllers/authContollers";
 
 const router: Router = Router();

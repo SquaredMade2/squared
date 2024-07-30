@@ -1,3 +1,3 @@
 export interface DesignationsContainerProps {
-  location: string;
+	location: string;
 }
