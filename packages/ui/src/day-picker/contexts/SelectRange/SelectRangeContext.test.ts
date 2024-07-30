@@ -15,7 +15,10 @@ import { isMatch } from "../Modifiers/utils/isMatch";
 import type { DayPickerRangeProps } from "../../types/DayPickerRange";
 import type { ActiveModifiers } from "../../types/Modifiers";
 
-import { type SelectRangeContextValue, useSelectRange } from "./SelectRangeContext";
+import {
+	type SelectRangeContextValue,
+	useSelectRange,
+} from "./SelectRangeContext";
 
 const today = new Date(2021, 11, 8);
 freezeBeforeAll(today);

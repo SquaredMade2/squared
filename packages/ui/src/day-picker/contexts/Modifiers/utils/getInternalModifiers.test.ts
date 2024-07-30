@@ -3,7 +3,10 @@ import { addDays } from "date-fns";
 import type { DayPickerContextValue } from "../../DayPicker";
 import { getDefaultContextValues } from "../../DayPicker/defaultContextValues";
 import type { SelectRangeContextValue } from "../../SelectRange";
-import { InternalModifier, type InternalModifiers } from "../../../types/Modifiers";
+import {
+	InternalModifier,
+	type InternalModifiers,
+} from "../../../types/Modifiers";
 
 import { getInternalModifiers } from "./getInternalModifiers";
 

@@ -5,7 +5,10 @@ import type { DayPickerProps } from "../../DayPicker";
 import { renderDayPickerHook, type RenderHookResult } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { type NavigationContextValue, useNavigation } from "./NavigationContext";
+import {
+	type NavigationContextValue,
+	useNavigation,
+} from "./NavigationContext";
 
 const today = new Date(2021, 11, 8);
 const todaysMonth = startOfMonth(today);

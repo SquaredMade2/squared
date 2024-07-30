@@ -12,39 +12,36 @@ import type { Modifiers } from "../../../types/Modifiers";
  * https://github.com/gpbl/react-day-picker/pull/1576
  */
 export function getInitialFocusTarget(
-  displayMonths: Date[],
-  modifiers: Modifiers
+	displayMonths: Date[],
+	modifiers: Modifiers,
 ) {
-  const firstDayInMonth = startOfMonth(displayMonths[0]);
-  const lastDayInMonth = endOfMonth(
-    displayMonths[displayMonths.length - 1]
-  );
+	const firstDayInMonth = startOfMonth(displayMonths[0]);
+	const lastDayInMonth = endOfMonth(displayMonths[displayMonths.length - 1]);
 
-  // TODO: cleanup code
-  let firstFocusableDay: Date | undefined;
-  let today: Date | undefined;
-  let date = firstDayInMonth;
-  while (date <= lastDayInMonth) {
-    const activeModifiers = getActiveModifiers(date, modifiers);
-    const isFocusable =
-      !activeModifiers.disabled && !activeModifiers.hidden;
-    if (!isFocusable) {
-      date = addDays(date, 1);
-      continue;
-    }
-    if (activeModifiers.selected) {
-      return date;
-    }
-    if (activeModifiers.today && !today) {
-      today = date;
-    }
-    if (!firstFocusableDay) {
-      firstFocusableDay = date;
-    }
-    date = addDays(date, 1);
-  }
-  if (today) {
-    return today;
-  }
-  return firstFocusableDay;
+	// TODO: cleanup code
+	let firstFocusableDay: Date | undefined;
+	let today: Date | undefined;
+	let date = firstDayInMonth;
+	while (date <= lastDayInMonth) {
+		const activeModifiers = getActiveModifiers(date, modifiers);
+		const isFocusable = !activeModifiers.disabled && !activeModifiers.hidden;
+		if (!isFocusable) {
+			date = addDays(date, 1);
+			continue;
+		}
+		if (activeModifiers.selected) {
+			return date;
+		}
+		if (activeModifiers.today && !today) {
+			today = date;
+		}
+		if (!firstFocusableDay) {
+			firstFocusableDay = date;
+		}
+		date = addDays(date, 1);
+	}
+	if (today) {
+		return today;
+	}
+	return firstFocusableDay;
 }

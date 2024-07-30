@@ -15,8 +15,9 @@ import type { Task } from "@/store/taskData/taskData.interfaces";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const style = {
-	tasksBackgroundGrid: `flex gap-2  snap-start`,
-	tasksBackgroundList: `flex flex-col hover:pr-3 transition-all duration-500 ease-in-out`,
+	tasksBackgroundGrid: "flex gap-2  snap-start",
+	tasksBackgroundList:
+		"flex flex-col hover:pr-3 transition-all duration-500 ease-in-out",
 };
 
 const ViewAllTasks = ({

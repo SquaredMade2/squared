@@ -3,7 +3,10 @@ import type { SelectMultipleContextValue } from "../../SelectMultiple";
 import type { SelectRangeContextValue } from "../../SelectRange";
 import { isDayPickerMultiple } from "../../../types/DayPickerMultiple";
 import { isDayPickerRange } from "../../../types/DayPickerRange";
-import { InternalModifier, type InternalModifiers } from "../../../types/Modifiers";
+import {
+	InternalModifier,
+	type InternalModifiers,
+} from "../../../types/Modifiers";
 
 import { matcherToArray } from "./matcherToArray";
 

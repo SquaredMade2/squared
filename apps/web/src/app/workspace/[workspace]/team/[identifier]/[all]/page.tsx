@@ -16,10 +16,11 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 
 const styles = {
-	container: `flex flex-row relative lg:w-[calc(100%-296px)] `,
-	homeBackground: `flex items-center flex-col w-screen h-full bg-background `,
+	container: "flex flex-row relative lg:w-[calc(100%-296px)] ",
+	homeBackground: "flex items-center flex-col w-screen h-full bg-background ",
 	homeBackgroundWrapper: "w-full snap-x overflow-hidden relative",
-	navbarDivParent: `bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between`,
+	navbarDivParent:
+		"bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between",
 	navBarDiv: "w-full px-2 sm:px-5",
 	showTaskForm: "fixed inset-0 flex justify-center items-center z-50",
 	filterStatusBar: "w-full",

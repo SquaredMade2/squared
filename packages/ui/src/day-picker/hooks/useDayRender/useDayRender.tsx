@@ -7,7 +7,10 @@ import { DayContent } from "../../components/DayContent";
 import { useDayPicker } from "../../contexts/DayPicker";
 import { useFocusContext } from "../../contexts/Focus";
 import { useActiveModifiers } from "../useActiveModifiers";
-import { type DayEventHandlers, useDayEventHandlers } from "../useDayEventHandlers";
+import {
+	type DayEventHandlers,
+	useDayEventHandlers,
+} from "../useDayEventHandlers";
 import { type SelectedDays, useSelectedDays } from "../useSelectedDays";
 import type { ActiveModifiers } from "../../types/Modifiers";
 import type { StyledComponent } from "../../types/Styles";

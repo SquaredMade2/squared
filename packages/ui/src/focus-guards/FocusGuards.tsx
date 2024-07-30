@@ -4,8 +4,8 @@ import * as React from "react";
 let count = 0;
 
 function FocusGuards(props: any) {
-  useFocusGuards();
-  return props.children;
+	useFocusGuards();
+	return props.children;
 }
 
 /**
@@ -13,48 +13,46 @@ function FocusGuards(props: any) {
  * to ensure `focusin` & `focusout` events can be caught consistently.
  */
 function useFocusGuards() {
-  React.useEffect(() => {
-    const edgeGuards = document.querySelectorAll(
-      "[data-squared-focus-guard]"
-    );
-    document.body.insertAdjacentElement(
-      "afterbegin",
-      edgeGuards[0] ?? createFocusGuard()
-    );
-    document.body.insertAdjacentElement(
-      "beforeend",
-      edgeGuards[1] ?? createFocusGuard()
-    );
-    count++;
+	React.useEffect(() => {
+		const edgeGuards = document.querySelectorAll("[data-squared-focus-guard]");
+		document.body.insertAdjacentElement(
+			"afterbegin",
+			edgeGuards[0] ?? createFocusGuard(),
+		);
+		document.body.insertAdjacentElement(
+			"beforeend",
+			edgeGuards[1] ?? createFocusGuard(),
+		);
+		count++;
 
-    return () => {
-      if (count === 1) {
-        for (const node of document.querySelectorAll(
-          "[data-squared-focus-guard]"
-        )) {
-          node.remove();
-        }
-      }
-      count--;
-    };
-  }, []);
+		return () => {
+			if (count === 1) {
+				for (const node of document.querySelectorAll(
+					"[data-squared-focus-guard]",
+				)) {
+					node.remove();
+				}
+			}
+			count--;
+		};
+	}, []);
 }
 
 function createFocusGuard() {
-  const element = document.createElement("span");
-  element.setAttribute("data-squared-focus-guard", "");
-  element.tabIndex = 0;
-  element.style.cssText =
-    "outline: none; opacity: 0; position: fixed; pointer-events: none";
-  return element;
+	const element = document.createElement("span");
+	element.setAttribute("data-squared-focus-guard", "");
+	element.tabIndex = 0;
+	element.style.cssText =
+		"outline: none; opacity: 0; position: fixed; pointer-events: none";
+	return element;
 }
 
 const Root = FocusGuards;
 
 export {
-  FocusGuards,
-  //
-  Root,
-  //
-  useFocusGuards,
+	FocusGuards,
+	//
+	Root,
+	//
+	useFocusGuards,
 };
