@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { Month } from "../Month";
 import { Months } from "../Months";

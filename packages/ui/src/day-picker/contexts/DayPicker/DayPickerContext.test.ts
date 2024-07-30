@@ -1,20 +1,20 @@
 import { es } from "date-fns/locale";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { renderDayPickerHook } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { CaptionLayout } from "../../components/Caption";
-import { DayPickerContextValue, useDayPicker } from ".";
+import type { CaptionLayout } from "../../components/Caption";
+import { type DayPickerContextValue, useDayPicker } from ".";
 import {
-	DefaultContextProps,
+	type DefaultContextProps,
 	getDefaultContextValues,
 } from "./defaultContextValues";
-import { DaySelectionMode } from "../../types/DayPickerBase";
-import { Formatters } from "../../types/Formatters";
-import { Labels } from "../../types/Labels";
-import { DayModifiers, ModifiersClassNames } from "../../types/Modifiers";
-import { ClassNames, Styles } from "../../types/Styles";
+import type { DaySelectionMode } from "../../types/DayPickerBase";
+import type { Formatters } from "../../types/Formatters";
+import type { Labels } from "../../types/Labels";
+import type { DayModifiers, ModifiersClassNames } from "../../types/Modifiers";
+import type { ClassNames, Styles } from "../../types/Styles";
 
 const today = new Date(2022, 5, 13);
 const defaults = getDefaultContextValues();

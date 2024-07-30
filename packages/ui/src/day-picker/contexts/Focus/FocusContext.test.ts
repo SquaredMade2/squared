@@ -8,10 +8,10 @@ import {
 	startOfWeek,
 } from "date-fns";
 
-import { renderDayPickerHook, RenderHookResult } from "../../test/render";
+import { renderDayPickerHook, type RenderHookResult } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { FocusContextValue, useFocusContext } from ".";
+import { type FocusContextValue, useFocusContext } from ".";
 
 const today = new Date(2021, 11, 8); // make sure is in the middle of the week for the complete test
 freezeBeforeAll(today);

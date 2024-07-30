@@ -1,4 +1,4 @@
-import {
+import type {
 	FocusEventHandler,
 	HTMLProps,
 	KeyboardEventHandler,
@@ -15,7 +15,7 @@ import { useSelectSingle } from "../../contexts/SelectSingle";
 import { isDayPickerMultiple } from "../../types/DayPickerMultiple";
 import { isDayPickerRange } from "../../types/DayPickerRange";
 import { isDayPickerSingle } from "../../types/DayPickerSingle";
-import { ActiveModifiers } from "../../types/Modifiers";
+import type { ActiveModifiers } from "../../types/Modifiers";
 
 export type EventName =
 	| "onClick"

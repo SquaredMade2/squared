@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
 import {
 	addDays,
@@ -6,16 +6,16 @@ import {
 	differenceInCalendarDays,
 	subDays,
 } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { renderDayPickerHook } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
 import { isMatch } from "../Modifiers/utils/isMatch";
-import { DayPickerRangeProps } from "../../types/DayPickerRange";
-import { ActiveModifiers } from "../../types/Modifiers";
+import type { DayPickerRangeProps } from "../../types/DayPickerRange";
+import type { ActiveModifiers } from "../../types/Modifiers";
 
-import { SelectRangeContextValue, useSelectRange } from "./SelectRangeContext";
+import { type SelectRangeContextValue, useSelectRange } from "./SelectRangeContext";
 
 const today = new Date(2021, 11, 8);
 freezeBeforeAll(today);

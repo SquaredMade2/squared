@@ -1,4 +1,4 @@
-import { WeekNumberLabel } from "../../../types/Labels";
+import type { WeekNumberLabel } from "../../../types/Labels";
 
 /**
  * The default ARIA label for the WeekNumber element.

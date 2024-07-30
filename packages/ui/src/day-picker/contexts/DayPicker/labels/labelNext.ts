@@ -1,4 +1,4 @@
-import { NavButtonLabel } from "../../../types/Labels";
+import type { NavButtonLabel } from "../../../types/Labels";
 
 /**
  * The default ARIA label for next month button in navigation

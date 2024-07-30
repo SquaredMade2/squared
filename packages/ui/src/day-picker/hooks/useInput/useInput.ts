@@ -1,7 +1,7 @@
 import {
-	ChangeEventHandler,
-	FocusEventHandler,
-	InputHTMLAttributes,
+	type ChangeEventHandler,
+	type FocusEventHandler,
+	type InputHTMLAttributes,
 	useState,
 } from "react";
 
@@ -9,9 +9,9 @@ import { differenceInCalendarDays, format as _format, parse } from "date-fns";
 import { enUS } from "date-fns/locale";
 
 import { parseFromToProps } from "../../contexts/DayPicker/utils";
-import { DayPickerBase } from "../../types/DayPickerBase";
-import { DayPickerSingleProps } from "../../types/DayPickerSingle";
-import {
+import type { DayPickerBase } from "../../types/DayPickerBase";
+import type { DayPickerSingleProps } from "../../types/DayPickerSingle";
+import type {
 	DayClickEventHandler,
 	MonthChangeEventHandler,
 } from "../../types/EventHandlers";

@@ -2,8 +2,8 @@ import { addMonths } from "date-fns";
 
 import {
 	InternalModifier,
-	InternalModifiers,
-	Modifiers,
+	type InternalModifiers,
+	type Modifiers,
 } from "../../../types/Modifiers";
 
 import { getActiveModifiers } from "./getActiveModifiers";

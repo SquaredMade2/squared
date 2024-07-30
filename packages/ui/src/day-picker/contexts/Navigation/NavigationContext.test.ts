@@ -1,11 +1,11 @@
 import { act } from "@testing-library/react";
 import { addMonths, startOfMonth, subMonths } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
-import { renderDayPickerHook, RenderHookResult } from "../../test/render";
+import { renderDayPickerHook, type RenderHookResult } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { NavigationContextValue, useNavigation } from "./NavigationContext";
+import { type NavigationContextValue, useNavigation } from "./NavigationContext";
 
 const today = new Date(2021, 11, 8);
 const todaysMonth = startOfMonth(today);

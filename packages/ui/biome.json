@@ -1,0 +1,56 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "files": {
+    "ignore": ["node_modules"],
+    "include": ["src"]
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "useButtonType": "off",
+        "noSvgWithoutTitle": "off",
+        "useValidAnchor": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off",
+        "noChildrenProp": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off"
+      },
+      "complexity": {
+        "noForEach": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      }
+    }
+  },
+  "javascript": {
+    "globals": [
+      "$",
+      "_",
+      "externalVariable",
+      "cypress",
+      "it",
+      "expect",
+      "cy",
+      "describe",
+      "beforeEach",
+      "jest",
+      "React",
+      "afterEach",
+      "Cypress"
+    ]
+  }
+}

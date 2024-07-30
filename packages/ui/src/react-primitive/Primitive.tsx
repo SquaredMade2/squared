@@ -57,7 +57,6 @@ const Primitive = NODES.reduce((primitive, node) => {
 
   Node.displayName = `Primitive.${node}`;
 
-  // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
   return { ...primitive, [node]: Node };
 }, {} as Primitives);
 

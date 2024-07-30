@@ -20,7 +20,10 @@
       "dependsOn": []
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^lint"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"]
     },
     "dev": {
       "cache": false,
