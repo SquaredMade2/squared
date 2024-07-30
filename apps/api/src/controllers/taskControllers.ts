@@ -5,9 +5,12 @@ import Task from "../models/task";
 import Team from "../models/team";
 import Workspace from "../models/workspace";
 
-const { ObjectId } = mongoose.Types
+const { ObjectId } = mongoose.Types;
 
-const addTask = async (req: Request, res: Response): Promise<Response> => {
+const addTask = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { team } = req.body;
   const task = await Task.create({
     authorId: req.body.authorId,
@@ -22,13 +25,13 @@ const addTask = async (req: Request, res: Response): Promise<Response> => {
     team: req.body.team,
     dateCreated: req.body.dateCreated,
   });
-  
+
   await Team.findByIdAndUpdate(
     team,
     { $push: { tasks: task._id } },
     { new: true }
   );
-  
+
   return res.json(task);
 };
 
@@ -52,59 +55,68 @@ const getTask = async (
       } else if (statusQuery === "all") {
         statusFilter = {};
       } else {
-        return next(new AppError("$$$ Invalid status provided $$$", 404));
+        return next(
+          new AppError("$$$ Invalid status provided $$$", 404)
+        );
       }
     }
-      const tasks = await Task.aggregate([
-        {
-          $match: { team: typeof teamId === 'string' ? new ObjectId(teamId) : teamId, ...statusFilter }
+    const tasks = await Task.aggregate([
+      {
+        $match: {
+          team:
+            typeof teamId === "string"
+              ? new ObjectId(teamId)
+              : teamId,
+          ...statusFilter,
         },
-        {
-          $addFields: {
-            dueDate: {
-              $dateToString: {
-                format: "%Y-%m-%dT%H:%M:%S.%LZ",
-                date: "$dueDate"
-              }
+      },
+      {
+        $addFields: {
+          dueDate: {
+            $dateToString: {
+              format: "%Y-%m-%dT%H:%M:%S.%LZ",
+              date: "$dueDate",
             },
-            dateCreated: {
-              $dateToString: {
-                format: "%Y-%m-%dT%H:%M:%S.%LZ",
-                date: "$dateCreated"
-              }
-            }
-          }
-        }
-      ]); 
-      res.json(tasks)
-  } catch (error) {
-    
-  }
+          },
+          dateCreated: {
+            $dateToString: {
+              format: "%Y-%m-%dT%H:%M:%S.%LZ",
+              date: "$dateCreated",
+            },
+          },
+        },
+      },
+    ]);
+    res.json(tasks);
+  } catch (error) {}
 };
 
-const getSingleTask = async (req: Request, res: Response): Promise<void> => {
+const getSingleTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const task = await Task.aggregate([
     {
-      $match: { _id: new ObjectId(req.params.id)}
+      $match: { _id: new ObjectId(req.params.id) },
     },
     {
       $addFields: {
         dueDate: {
           $dateToString: {
             format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            date: "$dueDate"
-          }
+            date: "$dueDate",
+          },
         },
         dateCreated: {
           $dateToString: {
             format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            date: "$dateCreated"
-          }
-        }
-      }
-    }
-  ]); 
-  res.json(task[0])
+            date: "$dateCreated",
+          },
+        },
+      },
+    },
+  ]);
+  res.json(task[0]);
 };
 
 const getSingleTaskIdentifier = async (
@@ -126,25 +138,25 @@ const getSingleTaskIdentifier = async (
           $match: {
             identifier,
             team: team._id,
-          }
+          },
         },
         {
           $addFields: {
             dueDate: {
               $dateToString: {
                 format: "%Y-%m-%dT%H:%M:%S.%LZ",
-                date: "$dueDate"
-              }
+                date: "$dueDate",
+              },
             },
             dateCreated: {
               $dateToString: {
                 format: "%Y-%m-%dT%H:%M:%S.%LZ",
-                date: "$dateCreated"
-              }
-            }
-          }
-        }
-      ]); 
+                date: "$dateCreated",
+              },
+            },
+          },
+        },
+      ]);
       res.json(task[0]);
     } else {
       return next(new AppError("$$$ No team found $$$", 404));
@@ -154,12 +166,18 @@ const getSingleTaskIdentifier = async (
   }
 };
 
-const deleteTask = async (req: Request, res: Response): Promise<void> => {
+const deleteTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   await Task.deleteOne({ _id: req.body.id });
   res.sendStatus(200);
 };
 
-const updateTask = async (req: Request, res: Response): Promise<void> => {
+const updateTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const task = await Task.findByIdAndUpdate(
     req.params.id,
     {
@@ -177,25 +195,25 @@ const updateTask = async (req: Request, res: Response): Promise<void> => {
     {
       $match: {
         _id: new ObjectId(req.params.id),
-      }
+      },
     },
     {
       $addFields: {
         dueDate: {
           $dateToString: {
             format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            date: "$dueDate"
-          }
+            date: "$dueDate",
+          },
         },
         dateCreated: {
           $dateToString: {
             format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            date: "$dateCreated"
-          }
-        }
-      }
-    }
-  ]); 
+            date: "$dateCreated",
+          },
+        },
+      },
+    },
+  ]);
   res.json(serializedTask[0]);
 };
 
@@ -215,28 +233,27 @@ const updateTaskAfterDrag = async (
     {
       $match: {
         _id: new ObjectId(String(taskId)),
-      }
+      },
     },
     {
       $addFields: {
         dueDate: {
           $dateToString: {
             format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            date: "$dueDate"
-          }
+            date: "$dueDate",
+          },
         },
         dateCreated: {
           $dateToString: {
             format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            date: "$dateCreated"
-          }
-        }
-      }
-    }
-  ]); 
+            date: "$dateCreated",
+          },
+        },
+      },
+    },
+  ]);
   res.json(serializedTask[0]);
 };
-
 
 const updateTaskAssignee = async (
   req: Request,

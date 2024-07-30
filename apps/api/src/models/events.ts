@@ -1,6 +1,10 @@
-import { Schema, model } from 'mongoose';
-import  type { TaskEventLog, TaskEvent, Comment } from '../interface/events';
-import { Labels } from '../interface/events';
+import { Schema, model } from "mongoose";
+import type {
+  TaskEventLog,
+  TaskEvent,
+  Comment,
+} from "../interface/events";
+import { Labels } from "../interface/events";
 
 /**
  * @openapi
@@ -28,19 +32,19 @@ import { Labels } from '../interface/events';
 
 const taskEventLogSchema = new Schema<TaskEventLog>({
   author: {
-    id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    id: { type: Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
   },
   createdAt: { type: Date, required: true },
   taskId: {
     type: Schema.Types.ObjectId,
-    ref: 'Task',
+    ref: "Task",
     required: true,
   },
   eventsLog: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'TaskEvent',
+      ref: "TaskEvent",
     },
   ],
 });
@@ -49,22 +53,22 @@ const taskEventSchema = new Schema<TaskEvent>({
   type: {
     type: String,
     enum: [
-      'titleUpdated',
-      'descriptionUpdated',
-      'statusUpdated',
-      'priorityUpdated',
-      'labelsUpdated',
-      'assigneeUpdated',
+      "titleUpdated",
+      "descriptionUpdated",
+      "statusUpdated",
+      "priorityUpdated",
+      "labelsUpdated",
+      "assigneeUpdated",
     ],
     required: true,
   },
   author: {
-    id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    id: { type: Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
   },
   taskId: {
     type: Schema.Types.ObjectId,
-    ref: 'Task',
+    ref: "Task",
     required: true,
   },
   updatedAt: {
@@ -86,13 +90,13 @@ const taskEventSchema = new Schema<TaskEvent>({
     type: String,
   },
   originalAssignee: {
-    id: { type: Schema.Types.Mixed, ref: 'User' },
+    id: { type: Schema.Types.Mixed, ref: "User" },
     name: String,
   },
   updatedAssignee: {
-    id: { type: Schema.Types.Mixed, ref: 'User'} ,
+    id: { type: Schema.Types.Mixed, ref: "User" },
     name: String,
-  }
+  },
 });
 
 /**
@@ -119,13 +123,13 @@ const taskEventSchema = new Schema<TaskEvent>({
 
 const commentSchema = new Schema<Comment>({
   comment: {
-    required: [true, 'A comment is required.'],
+    required: [true, "A comment is required."],
     type: String,
   },
   author: {
     required: true,
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
   },
   date: {
     required: true,
@@ -135,13 +139,16 @@ const commentSchema = new Schema<Comment>({
   task: {
     required: true,
     type: Schema.Types.ObjectId,
-    ref: 'Task',
+    ref: "Task",
   },
 });
 
-export const CommentModel = model<Comment>('Comment', commentSchema);
-export const TaskEventModel = model<TaskEvent>('TaskEvent', taskEventSchema);
+export const CommentModel = model<Comment>("Comment", commentSchema);
+export const TaskEventModel = model<TaskEvent>(
+  "TaskEvent",
+  taskEventSchema
+);
 export const TaskEventLogModel = model<TaskEventLog>(
-  'TaskEventLog',
+  "TaskEventLog",
   taskEventLogSchema
 );

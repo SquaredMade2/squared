@@ -3,7 +3,7 @@ import type IWorkspace from "./workspace";
 import type ITask from "./task";
 
 interface IUser {
-  id: Types.ObjectId,
+  id: Types.ObjectId;
   name: string;
   username: string;
   email: string;
@@ -15,7 +15,7 @@ interface IUser {
   on_boarding: boolean;
   verified: boolean;
   join_workspace: string[];
-  tasks: ITask[]
+  tasks: ITask[];
 }
 
 export default IUser;

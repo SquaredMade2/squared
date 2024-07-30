@@ -15,10 +15,10 @@ import type ITag from "../interface/tag";
  */
 
 const tagSchema = new Schema<ITag>({
-  name: {
-    type: String,
-    required: true,
-  },
+	name: {
+		type: String,
+		required: true,
+	},
 });
 
 const TagModel = model<ITag>("Tag", tagSchema);

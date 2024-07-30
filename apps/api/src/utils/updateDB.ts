@@ -24,8 +24,8 @@
 //           workspace.users = newWorkspace
 //           await Workspace.create(workspace)
 //   })
-  
-// } 
+
+// }
 
 // const updateTaskAssigneeName = async () => {
 //   const tasks = await Task.find();
@@ -55,7 +55,7 @@
 //       identifierCounter++; // Increment counter for the next identifier
 //     }
 //   } catch (error) {
-    
+
 //   }
 // };
 
@@ -71,16 +71,15 @@
 //   }
 // }
 
-
 // mongoose.set("strictQuery", false);
 // mongoose
 //   .connect(MONGO_URL, { dbName: "test" })
 //   .then((): void => {
-    
+
 //     // updateWorkspaceUsername();
 //     // updateTaskAssigneeName();
 //     // updateTasksWithoutIdentifier();
-//     // updateWorkspaceWithRepo() 
+//     // updateWorkspaceWithRepo()
 //   })
 //   .catch((err: string): void =>
 //   {}

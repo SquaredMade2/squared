@@ -1,4 +1,4 @@
 export interface FilterListDropDownProps {
-  filterId: string;
-  filterTitle: string;
+	filterId: string;
+	filterTitle: string;
 }

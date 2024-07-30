@@ -7,6 +7,7 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { HideStatusProps } from "../HideStatus/HideStatusProps";
 import type { StatusColumnProps } from "./StatusColumn.interfaces";
+import { ScrollArea } from "../ui/scroll-area";
 
 const StatusColumn = ({
 	columnType,
@@ -27,14 +28,7 @@ const StatusColumn = ({
 	};
 
 	return (
-		<div
-			className={`flex-col						
-			${view === "grid" && columnType === "Canceled" ? "ml-[15px] " : ""}
-			${view === "grid" && columnType === "Backlog" ? "mr-[15px] " : ""}
-			${view === "grid" && columnType === "In Progress" ? "mx-[15px] " : ""}
-			${view === "grid" && columnType === "Todo" ? "mx-[15px] " : ""}
-			${view === "grid" && columnType === "Done" ? "mx-[15px] " : ""}`}
-		>
+		<div className={view === "list" ? "mb-5" : "pb-4"}>
 			<TaskColumnTitle
 				isListView={isListView}
 				showTasks={showTasks}
@@ -44,14 +38,14 @@ const StatusColumn = ({
 			/>
 			<Droppable droppableId={columnType}>
 				{(provided, snapshot) => (
-					<div
+					<ScrollArea
 						ref={provided.innerRef}
 						{...provided.droppableProps}
 						className={`
 						${snapshot.isDraggingOver ? " h-full" : ""}${
 							snapshot.isDraggingOver && view === "grid"
 								? ""
-								: `overflow-y-auto ${view === "grid" && "h-[85vh]"}`
+								: `${view === "grid" && "h-[77vh] sm:h-[84vh] rounded-lg hover:pr-1 transition-all duration-500 ease-in-out"}`
 						} 
 						`}
 					>
@@ -62,10 +56,11 @@ const StatusColumn = ({
 							showTasks={showTasks}
 							setShowRenameModal={setShowRenameModal}
 							setTaskData={setTaskData}
+							title={columnType}
 						/>
 
 						{provided.placeholder}
-					</div>
+					</ScrollArea>
 				)}
 			</Droppable>
 		</div>

@@ -35,46 +35,46 @@ import type ITask from "../interface/task";
  */
 
 const taskSchema = new Schema<ITask>({
-  authorId: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  status: {
-    type: String,
-    required: true,
-  },
-  identifier: {
-    type: String,
-    required: true,
-  },
-  priority: {
-    type: String,
-  },
-  labels: {
-    type: Array,
-  },
-  dueDate: {
-    type: Date,
-  },
-  effortEstimate: {
-    type: Number,
-  },
-  team: { type: Schema.Types.ObjectId, ref: "Team", required: true },
-  dateCreated: {
-    type: Date,
-  },
-  assignee: {
-    id: { type: Schema.Types.ObjectId, ref: "User", default: null },
-    name: { type: String, ref: "User", default: null },
-  },
+	authorId: {
+		type: Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+	},
+	title: {
+		type: String,
+		required: true,
+	},
+	description: {
+		type: String,
+	},
+	status: {
+		type: String,
+		required: true,
+	},
+	identifier: {
+		type: String,
+		required: true,
+	},
+	priority: {
+		type: String,
+	},
+	labels: {
+		type: Array,
+	},
+	dueDate: {
+		type: Date,
+	},
+	effortEstimate: {
+		type: Number,
+	},
+	team: { type: Schema.Types.ObjectId, ref: "Team", required: true },
+	dateCreated: {
+		type: Date,
+	},
+	assignee: {
+		id: { type: Schema.Types.ObjectId, ref: "User", default: null },
+		name: { type: String, ref: "User", default: null },
+	},
 });
 
 const TaskModel = model<ITask>("Task", taskSchema);

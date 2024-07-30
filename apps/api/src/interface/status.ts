@@ -1,5 +1,5 @@
 interface IStatus {
-  status: string;
+	status: string;
 }
 
 export default IStatus;

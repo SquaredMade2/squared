@@ -1,3 +1,3 @@
 export interface AuthProviderProps {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }

@@ -5,7 +5,7 @@
 // // disabled for merge into main
 
 // export const receiveghWebhook = async (req: Request, res: Response) => {
-//     
+//
 //     // Receiving webhook
 //     try {
 //         if (req.body.head_commit !== undefined) {
@@ -27,7 +27,7 @@
 //             res.json(newCommit);
 //         }
 //     } catch (error) {
-//         
+//
 //     }
 // }
 

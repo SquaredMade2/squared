@@ -7,7 +7,7 @@ import {
   createTaskEvent,
   addTaskEvent,
   getTaskEvents,
-  getTaskEventLog
+  getTaskEventLog,
 } from "../controllers/eventsControllers";
 
 const router: Router = Router();
@@ -179,7 +179,6 @@ router.put("/comment/update", updateComment);
  *                   type: string
  */
 router.delete("/comment/delete/:id", deleteComment);
-
 
 router.post("/create-log", createTaskEvent);
 router.post("/add", addTaskEvent);

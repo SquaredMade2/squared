@@ -3,9 +3,17 @@
   "tasks": {
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "public/dist/**"],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "public/dist/**"
+      ],
       "dependsOn": ["^build"],
       "env": ["NEXT_PUBLIC_API_HOST"]
+    },
+    "start": {
+      "dependsOn": ["^start", "build"]
     },
     "test": {
       "outputs": ["coverage/**"],
@@ -23,6 +31,12 @@
     },
     "check-types": {
       "dependsOn": ["^check-types"]
+    },
+    "format:write": {
+      "dependsOn": ["^format:write"]
+    },
+    "format:check": {
+      "dependsOn": ["^format:check"]
     }
   }
 }

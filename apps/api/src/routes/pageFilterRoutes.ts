@@ -1,10 +1,10 @@
 import { Router } from "express";
 
 import {
-  addFilter,
-  getSelectedFilters,
-  getFilteredTasks,
-  deleteView,
+	addFilter,
+	getSelectedFilters,
+	getFilteredTasks,
+	deleteView,
 } from "../controllers/pageFilterControllers";
 
 const router: Router = Router();

@@ -1,1 +1,1 @@
-export type FilterType = 'any' | 'all';
+export type FilterType = "any" | "all";

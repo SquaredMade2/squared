@@ -1,4 +1,4 @@
 export interface ProfileImageProps {
-  profileName: string;
-  location: string;
+	profileName: string;
+	location: string;
 }

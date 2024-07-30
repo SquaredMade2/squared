@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
-  addTask,
-  getTask,
-  deleteTask,
-  updateTask,
-  getSingleTask,
-  updateTaskAfterDrag,
-  updateTaskAssignee,
-  getSingleTaskIdentifier,
+	addTask,
+	getTask,
+	deleteTask,
+	updateTask,
+	getSingleTask,
+	updateTaskAfterDrag,
+	updateTaskAssignee,
+	getSingleTaskIdentifier,
 } from "../controllers/taskControllers";
 
 const router: Router = Router();

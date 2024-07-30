@@ -4,7 +4,7 @@ import ITeam from "./team";
 import IWorkspace from "./workspace";
 
 interface ITask {
-  id:string,
+  id: string;
   authorId: Types.ObjectId;
   title: string;
   description: string;
@@ -21,7 +21,7 @@ interface ITask {
 
 interface Assignee {
   id: Types.ObjectId;
-  name: string
+  name: string;
 }
 
 export default ITask;

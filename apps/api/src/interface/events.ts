@@ -1,28 +1,28 @@
-import type { Types } from 'mongoose';
+import type { Types } from "mongoose";
 
 export enum Status {
-  backlog = 'backlog',
-  todo = 'todo',
-  inProgress = 'inProgress',
-  done = 'done',
-  canceled = 'canceled',
-  duplicate = 'duplicate',
+  backlog = "backlog",
+  todo = "todo",
+  inProgress = "inProgress",
+  done = "done",
+  canceled = "canceled",
+  duplicate = "duplicate",
 }
 
 export enum Priority {
-  noPriority = 'noPriority',
-  urgent = 'urgent',
-  high = 'high',
-  medium = 'medium',
-  low = 'low',
+  noPriority = "noPriority",
+  urgent = "urgent",
+  high = "high",
+  medium = "medium",
+  low = "low",
 }
 
 export enum Labels {
-  bug = 'Bug',
-  feature = 'Feature',
-  improvement = 'Improvement',
-  red = 'Red',
-  test = 'Test',
+  bug = "Bug",
+  feature = "Feature",
+  improvement = "Improvement",
+  red = "Red",
+  test = "Test",
 }
 
 export interface Author {
@@ -44,13 +44,13 @@ export interface TaskEventLog {
 
 export interface TaskEvent {
   type:
-    | 'labelsUpdated'
-    | 'titleUpdated'
-    | 'descriptionUpdated'
-    | 'commentUpdated'
-    | 'statusUpdated'
-    | 'priorityUpdated'
-    | 'assigneeUpdated';
+    | "labelsUpdated"
+    | "titleUpdated"
+    | "descriptionUpdated"
+    | "commentUpdated"
+    | "statusUpdated"
+    | "priorityUpdated"
+    | "assigneeUpdated";
   author: Author;
   taskId: Types.ObjectId;
   updatedAt: Date;

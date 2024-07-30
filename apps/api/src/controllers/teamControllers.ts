@@ -1,13 +1,19 @@
 import type { Request, Response, NextFunction } from "express";
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
 import Team from "../models/team";
 import Workspace from "../models/workspace";
 import Task from "../models/task";
 import WorkspaceModel from "../models/workspace";
 import AppError from "../utils/AppError";
-import { getLookup, tasksOfTeamFieldsDirect } from "../utils/aggregationUtils";
+import {
+  getLookup,
+  tasksOfTeamFieldsDirect,
+} from "../utils/aggregationUtils";
 
-const addTeam = async (req: Request, res: Response): Promise<Response> => {
+const addTeam = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { name, identifier, workspace, tasks } = req.body;
   const team = await Team.create({
     name,
@@ -32,28 +38,31 @@ const getTeam = async (
     const team = await Team.aggregate([
       {
         $match: {
-          _id: currentTeam
-        }
+          _id: currentTeam,
+        },
       },
       tasksOfTeamFieldsDirect,
-      getLookup('tasks', 'tasks', '_id', 'tasks'),
+      getLookup("tasks", "tasks", "_id", "tasks"),
     ]);
     if (!team) {
       return next(new AppError("$$$ Team not found $$$", 404));
     }
     res.json(team[0]);
-  } else if (identifier) {  
+  } else if (identifier) {
     const team = await Team.aggregate([
       {
         $match: {
           identifier: identifier,
-          workspace: typeof workspace === 'string' ? new Types.ObjectId(workspace) : workspace
-        }
+          workspace:
+            typeof workspace === "string"
+              ? new Types.ObjectId(workspace)
+              : workspace,
+        },
       },
       tasksOfTeamFieldsDirect,
-      getLookup('tasks', 'tasks', '_id', 'tasks'),
+      getLookup("tasks", "tasks", "_id", "tasks"),
     ]);
-    
+
     if (!team) {
       return next(new AppError("$$$ Team not found $$$", 404));
     }
@@ -61,14 +70,20 @@ const getTeam = async (
   }
 };
 
-const deleteTeam = async (req: Request, res: Response): Promise<void> => {
+const deleteTeam = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   await Task.deleteMany({ team: req.body.id });
   await Workspace.updateMany({}, { $pull: { teams: req.body.id } });
   await Team.deleteOne({ _id: req.body.id });
   res.sendStatus(200);
 };
 
-const updateTeam = async (req: Request, res: Response): Promise<void> => {
+const updateTeam = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { name, identifier, id, workspaceId } = req.body;
 
   const errorResponse = {
@@ -78,9 +93,8 @@ const updateTeam = async (req: Request, res: Response): Promise<void> => {
     field: "",
   };
 
-  const currentWorkspace = await WorkspaceModel.findById(workspaceId).populate(
-    "teams"
-  );
+  const currentWorkspace =
+    await WorkspaceModel.findById(workspaceId).populate("teams");
   if (!currentWorkspace) {
     errorResponse.message = "Workspace not found";
     errorResponse.field = "Workspace";
@@ -122,8 +136,13 @@ const updateTeam = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const getTeamInfo = async (req: Request, res: Response): Promise<void> => {
-  const teams = await Team.find({ _id: { $in: req.query.teamIdArray } });
+const getTeamInfo = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const teams = await Team.find({
+    _id: { $in: req.query.teamIdArray },
+  });
 
   res.json(teams);
 };
@@ -135,12 +154,14 @@ const teamExists = async (
 ): Promise<void> => {
   const { name, workspace, identifier } = req.body;
 
-  const identifierExists = await Team.findOne({ workspace, identifier });
-  const currentWorkspace = await WorkspaceModel.findById(workspace).populate(
-    "teams"
-  );
+  const identifierExists = await Team.findOne({
+    workspace,
+    identifier,
+  });
+  const currentWorkspace =
+    await WorkspaceModel.findById(workspace).populate("teams");
 
-  let nameExists:boolean;
+  let nameExists: boolean;
 
   if (currentWorkspace) {
     const findName = currentWorkspace.teams.find(

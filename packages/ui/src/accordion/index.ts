@@ -1,24 +1,24 @@
-'use client';
+"use client";
 export {
-  createAccordionScope,
-  //
-  Accordion,
-  AccordionItem,
-  AccordionHeader,
-  AccordionTrigger,
-  AccordionContent,
-  //
-  Root,
-  Item,
-  Header,
-  Trigger,
-  Content,
-} from './Accordion';
+	createAccordionScope,
+	//
+	Accordion,
+	AccordionItem,
+	AccordionHeader,
+	AccordionTrigger,
+	AccordionContent,
+	//
+	Root,
+	Item,
+	Header,
+	Trigger,
+	Content,
+} from "./Accordion";
 export type {
-  AccordionSingleProps,
-  AccordionMultipleProps,
-  AccordionItemProps,
-  AccordionHeaderProps,
-  AccordionTriggerProps,
-  AccordionContentProps,
-} from './Accordion';
+	AccordionSingleProps,
+	AccordionMultipleProps,
+	AccordionItemProps,
+	AccordionHeaderProps,
+	AccordionTriggerProps,
+	AccordionContentProps,
+} from "./Accordion";

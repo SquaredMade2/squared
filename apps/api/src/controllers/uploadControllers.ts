@@ -7,7 +7,8 @@ import s3 from "../utils/s3Client";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const bucketName: string = process.env.AWS_S3_BUCKET || "no bucket name found";
+const bucketName: string =
+  process.env.AWS_S3_BUCKET || "no bucket name found";
 const MAX_WIDTH = 1920;
 const MAX_HEIGHT = 1080;
 
@@ -37,9 +38,7 @@ const uploadSingleFile = async (
             quality: 1,
           })
         );
-      } catch (err) {
-        
-      }
+      } catch (err) {}
     }
 
     const sharpInstance = sharp(fileBuffer);
@@ -70,17 +69,20 @@ const uploadSingleFile = async (
       Body: data,
     };
 
-    s3.upload(params, async (err: Error, data: S3.ManagedUpload.SendData) => {
-      if (!req.file) return;
-      if (err) {
-        throw err;
+    s3.upload(
+      params,
+      async (err: Error, data: S3.ManagedUpload.SendData) => {
+        if (!req.file) return;
+        if (err) {
+          throw err;
+        }
+        res.status(200).send({
+          message: "File uploaded successfully",
+          url: data.Location,
+          fileKey: newFileName,
+        });
       }
-      res.status(200).send({
-        message: "File uploaded successfully",
-        url: data.Location,
-        fileKey: newFileName,
-      });
-    });
+    );
   } catch (error) {
     next(error);
   }
@@ -90,7 +92,9 @@ const deleteSingleFile = (fileKey: string) => {
   return new Promise((resolve, reject) => {
     if (!process.env.AWS_S3_BUCKET) {
       reject(
-        new Error("S3 bucket name is not defined in environment variables")
+        new Error(
+          "S3 bucket name is not defined in environment variables"
+        )
       );
       return;
     }
@@ -102,10 +106,8 @@ const deleteSingleFile = (fileKey: string) => {
 
     s3.deleteObject(deleteParams, (err, data) => {
       if (err) {
-        
         reject(err);
       } else {
-        
         resolve(data);
       }
     });

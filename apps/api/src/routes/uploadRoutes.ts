@@ -45,12 +45,12 @@ const router: Router = Router();
  *               type: string
  */
 router.post(
-  "/image/create",
-  (req, res, next) => {
-    next();
-  },
-  upload.single("image"),
-  uploadSingleFile
+	"/image/create",
+	(req, res, next) => {
+		next();
+	},
+	upload.single("image"),
+	uploadSingleFile,
 );
 /**
  * @openapi
@@ -58,7 +58,7 @@ router.post(
  *   delete:
  *     tags:
  *       - Upload Routes
- *     summary: deletes uploaded image 
+ *     summary: deletes uploaded image
  *     description: stores image file in an AWS s3 bucket
  *     parameters:
  *       - name: imageKey
@@ -85,16 +85,15 @@ router.post(
  *                   type: string
  */
 router.delete("/image/delete/:imageKey", (req, res) => {
-  if (typeof req.params.imageKey === "string") {
-    const imageKey = req.params.imageKey;
-    deleteSingleFile(imageKey)
-      .then(() =>
-        res.status(200).send({ message: "Image deleted successfully" })
-      )
-      .catch((err) => {
-        
-        res.status(500).send({ error: "Failed to delete image" });
-      });
-  }
+	if (typeof req.params.imageKey === "string") {
+		const imageKey = req.params.imageKey;
+		deleteSingleFile(imageKey)
+			.then(() =>
+				res.status(200).send({ message: "Image deleted successfully" }),
+			)
+			.catch((err) => {
+				res.status(500).send({ error: "Failed to delete image" });
+			});
+	}
 });
 export default router;
