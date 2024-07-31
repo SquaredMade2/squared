@@ -2,13 +2,13 @@ import "@testing-library/jest-dom";
 
 import { screen } from "@testing-library/react";
 import { addMonths, differenceInYears } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import { user } from "../../test/user";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { YearsDropdown, YearsDropdownProps } from "./YearsDropdown";
+import { YearsDropdown, type YearsDropdownProps } from "./YearsDropdown";
 
 const today = new Date(2020, 12, 22);
 

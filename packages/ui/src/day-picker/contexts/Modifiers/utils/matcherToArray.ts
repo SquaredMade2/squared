@@ -1,4 +1,4 @@
-import { Matcher } from "../../../types/Matchers";
+import type { Matcher } from "../../../types/Matchers";
 
 /** Normalize to array a matcher input. */
 export function matcherToArray(
@@ -6,9 +6,9 @@ export function matcherToArray(
 ): Matcher[] {
 	if (Array.isArray(matcher)) {
 		return [...matcher];
-	} else if (matcher !== undefined) {
-		return [matcher];
-	} else {
-		return [];
 	}
+	if (matcher !== undefined) {
+		return [matcher];
+	}
+	return [];
 }

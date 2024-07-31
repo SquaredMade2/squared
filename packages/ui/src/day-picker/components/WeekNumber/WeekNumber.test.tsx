@@ -2,11 +2,11 @@ import "@testing-library/jest-dom";
 
 import { screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render/customRender";
 
-import { WeekNumber, WeekNumberProps } from "./WeekNumber";
+import { WeekNumber, type WeekNumberProps } from "./WeekNumber";
 
 function setup(props: WeekNumberProps, dayPickerProps?: DayPickerProps) {
 	return customRender(<WeekNumber {...props} />, dayPickerProps);

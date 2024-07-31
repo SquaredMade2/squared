@@ -309,14 +309,21 @@ function findVisible(elements: HTMLElement[], container: HTMLElement) {
 	}
 }
 
-function isHidden(node: HTMLElement, { upTo }: { upTo?: HTMLElement }) {
+function isHidden(
+	node: HTMLElement,
+	{ upTo }: { upTo?: HTMLElement },
+): boolean {
 	if (getComputedStyle(node).visibility === "hidden") return true;
-	while (node) {
+
+	let currentNode: HTMLElement | null = node;
+
+	while (currentNode) {
 		// we stop at `upTo` (excluding it)
-		if (upTo !== undefined && node === upTo) return false;
-		if (getComputedStyle(node).display === "none") return true;
-		node = node.parentElement as HTMLElement;
+		if (upTo !== undefined && currentNode === upTo) return false;
+		if (getComputedStyle(currentNode).display === "none") return true;
+		currentNode = currentNode.parentElement;
 	}
+
 	return false;
 }
 
@@ -328,7 +335,7 @@ function isSelectableInput(
 
 function focus(element?: FocusableTarget | null, { select = false } = {}) {
 	// only focus if that element is focusable
-	if (element && element.focus) {
+	if (element?.focus) {
 		const previouslyFocusedElement = document.activeElement;
 		// NOTE: we prevent scrolling on focus, to minimize jarring transitions for users
 		element.focus({ preventScroll: true });

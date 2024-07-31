@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 
-import { RenderResult, screen } from "@testing-library/react";
-import { DayPickerProps } from "../../DayPicker";
+import { type RenderResult, screen } from "@testing-library/react";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 

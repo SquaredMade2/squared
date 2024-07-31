@@ -1,13 +1,13 @@
 import "@testing-library/jest-dom";
 
 import { screen } from "@testing-library/react";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render/customRender";
 
-import { CustomComponents } from "../../types/DayPickerBase";
+import type { CustomComponents } from "../../types/DayPickerBase";
 
-import { Row, RowProps } from "./Row";
+import { Row, type RowProps } from "./Row";
 
 function setup(props: RowProps, dayPickerProps?: DayPickerProps) {
 	customRender(<Row {...props} />, dayPickerProps);

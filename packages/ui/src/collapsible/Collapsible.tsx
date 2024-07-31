@@ -179,9 +179,9 @@ const CollapsibleContentImpl = React.forwardRef<
 	const originalStylesRef = React.useRef<Record<string, string>>();
 
 	React.useEffect(() => {
-		const rAF = requestAnimationFrame(
-			() => (isMountAnimationPreventedRef.current = false),
-		);
+		const rAF = requestAnimationFrame(() => {
+			isMountAnimationPreventedRef.current = false;
+		});
 		return () => cancelAnimationFrame(rAF);
 	}, []);
 
@@ -227,10 +227,10 @@ const CollapsibleContentImpl = React.forwardRef<
 			{...contentProps}
 			ref={composedRefs}
 			style={{
-				[`--squared-collapsible-content-height` as any]: height
+				["--squared-collapsible-content-height" as any]: height
 					? `${height}px`
 					: undefined,
-				[`--squared-collapsible-content-width` as any]: width
+				["--squared-collapsible-content-width" as any]: width
 					? `${width}px`
 					: undefined,
 				...props.style,

@@ -11,7 +11,6 @@ function createContext<ContextValueType extends object | null>(
 	function Provider(props: ContextValueType & { children: React.ReactNode }) {
 		const { children, ...context } = props;
 		// Only re-memoize when prop values change
-		// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 		const value = React.useMemo(
 			() => context,
 			Object.values(context),
@@ -29,7 +28,7 @@ function createContext<ContextValueType extends object | null>(
 		);
 	}
 
-	Provider.displayName = rootComponentName + "Provider";
+	Provider.displayName = `${rootComponentName}Provider`;
 	return [Provider, useContext] as const;
 }
 
@@ -73,7 +72,6 @@ function createContextScope(
 			const { scope, children, ...context } = props;
 			const Context = scope?.[scopeName][index] || BaseContext;
 			// Only re-memoize when prop values change
-			// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 			const value = React.useMemo(
 				() => context,
 				Object.values(context),
@@ -95,7 +93,7 @@ function createContextScope(
 			);
 		}
 
-		Provider.displayName = rootComponentName + "Provider";
+		Provider.displayName = `${rootComponentName}Provider`;
 		return [Provider, useContext] as const;
 	}
 
@@ -150,7 +148,7 @@ function composeContextScopes(...scopes: CreateScope[]) {
 					// eslint-disable-next-line react-hooks/rules-of-hooks
 					const scopeProps = useScope(overrideScopes);
 					const currentScope = scopeProps[`__scope${scopeName}`];
-					return { ...nextScopes, ...currentScope };
+					return Object.assign(nextScopes, currentScope);
 				},
 				{},
 			);

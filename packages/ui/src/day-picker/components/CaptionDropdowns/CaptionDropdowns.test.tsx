@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 
 import { screen } from "@testing-library/react";
 import { setMonth, setYear } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import {
@@ -14,8 +14,8 @@ import {
 import { user } from "../../test/user";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { CaptionProps } from "../Caption";
-import { CustomComponents } from "../../types/DayPickerBase";
+import type { CaptionProps } from "../Caption";
+import type { CustomComponents } from "../../types/DayPickerBase";
 
 import { CaptionDropdowns } from "./CaptionDropdowns";
 

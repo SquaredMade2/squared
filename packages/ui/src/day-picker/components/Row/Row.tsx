@@ -23,7 +23,7 @@ export function Row(props: RowProps): JSX.Element {
 	const DayComponent = components?.Day ?? Day;
 	const WeeknumberComponent = components?.WeekNumber ?? WeekNumber;
 
-	let weekNumberCell;
+	let weekNumberCell: React.ReactNode;
 	if (showWeekNumber) {
 		weekNumberCell = (
 			<td className={classNames.cell} style={styles.cell}>

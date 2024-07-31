@@ -5,12 +5,12 @@ import {
 	endOfWeek,
 	getISOWeek,
 	getWeek,
-	Locale,
+	type Locale,
 	startOfISOWeek,
 	startOfWeek,
 } from "date-fns";
 
-import { MonthWeek } from "./getMonthWeeks";
+import type { MonthWeek } from "./getMonthWeeks";
 
 /** Return the weeks between two dates.  */
 export function daysToMonthWeeks(

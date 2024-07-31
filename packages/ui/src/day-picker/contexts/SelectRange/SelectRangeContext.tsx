@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, type ReactNode, useContext } from "react";
 
 import {
 	addDays,
@@ -7,14 +7,14 @@ import {
 	subDays,
 } from "date-fns";
 
-import { DayPickerBase } from "../../types/DayPickerBase";
+import type { DayPickerBase } from "../../types/DayPickerBase";
 import {
-	DayPickerRangeProps,
+	type DayPickerRangeProps,
 	isDayPickerRange,
 } from "../../types/DayPickerRange";
-import { DayClickEventHandler } from "../../types/EventHandlers";
-import { DateRange } from "../../types/Matchers";
-import { InternalModifier, Modifiers } from "../../types/Modifiers";
+import type { DayClickEventHandler } from "../../types/EventHandlers";
+import type { DateRange } from "../../types/Matchers";
+import type { InternalModifier, Modifiers } from "../../types/Modifiers";
 
 import { addToRange } from "./utils/addToRange";
 

@@ -22,7 +22,7 @@ export function HeadRow(): JSX.Element {
 	return (
 		<tr style={styles.head_row} className={classNames.head_row}>
 			{showWeekNumber && (
-				<td style={styles.head_cell} className={classNames.head_cell}></td>
+				<td style={styles.head_cell} className={classNames.head_cell} />
 			)}
 			{weekdays.map((weekday, i) => (
 				<th

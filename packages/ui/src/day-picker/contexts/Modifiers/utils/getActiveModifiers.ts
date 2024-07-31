@@ -1,6 +1,6 @@
 import { isSameMonth } from "date-fns";
 
-import { ActiveModifiers, Modifiers } from "../../../types/Modifiers";
+import type { ActiveModifiers, Modifiers } from "../../../types/Modifiers";
 
 import { isMatch } from "./isMatch";
 
@@ -23,7 +23,9 @@ export function getActiveModifiers(
 		[],
 	);
 	const activeModifiers: ActiveModifiers = {};
-	matchedModifiers.forEach((modifier) => (activeModifiers[modifier] = true));
+	for (const modifier of matchedModifiers) {
+		activeModifiers[modifier] = true;
+	}
 
 	if (displayMonth && !isSameMonth(day, displayMonth)) {
 		activeModifiers.outside = true;

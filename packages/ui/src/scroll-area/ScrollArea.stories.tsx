@@ -33,7 +33,7 @@ export const Basic = () => {
 					<label>
 						type:{" "}
 						<select name="type">
-							<option></option>
+							<option />
 							<option>always</option>
 							<option>auto</option>
 							<option>scroll</option>
@@ -43,7 +43,7 @@ export const Basic = () => {
 					<label>
 						dir:{" "}
 						<select name="dir">
-							<option></option>
+							<option />
 							<option>ltr</option>
 							<option>rtl</option>
 						</select>
@@ -99,7 +99,7 @@ export const ContentChange = () => {
 			</button>
 			<ScrollAreaStory type="always" style={{ width: 800, height: 800 }}>
 				{Array.from({ length: verticalCount }).map((_, index) => (
-					<Copy key={index} style={{ width: 300 * horizontalCount + "px" }} />
+					<Copy key={index} style={{ width: `${300 * horizontalCount}px` }} />
 				))}
 			</ScrollAreaStory>
 		</>

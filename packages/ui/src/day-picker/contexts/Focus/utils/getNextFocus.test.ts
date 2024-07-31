@@ -2,15 +2,15 @@ import { addDays, format, parseISO } from "date-fns";
 
 import {
 	InternalModifier,
-	InternalModifiers,
-	Modifiers,
+	type InternalModifiers,
+	type Modifiers,
 } from "../../../types/Modifiers";
 
 import {
-	FocusDayPickerContext,
+	type FocusDayPickerContext,
 	getNextFocus,
-	MoveFocusBy,
-	MoveFocusDirection,
+	type MoveFocusBy,
+	type MoveFocusDirection,
 } from "./getNextFocus";
 
 type test = {

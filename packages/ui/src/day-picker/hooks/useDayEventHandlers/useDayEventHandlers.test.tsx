@@ -1,11 +1,11 @@
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { mockedContexts } from "../../test/mockedContexts";
 import { renderDayPickerHook } from "../../test/render";
 
-import { FocusContextValue } from "../../contexts/Focus";
-import { DayEventName, EventName, useDayEventHandlers } from ".";
-import { ActiveModifiers } from "../../types/Modifiers";
+import type { FocusContextValue } from "../../contexts/Focus";
+import { type DayEventName, type EventName, useDayEventHandlers } from ".";
+import type { ActiveModifiers } from "../../types/Modifiers";
 
 const today = new Date(2010, 5, 23);
 
@@ -151,10 +151,10 @@ describe('when calling "onKeyDown"', () => {
 					test(`should call ${expectedMethod}`, () => {
 						expect(mockedContexts.focus[expectedMethod]).toHaveBeenCalledWith();
 					});
-					test(`should prevent the default event`, () => {
+					test("should prevent the default event", () => {
 						expect(keyboardEvent.preventDefault).toHaveBeenCalledWith();
 					});
-					test(`should stop the event propagation`, () => {
+					test("should stop the event propagation", () => {
 						expect(keyboardEvent.preventDefault).toHaveBeenCalledWith();
 					});
 				});

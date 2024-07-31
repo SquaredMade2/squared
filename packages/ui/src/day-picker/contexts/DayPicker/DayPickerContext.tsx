@@ -92,7 +92,11 @@ export function DayPickerProvider(props: DayPickerProviderProps): JSX.Element {
 		captionLayout = "buttons";
 	}
 
-	let onSelect = undefined;
+	let onSelect:
+		| DayPickerSingleProps["onSelect"]
+		| DayPickerMultipleProps["onSelect"]
+		| DayPickerRangeProps["onSelect"]
+		| undefined;
 	if (
 		isDayPickerSingle(initialProps) ||
 		isDayPickerMultiple(initialProps) ||

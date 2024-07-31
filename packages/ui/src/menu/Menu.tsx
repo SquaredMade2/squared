@@ -116,7 +116,9 @@ const Menu: React.FC<MenuProps> = (props: ScopedProps<MenuProps>) => {
 				once: true,
 			});
 		};
-		const handlePointer = () => (isUsingKeyboardRef.current = false);
+		const handlePointer = () => {
+			isUsingKeyboardRef.current = false;
+		};
 		document.addEventListener("keydown", handleKeyDown, {
 			capture: true,
 		});

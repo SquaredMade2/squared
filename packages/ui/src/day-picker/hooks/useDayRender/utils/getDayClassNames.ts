@@ -1,5 +1,8 @@
-import { DayPickerContextValue } from "../../../contexts/DayPicker";
-import { ActiveModifiers, InternalModifier } from "../../../types/Modifiers";
+import type { DayPickerContextValue } from "../../../contexts/DayPicker";
+import {
+	type ActiveModifiers,
+	InternalModifier,
+} from "../../../types/Modifiers";
 
 function isInternalModifier(modifier: string): modifier is InternalModifier {
 	return Object.values(InternalModifier).includes(modifier as InternalModifier);

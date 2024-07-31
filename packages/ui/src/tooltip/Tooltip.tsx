@@ -15,6 +15,7 @@ import * as VisuallyHiddenPrimitive from "../visually-hidden";
 
 import type { Scope } from "../context";
 
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
 type ScopedProps<P = {}> = P & { __scopeTooltip?: Scope };
 const [createTooltipContext, createTooltipScope] = createContextScope(
 	"Tooltip",
@@ -283,10 +284,9 @@ const TooltipTrigger = React.forwardRef<
 	);
 	const isPointerDownRef = React.useRef(false);
 	const hasPointerMoveOpenedRef = React.useRef(false);
-	const handlePointerUp = React.useCallback(
-		() => (isPointerDownRef.current = false),
-		[],
-	);
+	const handlePointerUp = React.useCallback(() => {
+		isPointerDownRef.current = false;
+	}, []);
 
 	React.useEffect(() => {
 		return () => document.removeEventListener("pointerup", handlePointerUp);

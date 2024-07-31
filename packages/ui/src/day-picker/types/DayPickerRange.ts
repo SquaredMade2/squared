@@ -1,10 +1,10 @@
-import { DayPickerProps } from "../DayPicker";
+import type { DayPickerProps } from "../DayPicker";
 
-import { DayPickerContextValue } from "../contexts/DayPicker";
+import type { DayPickerContextValue } from "../contexts/DayPicker";
 
-import { DayPickerBase } from "./DayPickerBase";
-import { SelectRangeEventHandler } from "./EventHandlers";
-import { DateRange } from "./Matchers";
+import type { DayPickerBase } from "./DayPickerBase";
+import type { SelectRangeEventHandler } from "./EventHandlers";
+import type { DateRange } from "./Matchers";
 
 /** The props for the {@link DayPicker} component when using `mode="range"`. */
 export interface DayPickerRangeProps extends DayPickerBase {

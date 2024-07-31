@@ -1,17 +1,17 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
 import { addDays, addMonths } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { renderDayPickerHook } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
 import { isMatch } from "../Modifiers/utils/isMatch";
-import { DayPickerMultipleProps } from "../../types/DayPickerMultiple";
-import { ActiveModifiers } from "../../types/Modifiers";
+import type { DayPickerMultipleProps } from "../../types/DayPickerMultiple";
+import type { ActiveModifiers } from "../../types/Modifiers";
 
 import {
-	SelectMultipleContextValue,
+	type SelectMultipleContextValue,
 	useSelectMultiple,
 } from "./SelectMultipleContext";
 

@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import type { MouseEventHandler } from "react";
 
 import { IconLeft } from "../IconLeft";
 import { IconRight } from "../IconRight";

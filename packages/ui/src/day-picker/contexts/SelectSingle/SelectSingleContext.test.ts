@@ -1,15 +1,15 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { renderDayPickerHook } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { DayPickerSingleProps } from "../../types/DayPickerSingle";
-import { ActiveModifiers } from "../../types/Modifiers";
+import type { DayPickerSingleProps } from "../../types/DayPickerSingle";
+import type { ActiveModifiers } from "../../types/Modifiers";
 
 import {
-	SelectSingleContextValue,
+	type SelectSingleContextValue,
 	useSelectSingle,
 } from "./SelectSingleContext";
 

@@ -17,9 +17,9 @@ import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
 import { Slot } from "../slot";
 import { useControllableState } from "../use-controllable-state";
-import { toHaveNoViolations } from "jest-axe";
+// import { toHaveNoViolations } from "jest-axe";
 
-expect.extend(toHaveNoViolations);
+// expect.extend(toHaveNoViolations);
 
 /* -------------------------------------------------------------------------------------------------
  * Dialog

@@ -652,6 +652,7 @@ export const TickIcon = () => (
 		strokeLinejoin="round"
 		strokeWidth="3"
 	>
+		<title>TickIcon</title>
 		<path d="M2 20 L12 28 30 4" />
 	</svg>
 );

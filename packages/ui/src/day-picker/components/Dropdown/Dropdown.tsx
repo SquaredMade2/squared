@@ -1,4 +1,4 @@
-import {
+import type {
 	ChangeEventHandler,
 	CSSProperties,
 	ReactNode,
@@ -16,7 +16,7 @@ export interface DropdownProps {
 	caption?: ReactNode;
 	children?: SelectHTMLAttributes<HTMLSelectElement>["children"];
 	className?: string;
-	["aria-label"]?: string;
+	"aria-label"?: string;
 	style?: CSSProperties;
 	/** The selected value. */
 	value?: string | number;

@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 
 import { addMonths } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import {
