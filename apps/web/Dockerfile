@@ -1,6 +1,3 @@
-# Specify the correct Node.js version
-FROM node:21.1.0
-
 FROM node:18-alpine AS base
 
 # This Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
@@ -12,7 +9,8 @@ RUN apk update
 RUN apk add --no-cache libc6-compat
 # Set working directory
 WORKDIR /app
-RUN yarn global add turbo
+RUN npm install -g pnpm
+RUN npm install -g turbo
 COPY . .
 RUN turbo prune web --docker
 
@@ -22,11 +20,14 @@ RUN apk update
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Install pnpm again to make it available in this stage
+RUN npm install -g pnpm
+
 # First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/yarn.lock ./yarn.lock
-RUN yarn install
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install
 
 # Build the project
 COPY --from=builder /app/out/full/ .
@@ -39,14 +40,35 @@ ENV NEXT_PUBLIC_SERVER=${NEXT_PUBLIC_SERVER}
 ARG NEXT_PUBLIC_URL
 ENV NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
 
+ARG NEXT_PUBLIC_CLIENT_ID
+ENV NEXT_PUBLIC_CLIENT_ID=${NEXT_PUBLIC_CLIENT_ID}
+
+ARG NEXT_PUBLIC_GITHUB_CLIENT_SECRET
+ENV NEXT_PUBLIC_GITHUB_CLIENT_SECRET=${NEXT_PUBLIC_GITHUB_CLIENT_SECRET}
+
+ARG KINDE_CLIENT_ID
+ENV KINDE_CLIENT_ID=${KINDE_CLIENT_ID}
+
+ARG KINDE_CLIENT_SECRET
+ENV KINDE_CLIENT_SECRET=${KINDE_CLIENT_SECRET}
+
+ARG KINDE_ISSUER_URL
+ENV KINDE_ISSUER_URL=${KINDE_ISSUER_URL}
+
+ARG KINDE_SITE_URL
+ENV KINDE_SITE_URL=${KINDE_SITE_URL}
+
+ARG KINDE_POST_LOGOUT_REDIRECT_URL
+ENV KINDE_POST_LOGOUT_REDIRECT_URL=${KINDE_POST_LOGOUT_REDIRECT_URL}
+
+ARG KINDE_POST_LOGIN_REDIRECT_URL
+ENV KINDE_POST_LOGIN_REDIRECT_URL=${KINDE_POST_LOGIN_REDIRECT_URL}
+
 ARG GOOGLE_CLIENT_ID
 ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
 
 ARG GOOGLE_CLIENT_SECRET
 ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-
-ARG NEXTAUTH_SECRET
-ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
 
 ARG GITHUB_CLIENT_ID
 ENV GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
@@ -54,19 +76,28 @@ ENV GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
 ARG GITHUB_CLIENT_SECRET
 ENV GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
 
-ARG NEXTAUTH_URL
-ENV NEXTAUTH_URL=${NEXTAUTH_URL}
+ARG MONGO_URL
+ENV MONGO_URL=${MONGO_URL}
+
+ARG JWT_SECRECT
+ENV JWT_SECRECT=${JWT_SECRECT}
+
+ARG PORT
+ENV PORT=${PORT}
+
+ARG NEXTAUTH_SECRET
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
 
 ARG SENTRY_AUTH_TOKEN
 ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 
-ARG NEXT_PUBLIC_CLIENT_ID
-ENV NEXT_PUBLIC_CLIENT_ID=${NEXT_PUBLIC_CLIENT_ID}
-
-RUN yarn turbo build --filter=web...
+RUN pnpm turbo build --filter=web...
 
 FROM base AS runner
 WORKDIR /app
+
+# Install pnpm again to ensure it's available for the final stage
+RUN npm install -g pnpm
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs

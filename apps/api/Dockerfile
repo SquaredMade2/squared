@@ -9,7 +9,10 @@ RUN apk update
 RUN apk add --no-cache libc6-compat
 # Set working directory
 WORKDIR /app
-RUN pnpm global add turbo
+
+# Install pnpm and turbo globally
+RUN npm install -g pnpm turbo
+
 COPY . .
 RUN turbo prune api --docker
 
@@ -18,6 +21,9 @@ FROM base AS installer
 RUN apk update
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
+
+# Install pnpm again to make it available in this stage
+RUN npm install -g pnpm
 
 # First install dependencies (as they change less often)
 COPY .gitignore .gitignore
@@ -40,6 +46,9 @@ RUN pnpm turbo build --filter=api...
 
 FROM base AS runner
 WORKDIR /app
+
+# Install pnpm again to ensure it's available for the final stage
+RUN npm install -g pnpm
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 expressjs
