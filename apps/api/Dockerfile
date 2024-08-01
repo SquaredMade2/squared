@@ -33,7 +33,7 @@ RUN pnpm install
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
+COPY --from=builder /app/out/turbo.json ./turbo.json
 
 # Uncomment and use build args to enable remote caching
 # ARG TURBO_TEAM

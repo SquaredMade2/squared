@@ -21,7 +21,7 @@ RUN apk add --no-cache libc6-compat
 RUN npm install -g pnpm
 
 # Copy package.json and pnpm-lock.yaml to install dependencies
-COPY package.json pnpm-lock.yaml ./
+COPY --from=builder package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy built files from the builder stage
