@@ -40,6 +40,9 @@
     },
     "format:check": {
       "dependsOn": ["^format:check"]
+    },
+    "reset": {
+      "dependsOn": ["^reset"]
     }
   }
 }

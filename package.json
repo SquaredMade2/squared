@@ -17,6 +17,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "prepare": "husky install",
+    "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
     "test": "turbo run test",
@@ -53,5 +54,8 @@
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
   },
-  "packageManager": "pnpm@9.5.0"
+  "packageManager": "pnpm@9.5.0",
+  "dependencies": {
+    "rimraf": "^6.0.1"
+  }
 }
