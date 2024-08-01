@@ -41,6 +41,12 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 astro
 USER astro
 
+COPY --from=installer /app/apps/web/next.config.js .
+COPY --from=installer /app/apps/web/package.json .
+
+# Install dependencies for astro
+RUN pnpm install --frozen-lockfile
+
 # Expose the port and set the command to run the application
 EXPOSE 3000
 RUN npx astro start
