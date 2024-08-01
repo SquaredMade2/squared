@@ -28,6 +28,10 @@ env:
     NODE_ENV: "squared-envs:NODE_ENV"
     PORT: "squared-envs:PORT"
     SEED_PASSWORD: "squared-envs:SEED_PASSWORD"
+    GOOGLE_CLIENT_ID: "squared-envs:GOOGLE_CLIENT_ID"
+    GOOGLE_CLIENT_SECRET: "squared-envs:GOOGLE_CLIENT_SECRET"
+    GITHUB_CLIENT_ID: "squared-envs:GITHUB_CLIENT_ID"
+    GITHUB_CLIENT_SECRET: "squared-envs:GITHUB_CLIENT_SECRET"
 
 phases:
   pre_build:
@@ -62,7 +66,7 @@ phases:
       - echo "PORT=$PORT" >> .env
       - echo "SEED_PASSWORD=$SEED_PASSWORD" >> .env
       - echo Building Docker images...
-      - docker-compose build
+      - DOCKER_BUILDKIT=1 docker-compose build --progress=plain
 
   build:
     commands:
@@ -87,3 +91,4 @@ artifacts:
 cache:
   paths:
     - '/var/lib/docker'
+    - '/root/.cache/buildkit'

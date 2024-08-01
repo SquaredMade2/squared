@@ -10,75 +10,87 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
 if (
-	!GOOGLE_CLIENT_ID ||
-	!GOOGLE_CLIENT_SECRET ||
-	!GITHUB_CLIENT_ID ||
-	!GITHUB_CLIENT_SECRET ||
-	!NEXTAUTH_SECRET
+  !GOOGLE_CLIENT_ID ||
+  !GOOGLE_CLIENT_SECRET ||
+  !GITHUB_CLIENT_ID ||
+  !GITHUB_CLIENT_SECRET ||
+  !NEXTAUTH_SECRET
 ) {
-	throw new Error("Missing environment variables for NextAuth configuration");
+  const missingEnvs = () => {
+    const missing = [];
+    if (!GOOGLE_CLIENT_ID) missing.push("GOOGLE_CLIENT_ID");
+    if (!GOOGLE_CLIENT_SECRET) missing.push("GOOGLE_CLIENT_SECRET");
+    if (!GITHUB_CLIENT_ID) missing.push("GITHUB_CLIENT_ID");
+    if (!GITHUB_CLIENT_SECRET) missing.push("GITHUB_CLIENT_SECRET");
+    if (!NEXTAUTH_SECRET) missing.push("NEXTAUTH_SECRET");
+    return missing.join(", ");
+  };
+  throw new Error(
+    `Missing${missingEnvs()}environment variables. Please add them to your .env file`
+  );
 }
 const authOptions: AuthOptions = {
-	providers: [
-		GoogleProvider({
-			clientId: GOOGLE_CLIENT_ID,
-			clientSecret: GOOGLE_CLIENT_SECRET,
-			authorization: {
-				params: {
-					prompt: "consent",
-				},
-			},
-		}),
-		GithubProvider({
-			clientId: GITHUB_CLIENT_ID,
-			clientSecret: GITHUB_CLIENT_SECRET,
-			authorization: {
-				params: {
-					prompt: "consent",
-				},
-			},
-		}),
-	],
-	secret: NEXTAUTH_SECRET,
-	callbacks: {
-		async signIn({ user, account }) {
-			if (
-				account &&
-				(account.provider === "google" || account.provider === "github")
-			) {
-				(user as DefaultNextUser).ghToken = account.access_token;
-				try {
-					const { data } = await axios({
-						method: "POST",
-						url: `${process.env.NEXT_PUBLIC_SERVER}/auth/signInUsingNextAuth`,
-						data: { email: user?.email },
-						withCredentials: true,
-					});
-					const userData = data.user;
-					if (userData) {
-						user.userData = userData;
-						return true;
-					}
-					return false;
-				} catch (error) {
-					return "/login";
-				}
-			}
-			return false;
-		},
-		async session({ session, token }) {
-			if (token?.userData) {
-				session.userData = token.userData;
-			}
-			return session;
-		},
-		async jwt({ token, user }) {
-			if (user?.userData) {
-				token.userData = user.userData;
-			}
-			return token;
-		},
-	},
+  providers: [
+    GoogleProvider({
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+        },
+      },
+    }),
+    GithubProvider({
+      clientId: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+        },
+      },
+    }),
+  ],
+  secret: NEXTAUTH_SECRET,
+  callbacks: {
+    async signIn({ user, account }) {
+      if (
+        account &&
+        (account.provider === "google" ||
+          account.provider === "github")
+      ) {
+        (user as DefaultNextUser).ghToken = account.access_token;
+        try {
+          const { data } = await axios({
+            method: "POST",
+            url: `${process.env.NEXT_PUBLIC_SERVER}/auth/signInUsingNextAuth`,
+            data: { email: user?.email },
+            withCredentials: true,
+          });
+          const userData = data.user;
+          if (userData) {
+            user.userData = userData;
+            return true;
+          }
+          return false;
+        } catch (error) {
+          return "/login";
+        }
+      }
+      return false;
+    },
+    async session({ session, token }) {
+      if (token?.userData) {
+        session.userData = token.userData;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user?.userData) {
+        token.userData = user.userData;
+      }
+      return token;
+    },
+  },
 };
 const handler = NextAuth(authOptions);
 
