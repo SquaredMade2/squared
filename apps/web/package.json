@@ -25,6 +25,7 @@
 		"test-all": "pnpm run format && pnpm run lint && pnpm run build"
 	},
 	"dependencies": {
+		"@aws-sdk/client-secrets-manager": "^3.621.0",
 		"@cypress/react18": "^2.0.1",
 		"@fortawesome/fontawesome-svg-core": "^6.5.2",
 		"@fortawesome/free-solid-svg-icons": "^6.5.2",
