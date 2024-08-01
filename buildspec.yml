@@ -28,8 +28,7 @@ env:
     NODE_ENV: "squared-envs:NODE_ENV"
     PORT: "squared-envs:PORT"
     SEED_PASSWORD: "squared-envs:SEED_PASSWORD"
-  variables:
-    DOCKER_BUILDKIT: 1
+    DOCKER_BUILDKIT: 1   
 
 phases:
   pre_build:
