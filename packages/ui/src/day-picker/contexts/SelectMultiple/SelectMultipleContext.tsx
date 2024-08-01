@@ -1,14 +1,14 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, type ReactNode, useContext } from "react";
 
 import { isSameDay } from "date-fns";
 
-import { DayPickerBase } from "../../types/DayPickerBase";
+import type { DayPickerBase } from "../../types/DayPickerBase";
 import {
-	DayPickerMultipleProps,
+	type DayPickerMultipleProps,
 	isDayPickerMultiple,
 } from "../../types/DayPickerMultiple";
-import { DayClickEventHandler } from "../../types/EventHandlers";
-import { InternalModifier, Modifiers } from "../../types/Modifiers";
+import type { DayClickEventHandler } from "../../types/EventHandlers";
+import type { InternalModifier, Modifiers } from "../../types/Modifiers";
 
 /** Represent the modifiers that are changed by the multiple selection. */
 export type SelectMultipleModifiers = Pick<

@@ -10,7 +10,7 @@ export interface TableProps {
 	/** ID of table element */
 	id?: string;
 	/** The ID of the label of the table (the same given to the Caption). */
-	["aria-labelledby"]?: string;
+	"aria-labelledby"?: string;
 	/** The month where the table is displayed. */
 	displayMonth: Date;
 }

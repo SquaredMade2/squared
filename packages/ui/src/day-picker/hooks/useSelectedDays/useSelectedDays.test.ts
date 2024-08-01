@@ -1,4 +1,4 @@
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { mockedContexts } from "../../test/mockedContexts";
 import { renderDayPickerHook } from "../../test/render";

@@ -121,7 +121,7 @@ export const Promise = () => {
 				<button>Save</button>
 				<Toast.Root
 					className={rootClass()}
-					duration={saving ? Infinity : 2000}
+					duration={saving ? Number.POSITIVE_INFINITY : 2000}
 					open={open}
 					onOpenChange={setOpen}
 				>
@@ -153,7 +153,7 @@ export const KeyChange = () => {
 
 			{toastOneCount > 0 && (
 				<Toast.Root
-					key={"one-" + String(toastOneCount)}
+					key={`one-${String(toastOneCount)}`}
 					className={rootClass()}
 				>
 					<Toast.Description>Toast one</Toast.Description>
@@ -162,7 +162,7 @@ export const KeyChange = () => {
 
 			{toastTwoCount > 0 && (
 				<Toast.Root
-					key={"two-" + String(toastTwoCount)}
+					key={`two-${String(toastTwoCount)}`}
 					className={rootClass()}
 				>
 					<Toast.Description>Toast two</Toast.Description>
@@ -301,7 +301,7 @@ export const Chromatic = () => {
 	return (
 		<>
 			<h1>Order</h1>
-			<Toast.Provider duration={Infinity}>
+			<Toast.Provider duration={Number.POSITIVE_INFINITY}>
 				<Toast.Root className={rootClass()}>
 					<div className={headerClass()}>
 						<Toast.Title className={titleClass()}>Toast 1</Toast.Title>
@@ -334,14 +334,14 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h1>Uncontrolled</h1>
 
 			<h2>Open</h2>
 			<Toast.Provider>
-				<Toast.Root duration={Infinity} className={rootClass()}>
+				<Toast.Root duration={Number.POSITIVE_INFINITY} className={rootClass()}>
 					<div className={headerClass()}>
 						<Toast.Title className={titleClass()}>Toast</Toast.Title>
 						<Toast.Close className={closeClass()}>×</Toast.Close>
@@ -357,14 +357,14 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h2>Closed</h2>
 			<Toast.Provider>
 				<Toast.Root
 					defaultOpen={false}
-					duration={Infinity}
+					duration={Number.POSITIVE_INFINITY}
 					className={rootClass()}
 				>
 					<div className={headerClass()}>
@@ -382,14 +382,18 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h1>Controlled</h1>
 
 			<h2>Open</h2>
 			<Toast.Provider>
-				<Toast.Root open duration={Infinity} className={rootClass()}>
+				<Toast.Root
+					open
+					duration={Number.POSITIVE_INFINITY}
+					className={rootClass()}
+				>
 					<div className={headerClass()}>
 						<Toast.Title className={titleClass()}>Toast</Toast.Title>
 						<Toast.Close className={closeClass()}>×</Toast.Close>
@@ -405,12 +409,16 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h2>Closed</h2>
 			<Toast.Provider>
-				<Toast.Root open={false} duration={Infinity} className={rootClass()}>
+				<Toast.Root
+					open={false}
+					duration={Number.POSITIVE_INFINITY}
+					className={rootClass()}
+				>
 					<div className={headerClass()}>
 						<Toast.Title className={titleClass()}>Toast</Toast.Title>
 						<Toast.Close className={closeClass()}>×</Toast.Close>
@@ -426,7 +434,7 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h1>Dismissed</h1>
@@ -448,7 +456,7 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h2>Controlled</h2>
@@ -474,7 +482,7 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h1>Provider</h1>
@@ -496,11 +504,11 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 
 			<h2>Duration overidden</h2>
-			<Toast.Provider duration={Infinity}>
+			<Toast.Provider duration={Number.POSITIVE_INFINITY}>
 				<Toast.Root duration={SNAPSHOT_DELAY - 100} className={rootClass()}>
 					<div className={headerClass()}>
 						<Toast.Title className={titleClass()}>Toast</Toast.Title>
@@ -517,7 +525,7 @@ export const Chromatic = () => {
 						Action
 					</Toast.Action>
 				</Toast.Root>
-				<Toast.Viewport className={chromaticViewport()}></Toast.Viewport>
+				<Toast.Viewport className={chromaticViewport()} />
 			</Toast.Provider>
 		</>
 	);
@@ -584,7 +592,7 @@ const ToastWithProgress = (props: React.ComponentProps<typeof Toast.Root>) => {
 				<div
 					className={progressBarInnerClass()}
 					style={{
-						animationDuration: duration - 100 + "ms",
+						animationDuration: `${duration - 100}ms`,
 						animationPlayState: paused ? "paused" : "running",
 					}}
 				/>

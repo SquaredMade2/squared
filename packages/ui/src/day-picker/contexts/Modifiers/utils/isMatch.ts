@@ -6,7 +6,7 @@ import {
 	isDateInterval,
 	isDateRange,
 	isDayOfWeekType,
-	Matcher,
+	type Matcher,
 } from "../../../types/Matchers";
 
 import { isDateInRange } from "./isDateInRange";
@@ -63,9 +63,8 @@ export function isMatch(day: Date, matchers: Matcher[]): boolean {
 			const isClosedInterval = isAfter(matcher.before, matcher.after);
 			if (isClosedInterval) {
 				return isDayAfter && isDayBefore;
-			} else {
-				return isDayBefore || isDayAfter;
 			}
+			return isDayBefore || isDayAfter;
 		}
 		if (isDateAfterType(matcher)) {
 			return differenceInCalendarDays(day, matcher.after) > 0;

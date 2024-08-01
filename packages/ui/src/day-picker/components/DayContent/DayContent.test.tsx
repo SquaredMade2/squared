@@ -1,12 +1,12 @@
 import "@testing-library/jest-dom";
 
 import { es } from "date-fns/locale";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { DayContent, DayContentProps } from ".";
+import { DayContent, type DayContentProps } from ".";
 
 const today = new Date(2021, 8);
 

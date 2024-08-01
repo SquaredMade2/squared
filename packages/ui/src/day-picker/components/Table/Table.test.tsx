@@ -1,12 +1,12 @@
 import React from "react";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render/customRender";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { FooterProps } from "../Footer";
+import type { FooterProps } from "../Footer";
 
-import { Table, TableProps } from "./Table";
+import { Table, type TableProps } from "./Table";
 
 function setup(props: TableProps, dayPickerProps?: DayPickerProps) {
 	return customRender(<Table {...props} />, dayPickerProps);

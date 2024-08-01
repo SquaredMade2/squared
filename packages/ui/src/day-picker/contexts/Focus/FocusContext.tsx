@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 
 import { isSameDay } from "date-fns";
 
@@ -9,8 +9,8 @@ import { useNavigation } from "../Navigation";
 import { getInitialFocusTarget } from "./utils/getInitialFocusTarget";
 import {
 	getNextFocus,
-	MoveFocusBy,
-	MoveFocusDirection,
+	type MoveFocusBy,
+	type MoveFocusDirection,
 } from "./utils/getNextFocus";
 
 /** Represents the value of the {@link FocusContext}. */

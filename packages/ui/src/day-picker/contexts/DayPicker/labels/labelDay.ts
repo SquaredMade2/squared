@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-import { DayLabel } from "../../../types/Labels";
+import type { DayLabel } from "../../../types/Labels";
 
 /**
  * The default ARIA label for the day button.

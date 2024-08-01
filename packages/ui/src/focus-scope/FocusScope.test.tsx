@@ -1,4 +1,4 @@
-import * as React from "react";
+import type React from "react";
 
 import { FocusScope } from "../focus-scope";
 import { render, waitFor } from "@testing-library/react";

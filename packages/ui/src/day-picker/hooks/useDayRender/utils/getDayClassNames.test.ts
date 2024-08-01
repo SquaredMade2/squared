@@ -1,6 +1,9 @@
-import { DayPickerContextValue } from "../../../contexts/DayPicker";
+import type { DayPickerContextValue } from "../../../contexts/DayPicker";
 import { defaultClassNames } from "../../../contexts/DayPicker/defaultClassNames";
-import { ActiveModifiers, InternalModifier } from "../../../types/Modifiers";
+import {
+	type ActiveModifiers,
+	InternalModifier,
+} from "../../../types/Modifiers";
 
 import { getDayClassNames } from "./getDayClassNames";
 
@@ -23,7 +26,7 @@ test("should include the day class name", () => {
 });
 
 describe('when using "modifiersClassNames" for a custom modifier', () => {
-	const modifierClassName = `foo-class`;
+	const modifierClassName = "foo-class";
 	const dayPicker: DayPickerOptions = {
 		modifiersClassNames: {
 			foo: modifierClassName,
@@ -48,7 +51,9 @@ describe.each(internalModifiers)(
 			},
 			classNames: defaultClassNames,
 		};
-		const activeModifiers: ActiveModifiers = { [internalModifier]: true };
+		const activeModifiers: ActiveModifiers = {
+			[internalModifier]: true,
+		};
 		test("should return the custom class name for the modifier", () => {
 			expect(getDayClassNames(dayPicker, activeModifiers)).toContain(
 				modifierClassName,

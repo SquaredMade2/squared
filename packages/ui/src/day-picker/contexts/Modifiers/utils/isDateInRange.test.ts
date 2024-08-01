@@ -1,5 +1,5 @@
 import { addDays } from "date-fns";
-import { DateRange } from "../../../index";
+import type { DateRange } from "../../../index";
 
 import { isDateInRange } from "./isDateInRange";
 

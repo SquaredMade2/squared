@@ -22,17 +22,17 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendMail = async (
-  email: string,
-  username: string,
-  emailToken: string|undefined,
-  confirmationRouteOption: string,
-  workspace?: string,
-  workspaceName?: string
+	email: string,
+	username: string,
+	emailToken: string | undefined,
+	confirmationRouteOption: string,
+	workspace?: string,
+	workspaceName?: string,
 ) => {
-  try {
-    const url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
-    let subject = "Confirm Email!";
-    let htmlContent:string;
+	try {
+		const url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
+		let subject = "Confirm Email!";
+		let htmlContent: string;
 
 		if (confirmationRouteOption === "password") {
 			// Settings for password reset email

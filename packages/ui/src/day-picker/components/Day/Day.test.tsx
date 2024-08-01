@@ -1,13 +1,13 @@
 import "@testing-library/jest-dom";
 import { screen } from "@testing-library/react";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { CustomComponents } from "../../types/DayPickerBase";
+import type { CustomComponents } from "../../types/DayPickerBase";
 
-import { Day, DayProps } from "./Day";
+import { Day, type DayProps } from "./Day";
 
 const today = new Date(2021, 8);
 

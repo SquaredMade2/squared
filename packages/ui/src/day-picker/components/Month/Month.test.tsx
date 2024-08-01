@@ -1,14 +1,14 @@
 import "@testing-library/jest-dom";
 
 import { screen } from "@testing-library/react";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import { getMonthCaption, getMonthGrid } from "../../test/selectors";
 
-import { CustomComponents } from "../../types/DayPickerBase";
+import type { CustomComponents } from "../../types/DayPickerBase";
 
-import { Month, MonthProps } from "./Month";
+import { Month, type MonthProps } from "./Month";
 
 let root: HTMLDivElement;
 
@@ -139,13 +139,13 @@ describe("when dir is ltr", () => {
 			beforeEach(() => {
 				setup(monthProps, dayPickerProps);
 			});
-			test.each(expected)(`the root should have the %s class`, (name) =>
+			test.each(expected)("the root should have the %s class", (name) =>
 				expect(root).toHaveClass(testClassNames[name]),
 			);
-			test.each(expected)(`the root should have the %s style`, (name) =>
+			test.each(expected)("the root should have the %s style", (name) =>
 				expect(root).toHaveStyle(testStyles[name]),
 			);
-			test.each(notExpected)(`the root should not have the %s class`, (name) =>
+			test.each(notExpected)("the root should not have the %s class", (name) =>
 				expect(root).not.toHaveClass(testClassNames[name]),
 			);
 		},
@@ -218,13 +218,13 @@ describe("when dir is rtl", () => {
 			beforeEach(() => {
 				setup(monthProps, dayPickerProps);
 			});
-			test.each(expected)(`the root should have the %s class`, (name) =>
+			test.each(expected)("the root should have the %s class", (name) =>
 				expect(root).toHaveClass(testClassNames[name]),
 			);
-			test.each(expected)(`the root should have the %s style`, (name) =>
+			test.each(expected)("the root should have the %s style", (name) =>
 				expect(root).toHaveStyle(testStyles[name]),
 			);
-			test.each(notExpected)(`the root should not have the %s class`, (name) =>
+			test.each(notExpected)("the root should not have the %s class", (name) =>
 				expect(root).not.toHaveClass(testClassNames[name]),
 			);
 		},

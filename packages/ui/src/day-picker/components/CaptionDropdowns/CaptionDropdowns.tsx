@@ -1,12 +1,12 @@
 import { addMonths } from "date-fns";
 
-import { CaptionProps } from "../Caption/Caption";
+import type { CaptionProps } from "../Caption/Caption";
 import { CaptionLabel } from "../CaptionLabel";
 import { MonthsDropdown } from "../MonthsDropdown";
 import { YearsDropdown } from "../YearsDropdown";
 import { useDayPicker } from "../../contexts/DayPicker";
 import { useNavigation } from "../../contexts/Navigation";
-import { MonthChangeEventHandler } from "../../types/EventHandlers";
+import type { MonthChangeEventHandler } from "../../types/EventHandlers";
 
 /**
  * Render a caption with the dropdowns to navigate between months and years.

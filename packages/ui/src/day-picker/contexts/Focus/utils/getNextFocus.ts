@@ -11,9 +11,9 @@ import {
 	startOfWeek,
 } from "date-fns";
 
-import { DayPickerContextValue } from "../../DayPicker";
+import type { DayPickerContextValue } from "../../DayPicker";
 import { getActiveModifiers } from "../../Modifiers";
-import { Modifiers } from "../../../types/Modifiers";
+import type { Modifiers } from "../../../types/Modifiers";
 
 export type MoveFocusBy =
 	| "day"
@@ -86,19 +86,18 @@ export function getNextFocus(focusedDay: Date, options: FocusDayOptions): Date {
 	}
 	if (isFocusable) {
 		return newFocusedDay;
-	} else {
-		if (retry.count > MAX_RETRY) {
-			return retry.lastFocused;
-		}
-		return getNextFocus(newFocusedDay, {
-			moveBy,
-			direction,
-			context,
-			modifiers,
-			retry: {
-				...retry,
-				count: retry.count + 1,
-			},
-		});
 	}
+	if (retry.count > MAX_RETRY) {
+		return retry.lastFocused;
+	}
+	return getNextFocus(newFocusedDay, {
+		moveBy,
+		direction,
+		context,
+		modifiers,
+		retry: {
+			...retry,
+			count: retry.count + 1,
+		},
+	});
 }

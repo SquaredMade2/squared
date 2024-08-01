@@ -875,9 +875,14 @@ export const DisableHoverableContent = () => (
 );
 
 // change order slightly for more pleasing visual
-const SIDES = SIDE_OPTIONS.filter((side) => side !== "bottom").concat([
+type Side = "top" | "right" | "bottom" | "left";
+const SIDES: Side[] = [
+	...SIDE_OPTIONS.filter(
+		(side): side is Exclude<(typeof SIDE_OPTIONS)[number], "bottom"> =>
+			side !== "bottom",
+	),
 	"bottom",
-]);
+];
 
 export const Chromatic = () => (
 	<Tooltip.TooltipProvider>

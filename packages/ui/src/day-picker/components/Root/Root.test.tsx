@@ -1,16 +1,16 @@
 import "@testing-library/jest-dom";
 
-import { RenderResult, screen } from "@testing-library/react";
+import { type RenderResult, screen } from "@testing-library/react";
 import { addDays } from "date-fns";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import { getDayButton, queryMonthGrids } from "../../test/selectors";
 import { freezeBeforeAll } from "../../test/utils";
 
-import { MonthsProps } from "../Months";
+import type { MonthsProps } from "../Months";
 import { defaultClassNames } from "../../contexts/DayPicker/defaultClassNames";
-import { ClassNames } from "../../types/Styles";
+import type { ClassNames } from "../../types/Styles";
 
 import { Root } from "./Root";
 

@@ -520,7 +520,7 @@ export const PopoverNested = () => (
 						onInteractOutside={() => {
 							console.log("interact outside blue");
 						}}
-					></DummyPopover>
+					/>
 				</DummyPopover>
 			</DummyPopover>
 			<input type="text" defaultValue="some input" />

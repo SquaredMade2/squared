@@ -1,8 +1,8 @@
-import { MouseEventHandler } from "react";
+import type { MouseEventHandler } from "react";
 
 import { isSameMonth } from "date-fns";
 
-import { CaptionProps } from "../Caption/Caption";
+import type { CaptionProps } from "../Caption/Caption";
 import { Navigation } from "../Navigation";
 import { useDayPicker } from "../../contexts/DayPicker";
 import { useNavigation } from "../../contexts/Navigation";

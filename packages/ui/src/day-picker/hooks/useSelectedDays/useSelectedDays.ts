@@ -5,7 +5,7 @@ import { useSelectSingle } from "../../contexts/SelectSingle";
 import { isDayPickerMultiple } from "../../types/DayPickerMultiple";
 import { isDayPickerRange } from "../../types/DayPickerRange";
 import { isDayPickerSingle } from "../../types/DayPickerSingle";
-import { DateRange } from "../../types/Matchers";
+import type { DateRange } from "../../types/Matchers";
 
 export type SelectedDays = Date | Date[] | DateRange | undefined;
 

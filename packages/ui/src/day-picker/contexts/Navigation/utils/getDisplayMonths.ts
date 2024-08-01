@@ -17,7 +17,7 @@ export function getDisplayMonths(
 	const start = startOfMonth(month);
 	const end = startOfMonth(addMonths(start, numberOfMonths));
 	const monthsDiff = differenceInCalendarMonths(end, start);
-	let months = [];
+	let months: Date[] = [];
 
 	for (let i = 0; i < monthsDiff; i++) {
 		const nextMonth = addMonths(start, i);

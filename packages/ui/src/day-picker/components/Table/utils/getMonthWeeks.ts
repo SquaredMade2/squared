@@ -2,7 +2,7 @@ import {
 	addWeeks,
 	endOfMonth,
 	getWeeksInMonth,
-	Locale,
+	type Locale,
 	startOfMonth,
 } from "date-fns";
 

@@ -697,7 +697,9 @@ export const SingleItemAsDialogTrigger = () => {
 						>
 							<DialogPrimitive.Trigger className={itemClass()} asChild>
 								<DropdownMenuPrimitive.Item
-									onSelect={() => (isDialogOpenRef.current = true)}
+									onSelect={() => {
+										isDialogOpenRef.current = true;
+									}}
 								>
 									Delete
 								</DropdownMenuPrimitive.Item>
@@ -1149,9 +1151,14 @@ export const InPopupWindow = () => {
 };
 
 // change order slightly for more pleasing visual
-const SIDES = SIDE_OPTIONS.filter((side) => side !== "bottom").concat([
-	"bottom",
-]);
+const sidesArray = Array.from(SIDE_OPTIONS);
+const bottomIndex = sidesArray.indexOf("bottom");
+
+if (bottomIndex !== -1) {
+	sidesArray.push(...sidesArray.splice(bottomIndex, 1));
+}
+
+const SIDES = sidesArray as unknown as typeof SIDE_OPTIONS;
 
 export const Chromatic = () => {
 	const checkboxItems = [

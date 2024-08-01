@@ -1,4 +1,4 @@
-import { DayModifiers } from "../../../index";
+import type { DayModifiers } from "../../../index";
 
 import { getCustomModifiers } from "./getCustomModifiers";
 

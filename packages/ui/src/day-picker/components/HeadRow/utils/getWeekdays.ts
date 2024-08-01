@@ -1,4 +1,5 @@
-import { addDays, Locale, startOfISOWeek, startOfWeek } from "date-fns";
+import { addDays, startOfISOWeek, startOfWeek } from "date-fns";
+import type { Locale } from "date-fns";
 
 /**
  * Generate a series of 7 days, starting from the week, to use for formatting
@@ -15,7 +16,7 @@ export function getWeekdays(
 		? startOfISOWeek(new Date())
 		: startOfWeek(new Date(), { locale, weekStartsOn });
 
-	const days = [];
+	const days: Date[] = [];
 	for (let i = 0; i < 7; i++) {
 		const day = addDays(start, i);
 		days.push(day);

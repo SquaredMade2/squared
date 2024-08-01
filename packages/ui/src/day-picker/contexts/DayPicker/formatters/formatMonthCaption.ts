@@ -1,4 +1,4 @@
-import { format, Locale } from "date-fns";
+import { format, type Locale } from "date-fns";
 
 /**
  * The default formatter for the Month caption.

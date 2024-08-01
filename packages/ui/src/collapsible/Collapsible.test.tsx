@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import React from "react";
+import type React from "react";
 
 import {
 	Collapsible,

@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom";
-import { DayPickerProps } from "../../DayPicker";
+import type { DayPickerProps } from "../../DayPicker";
 
 import { customRender } from "../../test/render";
 import { getNextButton, getPrevButton } from "../../test/selectors";
 import { user } from "../../test/user";
 
-import { Navigation, NavigationProps } from "./Navigation";
+import { Navigation, type NavigationProps } from "./Navigation";
 
 let root: HTMLElement;
 
@@ -32,8 +32,16 @@ const dayPickerProps = {
 		nav: { color: "red" },
 	},
 	components: {
-		IconRight: () => <svg>IconRight</svg>,
-		IconLeft: () => <svg>IconLeft</svg>,
+		IconRight: () => (
+			<svg>
+				<title>IconRight</title>IconRight
+			</svg>
+		),
+		IconLeft: () => (
+			<svg>
+				<title>IconLeft</title>IconLeft
+			</svg>
+		),
 	},
 };
 
@@ -61,6 +69,7 @@ describe("when rendered", () => {
 	test('the next button should be named "next-month"', () => {
 		expect(getNextButton()).toHaveAttribute("name", "next-month");
 	});
+	// biome-ignore lint/suspicious/noDuplicateTestHooks: <explanation>
 	beforeEach(async () => {
 		await user.click(getPrevButton());
 	});

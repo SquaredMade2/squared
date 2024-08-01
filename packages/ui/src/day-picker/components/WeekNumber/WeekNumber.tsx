@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import type { MouseEventHandler } from "react";
 
 import { useDayPicker } from "../../contexts/DayPicker";
 
@@ -41,7 +41,7 @@ export function WeekNumber(props: WeekNumberProps): JSX.Element {
 
 	const label = labelWeekNumber(Number(weekNumber), { locale });
 
-	const handleClick: MouseEventHandler = function (e) {
+	const handleClick: MouseEventHandler = (e) => {
 		onWeekNumberClick(weekNumber, dates, e);
 	};
 
