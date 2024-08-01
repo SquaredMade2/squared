@@ -31,7 +31,7 @@ RUN pnpm install
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-COPY --from=builder /app/out/turbo.json ./turbo.json
+COPY turbo.json turbo.json
 
 # Accept build arguments and set them as environment variables
 ARG NEXT_PUBLIC_SERVER
