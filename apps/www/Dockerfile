@@ -25,7 +25,7 @@ COPY --from=builder package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy built files from the builder stage
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/out/dist ./dist
 
 # Final stage - Runner
 FROM base AS runner
