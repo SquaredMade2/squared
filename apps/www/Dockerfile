@@ -10,6 +10,7 @@ RUN npm install -g pnpm
 COPY . .
 RUN pnpm install
 RUN pnpm build
+RUN ls -R /app
 
 # Installer stage
 FROM base AS installer
@@ -25,7 +26,7 @@ COPY --from=builder package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Copy built files from the builder stage
-COPY --from=builder /app/out/dist ./dist
+COPY --from=builder /app/dist ./dist
 
 # Final stage - Runner
 FROM base AS runner
