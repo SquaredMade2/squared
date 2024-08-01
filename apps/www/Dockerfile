@@ -34,6 +34,7 @@ RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+RUN ls -R /app/apps/www
 
 # Final stage - Runner
 FROM base AS runner
@@ -47,7 +48,6 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 astro
 USER astro
 
-RUN ls -R /app
 COPY --from=installer /app/apps/www/astro.config.js .
 COPY --from=installer /app/apps/www/package.json .
 
