@@ -36,6 +36,9 @@ env:
 phases:
   pre_build:
     commands:
+      - echo "Printing environment variables"
+      - printenv
+      - echo "Environment variables printed"
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWE_REGION | docker login --username AWS --password-stdin 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com
       - echo Creating .env file...
