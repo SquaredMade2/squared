@@ -34,19 +34,16 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWE_REGION | docker login --username AWS --password-stdin 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com
-      - echo Building Docker images...
-      - docker build -t squared-www ./apps/www
-      - docker build -t squared-web ./apps/web
-      - docker build -t squared-api ./apps/api
-      - docker build -t squared-nginx ./nginx
+      - echo Running Docker Compose to build images...
+      - docker-compose -f docker-compose.yml build
 
   build:
     commands:
       - echo Tagging Docker images...
-      - docker tag squared-www:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
-      - docker tag squared-web:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
-      - docker tag squared-api:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
-      - docker tag squared-nginx:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest
+      - docker tag www:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
+      - docker tag web:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
+      - docker tag api:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
+      - docker tag nginx:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest
 
   post_build:
     commands:
