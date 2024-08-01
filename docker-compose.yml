@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/www/Dockerfile
+    image: squared-www:latest
     restart: always
     ports:
       - 4000:3000
@@ -19,6 +20,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+    image: squared-web:latest
     restart: always
     ports:
       - 3000:3000
@@ -39,12 +41,14 @@ services:
       - app_network
     env_file:
       - .env
+    image: squared-api:latest
 
   nginx:
     container_name: nginx
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    image: squared-nginx:latest
     restart: always
     ports:
       - 80:80

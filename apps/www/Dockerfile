@@ -34,7 +34,6 @@ RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
-RUN ls -R /app/apps/www
 
 # Final stage - Runner
 FROM base AS runner
