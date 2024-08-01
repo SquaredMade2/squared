@@ -47,7 +47,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 astro
 USER astro
 
+RUN ls -R /app/apps/www
 COPY --from=installer /app/apps/www/astro.config.js .
 COPY --from=installer /app/apps/www/package.json .
 
-CMD node apps/www/dist/server/entry.js
+CMD node apps/www/dist/server/entry.mjs
