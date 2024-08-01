@@ -3,30 +3,37 @@ FROM node:18-alpine AS base
 
 # Builder stage
 FROM base AS builder
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk update
 RUN apk add --no-cache libc6-compat
+
+# Set working directory
 WORKDIR /app
-RUN npm install -g pnpm
+
+# Install pnpm and turbo globally
+RUN npm install -g pnpm turbo
+
 COPY . .
-RUN pnpm install
-RUN pnpm build
-RUN ls -R /app
+RUN turbo prune www --docker
 
 # Installer stage
 FROM base AS installer
-WORKDIR /app
 RUN apk update
 RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
 # Install pnpm again to make it available in this stage
 RUN npm install -g pnpm
 
-# Copy package.json and pnpm-lock.yaml to install dependencies
-COPY --from=builder package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+# First install the dependencies (as they change less often)
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install
 
-# Copy built files from the builder stage
-COPY --from=builder /app/dist ./dist
+# Build the project
+COPY --from=builder /app/out/full/ .
+COPY turbo.json turbo.json
 
 # Final stage - Runner
 FROM base AS runner
@@ -40,12 +47,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 astro
 USER astro
 
-COPY --from=installer /app/apps/web/next.config.js .
-COPY --from=installer /app/apps/web/package.json .
+COPY --from=installer /app/apps/www/astro.config.js .
+COPY --from=installer /app/apps/www/package.json .
 
-# Install dependencies for astro
-RUN pnpm install --frozen-lockfile
-
-# Expose the port and set the command to run the application
-EXPOSE 3000
-RUN npx astro start
+CMD node apps/www/dist/server/entry.js
