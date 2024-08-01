@@ -1,6 +1,19 @@
 version: "3"
 
 services:
+  www:
+    container_name: www
+    build:
+      context: .
+      dockerfile: ./apps/www/Dockerfile
+    restart: always
+    ports:
+      - 4000:3000
+    networks:
+      - app_network
+    env_file:
+      - .env
+
   web:
     container_name: web
     build:
@@ -11,6 +24,9 @@ services:
       - 3000:3000
     networks:
       - app_network
+    env_file:
+      - .env
+
   api:
     container_name: api
     build:
@@ -21,9 +37,22 @@ services:
       - 3001:3001
     networks:
       - app_network
+    env_file:
+      - .env
 
-# Define a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - app_network
+    env_file:
+      - .env
+
 networks:
   app_network:
     external: true

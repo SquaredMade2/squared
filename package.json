@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api",
     "check-types": "turbo run check-types",
     "clean": "turbo run clean",
@@ -19,6 +20,8 @@
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
     "test": "turbo run test",
+    "test:web": "turbo run test --filter=web",
+    "test:api": "turbo run test --filter=api",
     "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci"
   },
   "devDependencies": {
