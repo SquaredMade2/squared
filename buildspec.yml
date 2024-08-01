@@ -1,0 +1,65 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    DOMAIN: "squared-envs-LnSPHE:DOMAIN"
+    EMAIL_USERNAME: "squared-envs-LnSPHE:EMAIL_USERNAME"
+    EMAIL_PASSWORD: "squared-envs-LnSPHE:EMAIL_PASSWORD"
+    AWS_ACCESS_KEY_ID: "squared-envs-LnSPHE:AWS_ACCESS_KEY_ID"
+    AWS_SECRET_ACCESS_KEY: "squared-envs-LnSPHE:AWS_SECRET_ACCESS_KEY"
+    AWS_S3_BUCKET: "squared-envs-LnSPHE:AWS_S3_BUCKET"
+    AWE_REGION: "squared-envs-LnSPHE:AWE_REGION"
+    CLIENT_ID: "squared-envs-LnSPHE:CLIENT_ID"
+    HOOKDECK_AUTH_TOKEN: "squared-envs-LnSPHE:HOOKDECK_AUTH_TOKEN"
+    JWT_SECRECT: "squared-envs-LnSPHE:JWT_SECRECT"
+    KINDE_CLIENT_ID: "squared-envs-LnSPHE:KINDE_CLIENT_ID"
+    KINDE_CLIENT_SECRET: "squared-envs-LnSPHE:KINDE_CLIENT_SECRET"
+    KINDE_ISSUER_URL: "squared-envs-LnSPHE:KINDE_ISSUER_URL"
+    KINDE_POST_LOGIN_REDIRECT_URL: "squared-envs-LnSPHE:KINDE_POST_LOGIN_REDIRECT_URL"
+    KINDE_POST_LOGOUT_REDIRECT_URL: "squared-envs-LnSPHE:KINDE_POST_LOGOUT_REDIRECT_URL"
+    KINDE_SITE_URL: "squared-envs-LnSPHE:KINDE_SITE_URL"
+    MONGO_URL: "squared-envs-LnSPHE:MONGO_URL"
+    NEXTAUTH_SECRET: "squared-envs-LnSPHE:NEXTAUTH_SECRET"
+    NEXT_PUBLIC_CLIENT_ID: "squared-envs-LnSPHE:NEXT_PUBLIC_CLIENT_ID"
+    NEXT_PUBLIC_CONFIRM_URL: "squared-envs-LnSPHE:NEXT_PUBLIC_CONFIRM_URL"
+    NEXT_PUBLIC_GITHUB_CLIENT_SECRET: "squared-envs-LnSPHE:NEXT_PUBLIC_GITHUB_CLIENT_SECRET"
+    NEXT_PUBLIC_SERVER: "squared-envs-LnSPHE:NEXT_PUBLIC_SERVER"
+    NEXT_PUBLIC_URL: "squared-envs-LnSPHE:NEXT_PUBLIC_URL"
+    NODE_ENV: "squared-envs-LnSPHE:NODE_ENV"
+    PORT: "squared-envs-LnSPHE:PORT"
+    SEED_PASSWORD: "squared-envs-LnSPHE:SEED_PASSWORD"
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWE_REGION | docker login --username AWS --password-stdin 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com
+      - echo Building Docker images...
+      - docker build -t squared-www ./apps/www
+      - docker build -t squared-web ./apps/web
+      - docker build -t squared-api ./apps/api
+      - docker build -t squared-nginx ./nginx
+
+  build:
+    commands:
+      - echo Tagging Docker images...
+      - docker tag squared-www:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
+      - docker tag squared-web:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
+      - docker tag squared-api:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
+      - docker tag squared-nginx:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest
+
+  post_build:
+    commands:
+      - echo Pushing Docker images to Amazon ECR...
+      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
+      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
+      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
+      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest
+
+artifacts:
+  files:
+    - '**/*'
+
+cache:
+  paths:
+    - '/var/lib/docker'
