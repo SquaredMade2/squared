@@ -3,7 +3,6 @@ import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { navBarToggle } from "@/store/userSettings";
 import { GithubIcon } from "@/components/Svg";
-import Link from "next/link";
 
 const styles = {
   mainContainer:
@@ -26,7 +25,7 @@ const styles = {
   title: "text-2xl text-foreground font-medium",
   subtitle: "text-muted-foreground text-sm",
   sectionWrapper: "flex items-center justify-between",
-  button: "w-24 h-16 rounded-lg bg-secondary hover:bg-primary"
+  button: "w-24 h-16 rounded-lg bg-secondary hover:bg-primary",
 };
 
 const GithubSettings: React.FC = () => {
@@ -39,7 +38,7 @@ const GithubSettings: React.FC = () => {
     dispatch(navBarToggle(navBarValue));
   };
 
-  const handleClick = (): void => {}
+  const handleClick = (): void => {};
 
   return (
     <div className={styles.mainContainer}>
@@ -57,20 +56,17 @@ const GithubSettings: React.FC = () => {
             <header className={styles.title}>Github</header>
           </div>
           <span className={styles.line} />
-
           <div className={styles.sectionWrapper}>
-			<div className={styles.headerText}>
-				<h3 className={styles.title}>Connect Personal Account</h3>
-				<header className={styles.subtitle}>
-				Connect your personal account to use the integration feature
-				</header>
-			</div>
-
-			<button onClick={handleClick} className={styles.button}>
-				Connect
-			</button>
-		  </div>
-
+            <div className={styles.headerText}>
+              <h3 className={styles.title}>Connect Personal Account</h3>
+              <header className={styles.subtitle}>
+                Connect your personal account to use the integration feature
+              </header>
+            </div>
+            <button onClick={handleClick} className={styles.button}>
+              Connect
+            </button>
+          </div>
           <span className={styles.line} />
         </div>
       </div>
