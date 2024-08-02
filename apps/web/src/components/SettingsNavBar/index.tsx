@@ -2,7 +2,6 @@
 import type React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { handleTheme } from "@/store/userSettings";
 import {
 	BriefcaseBusiness,
 	ChevronLeft,
@@ -27,7 +26,7 @@ const styles = {
 	settingText: "text-foreground cursor-pointer",
 	generalButton: "flex w-24 ml-6 p-0.5 cursor-pointer",
 	membersButton: "flex w-24 ml-6 p-0.5 cursor-pointer",
-	githubButton: "flex w-32 ml-6 mb-4 p-0.5 cursor-pointer",
+	integrationsButton: "flex w-32 ml-6 mb-4 p-0.5 cursor-pointer",
 	myAccountDiv: "mb-1 pl-0.5 flex items-center",
 	myWorkspaceDiv: "mb-1 pl-0.5 flex items-center",
 	myAccountText: "text-muted-foreground pl-2",
@@ -57,7 +56,7 @@ const SettingsNavBar = ({
 	const profileUrl = `${baseUrl}/profile`;
 	const generalUrl = `${baseUrl}/workspace`;
 	const membersUrl = `${baseUrl}/members`;
-	const githubUrl = `${baseUrl}/github-settings`;
+	const integrationsUrl = `${baseUrl}/integrations`;
 
 	const handleTeamClick: handleTeamClickNavbar = (team: Team) => {
 		if (setLoading) {
@@ -100,10 +99,10 @@ const SettingsNavBar = ({
 					</button>
 					<button
 						type="button"
-						onClick={() => router.push(githubUrl)}
-						className={styles.githubButton}
+						onClick={() => router.push(integrationsUrl)}
+						className={styles.integrationsButton}
 					>
-						Github Settings
+						Integrations
 					</button>
 					<div className={styles.myAccountDiv}>
 						<CircleUser className="size-4 text-[#6A6F75]" />
