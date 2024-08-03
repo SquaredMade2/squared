@@ -38,7 +38,9 @@ const GithubSettings: React.FC = () => {
     dispatch(navBarToggle(navBarValue));
   };
 
-  const handleClick = (): void => {};
+  const handleClick = (): void => {
+    window.location.href = "http://localhost:5173/oauth/github";
+  };
 
   return (
     <div className={styles.mainContainer}>
