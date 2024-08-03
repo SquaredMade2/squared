@@ -1,6 +1,12 @@
-import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from '@material-tailwind/react';
-import CommentForm from '@/components/Comments';
-import ActivityItemContainer from '../ActivtyItemContainer';
+import {
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from "@material-tailwind/react";
+import CommentForm from "@/components/Comments";
+import ActivityItemContainer from "../ActivtyItemContainer";
 
 const EventTabs = () => {
   return (
@@ -9,7 +15,7 @@ const EventTabs = () => {
         className="bg-background pb-0 px-0"
         indicatorProps={{
           className:
-            'bg-accent border-t border-x border-transparent rounded-none rounded-t-lg text-white mb-0 pb-0',
+            "bg-accent border-t border-x border-transparent rounded-none rounded-t-lg text-white mb-0 pb-0",
         }}
         placeholder={undefined}
         onPointerEnterCapture={undefined}

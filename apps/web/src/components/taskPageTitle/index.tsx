@@ -1,38 +1,59 @@
-import { useState, type FocusEvent } from 'react';
-import { useSelector } from 'react-redux';
-import TaskPageDescription from '@/components/taskPageDescription/index';
-import { updateTitle } from '@/api/taskApi';
-import useLogTaskEvent from '@/hooks/useLogTaskEvent';
-import MentionInput from '@/components/MentionsInput';
-import { CustomMentionStyle } from '@/utils/mentionInputStyle';
-import { transformingMentionInputs } from '@/utils/transformingMentionInputs';
-import { useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import type { RootState } from '@/store';
-import { EventType } from '@/interfaces/event.interfaces';
-import type { OnChangeHandlerFunc } from 'react-mentions';
+import { useState, type FocusEvent } from "react";
+import { useSelector } from "react-redux";
+import TaskPageDescription from "@/components/taskPageDescription/index";
+import { updateTitle } from "@/api/taskApi";
+import useLogTaskEvent from "@/hooks/useLogTaskEvent";
+import MentionInput from "@/components/MentionsInput";
+import { CustomMentionStyle } from "@/utils/mentionInputStyle";
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import type { RootState } from "@/store";
+import { EventType } from "@/interfaces/event.interfaces";
+import type { OnChangeHandlerFunc } from "react-mentions";
+import { useParams } from "next/navigation";
 
 const TaskPageTitle = () => {
   const dispatch = useAppDispatch();
+  const { taskId }: { taskId: string } = useParams();
+  const singleTaskTitle = useSelector(
+    (state: RootState) => state.singleTask.data?.title
+  );
+  const taskPageTitle = useSelector((state: RootState) => {
+    if (taskId === state.taskData.taskPage._id) {
+      return state.taskData.taskPage?.title;
+    }
+  });
+  const recentlyDeletedTitle = useSelector((state: RootState) => {
+    if (taskId === state.recentlyDeleted.recentlyDeleted._id) {
+      return state.recentlyDeleted.recentlyDeleted.title;
+    }
+  });
 
-  const title = useSelector((state: RootState) => state.singleTask.data?.title);
-  const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
-
+  const title = singleTaskTitle || taskPageTitle || recentlyDeletedTitle;
   const [updatedTitle, setUpdatedTitle] = useState(title);
   const [isFocused, setIsFocused] = useState(false);
 
-  const { author, storeCommonFields, storeType, storeTaskValue, updateTaskValue } =
-    useLogTaskEvent();
+  const {
+    author,
+    storeCommonFields,
+    storeType,
+    storeTaskValue,
+    updateTaskValue,
+  } = useLogTaskEvent();
 
   const styles = {
-    container: 'flex flex-col',
-    title: 'mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none',
+    container: "flex flex-col",
+    title:
+      "mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none",
   };
 
   const listOfMembers = useSelector(
-    (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers,
+    (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
   );
 
-  const { transformedInput: transformedTitleInput } = transformingMentionInputs(updatedTitle ?? '');
+  const { transformedInput: transformedTitleInput } = transformingMentionInputs(
+    updatedTitle ?? ""
+  );
 
   const handleChange: OnChangeHandlerFunc = (e) => {
     setUpdatedTitle(e.target.value);
@@ -40,8 +61,8 @@ const TaskPageTitle = () => {
 
   const logEvent = () => {
     storeType(EventType.TitleUpdated);
-    if (taskId !== undefined) storeTaskValue(title ?? '');
-    updateTaskValue(updatedTitle ?? '');
+    if (taskId !== undefined) storeTaskValue(title ?? "");
+    updateTaskValue(updatedTitle ?? "");
   };
 
   const handleSubmit = (e: FocusEvent<HTMLFormElement>) => {
@@ -55,7 +76,9 @@ const TaskPageTitle = () => {
     }
   };
 
-  const handleBlur = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur = (
+    e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setIsFocused(false);
     e.preventDefault();
     const changeMade: boolean = updatedTitle !== title;
@@ -71,13 +94,13 @@ const TaskPageTitle = () => {
       <MentionInput
         data={listOfMembers}
         className={styles.title}
-        value={updatedTitle ?? ''}
+        value={updatedTitle ?? ""}
         onChange={handleChange}
         onBlur={handleBlur}
         style={CustomMentionStyle(isFocused)}
         onFocus={() => setIsFocused(true)}
-        placeholder={'Title'}
-        name={'title'}
+        placeholder={"Title"}
+        name={"title"}
       />
       <TaskPageDescription />
     </form>

@@ -3,6 +3,7 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { RootState } from "@/store";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { ChevronRight } from "lucide-react";
+import { useParams } from "next/navigation";
 
 const styles = {
   buttonActive:
@@ -22,6 +23,7 @@ const styles = {
 };
 
 const TaskCardTop = () => {
+  const { taskId } = useParams();
   const workspace = useAppSelector(
     (state: RootState) => state.taskData.currentWorkspace
   );
@@ -32,7 +34,17 @@ const TaskCardTop = () => {
   );
 
   const taskTitle = useAppSelector((state) => state.singleTask.data?.title);
-
+  const taskPageTitle = useAppSelector((state) => {
+    if (taskId === state.taskData.taskPage._id) {
+      return state.taskData.taskPage.title;
+    }
+  });
+  const recentlyDeletedTitle = useAppSelector((state) => {
+    if (taskId === state.recentlyDeleted.recentlyDeleted._id) {
+      return state.recentlyDeleted.recentlyDeleted.title;
+    }
+  });
+  const title = taskTitle || taskPageTitle || recentlyDeletedTitle;
   return (
     <>
       <div className={styles.topBg}>
@@ -53,7 +65,7 @@ const TaskCardTop = () => {
           <span className={styles.rightChevron}>
             <ChevronRight className="size-4 stroke-gray-500" />
           </span>
-          <div className={styles.taskTitle}>{taskTitle}</div>
+          <div className={styles.taskTitle}>{title}</div>
         </div>
       </div>
     </>

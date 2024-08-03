@@ -6,17 +6,17 @@ const styles = {
 };
 
 export const ProjectDataWidgetButton = ({
-  toggleWidget,
-  setToggleWidget,
+  isWidgetOpen,
+  handleToggle,
 }: ProjectDataWidgetButtonProps): React.ReactElement => {
   return (
     <button
       title="title"
       className={styles.mainButton}
-      onClick={() => setToggleWidget(!toggleWidget)}
+      onClick={handleToggle}
       type="button"
     >
-      {toggleWidget ? (
+      {isWidgetOpen ? (
         <PanelRightOpen className="size-5 text-[#858699]" />
       ) : (
         <PanelLeftOpen className="size-5 text-[#858699]" />

@@ -9,6 +9,8 @@ import type {
 } from "@/app/interfaces/ProjectDataWidget.interfaces";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { LayoutGrid, Star } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setIsWidgetOpen } from "@/store/isWidgetOpen";
 
 const styles = {
   mainWidget:
@@ -27,7 +29,10 @@ const styles = {
 };
 
 export const ProjectDataWidget = () => {
-  const [toggleWidget, setToggleWidget] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const isWidgetOpen = useAppSelector(
+    (state) => state.isWidgetOpen.isWidgetOpen
+  );
 
   // The below is temporary until a favorite attribute is retrieved
   const [favorite, setFavorite] = useState<boolean>(false);
@@ -69,15 +74,18 @@ export const ProjectDataWidget = () => {
     {}
   );
 
+  const handleToggle = (): void => {
+    dispatch(setIsWidgetOpen(!isWidgetOpen));
+  };
   return (
-    <ClickAwayListener onClickAway={() => setToggleWidget(false)}>
+    <ClickAwayListener onClickAway={() => dispatch(setIsWidgetOpen(false))}>
       <div>
         <ProjectDataWidgetButton
-          toggleWidget={toggleWidget}
-          setToggleWidget={setToggleWidget}
+          isWidgetOpen={isWidgetOpen}
+          handleToggle={handleToggle}
         />
         <div
-          className={`${toggleWidget ? styles.visible : styles.hidden} ${styles.mainWidget}`}
+          className={`${isWidgetOpen ? styles.visible : styles.hidden} ${styles.mainWidget}`}
         >
           <div className={styles.header}>
             <header className={styles.headerTag}>All Issues</header>

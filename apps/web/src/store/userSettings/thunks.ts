@@ -4,16 +4,11 @@ import { toast } from "react-toastify";
 import { Octokit } from "octokit";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
-const GITHUB_CLIENT_SECRET =
-  process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET;
+const GITHUB_CLIENT_SECRET = process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET;
 
 export const updateProfile = createAsyncThunk(
   "userSettings/updateProfile",
-  async (dispatchedData: {
-    name: string;
-    username: string;
-    id: string;
-  }) => {
+  async (dispatchedData: { name: string; username: string; id: string }) => {
     const { name, username, id } = dispatchedData;
 
     const { data } = await axios({

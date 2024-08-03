@@ -20,7 +20,7 @@ interface ITask {
 
 interface Assignee {
   id: Types.ObjectId;
-  name: string
+  name: string;
 }
 
 export default ITask;

@@ -9,7 +9,8 @@ import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
 import NavBarTeams from "@/components/NavBarTeams";
 import type { Team } from "@/store/taskData/taskData.interfaces";
-import { Search } from "lucide-react";
+import SearchButton from "../SearchButton";
+import SearchCommand from "../SearchCommand";
 
 const styles = {
   header: "flex items-center justify-center w-full lg:justify-center",
@@ -20,9 +21,6 @@ const styles = {
   newIssueModalContainer: "absolute top-[100px] left-full",
   newTaskButton: "pr-36 pl-2 border shadow-lg rounded-md focus:outline-none",
   newTaskText: "text-nav",
-  searchButton:
-    "rounded-md border border-border w-10 align-center flex justify-center bg-secondary shadow-lg focus:outline-none flex flex-row items-center cursor-pointer hover:bg-popover h-10 items-center",
-  searchIconSVG: "stroke-current fill-transparent cursor-pointer h-5 w-5",
   createWorkSpaceDiv: "items-center",
   inviteDiv:
     "flex flex-col gap-4 items-center pb-6 text-foreground h-full justify-end",
@@ -37,7 +35,6 @@ const styles = {
   triangle: "transition-all 0.2s ease-in-out ml-1 z-30",
   fullWidth: "w-full ml-1.5",
   ul: "overflow-hidden",
-  searchButtonDiv: "ml-3.5",
   mainContainer: "w-11/12 flex flex-col",
   inboxButton:
     "w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer",
@@ -50,13 +47,9 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const inboxPageChecker = pathname.includes("/inbox");
-  const { user, theme } = useAppSelector((state) => state.userSettings);
+  const { user } = useAppSelector((state) => state.userSettings);
 
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-
-  const handleClick = (): void => {
-    router.push(`/workspace/${workspace.url}/search`);
-  };
 
   const handleTeamClick = (team: Team): void => {
     dispatch(setCurrentTeam(team));
@@ -77,17 +70,7 @@ const Navbar = () => {
           <span className={styles.innerDivSpan}>{user?.name}</span>
           <div className={styles.newIssueDiv}>
             <NewIssueButton />
-            <div className={styles.searchButtonDiv}>
-              <button onClick={handleClick} type="button" title="Title">
-                <span className={styles.searchButton}>
-                  <span>
-                    <Search
-                      className={` ${styles.searchIconSVG} ${theme === "light" ? "text-[#797A8C] " : "text-[white]"}`}
-                    />
-                  </span>
-                </span>
-              </button>
-            </div>
+            <SearchButton />
           </div>
         </div>
         <div className={styles.teamsWrapper}>
@@ -124,6 +107,9 @@ const Navbar = () => {
         </div>
         <div className={styles.newIssueModalContainer}>
           <NewIssueModal />
+        </div>
+        <div className={styles.newIssueModalContainer}>
+          <SearchCommand />
         </div>
       </div>
     </div>

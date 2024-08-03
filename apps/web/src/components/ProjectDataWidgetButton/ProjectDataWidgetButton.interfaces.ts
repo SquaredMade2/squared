@@ -1,4 +1,4 @@
 export interface ProjectDataWidgetButtonProps {
-  toggleWidget: boolean;
-  setToggleWidget: (toggleWidget: boolean) => void;
+  isWidgetOpen: boolean;
+  handleToggle: () => void;
 }

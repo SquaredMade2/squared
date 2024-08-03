@@ -11,6 +11,7 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import ProfileImage from "../ProfileImage";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import { Check } from "lucide-react";
+import { setIsMenuOpen } from "@/store/isMenuOpen";
 
 const styles = {
   main: "xs:pt-2 sm:pt-3 lg:pt-0 z-40 ",
@@ -23,8 +24,10 @@ const styles = {
   titleWrapper: "flex items-center w-full justify-between",
   dropDownWrapper:
     "w-64 mt-3 border border-border bg-popover z-40 rounded-lg pb-1 absolute transition-all duration-100",
-  menuOpen: "transform translate-y-0 scale-100 opacity-100 pointer-events-auto",
-  menuClosed: "transform -translate-y-6 scale-95 opacity-0 pointer-events-none",
+  isMenuOpen:
+    "transform translate-y-0 scale-100 opacity-100 pointer-events-auto",
+  isMenuClosed:
+    "transform -translate-y-6 scale-95 opacity-0 pointer-events-none",
   menuItemsWrapper: "px-1.5",
   menuItems:
     "px-2 py-1.5 hover:bg-accent rounded text-sm text-popover-foreground cursor-pointer",
@@ -41,7 +44,7 @@ const WorkSpaceDropDown = () => {
   const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
 
   const user = useAppSelector((state) => state.userSettings.user);
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const isMenuOpen = useAppSelector((state) => state.isMenuOpen.isMenuOpen);
   const currentWorkspace = useAppSelector(
     (state) => state.taskData.currentWorkspace
   );
@@ -84,7 +87,7 @@ const WorkSpaceDropDown = () => {
   };
 
   const handleMenu = (): void => {
-    setMenuOpen(!menuOpen);
+    dispatch(setIsMenuOpen(!isMenuOpen));
   };
 
   useEffect(() => {
@@ -95,7 +98,7 @@ const WorkSpaceDropDown = () => {
         !titleRef.current?.contains(event.target) &&
         !menuRef.current.contains(event.target)
       ) {
-        setMenuOpen(false);
+        dispatch(setIsMenuOpen(false));
       }
     }
 
@@ -110,7 +113,7 @@ const WorkSpaceDropDown = () => {
       <div className={styles.main}>
         <div className={styles.titleWrapper}>
           <div
-            className={`${styles.title} ${menuOpen ? "bg-popover" : ""}`}
+            className={`${styles.title} ${isMenuOpen ? "bg-popover" : ""}`}
             onClick={handleMenu}
             ref={titleRef}
           >
@@ -129,7 +132,7 @@ const WorkSpaceDropDown = () => {
           <div
             className={`
 					  ${styles.dropDownWrapper} 
-					  ${menuOpen ? styles.menuOpen : styles.menuClosed}
+					  ${isMenuOpen ? styles.isMenuOpen : styles.isMenuClosed}
 					`}
             ref={menuRef}
           >

@@ -1,30 +1,32 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'next/navigation';
-import { useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-import { getFilteredViews } from '@/store/filterPage/actions';
-import type { RootState } from '@/store';
-import { deleteTaskCard, updateTaskAfterDrag } from '@/api/taskApi';
-import { getAllTasks } from '@/store/taskData/thunks';
-import { setTaskList } from '@/store/taskData';
-import FilterSaveForm from '@/components/FilterSaveForm';
-import ViewAllTasks from '@/components/ViewAllTasks';
-import ViewNewFilters from '@/components/ViewNewFilters';
-import ViewNewTopNavBar from '@/components/ViewNewTopNavBar';
-import type { DragResult } from '@/components/ViewAllTasks/ViewAllTasks.interfaces';
-import type { FilterOption } from '@/app/interfaces/Filter.interfaces';
-import type { OnDragEndResponder } from '@hello-pangea/dnd';
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "next/navigation";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { getFilteredViews } from "@/store/filterPage/actions";
+import type { RootState } from "@/store";
+import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
+import { getAllTasks } from "@/store/taskData/thunks";
+import { setTaskList } from "@/store/taskData";
+import FilterSaveForm from "@/components/FilterSaveForm";
+import ViewAllTasks from "@/components/ViewAllTasks";
+import ViewNewFilters from "@/components/ViewNewFilters";
+import ViewNewTopNavBar from "@/components/ViewNewTopNavBar";
+import type { DragResult } from "@/components/ViewAllTasks/ViewAllTasks.interfaces";
+import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
 
 const styles = {
-  container: 'flex flex-row overflow-hidden relative',
-  homeBackground: 'flex items-center flex-col w-full h-screen bg-background ',
-  homeBackgroundWrapper: 'w-full px-8 h-screen snap-x relative',
-  navbarDivParent: 'bg-card w-full flex flex-col items-center justify-between mb-2',
-  navBarDiv: 'w-full',
-  filterSaveForm: 'w-[98%] m-3',
-  navBarWrapper: ' h-screen lg:left-0 lg:relative z-40 transition-all duration-300 ease-in-out',
+  container: "flex flex-row overflow-hidden relative",
+  homeBackground: "flex items-center flex-col w-full h-screen bg-background ",
+  homeBackgroundWrapper: "w-full px-8 h-screen snap-x relative",
+  navbarDivParent:
+    "bg-card w-full flex flex-col items-center justify-between mb-2",
+  navBarDiv: "w-full",
+  filterSaveForm: "w-[98%] m-3",
+  navBarWrapper:
+    " h-screen lg:left-0 lg:relative z-40 transition-all duration-300 ease-in-out",
 };
 
 const ViewsPage: React.FC = () => {
@@ -34,9 +36,11 @@ const ViewsPage: React.FC = () => {
   const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
   const { currentTeam } = useSelector((state: RootState) => state.taskData);
   const taskList = useSelector((state: RootState) => state.taskData.taskList);
-  const teamId = useSelector((state: RootState) => state.taskData.currentTeam._id);
-  const activeSelected = params.all === 'active';
-  const backlogSelected = params.all === 'backlog';
+  const teamId = useSelector(
+    (state: RootState) => state.taskData.currentTeam._id
+  );
+  const activeSelected = params.all === "active";
+  const backlogSelected = params.all === "backlog";
 
   const handleFilter = (filterValue: FilterOption | null) => {
     setFilterOption(filterValue);
@@ -55,7 +59,9 @@ const ViewsPage: React.FC = () => {
       return;
     }
 
-    const draggedTaskFound = taskList.find((task) => task && task._id === draggableId);
+    const draggedTaskFound = taskList.find(
+      (task) => task && task._id === draggableId
+    );
 
     if (!draggedTaskFound) {
       return;
@@ -66,8 +72,12 @@ const ViewsPage: React.FC = () => {
       status: destination.droppableId,
     };
 
-    const sourceIndex = taskList.findIndex((task) => task && task._id === draggableId);
-    const destinationIndex = taskList.findIndex((task) => task && task._id === draggableId);
+    const sourceIndex = taskList.findIndex(
+      (task) => task && task._id === draggableId
+    );
+    const destinationIndex = taskList.findIndex(
+      (task) => task && task._id === draggableId
+    );
 
     const updatedTaskList = [...taskList];
     updatedTaskList.splice(sourceIndex, 1);

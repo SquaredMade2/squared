@@ -129,10 +129,7 @@ const taskData = createSlice({
     incrementWorkspaceIssues(state) {
       state.currentWorkspace.issuesCreated += 1;
     },
-    getWorkspaceSuccess(
-      state,
-      action: PayloadAction<CurrentWorkspace>
-    ) {
+    getWorkspaceSuccess(state, action: PayloadAction<CurrentWorkspace>) {
       state.error = false;
       state.currentWorkspace = action.payload;
     },
@@ -186,9 +183,7 @@ const taskData = createSlice({
       .addCase(deleteAllTasks.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast(
-          "We tried deleting all the tasks, but we were not lucky"
-        );
+        toast("We tried deleting all the tasks, but we were not lucky");
       })
       .addCase(getAllTasks.pending, (state) => {
         state.isLoading = true;
@@ -360,13 +355,10 @@ const taskData = createSlice({
       .addCase(joiningWorkspaceVerification.fulfilled, (state) => {
         state.isLoading = false;
       })
-      .addCase(
-        joiningWorkspaceVerification.rejected,
-        (state, action) => {
-          state.isLoading = false;
-          console.error(action.payload);
-        }
-      )
+      .addCase(joiningWorkspaceVerification.rejected, (state, action) => {
+        state.isLoading = false;
+        console.error(action.payload);
+      })
 
       .addCase(createWorkspaceLinkToken.pending, (state) => {
         state.isLoading = true;
@@ -396,10 +388,7 @@ const taskData = createSlice({
       .addCase(setAssignee.fulfilled, (state, action) => {
         state.isLoading = false;
         for (const task of state.taskList) {
-          if (
-            task.assignee &&
-            task.assignee.id === action.payload.id
-          ) {
+          if (task.assignee && task.assignee.id === action.payload.id) {
             const indexOfTask = state.taskList.indexOf(task);
             state.taskList[indexOfTask].assignee = {
               id: action.payload.id,

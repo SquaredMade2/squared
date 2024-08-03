@@ -1,43 +1,55 @@
-import React from 'react';
-import ProfileImage from '@/components/ProfileImage';
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import parseISO from 'date-fns/parseISO';
-import format from 'date-fns/format';
+import React from "react";
+import ProfileImage from "@/components/ProfileImage";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import parseISO from "date-fns/parseISO";
+import format from "date-fns/format";
 import {
   type Assignee,
   type Author,
   EventType,
   type TaskEvent,
   type Labels,
-} from '@/interfaces/event.interfaces';
+} from "@/interfaces/event.interfaces";
 
 const UpdatedByInformation = () => {
   const styles = {
-    listWrapper: 'w-full',
-    listItemsContainer: 'list-none px-8',
-    listItem: 'flex items-center text-foreground border-t border-border py-1 list-none',
-    date: 'mr-4 text-muted-foreground',
-    authorContainer: 'flex items-center mr-4',
-    authorName: 'ml-2',
-    eventUpdatedText: 'text-muted-foreground text-ellipses',
-    primaryText: 'text-foreground',
+    listWrapper: "w-full",
+    listItemsContainer: "list-none px-8",
+    listItem:
+      "flex items-center text-foreground border-t border-border py-1 list-none",
+    date: "mr-4 text-muted-foreground",
+    authorContainer: "flex items-center mr-4",
+    authorName: "ml-2",
+    eventUpdatedText: "text-muted-foreground text-ellipses",
+    primaryText: "text-foreground",
   };
 
-  const eventLogs = useAppSelector((state) => state.events.taskEventLog.eventsLog) as TaskEvent[];
-
-  const findLabelAdded = (originalLabels: Labels[], updatedLabels: Labels[]) => {
-    const labelName = updatedLabels.filter((label) => !originalLabels.includes(label));
+  const eventLogs = useAppSelector(
+    (state) => state.events.taskEventLog.eventsLog
+  ) as TaskEvent[];
+  const findLabelAdded = (
+    originalLabels: Labels[],
+    updatedLabels: Labels[]
+  ) => {
+    const labelName = updatedLabels.filter(
+      (label) => !originalLabels.includes(label)
+    );
     return labelName;
   };
 
-  const findLabelRemoved = (originalLabels: Labels[], updatedLabels: Labels[]) => {
-    const labelName = originalLabels.filter((label) => !updatedLabels.includes(label));
+  const findLabelRemoved = (
+    originalLabels: Labels[],
+    updatedLabels: Labels[]
+  ) => {
+    const labelName = originalLabels.filter(
+      (label) => !updatedLabels.includes(label)
+    );
 
     return labelName;
   };
 
   const displayLabelNames = (labels: Labels[]) => {
-    return labels.join(', ');
+    return labels.join(", ");
   };
 
   const displayLabelUpdate = (log: TaskEvent) => {
@@ -48,8 +60,10 @@ const UpdatedByInformation = () => {
       const labelNamesAdded = findLabelAdded(originalLabels, updatedLabels);
       return (
         <p>
-          added {labelNamesAdded.length === 1 ? ' label ' : ' labels '}
-          <span className={styles.primaryText}>{displayLabelNames(labelNamesAdded)}</span>
+          added {labelNamesAdded.length === 1 ? " label " : " labels "}
+          <span className={styles.primaryText}>
+            {displayLabelNames(labelNamesAdded)}
+          </span>
         </p>
       );
     }
@@ -57,8 +71,10 @@ const UpdatedByInformation = () => {
       const labelNamesRemoved = findLabelRemoved(originalLabels, updatedLabels);
       return (
         <p>
-          removed {labelNamesRemoved.length === 1 ? ' label ' : ' labels '}
-          <span className={styles.primaryText}>{displayLabelNames(labelNamesRemoved)}</span>
+          removed {labelNamesRemoved.length === 1 ? " label " : " labels "}
+          <span className={styles.primaryText}>
+            {displayLabelNames(labelNamesRemoved)}
+          </span>
         </p>
       );
     }
@@ -74,29 +90,36 @@ const UpdatedByInformation = () => {
     if (noDescription) {
       return (
         <p>
-          added description <span className={styles.primaryText}>{log.updatedValue}</span>
+          added description{" "}
+          <span className={styles.primaryText}>{log.updatedValue}</span>
         </p>
       );
     }
     if (descriptionUpdated) {
       return (
         <p>
-          updated description from <span className={styles.primaryText}>{log.originalValue}</span>{' '}
-          to <span className={styles.primaryText}>{log.updatedValue}</span>
+          updated description from{" "}
+          <span className={styles.primaryText}>{log.originalValue}</span> to{" "}
+          <span className={styles.primaryText}>{log.updatedValue}</span>
         </p>
       );
     }
     return (
       <p>
-        removed description <span className={styles.primaryText}>{log.originalValue}</span>
+        removed description{" "}
+        <span className={styles.primaryText}>{log.originalValue}</span>
       </p>
     );
   };
-  const getAssigneeActions = (originalAssignee: Assignee, updatedAssignee: Assignee) => {
+  const getAssigneeActions = (
+    originalAssignee: Assignee,
+    updatedAssignee: Assignee
+  ) => {
     const noPreviousAssignee =
-      originalAssignee?.name === 'not Assigned' && updatedAssignee?.name !== 'not Assigned';
+      originalAssignee?.name === "not Assigned" &&
+      updatedAssignee?.name !== "not Assigned";
 
-    const assigneeRemoved = updatedAssignee?.name === 'not Assigned';
+    const assigneeRemoved = updatedAssignee?.name === "not Assigned";
 
     return {
       noPreviousAssignee,
@@ -108,7 +131,7 @@ const UpdatedByInformation = () => {
     const { originalAssignee, updatedAssignee, author } = log;
     const { noPreviousAssignee, assigneeRemoved } = getAssigneeActions(
       originalAssignee as Assignee,
-      updatedAssignee as Assignee,
+      updatedAssignee as Assignee
     );
     const selfAssigned = author.name === updatedAssignee?.name;
     if (noPreviousAssignee && selfAssigned) {
@@ -117,7 +140,8 @@ const UpdatedByInformation = () => {
     if (noPreviousAssignee && !selfAssigned) {
       return (
         <p>
-          assigned task to <span className={styles.primaryText}>{updatedAssignee?.name}</span>
+          assigned task to{" "}
+          <span className={styles.primaryText}>{updatedAssignee?.name}</span>
         </p>
       );
     }
@@ -126,8 +150,9 @@ const UpdatedByInformation = () => {
     }
     return (
       <p>
-        changed assignee from <span className={styles.primaryText}>{originalAssignee?.name}</span>{' '}
-        to <span className={styles.primaryText}>{updatedAssignee?.name}</span>
+        changed assignee from{" "}
+        <span className={styles.primaryText}>{originalAssignee?.name}</span> to{" "}
+        <span className={styles.primaryText}>{updatedAssignee?.name}</span>
       </p>
     );
   };
@@ -137,7 +162,8 @@ const UpdatedByInformation = () => {
       case EventType.TitleUpdated:
         return (
           <p>
-            updated title from <span className={styles.primaryText}>{log.originalValue}</span> to{' '}
+            updated title from{" "}
+            <span className={styles.primaryText}>{log.originalValue}</span> to{" "}
             <span className={styles.primaryText}>{log.updatedValue}</span>
           </p>
         );
@@ -147,14 +173,16 @@ const UpdatedByInformation = () => {
       case EventType.StatusUpdated:
         return (
           <p>
-            updated status from <span className={styles.primaryText}>{log.originalValue}</span> to{' '}
+            updated status from{" "}
+            <span className={styles.primaryText}>{log.originalValue}</span> to{" "}
             <span className={styles.primaryText}>{log.updatedValue}</span>
           </p>
         );
       case EventType.PriorityUpdated:
         return (
           <p>
-            updated priority from <span className={styles.primaryText}>{log.originalValue}</span> to{' '}
+            updated priority from{" "}
+            <span className={styles.primaryText}>{log.originalValue}</span> to{" "}
             <span className={styles.primaryText}>{log.updatedValue}</span>
           </p>
         );
@@ -163,14 +191,14 @@ const UpdatedByInformation = () => {
       case EventType.AssigneeUpdated:
         return displayAssigneeUpdate(log);
       default:
-        return '';
+        return "";
     }
   };
 
   const displayDate = (date: string) => {
     if (date) {
       const parsedDate = parseISO(date);
-      const formattedDate = format(parsedDate, 'dd MMM yyyy');
+      const formattedDate = format(parsedDate, "dd MMM yyyy");
       return formattedDate;
     }
   };
@@ -178,7 +206,7 @@ const UpdatedByInformation = () => {
   const displayAuthorProfile = (author: Author) => {
     return (
       <>
-        <ProfileImage profileName={author.name} location={'activityItem'} />
+        <ProfileImage profileName={author.name} location={"activityItem"} />
         <p className={styles.authorName}>{author.name}</p>
       </>
     );
@@ -190,9 +218,15 @@ const UpdatedByInformation = () => {
           const { updatedAt, author } = log;
           return (
             <li className={styles.listItem} key={updatedAt as string}>
-              <div className={styles.date}>{`${displayDate(updatedAt as string)}`}</div>
-              <div className={styles.authorContainer}>{displayAuthorProfile(author)}</div>
-              <div className={styles.eventUpdatedText}>{displayUpdate(log)}</div>
+              <div
+                className={styles.date}
+              >{`${displayDate(updatedAt as string)}`}</div>
+              <div className={styles.authorContainer}>
+                {displayAuthorProfile(author)}
+              </div>
+              <div className={styles.eventUpdatedText}>
+                {displayUpdate(log)}
+              </div>
             </li>
           );
         })}

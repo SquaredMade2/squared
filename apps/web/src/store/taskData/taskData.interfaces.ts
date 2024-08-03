@@ -93,20 +93,20 @@ export interface Access {
 }
 
 export interface Task {
-	authorId: string;
-	taskName: string;
-	_id: string;
-	title: string;
-	description: string;
-	status: string;
-	identifier: string;
-	priority: string | null;
-	labels: string[];
-	dueDate: Date | null;
-	effortEstimate: number | null;
-	team: Team;
-	dateCreated: Date;
-	assignee: Assignee | null;
+  authorId: string;
+  taskName: string;
+  _id: string;
+  title: string;
+  description: string;
+  status: string;
+  identifier: string;
+  priority: string | null;
+  labels: string[];
+  dueDate: Date | null;
+  effortEstimate: number | null;
+  team: Team;
+  dateCreated: Date;
+  assignee: Assignee | null;
 }
 
 export interface Assignee {

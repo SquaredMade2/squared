@@ -23,6 +23,7 @@ import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
 import { Calendar, GripVertical } from "lucide-react";
+import { setRecentlyDeleted } from "@/store/recentlyDeleted";
 
 const styles = {
   taskCardContainer: "relative mb-3",
@@ -91,6 +92,7 @@ const TaskCard = ({
   const getNotificationId = notifications.map((noti) => noti._id);
 
   const handleDeleteTaskCard = async (task: Task) => {
+    dispatch(setRecentlyDeleted(task));
     await deleteTaskCard(task._id);
     dispatch(getAllTasks(currentTeam));
     setShowDeleteCard(false);
