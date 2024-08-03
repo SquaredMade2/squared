@@ -79,6 +79,7 @@ phases:
   post_build:
     commands:
       - echo Pushing Docker images to Amazon ECR...
+      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com
       - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
       - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
       - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
