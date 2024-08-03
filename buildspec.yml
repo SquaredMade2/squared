@@ -37,7 +37,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWE_REGION | docker login --username AWS --password-stdin 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com
+      - aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URI
       - echo Creating .env file...
       - echo "DOMAIN=$DOMAIN" >> .env
       - echo "EMAIL_USERNAME=$EMAIL_USERNAME" >> .env
@@ -71,19 +71,18 @@ phases:
   build:
     commands:
       - echo Tagging Docker images...
-      - docker tag squared-www:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
-      - docker tag squared-web:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
-      - docker tag squared-api:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
-      - docker tag squared-nginx:latest 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest
+      - docker tag squared-www:latest $ECR_REGISTRY_URI/squared-www:latest
+      - docker tag squared-web:latest $ECR_REGISTRY_URI/squared-web:latest
+      - docker tag squared-api:latest $ECR_REGISTRY_URI/squared-api:latest
+      - docker tag squared-nginx:latest $ECR_REGISTRY_URI/squared-nginx:latest
 
   post_build:
     commands:
       - echo Pushing Docker images to Amazon ECR...
-      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com
-      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest
-      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest
-      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest
-      - docker push 014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest
+      - docker push $ECR_REGISTRY_URI/squared-www:latest
+      - docker push $ECR_REGISTRY_URI/squared-web:latest
+      - docker push $ECR_REGISTRY_URI/squared-api:latest
+      - docker push $ECR_REGISTRY_URI/squared-nginx:latest
 
 artifacts:
   files:
