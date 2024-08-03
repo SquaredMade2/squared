@@ -87,19 +87,21 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 										className={styles.workspaces}
 										key={workspace._id}
 									>
-										<div className={styles.flex}>
-											<WorkspaceInitials
-												workspaceName={workspace.name}
-												backgroundColor={index}
-												location="workspaceList"
-											/>
-											<li>{handleWorkspaceNameOverflow(workspace.name)}</li>
-										</div>
-										{workspace.name === currentWorkspace.name && (
-											<div>
-												<Check className="text-[#575BC7] size-5" />
+										<div>
+											<div className={styles.flex}>
+												<WorkspaceInitials
+													workspaceName={workspace.name}
+													backgroundColor={index}
+													location="workspaceList"
+												/>
+												<li>{handleWorkspaceNameOverflow(workspace.name)}</li>
 											</div>
-										)}
+											{workspace.name === currentWorkspace.name && (
+												<div>
+													<Check className="text-[#575BC7] size-5" />
+												</div>
+											)}
+										</div>
 									</Link>
 								))}
 							</ul>
