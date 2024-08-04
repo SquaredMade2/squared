@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { navBarToggle } from "@/store/userSettings";
@@ -16,7 +17,7 @@ const styles = {
   line: "block w-full border-t border-border",
   headerWrapper:
     "flex flex-row items-center justify-center h-36 hover:bg-secondary",
-  headerText: "flex flex-col justify-center  h-24",
+  headerText: "flex flex-col justify-center h-24",
   githubLogoWrapper:
     "flex flex-row justify-center items-center w-16 h-16 bg-white rounded-lg",
   githubIcon: "w-[50px]",
@@ -37,6 +38,15 @@ const GithubSettings: React.FC = () => {
     const navBarValue = !showNavBar;
     dispatch(navBarToggle(navBarValue));
   };
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("token");
+    if (token) {
+      // Handle the token as needed
+      console.log("GitHub Token:", token);
+      // For example, save it to localStorage or send it to your backend
+    }
+  }, []);
 
   const handleClick = (): void => {
     window.location.href = "http://localhost:5173/oauth/github";

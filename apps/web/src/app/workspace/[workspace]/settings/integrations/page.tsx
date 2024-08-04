@@ -15,7 +15,7 @@ const styles = {
   navbarWrapper:
     "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
   line: "block w-full border-t border-border",
-  headerWrapper: "flex flex-row items-center justify-center h-36 hover:bg-secondary",
+  headerWrapper: "flex flex-row items-center h-36 hover:bg-secondary",
   headerText: "flex flex-col mx-5 h-20",
   githubLogoWrapper:
     "flex flex-row justify-center items-center w-20 h-16 bg-white rounded-lg ml-4",
