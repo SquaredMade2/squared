@@ -4,37 +4,16 @@ import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
 import { getSingleTask } from '@/store/task/thunks';
 import { setDueDate } from '@/store/taskData';
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
-import { leftBracket, rightBracket } from '@/components/Svg';
 import type { DateDropdownProps } from '@/components/DateDropdown/DateDropdown.interfaces';
 import {
   format,
-  startOfMonth,
-  endOfMonth,
-  eachDayOfInterval,
-  addMonths,
-  subMonths,
-  startOfWeek,
-  endOfWeek,
-  isSameMonth,
-  isSameDay,
-  startOfDay,
   isBefore,
   endOfDay,
 } from 'date-fns';
-import { DAYS_OF_WEEK } from '@/constants/app_constants';
+import { Calendar } from '../ui/calendar';
 
 const styles = {
   container: 'border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72',
-  header: 'flex justify-between items-center text-popover-foreground mb-4',
-  grid: 'grid grid-cols-7 gap-1',
-  day: 'cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg',
-  dayNotCurrentMonth: 'text-muted-foreground',
-  dayNameContainer: 'grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent',
-  dayName: 'font-semibold text-muted-foreground text-center',
-  selectedDay:
-    'text-secondary-foreground bg-secondary hover:bg-blueGlow border border-transparent hover:border-blueGlow focus:outline-none focus:shadow-sm active:shadow-lg',
-  disabledDay: 'cursor-not-allowed pointer-events-none text-muted-foreground',
-  svg: 'cursor-pointer',
   dateContainer: 'mt-4 flex flex-col text-popover-foreground',
   inputRow: 'flex items-center justify-between gap-3 w-full',
   input: 'flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10',
@@ -57,7 +36,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     initialDate ? new Date(initialDate) : new Date(),
   );
-  const [currentMonth, setCurrentMonth] = useState(startOfMonth(selectedDate));
+
   const containerClass = `${styles.container} ${
     location === 'newIssue' ? 'absolute top-8' : 'absolute top-0 -left-[300px]'
   }`;
@@ -71,7 +50,8 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
     setSelectedDate(updatedDateTime);
     setSelectedTime(time);
   };
-
+// past dates are selectable - when DateButton clicked, calendar displays current month, not due month
+// when selectedDate is the date clicked, span for due date disappears
   const handleSelectDate = (selectedDay: Date) => {
     if (isDateInPast(selectedDay)) return;
     updateDateTime(selectedDay, selectedTime);
@@ -97,51 +77,10 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
     } catch (err) {}
   };
 
-  const days = eachDayOfInterval({
-    start: startOfWeek(startOfMonth(currentMonth)),
-    end: endOfWeek(endOfMonth(currentMonth)),
-  });
-
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <div className={containerClass}>
-        <div className={styles.header}>
-          <button type="button" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
-            <span className={styles.svg}>{leftBracket()}</span>
-          </button>
-          <span>{format(currentMonth, 'MMMM yyyy')}</span>
-          <button type="button" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
-            <span className={styles.svg}>{rightBracket()}</span>
-          </button>
-        </div>
-        <div className={styles.dayNameContainer}>
-          {DAYS_OF_WEEK.map((dayName) => (
-            <div key={dayName} className={styles.dayName}>
-              {dayName.charAt(0)}
-            </div>
-          ))}
-        </div>
-        <div className={styles.grid}>
-          {days.map((day) => {
-            const isPast = isDateInPast(day);
-            const isSelected = selectedDate && isSameDay(day, startOfDay(new Date(selectedDate)));
-            return (
-              <button
-                type="button"
-                key={day.toString()}
-                className={`${styles.day} ${
-                  !isSameMonth(day, currentMonth) && styles.dayNotCurrentMonth
-                } ${
-                  isSelected ? styles.selectedDay : 'text-popover-foreground'
-                } ${isPast && styles.disabledDay}`}
-                onClick={() => handleSelectDate(day)}
-                disabled={isPast}
-              >
-                {format(day, 'd')}
-              </button>
-            );
-          })}
-        </div>
+        <Calendar mode='single' selected={selectedDate} onSelect={setSelectedDate}/>
         <div className={styles.dateContainer}>
           Due date
           <div className={styles.inputRow}>
