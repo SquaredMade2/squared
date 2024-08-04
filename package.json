@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api",
     "check-types": "turbo run check-types",
     "clean": "turbo run clean",
@@ -15,9 +17,12 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "prepare": "husky install",
+    "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
     "test": "turbo run test",
+    "test:web": "turbo run test --filter=web",
+    "test:api": "turbo run test --filter=api",
     "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci"
   },
   "devDependencies": {
@@ -43,11 +48,14 @@
     "jest-extended": "^4.0.2",
     "start-server-and-test": "2.0.3",
     "text-encoding-polyfill": "^0.6.7",
-    "turbo": "^2.0.9"
+    "turbo": "^2.0.10"
   },
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
   },
-  "packageManager": "pnpm@9.5.0"
+  "packageManager": "pnpm@9.5.0",
+  "dependencies": {
+    "rimraf": "^6.0.1"
+  }
 }
