@@ -15,6 +15,7 @@
     "dev": "concurrently \"npm run watch-typescript\" \"npm run hot-reload\"",
     "watch-typescript": "npx tsc --watch",
     "hot-reload": "nodemon dist/index.js",
+    "reset": "rimraf node_modules pnpm-lock.yaml",
     "seed": "tsc && node ./dist/utils/DBSeed.js",
     "update": "tsc && node ./dist/utils/updateDb.js",
     "webhook": "tsc && node ./dist/webhooks/octokit.js",
