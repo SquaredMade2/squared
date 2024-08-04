@@ -37,6 +37,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
+      - aws configure set aws_access_key_id "squared-envs:ECR_ACCESS_KEY_ID" --profile user2 && aws configure set aws_secret_access_key "squared-envs:ECR_ACCESS_KEY_SECRET" --profile user2 && aws configure set region "$ECR_REGION" --profile user2 && aws configure set output "text" --profile user2
       - aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URI
       - echo Creating .env file...
       - echo "DOMAIN=$DOMAIN" >> .env
