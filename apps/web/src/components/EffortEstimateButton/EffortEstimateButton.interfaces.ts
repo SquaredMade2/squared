@@ -1,3 +1,3 @@
 export interface EffortEstimateButtonProps {
-  location: string;
+	location: string;
 }

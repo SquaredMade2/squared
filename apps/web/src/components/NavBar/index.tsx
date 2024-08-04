@@ -2,15 +2,21 @@
 import React from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { usePathname, useRouter } from "next/navigation";
-import { motion, useAnimation } from "framer-motion";
 import { setCurrentTeam } from "@/store/taskData";
 import NewIssueModal from "@/components/NewIssueModal";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
 import NavBarTeams from "@/components/NavBarTeams";
+import { LayoutGrid, Search } from "lucide-react";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import SearchButton from "../SearchButton";
 import SearchCommand from "../SearchCommand";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 const styles = {
   header: "flex items-center justify-center w-full lg:justify-center",
@@ -21,6 +27,9 @@ const styles = {
   newIssueModalContainer: "absolute top-[100px] left-full",
   newTaskButton: "pr-36 pl-2 border shadow-lg rounded-md focus:outline-none",
   newTaskText: "text-nav",
+  searchButton:
+    "rounded-md border border-border w-10 align-center flex justify-center bg-secondary shadow-lg focus:outline-none flex flex-row items-center cursor-pointer hover:bg-popover h-10 items-center",
+  searchIconSVG: "stroke-current fill-transparent cursor-pointer h-5 w-5",
   createWorkSpaceDiv: "items-center",
   inviteDiv:
     "flex flex-col gap-4 items-center pb-6 text-foreground h-full justify-end",
@@ -35,27 +44,34 @@ const styles = {
   triangle: "transition-all 0.2s ease-in-out ml-1 z-30",
   fullWidth: "w-full ml-1.5",
   ul: "overflow-hidden",
+  searchButtonDiv: "ml-3.5",
   mainContainer: "w-11/12 flex flex-col",
   inboxButton:
     "w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer",
   hover: "bg-secondary",
+  teamRow:
+    "w-full flex items-center my-1.5 hover:bg-secondary rounded-md pl-0.5",
+  teamSVG: "mr-2 p-0.5 rounded",
+  teamButton: "flex items-center cursor-pointer",
+  listWrapper: "w-full bg-accent z-10",
 };
 
 const Navbar = () => {
-  const controls = useAnimation();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const inboxPageChecker = pathname.includes("/inbox");
-  const { user } = useAppSelector((state) => state.userSettings);
-
+  const { user, theme } = useAppSelector((state) => state.userSettings);
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+
+  const handleClick = (): void => {
+    router.push(`/workspace/${workspace.url}/search`);
+  };
 
   const handleTeamClick = (team: Team): void => {
     dispatch(setCurrentTeam(team));
     router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
   };
-
   return (
     <div className={styles.main}>
       <div className={styles.mainContainer}>
@@ -71,6 +87,15 @@ const Navbar = () => {
           <div className={styles.newIssueDiv}>
             <NewIssueButton />
             <SearchButton />
+            <div className={styles.searchButtonDiv}>
+              <button onClick={handleClick} type="button" title="title">
+                <span className={styles.searchButton}>
+                  <Search
+                    className={` ${styles.searchIconSVG} ${theme === "light" ? "text-[#797A8C] " : "text-[white]"}`}
+                  />
+                </span>
+              </button>
+            </div>
           </div>
         </div>
         <div className={styles.teamsWrapper}>
@@ -86,24 +111,27 @@ const Navbar = () => {
           <div className={styles.row}>
             <span className={styles.innerDivSpan}>Your teams</span>
           </div>
-          <motion.ul
-            className={styles.ul}
-            initial={{ height: "auto" }}
-            animate={controls}
-            transition={{ duration: 0.1 }}
-          >
+          <Accordion type="single" collapsible>
             {workspace?.teams.map((team: Team) => {
               return (
-                <NavBarTeams
-                  key={team._id}
-                  id={team._id}
-                  teamName={team.name}
-                  onDropdownClick={() => handleTeamClick(team)}
-                  teamIdentifier={team.identifier}
-                />
+                <AccordionItem key={team._id} value={team._id}>
+                  <AccordionTrigger>
+                    <LayoutGrid className="text-[#9577FF] size-4" />
+
+                    {team.name}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <NavBarTeams
+                      id={team._id}
+                      teamName={team.name}
+                      onDropdownClick={() => handleTeamClick(team)}
+                      teamIdentifier={team.identifier}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
               );
             })}
-          </motion.ul>
+          </Accordion>
         </div>
         <div className={styles.newIssueModalContainer}>
           <NewIssueModal />

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import ITeam from "../interface/team";
+import type ITeam from "../interface/team";
 /**
  * @openapi
  * components:
@@ -27,30 +27,30 @@ import ITeam from "../interface/team";
  */
 
 const teamSchema = new Schema<ITeam>({
-  name: {
-    type: String,
-  },
-  identifier: {
-    type: String,
-    required: true,
-  },
-  workspace: {
-    type: Schema.Types.ObjectId,
-    ref: "Workspace",
-    required: true,
-  },
-  users: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  tasks: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Task",
-    },
-  ],
+	name: {
+		type: String,
+	},
+	identifier: {
+		type: String,
+		required: true,
+	},
+	workspace: {
+		type: Schema.Types.ObjectId,
+		ref: "Workspace",
+		required: true,
+	},
+	users: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "User",
+		},
+	],
+	tasks: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "Task",
+		},
+	],
 });
 
 const TeamModel = model<ITeam>("Team", teamSchema);

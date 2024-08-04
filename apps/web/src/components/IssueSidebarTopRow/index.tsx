@@ -27,6 +27,7 @@ const IssueSidebarTopRow = () => {
   const title = task !== undefined ? task.title : "";
   const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/tasks/${task?._id}`;
   const gitBranchName = `
+
 			${replaceSpacesWithDashes(`${title.toLowerCase()}-${String(identifier).toLowerCase()}`)}`;
 
   const copyUrl = async (): Promise<void> => {
@@ -48,7 +49,7 @@ const IssueSidebarTopRow = () => {
   };
 
   const copyGitBranchName = async (): Promise<void> => {
-    await navigator.clipboard.writeText(gitBranchName);
+    await navigator.clipboard.writeText(gitBranchName.trim());
     setIsBranchClicked(true);
     setTimeout(() => {
       setIsBranchClicked(false);

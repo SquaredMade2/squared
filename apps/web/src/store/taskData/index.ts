@@ -348,7 +348,6 @@ const taskData = createSlice({
         state.isLoading = false;
         console.error(action.payload);
       })
-
       .addCase(joiningWorkspaceVerification.pending, (state) => {
         state.isLoading = true;
       })
@@ -359,7 +358,6 @@ const taskData = createSlice({
         state.isLoading = false;
         console.error(action.payload);
       })
-
       .addCase(createWorkspaceLinkToken.pending, (state) => {
         state.isLoading = true;
       })
@@ -381,7 +379,6 @@ const taskData = createSlice({
         state.isLoading = false;
         console.error(action.payload);
       })
-
       .addCase(setAssignee.pending, (state) => {
         state.isLoading = true;
       })

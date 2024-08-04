@@ -3,7 +3,12 @@
   "tasks": {
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "public/dist/**"],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "public/dist/**"
+      ],
       "dependsOn": ["^build"],
       "env": ["NEXT_PUBLIC_API_HOST"]
     },
@@ -15,7 +20,10 @@
       "dependsOn": []
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^lint"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"]
     },
     "dev": {
       "cache": false,
@@ -26,6 +34,12 @@
     },
     "check-types": {
       "dependsOn": ["^check-types"]
+    },
+    "format:write": {
+      "dependsOn": ["^format:write"]
+    },
+    "format:check": {
+      "dependsOn": ["^format:check"]
     }
   }
 }

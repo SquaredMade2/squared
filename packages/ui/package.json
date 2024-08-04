@@ -1,241 +1,242 @@
 {
-	"name": "@repo/ui",
-	"version": "0.0.0",
-	"exports": {
-		"./accordion": {
-			"import": "./src/accordion/index.ts",
-			"require": "./src/accordion/index.ts"
-		},
-		"./arrow": {
-			"import": "./src/arrow/index.ts",
-			"require": "./src/arrow/index.ts"
-		},
-		"./collapsible": {
-			"import": "./src/collapsible/index.ts",
-			"require": "./src/collapsible/index.ts"
-		},
-		"./collection": {
-			"import": "./src/collection/index.ts",
-			"require": "./src/collection/index.ts"
-		},
-		"./compose-refs": {
-			"import": "./src/compose-refs/index.ts",
-			"require": "./src/compose-refs/index.ts"
-		},
-		"./context": {
-			"import": "./src/context/index.ts",
-			"require": "./src/context/index.ts"
-		},
-		"./context-menu": {
-			"import": "./src/context-menu/index.ts",
-			"require": "./src/context-menu/index.ts"
-		},
-		"./day-picker": {
-			"import": "./src/day-picker/index.ts",
-			"require": "./src/day-picker/index.ts"
-		},
-		"./dialog": {
-			"import": "./src/dialog/index.ts",
-			"require": "./src/dialog/index.ts"
-		},
-		"./direction": {
-			"import": "./src/direction/index.ts",
-			"require": "./src/direction/index.ts"
-		},
-		"./dismissable-layer": {
-			"import": "./src/dismissable-layer/index.ts",
-			"require": "./src/dismissable-layer/index.ts"
-		},
-		"./dropdown-menu": {
-			"import": "./src/dropdown-menu/index.ts",
-			"require": "./src/dropdown-menu/index.ts"
-		},
-		"./focus-guards": {
-			"import": "./src/focus-guards/index.ts",
-			"require": "./src/focus-guards/index.ts"
-		},
-		"./focus-scope": {
-			"import": "./src/focus-scope/index.ts",
-			"require": "./src/focus-scope/index.ts"
-		},
-		"./id": {
-			"import": "./src/id/index.ts",
-			"require": "./src/id/index.ts"
-		},
-		"./label": {
-			"import": "./src/label/index.ts",
-			"require": "./src/label/index.ts"
-		},
-		"./menu": {
-			"import": "./src/menu/index.ts",
-			"require": "./src/menu/index.ts"
-		},
-		"./number": {
-			"import": "./src/number/index.ts",
-			"require": "./src/number/index.ts"
-		},
-		"./popover": {
-			"import": "./src/popover/index.ts",
-			"require": "./src/popover/index.ts"
-		},
-		"./popper": {
-			"import": "./src/popper/index.ts",
-			"require": "./src/popper/index.ts"
-		},
-		"./portal": {
-			"import": "./src/portal/index.ts",
-			"require": "./src/portal/index.ts"
-		},
-		"./presence": {
-			"import": "./src/presence/index.ts",
-			"require": "./src/presence/index.ts"
-		},
-		"./primitive": {
-			"import": "./src/primitive/index.ts",
-			"require": "./src/primitive/index.ts"
-		},
-		"./react-primitive": {
-			"import": "./src/react-primitive/index.ts",
-			"require": "./src/react-primitive/index.ts"
-		},
-		"./rect": {
-			"import": "./src/rect/index.ts",
-			"require": "./src/rect/index.ts"
-		},
-		"./roving-focus": {
-			"import": "./src/roving-focus/index.ts",
-			"require": "./src/roving-focus/index.ts"
-		},
-		"./scroll-area": {
-			"import": "./src/scroll-area/index.ts",
-			"require": "./src/scroll-area/index.ts"
-		},
-		"./slot": {
-			"import": "./src/slot/index.ts",
-			"require": "./src/slot/index.ts"
-		},
-		"./switch": {
-			"import": "./src/switch/index.ts",
-			"require": "./src/switch/index.ts"
-		},
-		"./toast": {
-			"import": "./src/toast/index.ts",
-			"require": "./src/toast/index.ts"
-		},
-		"./tooltip": {
-			"import": "./src/tooltip/index.ts",
-			"require": "./src/tooltip/index.ts"
-		},
-		"./use-callback-ref": {
-			"import": "./src/use-callback-ref/index.ts",
-			"require": "./src/use-callback-ref/index.ts"
-		},
-		"./use-controllable-state": {
-			"import": "./src/use-controllable-state/index.ts",
-			"require": "./src/use-controllable-state/index.ts"
-		},
-		"./use-escape-keydown": {
-			"import": "./src/use-escape-keydown/index.ts",
-			"require": "./src/use-escape-keydown/index.ts"
-		},
-		"./use-layout-effect": {
-			"import": "./src/use-layout-effect/index.ts",
-			"require": "./src/use-layout-effect/index.ts"
-		},
-		"./use-previous": {
-			"import": "./src/use-previous/index.ts",
-			"require": "./src/use-previous/index.ts"
-		},
-		"./use-size": {
-			"import": "./src/use-size/index.ts",
-			"require": "./src/use-size/index.ts"
-		},
-		"./visually-hidden": {
-			"import": "./src/visually-hidden/index.ts",
-			"require": "./src/visually-hidden/index.ts"
-		}
-	},
-	"scripts": {
-		"lint": "biome lint .",
-		"lint:fix": "biome lint --write .",
-		"format:write": "biome format --write .",
-		"format:check": "biome format .",
-		"check-types": "tsc --skipLibCheck --noEmit",
-		"test": "jest",
-		"test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci",
-		"storybook": "cross-env BROWSER=none storybook dev -p 9009",
-		"cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
-		"cypress:run": "cypress run",
-		"cypress:dev": "cypress open",
-		"dev": "pnpm storybook",
-		"build:stories": "storybook build"
-	},
-	"dependencies": {
-		"@floating-ui/react-dom": "^2.1.1",
-		"aria-hidden": "^1.2.4",
-		"class-variance-authority": "^0.7.0",
-		"clsx": "^2.1.1",
-		"cross-env": "^7.0.3",
-		"date-fns": "^3.6.0",
-		"lucide-react": "^0.396.0",
-		"mockdate": "^3.0.5",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
-		"react-remove-scroll": "2.5.7",
-		"tailwind-merge": "^2.3.0"
-	},
-	"devDependencies": {
-		"@repo/typescript-config": "workspace:*",
-		"@stitches/core": "^1.2.8",
-		"@storybook/addon-essentials": "^7.6.20",
-		"@storybook/addon-storysource": "^7.6.20",
-		"@storybook/react": "^7.6.20",
-		"@storybook/react-webpack5": "^7.6.20",
-		"@storybook/test": "^7.6.20",
-		"@testing-library/cypress": "^7.0.7",
-		"@testing-library/dom": "^10.2.0",
-		"@testing-library/jest-dom": "^6.4.6",
-		"@testing-library/react": "^16.0.0",
-		"@testing-library/user-event": "^14.5.2",
-		"@types/fs-extra": "^11.0.4",
-		"@types/jest": "^28.0.0",
-		"@types/jest-axe": "^3.5.9",
-		"@types/node": "^20.14.8",
-		"@types/react": "^18.3.3",
-		"@types/react-dom": "^18.3.0",
-		"@types/react-test-renderer": "^18.3.0",
-		"@types/resize-observer-browser": "^0.1.11",
-		"cypress": "^8.7.0",
-		"cypress-real-events": "^1.13.0",
-		"esbuild": "0.21.4",
-		"fs-extra": "^11.2.0",
-		"glob": "^10.4.2",
-		"husky": "^4.3.8",
-		"jest": "^28.0.0",
-		"jest-axe": "^6.0.1",
-		"jest-watch-typeahead": "^1.1.0",
-		"lint-staged": "^10.5.4",
-		"pretty-quick": "^2.0.2",
-		"react-test-renderer": "^18.3.1",
-		"replace-in-files": "^3.0.0",
-		"start-server-and-test": "2.0.3",
-		"storybook": "^7.6.20",
-		"ts-jest": "^28.0.8",
-		"tsup": "8.1.0",
-		"typescript": "^4.9.5"
-	},
-	"peerDependencies": {
-		"@types/react": "*",
-		"@types/react-dom": "*",
-		"react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
-		"react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
-	},
-	"peerDependenciesMeta": {
-		"@types/react": {
-			"optional": true
-		},
-		"@types/react-dom": {
-			"optional": true
-		}
-	}
+  "name": "@repo/ui",
+  "version": "0.0.0",
+  "exports": {
+    "./accordion": {
+      "import": "./src/accordion/index.ts",
+      "require": "./src/accordion/index.ts"
+    },
+    "./arrow": {
+      "import": "./src/arrow/index.ts",
+      "require": "./src/arrow/index.ts"
+    },
+    "./collapsible": {
+      "import": "./src/collapsible/index.ts",
+      "require": "./src/collapsible/index.ts"
+    },
+    "./collection": {
+      "import": "./src/collection/index.ts",
+      "require": "./src/collection/index.ts"
+    },
+    "./compose-refs": {
+      "import": "./src/compose-refs/index.ts",
+      "require": "./src/compose-refs/index.ts"
+    },
+    "./context": {
+      "import": "./src/context/index.ts",
+      "require": "./src/context/index.ts"
+    },
+    "./context-menu": {
+      "import": "./src/context-menu/index.ts",
+      "require": "./src/context-menu/index.ts"
+    },
+    "./day-picker": {
+      "import": "./src/day-picker/index.ts",
+      "require": "./src/day-picker/index.ts"
+    },
+    "./dialog": {
+      "import": "./src/dialog/index.ts",
+      "require": "./src/dialog/index.ts"
+    },
+    "./direction": {
+      "import": "./src/direction/index.ts",
+      "require": "./src/direction/index.ts"
+    },
+    "./dismissable-layer": {
+      "import": "./src/dismissable-layer/index.ts",
+      "require": "./src/dismissable-layer/index.ts"
+    },
+    "./dropdown-menu": {
+      "import": "./src/dropdown-menu/index.ts",
+      "require": "./src/dropdown-menu/index.ts"
+    },
+    "./focus-guards": {
+      "import": "./src/focus-guards/index.ts",
+      "require": "./src/focus-guards/index.ts"
+    },
+    "./focus-scope": {
+      "import": "./src/focus-scope/index.ts",
+      "require": "./src/focus-scope/index.ts"
+    },
+    "./id": {
+      "import": "./src/id/index.ts",
+      "require": "./src/id/index.ts"
+    },
+    "./label": {
+      "import": "./src/label/index.ts",
+      "require": "./src/label/index.ts"
+    },
+    "./menu": {
+      "import": "./src/menu/index.ts",
+      "require": "./src/menu/index.ts"
+    },
+    "./number": {
+      "import": "./src/number/index.ts",
+      "require": "./src/number/index.ts"
+    },
+    "./popover": {
+      "import": "./src/popover/index.ts",
+      "require": "./src/popover/index.ts"
+    },
+    "./popper": {
+      "import": "./src/popper/index.ts",
+      "require": "./src/popper/index.ts"
+    },
+    "./portal": {
+      "import": "./src/portal/index.ts",
+      "require": "./src/portal/index.ts"
+    },
+    "./presence": {
+      "import": "./src/presence/index.ts",
+      "require": "./src/presence/index.ts"
+    },
+    "./primitive": {
+      "import": "./src/primitive/index.ts",
+      "require": "./src/primitive/index.ts"
+    },
+    "./react-primitive": {
+      "import": "./src/react-primitive/index.ts",
+      "require": "./src/react-primitive/index.ts"
+    },
+    "./rect": {
+      "import": "./src/rect/index.ts",
+      "require": "./src/rect/index.ts"
+    },
+    "./roving-focus": {
+      "import": "./src/roving-focus/index.ts",
+      "require": "./src/roving-focus/index.ts"
+    },
+    "./scroll-area": {
+      "import": "./src/scroll-area/index.ts",
+      "require": "./src/scroll-area/index.ts"
+    },
+    "./slot": {
+      "import": "./src/slot/index.ts",
+      "require": "./src/slot/index.ts"
+    },
+    "./switch": {
+      "import": "./src/switch/index.ts",
+      "require": "./src/switch/index.ts"
+    },
+    "./toast": {
+      "import": "./src/toast/index.ts",
+      "require": "./src/toast/index.ts"
+    },
+    "./tooltip": {
+      "import": "./src/tooltip/index.ts",
+      "require": "./src/tooltip/index.ts"
+    },
+    "./use-callback-ref": {
+      "import": "./src/use-callback-ref/index.ts",
+      "require": "./src/use-callback-ref/index.ts"
+    },
+    "./use-controllable-state": {
+      "import": "./src/use-controllable-state/index.ts",
+      "require": "./src/use-controllable-state/index.ts"
+    },
+    "./use-escape-keydown": {
+      "import": "./src/use-escape-keydown/index.ts",
+      "require": "./src/use-escape-keydown/index.ts"
+    },
+    "./use-layout-effect": {
+      "import": "./src/use-layout-effect/index.ts",
+      "require": "./src/use-layout-effect/index.ts"
+    },
+    "./use-previous": {
+      "import": "./src/use-previous/index.ts",
+      "require": "./src/use-previous/index.ts"
+    },
+    "./use-size": {
+      "import": "./src/use-size/index.ts",
+      "require": "./src/use-size/index.ts"
+    },
+    "./visually-hidden": {
+      "import": "./src/visually-hidden/index.ts",
+      "require": "./src/visually-hidden/index.ts"
+    }
+  },
+  "scripts": {
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "format:write": "biome format --write .",
+    "format:check": "biome format .",
+    "check-types": "tsc --skipLibCheck --noEmit",
+    "test": "jest",
+    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci",
+    "storybook": "cross-env BROWSER=none storybook dev -p 9009",
+    "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
+    "cypress:run": "cypress run",
+    "cypress:dev": "cypress open",
+    "dev": "pnpm storybook",
+    "build:stories": "storybook build"
+  },
+  "dependencies": {
+    "@floating-ui/react-dom": "^2.1.1",
+    "aria-hidden": "^1.2.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "cross-env": "^7.0.3",
+    "date-fns": "^3.6.0",
+    "lucide-react": "^0.396.0",
+    "mockdate": "^3.0.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-remove-scroll": "2.5.7",
+    "tailwind-merge": "^2.3.0",
+    "tslib": "^2.6.3"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@stitches/core": "^1.2.8",
+    "@storybook/addon-essentials": "^7.6.20",
+    "@storybook/addon-storysource": "^7.6.20",
+    "@storybook/react": "^7.6.20",
+    "@storybook/react-webpack5": "^7.6.20",
+    "@storybook/test": "^7.6.20",
+    "@testing-library/cypress": "^7.0.7",
+    "@testing-library/dom": "^10.2.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^28.0.0",
+    "@types/jest-axe": "^3.5.9",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-test-renderer": "^18.3.0",
+    "@types/resize-observer-browser": "^0.1.11",
+    "cypress": "^8.7.0",
+    "cypress-real-events": "^1.13.0",
+    "esbuild": "0.21.4",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.4.2",
+    "husky": "^4.3.8",
+    "jest": "^28.0.0",
+    "jest-axe": "^6.0.1",
+    "jest-watch-typeahead": "^1.1.0",
+    "lint-staged": "^10.5.4",
+    "pretty-quick": "^2.0.2",
+    "react-test-renderer": "^18.3.1",
+    "replace-in-files": "^3.0.0",
+    "start-server-and-test": "2.0.3",
+    "storybook": "^7.6.20",
+    "ts-jest": "^28.0.8",
+    "tsup": "8.1.0",
+    "typescript": "^4.9.5",
+    "@types/node": "~10.12.0"
+  },
+  "peerDependencies": {
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc",
+    "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "@types/react-dom": {
+      "optional": true
+    }
+  }
 }

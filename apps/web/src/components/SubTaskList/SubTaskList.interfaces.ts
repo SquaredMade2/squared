@@ -1,3 +1,3 @@
 export interface SubTaskListProps {
-  onAddSubtask: (subTasks: string) => void;
+	onAddSubtask: (subTasks: string) => void;
 }

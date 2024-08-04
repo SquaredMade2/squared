@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { Draggable } from "@hello-pangea/dnd";
 import DeleteConfirmCard from "@/components/DeleteConfirmCard";
+import { Calendar, GripVertical } from "lucide-react";
 import TaskCardTitle from "@/components/TaskCardTitle";
 import TaskCardPriority from "@/components/TaskCardPriority";
 import TaskCardLabels from "@/components/TaskCardLabels";
@@ -22,13 +23,12 @@ import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
-import { Calendar, GripVertical } from "lucide-react";
 import { setRecentlyDeleted } from "@/store/recentlyDeleted";
 
 const styles = {
-  taskCardContainer: "relative mb-3",
+  taskCardContainer: "relative w-[325px]",
   taskCard:
-    " cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow-lg border border-border hover:bg-accent space-y-4",
+    " cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4",
   main: "relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent",
   checkboxSection:
     "group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5",
@@ -85,8 +85,9 @@ const TaskCard = ({
   } | null>(null);
   // const taskUrl = `workspace/${currentWorkspace.url}/issue`; -- fix #2 https://linear.app/project-tasklist/issue/PRO-760/wrong-task-url-redirection-bug
 
-  const taskRefs: MutableRefObject<{ [key: string]: HTMLElement | null }> =
-    useRef({});
+  const taskRefs: MutableRefObject<{
+    [key: string]: HTMLElement | null;
+  }> = useRef({});
   const socket = useContext(SocketContext);
 
   const getNotificationId = notifications.map((noti) => noti._id);

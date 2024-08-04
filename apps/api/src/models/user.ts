@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IUser from "../interface/user";
+import type IUser from "../interface/user";
 /**
  * @openapi
  * components:
@@ -38,47 +38,47 @@ import IUser from "../interface/user";
  */
 
 const userSchema = new Schema<IUser>({
-  name: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  verified: {
-    type: Boolean,
-    default: false,
-  },
-  last_login: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
-  on_boarding: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
-  default_workspace: {
-    type: Schema.Types.ObjectId,
-    ref: "Workspace",
-    default: null,
-  },
-  join_workspace: {
-    type: [String],
-    default: [],
-  },
-  workspaces: [{ type: Schema.Types.ObjectId, ref: "Workspace" }],
-  teams: [{ type: Schema.Types.ObjectId, ref: "Team" }]
+	name: {
+		type: String,
+		required: true,
+	},
+	username: {
+		type: String,
+	},
+	email: {
+		type: String,
+		unique: true,
+		required: true,
+	},
+	password: {
+		type: String,
+		required: true,
+	},
+	verified: {
+		type: Boolean,
+		default: false,
+	},
+	last_login: {
+		type: Date,
+		default: Date.now,
+		required: true,
+	},
+	on_boarding: {
+		type: Boolean,
+		default: false,
+		required: true,
+	},
+	default_workspace: {
+		type: Schema.Types.ObjectId,
+		ref: "Workspace",
+		default: null,
+	},
+	join_workspace: {
+		type: [String],
+		default: [],
+	},
+	workspaces: [{ type: Schema.Types.ObjectId, ref: "Workspace" }],
+	teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
 });
 
 const UserModel = model<IUser>("User", userSchema);

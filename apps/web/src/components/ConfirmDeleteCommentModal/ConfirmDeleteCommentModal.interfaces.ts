@@ -1,3 +1,3 @@
 export type ConfirmDeleteCommentModalProps = {
-  handleShowConfirmDeleteDropdown: () => void;
+	handleShowConfirmDeleteDropdown: () => void;
 };

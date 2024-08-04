@@ -71,7 +71,6 @@ const ViewsPage: React.FC = () => {
       ...draggedTaskFound,
       status: destination.droppableId,
     };
-
     const sourceIndex = taskList.findIndex(
       (task) => task && task._id === draggableId
     );

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import AppError from "../utils/AppError";
 import Task from "../models/task";
@@ -36,6 +36,7 @@ const getTask = async (
   req: Request,
   res: Response,
   next: NextFunction
+  // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
 ): Promise<void | Response> => {
   const teamId = req.query.team;
   const statusQuery = req.query.status;

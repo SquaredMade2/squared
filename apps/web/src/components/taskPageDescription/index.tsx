@@ -34,7 +34,6 @@ const TaskPageDescription = () => {
   const socket = useContext(SocketContext);
 
   const [updatedDescription, setUpdatedDescription] = useState(description);
-
   const {
     author,
     storeCommonFields,
@@ -101,7 +100,6 @@ const TaskPageDescription = () => {
     }
     setIsFocused(false);
   };
-
   return (
     <MentionInput
       data={listOfMembers}

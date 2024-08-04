@@ -1,8 +1,9 @@
-import { Types } from "mongoose";
+import type { Types } from "mongoose";
+import type IUser from "./user";
 interface IUsersRoles {
-  user: Types.ObjectId;
-  role: String;
-  username: string;
+	user: IUser;
+	role: string;
+	username: string;
 }
 
 export default IUsersRoles;

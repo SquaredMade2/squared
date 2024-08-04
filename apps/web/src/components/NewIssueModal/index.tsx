@@ -18,6 +18,7 @@ import {
   setEffortEstimate,
 } from "@/store/taskData";
 import CreateNewIssueButton from "@/components/CreateNewIssueButton";
+
 import DesignationsContainer from "@/components/DesignationsContainer";
 import NewIssueTopRow from "@/components/NewIssueTopRow";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -33,6 +34,7 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
+import { Button } from "../ui/button";
 
 const styles = {
   wrapper:
@@ -46,7 +48,7 @@ const styles = {
   description:
     " w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1",
   bottomBorder: " mx-4 mt-1 h-[10px] border-b-2 border-border",
-  createIssueButton: "h-full flex items-center justify-end",
+  createIssueButton: "h-full flex items-center justify-end p-4",
 };
 
 const NewIssueModal = () => {
@@ -189,7 +191,6 @@ const NewIssueModal = () => {
       ).unwrap();
 
       dispatch(setResumeNewIssue(false));
-
       socket.emit(
         "user_mentioned",
         [...mentionedUserId],

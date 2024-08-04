@@ -3,6 +3,7 @@ import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
 import type { RootState } from "@/store";
 import { SquarePen } from "lucide-react";
+import { Button } from "../ui/button";
 
 const NewIssueButton = () => {
   const dispatch = useDispatch();
@@ -44,6 +45,24 @@ const NewIssueButton = () => {
       {resumeNewIssue && !showNewIssue && <div className={styles.blueCircle} />}
     </button>
   );
+};
+
+export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
+	const dispatch = useDispatch();
+	const styles = {
+		svg: " w-[20px] h-[20px] cursor-pointer",
+	};
+	const { theme } = useSelector((state: RootState) => state.userSettings);
+	const fillColor = () => (theme === "light" ? "#174EFF" : "white");
+	const handleOpen = () => {
+		dispatch(setShowNewIssue(true));
+		dispatch(setStatus(status));
+	};
+	return (
+		<Button onClick={() => handleOpen()} variant={"outline"}>
+			<SquarePen className={`size-5 cursor-pointer fill-[${fillColor()}]`} />
+		</Button>
+	);
 };
 
 export default NewIssueButton;

@@ -1,3 +1,3 @@
 export interface ViewNewTopNavBarProps {
-  showFilterSaveForm: boolean;
+	showFilterSaveForm: boolean;
 }

@@ -3,7 +3,7 @@
 exports[`given a Button with Slottable with asChild should render a link with icon on the left/right 1`] = `
 <div>
   <a
-    href="https://sandy-ui.com"
+    href="https://squared-ui.com"
   >
     <span>
       left

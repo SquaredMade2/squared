@@ -3,9 +3,7 @@
 context("Spies, Stubs, and Clock", () => {
   it("cy.spy() - wrap a method in a spy", () => {
     // https://on.cypress.io/spy
-    cy.visit(
-      "https://example.cypress.io/commands/spies-stubs-clocks"
-    );
+    cy.visit("https://example.cypress.io/commands/spies-stubs-clocks");
 
     const obj = {
       foo() {},
@@ -19,9 +17,7 @@ context("Spies, Stubs, and Clock", () => {
   });
 
   it("cy.spy() retries until assertions pass", () => {
-    cy.visit(
-      "https://example.cypress.io/commands/spies-stubs-clocks"
-    );
+    cy.visit("https://example.cypress.io/commands/spies-stubs-clocks");
 
     const obj = {
       /**
@@ -46,9 +42,7 @@ context("Spies, Stubs, and Clock", () => {
 
   it("cy.stub() - create a stub and/or replace a function with stub", () => {
     // https://on.cypress.io/stub
-    cy.visit(
-      "https://example.cypress.io/commands/spies-stubs-clocks"
-    );
+    cy.visit("https://example.cypress.io/commands/spies-stubs-clocks");
 
     const obj = {
       /**
@@ -74,9 +68,7 @@ context("Spies, Stubs, and Clock", () => {
     const now = new Date(Date.UTC(2017, 2, 14)).getTime();
 
     cy.clock(now);
-    cy.visit(
-      "https://example.cypress.io/commands/spies-stubs-clocks"
-    );
+    cy.visit("https://example.cypress.io/commands/spies-stubs-clocks");
     cy.get("#clock-div").click().should("have.text", "1489449600");
   });
 
@@ -88,9 +80,7 @@ context("Spies, Stubs, and Clock", () => {
     const now = new Date(Date.UTC(2017, 2, 14)).getTime();
 
     cy.clock(now);
-    cy.visit(
-      "https://example.cypress.io/commands/spies-stubs-clocks"
-    );
+    cy.visit("https://example.cypress.io/commands/spies-stubs-clocks");
     cy.get("#tick-div").click().should("have.text", "1489449600");
 
     cy.tick(10000); // 10 seconds passed
@@ -162,10 +152,7 @@ context("Spies, Stubs, and Clock", () => {
     expect(spy).to.be.calledWith(Cypress.sinon.match.any, 3);
 
     // match any value from a list
-    expect(spy).to.be.calledWith(
-      Cypress.sinon.match.in([1, 2, 3]),
-      3
-    );
+    expect(spy).to.be.calledWith(Cypress.sinon.match.in([1, 2, 3]), 3);
 
     /**
      * Returns true if the given number is even
@@ -176,10 +163,7 @@ context("Spies, Stubs, and Clock", () => {
     // expect the value to pass a custom predicate function
     // the second argument to "sinon.match(predicate, message)" is
     // shown if the predicate does not pass and assertion fails
-    expect(spy).to.be.calledWith(
-      Cypress.sinon.match(isEven, "isEven"),
-      3
-    );
+    expect(spy).to.be.calledWith(Cypress.sinon.match(isEven, "isEven"), 3);
 
     /**
      * Returns a function that checks if a given number is larger than the limit

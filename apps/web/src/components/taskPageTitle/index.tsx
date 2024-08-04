@@ -75,7 +75,6 @@ const TaskPageTitle = () => {
       dispatch(updateTitle(transformedTitleInput, taskId));
     }
   };
-
   const handleBlur = (
     e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

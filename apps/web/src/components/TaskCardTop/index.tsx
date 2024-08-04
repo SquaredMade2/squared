@@ -32,7 +32,6 @@ const TaskCardTop = () => {
   const index: number = allWorkspaces.findIndex(
     (item) => item._id === workspace._id
   );
-
   const taskTitle = useAppSelector((state) => state.singleTask.data?.title);
   const taskPageTitle = useAppSelector((state) => {
     if (taskId === state.taskData.taskPage._id) {

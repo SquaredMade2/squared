@@ -1,3 +1,3 @@
 export interface HelpButtonProps {
-  onClick: () => void;
+	onClick: () => void;
 }

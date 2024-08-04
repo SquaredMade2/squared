@@ -17,7 +17,9 @@ const TaskPageCenterContainer = ({
   return (
     <div className="w-full snap-start z-0 overflow-x-hidden ">
       <div className="flex items-center gap-2 ">
-        <div className=" hidden mdsm:block">{/* <ToggleNavBar /> */}</div>
+        <div className=" hidden mdsm:block">
+          <ToggleNavBar />
+        </div>
         <div className=" w-full max850:w-10/12 overflow-hidden">
           <TaskCardTop />
         </div>
@@ -28,7 +30,6 @@ const TaskPageCenterContainer = ({
           />
         </span>
       </div>
-
       <div className={styles.content}>
         <div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10 ">
           <TaskPageTitle />

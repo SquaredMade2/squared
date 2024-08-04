@@ -1,4 +1,4 @@
 export interface PurpleToggleProps {
-  active: boolean;
-  handleClick: () => void;
+	active: boolean;
+	handleClick: () => void;
 }

@@ -1,5 +1,5 @@
 const passwordResetTemplate = (verificationUrl: string) => {
-  return `
+	return `
     <div style='background:#0C0C0C; margin: 0 auto; padding: 20px 50px;'>
     <div style='padding: 15px 30px; width: 800px; margin: 0 auto;'>
     <div style='display: flex; align-items: center; '>

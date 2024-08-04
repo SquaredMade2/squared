@@ -12,11 +12,13 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Status } from "@/interfaces/event.interfaces";
 import type { Task } from "@/store/taskData/taskData.interfaces";
-import { ScrollArea } from "../ui/scroll-area";
+
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const style = {
-  tasksBackgroundGrid: "flex flex-row h-full w-full snap-start",
-  tasksBackgroundList: "flex flex-col w-full h-full",
+  tasksBackgroundGrid: "flex gap-2  snap-start",
+  tasksBackgroundList:
+    "flex flex-col hover:pr-3 transition-all duration-500 ease-in-out",
 };
 
 const ViewAllTasks = ({
@@ -57,7 +59,6 @@ const ViewAllTasks = ({
     };
     fetchData();
   }, [dispatch, team]);
-
   useEffect(() => {
     if (
       currentFilters.priority.length !== 0 ||
@@ -76,7 +77,6 @@ const ViewAllTasks = ({
       setShowFilteredView(false);
     }
   }, [dispatch, teamId, currentFilters, filterType]);
-
   const titleArr = [
     { value: "Backlog", id: 1 },
     { value: "Todo", id: 2 },
@@ -121,7 +121,6 @@ const ViewAllTasks = ({
       );
     });
   };
-
   return (
     <>
       {!loading && (
@@ -132,27 +131,26 @@ const ViewAllTasks = ({
             taskData={taskData ? taskData : ({} as Task)}
           />
           <DragDropContext onDragEnd={handleDragEnd}>
-            <ScrollArea
-              className={` px-8 ${
+            <div
+              className={` px-2 sm:px-5  ${
                 view === "list"
-                  ? "h-[92%] flex items-center justify-center w-full"
-                  : "h-[95%] overflow-x-auto w-[calc(100vw-296px)]"
+                  ? "h-[85%] sm:h-[93%] flex items-center justify-center w-full"
+                  : " lg:w-[calc(100vw-296px)]"
               }`}
             >
-              <div
-                className={
-                  view === "list"
-                    ? style.tasksBackgroundList
-                    : style.tasksBackgroundGrid
-                }
-              >
-                {view === "list" ? (
-                  <div className="mr-1">{filteredColumns()}</div>
-                ) : (
-                  filteredColumns()
-                )}
-              </div>
-            </ScrollArea>
+              <ScrollArea className="w-full h-full">
+                <div
+                  className={
+                    view === "list"
+                      ? style.tasksBackgroundList
+                      : style.tasksBackgroundGrid
+                  }
+                >
+                  {filteredColumns()}
+                </div>
+                {view === "grid" && <ScrollBar orientation="horizontal" />}
+              </ScrollArea>
+            </div>
           </DragDropContext>
         </>
       )}

@@ -1,3 +1,3 @@
 export interface PropsInterface {
-  location: string;
+	location: string;
 }

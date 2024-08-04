@@ -1,19 +1,19 @@
-import { Schema, model } from 'mongoose';
-import INotification from '../interface/notification';
+import { Schema, model } from "mongoose";
+import type INotification from "../interface/notification";
 
 const notificationSchema = new Schema<INotification>(
 	{
-		user: { type: Schema.Types.ObjectId, ref: 'User' },
-		task: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
+		user: { type: Schema.Types.ObjectId, ref: "User" },
+		task: [{ type: Schema.Types.ObjectId, ref: "Task" }],
 		read: { type: Boolean, default: false },
 		description: { type: String },
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 const NotificationModel = model<INotification>(
-	'Notification',
-	notificationSchema
+	"Notification",
+	notificationSchema,
 );
 
 export default NotificationModel;

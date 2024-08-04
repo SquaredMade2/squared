@@ -1,144 +1,147 @@
-import * as React from 'react';
+import "@testing-library/jest-dom";
 
-import * as AccordionPrimitive from '../accordion';
-import { RenderResult, fireEvent, render } from '@testing-library/react';
-import { axe } from 'jest-axe';
-import '@testing-library/jest-dom';
+import * as AccordionPrimitive from "../accordion";
+import type { RenderResult } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
+expect.extend(toHaveNoViolations);
 
-const ITEMS = ['One', 'Two', 'Three'];
+const ITEMS = ["One", "Two", "Three"];
 
-describe('given a single Accordion', () => {
+describe("given a single Accordion", () => {
   let handleValueChange: jest.Mock;
   let rendered: RenderResult;
 
-  describe('with default orientation=vertical', () => {
+  describe("with default orientation=vertical", () => {
     beforeEach(() => {
       handleValueChange = jest.fn();
-      rendered = render(<AccordionTest type="single" onValueChange={handleValueChange} />);
+      rendered = render(
+        <AccordionTest type="single" onValueChange={handleValueChange} />
+      );
     });
 
-    it('should have no accessibility violations in default state', async () => {
+    it("should have no accessibility violations in default state", async () => {
       expect(await axe(rendered.container)).toHaveNoViolations();
     });
 
-    describe('when navigating by keyboard', () => {
+    describe("when navigating by keyboard", () => {
       beforeEach(() => {
-        const trigger = rendered.getByText('Trigger One');
+        const trigger = rendered.getByText("Trigger One");
         trigger.focus();
       });
 
-      describe('on `ArrowDown`', () => {
-        it('should move focus to the next trigger', () => {
+      describe("on `ArrowDown`", () => {
+        it("should move focus to the next trigger", () => {
           fireEvent.keyDown(document.activeElement!, {
-            key: 'ArrowDown',
+            key: "ArrowDown",
           });
-          expect(rendered.getByText('Trigger Two')).toHaveFocus();
+          expect(rendered.getByText("Trigger Two")).toHaveFocus();
         });
 
-        it('should move focus to the first item if at the end', () => {
-          const trigger = rendered.getByText('Trigger Three');
+        it("should move focus to the first item if at the end", () => {
+          const trigger = rendered.getByText("Trigger Three");
           trigger.focus();
           fireEvent.keyDown(document.activeElement!, {
-            key: 'ArrowDown',
+            key: "ArrowDown",
           });
-          expect(rendered.getByText('Trigger One')).toHaveFocus();
+          expect(rendered.getByText("Trigger One")).toHaveFocus();
         });
       });
 
-      describe('on `ArrowUp`', () => {
-        it('should move focus to the previous trigger', () => {
-          const trigger = rendered.getByText('Trigger Three');
+      describe("on `ArrowUp`", () => {
+        it("should move focus to the previous trigger", () => {
+          const trigger = rendered.getByText("Trigger Three");
           trigger.focus();
           fireEvent.keyDown(document.activeElement!, {
-            key: 'ArrowUp',
+            key: "ArrowUp",
           });
-          expect(rendered.getByText('Trigger Two')).toHaveFocus();
+          expect(rendered.getByText("Trigger Two")).toHaveFocus();
         });
 
-        it('should move focus to the last item if at the beginning', () => {
-          const trigger = rendered.getByText('Trigger One');
+        it("should move focus to the last item if at the beginning", () => {
+          const trigger = rendered.getByText("Trigger One");
           trigger.focus();
           fireEvent.keyDown(document.activeElement!, {
-            key: 'ArrowUp',
+            key: "ArrowUp",
           });
-          expect(rendered.getByText('Trigger Three')).toHaveFocus();
+          expect(rendered.getByText("Trigger Three")).toHaveFocus();
         });
       });
 
-      describe('on `Home`', () => {
-        it('should move focus to the first trigger', () => {
-          fireEvent.keyDown(document.activeElement!, { key: 'Home' });
-          expect(rendered.getByText('Trigger One')).toHaveFocus();
+      describe("on `Home`", () => {
+        it("should move focus to the first trigger", () => {
+          fireEvent.keyDown(document.activeElement!, { key: "Home" });
+          expect(rendered.getByText("Trigger One")).toHaveFocus();
         });
       });
 
-      describe('on `End`', () => {
-        it('should move focus to the last trigger', () => {
-          fireEvent.keyDown(document.activeElement!, { key: 'End' });
-          expect(rendered.getByText('Trigger Three')).toHaveFocus();
+      describe("on `End`", () => {
+        it("should move focus to the last trigger", () => {
+          fireEvent.keyDown(document.activeElement!, { key: "End" });
+          expect(rendered.getByText("Trigger Three")).toHaveFocus();
         });
       });
     });
 
-    describe('when clicking a trigger', () => {
+    describe("when clicking a trigger", () => {
       let trigger: HTMLElement;
       let contentOne: HTMLElement | null;
 
       beforeEach(() => {
-        trigger = rendered.getByText('Trigger One');
+        trigger = rendered.getByText("Trigger One");
         fireEvent.click(trigger);
-        contentOne = rendered.getByText('Content One');
+        contentOne = rendered.getByText("Content One");
       });
 
-      it('should show the content', () => {
+      it("should show the content", () => {
         expect(contentOne).toBeVisible();
       });
 
-      it('should have no accessibility violations', async () => {
+      it("should have no accessibility violations", async () => {
         expect(await axe(rendered.container)).toHaveNoViolations();
       });
 
-      it('should call onValueChange', () => {
-        expect(handleValueChange).toHaveBeenCalledWith('One');
+      it("should call onValueChange", () => {
+        expect(handleValueChange).toHaveBeenCalledWith("One");
       });
 
-      describe('then clicking the trigger again', () => {
+      describe("then clicking the trigger again", () => {
         beforeEach(() => {
           fireEvent.click(trigger);
         });
 
-        it('should not close the content', () => {
+        it("should not close the content", () => {
           expect(contentOne).toBeVisible();
         });
 
-        it('should not call onValueChange', () => {
+        it("should not call onValueChange", () => {
           expect(handleValueChange).toHaveBeenCalledTimes(1);
         });
       });
 
-      describe('then clicking another trigger', () => {
+      describe("then clicking another trigger", () => {
         beforeEach(() => {
-          const trigger = rendered.getByText('Trigger Two');
+          const trigger = rendered.getByText("Trigger Two");
           fireEvent.click(trigger);
         });
 
-        it('should show the new content', () => {
-          const contentTwo = rendered.getByText('Content Two');
+        it("should show the new content", () => {
+          const contentTwo = rendered.getByText("Content Two");
           expect(contentTwo).toBeVisible();
         });
 
-        it('should call onValueChange', () => {
-          expect(handleValueChange).toHaveBeenCalledWith('Two');
+        it("should call onValueChange", () => {
+          expect(handleValueChange).toHaveBeenCalledWith("Two");
         });
 
-        it('should hide the previous content', () => {
+        it("should hide the previous content", () => {
           expect(contentOne).not.toBeVisible();
         });
       });
     });
   });
 
-  describe('with orientation=horizontal', () => {
+  describe("with orientation=horizontal", () => {
     describe('and default dir="ltr"', () => {
       beforeEach(() => {
         handleValueChange = jest.fn();
@@ -147,87 +150,87 @@ describe('given a single Accordion', () => {
             type="single"
             orientation="horizontal"
             onValueChange={handleValueChange}
-          />,
+          />
         );
       });
 
-      describe('when navigating by keyboard', () => {
+      describe("when navigating by keyboard", () => {
         beforeEach(() => {
-          const trigger = rendered.getByText('Trigger One');
+          const trigger = rendered.getByText("Trigger One");
           trigger.focus();
         });
 
-        describe('on `ArrowUp`', () => {
-          it('should do nothing', () => {
+        describe("on `ArrowUp`", () => {
+          it("should do nothing", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowUp',
+              key: "ArrowUp",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `ArrowDown`', () => {
-          it('should do nothing', () => {
+        describe("on `ArrowDown`", () => {
+          it("should do nothing", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowDown',
+              key: "ArrowDown",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `ArrowRight`', () => {
-          it('should move focus to the next trigger', () => {
+        describe("on `ArrowRight`", () => {
+          it("should move focus to the next trigger", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowRight',
+              key: "ArrowRight",
             });
-            expect(rendered.getByText('Trigger Two')).toHaveFocus();
+            expect(rendered.getByText("Trigger Two")).toHaveFocus();
           });
 
-          it('should move focus to the first item if at the end', () => {
-            const trigger = rendered.getByText('Trigger Three');
+          it("should move focus to the first item if at the end", () => {
+            const trigger = rendered.getByText("Trigger Three");
             trigger.focus();
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowRight',
+              key: "ArrowRight",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `ArrowLeft`', () => {
-          it('should move focus to the previous trigger', () => {
-            const trigger = rendered.getByText('Trigger Three');
+        describe("on `ArrowLeft`", () => {
+          it("should move focus to the previous trigger", () => {
+            const trigger = rendered.getByText("Trigger Three");
             trigger.focus();
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowLeft',
+              key: "ArrowLeft",
             });
-            expect(rendered.getByText('Trigger Two')).toHaveFocus();
+            expect(rendered.getByText("Trigger Two")).toHaveFocus();
           });
 
-          it('should move focus to the last item if at the beginning', () => {
-            const trigger = rendered.getByText('Trigger One');
+          it("should move focus to the last item if at the beginning", () => {
+            const trigger = rendered.getByText("Trigger One");
             trigger.focus();
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowLeft',
+              key: "ArrowLeft",
             });
-            expect(rendered.getByText('Trigger Three')).toHaveFocus();
+            expect(rendered.getByText("Trigger Three")).toHaveFocus();
           });
         });
 
-        describe('on `Home`', () => {
-          it('should move focus to the first trigger', () => {
+        describe("on `Home`", () => {
+          it("should move focus to the first trigger", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'Home',
+              key: "Home",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `End`', () => {
-          it('should move focus to the last trigger', () => {
+        describe("on `End`", () => {
+          it("should move focus to the last trigger", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'End',
+              key: "End",
             });
-            expect(rendered.getByText('Trigger Three')).toHaveFocus();
+            expect(rendered.getByText("Trigger Three")).toHaveFocus();
           });
         });
       });
@@ -242,85 +245,85 @@ describe('given a single Accordion', () => {
             dir="rtl"
             orientation="horizontal"
             onValueChange={handleValueChange}
-          />,
+          />
         );
       });
 
-      describe('when navigating by keyboard', () => {
+      describe("when navigating by keyboard", () => {
         beforeEach(() => {
-          const trigger = rendered.getByText('Trigger One');
+          const trigger = rendered.getByText("Trigger One");
           trigger.focus();
         });
 
-        describe('on `ArrowUp`', () => {
-          it('should do nothing', () => {
+        describe("on `ArrowUp`", () => {
+          it("should do nothing", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowUp',
+              key: "ArrowUp",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `ArrowDown`', () => {
-          it('should do nothing', () => {
+        describe("on `ArrowDown`", () => {
+          it("should do nothing", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowDown',
+              key: "ArrowDown",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `ArrowRight`', () => {
-          it('should move focus to the previous trigger', () => {
-            const trigger = rendered.getByText('Trigger Two');
+        describe("on `ArrowRight`", () => {
+          it("should move focus to the previous trigger", () => {
+            const trigger = rendered.getByText("Trigger Two");
             trigger.focus();
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowRight',
+              key: "ArrowRight",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
 
-          it('should move focus to the last item if at the beginning', () => {
+          it("should move focus to the last item if at the beginning", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowRight',
+              key: "ArrowRight",
             });
-            expect(rendered.getByText('Trigger Three')).toHaveFocus();
+            expect(rendered.getByText("Trigger Three")).toHaveFocus();
           });
         });
 
-        describe('on `ArrowLeft`', () => {
-          it('should move focus to the next trigger', () => {
+        describe("on `ArrowLeft`", () => {
+          it("should move focus to the next trigger", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowLeft',
+              key: "ArrowLeft",
             });
-            expect(rendered.getByText('Trigger Two')).toHaveFocus();
+            expect(rendered.getByText("Trigger Two")).toHaveFocus();
           });
 
-          it('should move focus to the first item if at the end', () => {
-            const trigger = rendered.getByText('Trigger Three');
+          it("should move focus to the first item if at the end", () => {
+            const trigger = rendered.getByText("Trigger Three");
             trigger.focus();
             fireEvent.keyDown(document.activeElement!, {
-              key: 'ArrowLeft',
+              key: "ArrowLeft",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `Home`', () => {
-          it('should move focus to the first trigger', () => {
+        describe("on `Home`", () => {
+          it("should move focus to the first trigger", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'Home',
+              key: "Home",
             });
-            expect(rendered.getByText('Trigger One')).toHaveFocus();
+            expect(rendered.getByText("Trigger One")).toHaveFocus();
           });
         });
 
-        describe('on `End`', () => {
-          it('should move focus to the last trigger', () => {
+        describe("on `End`", () => {
+          it("should move focus to the last trigger", () => {
             fireEvent.keyDown(document.activeElement!, {
-              key: 'End',
+              key: "End",
             });
-            expect(rendered.getByText('Trigger Three')).toHaveFocus();
+            expect(rendered.getByText("Trigger Three")).toHaveFocus();
           });
         });
       });
@@ -328,122 +331,134 @@ describe('given a single Accordion', () => {
   });
 });
 
-describe('given a multiple Accordion', () => {
+describe("given a multiple Accordion", () => {
   let handleValueChange: jest.Mock;
   let rendered: RenderResult;
 
   beforeEach(() => {
     handleValueChange = jest.fn();
-    rendered = render(<AccordionTest type="multiple" onValueChange={handleValueChange} />);
+    rendered = render(
+      <AccordionTest type="multiple" onValueChange={handleValueChange} />
+    );
   });
 
-  it('should have no accessibility violations in default state', async () => {
+  it("should have no accessibility violations in default state", async () => {
     expect(await axe(rendered.container)).toHaveNoViolations();
   });
 
-  describe('when navigating by keyboard', () => {
+  describe("when navigating by keyboard", () => {
     beforeEach(() => {
-      rendered.getByText('Trigger One').focus();
+      rendered.getByText("Trigger One").focus();
     });
 
-    describe('on `ArrowDown`', () => {
-      it('should move focus to the next trigger', () => {
+    describe("on `ArrowDown`", () => {
+      it("should move focus to the next trigger", () => {
         fireEvent.keyDown(document.activeElement!, {
-          key: 'ArrowDown',
+          key: "ArrowDown",
         });
-        expect(rendered.getByText('Trigger Two')).toHaveFocus();
+        expect(rendered.getByText("Trigger Two")).toHaveFocus();
       });
     });
 
-    describe('on `ArrowUp`', () => {
-      it('should move focus to the previous trigger', () => {
+    describe("on `ArrowUp`", () => {
+      it("should move focus to the previous trigger", () => {
         fireEvent.keyDown(document.activeElement!, {
-          key: 'ArrowUp',
+          key: "ArrowUp",
         });
-        expect(rendered.getByText('Trigger Three')).toHaveFocus();
+        expect(rendered.getByText("Trigger Three")).toHaveFocus();
       });
     });
 
-    describe('on `Home`', () => {
-      it('should move focus to the first trigger', () => {
-        fireEvent.keyDown(document.activeElement!, { key: 'Home' });
-        expect(rendered.getByText('Trigger One')).toHaveFocus();
+    describe("on `Home`", () => {
+      it("should move focus to the first trigger", () => {
+        fireEvent.keyDown(document.activeElement!, { key: "Home" });
+        expect(rendered.getByText("Trigger One")).toHaveFocus();
       });
     });
 
-    describe('on `End`', () => {
-      it('should move focus to the last trigger', () => {
-        fireEvent.keyDown(document.activeElement!, { key: 'End' });
-        expect(rendered.getByText('Trigger Three')).toHaveFocus();
+    describe("on `End`", () => {
+      it("should move focus to the last trigger", () => {
+        fireEvent.keyDown(document.activeElement!, { key: "End" });
+        expect(rendered.getByText("Trigger Three")).toHaveFocus();
       });
     });
   });
 
-  describe('when clicking a trigger', () => {
+  describe("when clicking a trigger", () => {
     let trigger: HTMLElement;
     let contentOne: HTMLElement | null;
 
     beforeEach(() => {
-      trigger = rendered.getByText('Trigger One');
+      trigger = rendered.getByText("Trigger One");
       fireEvent.click(trigger);
-      contentOne = rendered.getByText('Content One');
+      contentOne = rendered.getByText("Content One");
     });
 
-    it('should show the content', () => {
+    it("should show the content", () => {
       expect(contentOne).toBeVisible();
     });
 
-    it('should have no accessibility violations', async () => {
+    it("should have no accessibility violations", async () => {
       expect(await axe(rendered.container)).toHaveNoViolations();
     });
 
-    it('should call onValueChange', () => {
-      expect(handleValueChange).toHaveBeenCalledWith(['One']);
+    it("should call onValueChange", () => {
+      expect(handleValueChange).toHaveBeenCalledWith(["One"]);
     });
 
-    describe('then clicking the trigger again', () => {
+    describe("then clicking the trigger again", () => {
       beforeEach(() => {
         fireEvent.click(trigger);
       });
 
-      it('should hide the content', () => {
+      it("should hide the content", () => {
         expect(contentOne).not.toBeVisible();
       });
 
-      it('should call onValueChange', () => {
+      it("should call onValueChange", () => {
         expect(handleValueChange).toHaveBeenCalledWith([]);
       });
     });
 
-    describe('then clicking another trigger', () => {
+    describe("then clicking another trigger", () => {
       beforeEach(() => {
-        const trigger = rendered.getByText('Trigger Two');
+        const trigger = rendered.getByText("Trigger Two");
         fireEvent.click(trigger);
       });
 
-      it('should show the new content', () => {
-        const contentTwo = rendered.getByText('Content Two');
+      it("should show the new content", () => {
+        const contentTwo = rendered.getByText("Content Two");
         expect(contentTwo).toBeVisible();
       });
 
-      it('should call onValueChange', () => {
-        expect(handleValueChange).toHaveBeenCalledWith(['One', 'Two']);
+      it("should call onValueChange", () => {
+        expect(handleValueChange).toHaveBeenCalledWith(["One", "Two"]);
       });
 
-      it('should not hide the previous content', () => {
+      it("should not hide the previous content", () => {
         expect(contentOne).toBeVisible();
       });
     });
   });
 });
 
-function AccordionTest(props: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+function AccordionTest(
+  props: React.ComponentProps<typeof AccordionPrimitive.Root>
+) {
   return (
     <AccordionPrimitive.Root data-testid="container" {...props}>
       {ITEMS.map((val) => (
-        <AccordionPrimitive.Item value={val} key={val} data-testid={`item-${val.toLowerCase()}`}>
-          <AccordionPrimitive.Header data-testid={`header-${val.toLowerCase()}`}>
-            <AccordionPrimitive.Trigger>Trigger {val}</AccordionPrimitive.Trigger>
+        <AccordionPrimitive.Item
+          value={val}
+          key={val}
+          data-testid={`item-${val.toLowerCase()}`}
+        >
+          <AccordionPrimitive.Header
+            data-testid={`header-${val.toLowerCase()}`}
+          >
+            <AccordionPrimitive.Trigger>
+              Trigger {val}
+            </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content>Content {val}</AccordionPrimitive.Content>
         </AccordionPrimitive.Item>

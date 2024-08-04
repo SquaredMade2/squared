@@ -2,6 +2,7 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { authorizeGithubRedirect } from "@/store/userSettings/thunks";
 import GithubUserInfo from "../GithubUserInfo";
 import type { GithubIfAuthedDisplaySettingsProps } from "./GithubIfAuthedDisplaySettings";
+import { useTheme } from "@material-tailwind/react";
 
 const styles = {
   ghUserImage: "w-10 h-10",
@@ -20,7 +21,7 @@ const styles = {
 const GithubIfAuthedDisplaySettings = ({
   githubUser,
 }: GithubIfAuthedDisplaySettingsProps) => {
-  const theme = useAppSelector((state) => state.userSettings.theme);
+  const { theme } = useTheme();
   return githubUser ? (
     <GithubUserInfo />
   ) : (

@@ -1,12 +1,12 @@
 "use client";
 import "./globals.css";
 import { Providers } from "@/store/provider";
-import { useSelector } from "react-redux";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import type { ThemeProviderProps } from "next-themes/dist/types";
 import CommandPalette from "@/components/CommandPalette";
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CurrentNavbar from "@/components/CurrentNavbar";
-import type { RootState } from "@/store";
 
 const styles = {
   currentNavBar: "h-full flex flex-row overflow-hidden",
@@ -22,12 +22,17 @@ export default function RootLayout({
       <body>
         <Providers>
           <CommandPalette />
-          <ThemedComponent>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <div className={styles.currentNavBar}>
               <CurrentNavbar />
               {children}
             </div>
-          </ThemedComponent>
+          </ThemeProvider>
           <ToastContainerWrapper />
         </Providers>
       </body>
@@ -35,9 +40,8 @@ export default function RootLayout({
   );
 }
 
-function ThemedComponent({ children }: { children: React.ReactNode }) {
-  const theme = useSelector((state: RootState) => state.userSettings.theme);
-  return <div className={theme}>{children}</div>;
+function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
 function ToastContainerWrapper() {

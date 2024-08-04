@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IWorkspace from "../interface/workspace";
+import type IWorkspace from "../interface/workspace";
 
 /**
  * @openapi
@@ -29,29 +29,38 @@ import IWorkspace from "../interface/workspace";
  */
 
 const workspaceSchema = new Schema<IWorkspace>({
-  name: {
-    type: String,
-  },
-  url: {
-    type: String,
-  },
-  companySize: {
-    type: Number,
-  },
-  universalTokenLink: {
-    token: {
-      type: String,
-      default: "",
-    },
-    isEnabled: { type: Boolean, default: true },
-  },
-  teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
-  users: [{ user: { type: Schema.Types.ObjectId, ref: "User" }, role: String, username: { type: String, ref: "User"} }],
-  projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
-  issuesCreated: {
-    type: Number,
-  },
-  githubRepoInfo: { repoName: { type: String, default: '' }, owner: { type: String, default: '' }}
+	name: {
+		type: String,
+	},
+	url: {
+		type: String,
+	},
+	companySize: {
+		type: Number,
+	},
+	universalTokenLink: {
+		token: {
+			type: String,
+			default: "",
+		},
+		isEnabled: { type: Boolean, default: true },
+	},
+	teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+	users: [
+		{
+			user: { type: Schema.Types.ObjectId, ref: "User" },
+			role: String,
+			username: { type: String, ref: "User" },
+		},
+	],
+	projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
+	issuesCreated: {
+		type: Number,
+	},
+	githubRepoInfo: {
+		repoName: { type: String, default: "" },
+		owner: { type: String, default: "" },
+	},
 });
 
 const WorkspaceModel = model<IWorkspace>("Workspace", workspaceSchema);

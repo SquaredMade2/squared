@@ -1,9 +1,10 @@
-import { Types } from "mongoose";
+import type { Types } from "mongoose";
 import IUser from "./user";
 import ITeam from "./team";
 import IWorkspace from "./workspace";
 
 interface ITask {
+  id: string;
   authorId: Types.ObjectId;
   title: string;
   description: string;
