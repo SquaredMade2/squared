@@ -15,6 +15,7 @@ import {
 	createTeam,
 	createWorkspaceLinkToken,
 	deleteAllTasks,
+	deleteTask,
 	deleteTeam,
 	deleteWorkspace,
 	enableUniversalLink,
@@ -443,6 +444,24 @@ const taskData = createSlice({
 				},
 			)
 			.addCase(getCommitsByRepo.rejected, (state, action) => {
+				state.isLoading = false;
+				console.error(action.payload);
+			})
+			.addCase(deleteTask.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteTask.fulfilled, (state, action: PayloadAction<string>) => {
+				if (action.payload) {
+					state.isLoading = false;
+					state.currentTeam.tasks = state.currentTeam.tasks.filter((task) => {
+						if (task._id === action.payload) {
+							return false;
+						}
+						return true;
+					});
+				}
+			})
+			.addCase(deleteTask.rejected, (state, action) => {
 				state.isLoading = false;
 				console.error(action.payload);
 			});

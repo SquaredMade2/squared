@@ -23,6 +23,14 @@ import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
+import RightClickMenu2 from "../RightClickMenu2";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "../ui/context-menu";
+import TaskContextMenu from "../TaskContextMenu";
 
 const styles = {
 	taskCardContainer: "relative w-[325px]",
@@ -185,6 +193,7 @@ const TaskCard = ({
 											task={selectedTask}
 										/>
 									)}
+									{/* <RightClickMenu2 /> */}
 								</div>
 
 								<div
@@ -240,64 +249,70 @@ const TaskCard = ({
 										onClick={handleGlobalClick}
 										onContextMenu={(e) => handleContextMenu(e, task)}
 									>
-										<div
-											ref={(el: HTMLDivElement | null) => {
-												taskRefs.current[task._id] = el;
-											}}
-										>
-											{menuPosition && selectedTask && (
-												<RightClickMenu
-													x={menuPosition.x}
-													y={menuPosition.y}
-													handleDeleteTaskCard={handleDeleteTaskCard}
-													task={selectedTask}
-												/>
-											)}
-										</div>
-										<Link
-											href={`/tasks/${task._id}`}
-											onClick={() => dispatch(setTaskPage(task))}
-										>
-											<div className={styles.taskCardContainer}>
+										<ContextMenu>
+											<ContextMenuTrigger>
 												<div
-													key={task._id}
-													className={`${styles.taskCard} ${
-														theme === "light" ? "bg-card" : "bg-background"
-													}`}
+													ref={(el: HTMLDivElement | null) => {
+														taskRefs.current[task._id] = el;
+													}}
 												>
-													<TaskCardTitle
-														task={task}
-														taskTitle={task.title}
-														location={location}
-														highlightText={highlightText}
-														isShown={showPriority}
-													/>
-													{showDateTime && (
-														<TaskCardDate
-															icon={
-																<Calendar className="cursor-pointer size-4" />
-															}
-														>
-															Due Date:{" "}
-															{task.dueDate
-																? format(
-																		new Date(task.dueDate),
-																		"M/d/yy, h:mm a",
-																	)
-																: "No Date Set"}
-														</TaskCardDate>
+													{menuPosition && selectedTask && (
+														<RightClickMenu
+															x={menuPosition.x}
+															y={menuPosition.y}
+															handleDeleteTaskCard={handleDeleteTaskCard}
+															task={selectedTask}
+														/>
+														// <RightClickMenu2 />
 													)}
-													<div className={styles.labelRow}>
-														{showPriority && (
-															<TaskCardPriority border={true} task={task} />
-														)}
-														{showLabels && (
-															<TaskCardLabels task={task} view="grid" />
-														)}
-													</div>
+													<TaskContextMenu task={task} />
 												</div>
-											</div>
-										</Link>
+												<Link
+													href={`/tasks/${task._id}`}
+													onClick={() => dispatch(setTaskPage(task))}
+												>
+													<div className={styles.taskCardContainer}>
+														<div
+															key={task._id}
+															className={`${styles.taskCard} ${
+																theme === "light" ? "bg-card" : "bg-background"
+															}`}
+														>
+															<TaskCardTitle
+																task={task}
+																taskTitle={task.title}
+																location={location}
+																highlightText={highlightText}
+																isShown={showPriority}
+															/>
+															{showDateTime && (
+																<TaskCardDate
+																	icon={
+																		<Calendar className="cursor-pointer size-4" />
+																	}
+																>
+																	Due Date:{" "}
+																	{task.dueDate
+																		? format(
+																				new Date(task.dueDate),
+																				"M/d/yy, h:mm a",
+																			)
+																		: "No Date Set"}
+																</TaskCardDate>
+															)}
+															<div className={styles.labelRow}>
+																{showPriority && (
+																	<TaskCardPriority border={true} task={task} />
+																)}
+																{showLabels && (
+																	<TaskCardLabels task={task} view="grid" />
+																)}
+															</div>
+														</div>
+													</div>
+												</Link>
+											</ContextMenuTrigger>
+										</ContextMenu>
 									</div>
 								)}
 							</Draggable>
@@ -324,6 +339,7 @@ const TaskCard = ({
 									task={selectedTask}
 								/>
 							)}
+							{/* <RightClickMenu2 /> */}
 						</div>
 
 						<div className={styles.main}>
