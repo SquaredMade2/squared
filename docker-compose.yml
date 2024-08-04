@@ -1,16 +1,34 @@
 version: "3"
 
 services:
+  www:
+    container_name: www
+    build:
+      context: .
+      dockerfile: ./apps/www/Dockerfile
+    image: squared-www:latest
+    restart: always
+    ports:
+      - 4000:3000
+    networks:
+      - app_network
+    env_file:
+      - .env
+
   web:
     container_name: web
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+    image: squared-web:latest
     restart: always
     ports:
       - 3000:3000
     networks:
       - app_network
+    env_file:
+      - .env
+
   api:
     container_name: api
     build:
@@ -21,9 +39,24 @@ services:
       - 3001:3001
     networks:
       - app_network
+    env_file:
+      - .env
+    image: squared-api:latest
 
-# Define a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: squared-nginx:latest
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - app_network
+    env_file:
+      - .env
+
 networks:
   app_network:
     external: true
