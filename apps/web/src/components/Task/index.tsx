@@ -13,106 +13,120 @@ import { ActionType } from "@/store/events/events.actionTypes";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
 
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
-	const [render, setRender] = useState(false);
-	const [showSideNav, setShowSideNav] = useState(false);
-	const task = useAppSelector((state) => state.singleTask.data) || null;
-	const isLoading = useAppSelector((state) => state.singleTask.isLoading);
-	const currentRepo = useAppSelector(
-		(state) => state.taskData.currentWorkspace.githubRepoInfo,
-	);
-	const navbarToggled = useAppSelector(
-		(state) => state.userSettings.showNavBar,
-	);
+  const [render, setRender] = useState(false);
+  const [showSideNav, setShowSideNav] = useState(false);
+  const { taskId } = useParams();
+  const singleTask = useAppSelector((state) => state.singleTask.data || null);
+  const tasks = useAppSelector((state) => {
+    if (taskId === state.taskData.taskPage._id) {
+      return state.taskData.taskPage;
+    }
+  });
+  const recentlyDeleted = useAppSelector((state) => {
+    if (taskId === state.recentlyDeleted.recentlyDeleted._id) {
+      return state.recentlyDeleted.recentlyDeleted;
+    }
+  });
 
-	const showBackdrop = showSideNav || navbarToggled;
-	const dispatch = useAppDispatch();
-	const { taskId } = useParams();
-	const sideNav = useRef(null);
-	const svgRef = useRef(null);
+  const task = singleTask || tasks || recentlyDeleted;
+  const isLoading = useAppSelector((state) => state.singleTask.isLoading);
+  const currentRepo = useAppSelector(
+    (state) => state.taskData.currentWorkspace.githubRepoInfo
+  );
+  const navbarToggled = useAppSelector(
+    (state) => state.userSettings.showNavBar
+  );
 
-	const currentTaskId = useAppSelector(
-		(state) => state.currentTask.currentTaskId,
-	);
-	const dataForDispatch = taskId || currentTaskId;
+  const showBackdrop = showSideNav || navbarToggled;
+  const dispatch = useAppDispatch();
 
-	const toggleNav = () => {
-		setShowSideNav(!showSideNav);
-	};
+  console.log("taskId", taskId);
+  const sideNav = useRef(null);
+  const svgRef = useRef(null);
 
-	useEffect(() => {
-		if (dataForDispatch) {
-			dispatch(getTaskComments(dataForDispatch as string));
-			dispatch(getSingleTask(dataForDispatch as string));
-			dispatch(getTaskEventLog(dataForDispatch as string));
-		}
-		return () => {
-			dispatch(setGetSingleTaskError(false));
-			dispatch(removeTaskData());
-			dispatch({
-				type: ActionType.CLEAR_TASKPAGE_COMMENTS,
-				payload: [],
-			});
-		};
-	}, [currentTaskId]);
+  const currentTaskId = useAppSelector(
+    (state) => state.currentTask.currentTaskId
+  );
+  const dataForDispatch = taskId || currentTaskId;
 
-	useEffect(() => {
-		if (task !== undefined && isLoading !== true) {
-			setRender(true);
-		}
-	}, [task]);
+  const toggleNav = () => {
+    setShowSideNav(!showSideNav);
+  };
 
-	useEffect(() => {
-		if (currentRepo) {
-			dispatch(
-				getCommitsByRepo({
-					repoName: currentRepo.repoName,
-					owner: currentRepo.owner,
-				}),
-			);
-		}
-	}, []);
+  useEffect(() => {
+    if (dataForDispatch) {
+      dispatch(getTaskComments(dataForDispatch as string));
+      dispatch(getSingleTask(dataForDispatch as string));
+      dispatch(getTaskEventLog(dataForDispatch as string));
+    }
+    return () => {
+      dispatch(setGetSingleTaskError(false));
+      dispatch(removeTaskData());
+      dispatch({
+        type: ActionType.CLEAR_TASKPAGE_COMMENTS,
+        payload: [],
+      });
+    };
+  }, [currentTaskId]);
 
-	useEffect(() => {
-		function handleClickAway(event: MouseEvent) {
-			if (
-				sideNav.current &&
-				!(sideNav.current as HTMLElement).contains(event.target as Node)
-			) {
-				setShowSideNav(false);
-			}
-		}
+  useEffect(() => {
+    if (task !== undefined && isLoading !== true) {
+      setRender(true);
+    }
+  }, [task]);
 
-		document.addEventListener("mousedown", handleClickAway);
-		return () => {
-			document.removeEventListener("mousedown", handleClickAway);
-		};
-	}, []);
+  useEffect(() => {
+    if (currentRepo) {
+      dispatch(
+        getCommitsByRepo({
+          repoName: currentRepo.repoName,
+          owner: currentRepo.owner,
+        })
+      );
+    }
+  }, []);
 
-	return (
-		<>
-			{!mailTask && (
-				<DefaultTask
-					task={task as SingleTaskDataInterface}
-					render={render}
-					showBackdrop={showBackdrop}
-					showSideNav={showSideNav}
-					toggleSideNav={toggleNav}
-					svgRef={svgRef}
-					sideNav={sideNav}
-				/>
-			)}
-			{mailTask && (
-				<MailTask
-					task={task as SingleTaskDataInterface}
-					render={render}
-					showBackdrop={showBackdrop}
-					showSideNav={showSideNav}
-					toggleSideNav={toggleNav}
-					sideNav={sideNav}
-				/>
-			)}
-		</>
-	);
+  useEffect(() => {
+    function handleClickAway(event: MouseEvent) {
+      if (
+        sideNav.current &&
+        !(sideNav.current as HTMLElement).contains(event.target as Node)
+      ) {
+        setShowSideNav(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickAway);
+    return () => {
+      document.removeEventListener("mousedown", handleClickAway);
+    };
+  }, []);
+
+  return (
+    <>
+      {!mailTask && (
+        <DefaultTask
+          task={task as SingleTaskDataInterface}
+          render={render}
+          showBackdrop={showBackdrop}
+          showSideNav={showSideNav}
+          toggleSideNav={toggleNav}
+          svgRef={svgRef}
+          sideNav={sideNav}
+        />
+      )}
+      {mailTask && (
+        <MailTask
+          task={task as SingleTaskDataInterface}
+          render={render}
+          showBackdrop={showBackdrop}
+          showSideNav={showSideNav}
+          toggleSideNav={toggleNav}
+          sideNav={sideNav}
+        />
+      )}
+    </>
+  );
 };
 
 export default Task;
