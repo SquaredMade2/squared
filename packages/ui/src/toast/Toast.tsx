@@ -243,7 +243,11 @@ const ToastViewport = React.forwardRef<
 	}, [hasToasts, context.isClosePausedRef]);
 
 	const getSortedTabbableCandidates = React.useCallback(
-		({ tabbingDirection }: { tabbingDirection: "forwards" | "backwards" }) => {
+		({
+			tabbingDirection,
+		}: {
+			tabbingDirection: "forwards" | "backwards";
+		}) => {
 			const toastItems = getItems();
 			const tabbableCandidates = toastItems.map((toastItem) => {
 				const toastNode = toastItem.ref.current!;
@@ -585,7 +589,7 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 
 		const startTimer = React.useCallback(
 			(duration: number) => {
-				if (!duration || duration === Infinity) return;
+				if (!duration || duration === Number.POSITIVE_INFINITY) return;
 				window.clearTimeout(closeTimerRef.current);
 				closeTimerStartTimeRef.current = new Date().getTime();
 				closeTimerRef.current = window.setTimeout(handleClose, duration);
@@ -999,7 +1003,7 @@ function getAnnounceTextContent(container: HTMLElement) {
 	const textContent: string[] = [];
 	const childNodes = Array.from(container.childNodes);
 
-	childNodes.forEach((node) => {
+	for (const node of childNodes) {
 		if (node.nodeType === node.TEXT_NODE && node.textContent)
 			textContent.push(node.textContent);
 		if (isHTMLElement(node)) {
@@ -1016,7 +1020,7 @@ function getAnnounceTextContent(container: HTMLElement) {
 				}
 			}
 		}
-	});
+	}
 
 	// We return a collection of text rather than a single concatenated string.
 	// This allows SR VO to naturally pause break between nodes while announcing.
@@ -1064,9 +1068,8 @@ const isDeltaInDirection = (
 	const isDeltaX = deltaX > deltaY;
 	if (direction === "left" || direction === "right") {
 		return isDeltaX && deltaX > threshold;
-	} else {
-		return !isDeltaX && deltaY > threshold;
 	}
+	return !isDeltaX && deltaY > threshold;
 };
 
 function useNextFrame(callback = () => {}) {
@@ -1074,9 +1077,13 @@ function useNextFrame(callback = () => {}) {
 	useLayoutEffect(() => {
 		let raf1 = 0;
 		let raf2 = 0;
-		raf1 = window.requestAnimationFrame(
-			() => (raf2 = window.requestAnimationFrame(fn)),
-		);
+
+		const requestNextFrame = () => {
+			raf2 = window.requestAnimationFrame(fn);
+		};
+
+		raf1 = window.requestAnimationFrame(requestNextFrame);
+
 		return () => {
 			window.cancelAnimationFrame(raf1);
 			window.cancelAnimationFrame(raf2);

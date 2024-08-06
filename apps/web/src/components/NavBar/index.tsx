@@ -7,7 +7,7 @@ import NewIssueModal from "@/components/NewIssueModal";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
 import NavBarTeams from "@/components/NavBarTeams";
-import { NavSearchIcon, TeamIcon } from "@/components/Svg";
+import { LayoutGrid, Search } from "lucide-react";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import {
 	Accordion,
@@ -60,7 +60,6 @@ const Navbar = () => {
 	const pathname = usePathname();
 	const inboxPageChecker = pathname.includes("/inbox");
 	const { user, theme } = useAppSelector((state) => state.userSettings);
-
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
 	const handleClick = (): void => {
@@ -71,7 +70,6 @@ const Navbar = () => {
 		dispatch(setCurrentTeam(team));
 		router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
 	};
-
 	return (
 		<div className={styles.main}>
 			<div className={styles.mainContainer}>
@@ -87,9 +85,11 @@ const Navbar = () => {
 					<div className={styles.newIssueDiv}>
 						<NewIssueButton />
 						<div className={styles.searchButtonDiv}>
-							<button onClick={handleClick} type="button">
+							<button onClick={handleClick} type="button" title="title">
 								<span className={styles.searchButton}>
-									<span>{NavSearchIcon(styles.searchIconSVG, theme)}</span>
+									<Search
+										className={` ${styles.searchIconSVG} ${theme === "light" ? "text-[#797A8C] " : "text-[white]"}`}
+									/>
 								</span>
 							</button>
 						</div>
@@ -113,7 +113,8 @@ const Navbar = () => {
 							return (
 								<AccordionItem key={team._id} value={team._id}>
 									<AccordionTrigger>
-										<TeamIcon />
+										<LayoutGrid className="text-[#9577FF] size-4" />
+
 										{team.name}
 									</AccordionTrigger>
 									<AccordionContent>

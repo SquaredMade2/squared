@@ -8,7 +8,7 @@ import { getAllWorkspaces } from "@/store/taskData/thunks";
 import { clearUser } from "@/store/userSettings";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import ProfileImage from "../ProfileImage";
-import { menuCheckMark } from "@/components/Svg";
+import { Check } from "lucide-react";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import {
 	DropdownMenu,
@@ -45,7 +45,6 @@ const styles = {
 const WorkSpaceDropDown = () => {
 	const dispatch = useAppDispatch();
 	const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
-
 	const user = useAppSelector((state) => state.userSettings.user);
 	const currentWorkspace = useAppSelector(
 		(state) => state.taskData.currentWorkspace,
@@ -61,7 +60,6 @@ const WorkSpaceDropDown = () => {
 	const workspaceSettings = (workspaceSettingsOption: string) => {
 		return `/workspace/${workspaceUrl}/settings/${workspaceSettingsOption}`;
 	};
-
 	const signOutHandler = async () => {
 		await signOut({ redirect: false }).then(() => {
 			router.push("/login");
@@ -118,7 +116,7 @@ const WorkSpaceDropDown = () => {
 							<li>{handleWorkspaceNameOverflow(workspace.name)}</li>
 							{workspace.name === currentWorkspace.name && (
 								<div className={styles.paddingLeft}>
-									<span>{menuCheckMark("#575BC7")}</span>
+									<Check className="text-[#575BC7] size-5" />
 								</div>
 							)}
 						</DropdownMenuItem>

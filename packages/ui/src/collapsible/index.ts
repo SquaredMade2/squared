@@ -1,17 +1,17 @@
-'use client';
+"use client";
 export {
-  createCollapsibleScope,
-  //
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-  //
-  Root,
-  Trigger,
-  Content,
-} from './Collapsible';
+	createCollapsibleScope,
+	//
+	Collapsible,
+	CollapsibleTrigger,
+	CollapsibleContent,
+	//
+	Root,
+	Trigger,
+	Content,
+} from "./Collapsible";
 export type {
-  CollapsibleProps,
-  CollapsibleTriggerProps,
-  CollapsibleContentProps,
-} from './Collapsible';
+	CollapsibleProps,
+	CollapsibleTriggerProps,
+	CollapsibleContentProps,
+} from "./Collapsible";

@@ -7,7 +7,8 @@
       "@/*": ["*"]
     },
     "moduleResolution": "node16",
-    "module": "Node16"
+    "module": "Node16",
+    "types": ["jest", "jest-extended"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
 }

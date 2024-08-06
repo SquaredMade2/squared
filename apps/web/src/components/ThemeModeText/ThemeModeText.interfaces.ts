@@ -1,3 +1,3 @@
 export interface ThemeModeTextProps {
-  handleNextPage: () => void;
+	handleNextPage: () => void;
 }

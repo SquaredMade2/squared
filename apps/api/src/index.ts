@@ -102,6 +102,7 @@ const whitelist = [
   `http://localhost:${PORT}`,
   "https://app.squaredmade.com",
   "https://develop.squaredmade.com",
+  "https://squared-web.vercel.app",
 ];
 
 type StaticOrigin =

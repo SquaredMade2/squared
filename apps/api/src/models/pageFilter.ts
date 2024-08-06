@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { arrayBuffer } from "stream/consumers";
 const { Schema } = mongoose;
 
 /**
@@ -24,22 +23,22 @@ const { Schema } = mongoose;
  */
 
 export const pageFilterSchema = new Schema({
-  filterTitle: {
-    type: String,
-    required: true,
-  },
-  filterOption: {
-    type: Object,
-    required: true,
-  },
-  filterDescription: {
-    type: String,
-    required: false,
-  },
-  teamId: { type: mongoose.Schema.Types.ObjectId, ref: "Team", required: true },
+	filterTitle: {
+		type: String,
+		required: true,
+	},
+	filterOption: {
+		type: Object,
+		required: true,
+	},
+	filterDescription: {
+		type: String,
+		required: false,
+	},
+	teamId: { type: mongoose.Schema.Types.ObjectId, ref: "Team", required: true },
 
-  // leave comments in - Filters will be associated with project id as a feature.
-  // project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
+	// leave comments in - Filters will be associated with project id as a feature.
+	// project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
 });
 
 const PageFilterModel = mongoose.model("PageFilterModel", pageFilterSchema);

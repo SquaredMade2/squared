@@ -1,21 +1,21 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface showTaskFormState {
-  isOpen: boolean;
+	isOpen: boolean;
 }
 
 const initialState: showTaskFormState = {
-  isOpen: false,
+	isOpen: false,
 };
 
 const showTaskForm = createSlice({
-  name: 'showTaskForm',
-  initialState: initialState,
-  reducers: {
-    setShowTaskForm(state, action: PayloadAction<boolean>) {
-      state.isOpen = !!action.payload;
-    },
-  },
+	name: "showTaskForm",
+	initialState: initialState,
+	reducers: {
+		setShowTaskForm(state, action: PayloadAction<boolean>) {
+			state.isOpen = !!action.payload;
+		},
+	},
 });
 
 export const { setShowTaskForm } = showTaskForm.actions;

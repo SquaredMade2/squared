@@ -1,14 +1,16 @@
-import NextAuth from 'next-auth/next';
-import type { AuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import GithubProvider from 'next-auth/providers/github';
-import axios from 'axios';
-import type { DefaultNextUser } from '@/app/interfaces/Auth.interfaces';
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
+import NextAuth from "next-auth/next";
+import type { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
+import axios from "axios";
+import type { DefaultNextUser } from "@/app/interfaces/Auth.interfaces";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? "bob";
+const GOOGLE_CLIENT_SECRET =
+  process.env.GOOGLE_CLIENT_SECRET ?? "bob";
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID ?? "bob";
+const GITHUB_CLIENT_SECRET =
+  process.env.GITHUB_CLIENT_SECRET ?? "bob";
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET ?? "bob";
 if (
   !GOOGLE_CLIENT_ID ||
   !GOOGLE_CLIENT_SECRET ||
@@ -16,7 +18,9 @@ if (
   !GITHUB_CLIENT_SECRET ||
   !NEXTAUTH_SECRET
 ) {
-  throw new Error('Missing environment variables for NextAuth configuration');
+  throw new Error(
+    "Missing environment variables for NextAuth configuration"
+  );
 }
 const authOptions: AuthOptions = {
   providers: [
@@ -25,7 +29,7 @@ const authOptions: AuthOptions = {
       clientSecret: GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
-          prompt: 'consent',
+          prompt: "consent",
         },
       },
     }),
@@ -34,7 +38,7 @@ const authOptions: AuthOptions = {
       clientSecret: GITHUB_CLIENT_SECRET,
       authorization: {
         params: {
-          prompt: 'consent',
+          prompt: "consent",
         },
       },
     }),
@@ -42,11 +46,15 @@ const authOptions: AuthOptions = {
   secret: NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account }) {
-      if (account && (account.provider === 'google' || account.provider === 'github')) {
+      if (
+        account &&
+        (account.provider === "google" ||
+          account.provider === "github")
+      ) {
         (user as DefaultNextUser).ghToken = account.access_token;
         try {
           const { data } = await axios({
-            method: 'POST',
+            method: "POST",
             url: `${process.env.NEXT_PUBLIC_SERVER}/auth/signInUsingNextAuth`,
             data: { email: user?.email },
             withCredentials: true,
@@ -58,7 +66,7 @@ const authOptions: AuthOptions = {
           }
           return false;
         } catch (error) {
-          return '/login';
+          return "/login";
         }
       }
       return false;

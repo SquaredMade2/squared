@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import ITag from "../interface/tag";
+import type ITag from "../interface/tag";
 
 /**
  * @openapi
@@ -15,10 +15,10 @@ import ITag from "../interface/tag";
  */
 
 const tagSchema = new Schema<ITag>({
-  name: {
-    type: String,
-    required: true,
-  },
+	name: {
+		type: String,
+		required: true,
+	},
 });
 
 const TagModel = model<ITag>("Tag", tagSchema);

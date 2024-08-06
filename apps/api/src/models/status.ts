@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IStatus from "../interface/status";
+import type IStatus from "../interface/status";
 
 /**
  * @openapi
@@ -18,11 +18,11 @@ import IStatus from "../interface/status";
  */
 
 const statusSchema = new Schema<IStatus>({
-  status: {
-    type: String,
-    enum: ["PENDING", "ACTIVE", "DONE", "DELIVERED"],
-    default: "PENDING",
-  },
+	status: {
+		type: String,
+		enum: ["PENDING", "ACTIVE", "DONE", "DELIVERED"],
+		default: "PENDING",
+	},
 });
 
 const StatusModel = model<IStatus>("Status", statusSchema);

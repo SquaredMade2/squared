@@ -22,9 +22,9 @@ const styles = {
 };
 
 const DateDropdown: React.FC<DateDropdownProps> = ({
-  handleButtonClick,
-  handleClickAway,
-  location,
+	handleButtonClick,
+	handleClickAway,
+	location,
 }) => {
   const dispatch = useAppDispatch();
   const taskId = useAppSelector((state) => state.singleTask?.data?._id);
@@ -41,7 +41,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
     location === 'newIssue' ? 'absolute top-8' : 'absolute top-0 -left-[300px]'
   }`;
 
-  const isDateInPast = (date: Date) => isBefore(endOfDay(date), new Date());
+	const isDateInPast = (date: Date) => isBefore(endOfDay(date), new Date());
 
   const updateDateTime = (date: Date, time: string) => {
     const [hours, minutes] = time.split(':').map(Number);
@@ -57,16 +57,16 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
     updateDateTime(selectedDay, selectedTime);
   };
 
-  const handleSelectTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = e.target.value;
-    updateDateTime(selectedDate, time);
-  };
+	const handleSelectTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const time = e.target.value;
+		updateDateTime(selectedDate, time);
+	};
 
-  const handleSave = () => {
-    if (location === 'issueSidebar') updateItem(selectedDate);
-    if (location === 'newIssue') dispatch(setDueDate(selectedDate));
-    handleButtonClick();
-  };
+	const handleSave = () => {
+		if (location === "issueSidebar") updateItem(selectedDate);
+		if (location === "newIssue") dispatch(setDueDate(selectedDate));
+		handleButtonClick();
+	};
 
   const updateItem = async (newDate: Date) => {
     try {

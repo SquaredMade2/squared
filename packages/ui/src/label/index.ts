@@ -1,7 +1,7 @@
-'use client';
+"use client";
 export {
-  Label,
-  //
-  Root,
-} from './Label';
-export type { LabelProps } from './Label';
+	Label,
+	//
+	Root,
+} from "./Label";
+export type { LabelProps } from "./Label";

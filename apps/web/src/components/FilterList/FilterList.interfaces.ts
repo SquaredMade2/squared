@@ -1,3 +1,3 @@
 export interface FilterListProps {
-  searchInput: string;
+	searchInput: string;
 }

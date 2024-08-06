@@ -1,7 +1,7 @@
-'use client';
+"use client";
 export {
-  FocusScope,
-  //
-  Root,
-} from './FocusScope';
-export type { FocusScopeProps } from './FocusScope';
+	FocusScope,
+	//
+	Root,
+} from "./FocusScope";
+export type { FocusScopeProps } from "./FocusScope";

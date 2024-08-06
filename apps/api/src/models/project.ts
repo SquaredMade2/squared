@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import IProject from "../interface/project";
+import type IProject from "../interface/project";
 
 /**
  * @openapi
@@ -17,11 +17,11 @@ import IProject from "../interface/project";
  */
 
 const projectSchema = new Schema<IProject>({
-  name: {
-    type: String,
-    required: true,
-  },
-  team: { type: Schema.Types.ObjectId, ref: "Team" },
+	name: {
+		type: String,
+		required: true,
+	},
+	team: { type: Schema.Types.ObjectId, ref: "Team" },
 });
 
 const ProjectModel = model<IProject>("Project", projectSchema);

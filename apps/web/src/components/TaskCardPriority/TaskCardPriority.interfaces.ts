@@ -1,6 +1,6 @@
-import type { Task } from '@/store/taskData/taskData.interfaces';
+import type { Task } from "@/store/taskData/taskData.interfaces";
 
 export interface TaskCardPriorityProps {
-  task: Task;
-  border: boolean;
+	task: Task;
+	border: boolean;
 }

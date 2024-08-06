@@ -1,12 +1,11 @@
 import { Router } from "express";
-import catchAsync from "../utils/catchAsync";
 import {
-  addTeam,
-  getTeam,
-  deleteTeam,
-  updateTeam,
-  getTeamInfo,
-  teamExists,
+	addTeam,
+	getTeam,
+	deleteTeam,
+	updateTeam,
+	getTeamInfo,
+	teamExists,
 } from "../controllers/teamControllers";
 
 const router: Router = Router();
@@ -93,7 +92,7 @@ router.get("/read", getTeam);
  *                 error:
  *                   type: string
  */
-router.get("/getTeamInfo", catchAsync(getTeamInfo));
+router.get("/getTeamInfo", getTeamInfo);
 
 /**
  * @openapi
@@ -119,7 +118,7 @@ router.get("/getTeamInfo", catchAsync(getTeamInfo));
  *     responses:
  *       '204':
  *         description: Successful connection / Team exists
-*       '409':
+ *       '409':
  *         description: conflict
  *         content:
  *           application/json:
@@ -275,6 +274,5 @@ router.put("/update", updateTeam);
  *                   type: string
  */
 router.delete("/delete", deleteTeam);
-
 
 export default router;
