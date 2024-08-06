@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import type { RootState } from "@/store";
 import { signOut } from "next-auth/react";
+import { useToast } from "../ui/use-toast";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClickAwayListener } from "@mui/base";
@@ -15,7 +16,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { setShowSearchModal } from "@/store/showSearchModal";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import CopiedAlertBox from "../CopiedAlertBox";
 import SearchCommandView from "../SearchCommandView";
 import SearchCommandGoTo from "../SearchCommandGoTo";
 import SearchCommandCopy from "../SearchCommandCopy";
@@ -48,7 +48,6 @@ const SearchCommand = () => {
   const [lastKey, setLastKey] = useState<string>("");
   const [isIssueOpen, setIsIssueOpen] = useState<boolean>(false);
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
-  const [isUrlClicked, setIsUrlClicked] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -64,6 +63,7 @@ const SearchCommand = () => {
   const workspace = useAppSelector(
     (state: RootState) => state.taskData.currentWorkspace
   );
+  const { toast: copyToast } = useToast();
 
   useEffect(() => {
     const down = (e: KeyboardEvent): void => {
@@ -166,10 +166,10 @@ const SearchCommand = () => {
   async function handleCopyUrl(): Promise<void> {
     const url = `${process.env.NEXT_PUBLIC_URL}${pathname}`;
     await window.navigator.clipboard.writeText(url);
-    setIsUrlClicked(true);
-    setTimeout(() => {
-      setIsUrlClicked(false);
-    }, 3000);
+    copyToast({
+      description: "URL copied to clipboard.",
+    });
+    dispatch(setShowSearchModal(false));
   }
 
   async function signOutHandler() {
@@ -262,7 +262,6 @@ const SearchCommand = () => {
               </Command>
             </motion.div>
           </ClickAwayListener>
-          <CopiedAlertBox isUrlClicked={isUrlClicked} />
         </div>
       )}
     </AnimatePresence>
