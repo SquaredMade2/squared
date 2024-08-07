@@ -11,27 +11,13 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
-import { useParams } from "next/navigation";
 
 const TaskPageDescription = () => {
   const dispatch = useAppDispatch();
-  const { taskId }: { taskId: string } = useParams();
-  const singleTaskDescription = useSelector(
+  const description = useSelector(
     (state: RootState) => state.singleTask.data?.description
   );
-  const taskPageDescription = useSelector((state: RootState) => {
-    if (taskId === state.taskData.taskPage?._id) {
-      return state.taskData.taskPage?.description;
-    }
-  });
-  const recentlyDeletedDescription = useSelector((state: RootState) => {
-    if (taskId === state.recentlyDeleted.recentlyDeleted._id) {
-      return state.recentlyDeleted.recentlyDeleted.description;
-    }
-  });
-  const description =
-    singleTaskDescription || taskPageDescription || recentlyDeletedDescription;
-
+  const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
   const socket = useContext(SocketContext);
 
   const [updatedDescription, setUpdatedDescription] = useState(description);

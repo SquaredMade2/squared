@@ -23,7 +23,6 @@ import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
-import { setRecentlyDeleted } from "@/store/recentlyDeleted";
 
 const styles = {
   taskCardContainer: "relative w-[325px]",
@@ -93,7 +92,6 @@ const TaskCard = ({
   const getNotificationId = notifications.map((noti) => noti._id);
 
   const handleDeleteTaskCard = async (task: Task) => {
-    dispatch(setRecentlyDeleted(task));
     await deleteTaskCard(task._id);
     dispatch(getAllTasks(currentTeam));
     setShowDeleteCard(false);

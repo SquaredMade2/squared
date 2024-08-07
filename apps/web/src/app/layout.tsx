@@ -7,7 +7,6 @@ import CommandPalette from "@/components/CommandPalette";
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CurrentNavbar from "@/components/CurrentNavbar";
-import { Toaster } from "@/components/ui/toaster";
 
 const styles = {
   currentNavBar: "h-full flex flex-row overflow-hidden",
@@ -36,7 +35,6 @@ export default function RootLayout({
           </ThemeProvider>
           <ToastContainerWrapper />
         </Providers>
-        <Toaster />
       </body>
     </html>
   );

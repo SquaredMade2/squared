@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { usePathname, useRouter } from "next/navigation";
 import { setCurrentTeam } from "@/store/taskData";
@@ -7,7 +7,7 @@ import NewIssueModal from "@/components/NewIssueModal";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
 import NavBarTeams from "@/components/NavBarTeams";
-import { LayoutGrid, Search } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import SearchButton from "../SearchButton";
 import SearchCommand from "../SearchCommand";
@@ -53,6 +53,7 @@ const styles = {
 };
 
 const Navbar = () => {
+  const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -78,7 +79,7 @@ const Navbar = () => {
           <span className={styles.innerDivSpan}>{user?.name}</span>
           <div className={styles.newIssueDiv}>
             <NewIssueButton />
-            <SearchButton />
+            <SearchButton setIsSearchCommand={setIsSearchCommand} />
           </div>
         </div>
         <div className={styles.teamsWrapper}>
@@ -120,7 +121,10 @@ const Navbar = () => {
           <NewIssueModal />
         </div>
         <div className={styles.newIssueModalContainer}>
-          <SearchCommand />
+          <SearchCommand
+            isSearchCommand={isSearchCommand}
+            setIsSearchCommand={setIsSearchCommand}
+          />
         </div>
       </div>
     </div>

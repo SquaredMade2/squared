@@ -1,271 +1,200 @@
-import axios from "axios";
-import { toast } from "react-toastify";
-import type { RootState } from "@/store";
-import { signOut } from "next-auth/react";
-import { useToast } from "../ui/use-toast";
+import { commandSchema } from "./actions";
+import { DialogTitle } from "../ui/dialog";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ClickAwayListener } from "@mui/base";
-import { usePathname } from "next/navigation";
-import { clearUser } from "@/store/userSettings";
-import { setIsMenuOpen } from "@/store/isMenuOpen";
-import { setIsWidgetOpen } from "@/store/isWidgetOpen";
-import { useDispatch, useSelector } from "react-redux";
-import { setShowNewIssue } from "@/store/showNewIssue";
-import { motion, AnimatePresence } from "framer-motion";
-import { setShowSearchModal } from "@/store/showSearchModal";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import SearchCommandView from "../SearchCommandView";
-import SearchCommandGoTo from "../SearchCommandGoTo";
-import SearchCommandCopy from "../SearchCommandCopy";
-import SearchCommandTeams from "../SearchCommandTeams";
-import SearchCommandIssue from "../SearchCommandIssue";
-import SearchCommandSearch from "../SearchCommandSearch";
-import SearchCommandDeleted from "../SearchCommandDeleted";
-import SearchCommandProject from "../SearchCommandProject";
-import SearchCommandAccount from "../SearchCommandAccount";
-import SearchCommandSettings from "../SearchCommandSettings";
-import SearchCommandTemplates from "../SearchCommandTemplates";
-import SearchCommandNavigation from "../SearchCommandNavigation";
-import SearchCommandMiscellaneous from "../SearchCommandMiscellaneous";
+import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import type {
+  SearchbarItem,
+  SearchbarSection,
+} from "./SearchCommand.interface";
 import {
-  Command,
   CommandList,
-  CommandEmpty,
+  CommandItem,
   CommandInput,
+  CommandGroup,
+  CommandEmpty,
+  CommandDialog,
+  CommandShortcut,
   CommandSeparator,
-} from "@/components/ui/command";
+} from "../ui/command";
 
-const styles = {
-  wrapper:
-    "fixed z-10 top-0 left-0 flex items-start justify-center w-screen h-[703.2px] px-3 py-[13vh]  ",
-  container:
-    "relative flex flex-col w-[748.4px] border border-border bg-popover rounded-lg shadow-[#00000080] shadow-[0px_16px_70px] text-nav",
-};
-
-const SearchCommand = () => {
+const SearchCommand = ({
+  isSearchCommand,
+  setIsSearchCommand,
+}: {
+  isSearchCommand: boolean;
+  setIsSearchCommand: (open: boolean) => void;
+}) => {
   const [lastKey, setLastKey] = useState<string>("");
-  const [isIssueOpen, setIsIssueOpen] = useState<boolean>(false);
-  const [isInputFocus, setIsInputFocus] = useState<boolean>(false);
-  const router = useRouter();
-  const pathname = usePathname();
-  const dispatch = useDispatch();
-  const currentTeam = useAppSelector(
-    (state: RootState) => state.taskData.currentTeam
-  );
-  const showSearchModal = useSelector(
-    (state: RootState) => state.showSearchModal.isOpen
-  );
-  const currentWorkspace = useSelector(
-    (state: RootState) => state.taskData.currentWorkspace
-  );
-  const workspace = useAppSelector(
-    (state: RootState) => state.taskData.currentWorkspace
-  );
-  const { toast: copyToast } = useToast();
+  const [isInputFocus, setIsInputFocus] = useState<boolean>(true);
+  const commandItems = new commandSchema();
 
   useEffect(() => {
     const down = (e: KeyboardEvent): void => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        dispatch(setShowSearchModal(true));
+        setIsSearchCommand(true);
       }
       if (e.key === "Escape") {
-        dispatch(setShowSearchModal(false));
+        setIsSearchCommand(false);
       }
-
-      if (!showSearchModal || isInputFocus) return;
+      if (!isSearchCommand || isInputFocus) return;
 
       if (e.key.toLowerCase() === "c" && lastKey === "shift" && e.ctrlKey) {
-        handleCopyUrl();
+        const item = commandItems.getSchema()["Copy current page URL"];
+        if (isSearchbarItem(item)) {
+          item.function();
+        }
+        setIsSearchCommand(false);
         return;
       }
       if (e.altKey && e.shiftKey && e.key === "Œ") {
-        handleLogout();
-        return;
-      }
-      if (e.ctrlKey && e.key.toLowerCase() === "/") {
-        handleOpenNavigation(e);
+        // @ts-ignore comment
+        commandItems.getSchema().Account.logOut.function();
+        setIsSearchCommand(false);
         return;
       }
       if (e.key.toLowerCase() === "c") {
-        handleNewIssue();
-      }
-      if (lastKey === "o" && e.key.toLowerCase() === "i") {
-        setIsIssueOpen((isOpen) => !isOpen);
-        console.log("hello");
+        // @ts-ignore comment
+        commandItems.getSchema().Issue.createNewIssue.function();
+        setIsSearchCommand(false);
+        return;
       }
       if (lastKey === "g" && e.key.toLowerCase() === "i") {
-        handleGoToInbox();
+        const item = commandItems.getSchema()["Go to inbox"];
+        if (isSearchbarItem(item)) {
+          item.function();
+        }
+        setIsSearchCommand(false);
+        return;
       }
       if (lastKey === "g" && e.key.toLowerCase() === "a") {
-        handleGoToActiveIssues();
+        const item = commandItems.getSchema()["Go to active issues"];
+        if (isSearchbarItem(item)) {
+          item.function();
+        }
+        setIsSearchCommand(false);
+        return;
       }
+
       if (lastKey === "g" && e.key.toLowerCase() === "b") {
-        handleGoToBacklog();
+        const item = commandItems.getSchema()["Go to backlog"];
+        if (isSearchbarItem(item)) {
+          item.function();
+        }
+        setIsSearchCommand(false);
+        return;
       }
+
       if (lastKey === "g" && e.key.toLowerCase() === "e") {
-        handleGoToAllIssues();
+        const item = commandItems.getSchema()["Go to all issues"];
+        if (isSearchbarItem(item)) {
+          item.function();
+        }
+        setIsSearchCommand(false);
+        return;
       }
       if (lastKey === "g" && e.key.toLowerCase() === "u") {
-        handleGoToViews();
-      }
-      if (lastKey === "o" && e.key.toLowerCase() === "w") {
-        handleSwitchWorkspace();
+        const item = commandItems.getSchema()["Go to views"];
+        if (isSearchbarItem(item)) {
+          item.function();
+        }
+        setIsSearchCommand(false);
+        return;
       }
       setLastKey(e.key.toLowerCase());
     };
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [isInputFocus, showSearchModal, isIssueOpen, lastKey]);
+  }, [isSearchCommand, isInputFocus, lastKey]);
 
-  function handleClickAway(): void {
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleNewIssue(): void {
-    dispatch(setShowSearchModal(false));
-    dispatch(setShowNewIssue(true));
-  }
-
-  function handleGoToInbox(): void {
-    router.push(`/workspace/${workspace.url}/inbox`);
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleGoToActiveIssues(): void {
-    router.push(
-      `/workspace/${currentWorkspace.url}/team/${currentTeam.identifier}/active`
-    );
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleGoToBacklog(): void {
-    router.push(
-      `/workspace/${currentWorkspace.url}/team/${currentTeam.identifier}/backlog`
-    );
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleGoToAllIssues(): void {
-    router.push(
-      `/workspace/${currentWorkspace.url}/team/${currentTeam.identifier}/all`
-    );
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleGoToViews(): void {
-    dispatch(deleteAllCurrentFilters());
-    router.push(
-      `/workspace/${currentWorkspace.url}/team/${currentTeam.identifier}/views`
-    );
-    dispatch(setShowSearchModal(false));
-  }
-
-  async function handleCopyUrl(): Promise<void> {
-    const url = `${process.env.NEXT_PUBLIC_URL}${pathname}`;
-    await window.navigator.clipboard.writeText(url);
-    copyToast({
-      description: "URL copied to clipboard.",
-    });
-    dispatch(setShowSearchModal(false));
-  }
-
-  async function signOutHandler() {
-    await signOut({ redirect: false }).then(() => {
-      router.push("/login");
-    });
-    dispatch(setShowSearchModal(false));
-  }
-
-  async function handleLogout(): Promise<void> {
-    await signOutHandler();
-    try {
-      const response = await axios({
-        method: "POST",
-        url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
-        withCredentials: true,
-      });
-      dispatch(clearUser());
-      router.push(`${process.env.NEXT_PUBLIC_URL}`);
-      toast.success(response.data.success);
-    } catch (error) {}
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleSwitchWorkspace(): void {
-    dispatch(setIsMenuOpen(true));
-    dispatch(setShowSearchModal(false));
-  }
-
-  function handleOpenNavigation(
-    e: React.MouseEvent<HTMLDivElement> | KeyboardEvent
-  ): void {
-    e.stopPropagation();
-    dispatch(setIsWidgetOpen(true));
-    dispatch(setShowSearchModal(false));
-  }
-
+  // console.log(commandItems.getSchema());
   return (
-    <AnimatePresence>
-      {showSearchModal && (
-        <div className={styles.wrapper}>
-          <ClickAwayListener onClickAway={handleClickAway}>
-            <motion.div
-              className={styles.container}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.2 }}
+    <CommandDialog open={isSearchCommand} onOpenChange={setIsSearchCommand}>
+      <VisuallyHidden>
+        <DialogTitle>Searchbar</DialogTitle>
+      </VisuallyHidden>
+      <CommandInput
+        placeholder="Type a command or search..."
+        onFocusCapture={() => setIsInputFocus(true)}
+        onBlurCapture={() => setIsInputFocus(false)}
+      />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        {Object.entries(commandItems.getSchema()).map(([key, value]) => {
+          if (value === "separator") {
+            return <CommandSeparator key={key} />;
+          }
+          if (isSearchbarItem(value)) {
+            return commandItem(value as SearchbarItem, setIsSearchCommand, key);
+          }
+          return (
+            <CommandGroup
+              key={key}
+              heading={key}
+              style={{ pointerEvents: "auto" }}
+              className="[&_[cmdk-group-heading]]:text-[]"
             >
-              <Command>
-                <CommandInput
-                  placeholder="Type a command or search..."
-                  onFocusCapture={() => setIsInputFocus(true)}
-                  onBlurCapture={() => setIsInputFocus(false)}
-                />
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <SearchCommandIssue handleNewIssue={handleNewIssue} />
-                  <SearchCommandProject />
-                  <SearchCommandView />
-                  <SearchCommandTemplates />
-                  <SearchCommandNavigation
-                    isIssueOpen={isIssueOpen}
-                    setIsIssueOpen={setIsIssueOpen}
-                  />
-                  <CommandSeparator />
-                  <SearchCommandGoTo
-                    handleGoToViews={handleGoToViews}
-                    handleGoToInbox={handleGoToInbox}
-                    handleGoToBacklog={handleGoToBacklog}
-                    handleGoToAllIssues={handleGoToAllIssues}
-                    handleGoToActiveIssues={handleGoToActiveIssues}
-                  />
-                  <CommandSeparator />
-                  <SearchCommandDeleted />
-                  <CommandSeparator />
-                  <SearchCommandCopy handleCopyUrl={handleCopyUrl} />
-                  <CommandSeparator />
-                  <SearchCommandTeams />
-                  <SearchCommandSettings />
-                  <SearchCommandAccount
-                    handleLogout={handleLogout}
-                    handleSwitchWorkspace={handleSwitchWorkspace}
-                  />
-                  <SearchCommandMiscellaneous
-                    handleOpenNavigation={handleOpenNavigation}
-                  />
-                  <SearchCommandSearch />
-                </CommandList>
-              </Command>
-            </motion.div>
-          </ClickAwayListener>
-        </div>
-      )}
-    </AnimatePresence>
+              {Object.entries(value as SearchbarSection).map(
+                ([key1, value1]) => {
+                  return commandItem(
+                    value1 as SearchbarItem,
+                    setIsSearchCommand,
+                    key1
+                  );
+                }
+              )}
+            </CommandGroup>
+          );
+        })}
+      </CommandList>
+    </CommandDialog>
   );
 };
 
 export default SearchCommand;
+
+const isSearchbarItem = (
+  value: SearchbarItem | SearchbarSection | string
+): value is SearchbarItem => {
+  return (value as SearchbarItem).text !== undefined;
+};
+
+const commandItem = (
+  value: SearchbarItem,
+  setIsSearchCommand: (open: boolean) => void,
+  key?: string
+) => {
+  function handleClick() {
+    value.function();
+    setIsSearchCommand(false);
+  }
+  return (
+    <CommandItem
+      key={key ?? value.text}
+      onClickCapture={handleClick}
+      className="data-[disabled]:opacity-100 cursor-pointer aria-selected:text-[]"
+      style={{ pointerEvents: "auto" }}
+    >
+      <span className="size-4 mb-1">{value.icon}</span>
+      <span className="ml-3 cursor-pointer">{value.text}</span>
+      <CommandShortcut className="opacity-100 text-foreground cursor-pointer">
+        {value.shortcut?.map((item: string, index: number) => {
+          return (
+            <span
+              key={item}
+              className={`${
+                item === "then"
+                  ? "text-[#9BA3AF] dark:text-[#858698]"
+                  : "py-[2px] px-[4px] border rounded-sm border-[#DCE0E4] dark:border-[#2C2C3B]  bg-[#E0E0E5] dark:bg-[#2A3045] "
+              }
+                 cursor-pointer
+                ${index === value.shortcut.length - 1 ? "" : "mr-1"} `}
+            >
+              {item}
+            </span>
+          );
+        })}
+      </CommandShortcut>
+    </CommandItem>
+  );
+};

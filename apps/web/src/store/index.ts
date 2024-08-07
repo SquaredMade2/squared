@@ -14,10 +14,6 @@ import getListOfMembersReducer from "./workspaceMembers";
 import notificationReducer from "./notifications";
 import currentTaskReducer from "./currentTask";
 import storage from "redux-persist/lib/storage";
-import showSearchModal from "./showSearchModal";
-import isMenuOpen from "./isMenuOpen";
-import isWidgetOpen from "./isWidgetOpen";
-import recentlyDeleted from "./recentlyDeleted";
 import {
   persistReducer,
   FLUSH,
@@ -36,10 +32,6 @@ const rootReducer = combineReducers({
   showTaskForm: showTaskForm.reducer,
   taskData: taskData.reducer,
   showNewIssue: showNewIssue.reducer,
-  showSearchModal: showSearchModal.reducer,
-  isMenuOpen: isMenuOpen.reducer,
-  isWidgetOpen: isWidgetOpen.reducer,
-  recentlyDeleted: recentlyDeleted.reducer,
   resumeNewIssue: resumeNewIssue.reducer,
   singleTask: singleTask.reducer,
   notifications: notificationReducer,

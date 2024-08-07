@@ -13,4 +13,5 @@ module.exports = {
       tsconfig: "tsconfig.json",
     },
   },
+  setupFilesAfterEnv: ["<rootDir>/support/setupTests.js"],
 };

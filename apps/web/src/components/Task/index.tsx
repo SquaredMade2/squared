@@ -15,20 +15,7 @@ import { getCommitsByRepo } from "@/store/taskData/thunks";
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
   const [render, setRender] = useState(false);
   const [showSideNav, setShowSideNav] = useState(false);
-  const { taskId } = useParams();
-  const singleTask = useAppSelector((state) => state.singleTask.data || null);
-  const tasks = useAppSelector((state) => {
-    if (taskId === state.taskData.taskPage._id) {
-      return state.taskData.taskPage;
-    }
-  });
-  const recentlyDeleted = useAppSelector((state) => {
-    if (taskId === state.recentlyDeleted.recentlyDeleted._id) {
-      return state.recentlyDeleted.recentlyDeleted;
-    }
-  });
-
-  const task = singleTask || tasks || recentlyDeleted;
+  const task = useAppSelector((state) => state.singleTask.data) || null;
   const isLoading = useAppSelector((state) => state.singleTask.isLoading);
   const currentRepo = useAppSelector(
     (state) => state.taskData.currentWorkspace.githubRepoInfo
@@ -39,8 +26,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 
   const showBackdrop = showSideNav || navbarToggled;
   const dispatch = useAppDispatch();
-
-  console.log("taskId", taskId);
+  const { taskId } = useParams();
   const sideNav = useRef(null);
   const svgRef = useRef(null);
 
