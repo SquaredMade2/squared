@@ -2,6 +2,10 @@
 DESIRED_AUTHOR_NAME="yoloOnTheBattlefield"
 DESIRED_AUTHOR_EMAIL="cristianfloreadev@gmail.com"
 
+# Check the values
+echo "Author Name: $DESIRED_AUTHOR_NAME"
+echo "Author Email: $DESIRED_AUTHOR_EMAIL"
+
 # Amend the commit author
 GIT_COMMITTER_NAME="$DESIRED_AUTHOR_NAME" \
 GIT_COMMITTER_EMAIL="$DESIRED_AUTHOR_EMAIL" \
