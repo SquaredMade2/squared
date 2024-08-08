@@ -2,7 +2,6 @@
 import type React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { handleTheme } from "@/store/userSettings";
 import {
   BriefcaseBusiness,
   ChevronLeft,
@@ -55,7 +54,9 @@ const SettingsNavBar = ({
             <span className="h-3 mr-3 hover:cursor-pointer">
               <ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
             </span>
-            <h1 className="text-foreground cursor-pointer">Settings</h1>
+            <h1 className="text-foreground cursor-pointer">
+              Settings
+            </h1>
           </div>
           <div className="mb-1 pl-0.5 flex items-center">
             <BriefcaseBusiness className="size-4 text-[#6A6F75]" />

@@ -1,15 +1,14 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { lightMode, darkMode } from "@/components/Svg";
-import { handleTheme } from "@/store/userSettings";
 import type { ThemeModeTextProps } from "./ThemeModeText.interfaces";
 import { useTheme } from "next-themes";
 
 const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
-  const dispatch = useDispatch();
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
-  const selected = "border-solid border-2 border-onboardingTheme rounded";
+  const selected =
+    "border-solid border-2 border-onboardingTheme rounded";
 
   return (
     <div className="bg-card h-screen w-full flex flex-col items-center justify-center text-center">
@@ -17,15 +16,15 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
         Choose your style
       </span>
       <span className="text-muted-foreground text-base mb-8">
-        You can change the UI style at any time through the command menu or in
-        the settings.
+        You can change the UI style at any time through the command
+        menu or in the settings.
       </span>
       <div className="flex w-[600px] xs:w-11/12 h-48 border border-border text-foreground rounded-lg font-medium">
         {theme === "light" && (
           <>
             <div
               className="w-1/2 box-border border-border border-r flex items-center justify-center flex-col bg-taskHeader"
-              onClick={() => dispatch(handleTheme("light"))}
+              onClick={() => setTheme("light")}
             >
               <div className="w-3/5 h-auto my-3 flex items-center justify-center">
                 {lightMode(selected)}
@@ -34,7 +33,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
             </div>
             <div
               className="w-1/2 rounded-r-lg flex flex-col items-center justify-center"
-              onClick={() => dispatch(handleTheme("dark"))}
+              onClick={() => setTheme("dark")}
             >
               <div className="w-3/5 h-auto my-3 flex items-center justify-center">
                 {darkMode("")}
@@ -47,7 +46,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
           <>
             <div
               className="w-1/2 box-border border-border border-r flex items-center justify-center flex-col"
-              onClick={() => dispatch(handleTheme("light"))}
+              onClick={() => setTheme("light")}
             >
               <div className="w-3/5 h-auto my-3 flex items-center justify-center">
                 {lightMode("")}
@@ -56,7 +55,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
             </div>
             <div
               className="w-1/2 rounded-r-lg flex flex-col items-center justify-center bg-taskHeader"
-              onClick={() => dispatch(handleTheme("dark"))}
+              onClick={() => setTheme("dark")}
             >
               <div className="w-3/5 h-auto my-3 flex items-center justify-center">
                 {darkMode(selected)}
