@@ -238,7 +238,7 @@ app.use(
   }
 );
 
-server.listen(PORT, (): void => {});
+server.listen(3000, (): void => {});
 
 module.exports = app;
 export default app;
