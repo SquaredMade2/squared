@@ -1,0 +1,8 @@
+# Define the desired author information
+DESIRED_AUTHOR_NAME="yoloOnTheBattlefield"
+DESIRED_AUTHOR_EMAIL="cristianfloreadev@gmail.com"
+
+# Amend the commit author
+GIT_COMMITTER_NAME="$DESIRED_AUTHOR_NAME" \
+GIT_COMMITTER_EMAIL="$DESIRED_AUTHOR_EMAIL" \
+git commit --amend --author="$DESIRED_AUTHOR_NAME <$DESIRED_AUTHOR_EMAIL>" --no-edit
