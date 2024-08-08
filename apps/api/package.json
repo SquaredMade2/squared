@@ -7,7 +7,7 @@
     "build": "tsc",
     "check-types": "tsc --pretty --noEmit",
     "test": "tsc && mocha ./dist/test --exit",
-    "start": "node api/index.ts",
+    "start": "tsc && node dist/index.js",
     "format:write": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
