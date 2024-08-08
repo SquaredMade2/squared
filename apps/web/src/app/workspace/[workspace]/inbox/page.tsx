@@ -1,15 +1,17 @@
-'use client';
-import '@/app/globals.css';
-import InboxList from '@/components/InboxList';
-import InboxTopMenu from '@/components/InboxTopMenu';
-import { useState } from 'react';
-import InboxContents from '@/components/InboxContents';
+"use client";
+import "@/app/globals.css";
+import InboxList from "@/components/InboxList";
+import InboxTopMenu from "@/components/InboxTopMenu";
+import { useState } from "react";
+import InboxContents from "@/components/InboxContents";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const styles = {
-  wraper:
-    'w-full flex overflow-y-auto scrollbar-thin-transparent border rounded-none sm:rounded-md',
-  backdrop: 'w-full h-full bg-gray-500 bg-opacity-40 absolute top-0 left-0 z-10 md:hidden',
-  inboxContent: 'flex-grow bg-background h-screen overflow-auto scrollbar-thin-transparent',
+  wraper: "w-full flex  border  sm:rounded",
+  backdrop:
+    "w-full h-full bg-gray-500 bg-opacity-40 absolute top-0 left-0 z-10 xl:hidden",
+  inboxContent:
+    "flex-grow bg-background h-screen overflow-auto scrollbar-thin-transparent",
 };
 
 export default function Inbox(): React.JSX.Element {
@@ -22,14 +24,19 @@ export default function Inbox(): React.JSX.Element {
   };
 
   return (
-    <div className="w-full h-screen flex bg-background overflow-hidden p-0 sm:p-1">
-      {showInboxList && <div className={styles.backdrop} onClick={closeBackdrop} />}
-      <div className={styles.wraper}>
+    <div className="w-full h-screen flex  overflow-hidden p-0 sm:p-2">
+      {showInboxList && (
+        <div className={styles.backdrop} onClick={closeBackdrop} />
+      )}
+      <ScrollArea className={styles.wraper}>
         <div className="flex flex-col w-full">
           <InboxTopMenu toggleInboxList={toggleInboxList} />
           <div className="w-full flex">
             <div className="h-screen">
-              <InboxList showInboxList={showInboxList} closeBackdrop={closeBackdrop} />
+              <InboxList
+                showInboxList={showInboxList}
+                closeBackdrop={closeBackdrop}
+              />
             </div>
 
             <div className={styles.inboxContent}>
@@ -37,7 +44,7 @@ export default function Inbox(): React.JSX.Element {
             </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

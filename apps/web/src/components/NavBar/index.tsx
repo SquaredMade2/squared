@@ -7,134 +7,197 @@ import NewIssueModal from "@/components/NewIssueModal";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
 import NavBarTeams from "@/components/NavBarTeams";
-import { NavSearchIcon, TeamIcon } from "@/components/Svg";
+import { TeamIcon } from "@/components/Svg";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "../ui/accordion";
+import IconLeftMenu from "../IconLeftMenu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserTag } from "@fortawesome/free-solid-svg-icons";
+import { faTags } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpShortWide } from "@fortawesome/free-solid-svg-icons";
+import { faProjectDiagram } from "@fortawesome/free-solid-svg-icons";
+import { faSliders } from "@fortawesome/free-solid-svg-icons";
+import DisplayPreferences from "../DisplayPreferences";
 
 const styles = {
-	header: "flex items-center justify-center w-full lg:justify-center",
-	main: "flex flex h-full justify-center bg-popover border-r   w-[296px]",
-	second: "flex flex-col gap-4 lg:pt-1.5 pt-6 items-center text-nav w-full",
-	projectTasklist: "flex flex-row items-center cursor-pointer relative w-full",
-	newIssueDiv: "flex flex-row w-full justify-around ml-2",
-	newIssueModalContainer: "absolute top-[100px] left-full",
-	newTaskButton: "pr-36 pl-2 border shadow-lg rounded-md focus:outline-none",
-	newTaskText: "text-nav",
-	searchButton:
-		"rounded-md border border-border w-10 align-center flex justify-center bg-secondary shadow-lg focus:outline-none flex flex-row items-center cursor-pointer hover:bg-popover h-10 items-center",
-	searchIconSVG: "stroke-current fill-transparent cursor-pointer h-5 w-5",
-	createWorkSpaceDiv: "items-center",
-	inviteDiv:
-		"flex flex-col gap-4 items-center pb-6 text-foreground h-full justify-end",
-	userImg: "text-xs",
-	dropdownPostion: "relative",
-	teamsWrapper: "w-full h-full left-5 mt-10 cursor-default text-foreground",
-	themeButton: "mr-3",
-	stackIconButton: "flex items-center cursor-pointer hover:bg-background",
-	stackIconSVG: "mr-2",
-	row: "w-full flex items-center my-1.5 rounded-md mr-3",
-	innerDivSpan: "text-sm m-2 text-popover-foreground font-semibold",
-	triangle: "transition-all 0.2s ease-in-out ml-1 z-30",
-	fullWidth: "w-full ml-1.5",
-	ul: "overflow-hidden",
-	searchButtonDiv: "ml-3.5",
-	mainContainer: "w-11/12 flex flex-col",
-	inboxButton:
-		"w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer",
-	hover: "bg-secondary",
-	teamRow:
-		"w-full flex items-center my-1.5 hover:bg-secondary rounded-md pl-0.5",
-	teamSVG: "mr-2 p-0.5 rounded",
-	teamButton: "flex items-center cursor-pointer",
-	listWrapper: "w-full bg-accent z-10",
+  main: "flex h-full justify-center bg-popover border-r w-[250px]",
+  newIssueModalContainer: "absolute top-[100px] left-full",
+  teamsWrapper: "w-full h-full flex flex-col cursor-default text-foreground",
+  mainContainer: "w-11/12 flex flex-col",
 };
 
 const Navbar = () => {
-	const dispatch = useAppDispatch();
-	const router = useRouter();
-	const pathname = usePathname();
-	const inboxPageChecker = pathname.includes("/inbox");
-	const { user, theme } = useAppSelector((state) => state.userSettings);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
+  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const currentYear: number = new Date().getFullYear();
 
-	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const handleClick = (): void => {
+    router.push(`/workspace/${workspace.url}/search`);
+  };
+  const checkRouteIncludes = (pathname: string, ...args: string[]): boolean => {
+    return args.some((arg) => pathname.includes(arg));
+  };
 
-	const handleClick = (): void => {
-		router.push(`/workspace/${workspace.url}/search`);
-	};
+  const allowedRoutes = checkRouteIncludes(pathname, "/team", "/tasks");
+  const hideElements = checkRouteIncludes(pathname, "/tasks");
 
-	const handleTeamClick = (team: Team): void => {
-		dispatch(setCurrentTeam(team));
-		router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
-	};
+  const handleTeamClick = (team: Team): void => {
+    dispatch(setCurrentTeam(team));
+    router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
+  };
 
-	return (
-		<div className={styles.main}>
-			<div className={styles.mainContainer}>
-				<div className={styles.second}>
-					<div className={styles.projectTasklist}>
-						<div className={styles.fullWidth}>
-							<span className={styles.dropdownPostion}>
-								<WorkSpaceDropDown />
-							</span>
-						</div>
-					</div>
-					<span className={styles.innerDivSpan}>{user?.name}</span>
-					<div className={styles.newIssueDiv}>
-						<NewIssueButton />
-						<div className={styles.searchButtonDiv}>
-							<button onClick={handleClick} type="button">
-								<span className={styles.searchButton}>
-									<span>{NavSearchIcon(styles.searchIconSVG, theme)}</span>
-								</span>
-							</button>
-						</div>
-					</div>
-				</div>
-				<div className={styles.teamsWrapper}>
-					<div
-						className={`${styles.row + styles.inboxButton} ${inboxPageChecker && styles.hover} `}
-						onClick={() => {
-							router.push(`/workspace/${workspace.url}/inbox`);
-						}}
-					>
-						<div className={`${styles.innerDivSpan}`}>Inbox</div>
-					</div>
-
-					<div className={styles.row}>
-						<span className={styles.innerDivSpan}>Your teams</span>
-					</div>
-					<Accordion type="single" collapsible>
-						{workspace?.teams.map((team: Team) => {
-							return (
-								<AccordionItem key={team._id} value={team._id}>
-									<AccordionTrigger>
-										<TeamIcon />
-										{team.name}
-									</AccordionTrigger>
-									<AccordionContent>
-										<NavBarTeams
-											id={team._id}
-											teamName={team.name}
-											onDropdownClick={() => handleTeamClick(team)}
-											teamIdentifier={team.identifier}
-										/>
-									</AccordionContent>
-								</AccordionItem>
-							);
-						})}
-					</Accordion>
-				</div>
-				<div className={styles.newIssueModalContainer}>
-					<NewIssueModal />
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex h-full">
+      <div className="w-[50px]  h-full bg-muted dark:bg-accent border-r">
+        <IconLeftMenu />
+      </div>
+      {allowedRoutes && (
+        <div className={styles.main}>
+          <div className={styles.mainContainer}>
+            <div className={styles.teamsWrapper}>
+              <div className="h-12 flex items-center">
+                <WorkSpaceDropDown />
+              </div>
+              <div>
+                <NewIssueButton />
+              </div>
+              <div>
+                <Accordion type="single" collapsible>
+                  {workspace?.teams.map((team: Team) => {
+                    return (
+                      <AccordionItem key={team._id} value={team._id}>
+                        <AccordionTrigger className="text-sm">
+                          <TeamIcon />
+                          {team.name}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <NavBarTeams
+                            id={team._id}
+                            teamName={team.name}
+                            onDropdownClick={() => handleTeamClick(team)}
+                            teamIdentifier={team.identifier}
+                          />
+                        </AccordionContent>
+                      </AccordionItem>
+                    );
+                  })}
+                </Accordion>
+                {!hideElements && (
+                  <>
+                    <Accordion type="single" collapsible>
+                      {workspace?.teams.map((team: Team) => {
+                        return (
+                          <AccordionItem key={team._id} value={team._id}>
+                            <AccordionTrigger className="text-sm">
+                              <FontAwesomeIcon
+                                className="text-green-500"
+                                icon={faUserTag}
+                              />
+                              {"Assignee"}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div> Assignee Content</div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                    <Accordion type="single" collapsible>
+                      {workspace?.teams.map((team: Team) => {
+                        return (
+                          <AccordionItem key={team._id} value={team._id}>
+                            <AccordionTrigger className="text-sm">
+                              <FontAwesomeIcon
+                                className="text-pink-500"
+                                icon={faTags}
+                              />
+                              {"Labels"}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div> Labels Content</div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                    <Accordion type="single" collapsible>
+                      {workspace?.teams.map((team: Team) => {
+                        return (
+                          <AccordionItem key={team._id} value={team._id}>
+                            <AccordionTrigger className="text-sm">
+                              <FontAwesomeIcon
+                                className="text-orange-500"
+                                icon={faArrowUpShortWide}
+                              />
+                              {"Priority"}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div>Priority Content</div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                    <Accordion type="single" collapsible>
+                      {workspace?.teams.map((team: Team) => {
+                        return (
+                          <AccordionItem key={team._id} value={team._id}>
+                            <AccordionTrigger className="text-sm">
+                              <FontAwesomeIcon
+                                className="text-blue-500"
+                                icon={faProjectDiagram}
+                              />
+                              {"Projects"}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div>Projects Content</div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                    <Accordion type="single" collapsible>
+                      {workspace?.teams.map((team: Team) => {
+                        return (
+                          <AccordionItem key={team._id} value={team._id}>
+                            <AccordionTrigger className="text-sm">
+                              <FontAwesomeIcon
+                                className="text-cyan-500"
+                                icon={faSliders}
+                              />
+                              {"Display"}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <DisplayPreferences />
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                  </>
+                )}
+              </div>
+              <div className="mt-auto mb-3 w-full text-center">
+                <p className="text-muted-foreground text-xs ">
+                  &copy; {currentYear} Squared. All rights reserved
+                </p>
+              </div>
+            </div>
+            <div className={styles.newIssueModalContainer}>
+              <NewIssueModal />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Navbar;

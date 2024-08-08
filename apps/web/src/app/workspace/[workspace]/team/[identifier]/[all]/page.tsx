@@ -1,26 +1,25 @@
 "use client";
-
+import TopNavBar from "@/components/TopNavBar";
+import ViewAllTasks from "@/components/ViewAllTasks";
+import SelectedFiltersBar from "@/components/SelectedFiltersBar/index";
+import FilterSaveForm from "@/components/FilterSaveForm";
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
 import { getTeam, getAllTasks } from "@/store/taskData/thunks";
 import { setTaskList } from "@/store/taskData";
-import TopNavBar from "@/components/TopNavBar";
-import ViewAllTasks from "@/components/ViewAllTasks";
-import SelectedFiltersBar from "@/components/SelectedFiltersBar/index";
-import FilterSaveForm from "@/components/FilterSaveForm";
 import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 
 const styles = {
-  container: `flex flex-row relative lg:w-[calc(100%-296px)] `,
-  homeBackground: `flex items-center flex-col w-screen h-full bg-background `,
+  container: `flex flex-row relative lg:w-[calc(100%-300px)] `,
+  homeBackground: `flex items-center flex-col w-screen h-full`,
   homeBackgroundWrapper: "w-full snap-x overflow-hidden relative",
-  navbarDivParent: `bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between`,
-  navBarDiv: "w-full px-2 sm:px-5",
+  navbarDivParent: ` lg:w-[calc(100vw-300px)] flex flex-col items-center justify-between`,
+  navBarDiv: "w-full px-2",
   showTaskForm: "fixed inset-0 flex justify-center items-center z-50",
   filterStatusBar: "w-full",
   filterSaveForm: "w-[98%] m-3",
@@ -142,11 +141,7 @@ export default function Home() {
   return (
     <>
       {!isLoading && !workSpaceError && (
-        <div
-          className={`${styles.container} ${
-            view === "grid" && theme === "light" ? "bg-background" : "bg-card"
-          } ${theme}`}
-        >
+        <div className={`${styles.container}`}>
           <div className={styles.homeBackground}>
             <div
               className={`${styles.homeBackgroundWrapper} ${
@@ -190,11 +185,7 @@ export default function Home() {
       )}
 
       {workSpaceError && (
-        <div
-          className={`${styles.container} ${
-            view === "grid" && theme === "light" ? "bg-background" : "bg-card"
-          } ${theme}`}
-        >
+        <div className={`${styles.container} `}>
           <div
             className={`${styles.navBarWrapper} ${
               showNavBar ? "absolute -left-full" : "absolute left-0"

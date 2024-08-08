@@ -1,18 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setShowNewIssue } from "@/store/showNewIssue";
-import {
-  backlog,
-  canceled,
-  done,
-  duplicate,
-  inProgress,
-  NewIssue,
-  todo,
-} from "@/components/Svg";
+import { NewIssue } from "@/components/Svg";
 import { setStatus } from "@/store/taskData";
 import type { RootState } from "@/store";
 import { Button } from "../ui/button";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 
 const NewIssueButton = () => {
   const dispatch = useDispatch();
@@ -20,7 +11,7 @@ const NewIssueButton = () => {
   const titleArr = { value: "Todo", id: 2 };
   const styles = {
     button:
-      "flex flex-row w-9/12 h-10 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue-600 dark:text-foreground bg-blue-400/20 dark:bg-blue-800/60",
+      "flex w-full h-12 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-foreground bg-transparent",
     blueCircle: "w-1.5 h-1.5 rounded-md bg-accent border-border ml-2",
     placeholder: "px-2 w-auto text-foreground, cursor-pointer",
     svg: " w-[20px] h-[20px] cursor-pointer",
@@ -57,9 +48,6 @@ const NewIssueButton = () => {
 
 export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
   const dispatch = useDispatch();
-  const styles = {
-    svg: " w-[20px] h-[20px] cursor-pointer",
-  };
   const { theme } = useSelector((state: RootState) => state.userSettings);
   const fillColor = () => (theme === "light" ? "#174EFF" : "white");
   const handleOpen = () => {
@@ -68,7 +56,7 @@ export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
   };
   return (
     <Button onClick={() => handleOpen()} variant={"outline"}>
-      <span>{NewIssue(styles.svg, fillColor())}</span>
+      <span>+</span>
     </Button>
   );
 };

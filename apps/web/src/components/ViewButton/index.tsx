@@ -1,40 +1,41 @@
-import React from 'react';
-
-import { useAppSelector, useAppDispatch } from '@/hooks/typeScriptReduxHooks';
-
-import { ViewGridIcon, ViewListIcon } from '@/components/Svg';
-import { setView } from '@/store/userSettings';
-
-const style = {
-  viewButton:
-    ' h-10 w-16 bg-background bg-background cursor-pointer flex justify-center items-center rounded-sm box-border hover:bg-card',
-  viewButtonActive:
-    ' h-10 w-16 bg-card cursor-pointer flex justify-center items-center rounded-sm border border-border box-border hover:bg-card',
-};
+import React from "react";
+import ButtonIcon from "../ButtonIcon";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { setView } from "@/store/userSettings";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faListUl } from "@fortawesome/free-solid-svg-icons";
+import { faTableCellsLarge } from "@fortawesome/free-solid-svg-icons";
 
 const ViewButton = () => {
   const dispatch = useAppDispatch();
   const { theme, view } = useAppSelector((state) => state.userSettings);
 
+  const switchView = () => {
+    view === "list" ? dispatch(setView("grid")) : dispatch(setView("list"));
+  };
+  const icon =
+    view !== "list" ? (
+      <FontAwesomeIcon
+        className="text-gray-600 dark:text-gray-400"
+        icon={faListUl}
+      />
+    ) : (
+      <FontAwesomeIcon
+        className="text-gray-600 dark:text-gray-400"
+        icon={faTableCellsLarge}
+      />
+    );
+
+  const tooltip = view === "list" ? "Grid View" : "List View";
+
   return (
-    <>
-      <button
-        type="button"
-        className={view === 'list' ? style.viewButtonActive : style.viewButton}
-        id="list-view"
-        onClick={() => dispatch(setView('list'))}
-      >
-        {<ViewListIcon view={view} theme={theme} />}
-      </button>
-      <button
-        type="button"
-        className={view === 'grid' ? style.viewButtonActive : style.viewButton}
-        id="grid-view"
-        onClick={() => dispatch(setView('grid'))}
-      >
-        {<ViewGridIcon />}
-      </button>
-    </>
+    <ButtonIcon
+      icon={icon}
+      handleClick={switchView}
+      tooltipLabel={tooltip}
+      labelPosition="right"
+      hoverBg="bg-card"
+    />
   );
 };
 
