@@ -18,8 +18,9 @@ const IconLeftMenu = () => {
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
   const navigateTo = (childRoute: string): void => {
-    if (checkRouteIncludes(currentRoute, "/team") && childRoute === "") return;
-    router.push(`/workspace/${workspace.url}${childRoute}`);
+    checkRouteIncludes(currentRoute, "/team") && childRoute === ""
+      ? ""
+      : router.push(`/workspace/${workspace.url}${childRoute}`);
   };
 
   const iconStyle = "w-full h-12 flex items-center ";
