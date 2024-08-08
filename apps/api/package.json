@@ -7,7 +7,7 @@
     "build": "tsc",
     "check-types": "tsc --pretty --noEmit",
     "test": "tsc && mocha ./dist/test --exit",
-    "start": "tsc && node dist/index.js",
+    "start": "node api/index.ts",
     "format:write": "biome format --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
@@ -24,7 +24,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@9.5.0",
   "dependencies": {
     "@repo/jest-presets": "workspace:*",
     "@repo/logger": "workspace:*",
