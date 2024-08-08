@@ -19,7 +19,7 @@ import teamRoutes from "./routes/teamRoutes";
 import workspaceRoutes from "./routes/workspaceRoutes";
 import filterRoutes from "./routes/pageFilterRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
-import oauthRoutes from "./routes/oauthRoutes"; // for github oauth
+import githubRoutes from "./routes/githubRoutes"; // for github integration
 import type { Socket } from "socket.io";
 // import webhookRoutes from "./routes/ghWebhookRoutes";
 // import commitsRoutes from "./routes/commitsRoutes";
@@ -206,7 +206,7 @@ app.use("/team", teamRoutes);
 app.use("/workspace", workspaceRoutes);
 app.use("/filter", filterRoutes);
 app.use("/uploads", uploadRoutes);
-app.use("/oauth", oauthRoutes);
+app.use("/github", githubRoutes);
 // app.use("/webhooks", webhookRoutes);
 // app.use("/commit", commitsRoutes);
 app.get("/ping", (_req, res) => {

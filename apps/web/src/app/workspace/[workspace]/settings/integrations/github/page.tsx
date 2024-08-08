@@ -40,16 +40,16 @@ const GithubSettings: React.FC = () => {
   };
 
   useEffect(() => {
-    const token = new URLSearchParams(window.location.search).get("token");
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
     if (token) {
-      // Handle the token as needed
-      console.log("GitHub Token:", token);
-      // For example, save it to localStorage or send it to your backend
+      console.log('Token received:', token);
+      // Handle the token here, such as storing it in local storage or using it in your application
     }
   }, []);
 
   const handleClick = (): void => {
-    window.location.href = "http://localhost:5173/oauth/github";
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user`;
   };
 
   return (
