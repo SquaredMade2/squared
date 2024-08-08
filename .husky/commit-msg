@@ -1,2 +1,15 @@
 
 npx commitlint --edit $1
+
+# Define the desired author information
+DESIRED_AUTHOR_NAME="yoloOnTheBattlefield"
+DESIRED_AUTHOR_EMAIL="cristianfloreadev@gmail.com"
+
+# Set the author information globally
+git config --global user.name "$DESIRED_AUTHOR_NAME"
+git config --global user.email "$DESIRED_AUTHOR_EMAIL"
+
+echo "Set author information globally to $DESIRED_AUTHOR_NAME <$DESIRED_AUTHOR_EMAIL>."
+
+# Allow the commit to proceed
+exit 0
