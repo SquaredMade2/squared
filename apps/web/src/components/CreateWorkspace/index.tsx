@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { isRejected } from '@reduxjs/toolkit';
 import { addWorkspace, getAllWorkspaces } from "@/store/taskData/thunks";
 import { toast } from "react-toastify";
 import { ChevronLeft } from "lucide-react";
@@ -106,8 +107,9 @@ const CreateWorkspace = ({
 		};
 
 		const createWorkspace = await dispatch(addWorkspace(workspaceData));
+		console.log(createWorkspace)
 
-		if (!createWorkspace) {
+		if (isRejected(createWorkspace)) {
 			toast.error("Workspace Url already exists.");
 		} else {
 			dispatch(getUser());

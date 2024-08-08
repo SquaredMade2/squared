@@ -113,33 +113,38 @@ export const addWorkspace = createAsyncThunk<
 			.replace(/[^a-zA-Z0-9]/g, "")
 			.slice(0, 3)
 			.toUpperCase();
-
-		const exists = await dispatch(workspaceExists(workspace.url));
-		//fix have to do better error handling here -- https://linear.app/project-tasklist/issue/PRO-736/error-handling-bug-addworkspace-and-workspaceexists
-		if (exists) {
+		// Check if the workspace already exists	
 			try {
+				const exists = await dispatch(workspaceExists(workspace.url)).unwrap();
+				console.log(exists)
+				if (exists) {
+					return rejectWithValue('A workspace with this name alreaddy exists')
+				}
 				const userData = getState().userSettings.user;
-				const { data } = await axios({
-					method: "POST",
-					url: `${process.env.NEXT_PUBLIC_SERVER}/workspace/create`,
-					data: {
+				// Create the new workspace
+				const { data } = await axios.post(
+					`${process.env.NEXT_PUBLIC_SERVER}/workspace/create`,
+					{
 						name: workspace.name,
 						url: workspace.url,
 						companySize: 10,
 						users: userData._id,
 						username: userData.name,
 					},
-				});
-				dispatch(
-					createTeam({
-						name: workspace.name,
-						identifier,
-						workspaceId: data.workspace._id,
-					}),
+					{
+						withCredentials: true,
+					}
 				);
-				await dispatch(getAllWorkspaces());
+				// Create a team for the new workspace
+				await dispatch(createTeam({
+					name: workspace.name,
+					identifier,
+					workspaceId: data.workspace._id,
+				}));
+				// Refresh the list of all workspaces
+				dispatch(getAllWorkspaces());
 
-				return data;
+				return data.workspace;
 			} catch (error) {
 				if (error instanceof AxiosError) {
 					return rejectWithValue(error.response?.data);
@@ -147,10 +152,8 @@ export const addWorkspace = createAsyncThunk<
 				if (error instanceof Error) {
 					return rejectWithValue(error.message);
 				}
-				return rejectWithValue("An unknown error occurred");
+				return rejectWithValue("An unknown error occurred ");
 			}
-		} else {
-		}
 	},
 );
 
@@ -432,23 +435,24 @@ export const workspaceExists = createAsyncThunk(
 	"taskData/workspaceExists",
 	async (url: string, { rejectWithValue }) => {
 		try {
-			const exists = await axios({
-				method: "GET",
-				url: `${process.env.NEXT_PUBLIC_SERVER}/workspace/exists`,
-				withCredentials: true,
-				params: {
-					url,
-				},
-			});
+			const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/workspace/exists`, {
+                withCredentials: true,
+                params: { url },
+            });
 
-			//fix have to do better error handling here -- https://linear.app/project-tasklist/issue/PRO-736/error-handling-bug-addworkspace-and-workspaceexists
-
-			return exists;
+			return data; 
 		} catch (error) {
-			if (error instanceof AxiosError) {
+			
+			if (axios.isAxiosError(error)) {
+				if (error.response?.status === 404) {
+					console.log('thats 404')
+					return false;
+				}
+
 				return rejectWithValue(error.response?.data);
 			}
 			if (error instanceof Error) {
+			
 				return rejectWithValue(error.message);
 			}
 			return rejectWithValue("An unknown error occurred");

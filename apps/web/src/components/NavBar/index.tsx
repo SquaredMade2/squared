@@ -61,7 +61,7 @@ const Navbar = () => {
 	const inboxPageChecker = pathname.includes("/inbox");
 	const { user, theme } = useAppSelector((state) => state.userSettings);
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-
+	
 	const handleClick = (): void => {
 		router.push(`/workspace/${workspace.url}/search`);
 	};

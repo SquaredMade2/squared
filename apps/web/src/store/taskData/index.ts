@@ -213,7 +213,6 @@ const taskData = createSlice({
 			.addCase(addWorkspace.rejected, (state, action) => {
 				state.isLoading = false;
 				console.error(action.payload);
-				toast("Failed create new workspace");
 			})
 			.addCase(getAllWorkspaces.pending, (state) => {
 				state.status = "loading";
