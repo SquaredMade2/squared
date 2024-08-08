@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { lightMode, darkMode } from "@/components/Svg";
 import type { ThemeModeTextProps } from "./ThemeModeText.interfaces";
 import { useTheme } from "next-themes";
@@ -24,8 +23,6 @@ const styles = {
 };
 
 const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
-  const dispatch = useDispatch();
-
   const { theme, setTheme } = useTheme();
   const selected =
     "border-solid border-2 border-onboardingTheme rounded";
@@ -38,7 +35,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
         menu or in the settings.
       </span>
       <div className={styles.themeContainer}>
-        {theme === "light" && (
+        {theme === "light" || theme === "system" ? (
           <>
             <div
               className={`${styles.buttonLight} ${styles.selected}`}
@@ -57,8 +54,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
               <p>Dark</p>
             </div>
           </>
-        )}
-        {theme === "dark" && (
+        ) : (
           <>
             <div
               className={styles.buttonLight}
