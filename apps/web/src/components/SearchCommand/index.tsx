@@ -28,7 +28,39 @@ const SearchCommand = ({
   const [isInputFocus, setIsInputFocus] = useState<boolean>(true);
   const commandItems = new commandSchema();
 
+  // Function to check if the object is a SearchbarItem
+  const isSearchbarItem = (
+    value: SearchbarItem | SearchbarSection | string
+  ): value is SearchbarItem => {
+    return (value as SearchbarItem).text !== undefined;
+  };
+
+  // Function to flatten the schema
+  const flattenSchema = (
+    schema: SearchbarSection | SearchbarItem | string
+  ): SearchbarItem[] => {
+    const flattened: SearchbarItem[] = [];
+
+    const recurse = (obj: SearchbarSection | SearchbarItem | string) => {
+      if (typeof obj === "string") return;
+
+      if (isSearchbarItem(obj)) {
+        flattened.push(obj);
+      } else {
+        for (const key in obj) {
+          if (typeof obj[key] === "object" && obj[key] !== null) {
+            recurse(obj[key]);
+          }
+        }
+      }
+    };
+    recurse(schema);
+    return flattened;
+  };
+
   useEffect(() => {
+    const flattenedSchema = flattenSchema(commandItems.getSchema());
+
     const down = (e: KeyboardEvent): void => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -39,75 +71,32 @@ const SearchCommand = ({
       }
       if (!isSearchCommand || isInputFocus) return;
 
-      if (e.key.toLowerCase() === "c" && lastKey === "shift" && e.ctrlKey) {
-        const item = commandItems.getSchema()["Copy current page URL"];
-        if (isSearchbarItem(item)) {
+      for (const item of flattenedSchema) {
+        const shortcut = item.shortcut.map((key) => key.toLowerCase());
+        const pressedKeys: string[] = [];
+
+        if (e.ctrlKey) pressedKeys.push("ctrl");
+        if (e.shiftKey) pressedKeys.push("shift");
+        if (e.altKey) pressedKeys.push("alt");
+        if (e.metaKey) pressedKeys.push("ctrl");
+
+        pressedKeys.push(e.key.toLowerCase());
+
+        if (JSON.stringify(pressedKeys) === JSON.stringify(shortcut)) {
           item.function();
+          setIsSearchCommand(false);
+          return;
         }
-        setIsSearchCommand(false);
-        return;
-      }
-      if (e.altKey && e.shiftKey && e.key === "Œ") {
-        // @ts-ignore comment
-        commandItems.getSchema().Account.logOut.function();
-        setIsSearchCommand(false);
-        return;
-      }
-      if (e.key.toLowerCase() === "c") {
-        // @ts-ignore comment
-        commandItems.getSchema().Issue.createNewIssue.function();
-        setIsSearchCommand(false);
-        return;
-      }
-      if (lastKey === "g" && e.key.toLowerCase() === "i") {
-        const item = commandItems.getSchema()["Go to inbox"];
-        if (isSearchbarItem(item)) {
-          item.function();
-        }
-        setIsSearchCommand(false);
-        return;
-      }
-      if (lastKey === "g" && e.key.toLowerCase() === "a") {
-        const item = commandItems.getSchema()["Go to active issues"];
-        if (isSearchbarItem(item)) {
-          item.function();
-        }
-        setIsSearchCommand(false);
-        return;
       }
 
-      if (lastKey === "g" && e.key.toLowerCase() === "b") {
-        const item = commandItems.getSchema()["Go to backlog"];
-        if (isSearchbarItem(item)) {
-          item.function();
-        }
-        setIsSearchCommand(false);
-        return;
-      }
-
-      if (lastKey === "g" && e.key.toLowerCase() === "e") {
-        const item = commandItems.getSchema()["Go to all issues"];
-        if (isSearchbarItem(item)) {
-          item.function();
-        }
-        setIsSearchCommand(false);
-        return;
-      }
-      if (lastKey === "g" && e.key.toLowerCase() === "u") {
-        const item = commandItems.getSchema()["Go to views"];
-        if (isSearchbarItem(item)) {
-          item.function();
-        }
-        setIsSearchCommand(false);
-        return;
-      }
       setLastKey(e.key.toLowerCase());
     };
+
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [isSearchCommand, isInputFocus, lastKey]);
+  }, [isSearchCommand, isInputFocus, lastKey, commandItems]);
 
-  // console.log(commandItems.getSchema());
+  // Render the CommandDialog and its children
   return (
     <CommandDialog open={isSearchCommand} onOpenChange={setIsSearchCommand}>
       <VisuallyHidden>
@@ -153,12 +142,7 @@ const SearchCommand = ({
 
 export default SearchCommand;
 
-const isSearchbarItem = (
-  value: SearchbarItem | SearchbarSection | string
-): value is SearchbarItem => {
-  return (value as SearchbarItem).text !== undefined;
-};
-
+// Helper function to render a command item
 const commandItem = (
   value: SearchbarItem,
   setIsSearchCommand: (open: boolean) => void,
