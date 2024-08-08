@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import DisplayPreferences from "../DisplayPreferences";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { usePathname, useRouter } from "next/navigation";
 import { setCurrentTeam } from "@/store/taskData";
@@ -22,7 +23,7 @@ import { faTags } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpShortWide } from "@fortawesome/free-solid-svg-icons";
 import { faProjectDiagram } from "@fortawesome/free-solid-svg-icons";
 import { faSliders } from "@fortawesome/free-solid-svg-icons";
-import DisplayPreferences from "../DisplayPreferences";
+import { checkRouteIncludes } from "@/utils/reusables";
 
 const styles = {
   main: "flex h-full justify-center bg-popover border-r w-[250px]",
@@ -37,13 +38,6 @@ const Navbar = () => {
   const pathname = usePathname();
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
   const currentYear: number = new Date().getFullYear();
-
-  const handleClick = (): void => {
-    router.push(`/workspace/${workspace.url}/search`);
-  };
-  const checkRouteIncludes = (pathname: string, ...args: string[]): boolean => {
-    return args.some((arg) => pathname.includes(arg));
-  };
 
   const allowedRoutes = checkRouteIncludes(pathname, "/team", "/tasks");
   const hideElements = checkRouteIncludes(pathname, "/tasks");
