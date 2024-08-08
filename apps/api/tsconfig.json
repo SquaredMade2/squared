@@ -13,7 +13,7 @@
     "sourceMap": true,
     "inlineSources": true,
     "sourceRoot": "/",
-    "importHelpers": true
+    "importHelpers": true,
   },
   "include": ["api"],
   "exclude": ["node_modules", "api/test"]
