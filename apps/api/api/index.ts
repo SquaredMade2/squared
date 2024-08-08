@@ -2,12 +2,7 @@ import "dotenv/config";
 import "tslib";
 import * as Sentry from "@sentry/node";
 import express from "express";
-import type {
-  Request,
-  Response,
-  NextFunction,
-  Express,
-} from "express";
+import type { Request, Response, NextFunction, Express } from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -78,7 +73,7 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: ["./src/**/*.ts"],
+  apis: ["./api/**/*.ts"],
 };
 const swaggerDocument = swaggerjsdoc(options);
 
@@ -148,35 +143,17 @@ io.on("connection", (socket: Socket) => {
   });
   socket.on(
     "user_mentioned",
-    (
-      mentionedUser: string[],
-      taskId: string,
-      mentionedBy: string
-    ) => {
-      userMentionedOnTask(
-        userSocketId,
-        io,
-        mentionedUser,
-        taskId,
-        mentionedBy
-      );
+    (mentionedUser: string[], taskId: string, mentionedBy: string) => {
+      userMentionedOnTask(userSocketId, io, mentionedUser, taskId, mentionedBy);
     }
   );
-  socket.on(
-    "remove_notification",
-    (taskId: string, userId: string) => {
-      removedNotification(userSocketId, io, taskId, userId);
-    }
-  );
+  socket.on("remove_notification", (taskId: string, userId: string) => {
+    removedNotification(userSocketId, io, taskId, userId);
+  });
   socket.on(
     "sending_notificationId",
     (notificationIds: string | string[], userId: string) => {
-      updateNotificationToRead(
-        userSocketId,
-        notificationIds,
-        userId,
-        io
-      );
+      updateNotificationToRead(userSocketId, notificationIds, userId, io);
     }
   );
 });
@@ -186,11 +163,7 @@ app.use(Sentry.Handlers.errorHandler());
 // middlewere
 app.use(cors(corsOptions));
 
-app.use(
-  "/api-docs",
-  swaggerUI.serve,
-  swaggerUI.setup(swaggerDocument)
-);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // middleware
 app.use(express.json());
@@ -212,12 +185,9 @@ app.get("/ping", (_req, res) => {
 });
 
 // if url path does not match with route path
-app.all(
-  "*",
-  (req: Request, res: Response, next: NextFunction): void => {
-    next(new AppError("$$$ Page Not Found $$$", 404));
-  }
-);
+app.all("*", (req: Request, res: Response, next: NextFunction): void => {
+  next(new AppError("$$$ Page Not Found $$$", 404));
+});
 
 // default error
 app.use(
