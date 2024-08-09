@@ -211,9 +211,6 @@ app.get("/ping", (_req, res) => {
   res.send("pong");
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello World')
-})
 
 // if url path does not match with route path
 app.all(
@@ -241,5 +238,5 @@ app.use(
 server.listen(PORT, (): void => {});
 
 module.exports = app;
-// export default app;
+export default app;
 
