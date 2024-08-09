@@ -1,3 +1,3 @@
-const app = require("../dist/index.js");
+const app = require("../src/index.ts");
 
 module.exports = app;
