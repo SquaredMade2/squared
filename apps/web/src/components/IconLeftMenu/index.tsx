@@ -10,7 +10,6 @@ import { faInbox } from "@fortawesome/free-solid-svg-icons";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useRouter, usePathname } from "next/navigation";
-import { checkRouteIncludes } from "@/utils/reusables";
 
 const IconLeftMenu = () => {
   const router = useRouter();
@@ -18,7 +17,7 @@ const IconLeftMenu = () => {
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
   const navigateTo = (childRoute: string): void => {
-    checkRouteIncludes(currentRoute, "/team") && childRoute === ""
+    currentRoute.includes("/all") && childRoute === ""
       ? ""
       : router.push(`/workspace/${workspace.url}${childRoute}`);
   };

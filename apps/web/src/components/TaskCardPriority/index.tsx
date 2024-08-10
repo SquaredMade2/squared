@@ -1,40 +1,41 @@
-import React, { useState, useEffect, type ReactNode } from 'react';
+import React, { useState, useEffect, type ReactNode } from "react";
 import {
   nullPriority,
   lowPriority,
   mediumPriority,
   highPriority,
   urgentPriority,
-} from '@/components/Svg';
-import type { TaskCardPriorityProps } from './TaskCardPriority.interfaces';
-import { useAppSelector } from '@/hooks/typeScriptReduxHooks';
+} from "@/components/Svg";
+import type { TaskCardPriorityProps } from "./TaskCardPriority.interfaces";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useTheme } from "next-themes";
 
 const styles = {
   mainBorder:
-    'border border-border mb-2 mt-1 w-6 h-5 flex items-center justify-center p-0.5 rounded',
-  main: 'w-5 flex items-center justify-center p-0.5 rounded',
+    "border border-border mb-2 mt-1 w-6 h-5 flex items-center justify-center p-0.5 rounded",
+  main: "w-5 flex items-center justify-center p-0.5 rounded",
 };
 
 const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
   const [svg, setSvg] = useState<ReactNode>();
-  const { theme } = useAppSelector((state) => state.userSettings);
-  const iconGray = theme === 'dark' ? '#DCD8FE' : '#000';
+  const { theme } = useTheme();
+  const iconGray = theme === "dark" ? "#DCD8FE" : "#000";
 
   useEffect(() => {
     switch (task.priority) {
       case null:
         setSvg(nullPriority({}));
         break;
-      case 'Low':
+      case "Low":
         setSvg(lowPriority(iconGray));
         break;
-      case 'Medium':
+      case "Medium":
         setSvg(mediumPriority(iconGray));
         break;
-      case 'High':
+      case "High":
         setSvg(highPriority(iconGray));
         break;
-      case 'Urgent':
+      case "Urgent":
         setSvg(urgentPriority(iconGray));
         break;
       default:
