@@ -31,8 +31,6 @@ const initialState: TaskInitialState = {
   isError: false,
 };
 
-const { toast } = useToast();
-
 const singleTask = createSlice({
   name: "task",
   initialState: initialState,
@@ -57,13 +55,9 @@ const singleTask = createSlice({
         }
       )
       .addCase(getSingleTask.rejected, (state, action) => {
-        console.error(action.payload);
-        toast({
-          title: "could not get task",
-          variant: "destructive",
-        });
         state.isLoading = false;
         state.isError = true;
+        throw new Error(action.error.message);
       });
   },
 });

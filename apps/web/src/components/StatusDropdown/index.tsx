@@ -5,11 +5,15 @@ import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { statusOptions } from "@/constants/designations";
 import { setStatus } from "@/store/taskData";
 import { getSingleTask } from "@/store/task/thunks";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/hooks/typeScriptReduxHooks";
 import type { StatusDropdownProps } from "./StatusDropdown.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 const StatusDropdown = ({
   handleButtonClick,
@@ -18,9 +22,14 @@ const StatusDropdown = ({
   location,
 }: StatusDropdownProps) => {
   const dispatch = useAppDispatch();
-  const taskId = useAppSelector((state) => state.singleTask?.data?._id);
+  const { toast } = useToast();
+  const taskId = useAppSelector(
+    (state) => state.singleTask?.data?._id
+  );
 
-  const newIssueStatus = useAppSelector((state) => state.taskData.status);
+  const newIssueStatus = useAppSelector(
+    (state) => state.taskData.status
+  );
   const sidebarStatus = useAppSelector(
     (state) => state.singleTask?.data?.status
   );
@@ -64,7 +73,12 @@ const StatusDropdown = ({
           }
         );
         dispatch(getSingleTask(taskId as string));
-      } catch (err) {}
+      } catch (err) {
+        toast({
+          title: "Error updating status",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -118,11 +132,15 @@ const StatusDropdown = ({
                     className="flex flex-row text-center justify-between hover:bg-popoverHover rounded-md py-1 px-2"
                   >
                     <div className="flex flex-row items-center">
-                      <div className="w-4 h-4 mx-2">{showIcon(name)}</div>
+                      <div className="w-4 h-4 mx-2">
+                        {showIcon(name)}
+                      </div>
                       <span>{name}</span>
                     </div>
                     <div>
-                      {isChecked && <Check className="cursor-pointer size-5" />}
+                      {isChecked && (
+                        <Check className="cursor-pointer size-5" />
+                      )}
                     </div>
                   </Combobox.Option>
                 );

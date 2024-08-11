@@ -225,7 +225,7 @@ export default function TeamsSetting() {
                     <input
                       type="text"
                       aria-label="Team"
-                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded pl-0.5 xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
+                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
                       onChange={(e) => setTeamName(e.target.value)}
                       value={teamName}
                     />
@@ -241,7 +241,7 @@ export default function TeamsSetting() {
                     <input
                       type="text"
                       maxLength={5}
-                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded pl-0.5 xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
+                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
                       onChange={(e) =>
                         identifierInputFilter(e.target.value)
                       }

@@ -7,8 +7,6 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const GITHUB_CLIENT_SECRET =
   process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET;
 
-const { toast } = useToast();
-
 export const updateProfile = createAsyncThunk(
   "userSettings/updateProfile",
   async (dispatchedData: {
@@ -81,11 +79,8 @@ export const getListOfUsers = async (id: string) => {
       },
     });
     return data;
-  } catch (err) {
-    toast({
-      title: "Could not get list of users",
-      variant: "destructive",
-    });
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
   }
 };
 
@@ -101,11 +96,7 @@ export const verifyUser = async (token: string) => {
     });
     return data;
   } catch (error) {
-    console.error(error);
-    toast({
-      title: "Could not find user to verify",
-      variant: "destructive",
-    });
+    console.error(error instanceof Error ? error.message : error);
   }
 };
 

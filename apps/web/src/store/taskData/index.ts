@@ -92,8 +92,6 @@ const initialState: TaskDataState = {
   currentCommits: [],
 };
 
-const { toast } = useToast();
-
 const taskData = createSlice({
   name: "taskData",
   initialState: initialState,
@@ -176,10 +174,6 @@ const taskData = createSlice({
       .addCase(createNewTask.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "could not get task",
-          variant: "destructive",
-        });
       })
       .addCase(deleteAllTasks.pending, (state) => {
         state.isLoading = true;
@@ -191,11 +185,6 @@ const taskData = createSlice({
       .addCase(deleteAllTasks.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title:
-            "We tried deleting all the tasks, but we were not lucky",
-          variant: "destructive",
-        });
       })
       .addCase(getAllTasks.pending, (state) => {
         state.isLoading = true;
@@ -210,10 +199,6 @@ const taskData = createSlice({
       .addCase(getAllTasks.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "Failed to get all tasks.",
-          variant: "destructive",
-        });
       })
       .addCase(addWorkspace.pending, (state) => {
         state.isLoading = true;
@@ -228,10 +213,6 @@ const taskData = createSlice({
       .addCase(addWorkspace.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "Failed create new workspace",
-          variant: "destructive",
-        });
       })
       .addCase(getAllWorkspaces.pending, (state) => {
         state.status = "loading";
@@ -249,10 +230,6 @@ const taskData = createSlice({
         state.status = "failed";
         state.isLoading = false;
         console.error(action);
-        toast({
-          title: "Failed to get all workspaces.",
-          variant: "destructive",
-        });
       })
       .addCase(getTeam.pending, (state) => {
         state.isLoading = true;
@@ -263,10 +240,6 @@ const taskData = createSlice({
       .addCase(getTeam.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "Could not find team",
-          variant: "destructive",
-        });
       })
       .addCase(incrementCreatedIssues.pending, (state) => {
         state.isLoading = true;
@@ -278,10 +251,6 @@ const taskData = createSlice({
       .addCase(incrementCreatedIssues.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "Failed to increment create issues",
-          variant: "destructive",
-        });
       })
       .addCase(getWorkspace.pending, (state) => {
         state.isLoading = true;
@@ -292,10 +261,6 @@ const taskData = createSlice({
       .addCase(getWorkspace.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "failed to get workspace",
-          variant: "destructive",
-        });
       })
       .addCase(deleteWorkspace.pending, (state) => {
         state.isLoading = true;
@@ -306,10 +271,6 @@ const taskData = createSlice({
       .addCase(deleteWorkspace.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "failed to delete workspace",
-          variant: "destructive",
-        });
       })
       .addCase(deleteTeam.pending, (state) => {
         state.isLoading = true;
@@ -329,10 +290,6 @@ const taskData = createSlice({
       .addCase(deleteTeam.rejected, (state, action) => {
         state.isLoading = false;
         console.error(action.payload);
-        toast({
-          title: "failed to delete Team",
-          variant: "destructive",
-        });
       })
       .addCase(teamExists.pending, (state) => {
         state.isLoading = true;
@@ -463,9 +420,6 @@ const taskData = createSlice({
         (state, action: PayloadAction<GithubRepo>) => {
           state.isLoading = false;
           state.currentWorkspace.githubRepoInfo = action.payload;
-          toast({
-            title: `Successfuly Set this ${state.currentWorkspace.githubRepoInfo.repoName} to ${state.currentWorkspace.name}`,
-          });
         }
       )
       .addCase(setRepo.rejected, (state, action) => {

@@ -1,9 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 
 function AcceptWorkspaceInvitation() {
   const router = useRouter();
