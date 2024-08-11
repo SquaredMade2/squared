@@ -8,6 +8,7 @@ declare global {
 			PORT: string;
 			SEED_PASSWORD: string;
 			SENTRY_AUTH_TOKEN: string;
+			MONGO_URL_TESTING: string;
 		}
 	}
 }
