@@ -3,7 +3,7 @@ import type { PurpleToggleProps } from "./interfaces.PurpleToggle";
 const PurpleToggle = ({ active, handleClick }: PurpleToggleProps) => {
   return (
     <div
-      className={`${active ? "h-5 w-8 bg-purpleButton rounded-xl relative flex items-center cursor-pointer transition-colors duration-200" : "h-5 w-8 bg-gray-500 rounded-xl relative flex items-center cursor-pointer transition-colors duration-200"}`}
+      className={`${active ? "h-5 w-8 bg-cyan-500 rounded-xl relative flex items-center cursor-pointer transition-colors duration-200" : "h-5 w-8 bg-pink-500 rounded-xl relative flex items-center cursor-pointer transition-colors duration-200"}`}
       onClick={handleClick}
     >
       <div

@@ -65,7 +65,7 @@ const WorkSpaceDropDown = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center justify-between w-full text-muted-foreground mt-2">
+      <DropdownMenuTrigger className="flex items-center justify-between w-full text-muted-foreground">
         <div className="flex gap-2 items-center ml-2">
           <WorkspaceInitials
             workspaceName={currentWorkspace.name}
@@ -78,7 +78,7 @@ const WorkSpaceDropDown = () => {
           <ProfileImage profileName={user.name} location="dropdownMenu" />
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[265px]">
+      <DropdownMenuContent className="w-[240px]">
         {allWorkspaces.map((workspace, index) => (
           <Link
             href={`/workspace/${workspace.url}`}
@@ -101,11 +101,7 @@ const WorkSpaceDropDown = () => {
           </Link>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => router.push(workspaceSettings("workspace"))}
-        >
-          Workspace Settings
-        </DropdownMenuItem>
+
         <DropdownMenuItem
           onClick={() => router.push(workspaceSettings("members"))}
         >
@@ -114,8 +110,6 @@ const WorkSpaceDropDown = () => {
         <DropdownMenuItem onClick={() => router.push("/join")}>
           Create or join a workspace
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

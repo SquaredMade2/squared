@@ -6,9 +6,17 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useContext, useEffect } from "react";
 import { getNotifications, newNotification } from "@/store/notifications";
 import type { NotificationProps } from "@/store/notifications";
+import { ScrollArea } from "../ui/scroll-area";
 type Props = {
   showInboxList: boolean;
   closeBackdrop: () => void;
+};
+
+const styles = {
+  notificationsList: "flex flex-col gap-2 justify-center",
+
+  mailList:
+    "w-auto h-full absolute z-10 bg-background xl:static transition-all duration-300 ease-in-out",
 };
 
 const InboxList: React.FC<Props> = ({ showInboxList, closeBackdrop }) => {
@@ -50,21 +58,23 @@ const InboxList: React.FC<Props> = ({ showInboxList, closeBackdrop }) => {
 
   return (
     <div
-      className={`${"w-72 h-full absolute z-10 bg-background md:static xl:w-80 transition-all duration-300 ease-in-out"} ${showInboxList ? "left-0 top-0" : "-left-72"}`}
+      className={`${styles.mailList} ${showInboxList ? "left-0 top-0" : "-left-[100%]"}`}
     >
-      <div className="flex flex-col gap-2 scrollbar-thin-transparent h-full overflow-y-auto py-2">
-        {notifications?.map((obj: NotificationProps) => (
-          <InboxItem
-            key={obj._id}
-            notificationId={obj._id}
-            id={obj.task[0]._id}
-            title={obj.task[0].title}
-            date={obj.createdAt}
-            read={obj.read}
-            closeBackdrop={closeBackdrop}
-          />
-        ))}
-      </div>
+      <ScrollArea className="h-full w-full p-2 hover:pr-2.5 transition-all duration-500 ease-in-out">
+        <div className={styles.notificationsList}>
+          {notifications?.map((obj: NotificationProps) => (
+            <InboxItem
+              key={obj._id}
+              notificationId={obj._id}
+              id={obj.task[0]._id}
+              title={obj.task[0].title}
+              date={obj.createdAt}
+              read={obj.read}
+              closeBackdrop={closeBackdrop}
+            />
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 };

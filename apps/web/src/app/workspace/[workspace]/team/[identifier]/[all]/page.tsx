@@ -125,17 +125,17 @@ export default function Home() {
     <>
       {!isLoading && !workSpaceError && (
         <div
-          className={`flex flex-row relative lg:w-[calc(100%-296px)] ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
+          className={`flex flex-row relative lg:w-[calc(100%-300px)] ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
         >
           <div className="flex items-center flex-col w-screen h-full bg-background">
             <div
               className={`w-full snap-x overflow-hidden relative ${view === "grid" ? "h-[calc(100vh)]" : "h-[calc(100vh)]"}`}
             >
               <div
-                className={`bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between`}
+                className={`lg:w-[calc(100wv-300px)] flex flex-col items-center justify-between`}
               >
                 {!showFilterSaveForm && (
-                  <div className="w-full px-2 sm:px-5">
+                  <div className="w-full px-2 ">
                     <TopNavBar
                       showNavBar={showNavBar}
                       handleFilter={handleFilter}
@@ -171,7 +171,7 @@ export default function Home() {
 
       {workSpaceError && (
         <div
-          className={`flex flex-row relative lg:w-[calc(100%-296px)] ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
+          className={`flex flex-row relative lg:w-[calc(100%-300px)] ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
         >
           <div
             className={`h-screen lg:left-0 lg:relative z-40 transition-all duration-300 ease-in-out ${showNavBar ? "absolute -left-full" : "absolute left-0"}`}
@@ -180,7 +180,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center flex-col w-screen h-full bg-background">
-            <div className="bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between">
+            <div className="lg:w-[calc(100wv-300px)] flex flex-col items-center justify-between">
               {!showFilterSaveForm && (
                 <div className="w-full px-2 sm:px-5">
                   <TopNavBar

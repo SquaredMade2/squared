@@ -1,12 +1,12 @@
 import React, { useState, useEffect, type ReactNode } from "react";
 import { high, medium, low } from "@/components/Svg";
 import type { TaskCardPriorityProps } from "./TaskCardPriority.interfaces";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { CircleAlert, Ellipsis } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
   const [svg, setSvg] = useState<ReactNode>();
-  const { theme } = useAppSelector((state) => state.userSettings);
+  const { theme } = useTheme();
   const iconGray = theme === "dark" ? "#DCD8FE" : "#000";
 
   useEffect(() => {

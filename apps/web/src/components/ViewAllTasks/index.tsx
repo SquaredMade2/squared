@@ -128,10 +128,10 @@ const ViewAllTasks = ({
           />
           <DragDropContext onDragEnd={handleDragEnd}>
             <div
-              className={` px-2 sm:px-5  ${
+              className={` ${
                 view === "list"
-                  ? "h-[85%] sm:h-[93%] flex items-center justify-center w-full"
-                  : " lg:w-[calc(100vw-296px)]"
+                  ? "h-[85%] sm:h-[93%] flex items-center justify-center w-full px-2 pb-2"
+                  : " lg:w-[calc(100vw-300px)] px-2"
               }`}
             >
               <ScrollArea className="w-full h-full">
@@ -139,7 +139,7 @@ const ViewAllTasks = ({
                   className={
                     view === "list"
                       ? "flex flex-col hover:pr-3 transition-all duration-500 ease-in-out"
-                      : "flex gap-2  snap-start"
+                      : "flex snap-start"
                   }
                 >
                   {filteredColumns()}

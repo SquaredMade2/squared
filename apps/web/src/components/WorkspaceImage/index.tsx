@@ -32,11 +32,11 @@ const WorkspaceInitials = ({
   const getStyle = () => {
     switch (location) {
       case "workspaceList":
-        return "flex items-center justify-center w-5 h-5 text-xxs rounded mr-2 text-foreground font-normal";
+        return "flex items-center justify-center w-5 h-5 text-xxs rounded mr-2 text-white font-normal";
       case "workspaceMenu":
-        return "flex items-center justify-center w-5 h-5 text-xxs rounded mr-2 text-foreground";
+        return "flex items-center justify-center w-5 h-5 text-xxs rounded mr-2 text-white";
       case "workspaceSettings":
-        return "flex  items-center justify-center w-16 h-16  mb-10 mt-5 text-xl rounded text-foreground";
+        return "flex  items-center justify-center w-16 h-16  mb-10 mt-5 text-xl rounded text-white";
       default:
         return "";
     }

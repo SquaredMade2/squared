@@ -249,14 +249,6 @@ const TopNavBar = ({
               />
             )}
           </div>
-          <div className="flex gap-6 flex-none justify-start items-center">
-            <div className="bg-card h-full w-32 mr-5 flex justify-center items-center rounded-sm xs:hidden sm:hidden md:flex">
-              <ViewButton />
-            </div>
-
-            <TopNavBarDisplay />
-          </div>
-          <ProjectDataWidget />
         </div>
       </nav>
 

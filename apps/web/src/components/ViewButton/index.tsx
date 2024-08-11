@@ -1,73 +1,40 @@
 import React from "react";
+import ButtonIcon from "../ButtonIcon";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { setView } from "@/store/userSettings";
-import { LayoutPanelLeft, List } from "lucide-react";
-
-const setFillColorList = (view: string, theme: string) => {
-  switch (true) {
-    case view === "list" && theme === "dark":
-      return "text-[#EEEFFC]";
-    case view !== "list" && theme === "dark":
-      return "text-[#858699]";
-    case view === "list" && theme === "light":
-      return "text-[#282A30]";
-    case view !== "list" && theme === "light":
-      return "text-[#858699]";
-    default:
-      return;
-  }
-};
-
-const setFillColorLayoutPanelLeft = (view: string, theme: string) => {
-  switch (true) {
-    case view === "grid" && theme === "dark":
-      return "text-[#EEEFFC]";
-    case view !== "grid" && theme === "dark":
-      return "text-[#858699]";
-    case view === "grid" && theme === "light":
-      return "text-[#282A30]";
-    case view !== "grid" && theme === "light":
-      return "text-[#858699]";
-    default:
-      return;
-  }
-};
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faListUl } from "@fortawesome/free-solid-svg-icons";
+import { faTableCellsLarge } from "@fortawesome/free-solid-svg-icons";
 
 const ViewButton = () => {
   const dispatch = useAppDispatch();
   const { theme, view } = useAppSelector((state) => state.userSettings);
+  const switchView = () => {
+    view === "list" ? dispatch(setView("grid")) : dispatch(setView("list"));
+  };
+  const icon =
+    view !== "list" ? (
+      <FontAwesomeIcon
+        className="text-gray-600 dark:text-gray-400"
+        icon={faListUl}
+      />
+    ) : (
+      <FontAwesomeIcon
+        className="text-gray-600 dark:text-gray-400"
+        icon={faTableCellsLarge}
+      />
+    );
+
+  const tooltip = view === "list" ? "Grid View" : "List View";
 
   return (
-    <>
-      <button
-        type="button"
-        className={
-          view === "list"
-            ? " h-10 w-16 bg-card cursor-pointer flex justify-center items-center rounded-sm border border-border box-border hover:bg-card"
-            : " h-10 w-16 bg-background bg-background cursor-pointer flex justify-center items-center rounded-sm box-border hover:bg-card"
-        }
-        id="list-view"
-        onClick={() => dispatch(setView("list"))}
-        title="Title"
-      >
-        <List className={`${setFillColorList(view, theme)} size-5`} />
-      </button>
-      <button
-        type="button"
-        className={
-          view === "grid"
-            ? " h-10 w-16 bg-card cursor-pointer flex justify-center items-center rounded-sm border border-border box-border hover:bg-card"
-            : " h-10 w-16 bg-background bg-background cursor-pointer flex justify-center items-center rounded-sm box-border hover:bg-card"
-        }
-        id="grid-view"
-        onClick={() => dispatch(setView("grid"))}
-        title="Title"
-      >
-        <LayoutPanelLeft
-          className={`${setFillColorLayoutPanelLeft(view, theme)} size-5`}
-        />
-      </button>
-    </>
+    <ButtonIcon
+      icon={icon}
+      handleClick={switchView}
+      tooltipLabel={tooltip}
+      labelPosition="right"
+      hoverBg="bg-card"
+    />
   );
 };
 
