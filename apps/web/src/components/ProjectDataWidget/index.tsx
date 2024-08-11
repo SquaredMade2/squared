@@ -87,7 +87,6 @@ export const ProjectDataWidget = () => {
               </button>
             </div>
           </div>
-
           <div className="flex flex-col m-3 items-center justify-center">
             <ProjectDataWidgetDropdowns
               assigneesData={assigneesData}

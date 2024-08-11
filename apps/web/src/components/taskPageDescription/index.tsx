@@ -30,7 +30,7 @@ const TaskPageDescription = () => {
     updateTaskValue,
   } = useLogTaskEvent();
   const [isFocused, setIsFocused] = useState(false);
-
+  
   const listOfMembers = useSelector(
     (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
   );

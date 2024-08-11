@@ -37,7 +37,6 @@ const WorkSpaceDropDown = () => {
   const workspaceSettings = (workspaceSettingsOption: string) => {
     return `/workspace/${workspaceUrl}/settings/${workspaceSettingsOption}`;
   };
-
   const signOutHandler = async () => {
     await signOut({ redirect: false }).then(() => {
       router.push("/login");

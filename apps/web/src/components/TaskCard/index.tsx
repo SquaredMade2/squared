@@ -31,7 +31,6 @@ const TaskCard = ({
 }: TaskCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
   const uniqueTasks: Task[] = [];
 
   const { showDateTime, showPriority, showLabels } = useSelector(
@@ -117,7 +116,6 @@ const TaskCard = ({
       document.removeEventListener("mousedown", handleClickAway);
     };
   }, []);
-
   return (
     <>
       {view === "list" &&
@@ -289,7 +287,6 @@ const TaskCard = ({
                 />
               )}
             </div>
-
             <div className="relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent">
               <div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
                 <div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
@@ -317,7 +314,6 @@ const TaskCard = ({
                     location={location}
                   />
                 </div>
-
                 <div className="flex justify-end col-span-4 items-center lg:pr-5">
                   <div className="flex justify-end col-span-3 items-center pl-3.5">
                     {user && (

@@ -40,7 +40,7 @@ const NewIssueModal = () => {
     (state: RootState) => state.showNewIssue.isOpen
   );
   const authorId = useSelector(
-    (state: RootState) => state.userSettings.user._id
+    (state: RootState) => state.userSettings.user?._id
   );
 
   const {

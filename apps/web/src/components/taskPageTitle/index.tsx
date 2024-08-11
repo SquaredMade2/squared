@@ -69,7 +69,6 @@ const TaskPageTitle = () => {
       dispatch(updateTitle(transformedTitleInput, taskId));
     }
   };
-
   return (
     <form className="flex flex-col" onSubmit={handleSubmit}>
       <MentionInput
