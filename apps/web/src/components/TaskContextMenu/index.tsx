@@ -14,23 +14,29 @@ import PrioritySubContextMenu from "../PrioritySubContextMenu";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { TaskContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import LabelSubContextMenu from "../LabelSubContextMenu";
-import DateDropdown from "../DateDropdown";
-import { deleteTask } from "@/store/taskData/thunks";
-import { Star, Trash } from "lucide-react";
+import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
+import { 
+    // Calendar, Star, // Not used yet
+    Trash } from "lucide-react";
+import DateSubContextMenu from "../DateSubContextMenu";
+import Link from "next/link";
 
-const TaskContextMenu: React.FC<TaskContextMenuProps> = ({ task }) => {
+const TaskContextMenu: React.FC<TaskContextMenuProps> = ({ task, setIsCopied, copyToClipboard }) => {
 	const dispatch = useAppDispatch();
 
 	const [showDropdown, setShowDropdown] = useState(false);
 
 	const theme = useAppSelector((state) => state.userSettings.theme);
+    const currentTeam = useAppSelector((state) => state.taskData.currentTeam)
 	const styles = {
 		contentWrapper: ``,
 		centerIcon: "mr-2",
 	};
 
 	const deleteCurrentTask = async () => {
-		await dispatch(deleteTask(task._id));
+        console.log('done in deletecurrenttask')
+		await dispatch(deleteTask(task._id))
+        await dispatch(getAllTasks(currentTeam))
 	};
 
 	const handleDateToggle = () => {
@@ -51,42 +57,49 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({ task }) => {
 
 			<LabelSubContextMenu task={task} />
 
-			<ContextMenuItem onClick={handleDateToggle}>
+			{/* <ContextMenuItem onClick={handleDateToggle}>
+                <div className={styles.centerIcon}>
+                    <Calendar className="cursor-pointer size-4" />
+                </div>
 				Set due date...
-			</ContextMenuItem>
-			{showDropdown && (
+			</ContextMenuItem> */}
+            
+            <DateSubContextMenu task={task} />
+			{/* {showDropdown && (
 				<DateDropdown
 					location={""}
 					handleButtonClick={handleDateToggle}
 					handleClickAway={handleDateClickAway}
 				/>
-			)}
+			)} */}
 			<ContextMenuItem>Rename...</ContextMenuItem>
 
 			<ContextMenuSeparator />
-
-			<ContextMenuItem>Move</ContextMenuItem>
-
-			<ContextMenuSeparator />
-
+            {/*  No Subscribe feature yet
 			<ContextMenuItem>
 				<div className={styles.centerIcon}>
-					<Star />
+					<Star className="size-4"/>
 				</div>
 				Subscribe
-			</ContextMenuItem>
-			<ContextMenuItem>Favorite</ContextMenuItem>
-			<ContextMenuItem>Copy</ContextMenuItem>
+			</ContextMenuItem> */}
+			{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
+			<ContextMenuItem onClick={() => copyToClipboard(task._id)}>
+                Copy
+            </ContextMenuItem>
 
 			<ContextMenuSeparator />
 
 			<ContextMenuItem onClick={deleteCurrentTask}>
 				<div className={styles.centerIcon}>
-					<Trash />
+					<Trash className="size-4"/>
 				</div>
 				Delete
 			</ContextMenuItem>
-			<ContextMenuItem>Open in a new tab</ContextMenuItem>
+			<ContextMenuItem>
+                <Link href={`/tasks/${task._id}`} target="_blank"> 
+                    Open in New Tab
+                </Link>
+            </ContextMenuItem>
 		</ContextMenuContent>
 	);
 };

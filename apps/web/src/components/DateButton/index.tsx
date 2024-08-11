@@ -65,27 +65,28 @@ const DateButton = ({ location }: { location: string }) => {
     setShowDropdown(!showDropdown);
   };
 
-  return (
-    <>
-      <div
-        className={
-          location === "newIssue"
-            ? "relative"
-            : "relative flex flex-row flex-wrap"
-        }
-      >
-        {location === "newIssue" && newIssueButton()}
-        {location === "issueSidebar" && issueSidebarButton()}
-        {showDropdown && (
-          <DateDropdown
-            location={location}
-            handleButtonClick={handleButtonClick}
-            handleClickAway={handleClickAway}
-          />
-        )}
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div
+				className={
+					location === "newIssue"
+						? 'relative'
+						: "relative flex flex-row flex-wrap"
+				}
+			>
+				{location === "newIssue" && newIssueButton()}
+				{location === "issueSidebar" && issueSidebarButton()}
+				{showDropdown && (
+					<DateDropdown
+						location={location}
+						handleButtonClick={handleButtonClick}
+						handleClickAway={handleClickAway}
+						injectedTaskId=""
+					/>
+				)}
+			</div>
+		</>
+	);
 };
 
 export default DateButton;

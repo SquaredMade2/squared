@@ -22,25 +22,39 @@ import {
 } from "date-fns";
 import { DAYS_OF_WEEK } from "@/constants/app_constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getAllTasks } from "@/store/taskData/thunks";
 
 const DateDropdown: React.FC<DateDropdownProps> = ({
-  handleButtonClick,
-  handleClickAway,
-  location,
+	handleButtonClick,
+	handleClickAway,
+	location,
+	injectedTaskId
 }) => {
-  const dispatch = useAppDispatch();
-  const taskId = useAppSelector((state) => state.singleTask?.data?._id);
-  const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
-  const sidebarDate = useAppSelector((state) => state.singleTask.data?.dueDate);
-  const initialDate = location === "issueSidebar" ? sidebarDate : newIssueDate;
-  const initialTime = initialDate
-    ? format(new Date(initialDate), "HH:mm")
-    : "12:00";
-  const [selectedTime, setSelectedTime] = useState(initialTime);
-  const [selectedDate, setSelectedDate] = useState(
-    initialDate ? new Date(initialDate) : new Date()
-  );
-  const [currentMonth, setCurrentMonth] = useState(startOfMonth(selectedDate));
+	const dispatch = useAppDispatch();
+	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
+	const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
+	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
+	const sidebarDate = useAppSelector((state) => state.singleTask.data?.dueDate);
+	const initialDate = location === "issueSidebar" ? sidebarDate : newIssueDate;
+	const initialTime = initialDate
+		? format(new Date(initialDate), "HH:mm")
+		: "12:00";
+	const [selectedTime, setSelectedTime] = useState(initialTime);
+	const [selectedDate, setSelectedDate] = useState(
+		initialDate ? new Date(initialDate) : new Date(),
+	);
+	const [currentMonth, setCurrentMonth] = useState(startOfMonth(selectedDate));
+
+	const containerClassLocation = () => {
+		switch(location) {
+			case "newIssue":
+				return 'absolute top-8'
+			case "contextMenu":
+				return ''
+			default:
+				return 'absolute top-0 -left-[300px]'
+		}
+	}
   const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${
     location === "newIssue" ? "absolute top-8" : "absolute top-0 -left-[300px]"
   }`;
@@ -65,23 +79,24 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
     updateDateTime(selectedDate, time);
   };
 
-  const handleSave = () => {
-    if (location === "issueSidebar") updateItem(selectedDate);
-    if (location === "newIssue") dispatch(setDueDate(selectedDate));
-    handleButtonClick();
-  };
+	const handleSave = () => {
+		if (location === "issueSidebar" && taskId) updateItem(selectedDate, taskId);
+		if (location === "newIssue") dispatch(setDueDate(selectedDate));
+		if (location === "contextMenu") updateItem(selectedDate, injectedTaskId)
+		handleButtonClick();
+	};
 
-  const updateItem = async (newDate: Date) => {
-    try {
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_SERVER}/task/update/${taskId}`,
-        {
-          dueDate: newDate,
-        }
-      );
-      dispatch(getSingleTask(taskId as string));
-    } catch (err) {}
-  };
+	const updateItem = async (newDate: Date, updateId: string) => {
+		try {
+			await axios.put(
+				`${process.env.NEXT_PUBLIC_SERVER}/task/update/${updateId}`,
+				{
+					dueDate: newDate,
+				},
+			);
+			location === 'contextMenu' ? dispatch(getAllTasks(currentTeam)) : dispatch(getSingleTask(taskId as string));
+		} catch (err) {}
+	};
 
   const days = eachDayOfInterval({
     start: startOfWeek(startOfMonth(currentMonth)),

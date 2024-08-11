@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { assignee } from "../Svg";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -16,6 +15,7 @@ import {
 } from "@/app/interfaces/Tasks.interfaces";
 import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { getSingleTask } from "@/store/task/thunks";
+import { UserSearch } from "lucide-react";
 
 const styles = {
 	contentWrapper: "",
@@ -94,7 +94,9 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>{assignee()}</div>
+				<div className={styles.centerIcon}>
+                    <UserSearch className="size-5 text-[#9597AD]"/>
+                </div>
 				Assignee
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>

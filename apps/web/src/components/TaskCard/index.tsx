@@ -31,6 +31,32 @@ import {
 } from "../ui/context-menu";
 import TaskContextMenu from "../TaskContextMenu";
 
+const styles = {
+	taskCardContainer: "relative w-[325px]",
+	taskCard:
+		" cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4",
+	main: "relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent",
+	checkboxSection:
+		"group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5",
+	sixVerticalDots:
+		"hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2",
+	middleSection:
+		"appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]",
+	dateSection: "flex justify-end col-span-4 items-center lg:pr-5",
+	iconSection: "flex justify-end col-span-3 items-center pl-3.5",
+	checkboxDiv: "xs:mr-5 sm:mr-5 md:mr-4 ",
+	linkGrid: "grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0",
+	titleDiv: "col-span-10 text-foreground",
+	dateDiv: "text-muted-foreground md:flex xs:hidden sm:hidden",
+	labelRow: "flex flex-row items-center space-x-4",
+	copiedAlertBox:
+	"absolute left-[10] top-[75vh] bg-popover w-full p-2 rounded border border-border transition-all delay-100 duration-1000",
+
+	urlClipboard: "text-muted-foreground text-xs font-bold leading-6",
+	paste: "text-muted-foreground text-xs font-bold",
+	titleClipboard: "text-muted-foreground text-xs font-bold",
+};
+
 const TaskCard = ({
   filteredTasks,
   setTaskData,
@@ -65,10 +91,12 @@ const TaskCard = ({
     y: number;
   } | null>(null);
 
-  const taskRefs: MutableRefObject<{
-    [key: string]: HTMLElement | null;
-  }> = useRef({});
-  const socket = useContext(SocketContext);
+	const [isCopied, setIsCopied] = useState(false)
+
+	const taskRefs: MutableRefObject<{
+		[key: string]: HTMLElement | null;
+	}> = useRef({});
+	const socket = useContext(SocketContext);
 
   const getNotificationId = notifications.map((noti) => noti._id);
 
@@ -104,6 +132,14 @@ const TaskCard = ({
   const handleGlobalClick = () => {
     setMenuPosition(null);
   };
+
+  const copyToClipboard = (taskId: string) => {
+		navigator.clipboard.writeText(`${window.location.origin}/tasks/${taskId}`)
+		setIsCopied(true)
+		const disableCopyMessage = setTimeout(() => {
+			setIsCopied(false)
+		}, 3000)
+	}
 
   useEffect(() => {
     dispatch(getAllUsers(currentWorkspace._id));
@@ -212,64 +248,69 @@ const TaskCard = ({
                     onClick={handleGlobalClick}
                     onContextMenu={(e) => handleContextMenu(e, task)}
                   >
-                    <div
-                      ref={(el: HTMLDivElement | null) => {
-                        taskRefs.current[task._id] = el;
-                      }}
-                    >
-                      {menuPosition && selectedTask && (
-                        <RightClickMenu
-                          x={menuPosition.x}
-                          y={menuPosition.y}
-                          handleDeleteTaskCard={handleDeleteTaskCard}
-                          task={selectedTask}
-                        />
-                      )}
-                    </div>
-                    <Link
-                      href={`/tasks/${task._id}`}
-                      onClick={() => dispatch(setTaskPage(task))}
-                    >
-                      <div className="relative w-[325px]">
-                        <div
-                          key={task._id}
-                          className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
-                            theme === "light" ? "bg-card" : "bg-background"
-                          }`}
-                        >
-                          <TaskCardTitle
-                            task={task}
-                            taskTitle={task.title}
-                            location={location}
-                            highlightText={highlightText}
-                            isShown={showPriority}
-                          />
-                          {showDateTime && (
-                            <TaskCardDate
-                              icon={
-                                <Calendar className="cursor-pointer size-4" />
-                              }
-                            >
-                              Due Date:{" "}
-                              {task.dueDate
-                                ? format(
-                                    new Date(task.dueDate),
-                                    "M/d/yy, h:mm a"
-                                  )
-                                : "No Date Set"}
-                            </TaskCardDate>
-                          )}
-                          <div className="flex flex-row items-center space-x-4">
-                            {showPriority && (
-                              <TaskCardPriority border={true} task={task} />
-                            )}
-                            {showLabels && (
-                              <TaskCardLabels task={task} view="grid" />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+					<ContextMenu>
+						<ContextMenuTrigger>
+							<div
+							ref={(el: HTMLDivElement | null) => {
+								taskRefs.current[task._id] = el;
+							}}
+							>
+							{menuPosition && selectedTask && (
+								<RightClickMenu
+								x={menuPosition.x}
+								y={menuPosition.y}
+								handleDeleteTaskCard={handleDeleteTaskCard}
+								task={selectedTask}
+								/>
+							)}
+								<TaskContextMenu task={task} setIsCopied={setIsCopied} copyToClipboard={copyToClipboard} />
+							</div>
+							<Link
+							href={`/tasks/${task._id}`}
+							onClick={() => dispatch(setTaskPage(task))}
+							>
+							<div className="relative w-[325px]">
+								<div
+								key={task._id}
+								className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
+									theme === "light" ? "bg-card" : "bg-background"
+								}`}
+								>
+								<TaskCardTitle
+									task={task}
+									taskTitle={task.title}
+									location={location}
+									highlightText={highlightText}
+									isShown={showPriority}
+								/>
+								{showDateTime && (
+									<TaskCardDate
+									icon={
+										<Calendar className="cursor-pointer size-4" />
+									}
+									>
+									Due Date:{" "}
+									{task.dueDate
+										? format(
+											new Date(task.dueDate),
+											"M/d/yy, h:mm a"
+										)
+										: "No Date Set"}
+									</TaskCardDate>
+								)}
+								<div className="flex flex-row items-center space-x-4">
+									{showPriority && (
+									<TaskCardPriority border={true} task={task} />
+									)}
+									{showLabels && (
+									<TaskCardLabels task={task} view="grid" />
+									)}
+								</div>
+								</div>
+							</div>
+							</Link>
+						</ContextMenuTrigger>
+					</ContextMenu>
                   </div>
                 )}
               </Draggable>
@@ -296,6 +337,7 @@ const TaskCard = ({
                   task={selectedTask}
                 />
               )}
+				{/* <TaskContextMenu task={task} setIsCopied={setIsCopied} copyToClipboard={copyToClipboard} /> */}
             </div>
 
             <div className="relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent">
@@ -350,6 +392,14 @@ const TaskCard = ({
           deleteFade={deleteFade}
         />
       )}
+	  			{/* <div
+				className={`${styles.copiedAlertBox}`}
+			>
+				<p className={styles.titleClipboard}>
+					Task link copied to clipboard.
+				</p>
+				<p className={styles.paste}>Paste it wherever you like</p>
+			</div> */}
     </>
   );
 };

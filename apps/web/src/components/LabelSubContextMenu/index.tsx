@@ -1,18 +1,5 @@
 import { LabelSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import {
-	bugIcon,
-	featureIcon,
-	highPriority,
-	improvementIcon,
-	label,
-	lowPriority,
-	mediumPriority,
-	nullPriority,
-	redIcon,
-	testIcon,
-	urgentPriority,
-} from "../Svg";
-import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
@@ -26,6 +13,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setLabels, setPriority } from "@/store/taskData";
 import { labelOptions, priorityOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
+import { LabelColor } from "../LabelButton";
+import { Tag } from "lucide-react";
 
 const styles = {
 	contentWrapper: "",
@@ -50,15 +39,15 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 	const renderLabelIcon = (label: string) => {
 		switch (label) {
 			case "Bug":
-				return bugIcon();
+				return <LabelColor name={'Bug'} />;
 			case "Feature":
-				return featureIcon();
+				return <LabelColor name={'Feature'} />;
 			case "Improvement":
-				return improvementIcon();
+				return <LabelColor name={'Improvement'} />;
 			case "Red":
-				return redIcon();
+				return <LabelColor name={'Red'} />;
 			case "Test":
-				return testIcon();
+				return <LabelColor name={'Test'} />;
 			default:
 				return null;
 		}
@@ -100,7 +89,7 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 		return newSelection;
 	};
 
-	const handleSelectLabels = (labelName: string) => {
+	const handleSelectLabels = async (labelName: string) => {
 		let newLabelsSelected = [];
 		newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
 		if (task.labels) {
@@ -108,14 +97,16 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 			if (task._id !== undefined) storeCommonFields(author, task._id);
 			logEvent(newLabelsSelected);
 			updateItem(newLabelsSelected);
-			dispatch(getAllTasks(currentTeam));
 		}
+        await dispatch(getAllTasks(currentTeam));
 	};
 
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>{label()}</div>
+				<div className={styles.centerIcon}>
+                    <Tag className="cursor-pointer size-4" />
+                </div>
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>

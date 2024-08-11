@@ -92,7 +92,7 @@ const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>{priority()}</div>
+				<div className={styles.centerIcon}>{high()}</div>
 				Priority
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>

@@ -74,7 +74,7 @@ const StatusSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className={styles.centerIcon}>
-					<CircleDashed />
+                    <CircleDashed className="size-4" />
 				</div>
 				Status
 			</ContextMenuSubTrigger>
