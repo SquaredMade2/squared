@@ -29,7 +29,7 @@ export const handleOAuthCallback = async (req: Request, res: Response) => {
 
     const { access_token } = response.data;
 
-    res.redirect(`http://localhost:3000/workspace/work/settings/integrations/github?token=${access_token}`);
+    res.redirect(`https://github.com/apps/SquaredMadeApp/installations/new`);
   } catch (error) {
     console.error('Error exchanging code for token:', error);
     res.status(500).json({ error: 'Internal Server Error' });
