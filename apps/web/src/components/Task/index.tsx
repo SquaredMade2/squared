@@ -23,17 +23,22 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
   const navbarToggled = useAppSelector(
     (state) => state.userSettings.showNavBar
   );
-
+  const taskList = useAppSelector((state) => state.taskData.taskList);
+  const taskPageId = useAppSelector((state) => state.taskData.taskPage._id);
   const showBackdrop = showSideNav || navbarToggled;
   const dispatch = useAppDispatch();
-  const { taskId } = useParams();
+  const { taskName } = useParams();
   const sideNav = useRef(null);
   const svgRef = useRef(null);
 
   const currentTaskId = useAppSelector(
     (state) => state.currentTask.currentTaskId
   );
-  const dataForDispatch = taskId || currentTaskId;
+  const taskId = taskList.find(
+    (el) => el.title.split(" ").join("-").toLocaleLowerCase() === taskName
+  )?._id;
+
+  const dataForDispatch = taskId || taskPageId || currentTaskId;
 
   const toggleNav = () => {
     setShowSideNav(!showSideNav);

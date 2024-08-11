@@ -131,9 +131,7 @@ export default function Home() {
             <div
               className={`w-full snap-x overflow-hidden relative ${view === "grid" ? "h-[calc(100vh)]" : "h-[calc(100vh)]"}`}
             >
-              <div
-                className={`bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between`}
-              >
+              <div className="bg-background lg:w-[calc(100vw-296px)] flex flex-col items-center justify-between">
                 {!showFilterSaveForm && (
                   <div className="w-full px-2 sm:px-5">
                     <TopNavBar
