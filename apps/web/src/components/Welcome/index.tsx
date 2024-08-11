@@ -2,31 +2,22 @@ import React from "react";
 import type { WelcomeProps } from "./Welcome.interfaces";
 import { Button } from "../ui/button";
 
-const styles = {
-	mainContainer: "h-screen w-full flex items-center justify-center bg-card",
-	mainWrapper: "w-11/12 flex flex-col items-center justify-center text-center",
-	title: "text-foreground text-6xl xs:text-4xl font-bold mb-4",
-	description: "text-muted-foreground font-medium mb-8 xs:text-sm",
-	continueButtonDark:
-		"w-11/12 max-w-xs h-12 bg-purpleButton hover:bg-purpleButtonHover rounded text-foreground font-medium transition ease-out duration-100 box-content xs:w-full",
-	continueButtonLight:
-		"w-11/12 max-w-xs h-12 bg-purpleButtonHover hover:bg-purpleButton rounded text-foreground font-medium transition ease-out duration-100 box-content xs:w-full",
-};
-
 const Welcome = ({ handleNextPage }: WelcomeProps) => {
-	return (
-		<div className={styles.mainContainer}>
-			<div className={styles.mainWrapper}>
-				<h1 className={styles.title}>Welcome to Squared</h1>
-				<p className={styles.description}>
-					Squared optimizes software development, iterations, and bug fixes.
-				</p>
-				<Button type="button" onClick={handleNextPage}>
-					Get started
-				</Button>
-			</div>
-		</div>
-	);
+  return (
+    <div className="h-screen w-full flex items-center justify-center bg-card">
+      <div className="w-11/12 flex flex-col items-center justify-center text-center">
+        <h1 className="text-foreground text-6xl xs:text-4xl font-bold mb-4">
+          Welcome to Squared
+        </h1>
+        <p className="text-muted-foreground font-medium mb-8 xs:text-sm">
+          Squared optimizes software development, iterations, and bug fixes.
+        </p>
+        <Button type="button" onClick={handleNextPage}>
+          Get started
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export default Welcome;
