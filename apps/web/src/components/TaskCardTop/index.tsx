@@ -9,36 +9,32 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 
-const styles = {
-  homeContainer:
-    "w-full whitespace-nowrap flex items-center gap-2 text-foreground",
-  workspaceUrl: "flex items-center text-muted-foreground hover:text-foreground",
-  teamIcon: "mt-0.5 rounded",
-  taskTitle: "truncate max-w-full",
-};
-
 const TaskCardTop = () => {
   const workspace = useAppSelector(
     (state: RootState) => state.taskData.currentWorkspace
   );
-  const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
+  const allWorkspaces = useAppSelector(
+    (state) => state.taskData.workspaces
+  );
 
   const index: number = allWorkspaces.findIndex(
     (item) => item._id === workspace._id
   );
 
-  const taskTitle = useAppSelector((state) => state.singleTask.data?.title);
+  const taskTitle = useAppSelector(
+    (state) => state.singleTask.data?.title
+  );
 
   return (
     <>
       <Breadcrumb>
-        <BreadcrumbList className={styles.homeContainer}>
+        <BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
           <BreadcrumbItem>
             <BreadcrumbLink
-              className={styles.workspaceUrl}
+              className="flex items-center text-muted-foreground hover:text-foreground"
               href={`/workspace/${workspace.url}`}
             >
-              <div className={styles.teamIcon}>
+              <div className="mt-0.5 rounded">
                 <WorkspaceInitials
                   workspaceName={workspace.name}
                   backgroundColor={index}
@@ -49,7 +45,7 @@ const TaskCardTop = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem className={styles.taskTitle}>
+          <BreadcrumbItem className="truncate max-w-full">
             {taskTitle}
           </BreadcrumbItem>
         </BreadcrumbList>
