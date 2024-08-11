@@ -55,9 +55,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 				return 'absolute top-0 -left-[300px]'
 		}
 	}
-  const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${
-    location === "newIssue" ? "absolute top-8" : "absolute top-0 -left-[300px]"
-  }`;
+  const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${containerClassLocation()}`;
 
   const isDateInPast = (date: Date) => isBefore(endOfDay(date), new Date());
 

@@ -96,7 +96,7 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 			newLabelsSelected = newLabelSelection(task.labels, labelName);
 			if (task._id !== undefined) storeCommonFields(author, task._id);
 			logEvent(newLabelsSelected);
-			updateItem(newLabelsSelected);
+			await updateItem(newLabelsSelected);
 		}
         await dispatch(getAllTasks(currentTeam));
 	};

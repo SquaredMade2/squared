@@ -19,3 +19,11 @@ export interface PrioritySubContextMenuProps {
 export interface LabelSubContextMenuProps {
 	task: Task;
 }
+
+export interface RenameSubContextMenuProps {
+	task: Task;
+}
+
+export interface DateSubContextMenuProps {
+	task: Task;
+}

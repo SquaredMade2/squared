@@ -91,8 +91,8 @@ const TaskCardTitle = ({
               {showLabels && <TaskCardLabels task={task} view="list" />}
               {showDateTime && (
                 <div className="text-muted-foreground md:flex xs:hidden sm:hidden mr-2 mdsm:mr-3">
-                  {task.dateCreated
-                    ? format(new Date(task.dateCreated), "MMM dd")
+                  {task.dueDate
+                    ? format(new Date(task.dueDate), "MMM dd")
                     : "No Date"}
                 </div>
               )}

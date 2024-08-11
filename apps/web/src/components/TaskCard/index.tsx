@@ -22,11 +22,8 @@ import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
-import RightClickMenu2 from "../RightClickMenu2";
 import {
 	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
 	ContextMenuTrigger,
 } from "../ui/context-menu";
 import TaskContextMenu from "../TaskContextMenu";
@@ -136,7 +133,7 @@ const TaskCard = ({
   const copyToClipboard = (taskId: string) => {
 		navigator.clipboard.writeText(`${window.location.origin}/tasks/${taskId}`)
 		setIsCopied(true)
-		const disableCopyMessage = setTimeout(() => {
+		setTimeout(() => {
 			setIsCopied(false)
 		}, 3000)
 	}
@@ -177,53 +174,50 @@ const TaskCard = ({
                 onClick={handleGlobalClick}
                 onContextMenu={(e) => handleContextMenu(e, task)}
               >
-                <div
-                  ref={(el: HTMLDivElement | null) => {
-                    taskRefs.current[task._id] = el;
-                  }}
-                >
-                  {menuPosition && selectedTask && (
-                    <RightClickMenu
-                      x={menuPosition.x}
-                      y={menuPosition.y}
-                      handleDeleteTaskCard={handleDeleteTaskCard}
-                      task={selectedTask}
-                    />
-                  )}
-                </div>
+				<ContextMenu>
+					<ContextMenuTrigger>
+						<div
+						ref={(el: HTMLDivElement | null) => {
+							taskRefs.current[task._id] = el;
+						}}
+						>
+							<TaskContextMenu task={task} setIsCopied={setIsCopied} copyToClipboard={copyToClipboard} />
+						</div>
 
-                <div
-                  className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
-                    index === filteredTasks.length - 1 && "rounded-b-lg"
-                  }`}
-                >
-                  <div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
-                    <div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
-                      <GripVertical className="size-5" />
-                    </div>
-                    <div className="xs:mr-5 sm:mr-5 md:mr-4">
-                      <input
-                        className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
-                        type="checkbox"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    onClick={() => navigateToTask(task)}
-                    className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
-                  >
-                    <div className="col-span-10 text-foreground">
-                      <TaskCardTitle
-                        key={task._id}
-                        task={task}
-                        isShown={showPriority}
-                        taskTitle={task.title}
-                        location={location}
-                        highlightText={highlightText}
-                      />
-                    </div>
-                  </div>
-                </div>
+						<div
+						className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
+							index === filteredTasks.length - 1 && "rounded-b-lg"
+						}`}
+						>
+							<div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
+								<div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
+									<GripVertical className="size-5" />
+								</div>
+								<div className="xs:mr-5 sm:mr-5 md:mr-4">
+								<input
+									className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
+									type="checkbox"
+								/>
+								</div>
+							</div>
+							<div
+								onClick={() => navigateToTask(task)}
+								className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
+							>
+								<div className="col-span-10 text-foreground">
+								<TaskCardTitle
+									key={task._id}
+									task={task}
+									isShown={showPriority}
+									taskTitle={task.title}
+									location={location}
+									highlightText={highlightText}
+								/>
+								</div>
+							</div>
+						</div>
+					</ContextMenuTrigger>
+				</ContextMenu>
               </div>
             )}
           </Draggable>
@@ -255,14 +249,6 @@ const TaskCard = ({
 								taskRefs.current[task._id] = el;
 							}}
 							>
-							{menuPosition && selectedTask && (
-								<RightClickMenu
-								x={menuPosition.x}
-								y={menuPosition.y}
-								handleDeleteTaskCard={handleDeleteTaskCard}
-								task={selectedTask}
-								/>
-							)}
 								<TaskContextMenu task={task} setIsCopied={setIsCopied} copyToClipboard={copyToClipboard} />
 							</div>
 							<Link
@@ -324,62 +310,58 @@ const TaskCard = ({
             onClick={handleGlobalClick}
             onContextMenu={(e) => handleContextMenu(e, task)}
           >
-            <div
-              ref={(el: HTMLDivElement | null) => {
-                taskRefs.current[task._id] = el;
-              }}
-            >
-              {menuPosition && selectedTask && (
-                <RightClickMenu
-                  x={menuPosition.x}
-                  y={menuPosition.y}
-                  handleDeleteTaskCard={handleDeleteTaskCard}
-                  task={selectedTask}
-                />
-              )}
-				{/* <TaskContextMenu task={task} setIsCopied={setIsCopied} copyToClipboard={copyToClipboard} /> */}
-            </div>
+			<ContextMenu>
+				<ContextMenuTrigger>
+					<div
+					ref={(el: HTMLDivElement | null) => {
+						taskRefs.current[task._id] = el;
+					}}
+					>
+						<TaskContextMenu task={task} setIsCopied={setIsCopied} copyToClipboard={copyToClipboard} />
+					</div>
 
-            <div className="relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent">
-              <div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
-                <div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
-                  <GripVertical className="size-5" />
-                </div>
-                <div className="xs:mr-5 sm:mr-5 md:mr-4">
-                  <input
-                    className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
-                    type="checkbox"
-                  />
-                </div>
-              </div>
-              <Link
-                href={`/tasks/${task._id}`}
-                onClick={() => setTaskPage(task)}
-                className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
-              >
-                <div className="col-span-10 text-foreground">
-                  <TaskCardTitle
-                    key={task._id}
-                    task={task}
-                    isShown={showPriority}
-                    taskTitle={task.title}
-                    highlightText={highlightText}
-                    location={location}
-                  />
-                </div>
+					<div className="relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent">
+					<div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
+						<div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
+						<GripVertical className="size-5" />
+						</div>
+						<div className="xs:mr-5 sm:mr-5 md:mr-4">
+						<input
+							className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
+							type="checkbox"
+						/>
+						</div>
+					</div>
+					<Link
+						href={`/tasks/${task._id}`}
+						onClick={() => setTaskPage(task)}
+						className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
+					>
+						<div className="col-span-10 text-foreground">
+							<TaskCardTitle
+								key={task._id}
+								task={task}
+								isShown={showPriority}
+								taskTitle={task.title}
+								highlightText={highlightText}
+								location={location}
+							/>
+							</div>
 
-                <div className="flex justify-end col-span-4 items-center lg:pr-5">
-                  <div className="flex justify-end col-span-3 items-center pl-3.5">
-                    {user && (
-                      <ProfileImage
-                        profileName={user.name}
-                        location="taskCard"
-                      />
-                    )}
-                  </div>
-                </div>
-              </Link>
-            </div>
+							<div className="flex justify-end col-span-4 items-center lg:pr-5">
+							<div className="flex justify-end col-span-3 items-center pl-3.5">
+								{user && (
+								<ProfileImage
+									profileName={user.name}
+									location="taskCard"
+								/>
+								)}
+							</div>
+						</div>
+					</Link>
+					</div>
+				</ContextMenuTrigger>
+			</ContextMenu>
           </div>
         ))}
 
@@ -392,14 +374,6 @@ const TaskCard = ({
           deleteFade={deleteFade}
         />
       )}
-	  			{/* <div
-				className={`${styles.copiedAlertBox}`}
-			>
-				<p className={styles.titleClipboard}>
-					Task link copied to clipboard.
-				</p>
-				<p className={styles.paste}>Paste it wherever you like</p>
-			</div> */}
     </>
   );
 };

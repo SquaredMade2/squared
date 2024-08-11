@@ -59,17 +59,17 @@ const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
 		}
 	};
 
-	const handleSelectPriority = (newPriority: string) => {
+	const handleSelectPriority = async (newPriority: string) => {
 		if (newPriority === task.priority) return;
 		if (task._id !== undefined) storeCommonFields(author, task._id);
 		logEvent(newPriority);
 		updateItem(newPriority);
 		if (newPriority === "No priority") {
-			dispatch(setPriority(null));
+			await dispatch(setPriority(null));
 		} else {
-			dispatch(setPriority(newPriority));
+			await dispatch(setPriority(newPriority));
 		}
-		dispatch(getAllTasks(currentTeam));
+		await dispatch(getAllTasks(currentTeam));
 	};
 
 	const renderPriorityIcon = (priority: string) => {

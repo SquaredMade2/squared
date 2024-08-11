@@ -20,6 +20,7 @@ import {
     Trash } from "lucide-react";
 import DateSubContextMenu from "../DateSubContextMenu";
 import Link from "next/link";
+import RenameSubContextMenu from "../RenameSubContextMenu";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({ task, setIsCopied, copyToClipboard }) => {
 	const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({ task, setIsCopied, co
     const currentTeam = useAppSelector((state) => state.taskData.currentTeam)
 	const styles = {
 		contentWrapper: ``,
-		centerIcon: "mr-2",
+		centerIcon: `text-danger mr-2`,
 	};
 
 	const deleteCurrentTask = async () => {
@@ -56,23 +57,10 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({ task, setIsCopied, co
 			<PrioritySubContextMenu task={task} />
 
 			<LabelSubContextMenu task={task} />
-
-			{/* <ContextMenuItem onClick={handleDateToggle}>
-                <div className={styles.centerIcon}>
-                    <Calendar className="cursor-pointer size-4" />
-                </div>
-				Set due date...
-			</ContextMenuItem> */}
             
             <DateSubContextMenu task={task} />
-			{/* {showDropdown && (
-				<DateDropdown
-					location={""}
-					handleButtonClick={handleDateToggle}
-					handleClickAway={handleDateClickAway}
-				/>
-			)} */}
-			<ContextMenuItem>Rename...</ContextMenuItem>
+
+			<RenameSubContextMenu task={task} />
 
 			<ContextMenuSeparator />
             {/*  No Subscribe feature yet
