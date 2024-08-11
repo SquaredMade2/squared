@@ -156,9 +156,7 @@ const getSingleTaskIdentifier = async (
 };
 
 const deleteTask = async (req: Request, res: Response): Promise<void> => {
-	console.log('body:', req.body)
-	console.log('param:', req.params)
-	const deleted = await Task.deleteOne({ _id: req.body.id });
+	await Task.deleteOne({ _id: req.body.id });
 	res.sendStatus(200);
 };
 

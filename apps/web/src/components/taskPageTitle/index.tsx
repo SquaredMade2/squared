@@ -12,80 +12,80 @@ import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 
 const TaskPageTitle = () => {
-  const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 
-  const title = useSelector((state: RootState) => state.singleTask.data?.title);
-  const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
+	const title = useSelector((state: RootState) => state.singleTask.data?.title);
+	const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
 
-  const [updatedTitle, setUpdatedTitle] = useState(title);
-  const [isFocused, setIsFocused] = useState(false);
+	const [updatedTitle, setUpdatedTitle] = useState(title);
+	const [isFocused, setIsFocused] = useState(false);
 
-  const {
-    author,
-    storeCommonFields,
-    storeType,
-    storeTaskValue,
-    updateTaskValue,
-  } = useLogTaskEvent();
+	const {
+		author,
+		storeCommonFields,
+		storeType,
+		storeTaskValue,
+		updateTaskValue,
+	} = useLogTaskEvent();
 
-  const listOfMembers = useSelector(
-    (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
-  );
+	const listOfMembers = useSelector(
+		(state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers,
+	);
 
-  const { transformedInput: transformedTitleInput } = transformingMentionInputs(
-    updatedTitle ?? ""
-  );
+	const { transformedInput: transformedTitleInput } = transformingMentionInputs(
+		updatedTitle ?? "",
+	);
 
-  const handleChange: OnChangeHandlerFunc = (e) => {
-    setUpdatedTitle(e.target.value);
-  };
+	const handleChange: OnChangeHandlerFunc = (e) => {
+		setUpdatedTitle(e.target.value);
+	};
 
-  const logEvent = () => {
-    storeType(EventType.TitleUpdated);
-    if (taskId !== undefined) storeTaskValue(title ?? "");
-    updateTaskValue(updatedTitle ?? "");
-  };
+	const logEvent = () => {
+		storeType(EventType.TitleUpdated);
+		if (taskId !== undefined) storeTaskValue(title ?? "");
+		updateTaskValue(updatedTitle ?? "");
+	};
 
-  const handleSubmit = (e: FocusEvent<HTMLFormElement>) => {
-    setIsFocused(false);
-    e.preventDefault();
-    const changeMade: boolean = updatedTitle !== title;
-    if (changeMade && taskId !== undefined) {
-      storeCommonFields(author, taskId);
-      logEvent();
-      dispatch(updateTitle(transformedTitleInput, taskId));
-    }
-  };
+	const handleSubmit = (e: FocusEvent<HTMLFormElement>) => {
+		setIsFocused(false);
+		e.preventDefault();
+		const changeMade: boolean = updatedTitle !== title;
+		if (changeMade && taskId !== undefined) {
+			storeCommonFields(author, taskId);
+			logEvent();
+			dispatch(updateTitle(transformedTitleInput, taskId));
+		}
+	};
 
-  const handleBlur = (
-    e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setIsFocused(false);
-    e.preventDefault();
-    const changeMade: boolean = updatedTitle !== title;
-    if (changeMade && taskId !== undefined) {
-      storeCommonFields(author, taskId);
-      logEvent();
-      dispatch(updateTitle(transformedTitleInput, taskId));
-    }
-  };
+	const handleBlur = (
+		e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setIsFocused(false);
+		e.preventDefault();
+		const changeMade: boolean = updatedTitle !== title;
+		if (changeMade && taskId !== undefined) {
+			storeCommonFields(author, taskId);
+			logEvent();
+			dispatch(updateTitle(transformedTitleInput, taskId));
+		}
+	};
 
-  return (
-    <form className="flex flex-col" onSubmit={handleSubmit}>
-      <MentionInput
-        data={listOfMembers}
-        className="mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none"
-        value={updatedTitle ?? ""}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        style={CustomMentionStyle(isFocused)}
-        onFocus={() => setIsFocused(true)}
-        placeholder={"Title"}
-        name={"title"}
-      />
-      <TaskPageDescription />
-    </form>
-  );
+	return (
+		<form className="flex flex-col" onSubmit={handleSubmit}>
+			<MentionInput
+				data={listOfMembers}
+				className="mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none"
+				value={updatedTitle ?? ""}
+				onChange={handleChange}
+				onBlur={handleBlur}
+				style={CustomMentionStyle(isFocused)}
+				onFocus={() => setIsFocused(true)}
+				placeholder={"Title"}
+				name={"title"}
+			/>
+			<TaskPageDescription />
+		</form>
+	);
 };
 
 export default TaskPageTitle;

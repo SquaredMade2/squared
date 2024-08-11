@@ -2,7 +2,7 @@ export type DateDropdownProps = {
 	location: string;
 	handleButtonClick: () => void;
 	handleClickAway: () => void;
-	injectedTaskId: string
+	injectedTaskId: string;
 };
 
 export type Params = {

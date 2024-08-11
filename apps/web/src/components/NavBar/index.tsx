@@ -10,105 +10,105 @@ import NavBarTeams from "@/components/NavBarTeams";
 import { LayoutGrid, Search } from "lucide-react";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
 } from "../ui/accordion";
 
 const Navbar = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const pathname = usePathname();
-  const inboxPageChecker = pathname.includes("/inbox");
-  const { user, theme } = useAppSelector((state) => state.userSettings);
-  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const pathname = usePathname();
+	const inboxPageChecker = pathname.includes("/inbox");
+	const { user, theme } = useAppSelector((state) => state.userSettings);
+	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
-  const handleClick = (): void => {
-    router.push(`/workspace/${workspace.url}/search`);
-  };
+	const handleClick = (): void => {
+		router.push(`/workspace/${workspace.url}/search`);
+	};
 
-  const handleTeamClick = (team: Team): void => {
-    dispatch(setCurrentTeam(team));
-    router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
-  };
+	const handleTeamClick = (team: Team): void => {
+		dispatch(setCurrentTeam(team));
+		router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
+	};
 
-  return (
-    <div className="flex flex h-full justify-center bg-popover border-r w-[296px]">
-      <div className="w-11/12 flex flex-col">
-        <div className="flex flex-col gap-4 lg:pt-1.5 pt-6 items-center text-nav w-full">
-          <div className="flex flex-row items-center cursor-pointer relative w-full">
-            <div className="w-full ml-1.5">
-              <span className="relative">
-                <WorkSpaceDropDown />
-              </span>
-            </div>
-          </div>
-          <span className="text-sm m-2 text-popover-foreground font-semibold">
-            {user?.name}
-          </span>
-          <div className="flex flex-row w-full justify-around ml-2">
-            <NewIssueButton />
-            <div className="ml-3.5">
-              <button onClick={handleClick} type="button" title="title">
-                <span className="rounded-md border border-border w-10 align-center flex justify-center bg-secondary shadow-lg focus:outline-none flex flex-row items-center cursor-pointer hover:bg-popover h-10 items-center">
-                  <Search
-                    className={`stroke-current fill-transparent cursor-pointer h-5 w-5 ${
-                      theme === "light" ? "text-[#797A8C]" : "text-[white]"
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="w-full h-full left-5 mt-10 cursor-default text-foreground">
-          <div
-            className={`w-full flex items-center my-1.5 rounded-md mr-3 w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer ${
-              inboxPageChecker && "bg-secondary"
-            }`}
-            onClick={() => {
-              router.push(`/workspace/${workspace.url}/inbox`);
-            }}
-          >
-            <div className="text-sm m-2 text-popover-foreground font-semibold">
-              Inbox
-            </div>
-          </div>
+	return (
+		<div className="flex flex h-full justify-center bg-popover border-r w-[296px]">
+			<div className="w-11/12 flex flex-col">
+				<div className="flex flex-col gap-4 lg:pt-1.5 pt-6 items-center text-nav w-full">
+					<div className="flex flex-row items-center cursor-pointer relative w-full">
+						<div className="w-full ml-1.5">
+							<span className="relative">
+								<WorkSpaceDropDown />
+							</span>
+						</div>
+					</div>
+					<span className="text-sm m-2 text-popover-foreground font-semibold">
+						{user?.name}
+					</span>
+					<div className="flex flex-row w-full justify-around ml-2">
+						<NewIssueButton />
+						<div className="ml-3.5">
+							<button onClick={handleClick} type="button" title="title">
+								<span className="rounded-md border border-border w-10 align-center flex justify-center bg-secondary shadow-lg focus:outline-none flex flex-row items-center cursor-pointer hover:bg-popover h-10 items-center">
+									<Search
+										className={`stroke-current fill-transparent cursor-pointer h-5 w-5 ${
+											theme === "light" ? "text-[#797A8C]" : "text-[white]"
+										}`}
+									/>
+								</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div className="w-full h-full left-5 mt-10 cursor-default text-foreground">
+					<div
+						className={`w-full flex items-center my-1.5 rounded-md mr-3 w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer ${
+							inboxPageChecker && "bg-secondary"
+						}`}
+						onClick={() => {
+							router.push(`/workspace/${workspace.url}/inbox`);
+						}}
+					>
+						<div className="text-sm m-2 text-popover-foreground font-semibold">
+							Inbox
+						</div>
+					</div>
 
-          <div className="w-full flex items-center my-1.5 rounded-md mr-3">
-            <span className="text-sm m-2 text-popover-foreground font-semibold">
-              Your teams
-            </span>
-          </div>
-          <Accordion type="single" collapsible>
-            {workspace?.teams.map((team: Team) => {
-              return (
-                <AccordionItem key={team._id} value={team._id}>
-                  <AccordionTrigger>
-                    <LayoutGrid className="text-[#9577FF] size-4" />
+					<div className="w-full flex items-center my-1.5 rounded-md mr-3">
+						<span className="text-sm m-2 text-popover-foreground font-semibold">
+							Your teams
+						</span>
+					</div>
+					<Accordion type="single" collapsible>
+						{workspace?.teams.map((team: Team) => {
+							return (
+								<AccordionItem key={team._id} value={team._id}>
+									<AccordionTrigger>
+										<LayoutGrid className="text-[#9577FF] size-4" />
 
-                    {team.name}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <NavBarTeams
-                      id={team._id}
-                      teamName={team.name}
-                      onDropdownClick={() => handleTeamClick(team)}
-                      teamIdentifier={team.identifier}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-        </div>
-        <div className="absolute top-[100px] left-full">
-          <NewIssueModal />
-        </div>
-      </div>
-    </div>
-  );
+										{team.name}
+									</AccordionTrigger>
+									<AccordionContent>
+										<NavBarTeams
+											id={team._id}
+											teamName={team.name}
+											onDropdownClick={() => handleTeamClick(team)}
+											teamIdentifier={team.identifier}
+										/>
+									</AccordionContent>
+								</AccordionItem>
+							);
+						})}
+					</Accordion>
+				</div>
+				<div className="absolute top-[100px] left-full">
+					<NewIssueModal />
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default Navbar;

@@ -95,8 +95,8 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className={styles.centerIcon}>
-                    <UserSearch className="size-5 text-[#9597AD]"/>
-                </div>
+					<UserSearch className="size-5 text-[#9597AD]" />
+				</div>
 				Assignee
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>

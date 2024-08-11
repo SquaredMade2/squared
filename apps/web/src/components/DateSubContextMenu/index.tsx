@@ -13,7 +13,7 @@ import { statusOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { toast } from "react-toastify";
 import {
-    Calendar,
+	Calendar,
 	Circle,
 	CircleCheckBig,
 	CircleDashed,
@@ -28,9 +28,7 @@ const styles = {
 	centerIcon: "mr-2",
 };
 
-const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
-	task,
-}) => {
+const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({ task }) => {
 	const [showDropdown, setShowDropdown] = useState(true);
 
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
@@ -47,20 +45,20 @@ const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
 
 	return (
 		<ContextMenuSub>
-            <ContextMenuSubTrigger>
-                <div className={styles.centerIcon}>
-                    <Calendar className="cursor-pointer size-4" />
-                </div>
-                Set due date...
-            </ContextMenuSubTrigger>
-            <ContextMenuSubContent>
-                <DateDropdown
-                    location={"contextMenu"}
-                    handleButtonClick={handleButtonClick}
-                    handleClickAway={handleClickAway}
-                    injectedTaskId={task._id}
-                />
-            </ContextMenuSubContent>
+			<ContextMenuSubTrigger>
+				<div className={styles.centerIcon}>
+					<Calendar className="cursor-pointer size-4" />
+				</div>
+				Set due date...
+			</ContextMenuSubTrigger>
+			<ContextMenuSubContent>
+				<DateDropdown
+					location={"contextMenu"}
+					handleButtonClick={handleButtonClick}
+					handleClickAway={handleClickAway}
+					injectedTaskId={task._id}
+				/>
+			</ContextMenuSubContent>
 		</ContextMenuSub>
 	);
 };

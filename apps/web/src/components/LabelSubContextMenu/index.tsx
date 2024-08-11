@@ -39,15 +39,15 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 	const renderLabelIcon = (label: string) => {
 		switch (label) {
 			case "Bug":
-				return <LabelColor name={'Bug'} />;
+				return <LabelColor name={"Bug"} />;
 			case "Feature":
-				return <LabelColor name={'Feature'} />;
+				return <LabelColor name={"Feature"} />;
 			case "Improvement":
-				return <LabelColor name={'Improvement'} />;
+				return <LabelColor name={"Improvement"} />;
 			case "Red":
-				return <LabelColor name={'Red'} />;
+				return <LabelColor name={"Red"} />;
 			case "Test":
-				return <LabelColor name={'Test'} />;
+				return <LabelColor name={"Test"} />;
 			default:
 				return null;
 		}
@@ -98,15 +98,15 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 			logEvent(newLabelsSelected);
 			await updateItem(newLabelsSelected);
 		}
-        await dispatch(getAllTasks(currentTeam));
+		await dispatch(getAllTasks(currentTeam));
 	};
 
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className={styles.centerIcon}>
-                    <Tag className="cursor-pointer size-4" />
-                </div>
+					<Tag className="cursor-pointer size-4" />
+				</div>
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>

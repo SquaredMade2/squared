@@ -470,8 +470,7 @@ const workspaceExists = async (
 	next: NextFunction,
 ) => {
 	const { url } = req.query;
-	const exists = await Workspace.findOne({ url });
-	console.log(exists)
+	const exists = await Workspace.findOne({ url });	
 	if (exists) {
 		return next(new AppError("$$$ Workspace already exists. $$$", 404));
 	}

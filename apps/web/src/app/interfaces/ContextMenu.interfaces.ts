@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 export interface TaskContextMenuProps {
 	task: Task;
 	setIsCopied: Dispatch<SetStateAction<boolean>>;
-	copyToClipboard: (taskId: string) => void
+	copyToClipboard: (taskId: string) => void;
 }
 export interface StatusSubContextMenuProps {
 	task: Task;
