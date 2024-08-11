@@ -27,54 +27,8 @@ import {
 } from "@/utils/workspace-members-utils";
 import { navBarToggle } from "@/store/userSettings";
 import { useTheme } from "next-themes";
-const styles = {
-  mainContainer:
-    "flex mdsm:flex-col relative bg-card h-auto min-h-screen xs:p-0 w-full",
-  pageContainer:
-    "flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ",
-  TopNavbar: "lg:hidden mdsm:visible bg-background",
-  navbarWrapper:
-    "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
-  pageWrapper: " sm:w-full  sm:p-0 xs:w-full xl:w-2/5 md:w-3/4 ",
-  line: "block w-full border-t border-border my-6",
-  title: "text-2xl text-foreground mb-1 font-medium",
-  subtitle: "text-muted-foreground text-sm",
-  manageMemberTitle: "text-lg text-foreground mb-1 font-medium ",
-  inviteButtonLight:
-    "bg-blueGlowLight py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
-  inviteButtonDark:
-    "bg-blueGlow py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
-  goToPlan: "text-[#575bc7] text-opacity-1 font-semibold",
-  searchIconSVG: " fill-white h-5 w-5",
-  userInputsContainer:
-    "flex gap-3 mt-6 items-center justify-between w-full sm:justify-between md:w-full lg:w-full",
-  userInputSubContainer:
-    "relative gap-2 flex items-center md:w-2/3 lg:w-3/5 bg-textField rounded",
-  searchInput:
-    "border border-border bg-transparent text-sm py-1.5 w-full rounded-md w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400",
-  searchIcon: "absolute left-2 top-2.5",
-  membersLengthTitle: "mt-6 text-foreground text-sm",
-  membersDescriptionContainer:
-    "flex items-center border-border border-b pb-2 mt-4 md:text-sm justify-between xs:text-sm",
-  membersInfo: "flex flex-col w-2/4",
-  membersNameOrRole: "text-foreground",
-  membersEmail: "text-muted-foreground",
-  buttonsOptionContainer:
-    "flex flex-col -left-28 top-6 bg-background border border-border rounded gap-1 ",
-  universalInviteLinkContainer:
-    "gap-4 flex justify-between items-center mdsm:w-full ",
-  createLinkButton:
-    "hover:bg-[#999] hover:bg-opacity-20 p-1 mr-2 rounded w-[20px]",
-  inviteLinkInput:
-    "flex border border-border rounded w-full justify-between items-center bg-textField",
-  inviteLinkText:
-    "text-foreground p-1.5 overflow-hidden text-ellipsis whitespace-nowrap  text-sm",
-  bodyWrapper: "flex justify-between",
-  textPrimary: "text-foreground",
-  membersButtonWrapper: "ml-auto relative",
-};
+
 export default function Members() {
-  const [openInviteModal, setInviteOpenModal] = useState<boolean>(false);
   const [openUpdateMemberModal, setOpenUpdateMemberModal] =
     useState<boolean>(false);
   const [selectedMember, setSelectedMember] = useState<SelectedMemberProps>({
@@ -105,7 +59,9 @@ export default function Members() {
     dispatch(navBarToggle(navBarValue));
   };
   const handleButtonStyle = (): string =>
-    theme === "dark" ? styles.inviteButtonDark : styles.inviteButtonLight;
+    theme === "dark"
+      ? "bg-blueGlow py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer"
+      : "bg-blueGlowLight py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer";
   const getMembersRole = (userId: string) => {
     const membersRole = workspace.users.find(
       (member) => member.user === userId
@@ -354,11 +310,9 @@ export default function Members() {
       return newState;
     });
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
+  const handleSubmit = (): void => {
     invitingUserToWorkspace();
     setEmail("");
-    setInviteOpenModal(false);
   };
 
   const handleUpdateSubmit = async (
@@ -403,31 +357,33 @@ export default function Members() {
       user.email?.toLowerCase().includes(search.toLowerCase())
   );
   return (
-    <div className={styles.mainContainer}>
-      <div className={styles.TopNavbar}>
+    <div className="flex mdsm:flex-col relative bg-card h-auto min-h-screen xs:p-0 w-full">
+      <div className="lg:hidden mdsm:visible bg-background">
         <SettingsTopNavBar setShowNavBar={handleNavToggle} />
       </div>
       <div
         ref={navbarRef}
-        className={`${styles.navbarWrapper} ${showNavBar ? "mdsm:-left-0" : "mdsm:-left-[500px]"}`}
+        className={`relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10 ${
+          showNavBar ? "mdsm:-left-0" : "mdsm:-left-[500px]"
+        }`}
       >
         {/* <SettingsNavBar setLoading={console.log} /> */}
       </div>
 
-      <div className={styles.pageContainer}>
-        <div className={styles.pageWrapper}>
-          <p className={styles.title}>Members</p>
+      <div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4">
+        <div className="sm:w-full sm:p-0 xs:w-full xl:w-2/5 md:w-3/4">
+          <p className="text-2xl text-foreground mb-1 font-medium">Members</p>
 
-          <p className={styles.subtitle}>
+          <p className="text-muted-foreground text-sm">
             Manage who has access to this workspace
           </p>
-          <span className={styles.line} />
+          <span className="block w-full border-t border-border my-6" />
 
           <div
             className={`${currentUserRole ? "flex" : "hidden "} flex-col gap-1`}
           >
-            <div className={styles.bodyWrapper}>
-              <p className={styles.textPrimary}>Invite Link</p>
+            <div className="flex justify-between">
+              <p className="text-foreground">Invite Link</p>
               <PurpleToggle active={isActive} handleClick={handleToggleLink} />
             </div>
             {isActive ? (
@@ -436,13 +392,15 @@ export default function Members() {
                   Share this link with others you&apos;d like to join your
                   workspace.
                 </p>
-                <div className={styles.universalInviteLinkContainer}>
-                  <div className={styles.inviteLinkInput}>
-                    <p className={styles.inviteLinkText}>{workspaceLink}</p>
+                <div className="gap-4 flex justify-between items-center mdsm:w-full">
+                  <div className="flex border border-border rounded w-full justify-between items-center bg-textField">
+                    <p className="text-foreground p-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-sm">
+                      {workspaceLink}
+                    </p>
                     <button
                       type="button"
                       onClick={createWorkspaceLink}
-                      className={styles.createLinkButton}
+                      className="hover:bg-[#999] hover:bg-opacity-20 p-1 mr-2 rounded w-[20px]"
                     >
                       <RefreshCw className="size-4 text-[#858699]" />
                     </button>
@@ -467,70 +425,74 @@ export default function Members() {
                 your workspace.
               </p>
             )}
-            <span className={styles.line} />
+            <span className="block w-full border-t border-border my-6" />
           </div>
 
           <div>
-            <p className={styles.manageMemberTitle}>Manage members</p>
-            <p className={styles.subtitle}>
+            <p className="text-lg text-foreground mb-1 font-medium">
+              Manage members
+            </p>
+            <p className="text-muted-foreground text-sm">
               On the Free plan all members in a workspace are administrators.
               Upgrade to the standard plan to add the ability to assign or
               remove administrator roles.{" "}
-              <a href="www.example.com" className={styles.goToPlan}>
+              <a
+                href="www.example.com"
+                className="text-[#575bc7] text-opacity-1 font-semibold"
+              >
                 Go to Plans!
               </a>
             </p>
           </div>
-          <div className={styles.userInputsContainer}>
-            <div className={styles.userInputSubContainer}>
+          <div className="flex gap-3 mt-6 items-center justify-between w-full sm:justify-between md:w-full lg:w-full">
+            <div className="relative gap-2 flex items-center md:w-2/3 lg:w-3/5 bg-textField rounded">
               <input
-                className={styles.searchInput}
+                className="border border-border bg-transparent text-sm py-1.5 w-full rounded-md w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400"
                 type="text"
                 placeholder="Search by name/email"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <span className={styles.searchIcon}>
+              <span className="absolute left-2 top-2.5">
                 <Search className="size-4 text-[#999999]" />
               </span>
             </div>
             <div>
-              <button
-                type="button"
-                onClick={() => setInviteOpenModal(true)}
-                className={handleButtonStyle()}
-              >
-                Invite
-              </button>
+              {/* Modal to invite users */}
+              <InviteMembersModal
+                setEmail={setEmail}
+                handleSubmit={handleSubmit}
+              />
             </div>
           </div>
-          <p className={styles.membersLengthTitle}>
+          <p className="mt-6 text-foreground text-sm">
             {workspace?.users.length} members
           </p>
           {filteredMembers?.map(
             ({ _id, name, email, username }: ListOfUsersProps) => (
-              <div key={name} className={styles.membersDescriptionContainer}>
-                <div className={styles.membersInfo}>
-                  <p className={styles.membersNameOrRole}>{name}</p>
-                  <p className={styles.membersEmail}>{email}</p>
+              <div
+                key={name}
+                className="flex items-center border-border border-b pb-2 mt-4 md:text-sm justify-between xs:text-sm"
+              >
+                <div className="flex flex-col w-2/4">
+                  <p className="text-foreground">{name}</p>
+                  <p className="text-muted-foreground">{email}</p>
                 </div>
-                <span className={styles.membersNameOrRole}>
-                  {getMembersRole(_id)}
-                </span>
-                <div className={styles.membersButtonWrapper}>
+                <span className="text-foreground">{getMembersRole(_id)}</span>
+                <div className="ml-auto relative">
                   <button
                     type="button"
                     onClick={() => handleCommandOptions(_id)}
                     className={`${
                       commandOptions[_id] ? "focus:bg-[#333]" : ""
-                    }  block px-1 py-0.5 rounded`}
+                    } block px-1 py-0.5 rounded`}
                   >
                     <Ellipsis className="cursor-pointer size-4 text-[#858699]" />
                   </button>
                   <div
                     className={`${
                       commandOptions[_id] ? "absolute " : "hidden"
-                    } ${styles.buttonsOptionContainer}`}
+                    } flex flex-col -left-28 top-6 bg-background border border-border rounded gap-1`}
                   >
                     {renderUserOptions(_id, name, username)}
                   </div>
@@ -548,14 +510,6 @@ export default function Members() {
           )}
         </div>
       </div>
-      {/* Modal to invite users */}
-      {openInviteModal && (
-        <InviteMembersModal
-          setEmail={setEmail}
-          handleSubmit={handleSubmit}
-          setOpenModal={setInviteOpenModal}
-        />
-      )}
     </div>
   );
 }
