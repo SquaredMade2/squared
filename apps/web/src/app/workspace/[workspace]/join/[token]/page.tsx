@@ -42,7 +42,10 @@ export default function JoiningWorkspaceVerification() {
         }
         break;
       default:
-        toast({ title: "An unexpected error occured" });
+        toast({
+          title: "An unexpected error occured",
+          variant: "destructive",
+        });
         break;
     }
   };
