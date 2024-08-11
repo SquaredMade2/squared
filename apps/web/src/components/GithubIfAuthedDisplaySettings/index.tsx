@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { authorizeGithubRedirect } from "@/store/userSettings/thunks";
 import GithubUserInfo from "../GithubUserInfo";
 import type { GithubIfAuthedDisplaySettingsProps } from "./GithubIfAuthedDisplaySettings";

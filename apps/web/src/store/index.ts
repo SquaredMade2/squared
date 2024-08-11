@@ -15,49 +15,49 @@ import notificationReducer from "./notifications";
 import currentTaskReducer from "./currentTask";
 import storage from "redux-persist/lib/storage";
 import {
-	persistReducer,
-	FLUSH,
-	PAUSE,
-	PERSIST,
-	persistStore,
-	PURGE,
-	REGISTER,
-	REHYDRATE,
+  persistReducer,
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
 } from "redux-persist";
 
 const rootReducer = combineReducers({
-	toggleTaskFeatures: toggleTaskFeatures.reducer,
-	userSettings: userSettings.reducer,
-	isCmdPalette: isCmdPalette.reducer,
-	showTaskForm: showTaskForm.reducer,
-	taskData: taskData.reducer,
-	showNewIssue: showNewIssue.reducer,
-	resumeNewIssue: resumeNewIssue.reducer,
-	singleTask: singleTask.reducer,
-	notifications: notificationReducer,
-	currentTask: currentTaskReducer,
-	listOfWorkspaceMembers: getListOfMembersReducer,
-	filterPage,
-	events,
+  toggleTaskFeatures: toggleTaskFeatures.reducer,
+  userSettings: userSettings.reducer,
+  isCmdPalette: isCmdPalette.reducer,
+  showTaskForm: showTaskForm.reducer,
+  taskData: taskData.reducer,
+  showNewIssue: showNewIssue.reducer,
+  resumeNewIssue: resumeNewIssue.reducer,
+  singleTask: singleTask.reducer,
+  notifications: notificationReducer,
+  currentTask: currentTaskReducer,
+  listOfWorkspaceMembers: getListOfMembersReducer,
+  filterPage,
+  events,
 });
 
 const persistConfig = {
-	key: "root",
-	storage,
-	whitelist: ["userSettings", "toggleTaskFeatures", "taskData"],
-	debug: true,
+  key: "root",
+  storage,
+  whitelist: ["userSettings", "toggleTaskFeatures", "taskData"],
+  debug: true,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-	reducer: persistedReducer,
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			serializableCheck: {
-				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-			},
-		}),
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);
