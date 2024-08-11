@@ -32,7 +32,7 @@ const {
 const { Server } = require("socket.io");
 const { createServer } = require("node:http");
 
-const MONGO_URL = process.env.MONGO_URL_TESTING;
+const MONGO_URL = process.env.MONGO_URL;
 const PORT = process.env.PORT;
 
 const app: Express = express();
