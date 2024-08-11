@@ -8,10 +8,6 @@ import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CurrentNavbar from "@/components/CurrentNavbar";
 
-const styles = {
-  currentNavBar: "h-full flex flex-row overflow-hidden",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -28,7 +24,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className={styles.currentNavBar}>
+            <div className="h-full flex flex-row overflow-hidden">
               <CurrentNavbar />
               {children}
             </div>

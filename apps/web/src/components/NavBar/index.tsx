@@ -18,40 +18,6 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 
-const styles = {
-  header: "flex items-center justify-center w-full lg:justify-center",
-  main: "flex flex h-full justify-center bg-popover border-r   w-[296px]",
-  second: "flex flex-col gap-4 lg:pt-1.5 pt-6 items-center text-nav w-full",
-  projectTasklist: "flex flex-row items-center cursor-pointer relative w-full",
-  newIssueDiv: "flex flex-row w-full justify-around ml-2",
-  newIssueModalContainer: "absolute top-[100px] left-full",
-  newTaskButton: "pr-36 pl-2 border shadow-lg rounded-md focus:outline-none",
-  newTaskText: "text-nav",
-  createWorkSpaceDiv: "items-center",
-  inviteDiv:
-    "flex flex-col gap-4 items-center pb-6 text-foreground h-full justify-end",
-  userImg: "text-xs",
-  dropdownPostion: "relative",
-  teamsWrapper: "w-full h-full left-5 mt-10 cursor-default text-foreground",
-  themeButton: "mr-3",
-  stackIconButton: "flex items-center cursor-pointer hover:bg-background",
-  stackIconSVG: "mr-2",
-  row: "w-full flex items-center my-1.5 rounded-md mr-3",
-  innerDivSpan: "text-sm m-2 text-popover-foreground font-semibold",
-  triangle: "transition-all 0.2s ease-in-out ml-1 z-30",
-  fullWidth: "w-full ml-1.5",
-  ul: "overflow-hidden",
-  mainContainer: "w-11/12 flex flex-col",
-  inboxButton:
-    "w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer",
-  hover: "bg-secondary",
-  teamRow:
-    "w-full flex items-center my-1.5 hover:bg-secondary rounded-md pl-0.5",
-  teamSVG: "mr-2 p-0.5 rounded",
-  teamButton: "flex items-center cursor-pointer",
-  listWrapper: "w-full bg-accent z-10",
-};
-
 const Navbar = () => {
   const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -65,35 +31,44 @@ const Navbar = () => {
     dispatch(setCurrentTeam(team));
     router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
   };
+
   return (
-    <div className={styles.main}>
-      <div className={styles.mainContainer}>
-        <div className={styles.second}>
-          <div className={styles.projectTasklist}>
-            <div className={styles.fullWidth}>
-              <span className={styles.dropdownPostion}>
+    <div className="flex flex h-full justify-center bg-popover border-r w-[296px]">
+      <div className="w-11/12 flex flex-col">
+        <div className="flex flex-col gap-4 lg:pt-1.5 pt-6 items-center text-nav w-full">
+          <div className="flex flex-row items-center cursor-pointer relative w-full">
+            <div className="w-full ml-1.5">
+              <span className="relative">
                 <WorkSpaceDropDown />
               </span>
             </div>
           </div>
-          <span className={styles.innerDivSpan}>{user?.name}</span>
-          <div className={styles.newIssueDiv}>
+          <span className="text-sm m-2 text-popover-foreground font-semibold">
+            {user?.name}
+          </span>
+          <div className="flex flex-row w-full justify-around ml-2">
             <NewIssueButton />
             <SearchButton setIsSearchCommand={setIsSearchCommand} />
           </div>
         </div>
-        <div className={styles.teamsWrapper}>
+        <div className="w-full h-full left-5 mt-10 cursor-default text-foreground">
           <div
-            className={`${styles.row + styles.inboxButton} ${inboxPageChecker && styles.hover} `}
+            className={`w-full flex items-center my-1.5 rounded-md mr-3 w-full flex items-center h-9 hover:bg-secondary rounded-md cursor-pointer ${
+              inboxPageChecker && "bg-secondary"
+            }`}
             onClick={() => {
               router.push(`/workspace/${workspace.url}/inbox`);
             }}
           >
-            <div className={`${styles.innerDivSpan}`}>Inbox</div>
+            <div className="text-sm m-2 text-popover-foreground font-semibold">
+              Inbox
+            </div>
           </div>
 
-          <div className={styles.row}>
-            <span className={styles.innerDivSpan}>Your teams</span>
+          <div className="w-full flex items-center my-1.5 rounded-md mr-3">
+            <span className="text-sm m-2 text-popover-foreground font-semibold">
+              Your teams
+            </span>
           </div>
           <Accordion type="single" collapsible>
             {workspace?.teams.map((team: Team) => {
@@ -101,7 +76,6 @@ const Navbar = () => {
                 <AccordionItem key={team._id} value={team._id}>
                   <AccordionTrigger>
                     <LayoutGrid className="text-[#9577FF] size-4" />
-
                     {team.name}
                   </AccordionTrigger>
                   <AccordionContent>
@@ -117,11 +91,11 @@ const Navbar = () => {
             })}
           </Accordion>
         </div>
-        <div className={styles.newIssueModalContainer}>
+        <div className="absolute top-[100px] left-full">
           <NewIssueModal />
         </div>
-        <div className={styles.newIssueModalContainer}>
-          <SearchCommand
+                <div className="absolute top-[100px] left-full">
+                    <SearchCommand
             isSearchCommand={isSearchCommand}
             setIsSearchCommand={setIsSearchCommand}
           />

@@ -10,22 +10,6 @@ import type {
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { LayoutGrid, Star } from "lucide-react";
 
-const styles = {
-  mainWidget:
-    "fixed top-14 right-0 z-10 flex flex-col bg-card border border-border w-full md:w-1/2 lg:w-1/3 duration-500 h-screen transition-transform transform",
-  header:
-    "flex flex-col lg:pt-1.5 items-center text-nav w-full h-28 p-5 mt-2 border-b border-border bg-card",
-  headerTag: "m-2 p-2 mr-auto bg-popover rounded-md text-sm font-medium",
-  headerMainRow: "flex flex-row items-center m-3 mr-auto",
-  headerProjectTitle: "mx-3",
-  favoriteButton: "cursor-pointer",
-  projectImageLabelButton: "cursor-pointer",
-  widget: "flex flex-row items-center cursor-pointer relative w-full px-[18px]",
-  body: "flex flex-col m-3 items-center justify-center",
-  hidden: "translate-x-full",
-  visible: "translate-x-0",
-};
-
 export const ProjectDataWidget = () => {
   const [toggleWidget, setToggleWidget] = useState<boolean>(false);
 
@@ -77,25 +61,22 @@ export const ProjectDataWidget = () => {
           setToggleWidget={setToggleWidget}
         />
         <div
-          className={`${toggleWidget ? styles.visible : styles.hidden} ${styles.mainWidget}`}
+          className={`fixed top-14 right-0 z-10 flex flex-col bg-card border border-border w-full md:w-1/2 lg:w-1/3 duration-500 h-screen transition-transform transform ${
+            toggleWidget ? "translate-x-0" : "translate-x-full"
+          }`}
         >
-          <div className={styles.header}>
-            <header className={styles.headerTag}>All Issues</header>
-            <div className={styles.headerMainRow}>
-              <button
-                type="button"
-                className={styles.projectImageLabelButton}
-                title="title"
-              >
+          <div className="flex flex-col lg:pt-1.5 items-center text-nav w-full h-28 p-5 mt-2 border-b border-border bg-card">
+            <header className="m-2 p-2 mr-auto bg-popover rounded-md text-sm font-medium">
+              All Issues
+            </header>
+            <div className="flex flex-row items-center m-3 mr-auto">
+              <button type="button" className="cursor-pointer" title="title">
                 <LayoutGrid className="text-[#9577FF] size-4" />
               </button>
-              <header className={styles.headerProjectTitle}>
-                {" "}
-                {currentTeam.name}{" "}
-              </header>
+              <header className="mx-3">{currentTeam.name}</header>
               <button
                 type="button"
-                className={styles.favoriteButton}
+                className="cursor-pointer"
                 onClick={() => setFavorite(!favorite)}
               >
                 {favorite ? (
@@ -106,8 +87,7 @@ export const ProjectDataWidget = () => {
               </button>
             </div>
           </div>
-
-          <div className={styles.body}>
+          <div className="flex flex-col m-3 items-center justify-center">
             <ProjectDataWidgetDropdowns
               assigneesData={assigneesData}
               labelsData={labelsData}

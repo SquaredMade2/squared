@@ -30,12 +30,7 @@ const TaskPageDescription = () => {
     updateTaskValue,
   } = useLogTaskEvent();
   const [isFocused, setIsFocused] = useState(false);
-
-  const styles = {
-    description:
-      "resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent ",
-  };
-
+  
   const listOfMembers = useSelector(
     (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
   );
@@ -93,7 +88,7 @@ const TaskPageDescription = () => {
     <MentionInput
       data={listOfMembers}
       onChange={handleChange}
-      className={styles.description}
+      className="resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent "
       placeholder={"Add description..."}
       value={transformedDescriptionInput}
       name={"editDescription"}

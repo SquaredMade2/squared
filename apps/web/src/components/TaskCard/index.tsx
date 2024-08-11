@@ -18,42 +18,19 @@ import ProfileImage from "@/components/ProfileImage";
 import RightClickMenu from "@/components/RightClickMenu";
 import { SocketContext } from "@/app/SocketProvider";
 import { getAllTasks, getAllUsers } from "@/store/taskData/thunks";
-// import { formatUrl } from '@/utils/formatting'; -- fix #2 https://linear.app/project-tasklist/issue/PRO-760/wrong-task-url-redirection-bug
 import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
 
-const styles = {
-  taskCardContainer: "relative w-[325px]",
-  taskCard:
-    " cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4",
-  main: "relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent",
-  checkboxSection:
-    "group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5",
-  sixVerticalDots:
-    "hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2",
-  middleSection:
-    "appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]",
-  dateSection: "flex justify-end col-span-4 items-center lg:pr-5",
-  iconSection: "flex justify-end col-span-3 items-center pl-3.5",
-  checkboxDiv: "xs:mr-5 sm:mr-5 md:mr-4 ",
-  linkGrid: "grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0",
-  titleDiv: "col-span-10 text-foreground",
-  dateDiv: "text-muted-foreground md:flex xs:hidden sm:hidden",
-  labelRow: "flex flex-row items-center space-x-4",
-};
-
 const TaskCard = ({
   filteredTasks,
-  // setShowRenameModal, -- fix https://linear.app/project-tasklist/issue/PRO-756/taskcard-context-popover-foreground-typescript-bug
   setTaskData,
   highlightText,
   location,
 }: TaskCardProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
   const uniqueTasks: Task[] = [];
 
   const { showDateTime, showPriority, showLabels } = useSelector(
@@ -74,15 +51,10 @@ const TaskCard = ({
   const [deleteFade, setDeleteFade] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showDeleteCard, setShowDeleteCard] = useState(false);
-  const [
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- fix https://linear.app/project-tasklist/issue/PRO-756/taskcard-context-popover-foreground-typescript-bug
-    menuPosition,
-    setMenuPosition,
-  ] = useState<{
+  const [menuPosition, setMenuPosition] = useState<{
     x: number;
     y: number;
   } | null>(null);
-  // const taskUrl = `workspace/${currentWorkspace.url}/issue`; -- fix #2 https://linear.app/project-tasklist/issue/PRO-760/wrong-task-url-redirection-bug
 
   const taskRefs: MutableRefObject<{
     [key: string]: HTMLElement | null;
@@ -144,19 +116,6 @@ const TaskCard = ({
       document.removeEventListener("mousedown", handleClickAway);
     };
   }, []);
-
-  // useEffect(() => {
-  // 	const handleKeyDown = (e) => {
-  // 		if ((e.key === 'Escape' || e.key === 'Esc') && showDeleteCard === true) {
-  // 			handleCloseDeleteCard();
-  // 		}
-  // 		document.addEventListener('keydown', this.handleKeyDown);
-
-  // 		return () => {
-  // 			document.removeEventListener('keydown', this.handleKeyDown);
-  // 		};
-  // 	};
-  // }, [showDeleteCard]); leave in unitl component is complete.
   return (
     <>
       {view === "list" &&
@@ -188,23 +147,26 @@ const TaskCard = ({
                 </div>
 
                 <div
-                  className={`${styles.main} ${
+                  className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
                     index === filteredTasks.length - 1 && "rounded-b-lg"
                   }`}
                 >
-                  <div className={styles.checkboxSection}>
-                    <div className={styles.sixVerticalDots}>
+                  <div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
+                    <div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
                       <GripVertical className="size-5" />
                     </div>
-                    <div className={styles.checkboxDiv}>
-                      <input className={styles.middleSection} type="checkbox" />
+                    <div className="xs:mr-5 sm:mr-5 md:mr-4">
+                      <input
+                        className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
+                        type="checkbox"
+                      />
                     </div>
                   </div>
                   <div
                     onClick={() => navigateToTask(task)}
-                    className={styles.linkGrid}
+                    className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
                   >
-                    <div className={styles.titleDiv}>
+                    <div className="col-span-10 text-foreground">
                       <TaskCardTitle
                         key={task._id}
                         task={task}
@@ -258,10 +220,10 @@ const TaskCard = ({
                       href={`/tasks/${task._id}`}
                       onClick={() => dispatch(setTaskPage(task))}
                     >
-                      <div className={styles.taskCardContainer}>
+                      <div className="relative w-[325px]">
                         <div
                           key={task._id}
-                          className={`${styles.taskCard} ${
+                          className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
                             theme === "light" ? "bg-card" : "bg-background"
                           }`}
                         >
@@ -287,7 +249,7 @@ const TaskCard = ({
                                 : "No Date Set"}
                             </TaskCardDate>
                           )}
-                          <div className={styles.labelRow}>
+                          <div className="flex flex-row items-center space-x-4">
                             {showPriority && (
                               <TaskCardPriority border={true} task={task} />
                             )}
@@ -325,22 +287,24 @@ const TaskCard = ({
                 />
               )}
             </div>
-
-            <div className={styles.main}>
-              <div className={styles.checkboxSection}>
-                <div className={styles.sixVerticalDots}>
+            <div className="relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent">
+              <div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
+                <div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
                   <GripVertical className="size-5" />
                 </div>
-                <div className={styles.checkboxDiv}>
-                  <input className={styles.middleSection} type="checkbox" />
+                <div className="xs:mr-5 sm:mr-5 md:mr-4">
+                  <input
+                    className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
+                    type="checkbox"
+                  />
                 </div>
               </div>
               <Link
                 href={`/tasks/${task._id}`}
                 onClick={() => setTaskPage(task)}
-                className={styles.linkGrid}
+                className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
               >
-                <div className={styles.titleDiv}>
+                <div className="col-span-10 text-foreground">
                   <TaskCardTitle
                     key={task._id}
                     task={task}
@@ -350,9 +314,8 @@ const TaskCard = ({
                     location={location}
                   />
                 </div>
-
-                <div className={styles.dateSection}>
-                  <div className={styles.iconSection}>
+                <div className="flex justify-end col-span-4 items-center lg:pr-5">
+                  <div className="flex justify-end col-span-3 items-center pl-3.5">
                     {user && (
                       <ProfileImage
                         profileName={user.name}

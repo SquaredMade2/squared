@@ -1,10 +1,6 @@
 import type { ProjectDataWidgetButtonProps } from "./ProjectDataWidgetButton.interfaces";
 import { PanelLeftOpen, PanelRightOpen } from "lucide-react";
 
-const styles = {
-  mainButton: "flex items-center ml-5 cursor-pointer",
-};
-
 export const ProjectDataWidgetButton = ({
   toggleWidget,
   setToggleWidget,
@@ -12,7 +8,7 @@ export const ProjectDataWidgetButton = ({
   return (
     <button
       title="title"
-      className={styles.mainButton}
+      className="flex items-center ml-5 cursor-pointer"
       onClick={() => setToggleWidget(!toggleWidget)}
       type="button"
     >

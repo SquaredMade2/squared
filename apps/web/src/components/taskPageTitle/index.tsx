@@ -28,12 +28,6 @@ const TaskPageTitle = () => {
     updateTaskValue,
   } = useLogTaskEvent();
 
-  const styles = {
-    container: "flex flex-col",
-    title:
-      "mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none",
-  };
-
   const listOfMembers = useSelector(
     (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
   );
@@ -75,12 +69,11 @@ const TaskPageTitle = () => {
       dispatch(updateTitle(transformedTitleInput, taskId));
     }
   };
-
   return (
-    <form className={styles.container} onSubmit={handleSubmit}>
+    <form className="flex flex-col" onSubmit={handleSubmit}>
       <MentionInput
         data={listOfMembers}
-        className={styles.title}
+        className="mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none"
         value={updatedTitle ?? ""}
         onChange={handleChange}
         onBlur={handleBlur}
