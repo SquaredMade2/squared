@@ -5,8 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useToast } from "@/components/ui/use-toast";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { SqLogo } from "@/components/Svg";
 import { ChevronLeft } from "lucide-react";
@@ -17,6 +16,7 @@ export default function ResetPassword() {
   const router = useRouter();
   const params = useParams();
   const token = params.token as string;
+  const { toast } = useToast();
 
   const handleNewPassChange = (e: InputChangeEvent) => {
     setNewPassword(e.target.value);
@@ -30,7 +30,10 @@ export default function ResetPassword() {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords don't match.");
+      toast({
+        title: "Passwords don't match.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -39,10 +42,13 @@ export default function ResetPassword() {
         `${process.env.NEXT_PUBLIC_SERVER}/auth/password/${token}`,
         { token, newPassword }
       );
-      toast.success(responseData.message);
+      toast({ title: responseData.message });
       router.push("/login");
     } catch (error) {
-      toast.error("Failed to reset password. Please try again.");
+      toast({
+        title: "Failed to reset password. Please try again.",
+        variant: "destructive",
+      });
       console.error("Failed to reset password:", error);
     }
   };
@@ -68,7 +74,8 @@ export default function ResetPassword() {
         </div>
         <div className="sm:mx-auto sm:w-[90%]">
           <h2 className="text-sm text-[#9597ad] text-center">
-            Please create new password that you don&apos;t use on any other site
+            Please create new password that you don&apos;t use on any
+            other site
           </h2>
         </div>
         <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
