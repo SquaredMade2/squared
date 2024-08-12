@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@vercel/postgres": "^0.7.2",
+    "@repo/db": "workspace:*",
     "dotenv": "^16.4.1",
     "express": "^4.18.2"
   },

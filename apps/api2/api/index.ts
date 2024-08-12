@@ -2,9 +2,25 @@
 /* eslint-disable */
 import { Router } from "express";
 import { Route, toQueryHandler, toMutationHandler } from "./route";
+import { PrismaClient } from "@repo/db/src";
 
+export const prisma = new PrismaClient();
+
+
+import * as $abb393 from "./task/[taskId]";
 
 export type AllRouteDeps =
+  & Parameters<typeof $abb393.createRoute>[0]
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
+
+  {
+    type Params = { taskId: string };
+    const r: Route<Params> = $abb393.createRoute(deps);
+
+    router.get("/api/task/:taskId", toQueryHandler(r.GET));
+    router.post("/api/task/:taskId", toMutationHandler(r.POST));
+    router.put("/api/task/:taskId", toMutationHandler(r.PUT));
+    router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
+  }
 }

@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+enum Status {
+  backlog
+  todo
+  inProgress
+  done
+  canceled
+  duplicate
+}
+
+enum Priority {
+  noPriority
+  urgent
+  high
+  medium
+  low
+}
+
+enum Labels {
+  Bug
+  Feature
+  Improvement
+  Red
+  Test
+}
+
+model User {
+  id                 String         @id @default(uuid())
+  name               String
+  username           String
+  email              String         @unique
+  password           String
+  last_login         DateTime?
+  on_boarding        Boolean
+  verified           Boolean
+  default_workspace  Workspace      @relation("DefaultWorkspaceUsers", fields: [defaultWorkspaceId], references: [id])
+  defaultWorkspaceId String
+  workspaces         Workspace[]
+  teams              Team[]
+  tasks              Task[]
+  join_workspace     String[]
+  roles              UsersRoles[]
+  notifications      Notification[]
+  assignedWorkspace  Workspace?     @relation("AssignedWorkspaceUser")
+}
+
+model Author {
+  id           String         @id @default(uuid())
+  name         String
+  Task         Task[]
+  Comment      Comment[]
+  TaskEvent    TaskEvent[]
+  TaskEventLog TaskEventLog[]
+  Commits      Commits[]
+}
+
+model Assignee {
+  id               String      @id @default(uuid())
+  name             String
+  Task             Task[]
+  TaskEvent        TaskEvent[] @relation("OriginalAssigneeRelation")
+  TaskEventUpdated TaskEvent[] @relation("UpdatedAssigneeRelation")
+}
+
+model Task {
+  id             String         @id @default(uuid())
+  author         Author         @relation(fields: [authorId], references: [id])
+  authorId       String
+  title          String
+  description    String
+  status         Status
+  identifier     String
+  priority       Priority
+  labels         Labels[]
+  dueDate        DateTime?
+  effortEstimate Int
+  team           Team           @relation(fields: [teamId], references: [id])
+  teamId         String
+  dateCreated    DateTime?      @default(now())
+  assignee       Assignee       @relation(fields: [assigneeId], references: [id])
+  assigneeId     String
+  comments       Comment[]
+  eventLogs      TaskEventLog[]
+  user           User?          @relation(fields: [userId], references: [id])
+  userId         String?
+  taskEvents     TaskEvent[]
+  notifications  Notification[]
+}
+
+model Comment {
+  id       String   @id @default(uuid())
+  comment  String
+  author   Author   @relation(fields: [authorId], references: [id])
+  authorId String
+  date     DateTime @default(now())
+  task     Task     @relation(fields: [taskId], references: [id])
+  taskId   String
+}
+
+model TaskEvent {
+  id                 String    @id @default(uuid())
+  type               String
+  author             Author    @relation(fields: [authorId], references: [id])
+  authorId           String
+  task               Task      @relation(fields: [taskId], references: [id])
+  taskId             String
+  updatedAt          DateTime  @default(now())
+  originalLabels     Labels[]
+  updatedLabels      Labels[]
+  originalValue      String?
+  updatedValue       String?
+  originalAssignee   Assignee? @relation("OriginalAssigneeRelation", fields: [originalAssigneeId], references: [id])
+  updatedAssignee    Assignee? @relation("UpdatedAssigneeRelation", fields: [updatedAssigneeId], references: [id])
+  originalAssigneeId String?
+  updatedAssigneeId  String?
+}
+
+model TaskEventLog {
+  id        String   @id @default(uuid())
+  author    Author   @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  eventsLog String[]
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    String
+}
+
+model Notification {
+  id          String  @id @default(uuid())
+  user        User    @relation(fields: [userId], references: [id])
+  userId      String
+  task        Task    @relation(fields: [taskId], references: [id])
+  taskId      String
+  read        Boolean
+  description String
+}
+
+model Project {
+  id          String     @id @default(uuid())
+  name        String
+  team        Team       @relation(fields: [teamId], references: [id])
+  teamId      String
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  workspaceId String?
+}
+
+model StatusModel {
+  id     String @id @default(uuid())
+  status String
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String
+}
+
+model Team {
+  id          String    @id @default(uuid())
+  name        String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+  users       User[]
+  tasks       Task[]
+  identifier  String
+  projects    Project[]
+}
+
+model UsersRoles {
+  id          String     @id @default(uuid())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      String
+  role        String
+  username    String
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  workspaceId String?
+}
+
+model Workspace {
+  id                   String             @id @default(uuid())
+  name                 String
+  url                  String
+  companySize          Int
+  teams                Team[]
+  projects             Project[]
+  users                UsersRoles[]
+  universalTokenLink   UniversalTokenLink @relation(fields: [universalTokenLinkId], references: [id])
+  issuesCreated        Int
+  githubRepoInfo       GitHubRepoInfo     @relation(fields: [gitHubRepoInfoId], references: [id])
+  defaultUsers         User[]             @relation("DefaultWorkspaceUsers")
+  assignedUser         User?              @relation("AssignedWorkspaceUser", fields: [assignedUserId], references: [id])
+  assignedUserId       String?            @unique
+  User                 User?              @relation(fields: [userId], references: [id])
+  userId               String?
+  universalTokenLinkId String
+  gitHubRepoInfoId     String
+}
+
+model UniversalTokenLink {
+  id        String      @id @default(uuid())
+  token     String
+  isEnabled Boolean
+  workspace Workspace[]
+}
+
+model GitHubRepoInfo {
+  id        String      @id @default(uuid())
+  repoName  String
+  owner     String
+  workspace Workspace[]
+}
+
+model Commits {
+  id          String   @id @default(uuid())
+  tree_id     String
+  distinct    Boolean
+  message     String
+  timestamp   DateTime
+  url         String
+  author      Author   @relation(fields: [authorId], references: [id])
+  authorId    String
+  committer   Commiter @relation(fields: [committerId], references: [id])
+  committerId String
+  added       String[]
+  removed     String[]
+  modified    String[]
+  repoName    String
+  owner       String
+}
+
+model Commiter {
+  id       String    @id @default(uuid())
+  name     String
+  email    String
+  username String
+  commits  Commits[]
+}

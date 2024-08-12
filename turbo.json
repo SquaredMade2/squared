@@ -9,7 +9,7 @@
         "!.next/cache/**",
         "public/dist/**"
       ],
-      "dependsOn": ["^build"],
+      "dependsOn": ["^db:generate", "^build"],
       "env": ["NEXT_PUBLIC_API_HOST"]
     },
     "start": {
@@ -26,6 +26,7 @@
       "dependsOn": ["^lint:fix"]
     },
     "dev": {
+      "dependsOn": ["^db:generate"],
       "cache": false,
       "persistent": true
     },
@@ -43,6 +44,15 @@
     },
     "reset": {
       "dependsOn": ["^reset"]
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    },
+    "studio": {
+      "dependsOn": ["^studio"]
     }
   }
 }

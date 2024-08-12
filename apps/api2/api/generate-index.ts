@@ -17,6 +17,10 @@ export function generateIndex() {
 /* eslint-disable */
 import { Router } from "express";
 import { Route, toQueryHandler, toMutationHandler } from "./route";
+import { PrismaClient } from "@repo/db/src";
+
+export const prisma = new PrismaClient();
+
 `);
 
   const files = getRoutes(__dirname)
