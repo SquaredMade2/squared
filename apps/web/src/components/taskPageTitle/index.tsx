@@ -10,9 +10,10 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { RootState } from "@/store";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 
 const TaskPageTitle = () => {
+  const { toast } = useToast();
   const dispatch = useAppDispatch();
 
   const title = useSelector((state: RootState) => state.singleTask.data?.title);
@@ -73,8 +74,9 @@ const TaskPageTitle = () => {
     if (
       taskListTitle.includes(updatedTitle === undefined ? "" : updatedTitle)
     ) {
-      toast.warn(`${updatedTitle} already exists`, {
-        autoClose: 2500,
+      toast({
+        title: `${updatedTitle} already exists`,
+        variant: "destructive",
       });
       return;
     }
