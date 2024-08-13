@@ -7,7 +7,6 @@ import {
 	setFilteredTaskList,
 } from "@/store/filterPage/actions";
 import { setTaskList } from "@/store/taskData";
-import { updateTaskAfterDrag } from "@/api/taskApi";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterView from "@/components/FilterView";
 import type { RootState } from "@/store";
@@ -15,10 +14,13 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { Link } from "lucide-react";
+import type { Status } from "@repo/db";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const FilterPage = () => {
 	const params = useParams();
 	const dispatch = useAppDispatch();
+	const { updateTask } = useSquaredStore((state) => state.tasks);
 	const filteredTaskList = useSelector(
 		(state: RootState) => state.filterPage.filteredTaskList,
 	);
@@ -84,7 +86,7 @@ const FilterPage = () => {
 
 		dispatch(setTaskList(updatedTaskList));
 		dispatch(setFilteredTaskList(updatedFilteredTaskList));
-		await updateTaskAfterDrag(draggedTaskFound, droppableId);
+		updateTask(draggedTaskFound._id, { status: droppableId as Status });
 	};
 
 	const handleCopyShareLink = async () => {

@@ -5,9 +5,9 @@ import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { RenameModalProps } from "@/components/RenameModal/RenameModal.interfaces";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { Pencil } from "lucide-react";
-import { updateTitle } from "@/api/taskApi";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { useTheme } from "next-themes";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const RenameModal = ({
 	showRenameModal,
@@ -16,6 +16,7 @@ const RenameModal = ({
 	searchSubmit,
 }: RenameModalProps) => {
 	const dispatch = useAppDispatch();
+	const { updateTask } = useSquaredStore((state) => state.tasks);
 
 	const [inputValue, setInputValue] = useState<string>("");
 	const { theme } = useTheme();
@@ -31,7 +32,7 @@ const RenameModal = ({
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
 		if (inputValue !== taskData?.title) {
-			await updateTitle(inputValue.trim(), taskData._id);
+			await updateTask(taskData._id, { title: inputValue.trim() });
 			dispatch(getAllTasks(currentTeam));
 			if (searchSubmit) {
 				searchSubmit(e);

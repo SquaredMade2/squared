@@ -21,7 +21,7 @@ import { getAllTasks, getAllUsers } from "@/store/taskData/thunks";
 import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
-import { deleteTaskCard } from "@/api/taskApi";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const TaskCard = ({
 	filteredTasks,
@@ -32,6 +32,7 @@ const TaskCard = ({
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const uniqueTasks: Task[] = [];
+	const { deleteTask } = useSquaredStore((state) => state.tasks);
 
 	const { showDateTime, showPriority, showLabels } = useSelector(
 		(state: RootState) => state.toggleTaskFeatures,
@@ -64,7 +65,7 @@ const TaskCard = ({
 	const getNotificationId = notifications.map((noti) => noti._id);
 
 	const handleDeleteTaskCard = async (task: Task) => {
-		await deleteTaskCard(task._id);
+		await deleteTask(task._id);
 		dispatch(getAllTasks(currentTeam));
 		setShowDeleteCard(false);
 		setDeleteFade(false);

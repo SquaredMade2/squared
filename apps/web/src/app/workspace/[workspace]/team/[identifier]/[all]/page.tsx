@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
 import { getTeam, getAllTasks } from "@/store/taskData/thunks";
 import { setTaskList } from "@/store/taskData";
 import TopNavBar from "@/components/TopNavBar";
@@ -14,9 +13,12 @@ import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
+import { useSquaredStore } from "@/storeZ/provider";
+import type { Status } from "@repo/db";
 
 export default function Home() {
 	const dispatch = useDispatch();
+	const { updateTask, deleteTask } = useSquaredStore((state) => state.tasks);
 	const router = useRouter();
 	const params = useParams();
 	const { theme, view, user, showNavBar } = useSelector(
@@ -60,7 +62,7 @@ export default function Home() {
 	const backlogSelected = params.all === "backlog";
 
 	const handleDeleteTask = async (taskId: string) => {
-		await deleteTaskCard(taskId);
+		deleteTask(taskId);
 		dispatch(getAllTasks(currentTeam) as never);
 	};
 
@@ -101,7 +103,7 @@ export default function Home() {
 		const droppableId = destination.droppableId;
 
 		dispatch(setTaskList(updatedTaskList));
-		await updateTaskAfterDrag(draggedTaskFound, droppableId);
+		updateTask(draggedTaskFound._id, { status: droppableId as Status });
 	};
 
 	useEffect(() => {

@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { getFilteredViews } from "@/store/filterPage/actions";
 import type { RootState } from "@/store";
-import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { setTaskList } from "@/store/taskData";
 import FilterSaveForm from "@/components/FilterSaveForm";
@@ -16,10 +15,13 @@ import ViewNewTopNavBar from "@/components/ViewNewTopNavBar";
 import type { DragResult } from "@/components/ViewAllTasks/ViewAllTasks.interfaces";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { useSquaredStore } from "@/storeZ/provider";
+import type { Status } from "@repo/db";
 
 const ViewsPage: React.FC = () => {
 	const params = useParams();
 	const dispatch = useAppDispatch();
+	const { updateTask, deleteTask } = useSquaredStore((state) => state.tasks);
 	const [showFilterSaveForm, setShowFilterSaveForm] = useState(false);
 	const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
 	const { currentTeam } = useSelector((state: RootState) => state.taskData);
@@ -74,11 +76,11 @@ const ViewsPage: React.FC = () => {
 		const droppableId = destination.droppableId;
 
 		dispatch(setTaskList(updatedTaskList));
-		await updateTaskAfterDrag(draggedTaskFound, droppableId);
+		updateTask(draggedTaskFound._id, { status: droppableId as Status });
 	};
 
 	const handleDeleteTask = async (taskId: string) => {
-		await deleteTaskCard(taskId);
+		await deleteTask(taskId);
 		dispatch(getAllTasks(currentTeam));
 	};
 
