@@ -25,7 +25,7 @@ enum Priority {
   low
 }
 
-enum Labels {
+enum Label {
   Bug
   Feature
   Improvement
@@ -33,213 +33,155 @@ enum Labels {
   Test
 }
 
-model User {
-  id                 String         @id @default(uuid())
-  name               String
-  username           String
-  email              String         @unique
-  password           String
-  last_login         DateTime?
-  on_boarding        Boolean
-  verified           Boolean
-  default_workspace  Workspace      @relation("DefaultWorkspaceUsers", fields: [defaultWorkspaceId], references: [id])
-  defaultWorkspaceId String
-  workspaces         Workspace[]
-  teams              Team[]
-  tasks              Task[]
-  join_workspace     String[]
-  roles              UsersRoles[]
-  notifications      Notification[]
-  assignedWorkspace  Workspace?     @relation("AssignedWorkspaceUser")
+model Commit {
+  id                String   @id
+  tree_id           String?
+  distinct          Boolean?
+  message           String
+  timestamp         String
+  url               String
+  authorName        String?
+  authorEmail       String?
+  authorUsername    String?
+  committerName     String?
+  committerEmail    String?
+  committerUsername String?
+  added             String[]
+  removed           String[]
+  modified          String[]
+  repoName          String?
+  owner             String?
 }
 
-model Author {
-  id           String         @id @default(uuid())
-  name         String
-  Task         Task[]
-  Comment      Comment[]
-  TaskEvent    TaskEvent[]
-  TaskEventLog TaskEventLog[]
-  Commits      Commits[]
+model TaskEventLog {
+  id         String      @id @default(uuid())
+  authorId   String
+  authorName String
+  createdAt  DateTime    @default(now())
+  taskId     String
+  eventsLog  TaskEvent[] @relation("EventLogs")
 }
 
-model Assignee {
-  id               String      @id @default(uuid())
-  name             String
-  Task             Task[]
-  TaskEvent        TaskEvent[] @relation("OriginalAssigneeRelation")
-  TaskEventUpdated TaskEvent[] @relation("UpdatedAssigneeRelation")
-}
-
-model Task {
-  id             String         @id @default(uuid())
-  author         Author         @relation(fields: [authorId], references: [id])
-  authorId       String
-  title          String
-  description    String
-  status         Status
-  identifier     String
-  priority       Priority
-  labels         Labels[]
-  dueDate        DateTime?
-  effortEstimate Int
-  team           Team           @relation(fields: [teamId], references: [id])
-  teamId         String
-  dateCreated    DateTime?      @default(now())
-  assignee       Assignee       @relation(fields: [assigneeId], references: [id])
-  assigneeId     String
-  comments       Comment[]
-  eventLogs      TaskEventLog[]
-  user           User?          @relation(fields: [userId], references: [id])
-  userId         String?
-  taskEvents     TaskEvent[]
-  notifications  Notification[]
+model TaskEvent {
+  id                   String       @id @default(uuid())
+  type                 String
+  authorId             String
+  authorName           String
+  taskId               String
+  updatedAt            DateTime     @default(now())
+  originalLabels       Label[]
+  updatedLabels        Label[]
+  originalValue        String?
+  updatedValue         String?
+  originalAssigneeId   String?
+  originalAssigneeName String?
+  updatedAssigneeId    String?
+  updatedAssigneeName  String?
+  log                  TaskEventLog @relation("EventLogs", fields: [taskId], references: [id])
 }
 
 model Comment {
   id       String   @id @default(uuid())
   comment  String
-  author   Author   @relation(fields: [authorId], references: [id])
   authorId String
   date     DateTime @default(now())
-  task     Task     @relation(fields: [taskId], references: [id])
   taskId   String
 }
 
-model TaskEvent {
-  id                 String    @id @default(uuid())
-  type               String
-  author             Author    @relation(fields: [authorId], references: [id])
-  authorId           String
-  task               Task      @relation(fields: [taskId], references: [id])
-  taskId             String
-  updatedAt          DateTime  @default(now())
-  originalLabels     Labels[]
-  updatedLabels      Labels[]
-  originalValue      String?
-  updatedValue       String?
-  originalAssignee   Assignee? @relation("OriginalAssigneeRelation", fields: [originalAssigneeId], references: [id])
-  updatedAssignee    Assignee? @relation("UpdatedAssigneeRelation", fields: [updatedAssigneeId], references: [id])
-  originalAssigneeId String?
-  updatedAssigneeId  String?
-}
-
-model TaskEventLog {
-  id        String   @id @default(uuid())
-  author    Author   @relation(fields: [authorId], references: [id])
-  authorId  String
-  createdAt DateTime @default(now())
-  eventsLog String[]
-  task      Task     @relation(fields: [taskId], references: [id])
-  taskId    String
-}
-
 model Notification {
-  id          String  @id @default(uuid())
-  user        User    @relation(fields: [userId], references: [id])
+  id          String   @id @default(uuid())
   userId      String
-  task        Task    @relation(fields: [taskId], references: [id])
-  taskId      String
-  read        Boolean
-  description String
+  taskIds     String[]
+  read        Boolean  @default(false)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PageFilterModel {
+  id                String  @id @default(uuid())
+  filterTitle       String
+  filterOption      Json
+  filterDescription String?
+  teamId            String
+}
+
+model Task {
+  id             String    @id @default(uuid())
+  authorId       String
+  title          String
+  description    String?
+  status         Status
+  identifier     String
+  priority       Priority?
+  labels         Label[]
+  dueDate        DateTime?
+  effortEstimate Int?
+  teamId         String
+  dateCreated    DateTime  @default(now())
+  assigneeId     String?
+  assigneeName   String?
+
+  Team Team @relation(fields: [teamId], references: [id])
+}
+
+model Team {
+  id          String    @id @default(uuid())
+  name        String?
+  identifier  String
+  workspaceId String
+  users       User[]    @relation("TeamUsers")
+  tasks       Task[]
+  Workspace   Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+model User {
+  id                 String      @id @default(uuid())
+  name               String
+  username           String?
+  email              String      @unique
+  password           String
+  verified           Boolean     @default(false)
+  lastLogin          DateTime    @default(now())
+  onBoarding         Boolean     @default(false)
+  defaultWorkspaceId String?
+  workspaces         Workspace[] @relation("UserWorkspaces")
+  teams              Team[]      @relation("TeamUsers")
+}
+
+model Workspace {
+  id                   String              @id @default(uuid())
+  name                 String?
+  url                  String?
+  companySize          Int?
+  universalTokenLink   UniversalTokenLink? @relation(fields: [universalTokenLinkId], references: [id])
+  teams                Team[]
+  users                User[]              @relation("UserWorkspaces")
+  projects             Project[]
+  issuesCreated        Int?
+  githubRepoInfo       GithubRepoInfo?     @relation(fields: [githubRepoInfoId], references: [id])
+  universalTokenLinkId String?
+  githubRepoInfoId     String?
+}
+
+model UniversalTokenLink {
+  id        String      @id @default(uuid())
+  token     String      @default("")
+  isEnabled Boolean     @default(true)
+  Workspace Workspace[]
+}
+
+model GithubRepoInfo {
+  id        String      @id @default(uuid())
+  repoName  String      @default("")
+  owner     String      @default("")
+  Workspace Workspace[]
 }
 
 model Project {
   id          String     @id @default(uuid())
   name        String
-  team        Team       @relation(fields: [teamId], references: [id])
-  teamId      String
-  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  teamId      String?
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id])
   workspaceId String?
-}
-
-model StatusModel {
-  id     String @id @default(uuid())
-  status String
-}
-
-model Tag {
-  id   String @id @default(uuid())
-  name String
-}
-
-model Team {
-  id          String    @id @default(uuid())
-  name        String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
-  workspaceId String
-  users       User[]
-  tasks       Task[]
-  identifier  String
-  projects    Project[]
-}
-
-model UsersRoles {
-  id          String     @id @default(uuid())
-  user        User       @relation(fields: [userId], references: [id])
-  userId      String
-  role        String
-  username    String
-  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
-  workspaceId String?
-}
-
-model Workspace {
-  id                   String             @id @default(uuid())
-  name                 String
-  url                  String
-  companySize          Int
-  teams                Team[]
-  projects             Project[]
-  users                UsersRoles[]
-  universalTokenLink   UniversalTokenLink @relation(fields: [universalTokenLinkId], references: [id])
-  issuesCreated        Int
-  githubRepoInfo       GitHubRepoInfo     @relation(fields: [gitHubRepoInfoId], references: [id])
-  defaultUsers         User[]             @relation("DefaultWorkspaceUsers")
-  assignedUser         User?              @relation("AssignedWorkspaceUser", fields: [assignedUserId], references: [id])
-  assignedUserId       String?            @unique
-  User                 User?              @relation(fields: [userId], references: [id])
-  userId               String?
-  universalTokenLinkId String
-  gitHubRepoInfoId     String
-}
-
-model UniversalTokenLink {
-  id        String      @id @default(uuid())
-  token     String
-  isEnabled Boolean
-  workspace Workspace[]
-}
-
-model GitHubRepoInfo {
-  id        String      @id @default(uuid())
-  repoName  String
-  owner     String
-  workspace Workspace[]
-}
-
-model Commits {
-  id          String   @id @default(uuid())
-  tree_id     String
-  distinct    Boolean
-  message     String
-  timestamp   DateTime
-  url         String
-  author      Author   @relation(fields: [authorId], references: [id])
-  authorId    String
-  committer   Commiter @relation(fields: [committerId], references: [id])
-  committerId String
-  added       String[]
-  removed     String[]
-  modified    String[]
-  repoName    String
-  owner       String
-}
-
-model Commiter {
-  id       String    @id @default(uuid())
-  name     String
-  email    String
-  username String
-  commits  Commits[]
 }
