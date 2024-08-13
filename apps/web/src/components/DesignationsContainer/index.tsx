@@ -7,7 +7,10 @@ import EffortEstimateButton from "@/components/EffortEstimateButton";
 import HelpButton from "@/components/HelpButton";
 import EffortModal from "@/components/EffortModal";
 import { AssigneeButton } from "@/components/AssigneeButton";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/hooks/typeScriptReduxHooks";
 import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { AssigneeDropdown } from "@/components/AssigneeDropdown";
 import { getSingleTask } from "@/store/task/thunks";
@@ -16,6 +19,7 @@ import type {
   HandleAssigneeChange,
 } from "@/app/interfaces/Tasks.interfaces";
 import type { DesignationsContainerProps } from "./DesignationsContainer.interfaces";
+import { useToast } from "../ui/use-toast";
 
 export const setBackgroundColor = (theme: string) => {
   if (theme === "light") {
@@ -34,18 +38,26 @@ const generateItemContainer = (
     <div className="flex items-center shrink-0 text-muted-foreground text-sm font-semibold my-1 w-[95px]">
       <span>{text}</span>
       {ExtraComponent && (
-        <div className="ml-1.5 flex items-center">{ExtraComponent}</div>
+        <div className="ml-1.5 flex items-center">
+          {ExtraComponent}
+        </div>
       )}
     </div>
     <ButtonComponent location={location} />
   </div>
 );
 
-const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
+const DesignationsContainer = ({
+  location,
+}: DesignationsContainerProps) => {
   const dispatch = useAppDispatch();
-  const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
+  const { toast } = useToast();
+  const currentTeam = useAppSelector(
+    (state) => state.taskData.currentTeam
+  );
   const task = useAppSelector((state) => state.singleTask.data);
-  const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
+  const [showAssigneeDropdown, setShowAssigneeDropdown] =
+    useState(false);
   const [showEffortModal, setShowEffortModal] = useState(false);
 
   const handleOpenModal = () => setShowEffortModal(true);
@@ -54,15 +66,37 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
   const assigneeParams: AssigneeParams = (taskId, user) => {
     dispatch(getAllTasks(currentTeam));
     if (task !== undefined) {
-      dispatch(getSingleTask(task._id));
+      try {
+        dispatch(getSingleTask(task._id));
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to get task",
+          variant: "destructive",
+        });
+      }
     }
-    return { taskId: taskId, assignee: { id: user.id, name: user.name } };
+    return {
+      taskId: taskId,
+      assignee: { id: user.id, name: user.name },
+    };
   };
 
-  const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
+  const handleAssigneeChange: HandleAssigneeChange = async (
+    taskId,
+    user
+  ) => {
     dispatch(setAssignee(assigneeParams(taskId, user)));
     if (task !== undefined) {
-      dispatch(getSingleTask(task._id));
+      try {
+        dispatch(getSingleTask(task._id));
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to get task",
+          variant: "destructive",
+        });
+      }
     }
     await dispatch(getAllTasks(currentTeam));
   };
@@ -109,7 +143,11 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
       {location === "issueSidebar" && (
         <div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
           {generateItemContainer("Status", StatusButton, location)}
-          {generateItemContainer("Priority", PriorityButton, location)}
+          {generateItemContainer(
+            "Priority",
+            PriorityButton,
+            location
+          )}
           {generateItemContainer("Labels", LabelButton, location)}
           {generateItemContainer("Due Date", DateButton, location)}
           {generateItemContainer(
@@ -121,7 +159,10 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
           {generateAssigneeContainer()}
         </div>
       )}
-      <EffortModal isOpen={showEffortModal} onClose={handleCloseModal} />
+      <EffortModal
+        isOpen={showEffortModal}
+        onClose={handleCloseModal}
+      />
     </>
   );
 };

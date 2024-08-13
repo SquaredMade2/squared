@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { addWorkspace, getAllWorkspaces } from "@/store/taskData/thunks";
-import { toast } from "react-toastify";
+import {
+  addWorkspace,
+  getAllWorkspaces,
+} from "@/store/taskData/thunks";
+import { useToast } from "../ui/use-toast";
 import { ChevronLeft } from "lucide-react";
-import "react-toastify/dist/ReactToastify.css";
 import { getUser } from "@/store/userSettings/thunks";
 import type { CreateWorkspaceProps } from "./CreateWorkspace.interfaces";
 import type { AppDispatch, RootState } from "@/store";
@@ -17,6 +19,7 @@ const CreateWorkspace = ({
   onboarding,
   handleNextPage,
 }: CreateWorkspaceProps) => {
+  const { toast } = useToast();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -30,7 +33,9 @@ const CreateWorkspace = ({
   const taskDataLoadingState = useSelector(
     (state: RootState) => state.taskData.isLoading
   );
-  const user = useSelector((state: RootState) => state.userSettings.user);
+  const user = useSelector(
+    (state: RootState) => state.userSettings.user
+  );
 
   const checkUrl = (str: string) => {
     const newStr = str.trim();
@@ -54,9 +59,11 @@ const CreateWorkspace = ({
     e.preventDefault();
 
     if (!checkName(inputValue)) {
-      toast.error(
-        "Invalid workspace name. Name must not be empty and follow the format."
-      );
+      toast({
+        title:
+          "Invalid workspace name. Name must not be empty and follow the format.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -71,9 +78,11 @@ const CreateWorkspace = ({
       .replace(/[^a-z0-9-]/g, "");
 
     if (!checkUrl(finalWorkspaceUrl)) {
-      toast.error(
-        "Invalid workspace URL. URL must be in the format workspace-url-format."
-      );
+      toast({
+        title:
+          "Invalid workspace URL. URL must be in the format workspace-url-format.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -82,15 +91,20 @@ const CreateWorkspace = ({
       url: finalWorkspaceUrl,
     };
 
-    const createWorkspace = await dispatch(addWorkspace(workspaceData));
+    const createWorkspace = await dispatch(
+      addWorkspace(workspaceData)
+    );
 
     if (!createWorkspace) {
-      toast.error("Workspace Url already exists.");
+      toast({
+        title: "Workspace Url already exists.",
+        variant: "destructive",
+      });
     } else {
       dispatch(getUser());
       setInputValue("");
       setUrlInputValue("");
-      toast.success("Workspace created successfully!");
+      toast({ title: "Workspace created successfully!" });
       !onboarding || !handleNextPage
         ? router.push(`/workspace/${finalWorkspaceUrl}`)
         : handleNextPage();
@@ -120,12 +134,16 @@ const CreateWorkspace = ({
       {!onboarding && workspaceList.length > 0 && (
         <div className="w-screen absolute top-0 p-10 flex justify-between">
           <div className="flex flex-col text-sm">
-            <span className="text-xs text-muted-foreground">Logged in as:</span>
+            <span className="text-xs text-muted-foreground">
+              Logged in as:
+            </span>
             <span className="text-foreground">{user.email}</span>
           </div>
           <div className="flex items-center space-x-1 text-foreground">
             <ChevronLeft className="text-[#858699] size-5" />
-            <a href={`/workspace/${workspaceList[0].url}`}>Back to Squared</a>
+            <a href={`/workspace/${workspaceList[0].url}`}>
+              Back to Squared
+            </a>
           </div>
         </div>
       )}
@@ -137,8 +155,8 @@ const CreateWorkspace = ({
         </div>
         <div className="text-center">
           <span className="text-muted-foreground text-md">
-            Workspaces are shared environments where teams can work on projects,
-            cycles and tasks.
+            Workspaces are shared environments where teams can work on
+            projects, cycles and tasks.
           </span>
         </div>
         <form

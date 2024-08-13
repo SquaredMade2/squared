@@ -89,7 +89,9 @@ const TaskCard = ({
 
   const navigateToTask = async (task: Task) => {
     dispatch(setTaskPage(task));
-    router.push(`/tasks/${task._id}`);
+    router.push(
+      `/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`
+    );
   };
 
   const handleGlobalClick = () => {
@@ -157,6 +159,7 @@ const TaskCard = ({
                     </div>
                     <div className="xs:mr-5 sm:mr-5 md:mr-4">
                       <input
+                        title="input"
                         className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
                         type="checkbox"
                       />
@@ -217,7 +220,7 @@ const TaskCard = ({
                       )}
                     </div>
                     <Link
-                      href={`/tasks/${task._id}`}
+                      href={`/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
                       onClick={() => dispatch(setTaskPage(task))}
                     >
                       <div className="relative w-[325px]">
@@ -294,13 +297,14 @@ const TaskCard = ({
                 </div>
                 <div className="xs:mr-5 sm:mr-5 md:mr-4">
                   <input
+                    title="input"
                     className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
                     type="checkbox"
                   />
                 </div>
               </div>
               <Link
-                href={`/tasks/${task._id}`}
+                href={`/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
                 onClick={() => setTaskPage(task)}
                 className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
               >

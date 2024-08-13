@@ -1,9 +1,11 @@
 import axios from "axios";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/hooks/typeScriptReduxHooks";
 import { getAllWorkspaces } from "@/store/taskData/thunks";
 import { clearUser } from "@/store/userSettings";
 import WorkspaceInitials from "@/components/WorkspaceImage";
@@ -18,10 +20,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
+import { useToast } from "../ui/use-toast";
 
 const WorkSpaceDropDown = () => {
   const dispatch = useAppDispatch();
-  const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
+  const allWorkspaces = useAppSelector(
+    (state) => state.taskData.workspaces
+  );
   const user = useAppSelector((state) => state.userSettings.user);
   const currentWorkspace = useAppSelector(
     (state) => state.taskData.currentWorkspace
@@ -47,6 +52,8 @@ const WorkSpaceDropDown = () => {
     (item) => item._id === currentWorkspace._id
   );
 
+  const { toast } = useToast();
+
   const handleLogout = async (): Promise<void> => {
     await signOutHandler();
     try {
@@ -57,7 +64,7 @@ const WorkSpaceDropDown = () => {
       });
       dispatch(clearUser());
       router.push(`${process.env.NEXT_PUBLIC_URL}`);
-      toast.success(response.data.success);
+      toast({ title: response.data.success });
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -75,7 +82,10 @@ const WorkSpaceDropDown = () => {
           {handleWorkspaceNameOverflow(currentWorkspace.name)}
         </div>
         {user && (
-          <ProfileImage profileName={user.name} location="dropdownMenu" />
+          <ProfileImage
+            profileName={user.name}
+            location="dropdownMenu"
+          />
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[265px]">
@@ -115,7 +125,9 @@ const WorkSpaceDropDown = () => {
           Create or join a workspace
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
