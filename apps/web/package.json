@@ -57,6 +57,7 @@
     "@sentry/utils": "^8.20.0",
     "@storybook/react": "^8.1.5",
     "@types/react-router-dom": "^5.3.3",
+    "@types/uuid": "^10.0.0",
     "asynckit": "^0.4.0",
     "axios": "^1.7.2",
     "axios-mock-adapter": "^1.22.0",
@@ -96,6 +97,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^1.5.0",
     "@commitlint/cli": "^17.8.1",
+    "@repo/db": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@storybook/addon-essentials": "^8.1.5",
     "@storybook/addon-interactions": "^8.1.5",

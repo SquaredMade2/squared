@@ -1,11 +1,15 @@
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 
 export type TaskActions = {
-  addTask: (task: Task) => (state: TaskState) => TaskState;
+	addTask: (
+		task: Task,
+		workspaceId: string,
+		teamId: string,
+	) => (state: TaskState) => Promise<TaskState>;
 };
 
 export type TaskState = {
-  tasks: Task[];
+	tasks: Task[];
 };
 
 export type TaskStore = TaskActions & TaskState;
