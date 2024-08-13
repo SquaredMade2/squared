@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { getSingleTask } from "@/store/task/thunks";
 import { setDueDate } from "@/store/taskData";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import type { DateDropdownProps } from "@/components/DateDropdown/DateDropdown.interfaces";
@@ -23,6 +22,7 @@ import {
 import { DAYS_OF_WEEK } from "@/constants/app_constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const DateDropdown: React.FC<DateDropdownProps> = ({
 	handleButtonClick,
@@ -30,6 +30,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 	location,
 }) => {
 	const dispatch = useAppDispatch();
+	const { updateTask } = useSquaredStore((state) => state.tasks);
 	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 	const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
@@ -75,13 +76,13 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 
 	const updateItem = async (newDate: Date) => {
 		try {
-			await axios.put(
-				`${process.env.NEXT_PUBLIC_SERVER}/task/update/${taskId}`,
-				{
-					dueDate: newDate,
-				},
-			);
-			dispatch(getSingleTask(taskId as string));
+			taskId
+				? updateTask(taskId, { dueDate: newDate })
+				: toast({
+						title: "Error",
+						description: "Invalid task id",
+						variant: "destructive",
+					});
 		} catch (err) {
 			toast({
 				title: "Error",

@@ -3,9 +3,9 @@ import "./globals.css";
 import { Providers } from "@/store/provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
-import CommandPalette from "@/components/CommandPalette";
 import CurrentNavbar from "@/components/CurrentNavbar";
 import { Toaster } from "@/components/ui/toaster";
+import { SquaredStoreProvider } from "@/storeZ/provider";
 
 export default function RootLayout({
 	children,
@@ -16,19 +16,20 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				<Providers>
-					<CommandPalette />
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						disableTransitionOnChange
-					>
-						<div className="h-full flex flex-row overflow-hidden">
-							<CurrentNavbar />
-							{children}
-						</div>
-					</ThemeProvider>
-					<Toaster />
+					<SquaredStoreProvider>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+							disableTransitionOnChange
+						>
+							<div className="h-full flex flex-row overflow-hidden">
+								<CurrentNavbar />
+								{children}
+							</div>
+						</ThemeProvider>
+						<Toaster />
+					</SquaredStoreProvider>
 				</Providers>
 			</body>
 		</html>
