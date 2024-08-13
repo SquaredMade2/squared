@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -52,18 +52,17 @@ const NewIssueModal = () => {
     dueDate,
     effortEstimate,
     currentWorkspace,
+    taskList,
   } = useSelector((state: RootState) => state.taskData);
+
+  const taskListTitle = taskList.map((el) => el.title);
   const [titleInput, setTitleInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
-  const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>(
-    []
-  );
+  const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>([]);
   const [showCloseModal, setShowCloseModal] = useState(false);
 
   const socket = useContext(SocketContext);
-  const user = useSelector(
-    (state: RootState) => state.userSettings.user
-  );
+  const user = useSelector((state: RootState) => state.userSettings.user);
   const getListOfWorkspaceMembers = async () => {
     try {
       const members = (await Promise.all(
@@ -125,10 +124,7 @@ const NewIssueModal = () => {
     dispatch(setEffortEstimate(null));
   };
 
-  const handleClickAway = (
-    titleInput: string,
-    descriptionInput: string
-  ) => {
+  const handleClickAway = (titleInput: string, descriptionInput: string) => {
     if (
       !titleInput &&
       !descriptionInput &&
@@ -153,20 +149,22 @@ const NewIssueModal = () => {
       });
       return;
     }
+    if (taskListTitle.includes(titleInput)) {
+      toast({
+        title: `${titleInput} already exists`,
+        variant: "destructive",
+      });
+      return;
+    }
     dispatch(incrementCreatedIssues(currentWorkspace._id));
     try {
-      const {
-        transformedInput: transformedTitle,
-        userIds: titleUserId,
-      } = transformingMentionInputs(titleInput);
+      const { transformedInput: transformedTitle, userIds: titleUserId } =
+        transformingMentionInputs(titleInput);
       const {
         transformedInput: transformedDescriptionInput,
         userIds: descriptionUserId,
       } = transformingMentionInputs(descriptionInput);
-      const mentionedUserId = new Set([
-        ...descriptionUserId,
-        ...titleUserId,
-      ]);
+      const mentionedUserId = new Set([...descriptionUserId, ...titleUserId]);
       const newTask: Task = {
         authorId: authorId,
         title: transformedTitle,
@@ -220,9 +218,7 @@ const NewIssueModal = () => {
         {showNewIssue && (
           <div className="fixed z-10 top-0 left-0 flex items-start justify-center w-screen h-[703.2px] px-3 py-[13vh] ">
             <ClickAwayListener
-              onClickAway={() =>
-                handleClickAway(titleInput, descriptionInput)
-              }
+              onClickAway={() => handleClickAway(titleInput, descriptionInput)}
             >
               <motion.div
                 className="relative flex flex-col w-[748.4px] border border-border bg-popover rounded-lg shadow-[#00000080] shadow-[0px_16px_70px] text-nav"
