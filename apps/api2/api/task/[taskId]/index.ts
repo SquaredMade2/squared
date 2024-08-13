@@ -46,5 +46,50 @@ export function createRoute() {
         res.status(500).json({ message: "Internal server error" });
       }
     },
+    POST: async (req: Request<Params>, res: Response, body: Task) => {
+      const { taskId } = req.params;
+      try {
+        const existingTask = await prisma.task.findUnique({
+          where: { id: taskId, OR: [{ title: body.title }] },
+        });
+        if (existingTask) {
+          return res
+            .status(400)
+            .json({ message: "Task already exists" });
+        }
+        const newTask = await prisma.task.create({
+          data: body,
+        });
+
+        if (!newTask) {
+          return res
+            .status(404)
+            .json({ message: "Task not created" });
+        }
+
+        // Return the new task
+        res.json(newTask);
+      } catch (error) {
+        console.error("Error updating task:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+    },
+    DELETE: async (req: Request<Params>, res: Response) => {
+      const { taskId } = req.params;
+      try {
+        const task: Task | null = await prisma.task.delete({
+          where: { id: taskId },
+        });
+        if (!task) {
+          return res.status(404).json({ message: "Task not found" });
+        }
+
+        // Return success message
+        res.status(200).json({ message: "Task deleted" });
+      } catch (error) {
+        console.error("Error updating task:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+    },
   };
 }
