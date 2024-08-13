@@ -13,11 +13,32 @@ export const taskActions: TaskActions = {
 			apiString(uuidv4(), workspaceId, teamId),
 			task,
 		);
-		const newTask: Task = response.data;
-		return {
-			...state,
-			tasks: [...state.tasks, newTask],
-		};
+		state.tasks.push(response.data);
+		return response.data;
+	},
+	updateTask: (taskId, task, workspaceId, teamId) => async (state) => {
+		const response = await axios.put(
+			apiString(taskId, workspaceId, teamId),
+			task,
+		);
+		const index = state.tasks.findIndex((t) => t.id === taskId);
+		state.tasks[index] = response.data;
+		return response.data;
+	},
+	deleteTask: (taskId, workspaceId, teamId) => async (state) => {
+		await axios.delete(apiString(taskId, workspaceId, teamId));
+		state.tasks = state.tasks.filter((t) => t.id !== taskId);
+	},
+	getTask: (taskId, workspaceId, teamId) => async (state) => {
+		const existing = state.tasks.find((t) => t.id === taskId);
+		const response =
+			existing && (await axios.get(apiString(taskId, workspaceId, teamId)));
+		return existing ?? response?.data;
+	},
+	getAllTasks: (workspaceId, teamId) => async (state) => {
+		const response = await axios.get(apiString("task", workspaceId, teamId));
+		state.tasks = response.data;
+		return response.data;
 	},
 };
 
