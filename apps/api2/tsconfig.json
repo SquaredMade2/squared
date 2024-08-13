@@ -8,5 +8,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["api/**/*.ts"],
-  "exclude": ["node_modules", "api/index.ts"]
+  "exclude": ["node_modules"]
 }

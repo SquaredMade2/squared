@@ -6,11 +6,16 @@ type Params = {
   taskId: string;
 };
 
-export function createRoute() {
-  return {
-    GET: async (req: Request<Params>, res: Response) => {
-      const { taskId } = req.params;
+type Route<T> = {
+  GET?: (params: T, query: any) => Promise<any>;
+  PUT?: (params: T, query: any, body: Task) => Promise<any>;
+  POST?: (params: T, query: any, body: Task) => Promise<any>;
+  DELETE?: (params: T, query: any) => Promise<any>;
+};
 
+export function createRoute({}): Route<Params> {
+  return {
+    GET: async ({ taskId }) => {
       try {
         // Find the task by its ID
         const task: Task | null = await prisma.task.findUnique({
@@ -18,77 +23,72 @@ export function createRoute() {
         });
 
         if (!task) {
-          return res.status(404).json({ message: "Task not found" });
+          throw new Error("Task not found");
         }
 
         // Return the found task
-        res.json(task);
+        return task;
       } catch (error) {
         console.error("Error finding task:", error);
-        res.status(500).json({ message: "Internal server error" });
+        throw new Error("Internal server error");
       }
     },
-    PUT: async (req: Request<Params>, res: Response, body: Task) => {
-      const { taskId } = req.params;
+    PUT: async ({ taskId }, query, body) => {
       try {
         const task: Task | null = await prisma.task.update({
           where: { id: taskId },
           data: body,
         });
         if (!task) {
-          return res.status(404).json({ message: "Task not found" });
+          throw new Error("Task not found");
         }
 
         // Return the updated task
-        res.json(task);
+        return task;
       } catch (error) {
         console.error("Error updating task:", error);
-        res.status(500).json({ message: "Internal server error" });
+        throw new Error("Internal server error");
       }
     },
-    POST: async (req: Request<Params>, res: Response, body: Task) => {
-      const { taskId } = req.params;
+    POST: async ({ taskId }, query, body) => {
       try {
         const existingTask = await prisma.task.findUnique({
-          where: { id: taskId, OR: [{ title: body.title }] },
+          where: { id: taskId },
         });
+
         if (existingTask) {
-          return res
-            .status(400)
-            .json({ message: "Task already exists" });
+          throw new Error("Task already exists");
         }
+
         const newTask = await prisma.task.create({
           data: body,
         });
 
         if (!newTask) {
-          return res
-            .status(404)
-            .json({ message: "Task not created" });
+          throw new Error("Task not created");
         }
 
         // Return the new task
-        res.json(newTask);
+        return newTask;
       } catch (error) {
-        console.error("Error updating task:", error);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error creating task:", error);
+        throw new Error("Internal server error");
       }
     },
-    DELETE: async (req: Request<Params>, res: Response) => {
-      const { taskId } = req.params;
+    DELETE: async ({ taskId }) => {
       try {
         const task: Task | null = await prisma.task.delete({
           where: { id: taskId },
         });
         if (!task) {
-          return res.status(404).json({ message: "Task not found" });
+          throw new Error("Task not found");
         }
 
         // Return success message
-        res.status(200).json({ message: "Task deleted" });
+        return { message: "Task deleted" };
       } catch (error) {
-        console.error("Error updating task:", error);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error deleting task:", error);
+        throw new Error("Internal server error");
       }
     },
   };

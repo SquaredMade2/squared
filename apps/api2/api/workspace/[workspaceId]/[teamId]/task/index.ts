@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Task, Team } from "@repo/db/src";
+import { Task } from "@repo/db/src";
 import { prisma } from "../../../..";
 
 type Params = {
@@ -7,25 +7,29 @@ type Params = {
   teamId: string;
 };
 
-export function createRoute() {
+type Route<T> = {
+  GET?: (params: T, query: any) => Promise<any>;
+  PUT?: (params: T, query: any, body: any) => Promise<any>;
+};
+
+export function createRoute({}): Route<Params> {
   return {
-    GET: async (req: Request, res: Response) => {
-      const { teamId } = req.params;
+    GET: async ({ teamId }, query) => {
       try {
-        // Find the task by its ID
+        // Find tasks by team ID
         const tasks: Task[] | null = await prisma.task.findMany({
           where: { teamId },
         });
 
         if (!tasks) {
-          return res.status(404).json({ message: "Tasks not found" });
+          throw new Error("Tasks not found");
         }
 
-        // Return the found task
-        res.json(tasks);
+        // Return the found tasks
+        return tasks;
       } catch (error) {
         console.error("Error finding tasks:", error);
-        res.status(500).json({ message: "Internal server error" });
+        throw new Error("Internal server error");
       }
     },
   };
