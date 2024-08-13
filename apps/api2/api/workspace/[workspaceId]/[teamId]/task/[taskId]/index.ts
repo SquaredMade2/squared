@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Task } from "@repo/db/src";
-import { prisma } from "../../";
+import { prisma } from "../../../../..";
 
 type Params = {
   taskId: string;
