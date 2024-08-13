@@ -1,15 +1,10 @@
-import { Request, Response } from "express";
 import { Task } from "@repo/db/src";
-import { prisma } from "../../../..";
+import { prisma } from "@/api";
+import { Route } from "@/api/route";
 
 type Params = {
   workspaceId: string;
   teamId: string;
-};
-
-type Route<T> = {
-  GET?: (params: T, query: any) => Promise<any>;
-  PUT?: (params: T, query: any, body: any) => Promise<any>;
 };
 
 export function createRoute({}): Route<Params> {

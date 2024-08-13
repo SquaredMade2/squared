@@ -1,16 +1,9 @@
-import { Request, Response } from "express";
 import { Task } from "@repo/db/src";
-import { prisma } from "../../../../..";
+import { prisma } from "@/api";
+import { Route } from "@/api/route";
 
 type Params = {
   taskId: string;
-};
-
-type Route<T> = {
-  GET?: (params: T, query: any) => Promise<any>;
-  PUT?: (params: T, query: any, body: Task) => Promise<any>;
-  POST?: (params: T, query: any, body: Task) => Promise<any>;
-  DELETE?: (params: T, query: any) => Promise<any>;
 };
 
 export function createRoute({}): Route<Params> {
@@ -33,7 +26,7 @@ export function createRoute({}): Route<Params> {
         throw new Error("Internal server error");
       }
     },
-    PUT: async ({ taskId }, query, body) => {
+    PUT: async ({ taskId }, body) => {
       try {
         const task: Task | null = await prisma.task.update({
           where: { id: taskId },
@@ -50,7 +43,7 @@ export function createRoute({}): Route<Params> {
         throw new Error("Internal server error");
       }
     },
-    POST: async ({ taskId }, query, body) => {
+    POST: async ({ taskId }, body) => {
       try {
         const existingTask = await prisma.task.findUnique({
           where: { id: taskId },
