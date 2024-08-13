@@ -55,9 +55,6 @@ const userSettings = createSlice({
 				_id: "",
 			};
 		},
-		handleTheme(state, action: PayloadAction<string>) {
-			state.theme = action.payload;
-		},
 		setView(state, action: PayloadAction<string>) {
 			state.view = action.payload;
 		},
@@ -151,7 +148,6 @@ export const {
 	setUser,
 	navBarToggle,
 	clearUser,
-	handleTheme,
 	setView,
 	clearGithubAuthToken,
 	clearGithubUser,
