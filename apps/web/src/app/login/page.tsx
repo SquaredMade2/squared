@@ -4,9 +4,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/hooks/typeScriptReduxHooks";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { setUser } from "@/store/userSettings";
 import { getUser } from "@/store/userSettings/thunks";
@@ -24,6 +26,7 @@ export default function Login() {
   });
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
   const handleRegisterPush = () => {
     router.push("/register");
   };
@@ -49,10 +52,10 @@ export default function Login() {
         withCredentials: true,
       });
       if (responseData.error) {
-        toast.error(responseData.error);
+        toast({ title: responseData.error, variant: "destructive" });
       } else {
         dispatch(setUser(responseData.user));
-        toast.success("Login Successful, Welcome!");
+        toast({ title: "Login Successful, Welcome!" });
         setData({
           email: "",
           password: "",
@@ -60,20 +63,29 @@ export default function Login() {
         if (responseData.redirectTo) {
           router.push(`workspace/${responseData.redirectTo}`);
         } else {
-          toast.error("No workspace found for redirection.");
+          toast({
+            title: "No workspace found for redirection.",
+            variant: "destructive",
+          });
         }
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const serverError = error.response?.data.error;
         if (serverError) {
-          toast.error(serverError);
+          toast({ title: serverError, variant: "destructive" });
         } else {
-          toast.error("Something went wrong");
+          toast({
+            title: "Something went wrong",
+            variant: "destructive",
+          });
         }
       } else {
         console.error(error);
-        toast.error("An unexpected error occurred");
+        toast({
+          title: "An unexpected error occurred",
+          variant: "destructive",
+        });
       }
     }
   };
@@ -94,7 +106,7 @@ export default function Login() {
             setLoading(false);
           }
         }
-        toast.success("Login Successful, Welcome!");
+        toast({ title: "Login Successful, Welcome!" });
       } else {
         setLoading(false);
       }
@@ -115,7 +127,10 @@ export default function Login() {
         const userData = actionResult.payload as LocalUser;
         if (userData?.on_boarding && userData.workspaces.length) {
           router.push(`workspace/${userData.workspaces[0].url}`);
-        } else if (userData?.on_boarding && !userData.workspaces.length) {
+        } else if (
+          userData?.on_boarding &&
+          !userData.workspaces.length
+        ) {
           router.push("/join");
         } else if (userData && !userData.on_boarding) {
           router.push("/onboarding");

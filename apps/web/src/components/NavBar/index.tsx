@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { usePathname, useRouter } from "next/navigation";
 import { setCurrentTeam } from "@/store/taskData";
@@ -7,8 +7,10 @@ import NewIssueModal from "@/components/NewIssueModal";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
 import NavBarTeams from "@/components/NavBarTeams";
-import { LayoutGrid, Search } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import type { Team } from "@/store/taskData/taskData.interfaces";
+import SearchButton from "../SearchButton";
+import SearchCommand from "../SearchCommand";
 import {
   Accordion,
   AccordionContent,
@@ -17,16 +19,13 @@ import {
 } from "../ui/accordion";
 
 const Navbar = () => {
+  const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const inboxPageChecker = pathname.includes("/inbox");
-  const { user, theme } = useAppSelector((state) => state.userSettings);
+  const { user } = useAppSelector((state) => state.userSettings);
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-
-  const handleClick = (): void => {
-    router.push(`/workspace/${workspace.url}/search`);
-  };
 
   const handleTeamClick = (team: Team): void => {
     dispatch(setCurrentTeam(team));
@@ -49,17 +48,7 @@ const Navbar = () => {
           </span>
           <div className="flex flex-row w-full justify-around ml-2">
             <NewIssueButton />
-            <div className="ml-3.5">
-              <button onClick={handleClick} type="button" title="title">
-                <span className="rounded-md border border-border w-10 align-center flex justify-center bg-secondary shadow-lg focus:outline-none flex flex-row items-center cursor-pointer hover:bg-popover h-10 items-center">
-                  <Search
-                    className={`stroke-current fill-transparent cursor-pointer h-5 w-5 ${
-                      theme === "light" ? "text-[#797A8C]" : "text-[white]"
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
+            <SearchButton setIsSearchCommand={setIsSearchCommand} />
           </div>
         </div>
         <div className="w-full h-full left-5 mt-10 cursor-default text-foreground">
@@ -87,7 +76,6 @@ const Navbar = () => {
                 <AccordionItem key={team._id} value={team._id}>
                   <AccordionTrigger>
                     <LayoutGrid className="text-[#9577FF] size-4" />
-
                     {team.name}
                   </AccordionTrigger>
                   <AccordionContent>
@@ -105,6 +93,12 @@ const Navbar = () => {
         </div>
         <div className="absolute top-[100px] left-full">
           <NewIssueModal />
+        </div>
+                <div className="absolute top-[100px] left-full">
+                    <SearchCommand
+            isSearchCommand={isSearchCommand}
+            setIsSearchCommand={setIsSearchCommand}
+          />
         </div>
       </div>
     </div>
