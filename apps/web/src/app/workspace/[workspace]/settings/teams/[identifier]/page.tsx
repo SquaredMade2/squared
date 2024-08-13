@@ -3,9 +3,16 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import axios, { AxiosError } from "axios";
-import { toast } from "react-toastify";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { deleteTeam, getTeam, getWorkspace } from "@/store/taskData/thunks";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/hooks/typeScriptReduxHooks";
+import {
+  deleteTeam,
+  getTeam,
+  getWorkspace,
+} from "@/store/taskData/thunks";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import type { TeamData } from "@/app/workspace/[workspace]/settings/teams/[identifier]/teams.interfaces";
 import type { FormSubmitEvent } from "@/types";
@@ -15,6 +22,7 @@ import { navBarToggle } from "@/store/userSettings";
 import { X } from "lucide-react";
 
 export default function TeamsSetting() {
+  const { toast } = useToast();
   const params = useParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -22,15 +30,22 @@ export default function TeamsSetting() {
   const { currentTeam, access, error } = useAppSelector(
     (state) => state.taskData
   );
-  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const workspace = useAppSelector(
+    (state) => state.taskData.currentWorkspace
+  );
   const [teamName, setTeamName] = useState<string>(currentTeam.name);
   const [teamIdentifier, setTeamIdentifier] = useState<string>(
     currentTeam.identifier
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
-  const [fillColor, setFillColor] = useState<string>("text-[#9c9eac]");
-  const { user, theme } = useAppSelector((state) => state.userSettings);
+  const showNavBar = useAppSelector(
+    (state) => state.userSettings.showNavBar
+  );
+  const [fillColor, setFillColor] =
+    useState<string>("text-[#9c9eac]");
+  const { user, theme } = useAppSelector(
+    (state) => state.userSettings
+  );
 
   const workspaceUrl = params.workspace as string;
   const identifier = params.identifier as string;
@@ -38,7 +53,8 @@ export default function TeamsSetting() {
   const prevName = currentTeam.name;
   const prevIdentifier = currentTeam.identifier;
   const valueChanged =
-    (prevName !== teamName || prevIdentifier !== teamIdentifier) && !loading;
+    (prevName !== teamName || prevIdentifier !== teamIdentifier) &&
+    !loading;
   const userHasAccess =
     typeof access === "object" &&
     access &&
@@ -68,12 +84,15 @@ export default function TeamsSetting() {
 
   const handleDelete = (): void => {
     if (workspace.teams.length === 1) {
-      toast.error("This is your only team; it cannot be deleted.");
+      toast({
+        title: "This is your only team; it cannot be deleted.",
+        variant: "destructive",
+      });
     } else {
       dispatch(deleteTeam(currentTeam._id));
       handleClose();
       router.push(`/workspace/${workspaceUrl}`);
-      toast.success("Team deleted");
+      toast({ title: "Team deleted" });
     }
   };
 
@@ -85,11 +104,17 @@ export default function TeamsSetting() {
   const handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault();
     if (!teamName && !teamIdentifier) {
-      toast.error("Both Name and Identifier are required");
+      toast({
+        title: "Both Name and Identifier are required",
+        variant: "destructive",
+      });
     } else if (!teamIdentifier) {
-      toast.error("Identifier is required");
+      toast({
+        title: "Identifier is required",
+        variant: "destructive",
+      });
     } else if (!teamName) {
-      toast.error("Name is required");
+      toast({ title: "Name is required", variant: "destructive" });
     } else if (valueChanged) {
       try {
         const update = await updateTeam({
@@ -99,7 +124,9 @@ export default function TeamsSetting() {
           workspaceId: workspace._id,
         });
         if (update) {
-          dispatch(getWorkspace({ url: workspaceUrl, id: workspace._id }));
+          dispatch(
+            getWorkspace({ url: workspaceUrl, id: workspace._id })
+          );
           await dispatch(getTeam(teamIdentifier));
           const url = `/workspace/${workspace.url}/settings/teams/${teamIdentifier}`;
           router.push(url);
@@ -122,13 +149,13 @@ export default function TeamsSetting() {
         },
       });
       const response = update.data?.message;
-      toast.success(`${response}`);
+      toast({ title: `${response}` });
       dispatch(getTeam(teamData.identifier));
       return true;
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         const response = error.response?.data.message;
-        toast.error(`${response}`);
+        toast({ title: `${response}`, variant: "destructive" });
       }
       return false;
     }
@@ -162,8 +189,12 @@ export default function TeamsSetting() {
                   <h1>Verify team deletion</h1>
                   <div
                     onClick={handleClose}
-                    onMouseEnter={() => setFillColor("text-[#BDBFC5]")}
-                    onMouseLeave={() => setFillColor("text-[#9c9eac]")}
+                    onMouseEnter={() =>
+                      setFillColor("text-[#BDBFC5]")
+                    }
+                    onMouseLeave={() =>
+                      setFillColor("text-[#9c9eac]")
+                    }
                   >
                     <X className={`cursor-pointer ${fillColor}`} />
                   </div>
@@ -194,7 +225,7 @@ export default function TeamsSetting() {
                     <input
                       type="text"
                       aria-label="Team"
-                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded pl-0.5 xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
+                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
                       onChange={(e) => setTeamName(e.target.value)}
                       value={teamName}
                     />
@@ -210,8 +241,10 @@ export default function TeamsSetting() {
                     <input
                       type="text"
                       maxLength={5}
-                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded pl-0.5 xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
-                      onChange={(e) => identifierInputFilter(e.target.value)}
+                      className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
+                      onChange={(e) =>
+                        identifierInputFilter(e.target.value)
+                      }
                       value={teamIdentifier}
                     />
                   </div>
@@ -223,12 +256,14 @@ export default function TeamsSetting() {
                 </div>
               </form>
               <div>
-                <h3 className="text-lg font-medium mb-3">Delete team</h3>
+                <h3 className="text-lg font-medium mb-3">
+                  Delete team
+                </h3>
                 <p className="text-muted-foreground text-sm mb-3">
-                  <span className="font-medium">Warning: </span>Deleting the
-                  team will also permanently delete any issues associated with
-                  it. This can't be undone and your data cannot be recovered by
-                  Squared.
+                  <span className="font-medium">Warning: </span>
+                  Deleting the team will also permanently delete any
+                  issues associated with it. This can't be undone and
+                  your data cannot be recovered by Squared.
                 </p>
                 <DeleteButton
                   description="Delete Team"

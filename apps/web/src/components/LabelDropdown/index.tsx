@@ -10,8 +10,12 @@ import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import type { RootState } from "@/store";
 import type { LabelDropdownProps } from "./LabelDropdown.interfaces";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { EventType, type Labels } from "@/interfaces/event.interfaces";
+import {
+  EventType,
+  type Labels,
+} from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 export default function LabelDropdown({
   labelOptions,
@@ -20,6 +24,7 @@ export default function LabelDropdown({
   handleClickAway,
 }: LabelDropdownProps) {
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
   const newIssueLabels = useSelector(
     (state: RootState) => state.taskData.labels
@@ -27,7 +32,9 @@ export default function LabelDropdown({
   const sidebarLabels = useSelector(
     (state: RootState) => state.singleTask.data?.labels
   );
-  const taskId = useSelector((state: RootState) => state.singleTask?.data?._id);
+  const taskId = useSelector(
+    (state: RootState) => state.singleTask?.data?._id
+  );
 
   const {
     author,
@@ -46,14 +53,21 @@ export default function LabelDropdown({
           return name.toLowerCase().includes(query.toLowerCase());
         });
 
-  const newLabelSelection = (currentLabels: string[], labelName: string) => {
+  const newLabelSelection = (
+    currentLabels: string[],
+    labelName: string
+  ) => {
     let newSelection = [];
     if (currentLabels.length === 0) {
       newSelection = [labelName];
     } else {
-      const nameFound = currentLabels.find((current) => current === labelName);
+      const nameFound = currentLabels.find(
+        (current) => current === labelName
+      );
       if (nameFound) {
-        newSelection = currentLabels.filter((current) => current !== labelName);
+        newSelection = currentLabels.filter(
+          (current) => current !== labelName
+        );
       } else {
         newSelection = [...currentLabels, labelName];
       }
@@ -64,7 +78,10 @@ export default function LabelDropdown({
   const handleSelectLabels = (labelName: string) => {
     let newLabelsSelected = [];
     if (location === "newIssue") {
-      newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
+      newLabelsSelected = newLabelSelection(
+        newIssueLabels,
+        labelName
+      );
       dispatch(setLabels(newLabelsSelected));
     }
     if (location === "issueSidebar" && sidebarLabels) {
@@ -85,7 +102,12 @@ export default function LabelDropdown({
           }
         );
         dispatch(getSingleTask(taskId));
-      } catch (err) {}
+      } catch (err) {
+        toast({
+          title: "Error updating labels",
+          variant: "destructive",
+        });
+      }
     }
   };
 

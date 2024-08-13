@@ -5,8 +5,11 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useParams, useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import { getWorkspace, deleteWorkspace } from "@/store/taskData/thunks";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  getWorkspace,
+  deleteWorkspace,
+} from "@/store/taskData/thunks";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import DeleteButton from "@/components/DeleteButton";
@@ -17,6 +20,7 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { X } from "lucide-react";
 
 export default function WorkspaceSettings() {
+  const { toast } = useToast();
   const router = useRouter();
   const params = useParams();
   const dispatch = useAppDispatch();
@@ -27,19 +31,29 @@ export default function WorkspaceSettings() {
   const workspaceList = useSelector(
     (state: RootState) => state.taskData.workspaces
   );
-  const access = useSelector((state: RootState) => state.taskData.access);
-  const { user } = useSelector((state: RootState) => state.userSettings);
+  const access = useSelector(
+    (state: RootState) => state.taskData.access
+  );
+  const { user } = useSelector(
+    (state: RootState) => state.userSettings
+  );
   const [workspaceName, setWorkspaceName] = useState(workspace.name);
   const [workspaceURL, setWorkspaceURL] = useState(workspace.url);
   const [deletingWorkspace, setDeletingWorkspace] = useState(false);
-  const { showNavBar } = useSelector((state: RootState) => state.userSettings);
+  const { showNavBar } = useSelector(
+    (state: RootState) => state.userSettings
+  );
   const [fillColor, setFillColor] = useState("text-[#9c9eac]");
   const urlRegex = /^[a-z0-9-]*$/;
   const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const index = workspaceList.findIndex((item) => item._id === workspace._id);
+  const index = workspaceList.findIndex(
+    (item) => item._id === workspace._id
+  );
   const workspaceUrl = params.workspace;
   const userHasAccess =
-    access && access.id === user?._id && workspaceUrl === workspace.url;
+    access &&
+    access.id === user?._id &&
+    workspaceUrl === workspace.url;
 
   const currentUserRole = workspace.users.find(
     (u) => u.user === user._id
@@ -70,15 +84,20 @@ export default function WorkspaceSettings() {
 
   const handleDelete = async () => {
     try {
-      const actionResult = await dispatch(deleteWorkspace(workspace._id));
+      const actionResult = await dispatch(
+        deleteWorkspace(workspace._id)
+      );
       unwrapResult(actionResult);
 
       setDeletingWorkspace(true);
       handleClose();
-      toast.success("Workspace deleted, redirecting...");
+      toast({ title: "Workspace deleted, redirecting..." });
     } catch (error) {
       console.error("Error deleting workspace:", error);
-      toast.error("Failed to delete workspace. Please try again.");
+      toast({
+        title: "Failed to delete workspace. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -90,16 +109,23 @@ export default function WorkspaceSettings() {
     const name: string = workspaceName.trim();
     const url: string = workspaceURL.trim();
     if (!urlCheck) {
-      toast.error(
-        "Invalid workspace URL. URL must be in the format hello-world."
-      );
+      toast({
+        title:
+          "Invalid workspace URL. URL must be in the format hello-world.",
+        variant: "destructive",
+      });
     } else if (!name) {
-      toast.error("Workspace name is required.");
+      toast({
+        title: "Workspace name is required.",
+        variant: "destructive",
+      });
     } else {
       await updateWorkspace(name, url);
-      await dispatch(getWorkspace({ url: workspace.url, id: workspace._id }));
+      await dispatch(
+        getWorkspace({ url: workspace.url, id: workspace._id })
+      );
       router.push(`workspace/${url}/settings/workspace`);
-      toast.success("Workspace Updated");
+      toast({ title: "Workspace Updated" });
     }
   };
 
@@ -116,7 +142,10 @@ export default function WorkspaceSettings() {
         },
       });
     } catch (error) {
-      toast.error("An error occurred trying to update workspace");
+      toast({
+        title: "An error occurred trying to update workspace",
+        variant: "destructive",
+      });
     }
   };
 
@@ -167,7 +196,8 @@ export default function WorkspaceSettings() {
             </div>
             <div className="h-full w-full flex flex-col items-center mt-5 py-2 px-8">
               <h1>
-                Are you sure you want to {deleteOrLeaveBtnLabel.toUpperCase()}?
+                Are you sure you want to{" "}
+                {deleteOrLeaveBtnLabel.toUpperCase()}?
               </h1>
               <div className="flex mb-5">
                 <DeleteButton
@@ -194,7 +224,10 @@ export default function WorkspaceSettings() {
               location="workspaceSettings"
             />
           </div>
-          <form onSubmit={handleUpdate} className="border-b border-border mt-8">
+          <form
+            onSubmit={handleUpdate}
+            className="border-b border-border mt-8"
+          >
             <h2>General</h2>
             <div className="mb-4 mt-5 text-sm">
               <p className="text-sm text-muted-foreground mb-1.5">
@@ -228,9 +261,9 @@ export default function WorkspaceSettings() {
           <div>
             <h2 className="mt-10">Delete workspace</h2>
             <p className="text-sm mb-4 mt-1 text-muted-foreground">
-              If you want to permanently delete this workspace and all of its
-              data, including but not limited to users, issues, and comments,
-              you can do so below.
+              If you want to permanently delete this workspace and all
+              of its data, including but not limited to users, issues,
+              and comments, you can do so below.
             </p>
             <DeleteButton
               description={deleteOrLeaveBtnLabel}

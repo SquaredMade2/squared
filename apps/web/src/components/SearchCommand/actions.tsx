@@ -1,5 +1,4 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import type { RootState } from "@/store";
 import { signOut } from "next-auth/react";
 import { clearUser } from "@/store/userSettings";
@@ -7,7 +6,10 @@ import { setShowNewIssue } from "@/store/showNewIssue";
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./SearchCommand.interface";
 import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/hooks/typeScriptReduxHooks";
 import {
   Box,
   Copy,
@@ -24,6 +26,7 @@ import {
   ClipboardCopy,
   ArrowLeftRight,
 } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 export class commandSchema {
   router = useRouter();
@@ -35,8 +38,12 @@ export class commandSchema {
   currentTeam = useAppSelector(
     (state: RootState) => state.taskData.currentTeam
   );
-  showToast(message: string, type: "info" | "success" | "warning" | "error") {
-    toast(message, { type });
+  showToast(
+    title: string,
+    variant?: "destructive" | "default" | null
+  ) {
+    const { toast } = useToast();
+    toast({ title, variant });
   }
   constructor() {
     this.currentSchema = {
@@ -138,7 +145,9 @@ export class commandSchema {
         icon: <ArrowRight />,
         text: "Go to inbox",
         function: () => {
-          this.router.push(`/workspace/${this.currentWorkspace.url}/inbox`);
+          this.router.push(
+            `/workspace/${this.currentWorkspace.url}/inbox`
+          );
         },
         shortcut: ["G", "then", "I"],
       },
@@ -246,7 +255,7 @@ export class commandSchema {
         function: async () => {
           const url = `${process.env.NEXT_PUBLIC_URL}${this.pathname}`;
           await window.navigator.clipboard.writeText(url);
-          this.showToast("URL copied to clipboard", "success");
+          this.showToast("URL copied to clipboard");
         },
         shortcut: ["Ctrl", "Shift", "C"],
       },
@@ -329,7 +338,7 @@ export class commandSchema {
               });
               this.dispatch(clearUser());
               this.router.push(`${process.env.NEXT_PUBLIC_URL}`);
-              toast.success(response.data.success);
+              this.showToast("Logged out successfully");
             } catch (error) {}
           },
           shortcut: ["Alt", "Shift", "Q"],

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/hooks/typeScriptReduxHooks";
 import axios from "axios";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Combobox } from "@headlessui/react";
@@ -10,6 +13,7 @@ import type { PriorityDropdownProps } from "@/components/PriorityDropdown/Priori
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 const PriorityDropdown = ({
   handleButtonClick,
@@ -18,11 +22,16 @@ const PriorityDropdown = ({
   handleClickAway,
 }: PriorityDropdownProps) => {
   const dispatch = useAppDispatch();
-  const newIssuePriority = useAppSelector((state) => state.taskData.priority);
+  const { toast } = useToast();
+  const newIssuePriority = useAppSelector(
+    (state) => state.taskData.priority
+  );
   const sidebarPriority = useAppSelector(
     (state) => state.singleTask.data?.priority
   );
-  const taskId = useAppSelector((state) => state.singleTask?.data?._id);
+  const taskId = useAppSelector(
+    (state) => state.singleTask?.data?._id
+  );
 
   const {
     author,
@@ -68,7 +77,12 @@ const PriorityDropdown = ({
           }
         );
         dispatch(getSingleTask(taskId as string));
-      } catch (err) {}
+      } catch (err) {
+        toast({
+          title: "Error updating priority",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -121,7 +135,9 @@ const PriorityDropdown = ({
                     className="flex flex-row text-center justify-between hover:bg-popoverHover rounded-md py-1 px-2"
                   >
                     <div className="flex flex-row items-center">
-                      <div className="w-4 h-4 mx-2">{showIcon(name)}</div>
+                      <div className="w-4 h-4 mx-2">
+                        {showIcon(name)}
+                      </div>
                       <span>{name}</span>
                     </div>
                     {isChecked && (
