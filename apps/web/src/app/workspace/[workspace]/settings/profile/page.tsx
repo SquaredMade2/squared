@@ -2,20 +2,24 @@
 
 import { useState, type ReactElement } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 import type { InputChangeEvent } from "types";
 import { updateProfile, getUser } from "@/store/userSettings/thunks";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
 import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
-import { useTheme } from "next-themes";
 
 const styles = {
-  mainContainer: "flex mdsm:flex-col bg-card h-screen min-h-screen w-full",
-  pageContainer: "flex flex-col h-full w-full items-center bg-background pt-20",
+  mainContainer:
+    "flex mdsm:flex-col bg-card h-screen min-h-screen w-full",
+  pageContainer:
+    "flex flex-col h-full w-full items-center bg-background pt-20",
   pageWrapper: "w-1/3 mdsm:w-3/4",
   title: "text-2xl text-foreground mb-1 font-medium",
   profileSubTitle: "text-muted-foreground text-sm",
@@ -42,22 +46,30 @@ const styles = {
 };
 
 export default function Profile(): ReactElement {
+  const { toast } = useToast();
   const dispatch = useAppDispatch();
 
-  const user = useSelector((state: RootState) => state.userSettings.user);
-  const { theme } = useTheme();
+  const user = useSelector(
+    (state: RootState) => state.userSettings.user
+  );
 
   const [fullName, setFullName] = useState<string>(user.name);
   const [username, setUsername] = useState<string>(user.username);
-  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
+  const showNavBar = useAppSelector(
+    (state) => state.userSettings.showNavBar
+  );
 
   const prevFullname = user.name;
   const prevUsername = user.username;
-  const valueChanged = fullName !== prevFullname || username !== prevUsername;
+  const valueChanged =
+    fullName !== prevFullname || username !== prevUsername;
 
   const handleUpdate = async () => {
     if (username.trim().length <= 0 || fullName.trim().length <= 0) {
-      return toast.error("One or more fields can not be empty.");
+      return toast({
+        title: "One or more fields can not be empty.",
+        variant: "destructive",
+      });
     }
     if (valueChanged) {
       const data = { name: fullName, username, id: user._id };
@@ -114,8 +126,8 @@ export default function Profile(): ReactElement {
             <div className={styles.usernameTitleWrapper}>
               <p className={styles.usernameTitle}>Username</p>
               <p className={styles.usernameSubTitle}>
-                - Nickname or first name, however you want to be called in
-                Squared
+                - Nickname or first name, however you want to be
+                called in Squared
               </p>
             </div>
             <input
@@ -128,7 +140,10 @@ export default function Profile(): ReactElement {
           <div
             className={`${valueChanged ? styles.notVisible : styles.visible}`}
           >
-            <BlueButton description="Update" handleAction={handleUpdate} />
+            <BlueButton
+              description="Update"
+              handleAction={handleUpdate}
+            />
           </div>
         </div>
       </div>
