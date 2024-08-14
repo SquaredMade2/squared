@@ -116,27 +116,30 @@ export default function Login() {
 		LogInAuthentications();
 	}, [session, dispatch, status]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			if (user) {
-				const actionResult = await dispatch(getUser());
-				const userData = actionResult.payload as LocalUser;
-				if (userData?.on_boarding && userData.workspaces.length) {
-					router.push(`workspace/${userData.workspaces[0].url}`);
-				} else if (userData?.on_boarding && !userData.workspaces.length) {
-					router.push("/join");
-				} else if (userData && !userData.on_boarding) {
-					router.push("/onboarding");
-				} else {
-					setLoading(false);
-				}
-			} else {
-				setLoading(false);
-			}
-		};
-		fetchData();
-	}, [user, dispatch, router]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      if (user) {
+        const actionResult = await dispatch(getUser());
+        const userData = actionResult.payload as LocalUser;
+        if (userData?.on_boarding && userData.workspaces.length) {
+          router.replace(`${process.env.NEXT_PUBLIC_URL}/workspace/${userData.workspaces[0].url}`);
+        } else if (
+          userData?.on_boarding &&
+          !userData.workspaces.length
+        ) {
+          router.push("/join");
+        } else if (userData && !userData.on_boarding) {
+          router.push("/onboarding");
+        } else {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [user, dispatch, router]);
 
 	return (
 		<div className="top-0 w-full flex items-center h-[100vh] bg-[#141414]">
