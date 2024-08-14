@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname "$0")/h"
 
-npx @biomejs/biome format --write
+npx @biomejs/biome format --write .
