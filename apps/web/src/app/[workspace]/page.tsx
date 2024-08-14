@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { getWorkspace } from "../../store/taskData/thunks";
+import { getWorkspace } from "@/store/taskData/thunks";
 import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
