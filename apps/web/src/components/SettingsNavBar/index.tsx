@@ -27,7 +27,7 @@ const SettingsNavBar = ({
     (state: RootState) => state.taskData.currentWorkspace
   );
 
-  const baseUrl = `/workspace/${workspace.url}/settings`;
+  const baseUrl = "/settings";
   const teamUrl = `${baseUrl}/teams`;
   const addTeamUrl = `${baseUrl}/new-team`;
   const profileUrl = `${baseUrl}/profile`;
@@ -41,6 +41,7 @@ const SettingsNavBar = ({
     }
     dispatch(setCurrentTeam(team));
     router.push(`${teamUrl}/${team.identifier}`);
+    console.log(`${teamUrl}/${team.identifier}`);
   };
 
   return (
@@ -49,14 +50,12 @@ const SettingsNavBar = ({
         <div>
           <div
             className="text-xl flex items-center py-6"
-            onClick={() => router.push(`/workspace/${workspace.url}`)}
+            onClick={() => router.push(`/${workspace.url}`)}
           >
             <span className="h-3 mr-3 hover:cursor-pointer">
               <ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
             </span>
-            <h1 className="text-foreground cursor-pointer">
-              Settings
-            </h1>
+            <h1 className="text-foreground cursor-pointer">Settings</h1>
           </div>
           <div className="mb-1 pl-0.5 flex items-center">
             <BriefcaseBusiness className="size-4 text-[#6A6F75]" />

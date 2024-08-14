@@ -2,10 +2,7 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
-import {
-  useAppSelector,
-  useAppDispatch,
-} from "@/hooks/typeScriptReduxHooks";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
 import { getListOfUsers } from "@/store/userSettings/thunks";
 import {
@@ -18,7 +15,7 @@ import { useToast } from "@/components/ui/use-toast";
 import type {
   ListOfUsersProps,
   SelectedMemberProps,
-} from "@/app/workspace/[workspace]/settings/members/members.interfaces";
+} from "./members.interfaces";
 import InviteMembersModal from "@/components/InviteMembersModal";
 import { RolesButtonOptions } from "@/components/RolesButtonOptions";
 import UpdateMembersInfoModal from "@/components/UpdateMembersModal";
@@ -77,39 +74,29 @@ const styles = {
   membersButtonWrapper: "ml-auto relative",
 };
 export default function Members() {
-  const [openInviteModal, setInviteOpenModal] =
-    useState<boolean>(false);
+  const [openInviteModal, setInviteOpenModal] = useState<boolean>(false);
   const [openUpdateMemberModal, setOpenUpdateMemberModal] =
     useState<boolean>(false);
-  const [selectedMember, setSelectedMember] =
-    useState<SelectedMemberProps>({
-      id: "",
-      name: "",
-      username: "",
-    });
+  const [selectedMember, setSelectedMember] = useState<SelectedMemberProps>({
+    id: "",
+    name: "",
+    username: "",
+  });
   const { toast } = useToast();
   const [search, setSearch] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
-  const [commandOptions, setCommandOptions] = useState<
-    Record<string, boolean>
-  >({});
-  const [listOfUsers, setListOfUsers] = useState<ListOfUsersProps[]>(
-    []
+  const [commandOptions, setCommandOptions] = useState<Record<string, boolean>>(
+    {}
   );
+  const [listOfUsers, setListOfUsers] = useState<ListOfUsersProps[]>([]);
   const navbarRef = useRef<HTMLDivElement | null>(null);
-  const workspace = useAppSelector(
-    (state) => state.taskData.currentWorkspace
-  );
-  const showNavBar = useAppSelector(
-    (state) => state.userSettings.showNavBar
-  );
+  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
   const [isActive, setIsActive] = useState<boolean>(
     workspace.universalTokenLink.isEnabled
   );
-  const currentUser = useAppSelector(
-    (state) => state.userSettings.user
-  );
+  const currentUser = useAppSelector((state) => state.userSettings.user);
   const { theme } = useTheme();
 
   const dispatch = useAppDispatch();
@@ -119,9 +106,7 @@ export default function Members() {
     dispatch(navBarToggle(navBarValue));
   };
   const handleButtonStyle = (): string =>
-    theme === "dark"
-      ? styles.inviteButtonDark
-      : styles.inviteButtonLight;
+    theme === "dark" ? styles.inviteButtonDark : styles.inviteButtonLight;
   const getMembersRole = (userId: string) => {
     const membersRole = workspace.users.find(
       (member) => member.user === userId
@@ -180,11 +165,7 @@ export default function Members() {
     workspace_Id: string
   ) => {
     try {
-      const data = await updateTheUsersRole(
-        userId,
-        workspace_Id,
-        role
-      );
+      const data = await updateTheUsersRole(userId, workspace_Id, role);
       const listOfUserCopy = [...listOfUsers];
       if (data?.success) {
         setListOfUsers((users) => {
@@ -222,19 +203,14 @@ export default function Members() {
   const createWorkspaceLink = async () => {
     try {
       await dispatch(createWorkspaceLinkToken(workspace._id));
-      dispatch(
-        getWorkspace({ url: workspace?.url, id: workspace?._id })
-      );
+      dispatch(getWorkspace({ url: workspace?.url, id: workspace?._id }));
     } catch (error) {
       console.error("Error in createworkspacelink: ", error);
     }
   };
   const deleteUserFromWorkspace = async (memberId: string) => {
     try {
-      const data = await deletingUserFromWorkspace(
-        memberId,
-        workspace?._id
-      );
+      const data = await deletingUserFromWorkspace(memberId, workspace?._id);
       if (data?.success) {
         setListOfUsers((users) => {
           return users.filter((user) => user._id !== memberId);
@@ -263,18 +239,15 @@ export default function Members() {
       owner: [
         {
           text: "Make Owner",
-          action: () =>
-            updatingUsersRole(memberId, "owner", workspace?._id),
+          action: () => updatingUsersRole(memberId, "owner", workspace?._id),
         },
         {
           text: "Make Admin",
-          action: () =>
-            updatingUsersRole(memberId, "admin", workspace?._id),
+          action: () => updatingUsersRole(memberId, "admin", workspace?._id),
         },
         {
           text: "Make Member",
-          action: () =>
-            updatingUsersRole(memberId, "member", workspace?._id),
+          action: () => updatingUsersRole(memberId, "member", workspace?._id),
         },
         {
           text: "Remove User",
@@ -336,26 +309,15 @@ export default function Members() {
     name?: string,
     username?: string
   ) => {
-    const currentUserRole = getMembersRole(
-      currentUser?._id
-    )?.toLowerCase();
+    const currentUserRole = getMembersRole(currentUser?._id)?.toLowerCase();
     const memberRole = getMembersRole(memberId)?.toLowerCase();
     let options: { text: string; action: () => void }[] = [];
     const roleActions = getRoleActions(memberId, name, username);
-    if (
-      currentUserRole === "owner" &&
-      currentUser?._id !== memberId
-    ) {
+    if (currentUserRole === "owner" && currentUser?._id !== memberId) {
       options = roleActions.owner;
-    } else if (
-      currentUserRole === "owner" &&
-      currentUser?._id === memberId
-    ) {
+    } else if (currentUserRole === "owner" && currentUser?._id === memberId) {
       options = roleActions.self;
-    } else if (
-      currentUserRole === "admin" &&
-      memberRole !== "owner"
-    ) {
+    } else if (currentUserRole === "admin" && memberRole !== "owner") {
       options = roleActions.admin;
     } else if (currentUser?._id === memberId) {
       options = roleActions.self;
@@ -405,9 +367,7 @@ export default function Members() {
       return newState;
     });
   };
-  const handleSubmit = (
-    e: React.FormEvent<HTMLFormElement>
-  ): void => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     invitingUserToWorkspace();
     setEmail("");
@@ -439,9 +399,7 @@ export default function Members() {
           workspaceId: workspace?._id,
         })
       );
-      dispatch(
-        getWorkspace({ url: workspace.url, id: workspace._id })
-      );
+      dispatch(getWorkspace({ url: workspace.url, id: workspace._id }));
     } catch (error) {
       console.error(error);
     }
@@ -450,7 +408,7 @@ export default function Members() {
     getMembers();
     enablingUniversalLink();
   }, [isActive]);
-  const workspaceLink = `${process.env.NEXT_PUBLIC_URL}/workspace/${workspace?.url}/accept/${workspace?.universalTokenLink.token}`;
+  const workspaceLink = `${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/accept/${workspace?.universalTokenLink.token}`;
 
   const filteredMembers = listOfUsers.filter(
     (user) =>
@@ -483,23 +441,19 @@ export default function Members() {
           >
             <div className={styles.bodyWrapper}>
               <p className={styles.textPrimary}>Invite Link</p>
-              <PurpleToggle
-                active={isActive}
-                handleClick={handleToggleLink}
-              />
+              <PurpleToggle active={isActive} handleClick={handleToggleLink} />
             </div>
             {isActive ? (
               <>
                 <p className="text-muted-foreground">
-                  Share this link with others you&apos;d like to join
-                  your workspace.
+                  Share this link with others you&apos;d like to join your
+                  workspace.
                 </p>
                 <div className={styles.universalInviteLinkContainer}>
                   <div className={styles.inviteLinkInput}>
-                    <p className={styles.inviteLinkText}>
-                      {workspaceLink}
-                    </p>
+                    <p className={styles.inviteLinkText}>{workspaceLink}</p>
                     <button
+                      title="button"
                       type="button"
                       onClick={createWorkspaceLink}
                       className={styles.createLinkButton}
@@ -509,9 +463,7 @@ export default function Members() {
                   </div>
                   <button
                     type="button"
-                    onClick={() =>
-                      navigator.clipboard.writeText(workspaceLink)
-                    }
+                    onClick={() => navigator.clipboard.writeText(workspaceLink)}
                     className={`${handleButtonStyle()} flex items-center gap-1 font-semibold`}
                   >
                     <Copy
@@ -525,8 +477,8 @@ export default function Members() {
               </>
             ) : (
               <p className="text-muted-foreground">
-                Invite links provided a unique URL that allows anyone
-                to join your workspace.
+                Invite links provided a unique URL that allows anyone to join
+                your workspace.
               </p>
             )}
             <span className={styles.line} />
@@ -535,9 +487,9 @@ export default function Members() {
           <div>
             <p className={styles.manageMemberTitle}>Manage members</p>
             <p className={styles.subtitle}>
-              On the Free plan all members in a workspace are
-              administrators. Upgrade to the standard plan to add the
-              ability to assign or remove administrator roles.{" "}
+              On the Free plan all members in a workspace are administrators.
+              Upgrade to the standard plan to add the ability to assign or
+              remove administrator roles.{" "}
               <a href="www.example.com" className={styles.goToPlan}>
                 Go to Plans!
               </a>
@@ -571,10 +523,7 @@ export default function Members() {
           </p>
           {filteredMembers?.map(
             ({ _id, name, email, username }: ListOfUsersProps) => (
-              <div
-                key={name}
-                className={styles.membersDescriptionContainer}
-              >
+              <div key={name} className={styles.membersDescriptionContainer}>
                 <div className={styles.membersInfo}>
                   <p className={styles.membersNameOrRole}>{name}</p>
                   <p className={styles.membersEmail}>{email}</p>
@@ -584,6 +533,7 @@ export default function Members() {
                 </span>
                 <div className={styles.membersButtonWrapper}>
                   <button
+                    title="button"
                     type="button"
                     onClick={() => handleCommandOptions(_id)}
                     className={`${

@@ -30,9 +30,7 @@ const NavBarTeams = ({
 
   const handleActiveParams: handleActiveParamsType = (param: string): void => {
     if (teamIdentifier) {
-      router.push(
-        `/workspace/${currentWorkspace.url}/team/${teamIdentifier}/${param}`
-      );
+      router.push(`/${currentWorkspace.url}/team/${teamIdentifier}/${param}`);
     } else {
       console.error("Team identifier not found");
     }

@@ -52,7 +52,7 @@ export default function Home() {
     if (userHasAccess) {
       dispatch(getTeam(teamIdentifier as string) as never);
     } else {
-      router.push(`/workspace/${workspaceUrl}`);
+      router.push(`/${workspaceUrl}`);
     }
   }, [dispatch, teamIdentifier, userHasAccess, workspaceUrl, router]);
 

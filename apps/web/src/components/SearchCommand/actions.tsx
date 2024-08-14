@@ -6,10 +6,7 @@ import { setShowNewIssue } from "@/store/showNewIssue";
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./SearchCommand.interface";
 import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
   Box,
   Copy,
@@ -38,10 +35,7 @@ export class commandSchema {
   currentTeam = useAppSelector(
     (state: RootState) => state.taskData.currentTeam
   );
-  showToast(
-    title: string,
-    variant?: "destructive" | "default" | null
-  ) {
+  showToast(title: string, variant?: "destructive" | "default" | null) {
     const { toast } = useToast();
     toast({ title, variant });
   }
@@ -90,7 +84,7 @@ export class commandSchema {
           function: () => {
             this.dispatch(deleteAllCurrentFilters());
             this.router.push(
-              `/workspace/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`
+              `/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`
             );
           },
           shortcut: [],
@@ -145,9 +139,7 @@ export class commandSchema {
         icon: <ArrowRight />,
         text: "Go to inbox",
         function: () => {
-          this.router.push(
-            `/workspace/${this.currentWorkspace.url}/inbox`
-          );
+          this.router.push("/inbox");
         },
         shortcut: ["G", "then", "I"],
       },
@@ -163,7 +155,7 @@ export class commandSchema {
         text: "Go to active issues",
         function: () => {
           this.router.push(
-            `/workspace/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`
+            `/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`
           );
         },
         shortcut: ["G", "then", "A"],
@@ -173,7 +165,7 @@ export class commandSchema {
         text: "Go to backlog",
         function: () => {
           this.router.push(
-            `/workspace/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`
+            `/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`
           );
         },
         shortcut: ["G", "then", "B"],
@@ -183,7 +175,7 @@ export class commandSchema {
         text: "Go to all issues",
         function: () => {
           this.router.push(
-            `/workspace/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`
+            `/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`
           );
         },
         shortcut: ["G", "then", "E"],
@@ -202,7 +194,7 @@ export class commandSchema {
         function: () => {
           this.dispatch(deleteAllCurrentFilters());
           this.router.push(
-            `/workspace/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`
+            `/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`
           );
         },
         shortcut: ["G", "then", "U"],
@@ -273,9 +265,7 @@ export class commandSchema {
           icon: <ArrowRight />,
           text: "Create new team...",
           function: () => {
-            this.router.push(
-              `/workspace/${this.currentWorkspace.url}/settings/new-team`
-            );
+            this.router.push("/settings/new-team");
           },
           shortcut: [],
         },
@@ -285,9 +275,7 @@ export class commandSchema {
           icon: <Settings />,
           text: "Workspace Settings",
           function: () => {
-            this.router.push(
-              `/workspace/${this.currentWorkspace.url}/settings/workspace`
-            );
+            this.router.push("/settings/workspace");
           },
           shortcut: [],
         },
@@ -295,9 +283,7 @@ export class commandSchema {
           icon: <Settings />,
           text: "Account Settings",
           function: () => {
-            this.router.push(
-              `/workspace/${this.currentWorkspace.url}/settings/profile`
-            );
+            this.router.push("/settings/profile");
           },
           shortcut: [],
         },
@@ -305,9 +291,7 @@ export class commandSchema {
           icon: <Settings />,
           text: "Team Settings",
           function: () => {
-            this.router.push(
-              `/workspace/${this.currentWorkspace.url}/settings/teams/${this.currentTeam.identifier}`
-            );
+            this.router.push(`/settings/teams/${this.currentTeam.identifier}`);
           },
           shortcut: [],
         },
@@ -315,9 +299,7 @@ export class commandSchema {
           icon: <Settings />,
           text: "Github Settings",
           function: () => {
-            this.router.push(
-              `/workspace/${this.currentWorkspace.url}/settings/github-settings`
-            );
+            this.router.push("/settings/github-settings");
           },
           shortcut: [],
         },

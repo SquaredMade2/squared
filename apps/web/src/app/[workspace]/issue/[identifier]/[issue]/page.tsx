@@ -38,7 +38,7 @@ const TaskPage = () => {
   const workspaceUrl = params.workspace;
   const userHasAccess =
     access && access.id === user?._id && workspaceUrl === currentWorkspace.url;
-  const urlRedirect = `/workspace/${workspaceUrl}/issue/${params.identifier}/${formatUrl(taskPage.title)}`;
+  const urlRedirect = `/${workspaceUrl}/issue/${params.identifier}/${formatUrl(taskPage.title)}`;
 
   const toggleNav = (nav: string) => {
     if (nav === "navBar") {
