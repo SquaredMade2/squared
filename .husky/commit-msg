@@ -14,6 +14,7 @@ echo "Set author information locally to $DESIRED_AUTHOR_NAME <$DESIRED_AUTHOR_EM
 echo "Running Formatting..."
 
 pnpm format:write
+git add .
 
 # Allow the commit to proceed
 exit 0
