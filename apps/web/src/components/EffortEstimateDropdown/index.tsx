@@ -1,4 +1,7 @@
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/hooks/typeScriptReduxHooks";
 import axios from "axios";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Combobox } from "@headlessui/react";
@@ -7,6 +10,7 @@ import { getSingleTask } from "@/store/task/thunks";
 import { effortEstimateOptions } from "@/constants/designations";
 import type { EffortEstimateDropdownProps } from "@/components/EffortEstimateDropdown/EffortEstimateDropdown.interfaces";
 import ProgressBar from "@/components/ProgressBar";
+import { useToast } from "../ui/use-toast";
 
 const EffortEstimateDropdown = ({
   location,
@@ -16,23 +20,29 @@ const EffortEstimateDropdown = ({
 }: EffortEstimateDropdownProps) => {
   //const { taskId }: { taskId: string } = useParams();
   const dispatch = useAppDispatch();
-  const taskId = useAppSelector((state) => state.singleTask?.data?._id);
+  const { toast } = useToast();
+  const taskId = useAppSelector(
+    (state) => state.singleTask?.data?._id
+  );
   const newIssueEffortEstimate = useAppSelector(
     (state) => state.taskData.effortEstimate
   );
-  const sidebarEffortEstimate: number | undefined = useAppSelector((state) => {
-    if (location === "issueSidebar") {
-      return state.singleTask.data?.effortEstimate;
+  const sidebarEffortEstimate: number | undefined = useAppSelector(
+    (state) => {
+      if (location === "issueSidebar") {
+        return state.singleTask.data?.effortEstimate;
+      }
+      return undefined;
     }
-    return undefined;
-  });
+  );
 
   const extractNumber = (str: string): number =>
     Number.parseInt(str.substring(0, 2).trim(), 10);
 
   const handleSelectEffortEstimate = (newEffortEstimate: number) => {
     if (location === "issueSidebar") updateItem(newEffortEstimate);
-    if (location === "newIssue") dispatch(setEffortEstimate(newEffortEstimate));
+    if (location === "newIssue")
+      dispatch(setEffortEstimate(newEffortEstimate));
     handleButtonClick();
   };
 
@@ -45,7 +55,12 @@ const EffortEstimateDropdown = ({
         }
       );
       dispatch(getSingleTask(taskId as string));
-    } catch (err) {}
+    } catch (err) {
+      toast({
+        title: "Error updating effort estimate",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -62,12 +77,16 @@ const EffortEstimateDropdown = ({
                 const estimateNumber = extractNumber(effortEstimate);
                 let isChecked = false;
                 if (location === "newIssue")
-                  isChecked = newIssueEffortEstimate === estimateNumber;
+                  isChecked =
+                    newIssueEffortEstimate === estimateNumber;
                 if (location === "issueSidebar")
-                  isChecked = sidebarEffortEstimate === estimateNumber;
+                  isChecked =
+                    sidebarEffortEstimate === estimateNumber;
                 return (
                   <Combobox.Option
-                    onClick={() => handleSelectEffortEstimate(estimateNumber)}
+                    onClick={() =>
+                      handleSelectEffortEstimate(estimateNumber)
+                    }
                     value={effortEstimate}
                     key={estimateNumber}
                     className={`flex flex-row justify-between items-center hover:bg-popoverHover rounded-md py-1 px-2 cursor-pointer ${
@@ -78,7 +97,9 @@ const EffortEstimateDropdown = ({
                       <span className="w-4 h-4 mr-2 cursor-pointer">
                         {showIcon(estimateNumber)}
                       </span>
-                      <span className="cursor-pointer">{estimateNumber}</span>
+                      <span className="cursor-pointer">
+                        {estimateNumber}
+                      </span>
                     </div>
                     <div className="w-16">
                       <ProgressBar progress={estimateNumber} />

@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useToast } from "@/components/ui/use-toast";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { SqLogo } from "@/components/Svg";
 import { ChevronLeft } from "lucide-react";
@@ -13,6 +12,7 @@ import { ChevronLeft } from "lucide-react";
 export default function ResetPasswordRequest() {
   const [email, setEmail] = useState("");
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleChange = (e: InputChangeEvent) => {
     setEmail(e.target.value);
@@ -26,13 +26,15 @@ export default function ResetPasswordRequest() {
         `${process.env.NEXT_PUBLIC_SERVER}/auth/password/reset`,
         { email }
       );
-      toast.success(responseData.message);
+      toast({ title: responseData.message });
       router.push("/login");
     } catch (error) {
       console.error("Failed to request password reset:", error);
-      toast.error(
-        "There was an issue submitting your request. Please try again later."
-      );
+      toast({
+        title:
+          "There was an issue submitting your request. Please try again later.",
+        variant: "destructive",
+      });
     }
   };
 

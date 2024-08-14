@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { SqLogo } from "@/components/Svg";
 import { Eye, EyeOff } from "lucide-react";
@@ -18,7 +18,7 @@ export default function RegisterUser() {
   const handlePushLogin = () => {
     router.push("/login");
   };
-
+  const { toast } = useToast();
   const registerUser = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -34,36 +34,19 @@ export default function RegisterUser() {
         });
 
       if (data.error) {
-        toast.error(data.error, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        toast({ title: data.error, variant: "destructive" });
       } else {
         setData({
           name: "",
           email: "",
           password: "",
         });
-        toast.success(data.message, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        toast({ title: data.message });
         router.push("/login");
       }
     } catch (error) {
-      if (error instanceof Error) toast.error(error.message);
+      if (error instanceof Error)
+        toast({ title: error.message, variant: "destructive" });
     }
   };
 
@@ -95,7 +78,9 @@ export default function RegisterUser() {
                 placeholder=" Your name.."
                 type="text"
                 value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
+                onChange={(e) =>
+                  setData({ ...data, name: e.target.value })
+                }
                 className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
               />
             </div>
@@ -104,7 +89,9 @@ export default function RegisterUser() {
                 placeholder=" Email Address.."
                 type="email"
                 value={data.email}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
+                onChange={(e) =>
+                  setData({ ...data, email: e.target.value })
+                }
                 className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
               />
             </div>
@@ -113,7 +100,9 @@ export default function RegisterUser() {
                 placeholder=" Password.."
                 type={displayPassword}
                 value={data.password}
-                onChange={(e) => setData({ ...data, password: e.target.value })}
+                onChange={(e) =>
+                  setData({ ...data, password: e.target.value })
+                }
                 autoComplete="new-password"
                 className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
               />

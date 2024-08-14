@@ -10,16 +10,19 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { RootState } from "@/store";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
+import { useToast } from "@/components/ui/use-toast";
 
 const TaskPageTitle = () => {
+  const { toast } = useToast();
   const dispatch = useAppDispatch();
 
   const title = useSelector((state: RootState) => state.singleTask.data?.title);
   const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
-
+  const taskListTitle = useSelector((state: RootState) =>
+    state.taskData.taskList.map((el) => el.title)
+  );
   const [updatedTitle, setUpdatedTitle] = useState(title);
   const [isFocused, setIsFocused] = useState(false);
-
   const {
     author,
     storeCommonFields,
@@ -27,6 +30,12 @@ const TaskPageTitle = () => {
     storeTaskValue,
     updateTaskValue,
   } = useLogTaskEvent();
+
+  const styles = {
+    container: "flex flex-col",
+    title:
+      "mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none",
+  };
 
   const listOfMembers = useSelector(
     (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
@@ -62,6 +71,15 @@ const TaskPageTitle = () => {
   ) => {
     setIsFocused(false);
     e.preventDefault();
+    if (
+      taskListTitle.includes(updatedTitle === undefined ? "" : updatedTitle)
+    ) {
+      toast({
+        title: `${updatedTitle} already exists`,
+        variant: "destructive",
+      });
+      return;
+    }
     const changeMade: boolean = updatedTitle !== title;
     if (changeMade && taskId !== undefined) {
       storeCommonFields(author, taskId);

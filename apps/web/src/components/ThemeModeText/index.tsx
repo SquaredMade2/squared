@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { lightMode, darkMode } from "@/components/Svg";
 import type { ThemeModeTextProps } from "./ThemeModeText.interfaces";
 import { useTheme } from "next-themes";
@@ -20,7 +19,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
         menu or in the settings.
       </span>
       <div className="flex w-[600px] xs:w-11/12 h-48 border border-border text-foreground rounded-lg font-medium">
-        {theme === "light" && (
+        {theme === "light" || theme === "system" ? (
           <>
             <div
               className="w-1/2 box-border border-border border-r flex items-center justify-center flex-col bg-taskHeader"
@@ -41,8 +40,7 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
               <p>Dark</p>
             </div>
           </>
-        )}
-        {theme === "dark" && (
+        ) : (
           <>
             <div
               className="w-1/2 box-border border-border border-r flex items-center justify-center flex-col"

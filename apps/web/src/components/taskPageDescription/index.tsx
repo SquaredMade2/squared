@@ -11,16 +11,21 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
+import { useToast } from "../ui/use-toast";
 
 const TaskPageDescription = () => {
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
   const description = useSelector(
     (state: RootState) => state.singleTask.data?.description
   );
-  const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
+  const taskId = useSelector(
+    (state: RootState) => state.singleTask.data?._id
+  );
   const socket = useContext(SocketContext);
 
-  const [updatedDescription, setUpdatedDescription] = useState(description);
+  const [updatedDescription, setUpdatedDescription] =
+    useState(description);
 
   const {
     author,
@@ -32,9 +37,12 @@ const TaskPageDescription = () => {
   const [isFocused, setIsFocused] = useState(false);
   
   const listOfMembers = useSelector(
-    (state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers
+    (state: RootState) =>
+      state.listOfWorkspaceMembers.listOfWorkspaceMembers
   );
-  const user = useSelector((state: RootState) => state.userSettings.user);
+  const user = useSelector(
+    (state: RootState) => state.userSettings.user
+  );
   const handleChange: OnChangeHandlerFunc = (e) => {
     setUpdatedDescription(e.target.value);
   };
@@ -64,7 +72,15 @@ const TaskPageDescription = () => {
           updatedTaskDescription._id,
           user._id
         );
-      } catch (err) {}
+      } catch (err) {
+        if (err instanceof Error) {
+          toast({
+            title: "Error updating description",
+            description: err?.message,
+            variant: "destructive",
+          });
+        }
+      }
     }
   };
 
