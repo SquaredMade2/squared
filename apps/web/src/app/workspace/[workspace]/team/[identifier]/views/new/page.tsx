@@ -18,113 +18,113 @@ import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 
 const ViewsPage: React.FC = () => {
-  const params = useParams();
-  const dispatch = useAppDispatch();
-  const [showFilterSaveForm, setShowFilterSaveForm] = useState(false);
-  const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
-  const { currentTeam } = useSelector((state: RootState) => state.taskData);
-  const taskList = useSelector((state: RootState) => state.taskData.taskList);
-  const teamId = useSelector(
-    (state: RootState) => state.taskData.currentTeam._id
-  );
-  const activeSelected = params.all === "active";
-  const backlogSelected = params.all === "backlog";
+	const params = useParams();
+	const dispatch = useAppDispatch();
+	const [showFilterSaveForm, setShowFilterSaveForm] = useState(false);
+	const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
+	const { currentTeam } = useSelector((state: RootState) => state.taskData);
+	const taskList = useSelector((state: RootState) => state.taskData.taskList);
+	const teamId = useSelector(
+		(state: RootState) => state.taskData.currentTeam._id,
+	);
+	const activeSelected = params.all === "active";
+	const backlogSelected = params.all === "backlog";
 
-  const handleFilter = (filterValue: FilterOption | null) => {
-    setFilterOption(filterValue);
-  };
+	const handleFilter = (filterValue: FilterOption | null) => {
+		setFilterOption(filterValue);
+	};
 
-  const handleFilterSaveForm = (value: boolean) => {
-    setShowFilterSaveForm(value);
-  };
+	const handleFilterSaveForm = (value: boolean) => {
+		setShowFilterSaveForm(value);
+	};
 
-  const handleDragEnd = async (result: DragResult) => {
-    const { destination, source, draggableId } = result;
+	const handleDragEnd = async (result: DragResult) => {
+		const { destination, source, draggableId } = result;
 
-    const destinationUnchanged = destination.droppableId === source.droppableId;
+		const destinationUnchanged = destination.droppableId === source.droppableId;
 
-    if (!destination || destinationUnchanged) {
-      return;
-    }
+		if (!destination || destinationUnchanged) {
+			return;
+		}
 
-    const draggedTaskFound = taskList.find(
-      (task) => task && task._id === draggableId
-    );
+		const draggedTaskFound = taskList.find(
+			(task) => task && task._id === draggableId,
+		);
 
-    if (!draggedTaskFound) {
-      return;
-    }
+		if (!draggedTaskFound) {
+			return;
+		}
 
-    const taskWithNewStatus = {
-      ...draggedTaskFound,
-      status: destination.droppableId,
-    };
+		const taskWithNewStatus = {
+			...draggedTaskFound,
+			status: destination.droppableId,
+		};
 
-    const sourceIndex = taskList.findIndex(
-      (task) => task && task._id === draggableId
-    );
-    const destinationIndex = taskList.findIndex(
-      (task) => task && task._id === draggableId
-    );
+		const sourceIndex = taskList.findIndex(
+			(task) => task && task._id === draggableId,
+		);
+		const destinationIndex = taskList.findIndex(
+			(task) => task && task._id === draggableId,
+		);
 
-    const updatedTaskList = [...taskList];
-    updatedTaskList.splice(sourceIndex, 1);
-    updatedTaskList.splice(destinationIndex, 0, taskWithNewStatus);
+		const updatedTaskList = [...taskList];
+		updatedTaskList.splice(sourceIndex, 1);
+		updatedTaskList.splice(destinationIndex, 0, taskWithNewStatus);
 
-    const droppableId = destination.droppableId;
+		const droppableId = destination.droppableId;
 
-    dispatch(setTaskList(updatedTaskList));
-    await updateTaskAfterDrag(draggedTaskFound, droppableId);
-  };
+		dispatch(setTaskList(updatedTaskList));
+		await updateTaskAfterDrag(draggedTaskFound, droppableId);
+	};
 
-  const handleDeleteTask = async (taskId: string) => {
-    await deleteTaskCard(taskId);
-    dispatch(getAllTasks(currentTeam));
-  };
+	const handleDeleteTask = async (taskId: string) => {
+		await deleteTaskCard(taskId);
+		dispatch(getAllTasks(currentTeam));
+	};
 
-  useEffect(() => {
-    dispatch(getFilteredViews(teamId));
-  }, [dispatch, teamId]);
+	useEffect(() => {
+		dispatch(getFilteredViews(teamId));
+	}, [dispatch, teamId]);
 
-  return (
-    <div className="flex flex-row overflow-hidden relative">
-      <div className="flex items-center flex-col w-full h-screen bg-background">
-        <div className="w-full px-8 h-screen snap-x relative">
-          <ViewNewTopNavBar showFilterSaveForm={showFilterSaveForm} />
-          <div className="bg-card w-full flex flex-col items-center justify-between mb-2">
-            <div className="w-full">
-              {!showFilterSaveForm && (
-                <ViewNewFilters
-                  handleFilter={handleFilter}
-                  filterOption={filterOption}
-                  showFilterSaveForm={showFilterSaveForm}
-                  handleFilterSaveForm={handleFilterSaveForm}
-                />
-              )}
+	return (
+		<div className="flex flex-row overflow-hidden relative">
+			<div className="flex items-center flex-col w-full h-screen bg-background">
+				<div className="w-full px-8 h-screen snap-x relative">
+					<ViewNewTopNavBar showFilterSaveForm={showFilterSaveForm} />
+					<div className="bg-card w-full flex flex-col items-center justify-between mb-2">
+						<div className="w-full">
+							{!showFilterSaveForm && (
+								<ViewNewFilters
+									handleFilter={handleFilter}
+									filterOption={filterOption}
+									showFilterSaveForm={showFilterSaveForm}
+									handleFilterSaveForm={handleFilterSaveForm}
+								/>
+							)}
 
-              {showFilterSaveForm && (
-                <div className="w-[98%] m-3">
-                  <FilterSaveForm
-                    filterOption={filterOption}
-                    handleFilter={handleFilter}
-                    handleFilterSaveForm={handleFilterSaveForm}
-                    setShowFilterSaveForm={setShowFilterSaveForm}
-                    redirectToViewsOnCreate={true}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-          <ViewAllTasks
-            activeSelected={activeSelected}
-            backlogSelected={backlogSelected}
-            handleDragEnd={handleDragEnd as OnDragEndResponder}
-            handleDeleteTask={handleDeleteTask}
-          />
-        </div>
-      </div>
-    </div>
-  );
+							{showFilterSaveForm && (
+								<div className="w-[98%] m-3">
+									<FilterSaveForm
+										filterOption={filterOption}
+										handleFilter={handleFilter}
+										handleFilterSaveForm={handleFilterSaveForm}
+										setShowFilterSaveForm={setShowFilterSaveForm}
+										redirectToViewsOnCreate={true}
+									/>
+								</div>
+							)}
+						</div>
+					</div>
+					<ViewAllTasks
+						activeSelected={activeSelected}
+						backlogSelected={backlogSelected}
+						handleDragEnd={handleDragEnd as OnDragEndResponder}
+						handleDeleteTask={handleDeleteTask}
+					/>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default ViewsPage;
