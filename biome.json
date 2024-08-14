@@ -56,7 +56,6 @@
       "externalVariable",
       "cypress",
       "it",
-      "expect",
       "cy",
       "describe",
       "beforeEach",

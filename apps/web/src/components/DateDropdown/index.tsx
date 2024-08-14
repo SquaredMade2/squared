@@ -1,16 +1,27 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useAppDispatch, useAppSelector } from '@/hooks/typeScriptReduxHooks';
-import { getSingleTask } from '@/store/task/thunks';
-import { setDueDate } from '@/store/taskData';
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
-import type { DateDropdownProps } from '@/components/DateDropdown/DateDropdown.interfaces';
+import { useState } from "react";
+import axios from "axios";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { getSingleTask } from "@/store/task/thunks";
+import { setDueDate } from "@/store/taskData";
+import { ClickAwayListener } from "@mui/base/ClickAwayListener";
+import type { DateDropdownProps } from "@/components/DateDropdown/DateDropdown.interfaces";
 import { format } from "date-fns";
+import { useToast } from "../ui/use-toast";
 import { Calendar } from "../ui/calendar";
 
 const styles = {
   container:
     "border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72",
+  header: "flex justify-between items-center text-popover-foreground mb-4",
+  grid: "grid grid-cols-7 gap-1",
+  day: "cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg",
+  dayNotCurrentMonth: "text-muted-foreground",
+  dayNameContainer: "grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent",
+  dayName: "font-semibold text-muted-foreground text-center",
+  selectedDay:
+    "text-secondary-foreground bg-secondary hover:bg-blueGlow border border-transparent hover:border-blueGlow focus:outline-none focus:shadow-sm active:shadow-lg",
+  disabledDay: "cursor-not-allowed pointer-events-none text-muted-foreground",
+  svg: "cursor-pointer",
   dateContainer: "mt-4 flex flex-col text-popover-foreground",
   inputRow: "flex items-center justify-between gap-3 w-full",
   input: "flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10",
@@ -24,6 +35,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
   location,
 }) => {
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
   const taskId = useAppSelector((state) => state.singleTask?.data?._id);
   const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
   const sidebarDate = useAppSelector((state) => state.singleTask.data?.dueDate);
@@ -34,7 +46,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
   const [selectedTime, setSelectedTime] = useState(initialTime);
   const [selectedDate, setSelectedDate] = useState(initialDate ?? undefined);
 
-  const containerClass = `${styles.container} ${
+  const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${
     location === "newIssue" ? "absolute top-8" : "absolute top-0 -left-[300px]"
   }`;
 
@@ -72,7 +84,13 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
         }
       );
       dispatch(getSingleTask(taskId as string));
-    } catch (err) {}
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to update due date",
+        variant: "destructive",
+      })
+    }
   };
 
   return (
@@ -94,6 +112,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
               </span>
             )}
             <input
+              title="title"
               type="time"
               className={styles.input}
               value={selectedTime}
