@@ -360,27 +360,7 @@ const taskData = createSlice({
         state.isLoading = false;
         console.error(action.payload);
       })
-      .addCase(createWorkspaceLinkToken.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(createWorkspaceLinkToken.fulfilled, (state) => {
-        state.isLoading = false;
-      })
-      .addCase(createWorkspaceLinkToken.rejected, (state, action) => {
-        state.isLoading = false;
-        console.error(action.payload);
-      })
 
-      .addCase(enableUniversalLink.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(enableUniversalLink.fulfilled, (state) => {
-        state.isLoading = false;
-      })
-      .addCase(enableUniversalLink.rejected, (state, action) => {
-        state.isLoading = false;
-        console.error(action.payload);
-      })
       .addCase(enableUniversalLink.pending, (state) => {
         state.isLoading = true;
       })
