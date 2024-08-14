@@ -170,7 +170,6 @@ const Search = () => {
 							<TaskCard
 								filteredTasks={filteredTasks}
 								setShowRenameModal={setShowRenameModal}
-								setTaskData={setTaskData}
 								highlightText={highlightText}
 								location="search"
 							/>

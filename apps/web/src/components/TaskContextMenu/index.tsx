@@ -1,12 +1,7 @@
-import { useState } from "react";
 import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
-	ContextMenuShortcut,
-	ContextMenuSub,
-	ContextMenuSubContent,
-	ContextMenuSubTrigger,
 } from "../ui/context-menu";
 import StatusSubContextMenu from "../StatusSubContextMenu";
 import AssigneeSubContextMenu from "../AssigneeSubContextMenu";
@@ -25,14 +20,11 @@ import RenameSubContextMenu from "../RenameSubContextMenu";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	task,
+    // Keep here for future
 	setIsCopied,
 	copyToClipboard,
 }) => {
 	const dispatch = useAppDispatch();
-
-	const [showDropdown, setShowDropdown] = useState(false);
-
-	const theme = useAppSelector((state) => state.userSettings.theme);
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 	const styles = {
 		contentWrapper: ``,
@@ -43,14 +35,6 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 		console.log("done in deletecurrenttask");
 		await dispatch(deleteTask(task._id));
 		await dispatch(getAllTasks(currentTeam));
-	};
-
-	const handleDateToggle = () => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleDateClickAway = () => {
-		setShowDropdown(!showDropdown);
 	};
 
 	return (

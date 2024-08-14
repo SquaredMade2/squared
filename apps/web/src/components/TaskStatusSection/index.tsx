@@ -26,7 +26,6 @@ const TaskStatusSection = ({
 				<TaskCard
 					filteredTasks={filteredTasks}
 					setShowRenameModal={setShowRenameModal}
-					setTaskData={setTaskData}
 					location={location}
 					highlightText={highlightText}
 				/>

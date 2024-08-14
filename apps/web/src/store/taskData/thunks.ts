@@ -75,7 +75,6 @@ export const deleteAllTasks = createAsyncThunk(
 export const deleteTask = createAsyncThunk(
 	"taskData/deleteTask",
 	async (taskId: string, { rejectWithValue }) => {
-		console.log(taskId);
 		try {
 			const { data } = await axios({
 				method: "DELETE",
@@ -87,7 +86,6 @@ export const deleteTask = createAsyncThunk(
 			});
 			return taskId;
 		} catch (error) {
-			console.log(error);
 			if (error instanceof AxiosError) {
 				return rejectWithValue(error.response?.data);
 			}
@@ -142,7 +140,6 @@ export const addWorkspace = createAsyncThunk<
 			.toUpperCase();
 
 		const exists = await dispatch(workspaceExists(workspace.url));
-		console.log(exists);
 		//fix have to do better error handling here -- https://linear.app/project-tasklist/issue/PRO-736/error-handling-bug-addworkspace-and-workspaceexists
 		if (exists) {
 			try {
@@ -468,12 +465,10 @@ export const workspaceExists = createAsyncThunk(
 					url,
 				},
 			});
-			console.log(exists);
 			//fix have to do better error handling here -- https://linear.app/project-tasklist/issue/PRO-736/error-handling-bug-addworkspace-and-workspaceexists
 
 			return exists;
 		} catch (error) {
-			console.log("errored");
 			if (error instanceof AxiosError) {
 				return rejectWithValue(error.response?.data);
 			}

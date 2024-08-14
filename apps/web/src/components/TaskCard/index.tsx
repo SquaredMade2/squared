@@ -52,7 +52,6 @@ const styles = {
 
 const TaskCard = ({
 	filteredTasks,
-	setTaskData,
 	highlightText,
 	location,
 }: TaskCardProps) => {
@@ -79,11 +78,8 @@ const TaskCard = ({
 	const [deleteFade, setDeleteFade] = useState(false);
 	const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 	const [showDeleteCard, setShowDeleteCard] = useState(false);
-	const [menuPosition, setMenuPosition] = useState<{
-		x: number;
-		y: number;
-	} | null>(null);
 
+	//  Keep this here for future
 	const [isCopied, setIsCopied] = useState(false);
 
 	const taskRefs: MutableRefObject<{
@@ -107,23 +103,9 @@ const TaskCard = ({
 		setDeleteFade(false);
 	};
 
-	const handleContextMenu = (
-		e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-		task: Task,
-	) => {
-		e.preventDefault();
-		setTaskData?.(task);
-		setSelectedTask(task);
-		setMenuPosition({ x: e.clientX, y: e.clientY });
-	};
-
 	const navigateToTask = async (task: Task) => {
 		dispatch(setTaskPage(task));
 		router.push(`/tasks/${task._id}`);
-	};
-
-	const handleGlobalClick = () => {
-		setMenuPosition(null);
 	};
 
 	const copyToClipboard = (taskId: string) => {
@@ -138,23 +120,6 @@ const TaskCard = ({
 		dispatch(getAllUsers(currentWorkspace._id));
 	}, [currentWorkspace._id, dispatch]);
 
-	useEffect(() => {
-		function handleClickAway(e: MouseEvent) {
-			if (
-				!Object.values(taskRefs.current).some((taskEl) =>
-					taskEl?.contains(e.target as Node),
-				)
-			) {
-				setMenuPosition(null);
-			}
-		}
-
-		document.addEventListener("mousedown", handleClickAway);
-		return () => {
-			document.removeEventListener("mousedown", handleClickAway);
-		};
-	}, []);
-
 	return (
 		<>
 			{view === "list" &&
@@ -167,8 +132,6 @@ const TaskCard = ({
 								{...provided.draggableProps}
 								{...provided.dragHandleProps}
 								ref={provided.innerRef}
-								onClick={handleGlobalClick}
-								onContextMenu={(e) => handleContextMenu(e, task)}
 							>
 								<ContextMenu>
 									<ContextMenuTrigger>
@@ -239,8 +202,6 @@ const TaskCard = ({
 										{...provided.draggableProps}
 										{...provided.dragHandleProps}
 										ref={provided.innerRef}
-										onClick={handleGlobalClick}
-										onContextMenu={(e) => handleContextMenu(e, task)}
 									>
 										<ContextMenu>
 											<ContextMenuTrigger>
@@ -311,8 +272,6 @@ const TaskCard = ({
 					<div
 						id={"this"}
 						key={task._id}
-						onClick={handleGlobalClick}
-						onContextMenu={(e) => handleContextMenu(e, task)}
 					>
 						<ContextMenu>
 							<ContextMenuTrigger>
