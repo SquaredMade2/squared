@@ -3,7 +3,7 @@
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { useStore } from "zustand";
 
-import { type SquaredStore, createSquaredStore } from "@/storeZ";
+import { type SquaredState, createSquaredStore } from "@/storeZ";
 
 export type SquaredStoreApi = ReturnType<typeof createSquaredStore>;
 
@@ -31,7 +31,7 @@ export const SquaredStoreProvider = ({
 };
 
 export const useSquaredStore = <T,>(
-	selector: (store: SquaredStore) => T,
+	selector: (store: SquaredState) => T,
 ): T => {
 	const counterStoreContext = useContext(SquaredStoreContext);
 
@@ -40,4 +40,16 @@ export const useSquaredStore = <T,>(
 	}
 
 	return useStore(counterStoreContext, selector);
+};
+
+export const useTaskStore = () => {
+	return useSquaredStore((state) => state.tasks.getState());
+};
+
+export const useTeamStore = () => {
+	return useSquaredStore((state) => state.teams.getState());
+};
+
+export const useWorkspaceStore = () => {
+	return useSquaredStore((state) => state.workspaces.getState());
 };

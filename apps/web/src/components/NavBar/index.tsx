@@ -17,6 +17,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "../ui/accordion";
+import { teamExists } from "@/store/taskData/thunks";
 
 const Navbar = () => {
 	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
@@ -92,7 +93,7 @@ const Navbar = () => {
 					</Accordion>
 				</div>
 				<div className="absolute top-[100px] left-full">
-					<NewIssueModal />
+					<NewIssueModal teamId={workspace?.teams[0]._id} />
 				</div>
 				<div className="absolute top-[100px] left-full">
 					<SearchCommand

@@ -8,10 +8,12 @@ export const prisma = new PrismaClient();
 
 
 import * as $61fb65 from "./team/[teamId]/task";
+import * as $0a9f89 from "./team/[teamId]";
 import * as $abb393 from "./task/[taskId]";
 
 export type AllRouteDeps =
   & Parameters<typeof $61fb65.createRoute>[0]
+  & Parameters<typeof $0a9f89.createRoute>[0]
   & Parameters<typeof $abb393.createRoute>[0]
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
@@ -24,6 +26,16 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     router.post("/api/team/:teamId/task", toMutationHandler(r.POST));
     router.put("/api/team/:teamId/task", toMutationHandler(r.PUT));
     router.delete("/api/team/:teamId/task", toQueryHandler(r.DELETE));
+  }
+
+  {
+    type Params = { teamId: string };
+    const r: Route<Params> = $0a9f89.createRoute(deps);
+
+    router.get("/api/team/:teamId", toQueryHandler(r.GET));
+    router.post("/api/team/:teamId", toMutationHandler(r.POST));
+    router.put("/api/team/:teamId", toMutationHandler(r.PUT));
+    router.delete("/api/team/:teamId", toQueryHandler(r.DELETE));
   }
 
   {

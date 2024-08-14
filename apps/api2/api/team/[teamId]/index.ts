@@ -1,4 +1,4 @@
-import { Task } from "@repo/db/src";
+import { Team } from "@repo/db/src";
 import { prisma } from "@/api";
 import { Route } from "@/api/route";
 
@@ -10,19 +10,19 @@ export function createRoute({}): Route<Params> {
   return {
     GET: async ({ teamId }, query) => {
       try {
-        // Find tasks by team ID
-        const tasks: Task[] | null = await prisma.task.findMany({
-          where: { teamId },
+        // Find team by ID
+        const team: Team | null = await prisma.team.findFirst({
+          where: { id: teamId },
         });
 
-        if (!tasks) {
+        if (!team) {
           throw new Error("Tasks not found");
         }
 
-        // Return the found tasks
-        return tasks;
+        // Return the found team
+        return team;
       } catch (error) {
-        console.error("Error finding tasks:", error);
+        console.error("Error finding team:", error);
         throw new Error("Internal server error");
       }
     },

@@ -5,7 +5,10 @@ export type TeamState = {
 };
 
 export type TeamActions = {
-  addTeam: (team: Team) => (state: TeamState) => Team;
+  addTeam: (team: Team) => (state: TeamState) => Promise<Team>;
+  getTeam: (
+    teamId: string
+  ) => (state: TeamState) => Promise<Team> | Team | undefined;
 };
 
 export type TeamStore = TeamState & TeamActions;
