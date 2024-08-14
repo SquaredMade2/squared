@@ -4,17 +4,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import axios, { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  useAppSelector,
-  useAppDispatch,
-} from "@/hooks/typeScriptReduxHooks";
-import {
-  deleteTeam,
-  getTeam,
-  getWorkspace,
-} from "@/store/taskData/thunks";
+import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { deleteTeam, getTeam, getWorkspace } from "@/store/taskData/thunks";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
-import type { TeamData } from "@/app/workspace/[workspace]/settings/teams/[identifier]/teams.interfaces";
+import type { TeamData } from "./teams.interfaces";
 import type { FormSubmitEvent } from "@/types";
 import BlueButton from "@/components/BlueButton";
 import DeleteButton from "@/components/DeleteButton";
@@ -23,44 +16,34 @@ import { X } from "lucide-react";
 
 export default function TeamsSetting() {
   const { toast } = useToast();
-  const params = useParams();
+  const { identifier } = useParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   const { currentTeam, access, error } = useAppSelector(
     (state) => state.taskData
   );
-  const workspace = useAppSelector(
-    (state) => state.taskData.currentWorkspace
-  );
+  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
   const [teamName, setTeamName] = useState<string>(currentTeam.name);
   const [teamIdentifier, setTeamIdentifier] = useState<string>(
     currentTeam.identifier
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const showNavBar = useAppSelector(
-    (state) => state.userSettings.showNavBar
-  );
-  const [fillColor, setFillColor] =
-    useState<string>("text-[#9c9eac]");
-  const { user, theme } = useAppSelector(
-    (state) => state.userSettings
-  );
+  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
+  const [fillColor, setFillColor] = useState<string>("text-[#9c9eac]");
+  const { user, theme } = useAppSelector((state) => state.userSettings);
 
-  const workspaceUrl = params.workspace as string;
-  const identifier = params.identifier as string;
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const prevName = currentTeam.name;
   const prevIdentifier = currentTeam.identifier;
   const valueChanged =
-    (prevName !== teamName || prevIdentifier !== teamIdentifier) &&
-    !loading;
+    (prevName !== teamName || prevIdentifier !== teamIdentifier) && !loading;
+
   const userHasAccess =
     typeof access === "object" &&
     access &&
     "id" in access &&
-    access.id === user?._id &&
-    workspaceUrl === workspace?.url;
+    access.id === user?._id;
 
   const identifierInputFilter = (value: string): void => {
     const regex = /^[A-Za-z0-9]*$/g;
@@ -91,7 +74,7 @@ export default function TeamsSetting() {
     } else {
       dispatch(deleteTeam(currentTeam._id));
       handleClose();
-      router.push(`/workspace/${workspaceUrl}`);
+      router.push(`/${workspace?.url}`);
       toast({ title: "Team deleted" });
     }
   };
@@ -124,11 +107,9 @@ export default function TeamsSetting() {
           workspaceId: workspace._id,
         });
         if (update) {
-          dispatch(
-            getWorkspace({ url: workspaceUrl, id: workspace._id })
-          );
+          dispatch(getWorkspace({ url: workspace?.url, id: workspace._id }));
           await dispatch(getTeam(teamIdentifier));
-          const url = `/workspace/${workspace.url}/settings/teams/${teamIdentifier}`;
+          const url = `/${workspace.url}/settings/teams/${teamIdentifier}`;
           router.push(url);
         }
       } catch (err) {}
@@ -166,7 +147,7 @@ export default function TeamsSetting() {
       if (userHasAccess) {
         setLoading(false);
       } else {
-        router.push(`/workspace/${workspaceUrl}`);
+        router.push(`/${workspace?.url}`);
       }
     };
     fetchData();
@@ -189,12 +170,8 @@ export default function TeamsSetting() {
                   <h1>Verify team deletion</h1>
                   <div
                     onClick={handleClose}
-                    onMouseEnter={() =>
-                      setFillColor("text-[#BDBFC5]")
-                    }
-                    onMouseLeave={() =>
-                      setFillColor("text-[#9c9eac]")
-                    }
+                    onMouseEnter={() => setFillColor("text-[#BDBFC5]")}
+                    onMouseLeave={() => setFillColor("text-[#9c9eac]")}
                   >
                     <X className={`cursor-pointer ${fillColor}`} />
                   </div>
@@ -242,9 +219,7 @@ export default function TeamsSetting() {
                       type="text"
                       maxLength={5}
                       className={`border border-border pl-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded xs:w-3/4 bg-textField ${theme === "dark" ? "bg-background" : "bg-card"}`}
-                      onChange={(e) =>
-                        identifierInputFilter(e.target.value)
-                      }
+                      onChange={(e) => identifierInputFilter(e.target.value)}
                       value={teamIdentifier}
                     />
                   </div>
@@ -256,14 +231,12 @@ export default function TeamsSetting() {
                 </div>
               </form>
               <div>
-                <h3 className="text-lg font-medium mb-3">
-                  Delete team
-                </h3>
+                <h3 className="text-lg font-medium mb-3">Delete team</h3>
                 <p className="text-muted-foreground text-sm mb-3">
                   <span className="font-medium">Warning: </span>
-                  Deleting the team will also permanently delete any
-                  issues associated with it. This can't be undone and
-                  your data cannot be recovered by Squared.
+                  Deleting the team will also permanently delete any issues
+                  associated with it. This can't be undone and your data cannot
+                  be recovered by Squared.
                 </p>
                 <DeleteButton
                   description="Delete Team"

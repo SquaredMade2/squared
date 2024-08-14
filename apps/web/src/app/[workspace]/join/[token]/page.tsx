@@ -3,18 +3,13 @@ import { useEffect } from "react";
 import axios, { type AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { joiningWorkspaceVerification } from "@/store/taskData/thunks";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function JoiningWorkspaceVerification() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userSettings.user);
-  const workspace = useAppSelector(
-    (state) => state.taskData.currentWorkspace
-  );
+  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
   const router = useRouter();
   const { token } = useParams();
   const { toast } = useToast();
@@ -25,7 +20,7 @@ export default function JoiningWorkspaceVerification() {
     } else if (!user?.on_boarding) {
       router.push("/onboarding");
     } else {
-      router.push(`/workspace/${url}`);
+      router.push(`/${url}`);
     }
   };
 
@@ -38,7 +33,7 @@ export default function JoiningWorkspaceVerification() {
         } else if (!user.on_boarding) {
           router.push("/onboarding");
         } else {
-          router.push(`/workspace/${workspace?.url}`);
+          router.push(`/${workspace?.url}`);
         }
         break;
       default:
@@ -53,9 +48,7 @@ export default function JoiningWorkspaceVerification() {
   useEffect(() => {
     const verifyingTokenToJoinWorkspace = async () => {
       try {
-        const data = await dispatch(
-          joiningWorkspaceVerification(token)
-        );
+        const data = await dispatch(joiningWorkspaceVerification(token));
 
         if (data?.payload.success) {
           toast({ title: data.payload.message });

@@ -20,7 +20,7 @@ function AcceptWorkspaceInvitation() {
           toast({
             title: `Successfully joined ${data.updatedWorkspace.url} workspace!`,
           });
-          router.push(`/workspace/${data.updatedWorkspace.url}`);
+          router.push(`/${data.updatedWorkspace.url}`);
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {

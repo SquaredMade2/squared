@@ -22,6 +22,7 @@ import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { deleteTaskCard } from "@/api/taskApi";
+import { formatUrl } from "@/utils/formatting";
 
 const TaskCard = ({
   filteredTasks,
@@ -90,7 +91,7 @@ const TaskCard = ({
   const navigateToTask = async (task: Task) => {
     dispatch(setTaskPage(task));
     router.push(
-      `/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`
+      `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`
     );
   };
 
@@ -220,7 +221,7 @@ const TaskCard = ({
                       )}
                     </div>
                     <Link
-                      href={`/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
+                      href={`/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`}
                       onClick={() => dispatch(setTaskPage(task))}
                     >
                       <div className="relative w-[325px]">
@@ -304,7 +305,7 @@ const TaskCard = ({
                 </div>
               </div>
               <Link
-                href={`/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
+                href={`/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`}
                 onClick={() => setTaskPage(task)}
                 className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
               >

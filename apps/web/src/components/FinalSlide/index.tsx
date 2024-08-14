@@ -14,7 +14,7 @@ const FinalSlide = () => {
   );
 
   const handleClick = () => {
-    router.push(`/workspace/${workspace[0].url}`);
+    router.push(`/${workspace[0].url}`);
   };
 
   return (

@@ -13,17 +13,13 @@ const TaskCardTop = () => {
   const workspace = useAppSelector(
     (state: RootState) => state.taskData.currentWorkspace
   );
-  const allWorkspaces = useAppSelector(
-    (state) => state.taskData.workspaces
-  );
+  const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
 
   const index: number = allWorkspaces.findIndex(
     (item) => item._id === workspace._id
   );
 
-  const taskTitle = useAppSelector(
-    (state) => state.singleTask.data?.title
-  );
+  const taskTitle = useAppSelector((state) => state.singleTask.data?.title);
 
   return (
     <>
@@ -32,7 +28,7 @@ const TaskCardTop = () => {
           <BreadcrumbItem>
             <BreadcrumbLink
               className="flex items-center text-muted-foreground hover:text-foreground"
-              href={`/workspace/${workspace.url}`}
+              href={`/${workspace.url}`}
             >
               <div className="mt-0.5 rounded">
                 <WorkspaceInitials
