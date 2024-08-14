@@ -1,11 +1,11 @@
 import type { Team } from "@repo/db";
 
-export type TeamActions = {
-	addTeam: (team: Team) => (state: TeamState) => TeamState;
-};
-
 export type TeamState = {
-	teams: Team[];
+  teams: Team[];
 };
 
-export type TeamStore = TeamActions & TeamState;
+export type TeamActions = {
+  addTeam: (team: Team) => (state: TeamState) => Team;
+};
+
+export type TeamStore = TeamState & TeamActions;

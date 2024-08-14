@@ -1,25 +1,17 @@
 import { createStore } from "zustand/vanilla";
-import type { Team } from "@repo/db";
-
-export type TeamState = {
-  teams: Team[];
-};
-
-export type TeamActions = {
-  addTeam: (team: Team) => void;
-};
-
-export type TeamStore = TeamState & TeamActions;
+export * from "./interfaces";
+import type { TeamState, TeamStore } from "./interfaces";
 
 export const createTeamStore = (
   initState: TeamState = { teams: [] }
 ) => {
   return createStore<TeamStore>()((set) => ({
     ...initState,
-    addTeam: (team) => {
-      set((state) => ({
+    addTeam: (team) => (state) => {
+      set({
         teams: [...state.teams, team],
-      }));
+      });
+      return team;
     },
   }));
 };

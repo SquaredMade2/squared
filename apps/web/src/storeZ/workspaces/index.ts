@@ -1,16 +1,6 @@
 import { createStore } from "zustand/vanilla";
-import type { Workspace } from "@repo/db";
-
-export type WorkspaceState = {
-  workspaces: Workspace[];
-  currentWorkspace: Workspace | null;
-};
-
-export type WorkspaceActions = {
-  addWorkspace: (workspace: Workspace) => void;
-};
-
-export type WorkspaceStore = WorkspaceState & WorkspaceActions;
+export * from "./interfaces";
+import type { WorkspaceState, WorkspaceStore } from "./interfaces";
 
 export const createWorkspaceStore = (
   initState: WorkspaceState = {
@@ -20,10 +10,11 @@ export const createWorkspaceStore = (
 ) => {
   return createStore<WorkspaceStore>()((set) => ({
     ...initState,
-    addWorkspace: (workspace) => {
-      set((state) => ({
-        workspaces: [...state.workspaces, workspace],
-      }));
+    addWorkspace: (team) => (state) => {
+      set({
+        workspaces: [...state.workspaces, team],
+      });
+      return team;
     },
   }));
 };
