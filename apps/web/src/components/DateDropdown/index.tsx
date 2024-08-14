@@ -9,26 +9,6 @@ import { format } from "date-fns";
 import { useToast } from "../ui/use-toast";
 import { Calendar } from "../ui/calendar";
 
-const styles = {
-  container:
-    "border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72",
-  header: "flex justify-between items-center text-popover-foreground mb-4",
-  grid: "grid grid-cols-7 gap-1",
-  day: "cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg",
-  dayNotCurrentMonth: "text-muted-foreground",
-  dayNameContainer: "grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent",
-  dayName: "font-semibold text-muted-foreground text-center",
-  selectedDay:
-    "text-secondary-foreground bg-secondary hover:bg-blueGlow border border-transparent hover:border-blueGlow focus:outline-none focus:shadow-sm active:shadow-lg",
-  disabledDay: "cursor-not-allowed pointer-events-none text-muted-foreground",
-  svg: "cursor-pointer",
-  dateContainer: "mt-4 flex flex-col text-popover-foreground",
-  inputRow: "flex items-center justify-between gap-3 w-full",
-  input: "flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10",
-  buttonContainer: "mt-10 flex justify-end gap-3",
-  button: "cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary",
-};
-
 const DateDropdown: React.FC<DateDropdownProps> = ({
   handleButtonClick,
   handleClickAway,
@@ -103,32 +83,36 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
           disabled={(date) => date < new Date()}
           defaultMonth={new Date(selectedDate ? selectedDate : "")}
         />
-        <div className={styles.dateContainer}>
+        <div className="mt-4 flex flex-col text-popover-foreground">
           Due date
-          <div className={styles.inputRow}>
+          <div className="flex items-center justify-between gap-3 w-full">
             {selectedDate && (
-              <span className={styles.input}>
+              <span className="flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10">
                 {format(new Date(selectedDate), "M/dd/yy")}
               </span>
             )}
             <input
               title="title"
               type="time"
-              className={styles.input}
+              className="flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10"
               value={selectedTime}
               onChange={handleSelectTime}
             />
           </div>
         </div>
-        <div className={styles.buttonContainer}>
+        <div className="mt-10 flex justify-end gap-3">
           <button
             type="button"
-            className={`${styles.button} border-2 border-border bg-popover`}
+            className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary"
             onClick={handleClickAway}
           >
             Cancel
           </button>
-          <button type="button" className={styles.button} onClick={handleSave}>
+          <button
+            type="button"
+            className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary"
+            onClick={handleSave}
+          >
             Save
           </button>
         </div>
