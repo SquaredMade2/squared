@@ -1,6 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/hooks/typeScriptReduxHooks";
 import { getSingleTask } from "@/store/task/thunks";
 import { setDueDate } from "@/store/taskData";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
@@ -22,6 +25,7 @@ import {
 } from "date-fns";
 import { DAYS_OF_WEEK } from "@/constants/app_constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 const DateDropdown: React.FC<DateDropdownProps> = ({
   handleButtonClick,
@@ -29,10 +33,18 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
   location,
 }) => {
   const dispatch = useAppDispatch();
-  const taskId = useAppSelector((state) => state.singleTask?.data?._id);
-  const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
-  const sidebarDate = useAppSelector((state) => state.singleTask.data?.dueDate);
-  const initialDate = location === "issueSidebar" ? sidebarDate : newIssueDate;
+  const { toast } = useToast();
+  const taskId = useAppSelector(
+    (state) => state.singleTask?.data?._id
+  );
+  const newIssueDate = useAppSelector(
+    (state) => state.taskData.dueDate
+  );
+  const sidebarDate = useAppSelector(
+    (state) => state.singleTask.data?.dueDate
+  );
+  const initialDate =
+    location === "issueSidebar" ? sidebarDate : newIssueDate;
   const initialTime = initialDate
     ? format(new Date(initialDate), "HH:mm")
     : "12:00";
@@ -40,12 +52,17 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
   const [selectedDate, setSelectedDate] = useState(
     initialDate ? new Date(initialDate) : new Date()
   );
-  const [currentMonth, setCurrentMonth] = useState(startOfMonth(selectedDate));
+  const [currentMonth, setCurrentMonth] = useState(
+    startOfMonth(selectedDate)
+  );
   const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${
-    location === "newIssue" ? "absolute top-8" : "absolute top-0 -left-[300px]"
+    location === "newIssue"
+      ? "absolute top-8"
+      : "absolute top-0 -left-[300px]"
   }`;
 
-  const isDateInPast = (date: Date) => isBefore(endOfDay(date), new Date());
+  const isDateInPast = (date: Date) =>
+    isBefore(endOfDay(date), new Date());
 
   const updateDateTime = (date: Date, time: string) => {
     const [hours, minutes] = time.split(":").map(Number);
@@ -60,7 +77,9 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
     updateDateTime(selectedDay, selectedTime);
   };
 
-  const handleSelectTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectTime = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const time = e.target.value;
     updateDateTime(selectedDate, time);
   };
@@ -80,7 +99,13 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
         }
       );
       dispatch(getSingleTask(taskId as string));
-    } catch (err) {}
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to update due date",
+        variant: "destructive",
+      });
+    }
   };
 
   const days = eachDayOfInterval({
@@ -95,7 +120,9 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
           <button
             title="Previous Month"
             type="button"
-            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+            onClick={() =>
+              setCurrentMonth(subMonths(currentMonth, 1))
+            }
           >
             <ChevronLeft className="cursor-pointer size-5 text-[#6b6f76]" />
           </button>
@@ -103,7 +130,9 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
           <button
             title="Next Month"
             type="button"
-            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+            onClick={() =>
+              setCurrentMonth(addMonths(currentMonth, 1))
+            }
           >
             <ChevronRight className="cursor-pointer size-5 text-[#6b6f76]" />
           </button>
@@ -165,7 +194,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
         <div className="mt-10 flex justify-end gap-3">
           <button
             type="button"
-            className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border bg-popover"
+            className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border"
             onClick={handleClickAway}
           >
             Cancel

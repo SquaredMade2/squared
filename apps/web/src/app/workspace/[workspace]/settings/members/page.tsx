@@ -2,7 +2,10 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/hooks/typeScriptReduxHooks";
 import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
 import { getListOfUsers } from "@/store/userSettings/thunks";
 import {
@@ -11,7 +14,7 @@ import {
   createWorkspaceLinkToken,
   enableUniversalLink,
 } from "@/store/taskData/thunks";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 import type {
   ListOfUsersProps,
   SelectedMemberProps,
@@ -31,25 +34,35 @@ import { useTheme } from "next-themes";
 export default function Members() {
   const [openUpdateMemberModal, setOpenUpdateMemberModal] =
     useState<boolean>(false);
-  const [selectedMember, setSelectedMember] = useState<SelectedMemberProps>({
-    id: "",
-    name: "",
-    username: "",
-  });
+  const [selectedMember, setSelectedMember] =
+    useState<SelectedMemberProps>({
+      id: "",
+      name: "",
+      username: "",
+    });
+  const { toast } = useToast();
   const [search, setSearch] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
-  const [commandOptions, setCommandOptions] = useState<Record<string, boolean>>(
-    {}
+  const [commandOptions, setCommandOptions] = useState<
+    Record<string, boolean>
+  >({});
+  const [listOfUsers, setListOfUsers] = useState<ListOfUsersProps[]>(
+    []
   );
-  const [listOfUsers, setListOfUsers] = useState<ListOfUsersProps[]>([]);
   const navbarRef = useRef<HTMLDivElement | null>(null);
-  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
+  const workspace = useAppSelector(
+    (state) => state.taskData.currentWorkspace
+  );
+  const showNavBar = useAppSelector(
+    (state) => state.userSettings.showNavBar
+  );
   const [isActive, setIsActive] = useState<boolean>(
     workspace.universalTokenLink.isEnabled
   );
-  const currentUser = useAppSelector((state) => state.userSettings.user);
+  const currentUser = useAppSelector(
+    (state) => state.userSettings.user
+  );
   const { theme } = useTheme();
 
   const dispatch = useAppDispatch();
@@ -104,11 +117,14 @@ export default function Members() {
               return user;
             });
           });
-          toast.success(data.message);
+          toast({ title: data.message });
         }
         return data;
       } catch (err) {
-        toast.error("Could not update username.");
+        toast({
+          title: "Could not update username.",
+          variant: "destructive",
+        });
       }
     };
   const updatingUsersRole = async (
@@ -117,7 +133,11 @@ export default function Members() {
     workspace_Id: string
   ) => {
     try {
-      const data = await updateTheUsersRole(userId, workspace_Id, role);
+      const data = await updateTheUsersRole(
+        userId,
+        workspace_Id,
+        role
+      );
       const listOfUserCopy = [...listOfUsers];
       if (data?.success) {
         setListOfUsers((users) => {
@@ -134,9 +154,12 @@ export default function Members() {
           getWorkspace({ url: workspace?.url, id: workspace?._id })
         );
         handleCommandOptions(userId);
-        toast.success("Users role updated successfully");
+        toast({ title: "Users role updated successfully" });
       } else {
-        toast.error("Failed to update user role");
+        toast({
+          title: "Failed to update user role",
+          variant: "destructive",
+        });
         setListOfUsers(listOfUserCopy);
       }
     } catch (err) {
@@ -144,7 +167,7 @@ export default function Members() {
       if (axios.isAxiosError(err)) {
         const serverError = err?.response?.data;
         if (serverError) {
-          toast.error(serverError);
+          toast({ title: serverError, variant: "destructive" });
         }
       }
     }
@@ -152,14 +175,19 @@ export default function Members() {
   const createWorkspaceLink = async () => {
     try {
       await dispatch(createWorkspaceLinkToken(workspace._id));
-      dispatch(getWorkspace({ url: workspace?.url, id: workspace?._id }));
+      dispatch(
+        getWorkspace({ url: workspace?.url, id: workspace?._id })
+      );
     } catch (error) {
       console.error("Error in createworkspacelink: ", error);
     }
   };
   const deleteUserFromWorkspace = async (memberId: string) => {
     try {
-      const data = await deletingUserFromWorkspace(memberId, workspace?._id);
+      const data = await deletingUserFromWorkspace(
+        memberId,
+        workspace?._id
+      );
       if (data?.success) {
         setListOfUsers((users) => {
           return users.filter((user) => user._id !== memberId);
@@ -167,9 +195,12 @@ export default function Members() {
         await dispatch(
           getWorkspace({ url: workspace?.url, id: workspace?._id })
         );
-        toast.success(data.success);
+        toast({ title: data.success });
       } else {
-        toast.error("Cannot delete member");
+        toast({
+          title: "Cannot delete member",
+          variant: "destructive",
+        });
       }
     } catch (err) {
       console.log(err);
@@ -185,15 +216,18 @@ export default function Members() {
       owner: [
         {
           text: "Make Owner",
-          action: () => updatingUsersRole(memberId, "owner", workspace?._id),
+          action: () =>
+            updatingUsersRole(memberId, "owner", workspace?._id),
         },
         {
           text: "Make Admin",
-          action: () => updatingUsersRole(memberId, "admin", workspace?._id),
+          action: () =>
+            updatingUsersRole(memberId, "admin", workspace?._id),
         },
         {
           text: "Make Member",
-          action: () => updatingUsersRole(memberId, "member", workspace?._id),
+          action: () =>
+            updatingUsersRole(memberId, "member", workspace?._id),
         },
         {
           text: "Remove User",
@@ -255,15 +289,26 @@ export default function Members() {
     name?: string,
     username?: string
   ) => {
-    const currentUserRole = getMembersRole(currentUser?._id)?.toLowerCase();
+    const currentUserRole = getMembersRole(
+      currentUser?._id
+    )?.toLowerCase();
     const memberRole = getMembersRole(memberId)?.toLowerCase();
     let options: { text: string; action: () => void }[] = [];
     const roleActions = getRoleActions(memberId, name, username);
-    if (currentUserRole === "owner" && currentUser?._id !== memberId) {
+    if (
+      currentUserRole === "owner" &&
+      currentUser?._id !== memberId
+    ) {
       options = roleActions.owner;
-    } else if (currentUserRole === "owner" && currentUser?._id === memberId) {
+    } else if (
+      currentUserRole === "owner" &&
+      currentUser?._id === memberId
+    ) {
       options = roleActions.self;
-    } else if (currentUserRole === "admin" && memberRole !== "owner") {
+    } else if (
+      currentUserRole === "admin" &&
+      memberRole !== "owner"
+    ) {
       options = roleActions.admin;
     } else if (currentUser?._id === memberId) {
       options = roleActions.self;
@@ -288,9 +333,12 @@ export default function Members() {
       if (axios.isAxiosError(error)) {
         const serverError = error?.response?.data;
         if (serverError) {
-          toast.error(serverError);
+          toast({ title: serverError, variant: "destructive" });
         } else {
-          toast.error("Something with wrong");
+          toast({
+            title: "Something with wrong",
+            variant: "destructive",
+          });
         }
       }
     }
@@ -340,7 +388,9 @@ export default function Members() {
           workspaceId: workspace?._id,
         })
       );
-      dispatch(getWorkspace({ url: workspace.url, id: workspace._id }));
+      dispatch(
+        getWorkspace({ url: workspace.url, id: workspace._id })
+      );
     } catch (error) {
       console.error(error);
     }
@@ -389,8 +439,8 @@ export default function Members() {
             {isActive ? (
               <>
                 <p className="text-muted-foreground">
-                  Share this link with others you&apos;d like to join your
-                  workspace.
+                  Share this link with others you&apos;d like to join
+                  your workspace.
                 </p>
                 <div className="gap-4 flex justify-between items-center mdsm:w-full">
                   <div className="flex border border-border rounded w-full justify-between items-center bg-textField">
@@ -407,7 +457,9 @@ export default function Members() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => navigator.clipboard.writeText(workspaceLink)}
+                    onClick={() =>
+                      navigator.clipboard.writeText(workspaceLink)
+                    }
                     className={`${handleButtonStyle()} flex items-center gap-1 font-semibold`}
                   >
                     <Copy
@@ -421,8 +473,8 @@ export default function Members() {
               </>
             ) : (
               <p className="text-muted-foreground">
-                Invite links provided a unique URL that allows anyone to join
-                your workspace.
+                Invite links provided a unique URL that allows anyone
+                to join your workspace.
               </p>
             )}
             <span className="block w-full border-t border-border my-6" />
@@ -447,7 +499,7 @@ export default function Members() {
           <div className="flex gap-3 mt-6 items-center justify-between w-full sm:justify-between md:w-full lg:w-full">
             <div className="relative gap-2 flex items-center md:w-2/3 lg:w-3/5 bg-textField rounded">
               <input
-                className="border border-border bg-transparent text-sm py-1.5 w-full rounded-md w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                className="border border-border bg-transparent text-sm py-1.5 w-full rounded-md md:w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400"
                 type="text"
                 placeholder="Search by name/email"
                 value={search}
