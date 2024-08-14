@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { replaceSpacesWithDashes } from "@/utils/formatting";
+import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
 import CopyTaskUrl from "../CopyTaskUrl";
 import CopyTaskId from "../CopyTaskId";
 import CopyGitBranchName from "../CopyGitBranchName";
@@ -13,7 +13,7 @@ const IssueSidebarTopRow = () => {
   const identifier = task?.identifier;
   const title = task !== undefined ? task.title : "";
   const { currentTeam } = useAppSelector((state) => state.taskData);
-  const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${title.trim().split(" ").join("-").toLocaleLowerCase()}`;
+  const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(title)}`;
   const gitBranchName = `
 			${replaceSpacesWithDashes(
         `${title.toLowerCase()}-${String(identifier).toLowerCase()}`

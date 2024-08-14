@@ -9,6 +9,7 @@ import { setIsCmdPalette } from "@/store/isCmdPalette";
 import { setTaskPage } from "@/store/taskData";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { Search } from "lucide-react";
+import { formatUrl } from "@/utils/formatting";
 
 const CommandPalette = () => {
   const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ const CommandPalette = () => {
     // setTaskPage should be set to getSingleTask
     dispatch(setTaskPage(task));
     router.push(
-      `/${currentTeam.name}/task/${currentTeam.identifier}/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`
+      `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`
     );
   };
 

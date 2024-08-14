@@ -12,6 +12,7 @@ import { getTaskComments, getTaskEventLog } from "@/store/events/actions";
 import { ActionType } from "@/store/events/events.actionTypes";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
 import { useToast } from "../ui/use-toast";
+import { formatUrl } from "@/utils/formatting";
 
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
   const [render, setRender] = useState(false);
@@ -37,10 +38,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
   const currentTaskId = useAppSelector(
     (state) => state.currentTask.currentTaskId
   );
-  const taskId = taskList.find(
-    (el) =>
-      el.title.trim().split(" ").join("-").toLocaleLowerCase() === taskName
-  )?._id;
+  const taskId = taskList.find((el) => formatUrl(el.title) === taskName)?._id;
 
   const dataForDispatch = taskId || taskPageId || currentTaskId;
 
