@@ -12,7 +12,8 @@ const IssueSidebarTopRow = () => {
   const [isBranchClicked, setIsBranchClicked] = useState(false);
   const identifier = task?.identifier;
   const title = task !== undefined ? task.title : "";
-  const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/tasks/${task?._id}`;
+  const { currentTeam } = useAppSelector((state) => state.taskData);
+  const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${title.trim().split(" ").join("-").toLocaleLowerCase()}`;
   const gitBranchName = `
 			${replaceSpacesWithDashes(
         `${title.toLowerCase()}-${String(identifier).toLowerCase()}`

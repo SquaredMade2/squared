@@ -15,7 +15,7 @@ const SettingsTopNavBar = ({ setShowNavBar }: SettingsTopNavbarProps) => {
         </span>
         <div
           className="flex text-foreground items-center py-4 cursor-pointer"
-          onClick={() => router.push(`/workspace/${workspace.url}`)}
+          onClick={() => router.push(`/${workspace.url}`)}
         >
           <span className="mr-2 cursor-pointer">
             <ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />

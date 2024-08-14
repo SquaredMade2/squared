@@ -15,7 +15,7 @@ const CommandPalette = () => {
 
   const { isCmdPalette } = useAppSelector((state) => state.isCmdPalette);
   const taskList = useAppSelector((state) => state.taskData.taskList);
-
+  const { currentTeam } = useAppSelector((state) => state.taskData);
   const [query, setQuery] = useState("");
 
   const filteredTaskTitle = query
@@ -29,7 +29,9 @@ const CommandPalette = () => {
     dispatch(setIsCmdPalette(false));
     // setTaskPage should be set to getSingleTask
     dispatch(setTaskPage(task));
-    router.push(`/tasks/${task._id}`);
+    router.push(
+      `/${currentTeam.name}/task/${currentTeam.identifier}/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`
+    );
   };
 
   useEffect(() => {

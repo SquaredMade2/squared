@@ -33,10 +33,10 @@ const IssueIdentification: React.FunctionComponent = () => {
         );
         if (data) {
           const titleSlug = formatUrl(data.payload.title);
-          const urlRedirect = `/workspace/${workspaceUrl}/issue/${params.identifier}/${titleSlug}`;
+          const urlRedirect = `/${workspaceUrl}/issue/${params.identifier}/${titleSlug}`;
           router.push(urlRedirect);
         } else {
-          router.push(`/workspace/${workspaceUrl}`);
+          router.push(`/${workspaceUrl}`);
         }
       };
       fetch();

@@ -8,18 +8,20 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 const expandIcon = <FontAwesomeIcon icon={faExpand} />;
 
 const Expand = () => {
-	const taskId = useAppSelector((state) => state.currentTask.currentTaskId);
-	const url = `${process.env.NEXT_PUBLIC_URL}/tasks/${taskId}`;
-	return (
-		<Link href={url}>
-			<ButtonIcon
-				icon={expandIcon}
-				tooltipLabel="Expand"
-				labelPosition="left"
-				hoverBg="bg-accent"
-			/>
-		</Link>
-	);
+  const title = useAppSelector((state) => state.taskData.taskPage.title);
+  const { currentTeam } = useAppSelector((state) => state.taskData);
+  const url = `/${currentTeam.name}/task/${currentTeam.identifier}/${title.trim().split(" ").join("-").toLocaleLowerCase()}`;
+
+  return (
+    <Link href={url}>
+      <ButtonIcon
+        icon={expandIcon}
+        tooltipLabel="Expand"
+        labelPosition="left"
+        hoverBg="bg-accent"
+      />
+    </Link>
+  );
 };
 
 export default Expand;

@@ -90,7 +90,7 @@ const TaskCard = ({
   const navigateToTask = async (task: Task) => {
     dispatch(setTaskPage(task));
     router.push(
-      `/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`
+      `/${currentTeam.name}/task/${currentTeam.identifier}/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`
     );
   };
 
@@ -220,7 +220,7 @@ const TaskCard = ({
                       )}
                     </div>
                     <Link
-                      href={`/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
+                      href={`/${currentTeam.name}/task/${currentTeam.identifier}/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
                       onClick={() => dispatch(setTaskPage(task))}
                     >
                       <div className="relative w-[325px]">
@@ -304,7 +304,7 @@ const TaskCard = ({
                 </div>
               </div>
               <Link
-                href={`/tasks/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
+                href={`/${currentTeam.name}/task/${currentTeam.identifier}/${task.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
                 onClick={() => setTaskPage(task)}
                 className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
               >

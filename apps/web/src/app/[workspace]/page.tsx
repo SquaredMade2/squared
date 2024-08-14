@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { getWorkspace } from "../../../store/taskData/thunks";
-import WorkspaceNotFoundPage from "./WorkspaceNotFoundPage";
+import { getWorkspace } from "../../store/taskData/thunks";
+import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Team } from "@/store/taskData/taskData.interfaces";
@@ -30,7 +30,7 @@ export default function Home() {
         );
         if (updatedCurrentTeam.payload) {
           router.push(
-            `/workspace/${workspaceUrl}/team/${(updatedCurrentTeam.payload as Team).identifier}/all`
+            `/${workspaceUrl}/team/${(updatedCurrentTeam.payload as Team).identifier}/all`
           );
         }
       };

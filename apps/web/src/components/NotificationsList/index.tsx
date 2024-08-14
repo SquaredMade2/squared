@@ -18,6 +18,7 @@ function NotificationsList({
   const notifications = useAppSelector(
     (state) => state.notifications.notifications
   );
+  const { currentTeam } = useAppSelector((state) => state.taskData);
   const notificationRef = useRef<HTMLDivElement>(null);
   const user = useAppSelector((state) => state.userSettings.user);
   const dispatch = useDispatch();
@@ -169,7 +170,7 @@ function NotificationsList({
                   </div>
                   <Link
                     onClick={() => handleMarkRead(noti._id)}
-                    href={`${process.env.NEXT_PUBLIC_URL}/tasks/${t._id}`}
+                    href={`/${currentTeam.name}/task/${currentTeam.identifier}/${t.title.trim().split(" ").join("-").toLocaleLowerCase()}`}
                   >
                     Details &rarr;
                   </Link>

@@ -2,12 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { createTeam, teamExists } from "@/store/taskData/thunks";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
@@ -38,29 +35,20 @@ const styles = {
 export default function CreateTeam() {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
-  const params = useParams();
   const router = useRouter();
 
   const [teamName, setTeamName] = useState<string>("");
   const [teamIdentifier, setTeamIdentifier] = useState<string>("");
-  const workspace = useAppSelector(
-    (state) => state.taskData.currentWorkspace
-  );
-  const { user, theme } = useAppSelector(
-    (state) => state.userSettings
-  );
+  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+  const { user, theme } = useAppSelector((state) => state.userSettings);
   const access = useAppSelector((state) => state.taskData.access);
-  const showNavBar = useAppSelector(
-    (state) => state.userSettings.showNavBar
-  );
+  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
 
-  const workspaceUrl = params.workspace;
   const userHasAccess =
     typeof access === "object" &&
     access &&
     "id" in access &&
-    access.id === user?._id &&
-    workspaceUrl === workspace?.url;
+    access.id === user?._id;
 
   const identifierInputFilter = (e: InputChangeEvent): void => {
     const identifierFormat = /^[A-Za-z0-9]*$/g;
@@ -100,9 +88,7 @@ export default function CreateTeam() {
             workspaceId: workspace._id,
           })
         );
-        router.push(
-          `/workspace/${workspaceUrl}/team/${teamIdentifier}/all`
-        );
+        router.push(`/${workspace?.url}/team/${teamIdentifier}/all`);
         toast({ title: "Team created" });
       }
     }
@@ -115,7 +101,7 @@ export default function CreateTeam() {
 
   useEffect(() => {
     if (!userHasAccess) {
-      router.push(`/workspace/${workspaceUrl}`);
+      router.push(`/workspace/${workspace?.url}`);
     }
   }, []);
 
@@ -129,8 +115,7 @@ export default function CreateTeam() {
           <div>
             <h1 className={styles.title}>Create Team</h1>
             <p className={styles.titleDescription}>
-              Create a new team to manage separate cycles and
-              workflows
+              Create a new team to manage separate cycles and workflows
             </p>
           </div>
           <span className={styles.line} />
