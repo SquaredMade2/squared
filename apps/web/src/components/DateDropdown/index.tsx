@@ -77,7 +77,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 	const updateItem = async (newDate: Date) => {
 		try {
 			taskId
-				? updateTask(taskId, { dueDate: newDate })
+				? await updateTask(taskId, { dueDate: newDate })
 				: toast({
 						title: "Error",
 						description: "Invalid task id",

@@ -76,7 +76,7 @@ const ViewsPage: React.FC = () => {
 		const droppableId = destination.droppableId;
 
 		dispatch(setTaskList(updatedTaskList));
-		updateTask(draggedTaskFound._id, { status: droppableId as Status });
+		await updateTask(draggedTaskFound._id, { status: droppableId as Status });
 	};
 
 	const handleDeleteTask = async (taskId: string) => {

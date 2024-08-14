@@ -14,7 +14,7 @@ const RenameModal = ({
 	taskData,
 	searchSubmit,
 }: RenameModalProps) => {
-	const {getAllTasks} = useSquaredStore((state) => state.tasks);
+	const { getAllTasks } = useSquaredStore((state) => state.tasks);
 	const { updateTask } = useSquaredStore((state) => state.tasks);
 
 	const [inputValue, setInputValue] = useState<string>("");
@@ -31,7 +31,7 @@ const RenameModal = ({
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
 		if (inputValue !== taskData?.title) {
-			updateTask(taskData._id, { title: inputValue.trim() });
+			await updateTask(taskData._id, { title: inputValue.trim() });
 			getAllTasks(currentTeam._id);
 			if (searchSubmit) {
 				searchSubmit(e);

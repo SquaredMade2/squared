@@ -86,7 +86,7 @@ const FilterPage = () => {
 
 		dispatch(setTaskList(updatedTaskList));
 		dispatch(setFilteredTaskList(updatedFilteredTaskList));
-		updateTask(draggedTaskFound._id, { status: droppableId as Status });
+		await updateTask(draggedTaskFound._id, { status: droppableId as Status });
 	};
 
 	const handleCopyShareLink = async () => {

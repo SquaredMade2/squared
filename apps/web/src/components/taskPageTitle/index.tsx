@@ -56,18 +56,18 @@ const TaskPageTitle = () => {
 		updateTaskValue(updatedTitle ?? "");
 	};
 
-	const handleSubmit = (e: FocusEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: FocusEvent<HTMLFormElement>) => {
 		setIsFocused(false);
 		e.preventDefault();
 		const changeMade: boolean = updatedTitle !== title;
 		if (changeMade && taskId !== undefined) {
 			storeCommonFields(author, taskId);
 			logEvent();
-			updateTask(taskId, { title: updatedTitle });
+			await updateTask(taskId, { title: updatedTitle });
 		}
 	};
 
-	const handleBlur = (
+	const handleBlur = async (
 		e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		setIsFocused(false);
@@ -85,7 +85,7 @@ const TaskPageTitle = () => {
 		if (changeMade && taskId !== undefined) {
 			storeCommonFields(author, taskId);
 			logEvent();
-			updateTask(taskId, { title: updatedTitle });
+			await updateTask(taskId, { title: updatedTitle });
 		}
 	};
 	return (

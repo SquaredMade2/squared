@@ -18,7 +18,9 @@ import type { Status } from "@repo/db";
 
 export default function Home() {
 	const dispatch = useDispatch();
-	const { updateTask, deleteTask, getAllTasks } = useSquaredStore((state) => state.tasks);
+	const { updateTask, deleteTask, getAllTasks } = useSquaredStore(
+		(state) => state.tasks,
+	);
 	const router = useRouter();
 	const params = useParams();
 	const { theme, view, user, showNavBar } = useSelector(
@@ -103,7 +105,7 @@ export default function Home() {
 		const droppableId = destination.droppableId;
 
 		dispatch(setTaskList(updatedTaskList));
-		updateTask(draggedTaskFound._id, { status: droppableId as Status });
+		await updateTask(draggedTaskFound._id, { status: droppableId as Status });
 	};
 
 	useEffect(() => {
