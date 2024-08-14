@@ -1,25 +1,25 @@
+import { createStore } from "zustand/vanilla";
 import type { Team } from "@repo/db";
-import type { TeamActions, TeamState, TeamStore } from "./interfaces.ts";
-import axios from "axios";
 
-const apiString = (path: string, workspaceId: string) => {
-	return `${process.env.SERVER_URL}/api/workspace/${workspaceId}/${path}`;
+export type TeamState = {
+  teams: Team[];
 };
 
-export const teamActions: TeamActions = {
-	addTeam: (team: Team) => (state: TeamState) => {
-		return {
-			...state,
-			teams: [...state.teams, team],
-		};
-	},
+export type TeamActions = {
+  addTeam: (team: Team) => void;
 };
 
-export const teamState: TeamState = {
-	teams: [],
-};
+export type TeamStore = TeamState & TeamActions;
 
-export const initTeamState: TeamStore = {
-	...teamState,
-	...teamActions,
+export const createTeamStore = (
+  initState: TeamState = { teams: [] }
+) => {
+  return createStore<TeamStore>()((set) => ({
+    ...initState,
+    addTeam: (team) => {
+      set((state) => ({
+        teams: [...state.teams, team],
+      }));
+    },
+  }));
 };

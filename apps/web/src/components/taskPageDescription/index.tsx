@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { useState, useContext } from "react";
 import axios from "axios";
-import { getSingleTask } from "@/store/task/thunks";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
@@ -12,6 +11,7 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "../ui/use-toast";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const TaskPageDescription = () => {
 	const dispatch = useAppDispatch();
@@ -20,6 +20,7 @@ const TaskPageDescription = () => {
 		(state: RootState) => state.singleTask.data?.description,
 	);
 	const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
+	const { getTask } = useSquaredStore((state) => state.tasks);
 	const socket = useContext(SocketContext);
 
 	const [updatedDescription, setUpdatedDescription] = useState(description);
@@ -53,9 +54,7 @@ const TaskPageDescription = () => {
 						description: transformedDescriptionInput,
 					},
 				);
-				const updatedTaskDescription = await dispatch(
-					getSingleTask(taskId),
-				).unwrap();
+				const updatedTaskDescription = await getTask(taskId);
 				const { userIds: userId } = transformingMentionInputs(
 					updatedDescription ?? "",
 				);

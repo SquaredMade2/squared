@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { getTeam, getAllTasks } from "@/store/taskData/thunks";
+import { getTeam } from "@/store/taskData/thunks";
 import { setTaskList } from "@/store/taskData";
 import TopNavBar from "@/components/TopNavBar";
 import ViewAllTasks from "@/components/ViewAllTasks";
@@ -18,7 +18,7 @@ import type { Status } from "@repo/db";
 
 export default function Home() {
 	const dispatch = useDispatch();
-	const { updateTask, deleteTask } = useSquaredStore((state) => state.tasks);
+	const { updateTask, deleteTask, getAllTasks } = useSquaredStore((state) => state.tasks);
 	const router = useRouter();
 	const params = useParams();
 	const { theme, view, user, showNavBar } = useSelector(
@@ -63,7 +63,7 @@ export default function Home() {
 
 	const handleDeleteTask = async (taskId: string) => {
 		deleteTask(taskId);
-		dispatch(getAllTasks(currentTeam) as never);
+		getAllTasks(currentTeam._id);
 	};
 
 	const handleDragEnd: OnDragEndResponder = async (result) => {

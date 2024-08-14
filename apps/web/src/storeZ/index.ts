@@ -1,38 +1,22 @@
 import { createStore } from "zustand/vanilla";
-import { initTaskState } from "./tasks";
-import type { TaskActions, TaskState } from "./tasks/interfaces";
-import type { WorkspaceActions, WorkspaceState } from "./workspaces/interfaces";
-import { initWorkspaceState } from "./workspaces";
-import type { TeamActions, TeamState } from "./teams/interfaces";
-import { initTeamState } from "./teams";
+import type { StoreApi } from "zustand/vanilla";
+import { createTaskStore } from "./tasks";
+import type { TaskStore } from "./tasks";
+import { createWorkspaceStore } from "./workspaces";
+import type { WorkspaceStore } from "./workspaces";
+import { createTeamStore } from "./teams";
+import type { TeamStore } from "./teams";
 
 export type SquaredState = {
-	tasks: TaskState;
-	workspaces: WorkspaceState;
-	teams: TeamState;
+  tasks: StoreApi<TaskStore>;
+  workspaces: StoreApi<WorkspaceStore>;
+  teams: StoreApi<TeamStore>;
 };
 
-export type SquaredActions = {
-	tasks: TaskActions;
-	workspaces: WorkspaceActions;
-	teams: TeamActions;
-};
-
-export type SquaredStore = SquaredState & SquaredActions;
-
-export const defaultInitState: SquaredState = {
-	tasks: initTaskState,
-	workspaces: initWorkspaceState,
-	teams: initTeamState,
-};
-
-export const createSquaredStore = (
-	initState: SquaredState = defaultInitState,
-) => {
-	return createStore<SquaredStore>()(() => ({
-		...defaultInitState,
-		tasks: initTaskState,
-		workspaces: initWorkspaceState,
-		teams: initTeamState,
-	}));
+export const createSquaredStore = () => {
+  return createStore<SquaredState>()(() => ({
+    tasks: createTaskStore(),
+    workspaces: createWorkspaceStore(),
+    teams: createTeamStore(),
+  }));
 };

@@ -9,7 +9,7 @@
     "db:push": "turbo run db:push",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
-    "dev": "turbo run dev --filter=web --filter=api",
+    "dev": "turbo run dev --filter=web --filter=api2",
     "check-types": "turbo run check-types",
     "clean": "turbo run clean",
     "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",

@@ -10,13 +10,13 @@ import { AssigneeButton } from "@/components/AssigneeButton";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { AssigneeDropdown } from "@/components/AssigneeDropdown";
-import { getSingleTask } from "@/store/task/thunks";
 import type {
 	AssigneeParams,
 	HandleAssigneeChange,
 } from "@/app/interfaces/Tasks.interfaces";
 import type { DesignationsContainerProps } from "./DesignationsContainer.interfaces";
 import { useToast } from "../ui/use-toast";
+import { useSquaredStore } from "@/storeZ/provider";
 
 export const setBackgroundColor = (theme: string) => {
 	if (theme === "light") {
@@ -44,6 +44,7 @@ const generateItemContainer = (
 
 const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 	const dispatch = useAppDispatch();
+	const { getAllTasks, getTask } = useSquaredStore((state) => state.tasks);
 	const { toast } = useToast();
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 	const task = useAppSelector((state) => state.singleTask.data);
@@ -54,10 +55,10 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 	const handleCloseModal = () => setShowEffortModal(false);
 
 	const assigneeParams: AssigneeParams = (taskId, user) => {
-		dispatch(getAllTasks(currentTeam));
+		getAllTasks(currentTeam._id);
 		if (task !== undefined) {
 			try {
-				dispatch(getSingleTask(task._id));
+				async () => await getTask(task._id);
 			} catch (error) {
 				toast({
 					title: "Error",
@@ -76,7 +77,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 		dispatch(setAssignee(assigneeParams(taskId, user)));
 		if (task !== undefined) {
 			try {
-				dispatch(getSingleTask(task._id));
+				async () => await getTask(task._id);
 			} catch (error) {
 				toast({
 					title: "Error",
@@ -85,7 +86,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 				});
 			}
 		}
-		await dispatch(getAllTasks(currentTeam));
+		getAllTasks(currentTeam._id);
 	};
 
 	const generateAssigneeContainer: () => React.JSX.Element = () => {

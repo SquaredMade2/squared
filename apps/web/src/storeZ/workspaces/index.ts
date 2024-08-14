@@ -1,30 +1,29 @@
+import { createStore } from "zustand/vanilla";
 import type { Workspace } from "@repo/db";
-import type {
-	WorkspaceActions,
-	WorkspaceState,
-	WorkspaceStore,
-} from "./interfaces";
-import axios from "axios";
 
-const apiString = (path: string) => {
-	return `${process.env.SERVER_URL}/api/workspace/${path}`;
+export type WorkspaceState = {
+  workspaces: Workspace[];
+  currentWorkspace: Workspace | null;
 };
 
-export const workspaceActions: WorkspaceActions = {
-	addWorkspace: (workspace: Workspace) => (state: WorkspaceState) => {
-		return {
-			...state,
-			workspaces: [...state.workspaces, workspace],
-		};
-	},
+export type WorkspaceActions = {
+  addWorkspace: (workspace: Workspace) => void;
 };
 
-export const workspaceState: WorkspaceState = {
-	workspaces: [],
-	currentWorkspace: null,
-};
+export type WorkspaceStore = WorkspaceState & WorkspaceActions;
 
-export const initWorkspaceState: WorkspaceStore = {
-	...workspaceState,
-	...workspaceActions,
+export const createWorkspaceStore = (
+  initState: WorkspaceState = {
+    workspaces: [],
+    currentWorkspace: null,
+  }
+) => {
+  return createStore<WorkspaceStore>()((set) => ({
+    ...initState,
+    addWorkspace: (workspace) => {
+      set((state) => ({
+        workspaces: [...state.workspaces, workspace],
+      }));
+    },
+  }));
 };

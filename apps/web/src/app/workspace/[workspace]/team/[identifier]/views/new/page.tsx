@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { getFilteredViews } from "@/store/filterPage/actions";
 import type { RootState } from "@/store";
-import { getAllTasks } from "@/store/taskData/thunks";
 import { setTaskList } from "@/store/taskData";
 import FilterSaveForm from "@/components/FilterSaveForm";
 import ViewAllTasks from "@/components/ViewAllTasks";
@@ -21,6 +20,7 @@ import type { Status } from "@repo/db";
 const ViewsPage: React.FC = () => {
 	const params = useParams();
 	const dispatch = useAppDispatch();
+	const { getAllTasks } = useSquaredStore((state) => state.tasks);
 	const { updateTask, deleteTask } = useSquaredStore((state) => state.tasks);
 	const [showFilterSaveForm, setShowFilterSaveForm] = useState(false);
 	const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
@@ -80,8 +80,8 @@ const ViewsPage: React.FC = () => {
 	};
 
 	const handleDeleteTask = async (taskId: string) => {
-		await deleteTask(taskId);
-		dispatch(getAllTasks(currentTeam));
+		deleteTask(taskId);
+		getAllTasks(currentTeam._id);
 	};
 
 	useEffect(() => {

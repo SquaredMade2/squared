@@ -4,13 +4,13 @@ import axios from "axios";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Combobox } from "@headlessui/react";
 import { setPriority } from "@/store/taskData";
-import { getSingleTask } from "@/store/task/thunks";
 import { priorityOptions } from "@/constants/designations";
 import type { PriorityDropdownProps } from "@/components/PriorityDropdown/PriorityDropdown.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const PriorityDropdown = ({
 	handleButtonClick,
@@ -20,6 +20,7 @@ const PriorityDropdown = ({
 }: PriorityDropdownProps) => {
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
+	const { getTask } = useSquaredStore((state) => state.tasks);
 	const newIssuePriority = useAppSelector((state) => state.taskData.priority);
 	const sidebarPriority = useAppSelector(
 		(state) => state.singleTask.data?.priority,
@@ -69,7 +70,7 @@ const PriorityDropdown = ({
 						priority: newPriority,
 					},
 				);
-				dispatch(getSingleTask(taskId as string));
+				await getTask(taskId);
 			} catch (err) {
 				toast({
 					title: "Error updating priority",

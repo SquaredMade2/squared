@@ -1,47 +1,58 @@
-import type { Task } from "@repo/db";
-import type { TaskActions, TaskState, TaskStore } from "./interfaces";
+import { createStore } from "zustand/vanilla";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import type { Task } from "@repo/db";
 
-const apiString = (path: string) => {
-	return `${process.env.SERVER_URL}/api/task/${path}`;
+export type TaskState = {
+  tasks: Task[];
 };
 
-export const taskActions: TaskActions = {
-	addTask: (task) => async (state) => {
-		const response = await axios.post(apiString(uuidv4()), task);
-		state.tasks.push(response.data);
-		return response.data;
-	},
-	updateTask: (taskId, task) => async (state) => {
-		const response = await axios.put(apiString(taskId), task);
-		const index = state.tasks.findIndex((t) => t.id === taskId);
-		state.tasks[index] = response.data;
-		return response.data;
-	},
-	deleteTask: (taskId) => async (state) => {
-		await axios.delete(apiString(taskId));
-		state.tasks = state.tasks.filter((t) => t.id !== taskId);
-	},
-	getTask: (taskId) => async (state) => {
-		const existing = state.tasks.find((t) => t.id === taskId);
-		const response = existing && (await axios.get(apiString(taskId)));
-		return existing ?? response?.data;
-	},
-	getAllTasks: (teamId) => async (state) => {
-		const response = await axios.get(
-			`${process.env.SERVER_URL}/api/team/${teamId}`,
-		);
-		state.tasks = response.data;
-		return response.data;
-	},
+export type TaskActions = {
+  addTask: (task: Task) => Promise<void>;
+  updateTask: (taskId: string, task: Partial<Task>) => Promise<void>;
+  deleteTask: (taskId: string) => Promise<void>;
+  getTask: (taskId: string) => Promise<Task | undefined>;
+  getAllTasks: (teamId: string) => Promise<void>;
 };
 
-export const taskState: TaskState = {
-	tasks: [],
-};
+export type TaskStore = TaskState & TaskActions;
 
-export const initTaskState: TaskStore = {
-	...taskState,
-	...taskActions,
+const apiString = (path: string) =>
+  `${process.env.SERVER_URL}/api/task/${path}`;
+
+export const createTaskStore = (
+  initState: TaskState = { tasks: [] }
+) => {
+  return createStore<TaskStore>()((set) => ({
+    ...initState,
+    addTask: async (task) => {
+      const response = await axios.post(apiString(""), task);
+      set((state) => ({ tasks: [...state.tasks, response.data] }));
+    },
+    updateTask: async (taskId, task) => {
+      const response = await axios.put(apiString(taskId), task);
+      set((state) => ({
+        tasks: state.tasks.map((t) =>
+          t.id === taskId ? response.data : t
+        ),
+      }));
+    },
+    deleteTask: async (taskId) => {
+      await axios.delete(apiString(taskId));
+      set((state) => ({
+        tasks: state.tasks.filter((t) => t.id !== taskId),
+      }));
+    },
+    getTask: async (taskId) => {
+      const existing = initState.tasks.find((t) => t.id === taskId);
+      if (existing) return existing;
+      const response = await axios.get(apiString(taskId));
+      return response.data;
+    },
+    getAllTasks: async (teamId) => {
+      const response = await axios.get(
+        `${process.env.SERVER_URL}/api/team/${teamId}`
+      );
+      set({ tasks: response.data });
+    },
+  }));
 };

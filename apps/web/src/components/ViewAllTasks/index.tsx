@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getAllTasks } from "@/store/taskData/thunks";
 import { DragDropContext } from "@hello-pangea/dnd";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
@@ -13,6 +12,7 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Status } from "@/interfaces/event.interfaces";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { useSquaredStore } from "@/storeZ/provider";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -25,6 +25,7 @@ const ViewAllTasks = ({
 	handleDeleteTask: (taskId: string) => void;
 }) => {
 	const dispatch = useAppDispatch();
+	const { getAllTasks } = useSquaredStore((state) => state.tasks);
 	const view = useSelector((state: RootState) => state.userSettings.view);
 	const team = useSelector((state: RootState) => state.taskData.currentTeam);
 	const teamId = useSelector(
@@ -47,7 +48,7 @@ const ViewAllTasks = ({
 
 	useEffect(() => {
 		const fetchData = async () => {
-			await dispatch(getAllTasks(team));
+			getAllTasks(team._id);
 			setLoading(false);
 		};
 		fetchData();

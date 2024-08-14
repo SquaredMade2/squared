@@ -5,7 +5,6 @@ import { Combobox } from "@headlessui/react";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { LabelColor } from "@/components/LabelButton";
 import { setLabels } from "@/store/taskData";
-import { getSingleTask } from "@/store/task/thunks";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import type { RootState } from "@/store";
 import type { LabelDropdownProps } from "./LabelDropdown.interfaces";
@@ -13,6 +12,7 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType, type Labels } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import { useSquaredStore } from "@/storeZ/provider";
 
 export default function LabelDropdown({
 	labelOptions,
@@ -22,6 +22,7 @@ export default function LabelDropdown({
 }: LabelDropdownProps) {
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
+	const { getTask } = useSquaredStore((state) => state.tasks);
 
 	const newIssueLabels = useSelector(
 		(state: RootState) => state.taskData.labels,
@@ -86,7 +87,7 @@ export default function LabelDropdown({
 						labels: newLabelSelection,
 					},
 				);
-				dispatch(getSingleTask(taskId));
+				await getTask(taskId);
 			} catch (err) {
 				toast({
 					title: "Error updating labels",
