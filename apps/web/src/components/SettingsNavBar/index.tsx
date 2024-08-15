@@ -16,29 +16,6 @@ import type { Team } from "@/store/taskData/taskData.interfaces";
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 
-const styles = {
-  main: "bg-accent border border-border min-w-[296px] min-h-screen h-full flex flex-col",
-  inviteDiv: "flex flex-col items-center pb-6 text-foreground",
-  title: "text-xl flex items-center py-6",
-  backSvg: "h-3 mr-3 hover:cursor-pointer",
-  addTeam: "flex items-center justify-center p-1 ml-3 rounded",
-  teamSvg: "mr-2 rounded p-1 cursor-pointer",
-  settingText: "text-foreground cursor-pointer",
-  generalButton: "flex w-24 ml-6 p-0.5 cursor-pointer",
-  membersButton: "flex w-24 ml-6 p-0.5 cursor-pointer",
-  integrationsButton: "flex w-32 ml-6 mb-4 p-0.5 cursor-pointer",
-  myAccountDiv: "mb-1 pl-0.5 flex items-center",
-  myWorkspaceDiv: "mb-1 pl-0.5 flex items-center",
-  myAccountText: "text-muted-foreground pl-2",
-  profileButton: "rounded flex w-24 ml-6  p-0.5",
-  teamsDiv: "pt-5 pb-1 flex items-center",
-  teamsDivText: "text-muted-foreground pl-2",
-  teamsLi: "rounded flex p-0.5 ml-6 cursor-pointer",
-  lightButton: "pt-10 flex w-full justify-center pr-5",
-  darkButton: "rounded p-1 cursor-pointer",
-  pointer: "cursor-pointer",
-};
-
 const SettingsNavBar = ({
   setLoading,
 }: SettingsNavbarProps): React.ReactElement => {
@@ -102,7 +79,7 @@ const SettingsNavBar = ({
           <button
             type="button"
             onClick={() => router.push(integrationsUrl)}
-            className={styles.integrationsButton}
+            className="flex w-32 ml-6 mb-4 p-0.5 cursor-pointer"
           >
             Integrations
           </button>
