@@ -11,75 +11,75 @@ import ButtonIcon from "../ButtonIcon";
 import { PanelRight } from "lucide-react";
 
 type Props = {
-  task: SingleTaskDataInterface;
-  render: boolean;
-  showBackdrop: boolean;
-  toggleSideNav: () => void;
-  showSideNav: boolean;
-  sideNav: RefObject<HTMLDivElement>;
+	task: SingleTaskDataInterface;
+	render: boolean;
+	showBackdrop: boolean;
+	toggleSideNav: () => void;
+	showSideNav: boolean;
+	sideNav: RefObject<HTMLDivElement>;
 };
 const MailTask: React.FC<Props> = ({
-  task,
-  render,
-  showBackdrop,
-  showSideNav,
-  toggleSideNav,
-  sideNav,
+	task,
+	render,
+	showBackdrop,
+	showSideNav,
+	toggleSideNav,
+	sideNav,
 }) => {
-  return (
-    <>
-      {((!render && !task) || !task) && <LoadingBar isLoading={true} />}
+	return (
+		<>
+			{((!render && !task) || !task) && <LoadingBar isLoading={true} />}
 
-      {render && task && (
-        <>
-          <div className=" w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto overflow-x-hidden">
-            {showBackdrop && (
-              <div
-                className={
-                  "w-full h-screen absolute top-0 left-0 bg-gray-500 z-10 bg-opacity-40"
-                }
-              />
-            )}
-            <div className="w-full h-full p-2 sm:p-5 relative ">
-              <div className="flex w-full ">
-                <div className="w-full snap-start z-0 overflow-x-hidden ">
-                  <div className="flex items-center gap-2 ">
-                    <div className=" w-full max850:w-10/12 overflow-hidden">
-                      <TaskCardTop />
-                    </div>
-                    <div className="absolute right-1 sm:right-5 cursor-pointer">
-                      <ButtonIcon
-                        icon={<PanelRight className="text-[#6B6F76] size-5" />}
-                        handleClick={toggleSideNav}
-                        hoverBg="bg-accent"
-                      />
-                    </div>
-                  </div>
+			{render && task && (
+				<>
+					<div className=" w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto overflow-x-hidden">
+						{showBackdrop && (
+							<div
+								className={
+									"w-full h-screen absolute top-0 left-0 bg-gray-500 z-10 bg-opacity-40"
+								}
+							/>
+						)}
+						<div className="w-full h-full p-2 sm:p-5 relative ">
+							<div className="flex w-full ">
+								<div className="w-full snap-start z-0 overflow-x-hidden ">
+									<div className="flex items-center gap-2 ">
+										<div className=" w-full max850:w-10/12 overflow-hidden">
+											<TaskCardTop />
+										</div>
+										<div className="absolute right-1 sm:right-5 cursor-pointer">
+											<ButtonIcon
+												icon={<PanelRight className="text-[#6B6F76] size-5" />}
+												handleClick={toggleSideNav}
+												hoverBg="bg-accent"
+											/>
+										</div>
+									</div>
 
-                  <div className="overflow-auto scrollbar-thin-transparent h-[calc(100vh-5rem)]">
-                    <div className="mr-1">
-                      <TaskPageTitle />
-                      <EventTabs />
-                    </div>
-                  </div>
-                </div>
+									<div className="overflow-auto scrollbar-thin-transparent h-[calc(100vh-5rem)]">
+										<div className="mr-1">
+											<TaskPageTitle />
+											<EventTabs />
+										</div>
+									</div>
+								</div>
 
-                <div
-                  className={`${"absolute z-20 md:top-5 transition-all duration-300 ease-in-out"} ${
-                    showSideNav ? "right-1 sm:right-5" : "-right-[600px]"
-                  }`}
-                >
-                  <div className="" ref={sideNav}>
-                    <IssueSidebarContainer />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-    </>
-  );
+								<div
+									className={`${"absolute z-20 md:top-5 transition-all duration-300 ease-in-out"} ${
+										showSideNav ? "right-1 sm:right-5" : "-right-[600px]"
+									}`}
+								>
+									<div className="" ref={sideNav}>
+										<IssueSidebarContainer />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</>
+			)}
+		</>
+	);
 };
 
 export default MailTask;
