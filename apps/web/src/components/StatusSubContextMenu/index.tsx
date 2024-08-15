@@ -1,3 +1,10 @@
+import {
+	Circle,
+	CircleCheckBig,
+	CircleDashed,
+	CircleX,
+	Copy,
+} from "lucide-react";
 import axios from "axios";
 import { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import { inProgress } from "../Svg";
@@ -11,14 +18,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getSingleTask } from "@/store/task/thunks";
 import { statusOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
-import { toast } from "react-toastify";
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleX,
-	Copy,
-} from "lucide-react";
 
 const styles = {
 	contentWrapper: "",
@@ -32,10 +31,6 @@ const StatusSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
 
 	const dispatch = useAppDispatch();
 	const handleSetStatus: (status: string) => void = async (status) => {
-		if (status === "Duplicate") {
-			toast("Duplicate is currently not implemented");
-			return;
-		}
 		if (task._id !== undefined) {
 			try {
 				await axios.put(
@@ -79,7 +74,8 @@ const StatusSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
 				Status
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{statusOptions.map((status) => {
+				{/* Need to get rid of the last item (Duplicate) because its not used yet */}
+				{statusOptions.slice(0, -1).map((status) => {
 					return (
 						<ContextMenuItem
 							key={status}
