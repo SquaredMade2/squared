@@ -146,9 +146,10 @@ export class commandSchema {
       "Go to my issues": {
         icon: <ArrowRight />,
         text: "Go to my issues",
-        function: () => {},
         shortcut: ["G", "then", "M"],
-        /* This is for the future functionality */
+        function: () => {
+          this.router.push(`/${this.currentWorkspace.url}/my-issues/assigned`);
+        },
       },
       "Go to active issues": {
         icon: <ArrowRight />,

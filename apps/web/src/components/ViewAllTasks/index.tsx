@@ -15,10 +15,12 @@ import type { Task } from "@/store/taskData/taskData.interfaces";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const ViewAllTasks = ({
+  myIssueSelected = false,
   handleDragEnd,
   activeSelected,
   backlogSelected,
 }: {
+  myIssueSelected?: boolean;
   activeSelected: boolean;
   backlogSelected: boolean;
   handleDragEnd: OnDragEndResponder;
@@ -44,7 +46,9 @@ const ViewAllTasks = ({
   const filterType = useSelector(
     (state: RootState) => state.filterPage.filterType
   );
-
+  const userName = useSelector(
+    (state: RootState) => state.userSettings.user.username
+  );
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(getAllTasks(team));
@@ -93,6 +97,11 @@ const ViewAllTasks = ({
   };
 
   const getTasksForStatus = (status: Status) => {
+    if (myIssueSelected) {
+      return taskList
+        .filter((task) => task.status === status)
+        .filter((task) => task.assignee?.name === userName);
+    }
     if (!activeSelected && !backlogSelected && showFilteredView) {
       return filteredTaskList.filter((task) => task.status === status);
     }

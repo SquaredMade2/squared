@@ -41,7 +41,6 @@ const SettingsNavBar = ({
     }
     dispatch(setCurrentTeam(team));
     router.push(`${teamUrl}/${team.identifier}`);
-    console.log(`${teamUrl}/${team.identifier}`);
   };
 
   return (

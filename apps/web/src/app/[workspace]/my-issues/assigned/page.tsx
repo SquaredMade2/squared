@@ -1,6 +1,6 @@
 "use client";
 import HomeIssues from "@/components/HomeIssues";
 
-export default function Home() {
+export default function MyIssues() {
   return <HomeIssues />;
 }
