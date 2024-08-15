@@ -20,6 +20,7 @@ import {
 
 const Navbar = () => {
   const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
+  const [isNewIssueCommand, setIsNewIssueCommand] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -47,7 +48,10 @@ const Navbar = () => {
             {user?.name}
           </span>
           <div className="flex flex-row w-full justify-around ml-2">
-            <NewIssueButton />
+            <NewIssueButton 
+              setIsNewIssueCommand={setIsNewIssueCommand} 
+              isNewIssueCommand={isNewIssueCommand}
+            />
             <SearchButton setIsSearchCommand={setIsSearchCommand} />
           </div>
         </div>
@@ -92,7 +96,10 @@ const Navbar = () => {
           </Accordion>
         </div>
         <div className="absolute top-[100px] left-full">
-          <NewIssueModal />
+          <NewIssueModal
+            setIsNewIssueCommand={setIsNewIssueCommand} 
+            isNewIssueCommand={isNewIssueCommand}
+          />
         </div>
                 <div className="absolute top-[100px] left-full">
                     <SearchCommand

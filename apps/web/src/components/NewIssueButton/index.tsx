@@ -1,12 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
+import { FC } from "react";
+
 import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
 import type { RootState } from "@/store";
 import { SquarePen } from "lucide-react";
 import { Button } from "../ui/button";
 
-const NewIssueButton = () => {
+interface NewIssueButtonProps {
+  setIsNewIssueCommand: (value: boolean) => void;
+  isNewIssueCommand: boolean;
+};
+
+const NewIssueButton: FC<NewIssueButtonProps> = ({ setIsNewIssueCommand, isNewIssueCommand } ) => {
   const dispatch = useDispatch();
+
+  const handleIsNewIssueCommand = (): void => {
+    setIsNewIssueCommand(!isNewIssueCommand)
+  };
 
   const titleArr = { value: "Todo", id: 2 };
 
@@ -28,7 +39,7 @@ const NewIssueButton = () => {
     <button
       type="button"
       className="flex flex-row w-9/12 h-10 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue-600 dark:text-foreground bg-blue-400/20 dark:bg-blue-800/60"
-      onClick={() => handleOpen()}
+      onClick={handleIsNewIssueCommand}
     >
       <span>
         <SquarePen className={`size-5 cursor-pointer fill-[${fillColor()}]`} />

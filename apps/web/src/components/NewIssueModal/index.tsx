@@ -1,8 +1,13 @@
 import { useState, useEffect, useContext } from "react";
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+
+import { FC } from "react";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
+import { NewIssueModalProps } from "./NewIssueModal.interfaces";
+
 import {
   getAllTasks,
   createNewTask,
@@ -34,7 +39,8 @@ import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { Button } from "../ui/button";
 
-const NewIssueModal = () => {
+const NewIssueModal: FC<NewIssueModalProps> = ({ isNewIssueCommand, setIsNewIssueCommand }) => {
+  console.log(isNewIssueCommand)
   const { toast } = useToast();
   const dispatch = useAppDispatch();
   const showNewIssue = useSelector(
@@ -213,67 +219,80 @@ const NewIssueModal = () => {
   // 	dispatch(setLabels([]));
   // };
   return (
-    <>
-      <AnimatePresence>
-        {showNewIssue && (
-          <div className="fixed z-10 top-0 left-0 flex items-start justify-center w-screen h-[703.2px] px-3 py-[13vh] ">
-            <ClickAwayListener
-              onClickAway={() => handleClickAway(titleInput, descriptionInput)}
-            >
-              <motion.div
-                className="relative flex flex-col w-[748.4px] border border-border bg-popover rounded-lg shadow-[#00000080] shadow-[0px_16px_70px] text-nav"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2 }}
-              >
-                <NewIssueTopRow
-                  showCloseModal={showCloseModal}
-                  handleCloseClick={handleCloseClick}
-                  handleCancelClose={handleCancelClose}
-                  handleDiscard={handleDiscard}
-                />
-                <form className="">
-                  <div className="mx-6">
-                    <MentionInput
-                      data={listOfUsers}
-                      value={titleInput}
-                      placeholder={"Issue title..."}
-                      className={`${"w-full leading-6 min-h-min h-full py-4 text-xl mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none"} `}
-                      name={"issueTitle"}
-                      onChange={handleTitleChange}
-                    />
-                    <div className=" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1" />
-                    <MentionInput
-                      data={listOfUsers}
-                      value={descriptionInput}
-                      placeholder={"Add description..."}
-                      className={`${" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1"} py-4`}
-                      name={"addDescription"}
-                      onChange={handleDescriptionChange}
-                    />
-                  </div>
-                </form>
-                <div>
-                  <div className="mx-5">
-                    <DesignationsContainer location={"newIssue"} />
-                  </div>
-                  <div className=" mx-4 mt-1 h-[10px] border-b-2 border-border" />
-                  <div className="h-full flex items-center justify-end p-4">
-                    <Button
-                      onClick={handleCreateIssue}
-                      className="hover:cursor-pointer"
-                    >
-                      Create Issue
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            </ClickAwayListener>
-          </div>
-        )}
-      </AnimatePresence>
-    </>
+    <Dialog open={isNewIssueCommand} onOpenChange={setIsNewIssueCommand}>
+      <DialogTitle>Create New Issue</DialogTitle>
+      <DialogContent>
+        <MentionInput
+          data={listOfUsers}
+          value={titleInput}
+          placeholder={"Issue title..."}
+          className={`${"w-full leading-6 min-h-min h-full py-4 text-xl mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none"} `}
+          name={"issueTitle"}
+          onChange={handleTitleChange}
+        />
+      </DialogContent>
+    </Dialog>
+      // <AnimatePresence>
+      //   {showNewIssue && (
+      //     <div className="fixed z-10 top-0 left-0 flex items-start justify-center w-screen h-[703.2px] px-3 py-[13vh] ">
+      //       <ClickAwayListener
+      //         onClickAway={() =>
+      //           handleClickAway(titleInput, descriptionInput)
+      //         }
+      //       >
+      //         <motion.div
+      //           className="relative flex flex-col w-[748.4px] border border-border bg-popover rounded-lg shadow-[#00000080] shadow-[0px_16px_70px] text-nav"
+      //           initial={{ opacity: 0, scale: 0.9 }}
+      //           animate={{ opacity: 1, scale: 1 }}
+      //           exit={{ opacity: 0, scale: 0.9 }}
+      //           transition={{ duration: 0.2 }}
+      //         >
+                // <NewIssueTopRow
+                //   showCloseModal={showCloseModal}
+                //   handleCloseClick={handleCloseClick}
+                //   handleCancelClose={handleCancelClose}
+                //   handleDiscard={handleDiscard}
+                // />
+      //           <form className="">
+      //             <div className="mx-6">
+                    // <MentionInput
+                    //   data={listOfUsers}
+                    //   value={titleInput}
+                    //   placeholder={"Issue title..."}
+                    //   className={`${"w-full leading-6 min-h-min h-full py-4 text-xl mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none"} `}
+                    //   name={"issueTitle"}
+                    //   onChange={handleTitleChange}
+                    // />
+      //               <div className=" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1" />
+      //               <MentionInput
+      //                 data={listOfUsers}
+      //                 value={descriptionInput}
+      //                 placeholder={"Add description..."}
+      //                 className={`${" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1"} py-4`}
+      //                 name={"addDescription"}
+      //                 onChange={handleDescriptionChange}
+      //               />
+      //             </div>
+      //           </form>
+      //           <div>
+      //             <div className="mx-5">
+      //               <DesignationsContainer location={"newIssue"} />
+      //             </div>
+      //             <div className=" mx-4 mt-1 h-[10px] border-b-2 border-border" />
+      //             <div className="h-full flex items-center justify-end p-4">
+      //               <Button
+      //                 onClick={handleCreateIssue}
+      //                 className="hover:cursor-pointer"
+      //               >
+      //                 Create Issue
+      //               </Button>
+      //             </div>
+      //           </div>
+      //         </motion.div>
+      //       </ClickAwayListener>
+      //     </div>
+      //   )}
+      // </AnimatePresence>
   );
 };
 
