@@ -49,9 +49,7 @@ const FilterSaveForm = ({
       setShowFilterSaveForm(false);
       if (redirectToViewsOnCreate) {
         dispatch(deleteAllCurrentFilters());
-        router.push(
-          `/workspace/${workspace.url}/team/${team.identifier}/views`
-        );
+        router.push(`/${workspace.url}/team/${team.identifier}/views`);
       }
     } catch (err) {}
   };

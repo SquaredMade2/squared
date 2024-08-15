@@ -30,11 +30,11 @@ const Navbar = () => {
 
   const handleTeamClick = (team: Team): void => {
     dispatch(setCurrentTeam(team));
-    router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
+    router.push(`/${workspace.url}/team/${team.identifier}/all`);
   };
 
   return (
-    <div className="flex flex h-full justify-center bg-popover border-r w-[296px]">
+    <div className=" flex h-full justify-center bg-popover border-r w-[296px]">
       <div className="w-11/12 flex flex-col">
         <div className="flex flex-col gap-4 lg:pt-1.5 pt-6 items-center text-nav w-full">
           <div className="flex flex-row items-center cursor-pointer relative w-full">
@@ -61,7 +61,7 @@ const Navbar = () => {
               inboxPageChecker && "bg-secondary"
             }`}
             onClick={() => {
-              router.push(`/workspace/${workspace.url}/inbox`);
+              router.push("/inbox");
             }}
           >
             <div className="text-sm m-2 text-popover-foreground font-semibold">
@@ -101,8 +101,8 @@ const Navbar = () => {
             isNewIssueCommand={isNewIssueCommand}
           />
         </div>
-                <div className="absolute top-[100px] left-full">
-                    <SearchCommand
+        <div className="absolute top-[100px] left-full">
+          <SearchCommand
             isSearchCommand={isSearchCommand}
             setIsSearchCommand={setIsSearchCommand}
           />
