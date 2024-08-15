@@ -10,13 +10,13 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 
 export default function Home() {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const params = useParams();
+	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const params = useParams();
 
-  const error = useSelector((state: RootState) => state.taskData.error);
-  const user = useSelector((state: RootState) => state.userSettings.user);
-  const workspaceUrl = params.workspace;
+	const error = useSelector((state: RootState) => state.taskData.error);
+	const user = useSelector((state: RootState) => state.userSettings.user);
+	const workspaceUrl = params.workspace;
 
   useEffect(() => {
     if (!user) {
@@ -38,13 +38,13 @@ export default function Home() {
     }
   }, [dispatch, router, user, workspaceUrl]);
 
-  return (
-    <>
-      {!error ? (
-        <div className="h-screen w-full bg-card" />
-      ) : (
-        <WorkspaceNotFoundPage />
-      )}
-    </>
-  );
+	return (
+		<>
+			{!error ? (
+				<div className="h-screen w-full bg-card" />
+			) : (
+				<WorkspaceNotFoundPage />
+			)}
+		</>
+	);
 }

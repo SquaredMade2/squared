@@ -2,11 +2,11 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { RootState } from "@/store";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 
 const TaskCardTop = () => {
@@ -15,9 +15,9 @@ const TaskCardTop = () => {
   );
   const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
 
-  const index: number = allWorkspaces.findIndex(
-    (item) => item._id === workspace._id
-  );
+	const index: number = allWorkspaces.findIndex(
+		(item) => item._id === workspace._id,
+	);
 
   const taskTitle = useAppSelector((state) => state.singleTask.data?.title);
 

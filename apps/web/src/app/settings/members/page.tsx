@@ -6,10 +6,10 @@ import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
 import { getListOfUsers } from "@/store/userSettings/thunks";
 import {
-  joinWorkspace,
-  getWorkspace,
-  createWorkspaceLinkToken,
-  enableUniversalLink,
+	joinWorkspace,
+	getWorkspace,
+	createWorkspaceLinkToken,
+	enableUniversalLink,
 } from "@/store/taskData/thunks";
 import { useToast } from "@/components/ui/use-toast";
 import type {
@@ -21,57 +21,57 @@ import { RolesButtonOptions } from "@/components/RolesButtonOptions";
 import UpdateMembersInfoModal from "@/components/UpdateMembersModal";
 import PurpleToggle from "@/components/PurpleToggle";
 import {
-  deletingUserFromWorkspace,
-  updateTheUsersRole,
-  updateUsersInfo,
+	deletingUserFromWorkspace,
+	updateTheUsersRole,
+	updateUsersInfo,
 } from "@/utils/workspace-members-utils";
 import { navBarToggle } from "@/store/userSettings";
 import { useTheme } from "next-themes";
 const styles = {
-  mainContainer:
-    "flex mdsm:flex-col relative bg-card h-auto min-h-screen xs:p-0 w-full",
-  pageContainer:
-    "flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ",
-  TopNavbar: "lg:hidden mdsm:visible bg-background",
-  navbarWrapper:
-    "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
-  pageWrapper: " sm:w-full  sm:p-0 xs:w-full xl:w-2/5 md:w-3/4 ",
-  line: "block w-full border-t border-border my-6",
-  title: "text-2xl text-foreground mb-1 font-medium",
-  subtitle: "text-muted-foreground text-sm",
-  manageMemberTitle: "text-lg text-foreground mb-1 font-medium ",
-  inviteButtonLight:
-    "bg-blueGlowLight py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
-  inviteButtonDark:
-    "bg-blueGlow py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
-  goToPlan: "text-[#575bc7] text-opacity-1 font-semibold",
-  searchIconSVG: " fill-white h-5 w-5",
-  userInputsContainer:
-    "flex gap-3 mt-6 items-center justify-between w-full sm:justify-between md:w-full lg:w-full",
-  userInputSubContainer:
-    "relative gap-2 flex items-center md:w-2/3 lg:w-3/5 bg-textField rounded",
-  searchInput:
-    "border border-border bg-transparent text-sm py-1.5 w-full rounded-md w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400",
-  searchIcon: "absolute left-2 top-2.5",
-  membersLengthTitle: "mt-6 text-foreground text-sm",
-  membersDescriptionContainer:
-    "flex items-center border-border border-b pb-2 mt-4 md:text-sm justify-between xs:text-sm",
-  membersInfo: "flex flex-col w-2/4",
-  membersNameOrRole: "text-foreground",
-  membersEmail: "text-muted-foreground",
-  buttonsOptionContainer:
-    "flex flex-col -left-28 top-6 bg-background border border-border rounded gap-1 ",
-  universalInviteLinkContainer:
-    "gap-4 flex justify-between items-center mdsm:w-full ",
-  createLinkButton:
-    "hover:bg-[#999] hover:bg-opacity-20 p-1 mr-2 rounded w-[20px]",
-  inviteLinkInput:
-    "flex border border-border rounded w-full justify-between items-center bg-textField",
-  inviteLinkText:
-    "text-foreground p-1.5 overflow-hidden text-ellipsis whitespace-nowrap  text-sm",
-  bodyWrapper: "flex justify-between",
-  textPrimary: "text-foreground",
-  membersButtonWrapper: "ml-auto relative",
+	mainContainer:
+		"flex mdsm:flex-col relative bg-card h-auto min-h-screen xs:p-0 w-full",
+	pageContainer:
+		"flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ",
+	TopNavbar: "lg:hidden mdsm:visible bg-background",
+	navbarWrapper:
+		"relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
+	pageWrapper: " sm:w-full  sm:p-0 xs:w-full xl:w-2/5 md:w-3/4 ",
+	line: "block w-full border-t border-border my-6",
+	title: "text-2xl text-foreground mb-1 font-medium",
+	subtitle: "text-muted-foreground text-sm",
+	manageMemberTitle: "text-lg text-foreground mb-1 font-medium ",
+	inviteButtonLight:
+		"bg-blueGlowLight py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
+	inviteButtonDark:
+		"bg-blueGlow py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
+	goToPlan: "text-[#575bc7] text-opacity-1 font-semibold",
+	searchIconSVG: " fill-white h-5 w-5",
+	userInputsContainer:
+		"flex gap-3 mt-6 items-center justify-between w-full sm:justify-between md:w-full lg:w-full",
+	userInputSubContainer:
+		"relative gap-2 flex items-center md:w-2/3 lg:w-3/5 bg-textField rounded",
+	searchInput:
+		"border border-border bg-transparent text-sm py-1.5 w-full rounded-md w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400",
+	searchIcon: "absolute left-2 top-2.5",
+	membersLengthTitle: "mt-6 text-foreground text-sm",
+	membersDescriptionContainer:
+		"flex items-center border-border border-b pb-2 mt-4 md:text-sm justify-between xs:text-sm",
+	membersInfo: "flex flex-col w-2/4",
+	membersNameOrRole: "text-foreground",
+	membersEmail: "text-muted-foreground",
+	buttonsOptionContainer:
+		"flex flex-col -left-28 top-6 bg-background border border-border rounded gap-1 ",
+	universalInviteLinkContainer:
+		"gap-4 flex justify-between items-center mdsm:w-full ",
+	createLinkButton:
+		"hover:bg-[#999] hover:bg-opacity-20 p-1 mr-2 rounded w-[20px]",
+	inviteLinkInput:
+		"flex border border-border rounded w-full justify-between items-center bg-textField",
+	inviteLinkText:
+		"text-foreground p-1.5 overflow-hidden text-ellipsis whitespace-nowrap  text-sm",
+	bodyWrapper: "flex justify-between",
+	textPrimary: "text-foreground",
+	membersButtonWrapper: "ml-auto relative",
 };
 export default function Members() {
   const [openInviteModal, setInviteOpenModal] = useState<boolean>(false);
@@ -99,7 +99,7 @@ export default function Members() {
   const currentUser = useAppSelector((state) => state.userSettings.user);
   const { theme } = useTheme();
 
-  const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 
   const handleNavToggle = (): void => {
     const navBarValue = !showNavBar;
@@ -331,31 +331,31 @@ export default function Members() {
     ));
   };
 
-  const invitingUserToWorkspace = async () => {
-    try {
-      const data = await dispatch(
-        joinWorkspace({ id: workspace._id, email: email })
-      );
-      console.log(data);
-      return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const serverError = error?.response?.data;
-        if (serverError) {
-          toast({ title: serverError, variant: "destructive" });
-        } else {
-          toast({
-            title: "Something with wrong",
-            variant: "destructive",
-          });
-        }
-      }
-    }
-  };
+	const invitingUserToWorkspace = async () => {
+		try {
+			const data = await dispatch(
+				joinWorkspace({ id: workspace._id, email: email }),
+			);
+			console.log(data);
+			return data;
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				const serverError = error?.response?.data;
+				if (serverError) {
+					toast({ title: serverError, variant: "destructive" });
+				} else {
+					toast({
+						title: "Something with wrong",
+						variant: "destructive",
+					});
+				}
+			}
+		}
+	};
 
-  const currentUserRole =
-    getMembersRole(currentUser._id) === "Admin" ||
-    getMembersRole(currentUser._id) === "Owner";
+	const currentUserRole =
+		getMembersRole(currentUser._id) === "Admin" ||
+		getMembersRole(currentUser._id) === "Owner";
 
   const handleCommandOptions = (memberId: string) => {
     setCommandOptions((prevState: Record<string, boolean>) => {
@@ -374,22 +374,22 @@ export default function Members() {
     setInviteOpenModal(false);
   };
 
-  const handleUpdateSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-    name: string,
-    username: string,
-    id: string
-  ): Promise<void> => {
-    e.preventDefault();
-    await dispatch(updateMembersInfo(name, username, id));
-    setOpenUpdateMemberModal(false);
-  };
-  useEffect(() => {
-    setIsActive(workspace.universalTokenLink.isEnabled);
-  }, []);
-  const handleToggleLink = async () => {
-    setIsActive((prev) => !prev);
-  };
+	const handleUpdateSubmit = async (
+		e: React.FormEvent<HTMLFormElement>,
+		name: string,
+		username: string,
+		id: string,
+	): Promise<void> => {
+		e.preventDefault();
+		await dispatch(updateMembersInfo(name, username, id));
+		setOpenUpdateMemberModal(false);
+	};
+	useEffect(() => {
+		setIsActive(workspace.universalTokenLink.isEnabled);
+	}, []);
+	const handleToggleLink = async () => {
+		setIsActive((prev) => !prev);
+	};
 
   const enablingUniversalLink = async () => {
     try {
@@ -410,31 +410,31 @@ export default function Members() {
   }, [isActive]);
   const workspaceLink = `${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/accept/${workspace?.universalTokenLink.token}`;
 
-  const filteredMembers = listOfUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email?.toLowerCase().includes(search.toLowerCase())
-  );
-  return (
-    <div className={styles.mainContainer}>
-      <div className={styles.TopNavbar}>
-        <SettingsTopNavBar setShowNavBar={handleNavToggle} />
-      </div>
-      <div
-        ref={navbarRef}
-        className={`${styles.navbarWrapper} ${showNavBar ? "mdsm:-left-0" : "mdsm:-left-[500px]"}`}
-      >
-        {/* <SettingsNavBar setLoading={console.log} /> */}
-      </div>
+	const filteredMembers = listOfUsers.filter(
+		(user) =>
+			user.name.toLowerCase().includes(search.toLowerCase()) ||
+			user.email?.toLowerCase().includes(search.toLowerCase()),
+	);
+	return (
+		<div className={styles.mainContainer}>
+			<div className={styles.TopNavbar}>
+				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
+			</div>
+			<div
+				ref={navbarRef}
+				className={`${styles.navbarWrapper} ${showNavBar ? "mdsm:-left-0" : "mdsm:-left-[500px]"}`}
+			>
+				{/* <SettingsNavBar setLoading={console.log} /> */}
+			</div>
 
-      <div className={styles.pageContainer}>
-        <div className={styles.pageWrapper}>
-          <p className={styles.title}>Members</p>
+			<div className={styles.pageContainer}>
+				<div className={styles.pageWrapper}>
+					<p className={styles.title}>Members</p>
 
-          <p className={styles.subtitle}>
-            Manage who has access to this workspace
-          </p>
-          <span className={styles.line} />
+					<p className={styles.subtitle}>
+						Manage who has access to this workspace
+					</p>
+					<span className={styles.line} />
 
           <div
             className={`${currentUserRole ? "flex" : "hidden "} flex-col gap-1`}

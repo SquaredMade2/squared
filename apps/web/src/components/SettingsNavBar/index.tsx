@@ -3,11 +3,11 @@ import type React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import {
-  BriefcaseBusiness,
-  ChevronLeft,
-  CircleUser,
-  Plus,
-  Users,
+	BriefcaseBusiness,
+	ChevronLeft,
+	CircleUser,
+	Plus,
+	Users,
 } from "lucide-react";
 import { setCurrentTeam } from "@/store/taskData";
 import type { RootState } from "@/store";
@@ -17,15 +17,15 @@ import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 
 const SettingsNavBar = ({
-  setLoading,
+	setLoading,
 }: SettingsNavbarProps): React.ReactElement => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { setTheme } = useTheme();
+	const dispatch = useDispatch();
+	const router = useRouter();
+	const { setTheme } = useTheme();
 
-  const workspace = useSelector(
-    (state: RootState) => state.taskData.currentWorkspace
-  );
+	const workspace = useSelector(
+		(state: RootState) => state.taskData.currentWorkspace,
+	);
 
   const baseUrl = "/settings";
   const teamUrl = `${baseUrl}/teams`;
