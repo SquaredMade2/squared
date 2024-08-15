@@ -106,11 +106,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
         <>
           <div className={styles.pageWrapper}>
             {showBackdrop && (
-              <div
-                className={
-                  showSideNav ? styles.sideNavBackdrop : styles.navBackdrop
-                }
-              />
+              <div className={showSideNav ? styles.sideNavBackdrop : ""} />
             )}
             <div className="w-full h-full p-2 md:p-5 xl:px-10 ">
               <div className="flex w-full relative">

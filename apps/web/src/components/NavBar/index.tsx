@@ -1,11 +1,7 @@
 "use client";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { usePathname, useRouter } from "next/navigation";
-import { setCurrentTeam } from "@/store/taskData";
-import NewIssueModal from "@/components/NewIssueModal";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 import NewIssueButton from "@/components/NewIssueButton";
-import NavBarTeams from "@/components/NavBarTeams";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import {
   Accordion,
@@ -14,6 +10,7 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { LayoutGrid } from "lucide-react";
+import Teams from "../Teams";
 
 const styles = {
   main: "flex h-full justify-center bg-popover border-r w-64",
@@ -23,20 +20,8 @@ const styles = {
 };
 
 const Navbar = () => {
-  const checkRouteIncludes = (pathname: string, ...args: string[]): boolean => {
-    return args.some((arg) => pathname.includes(arg));
-  };
-
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const pathname = usePathname();
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
   const currentYear: number = new Date().getFullYear();
-  const allowedRoutes = checkRouteIncludes(pathname, "/team");
-  const handleTeamClick = (team: Team): void => {
-    dispatch(setCurrentTeam(team));
-    router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
-  };
 
   return (
     <>
@@ -59,12 +44,7 @@ const Navbar = () => {
                         {team.name}
                       </AccordionTrigger>
                       <AccordionContent>
-                        <NavBarTeams
-                          id={team._id}
-                          teamName={team.name}
-                          onDropdownClick={() => handleTeamClick(team)}
-                          teamIdentifier={team.identifier}
-                        />
+                        <Teams />
                       </AccordionContent>
                     </AccordionItem>
                   );
@@ -76,9 +56,6 @@ const Navbar = () => {
                 &copy; {currentYear} Squared. All rights reserved
               </p>
             </div>
-          </div>
-          <div className={styles.newIssueModalContainer}>
-            <NewIssueModal />
           </div>
         </div>
       </div>

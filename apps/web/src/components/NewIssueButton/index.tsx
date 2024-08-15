@@ -4,12 +4,12 @@ import { setStatus } from "@/store/taskData";
 import type { RootState } from "@/store";
 import { SquarePen } from "lucide-react";
 import { Button } from "../ui/button";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import ButtonIcon from "../ButtonIcon";
+const titleArr = { value: "Todo", id: 2 };
 const NewIssueButton = () => {
   const dispatch = useDispatch();
-
-  const titleArr = { value: "Todo", id: 2 };
-
   const showNewIssue = useSelector(
     (state: RootState) => state.showNewIssue.isOpen
   );
@@ -55,6 +55,28 @@ export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
     <Button onClick={() => handleOpen()} variant={"outline"}>
       <SquarePen className={`size-5 cursor-pointer fill-[${fillColor()}]`} />
     </Button>
+  );
+};
+
+export const SideNavNewIssueButton = () => {
+  const dispatch = useDispatch();
+  const handleOpen = () => {
+    dispatch(setShowNewIssue(true));
+    dispatch(setStatus(titleArr.value));
+  };
+  return (
+    <ButtonIcon
+      icon={
+        <FontAwesomeIcon
+          className="text-gray-600 dark:text-gray-400"
+          icon={faPenToSquare}
+        />
+      }
+      handleClick={handleOpen}
+      hoverBg="bg-card"
+      tooltipLabel="New Issue"
+      labelPosition="right"
+    />
   );
 };
 

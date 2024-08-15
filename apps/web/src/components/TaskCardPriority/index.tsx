@@ -1,7 +1,7 @@
 import React, { useState, useEffect, type ReactNode } from "react";
 import { high, medium, low } from "@/components/Svg";
 import type { TaskCardPriorityProps } from "./TaskCardPriority.interfaces";
-import { CircleAlert, Ellipsis } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { useTheme } from "next-themes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
