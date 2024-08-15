@@ -35,10 +35,10 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const sideNav = useRef(null);
 	const svgRef = useRef(null);
 
-  const currentTaskId = useAppSelector(
-    (state) => state.currentTask.currentTaskId
-  );
-  const taskId = taskList.find((el) => formatUrl(el.title) === taskName)?._id;
+	const currentTaskId = useAppSelector(
+		(state) => state.currentTask.currentTaskId,
+	);
+	const taskId = taskList.find((el) => formatUrl(el.title) === taskName)?._id;
 
 	const dataForDispatch = taskId || taskPageId || currentTaskId;
 

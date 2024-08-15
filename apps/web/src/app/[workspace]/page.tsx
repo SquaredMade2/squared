@@ -18,25 +18,25 @@ export default function Home() {
 	const user = useSelector((state: RootState) => state.userSettings.user);
 	const workspaceUrl = params.workspace;
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    } else if (!user?.on_boarding) {
-      router.push("/onboarding");
-    } else {
-      const fetchWorkspace = async () => {
-        const updatedCurrentTeam = await dispatch(
-          getWorkspace({ url: workspaceUrl as string, id: "" })
-        );
-        if (updatedCurrentTeam.payload) {
-          router.push(
-            `/${workspaceUrl}/team/${(updatedCurrentTeam.payload as Team).identifier}/all`
-          );
-        }
-      };
-      fetchWorkspace();
-    }
-  }, [dispatch, router, user, workspaceUrl]);
+	useEffect(() => {
+		if (!user) {
+			router.push("/login");
+		} else if (!user?.on_boarding) {
+			router.push("/onboarding");
+		} else {
+			const fetchWorkspace = async () => {
+				const updatedCurrentTeam = await dispatch(
+					getWorkspace({ url: workspaceUrl as string, id: "" }),
+				);
+				if (updatedCurrentTeam.payload) {
+					router.push(
+						`/${workspaceUrl}/team/${(updatedCurrentTeam.payload as Team).identifier}/all`,
+					);
+				}
+			};
+			fetchWorkspace();
+		}
+	}, [dispatch, router, user, workspaceUrl]);
 
 	return (
 		<>

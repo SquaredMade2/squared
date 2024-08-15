@@ -6,5 +6,6 @@ expect.extend(toHaveNoViolations);
 const config = {
   verbose: true,
   setupFilesAfterEnv: ["<rootDir>/support/setupTests.js"],
+  modulePathIgnorePatterns: ["dist"],
 };
 module.exports = config;
