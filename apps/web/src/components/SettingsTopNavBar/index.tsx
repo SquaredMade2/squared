@@ -4,8 +4,8 @@ import type { SettingsTopNavbarProps } from "@/components/SettingsTopNavBar/Sett
 import { ChevronLeft, PanelLeft } from "lucide-react";
 
 const SettingsTopNavBar = ({ setShowNavBar }: SettingsTopNavbarProps) => {
-  const router = useRouter();
-  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+	const router = useRouter();
+	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
   return (
     <div>

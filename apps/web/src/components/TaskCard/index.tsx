@@ -25,68 +25,68 @@ import { deleteTaskCard } from "@/api/taskApi";
 import { formatUrl } from "@/utils/formatting";
 
 const TaskCard = ({
-  filteredTasks,
-  setTaskData,
-  highlightText,
-  location,
+	filteredTasks,
+	setTaskData,
+	highlightText,
+	location,
 }: TaskCardProps) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
-  const uniqueTasks: Task[] = [];
+	const dispatch = useDispatch<AppDispatch>();
+	const router = useRouter();
+	const uniqueTasks: Task[] = [];
 
-  const { showDateTime, showPriority, showLabels } = useSelector(
-    (state: RootState) => state.toggleTaskFeatures
-  );
-  const notifications = useSelector(
-    (state: RootState) => state.notifications.notifications
-  );
+	const { showDateTime, showPriority, showLabels } = useSelector(
+		(state: RootState) => state.toggleTaskFeatures,
+	);
+	const notifications = useSelector(
+		(state: RootState) => state.notifications.notifications,
+	);
 
-  const { view, theme, user } = useSelector(
-    (state: RootState) => state.userSettings
-  );
-  const { currentWorkspace } = useSelector(
-    (state: RootState) => state.taskData
-  );
-  const { currentTeam } = useSelector((state: RootState) => state.taskData);
+	const { view, theme, user } = useSelector(
+		(state: RootState) => state.userSettings,
+	);
+	const { currentWorkspace } = useSelector(
+		(state: RootState) => state.taskData,
+	);
+	const { currentTeam } = useSelector((state: RootState) => state.taskData);
 
-  const [deleteFade, setDeleteFade] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [showDeleteCard, setShowDeleteCard] = useState(false);
-  const [menuPosition, setMenuPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
+	const [deleteFade, setDeleteFade] = useState(false);
+	const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+	const [showDeleteCard, setShowDeleteCard] = useState(false);
+	const [menuPosition, setMenuPosition] = useState<{
+		x: number;
+		y: number;
+	} | null>(null);
 
-  const taskRefs: MutableRefObject<{
-    [key: string]: HTMLElement | null;
-  }> = useRef({});
-  const socket = useContext(SocketContext);
+	const taskRefs: MutableRefObject<{
+		[key: string]: HTMLElement | null;
+	}> = useRef({});
+	const socket = useContext(SocketContext);
 
-  const getNotificationId = notifications.map((noti) => noti._id);
+	const getNotificationId = notifications.map((noti) => noti._id);
 
-  const handleDeleteTaskCard = async (task: Task) => {
-    await deleteTaskCard(task._id);
-    dispatch(getAllTasks(currentTeam));
-    setShowDeleteCard(false);
-    setDeleteFade(false);
+	const handleDeleteTaskCard = async (task: Task) => {
+		await deleteTaskCard(task._id);
+		dispatch(getAllTasks(currentTeam));
+		setShowDeleteCard(false);
+		setDeleteFade(false);
 
-    socket.emit("remove_notification", task._id, getNotificationId);
-  };
+		socket.emit("remove_notification", task._id, getNotificationId);
+	};
 
-  const handleCloseDeleteCard = () => {
-    setShowDeleteCard(false);
-    setDeleteFade(false);
-  };
+	const handleCloseDeleteCard = () => {
+		setShowDeleteCard(false);
+		setDeleteFade(false);
+	};
 
-  const handleContextMenu = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    task: Task
-  ) => {
-    e.preventDefault();
-    setTaskData?.(task);
-    setSelectedTask(task);
-    setMenuPosition({ x: e.clientX, y: e.clientY });
-  };
+	const handleContextMenu = (
+		e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+		task: Task,
+	) => {
+		e.preventDefault();
+		setTaskData?.(task);
+		setSelectedTask(task);
+		setMenuPosition({ x: e.clientX, y: e.clientY });
+	};
 
   const navigateToTask = async (task: Task) => {
     dispatch(setTaskPage(task));
@@ -95,59 +95,59 @@ const TaskCard = ({
     );
   };
 
-  const handleGlobalClick = () => {
-    setMenuPosition(null);
-  };
+	const handleGlobalClick = () => {
+		setMenuPosition(null);
+	};
 
-  useEffect(() => {
-    dispatch(getAllUsers(currentWorkspace._id));
-  }, [currentWorkspace._id, dispatch]);
+	useEffect(() => {
+		dispatch(getAllUsers(currentWorkspace._id));
+	}, [currentWorkspace._id, dispatch]);
 
-  useEffect(() => {
-    function handleClickAway(e: MouseEvent) {
-      if (
-        !Object.values(taskRefs.current).some((taskEl) =>
-          taskEl?.contains(e.target as Node)
-        )
-      ) {
-        setMenuPosition(null);
-      }
-    }
+	useEffect(() => {
+		function handleClickAway(e: MouseEvent) {
+			if (
+				!Object.values(taskRefs.current).some((taskEl) =>
+					taskEl?.contains(e.target as Node),
+				)
+			) {
+				setMenuPosition(null);
+			}
+		}
 
-    document.addEventListener("mousedown", handleClickAway);
-    return () => {
-      document.removeEventListener("mousedown", handleClickAway);
-    };
-  }, []);
-  return (
-    <>
-      {view === "list" &&
-        location === "dashboard" &&
-        filteredTasks?.map((task, index) => (
-          <Draggable draggableId={task._id} index={index} key={task._id}>
-            {(provided) => (
-              <div
-                id={"this"}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                ref={provided.innerRef}
-                onClick={handleGlobalClick}
-                onContextMenu={(e) => handleContextMenu(e, task)}
-              >
-                <div
-                  ref={(el: HTMLDivElement | null) => {
-                    taskRefs.current[task._id] = el;
-                  }}
-                >
-                  {menuPosition && selectedTask && (
-                    <RightClickMenu
-                      x={menuPosition.x}
-                      y={menuPosition.y}
-                      handleDeleteTaskCard={handleDeleteTaskCard}
-                      task={selectedTask}
-                    />
-                  )}
-                </div>
+		document.addEventListener("mousedown", handleClickAway);
+		return () => {
+			document.removeEventListener("mousedown", handleClickAway);
+		};
+	}, []);
+	return (
+		<>
+			{view === "list" &&
+				location === "dashboard" &&
+				filteredTasks?.map((task, index) => (
+					<Draggable draggableId={task._id} index={index} key={task._id}>
+						{(provided) => (
+							<div
+								id={"this"}
+								{...provided.draggableProps}
+								{...provided.dragHandleProps}
+								ref={provided.innerRef}
+								onClick={handleGlobalClick}
+								onContextMenu={(e) => handleContextMenu(e, task)}
+							>
+								<div
+									ref={(el: HTMLDivElement | null) => {
+										taskRefs.current[task._id] = el;
+									}}
+								>
+									{menuPosition && selectedTask && (
+										<RightClickMenu
+											x={menuPosition.x}
+											y={menuPosition.y}
+											handleDeleteTaskCard={handleDeleteTaskCard}
+											task={selectedTask}
+										/>
+									)}
+								</div>
 
                 <div
                   className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
@@ -334,17 +334,17 @@ const TaskCard = ({
           </div>
         ))}
 
-      {showDeleteCard && selectedTask && (
-        // Not sure if this Component is being used, because there is no confirmation before delete
-        <DeleteConfirmCard
-          task={selectedTask}
-          handleDeleteTaskCard={handleDeleteTaskCard}
-          onClose={handleCloseDeleteCard}
-          deleteFade={deleteFade}
-        />
-      )}
-    </>
-  );
+			{showDeleteCard && selectedTask && (
+				// Not sure if this Component is being used, because there is no confirmation before delete
+				<DeleteConfirmCard
+					task={selectedTask}
+					handleDeleteTaskCard={handleDeleteTaskCard}
+					onClose={handleCloseDeleteCard}
+					deleteFade={deleteFade}
+				/>
+			)}
+		</>
+	);
 };
 
 export default TaskCard;

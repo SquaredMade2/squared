@@ -45,25 +45,25 @@ export default function TeamsSetting() {
     "id" in access &&
     access.id === user?._id;
 
-  const identifierInputFilter = (value: string): void => {
-    const regex = /^[A-Za-z0-9]*$/g;
-    const test = regex.test(value);
-    if (test) {
-      setTeamIdentifier(value.toUpperCase());
-    }
-  };
+	const identifierInputFilter = (value: string): void => {
+		const regex = /^[A-Za-z0-9]*$/g;
+		const test = regex.test(value);
+		if (test) {
+			setTeamIdentifier(value.toUpperCase());
+		}
+	};
 
-  const handleOpen = () => {
-    if (dialogRef.current) {
-      dialogRef.current.showModal();
-    }
-  };
+	const handleOpen = () => {
+		if (dialogRef.current) {
+			dialogRef.current.showModal();
+		}
+	};
 
-  const handleClose = () => {
-    if (dialogRef.current) {
-      dialogRef.current.close();
-    }
-  };
+	const handleClose = () => {
+		if (dialogRef.current) {
+			dialogRef.current.close();
+		}
+	};
 
   const handleDelete = (): void => {
     if (workspace.teams.length === 1) {
@@ -79,10 +79,10 @@ export default function TeamsSetting() {
     }
   };
 
-  const handleNavToggle = (): void => {
-    const navBarValue = !showNavBar;
-    dispatch(navBarToggle(navBarValue));
-  };
+	const handleNavToggle = (): void => {
+		const navBarValue = !showNavBar;
+		dispatch(navBarToggle(navBarValue));
+	};
 
   const handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault();
@@ -116,31 +116,31 @@ export default function TeamsSetting() {
     }
   };
 
-  const updateTeam = async (teamData: TeamData): Promise<boolean> => {
-    try {
-      const update = await axios({
-        method: "PUT",
-        url: `${process.env.NEXT_PUBLIC_SERVER}/team/update`,
-        withCredentials: true,
-        data: {
-          name: teamData.name.trim(),
-          identifier: teamData.identifier,
-          id: teamData.id,
-          workspaceId: workspace._id,
-        },
-      });
-      const response = update.data?.message;
-      toast({ title: `${response}` });
-      dispatch(getTeam(teamData.identifier));
-      return true;
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        const response = error.response?.data.message;
-        toast({ title: `${response}`, variant: "destructive" });
-      }
-      return false;
-    }
-  };
+	const updateTeam = async (teamData: TeamData): Promise<boolean> => {
+		try {
+			const update = await axios({
+				method: "PUT",
+				url: `${process.env.NEXT_PUBLIC_SERVER}/team/update`,
+				withCredentials: true,
+				data: {
+					name: teamData.name.trim(),
+					identifier: teamData.identifier,
+					id: teamData.id,
+					workspaceId: workspace._id,
+				},
+			});
+			const response = update.data?.message;
+			toast({ title: `${response}` });
+			dispatch(getTeam(teamData.identifier));
+			return true;
+		} catch (error: unknown) {
+			if (error instanceof AxiosError) {
+				const response = error.response?.data.message;
+				toast({ title: `${response}`, variant: "destructive" });
+			}
+			return false;
+		}
+	};
 
   useEffect(() => {
     const fetchData = async () => {

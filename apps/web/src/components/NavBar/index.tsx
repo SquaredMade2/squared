@@ -12,20 +12,20 @@ import type { Team } from "@/store/taskData/taskData.interfaces";
 import SearchButton from "../SearchButton";
 import SearchCommand from "../SearchCommand";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
 } from "../ui/accordion";
 
 const Navbar = () => {
-  const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const pathname = usePathname();
-  const inboxPageChecker = pathname.includes("/inbox");
-  const { user } = useAppSelector((state) => state.userSettings);
-  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
+	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const pathname = usePathname();
+	const inboxPageChecker = pathname.includes("/inbox");
+	const { user } = useAppSelector((state) => state.userSettings);
+	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
   const handleTeamClick = (team: Team): void => {
     dispatch(setCurrentTeam(team));

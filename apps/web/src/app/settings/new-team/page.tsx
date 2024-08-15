@@ -11,25 +11,25 @@ import BlueButton from "@/components/BlueButton";
 import { navBarToggle } from "@/store/userSettings";
 
 const styles = {
-  mainContainer:
-    "flex bg-background text-foreground min-h-screen mdsm:flex-col w-full",
-  pageContainer: "w-full pt-20 flex justify-center",
-  pageWrapper: "flex flex-col w-1/3 mdsm:w-3/4",
-  form: "flex flex-col",
-  title: "text-2xl text-foreground mb-1 font-medium",
-  line: "block w-full border-t border-border mt-6",
-  input:
-    "w-full border border-border rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
-  identifierInput:
-    "w-20 border border-border max-h-8 rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
-  inputWrapper: "my-6",
-  TopNavbar: "lg:hidden mdsm:visible",
-  navbarWrapper:
-    "relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out",
-  titleDescription: "text-sm text-muted-foreground",
-  inputLabel: "text-sm",
-  identifierDescription: "text-sm text-muted-foreground pl-5",
-  identifierinputWrapper: "flex",
+	mainContainer:
+		"flex bg-background text-foreground min-h-screen mdsm:flex-col w-full",
+	pageContainer: "w-full pt-20 flex justify-center",
+	pageWrapper: "flex flex-col w-1/3 mdsm:w-3/4",
+	form: "flex flex-col",
+	title: "text-2xl text-foreground mb-1 font-medium",
+	line: "block w-full border-t border-border mt-6",
+	input:
+		"w-full border border-border rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
+	identifierInput:
+		"w-20 border border-border max-h-8 rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
+	inputWrapper: "my-6",
+	TopNavbar: "lg:hidden mdsm:visible",
+	navbarWrapper:
+		"relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out",
+	titleDescription: "text-sm text-muted-foreground",
+	inputLabel: "text-sm",
+	identifierDescription: "text-sm text-muted-foreground pl-5",
+	identifierinputWrapper: "flex",
 };
 
 export default function CreateTeam() {
@@ -50,35 +50,35 @@ export default function CreateTeam() {
     "id" in access &&
     access.id === user?._id;
 
-  const identifierInputFilter = (e: InputChangeEvent): void => {
-    const identifierFormat = /^[A-Za-z0-9]*$/g;
-    if (identifierFormat.test(e.target.value)) {
-      setTeamIdentifier(e.target.value.toUpperCase());
-    }
-  };
+	const identifierInputFilter = (e: InputChangeEvent): void => {
+		const identifierFormat = /^[A-Za-z0-9]*$/g;
+		if (identifierFormat.test(e.target.value)) {
+			setTeamIdentifier(e.target.value.toUpperCase());
+		}
+	};
 
-  const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
-    e.preventDefault();
-    if (!teamName && !teamIdentifier) {
-      toast({
-        title: "Both Name and Identifier required",
-        variant: "destructive",
-      });
-    } else if (!teamIdentifier) {
-      toast({
-        title: "Identifier is required",
-        variant: "destructive",
-      });
-    } else if (!teamName) {
-      toast({ title: "Name is required", variant: "destructive" });
-    } else {
-      const doesTeamExist = await dispatch(
-        teamExists({
-          workspace: workspace._id,
-          identifier: teamIdentifier,
-          name: teamName.trim(),
-        })
-      );
+	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
+		e.preventDefault();
+		if (!teamName && !teamIdentifier) {
+			toast({
+				title: "Both Name and Identifier required",
+				variant: "destructive",
+			});
+		} else if (!teamIdentifier) {
+			toast({
+				title: "Identifier is required",
+				variant: "destructive",
+			});
+		} else if (!teamName) {
+			toast({ title: "Name is required", variant: "destructive" });
+		} else {
+			const doesTeamExist = await dispatch(
+				teamExists({
+					workspace: workspace._id,
+					identifier: teamIdentifier,
+					name: teamName.trim(),
+				}),
+			);
 
       if (!doesTeamExist.payload) {
         dispatch(
@@ -94,10 +94,10 @@ export default function CreateTeam() {
     }
   };
 
-  const handleNavToggle = (): void => {
-    const navBarValue = !showNavBar;
-    dispatch(navBarToggle(navBarValue));
-  };
+	const handleNavToggle = (): void => {
+		const navBarValue = !showNavBar;
+		dispatch(navBarToggle(navBarValue));
+	};
 
   useEffect(() => {
     if (!userHasAccess) {

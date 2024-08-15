@@ -12,9 +12,9 @@ import type { NotificationListProps } from "./NotificationsList.interfaces";
 import { formatUrl } from "@/utils/formatting";
 
 function NotificationsList({
-  setShowNotification,
-  showNotification,
-  notificationButtonRef,
+	setShowNotification,
+	showNotification,
+	notificationButtonRef,
 }: NotificationListProps) {
   const notifications = useAppSelector(
     (state) => state.notifications.notifications
@@ -26,76 +26,76 @@ function NotificationsList({
   const socket = useContext(SocketContext);
   const { theme } = useAppSelector((state) => state.userSettings);
 
-  const summarizeInputText = (text: string, maxWords: number): string => {
-    if (!text) {
-      return "";
-    }
-    const word = text.split(" ");
-    if (word.length > maxWords) {
-      return `${word.slice(0, maxWords).join(" ")}...`;
-    }
-    return text;
-  };
+	const summarizeInputText = (text: string, maxWords: number): string => {
+		if (!text) {
+			return "";
+		}
+		const word = text.split(" ");
+		if (word.length > maxWords) {
+			return `${word.slice(0, maxWords).join(" ")}...`;
+		}
+		return text;
+	};
 
-  useEffect(() => {
-    const handler = (event: MouseEvent): void => {
-      if (
-        notificationButtonRef.current &&
-        !notificationButtonRef.current.contains(event.target as HTMLElement) &&
-        notificationRef.current != null &&
-        !notificationRef.current.contains(event.target as HTMLElement)
-      ) {
-        event.stopPropagation();
-        setShowNotification(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    };
-  }, [showNotification]);
+	useEffect(() => {
+		const handler = (event: MouseEvent): void => {
+			if (
+				notificationButtonRef.current &&
+				!notificationButtonRef.current.contains(event.target as HTMLElement) &&
+				notificationRef.current != null &&
+				!notificationRef.current.contains(event.target as HTMLElement)
+			) {
+				event.stopPropagation();
+				setShowNotification(false);
+			}
+		};
+		document.addEventListener("mousedown", handler);
+		return () => {
+			document.removeEventListener("mousedown", handler);
+		};
+	}, [showNotification]);
 
-  const handleConfirmedNotificationColor = (read: boolean, theme: string) => {
-    if (theme === "light") {
-      return read
-        ? "bg-[#f1eeee] bg-opacity-20"
-        : "bg-[#e1e1e1] border shadow-sm";
-    }
-    if (theme === "dark") {
-      return read ? "bg-[#161c2c]" : "bg-[#394565]";
-    }
-  };
+	const handleConfirmedNotificationColor = (read: boolean, theme: string) => {
+		if (theme === "light") {
+			return read
+				? "bg-[#f1eeee] bg-opacity-20"
+				: "bg-[#e1e1e1] border shadow-sm";
+		}
+		if (theme === "dark") {
+			return read ? "bg-[#161c2c]" : "bg-[#394565]";
+		}
+	};
 
-  const handleRemoveNotification = (id: string) => {
-    socket.emit("remove_notification", id);
-  };
+	const handleRemoveNotification = (id: string) => {
+		socket.emit("remove_notification", id);
+	};
 
-  const handleMarkAllRead = () => {
-    const getNotificationIds = notifications.map(
-      (noti: { _id: string }) => noti._id
-    );
-    socket.emit("sending_notificationId", getNotificationIds, user._id);
-  };
+	const handleMarkAllRead = () => {
+		const getNotificationIds = notifications.map(
+			(noti: { _id: string }) => noti._id,
+		);
+		socket.emit("sending_notificationId", getNotificationIds, user._id);
+	};
 
-  const handleMarkRead = (id: string) => {
-    socket.emit("sending_notificationId", id, user._id);
-  };
+	const handleMarkRead = (id: string) => {
+		socket.emit("sending_notificationId", id, user._id);
+	};
 
-  const formattedDate = (notification: string) => {
-    return format(new Date(notification), "MMMM d, yyyy").toString();
-  };
+	const formattedDate = (notification: string) => {
+		return format(new Date(notification), "MMMM d, yyyy").toString();
+	};
 
-  useEffect(() => {
-    socket.on("receiving_updatedMarkedNotification", (data: unknown) => {
-      const updatedNotificationData =
-        typeof data === "string" ? JSON.parse(data) : data;
-      dispatch(getNotifications(updatedNotificationData));
-    });
-  }, [socket.id, dispatch]);
+	useEffect(() => {
+		socket.on("receiving_updatedMarkedNotification", (data: unknown) => {
+			const updatedNotificationData =
+				typeof data === "string" ? JSON.parse(data) : data;
+			dispatch(getNotifications(updatedNotificationData));
+		});
+	}, [socket.id, dispatch]);
 
-  const allNotificationRead = notifications.every(
-    (noti: { read: boolean }): boolean => noti.read
-  );
+	const allNotificationRead = notifications.every(
+		(noti: { read: boolean }): boolean => noti.read,
+	);
 
   return (
     <motion.div

@@ -50,16 +50,16 @@ export default function JoiningWorkspaceVerification() {
       try {
         const data = await dispatch(joiningWorkspaceVerification(token));
 
-        if (data?.payload.success) {
-          toast({ title: data.payload.message });
-          handleUserRedirection(data?.payload.workspace?.url);
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          handleAxiosError(error);
-        }
-      }
-    };
-    verifyingTokenToJoinWorkspace();
-  }, [token, user]);
+				if (data?.payload.success) {
+					toast({ title: data.payload.message });
+					handleUserRedirection(data?.payload.workspace?.url);
+				}
+			} catch (error) {
+				if (axios.isAxiosError(error)) {
+					handleAxiosError(error);
+				}
+			}
+		};
+		verifyingTokenToJoinWorkspace();
+	}, [token, user]);
 }

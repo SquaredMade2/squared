@@ -39,49 +39,49 @@ export default function WorkspaceSettings() {
   const index = workspaceList.findIndex((item) => item._id === workspace._id);
   const userHasAccess = access && access.id === user?._id;
 
-  const currentUserRole = workspace.users.find(
-    (u) => u.user === user._id
-  )?.role;
+	const currentUserRole = workspace.users.find(
+		(u) => u.user === user._id,
+	)?.role;
 
-  const deleteOrLeaveBtnLabel =
-    currentUserRole === "owner" ? "Delete this workspace" : "Leave";
+	const deleteOrLeaveBtnLabel =
+		currentUserRole === "owner" ? "Delete this workspace" : "Leave";
 
-  const checkURL = (str: string) => {
-    const trimmedStr = str.trim();
-    if (trimmedStr === "") {
-      return false;
-    }
-    return urlRegex.test(trimmedStr);
-  };
+	const checkURL = (str: string) => {
+		const trimmedStr = str.trim();
+		if (trimmedStr === "") {
+			return false;
+		}
+		return urlRegex.test(trimmedStr);
+	};
 
-  const handleOpen = () => {
-    if (dialogRef.current) {
-      dialogRef.current.showModal();
-    }
-  };
+	const handleOpen = () => {
+		if (dialogRef.current) {
+			dialogRef.current.showModal();
+		}
+	};
 
-  const handleClose = () => {
-    if (dialogRef.current) {
-      dialogRef.current.close();
-    }
-  };
+	const handleClose = () => {
+		if (dialogRef.current) {
+			dialogRef.current.close();
+		}
+	};
 
   const handleDelete = async () => {
     try {
       const actionResult = await dispatch(deleteWorkspace(workspace._id));
       unwrapResult(actionResult);
 
-      setDeletingWorkspace(true);
-      handleClose();
-      toast({ title: "Workspace deleted, redirecting..." });
-    } catch (error) {
-      console.error("Error deleting workspace:", error);
-      toast({
-        title: "Failed to delete workspace. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
+			setDeletingWorkspace(true);
+			handleClose();
+			toast({ title: "Workspace deleted, redirecting..." });
+		} catch (error) {
+			console.error("Error deleting workspace:", error);
+			toast({
+				title: "Failed to delete workspace. Please try again.",
+				variant: "destructive",
+			});
+		}
+	};
 
   const handleUpdate = async (
     e: React.FormEvent<HTMLFormElement>
@@ -108,43 +108,43 @@ export default function WorkspaceSettings() {
     }
   };
 
-  const updateWorkspace = async (name: string, url: string) => {
-    try {
-      await axios({
-        method: "PUT",
-        url: `${process.env.NEXT_PUBLIC_SERVER}/workspace/update`,
-        withCredentials: true,
-        params: {
-          name: name,
-          url: url,
-          id: workspace._id,
-        },
-      });
-    } catch (error) {
-      toast({
-        title: "An error occurred trying to update workspace",
-        variant: "destructive",
-      });
-    }
-  };
+	const updateWorkspace = async (name: string, url: string) => {
+		try {
+			await axios({
+				method: "PUT",
+				url: `${process.env.NEXT_PUBLIC_SERVER}/workspace/update`,
+				withCredentials: true,
+				params: {
+					name: name,
+					url: url,
+					id: workspace._id,
+				},
+			});
+		} catch (error) {
+			toast({
+				title: "An error occurred trying to update workspace",
+				variant: "destructive",
+			});
+		}
+	};
 
-  const handleNavToggle = () => {
-    const navBarValue = !showNavBar;
-    dispatch(navBarToggle(navBarValue));
-  };
+	const handleNavToggle = () => {
+		const navBarValue = !showNavBar;
+		dispatch(navBarToggle(navBarValue));
+	};
 
-  useEffect(() => {
-    if (deletingWorkspace) {
-      setTimeout(() => {
-        if (!workspaceList.length) {
-          router.push("/join");
-        } else {
-          router.push(`workspace/${workspaceList[0].url}`);
-        }
-        setDeletingWorkspace(false);
-      }, 2000);
-    }
-  }, [workspaceList, deletingWorkspace, index]);
+	useEffect(() => {
+		if (deletingWorkspace) {
+			setTimeout(() => {
+				if (!workspaceList.length) {
+					router.push("/join");
+				} else {
+					router.push(`workspace/${workspaceList[0].url}`);
+				}
+				setDeletingWorkspace(false);
+			}, 2000);
+		}
+	}, [workspaceList, deletingWorkspace, index]);
 
   useEffect(() => {
     if (!userHasAccess) {

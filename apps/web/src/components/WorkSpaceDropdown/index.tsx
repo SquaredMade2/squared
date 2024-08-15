@@ -10,11 +10,11 @@ import ProfileImage from "../ProfileImage";
 import { Check } from "lucide-react";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
 import { useToast } from "../ui/use-toast";
@@ -27,9 +27,9 @@ const WorkSpaceDropDown = () => {
     (state) => state.taskData.currentWorkspace
   );
 
-  useEffect(() => {
-    dispatch(getAllWorkspaces());
-  }, [dispatch]);
+	useEffect(() => {
+		dispatch(getAllWorkspaces());
+	}, [dispatch]);
 
   const router = useRouter();
 
@@ -42,27 +42,27 @@ const WorkSpaceDropDown = () => {
     });
   };
 
-  const index: number = allWorkspaces.findIndex(
-    (item) => item._id === currentWorkspace._id
-  );
+	const index: number = allWorkspaces.findIndex(
+		(item) => item._id === currentWorkspace._id,
+	);
 
-  const { toast } = useToast();
+	const { toast } = useToast();
 
-  const handleLogout = async (): Promise<void> => {
-    await signOutHandler();
-    try {
-      const response = await axios({
-        method: "POST",
-        url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
-        withCredentials: true,
-      });
-      dispatch(clearUser());
-      router.push(`${process.env.NEXT_PUBLIC_URL}`);
-      toast({ title: response.data.success });
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
+	const handleLogout = async (): Promise<void> => {
+		await signOutHandler();
+		try {
+			const response = await axios({
+				method: "POST",
+				url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
+				withCredentials: true,
+			});
+			dispatch(clearUser());
+			router.push(`${process.env.NEXT_PUBLIC_URL}`);
+			toast({ title: response.data.success });
+		} catch (error) {
+			console.error("Error during logout:", error);
+		}
+	};
 
   return (
     <DropdownMenu>

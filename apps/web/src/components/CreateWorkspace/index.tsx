@@ -13,12 +13,12 @@ import { Button } from "../ui/button";
 // import { linkTo } from "@storybook/addon-links/*";
 
 const CreateWorkspace = ({
-  onboarding,
-  handleNextPage,
+	onboarding,
+	handleNextPage,
 }: CreateWorkspaceProps) => {
-  const { toast } = useToast();
-  const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
+	const { toast } = useToast();
+	const router = useRouter();
+	const dispatch = useDispatch<AppDispatch>();
 
   const [inputValue, setInputValue] = useState("");
   const [urlInputValue, setUrlInputValue] = useState("");
@@ -32,59 +32,59 @@ const CreateWorkspace = ({
   );
   const user = useSelector((state: RootState) => state.userSettings.user);
 
-  const checkUrl = (str: string) => {
-    const newStr = str.trim();
-    if (newStr === "") {
-      return false;
-    }
-    return urlRegex.test(newStr);
-  };
+	const checkUrl = (str: string) => {
+		const newStr = str.trim();
+		if (newStr === "") {
+			return false;
+		}
+		return urlRegex.test(newStr);
+	};
 
-  const checkName = (str: string) => {
-    const newStr = str.trim();
-    if (newStr === "") {
-      return false;
-    }
-    return nameRegex.test(newStr);
-  };
+	const checkName = (str: string) => {
+		const newStr = str.trim();
+		if (newStr === "") {
+			return false;
+		}
+		return nameRegex.test(newStr);
+	};
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
+	const handleSubmit = async (
+		e: React.FormEvent<HTMLFormElement>,
+	): Promise<void> => {
+		e.preventDefault();
 
-    if (!checkName(inputValue)) {
-      toast({
-        title:
-          "Invalid workspace name. Name must not be empty and follow the format.",
-        variant: "destructive",
-      });
-      return;
-    }
+		if (!checkName(inputValue)) {
+			toast({
+				title:
+					"Invalid workspace name. Name must not be empty and follow the format.",
+				variant: "destructive",
+			});
+			return;
+		}
 
-    const finalWorkspaceUrl: string = (
-      urlInputValue.length > 0 ? urlInputValue : inputValue
-    )
-      .trim()
-      .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/'/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
+		const finalWorkspaceUrl: string = (
+			urlInputValue.length > 0 ? urlInputValue : inputValue
+		)
+			.trim()
+			.toLowerCase()
+			.replace(/&/g, "and")
+			.replace(/'/g, "")
+			.replace(/\s+/g, "-")
+			.replace(/[^a-z0-9-]/g, "");
 
-    if (!checkUrl(finalWorkspaceUrl)) {
-      toast({
-        title:
-          "Invalid workspace URL. URL must be in the format workspace-url-format.",
-        variant: "destructive",
-      });
-      return;
-    }
+		if (!checkUrl(finalWorkspaceUrl)) {
+			toast({
+				title:
+					"Invalid workspace URL. URL must be in the format workspace-url-format.",
+				variant: "destructive",
+			});
+			return;
+		}
 
-    const workspaceData: { name: string; url: string } = {
-      name: inputValue,
-      url: finalWorkspaceUrl,
-    };
+		const workspaceData: { name: string; url: string } = {
+			name: inputValue,
+			url: finalWorkspaceUrl,
+		};
 
     const createWorkspace = await dispatch(addWorkspace(workspaceData));
 
@@ -104,23 +104,23 @@ const CreateWorkspace = ({
     }
   };
 
-  useEffect(() => {
-    const formattedUrlInput = inputValue
-      .trim()
-      .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/'/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
+	useEffect(() => {
+		const formattedUrlInput = inputValue
+			.trim()
+			.toLowerCase()
+			.replace(/&/g, "and")
+			.replace(/'/g, "")
+			.replace(/\s+/g, "-")
+			.replace(/[^a-z0-9-]/g, "");
 
-    setUrlInputValue(formattedUrlInput);
-  }, [inputValue]);
+		setUrlInputValue(formattedUrlInput);
+	}, [inputValue]);
 
-  useEffect(() => {
-    if (!taskDataLoadingState) {
-      user && dispatch(getAllWorkspaces());
-    }
-  }, []);
+	useEffect(() => {
+		if (!taskDataLoadingState) {
+			user && dispatch(getAllWorkspaces());
+		}
+	}, []);
 
   return (
     <div className="h-screen w-full bg-card relative flex flex-col items-center justify-center">
