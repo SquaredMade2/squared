@@ -34,27 +34,25 @@ const FilterSaveForm = ({
 	);
 	const team = useSelector((state: RootState) => state.taskData.currentTeam);
 
-	const handleSaveFilter = async () => {
-		try {
-			await axios({
-				url: `${process.env.NEXT_PUBLIC_SERVER}/filter/create`,
-				method: "POST",
-				data: {
-					filterTitle,
-					filterOption: currentFilters,
-					filterDescription,
-					teamId,
-				},
-			});
-			setShowFilterSaveForm(false);
-			if (redirectToViewsOnCreate) {
-				dispatch(deleteAllCurrentFilters());
-				router.push(
-					`/workspace/${workspace.url}/team/${team.identifier}/views`,
-				);
-			}
-		} catch (err) {}
-	};
+  const handleSaveFilter = async () => {
+    try {
+      await axios({
+        url: `${process.env.NEXT_PUBLIC_SERVER}/filter/create`,
+        method: "POST",
+        data: {
+          filterTitle,
+          filterOption: currentFilters,
+          filterDescription,
+          teamId,
+        },
+      });
+      setShowFilterSaveForm(false);
+      if (redirectToViewsOnCreate) {
+        dispatch(deleteAllCurrentFilters());
+        router.push(`/${workspace.url}/team/${team.identifier}/views`);
+      }
+    } catch (err) {}
+  };
 
 	useEffect(() => {
 		setTaskAttributeTitles(Object.keys(currentFilters));

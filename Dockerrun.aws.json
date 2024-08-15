@@ -1,0 +1,210 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "www",
+            "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 4000,
+                    "containerPort": 3000
+                }
+            ],
+            "environment": [
+                {
+                    "name": "NEXT_PUBLIC_GITHUB_CLIENT_ID",
+                    "value": "squaredenvs:NEXT_PUBLIC_GITHUB_CLIENT_ID"
+                },
+                {
+                    "name": "NEXT_PUBLIC_GITHUB_REDIRECT_URI",
+                    "value": "squaredenvs:NEXT_PUBLIC_GITHUB_REDIRECT_URI"
+                }
+            ]
+        },
+        {
+            "name": "web",
+            "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 3000,
+                    "containerPort": 3000
+                }
+            ],
+            "environment": [
+                {
+                    "name": "NEXT_PUBLIC_SERVER",
+                    "value": "squaredenvs:NEXT_PUBLIC_SERVER"
+                },
+                {
+                    "name": "NEXT_PUBLIC_URL",
+                    "value": "squaredenvs:NEXT_PUBLIC_URL"
+                },
+                {
+                    "name": "NEXT_PUBLIC_CLIENT_ID",
+                    "value": "squaredenvs:NEXT_PUBLIC_CLIENT_ID"
+                },
+                {
+                    "name": "NEXT_PUBLIC_GITHUB_CLIENT_SECRET",
+                    "value": "squaredenvs:NEXT_PUBLIC_GITHUB_CLIENT_SECRET"
+                },
+                {
+                    "name": "GOOGLE_CLIENT_ID",
+                    "value": "squaredenvs:GOOGLE_CLIENT_ID"
+                },
+                {
+                    "name": "GOOGLE_CLIENT_SECRET",
+                    "value": "squaredenvs:GOOGLE_CLIENT_SECRET"
+                },
+                {
+                    "name": "GITHUB_CLIENT_ID",
+                    "value": "squaredenvs:GITHUB_CLIENT_ID"
+                },
+                {
+                    "name": "GITHUB_CLIENT_SECRET",
+                    "value": "squaredenvs:GITHUB_CLIENT_SECRET"
+                },
+                {
+                    "name": "MONGO_URL",
+                    "value": "squaredenvs:MONGO_URL"
+                },
+                {
+                    "name": "JWT_SECRECT",
+                    "value": "squaredenvs:JWT_SECRECT"
+                },
+                {
+                    "name": "PORT",
+                    "value": "squaredenvs:PORT"
+                },
+                {
+                    "name": "NEXTAUTH_SECRET",
+                    "value": "squaredenvs:NEXTAUTH_SECRET"
+                },
+                {
+                    "name": "SENTRY_AUTH_TOKEN",
+                    "value": "squaredenvs:SENTRY_AUTH_TOKEN"
+                }
+            ]
+        },
+        {
+            "name": "api",
+            "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 3001,
+                    "containerPort": 3001
+                }
+            ],
+            "environment": [
+                {
+                    "name": "MONGO_URL",
+                    "value": "squaredenvs:MONGO_URL"
+                },
+                {
+                    "name": "JWT_SECRECT",
+                    "value": "squaredenvs:JWT_SECRECT"
+                },
+                {
+                    "name": "EMAIL_USERNAME",
+                    "value": "squaredenvs:EMAIL_USERNAME"
+                },
+                {
+                    "name": "EMAIL_PASSWORD",
+                    "value": "squaredenvs:EMAIL_PASSWORD"
+                },
+                {
+                    "name": "BASE_URL",
+                    "value": "squaredenvs:BASE_URL"
+                },
+                {
+                    "name": "PORT",
+                    "value": "squaredenvs:PORT"
+                },
+                {
+                    "name": "NODE_ENV",
+                    "value": "squaredenvs:NODE_ENV"
+                },
+                {
+                    "name": "AWS_ACCESS_KEY_ID",
+                    "value": "squaredenvs:AWS_ACCESS_KEY_ID"
+                },
+                {
+                    "name": "AWS_SECRET_ACCESS_KEY",
+                    "value": "squaredenvs:AWS_SECRET_ACCESS_KEY"
+                },
+                {
+                    "name": "AWS_S3_BUCKET",
+                    "value": "squaredenvs:AWS_S3_BUCKET"
+                },
+                {
+                    "name": "AWE_REGION",
+                    "value": "squaredenvs:AWE_REGION"
+                },
+                {
+                    "name": "NEXT_PUBLIC_CONFIRM_URL",
+                    "value": "squaredenvs:NEXT_PUBLIC_CONFIRM_URL"
+                },
+                {
+                    "name": "NEXT_PUBLIC_SERVER",
+                    "value": "squaredenvs:NEXT_PUBLIC_SERVER"
+                },
+                {
+                    "name": "GITHUB_USER_ACCESS_TOKEN",
+                    "value": "squaredenvs:GITHUB_USER_ACCESS_TOKEN"
+                },
+                {
+                    "name": "HOOKDECK_AUTH_TOKEN",
+                    "value": "squaredenvs:HOOKDECK_AUTH_TOKEN"
+                },
+                {
+                    "name": "CLIENT_ID",
+                    "value": "squaredenvs:CLIENT_ID"
+                },
+                {
+                    "name": "SEED_PASSWORD",
+                    "value": "squaredenvs:SEED_PASSWORD"
+                },
+                {
+                    "name": "NGROK_AUTHTOKEN",
+                    "value": "squaredenvs:NGROK_AUTHTOKEN"
+                },
+                {
+                    "name": "GITHUB_APP_ID",
+                    "value": "squaredenvs:GITHUB_APP_ID"
+                },
+                {
+                    "name": "GITHUB_CLIENT_ID",
+                    "value": "squaredenvs:GITHUB_CLIENT_ID"
+                },
+                {
+                    "name": "GITHUB_CLIENT_SECRET",
+                    "value": "squaredenvs:GITHUB_CLIENT_SECRET"
+                },
+                {
+                    "name": "GITHUB_PRIVATE_KEY",
+                    "value": "squaredenvs:GITHUB_PRIVATE_KEY"
+                }
+            ]
+        },
+        {
+            "name": "nginx",
+            "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "environment": []
+        }
+    ],
+    "volumes": [],
+    "networkMode": "bridge"
+}

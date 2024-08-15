@@ -15,6 +15,7 @@ echo "Running Formatting..."
 
 pnpm format:write
 git add .
+git commit --amend --no-edit
 
 # Allow the commit to proceed
 exit 0
