@@ -1,26 +1,11 @@
-import axios from "axios";
+import { useState } from "react";
+import { Calendar } from "lucide-react";
 import { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
-import { inProgress } from "../Svg";
 import {
-	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { getSingleTask } from "@/store/task/thunks";
-import { statusOptions } from "@/constants/designations";
-import { getAllTasks } from "@/store/taskData/thunks";
-import { toast } from "react-toastify";
-import {
-	Calendar,
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleX,
-	Copy,
-} from "lucide-react";
-import { useState } from "react";
 import DateDropdown from "../DateDropdown";
 
 const styles = {
@@ -30,10 +15,6 @@ const styles = {
 
 const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({ task }) => {
 	const [showDropdown, setShowDropdown] = useState(true);
-
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-
-	const dispatch = useAppDispatch();
 
 	const handleButtonClick = () => {
 		setShowDropdown(!showDropdown);

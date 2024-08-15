@@ -1,3 +1,5 @@
+import axios from "axios";
+import { Tag } from "lucide-react";
 import { LabelSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import {
 	ContextMenuItem,
@@ -7,14 +9,11 @@ import {
 } from "../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType, Labels } from "@/interfaces/event.interfaces";
-import axios from "axios";
 import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { setLabels, setPriority } from "@/store/taskData";
-import { labelOptions, priorityOptions } from "@/constants/designations";
+import { labelOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { LabelColor } from "../LabelButton";
-import { Tag } from "lucide-react";
 
 const styles = {
 	contentWrapper: "",
@@ -32,7 +31,6 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 		author,
 		storeCommonFields,
 		storeType,
-		storeTaskLabels,
 		updateTaskLabels,
 	} = useLogTaskEvent();
 

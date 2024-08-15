@@ -1,3 +1,4 @@
+import { UserSearch } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
 	ContextMenuItem,
@@ -15,7 +16,6 @@ import {
 } from "@/app/interfaces/Tasks.interfaces";
 import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { getSingleTask } from "@/store/task/thunks";
-import { UserSearch } from "lucide-react";
 
 const styles = {
 	contentWrapper: "",

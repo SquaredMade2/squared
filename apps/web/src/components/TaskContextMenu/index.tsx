@@ -1,3 +1,8 @@
+import Link from "next/link";
+import {
+	// Calendar, Star, // Not used yet
+	Trash,
+} from "lucide-react";
 import {
 	ContextMenuContent,
 	ContextMenuItem,
@@ -10,35 +15,25 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { TaskContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import LabelSubContextMenu from "../LabelSubContextMenu";
 import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
-import {
-	// Calendar, Star, // Not used yet
-	Trash,
-} from "lucide-react";
 import DateSubContextMenu from "../DateSubContextMenu";
-import Link from "next/link";
 import RenameSubContextMenu from "../RenameSubContextMenu";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	task,
-    // Keep here for future
+    // Keep below here for future
 	setIsCopied,
 	copyToClipboard,
 }) => {
 	const dispatch = useAppDispatch();
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-	const styles = {
-		contentWrapper: ``,
-		centerIcon: `text-danger mr-2`,
-	};
 
 	const deleteCurrentTask = async () => {
-		console.log("done in deletecurrenttask");
 		await dispatch(deleteTask(task._id));
 		await dispatch(getAllTasks(currentTeam));
 	};
 
 	return (
-		<ContextMenuContent className={styles.contentWrapper}>
+		<ContextMenuContent>
 			<StatusSubContextMenu task={task} />
 
 			<AssigneeSubContextMenu task={task} />
@@ -54,7 +49,7 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 			<ContextMenuSeparator />
 			{/*  No Subscribe feature yet
 			<ContextMenuItem>
-				<div className={styles.centerIcon}>
+				<div className='text-danger mr-2'>
 					<Star className="size-4"/>
 				</div>
 				Subscribe
@@ -67,7 +62,7 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 			<ContextMenuSeparator />
 
 			<ContextMenuItem onClick={deleteCurrentTask}>
-				<div className={styles.centerIcon}>
+				<div className='text-danger mr-2'>
 					<Trash className="size-4" />
 				</div>
 				Delete

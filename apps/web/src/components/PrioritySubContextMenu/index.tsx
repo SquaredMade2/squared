@@ -1,3 +1,5 @@
+import axios from "axios";
+import { CircleAlert, Ellipsis } from "lucide-react";
 import { PrioritySubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import {
 	ContextMenuItem,
@@ -7,14 +9,12 @@ import {
 } from "../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
-import axios from "axios";
 import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setPriority } from "@/store/taskData";
 import { priorityOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { high, low, medium } from "../Svg";
-import { CircleAlert, Ellipsis } from "lucide-react";
 
 const styles = {
 	contentWrapper: "",
@@ -34,7 +34,6 @@ const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
 		storeType,
 		storeTaskValue,
 		updateTaskValue,
-		taskEvent,
 	} = useLogTaskEvent();
 
 	const logEvent = (newPriority: string) => {
