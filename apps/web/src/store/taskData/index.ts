@@ -44,7 +44,7 @@ const initialState: TaskDataState = {
 		identifier: "",
 		priority: null,
 		labels: [],
-		dueDate: null,
+		dueDate: undefined,
 		effortEstimate: null,
 		description: "",
 		team: null as unknown as Team,
