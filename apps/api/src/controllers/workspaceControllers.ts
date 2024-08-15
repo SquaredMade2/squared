@@ -471,7 +471,7 @@ const workspaceExists = async (
 ) => {
 	const { url } = req.query;
 	const exists = await Workspace.findOne({ url });
-	res.status(200).json(!!exists) 
+	res.status(200).json(!!exists);
 };
 
 const updateUserRoles = async (

@@ -113,47 +113,49 @@ export const addWorkspace = createAsyncThunk<
 			.replace(/[^a-zA-Z0-9]/g, "")
 			.slice(0, 3)
 			.toUpperCase();
-		// Check if the workspace already exists	
-			try {
-				const exists = await dispatch(workspaceExists(workspace.url)).unwrap();
-				console.log(exists)
-				if (exists) {
-					return rejectWithValue('A workspace with this name alreaddy exists')
-				}
-				const userData = getState().userSettings.user;
-				// Create the new workspace
-				const { data } = await axios.post(
-					`${process.env.NEXT_PUBLIC_SERVER}/workspace/create`,
-					{
-						name: workspace.name,
-						url: workspace.url,
-						companySize: 10,
-						users: userData._id,
-						username: userData.name,
-					},
-					{
-						withCredentials: true,
-					}
-				);
-				// Create a team for the new workspace
-				await dispatch(createTeam({
+		// Check if the workspace already exists
+		try {
+			const exists = await dispatch(workspaceExists(workspace.url)).unwrap();
+			console.log(exists);
+			if (exists) {
+				return rejectWithValue("A workspace with this name alreaddy exists");
+			}
+			const userData = getState().userSettings.user;
+			// Create the new workspace
+			const { data } = await axios.post(
+				`${process.env.NEXT_PUBLIC_SERVER}/workspace/create`,
+				{
+					name: workspace.name,
+					url: workspace.url,
+					companySize: 10,
+					users: userData._id,
+					username: userData.name,
+				},
+				{
+					withCredentials: true,
+				},
+			);
+			// Create a team for the new workspace
+			await dispatch(
+				createTeam({
 					name: workspace.name,
 					identifier,
 					workspaceId: data.workspace._id,
-				}));
-				// Refresh the list of all workspaces
-				dispatch(getAllWorkspaces());
+				}),
+			);
+			// Refresh the list of all workspaces
+			dispatch(getAllWorkspaces());
 
-				return data.workspace;
-			} catch (error) {
-				if (error instanceof AxiosError) {
-					return rejectWithValue(error.response?.data);
-				}
-				if (error instanceof Error) {
-					return rejectWithValue(error.message);
-				}
-				return rejectWithValue("An unknown error occurred ");
+			return data.workspace;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				return rejectWithValue(error.response?.data);
 			}
+			if (error instanceof Error) {
+				return rejectWithValue(error.message);
+			}
+			return rejectWithValue("An unknown error occurred ");
+		}
 	},
 );
 
@@ -435,24 +437,25 @@ export const workspaceExists = createAsyncThunk(
 	"taskData/workspaceExists",
 	async (url: string, { rejectWithValue }) => {
 		try {
-			const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER}/workspace/exists`, {
-                withCredentials: true,
-                params: { url },
-            });
+			const { data } = await axios.get(
+				`${process.env.NEXT_PUBLIC_SERVER}/workspace/exists`,
+				{
+					withCredentials: true,
+					params: { url },
+				},
+			);
 
-			return data; 
+			return data;
 		} catch (error) {
-			
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 404) {
-					console.log('thats 404')
+					console.log("thats 404");
 					return false;
 				}
 
 				return rejectWithValue(error.response?.data);
 			}
 			if (error instanceof Error) {
-			
 				return rejectWithValue(error.message);
 			}
 			return rejectWithValue("An unknown error occurred");
