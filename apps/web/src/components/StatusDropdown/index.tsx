@@ -10,6 +10,7 @@ import type { StatusDropdownProps } from "./StatusDropdown.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 const StatusDropdown = ({
 	handleButtonClick,
@@ -18,6 +19,7 @@ const StatusDropdown = ({
 	location,
 }: StatusDropdownProps) => {
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 
 	const newIssueStatus = useAppSelector((state) => state.taskData.status);
@@ -64,7 +66,12 @@ const StatusDropdown = ({
 					},
 				);
 				dispatch(getSingleTask(taskId as string));
-			} catch (err) {}
+			} catch (err) {
+				toast({
+					title: "Error updating status",
+					variant: "destructive",
+				});
+			}
 		}
 	};
 

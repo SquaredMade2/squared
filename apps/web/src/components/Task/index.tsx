@@ -11,6 +11,8 @@ import { getSingleTask } from "@/store/task/thunks";
 import { getTaskComments, getTaskEventLog } from "@/store/events/actions";
 import { ActionType } from "@/store/events/events.actionTypes";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
+import { useToast } from "../ui/use-toast";
+import { formatUrl } from "@/utils/formatting";
 
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const [render, setRender] = useState(false);
@@ -23,17 +25,22 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const navbarToggled = useAppSelector(
 		(state) => state.userSettings.showNavBar,
 	);
-
+	const taskList = useAppSelector((state) => state.taskData.taskList);
+	const taskPageId = useAppSelector((state) => state.taskData.taskPage._id);
 	const showBackdrop = showSideNav || navbarToggled;
 	const dispatch = useAppDispatch();
-	const { taskId } = useParams();
+	const { toast } = useToast();
+	const { taskName } = useParams();
+
 	const sideNav = useRef(null);
 	const svgRef = useRef(null);
 
 	const currentTaskId = useAppSelector(
 		(state) => state.currentTask.currentTaskId,
 	);
-	const dataForDispatch = taskId || currentTaskId;
+	const taskId = taskList.find((el) => formatUrl(el.title) === taskName)?._id;
+
+	const dataForDispatch = taskId || taskPageId || currentTaskId;
 
 	const toggleNav = () => {
 		setShowSideNav(!showSideNav);
@@ -41,9 +48,16 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 
 	useEffect(() => {
 		if (dataForDispatch) {
-			dispatch(getTaskComments(dataForDispatch as string));
-			dispatch(getSingleTask(dataForDispatch as string));
-			dispatch(getTaskEventLog(dataForDispatch as string));
+			try {
+				dispatch(getTaskComments(dataForDispatch as string));
+				dispatch(getSingleTask(dataForDispatch as string));
+				dispatch(getTaskEventLog(dataForDispatch as string));
+			} catch (error) {
+				toast({
+					title: "An unexpected error occured",
+					variant: "destructive",
+				});
+			}
 		}
 		return () => {
 			dispatch(setGetSingleTaskError(false));

@@ -4,7 +4,6 @@ import { createContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
 import { setUser } from "@/store/userSettings";
 import type { RootState } from "@/store";
 import type { AuthProviderProps } from "./AuthProvider.interfaces";

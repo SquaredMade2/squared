@@ -23,6 +23,7 @@ import {
 import { DAYS_OF_WEEK } from "@/constants/app_constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getAllTasks } from "@/store/taskData/thunks";
+import { useToast } from "../ui/use-toast";
 
 const DateDropdown: React.FC<DateDropdownProps> = ({
 	handleButtonClick,
@@ -31,6 +32,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 	injectedTaskId,
 }) => {
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 	const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
@@ -95,7 +97,13 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 			location === "contextMenu"
 				? dispatch(getAllTasks(currentTeam))
 				: dispatch(getSingleTask(taskId as string));
-		} catch (err) {}
+		} catch (err) {
+			toast({
+				title: "Error",
+				description: "Failed to update due date",
+				variant: "destructive",
+			});
+		}
 	};
 
 	const days = eachDayOfInterval({
@@ -180,7 +188,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 				<div className="mt-10 flex justify-end gap-3">
 					<button
 						type="button"
-						className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border bg-popover"
+						className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border"
 						onClick={handleClickAway}
 					>
 						Cancel

@@ -27,12 +27,8 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 
 	const newIssueLabels = useAppSelector((state) => state.taskData.labels);
 
-	const {
-		author,
-		storeCommonFields,
-		storeType,
-		updateTaskLabels,
-	} = useLogTaskEvent();
+	const { author, storeCommonFields, storeType, updateTaskLabels } =
+		useLogTaskEvent();
 
 	const renderLabelIcon = (label: string) => {
 		switch (label) {

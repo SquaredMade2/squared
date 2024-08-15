@@ -16,6 +16,7 @@ import type {
 	HandleAssigneeChange,
 } from "@/app/interfaces/Tasks.interfaces";
 import type { DesignationsContainerProps } from "./DesignationsContainer.interfaces";
+import { useToast } from "../ui/use-toast";
 
 export const setBackgroundColor = (theme: string) => {
 	if (theme === "light") {
@@ -43,6 +44,7 @@ const generateItemContainer = (
 
 const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 	const task = useAppSelector((state) => state.singleTask.data);
 	const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
@@ -54,15 +56,34 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 	const assigneeParams: AssigneeParams = (taskId, user) => {
 		dispatch(getAllTasks(currentTeam));
 		if (task !== undefined) {
-			dispatch(getSingleTask(task._id));
+			try {
+				dispatch(getSingleTask(task._id));
+			} catch (error) {
+				toast({
+					title: "Error",
+					description: "Failed to get task",
+					variant: "destructive",
+				});
+			}
 		}
-		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
+		return {
+			taskId: taskId,
+			assignee: { id: user.id, name: user.name },
+		};
 	};
 
 	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
 		dispatch(setAssignee(assigneeParams(taskId, user)));
 		if (task !== undefined) {
-			dispatch(getSingleTask(task._id));
+			try {
+				dispatch(getSingleTask(task._id));
+			} catch (error) {
+				toast({
+					title: "Error",
+					description: "Failed to get task",
+					variant: "destructive",
+				});
+			}
 		}
 		await dispatch(getAllTasks(currentTeam));
 	};

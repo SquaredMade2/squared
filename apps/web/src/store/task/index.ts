@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { getSingleTask } from "@/store/task/thunks";
-import { toast } from "react-toastify";
 import type { Assignee } from "../taskData/taskData.interfaces";
+import { useToast } from "@/components/ui/use-toast";
 
 export interface TaskInitialState {
 	isLoading: boolean;
@@ -55,10 +55,9 @@ const singleTask = createSlice({
 				},
 			)
 			.addCase(getSingleTask.rejected, (state, action) => {
-				console.error(action.payload);
-				toast.error("could not get task");
 				state.isLoading = false;
 				state.isError = true;
+				throw new Error(action.error.message);
 			});
 	},
 });

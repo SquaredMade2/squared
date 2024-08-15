@@ -1,6 +1,6 @@
+import { useToast } from "@/components/ui/use-toast";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { Octokit } from "octokit";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
@@ -78,8 +78,8 @@ export const getListOfUsers = async (id: string) => {
 			},
 		});
 		return data;
-	} catch (err) {
-		toast.error("Could not get list of users");
+	} catch (error) {
+		console.error(error instanceof Error ? error.message : error);
 	}
 };
 
@@ -95,8 +95,7 @@ export const verifyUser = async (token: string) => {
 		});
 		return data;
 	} catch (error) {
-		console.error(error);
-		toast.error("Could not find user to verify");
+		console.error(error instanceof Error ? error.message : error);
 	}
 };
 

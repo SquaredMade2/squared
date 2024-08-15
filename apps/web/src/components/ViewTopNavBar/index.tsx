@@ -46,7 +46,7 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 	const handleNewView = (): void => {
 		dispatch(deleteAllCurrentFilters());
 		router.push(
-			`/workspace/${currentWorkspace.url}/${currentTeam.identifier}/views/new`,
+			`/workspace/${currentWorkspace.url}/team/${currentTeam.identifier}/views/new`,
 		);
 	};
 

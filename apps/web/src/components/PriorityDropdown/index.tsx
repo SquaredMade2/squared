@@ -10,6 +10,7 @@ import type { PriorityDropdownProps } from "@/components/PriorityDropdown/Priori
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 const PriorityDropdown = ({
 	handleButtonClick,
@@ -18,6 +19,7 @@ const PriorityDropdown = ({
 	handleClickAway,
 }: PriorityDropdownProps) => {
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 	const newIssuePriority = useAppSelector((state) => state.taskData.priority);
 	const sidebarPriority = useAppSelector(
 		(state) => state.singleTask.data?.priority,
@@ -68,7 +70,12 @@ const PriorityDropdown = ({
 					},
 				);
 				dispatch(getSingleTask(taskId as string));
-			} catch (err) {}
+			} catch (err) {
+				toast({
+					title: "Error updating priority",
+					variant: "destructive",
+				});
+			}
 		}
 	};
 

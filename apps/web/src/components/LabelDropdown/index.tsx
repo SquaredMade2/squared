@@ -12,6 +12,7 @@ import type { LabelDropdownProps } from "./LabelDropdown.interfaces";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType, type Labels } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 export default function LabelDropdown({
 	labelOptions,
@@ -20,6 +21,7 @@ export default function LabelDropdown({
 	handleClickAway,
 }: LabelDropdownProps) {
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 
 	const newIssueLabels = useSelector(
 		(state: RootState) => state.taskData.labels,
@@ -85,7 +87,12 @@ export default function LabelDropdown({
 					},
 				);
 				dispatch(getSingleTask(taskId));
-			} catch (err) {}
+			} catch (err) {
+				toast({
+					title: "Error updating labels",
+					variant: "destructive",
+				});
+			}
 		}
 	};
 

@@ -7,6 +7,7 @@ import { getSingleTask } from "@/store/task/thunks";
 import { effortEstimateOptions } from "@/constants/designations";
 import type { EffortEstimateDropdownProps } from "@/components/EffortEstimateDropdown/EffortEstimateDropdown.interfaces";
 import ProgressBar from "@/components/ProgressBar";
+import { useToast } from "../ui/use-toast";
 
 const EffortEstimateDropdown = ({
 	location,
@@ -16,6 +17,7 @@ const EffortEstimateDropdown = ({
 }: EffortEstimateDropdownProps) => {
 	//const { taskId }: { taskId: string } = useParams();
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 	const newIssueEffortEstimate = useAppSelector(
 		(state) => state.taskData.effortEstimate,
@@ -45,7 +47,12 @@ const EffortEstimateDropdown = ({
 				},
 			);
 			dispatch(getSingleTask(taskId as string));
-		} catch (err) {}
+		} catch (err) {
+			toast({
+				title: "Error updating effort estimate",
+				variant: "destructive",
+			});
+		}
 	};
 
 	return (

@@ -20,7 +20,7 @@ import RenameSubContextMenu from "../RenameSubContextMenu";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	task,
-    // Keep below here for future
+	// Keep below here for future
 	setIsCopied,
 	copyToClipboard,
 }) => {
@@ -62,7 +62,7 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 			<ContextMenuSeparator />
 
 			<ContextMenuItem onClick={deleteCurrentTask}>
-				<div className='text-danger mr-2'>
+				<div className="text-danger mr-2">
 					<Trash className="size-4" />
 				</div>
 				Delete

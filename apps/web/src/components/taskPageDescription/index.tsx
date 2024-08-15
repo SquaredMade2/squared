@@ -11,9 +11,11 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
+import { useToast } from "../ui/use-toast";
 
 const TaskPageDescription = () => {
 	const dispatch = useAppDispatch();
+	const { toast } = useToast();
 	const description = useSelector(
 		(state: RootState) => state.singleTask.data?.description,
 	);
@@ -64,7 +66,15 @@ const TaskPageDescription = () => {
 					updatedTaskDescription._id,
 					user._id,
 				);
-			} catch (err) {}
+			} catch (err) {
+				if (err instanceof Error) {
+					toast({
+						title: "Error updating description",
+						description: err?.message,
+						variant: "destructive",
+					});
+				}
+			}
 		}
 	};
 

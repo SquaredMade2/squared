@@ -465,6 +465,7 @@ export const workspaceExists = createAsyncThunk(
 					url,
 				},
 			});
+
 			//fix have to do better error handling here -- https://linear.app/project-tasklist/issue/PRO-736/error-handling-bug-addworkspace-and-workspaceexists
 
 			return exists;

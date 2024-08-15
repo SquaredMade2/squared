@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -35,12 +35,13 @@ import type { OnChangeHandlerFunc } from "react-mentions";
 import { Button } from "../ui/button";
 
 const NewIssueModal = () => {
+	const { toast } = useToast();
 	const dispatch = useAppDispatch();
 	const showNewIssue = useSelector(
 		(state: RootState) => state.showNewIssue.isOpen,
 	);
 	const authorId = useSelector(
-		(state: RootState) => state.userSettings.user._id,
+		(state: RootState) => state.userSettings.user?._id,
 	);
 
 	const {
@@ -51,7 +52,10 @@ const NewIssueModal = () => {
 		dueDate,
 		effortEstimate,
 		currentWorkspace,
+		taskList,
 	} = useSelector((state: RootState) => state.taskData);
+
+	const taskListTitle = taskList.map((el) => el.title);
 	const [titleInput, setTitleInput] = useState("");
 	const [descriptionInput, setDescriptionInput] = useState("");
 	const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>([]);
@@ -139,8 +143,16 @@ const NewIssueModal = () => {
 
 	const handleCreateIssue = async () => {
 		if (titleInput.replace(/\s+/g, "").length === 0) {
-			toast.warn("Please Enter a Title!", {
-				autoClose: 2500,
+			toast({
+				title: "Please Enter a Title!",
+				variant: "destructive",
+			});
+			return;
+		}
+		if (taskListTitle.includes(titleInput)) {
+			toast({
+				title: `${titleInput} already exists`,
+				variant: "destructive",
 			});
 			return;
 		}

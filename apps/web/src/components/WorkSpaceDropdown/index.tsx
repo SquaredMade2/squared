@@ -1,7 +1,6 @@
 import axios from "axios";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { getAllWorkspaces } from "@/store/taskData/thunks";
@@ -18,6 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
+import { useToast } from "../ui/use-toast";
 
 const WorkSpaceDropDown = () => {
 	const dispatch = useAppDispatch();
@@ -32,12 +32,10 @@ const WorkSpaceDropDown = () => {
 	}, [dispatch]);
 
 	const router = useRouter();
-	const workspaceUrl = currentWorkspace.url;
 
 	const workspaceSettings = (workspaceSettingsOption: string) => {
-		return `/workspace/${workspaceUrl}/settings/${workspaceSettingsOption}`;
+		return `/settings/${workspaceSettingsOption}`;
 	};
-
 	const signOutHandler = async () => {
 		await signOut({ redirect: false }).then(() => {
 			router.push("/login");
@@ -47,6 +45,8 @@ const WorkSpaceDropDown = () => {
 	const index: number = allWorkspaces.findIndex(
 		(item) => item._id === currentWorkspace._id,
 	);
+
+	const { toast } = useToast();
 
 	const handleLogout = async (): Promise<void> => {
 		await signOutHandler();
@@ -58,7 +58,7 @@ const WorkSpaceDropDown = () => {
 			});
 			dispatch(clearUser());
 			router.push(`${process.env.NEXT_PUBLIC_URL}`);
-			toast.success(response.data.success);
+			toast({ title: response.data.success });
 		} catch (error) {
 			console.error("Error during logout:", error);
 		}
@@ -82,7 +82,7 @@ const WorkSpaceDropDown = () => {
 			<DropdownMenuContent className="w-[265px]">
 				{allWorkspaces.map((workspace, index) => (
 					<Link
-						href={`/workspace/${workspace.url}`}
+						href={`/${workspace.url}`}
 						className="py-1.5 text-popover-foreground flex items-center hover:bg-accent rounded text-sm font-medium cursor-default justify-start"
 						key={workspace._id}
 					>

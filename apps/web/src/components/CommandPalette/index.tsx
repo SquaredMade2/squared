@@ -9,13 +9,14 @@ import { setIsCmdPalette } from "@/store/isCmdPalette";
 import { setTaskPage } from "@/store/taskData";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import { Search } from "lucide-react";
+import { formatUrl } from "@/utils/formatting";
 
 const CommandPalette = () => {
 	const dispatch = useAppDispatch();
 
 	const { isCmdPalette } = useAppSelector((state) => state.isCmdPalette);
 	const taskList = useAppSelector((state) => state.taskData.taskList);
-
+	const { currentTeam } = useAppSelector((state) => state.taskData);
 	const [query, setQuery] = useState("");
 
 	const filteredTaskTitle = query
@@ -29,7 +30,9 @@ const CommandPalette = () => {
 		dispatch(setIsCmdPalette(false));
 		// setTaskPage should be set to getSingleTask
 		dispatch(setTaskPage(task));
-		router.push(`/tasks/${task._id}`);
+		router.push(
+			`/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`,
+		);
 	};
 
 	useEffect(() => {

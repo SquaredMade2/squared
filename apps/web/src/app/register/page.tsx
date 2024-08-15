@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { SqLogo } from "@/components/Svg";
 import { Eye, EyeOff } from "lucide-react";
@@ -18,7 +18,7 @@ export default function RegisterUser() {
 	const handlePushLogin = () => {
 		router.push("/login");
 	};
-
+	const { toast } = useToast();
 	const registerUser = async (
 		e: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
@@ -34,36 +34,19 @@ export default function RegisterUser() {
 				});
 
 			if (data.error) {
-				toast.error(data.error, {
-					position: "top-center",
-					autoClose: 2000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "colored",
-				});
+				toast({ title: data.error, variant: "destructive" });
 			} else {
 				setData({
 					name: "",
 					email: "",
 					password: "",
 				});
-				toast.success(data.message, {
-					position: "top-center",
-					autoClose: 2000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "colored",
-				});
+				toast({ title: data.message });
 				router.push("/login");
 			}
 		} catch (error) {
-			if (error instanceof Error) toast.error(error.message);
+			if (error instanceof Error)
+				toast({ title: error.message, variant: "destructive" });
 		}
 	};
 
