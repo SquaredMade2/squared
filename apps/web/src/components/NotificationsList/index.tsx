@@ -9,20 +9,22 @@ import { useDispatch } from "react-redux";
 import type { NotificationProps } from "@/store/notifications";
 import { motion } from "framer-motion";
 import type { NotificationListProps } from "./NotificationsList.interfaces";
+import { formatUrl } from "@/utils/formatting";
 
 function NotificationsList({
 	setShowNotification,
 	showNotification,
 	notificationButtonRef,
 }: NotificationListProps) {
-	const notifications = useAppSelector(
-		(state) => state.notifications.notifications,
-	);
-	const notificationRef = useRef<HTMLDivElement>(null);
-	const user = useAppSelector((state) => state.userSettings.user);
-	const dispatch = useDispatch();
-	const socket = useContext(SocketContext);
-	const { theme } = useAppSelector((state) => state.userSettings);
+  const notifications = useAppSelector(
+    (state) => state.notifications.notifications
+  );
+  const { currentTeam } = useAppSelector((state) => state.taskData);
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const user = useAppSelector((state) => state.userSettings.user);
+  const dispatch = useDispatch();
+  const socket = useContext(SocketContext);
+  const { theme } = useAppSelector((state) => state.userSettings);
 
 	const summarizeInputText = (text: string, maxWords: number): string => {
 		if (!text) {
@@ -95,96 +97,97 @@ function NotificationsList({
 		(noti: { read: boolean }): boolean => noti.read,
 	);
 
-	return (
-		<motion.div
-			initial={{ opacity: 0, scale: 0.9 }}
-			animate={{ opacity: 1, scale: 1 }}
-			exit={{ opacity: 0, scale: 0.9 }}
-			transition={{ duration: 0.2 }}
-			ref={notificationRef}
-			className={`flex flex-col gap-2 p-4 rounded-xl absolute top-4 right-2 z-10 w-[466px] overflow-y-auto ${
-				theme === "light" ? "bg-[#FFFFFF] shadow-lg " : "bg-[#0d1220ee]"
-			} ${notifications.length > 0 ? "h-[500px]" : "h-[250px]"}`}
-		>
-			<div className="flex justify-between items-center">
-				<div className="flex items-center gap-2">
-					<Bell
-						className={`size-5 ${
-							theme === "dark" ? "text-[#EEEFFC]" : "text-[#3C4149]"
-						}`}
-					/>
-					<span className="text-foreground">Notifications</span>
-				</div>
-				<div className="flex items-center gap-1">
-					<button
-						type="button"
-						onClick={handleMarkAllRead}
-						className="text-muted-foreground cursor-pointer"
-					>
-						Mark all as read
-					</button>
-					<Check
-						className={`size-5 ${allNotificationRead ? "text-[limegreen]" : ""}`}
-					/>
-				</div>
-			</div>
-			{notifications.length > 0 ? (
-				notifications.map((noti: NotificationProps) =>
-					noti.task.map(
-						(t: { title: string; description: string; _id: string }) => (
-							<div
-								key={`${noti._id}`}
-								className={`${handleConfirmedNotificationColor(
-									noti.read,
-									theme,
-								)} flex flex-col p-2 gap-2 rounded-xl w-full`}
-							>
-								<div className="flex justify-between items-center">
-									<p className="text-foreground">
-										{summarizeInputText(t.title, 5)}
-									</p>
-									<p className="text-[#555776]">
-										{formattedDate(noti.createdAt)}
-									</p>
-								</div>
-								<p className="text-[#ACAFCE]">
-									{summarizeInputText(t.description, 8)}
-								</p>
-								<div className="flex justify-between items-center text-[#9CA6C9]">
-									<div className="flex items-center gap-1">
-										<button
-											type="button"
-											onClick={() => handleMarkRead(noti._id)}
-											className="cursor-pointer"
-										>
-											Mark as read
-										</button>
-										<button
-											type="button"
-											className="cursor-pointer"
-											onClick={() => handleRemoveNotification(t._id)}
-										>
-											<Trash2 className="size-4" />
-										</button>
-									</div>
-									<Link
-										onClick={() => handleMarkRead(noti._id)}
-										href={`${process.env.NEXT_PUBLIC_URL}/tasks/${t._id}`}
-									>
-										Details &rarr;
-									</Link>
-								</div>
-							</div>
-						),
-					),
-				)
-			) : (
-				<p className="text-center text-2xl my-auto text-foreground">
-					No Notifications
-				</p>
-			)}
-		</motion.div>
-	);
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.2 }}
+      ref={notificationRef}
+      className={`flex flex-col gap-2 p-4 rounded-xl absolute top-4 right-2 z-10 w-[466px] overflow-y-auto ${
+        theme === "light" ? "bg-[#FFFFFF] shadow-lg " : "bg-[#0d1220ee]"
+      } ${notifications.length > 0 ? "h-[500px]" : "h-[250px]"}`}
+    >
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <Bell
+            className={`size-5 ${
+              theme === "dark" ? "text-[#EEEFFC]" : "text-[#3C4149]"
+            }`}
+          />
+          <span className="text-foreground">Notifications</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleMarkAllRead}
+            className="text-muted-foreground cursor-pointer"
+          >
+            Mark all as read
+          </button>
+          <Check
+            className={`size-5 ${allNotificationRead ? "text-[limegreen]" : ""}`}
+          />
+        </div>
+      </div>
+      {notifications.length > 0 ? (
+        notifications.map((noti: NotificationProps) =>
+          noti.task.map(
+            (t: { title: string; description: string; _id: string }) => (
+              <div
+                key={`${noti._id}`}
+                className={`${handleConfirmedNotificationColor(
+                  noti.read,
+                  theme
+                )} flex flex-col p-2 gap-2 rounded-xl w-full`}
+              >
+                <div className="flex justify-between items-center">
+                  <p className="text-foreground">
+                    {summarizeInputText(t.title, 5)}
+                  </p>
+                  <p className="text-[#555776]">
+                    {formattedDate(noti.createdAt)}
+                  </p>
+                </div>
+                <p className="text-[#ACAFCE]">
+                  {summarizeInputText(t.description, 8)}
+                </p>
+                <div className="flex justify-between items-center text-[#9CA6C9]">
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleMarkRead(noti._id)}
+                      className="cursor-pointer"
+                    >
+                      Mark as read
+                    </button>
+                    <button
+                      title="button"
+                      type="button"
+                      className="cursor-pointer"
+                      onClick={() => handleRemoveNotification(t._id)}
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                  <Link
+                    onClick={() => handleMarkRead(noti._id)}
+                    href={`/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(t.title)}`}
+                  >
+                    Details &rarr;
+                  </Link>
+                </div>
+              </div>
+            )
+          )
+        )
+      ) : (
+        <p className="text-center text-2xl my-auto text-foreground">
+          No Notifications
+        </p>
+      )}
+    </motion.div>
+  );
 }
 
 export default NotificationsList;

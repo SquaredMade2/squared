@@ -3,11 +3,11 @@ import axios from "axios";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { Combobox } from "@headlessui/react";
 import { setEffortEstimate } from "@/store/taskData";
+import { getSingleTask } from "@/store/task/thunks";
 import { effortEstimateOptions } from "@/constants/designations";
 import type { EffortEstimateDropdownProps } from "@/components/EffortEstimateDropdown/EffortEstimateDropdown.interfaces";
 import ProgressBar from "@/components/ProgressBar";
 import { useToast } from "../ui/use-toast";
-import { useSquaredStore } from "@/storeZ/provider";
 
 const EffortEstimateDropdown = ({
 	location,
@@ -15,8 +15,8 @@ const EffortEstimateDropdown = ({
 	handleButtonClick,
 	handleClickAway,
 }: EffortEstimateDropdownProps) => {
+	//const { taskId }: { taskId: string } = useParams();
 	const dispatch = useAppDispatch();
-	const { getTask } = useSquaredStore((state) => state.tasks);
 	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 	const newIssueEffortEstimate = useAppSelector(
@@ -46,7 +46,7 @@ const EffortEstimateDropdown = ({
 					effortEstimate: newEffortEstimate,
 				},
 			);
-			taskId && (await getTask(taskId));
+			dispatch(getSingleTask(taskId as string));
 		} catch (err) {
 			toast({
 				title: "Error updating effort estimate",

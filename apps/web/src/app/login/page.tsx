@@ -123,11 +123,10 @@ export default function Login() {
         const actionResult = await dispatch(getUser());
         const userData = actionResult.payload as LocalUser;
         if (userData?.on_boarding && userData.workspaces.length) {
-          router.replace(`${process.env.NEXT_PUBLIC_URL}/workspace/${userData.workspaces[0].url}`);
-        } else if (
-          userData?.on_boarding &&
-          !userData.workspaces.length
-        ) {
+          router.replace(
+            `${process.env.NEXT_PUBLIC_URL}/${userData.workspaces[0].url}`
+          );
+        } else if (userData?.on_boarding && !userData.workspaces.length) {
           router.push("/join");
         } else if (userData && !userData.on_boarding) {
           router.push("/onboarding");

@@ -20,17 +20,17 @@ const CreateWorkspace = ({
 	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
 
-	const [inputValue, setInputValue] = useState("");
-	const [urlInputValue, setUrlInputValue] = useState("");
-	const urlRegex = /^[a-z0-9-]*$/;
-	const nameRegex = /^[a-zA-Z0-9-& ']+$/;
-	const workspaceList = useSelector(
-		(state: RootState) => state.taskData.workspaces,
-	);
-	const taskDataLoadingState = useSelector(
-		(state: RootState) => state.taskData.isLoading,
-	);
-	const user = useSelector((state: RootState) => state.userSettings.user);
+  const [inputValue, setInputValue] = useState("");
+  const [urlInputValue, setUrlInputValue] = useState("");
+  const urlRegex = /^[a-z0-9-]*$/;
+  const nameRegex = /^[a-zA-Z0-9-& ']+$/;
+  const workspaceList = useSelector(
+    (state: RootState) => state.taskData.workspaces
+  );
+  const taskDataLoadingState = useSelector(
+    (state: RootState) => state.taskData.isLoading
+  );
+  const user = useSelector((state: RootState) => state.userSettings.user);
 
 	const checkUrl = (str: string) => {
 		const newStr = str.trim();
@@ -86,23 +86,23 @@ const CreateWorkspace = ({
 			url: finalWorkspaceUrl,
 		};
 
-		const createWorkspace = await dispatch(addWorkspace(workspaceData));
+    const createWorkspace = await dispatch(addWorkspace(workspaceData));
 
-		if (!createWorkspace) {
-			toast({
-				title: "Workspace Url already exists.",
-				variant: "destructive",
-			});
-		} else {
-			dispatch(getUser());
-			setInputValue("");
-			setUrlInputValue("");
-			toast({ title: "Workspace created successfully!" });
-			!onboarding || !handleNextPage
-				? router.push(`/workspace/${finalWorkspaceUrl}`)
-				: handleNextPage();
-		}
-	};
+    if (!createWorkspace) {
+      toast({
+        title: "Workspace Url already exists.",
+        variant: "destructive",
+      });
+    } else {
+      dispatch(getUser());
+      setInputValue("");
+      setUrlInputValue("");
+      toast({ title: "Workspace created successfully!" });
+      !onboarding || !handleNextPage
+        ? router.push(`/${finalWorkspaceUrl}`)
+        : handleNextPage();
+    }
+  };
 
 	useEffect(() => {
 		const formattedUrlInput = inputValue
@@ -122,69 +122,69 @@ const CreateWorkspace = ({
 		}
 	}, []);
 
-	return (
-		<div className="h-screen w-full bg-card relative flex flex-col items-center justify-center">
-			{!onboarding && workspaceList.length > 0 && (
-				<div className="w-screen absolute top-0 p-10 flex justify-between">
-					<div className="flex flex-col text-sm">
-						<span className="text-xs text-muted-foreground">Logged in as:</span>
-						<span className="text-foreground">{user.email}</span>
-					</div>
-					<div className="flex items-center space-x-1 text-foreground">
-						<ChevronLeft className="text-[#858699] size-5" />
-						<a href={`/workspace/${workspaceList[0].url}`}>Back to Squared</a>
-					</div>
-				</div>
-			)}
-			<div className="p-8 flex flex-col space-y-6">
-				<div className="text-center">
-					<span className="text-2xl text-foreground font-medium">
-						Create a new workspace
-					</span>
-				</div>
-				<div className="text-center">
-					<span className="text-muted-foreground text-md">
-						Workspaces are shared environments where teams can work on projects,
-						cycles and tasks.
-					</span>
-				</div>
-				<form
-					className="flex flex-col space-y-6 text-foreground items-center"
-					onSubmit={handleSubmit}
-				>
-					<div className="w-full shadow-[0_3px_15px_5px_rgb(0,0,0,0.1)] p-7 rounded-xl flex flex-col space-y-7 bg-accent">
-						<div className="flex flex-col space-y-1 text-foreground relative">
-							<label className="text-sm">Workspace Name</label>
-							<input
-								type="text"
-								id="workSpace"
-								autoComplete="off"
-								className="h-12 rounded-md border border-border text-sm bg-card indent-2 focus:outline-none focus:ring-1 relative"
-								value={inputValue}
-								onChange={(e) => setInputValue(e.target.value)}
-							/>
-						</div>
-						<div className="flex flex-col space-y-1 text-foreground relative">
-							<label className="text-sm">Workspace URL</label>
-							<div className="flex flex-col space-y-1 text-foreground relative">
-								<span className="absolute z-10 bottom-3 left-2 text-muted-foreground xs:hidden">
-									app.squaredmade.com/
-								</span>
-								<input
-									className="h-12 rounded-md border border-border text-sm pl-[192px] bg-card xs:pl-0 xs:indent-2 focus:outline-none focus:ring-1 relative"
-									id="workSpaceUrl"
-									autoComplete="off"
-									value={urlInputValue}
-									onChange={(e) => setUrlInputValue(e.target.value)}
-								/>
-							</div>
-						</div>
-					</div>
-					<Button type="submit">Create workspace</Button>
-				</form>
-			</div>
-		</div>
-	);
+  return (
+    <div className="h-screen w-full bg-card relative flex flex-col items-center justify-center">
+      {!onboarding && workspaceList.length > 0 && (
+        <div className="w-screen absolute top-0 p-10 flex justify-between">
+          <div className="flex flex-col text-sm">
+            <span className="text-xs text-muted-foreground">Logged in as:</span>
+            <span className="text-foreground">{user.email}</span>
+          </div>
+          <div className="flex items-center space-x-1 text-foreground">
+            <ChevronLeft className="text-[#858699] size-5" />
+            <a href={`/${workspaceList[0].url}`}>Back to Squared</a>
+          </div>
+        </div>
+      )}
+      <div className="p-8 flex flex-col space-y-6">
+        <div className="text-center">
+          <span className="text-2xl text-foreground font-medium">
+            Create a new workspace
+          </span>
+        </div>
+        <div className="text-center">
+          <span className="text-muted-foreground text-md">
+            Workspaces are shared environments where teams can work on projects,
+            cycles and tasks.
+          </span>
+        </div>
+        <form
+          className="flex flex-col space-y-6 text-foreground items-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="w-full shadow-[0_3px_15px_5px_rgb(0,0,0,0.1)] p-7 rounded-xl flex flex-col space-y-7 bg-accent">
+            <div className="flex flex-col space-y-1 text-foreground relative">
+              <label className="text-sm">Workspace Name</label>
+              <input
+                type="text"
+                id="workSpace"
+                autoComplete="off"
+                className="h-12 rounded-md border border-border text-sm bg-card indent-2 focus:outline-none focus:ring-1 relative"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col space-y-1 text-foreground relative">
+              <label className="text-sm">Workspace URL</label>
+              <div className="flex flex-col space-y-1 text-foreground relative">
+                <span className="absolute z-10 bottom-3 left-2 text-muted-foreground xs:hidden">
+                  app.squaredmade.com/
+                </span>
+                <input
+                  className="h-12 rounded-md border border-border text-sm pl-[192px] bg-card xs:pl-0 xs:indent-2 focus:outline-none focus:ring-1 relative"
+                  id="workSpaceUrl"
+                  autoComplete="off"
+                  value={urlInputValue}
+                  onChange={(e) => setUrlInputValue(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+          <Button type="submit">Create workspace</Button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default CreateWorkspace;

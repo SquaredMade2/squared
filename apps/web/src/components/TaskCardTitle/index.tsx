@@ -10,12 +10,11 @@ import type {
 	HandleAssigneeChange,
 } from "@/app/interfaces/Tasks.interfaces";
 import ProfileImage from "@/components/ProfileImage";
-import { setAssignee } from "@/store/taskData/thunks";
+import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { AssigneeDropdown } from "@/components/AssigneeDropdown";
 import TaskCardLabels from "@/components/TaskCardLabels";
 import type { TaskCardTitleProps } from "./TaskCardTitle.interfaces";
 import { UserSearch } from "lucide-react";
-import { useSquaredStore } from "@/storeZ/provider";
 
 // Leave task and handleOpenDeleteCard in until delete function is added
 const TaskCardTitle = ({
@@ -27,7 +26,6 @@ const TaskCardTitle = ({
 }: TaskCardTitleProps) => {
 	const { view } = useAppSelector((state) => state.userSettings);
 	const dispatch = useAppDispatch();
-	const { getAllTasks } = useSquaredStore((state) => state.tasks);
 
 	const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
@@ -55,16 +53,13 @@ const TaskCardTitle = ({
 		location === "dashboard" ? currentTeam.identifier : task.team.identifier;
 
 	const assigneeParams: AssigneeParams = (taskId, user) => {
-		getAllTasks(currentTeam._id);
-		return {
-			taskId: taskId,
-			assignee: { id: user.id, name: user.name },
-		};
+		dispatch(getAllTasks(currentTeam));
+		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
 	};
 
 	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
 		dispatch(setAssignee(assigneeParams(taskId, user)));
-		getAllTasks(currentTeam._id);
+		await dispatch(getAllTasks(currentTeam));
 	};
 
 	return (

@@ -3,7 +3,11 @@ import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
-import { createNewTask, incrementCreatedIssues } from "@/store/taskData/thunks";
+import {
+	getAllTasks,
+	createNewTask,
+	incrementCreatedIssues,
+} from "@/store/taskData/thunks";
 import { setShowNewIssue } from "@/store/showNewIssue";
 import { setResumeNewIssue } from "@/store/resumeNewIssue";
 import {
@@ -29,12 +33,10 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { Button } from "../ui/button";
-import { useTaskStore } from "@/storeZ/provider";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
 	const dispatch = useAppDispatch();
-	const { getAllTasks } = useTaskStore();
 	const showNewIssue = useSelector(
 		(state: RootState) => state.showNewIssue.isOpen,
 	);
@@ -191,7 +193,7 @@ const NewIssueModal = () => {
 				taskCreatedResponse._id,
 				user._id,
 			);
-			getAllTasks(currentTeam._id);
+			dispatch(getAllTasks(currentTeam));
 			dispatch(setShowNewIssue(false));
 			setTitleInput("");
 			setDescriptionInput("");

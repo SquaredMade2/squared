@@ -1,6 +1,7 @@
 import { useState, type FocusEvent } from "react";
 import { useSelector } from "react-redux";
 import TaskPageDescription from "@/components/taskPageDescription/index";
+import { updateTitle } from "@/api/taskApi";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
@@ -10,12 +11,10 @@ import type { RootState } from "@/store";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
-import { useSquaredStore } from "@/storeZ/provider";
 
 const TaskPageTitle = () => {
 	const { toast } = useToast();
 	const dispatch = useAppDispatch();
-	const { updateTask } = useSquaredStore((state) => state.tasks);
 
 	const title = useSelector((state: RootState) => state.singleTask.data?.title);
 	const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
@@ -56,18 +55,18 @@ const TaskPageTitle = () => {
 		updateTaskValue(updatedTitle ?? "");
 	};
 
-	const handleSubmit = async (e: FocusEvent<HTMLFormElement>) => {
+	const handleSubmit = (e: FocusEvent<HTMLFormElement>) => {
 		setIsFocused(false);
 		e.preventDefault();
 		const changeMade: boolean = updatedTitle !== title;
 		if (changeMade && taskId !== undefined) {
 			storeCommonFields(author, taskId);
 			logEvent();
-			await updateTask(taskId, { title: updatedTitle });
+			dispatch(updateTitle(transformedTitleInput, taskId));
 		}
 	};
 
-	const handleBlur = async (
+	const handleBlur = (
 		e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		setIsFocused(false);
@@ -85,7 +84,7 @@ const TaskPageTitle = () => {
 		if (changeMade && taskId !== undefined) {
 			storeCommonFields(author, taskId);
 			logEvent();
-			await updateTask(taskId, { title: updatedTitle });
+			dispatch(updateTitle(transformedTitleInput, taskId));
 		}
 	};
 	return (

@@ -4,13 +4,13 @@ import { Combobox } from "@headlessui/react";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { statusOptions } from "@/constants/designations";
 import { setStatus } from "@/store/taskData";
+import { getSingleTask } from "@/store/task/thunks";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { StatusDropdownProps } from "./StatusDropdown.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
-import { useSquaredStore } from "@/storeZ/provider";
 
 const StatusDropdown = ({
 	handleButtonClick,
@@ -20,7 +20,6 @@ const StatusDropdown = ({
 }: StatusDropdownProps) => {
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
-	const { getTask } = useSquaredStore((state) => state.tasks);
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 
 	const newIssueStatus = useAppSelector((state) => state.taskData.status);
@@ -66,7 +65,7 @@ const StatusDropdown = ({
 						status: newStatus,
 					},
 				);
-				await getTask(taskId);
+				dispatch(getSingleTask(taskId as string));
 			} catch (err) {
 				toast({
 					title: "Error updating status",
