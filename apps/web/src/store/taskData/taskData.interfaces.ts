@@ -102,7 +102,7 @@ export interface Task {
   identifier: string;
   priority: string | null;
   labels: string[];
-  dueDate: Date | null;
+  dueDate: Date | undefined;
   effortEstimate: number | null;
   team: Team;
   dateCreated: Date;

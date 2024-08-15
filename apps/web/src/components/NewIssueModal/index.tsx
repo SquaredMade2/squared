@@ -120,7 +120,7 @@ const NewIssueModal = () => {
     dispatch(setStatus("Todo"));
     dispatch(setPriority(""));
     dispatch(setLabels([]));
-    dispatch(setDueDate(null));
+    dispatch(setDueDate(undefined));
     dispatch(setEffortEstimate(null));
   };
 
@@ -200,7 +200,7 @@ const NewIssueModal = () => {
       dispatch(setStatus("Todo"));
       dispatch(setPriority(""));
       dispatch(setLabels([]));
-      dispatch(setDueDate(null));
+      dispatch(setDueDate(undefined));
       dispatch(setEffortEstimate(null));
     } catch (err) {}
   };
