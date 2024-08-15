@@ -14,6 +14,8 @@ import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
+import Navbar from "@/components/NavBar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -124,54 +126,51 @@ export default function Home() {
   return (
     <>
       {!isLoading && !workSpaceError && (
-        <div
-          className={`flex flex-row relative lg:w-[calc(100%-300px)] ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
-        >
-          <div className="flex items-center flex-col w-screen h-full bg-background">
-            <div
-              className={`w-full snap-x overflow-hidden relative ${view === "grid" ? "h-[calc(100vh)]" : "h-[calc(100vh)]"}`}
-            >
-              <div
-                className={`lg:w-[calc(100wv-300px)] flex flex-col items-center justify-between`}
-              >
-                {!showFilterSaveForm && (
-                  <div className="w-full px-2 ">
-                    <TopNavBar
-                      showNavBar={showNavBar}
-                      handleFilter={handleFilter}
-                      filterOption={filterOption}
-                      showFilterSaveForm={showFilterSaveForm}
-                      handleFilterSaveForm={handleFilterSaveForm}
-                    />
-                  </div>
-                )}
-
-                {showFilterSaveForm && (
-                  <div className="w-[98%] m-3">
-                    <FilterSaveForm
-                      filterOption={filterOption}
-                      handleFilter={handleFilter}
-                      handleFilterSaveForm={handleFilterSaveForm}
-                      setShowFilterSaveForm={setShowFilterSaveForm}
-                    />
-                  </div>
-                )}
+        <div className="w-full flex flex-col h-screen overflow-hidden ">
+          <div>
+            {!showFilterSaveForm && (
+              <div className="w-full px-2 ">
+                <TopNavBar
+                  showNavBar={showNavBar}
+                  handleFilter={handleFilter}
+                  filterOption={filterOption}
+                  showFilterSaveForm={showFilterSaveForm}
+                  handleFilterSaveForm={handleFilterSaveForm}
+                />
               </div>
-
+            )}
+            {showFilterSaveForm && (
+              <div className="w-[98%] m-3">
+                <FilterSaveForm
+                  filterOption={filterOption}
+                  handleFilter={handleFilter}
+                  handleFilterSaveForm={handleFilterSaveForm}
+                  setShowFilterSaveForm={setShowFilterSaveForm}
+                />
+              </div>
+            )}
+          </div>
+          <div
+            className={`flex flex-col flex-grow ${view === "grid" ? "mx-2" : ""}`}
+          >
+            <ScrollArea
+              className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""}`}
+            >
               <ViewAllTasks
                 activeSelected={activeSelected}
                 backlogSelected={backlogSelected}
                 handleDragEnd={handleDragEnd}
                 handleDeleteTask={handleDeleteTask}
               />
-            </div>
+              {view === "grid" && <ScrollBar orientation="horizontal" />}
+            </ScrollArea>
           </div>
         </div>
       )}
 
       {workSpaceError && (
         <div
-          className={`flex flex-row relative lg:w-[calc(100%-300px)] ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
+          className={`flex flex-row relative  ${view === "grid" && theme === "light" ? "bg-background" : "bg-card"} ${theme}`}
         >
           <div
             className={`h-screen lg:left-0 lg:relative z-40 transition-all duration-300 ease-in-out ${showNavBar ? "absolute -left-full" : "absolute left-0"}`}
@@ -180,7 +179,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center flex-col w-screen h-full bg-background">
-            <div className="lg:w-[calc(100wv-300px)] flex flex-col items-center justify-between">
+            <div className=" flex flex-col items-center justify-between">
               {!showFilterSaveForm && (
                 <div className="w-full px-2 sm:px-5">
                   <TopNavBar

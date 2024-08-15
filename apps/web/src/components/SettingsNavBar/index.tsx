@@ -44,7 +44,7 @@ const SettingsNavBar = ({
   };
 
   return (
-    <div className="bg-accent border border-border min-w-[296px] min-h-screen h-full flex flex-col">
+    <div className="bg-card min-w-64 min-h-screen h-full flex flex-col">
       <div className="flex flex-col items-center pb-6 text-foreground">
         <div>
           <div
@@ -54,9 +54,7 @@ const SettingsNavBar = ({
             <span className="h-3 mr-3 hover:cursor-pointer">
               <ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
             </span>
-            <h1 className="text-foreground cursor-pointer">
-              Settings
-            </h1>
+            <h1 className="text-foreground cursor-pointer">Settings</h1>
           </div>
           <div className="mb-1 pl-0.5 flex items-center">
             <BriefcaseBusiness className="size-4 text-[#6A6F75]" />

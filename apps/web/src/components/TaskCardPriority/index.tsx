@@ -3,7 +3,8 @@ import { high, medium, low } from "@/components/Svg";
 import type { TaskCardPriorityProps } from "./TaskCardPriority.interfaces";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { useTheme } from "next-themes";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
   const [svg, setSvg] = useState<ReactNode>();
   const { theme } = useTheme();
@@ -24,7 +25,12 @@ const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
         setSvg(high);
         break;
       case "Urgent":
-        setSvg(<CircleAlert className="size-4 fill-destructive" />);
+        setSvg(
+          <FontAwesomeIcon
+            className="text-muted-foreground"
+            icon={faExclamation}
+          />
+        );
         break;
       default:
         setSvg(<Ellipsis className="size-4" />);

@@ -16,6 +16,10 @@ const IconLeftMenu = () => {
   const currentRoute = usePathname();
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
+  const checkRouteIncludes = (pathname: string, ...args: string[]): boolean => {
+    return args.some((arg) => pathname.includes(arg));
+  };
+
   const navigateTo = (childRoute: string): void => {
     currentRoute.includes("/all") && childRoute === ""
       ? ""
@@ -24,7 +28,7 @@ const IconLeftMenu = () => {
 
   const iconStyle = "w-full h-12 flex items-center ";
   return (
-    <div className="flex flex-col h-full items-center border w-full">
+    <div className="flex flex-col h-full items-center w-full">
       <div className="flex flex-col items-center">
         <div className={iconStyle}>
           <ButtonIcon

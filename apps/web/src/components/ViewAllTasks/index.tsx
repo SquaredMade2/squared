@@ -127,25 +127,8 @@ const ViewAllTasks = ({
             taskData={taskData ? taskData : ({} as Task)}
           />
           <DragDropContext onDragEnd={handleDragEnd}>
-            <div
-              className={` ${
-                view === "list"
-                  ? "h-[85%] sm:h-[93%] flex items-center justify-center w-full px-2 pb-2"
-                  : " lg:w-[calc(100vw-300px)] px-2"
-              }`}
-            >
-              <ScrollArea className="w-full h-full">
-                <div
-                  className={
-                    view === "list"
-                      ? "flex flex-col hover:pr-3 transition-all duration-500 ease-in-out"
-                      : "flex snap-start"
-                  }
-                >
-                  {filteredColumns()}
-                </div>
-                {view === "grid" && <ScrollBar orientation="horizontal" />}
-              </ScrollArea>
+            <div className={view === "list" ? "px-2" : "flex"}>
+              {filteredColumns()}
             </div>
           </DragDropContext>
         </>
