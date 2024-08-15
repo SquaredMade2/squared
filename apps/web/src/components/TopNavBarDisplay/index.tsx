@@ -4,7 +4,7 @@ import { setView } from "@/store/userSettings";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, SlidersVertical } from "lucide-react";
-import PurpleToggle from "@/components/PurpleToggle";
+import { Switch } from "../ui/switch";
 import {
   setShowPriority,
   setShowLabels,
@@ -107,27 +107,24 @@ const TopNavBarDisplay = () => {
                   <p className="text-foreground text-sm py-1 mb-1 last:mb-0">
                     Priority
                   </p>
-                  <PurpleToggle
-                    active={showPriority}
-                    handleClick={handlePriority}
+                  <Switch
+                    checked={showPriority}
+                    onCheckedChange={handlePriority}
                   />
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <p className="text-foreground text-sm py-1 mb-1 last:mb-0">
                     Labels
                   </p>
-                  <PurpleToggle
-                    active={showLabels}
-                    handleClick={handleLabels}
-                  />
+                  <Switch checked={showLabels} onCheckedChange={handleLabels} />
                 </div>
                 <div className="flex items-center justify-between w-full">
                   <p className="text-foreground text-sm py-1 mb-1 last:mb-0">
                     Date and Time
                   </p>
-                  <PurpleToggle
-                    active={showDateTime}
-                    handleClick={handleDateTime}
+                  <Switch
+                    checked={showDateTime}
+                    onCheckedChange={handleDateTime}
                   />
                 </div>
               </ul>

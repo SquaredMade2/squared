@@ -15,13 +15,14 @@ import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces"
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
+import { Switch } from "../ui/switch";
 
 const SettingsNavBar = ({
   setLoading,
 }: SettingsNavbarProps): React.ReactElement => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
 
   const workspace = useSelector(
     (state: RootState) => state.taskData.currentWorkspace
@@ -121,21 +122,14 @@ const SettingsNavBar = ({
             </span>
             <p className="cursor-pointer">Add team</p>
           </div>
-          <div className="pt-10 flex w-full justify-center pr-5">
-            <button
-              type="button"
-              onClick={() => setTheme("light")}
-              className="mr-2 rounded p-1 cursor-pointer"
-            >
-              Light
-            </button>
-            <button
-              type="button"
-              className="rounded p-1 cursor-pointer"
-              onClick={() => setTheme("dark")}
-            >
-              Dark
-            </button>
+          <div className="pt-10 flex gap-2 w-full justify-center pr-5">
+            Dark
+            <Switch
+              onCheckedChange={() =>
+                setTheme(`${theme === "light" ? "dark" : "light"}`)
+              }
+            />
+            Light
           </div>
         </div>
       </div>

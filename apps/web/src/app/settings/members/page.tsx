@@ -19,7 +19,7 @@ import type {
 import InviteMembersModal from "@/components/InviteMembersModal";
 import { RolesButtonOptions } from "@/components/RolesButtonOptions";
 import UpdateMembersInfoModal from "@/components/UpdateMembersModal";
-import PurpleToggle from "@/components/PurpleToggle";
+import { Switch } from "@/components/ui/switch";
 import {
   deletingUserFromWorkspace,
   updateTheUsersRole,
@@ -441,7 +441,7 @@ export default function Members() {
           >
             <div className={styles.bodyWrapper}>
               <p className={styles.textPrimary}>Invite Link</p>
-              <PurpleToggle active={isActive} handleClick={handleToggleLink} />
+              <Switch checked={isActive} onCheckedChange={handleToggleLink} />
             </div>
             {isActive ? (
               <>
