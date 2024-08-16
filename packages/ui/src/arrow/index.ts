@@ -1,6 +1,6 @@
 export {
-  Arrow,
-  //
-  Root,
-} from './Arrow';
-export type { ArrowProps } from './Arrow';
+	Arrow,
+	//
+	Root,
+} from "./Arrow";
+export type { ArrowProps } from "./Arrow";

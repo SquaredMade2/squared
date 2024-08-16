@@ -21,16 +21,11 @@ import {
 } from ".";
 import { createTaskEventLog } from "../events/actions";
 
-export const createNewTask = createAsyncThunk<
-  Task,
-  Task,
-  { state: RootState }
->(
+export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
   "taskData/createNewTask",
   async (task: Task, { getState, rejectWithValue, dispatch }) => {
     const currentTeam = getState().taskData.currentTeam;
-    const { _id: authorId, name: authorName } =
-      getState().userSettings.user;
+    const { _id: authorId, name: authorName } = getState().userSettings.user;
     const author = {
       id: authorId,
       name: authorName,
@@ -190,11 +185,7 @@ export const getAllWorkspaces = createAsyncThunk<
   }
 );
 
-export const getTeam = createAsyncThunk<
-  Team,
-  string,
-  { state: RootState }
->(
+export const getTeam = createAsyncThunk<Team, string, { state: RootState }>(
   "taskData/getTeam",
   async (
     identifier: string | string[],
@@ -302,10 +293,7 @@ export const deleteWorkspace = createAsyncThunk<
   { state: RootState }
 >(
   "taskData/deleteWorkspace",
-  async (
-    workspaceId: string,
-    { rejectWithValue, getState, dispatch }
-  ) => {
+  async (workspaceId: string, { rejectWithValue, getState, dispatch }) => {
     const teamIds = getState().taskData.currentWorkspace.teams.map(
       (item: Team) => item._id
     );
@@ -335,11 +323,7 @@ export const deleteWorkspace = createAsyncThunk<
   }
 );
 
-export const deleteTeam = createAsyncThunk<
-  Team,
-  string,
-  { state: RootState }
->(
+export const deleteTeam = createAsyncThunk<Team, string, { state: RootState }>(
   "taskData/deleteTeam",
   async (teamId: string, { rejectWithValue, getState, dispatch }) => {
     const { url, _id } = getState().taskData.currentWorkspace;
@@ -505,10 +489,7 @@ export const searchTasks = createAsyncThunk(
 
 export const joinWorkspace = createAsyncThunk(
   "taskData/joinWorkspace",
-  async (
-    userInfo: { id: string; email: string },
-    { rejectWithValue }
-  ) => {
+  async (userInfo: { id: string; email: string }, { rejectWithValue }) => {
     const id = userInfo.id;
     const email = userInfo.email;
     try {
@@ -679,8 +660,7 @@ export const createGhWebhook = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const { ghToken, ghUser, ghRepo, workspaceId } =
-      createGhWebhookParams;
+    const { ghToken, ghUser, ghRepo, workspaceId } = createGhWebhookParams;
     try {
       const { data } = await axios({
         method: "POST",

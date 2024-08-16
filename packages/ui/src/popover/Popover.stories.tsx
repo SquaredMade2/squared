@@ -399,9 +399,10 @@ export const WithSlottedTrigger = () => {
 };
 
 // change order slightly for more pleasing visual
-const SIDES = SIDE_OPTIONS.filter((side) => side !== "bottom").concat([
-	"bottom",
-]);
+type Side = "top" | "right" | "left" | "bottom";
+const filteredSides: Side[] = SIDE_OPTIONS.filter((side) => side !== "bottom");
+filteredSides.push("bottom");
+const SIDES = filteredSides;
 
 export const Chromatic = () => (
 	<div style={{ padding: 200, paddingBottom: 500 }}>

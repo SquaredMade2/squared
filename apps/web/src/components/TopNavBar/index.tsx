@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-
 import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { getNotifications, newNotification } from "@/store/notifications";
@@ -7,42 +6,13 @@ import ViewButton from "@/components/ViewButton";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdown";
 import SelectedFiltersBar from "@/components/SelectedFiltersBar";
-import {
-	newFilter,
-	//  BellIcon -- this has been disabled until a suitable icon has been found. The current icon does not match the design theme
-} from "@/components/Svg";
+import { Filter } from "lucide-react";
 import type { TopNavBarProps } from "@/components/TopNavBar/TopNavBar.interfaces";
 import { ProjectDataWidget } from "@/components/ProjectDataWidget";
 import { SocketContext } from "@/app/SocketProvider";
 import NotificationsList from "@/components/NotificationsList";
 import type { AnyAction } from "@reduxjs/toolkit";
 import ToggleNavBar from "../ToggleNavBar";
-
-const style = {
-	header: "max-w-screen",
-	nav: " bg-background h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]",
-	leftSide: "bg-linearPurple-600 flex flex-none justify-start items-center",
-	leftButtonContainer: " w-full flex flex-none justify-start items-center",
-	toggleNavBar: "lg:hidden cursor-pointer mr-2",
-	activeIssues:
-		"w-22 text-sm rounded flex justify-center items-center text-foreground h-full flex-row",
-	star: "flex items-center justify-center ml-4 py-2 text-xs px-2 xs:hidden sm:hidden md:block rounded hover:bg-accent",
-	starFill: "fill-gray-500",
-	filterDiv:
-		"relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent",
-	filter:
-		"text-xs w-full flex items-center justify-center h-10 mr-2 p-0.5 border-border bg-card text-foreground cursor-pointer hover:bg-accent",
-	rightSide:
-		"bg-linearPurple-600 flex flex-none sm:justify-end items-center xs:grid-cols-2",
-	rightButtonContainer: "flex gap-6 flex-none justify-start items-center",
-	viewButtonContainer:
-		"bg-card h-full w-32 mr-5 flex justify-center items-center rounded-sm xs:hidden sm:hidden md:flex",
-	xsFilter: "xs:w-full",
-	notificationContainer: "flex items-center mr-6 mt-2 relative ",
-	notificationBtn: "cursor-pointer",
-	amountOfNotifications:
-		"absolute -top-3 -right-2 text-foreground bg-destructive rounded-full px-1 text-xs",
-};
 
 export const setFillColor = (theme: string): undefined | string => {
 	switch (true) {
@@ -173,18 +143,24 @@ const TopNavBar = ({
 	// );  //fix disabled until inbox works -- https://linear.app/project-tasklist/issue/PRO-780/re-enable-inbox-when-fixed-on-develop
 
 	return (
-		<header className={style.header}>
-			<nav className={style.nav}>
-				<div className={style.leftSide}>
-					<div className={style.leftButtonContainer}>
-						<div className={style.toggleNavBar}>
+		<header className="max-w-screen">
+			<nav className="bg-background h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]">
+				<div className="bg-linearPurple-600 flex flex-none justify-start items-center">
+					<div className="w-full flex flex-none justify-start items-center">
+						<div className="lg:hidden cursor-pointer mr-2">
 							<ToggleNavBar />
 						</div>
-						<button className={style.activeIssues} type="button">
+						<button
+							className="w-22 text-sm rounded flex justify-center items-center text-foreground h-full flex-row"
+							type="button"
+						>
 							<div>All Issues</div>
 						</button>
 						{screenSize.width > 640 && (
-							<div ref={menuRef} className={`${style.filterDiv} group`}>
+							<div
+								ref={menuRef}
+								className="relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent group"
+							>
 								<button
 									type="button"
 									onClick={
@@ -201,9 +177,11 @@ const TopNavBar = ({
 													setShowFilterDropDown(true);
 												}
 									}
-									className={`${style.filter} group-hover:bg-accent`}
+									className="text-xs w-full flex items-center justify-center h-10 mr-2 p-0.5 border-border bg-card text-foreground cursor-pointer hover:bg-accent group-hover:bg-accent"
 								>
-									<div className="mr-2">{newFilter()}</div>
+									<div className="mr-2">
+										<Filter className="size-5" />
+									</div>
 									<p>{showFilterStatusBar ? "Clear Filters x" : "Filter"}</p>
 								</button>
 								<FilterDropDown
@@ -215,10 +193,13 @@ const TopNavBar = ({
 						)}
 					</div>
 				</div>
-				<div className={style.rightSide}>
-					<div className={style.xsFilter}>
+				<div className="bg-linearPurple-600 flex flex-none sm:justify-end items-center xs:grid-cols-2">
+					<div className="xs:w-full">
 						{screenSize.width < 640 && (
-							<div ref={menuRef} className={style.filterDiv}>
+							<div
+								ref={menuRef}
+								className="relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent"
+							>
 								<button
 									type="button"
 									onClick={
@@ -235,7 +216,7 @@ const TopNavBar = ({
 													setShowFilterDropDown(true);
 												}
 									}
-									className={style.filter}
+									className="text-xs w-full flex items-center justify-center h-10 mr-2 p-0.5 border-border bg-card text-foreground cursor-pointer hover:bg-accent"
 								>
 									<p>{showFilterStatusBar ? "Clear Filters x" : "+ Filter"}</p>
 								</button>
@@ -247,7 +228,7 @@ const TopNavBar = ({
 							</div>
 						)}
 					</div>
-					<div className={style.notificationContainer}>
+					<div className="flex items-center mr-6 mt-2 relative">
 						{/* <button
 							ref={notificationButtonRef}
 							onClick={handleNotification}
@@ -268,8 +249,8 @@ const TopNavBar = ({
 							/>
 						)}
 					</div>
-					<div className={style.rightButtonContainer}>
-						<div className={style.viewButtonContainer}>
+					<div className="flex gap-6 flex-none justify-start items-center">
+						<div className="bg-card h-full w-32 mr-5 flex justify-center items-center rounded-sm xs:hidden sm:hidden md:flex">
 							<ViewButton />
 						</div>
 

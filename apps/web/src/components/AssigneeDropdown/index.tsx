@@ -3,7 +3,7 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { UsersInWorkspace } from "@/store/taskData/taskData.interfaces";
 import ProfileImage from "../ProfileImage";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
-import { UnassignedSVGInDropdown } from "../Svg";
+import { UserSearch } from "lucide-react";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType, type Assignee } from "@/interfaces/event.interfaces";
 import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
@@ -42,26 +42,14 @@ export const AssigneeDropdown = ({
 		e.stopPropagation();
 	};
 
-	const styles = {
-		dropdownWrapperGrid:
-			"absolute top-10 right-1 flex flex-col bg-card click-event-none border border-border rounded-lg overflow-hidden z-30 w-50 h-60 flex flex-col",
-		dropdownWrapperDashboard:
-			"absolute flex flex-col bg-card click-event-none border border-border rounded-lg overflow-hidden ml-auto z-30 flex-end col-span-6 flex flex-col",
-		assignButton: "flex flex-row items-center mx-1",
-		inputFilter: "bg-card h-10 p-1 border-b border-border",
-		overflowHandler: "overflow-scroll-y",
-		taskPage:
-			"flex flex-col text-foreground bg-card border border-border rounded-lg overflow-hidden ml-20 flex-end col-span-6 flex flex-col",
-	};
-
 	const handleLocation: () => string = () => {
 		switch (location) {
 			case "Grid":
-				return styles.dropdownWrapperGrid;
+				return "absolute top-10 right-1 flex flex-col bg-card click-event-none border border-border rounded-lg overflow-hidden z-30 w-50 h-60 flex flex-col";
 			case "Dashboard":
-				return styles.dropdownWrapperDashboard;
+				return "absolute flex flex-col bg-card click-event-none border border-border rounded-lg overflow-hidden ml-auto z-30 flex-end col-span-6 flex flex-col";
 			case "taskPage":
-				return styles.taskPage;
+				return "flex flex-col text-foreground bg-card border border-border rounded-lg overflow-hidden ml-20 flex-end col-span-6 flex flex-col";
 			default:
 				return "";
 		}
@@ -115,19 +103,19 @@ export const AssigneeDropdown = ({
 		<ClickAwayListener onClickAway={handleClickOffDropdown}>
 			<div onClick={(e) => preventDefault(e)} className={handleLocation()}>
 				<input
-					className={styles.inputFilter}
+					className="bg-card h-10 p-1 border-b border-border"
 					type="text"
 					onChange={(e) => setUserFilter(e.target.value)}
 				/>
 				<button
 					type="button"
-					className={styles.assignButton}
+					className="flex flex-row items-center mx-1"
 					onClick={() => handleClickAssignee(taskId, { id: null, name: null })}
 				>
-					<UnassignedSVGInDropdown />
+					<UserSearch className="size-4 mr-2" />
 					Unassign
 				</button>
-				<ul className={styles.overflowHandler}>
+				<ul className="overflow-scroll-y">
 					{allUsers
 						?.filter((user) => handleFilter(user.username))
 						.map((user: UsersInWorkspace) => {
@@ -139,7 +127,7 @@ export const AssigneeDropdown = ({
 								<li key={user.user}>
 									<button
 										type="button"
-										className={styles.assignButton}
+										className="flex flex-row items-center mx-1"
 										onClick={() => handleClickAssignee(taskId, assignee)}
 									>
 										<ProfileImage

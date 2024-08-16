@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { setCurrentFilter } from "@/store/filterPage/actions";
-import { leftBracket, rightBracket } from "@/components/Svg";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
 	format,
 	startOfMonth,
@@ -22,31 +22,6 @@ import type {
 	FilterOption,
 } from "@/app/interfaces/Filter.interfaces";
 import { DAYS_OF_WEEK } from "@/constants/app_constants";
-
-const styles = {
-	main: "absolute z-50 top-5 -left-1 w-72",
-	container:
-		"border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72",
-	header: "flex justify-between items-center text-foreground mb-4",
-	grid: "grid grid-cols-7 gap-1",
-	day: "cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg",
-	dayNotCurrentMonth: "text-muted-foreground",
-	dayNameContainer: "grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent",
-	dayName: "font-semibold text-muted-foreground text-center",
-	selectedDay:
-		"text-[#174EFF] hover:bg-blueGlow border border-transparent hover:border-blueGlow focus:outline-none focus:shadow-sm active:shadow-lg",
-	disabledDay: "cursor-not-allowed pointer-events-none text-muted-foreground",
-	svg: "cursor-pointer",
-	dateContainer: "mt-4 flex flex-col text-foreground",
-	inputRow: "flex items-center justify-between gap-3 w-full",
-	input: "flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10",
-	buttonContainer: "mt-10 flex justify-end gap-3",
-	button: "cursor-pointer p-2.5 rounded-md text-foreground",
-	toggleContainer: "flex gap-2 mb-4",
-	toggleButton: "flex-1 p-2 rounded-md text-center cursor-pointer",
-	selectedToggleButton: "bg-[#123abc] text-foreground",
-	unselectedToggleButton: "bg-gray-400 text-foreground",
-};
 
 const DueDateFilterDropDown = ({
 	showDueDateFilterDropDown,
@@ -136,20 +111,20 @@ const DueDateFilterDropDown = ({
 	});
 
 	const toggleButtonClass = (type: "before" | "after") =>
-		`${styles.toggleButton} ${
+		`flex-1 p-2 rounded-md text-center cursor-pointer ${
 			selectedToggle === type
-				? styles.selectedToggleButton
-				: styles.unselectedToggleButton
+				? "bg-[#123abc] text-foreground"
+				: "bg-gray-400 text-foreground"
 		}`;
 
 	return (
 		<div
-			className={` ${styles.main} ${showFilterDropDown ? "h-10 mt-[20%]" : "h-0 hidden"} transition-all duration-300 opacity-100' 
+			className={`absolute z-50 top-5 -left-1 w-72 transition-all duration-300 ${
+				showFilterDropDown ? "h-10 mt-[20%] opacity-100" : "h-0 hidden"
 			}`}
-			// Please do not move styles to styles object. The props cannot be read in styles object.
 		>
-			<div className={styles.container}>
-				<div className={styles.toggleContainer}>
+			<div className="border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72">
+				<div className="flex gap-2 mb-4">
 					<div
 						className={toggleButtonClass("before")}
 						onClick={() => handleToggleClick("before")}
@@ -163,29 +138,32 @@ const DueDateFilterDropDown = ({
 						After Date
 					</div>
 				</div>
-				<div className={styles.header}>
+				<div className="flex justify-between items-center text-foreground mb-4">
 					<button
 						onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
 						type="button"
 					>
-						<span className={styles.svg}>{leftBracket()}</span>
+						<ChevronLeft className="cursor-pointer size-5 text-[#6b6f76]" />
 					</button>
 					<span>{format(currentMonth, "MMMM yyyy")}</span>
 					<button
 						onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
 						type="button"
 					>
-						<span className={styles.svg}>{rightBracket()}</span>
+						<ChevronRight className="cursor-pointer size-5 text-[#6b6f76]" />
 					</button>
 				</div>
-				<div className={styles.dayNameContainer}>
+				<div className="grid grid-cols-7 gap-1 rounded-md py-3 my-3 bg-accent">
 					{DAYS_OF_WEEK.map((dayName) => (
-						<div key={dayName} className={styles.dayName}>
+						<div
+							key={dayName}
+							className="font-semibold text-muted-foreground text-center"
+						>
 							{dayName.charAt(0)}
 						</div>
 					))}
 				</div>
-				<div className={styles.grid}>
+				<div className="grid grid-cols-7 gap-1">
 					{days.map((day) => {
 						const isPast = isDateInPast(day);
 						const isSelected =
@@ -194,10 +172,14 @@ const DueDateFilterDropDown = ({
 						return (
 							<button
 								key={day.toString()}
-								className={`${styles.day} ${
-									!isSameMonth(day, currentMonth) && styles.dayNotCurrentMonth
-								} ${isSelected ? styles.selectedDay : "text-foreground"} ${
-									isPast && styles.disabledDay
+								className={`cursor-pointer rounded-md p-2 hover:bg-blueGlow border border-transparent hover:border-blueGlow text-center focus:outline-none focus:shadow-sm active:shadow-lg ${
+									!isSameMonth(day, currentMonth)
+										? "text-muted-foreground"
+										: "text-foreground"
+								} ${isSelected ? "text-[#174EFF] hover:bg-blueGlow" : ""} ${
+									isPast
+										? "cursor-not-allowed pointer-events-none text-muted-foreground"
+										: ""
 								}`}
 								onClick={() => handleSelectDate(day)}
 								disabled={isPast}
@@ -208,32 +190,32 @@ const DueDateFilterDropDown = ({
 						);
 					})}
 				</div>
-				<div className={styles.dateContainer}>
+				<div className="mt-4 flex flex-col text-foreground">
 					Due date
-					<div className={styles.inputRow}>
+					<div className="flex items-center justify-between gap-3 w-full">
 						{selectedDate && (
-							<span className={styles.input}>
+							<span className="flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10">
 								{format(new Date(selectedDate), "M/dd/yy")}
 							</span>
 						)}
 						<input
 							type="time"
-							className={styles.input}
+							className="flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10"
 							value={selectedTime}
 							onChange={handleSelectTime}
 						/>
 					</div>
 				</div>
-				<div className={styles.buttonContainer}>
+				<div className="mt-10 flex justify-end gap-3">
 					<button
-						className={`${styles.button} border-2 border-border bg-popover`}
+						className="cursor-pointer p-2.5 rounded-md text-foreground border-2 border-border bg-popover"
 						onClick={handleClickAway}
 						type="button"
 					>
 						Cancel
 					</button>
 					<button
-						className={`${styles.button} bg-[#123abc] text-foreground`}
+						className="cursor-pointer p-2.5 rounded-md text-foreground bg-[#123abc]"
 						onClick={handleClick}
 						type="button"
 					>

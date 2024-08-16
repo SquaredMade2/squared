@@ -1,5 +1,5 @@
 export interface ComplexityButtonsProps {
-  onSelect: (arg0: string) => void;
+	onSelect: (arg0: string) => void;
 }
 
 export type handleClickComplexityType = (value: number) => void;

@@ -8,22 +8,12 @@ export const ProjectDataWidgetDropdowns = ({
 }: ProjectDataWidgetDropdownsProps) => {
 	const lightSettings = useAppSelector((state) => state.userSettings).theme;
 
-	const styles = {
-		navbar:
-			"flex flex-col w-full mt-10 text-foreground rounded-lg items-center justify-center",
-		eachNav:
-			"flex flex-row justify-center w-1/3 h-full rounded-lg text-center mr-1 text-sm",
-		button: "cursor-pointer text-center",
-		tabWrappers:
-			"flex flex-row justify-center items-center w-full text-foreground",
-	};
-
 	return (
-		<ul className={styles.navbar}>
-			<li className={styles.tabWrappers}>
+		<ul className="flex flex-col w-full mt-10 text-foreground rounded-lg items-center justify-center">
+			<li className="flex flex-row justify-center items-center w-full text-foreground">
 				<AssigneesTab assigneesData={assigneesData} />
 			</li>
-			<li className={styles.tabWrappers}>
+			<li className="flex flex-row justify-center items-center w-full text-foreground">
 				<LabelsTab labelsData={labelsData} />
 			</li>
 		</ul>

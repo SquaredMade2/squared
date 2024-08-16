@@ -1,23 +1,22 @@
 import { Router } from "express";
 import {
-  addWorkspace,
-  getWorkspace,
-  deleteWorkspace,
-  updateWorkspace,
-  getAllWorkspaces,
-  workspaceExists,
-  joinWorkspace,
-  verifyTokenToJoinWorkspace,
-  updateUserRoles,
-  removeUserFromWorkspace,
-  createTokenLink,
-  joinWorkspaceThroughUniversalLink,
-  enableUniversalLink,
-  searchQuery,
-  incrementWorkspaceCreatedIssues,
-  setGithubRepo,
+	addWorkspace,
+	getWorkspace,
+	deleteWorkspace,
+	updateWorkspace,
+	getAllWorkspaces,
+	workspaceExists,
+	joinWorkspace,
+	verifyTokenToJoinWorkspace,
+	updateUserRoles,
+	removeUserFromWorkspace,
+	createTokenLink,
+	joinWorkspaceThroughUniversalLink,
+	enableUniversalLink,
+	searchQuery,
+	incrementWorkspaceCreatedIssues,
+	setGithubRepo,
 } from "../controllers/workspaceControllers";
-// import catchAsync from "../utils/catchAsync";
 const router: Router = Router();
 
 /**
@@ -727,6 +726,6 @@ router.delete("/delete", deleteWorkspace);
  */
 router.delete("/delete-user", removeUserFromWorkspace);
 
-router.post("/setGithubRepo", setGithubRepo) 
+router.post("/setGithubRepo", setGithubRepo);
 
 export default router;

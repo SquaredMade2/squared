@@ -1,29 +1,29 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 // interface
 export interface WorkspaceMember {
-  name: string;
-  id: string;
-  email: string;
+	name: string;
+	id: string;
+	email: string;
 }
 
 interface ListOfMembersProps {
-  listOfWorkspaceMembers: WorkspaceMember[];
+	listOfWorkspaceMembers: WorkspaceMember[];
 }
 // initial state
 const initialState: ListOfMembersProps = {
-  listOfWorkspaceMembers: [],
+	listOfWorkspaceMembers: [],
 };
 
 // createslice
 const getListOfMembersSlice = createSlice({
-  name: 'listOfMembers',
-  initialState,
-  reducers: {
-    getListOfMembers(state, action: PayloadAction<WorkspaceMember[]>) {
-      state.listOfWorkspaceMembers = action.payload;
-    },
-  },
+	name: "listOfMembers",
+	initialState,
+	reducers: {
+		getListOfMembers(state, action: PayloadAction<WorkspaceMember[]>) {
+			state.listOfWorkspaceMembers = action.payload;
+		},
+	},
 });
 
 export default getListOfMembersSlice.reducer;

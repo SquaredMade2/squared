@@ -168,7 +168,7 @@ const PopperContent = React.forwardRef<
 	const arrowHeight = arrowSize?.height ?? 0;
 
 	const desiredPlacement = (side +
-		(align !== "center" ? "-" + align : "")) as Placement;
+		(align !== "center" ? `-${align}` : "")) as Placement;
 
 	const collisionPadding =
 		typeof collisionPaddingProp === "number"
@@ -371,7 +371,7 @@ const PopperArrow = React.forwardRef<PopperArrowElement, PopperArrowProps>(
 					transform: {
 						top: "translateY(100%)",
 						right: "translateY(50%) rotate(90deg) translateX(-50%)",
-						bottom: `rotate(180deg)`,
+						bottom: "rotate(180deg)",
 						left: "translateY(50%) rotate(-90deg) translateX(50%)",
 					}[contentContext.placedSide],
 					visibility: contentContext.shouldHideArrow ? "hidden" : undefined,

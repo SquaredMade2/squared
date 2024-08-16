@@ -3,36 +3,19 @@ import { Fragment, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteView } from "@/store/filterPage/actions";
 import {
-	ellipsisTwo,
-	editView,
-	duplicateView,
-	changeViewOwner,
-	rightArrow,
-	viewVisibility,
-	favoriteView,
-	copyShareLink,
-} from "@/components/Svg";
-import { TrashCan } from "../Svg";
+	BookUser,
+	ChevronRight,
+	CircleUser,
+	Copy,
+	Ellipsis,
+	Link,
+	Pencil,
+	Star,
+	Trash2,
+} from "lucide-react";
 import type { FilterListDropDownProps } from "./FilterListDropDown.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import { useTheme } from "next-themes";
-
-const styles = {
-	main: "relative w-10 text-right mr-5",
-	menu: "relative inline-block w-10 text-left",
-	menuButton:
-		"inline-flex z-0 w-10 justify-center rounded-md bg-card text-sm font-medium text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75",
-	menuItems:
-		"fixed mr-[2.5%] z-10 text-foreground right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
-	div: "px-1 py-1 ",
-	menuItem: "group flex w-full items-center rounded-md px-2 py-2 text-sm",
-	paddingLeft: "pl-3",
-	rightArrow: "pl-[21px]",
-	copiedAlertBox:
-		"fixed bottom-5 right-5 w-auto bg-accent border border-border rounded px-4 py-4 transition-all delay-100 duration-1000",
-	urlClipboard: "text-foreground text-xs font-bold leading-6 mb-2",
-	paste: "text-muted-foreground text-xs font-bold",
-};
 
 const FilterListDropDown = ({
 	filterId,
@@ -55,7 +38,10 @@ const FilterListDropDown = ({
 					hover: "group-hover:fill-black",
 					color: "fill-gray-500",
 				})
-			: setFillColor({ ...fillColor, hover: "group-hover:fill-white" });
+			: setFillColor({
+					...fillColor,
+					hover: "group-hover:fill-white",
+				});
 	};
 
 	const handleCopyShareLink = async () => {
@@ -76,11 +62,15 @@ const FilterListDropDown = ({
 	}, [theme]);
 
 	return (
-		<div className={styles.main}>
-			<Menu as="div" className={styles.menu}>
+		<div className="relative w-10 text-right mr-5">
+			<Menu as="div" className="relative inline-block w-10 text-left">
 				<div>
-					<Menu.Button className={styles.menuButton}>
-						{ellipsisTwo()}
+					<Menu.Button className="inline-flex z-0 w-10 justify-center rounded-md bg-card text-sm font-medium text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+						<Ellipsis
+							className={`size-4 cursor-pointer ${
+								theme === "light" ? "text-[black]" : "text-[white]"
+							}`}
+						/>
 					</Menu.Button>
 				</div>
 				<Transition
@@ -92,8 +82,8 @@ const FilterListDropDown = ({
 					leaveFrom="transform opacity-100 scale-100"
 					leaveTo="transform opacity-0 scale-95"
 				>
-					<Menu.Items className={styles.menuItems}>
-						<div className={styles.div}>
+					<Menu.Items className="fixed mr-[2.5%] z-10 text-foreground right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+						<div className="px-1 py-1">
 							<Menu.Item>
 								{({ active }) => (
 									<button
@@ -102,10 +92,10 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 									>
-										<div>{editView()}</div>
-										<p className={styles.paddingLeft}>Edit</p>
+										<Pencil className="size-4" />
+										<p className="pl-3">Edit</p>
 									</button>
 								)}
 							</Menu.Item>
@@ -117,10 +107,10 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 									>
-										<div>{duplicateView()}</div>
-										<p className={styles.paddingLeft}>Duplicate</p>
+										<Copy className="size-4" />
+										<p className="pl-3">Duplicate</p>
 									</button>
 								)}
 							</Menu.Item>
@@ -132,11 +122,13 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 									>
-										<div>{changeViewOwner()}</div>
-										<p className={styles.paddingLeft}>Change View Owner</p>
-										<div className={styles.rightArrow}>{rightArrow()}</div>
+										<CircleUser className="size-4" />
+										<p className="pl-3">Change View Owner</p>
+										<div className="pl-[21px]">
+											<ChevronRight className="size-3" />
+										</div>
 									</button>
 								)}
 							</Menu.Item>
@@ -148,18 +140,18 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 									>
-										<div>{viewVisibility()}</div>
-										<p className={styles.paddingLeft}>
-											Change View Visibility{" "}
-										</p>
-										<div className={styles.paddingLeft}>{rightArrow()}</div>
+										<BookUser className="size-4" />
+										<p className="pl-3">Change View Visibility </p>
+										<div className="pl-3">
+											<ChevronRight className="size-3" />
+										</div>
 									</button>
 								)}
 							</Menu.Item>
 						</div>
-						<div className={styles.div}>
+						<div className="px-1 py-1">
 							<Menu.Item>
 								{({ active }) => (
 									<button
@@ -168,10 +160,10 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 									>
-										<div>{favoriteView()}</div>
-										<p className={styles.paddingLeft}>Favorite View</p>
+										<Star className="size-4" />
+										<p className="pl-3">Favorite View</p>
 									</button>
 								)}
 							</Menu.Item>
@@ -183,16 +175,16 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 										onClick={handleCopyShareLink}
 									>
-										<div>{copyShareLink()}</div>
-										<p className={styles.paddingLeft}>Copy share link</p>
+										<Link className="size-4" />
+										<p className="pl-3">Copy share link</p>
 									</button>
 								)}
 							</Menu.Item>
 						</div>
-						<div className={styles.div}>
+						<div className="px-1 py-1">
 							<Menu.Item>
 								{({ active }) => (
 									<button
@@ -201,19 +193,15 @@ const FilterListDropDown = ({
 											active
 												? "bg-violet-500 text-foreground"
 												: "text-foreground"
-										} ${styles.menuItem}`}
+										} group flex w-full items-center rounded-md px-2 py-2 text-sm`}
 										onClick={() => {
 											dispatch(deleteView(filterId, teamId));
 										}}
 									>
 										<div>
-											{
-												<TrashCan
-													className={`${fillColor.hover} ${fillColor.color}`}
-												/>
-											}
+											<Trash2 className="size-4" />
 										</div>
-										<p className={styles.paddingLeft}>Delete</p>
+										<p className="pl-3">Delete</p>
 									</button>
 								)}
 							</Menu.Item>
@@ -222,12 +210,16 @@ const FilterListDropDown = ({
 				</Transition>
 			</Menu>
 			<div
-				className={`${styles.copiedAlertBox} ${isLinkCopied ? "opacity-100" : "opacity-0"}`}
+				className={`fixed bottom-5 right-5 w-auto bg-accent border border-border rounded px-4 py-4 transition-all delay-100 duration-1000 ${
+					isLinkCopied ? "opacity-100" : "opacity-0"
+				}`}
 			>
-				<p className={styles.urlClipboard}>
+				<p className="text-foreground text-xs font-bold leading-6 mb-2">
 					Share link to {filterTitle} copied to clipboard!
 				</p>
-				<p className={styles.paste}>Paste it wherever you like</p>
+				<p className="text-muted-foreground text-xs font-bold">
+					Paste it wherever you like
+				</p>
 			</div>
 		</div>
 	);

@@ -1,5 +1,5 @@
 export type HideTaskStatusDropdownProps = {
-  toggleHideDropdown: () => void;
-  showTasks: boolean;
-  toggleShowTasks: () => void;
+	toggleHideDropdown: () => void;
+	showTasks: boolean;
+	toggleShowTasks: () => void;
 };

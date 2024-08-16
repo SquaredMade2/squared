@@ -1,12 +1,11 @@
-const styles = {
-  editorPlaceholder:
-    'text-gray-400 absolute top-6 left-14 text-base select-none inline-block pointer-events-none',
-};
-
 export function PlaceholderPlugin({
-  placeholderText,
+	placeholderText,
 }: {
-  placeholderText: string;
+	placeholderText: string;
 }): React.ReactElement {
-  return <div className={styles.editorPlaceholder}>{placeholderText}</div>;
+	return (
+		<div className="text-gray-400 absolute top-6 left-14 text-base select-none inline-block pointer-events-none">
+			{placeholderText}
+		</div>
+	);
 }

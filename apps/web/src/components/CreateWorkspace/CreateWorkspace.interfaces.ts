@@ -1,4 +1,4 @@
 export interface CreateWorkspaceProps {
-  onboarding: boolean;
-  handleNextPage?: () => void;
+	onboarding: boolean;
+	handleNextPage?: () => void;
 }

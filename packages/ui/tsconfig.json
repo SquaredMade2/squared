@@ -1,7 +1,12 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
+  "include": ["src", "types", "scripts"],
   "compilerOptions": {
-    "jsx": "react",
+    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "importHelpers": true,
+    "lib": ["DOM", "ESNext", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
       "number": ["./src/number"],
       "primitive": ["./src/primitive"],
@@ -67,7 +72,5 @@
       "input": ["./src/input"],
       "textarea": ["./src/textarea"]
     }
-  },
-  "include": ["."],
-  "exclude": ["node_modules"]
+  }
 }

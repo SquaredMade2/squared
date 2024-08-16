@@ -1,5 +1,5 @@
 interface ITag {
-  name: string;
+	name: string;
 }
 
 export default ITag;

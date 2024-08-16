@@ -1,3 +1,3 @@
 export interface SettingsTopNavbarProps {
-  setShowNavBar: () => void;
+	setShowNavBar: () => void;
 }

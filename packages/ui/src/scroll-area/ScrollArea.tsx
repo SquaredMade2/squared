@@ -122,8 +122,8 @@ const ScrollArea = React.forwardRef<ScrollAreaElement, ScrollAreaProps>(
 					style={{
 						position: "relative",
 						// Pass corner sizes as CSS vars to reduce re-renders of context consumers
-						["--squared-scroll-area-corner-width" as any]: cornerWidth + "px",
-						["--squared-scroll-area-corner-height" as any]: cornerHeight + "px",
+						["--squared-scroll-area-corner-width" as any]: `${cornerWidth}px`,
+						["--squared-scroll-area-corner-height" as any]: `${cornerHeight}px`,
 						...props.style,
 					}}
 				/>
@@ -161,8 +161,10 @@ const ScrollAreaViewport = React.forwardRef<
 		<>
 			{/* Hide scrollbars cross-browser and enable momentum scroll for touch devices */}
 			<style
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{
-					__html: `[data-squared-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-squared-scroll-area-viewport]::-webkit-scrollbar{display:none}`,
+					__html:
+						"[data-squared-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-squared-scroll-area-viewport]::-webkit-scrollbar{display:none}",
 				}}
 				nonce={nonce}
 			/>
@@ -466,10 +468,15 @@ const ScrollAreaScrollbarVisible = React.forwardRef<
 			sizes,
 			onSizesChange: setSizes,
 			hasThumb: Boolean(thumbRatio > 0 && thumbRatio < 1),
-			onThumbChange: (thumb) => (thumbRef.current = thumb),
-			onThumbPointerUp: () => (pointerOffsetRef.current = 0),
-			onThumbPointerDown: (pointerPos) =>
-				(pointerOffsetRef.current = pointerPos),
+			onThumbChange: (thumb) => {
+				thumbRef.current = thumb;
+			},
+			onThumbPointerUp: () => {
+				pointerOffsetRef.current = 0;
+			},
+			onThumbPointerDown: (pointerPos) => {
+				pointerOffsetRef.current = pointerPos;
+			},
 		};
 
 	function getScrollPosition(pointerPos: number, dir?: Direction) {
@@ -591,8 +598,7 @@ const ScrollAreaScrollbarX = React.forwardRef<
 					context.dir === "rtl" ? "var(--squared-scroll-area-corner-width)" : 0,
 				right:
 					context.dir === "ltr" ? "var(--squared-scroll-area-corner-width)" : 0,
-				["--squared-scroll-area-thumb-width" as any]:
-					getThumbSize(sizes) + "px",
+				["--squared-scroll-area-thumb-width" as any]: `${getThumbSize(sizes)}px`,
 				...props.style,
 			}}
 			onThumbPointerDown={(pointerPos) =>
@@ -656,8 +662,7 @@ const ScrollAreaScrollbarY = React.forwardRef<
 				right: context.dir === "ltr" ? 0 : undefined,
 				left: context.dir === "rtl" ? 0 : undefined,
 				bottom: "var(--squared-scroll-area-corner-height)",
-				["--squared-scroll-area-thumb-height" as any]:
-					getThumbSize(sizes) + "px",
+				["--squared-scroll-area-thumb-height" as any]: `${getThumbSize(sizes)}px`,
 				...props.style,
 			}}
 			onThumbPointerDown={(pointerPos) =>
@@ -1017,12 +1022,12 @@ const ScrollAreaCornerImpl = React.forwardRef<
 /* -----------------------------------------------------------------------------------------------*/
 
 function toInt(value?: string) {
-	return value ? parseInt(value, 10) : 0;
+	return value ? Number.parseInt(value, 10) : 0;
 }
 
 function getThumbRatio(viewportSize: number, contentSize: number) {
 	const ratio = viewportSize / contentSize;
-	return isNaN(ratio) ? 0 : ratio;
+	return Number.isNaN(ratio) ? 0 : ratio;
 }
 
 function getThumbSize(sizes: Sizes) {

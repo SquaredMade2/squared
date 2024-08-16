@@ -6,15 +6,8 @@ import type {
 	Color,
 	RightClickMenuProps,
 } from "@/components/RightClickMenu/RightClickMenu.interfaces";
-import { TrashCan, Pencil } from "@/components/Svg";
+import { Pencil, Trash2 } from "lucide-react";
 import { useTheme } from "next-themes";
-
-const styles = {
-	main: " bg-popover text-popover-foreground fixed border border-border z-10 cursor-default rounded",
-	mainWrapper: "w-full h-full p-1.5",
-	itemWrapper: "flex items-center hover:bg-popoverHover py-1 pr-3 pl-1 rounded",
-	svg: "mr-2",
-};
 
 const RightClickMenu = ({
 	x,
@@ -35,7 +28,10 @@ const RightClickMenu = ({
 					hover: "group-hover:fill-black",
 					color: "fill-gray-500",
 				})
-			: setFillColor({ ...fillColor, hover: "group-hover:fill-white" });
+			: setFillColor({
+					...fillColor,
+					hover: "group-hover:fill-white",
+				});
 	};
 
 	useEffect(() => {
@@ -44,28 +40,31 @@ const RightClickMenu = ({
 
 	return (
 		//Inline styling on purpose.
-		<div className={styles.main} style={{ top: `${y}px`, left: `${x}px` }}>
-			<div className={styles.mainWrapper}>
+		<div
+			className=" bg-popover text-popover-foreground fixed border border-border z-10 cursor-default rounded"
+			style={{ top: `${y}px`, left: `${x}px` }}
+		>
+			<div className="w-full h-full p-1.5">
 				<ul>
 					{setShowRenameModal && (
 						<li
 							onClick={() => setShowRenameModal(true)}
-							className={`${styles.itemWrapper} group`}
+							className={`${"flex items-center hover:bg-popoverHover py-1 pr-3 pl-1 rounded"} group`}
 						>
-							<span className={styles.svg}>
-								{<Pencil className={`${fillColor.color} ${fillColor.hover}`} />}
+							<span className="mr-2">
+								<Pencil className="size-4" />
 							</span>
 							<p>Rename...</p>
 						</li>
 					)}
 					<li
-						className={`${styles.itemWrapper} group`}
+						className={`${"flex items-center hover:bg-popoverHover py-1 pr-3 pl-1 rounded"} group`}
 						onClick={() => {
 							handleDeleteTaskCard(task);
 						}}
 					>
-						<span className={styles.svg}>
-							{<TrashCan className={`${fillColor.hover} ${fillColor.color}`} />}
+						<span className="mr-2">
+							<Trash2 className="size-4" />
 						</span>
 						<p>Delete</p>
 					</li>

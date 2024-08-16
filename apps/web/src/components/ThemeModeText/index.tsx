@@ -1,75 +1,62 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { lightMode, darkMode } from "@/components/Svg";
-import { handleTheme } from "@/store/userSettings";
 import type { ThemeModeTextProps } from "./ThemeModeText.interfaces";
-import type { RootState } from "@/store";
 import { useTheme } from "next-themes";
 
-const styles = {
-	container:
-		"bg-card h-screen w-full flex flex-col items-center justify-center text-center",
-	title: "text-foreground text-2xl font-medium mb-3",
-	subTitle: "text-muted-foreground text-base mb-8",
-	themeContainer:
-		"flex w-[600px] xs:w-11/12 h-48 border border-border text-foreground rounded-lg font-medium",
-	buttonLight:
-		"w-1/2 box-border border-border border-r flex items-center justify-center flex-col",
-	buttonDark: "w-1/2 rounded-r-lg flex flex-col items-center justify-center",
-	selected: "bg-taskHeader",
-	svgWrapper: "w-3/5 h-auto my-3 flex items-center justify-center",
-	continueButtonDark:
-		"w-11/12 max-w-xs h-12 bg-purpleButton hover:bg-purpleButtonHover rounded text-foreground font-medium mt-12 transition ease-out duration-100 box-content",
-	continueButtonLight:
-		"w-11/12 max-w-xs h-12 bg-purpleButtonHover hover:bg-purpleButton rounded text-foreground font-medium mt-12 transition ease-out duration-100 box-content",
-};
-
 const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
-	const dispatch = useDispatch();
+	const { theme, setTheme } = useTheme();
 
-	const { theme } = useTheme();
 	const selected = "border-solid border-2 border-onboardingTheme rounded";
 
 	return (
-		<div className={styles.container}>
-			<span className={styles.title}>Choose your style </span>
-			<span className={styles.subTitle}>
+		<div className="bg-card h-screen w-full flex flex-col items-center justify-center text-center">
+			<span className="text-foreground text-2xl font-medium mb-3">
+				Choose your style
+			</span>
+			<span className="text-muted-foreground text-base mb-8">
 				You can change the UI style at any time through the command menu or in
 				the settings.
 			</span>
-			<div className={styles.themeContainer}>
-				{theme === "light" && (
+			<div className="flex w-[600px] xs:w-11/12 h-48 border border-border text-foreground rounded-lg font-medium">
+				{theme === "light" || theme === "system" ? (
 					<>
 						<div
-							className={`${styles.buttonLight} ${styles.selected}`}
-							onClick={() => dispatch(handleTheme("light"))}
+							className="w-1/2 box-border border-border border-r flex items-center justify-center flex-col bg-taskHeader"
+							onClick={() => setTheme("light")}
 						>
-							<div className={styles.svgWrapper}>{lightMode(selected)}</div>
+							<div className="w-3/5 h-auto my-3 flex items-center justify-center">
+								{lightMode(selected)}
+							</div>
 							<p>Light</p>
 						</div>
 						<div
-							className={styles.buttonDark}
-							onClick={() => dispatch(handleTheme("dark"))}
+							className="w-1/2 rounded-r-lg flex flex-col items-center justify-center"
+							onClick={() => setTheme("dark")}
 						>
-							<div className={styles.svgWrapper}>{darkMode("")}</div>
+							<div className="w-3/5 h-auto my-3 flex items-center justify-center">
+								{darkMode("")}
+							</div>
 							<p>Dark</p>
 						</div>
 					</>
-				)}
-				{theme === "dark" && (
+				) : (
 					<>
 						<div
-							className={styles.buttonLight}
-							onClick={() => dispatch(handleTheme("light"))}
+							className="w-1/2 box-border border-border border-r flex items-center justify-center flex-col"
+							onClick={() => setTheme("light")}
 						>
-							<div className={styles.svgWrapper}>{lightMode("")}</div>
+							<div className="w-3/5 h-auto my-3 flex items-center justify-center">
+								{lightMode("")}
+							</div>
 							<p>Light</p>
 						</div>
 						<div
-							className={`${styles.buttonDark} ${styles.selected}`}
-							onClick={() => dispatch(handleTheme("dark"))}
+							className="w-1/2 rounded-r-lg flex flex-col items-center justify-center bg-taskHeader"
+							onClick={() => setTheme("dark")}
 						>
-							<div className={styles.svgWrapper}>{darkMode(selected)}</div>
+							<div className="w-3/5 h-auto my-3 flex items-center justify-center">
+								{darkMode(selected)}
+							</div>
 							<p>Dark</p>
 						</div>
 					</>
@@ -77,7 +64,11 @@ const ThemeModeText = ({ handleNextPage }: ThemeModeTextProps) => {
 			</div>
 			<button
 				type="button"
-				className={`${theme === "light" ? styles.continueButtonLight : styles.continueButtonDark}`}
+				className={`w-11/12 max-w-xs h-12 ${
+					theme === "light"
+						? "bg-purpleButtonHover hover:bg-purpleButton"
+						: "bg-purpleButton hover:bg-purpleButtonHover"
+				} rounded text-foreground font-medium mt-12 transition ease-out duration-100 box-content`}
 				onClick={handleNextPage}
 			>
 				Continue

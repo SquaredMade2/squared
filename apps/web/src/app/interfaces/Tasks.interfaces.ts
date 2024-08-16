@@ -1,25 +1,28 @@
-import type { Assignee, Task } from '@/store/taskData/taskData.interfaces';
+import type { Assignee, Task } from "@/store/taskData/taskData.interfaces";
 
 export interface TaskCardStatusProps {
-  task: Task;
+	task: Task;
 }
 
 export interface TaskCardTopProps {
-  task: Task;
+	task: Task;
 }
 
 export interface AssigneeParam {
-  id: string | null;
-  name: string | null;
+	id: string | null;
+	name: string | null;
 }
 
 export interface SetAssigneeObject {
-  taskId: string;
-  assignee: AssigneeParam;
+	taskId: string;
+	assignee: AssigneeParam;
 }
 
 export type SetNoAssignee = (taskId: string) => SetAssigneeObject;
 
 export type HandleAssigneeChange = (taskId: string, user: Assignee) => void;
 
-export type AssigneeParams = (taskId: string, user: Assignee) => SetAssigneeObject;
+export type AssigneeParams = (
+	taskId: string,
+	user: Assignee,
+) => SetAssigneeObject;

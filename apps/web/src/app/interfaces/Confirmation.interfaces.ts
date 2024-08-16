@@ -1,5 +1,5 @@
 export interface Data {
-  success: boolean;
-  redirect: string;
-  message: string;
+	success: boolean;
+	redirect: string;
+	message: string;
 }

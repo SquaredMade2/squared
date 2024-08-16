@@ -1,21 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface showNewIssueState {
-  isOpen: boolean;
+	isOpen: boolean;
 }
 
 const initialState: showNewIssueState = {
-  isOpen: false,
+	isOpen: false,
 };
 
 const showNewIssue = createSlice({
-  name: 'showNewIssue',
-  initialState: initialState,
-  reducers: {
-    setShowNewIssue(state, action) {
-      state.isOpen = !!action.payload;
-    },
-  },
+	name: "showNewIssue",
+	initialState: initialState,
+	reducers: {
+		setShowNewIssue(state, action) {
+			state.isOpen = !!action.payload;
+		},
+	},
 });
 
 export const { setShowNewIssue } = showNewIssue.actions;

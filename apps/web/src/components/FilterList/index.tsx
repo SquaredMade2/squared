@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-// import Link from 'next/link'; leave in until component fixed
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { getFilteredViews } from "@/store/filterPage/actions";
 import FilterListDropDown from "@/components/FilterListDropDown";
 
-import { stackIcon, personIcon } from "@/components/Svg";
+import { CircleUser, Layers3 } from "lucide-react";
 import type { FilterListProps } from "./FilterList.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import { useTheme } from "next-themes";
@@ -19,32 +18,14 @@ const FilterList = ({ searchInput }: FilterListProps) => {
 	const userName = useSelector((state: RootState) => state.userSettings.user);
 	const dispatch = useDispatch<AppDispatch>();
 
-	const styles = {
-		main: "h-full bg-card overflow-hidden border border-border rounded-lg",
-		itemMain: `grid grid-cols-2 h-[7vh] items-center bg-gradient-to-r ${
-			theme === "dark"
-				? "from-[#1d2029] to-[#0e0f11]"
-				: "from-[#F7F7F7] to-[#FFFFFF]"
-		} border-b border-border`,
-		leftSide: "flex items-center",
-		stackIcon: "ml-5",
-		filterTitle: "ml-4 text-foreground",
-		rightSide: "flex items-center justify-end",
-		personIcon: "mr-3",
-		userName: "mr-3 text-foreground",
-		ellipsis: "mr-5 w-10 hover:bg-background",
-		rightSideLink: "md:flex hidden items-center",
-		topContainer: "pt-3.5",
-	};
-
 	useEffect(() => {
 		dispatch(getFilteredViews(teamId));
 	}, []);
 
 	return (
-		<div className={styles.topContainer}>
+		<div className="pt-3.5">
 			{filters.length > 0 ? (
-				<div className={styles.main}>
+				<div className="h-full bg-card overflow-hidden border border-border rounded-lg">
 					{filters
 						.filter((filter) => {
 							return filter.filterTitle
@@ -55,37 +36,44 @@ const FilterList = ({ searchInput }: FilterListProps) => {
 						})
 						.map((filter) => {
 							return (
-								<>
-									<div key={filter._id.toString()} className={styles.itemMain}>
-										<Link href={`/filter/${filter._id}`}>
-											<div className={styles.leftSide}>
-												<div className={styles.stackIcon}>{stackIcon()}</div>
-												<div className={styles.filterTitle}>
-													{filters.length > 0
-														? filter.filterTitle.toString()
-														: null}
-												</div>
+								<div
+									key={filter._id.toString()}
+									className={`grid grid-cols-2 h-[7vh] items-center bg-gradient-to-r ${
+										theme === "dark"
+											? "from-[#1d2029] to-[#0e0f11]"
+											: "from-[#F7F7F7] to-[#FFFFFF]"
+									} border-b border-border`}
+								>
+									<Link href={`/filter/${filter._id}`}>
+										<div className="flex items-center">
+											<div className="ml-5">
+												<Layers3 className="size-4 text-[#858699]" />
+											</div>
+											<div className="ml-4 text-foreground">
+												{filters.length > 0
+													? filter.filterTitle.toString()
+													: null}
+											</div>
+										</div>
+									</Link>
+									<div className="flex items-center justify-end">
+										<Link
+											href={`/filter/${filter._id}`}
+											className="md:flex hidden items-center"
+										>
+											<div className="mr-3">
+												<CircleUser className="size-4 text-[#6A6F75]" />
+											</div>
+											<div className="mr-3 text-foreground">
+												<p>{userName.name}</p>
 											</div>
 										</Link>
-										<div className={styles.rightSide}>
-											<Link
-												href={`/filter/${filter._id}`}
-												className={styles.rightSideLink}
-											>
-												<div className={styles.personIcon}>
-													{personIcon({})}
-												</div>
-												<div className={styles.userName}>
-													<p>{userName.name}</p>
-												</div>
-											</Link>
-											<FilterListDropDown
-												filterId={filter._id.toString()}
-												filterTitle={filter.filterTitle.toString()}
-											/>
-										</div>
+										<FilterListDropDown
+											filterId={filter._id.toString()}
+											filterTitle={filter.filterTitle.toString()}
+										/>
 									</div>
-								</>
+								</div>
 							);
 						})}
 				</div>

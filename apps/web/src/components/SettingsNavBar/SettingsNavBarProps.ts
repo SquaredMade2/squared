@@ -1,3 +1,3 @@
 export interface SettingsNavbarProps {
-  setLoading?: (loading: boolean) => void;
+	setLoading?: (loading: boolean) => void;
 }

@@ -117,7 +117,7 @@ export const Chromatic = () => (
 			Empty consumer child - <span aria-hidden>✅</span>
 		</h2>
 		<ErrorBoundary>
-			<SlotWithoutSlottable></SlotWithoutSlottable>
+			<SlotWithoutSlottable />
 		</ErrorBoundary>
 
 		<h2>
@@ -205,7 +205,7 @@ export const Chromatic = () => (
 			Empty consumer child - <span aria-hidden>✅</span>
 		</h2>
 		<ErrorBoundary>
-			<SlotWithSlottable></SlotWithSlottable>
+			<SlotWithSlottable />
 		</ErrorBoundary>
 
 		<h2>
@@ -298,7 +298,7 @@ const SlotWithFalseInternalChild = ({ children, ...props }: any) => (
 );
 
 const SlotWithNullInternalChild = ({ children, ...props }: any) => (
-	<Slot {...props}>{false ? children : null}</Slot>
+	<Slot {...props}>{null}</Slot>
 );
 
 const SlotWithPreventableEvent = (props: any) => (

@@ -15,14 +15,16 @@ interface CollectionProps extends SlotProps {
 // This is because we encountered issues with generic types that cannot be statically analysed
 // due to creating them dynamically via createCollection.
 
-function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
-	name: string,
-) {
+function createCollection<
+	ItemElement extends HTMLElement,
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
+	ItemData = {},
+>(name: string) {
 	/* -----------------------------------------------------------------------------------------------
 	 * CollectionProvider
 	 * ---------------------------------------------------------------------------------------------*/
 
-	const PROVIDER_NAME = name + "CollectionProvider";
+	const PROVIDER_NAME = `${name}CollectionProvider`;
 	const [createCollectionContext, createCollectionScope] =
 		createContextScope(PROVIDER_NAME);
 
@@ -64,7 +66,7 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 	 * CollectionSlot
 	 * ---------------------------------------------------------------------------------------------*/
 
-	const COLLECTION_SLOT_NAME = name + "CollectionSlot";
+	const COLLECTION_SLOT_NAME = `${name}CollectionSlot`;
 
 	const CollectionSlot = React.forwardRef<CollectionElement, CollectionProps>(
 		(props, forwardedRef) => {
@@ -81,7 +83,7 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 	 * CollectionItem
 	 * ---------------------------------------------------------------------------------------------*/
 
-	const ITEM_SLOT_NAME = name + "CollectionItemSlot";
+	const ITEM_SLOT_NAME = `${name}CollectionItemSlot`;
 	const ITEM_DATA_ATTR = "data-squared-collection-item";
 
 	type CollectionItemSlotProps = ItemData & {
@@ -120,7 +122,7 @@ function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
 	 * ---------------------------------------------------------------------------------------------*/
 
 	function useCollection(scope: any) {
-		const context = useCollectionContext(name + "CollectionConsumer", scope);
+		const context = useCollectionContext(`${name}CollectionConsumer`, scope);
 
 		const getItems = React.useCallback(() => {
 			const collectionNode = context.collectionRef.current;

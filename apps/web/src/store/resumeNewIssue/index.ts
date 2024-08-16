@@ -1,21 +1,21 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface resumeNewIssueState {
-  hasData: boolean;
+	hasData: boolean;
 }
 
 const initialState: resumeNewIssueState = {
-  hasData: false,
+	hasData: false,
 };
 
 const resumeNewIssue = createSlice({
-  name: 'resumeNewIssue',
-  initialState: initialState,
-  reducers: {
-    setResumeNewIssue(state, action: PayloadAction<boolean>) {
-      state.hasData = !!action.payload;
-    },
-  },
+	name: "resumeNewIssue",
+	initialState: initialState,
+	reducers: {
+		setResumeNewIssue(state, action: PayloadAction<boolean>) {
+			state.hasData = !!action.payload;
+		},
+	},
 });
 
 export const { setResumeNewIssue } = resumeNewIssue.actions;

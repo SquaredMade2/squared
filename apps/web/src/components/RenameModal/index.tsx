@@ -4,23 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { RenameModalProps } from "@/components/RenameModal/RenameModal.interfaces";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import { Pencil } from "@/components/Svg";
+import { Pencil } from "lucide-react";
 import { updateTitle } from "@/api/taskApi";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { useTheme } from "next-themes";
-
-const styles = {
-	main: "w-[640px] xs:w-[calc(100%-10px)] border border-border fixed top-1/4 bg-popover rounded-lg text-foreground shadow-[#00000080] shadow-[0px_16px_70px] z-40",
-	input: "bg-popover focus:outline-none py-5 block text-lg w-full",
-	title: "bg-popoverHover inline-block px-3 py-0.5 rounded mt-5 text-sm",
-	mainWrapper: "px-5",
-	renameButton:
-		"bg-popoverHover rounded pl-3.5 py-2.5 flex items-center whitespace-nowrap overflow-hidden text-sm w-full",
-	renameContainer: "p-1.5 border-t border-border",
-	pencil: "mr-2.5",
-	renameSecondary: "text-muted-foreground",
-	container: "w-full mdsm:w-full flex justify-center z-40",
-};
 
 const RenameModal = ({
 	showRenameModal,
@@ -89,13 +76,19 @@ const RenameModal = ({
 	return (
 		<>
 			{showRenameModal && (
-				<div className={styles.container}>
-					<form ref={modalRef} className={styles.main} onSubmit={handleSubmit}>
-						<div className={styles.mainWrapper}>
-							<h2 className={styles.title}>{title}</h2>
+				<div className="w-full mdsm:w-full flex justify-center z-40">
+					<form
+						ref={modalRef}
+						className="w-[640px] xs:w-[calc(100%-10px)] border border-border fixed top-1/4 bg-popover rounded-lg text-foreground shadow-[#00000080] shadow-[0px_16px_70px] z-40"
+						onSubmit={handleSubmit}
+					>
+						<div className="px-5">
+							<h2 className="bg-popoverHover inline-block px-3 py-0.5 rounded mt-5 text-sm">
+								{title}
+							</h2>
 							<input
 								type="text"
-								className={styles.input}
+								className="bg-popover focus:outline-none py-5 block text-lg w-full"
 								value={inputValue}
 								onFocus={(e) => e.target.select()}
 								spellCheck="false"
@@ -103,16 +96,17 @@ const RenameModal = ({
 								onChange={handleChange}
 							/>
 						</div>
-						<div className={styles.renameContainer}>
-							<button className={styles.renameButton} type="button">
-								<span className={styles.pencil}>
-									{<Pencil className={`${fillColor}`} />}
+						<div className="p-1.5 border-t border-border">
+							<button
+								className="bg-popoverHover rounded pl-3.5 py-2.5 flex items-center whitespace-nowrap overflow-hidden text-sm w-full"
+								type="button"
+							>
+								<span className="mr-2.5">
+									<Pencil className="size-4" />
 								</span>
 								<p>
 									Rename issue to{" "}
-									<span
-										className={styles.renameSecondary}
-									>{`"${inputValue}"`}</span>
+									<span className="text-muted-foreground">{`"${inputValue}"`}</span>
 								</p>
 							</button>
 						</div>

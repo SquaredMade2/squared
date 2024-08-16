@@ -1,8 +1,8 @@
-import type { FilterOption } from '@/app/interfaces/Filter.interfaces';
+import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 
 export type SelectedFiltersBarProps = {
-  filterOption: object | null;
-  showFilterSaveForm: boolean;
-  handleFilter(filterValue: FilterOption | null): void;
-  handleFilterSaveForm(value: boolean): void;
+	filterOption: object | null;
+	showFilterSaveForm: boolean;
+	handleFilter(filterValue: FilterOption | null): void;
+	handleFilterSaveForm(value: boolean): void;
 };
