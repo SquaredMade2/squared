@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { getNotifications, newNotification } from "@/store/notifications";
-import ViewButton from "@/components/ViewButton";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdown";
 import SelectedFiltersBar from "@/components/SelectedFiltersBar";
@@ -144,8 +143,8 @@ const TopNavBar = ({
 
   return (
     <header className="max-w-screen">
-      <nav className="bg-background h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]">
-        <div className="bg-linearPurple-600 flex flex-none justify-start items-center">
+      <nav className="h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]">
+        <div className="flex flex-none justify-start items-center">
           <div className="w-full flex flex-none justify-start items-center">
             <div className="lg:hidden cursor-pointer mr-2">
               <ToggleNavBar />
@@ -193,7 +192,7 @@ const TopNavBar = ({
             )}
           </div>
         </div>
-        <div className="bg-linearPurple-600 flex flex-none sm:justify-end items-center xs:grid-cols-2">
+        <div className="flex flex-none sm:justify-end items-center xs:grid-cols-2">
           <div className="xs:w-full">
             {screenSize.width < 640 && (
               <div
@@ -248,6 +247,9 @@ const TopNavBar = ({
                 showNotification={showNotification}
               />
             )}
+          </div>
+          <div className="">
+            <TopNavBarDisplay />
           </div>
         </div>
       </nav>

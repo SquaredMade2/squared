@@ -11,14 +11,6 @@ type Props = {
   showInboxList: boolean;
   closeBackdrop: () => void;
 };
-
-const styles = {
-  notificationsList: "flex flex-col gap-2 justify-center",
-
-  mailList:
-    "w-auto h-full absolute z-10 bg-background xl:static transition-all duration-300 ease-in-out",
-};
-
 const InboxList: React.FC<Props> = ({ showInboxList, closeBackdrop }) => {
   const socket = useContext(SocketContext);
   const user = useAppSelector((state) => state.userSettings.user);
@@ -58,10 +50,11 @@ const InboxList: React.FC<Props> = ({ showInboxList, closeBackdrop }) => {
 
   return (
     <div
-      className={`${styles.mailList} ${showInboxList ? "left-0 top-0" : "-left-[100%]"}`}
+      className={`$w-auto h-full absolute z-10 bg-background xl:static transition-all duration-300 ease-in-out
+        ${showInboxList ? "left-0 top-0" : "-left-[100%]"}`}
     >
       <ScrollArea className="h-full w-full p-2 hover:pr-2.5 transition-all duration-500 ease-in-out">
-        <div className={styles.notificationsList}>
+        <div className="flex flex-col gap-2 justify-center">
           {notifications?.map((obj: NotificationProps) => (
             <InboxItem
               key={obj._id}

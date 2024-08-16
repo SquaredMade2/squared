@@ -51,7 +51,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
     ? ""
     : theme === "dark"
       ? "hover:text-foreground hover:bg-[#282E43]"
-      : "hover:border hover:border-indigo-300 hover:shadow hover:text-foreground";
+      : "hover:border hover:border-gray-500 hover:shadow hover:text-foreground";
 
   const handleMarkRead = (id: string) => {
     socket.emit("sending_notificationId", id, user._id);
