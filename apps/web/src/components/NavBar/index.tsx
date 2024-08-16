@@ -12,22 +12,15 @@ import {
 import { LayoutGrid } from "lucide-react";
 import Teams from "../Teams";
 
-const styles = {
-  main: "flex h-full justify-center bg-popover border-r w-64",
-  newIssueModalContainer: "absolute top-[100px] left-full",
-  teamsWrapper: "w-full h-full flex flex-col cursor-default text-foreground",
-  mainContainer: "w-11/12 flex flex-col",
-};
-
 const Navbar = () => {
   const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
   const currentYear: number = new Date().getFullYear();
 
   return (
     <>
-      <div className={styles.main}>
-        <div className={styles.mainContainer}>
-          <div className={styles.teamsWrapper}>
+      <div className="flex h-full justify-center bg-popover border-r w-64">
+        <div className="w-11/12 flex flex-col">
+          <div className="w-full h-full flex flex-col cursor-default text-foreground">
             <div className="h-12 flex items-center">
               <WorkSpaceDropDown />
             </div>

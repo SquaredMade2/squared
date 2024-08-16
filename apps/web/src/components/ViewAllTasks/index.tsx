@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getAllTasks } from "@/store/taskData/thunks";
@@ -12,7 +11,6 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Status } from "@/interfaces/event.interfaces";
 import type { Task } from "@/store/taskData/taskData.interfaces";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const ViewAllTasks = ({
   handleDragEnd,

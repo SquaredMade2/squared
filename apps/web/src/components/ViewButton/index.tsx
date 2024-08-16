@@ -8,22 +8,16 @@ import { faTableCellsLarge } from "@fortawesome/free-solid-svg-icons";
 
 const ViewButton = () => {
   const dispatch = useAppDispatch();
-  const { theme, view } = useAppSelector((state) => state.userSettings);
+  const { view } = useAppSelector((state) => state.userSettings);
   const switchView = () => {
     view === "list" ? dispatch(setView("grid")) : dispatch(setView("list"));
   };
-  const icon =
-    view !== "list" ? (
-      <FontAwesomeIcon
-        className="text-gray-600 dark:text-gray-400"
-        icon={faListUl}
-      />
-    ) : (
-      <FontAwesomeIcon
-        className="text-gray-600 dark:text-gray-400"
-        icon={faTableCellsLarge}
-      />
-    );
+  const icon = (
+    <FontAwesomeIcon
+      className="text-gray-600 dark:text-gray-400"
+      icon={view === "list" ? faTableCellsLarge : faListUl}
+    />
+  );
 
   const tooltip = view === "list" ? "Grid View" : "List View";
 

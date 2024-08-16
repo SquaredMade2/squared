@@ -4,14 +4,15 @@ import ViewButton from "../ViewButton";
 import LogoutButton from "../LogoutButton";
 import ThemeSwitcher from "../ThemeSwitcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
-import { faInbox } from "@fortawesome/free-solid-svg-icons";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faGear,
+  faInbox,
+  faHouse,
+} from "@fortawesome/free-solid-svg-icons";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useRouter, usePathname } from "next/navigation";
 import ToggleNavBar from "../ToggleNavBar";
-import TeamsButton from "../TeamsButton";
 import WorkspaceButton from "../WorkspaceButton";
 import { SideNavNewIssueButton } from "../NewIssueButton";
 
@@ -75,9 +76,7 @@ const IconLeftMenu = () => {
             <div className={iconStyle}>
               <WorkspaceButton />
             </div>
-            <div className={iconStyle}>
-              <TeamsButton />
-            </div>
+
             <div className={iconStyle}>
               <SideNavNewIssueButton />
             </div>

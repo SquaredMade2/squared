@@ -25,18 +25,13 @@ const ThemeSwitcher: React.FC = () => {
     localStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
-  const icon =
-    theme !== "light" ? (
-      <FontAwesomeIcon
-        className="text-gray-600 dark:text-gray-400"
-        icon={faLightbulb}
-      />
-    ) : (
-      <FontAwesomeIcon
-        className="text-gray-600 dark:text-gray-400"
-        icon={faMoon}
-      />
-    );
+  const icon = (
+    <FontAwesomeIcon
+      className="text-gray-600 dark:text-gray-400"
+      icon={theme === "light" ? faMoon : faLightbulb}
+    />
+  );
+
   const tooltip = theme === "light" ? "Dark mode" : "Light mode";
 
   return (

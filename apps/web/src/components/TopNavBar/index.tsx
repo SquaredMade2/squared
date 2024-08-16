@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { getNotifications, newNotification } from "@/store/notifications";
-import ViewButton from "@/components/ViewButton";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdown";
 import SelectedFiltersBar from "@/components/SelectedFiltersBar";

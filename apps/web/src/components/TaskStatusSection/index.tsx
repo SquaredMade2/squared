@@ -1,6 +1,5 @@
 import TaskCard from "@/components/TaskCard";
 import type { TaskStatusSectionProps } from "./TaskStatusSection.interfaces";
-import { Button } from "../ui/button";
 import { GridColumnNewIssueButton } from "../NewIssueButton";
 
 const TaskStatusSection = ({

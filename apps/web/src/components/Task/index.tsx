@@ -11,18 +11,6 @@ import { ActionType } from "@/store/events/events.actionTypes";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
 import { LoadingTask } from "../LoadingTask";
 
-const styles = {
-  pageWrapper:
-    " w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden",
-
-  sideNavWrapper:
-    "relative max850:absolute transition-all duration-300 ease-in-out",
-  sideNavBackdrop:
-    "max850:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40",
-  navBackdrop:
-    "mdsm:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40",
-};
-
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
   const [render, setRender] = useState(false);
   const [showSideNav, setShowSideNav] = useState(false);
@@ -104,9 +92,15 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
       {((!render && !task) || !task) && <LoadingTask />}
       {render && task && (
         <>
-          <div className={styles.pageWrapper}>
+          <div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
             {showBackdrop && (
-              <div className={showSideNav ? styles.sideNavBackdrop : ""} />
+              <div
+                className={
+                  showSideNav
+                    ? "max850:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40"
+                    : ""
+                }
+              />
             )}
             <div className="w-full h-full p-2 md:p-5 xl:px-10 ">
               <div className="flex w-full relative">
@@ -115,7 +109,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
                   svgRef={svgRef}
                 />
                 <div
-                  className={`${styles.sideNavWrapper} ${
+                  className={`relative max850:absolute transition-all duration-300 ease-in-out ${
                     showSideNav
                       ? " z-20 max850:-right-0 "
                       : " max850:-right-[500px] "
