@@ -28,8 +28,9 @@ const LogoutButton = () => {
         withCredentials: true,
       });
       dispatch(clearUser());
-      router.push(`${process.env.NEXT_PUBLIC_URL}`);
+      router.replace(`${process.env.NEXT_PUBLIC_URL}`);
       toast.success(response.data.success);
+      //toast({ title: response.data.success})
     } catch (error) {}
   };
   return (

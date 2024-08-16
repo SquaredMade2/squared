@@ -2,23 +2,33 @@ import React from "react";
 import ButtonIcon from "../ButtonIcon";
 import { navBarToggle } from "@/store/userSettings";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { PanelLeft } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
-const ToggleNavBar = () => {
-	const { showNavBar } = useAppSelector((state) => state.userSettings);
-	const dispatch = useAppDispatch();
-	const handleNavBar = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
+interface ToggleNavBarProps {
+  hover?: "bg-accent" | "bg-card";
+}
 
-	return (
-		<ButtonIcon
-			icon={<PanelLeft className="text-[#6B6F76] size-5" />}
-			hoverBg="bg-accent"
-			handleClick={handleNavBar}
-		/>
-	);
+const ToggleNavBar: React.FC<ToggleNavBarProps> = ({ hover }) => {
+  const { showNavBar } = useAppSelector((state) => state.userSettings);
+  const dispatch = useAppDispatch();
+
+  const handleNavBar = (): void => {
+    dispatch(navBarToggle(!showNavBar));
+  };
+
+  const toggleIcon = (
+    <FontAwesomeIcon icon={showNavBar ? faChevronLeft : faChevronRight} />
+  );
+
+  const label = showNavBar ? "Hide Navbar" : "Show Navbar";
+
+  return (
+    <ButtonIcon icon={toggleIcon} hoverBg={hover} handleClick={handleNavBar} />
+  );
 };
 
 export default ToggleNavBar;
