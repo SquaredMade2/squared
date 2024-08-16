@@ -28,13 +28,13 @@ const NavBarTeams = ({
 	);
 	const router = useRouter();
 
-  const handleActiveParams: handleActiveParamsType = (param: string): void => {
-    if (teamIdentifier) {
-      router.push(`/${currentWorkspace.url}/team/${teamIdentifier}/${param}`);
-    } else {
-      console.error("Team identifier not found");
-    }
-  };
+	const handleActiveParams: handleActiveParamsType = (param: string): void => {
+		if (teamIdentifier) {
+			router.push(`/${currentWorkspace.url}/team/${teamIdentifier}/${param}`);
+		} else {
+			console.error("Team identifier not found");
+		}
+	};
 
 	const handleMouseEnter = () => {
 		theme === "light" ? setIsHovered("black") : setIsHovered("white");

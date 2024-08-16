@@ -48,13 +48,13 @@ export default function Home() {
 		setShowFilterSaveForm(value);
 	};
 
-  useEffect(() => {
-    if (userHasAccess) {
-      dispatch(getTeam(teamIdentifier as string) as never);
-    } else {
-      router.push(`/${workspaceUrl}`);
-    }
-  }, [dispatch, teamIdentifier, userHasAccess, workspaceUrl, router]);
+	useEffect(() => {
+		if (userHasAccess) {
+			dispatch(getTeam(teamIdentifier as string) as never);
+		} else {
+			router.push(`/${workspaceUrl}`);
+		}
+	}, [dispatch, teamIdentifier, userHasAccess, workspaceUrl, router]);
 
 	const activeSelected = params.all === "active";
 	const backlogSelected = params.all === "backlog";

@@ -6,15 +6,15 @@ import CopyTaskId from "../CopyTaskId";
 import CopyGitBranchName from "../CopyGitBranchName";
 
 const IssueSidebarTopRow = () => {
-  const task = useAppSelector((state) => state.singleTask.data);
-  const [isUrlClicked, setIsUrlClicked] = useState(false);
-  const [isIdClicked, setIsIdClicked] = useState(false);
-  const [isBranchClicked, setIsBranchClicked] = useState(false);
-  const identifier = task?.identifier;
-  const title = task !== undefined ? task.title : "";
-  const { currentTeam } = useAppSelector((state) => state.taskData);
-  const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(title)}`;
-  const gitBranchName = `
+	const task = useAppSelector((state) => state.singleTask.data);
+	const [isUrlClicked, setIsUrlClicked] = useState(false);
+	const [isIdClicked, setIsIdClicked] = useState(false);
+	const [isBranchClicked, setIsBranchClicked] = useState(false);
+	const identifier = task?.identifier;
+	const title = task !== undefined ? task.title : "";
+	const { currentTeam } = useAppSelector((state) => state.taskData);
+	const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(title)}`;
+	const gitBranchName = `
 			${replaceSpacesWithDashes(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
 			)}`;
