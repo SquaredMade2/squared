@@ -6,7 +6,7 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
+} from "../../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { getSingleTask } from "@/store/task/thunks";
@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setPriority } from "@/store/taskData";
 import { priorityOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
-import { high, low, medium } from "../Svg";
+import { high, low, medium } from "../../Svg";
 
 const styles = {
 	contentWrapper: "",

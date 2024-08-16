@@ -6,14 +6,14 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
+} from "../../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType, Labels } from "@/interfaces/event.interfaces";
 import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { labelOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
-import { LabelColor } from "../LabelButton";
+import { LabelColor } from "../../LabelButton";
 
 const styles = {
 	contentWrapper: "",

@@ -1,5 +1,5 @@
-import { Task } from "@/store/taskData/taskData.interfaces";
 import { Dispatch, SetStateAction } from "react";
+import { Task } from "@/store/taskData/taskData.interfaces";
 
 export interface TaskContextMenuProps {
 	task: Task;

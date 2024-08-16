@@ -5,8 +5,8 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
-import ProfileImage from "../ProfileImage";
+} from "../../ui/context-menu";
+import ProfileImage from "../../ProfileImage";
 import { AssigneeSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import { Assignee, EventType } from "@/interfaces/event.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";

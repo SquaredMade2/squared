@@ -8,15 +8,15 @@ import {
 	ContextMenuItem,
 	ContextMenuSeparator,
 } from "../ui/context-menu";
-import StatusSubContextMenu from "../StatusSubContextMenu";
-import AssigneeSubContextMenu from "../AssigneeSubContextMenu";
-import PrioritySubContextMenu from "../PrioritySubContextMenu";
+import StatusSubContextMenu from "./StatusSubContextMenu";
+import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
+import PrioritySubContextMenu from "./PrioritySubContextMenu";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { TaskContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
-import LabelSubContextMenu from "../LabelSubContextMenu";
+import LabelSubContextMenu from "./LabelSubContextMenu";
 import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
-import DateSubContextMenu from "../DateSubContextMenu";
-import RenameSubContextMenu from "../RenameSubContextMenu";
+import DateSubContextMenu from "./DateSubContextMenu";
+import RenameSubContextMenu from "./RenameSubContextMenu";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	task,

@@ -4,10 +4,10 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
+} from "../../ui/context-menu";
 import { RenameSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 import { updateTitle } from "@/api/taskApi";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { EventType } from "@/interfaces/event.interfaces";

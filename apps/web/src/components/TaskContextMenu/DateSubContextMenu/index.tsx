@@ -5,8 +5,8 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
-import DateDropdown from "../DateDropdown";
+} from "../../ui/context-menu";
+import DateDropdown from "../../DateDropdown";
 
 const styles = {
 	contentWrapper: "",
