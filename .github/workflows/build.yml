@@ -48,6 +48,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
 
+      - name: Run linting check
+        run: pnpm lint
+
       - name: Install Cypress
         run: npx cypress install
 
