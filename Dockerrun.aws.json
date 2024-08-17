@@ -37,7 +37,7 @@
       "name": "www",
       "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest",
       "essential": true,
-      "memory": 512,
+      "memory": 256,
       "portMappings": [
         {
           "hostPort": 4000,
@@ -131,7 +131,7 @@
       "name": "api",
       "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest",
       "essential": true,
-      "memory": 512,
+      "memory": 1024,
       "portMappings": [
         {
           "hostPort": 5173,
@@ -212,7 +212,7 @@
       "name": "nginx",
       "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest",
       "essential": true,
-      "memory": 512,
+      "memory": 256,
       "portMappings": [
         {
           "hostPort": 80,
