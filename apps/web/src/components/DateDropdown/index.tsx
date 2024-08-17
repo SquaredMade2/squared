@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getSingleTask } from "@/store/task/thunks";
@@ -111,6 +111,19 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 		end: endOfWeek(endOfMonth(currentMonth)),
 	});
 
+	const handleCancelButton: () => React.ReactElement | undefined = () => {
+		if (location !== "contextMenu")
+			return (
+				<button
+					type="button"
+					className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border"
+					onClick={handleClickAway}
+				>
+					Cancel
+				</button>
+			);
+	};
+
 	return (
 		<ClickAwayListener onClickAway={handleClickAway}>
 			<div className={containerClass}>
@@ -186,13 +199,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 					</div>
 				</div>
 				<div className="mt-10 flex justify-end gap-3">
-					<button
-						type="button"
-						className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border"
-						onClick={handleClickAway}
-					>
-						Cancel
-					</button>
+					{handleCancelButton()}
 					<button
 						type="button"
 						className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary"

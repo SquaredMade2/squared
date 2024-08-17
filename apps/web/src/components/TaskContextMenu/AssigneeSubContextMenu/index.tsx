@@ -99,8 +99,9 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 				</div>
 				Assignee
 			</ContextMenuSubTrigger>
-			<ContextMenuSubContent>
+			<ContextMenuSubContent className="max-w-96 max-h-60 overflow-y-scroll overflow-x-scroll">
 				<ContextMenuItem
+					className="w-40"
 					onClick={() =>
 						handleClickAssignee(task._id, { id: null, name: null })
 					}
@@ -118,7 +119,7 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 						>
 							<ProfileImage
 								profileName={assignee.username}
-								location={"taskCard"}
+								location={"contextMenu"}
 							/>
 							{assignee.username}
 						</ContextMenuItem>

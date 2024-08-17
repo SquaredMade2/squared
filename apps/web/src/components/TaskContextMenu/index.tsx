@@ -17,6 +17,7 @@ import LabelSubContextMenu from "./LabelSubContextMenu";
 import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
 import DateSubContextMenu from "./DateSubContextMenu";
 import RenameSubContextMenu from "./RenameSubContextMenu";
+import { replaceSpacesWithDashes } from "@/utils/formatting";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	task,
@@ -27,9 +28,21 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	const dispatch = useAppDispatch();
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
+	const title = task !== undefined ? task.title : "";
+	const identifier = task?.identifier;
+
 	const deleteCurrentTask = async () => {
 		await dispatch(deleteTask(task._id));
 		await dispatch(getAllTasks(currentTeam));
+	};
+
+	const gitBranchName = `
+	${replaceSpacesWithDashes(
+		`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
+	)}`;
+
+	const copyBranchName = () => {
+		navigator.clipboard.writeText(gitBranchName.trim());
 	};
 
 	return (
@@ -56,21 +69,24 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 			</ContextMenuItem> */}
 			{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
 			<ContextMenuItem onClick={() => copyToClipboard(task._id)}>
-				Copy
+				Copy Link
+			</ContextMenuItem>
+
+			<ContextMenuItem onClick={copyBranchName}>
+				Copy Branch Name
 			</ContextMenuItem>
 
 			<ContextMenuSeparator />
-
-			<ContextMenuItem onClick={deleteCurrentTask}>
-				<div className="text-danger mr-2">
-					<Trash className="size-4" />
-				</div>
-				Delete
-			</ContextMenuItem>
 			<ContextMenuItem>
 				<Link href={`/tasks/${task._id}`} target="_blank">
 					Open in New Tab
 				</Link>
+			</ContextMenuItem>
+			<ContextMenuItem onClick={deleteCurrentTask}>
+				<div className="mr-2">
+					<Trash className="size-4" color="red" />
+				</div>
+				<label className="text-destructive">Delete</label>
 			</ContextMenuItem>
 		</ContextMenuContent>
 	);
