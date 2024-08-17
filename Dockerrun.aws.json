@@ -171,18 +171,6 @@
           "value": "squaredenvs:NODE_ENV"
         },
         {
-          "name": "AWS_ACCESS_KEY_ID",
-          "value": "squaredenvs:AWS_ACCESS_KEY_ID"
-        },
-        {
-          "name": "AWS_SECRET_ACCESS_KEY",
-          "value": "squaredenvs:AWS_SECRET_ACCESS_KEY"
-        },
-        {
-          "name": "AWS_S3_BUCKET",
-          "value": "squaredenvs:AWS_S3_BUCKET"
-        },
-        {
           "name": "NEXT_PUBLIC_CONFIRM_URL",
           "value": "squaredenvs:NEXT_PUBLIC_CONFIRM_URL"
         },

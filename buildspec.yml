@@ -5,9 +5,6 @@ env:
     DOMAIN: "squared-envs:DOMAIN"
     EMAIL_USERNAME: "squared-envs:EMAIL_USERNAME"
     EMAIL_PASSWORD: "squared-envs:EMAIL_PASSWORD"
-    AWS_ACCESS_KEY_ID: "squared-envs:AWS_ACCESS_KEY_ID"
-    AWS_SECRET_ACCESS_KEY: "squared-envs:AWS_SECRET_ACCESS_KEY"
-    AWS_S3_BUCKET: "squared-envs:AWS_S3_BUCKET"
     CLIENT_ID: "squared-envs:CLIENT_ID"
     HOOKDECK_AUTH_TOKEN: "squared-envs:HOOKDECK_AUTH_TOKEN"
     JWT_SECRECT: "squared-envs:JWT_SECRECT"
@@ -39,9 +36,6 @@ phases:
       - echo "EMAIL_PASSWORD=$EMAIL_PASSWORD" >> .env
       - echo "PORT=$PORT" >> .env
       - echo "NODE_ENV=$NODE_ENV" >> .env
-      - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
-      - echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
-      - echo "AWS_S3_BUCKET=$AWS_S3_BUCKET" >> .env
       - echo "NEXT_PUBLIC_CONFIRM_URL=$NEXT_PUBLIC_CONFIRM_URL" >> .env
       - echo "NEXT_PUBLIC_SERVER=$NEXT_PUBLIC_SERVER" >> .env
       - echo "HOOKDECK_AUTH_TOKEN=$HOOKDECK_AUTH_TOKEN" >> .env
