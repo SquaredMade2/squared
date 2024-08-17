@@ -33,22 +33,22 @@ const styles = {
 };
 
 export default function CreateTeam() {
-  const { toast } = useToast();
-  const dispatch = useAppDispatch();
-  const router = useRouter();
+	const { toast } = useToast();
+	const dispatch = useAppDispatch();
+	const router = useRouter();
 
-  const [teamName, setTeamName] = useState<string>("");
-  const [teamIdentifier, setTeamIdentifier] = useState<string>("");
-  const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-  const { user, theme } = useAppSelector((state) => state.userSettings);
-  const access = useAppSelector((state) => state.taskData.access);
-  const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
+	const [teamName, setTeamName] = useState<string>("");
+	const [teamIdentifier, setTeamIdentifier] = useState<string>("");
+	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+	const { user, theme } = useAppSelector((state) => state.userSettings);
+	const access = useAppSelector((state) => state.taskData.access);
+	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
 
-  const userHasAccess =
-    typeof access === "object" &&
-    access &&
-    "id" in access &&
-    access.id === user?._id;
+	const userHasAccess =
+		typeof access === "object" &&
+		access &&
+		"id" in access &&
+		access.id === user?._id;
 
 	const identifierInputFilter = (e: InputChangeEvent): void => {
 		const identifierFormat = /^[A-Za-z0-9]*$/g;
@@ -80,82 +80,82 @@ export default function CreateTeam() {
 				}),
 			);
 
-      if (!doesTeamExist.payload) {
-        dispatch(
-          createTeam({
-            name: teamName.trim(),
-            identifier: teamIdentifier,
-            workspaceId: workspace._id,
-          })
-        );
-        router.push(`/${workspace?.url}/team/${teamIdentifier}/all`);
-        toast({ title: "Team created" });
-      }
-    }
-  };
+			if (!doesTeamExist.payload) {
+				dispatch(
+					createTeam({
+						name: teamName.trim(),
+						identifier: teamIdentifier,
+						workspaceId: workspace._id,
+					}),
+				);
+				router.push(`/${workspace?.url}/team/${teamIdentifier}/all`);
+				toast({ title: "Team created" });
+			}
+		}
+	};
 
 	const handleNavToggle = (): void => {
 		const navBarValue = !showNavBar;
 		dispatch(navBarToggle(navBarValue));
 	};
 
-  useEffect(() => {
-    if (!userHasAccess) {
-      router.push(`/workspace/${workspace?.url}`);
-    }
-  }, []);
+	useEffect(() => {
+		if (!userHasAccess) {
+			router.push(`/workspace/${workspace?.url}`);
+		}
+	}, []);
 
-  return (
-    <div className={styles.mainContainer}>
-      <div className={styles.TopNavbar}>
-        <SettingsTopNavBar setShowNavBar={handleNavToggle} />
-      </div>
-      <div className={styles.pageContainer}>
-        <div className={styles.pageWrapper}>
-          <div>
-            <h1 className={styles.title}>Create Team</h1>
-            <p className={styles.titleDescription}>
-              Create a new team to manage separate cycles and workflows
-            </p>
-          </div>
-          <span className={styles.line} />
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <div>
-              <div className={styles.inputWrapper}>
-                <p className={styles.inputLabel}>Team Name</p>
-                <input
-                  type="text"
-                  value={teamName}
-                  placeholder="e.g. Engineering"
-                  onChange={(e) => setTeamName(e.target.value)}
-                  className={`${styles.input} ${theme === "dark" ? "bg-background" : "bg-card"}`}
-                />
-              </div>
-              <div className={styles.inputWrapper}>
-                <p className={styles.inputLabel}>Team identifier</p>
-                <div className={styles.identifierinputWrapper}>
-                  <input
-                    type="text"
-                    value={teamIdentifier}
-                    placeholder="e.g. ENG"
-                    maxLength={5}
-                    onChange={identifierInputFilter}
-                    className={`${styles.identifierInput} ${
-                      theme === "dark" ? "bg-background" : "bg-card"
-                    }`}
-                  />
-                  <p className={styles.identifierDescription}>
-                    {
-                      "This is used as the identifier (e.g. ENG-123) for all issues of the team. Keep it short and simple."
-                    }
-                  </p>
-                </div>
-              </div>
-              <BlueButton description="Create Team" />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className={styles.mainContainer}>
+			<div className={styles.TopNavbar}>
+				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
+			</div>
+			<div className={styles.pageContainer}>
+				<div className={styles.pageWrapper}>
+					<div>
+						<h1 className={styles.title}>Create Team</h1>
+						<p className={styles.titleDescription}>
+							Create a new team to manage separate cycles and workflows
+						</p>
+					</div>
+					<span className={styles.line} />
+					<form className={styles.form} onSubmit={handleSubmit}>
+						<div>
+							<div className={styles.inputWrapper}>
+								<p className={styles.inputLabel}>Team Name</p>
+								<input
+									type="text"
+									value={teamName}
+									placeholder="e.g. Engineering"
+									onChange={(e) => setTeamName(e.target.value)}
+									className={`${styles.input} ${theme === "dark" ? "bg-background" : "bg-card"}`}
+								/>
+							</div>
+							<div className={styles.inputWrapper}>
+								<p className={styles.inputLabel}>Team identifier</p>
+								<div className={styles.identifierinputWrapper}>
+									<input
+										type="text"
+										value={teamIdentifier}
+										placeholder="e.g. ENG"
+										maxLength={5}
+										onChange={identifierInputFilter}
+										className={`${styles.identifierInput} ${
+											theme === "dark" ? "bg-background" : "bg-card"
+										}`}
+									/>
+									<p className={styles.identifierDescription}>
+										{
+											"This is used as the identifier (e.g. ENG-123) for all issues of the team. Keep it short and simple."
+										}
+									</p>
+								</div>
+							</div>
+							<BlueButton description="Create Team" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	);
 }

@@ -1,37 +1,37 @@
-import { Request, Response } from 'express';
-import axios from 'axios';
+import type { Request, Response } from "express";
+import axios from "axios";
 
-const clientId = process.env.GITHUB_CLIENT_ID!;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET!;
-const appId = process.env.GITHUB_APP_ID!;
-const privateKey = process.env.GITHUB_PRIVATE_KEY!.replace(/\\n/g, '\n');
+const clientId = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+const appId = process.env.GITHUB_APP_ID;
+const privateKey = process.env.GITHUB_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
 // Ensure environment variables are correctly defined
 if (!clientId || !clientSecret || !appId || !privateKey) {
-  throw new Error('Missing necessary environment variables');
+	throw new Error("Missing necessary environment variables");
 }
 
 export const handleOAuthCallback = async (req: Request, res: Response) => {
-  const { code } = req.query;
+	const { code } = req.query;
 
-  try {
-    const response = await axios.post(
-      'https://github.com/login/oauth/access_token',
-      {
-        client_id: clientId,
-        client_secret: clientSecret,
-        code,
-      },
-      {
-        headers: { Accept: 'application/json' },
-      }
-    );
+	try {
+		const response = await axios.post(
+			"https://github.com/login/oauth/access_token",
+			{
+				client_id: clientId,
+				client_secret: clientSecret,
+				code,
+			},
+			{
+				headers: { Accept: "application/json" },
+			},
+		);
 
-    const { access_token } = response.data;
+		const { access_token } = response.data;
 
-    res.redirect(`https://github.com/apps/SquaredMadeApp/installations/new`);
-  } catch (error) {
-    console.error('Error exchanging code for token:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+		res.redirect("https://github.com/apps/SquaredMadeApp/installations/new");
+	} catch (error) {
+		console.error("Error exchanging code for token:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 };

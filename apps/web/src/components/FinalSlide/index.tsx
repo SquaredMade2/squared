@@ -13,9 +13,9 @@ const FinalSlide = () => {
 		(state: RootState) => state.taskData.workspaces,
 	);
 
-  const handleClick = () => {
-    router.push(`/${workspace[0].url}`);
-  };
+	const handleClick = () => {
+		router.push(`/${workspace[0].url}`);
+	};
 
 	return (
 		<div className="h-screen w-full bg-card flex flex-col items-center justify-center text-center">

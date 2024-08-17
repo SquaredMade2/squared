@@ -14,10 +14,10 @@ import { formatUrl } from "@/utils/formatting";
 const CommandPalette = () => {
 	const dispatch = useAppDispatch();
 
-  const { isCmdPalette } = useAppSelector((state) => state.isCmdPalette);
-  const taskList = useAppSelector((state) => state.taskData.taskList);
-  const { currentTeam } = useAppSelector((state) => state.taskData);
-  const [query, setQuery] = useState("");
+	const { isCmdPalette } = useAppSelector((state) => state.isCmdPalette);
+	const taskList = useAppSelector((state) => state.taskData.taskList);
+	const { currentTeam } = useAppSelector((state) => state.taskData);
+	const [query, setQuery] = useState("");
 
 	const filteredTaskTitle = query
 		? taskList?.filter((task) =>
@@ -26,14 +26,14 @@ const CommandPalette = () => {
 		: [];
 	const router = useRouter();
 
-  const handleChange = (task: Task): void => {
-    dispatch(setIsCmdPalette(false));
-    // setTaskPage should be set to getSingleTask
-    dispatch(setTaskPage(task));
-    router.push(
-      `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`
-    );
-  };
+	const handleChange = (task: Task): void => {
+		dispatch(setIsCmdPalette(false));
+		// setTaskPage should be set to getSingleTask
+		dispatch(setTaskPage(task));
+		router.push(
+			`/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`,
+		);
+	};
 
 	useEffect(() => {
 		const onKeyDown = (e: KeyboardEvent): void => {
