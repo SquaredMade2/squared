@@ -72,6 +72,31 @@ export const deleteAllTasks = createAsyncThunk(
 	},
 );
 
+export const deleteTask = createAsyncThunk(
+	"taskData/deleteTask",
+	async (taskId: string, { rejectWithValue }) => {
+		try {
+			const { data } = await axios({
+				method: "DELETE",
+				url: `${process.env.NEXT_PUBLIC_SERVER}/task/delete`,
+				data: {
+					id: taskId,
+				},
+				withCredentials: true,
+			});
+			return taskId;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				return rejectWithValue(error.response?.data);
+			}
+			if (error instanceof Error) {
+				return rejectWithValue(error.message);
+			}
+			return rejectWithValue("An unknown error occurred");
+		}
+	},
+);
+
 export const getAllTasks = createAsyncThunk(
 	"taskData/getAllTasks",
 	async (team: Team, { rejectWithValue }) => {
@@ -116,6 +141,7 @@ export const addWorkspace = createAsyncThunk<
 		// Check if the workspace already exists
 		try {
 			const exists = await dispatch(workspaceExists(workspace.url)).unwrap();
+			console.log(exists);
 			if (exists) {
 				return rejectWithValue("A workspace with this name alreaddy exists");
 			}
@@ -448,6 +474,7 @@ export const workspaceExists = createAsyncThunk(
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 404) {
+					console.log("thats 404");
 					return false;
 				}
 
