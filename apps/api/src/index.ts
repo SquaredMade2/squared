@@ -14,6 +14,7 @@ import teamRoutes from "./routes/teamRoutes";
 import workspaceRoutes from "./routes/workspaceRoutes";
 import filterRoutes from "./routes/pageFilterRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
+import githubRoutes from "./routes/githubRoutes"; // for github integration
 import type { Socket } from "socket.io";
 // import webhookRoutes from "./routes/ghWebhookRoutes";
 // import commitsRoutes from "./routes/commitsRoutes";
@@ -28,7 +29,7 @@ const { Server } = require("socket.io");
 const { createServer } = require("node:http");
 
 const MONGO_URL = process.env.MONGO_URL;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5173;
 
 const app: Express = express();
 const server = createServer(app);
@@ -178,6 +179,7 @@ app.use("/team", teamRoutes);
 app.use("/workspace", workspaceRoutes);
 app.use("/filter", filterRoutes);
 app.use("/uploads", uploadRoutes);
+app.use("/github", githubRoutes);
 // app.use("/webhooks", webhookRoutes);
 // app.use("/commit", commitsRoutes);
 app.get("/ping", (_req, res) => {
