@@ -14,7 +14,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-      SHELL: /bin/bash 
+      SHELL: /bin/bash  # Explicitly set the shell
 
     steps:
       - name: Check out code
@@ -31,7 +31,13 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
-      
+
+      - name: Setup global bin directory for pnpm
+        run: pnpm setup
+
+      - name: Install Turbo globally
+        run: pnpm add turbo --global
+
       - name: Cache node_modules and pnpm store
         uses: actions/cache@v4
         with:
@@ -42,15 +48,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Setup global bin directory for pnpm
-        run: pnpm setup
-
-      - name: Install Turbo globally
-        run: pnpm add turbo --global
-      
       - name: Lint Changed Packages
         run: turbo run lint --filter=...origin/main
 
