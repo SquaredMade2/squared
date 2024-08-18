@@ -30,6 +30,9 @@ jobs:
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
+      
+      - name: Install Turbo
+        run: pnpm add @turbo/turbo --global
 
       - name: Install dependencies
         run: pnpm install
