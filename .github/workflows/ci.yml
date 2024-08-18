@@ -44,8 +44,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Install Turbo
-        run: pnpm add @turbo/turbo --global
+      - name: Setup global bin directory for pnpm
+        run: pnpm setup
+
+      - name: Install Turbo globally
+        run: pnpm add turbo --global
       
       - name: Lint Changed Packages
         run: turbo run lint --filter=...origin/main
