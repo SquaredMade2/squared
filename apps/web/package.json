@@ -52,7 +52,6 @@
     "@repo/logger": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
-    "@repo/ui-old": "workspace:*",
     "@sentry/nextjs": "^7.117.0",
     "@sentry/utils": "^8.20.0",
     "@storybook/react": "^8.1.5",
