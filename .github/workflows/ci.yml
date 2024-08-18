@@ -32,11 +32,8 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
-      - name: Setup global bin directory for pnpm
-        run: pnpm setup
-
       - name: Install Turbo globally
-        run: pnpm add turbo --global
+        run: pnpm setup && pnpm add turbo --global
 
       - name: Cache node_modules and pnpm store
         uses: actions/cache@v4
