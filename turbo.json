@@ -2,47 +2,114 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
       "outputs": [
         "dist/**",
         ".next/**",
         "!.next/cache/**",
         "public/dist/**"
       ],
-      "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_API_HOST"]
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NEXT_PUBLIC_API_HOST"
+      ]
     },
     "start": {
-      "dependsOn": ["^start", "build"]
-    },
-    "test": {
-      "outputs": ["coverage/**"],
-      "dependsOn": []
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+      "dependsOn": [
+        "^start",
+        "build"
+      ]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": [
+        "^dev"
+      ]
+    },
+    "check-types": {
+      "dependsOn": [
+        "^check-types"
+      ],
+      "outputs": []
     },
     "clean": {
       "cache": false
     },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+    "cypress:ci": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "cypress:dev": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "cypress:run": {
+      "dependsOn": [],
+      "outputs": []
     },
     "format:write": {
-      "dependsOn": ["^format:write"]
+      "dependsOn": [
+        "^format:write"
+      ],
+      "outputs": []
     },
     "format:check": {
-      "dependsOn": ["^format:check"]
+      "dependsOn": [
+        "^format:check"
+      ],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
+      "outputs": []
+    },
+    "lint:fix": {
+      "dependsOn": [
+        "^lint:fix"
+      ],
+      "outputs": []
     },
     "reset": {
-      "dependsOn": ["^reset"]
+      "dependsOn": [
+        "^reset"
+      ],
+      "cache": false
+    },
+    "storybook": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": [
+        "^test"
+      ],
+      "outputs": [
+        "coverage/**"
+      ]
+    },
+    "test:web": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "test:api": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "test:ci": {
+      "dependsOn": [
+        "check-types",
+        "test"
+      ],
+      "outputs": []
     }
-  }
+  },
+  "ui": "tui"
 }

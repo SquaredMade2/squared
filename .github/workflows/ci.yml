@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: ["develop"]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint Changed Packages
+        run: turbo run lint --filter=...origin/main
+
+      - name: Build Changed Packages
+        run: turbo run build --filter=...origin/main
+
+      - name: Test Changed Packages
+        run: turbo run test --filter=...origin/main

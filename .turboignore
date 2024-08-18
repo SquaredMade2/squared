@@ -1,0 +1,9 @@
+# Ignore changes in the following directories:
+node_modules
+dist
+.next
+!.env  # Monitor changes in .env files
+
+# Ignore any changes in these files:
+*.md
+*.log
