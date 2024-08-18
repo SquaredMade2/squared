@@ -92,7 +92,7 @@
       "@squared-ui/react-use-previous": ["./src/react/use-previous/src"],
       "@squared-ui/react-use-rect": ["./src/react/use-rect/src"],
       "@squared-ui/react-use-size": ["./src/react/use-size/src"],
-      "@squared-ui/react-visually-hidden": ["./src/react/visually-hidden/src"],
+      "@squared-ui/react-visually-hidden": ["./src/react/visually-hidden/src"]
     }
   }
 }
