@@ -12,9 +12,6 @@
         "!.next/cache/**",
         "public/dist/**"
       ],
-      "dependsOn": [
-        "^build"
-      ],
       "env": [
         "NEXT_PUBLIC_API_HOST"
       ]
@@ -68,5 +65,6 @@
         "^reset"
       ]
     }
-  }
+  },
+  "ui": "tui"
 }
