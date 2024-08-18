@@ -31,12 +31,22 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
       
-      - name: Install Turbo
-        run: pnpm add @turbo/turbo --global
+      - name: Cache node_modules and pnpm store
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
+      - name: Install Turbo
+        run: pnpm add @turbo/turbo --global
+      
       - name: Lint Changed Packages
         run: turbo run lint --filter=...origin/main
 
