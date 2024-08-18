@@ -1,6 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import type { TaskState, TaskStore } from "./interfaces";
+import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
@@ -10,7 +11,7 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 	return createStore<TaskStore>()((set) => ({
 		...initState,
 		addTask: (task) => async (state) => {
-			const response = await axios.post(apiString(""), task);
+			const response = await axios.post(apiString(uuidv4()), task);
 			set({ tasks: [...state.tasks, response.data] });
 			return response.data;
 		},
