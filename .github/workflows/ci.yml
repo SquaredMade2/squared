@@ -33,7 +33,7 @@ jobs:
           corepack prepare pnpm@latest --activate
 
       - name: Install Turbo
-        run: pnpm install turbo
+        run: pnpm install -g turbo
 
       - name: Cache node_modules and pnpm store
         uses: actions/cache@v4
