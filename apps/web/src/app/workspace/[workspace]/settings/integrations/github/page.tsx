@@ -58,6 +58,7 @@ const GithubSettings: React.FC = () => {
 						<button
 							onClick={handleClick}
 							className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary"
+							type="button"
 						>
 							Connect
 						</button>
