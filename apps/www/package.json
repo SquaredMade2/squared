@@ -21,7 +21,6 @@
 	"devDependencies": {
 		"@repo/jest-presets": "workspace:*",
 		"@repo/logger": "workspace:*",
-		"@repo/typescript-config": "workspace:*",
-		"@repo/ui": "workspace:*"
+		"@repo/typescript-config": "workspace:*"
 	}
 }
