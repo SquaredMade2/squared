@@ -1,7 +1,9 @@
 import type { Workspace } from "@repo/db";
 
 export type WorkspaceActions = {
-	addWorkspace: (workspace: Workspace) => (state: WorkspaceState) => Workspace;
+	addWorkspace: (
+		workspace: Workspace,
+	) => (state: WorkspaceState) => Promise<Workspace>;
 };
 
 export type WorkspaceState = {

@@ -36,7 +36,7 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 		},
 		getAllTasks: (teamId) => async (state) => {
 			const response = await axios.get(
-				`${process.env.SERVER_URL}/api/team/${teamId}`,
+				`${process.env.SERVER_URL}/api/team/${teamId}/task`,
 			);
 			set({ tasks: response.data });
 		},
