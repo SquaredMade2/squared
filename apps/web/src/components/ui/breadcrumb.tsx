@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Slot } from "@repo/ui/slot";
+import { Slot } from "@repo/ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { cn } from "@/utils/cn";
 

@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run --filter=!@repo/ui build",
+    "build:ui": "turbo run --filter=@repo/ui build",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api",
-    "check-types": "turbo run check-types",
+    "types:check": "turbo run types:check",
     "clean": "turbo run clean",
     "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
     "cypress:dev": "cypress open",
@@ -22,7 +23,7 @@
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci"
+    "test:ci": "pnpm types:check && jest --ci && pnpm cypress:ci"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

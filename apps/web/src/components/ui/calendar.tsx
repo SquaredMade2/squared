@@ -2,7 +2,7 @@
 
 import type * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "@repo/ui/day-picker";
+import { DayPicker } from "@repo/ui-old/day-picker";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/utils/cn";

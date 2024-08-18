@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import * as ScrollAreaPrimitive from "@repo/ui/scroll-area";
+import * as ScrollAreaPrimitive from "@repo/ui/react-scroll-area";
 import { cn } from "@/utils/cn";
 
 const ScrollArea = React.forwardRef<

@@ -1,7 +1,7 @@
 import { commandSchema } from "./actions";
 import { DialogTitle } from "../ui/dialog";
 import { useEffect, useState } from "react";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { VisuallyHidden } from "@repo/ui/react-visually-hidden";
 import type {
 	SearchbarItem,
 	SearchbarSection,

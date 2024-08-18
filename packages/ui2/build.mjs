@@ -47,4 +47,4 @@ async function build(path) {
   console.log(`Built ${path}/dist/index.d.ts`);
 }
 
-globSync("components/*/*").forEach(build);
+globSync("src/*/*").forEach(build);

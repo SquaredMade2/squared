@@ -1,5 +1,5 @@
 {
-  "name": "@repo/ui",
+  "name": "@repo/ui-old",
   "version": "0.0.0",
   "exports": {
     "./accordion": {
@@ -160,9 +160,9 @@
     "lint:fix": "biome lint --write .",
     "format:write": "biome format --write .",
     "format:check": "biome format .",
-    "check-types": "tsc --skipLibCheck --noEmit",
+    "types:check": "tsc --skipLibCheck --noEmit",
     "test": "jest",
-    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci",
+    "test:ci": "pnpm types:check && jest --ci && pnpm cypress:ci",
     "storybook": "cross-env BROWSER=none storybook dev -p 9009",
     "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
     "cypress:run": "cypress run",

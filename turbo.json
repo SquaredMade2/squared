@@ -2,28 +2,44 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
       "outputs": [
         "dist/**",
         ".next/**",
         "!.next/cache/**",
         "public/dist/**"
       ],
-      "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_API_HOST"]
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NEXT_PUBLIC_API_HOST"
+      ]
     },
     "start": {
-      "dependsOn": ["^start", "build"]
+      "dependsOn": [
+        "^start",
+        "build"
+      ]
     },
     "test": {
-      "outputs": ["coverage/**"],
+      "outputs": [
+        "coverage/**"
+      ],
       "dependsOn": []
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+      "dependsOn": [
+        "^lint:fix"
+      ]
     },
     "dev": {
       "cache": false,
@@ -32,17 +48,25 @@
     "clean": {
       "cache": false
     },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+    "types:check": {
+      "dependsOn": [
+        "^types:check"
+      ]
     },
     "format:write": {
-      "dependsOn": ["^format:write"]
+      "dependsOn": [
+        "^format:write"
+      ]
     },
     "format:check": {
-      "dependsOn": ["^format:check"]
+      "dependsOn": [
+        "^format:check"
+      ]
     },
     "reset": {
-      "dependsOn": ["^reset"]
+      "dependsOn": [
+        "^reset"
+      ]
     }
   }
 }
