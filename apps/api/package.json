@@ -29,7 +29,6 @@
     "@repo/jest-presets": "workspace:*",
     "@repo/logger": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/ui": "workspace:*",
     "@sentry/cli": "^2.22.2",
     "@sentry/node": "^7.81.1",
     "@types/jest": "^29.5.12",
