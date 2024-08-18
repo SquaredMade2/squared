@@ -8,7 +8,7 @@ export type TeamActions = {
 	addTeam: (team: Team) => (state: TeamState) => Promise<Team>;
 	getTeam: (
 		teamId: string,
-	) => (state: TeamState) => Promise<Team> | Team | undefined;
+	) => (state: TeamState) => Promise<Team | undefined> | Team;
 };
 
 export type TeamStore = TeamState & TeamActions;
