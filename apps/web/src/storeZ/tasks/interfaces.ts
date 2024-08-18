@@ -12,7 +12,7 @@ export type TaskActions = {
 	) => (state: TaskState) => Promise<Task>;
 	deleteTask: (taskId: string) => (state: TaskState) => void;
 	getTask: (taskId: string) => (state: TaskState) => Promise<Task | undefined>;
-	getAllTasks: (teamId: string) => (state: TaskState) => Promise<void>;
+	getAllTasks: (teamId: string) => (state: TaskState) => Promise<Task[]>;
 };
 
 export type TaskStore = TaskState & TaskActions;
