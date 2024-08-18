@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "turbo run --filter=!@repo/ui build",
-    "build:ui": "turbo run --filter=@repo/ui build",
+    "build": "turbo run build",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api",
