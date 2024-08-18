@@ -35,3 +35,30 @@ export const handleOAuthCallback = async (req: Request, res: Response) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
+
+export const handleWebhook = async (req: Request, res: Response) => {
+	const payload = req.body;
+
+	// Log the entire payload to see what GitHub is sending
+	console.log("Webhook payload received:", JSON.stringify(payload, null, 2));
+
+	if (payload.action === "push") {
+		console.log(
+			`Received a push event for repository: ${payload.repository.name}`,
+		);
+	}
+
+	const eventType = req.headers["x-github-event"];
+
+	// if eventType == create ==> created Branch
+	// if eventType ==
+
+	console.log("Received a webhook event:", req.headers["x-github-event"]);
+	if (eventType === "push") {
+		console.log(
+			`Received a push event for repository: ${payload.repository.name}`,
+		);
+	}
+
+	res.status(200).send("Webhook received");
+};
