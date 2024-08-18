@@ -657,5 +657,10 @@
       }
     }
   },
+  "workspaces": {
+    "packages": [
+      "src/**/*"
+    ]
+  },
   "packageManager": "pnpm@9.7.0"
 }
