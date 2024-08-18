@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-avatar
+$ pnpm add @squared-ui/react-avatar
 # or
 $ npm install @squared-ui/react-avatar
 ```

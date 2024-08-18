@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-use-size
+$ pnpm add @squared-ui/react-use-size
 # or
 $ npm install @squared-ui/react-use-size
 ```

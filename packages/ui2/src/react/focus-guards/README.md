@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-focus-guards
+$ pnpm add @squared-ui/react-focus-guards
 # or
 $ npm install @squared-ui/react-focus-guards
 ```

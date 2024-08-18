@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-dropdown-menu
+$ pnpm add @squared-ui/react-dropdown-menu
 # or
 $ npm install @squared-ui/react-dropdown-menu
 ```

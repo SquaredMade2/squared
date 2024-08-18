@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-dialog
+$ pnpm add @squared-ui/react-dialog
 # or
 $ npm install @squared-ui/react-dialog
 ```

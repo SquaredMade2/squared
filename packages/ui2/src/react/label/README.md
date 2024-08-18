@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-label
+$ pnpm add @squared-ui/react-label
 # or
 $ npm install @squared-ui/react-label
 ```

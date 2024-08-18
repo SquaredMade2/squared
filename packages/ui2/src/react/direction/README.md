@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-direction
+$ pnpm add @squared-ui/react-direction
 # or
 $ npm install @squared-ui/react-direction
 ```

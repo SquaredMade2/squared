@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-menu
+$ pnpm add @squared-ui/react-menu
 # or
 $ npm install @squared-ui/react-menu
 ```

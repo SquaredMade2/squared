@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-toggle
+$ pnpm add @squared-ui/react-toggle
 # or
 $ npm install @squared-ui/react-toggle
 ```

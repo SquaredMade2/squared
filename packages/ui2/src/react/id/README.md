@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-id
+$ pnpm add @squared-ui/react-id
 # or
 $ npm install @squared-ui/react-id
 ```

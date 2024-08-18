@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-toast
+$ pnpm add @squared-ui/react-toast
 # or
 $ npm install @squared-ui/react-toast
 ```

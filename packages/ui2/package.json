@@ -250,6 +250,16 @@
         "default": "./src/react/context-menu/dist/index.js"
       }
     },
+    "./react-day-picker": {
+      "import": {
+        "types": "./src/react/day-picker/dist/index.d.mts",
+        "default": "./src/react/day-picker/dist/index.mjs"
+      },
+      "require": {
+        "types": "./src/react/day-picker/dist/index.d.ts",
+        "default": "./src/react/day-picker/dist/index.js"
+      }
+    },
     "./react-dialog": {
       "import": {
         "types": "./src/react/dialog/dist/index.d.mts",

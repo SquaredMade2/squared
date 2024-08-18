@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-hover-card
+$ pnpm add @squared-ui/react-hover-card
 # or
 $ npm install @squared-ui/react-hover-card
 ```

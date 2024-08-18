@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-context-menu
+$ pnpm add @squared-ui/react-context-menu
 # or
 $ npm install @squared-ui/react-context-menu
 ```

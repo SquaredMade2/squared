@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-slot
+$ pnpm add @squared-ui/react-slot
 # or
 $ npm install @squared-ui/react-slot
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-navigation-menu
+$ pnpm add @squared-ui/react-navigation-menu
 # or
 $ npm install @squared-ui/react-navigation-menu
 ```

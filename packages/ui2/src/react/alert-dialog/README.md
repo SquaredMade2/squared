@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-alert-dialog
+$ pnpm add @squared-ui/react-alert-dialog
 # or
 $ npm install @squared-ui/react-alert-dialog
 ```

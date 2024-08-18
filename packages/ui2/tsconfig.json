@@ -51,6 +51,7 @@
       "@squared-ui/react-compose-refs": ["./src/react/compose-refs/src"],
       "@squared-ui/react-context": ["./src/react/context/src"],
       "@squared-ui/react-context-menu": ["./src/react/context-menu/src"],
+      "@squared-ui/react-day-picker": ["./src/react/day-picker/src"],
       "@squared-ui/react-dialog": ["./src/react/dialog/src"],
       "@squared-ui/react-direction": ["./src/react/direction/src"],
       "@squared-ui/react-dismissable-layer": ["./src/react/dismissable-layer/src"],

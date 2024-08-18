@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/number
+$ pnpm add @squared-ui/number
 # or
 $ npm install @squared-ui/number
 ```

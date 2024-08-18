@@ -2,7 +2,7 @@
   "extends": "@repo/typescript-config/react-library.json",
   "include": ["src", "types", "scripts"],
   "compilerOptions": {
-    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "types": ["node", "jest"],
     "importHelpers": true,
     "lib": ["DOM", "ESNext", "DOM.Iterable"],
     "jsx": "react-jsx",

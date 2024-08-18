@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-use-escape-keydown
+$ pnpm add @squared-ui/react-use-escape-keydown
 # or
 $ npm install @squared-ui/react-use-escape-keydown
 ```

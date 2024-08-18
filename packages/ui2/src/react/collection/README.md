@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-collection
+$ pnpm add @squared-ui/react-collection
 # or
 $ npm install @squared-ui/react-collection
 ```

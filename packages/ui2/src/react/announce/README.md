@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-announce
+$ pnpm add @squared-ui/react-announce
 # or
 $ npm install @squared-ui/react-announce
 ```

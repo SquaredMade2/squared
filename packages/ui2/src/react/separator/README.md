@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-separator
+$ pnpm add @squared-ui/react-separator
 # or
 $ npm install @squared-ui/react-separator
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-toolbar
+$ pnpm add @squared-ui/react-toolbar
 # or
 $ npm install @squared-ui/react-toolbar
 ```

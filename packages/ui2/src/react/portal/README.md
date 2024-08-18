@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-portal
+$ pnpm add @squared-ui/react-portal
 # or
 $ npm install @squared-ui/react-portal
 ```

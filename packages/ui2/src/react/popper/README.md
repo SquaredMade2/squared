@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-popper
+$ pnpm add @squared-ui/react-popper
 # or
 $ npm install @squared-ui/react-popper
 ```

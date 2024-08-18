@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-tooltip
+$ pnpm add @squared-ui/react-tooltip
 # or
 $ npm install @squared-ui/react-tooltip
 ```

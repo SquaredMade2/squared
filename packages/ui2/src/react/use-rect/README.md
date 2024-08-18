@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-use-rect
+$ pnpm add @squared-ui/react-use-rect
 # or
 $ npm install @squared-ui/react-use-rect
 ```

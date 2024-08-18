@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-scroll-area
+$ pnpm add @squared-ui/react-scroll-area
 # or
 $ npm install @squared-ui/react-scroll-area
 ```

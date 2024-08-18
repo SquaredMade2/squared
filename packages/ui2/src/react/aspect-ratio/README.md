@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-aspect-ratio
+$ pnpm add @squared-ui/react-aspect-ratio
 # or
 $ npm install @squared-ui/react-aspect-ratio
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-presence
+$ pnpm add @squared-ui/react-presence
 # or
 $ npm install @squared-ui/react-presence
 ```

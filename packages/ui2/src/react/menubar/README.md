@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-menubar
+$ pnpm add @squared-ui/react-menubar
 # or
 $ npm install @squared-ui/react-menubar
 ```

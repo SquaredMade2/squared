@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-select
+$ pnpm add @squared-ui/react-select
 # or
 $ npm install @squared-ui/react-select
 ```

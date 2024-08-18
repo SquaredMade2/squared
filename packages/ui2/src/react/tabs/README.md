@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-tabs
+$ pnpm add @squared-ui/react-tabs
 # or
 $ npm install @squared-ui/react-tabs
 ```

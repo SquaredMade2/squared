@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-accordion
+$ pnpm add @squared-ui/react-accordion
 # or
 $ npm install @squared-ui/react-accordion
 ```

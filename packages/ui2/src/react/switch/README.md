@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-switch
+$ pnpm add @squared-ui/react-switch
 # or
 $ npm install @squared-ui/react-switch
 ```

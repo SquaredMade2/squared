@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-progress
+$ pnpm add @squared-ui/react-progress
 # or
 $ npm install @squared-ui/react-progress
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-collapsible
+$ pnpm add @squared-ui/react-collapsible
 # or
 $ npm install @squared-ui/react-collapsible
 ```

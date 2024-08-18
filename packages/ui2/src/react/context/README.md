@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-context
+$ pnpm add @squared-ui/react-context
 # or
 $ npm install @squared-ui/react-context
 ```

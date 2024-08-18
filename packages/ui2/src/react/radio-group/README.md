@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-radio-group
+$ pnpm add @squared-ui/react-radio-group
 # or
 $ npm install @squared-ui/react-radio-group
 ```

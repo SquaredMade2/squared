@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/primitive
+$ pnpm add @squared-ui/primitive
 # or
 $ npm install @squared-ui/primitive
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-focus-scope
+$ pnpm add @squared-ui/react-focus-scope
 # or
 $ npm install @squared-ui/react-focus-scope
 ```

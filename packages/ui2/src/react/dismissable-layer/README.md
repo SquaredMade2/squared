@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-dismissable-layer
+$ pnpm add @squared-ui/react-dismissable-layer
 # or
 $ npm install @squared-ui/react-dismissable-layer
 ```

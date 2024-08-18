@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-slider
+$ pnpm add @squared-ui/react-slider
 # or
 $ npm install @squared-ui/react-slider
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-use-previous
+$ pnpm add @squared-ui/react-use-previous
 # or
 $ npm install @squared-ui/react-use-previous
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-popover
+$ pnpm add @squared-ui/react-popover
 # or
 $ npm install @squared-ui/react-popover
 ```

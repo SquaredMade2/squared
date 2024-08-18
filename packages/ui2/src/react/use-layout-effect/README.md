@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-use-layout-effect
+$ pnpm add @squared-ui/react-use-layout-effect
 # or
 $ npm install @squared-ui/react-use-layout-effect
 ```

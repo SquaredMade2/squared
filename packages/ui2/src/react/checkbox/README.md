@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-checkbox
+$ pnpm add @squared-ui/react-checkbox
 # or
 $ npm install @squared-ui/react-checkbox
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-visually-hidden
+$ pnpm add @squared-ui/react-visually-hidden
 # or
 $ npm install @squared-ui/react-visually-hidden
 ```

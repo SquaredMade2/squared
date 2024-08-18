@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-arrow
+$ pnpm add @squared-ui/react-arrow
 # or
 $ npm install @squared-ui/react-arrow
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-use-controllable-state
+$ pnpm add @squared-ui/react-use-controllable-state
 # or
 $ npm install @squared-ui/react-use-controllable-state
 ```

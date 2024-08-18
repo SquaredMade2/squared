@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-compose-refs
+$ pnpm add @squared-ui/react-compose-refs
 # or
 $ npm install @squared-ui/react-compose-refs
 ```

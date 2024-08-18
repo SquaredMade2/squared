@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-$ yarn add @squared-ui/react-accessible-icon
+$ pnpm add @squared-ui/react-accessible-icon
 # or
 $ npm install @squared-ui/react-accessible-icon
 ```
