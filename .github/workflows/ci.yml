@@ -60,10 +60,10 @@ jobs:
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Lint Changed Packages
-        run: turbo run lint --filter=...origin/main
+        run: turbo run lint --filter=...[HEAD^1]
 
       - name: Build Changed Packages
-        run: turbo run build --filter=...origin/main
+        run: turbo run build --filter=...[HEAD^1]
 
       - name: Test Changed Packages
-        run: turbo run test --filter=...origin/main
+        run: turbo run test --filter=...[HEAD^1]
