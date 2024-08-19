@@ -1,41 +1,49 @@
-# Configuration for www.<yourdomain> (Main Page)
-server {
-    listen 80;
-    server_name www.${DOMAIN};
+worker_processes 1;
 
-    location / {
-        proxy_pass http://www:4000;  # Assuming the main page is served on port 4000
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
+events {
+    worker_connections 1024;
 }
 
-# Configuration for app.<yourdomain> (Next.js Application)
-server {
-    listen 80;
-    server_name app.${DOMAIN};
+http {
+    # Configuration for www.<yourdomain> (Main Page)
+    server {
+        listen 80;
+        server_name www.${DOMAIN};
 
-    location / {
-        proxy_pass http://web:3000;  # Assuming Next.js is running on port 3000
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        location / {
+            proxy_pass http://www:4000;  # Assuming the main page is served on port 4000
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
     }
-}
 
-# Configuration for cloud.<yourdomain> (Express API)
-server {
-    listen 80;
-    server_name cloud.${DOMAIN};
+    # Configuration for app.<yourdomain> (Next.js Application)
+    server {
+        listen 80;
+        server_name app.${DOMAIN};
 
-    location / {
-        proxy_pass http://api:5173;  # Assuming the Express server is running on port 5173
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        location / {
+            proxy_pass http://web:3000;  # Assuming Next.js is running on port 3000
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    # Configuration for cloud.<yourdomain> (Express API)
+    server {
+        listen 80;
+        server_name cloud.${DOMAIN};
+
+        location / {
+            proxy_pass http://api:5173;  # Assuming the Express server is running on port 5173
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
     }
 }

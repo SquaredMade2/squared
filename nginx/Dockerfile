@@ -15,4 +15,4 @@ RUN chmod +x /start.sh
 EXPOSE 80
 
 # Start the container by replacing variables and running Nginx
-CMD ["/start.sh"]
+CMD ["./start.sh"]
