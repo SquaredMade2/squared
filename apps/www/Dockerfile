@@ -33,16 +33,17 @@ COPY turbo.json turbo.json
 RUN pnpm turbo build --filter=www...
 
 # Runner stage
-FROM node:20-slim AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 astro
-USER astro
+# Install a simple static server
+RUN npm install -g serve
 
-COPY --from=installer /app/apps/www/astro.config.mjs ./astro.config.mjs
-COPY --from=installer /app/apps/www/package.json ./package.json
-COPY --from=installer /app/apps/www/dist /app/apps/www/dist
+# Copy the built static files from the installer stage
+COPY --from=installer /app/apps/www/dist /app/www
 
-CMD ["node", "apps/www/dist/server/entry.mjs"]
+# Expose port 4000
+EXPOSE 4000
+
+# Serve the static files using 'serve'
+CMD ["serve", "-s", "www", "-l", "4000"]
