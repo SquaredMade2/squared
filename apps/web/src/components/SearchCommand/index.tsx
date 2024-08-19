@@ -67,6 +67,14 @@ const SearchCommand = ({
 				setIsSearchCommand(false);
 				return;
 			}
+			if (lastKey === "g" && e.key.toLowerCase() === "m") {
+				const item = commandItems.getSchema()["Go to my issues"];
+				if (isSearchbarItem(item)) {
+					item.function();
+				}
+				setIsSearchCommand(false);
+				return;
+			}
 			if (lastKey === "g" && e.key.toLowerCase() === "a") {
 				const item = commandItems.getSchema()["Go to active issues"];
 				if (isSearchbarItem(item)) {

@@ -28,6 +28,9 @@ export const setFillColor = (theme: string): undefined | string => {
 const TopNavBar = ({
 	filterOption,
 	handleFilter,
+	activeSelected,
+	backlogSelected,
+	myIssueSelected,
 	showFilterSaveForm,
 	handleFilterSaveForm,
 }: TopNavBarProps) => {
@@ -56,6 +59,13 @@ const TopNavBar = ({
 			width: window.innerWidth,
 			height: window.innerHeight,
 		};
+	}
+
+	function getIssues() {
+		if (activeSelected) return "Active Issues";
+		if (backlogSelected) return "Backlog Issues";
+		if (myIssueSelected) return "My Issues";
+		return "All Issues";
 	}
 
 	// const handleNotification = (e: React.MouseEvent): void => {
@@ -154,7 +164,7 @@ const TopNavBar = ({
 							className="w-22 text-sm rounded flex justify-center items-center text-foreground h-full flex-row"
 							type="button"
 						>
-							<div>All Issues</div>
+							<div>{getIssues()}</div>
 						</button>
 						{screenSize.width > 640 && (
 							<div

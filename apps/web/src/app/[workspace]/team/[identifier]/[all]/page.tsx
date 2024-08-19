@@ -1,7 +1,8 @@
 "use client";
+import React from "react";
 
 import { useEffect, useState, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
 import { getTeam, getAllTasks } from "@/store/taskData/thunks";
@@ -16,6 +17,7 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 
 export default function Home() {
+	const pathname = usePathname();
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const params = useParams();
@@ -58,6 +60,7 @@ export default function Home() {
 
 	const activeSelected = params.all === "active";
 	const backlogSelected = params.all === "backlog";
+	const myIssueSelected = pathname.includes("my-issues/assigned");
 
 	const handleDeleteTask = async (taskId: string) => {
 		await deleteTaskCard(taskId);
@@ -138,6 +141,9 @@ export default function Home() {
 											showNavBar={showNavBar}
 											handleFilter={handleFilter}
 											filterOption={filterOption}
+											activeSelected={activeSelected}
+											backlogSelected={backlogSelected}
+											myIssueSelected={myIssueSelected}
 											showFilterSaveForm={showFilterSaveForm}
 											handleFilterSaveForm={handleFilterSaveForm}
 										/>
@@ -157,6 +163,7 @@ export default function Home() {
 							</div>
 
 							<ViewAllTasks
+								myIssueSelected={myIssueSelected}
 								activeSelected={activeSelected}
 								backlogSelected={backlogSelected}
 								handleDragEnd={handleDragEnd}
@@ -184,6 +191,9 @@ export default function Home() {
 									<TopNavBar
 										handleFilter={handleFilter}
 										filterOption={filterOption}
+										activeSelected={activeSelected}
+										backlogSelected={backlogSelected}
+										myIssueSelected={myIssueSelected}
 										showFilterSaveForm={showFilterSaveForm}
 										handleFilterSaveForm={handleFilterSaveForm}
 										showNavBar={showNavBar}
