@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
-import { useToast } from "@/components/ui/use-toast";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import {
 	getAllTasks,
 	createNewTask,
@@ -16,6 +16,7 @@ import {
 	setPriority,
 	setDueDate,
 	setEffortEstimate,
+	setTaskPage,
 } from "@/store/taskData";
 import DesignationsContainer from "@/components/DesignationsContainer";
 import NewIssueTopRow from "@/components/NewIssueTopRow";
@@ -34,14 +35,29 @@ import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { Button } from "../ui/button";
 
+const styles = {
+	wrapper:
+		"fixed z-10 top-0 left-0 flex items-start justify-center w-screen h-[703.2px] px-3 py-[13vh] ",
+	container:
+		"relative flex flex-col w-[748.4px] border border-border bg-popover rounded-lg shadow-[#00000080] shadow-[0px_16px_70px] text-nav",
+	form: "",
+	textContainer: "mx-6",
+	title:
+		"w-full leading-6 min-h-min h-full py-4 text-xl mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none",
+	description:
+		" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1",
+	bottomBorder: " mx-4 mt-1 h-[10px] border-b-2 border-border",
+	createIssueButton: "h-full flex items-center justify-end p-4",
+};
+
 const NewIssueModal = () => {
-	const { toast } = useToast();
 	const dispatch = useAppDispatch();
+	const router = useRouter();
 	const showNewIssue = useSelector(
 		(state: RootState) => state.showNewIssue.isOpen,
 	);
 	const authorId = useSelector(
-		(state: RootState) => state.userSettings.user?._id,
+		(state: RootState) => state.userSettings.user._id,
 	);
 
 	const {
@@ -52,10 +68,7 @@ const NewIssueModal = () => {
 		dueDate,
 		effortEstimate,
 		currentWorkspace,
-		taskList,
 	} = useSelector((state: RootState) => state.taskData);
-
-	const taskListTitle = taskList.map((el) => el.title);
 	const [titleInput, setTitleInput] = useState("");
 	const [descriptionInput, setDescriptionInput] = useState("");
 	const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>([]);
@@ -143,17 +156,6 @@ const NewIssueModal = () => {
 
 	const handleCreateIssue = async () => {
 		if (titleInput.replace(/\s+/g, "").length === 0) {
-			toast({
-				title: "Please Enter a Title!",
-				variant: "destructive",
-			});
-			return;
-		}
-		if (taskListTitle.includes(titleInput)) {
-			toast({
-				title: `${titleInput} already exists`,
-				variant: "destructive",
-			});
 			return;
 		}
 		dispatch(incrementCreatedIssues(currentWorkspace._id));
@@ -185,6 +187,9 @@ const NewIssueModal = () => {
 				createNewTask(newTask as Task),
 			).unwrap();
 
+			dispatch(setTaskPage(newTask));
+			router.push(`/tasks/${taskCreatedResponse._id}`);
+
 			dispatch(setResumeNewIssue(false));
 
 			socket.emit(
@@ -193,6 +198,7 @@ const NewIssueModal = () => {
 				taskCreatedResponse._id,
 				user._id,
 			);
+
 			dispatch(getAllTasks(currentTeam));
 			dispatch(setShowNewIssue(false));
 			setTitleInput("");
@@ -216,12 +222,12 @@ const NewIssueModal = () => {
 		<>
 			<AnimatePresence>
 				{showNewIssue && (
-					<div className="fixed z-10 top-0 left-0 flex items-start justify-center w-screen h-[703.2px] px-3 py-[13vh] ">
+					<div className={styles.wrapper}>
 						<ClickAwayListener
 							onClickAway={() => handleClickAway(titleInput, descriptionInput)}
 						>
 							<motion.div
-								className="relative flex flex-col w-[748.4px] border border-border bg-popover rounded-lg shadow-[#00000080] shadow-[0px_16px_70px] text-nav"
+								className={styles.container}
 								initial={{ opacity: 0, scale: 0.9 }}
 								animate={{ opacity: 1, scale: 1 }}
 								exit={{ opacity: 0, scale: 0.9 }}
@@ -233,22 +239,22 @@ const NewIssueModal = () => {
 									handleCancelClose={handleCancelClose}
 									handleDiscard={handleDiscard}
 								/>
-								<form className="">
-									<div className="mx-6">
+								<form className={styles.form}>
+									<div className={styles.textContainer}>
 										<MentionInput
 											data={listOfUsers}
 											value={titleInput}
 											placeholder={"Issue title..."}
-											className={`${"w-full leading-6 min-h-min h-full py-4 text-xl mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none"} `}
+											className={`${styles.title} `}
 											name={"issueTitle"}
 											onChange={handleTitleChange}
 										/>
-										<div className=" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1" />
+										<div className={styles.description} />
 										<MentionInput
 											data={listOfUsers}
 											value={descriptionInput}
 											placeholder={"Add description..."}
-											className={`${" w-full h-full text-base bg-transparent focus:outline-none resize-none mb-1"} py-4`}
+											className={`${styles.description} py-4`}
 											name={"addDescription"}
 											onChange={handleDescriptionChange}
 										/>
@@ -258,8 +264,8 @@ const NewIssueModal = () => {
 									<div className="mx-5">
 										<DesignationsContainer location={"newIssue"} />
 									</div>
-									<div className=" mx-4 mt-1 h-[10px] border-b-2 border-border" />
-									<div className="h-full flex items-center justify-end p-4">
+									<div className={styles.bottomBorder} />
+									<div className={styles.createIssueButton}>
 										<Button
 											onClick={handleCreateIssue}
 											className="hover:cursor-pointer"
