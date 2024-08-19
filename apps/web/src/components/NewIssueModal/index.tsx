@@ -1,9 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
-<<<<<<< HEAD
-import { useToast } from "@/components/ui/use-toast";
-=======
->>>>>>> 14d8736 (fix(web): removing react-toastify)
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
