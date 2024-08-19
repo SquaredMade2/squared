@@ -20,7 +20,7 @@ const SettingsNavBar = ({
 }: SettingsNavbarProps): React.ReactElement => {
 	const dispatch = useDispatch();
 	const router = useRouter();
-
+	const { setTheme } = useTheme()
 	const workspace = useSelector(
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
@@ -31,7 +31,7 @@ const SettingsNavBar = ({
 	const profileUrl = `${baseUrl}/profile`;
 	const generalUrl = `${baseUrl}/workspace`;
 	const membersUrl = `${baseUrl}/members`;
-	const githubUrl = `${baseUrl}/github-settings`;
+	const integrationsUrl = `${baseUrl}/integrations`;
 
 	const handleTeamClick: handleTeamClickNavbar = (team: Team) => {
 		if (setLoading) {
@@ -75,10 +75,10 @@ const SettingsNavBar = ({
 					</button>
 					<button
 						type="button"
-						onClick={() => router.push(githubUrl)}
+						onClick={() => router.push(integrationsUrl)}
 						className="flex w-32 ml-6 mb-4 p-0.5 cursor-pointer"
 					>
-						Github Settings
+						Integrations
 					</button>
 					<div className="mb-1 pl-0.5 flex items-center">
 						<CircleUser className="size-4 text-[#6A6F75]" />
@@ -118,6 +118,22 @@ const SettingsNavBar = ({
 							<Plus className="size-5 cursor-pointer" />
 						</span>
 						<p className="cursor-pointer">Add team</p>
+					</div>
+					<div className="pt-10 flex w-full justify-center pr-5">
+						<button
+							type="button"
+							onClick={() => setTheme("light")}
+							className="mr-2 rounded p-1 cursor-pointer"
+						>
+							Light
+						</button>
+						<button
+							type="button"
+							className="rounded p-1 cursor-pointer"
+							onClick={() => setTheme("dark")}
+						>
+							Dark
+						</button>
 					</div>
 				</div>
 			</div>
