@@ -51,6 +51,7 @@ const taskEventSchema = new Schema<TaskEvent>({
 		enum: [
 			"titleUpdated",
 			"descriptionUpdated",
+			"gitUpdated",
 			"statusUpdated",
 			"priorityUpdated",
 			"labelsUpdated",
@@ -92,6 +93,9 @@ const taskEventSchema = new Schema<TaskEvent>({
 	updatedAssignee: {
 		id: { type: Schema.Types.Mixed, ref: "User" },
 		name: String,
+	},
+	gitUpdate: {
+		type: String,
 	},
 });
 

@@ -28,6 +28,7 @@ export enum EventType {
 	LabelsUpdated = "labelsUpdated",
 	TitleUpdated = "titleUpdated",
 	DescriptionUpdated = "descriptionUpdated",
+	GitUpdated = "gitUpdated",
 	CommentUpdated = "commentUpdated",
 	StatusUpdated = "statusUpdated",
 	PriorityUpdated = "priorityUpdated",
@@ -63,4 +64,5 @@ export interface TaskEvent {
 	originalAssignee?: Assignee;
 	updatedAssignee?: Assignee;
 	commentRef?: string;
+	gitUpdate?: string;
 }

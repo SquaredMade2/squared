@@ -47,6 +47,7 @@ export interface TaskEvent {
 		| "labelsUpdated"
 		| "titleUpdated"
 		| "descriptionUpdated"
+		| "gitUpdated"
 		| "commentUpdated"
 		| "statusUpdated"
 		| "priorityUpdated"
@@ -60,6 +61,7 @@ export interface TaskEvent {
 	updatedValue?: string | Status | Priority | null;
 	originalAssignee?: Assignee;
 	updatedAssignee?: Assignee;
+	gitUpdate?: string;
 }
 
 export interface Comment {

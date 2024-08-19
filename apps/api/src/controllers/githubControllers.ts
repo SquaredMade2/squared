@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import axios from "axios";
+import Task from "../models/task";
+import { TaskEventModel } from "../models/events";
 
 const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -38,26 +40,72 @@ export const handleOAuthCallback = async (req: Request, res: Response) => {
 
 export const handleWebhook = async (req: Request, res: Response) => {
 	const payload = req.body;
+	const eventType = req.headers["x-github-event"];
+	const branchName = payload.ref.split("/").pop();
+	let gitUpdate = "";
 
-	// Log the entire payload to see what GitHub is sending
 	console.log("Webhook payload received:", JSON.stringify(payload, null, 2));
+	if (eventType === "create" && payload.ref_type === "branch") {
+		gitUpdate = `Branch ${branchName} created in repository ${payload.repository.full_name}`;
+	} else if (eventType === "push") {
+		type Commit = {
+			id: string;
+			url: string;
+		};
 
-	if (payload.action === "push") {
-		console.log(
-			`Received a push event for repository: ${payload.repository.name}`,
-		);
+		// Prepare commit links
+		const commitLinks = payload.commits
+			.map((commit: Commit) => {
+				return `Commit ${commit.id.substring(0, 7)}: ${commit.url}`;
+			})
+			.join("\n");
+
+		gitUpdate = `Branch ${branchName} updated in repository ${payload.repository.full_name} with the following commits:\n${commitLinks}`;
+	} else {
+		console.log("No relevant event type");
+		return res.status(200).send("No relevant event type");
 	}
 
-	const eventType = req.headers["x-github-event"];
+	// Extract task identifier from branch name
+	const identifierPattern = /([A-Z]{2,}-\d+)/i;
+	const match = branchName?.match(identifierPattern);
 
-	// if eventType == create ==> created Branch
-	// if eventType ==
+	if (match) {
+		const identifier = match[1].toUpperCase();
 
-	console.log("Received a webhook event:", req.headers["x-github-event"]);
-	if (eventType === "push") {
-		console.log(
-			`Received a push event for repository: ${payload.repository.name}`,
-		);
+		try {
+			// Find the task by the extracted identifier, ignoring case
+			const task = await Task.findOne({
+				identifier: new RegExp(`^${identifier}$`, "i"),
+			});
+
+			if (task) {
+				const authorId = task._id;
+				const authorName =
+					payload.pusher?.name || payload.sender.login || "Unknown User"; // Default name if not provided
+				// Create a new task event
+				const newTaskEvent = new TaskEventModel({
+					type: "gitUpdated",
+					author: {
+						id: authorId,
+						name: authorName,
+					},
+					taskId: task._id,
+					updatedAt: new Date(),
+					gitUpdate,
+				});
+
+				await newTaskEvent.save();
+
+				console.log(`Task event created for task ${identifier}`);
+			} else {
+				console.log(`No task found for identifier ${identifier}`);
+			}
+		} catch (error) {
+			console.error("Error handling webhook:", error);
+		}
+	} else {
+		console.log("No task identifier found in branch name");
 	}
 
 	res.status(200).send("Webhook received");
