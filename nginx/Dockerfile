@@ -1,8 +1,8 @@
 # Use the official Nginx image as the base image
-FROM nginx:latest
+FROM nginx:stable-alpine
 
 # Install envsubst for variable substitution
-RUN apt-get update && apt-get install -y gettext-base
+RUN apk add --no-cache gettext
 
 # Copy the template nginx.conf
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
