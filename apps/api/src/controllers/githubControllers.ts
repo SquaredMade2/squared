@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import axios from "axios";
 
-const clientId = process.env.GITHUB_CLIENT_ID!;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET!;
-const appId = process.env.GITHUB_APP_ID!;
-const privateKey = process.env.GITHUB_PRIVATE_KEY!.replace(/\\n/g, "\n");
+const clientId = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+const appId = process.env.GITHUB_APP_ID;
+const privateKey = process.env.GITHUB_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
 // Ensure environment variables are correctly defined
 if (!clientId || !clientSecret || !appId || !privateKey) {

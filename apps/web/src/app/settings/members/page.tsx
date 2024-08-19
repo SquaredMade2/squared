@@ -19,7 +19,7 @@ import type {
 import InviteMembersModal from "@/components/InviteMembersModal";
 import { RolesButtonOptions } from "@/components/RolesButtonOptions";
 import UpdateMembersInfoModal from "@/components/UpdateMembersModal";
-import PurpleToggle from "@/components/PurpleToggle";
+import { Switch } from "@/components/ui/switch";
 import {
 	deletingUserFromWorkspace,
 	updateTheUsersRole,
@@ -27,6 +27,7 @@ import {
 } from "@/utils/workspace-members-utils";
 import { navBarToggle } from "@/store/userSettings";
 import { useTheme } from "next-themes";
+
 const styles = {
 	mainContainer:
 		"flex mdsm:flex-col relative bg-card h-auto min-h-screen xs:p-0 w-full",
@@ -73,6 +74,7 @@ const styles = {
 	textPrimary: "text-foreground",
 	membersButtonWrapper: "ml-auto relative",
 };
+
 export default function Members() {
 	const [openInviteModal, setInviteOpenModal] = useState<boolean>(false);
 	const [openUpdateMemberModal, setOpenUpdateMemberModal] =
@@ -441,7 +443,7 @@ export default function Members() {
 					>
 						<div className={styles.bodyWrapper}>
 							<p className={styles.textPrimary}>Invite Link</p>
-							<PurpleToggle active={isActive} handleClick={handleToggleLink} />
+							<Switch checked={isActive} onCheckedChange={handleToggleLink} />
 						</div>
 						{isActive ? (
 							<>
