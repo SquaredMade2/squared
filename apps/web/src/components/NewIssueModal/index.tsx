@@ -156,9 +156,6 @@ const NewIssueModal = () => {
 
 	const handleCreateIssue = async () => {
 		if (titleInput.replace(/\s+/g, "").length === 0) {
-			toast.warn("Please Enter a Title!", {
-				autoClose: 2500,
-			});
 			return;
 		}
 		dispatch(incrementCreatedIssues(currentWorkspace._id));
