@@ -43,5 +43,6 @@ USER astro
 
 COPY --from=installer /app/apps/www/astro.config.mjs ./astro.config.mjs
 COPY --from=installer /app/apps/www/package.json ./package.json
+COPY --from=installer /app/apps/www/dist /app/apps/www/dist
 
 CMD ["node", "apps/www/dist/server/entry.mjs"]
