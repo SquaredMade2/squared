@@ -21,8 +21,7 @@ const SettingsNavBar = ({
 }: SettingsNavbarProps): React.ReactElement => {
 	const dispatch = useDispatch();
 	const router = useRouter();
-	const { setTheme } = useTheme();
-
+	const { setTheme } = useTheme()
 	const workspace = useSelector(
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
