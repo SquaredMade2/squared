@@ -4,16 +4,16 @@ import SettingsNavBar from "@/components/SettingsNavBar";
 import React from "react";
 
 export default function TeamLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <div className="flex">
-      <div className="w-64">
-        <SettingsNavBar />
-      </div>
-      <main>{children}</main>
-    </div>
-  );
+	return (
+		<div className="flex">
+			<div className="w-64">
+				<SettingsNavBar />
+			</div>
+			<main>{children}</main>
+		</div>
+	);
 }

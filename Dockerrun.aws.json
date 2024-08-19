@@ -1,0 +1,252 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "nginx-proxy-conf",
+      "host": {
+        "sourcePath": "/var/app/current/nginx/conf.d"
+      }
+    },
+    {
+      "name": "www-app",
+      "host": {
+        "sourcePath": "/var/app/current/www"
+      }
+    },
+    {
+      "name": "web-app",
+      "host": {
+        "sourcePath": "/var/app/current/web"
+      }
+    },
+    {
+      "name": "api-app",
+      "host": {
+        "sourcePath": "/var/app/current/api"
+      }
+    },
+    {
+      "name": "awseb-logs-nginx-proxy",
+      "host": {
+        "sourcePath": "/var/log/nginx"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "www",
+      "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-www:latest",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 4000,
+          "containerPort": 4000
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "www-app",
+          "containerPath": "/var/www/html",
+          "readOnly": true
+        }
+      ],
+      "environment": [
+        {
+          "name": "NEXT_PUBLIC_GITHUB_CLIENT_ID",
+          "value": "squaredenvs:NEXT_PUBLIC_GITHUB_CLIENT_ID"
+        },
+        {
+          "name": "NEXT_PUBLIC_GITHUB_REDIRECT_URI",
+          "value": "squaredenvs:NEXT_PUBLIC_GITHUB_REDIRECT_URI"
+        }
+      ]
+    },
+    {
+      "name": "web",
+      "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-web:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 3000,
+          "containerPort": 3000
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "web-app",
+          "containerPath": "/usr/share/nginx/html",
+          "readOnly": true
+        }
+      ],
+      "environment": [
+        {
+          "name": "NEXT_PUBLIC_SERVER",
+          "value": "squaredenvs:NEXT_PUBLIC_SERVER"
+        },
+        {
+          "name": "NEXT_PUBLIC_URL",
+          "value": "squaredenvs:NEXT_PUBLIC_URL"
+        },
+        {
+          "name": "NEXT_PUBLIC_CLIENT_ID",
+          "value": "squaredenvs:NEXT_PUBLIC_CLIENT_ID"
+        },
+        {
+          "name": "NEXT_PUBLIC_GITHUB_CLIENT_SECRET",
+          "value": "squaredenvs:NEXT_PUBLIC_GITHUB_CLIENT_SECRET"
+        },
+        {
+          "name": "NEXT_PUBLIC_GITHUB_CLIENT_ID",
+          "value": "squaredenvs:NEXT_PUBLIC_GITHUB_CLIENT_ID"
+        },
+        {
+          "name": "NEXT_PUBLIC_GITHUB_REDIRECT_URI",
+          "value": "squaredenvs:NEXT_PUBLIC_GITHUB_REDIRECT_URI"
+        },
+        {
+          "name": "GOOGLE_CLIENT_ID",
+          "value": "squaredenvs:GOOGLE_CLIENT_ID"
+        },
+        {
+          "name": "GOOGLE_CLIENT_SECRET",
+          "value": "squaredenvs:GOOGLE_CLIENT_SECRET"
+        },
+        {
+          "name": "GITHUB_CLIENT_ID",
+          "value": "squaredenvs:GITHUB_CLIENT_ID"
+        },
+        {
+          "name": "GITHUB_CLIENT_SECRET",
+          "value": "squaredenvs:GITHUB_CLIENT_SECRET"
+        },
+        {
+          "name": "NEXTAUTH_SECRET",
+          "value": "squaredenvs:NEXTAUTH_SECRET"
+        }
+      ]
+    },
+    {
+      "name": "api",
+      "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-api:latest",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 5173,
+          "containerPort": 5173
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "api-app",
+          "containerPath": "/usr/src/app",
+          "readOnly": true
+        }
+      ],
+      "environment": [
+        {
+          "name": "MONGO_URL",
+          "value": "squaredenvs:MONGO_URL"
+        },
+        {
+          "name": "JWT_SECRECT",
+          "value": "squaredenvs:JWT_SECRECT"
+        },
+        {
+          "name": "EMAIL_USERNAME",
+          "value": "squaredenvs:EMAIL_USERNAME"
+        },
+        {
+          "name": "EMAIL_PASSWORD",
+          "value": "squaredenvs:EMAIL_PASSWORD"
+        },
+        {
+          "name": "PORT",
+          "value": "squaredenvs:PORT"
+        },
+        {
+          "name": "NODE_ENV",
+          "value": "squaredenvs:NODE_ENV"
+        },
+        {
+          "name": "NEXT_PUBLIC_CONFIRM_URL",
+          "value": "squaredenvs:NEXT_PUBLIC_CONFIRM_URL"
+        },
+        {
+          "name": "NEXT_PUBLIC_SERVER",
+          "value": "squaredenvs:NEXT_PUBLIC_SERVER"
+        },
+        {
+          "name": "HOOKDECK_AUTH_TOKEN",
+          "value": "squaredenvs:HOOKDECK_AUTH_TOKEN"
+        },
+        {
+          "name": "CLIENT_ID",
+          "value": "squaredenvs:CLIENT_ID"
+        },
+        {
+          "name": "SEED_PASSWORD",
+          "value": "squaredenvs:SEED_PASSWORD"
+        },
+        {
+          "name": "GITHUB_APP_ID",
+          "value": "squaredenvs:GITHUB_APP_ID"
+        },
+        {
+          "name": "GITHUB_CLIENT_ID",
+          "value": "squaredenvs:GITHUB_CLIENT_ID"
+        },
+        {
+          "name": "GITHUB_CLIENT_SECRET",
+          "value": "squaredenvs:GITHUB_CLIENT_SECRET"
+        },
+        {
+          "name": "GITHUB_PRIVATE_KEY",
+          "value": "squaredenvs:GITHUB_PRIVATE_KEY"
+        }
+      ]
+    },
+    {
+      "name": "nginx",
+      "image": "014498627014.dkr.ecr.ap-southeast-2.amazonaws.com/squared-nginx:latest",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["www", "web", "api"],
+      "mountPoints": [
+        {
+          "sourceVolume": "nginx-proxy-conf",
+          "containerPath": "/etc/nginx/conf.d",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "www-app",
+          "containerPath": "/var/www/html",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "web-app",
+          "containerPath": "/usr/share/nginx/html",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "api-app",
+          "containerPath": "/usr/src/app",
+          "readOnly": true
+        },
+        {
+          "sourceVolume": "awseb-logs-nginx-proxy",
+          "containerPath": "/var/log/nginx"
+        }
+      ]
+    }
+  ],
+  "networkMode": "bridge"
+}

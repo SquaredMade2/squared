@@ -16,7 +16,6 @@
     "format:check": "turbo run format:check",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "prepare": "husky install",
     "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
@@ -55,9 +54,8 @@
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
   },
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@9.7.0",
   "dependencies": {
-    "@radix-ui/react-hover-card": "^1.1.1",
     "rimraf": "^6.0.1"
   }
 }

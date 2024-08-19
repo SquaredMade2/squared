@@ -10,36 +10,36 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 
 const TaskPageCenterContainer = ({
-  setShowSideNav,
+	setShowSideNav,
 }: TaskPageCenterContainerProps) => {
-  return (
-    <div className="w-full snap-start z-0 overflow-x-hidden ">
-      <div className="flex items-center gap-2">
-        {/* <div className=" hidden mdsm:block">
+	return (
+		<div className="w-full snap-start z-0 overflow-x-hidden ">
+			<div className="flex items-center gap-2">
+				{/* <div className=" hidden mdsm:block">
           <ToggleNavBar />
         </div> */}
-        <div className=" w-full max850:w-10/12 overflow-hidden">
-          <TaskCardTop />
-        </div>
-        <span
-          onClick={setShowSideNav}
-          className="hidden max850:block max850:absolute max850:right-0 cursor-pointer"
-        >
-          <ButtonIcon
-            icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
-            hoverBg="bg-accent"
-          />
-        </span>
-      </div>
+				<div className=" w-full max850:w-10/12 overflow-hidden">
+					<TaskCardTop />
+				</div>
+				<span
+					onClick={setShowSideNav}
+					className="hidden max850:block max850:absolute max850:right-0 cursor-pointer"
+				>
+					<ButtonIcon
+						icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
+						hoverBg="bg-accent"
+					/>
+				</span>
+			</div>
 
-      <ScrollArea className="h-[calc(100vh-5rem)] ">
-        <div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
-          <TaskPageTitle />
-          <EventTabs />
-        </div>
-      </ScrollArea>
-    </div>
-  );
+			<ScrollArea className="h-[calc(100vh-5rem)] ">
+				<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
+					<TaskPageTitle />
+					<EventTabs />
+				</div>
+			</ScrollArea>
+		</div>
+	);
 };
 
 export default TaskPageCenterContainer;

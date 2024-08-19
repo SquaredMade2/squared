@@ -4,56 +4,37 @@ import { Providers } from "@/store/provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
 import CommandPalette from "@/components/CommandPalette";
-import { ToastContainer, Slide } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import CurrentNavbar from "@/components/CurrentNavbar";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className="text-sm">
-        <Providers>
-          <CommandPalette />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="h-full flex flex-row overflow-hidden">
-              <CurrentNavbar />
-              {children}
-            </div>
-          </ThemeProvider>
-          <ToastContainerWrapper />
-        </Providers>
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body className="text-sm">
+				<Providers>
+					<CommandPalette />
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<div className="h-full flex flex-row overflow-hidden">
+							<CurrentNavbar />
+							{children}
+						</div>
+					</ThemeProvider>
+					<Toaster />
+				</Providers>
+			</body>
+		</html>
+	);
 }
 
 function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
-}
-
-function ToastContainerWrapper() {
-  return (
-    <ToastContainer
-      position="top-center"
-      autoClose={2000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      transition={Slide}
-      theme="colored"
-    />
-  );
+	return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

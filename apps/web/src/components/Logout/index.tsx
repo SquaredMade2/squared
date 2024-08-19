@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { useToast } from "../ui/use-toast";
 
 const Logout = () => {
+	const { toast } = useToast();
 	const router = useRouter();
 	const handleLogout = async () => {
 		try {
@@ -11,8 +12,8 @@ const Logout = () => {
 				url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
 				withCredentials: true,
 			});
-			router.push(response.data);
-			toast.success(response.data.success);
+			router.replace("/login");
+			toast({ title: response.data.success });
 		} catch (error) {}
 	};
 
