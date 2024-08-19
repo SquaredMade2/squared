@@ -16,6 +16,9 @@ RUN turbo prune api --docker
 FROM base AS installer
 WORKDIR /app
 
+# Re-install pnpm in this stage
+RUN npm install -g pnpm
+
 # Install dependencies
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
