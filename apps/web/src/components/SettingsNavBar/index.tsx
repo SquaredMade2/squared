@@ -14,6 +14,7 @@ import type { RootState } from "@/store";
 import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
+import { useTheme } from "next-themes";
 
 const SettingsNavBar = ({
 	setLoading,
