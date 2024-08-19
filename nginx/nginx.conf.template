@@ -5,7 +5,9 @@ events {
 }
 
 http {
-    # Configuration for www.<yourdomain> (Main Page)
+    server_names_hash_bucket_size 128;
+
+    # Configuration for www.<domain> (Main Page)
     server {
         listen 80;
         server_name www.${DOMAIN};
@@ -19,7 +21,7 @@ http {
         }
     }
 
-    # Configuration for app.<yourdomain> (Next.js Application)
+    # Configuration for app.<domain> (Next.js Application)
     server {
         listen 80;
         server_name app.${DOMAIN};
@@ -33,7 +35,7 @@ http {
         }
     }
 
-    # Configuration for cloud.<yourdomain> (Express API)
+    # Configuration for cloud.<domain> (Express API)
     server {
         listen 80;
         server_name cloud.${DOMAIN};
