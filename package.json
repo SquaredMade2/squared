@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "build:packages": "turbo run --filter='./packages/**/*' build",
+    "build:packages": "turbo run --filter='./packages/**/*' build --verbose",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api",
