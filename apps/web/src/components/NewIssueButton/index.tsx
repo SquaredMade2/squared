@@ -52,7 +52,7 @@ export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
 		dispatch(setStatus(status));
 	};
 	return (
-		<Button onClick={() => handleOpen()} variant={"outline"}>
+		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
 			<SquarePen className={`size-5 cursor-pointer fill-[${fillColor()}]`} />
 		</Button>
 	);

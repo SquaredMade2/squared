@@ -22,7 +22,6 @@ const SettingsNavBar = ({
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const { setTheme } = useTheme();
-
 	const workspace = useSelector(
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
