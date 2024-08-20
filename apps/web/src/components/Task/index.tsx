@@ -1,16 +1,15 @@
 "use client";
-
+import IssueSidebarContainer from "../IssueSidebarContainer";
+import TaskPageCenterContainer from "../TaskPageCenterContainer";
 import { useEffect, useState, useRef } from "react";
-import MailTask from "../MailTask";
-import DefaultTask from "../DefaultTask";
 import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setGetSingleTaskError, removeTaskData } from "@/store/task";
-import type { SingleTaskDataInterface } from "@/store/task";
 import { getSingleTask } from "@/store/task/thunks";
 import { getTaskComments, getTaskEventLog } from "@/store/events/actions";
 import { ActionType } from "@/store/events/events.actionTypes";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
+import { LoadingTask } from "../LoadingTask";
 import { useToast } from "../ui/use-toast";
 import { formatUrl } from "@/utils/formatting";
 
@@ -104,26 +103,40 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 
 	return (
 		<>
-			{!mailTask && (
-				<DefaultTask
-					task={task as SingleTaskDataInterface}
-					render={render}
-					showBackdrop={showBackdrop}
-					showSideNav={showSideNav}
-					toggleSideNav={toggleNav}
-					svgRef={svgRef}
-					sideNav={sideNav}
-				/>
-			)}
-			{mailTask && (
-				<MailTask
-					task={task as SingleTaskDataInterface}
-					render={render}
-					showBackdrop={showBackdrop}
-					showSideNav={showSideNav}
-					toggleSideNav={toggleNav}
-					sideNav={sideNav}
-				/>
+			{((!render && !task) || !task) && <LoadingTask />}
+			{render && task && (
+				<>
+					<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
+						{showBackdrop && (
+							<div
+								className={
+									showSideNav
+										? "max850:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40"
+										: ""
+								}
+							/>
+						)}
+						<div className="w-full h-full p-2 md:p-5 xl:px-10 ">
+							<div className="flex w-full relative">
+								<TaskPageCenterContainer
+									setShowSideNav={toggleNav}
+									svgRef={svgRef}
+								/>
+								<div
+									className={`relative max850:absolute transition-all duration-300 ease-in-out ${
+										showSideNav
+											? " z-20 max850:-right-0 "
+											: " max850:-right-[500px] "
+									}`}
+								>
+									<div className="" ref={sideNav}>
+										<IssueSidebarContainer />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</>
 			)}
 		</>
 	);
