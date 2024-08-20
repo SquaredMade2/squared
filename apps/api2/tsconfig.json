@@ -14,6 +14,6 @@
       "@/*": ["*"]
     }
   },
-  "include": ["api/**/*.ts"],
+  "include": ["api/**/*.ts", "swagger.ts"],
   "exclude": ["node_modules"]
 }
