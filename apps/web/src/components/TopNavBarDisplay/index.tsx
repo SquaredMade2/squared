@@ -105,7 +105,6 @@ const TopNavBarDisplay = () => {
 							<span className="w-full border-t border-border block my-1" />
 
 							<DisplayPreferences />
-
 						</motion.div>
 					</ClickAwayListener>
 				)}
