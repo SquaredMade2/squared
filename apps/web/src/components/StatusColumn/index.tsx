@@ -45,7 +45,9 @@ const StatusColumn = ({
 						${snapshot.isDraggingOver ? " h-full" : ""}${
 							snapshot.isDraggingOver && view === "grid"
 								? ""
+
 								: `${view === "grid" && "h-[77vh] sm:h-[86vh] rounded pr-2 transition-all duration-500 ease-in-out"}`
+
 						} 
 						`}
 					>

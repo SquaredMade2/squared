@@ -4,7 +4,7 @@ import { setView } from "@/store/userSettings";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, SlidersVertical } from "lucide-react";
-import PurpleToggle from "@/components/PurpleToggle";
+import { Switch } from "../ui/switch";
 import {
 	setShowPriority,
 	setShowLabels,
@@ -103,7 +103,9 @@ const TopNavBarDisplay = () => {
 								</div>
 							</div>
 							<span className="w-full border-t border-border block my-1" />
+
 							<DisplayPreferences />
+
 						</motion.div>
 					</ClickAwayListener>
 				)}
