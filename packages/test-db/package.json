@@ -1,0 +1,27 @@
+{
+  "name": "@repo/test-db",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "db:seed": "cross-env NODE_ENV=test ts-node src/seed.ts",
+    "docker:db": "docker-compose -f docker-compose.yml up -d",
+    "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.4.1",
+    "cross-env": "^7.0.3",
+    "prisma": "^5.18.0",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.3"
+  }
+}

@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 import fs from "fs";
 import path from "path";
-import express from "express";
+import "dotenv/config";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
@@ -19,8 +19,9 @@ export function generateIndex() {
 import express from "express";
 import { Router } from "express";
 import { Route, toQueryHandler, toMutationHandler } from "./route";
-import { PrismaClient } from "@repo/db";
-import { setupSwagger } from "./swagger"; // Import Swagger setup
+${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@repo/db";`}
+import { setupSwagger } from "../swagger"; // Import Swagger setup
+import "dotenv/config";
 
 export const prisma = new PrismaClient();
 
@@ -85,7 +86,7 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
   setupSwagger(router);
 }`);
 
-// Adding the server setup to the generated index file
+  // Adding the server setup to the generated index file
   writeLn(`
 const app = express();
 const port = process.env.PORT || 3000;
@@ -104,7 +105,6 @@ app.listen(port, () => {
   console.log(\`Server is running on http://localhost:\${port}\`);
 });
 `);
-
 }
 
 function getRoutes(dir: string): string[] {
