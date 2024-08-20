@@ -1,4 +1,4 @@
-import { User } from "@repo/db/src";
+import { User, Workspace } from "@repo/db/src";
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
 import { Route } from "@/api/route";
@@ -25,7 +25,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute({}): Route<Params> {
   return {
-    POST: async ({ userId }, body: body) => {
+    POST: async ({ userId }, body: body): Promise<{ data: User | null }> => {
       try {
         const { email, password, provider, type, name, username } = body.login;
 
@@ -109,6 +109,7 @@ export function createRoute({}): Route<Params> {
               throw new Error("Incorrect Password");
             }
           }
+          const userWorkspaces: Workspace[] = await prisma.userWorkspace.findMany({where: {userId: user.id}, include: {workspace: true}}).then((workspaces) => workspaces.map((workspace) => workspace.workspace));
 
           jwt.sign(
             {
@@ -117,7 +118,7 @@ export function createRoute({}): Route<Params> {
               name: user.name,
               defaultWorkspace: user.defaultWorkspaceId,
               lastLogin: user.lastLogin,
-              workspaces: user.workspaces,
+              workspaces: userWorkspaces,
             },
             JWT_SECRET,
             {},

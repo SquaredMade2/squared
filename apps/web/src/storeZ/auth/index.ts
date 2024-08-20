@@ -12,7 +12,10 @@ export const createTaskStore = (initState: AuthState = { user: null }) => {
 	return createStore<AuthStore>()((set) => ({
 		...initState,
 		login: (userId: string, login: Login) => async () => {
-			const response = await axios.post(apiString(userId), login);
+			const response: { data: User | null } = await axios.post(
+				apiString(userId),
+				login,
+			);
 			set({ user: response.data });
 			return response.data;
 		},
