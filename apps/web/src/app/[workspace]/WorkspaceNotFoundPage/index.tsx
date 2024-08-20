@@ -60,7 +60,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 								{allWorkspaces.map((workspace, index) => (
 									<Link
 										legacyBehavior
-										href={`workspace/${workspace.url}`}
+										href={`/${workspace.url}`}
 										className="px-3 py-1.5 flex items-center hover:bg-popoverHover rounded text-sm font-medium cursor-default justify-between"
 										key={workspace._id}
 									>
