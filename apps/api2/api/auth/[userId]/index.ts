@@ -128,7 +128,7 @@ export function createRoute({}): Route<Params> {
               await user.populate("workspaces");
               const workspace = user.workspaces[0];
 
-              if (!user.on_boarding || !workspace) {
+              if (!user.onBoarding || !workspace) {
                 return res.json({
                   user,
                   redirectTo: "/onboarding",
