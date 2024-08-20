@@ -54,5 +54,6 @@
     "studio": {
       "dependsOn": ["^studio"]
     }
-  }
+  },
+  "ui": "tui"
 }
