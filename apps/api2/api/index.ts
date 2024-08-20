@@ -7,16 +7,30 @@ import { PrismaClient } from "@repo/db/src";
 export const prisma = new PrismaClient();
 
 
+import * as $230080 from "./workspace/[workspaceId]/team";
 import * as $61fb65 from "./team/[teamId]/task";
 import * as $0a9f89 from "./team/[teamId]";
 import * as $abb393 from "./task/[taskId]";
+import * as $4e2f25 from "./auth/[userId]";
 
 export type AllRouteDeps =
+  & Parameters<typeof $230080.createRoute>[0]
   & Parameters<typeof $61fb65.createRoute>[0]
   & Parameters<typeof $0a9f89.createRoute>[0]
   & Parameters<typeof $abb393.createRoute>[0]
+  & Parameters<typeof $4e2f25.createRoute>[0]
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
+
+  {
+    type Params = { workspaceId: string };
+    const r: Route<Params> = $230080.createRoute(deps);
+
+    router.get("/api/workspace/:workspaceId/team", toQueryHandler(r.GET));
+    router.post("/api/workspace/:workspaceId/team", toMutationHandler(r.POST));
+    router.put("/api/workspace/:workspaceId/team", toMutationHandler(r.PUT));
+    router.delete("/api/workspace/:workspaceId/team", toQueryHandler(r.DELETE));
+  }
 
   {
     type Params = { teamId: string };
@@ -46,5 +60,15 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     router.post("/api/task/:taskId", toMutationHandler(r.POST));
     router.put("/api/task/:taskId", toMutationHandler(r.PUT));
     router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
+  }
+
+  {
+    type Params = { userId: string };
+    const r: Route<Params> = $4e2f25.createRoute(deps);
+
+    router.get("/api/auth/:userId", toQueryHandler(r.GET));
+    router.post("/api/auth/:userId", toMutationHandler(r.POST));
+    router.put("/api/auth/:userId", toMutationHandler(r.PUT));
+    router.delete("/api/auth/:userId", toQueryHandler(r.DELETE));
   }
 }
