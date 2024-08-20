@@ -15,7 +15,7 @@ const EventTabs = () => {
 				className="bg-background pb-0 px-0"
 				indicatorProps={{
 					className:
-						"bg-accent border-t border-x border-transparent rounded-none rounded-t-lg text-foreground mb-0 pb-0",
+						"bg-muted dark:bg-accent border-t border-x border-transparent rounded-none rounded-t-lg text-foreground mb-0 pb-0",
 				}}
 				placeholder={undefined}
 				onPointerEnterCapture={undefined}
@@ -42,7 +42,7 @@ const EventTabs = () => {
 					Comments
 				</Tab>
 			</TabsHeader>
-			<div className="w-full h-px bg-accent" />
+			<div className="w-full h-px bg-muted dark:bg-accent" />
 			<TabsBody
 				placeholder={undefined}
 				onPointerEnterCapture={undefined}

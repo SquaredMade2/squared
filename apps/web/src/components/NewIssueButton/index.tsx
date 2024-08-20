@@ -4,12 +4,12 @@ import { setStatus } from "@/store/taskData";
 import type { RootState } from "@/store";
 import { SquarePen } from "lucide-react";
 import { Button } from "../ui/button";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import ButtonIcon from "../ButtonIcon";
+const titleArr = { value: "Todo", id: 2 };
 const NewIssueButton = () => {
 	const dispatch = useDispatch();
-
-	const titleArr = { value: "Todo", id: 2 };
-
 	const showNewIssue = useSelector(
 		(state: RootState) => state.showNewIssue.isOpen,
 	);
@@ -27,7 +27,7 @@ const NewIssueButton = () => {
 	return (
 		<button
 			type="button"
-			className="flex flex-row w-9/12 h-10 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue-600 dark:text-foreground bg-blue-400/20 dark:bg-blue-800/60"
+			className="flex flex-row w-full h-12 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue-600 dark:text-foreground "
 			onClick={() => handleOpen()}
 		>
 			<span>
@@ -55,6 +55,23 @@ export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
 		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
 			<SquarePen className={`size-5 cursor-pointer fill-[${fillColor()}]`} />
 		</Button>
+	);
+};
+
+export const SideNavNewIssueButton = () => {
+	const dispatch = useDispatch();
+	const handleOpen = () => {
+		dispatch(setShowNewIssue(true));
+		dispatch(setStatus(titleArr.value));
+	};
+	return (
+		<ButtonIcon
+			icon={<FontAwesomeIcon icon={faPenToSquare} />}
+			handleClick={handleOpen}
+			hoverBg="bg-card"
+			tooltipLabel="New Issue"
+			labelPosition="right"
+		/>
 	);
 };
 

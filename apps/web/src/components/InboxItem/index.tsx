@@ -9,6 +9,7 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faEnvelopeOpen } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
 import { getNotifications } from "@/store/notifications";
+import { useTheme } from "next-themes";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	id,
@@ -32,15 +33,15 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const user = useAppSelector((state) => state.userSettings.user);
 	const isActive = currentTaskId === id;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
-	const { theme } = useAppSelector((state) => state.userSettings);
+	const { theme } = useTheme();
 	const inactiveNotread =
 		theme === "dark"
-			? "bg-[#171B26] text-muted-foreground"
-			: "bg-white shadow-sm text-muted-foreground";
+			? "bg-accent text-muted-foreground"
+			: "bg-muted  text-muted-foreground";
 	const inactiveRead =
 		theme === "dark"
 			? "bg-popover text-muted-foreground"
-			: "bg-transparen border text-muted-foreground";
+			: "bg-popover border text-muted-foreground";
 
 	const active =
 		theme === "dark"
@@ -50,7 +51,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 		? ""
 		: theme === "dark"
 			? "hover:text-foreground hover:bg-[#282E43]"
-			: "hover:border hover:border-indigo-300 hover:shadow hover:text-foreground";
+			: "hover:border hover:border-gray-500 hover:shadow hover:text-foreground";
 
 	const handleMarkRead = (id: string) => {
 		socket.emit("sending_notificationId", id, user._id);
@@ -68,7 +69,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 				block: "center",
 			});
 		}
-	}, [route, theme]);
+	}, [route]);
 
 	useEffect(() => {
 		socket.on("receiving_updatedMarkedNotification", (data: unknown) => {
@@ -81,7 +82,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	return (
 		<div
 			onClick={() => handleClick(id, notificationId)}
-			className={`p-2 mx-1 rounded-md cursor-pointer  ${
+			className={`p-2 w-80 rounded-md cursor-pointer  ${
 				isActive ? active : read ? inactiveRead : inactiveNotread
 			} ${hover}`}
 		>
