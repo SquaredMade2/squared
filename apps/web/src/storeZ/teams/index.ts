@@ -22,5 +22,25 @@ export const createTeamStore = (initState: TeamState = { teams: [] }) => {
 			const stateTeam = state.teams.find((t) => t.id === teamId);
 			return stateTeam || (await axios.get(apiString(teamId)));
 		},
+		updateTeam: (teamId, team) => async (state) => {
+			const updatedTeam: Team = await axios.put(apiString(teamId), team);
+			set({
+				teams: state.teams.map((t) => (t.id === teamId ? updatedTeam : t)),
+			});
+			return updatedTeam;
+		},
+		deleteTeam: (teamId) => (state) => {
+			axios.delete(apiString(teamId));
+			set({
+				teams: state.teams.filter((t) => t.id !== teamId),
+			});
+		},
+		getAllTeams: (workspaceId) => async () => {
+			const teams: Team[] = await axios.get(apiString(workspaceId));
+			set({
+				teams: teams,
+			});
+			return teams;
+		},
 	}));
 };
