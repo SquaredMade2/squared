@@ -11,7 +11,7 @@ const Teams = () => {
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const handleTeamClick = (team: Team): void => {
 		dispatch(setCurrentTeam(team));
-		router.push(`/workspace/${workspace.url}/team/${team.identifier}/all`);
+		router.push(`/${workspace.url}/team/${team.identifier}/all`);
 	};
 
 	return (
