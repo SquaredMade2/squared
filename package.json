@@ -19,6 +19,7 @@
     "format:check": "turbo run format:check",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
+    "postinstall": "pnpm db:gen",
     "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
