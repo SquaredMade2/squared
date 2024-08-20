@@ -51,9 +51,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
 
-      - name: Generate DB Types
-        run: pnpm db:gen
-
       - name: Run linting check
         run: pnpm lint
 
