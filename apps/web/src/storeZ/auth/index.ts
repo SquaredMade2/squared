@@ -1,45 +1,49 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
-import type { TaskState, TaskStore } from "./interfaces";
+import type { AuthState, AuthStore, Login } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
-import type { Task } from "@repo/db";
+import type { User } from "@repo/db";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/task/${path}`;
+	`${process.env.SERVER_URL}/api/auth/${path}`;
 
-export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
-	return createStore<TaskStore>()((set) => ({
+export const createTaskStore = (initState: AuthState = { user: null }) => {
+	return createStore<AuthStore>()((set) => ({
 		...initState,
-		addTask: (task) => async (state) => {
-			const response = await axios.post(apiString(uuidv4()), task);
-			set({ tasks: [...state.tasks, response.data] });
+		login: (userId: string, login: Login) => async () => {
+			const response = await axios.post(apiString(userId), login);
+			set({ user: response.data });
 			return response.data;
 		},
-		updateTask: (taskId, task) => async (state) => {
-			const response = await axios.put(apiString(taskId), task);
-			set({
-				tasks: state.tasks.map((t) => (t.id === taskId ? response.data : t)),
-			});
-			return response.data;
-		},
-		deleteTask: (taskId) => async (state) => {
-			await axios.delete(apiString(taskId));
-			set({
-				tasks: state.tasks.filter((t) => t.id !== taskId),
-			});
-		},
-		getTask: (taskId) => async (state) => {
-			const existing = state.tasks.find((t) => t.id === taskId);
-			if (existing) return existing;
-			const response = await axios.get(apiString(taskId));
-			return response.data;
-		},
-		getAllTasks: (teamId) => async (state) => {
-			const response: { data: Task[] } = await axios.get(
-				`${process.env.SERVER_URL}/api/team/${teamId}/task`,
+		register: (login: Login) => async () => {
+			const userId = uuidv4();
+			const response: { data: User | null } = await axios.post(
+				apiString(userId),
+				login,
 			);
-			set({ tasks: response.data });
+			set({ user: response.data });
+			return response.data;
+		},
+		verifyUser: (token: string) => async () => {
+			const response: { data: User | null } = await axios.post(apiString(""), {
+				token,
+			});
+			set({ user: response.data });
+			return response.data;
+		},
+		logout: () => async () => {
+			const response: { data: boolean } = await axios.post(apiString("logout"));
+			set({ user: null });
+			return response.data;
+		},
+		resetPassword: (email: string) => async () => {
+			const response: { data: boolean } = await axios.post(
+				apiString("reset-password"),
+				{
+					email,
+				},
+			);
 			return response.data;
 		},
 	}));

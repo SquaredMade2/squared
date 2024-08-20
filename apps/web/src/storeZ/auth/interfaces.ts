@@ -4,15 +4,21 @@ export type AuthState = {
 	user: User | null;
 };
 
+export type Login = {
+	provider: "credentials" | "oauth";
+	type: "register" | "login";
+	email: string;
+	password?: string;
+	name?: string;
+	username?: string;
+};
+
 export type AuthActions = {
-	login: (userId: User) => (state: AuthState) => Promise<User | undefined>;
-	register: (userId: string) => (state: AuthState) => Promise<User | undefined>;
-	verifyUser: (
-		token: string,
-	) => (state: AuthState) => Promise<User | undefined>;
-	logout: () => (state: AuthState) => Promise<void>;
-	resetPassword: (email: string) => (state: AuthState) => Promise<void>;
-	getGithubAccessToken: (code: string) => (state: AuthState) => Promise<void>;
+	login: (userId: string, login: Login) => () => Promise<User | null>;
+	register: (login: Login) => () => Promise<User | null>;
+	verifyUser: (token: string) => () => Promise<User | null>;
+	logout: () => () => Promise<boolean>;
+	resetPassword: (email: string) => () => Promise<boolean>;
 };
 
 export type AuthStore = AuthState & AuthActions;
