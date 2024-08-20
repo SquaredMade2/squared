@@ -17,7 +17,8 @@ export function generateIndex() {
 /* eslint-disable */
 import { Router } from "express";
 import { Route, toQueryHandler, toMutationHandler } from "./route";
-import { PrismaClient } from "@repo/db/src";
+import { PrismaClient } from "@repo/db";
+import { setupSwagger } from "./swagger"; // Import Swagger setup
 
 export const prisma = new PrismaClient();
 
@@ -50,7 +51,7 @@ export const prisma = new PrismaClient();
   }
 
   writeLn(`
-export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
+function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 
   const routeRe = /^\.\/(.*)$/;
   const routeParamsRe = /\[(\w+)\]/g;
@@ -77,7 +78,10 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
   }`);
   }
 
-  writeLn("}");
+  writeLn(`
+  // Setup Swagger documentation
+  setupSwagger(router);
+}`);
 }
 
 function getRoutes(dir: string): string[] {
