@@ -10,7 +10,7 @@ http {
     # Configuration for www.<domain> (Main Page)
     server {
         listen 80;
-        server_name www.${DOMAIN};
+        server_name www.squaredmade.ap-southeast-2.elasticbeanstalk.com;
 
         location / {
             proxy_pass http://www:4000;  # Assuming the main page is served on port 4000
@@ -24,7 +24,7 @@ http {
     # Configuration for app.<domain> (Next.js Application)
     server {
         listen 80;
-        server_name app.${DOMAIN};
+        server_name app.squaredmade.ap-southeast-2.elasticbeanstalk.com;
 
         location / {
             proxy_pass http://web:3000;  # Assuming Next.js is running on port 3000
@@ -38,7 +38,7 @@ http {
     # Configuration for cloud.<domain> (Express API)
     server {
         listen 80;
-        server_name cloud.${DOMAIN};
+        server_name cloud.squaredmade.ap-southeast-2.elasticbeanstalk.com;
 
         location / {
             proxy_pass http://api:5173;  # Assuming the Express server is running on port 5173
