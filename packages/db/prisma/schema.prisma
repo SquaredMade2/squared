@@ -54,21 +54,22 @@ model Commit {
 }
 
 model TaskEventLog {
-  id         String      @id @default(uuid())
+  id         String   @id @default(uuid())
   authorId   String
   authorName String
-  createdAt  DateTime    @default(now())
+  createdAt  DateTime @default(now())
   taskId     String
-  eventsLog  TaskEvent[] @relation("EventLogs")
+
+  taskEvents TaskEvent[] @relation("EventLogs")
 }
 
 model TaskEvent {
-  id                   String       @id @default(uuid())
+  id                   String   @id @default(uuid())
   type                 String
   authorId             String
   authorName           String
   taskId               String
-  updatedAt            DateTime     @default(now())
+  updatedAt            DateTime @default(now())
   originalLabels       Label[]
   updatedLabels        Label[]
   originalValue        String?
@@ -77,7 +78,8 @@ model TaskEvent {
   originalAssigneeName String?
   updatedAssigneeId    String?
   updatedAssigneeName  String?
-  log                  TaskEventLog @relation("EventLogs", fields: [taskId], references: [id])
+
+  taskEventLog TaskEventLog @relation("EventLogs", fields: [taskId], references: [id])
 }
 
 model Comment {
@@ -86,6 +88,9 @@ model Comment {
   authorId String
   date     DateTime @default(now())
   taskId   String
+
+  Task   Task @relation(fields: [taskId], references: [id])
+  Author User @relation(fields: [authorId], references: [id])
 }
 
 model Notification {
@@ -96,6 +101,8 @@ model Notification {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  User User @relation(fields: [userId], references: [id])
 }
 
 model PageFilterModel {
@@ -122,66 +129,81 @@ model Task {
   assigneeId     String?
   assigneeName   String?
 
-  Team Team @relation(fields: [teamId], references: [id])
+  Author  User      @relation(fields: [authorId], references: [id])
+  Team    Team      @relation(fields: [teamId], references: [id])
+  Comment Comment[]
 }
 
 model Team {
-  id          String    @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String?
   identifier  String
   workspaceId String
-  users       User[]    @relation("TeamUsers")
-  tasks       Task[]
-  Workspace   Workspace @relation(fields: [workspaceId], references: [id])
+
+  Users     User[]    @relation("TeamUsers")
+  Tasks     Task[]
+  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Project   Project[]
 }
 
 model User {
-  id                 String      @id @default(uuid())
+  id                 String   @id @default(uuid())
   name               String
   username           String?
-  email              String      @unique
+  email              String   @unique
   password           String
-  verified           Boolean     @default(false)
-  lastLogin          DateTime    @default(now())
-  onBoarding         Boolean     @default(false)
+  verified           Boolean  @default(false)
+  lastLogin          DateTime @default(now())
+  onBoarding         Boolean  @default(false)
   defaultWorkspaceId String?
-  workspaces         Workspace[] @relation("UserWorkspaces")
-  teams              Team[]      @relation("TeamUsers")
+
+  DefaultWorkspace Workspace?     @relation(fields: [defaultWorkspaceId], references: [id])
+  Workspaces       Workspace[]    @relation("UserWorkspaces")
+  Teams            Team[]         @relation("TeamUsers")
+  Notification     Notification[]
+  Comment          Comment[]
+  Task             Task[]
 }
 
 model Workspace {
-  id                   String              @id @default(uuid())
+  id                   String  @id @default(uuid())
   name                 String?
   url                  String?
   companySize          Int?
-  universalTokenLink   UniversalTokenLink? @relation(fields: [universalTokenLinkId], references: [id])
-  teams                Team[]
-  users                User[]              @relation("UserWorkspaces")
-  projects             Project[]
   issuesCreated        Int?
-  githubRepoInfo       GithubRepoInfo?     @relation(fields: [githubRepoInfoId], references: [id])
   universalTokenLinkId String?
   githubRepoInfoId     String?
+
+  universalTokenLink UniversalTokenLink? @relation(fields: [universalTokenLinkId], references: [id])
+  teams              Team[]
+  projects           Project[]
+  githubRepoInfo     GithubRepoInfo?     @relation(fields: [githubRepoInfoId], references: [id])
+  Users              User[]              @relation("UserWorkspaces")
+  User               User[]
 }
 
 model UniversalTokenLink {
-  id        String      @id @default(uuid())
-  token     String      @default("")
-  isEnabled Boolean     @default(true)
+  id        String  @id @default(uuid())
+  token     String  @default("")
+  isEnabled Boolean @default(true)
+
   Workspace Workspace[]
 }
 
 model GithubRepoInfo {
-  id        String      @id @default(uuid())
-  repoName  String      @default("")
-  owner     String      @default("")
+  id       String @id @default(uuid())
+  repoName String @default("")
+  owner    String @default("")
+
   Workspace Workspace[]
 }
 
 model Project {
-  id          String     @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   teamId      String?
-  Workspace   Workspace? @relation(fields: [workspaceId], references: [id])
   workspaceId String?
+
+  Team      Team?      @relation(fields: [teamId], references: [id])
+  Workspace Workspace? @relation(fields: [workspaceId], references: [id])
 }
