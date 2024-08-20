@@ -57,5 +57,8 @@ jobs:
       - name: Install Cypress
         run: npx cypress install
 
+      - name: Generate DB Types
+        run: pnpm db:gen
+
       - name: Run tests
         run: pnpm test:ci
