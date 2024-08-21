@@ -19,20 +19,14 @@ const WorkSpaceDropDownContents = () => {
 	}, [dispatch]);
 
 	const router = useRouter();
-	const workspaceUrl = currentWorkspace.url;
-
 	const workspaceSettings = (workspaceSettingsOption: string) => {
-		return `/workspace/${workspaceUrl}/settings/${workspaceSettingsOption}`;
+		return `/settings/${workspaceSettingsOption}`;
 	};
 
 	return (
 		<div className="w-full flex flex-col">
 			{allWorkspaces.map((workspace, index) => (
-				<Link
-					href={`/workspace/${workspace.url}`}
-					className=""
-					key={workspace._id}
-				>
+				<Link href={`/${workspace.url}`} key={workspace._id}>
 					<div className="flex items-center p-1 rounded dark:hover:bg-accent hover:bg-muted">
 						<WorkspaceInitials
 							workspaceName={workspace.name}
