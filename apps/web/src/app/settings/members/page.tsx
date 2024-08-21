@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
 import { getListOfUsers } from "@/store/userSettings/thunks";
@@ -25,7 +24,6 @@ import {
 	updateTheUsersRole,
 	updateUsersInfo,
 } from "@/utils/workspace-members-utils";
-import { navBarToggle } from "@/store/userSettings";
 import { useTheme } from "next-themes";
 
 const styles = {
@@ -92,9 +90,7 @@ export default function Members() {
 		{},
 	);
 	const [listOfUsers, setListOfUsers] = useState<ListOfUsersProps[]>([]);
-	const navbarRef = useRef<HTMLDivElement | null>(null);
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
 	const [isActive, setIsActive] = useState<boolean>(
 		workspace.universalTokenLink.isEnabled,
 	);
@@ -103,10 +99,6 @@ export default function Members() {
 
 	const dispatch = useAppDispatch();
 
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
 	const handleButtonStyle = (): string =>
 		theme === "dark" ? styles.inviteButtonDark : styles.inviteButtonLight;
 	const getMembersRole = (userId: string) => {
@@ -419,16 +411,6 @@ export default function Members() {
 	);
 	return (
 		<div className={styles.mainContainer}>
-			<div className={styles.TopNavbar}>
-				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
-			</div>
-			<div
-				ref={navbarRef}
-				className={`${styles.navbarWrapper} ${showNavBar ? "mdsm:-left-0" : "mdsm:-left-[500px]"}`}
-			>
-				{/* <SettingsNavBar setLoading={console.log} /> */}
-			</div>
-
 			<div className={styles.pageContainer}>
 				<div className={styles.pageWrapper}>
 					<p className={styles.title}>Members</p>

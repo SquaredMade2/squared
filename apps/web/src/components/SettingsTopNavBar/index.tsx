@@ -1,15 +1,16 @@
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { SettingsTopNavbarProps } from "@/components/SettingsTopNavBar/SettingsTopNavbar.interfaces";
 import { ChevronLeft, PanelLeft } from "lucide-react";
 
-const SettingsTopNavBar = ({ setShowNavBar }: SettingsTopNavbarProps) => {
+const SettingsTopNavBar: React.FC<{ setShowNavBar: () => void }> = ({
+	setShowNavBar,
+}) => {
 	const router = useRouter();
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 
 	return (
 		<div>
-			<div className="flex items-center">
+			<div className="flex items-center border">
 				<span onClick={setShowNavBar} className="px-4">
 					<PanelLeft className="text-[#6B6F76] size-5" />
 				</span>
@@ -22,9 +23,6 @@ const SettingsTopNavBar = ({ setShowNavBar }: SettingsTopNavbarProps) => {
 					</span>
 					<h2>Settings</h2>
 				</div>
-			</div>
-			<div>
-				<span className="border-t border-border block" />
 			</div>
 		</div>
 	);

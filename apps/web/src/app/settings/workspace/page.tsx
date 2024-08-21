@@ -7,11 +7,9 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { getWorkspace, deleteWorkspace } from "@/store/taskData/thunks";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import DeleteButton from "@/components/DeleteButton";
 import BlueButton from "@/components/BlueButton";
-import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { X } from "lucide-react";
@@ -32,7 +30,6 @@ export default function WorkspaceSettings() {
 	const [workspaceName, setWorkspaceName] = useState(workspace.name);
 	const [workspaceURL, setWorkspaceURL] = useState(workspace.url);
 	const [deletingWorkspace, setDeletingWorkspace] = useState(false);
-	const { showNavBar } = useSelector((state: RootState) => state.userSettings);
 	const [fillColor, setFillColor] = useState("text-[#9c9eac]");
 	const urlRegex = /^[a-z0-9-]*$/;
 	const dialogRef = useRef<HTMLDialogElement | null>(null);
@@ -128,11 +125,6 @@ export default function WorkspaceSettings() {
 		}
 	};
 
-	const handleNavToggle = () => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
-
 	useEffect(() => {
 		if (deletingWorkspace) {
 			setTimeout(() => {
@@ -154,10 +146,7 @@ export default function WorkspaceSettings() {
 
 	return (
 		<div className="flex mdsm:flex-col relative bg-background min-h-screen xs:h-full xs:pb-10 w-full">
-			<div className="relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10 lg:hidden mdsm:visible">
-				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
-			</div>
-			<div className="h-full w-full flex flex-col items-center bg-background text-foreground pt-20">
+			<div className="h-full w-full flex flex-col items-center bg-background text-foreground pt-2">
 				<div>
 					<dialog
 						className="w-84 bg-background text-foreground rounded-lg cursor-default border border-border"

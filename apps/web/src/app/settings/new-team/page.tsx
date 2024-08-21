@@ -6,9 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { createTeam, teamExists } from "@/store/taskData/thunks";
 import { useRouter } from "next/navigation";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
-import { navBarToggle } from "@/store/userSettings";
 
 const styles = {
 	mainContainer:
@@ -36,13 +34,11 @@ export default function CreateTeam() {
 	const { toast } = useToast();
 	const dispatch = useAppDispatch();
 	const router = useRouter();
-
 	const [teamName, setTeamName] = useState<string>("");
 	const [teamIdentifier, setTeamIdentifier] = useState<string>("");
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const { user, theme } = useAppSelector((state) => state.userSettings);
 	const access = useAppSelector((state) => state.taskData.access);
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
 
 	const userHasAccess =
 		typeof access === "object" &&
@@ -94,11 +90,6 @@ export default function CreateTeam() {
 		}
 	};
 
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
-
 	useEffect(() => {
 		if (!userHasAccess) {
 			router.push(`/workspace/${workspace?.url}`);
@@ -107,9 +98,6 @@ export default function CreateTeam() {
 
 	return (
 		<div className={styles.mainContainer}>
-			<div className={styles.TopNavbar}>
-				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
-			</div>
 			<div className={styles.pageContainer}>
 				<div className={styles.pageWrapper}>
 					<div>
