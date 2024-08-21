@@ -11,6 +11,7 @@ import type { RootState } from "@/store";
 import type { CurrentFilters } from "@/store/filterPage";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { SelectedFilterProps } from "./SelectedFilter.interfaces";
+import AssigneeFilterDropDown from "../AssigneeFilterDropDown";
 
 export default function SelectedFilter({
 	handleFilter,
@@ -29,6 +30,8 @@ export default function SelectedFilter({
 	const [showDueDateFilterDropDown, setShowDueDateFilterDropDown] =
 		useState(false);
 	const [showEffortFilterDropDown, setShowEffortFilterDropDown] =
+		useState(false);
+	const [showAssigneeFilterDropDown, setShowAssigneeFilterDropDown] =
 		useState(false);
 	const selectIsOrIsNotRef = useRef<HTMLParagraphElement | null>(null);
 	const currentFilters = useSelector(
@@ -93,6 +96,9 @@ export default function SelectedFilter({
 				case "effortEstimate":
 					setShowEffortFilterDropDown(true);
 					break;
+				case "assignee":
+					setShowAssigneeFilterDropDown(true);
+					break;
 			}
 		} else {
 			setShowStatusFilterDropDown(false);
@@ -100,6 +106,7 @@ export default function SelectedFilter({
 			setShowLabelFilterDropDown(false);
 			setShowDueDateFilterDropDown(false);
 			setShowEffortFilterDropDown(false);
+			setShowAssigneeFilterDropDown(false);
 		}
 	}, [showChangeOptionDropDown]);
 
@@ -193,6 +200,16 @@ export default function SelectedFilter({
 							handleFilter={handleFilter}
 							setShowEffortFilterDropDown={setShowEffortFilterDropDown}
 							showEffortFilterDropDown={showEffortFilterDropDown}
+						/>
+					</div>
+					<div
+						id="AssigneeFilterDropDown"
+						className="absolute w-72 top-full left-0"
+					>
+						<AssigneeFilterDropDown
+							handleFilter={handleFilter}
+							setShowAssigneeFilterDropDown={setShowAssigneeFilterDropDown}
+							showAssigneeFilterDropDown={showAssigneeFilterDropDown}
 						/>
 					</div>
 				</div>

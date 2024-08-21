@@ -44,7 +44,6 @@ const ViewAllTasks = ({
 	const filterType = useSelector(
 		(state: RootState) => state.filterPage.filterType,
 	);
-
 	useEffect(() => {
 		const fetchData = async () => {
 			await dispatch(getAllTasks(team));
@@ -60,7 +59,8 @@ const ViewAllTasks = ({
 			currentFilters.assignee?.length !== 0 ||
 			currentFilters.labels.length !== 0 ||
 			currentFilters.dueDate.length !== 0 ||
-			currentFilters.effortEstimate.length !== 0
+			currentFilters.effortEstimate.length !== 0 ||
+			currentFilters.assignee.length !== 0
 		) {
 			const dashboardPage = true;
 			const filterId = "dashboardPage";

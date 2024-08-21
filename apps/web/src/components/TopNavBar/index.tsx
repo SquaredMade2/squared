@@ -130,7 +130,8 @@ const TopNavBar = ({
 			currentFilters.priority.length === 0 &&
 			currentFilters.labels.length === 0 &&
 			currentFilters.dueDate.length === 0 &&
-			currentFilters.effortEstimate.length === 0
+			currentFilters.effortEstimate.length === 0 &&
+			currentFilters.assignee?.length === 0
 		) {
 			setShowFilterStatusBar(false);
 		} else {
@@ -168,7 +169,8 @@ const TopNavBar = ({
 										currentFilters.status.length > 0 ||
 										currentFilters.labels.length > 0 ||
 										currentFilters.dueDate.length > 0 ||
-										currentFilters.effortEstimate.length > 0
+										currentFilters.effortEstimate.length > 0 ||
+										currentFilters.assignee?.length > 0
 											? () => {
 													handleFilter(null);
 													dispatch(deleteAllCurrentFilters());
@@ -207,7 +209,8 @@ const TopNavBar = ({
 										currentFilters.status.length > 0 ||
 										currentFilters.labels.length > 0 ||
 										currentFilters.dueDate.length > 0 ||
-										currentFilters.effortEstimate.length > 0
+										currentFilters.effortEstimate.length > 0 ||
+										currentFilters?.assignee?.length > 0
 											? () => {
 													handleFilter(null);
 													dispatch(deleteAllCurrentFilters());

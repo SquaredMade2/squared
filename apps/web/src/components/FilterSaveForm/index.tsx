@@ -61,7 +61,8 @@ const FilterSaveForm = ({
 			currentFilters.priority.length === 0 &&
 			currentFilters.labels.length === 0 &&
 			currentFilters.dueDate.length === 0 &&
-			currentFilters.effortEstimate.length === 0;
+			currentFilters.effortEstimate.length === 0 &&
+			currentFilters.assignee?.length === 0;
 
 		if (noFilterSelected) {
 			setFilterSelected(false);

@@ -18,8 +18,15 @@ const SelectedFiltersBar = ({
 	const dispatch = useDispatch();
 	const [showFilterDropDown, setShowFilterDropDown] = useState<boolean>(false);
 	const [taskAttributeTitles] = useState<
-		Array<"status" | "priority" | "labels" | "dueDate" | "effortEstimate">
-	>(["status", "priority", "labels", "dueDate", "effortEstimate"]);
+		Array<
+			| "status"
+			| "priority"
+			| "labels"
+			| "dueDate"
+			| "effortEstimate"
+			| "assignee"
+		>
+	>(["status", "priority", "labels", "dueDate", "effortEstimate", "assignee"]);
 	const [filterSelected, setFilterSelected] = useState<boolean>(false);
 	const currentFilters = useAppSelector(
 		(state) => state.filterPage.currentFilters,
@@ -62,7 +69,8 @@ const SelectedFiltersBar = ({
 			currentFilters.priority.length === 0 &&
 			currentFilters.labels.length === 0 &&
 			currentFilters.dueDate.length === 0 &&
-			currentFilters.effortEstimate.length === 0;
+			currentFilters.effortEstimate.length === 0 &&
+			currentFilters.assignee?.length === 0;
 
 		if (noFilterSelected) {
 			setFilterSelected(false);
@@ -70,14 +78,13 @@ const SelectedFiltersBar = ({
 			setFilterSelected(true);
 		}
 	}, [currentFilters]);
-
 	return (
 		<>
 			<div className="grid grid-cols-6 h-full text-foreground border-border bg-card border-t">
 				<div className="flex items-center ml-5 col-span-4 flex-wrap mb-1">
 					{filterSelected &&
 						taskAttributeTitles.map((taskAttributeTitle) => {
-							return currentFilters[taskAttributeTitle].map(
+							return currentFilters[taskAttributeTitle]?.map(
 								(taskAttribute: string | number | DateFilter) => {
 									return (
 										<SelectedFilter

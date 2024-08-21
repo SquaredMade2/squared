@@ -20,10 +20,18 @@ import StatusFilterDropDown from "@/components/StatusFilterDropDown";
 import LabelFilterDropDown from "@/components/LabelFilterDropDown";
 import DueDateFilterDropDown from "@/components/DueDateFilterDropDown";
 import EffortFilterDropDown from "@/components/EffortFilterDropDown";
+import AssigneeFilterDropDown from "@/components/AssigneeFilterDropDown";
 
 import type { Props } from "@/components/FilterDropdown/FilterDropdown.interfaces";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
-import { Calendar, CircleDashed, Clock, Ellipsis, Tag } from "lucide-react";
+import {
+	Calendar,
+	CircleDashed,
+	Clock,
+	Ellipsis,
+	Tag,
+	UserSearch,
+} from "lucide-react";
 
 const groupOne = [
 	{
@@ -60,6 +68,13 @@ const groupOne = [
 		border: false,
 		svg: <Clock className="cursor-pointer size-4" />,
 		group: "effortEstimate",
+	},
+	{
+		id: 6,
+		name: "Assignee",
+		border: false,
+		svg: <UserSearch className="cursor-pointer size-4" />,
+		group: "Assignee",
 	},
 	// {
 	// 	id: 4,
@@ -157,12 +172,15 @@ const FilterDropDown: React.FunctionComponent<Props> = ({
 		useState(false);
 	const [showEffortFilterDropDown, setShowEffortFilterDropDown] =
 		useState(false);
+	const [showAssigneeFilterDropDown, setShowAssigneeFilterDropDown] =
+		useState(false);
 	const filterDropDownRef = useRef<HTMLButtonElement>(null);
 	const priorityMenuRef = useRef<HTMLDivElement>(null);
 	const statusMenuRef = useRef<HTMLDivElement>(null);
 	const labelMenuRef = useRef<HTMLDivElement>(null);
 	const dueDateMenuRef = useRef<HTMLDivElement>(null);
 	const effortMenuRef = useRef<HTMLDivElement>(null);
+	const assigneeMenuRef = useRef<HTMLDivElement>(null);
 
 	const filteredGroup =
 		query === ""
@@ -215,6 +233,10 @@ const FilterDropDown: React.FunctionComponent<Props> = ({
 			setShowEffortFilterDropDown(true);
 			setShowFilterDropDown(false);
 		}
+		if (filterOption.name === "Assignee") {
+			setShowAssigneeFilterDropDown(true);
+			setShowFilterDropDown(false);
+		}
 
 		if (typeof filterOption === "object") {
 			handleFilter(filterOption);
@@ -256,6 +278,12 @@ const FilterDropDown: React.FunctionComponent<Props> = ({
 				!effortMenuRef.current.contains(e.target as HTMLElement)
 			) {
 				setShowEffortFilterDropDown(false);
+			}
+			if (
+				assigneeMenuRef.current != null &&
+				!assigneeMenuRef.current.contains(e.target as HTMLElement)
+			) {
+				setShowAssigneeFilterDropDown(false);
 			}
 		};
 
@@ -410,6 +438,13 @@ const FilterDropDown: React.FunctionComponent<Props> = ({
 				<EffortFilterDropDown
 					showEffortFilterDropDown={showEffortFilterDropDown}
 					setShowEffortFilterDropDown={setShowEffortFilterDropDown}
+					handleFilter={handleFilter}
+				/>
+			</div>
+			<div id="assigneeFilterDiv" ref={assigneeMenuRef}>
+				<AssigneeFilterDropDown
+					showAssigneeFilterDropDown={showAssigneeFilterDropDown}
+					setShowAssigneeFilterDropDown={setShowAssigneeFilterDropDown}
 					handleFilter={handleFilter}
 				/>
 			</div>

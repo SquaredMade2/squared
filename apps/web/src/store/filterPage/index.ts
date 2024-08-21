@@ -46,7 +46,7 @@ export interface DateFilter {
 export interface CurrentFilters {
 	status: string[];
 	priority: string[];
-	assignee: string[] | null;
+	assignee: string[];
 	labels: string[];
 	dueDate: DateFilter[];
 	effortEstimate: number[];
