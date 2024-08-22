@@ -10,7 +10,7 @@ const SettingsTopNavBar: React.FC<{ setShowNavBar: () => void }> = ({
 
 	return (
 		<div>
-			<div className="flex items-center border">
+			<div className="flex items-center border-b shadow">
 				<span onClick={setShowNavBar} className="px-4">
 					<PanelLeft className="text-[#6B6F76] size-5" />
 				</span>

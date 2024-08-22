@@ -50,16 +50,13 @@ const ButtonIcon: FC<Props> = ({
 	children,
 }) => {
 	const [isHovering, setIsHovering] = useState(false);
-	const switchHover = () => {
-		setIsHovering(!isHovering);
-	};
 	const iconHover = hoverBg ? `hover:${hoverBg}` : "";
 
 	return (
 		<div
 			className="relative flex whitespace-nowrap text-muted-foreground cursor-pointer hover:text-foreground"
-			onMouseEnter={switchHover}
-			onMouseLeave={switchHover}
+			onMouseEnter={() => setIsHovering(true)}
+			onMouseLeave={() => setIsHovering(false)}
 			onClick={handleClick}
 		>
 			<div

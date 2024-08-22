@@ -146,7 +146,7 @@ export default function WorkspaceSettings() {
 
 	return (
 		<div className="flex mdsm:flex-col relative bg-background min-h-screen xs:h-full xs:pb-10 w-full">
-			<div className="h-full w-full flex flex-col items-center bg-background text-foreground pt-2">
+			<div className="h-full w-full flex flex-col items-center bg-background text-foreground pt-20">
 				<div>
 					<dialog
 						className="w-84 bg-background text-foreground rounded-lg cursor-default border border-border"

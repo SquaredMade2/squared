@@ -17,19 +17,19 @@ export default function TeamLayout({
 		<div className="h-full w-full relative">
 			{showNavbar && (
 				<div
-					className="w-full h-full bg-gray-500 bg-opacity-40 absolute top-0 left-0 z-10 lg:hidden"
+					className="w-full h-full bg-gray-500 bg-opacity-40 absolute top-0 left-0 z-10 md:hidden"
 					onClick={toggleNavbar}
 				/>
 			)}
 
 			<div className="overflow-hidden relative">
-				<div className="h-full w-full h-12 lg:hidden sticky top-0">
+				<div className="h-full w-full h-12 md:hidden sticky top-0">
 					<SettingsTopNavBar setShowNavBar={toggleNavbar} />
 				</div>
 				<div className="flex">
 					<div
 						className={cn(
-							"w-64 absolute z-10 lg:static transition-all duration-300 ease-in-out",
+							"w-64 absolute z-10 md:static transition-all duration-300 ease-in-out",
 							showNavbar ? "left-0 top-0" : "-left-[100%]",
 						)}
 					>

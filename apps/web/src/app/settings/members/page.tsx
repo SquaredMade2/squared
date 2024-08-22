@@ -28,7 +28,7 @@ import { useTheme } from "next-themes";
 
 const styles = {
 	mainContainer:
-		"flex mdsm:flex-col relative bg-card h-auto min-h-screen xs:p-0 w-full",
+		"flex mdsm:flex-col relative h-auto min-h-screen xs:p-0 w-full",
 	pageContainer:
 		"flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ",
 	TopNavbar: "lg:hidden mdsm:visible bg-background",
