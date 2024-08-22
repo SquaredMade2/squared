@@ -1,4 +1,4 @@
-import { Task } from "@repo/db/src";
+import { Task } from "@repo/db";
 import { prisma } from "@/api";
 import { Route } from "@/api/route";
 

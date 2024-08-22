@@ -1,4 +1,4 @@
-import { Team } from "@repo/db/src";
+import { Team } from "@repo/db";
 import { prisma } from "@/api";
 import { Route } from "@/api/route";
 
