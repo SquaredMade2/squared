@@ -4,6 +4,7 @@ import InboxList from "@/components/InboxList";
 import InboxTopMenu from "@/components/InboxTopMenu";
 import { useState } from "react";
 import InboxContents from "@/components/InboxContents";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Inbox(): React.JSX.Element {
 	const [showInboxList, setShowInboxList] = useState(false);
@@ -15,14 +16,14 @@ export default function Inbox(): React.JSX.Element {
 	};
 
 	return (
-		<div className="w-full h-screen flex bg-background overflow-hidden p-0 sm:p-1">
+		<div className="w-full h-screen flex  overflow-hidden p-0 sm:p-2">
 			{showInboxList && (
 				<div
-					className="w-full h-full bg-gray-500 bg-opacity-40 absolute top-0 left-0 z-10 md:hidden"
+					className="w-full h-full bg-gray-500 bg-opacity-40 absolute top-0 left-0 z-10 xl:hidden"
 					onClick={closeBackdrop}
 				/>
 			)}
-			<div className="w-full flex overflow-y-auto scrollbar-thin-transparent border rounded-none sm:rounded-md">
+			<ScrollArea className="w-full flex  border  sm:rounded">
 				<div className="flex flex-col w-full">
 					<InboxTopMenu toggleInboxList={toggleInboxList} />
 					<div className="w-full flex">
@@ -38,7 +39,7 @@ export default function Inbox(): React.JSX.Element {
 						</div>
 					</div>
 				</div>
-			</div>
+			</ScrollArea>
 		</div>
 	);
 }

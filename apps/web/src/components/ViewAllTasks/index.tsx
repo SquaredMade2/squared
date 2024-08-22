@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getAllTasks } from "@/store/taskData/thunks";
@@ -12,7 +11,6 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Status } from "@/interfaces/event.interfaces";
 import type { Task } from "@/store/taskData/taskData.interfaces";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -127,25 +125,8 @@ const ViewAllTasks = ({
 						taskData={taskData ? taskData : ({} as Task)}
 					/>
 					<DragDropContext onDragEnd={handleDragEnd}>
-						<div
-							className={` px-2 sm:px-5  ${
-								view === "list"
-									? "h-[85%] sm:h-[93%] flex items-center justify-center w-full"
-									: " lg:w-[calc(100vw-296px)]"
-							}`}
-						>
-							<ScrollArea className="w-full h-full">
-								<div
-									className={
-										view === "list"
-											? "flex flex-col hover:pr-3 transition-all duration-500 ease-in-out"
-											: "flex gap-2  snap-start"
-									}
-								>
-									{filteredColumns()}
-								</div>
-								{view === "grid" && <ScrollBar orientation="horizontal" />}
-							</ScrollArea>
+						<div className={view === "list" ? "px-2" : "flex"}>
+							{filteredColumns()}
 						</div>
 					</DragDropContext>
 				</>
