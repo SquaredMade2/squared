@@ -1,14 +1,9 @@
-FROM node:18-alpine AS base
+# Base image
+FROM node:20-alpine AS base
 
-# The web Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
-# Make sure you update this Dockerfile, the Dockerfile in the web workspace and copy that over to Dockerfile in the docs.
-
+# Builder stage
 FROM base AS builder
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk update
 RUN apk add --no-cache libc6-compat
-
-# Set working directory
 WORKDIR /app
 
 # Install pnpm and turbo globally
@@ -17,44 +12,109 @@ RUN npm install -g pnpm turbo
 COPY . .
 RUN turbo prune api --docker
 
-# Add lockfile and package.json's of isolated subworkspace
+# Installer stage
 FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install pnpm again to make it available in this stage
+# Re-install pnpm in this stage
 RUN npm install -g pnpm
 
-# First install dependencies (as they change less often)
-COPY .gitignore .gitignore
+# Install dependencies
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
-# Build the project and its dependencies
+# Remove unnecessary packages
+RUN pnpm prune --prod
+
+# Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
-# Uncomment and use build args to enable remote caching
-# ARG TURBO_TEAM
-# ENV TURBO_TEAM=$TURBO_TEAM
+# Accept build arguments and set them as environment variables
+ARG MONGO_URL
+ENV MONGO_URL=${MONGO_URL}
 
-# ARG TURBO_TOKEN
-# ENV TURBO_TOKEN=$TURBO_TOKEN
+ARG JWT_SECRECT
+ENV JWT_SECRECT=${JWT_SECRECT}
+
+ARG EMAIL_USERNAME
+ENV EMAIL_USERNAME=${EMAIL_USERNAME}
+
+ARG EMAIL_PASSWORD
+ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
+
+ARG BASE_URL
+ENV BASE_URL=${BASE_URL}
+
+ARG PORT
+ENV PORT=${PORT}
+
+ARG NODE_ENV
+ENV NODE_ENV=${NODE_ENV}
+
+ARG AWS_ACCESS_KEY_ID
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+
+ARG AWS_SECRET_ACCESS_KEY
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+ARG AWS_S3_BUCKET
+ENV AWS_S3_BUCKET=${AWS_S3_BUCKET}
+
+ARG AWE_REGION
+ENV AWE_REGION=${AWE_REGION}
+
+ARG NEXT_PUBLIC_CONFIRM_URL
+ENV NEXT_PUBLIC_CONFIRM_URL=${NEXT_PUBLIC_CONFIRM_URL}
+
+ARG NEXT_PUBLIC_SERVER
+ENV NEXT_PUBLIC_SERVER=${NEXT_PUBLIC_SERVER}
+
+ARG GITHUB_USER_ACCESS_TOKEN
+ENV GITHUB_USER_ACCESS_TOKEN=${GITHUB_USER_ACCESS_TOKEN}
+
+ARG HOOKDECK_AUTH_TOKEN
+ENV HOOKDECK_AUTH_TOKEN=${HOOKDECK_AUTH_TOKEN}
+
+ARG CLIENT_ID
+ENV CLIENT_ID=${CLIENT_ID}
+
+ARG SEED_PASSWORD
+ENV SEED_PASSWORD=${SEED_PASSWORD}
+
+ARG NGROK_AUTHTOKEN
+ENV NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+
+ARG GITHUB_APP_ID
+ENV GITHUB_APP_ID=${GITHUB_APP_ID}
+
+ARG GITHUB_CLIENT_ID
+ENV GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+
+ARG GITHUB_CLIENT_SECRET
+ENV GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+
+ARG GITHUB_PRIVATE_KEY
+ENV GITHUB_PRIVATE_KEY=${GITHUB_PRIVATE_KEY}
+
+ARG NEXT_PUBLIC_GITHUB_CLIENT_ID
+ENV NEXT_PUBLIC_GITHUB_CLIENT_ID=${NEXT_PUBLIC_GITHUB_CLIENT_ID}
+
+ARG NEXT_PUBLIC_GITHUB_REDIRECT_URI
+ENV NEXT_PUBLIC_GITHUB_REDIRECT_URI=${NEXT_PUBLIC_GITHUB_REDIRECT_URI}
 
 RUN pnpm turbo build --filter=api...
 
-FROM base AS runner
+# Runner stage
+FROM node:20-slim AS runner
 WORKDIR /app
 
-# Install pnpm again to ensure it's available for the final stage
-RUN npm install -g pnpm
-
 # Don't run production as root
-RUN addgroup --system --gid 1001 expressjs
+RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
+
 COPY --from=installer /app .
 
-CMD node apps/api/dist/index.js
+CMD ["node", "apps/api/dist/index.js"]
