@@ -70,17 +70,16 @@ const DateDropdown: React.FC<DateDropdownProps> = ({ location }) => {
 				selected={selectedDate}
 				onSelect={(date) => handleSelectDate(date)}
 				disabled={(date) => date < new Date()}
-				// defaultMonth={new Date(selectedDate ? selectedDate : "")} 	create function - getDefaultMonth
+				defaultMonth={new Date(selectedDate ? selectedDate : "")}
 			/>
 			<div className="mt-4 flex flex-col text-popover-foreground">
 				Due date
 				<div className="flex items-center justify-between gap-3 w-full">
-					{/* set a default date or something so this always shows */}
-					{selectedDate && (
-						<span className="flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10">
-							{format(new Date(selectedDate), "M/dd/yy")}
-						</span>
-					)}
+					<span className="flex items-center bg-accent p-3 rounded-lg flex-1 mt-2 h-10">
+						{selectedDate
+							? format(new Date(selectedDate), "M/dd/yy")
+							: "M/dd/yy"}
+					</span>
 					<input
 						title="title"
 						type="time"
