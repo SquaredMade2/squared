@@ -32,6 +32,7 @@ export default function Landingpage() {
 				}
 			} else {
 				setLoading(false);
+				router.push("/login");
 			}
 		};
 		fetchData();
