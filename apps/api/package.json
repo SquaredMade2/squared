@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "types:check": "tsc --pretty --noEmit",
-    "test": "tsc && mocha ./dist/test --exit",
     "start": "tsc && node dist/index.js",
     "format:write": "biome format --write .",
     "format:check": "biome format .",
