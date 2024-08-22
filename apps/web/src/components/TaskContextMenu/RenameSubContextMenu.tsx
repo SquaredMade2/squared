@@ -1,21 +1,19 @@
-import { type ChangeEvent, useRef } from "react";
+import { type ChangeEvent, type FC, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../../ui/context-menu";
-import type { RenameSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
-import { Input } from "../../ui/input";
-import { Button } from "../../ui/button";
+} from "../ui/context-menu";
+import type { RenameSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { updateTitle } from "@/api/taskApi";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { EventType } from "@/interfaces/event.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 
-const RenameSubContextMenu: React.FC<RenameSubContextMenuProps> = ({
-	task,
-}) => {
+const RenameSubContextMenu: FC<RenameSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 

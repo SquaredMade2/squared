@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { FC } from "react";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,
@@ -12,15 +13,16 @@ import StatusSubContextMenu from "./StatusSubContextMenu";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { TaskContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { TaskContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import LabelSubContextMenu from "./LabelSubContextMenu";
 import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
 import DateSubContextMenu from "./DateSubContextMenu";
-import RenameSubContextMenu from "./RenameSubContextMenu";
+// Will need in future
+// import RenameSubContextMenu from "./RenameSubContextMenu";
 import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
 
-const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
+const TaskContextMenu: FC<TaskContextMenuProps> = ({
 	task,
 	// Keep below here for future
 	setIsCopied,
@@ -67,7 +69,8 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 
 			<DateSubContextMenu task={task} />
 
-			<RenameSubContextMenu task={task} />
+			{/* Need to make this with a Dialog comp */}
+			{/* <RenameSubContextMenu task={task} /> */}
 
 			<ContextMenuSeparator />
 			{/*  No Subscribe feature yet

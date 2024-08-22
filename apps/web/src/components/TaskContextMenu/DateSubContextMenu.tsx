@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, type FC } from "react";
 import { Calendar } from "lucide-react";
-import type { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { DateSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../../ui/context-menu";
-import DateDropdown from "../../DateDropdown";
+} from "../ui/context-menu";
+import DateDropdown from "../DateDropdown";
 
-const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({ task }) => {
+const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
 	const [showDropdown, setShowDropdown] = useState(true);
 
 	const handleButtonClick = () => {

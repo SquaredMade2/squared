@@ -1,21 +1,22 @@
-import axios from "axios";
+import type { FC } from "react";
+import { put as axiosPut } from "axios";
 import { Tag } from "lucide-react";
-import type { LabelSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { LabelSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../../ui/context-menu";
+} from "../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType, type Labels } from "@/interfaces/event.interfaces";
 import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { labelOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
-import { LabelColor } from "../../LabelButton";
+import { LabelColor } from "../LabelButton";
 
-const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
+const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
 
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
@@ -45,7 +46,7 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 	const updateItem = async (newLabelSelection: string[]) => {
 		if (task._id !== undefined) {
 			try {
-				await axios.put(
+				await axiosPut(
 					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
 					{
 						labels: newLabelSelection,

@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import {
 	Circle,
 	CircleCheckBig,
@@ -5,35 +6,28 @@ import {
 	CircleX,
 	Copy,
 } from "lucide-react";
-import axios from "axios";
-import type { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
-import { inProgress } from "../../Svg";
+import { put as axiosPut } from "axios";
+import type { StatusSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
+import { inProgress } from "../Svg";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../../ui/context-menu";
+} from "../ui/context-menu";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getSingleTask } from "@/store/task/thunks";
 import { statusOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 
-const styles = {
-	contentWrapper: "",
-	centerIcon: "mr-2",
-};
-
-const StatusSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
-	task,
-}) => {
+const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
 	const dispatch = useAppDispatch();
 	const handleSetStatus: (status: string) => void = async (status) => {
 		if (task._id !== undefined) {
 			try {
-				await axios.put(
+				await axiosPut(
 					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
 					{
 						status,
@@ -68,7 +62,7 @@ const StatusSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>
+				<div className="mr-2">
 					<CircleDashed className="size-4" />
 				</div>
 				Status
@@ -81,9 +75,7 @@ const StatusSubContextMenu: React.FC<StatusSubContextMenuProps> = ({
 							key={status}
 							onClick={() => handleSetStatus(status)}
 						>
-							<div className={styles.centerIcon}>
-								{handleRenderIcon(status)}
-							</div>
+							<div className="mr-2">{handleRenderIcon(status)}</div>
 							{status}
 						</ContextMenuItem>
 					);

@@ -1,3 +1,4 @@
+import type { FC } from "react";
 import { UserSearch } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
@@ -5,9 +6,9 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../../ui/context-menu";
-import ProfileImage from "../../ProfileImage";
-import type { AssigneeSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+} from "../ui/context-menu";
+import ProfileImage from "../ProfileImage";
+import type { AssigneeSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import { type Assignee, EventType } from "@/interfaces/event.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import type {
@@ -18,9 +19,7 @@ import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { getSingleTask } from "@/store/task/thunks";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 
-const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
-	task,
-}) => {
+const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
 
 	const taskDataReceived =
@@ -116,79 +115,6 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 					className="max-w-96"
 					style={{ height: assigneeDropdownHeight() }}
 				>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
-					<ContextMenuItem
-						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
-					>
-						Unassign
-					</ContextMenuItem>
 					<ContextMenuItem
 						className="w-40"
 						onClick={() =>

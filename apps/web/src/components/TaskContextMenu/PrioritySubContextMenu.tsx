@@ -1,12 +1,13 @@
-import axios from "axios";
+import type { FC } from "react";
+import { put as axiosPut } from "axios";
 import { CircleAlert, Ellipsis } from "lucide-react";
-import type { PrioritySubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { PrioritySubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../../ui/context-menu";
+} from "../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { getSingleTask } from "@/store/task/thunks";
@@ -14,11 +15,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setPriority } from "@/store/taskData";
 import { priorityOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
-import { high, low, medium } from "../../Svg";
+import { high, low, medium } from "../Svg";
 
-const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
-	task,
-}) => {
+const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
 
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
@@ -42,7 +41,7 @@ const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
 	const updateItem = async (newPriority: string) => {
 		if (task._id !== undefined) {
 			try {
-				await axios.put(
+				await axiosPut(
 					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
 					{
 						priority: newPriority,
