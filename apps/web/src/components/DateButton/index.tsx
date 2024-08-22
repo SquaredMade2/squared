@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setBackgroundColor } from "../DesignationsContainer";
 import DateDropdown from "@/components/DateDropdown";
 import type { RootState } from "@/store";
 import format from "date-fns/format";
 import { Calendar } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 const DateButton = ({ location }: { location: string }) => {
 	const newIssueDate = useAppSelector(
@@ -16,7 +16,6 @@ const DateButton = ({ location }: { location: string }) => {
 		}
 		return undefined;
 	});
-	const [showDropdown, setShowDropdown] = useState(false);
 	const { theme } = useAppSelector((state) => state.userSettings);
 
 	const handleBackground = () => {
@@ -30,7 +29,6 @@ const DateButton = ({ location }: { location: string }) => {
 			<button
 				type="button"
 				className={`${"inline-flex items-center border border-border rounded px-2 py-0.5 mr-3 text-popover-foreground text-sm shadow-md cursor-pointer"} ${handleBackground()}`}
-				onClick={handleButtonClick}
 			>
 				<Calendar className="cursor-pointer size-4" />
 				<span className="text-sm font-semibold text-popover-foreground ml-2 cursor-pointer">
@@ -45,7 +43,6 @@ const DateButton = ({ location }: { location: string }) => {
 			<button
 				type="button"
 				className={`${"inline-flex items-center border border-border hover:border-border rounded-3xl px-3 py-1 m-1 text-sm cursor-pointer"} ${setBackgroundColor(theme)}`}
-				onClick={handleButtonClick}
 			>
 				<Calendar className="cursor-pointer size-4" />
 				<span className="text-sm font-semibold text-popover-foreground ml-2 cursor-pointer">
@@ -57,34 +54,22 @@ const DateButton = ({ location }: { location: string }) => {
 		);
 	};
 
-	const handleButtonClick = () => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleClickAway = () => {
-		setShowDropdown(!showDropdown);
-	};
-
 	return (
-		<>
-			<div
+		<Popover>
+			<PopoverTrigger
+				asChild
 				className={
 					location === "newIssue"
 						? "relative"
 						: "relative flex flex-row flex-wrap"
 				}
 			>
-				{location === "newIssue" && newIssueButton()}
-				{location === "issueSidebar" && issueSidebarButton()}
-				{showDropdown && (
-					<DateDropdown
-						location={location}
-						handleButtonClick={handleButtonClick}
-						handleClickAway={handleClickAway}
-					/>
-				)}
-			</div>
-		</>
+				{location === "newIssue" ? newIssueButton() : issueSidebarButton()}
+			</PopoverTrigger>
+			<PopoverContent>
+				<DateDropdown location={location} />
+			</PopoverContent>
+		</Popover>
 	);
 };
 
