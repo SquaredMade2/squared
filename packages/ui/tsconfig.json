@@ -54,7 +54,9 @@
       "@squared-ui/react-day-picker": ["./src/react/day-picker/src"],
       "@squared-ui/react-dialog": ["./src/react/dialog/src"],
       "@squared-ui/react-direction": ["./src/react/direction/src"],
-      "@squared-ui/react-dismissable-layer": ["./src/react/dismissable-layer/src"],
+      "@squared-ui/react-dismissable-layer": [
+        "./src/react/dismissable-layer/src"
+      ],
       "@squared-ui/react-dropdown-menu": ["./src/react/dropdown-menu/src"],
       "@squared-ui/react-focus-guards": ["./src/react/focus-guards/src"],
       "@squared-ui/react-focus-scope": ["./src/react/focus-scope/src"],
@@ -85,10 +87,18 @@
       "@squared-ui/react-toggle-group": ["./src/react/toggle-group/src"],
       "@squared-ui/react-toolbar": ["./src/react/toolbar/src"],
       "@squared-ui/react-tooltip": ["./src/react/tooltip/src"],
-      "@squared-ui/react-use-callback-ref": ["./src/react/use-callback-ref/src"],
-      "@squared-ui/react-use-controllable-state": ["./src/react/use-controllable-state/src"],
-      "@squared-ui/react-use-escape-keydown": ["./src/react/use-escape-keydown/src"],
-      "@squared-ui/react-use-layout-effect": ["./src/react/use-layout-effect/src"],
+      "@squared-ui/react-use-callback-ref": [
+        "./src/react/use-callback-ref/src"
+      ],
+      "@squared-ui/react-use-controllable-state": [
+        "./src/react/use-controllable-state/src"
+      ],
+      "@squared-ui/react-use-escape-keydown": [
+        "./src/react/use-escape-keydown/src"
+      ],
+      "@squared-ui/react-use-layout-effect": [
+        "./src/react/use-layout-effect/src"
+      ],
       "@squared-ui/react-use-previous": ["./src/react/use-previous/src"],
       "@squared-ui/react-use-rect": ["./src/react/use-rect/src"],
       "@squared-ui/react-use-size": ["./src/react/use-size/src"],

@@ -1,10 +1,17 @@
 import { globSync } from "glob";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";
+import { cpus } from "os";
+import { Worker, isMainThread, parentPort, workerData } from "worker_threads";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 console.log("Building packages...");
 
-async function build(path) {
+const build = async (path) => {
   const file = `${path}/src/index.ts`;
   const dist = `${path}/dist`;
 
@@ -14,7 +21,6 @@ async function build(path) {
     packages: "external",
     bundle: true,
     sourcemap: true,
-    format: "cjs",
     target: "es2022",
     outdir: dist,
   };
@@ -29,13 +35,6 @@ async function build(path) {
   });
   console.log(`Built ${path}/dist/index.mjs`);
 
-  // tsup is used to emit d.ts files only (esbuild can't do that).
-  //
-  // Notes:
-  // 1. Emitting d.ts files is super slow for whatever reason.
-  // 2. It could have fully replaced esbuild (as it uses that internally),
-  //    but at the moment its esbuild version is somewhat outdated.
-  //    It’s also harder to configure and esbuild docs are more thorough.
   await tsup.build({
     entry: [file],
     format: ["cjs", "esm"],
@@ -45,6 +44,45 @@ async function build(path) {
     external: [/@squared-ui\/.+/],
   });
   console.log(`Built ${path}/dist/index.d.ts`);
-}
+};
 
-globSync("src/*/*").forEach(build);
+if (isMainThread) {
+  const paths = globSync("src/*/*");
+  const numCores = cpus().length;
+  const numWorkers = Math.min(numCores, paths.length);
+
+  let currentIndex = 0;
+
+  const workerPromises = Array.from(
+    { length: numWorkers },
+    () =>
+      new Promise((resolve, reject) => {
+        const worker = new Worker(__filename, {
+          workerData: paths[currentIndex++],
+        });
+
+        worker.on("message", () => {
+          if (currentIndex < paths.length) {
+            worker.postMessage(paths[currentIndex++]);
+          } else {
+            worker.terminate().then(resolve);
+          }
+        });
+
+        worker.on("error", reject);
+        worker.on("exit", (code) => {
+          if (code !== 0) {
+            reject(new Error(`Worker stopped with exit code ${code}`));
+          }
+        });
+      }),
+  );
+
+  Promise.all(workerPromises).then(() => {
+    console.log("All packages built.");
+  });
+} else {
+  build(workerData).then(() => {
+    parentPort.postMessage("done");
+  });
+}
