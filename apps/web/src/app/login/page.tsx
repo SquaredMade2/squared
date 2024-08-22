@@ -94,7 +94,7 @@ export default function Login() {
 				if (session?.userData) {
 					dispatch(setUser(session?.userData));
 					if (on_boarding && workspaces?.length) {
-						router.push(`workspace/${workspaces[0].url}`);
+						router.push(`${workspaces[0].url}`);
 					} else if (on_boarding && !workspaces?.length) {
 						router.push("/join");
 					} else if (!on_boarding) {

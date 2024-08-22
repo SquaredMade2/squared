@@ -63,7 +63,7 @@ const ButtonIcon: FC<Props> = ({
 			onClick={handleClick}
 		>
 			<div
-				className={`"flex items-center justify-center rounded-full w-8 h-8 hover:border" ${iconHover}`}
+				className={`flex items-center justify-center rounded-full w-8 h-8 hover:border ${iconHover}`}
 			>
 				{icon}
 			</div>

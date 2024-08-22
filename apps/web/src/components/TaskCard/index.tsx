@@ -312,23 +312,13 @@ const TaskCard = ({
 												index === filteredTasks.length - 1 && "rounded-b-lg"
 											}`}
 										>
-											<div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
-												<div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
-													<GripVertical className="size-5" />
-												</div>
-												<div className="xs:mr-5 sm:mr-5 md:mr-4">
-													<input
-														title="input"
-														className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
-														type="checkbox"
-													/>
-												</div>
-											</div>
-											<div
-												onClick={() => navigateToTask(task)}
-												className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
-											>
-												<div className="col-span-10 text-foreground">
+											<div className="relative w-[325px] mb-2">
+												<div
+													key={task._id}
+													className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
+														theme === "light" ? "bg-card" : "bg-background"
+													}`}
+												>
 													<TaskCardTitle
 														key={task._id}
 														task={task}
