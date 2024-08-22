@@ -157,9 +157,9 @@ model User {
   onBoarding         Boolean  @default(false)
   defaultWorkspaceId String?
 
-  DefaultWorkspace Workspace?     @relation(fields: [defaultWorkspaceId], references: [id])
-  Workspaces       Workspace[]    @relation("UserWorkspaces")
-  Teams            Team[]         @relation("TeamUsers")
+  DefaultWorkspace Workspace?      @relation(fields: [defaultWorkspaceId], references: [id])
+  Workspaces       UserWorkspace[]
+  Teams            Team[]          @relation("TeamUsers")
   Notification     Notification[]
   Comment          Comment[]
   Task             Task[]
@@ -178,8 +178,18 @@ model Workspace {
   teams              Team[]
   projects           Project[]
   githubRepoInfo     GithubRepoInfo?     @relation(fields: [githubRepoInfoId], references: [id])
-  Users              User[]              @relation("UserWorkspaces")
+  Users              UserWorkspace[]
   User               User[]
+}
+
+model UserWorkspace {
+  userId      String
+  workspaceId String
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([userId, workspaceId])
 }
 
 model UniversalTokenLink {
