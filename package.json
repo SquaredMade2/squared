@@ -23,7 +23,7 @@
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "test:ci": "pnpm types:check && jest --ci && pnpm cypress:ci"
+    "test:ci": "jest --ci && pnpm cypress:ci"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

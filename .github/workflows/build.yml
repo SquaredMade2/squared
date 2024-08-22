@@ -1,4 +1,4 @@
-name: Build and Test
+name: CI Pipeline
 
 on:
   pull_request:
@@ -6,53 +6,41 @@ on:
       - develop
 
 jobs:
-  build_and_test:
+  setup:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Read Node version
-        id: node_version
-        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
-
-      - name: Set Node version
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "${{ steps.node_version.outputs.NVMRC }}"
+          node-version: "20.x"
 
-      - name: Install pnpm
+      - name: Install PNPM
         run: npm install -g pnpm
-
-      - name: Get pnpm store path
-        id: pnpm-cache-dir-path
-        run: echo "storePath=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/.nvmrc') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build packages with Turbo
-        run: pnpm turbo run build --filter='./packages/**/*'
-
-      - name: Reinstall dependencies
-        run: pnpm install
-
-      - name: Run linting check
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint code
         run: pnpm lint
 
-      - name: Run type checks
+  types_check:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Type checking
         run: pnpm types:check
 
+  test:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
       - name: Cache Cypress binary
         uses: actions/cache@v3
         with:
