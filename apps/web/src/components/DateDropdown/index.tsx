@@ -8,7 +8,10 @@ import { format } from "date-fns";
 import { useToast } from "../ui/use-toast";
 import { Calendar } from "../ui/calendar";
 
-const DateDropdown: React.FC<DateDropdownProps> = ({ location }) => {
+const DateDropdown: React.FC<DateDropdownProps> = ({
+	location,
+	setDropdownOpen,
+}) => {
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
@@ -43,6 +46,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({ location }) => {
 	const handleSave = () => {
 		if (location === "issueSidebar") updateItem(selectedDate);
 		if (location === "newIssue") dispatch(setDueDate(selectedDate));
+		setDropdownOpen(false);
 	};
 
 	const updateItem = async (newDate: Date | undefined) => {
@@ -93,6 +97,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({ location }) => {
 				<button
 					type="button"
 					className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary"
+					onClick={() => setDropdownOpen(false)}
 				>
 					Cancel
 				</button>

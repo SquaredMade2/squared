@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setBackgroundColor } from "../DesignationsContainer";
 import DateDropdown from "@/components/DateDropdown";
@@ -16,6 +17,7 @@ const DateButton = ({ location }: { location: string }) => {
 		}
 		return undefined;
 	});
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const { theme } = useAppSelector((state) => state.userSettings);
 
 	const handleBackground = () => {
@@ -55,7 +57,7 @@ const DateButton = ({ location }: { location: string }) => {
 	};
 
 	return (
-		<Popover>
+		<Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
 			<PopoverTrigger
 				asChild
 				className={
@@ -67,7 +69,7 @@ const DateButton = ({ location }: { location: string }) => {
 				{location === "newIssue" ? newIssueButton() : issueSidebarButton()}
 			</PopoverTrigger>
 			<PopoverContent>
-				<DateDropdown location={location} />
+				<DateDropdown location={location} setDropdownOpen={setDropdownOpen} />
 			</PopoverContent>
 		</Popover>
 	);
