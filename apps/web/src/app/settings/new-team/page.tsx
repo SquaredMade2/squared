@@ -101,7 +101,7 @@ export default function CreateTeam() {
 
 	useEffect(() => {
 		if (!userHasAccess) {
-			router.push(`/workspace/${workspace?.url}`);
+			router.push(`/${workspace?.url}`);
 		}
 	}, []);
 

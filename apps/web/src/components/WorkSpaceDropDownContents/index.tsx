@@ -6,6 +6,7 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check } from "lucide-react";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import Link from "next/link";
+import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 const WorkSpaceDropDownContents = () => {
 	const dispatch = useAppDispatch();
@@ -22,46 +23,44 @@ const WorkSpaceDropDownContents = () => {
 	const workspaceUrl = currentWorkspace.url;
 
 	const workspaceSettings = (workspaceSettingsOption: string) => {
-		return `/workspace/${workspaceUrl}/settings/${workspaceSettingsOption}`;
+		return `/${workspaceUrl}/settings/${workspaceSettingsOption}`;
 	};
 
 	return (
 		<div className="w-full flex flex-col">
 			{allWorkspaces.map((workspace, index) => (
-				<Link
-					href={`/workspace/${workspace.url}`}
-					className=""
+				<DropdownMenuItem
 					key={workspace._id}
+					onClick={() => router.push(`/${workspace.url}`)}
+					className="cursor-pointer"
 				>
-					<div className="flex items-center p-1 rounded dark:hover:bg-accent hover:bg-muted">
-						<WorkspaceInitials
-							workspaceName={workspace.name}
-							backgroundColor={index}
-							location="workspaceList"
-						/>
-						<li>{handleWorkspaceNameOverflow(workspace.name)}</li>
-						{workspace.name === currentWorkspace.name && (
-							<div className="pl-1 pb-0.5 ml-auto">
-								<Check className="text-foreground size-5" />
-							</div>
-						)}
-					</div>
-				</Link>
+					<WorkspaceInitials
+						workspaceName={workspace.name}
+						backgroundColor={index}
+						location="workspaceList"
+					/>
+					{handleWorkspaceNameOverflow(workspace.name)}
+					{workspace.name === currentWorkspace.name && (
+						<div className="pl-1 pb-0.5 ml-auto">
+							<Check className="text-foreground size-5" />
+						</div>
+					)}
+				</DropdownMenuItem>
 			))}
 			<hr className="my-1" />
 
-			<div
+			<DropdownMenuItem
 				onClick={() => router.push(workspaceSettings("members"))}
-				className="cursor-pointer p-1 rounded dark:hover:bg-accent hover:bg-muted"
+				className="cursor-pointer"
 			>
 				Invite & manage members
-			</div>
-			<div
+			</DropdownMenuItem>
+			<DropdownMenuItem
 				onClick={() => router.push("/join")}
-				className="cursor-pointer p-1 rounded dark:hover:bg-accent hover:bg-muted"
+				className="cursor-pointer"
 			>
 				Create or join a workspace
-			</div>
+			</DropdownMenuItem>
 		</div>
 	);
 };

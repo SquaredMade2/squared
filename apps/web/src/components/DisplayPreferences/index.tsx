@@ -6,9 +6,7 @@ import {
 	setShowLabels,
 	setShowDateTime,
 } from "@/store/toggleTaskFeatures";
-
-const toggleWrapper = "flex items-center justify-between w-full";
-const listText = "text-foreground text-xs py-1 mb-1 last:mb-0";
+import { useId } from "@repo/ui/id";
 
 const DisplayPreferences = () => {
 	const dispatch = useAppDispatch();
@@ -29,21 +27,26 @@ const DisplayPreferences = () => {
 		dispatch(setShowDateTime());
 	};
 
+	const displayOptions = [
+		{ label: "Priority", show: showPriority, handle: handlePriority },
+		{ label: "Labels", show: showLabels, handle: handleLabels },
+		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
+	];
+
 	return (
 		<div>
 			<ul>
-				<div className={toggleWrapper}>
-					<p className={listText}>Priority</p>
-					<PurpleToggle active={showPriority} handleClick={handlePriority} />
-				</div>
-				<div className={toggleWrapper}>
-					<p className={listText}>Labels</p>
-					<PurpleToggle active={showLabels} handleClick={handleLabels} />
-				</div>
-				<div className={toggleWrapper}>
-					<p className={listText}>Date and Time</p>
-					<PurpleToggle active={showDateTime} handleClick={handleDateTime} />
-				</div>
+				{displayOptions.map((option) => (
+					<div
+						className="flex items-center justify-between w-full"
+						key={useId()}
+					>
+						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+							{option.label}
+						</p>
+						<PurpleToggle active={option.show} handleClick={option.handle} />
+					</div>
+				))}
 			</ul>
 		</div>
 	);

@@ -11,6 +11,7 @@ import {
 } from "../ui/dropdown-menu";
 import WorkSpaceDropDownContents from "../WorkSpaceDropDownContents";
 import { useToast } from "../ui/use-toast";
+import { Button } from "../ui/button";
 const WorkSpaceDropDown = () => {
 	const dispatch = useAppDispatch();
 	const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
@@ -29,18 +30,18 @@ const WorkSpaceDropDown = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className="flex items-center justify-between w-full text-muted-foreground foccus:outline-none">
-				<div className="flex gap-2 items-center ">
+			<DropdownMenuTrigger asChild>
+				<Button variant={"ghost"} className="cursor-pointer gap-1">
 					<WorkspaceInitials
 						workspaceName={currentWorkspace.name}
 						backgroundColor={index}
 						location="workspaceMenu"
 					/>
 					{handleWorkspaceNameOverflow(currentWorkspace.name)}
-				</div>
-				{user && (
-					<ProfileImage profileName={user.name} location="dropdownMenu" />
-				)}
+					{user && (
+						<ProfileImage profileName={user.name} location="dropdownMenu" />
+					)}
+				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-60">
 				<WorkSpaceDropDownContents />
