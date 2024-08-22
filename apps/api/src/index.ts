@@ -93,15 +93,15 @@ mongoose
 		console.log("Database Connection Error", err);
 	});
 
-  const vercelAccess: StaticOrigin = /[\w-\/:]*squared-52c50d26\.vercel\.app/
+const vercelAccess: StaticOrigin = /[\w-\/:]*squared-52c50d26\.vercel\.app/;
 
 const whitelist = [
-  "http://localhost:3000",
-  `http://localhost:${PORT}`,
-  "https://app.squaredmade.com",
-  "https://develop.squaredmade.com",
-  "https://squared-web.vercel.app",
-  vercelAccess
+	"http://localhost:3000",
+	`http://localhost:${PORT}`,
+	"https://app.squaredmade.com",
+	"https://develop.squaredmade.com",
+	"https://squared-web.vercel.app",
+	vercelAccess,
 ];
 
 type StaticOrigin =
