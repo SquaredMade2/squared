@@ -21,8 +21,7 @@
     "reset": "rimraf node_modules pnpm-lock.yaml",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
-    "test": "jest --watch",
-    "test:ci": "jest --ci --coverage",
+    "test": "pnpm run build",
     "test-all": "pnpm run format && pnpm run lint && pnpm run build"
   },
   "dependencies": {
