@@ -224,7 +224,7 @@ const TaskCard = ({
 											href={`/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(task.title)}`}
 											onClick={() => dispatch(setTaskPage(task))}
 										>
-											<div className="relative w-[325px]">
+											<div className="relative w-[325px] mb-2">
 												<div
 													key={task._id}
 													className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${

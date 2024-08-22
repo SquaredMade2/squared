@@ -28,7 +28,7 @@ const StatusColumn = ({
 	};
 
 	return (
-		<div className={view === "list" ? "mb-5" : "pb-4"}>
+		<div className={view === "list" ? "mb-2" : "pb-2"}>
 			<TaskColumnTitle
 				isListView={isListView}
 				showTasks={showTasks}
@@ -45,7 +45,7 @@ const StatusColumn = ({
 						${snapshot.isDraggingOver ? " h-full" : ""}${
 							snapshot.isDraggingOver && view === "grid"
 								? ""
-								: `${view === "grid" && "h-[77vh] sm:h-[84vh] rounded-lg hover:pr-1 transition-all duration-500 ease-in-out"}`
+								: `${view === "grid" && "h-[77vh] sm:h-[86vh] rounded pr-2 transition-all duration-500 ease-in-out"}`
 						} 
 						`}
 					>
