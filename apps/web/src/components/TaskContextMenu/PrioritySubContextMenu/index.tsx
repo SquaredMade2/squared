@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CircleAlert, Ellipsis } from "lucide-react";
-import { PrioritySubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { PrioritySubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -15,11 +15,6 @@ import { setPriority } from "@/store/taskData";
 import { priorityOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { high, low, medium } from "../../Svg";
-
-const styles = {
-	contentWrapper: "",
-	centerIcon: "mr-2",
-};
 
 const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
 	task,
@@ -91,16 +86,17 @@ const PrioritySubContextMenu: React.FC<PrioritySubContextMenuProps> = ({
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>{high()}</div>
+				<div className="mr-2">{high()}</div>
 				Priority
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
 				{priorityOptions.map((priority) => {
 					return (
-						<ContextMenuItem onClick={() => handleSelectPriority(priority)}>
-							<div className={styles.centerIcon}>
-								{renderPriorityIcon(priority)}
-							</div>
+						<ContextMenuItem
+							key={priority}
+							onClick={() => handleSelectPriority(priority)}
+						>
+							<div className="mr-2">{renderPriorityIcon(priority)}</div>
 							{priority}
 						</ContextMenuItem>
 					);

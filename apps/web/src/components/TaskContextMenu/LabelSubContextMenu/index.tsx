@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Tag } from "lucide-react";
-import { LabelSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { LabelSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -8,17 +8,12 @@ import {
 	ContextMenuSubTrigger,
 } from "../../ui/context-menu";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import { EventType, Labels } from "@/interfaces/event.interfaces";
+import { EventType, type Labels } from "@/interfaces/event.interfaces";
 import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { labelOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { LabelColor } from "../../LabelButton";
-
-const styles = {
-	contentWrapper: "",
-	centerIcon: "mr-2",
-};
 
 const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
@@ -98,7 +93,7 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>
+				<div className="mr-2">
 					<Tag className="cursor-pointer size-4" />
 				</div>
 				Label
@@ -106,8 +101,11 @@ const LabelSubContextMenu: React.FC<LabelSubContextMenuProps> = ({ task }) => {
 			<ContextMenuSubContent>
 				{labelOptions.map((label) => {
 					return (
-						<ContextMenuItem onClick={() => handleSelectLabels(label)}>
-							<div className={styles.centerIcon}>{renderLabelIcon(label)}</div>
+						<ContextMenuItem
+							key={label}
+							onClick={() => handleSelectLabels(label)}
+						>
+							<div className="mr-2">{renderLabelIcon(label)}</div>
 							{label}
 						</ContextMenuItem>
 					);

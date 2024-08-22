@@ -12,12 +12,13 @@ import StatusSubContextMenu from "./StatusSubContextMenu";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { TaskContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { TaskContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import LabelSubContextMenu from "./LabelSubContextMenu";
 import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
 import DateSubContextMenu from "./DateSubContextMenu";
 import RenameSubContextMenu from "./RenameSubContextMenu";
 import { replaceSpacesWithDashes } from "@/utils/formatting";
+import { useToast } from "../ui/use-toast";
 
 const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	task,
@@ -25,15 +26,24 @@ const TaskContextMenu: React.FC<TaskContextMenuProps> = ({
 	setIsCopied,
 	copyToClipboard,
 }) => {
+	const { toast } = useToast();
 	const dispatch = useAppDispatch();
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
 
+	const alertDeletedTask = () => {
+		toast({
+			title: "Task Deleted",
+			description: `${task.title} has been successfully deleted.`,
+		});
+	};
+
 	const deleteCurrentTask = async () => {
 		await dispatch(deleteTask(task._id));
 		await dispatch(getAllTasks(currentTeam));
+		alertDeletedTask();
 	};
 
 	const gitBranchName = `

@@ -6,7 +6,7 @@ import {
 	Copy,
 } from "lucide-react";
 import axios from "axios";
-import { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import { inProgress } from "../../Svg";
 import {
 	ContextMenuItem,

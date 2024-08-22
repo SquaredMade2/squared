@@ -1,11 +1,11 @@
-import { useRef } from "react";
+import { type ChangeEvent, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../../ui/context-menu";
-import { RenameSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { RenameSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { updateTitle } from "@/api/taskApi";
@@ -45,6 +45,10 @@ const RenameSubContextMenu: React.FC<RenameSubContextMenuProps> = ({
 		}
 	};
 
+	const updateRenamedTask: (e: ChangeEvent<HTMLInputElement>) => void = (e) => {
+		renamedTask.current = e.target.value;
+	};
+
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>Rename</ContextMenuSubTrigger>
@@ -52,7 +56,7 @@ const RenameSubContextMenu: React.FC<RenameSubContextMenuProps> = ({
 				<div className="flex flex-col h-40">
 					<Input
 						className="mx-3 w-40 mt-3"
-						onChange={(e) => (renamedTask.current = e.target.value)}
+						onChange={(e) => updateRenamedTask(e)}
 					/>
 					<Button type="submit" className="m-auto" onClick={handleChangeTitle}>
 						{" "}

@@ -7,20 +7,16 @@ import {
 	ContextMenuSubTrigger,
 } from "../../ui/context-menu";
 import ProfileImage from "../../ProfileImage";
-import { AssigneeSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
-import { Assignee, EventType } from "@/interfaces/event.interfaces";
+import type { AssigneeSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import { type Assignee, EventType } from "@/interfaces/event.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import {
+import type {
 	AssigneeParams,
 	HandleAssigneeChange,
 } from "@/app/interfaces/Tasks.interfaces";
 import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { getSingleTask } from "@/store/task/thunks";
-
-const styles = {
-	contentWrapper: "",
-	centerIcon: "mr-2",
-};
+import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 
 const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 	task,
@@ -32,6 +28,10 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
+	const assignees = useAppSelector(
+		(state) => state.taskData.allUsersInWorkspace,
+	);
+
 	const {
 		author,
 		storeCommonFields,
@@ -39,6 +39,20 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 		storeType,
 		updateTaskAssignee,
 	} = useLogTaskEvent();
+
+	const assigneeDropdownHeight = () => {
+		const assigneeLength = assignees.length;
+		switch (assigneeLength) {
+			case 1:
+				return "4rem";
+			case 2:
+				return "6rem";
+			case 3:
+				return "8rem";
+			default:
+				return "12rem";
+		}
+	};
 
 	const handleStoreCurrentAssignee = (): void => {
 		const noUserAssigned = task.assignee?.name === null;
@@ -88,43 +102,122 @@ const AssigneeSubContextMenu: React.FC<AssigneeSubContextMenuProps> = ({
 		handleAssigneeChange(taskId, newAssignee);
 		logAssigneeChangeEvent(newAssignee);
 	};
-	const assignees = useAppSelector(
-		(state) => state.taskData.allUsersInWorkspace,
-	);
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>
+				<div className="mr-2">
 					<UserSearch className="size-5 text-[#9597AD]" />
 				</div>
 				Assignee
 			</ContextMenuSubTrigger>
-			<ContextMenuSubContent className="max-w-96 max-h-60 overflow-y-scroll overflow-x-scroll">
-				<ContextMenuItem
-					className="w-40"
-					onClick={() =>
-						handleClickAssignee(task._id, { id: null, name: null })
-					}
+			<ContextMenuSubContent>
+				{/* Has to be incline styling, classes that limit height dont trigger the ScrollArea component */}
+				<ScrollArea
+					className="max-w-96"
+					style={{ height: assigneeDropdownHeight() }}
 				>
-					Unassign
-				</ContextMenuItem>
-				{assignees.map((assignee) => {
-					const formattedAssignee = {
-						id: assignee.user,
-						name: assignee.username,
-					};
-					return (
-						<ContextMenuItem
-							onClick={() => handleClickAssignee(task._id, formattedAssignee)}
-						>
-							<ProfileImage
-								profileName={assignee.username}
-								location={"contextMenu"}
-							/>
-							{assignee.username}
-						</ContextMenuItem>
-					);
-				})}
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+					<ContextMenuItem
+						className="w-40"
+						onClick={() =>
+							handleClickAssignee(task._id, { id: null, name: null })
+						}
+					>
+						Unassign
+					</ContextMenuItem>
+
+					{assignees.map((assignee) => {
+						const formattedAssignee = {
+							id: assignee.user,
+							name: assignee.username,
+						};
+						return (
+							<ContextMenuItem
+								key={assignee.user}
+								onClick={() => handleClickAssignee(task._id, formattedAssignee)}
+							>
+								<ProfileImage
+									profileName={assignee.username}
+									location={"contextMenu"}
+								/>
+								{assignee.username}
+							</ContextMenuItem>
+						);
+					})}
+					<ScrollBar orientation="vertical" />
+				</ScrollArea>
 			</ContextMenuSubContent>
 		</ContextMenuSub>
 	);

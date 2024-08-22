@@ -1,17 +1,12 @@
 import { useState } from "react";
 import { Calendar } from "lucide-react";
-import { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
+import type { StatusSubContextMenuProps } from "@/app/interfaces/ContextMenu.interfaces";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../../ui/context-menu";
 import DateDropdown from "../../DateDropdown";
-
-const styles = {
-	contentWrapper: "",
-	centerIcon: "mr-2",
-};
 
 const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({ task }) => {
 	const [showDropdown, setShowDropdown] = useState(true);
@@ -27,7 +22,7 @@ const DateSubContextMenu: React.FC<StatusSubContextMenuProps> = ({ task }) => {
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
-				<div className={styles.centerIcon}>
+				<div className="mr-2">
 					<Calendar className="cursor-pointer size-4" />
 				</div>
 				Set due date...
