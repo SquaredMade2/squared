@@ -22,6 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        working-directory: ./
 
   lint:
     needs: setup
@@ -37,6 +38,7 @@ jobs:
 
       - name: Lint code
         run: pnpm lint
+        working-directory: ./
 
   types_check:
     needs: setup
@@ -52,6 +54,7 @@ jobs:
 
       - name: Type checking
         run: pnpm types:check
+        working-directory: ./
 
   test:
     needs: setup
@@ -75,6 +78,8 @@ jobs:
 
       - name: Install Cypress
         run: npx cypress install
+        working-directory: ./
 
       - name: Run tests
         run: pnpm test:ci
+        working-directory: ./
