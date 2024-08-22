@@ -70,7 +70,7 @@ const DateDropdown: React.FC<DateDropdownProps> = ({ location }) => {
 				selected={selectedDate}
 				onSelect={(date) => handleSelectDate(date)}
 				disabled={(date) => date < new Date()}
-				defaultMonth={new Date(selectedDate ? selectedDate : "")}
+				defaultMonth={selectedDate ? new Date(selectedDate) : new Date()}
 			/>
 			<div className="mt-4 flex flex-col text-popover-foreground">
 				Due date
