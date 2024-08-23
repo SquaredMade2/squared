@@ -8,6 +8,9 @@
     "db:gen": "turbo run db:generate",
     "db:push": "turbo run db:push",
     "docker:build": "docker-compose build",
+    "docker:db": "pnpm --filter=test-db run docker:db && pnpm run db:gen && pnpm run db:push",
+    "docker:db:down": "pnpm --filter=test-db run docker:db:down",
+    "docker:db:seed": "pnpm --filter=test-db run db:seed",
     "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api2",
     "check-types": "turbo run check-types",
@@ -19,7 +22,6 @@
     "format:check": "turbo run format:check",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "postinstall": "pnpm db:gen",
     "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
@@ -27,7 +29,8 @@
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci"
+    "test:ci": "pnpm check-types && jest --ci && pnpm cypress:ci",
+    "postinstall":"pnpm run db:gen"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

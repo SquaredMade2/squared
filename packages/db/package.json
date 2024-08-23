@@ -20,6 +20,6 @@
   "devDependencies": {
     "@repo/logger": "workspace:*",
     "prisma": "^5.18.0",
-    "@repo/typescript-config": "workspace:*"
+    "ts-node": "^10.9.2"
   }
 }
