@@ -9,40 +9,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
 
-      - name: Cache Docker layers
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Cache pnpm dependencies
         uses: actions/cache@v2
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-docker-
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+        run: pnpm install
 
-      - name: Build and Start Services
-        run: |
-          DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml up --build -d
+      - name: Build Packages
+        run: pnpm build:packages
 
       - name: Run Tests
-        run: |
-          docker-compose exec web pnpm test
-
-      - name: Stop and Remove Services
-        if: always()
-        run: |
-          docker-compose down
-
-      - name: Push Docker Images
-        if: github.ref == 'refs/heads/develop'
-        run: |
-          docker-compose push
+        run: pnpm test
