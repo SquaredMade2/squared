@@ -1,12 +1,12 @@
 import React from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import PurpleToggle from "@/components/PurpleToggle";
 import {
 	setShowPriority,
 	setShowLabels,
 	setShowDateTime,
 } from "@/store/toggleTaskFeatures";
 import { useId } from "@repo/ui/id";
+import { Switch } from "../ui/switch";
 
 const DisplayPreferences = () => {
 	const dispatch = useAppDispatch();
@@ -44,7 +44,7 @@ const DisplayPreferences = () => {
 						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
 							{option.label}
 						</p>
-						<PurpleToggle active={option.show} handleClick={option.handle} />
+						<Switch checked={option.show} onClick={option.handle} />
 					</div>
 				))}
 			</ul>

@@ -55,7 +55,7 @@ const TopNavBarDisplay = () => {
 		<div className="flex flex-col gap-2 items-end relative h-10 hover:bg-accent">
 			<Popover>
 				<PopoverTrigger asChild>
-					<Button variant={"outline"}>
+					<Button variant={"outline"} className="gap-2">
 						<SlidersVertical className="size-4" />
 						Display
 						<ChevronDown className="size-4" />

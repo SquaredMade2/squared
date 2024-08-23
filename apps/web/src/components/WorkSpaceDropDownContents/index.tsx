@@ -5,7 +5,6 @@ import { getAllWorkspaces } from "@/store/taskData/thunks";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check } from "lucide-react";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
-import Link from "next/link";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 const WorkSpaceDropDownContents = () => {
@@ -20,10 +19,9 @@ const WorkSpaceDropDownContents = () => {
 	}, [dispatch]);
 
 	const router = useRouter();
-	const workspaceUrl = currentWorkspace.url;
 
 	const workspaceSettings = (workspaceSettingsOption: string) => {
-		return `/${workspaceUrl}/settings/${workspaceSettingsOption}`;
+		return `/settings/${workspaceSettingsOption}`;
 	};
 
 	return (
