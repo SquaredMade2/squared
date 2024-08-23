@@ -22,6 +22,9 @@ jobs:
           npm install -g pnpm
           pnpm config set store-dir ~/.pnpm-store
 
+      - name: Install turbo
+        run: npm install -g turbo
+
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -39,8 +42,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build Packages
-        run: pnpm build:packages
+      - name: Turbo Build Web
+        run: turbo --filter=web build
 
       - name: Run Tests
         run: pnpm test
