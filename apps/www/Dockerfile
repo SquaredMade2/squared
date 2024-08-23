@@ -1,13 +1,9 @@
-# Base stage
-FROM node:18-alpine AS base
+# Base image
+FROM node:20-alpine AS base
 
 # Builder stage
 FROM base AS builder
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk update
 RUN apk add --no-cache libc6-compat
-
-# Set working directory
 WORKDIR /app
 
 # Install pnpm and turbo globally
@@ -18,36 +14,36 @@ RUN turbo prune www --docker
 
 # Installer stage
 FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install pnpm again to make it available in this stage
+# Re-install pnpm in this stage
 RUN npm install -g pnpm
 
-# First install the dependencies (as they change less often)
-COPY .gitignore .gitignore
+# Install dependencies
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
+# Remove unnecessary packages
+RUN pnpm prune --prod
 
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+RUN pnpm turbo build --filter=www...
 
-# Final stage - Runner
-FROM base AS runner
+# Runner stage
+FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Install pnpm again to ensure it's available for the final stage
-RUN npm install -g pnpm
+# Install a simple static server
+RUN npm install -g serve
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 astro
-USER astro
+# Copy the built static files from the installer stage
+COPY --from=installer /app/apps/www/dist /app/www
 
-COPY --from=installer /app/apps/www/astro.config.mjs .
-COPY --from=installer /app/apps/www/package.json .
+# Expose port 4000
+EXPOSE 4000
 
-CMD node apps/www/dist/server/entry.mjs
+# Serve the static files using 'serve'
+CMD ["serve", "-s", "www", "-l", "4000"]
