@@ -17,7 +17,7 @@
     "reset": "rimraf node_modules pnpm-lock.yaml",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
-    "test": "pnpm run build",
+    "test": "turbo run build",
     "test-all": "pnpm run format && pnpm run lint && pnpm run build"
   },
   "dependencies": {
