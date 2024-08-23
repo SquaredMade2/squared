@@ -1,5 +1,5 @@
 "use client";
-import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { navBarToggle } from "@/store/userSettings";
 import { GithubIcon } from "@/components/Svg";
