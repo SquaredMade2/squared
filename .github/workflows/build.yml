@@ -24,7 +24,9 @@ jobs:
           cache: "pnpm"
 
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: |
+          npm install -g pnpm
+          pnpm config set store-dir ~/.pnpm-store
 
       - name: Cache pnpm dependencies
         uses: actions/cache@v2
@@ -42,3 +44,12 @@ jobs:
 
       - name: Run Tests
         run: pnpm test
+
+      - name: Push Changes
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Automated build and test"
+          git push origin develop
