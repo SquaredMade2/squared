@@ -994,11 +994,11 @@ function getAnnounceTextContent(container: HTMLElement) {
 		if (isHTMLElement(node)) {
 			const isHidden =
 				node.ariaHidden || node.hidden || node.style.display === "none";
-			const isExcluded = node.dataset.radixToastAnnounceExclude === "";
+			const isExcluded = node.dataset.squaredToastAnnounceExclude === "";
 
 			if (!isHidden) {
 				if (isExcluded) {
-					const altText = node.dataset.radixToastAnnounceAlt;
+					const altText = node.dataset.squaredToastAnnounceAlt;
 					if (altText) textContent.push(altText);
 				} else {
 					textContent.push(...getAnnounceTextContent(node));
