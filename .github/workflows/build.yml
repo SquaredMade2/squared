@@ -43,6 +43,10 @@ jobs:
       - name: Build Packages
         run: pnpm build:packages
 
+      # Optional: Install dependencies again to ensure proper linking
+      - name: Reinstall dependencies (optional)
+        run: pnpm install
+
       - name: Cache Cypress binary
         uses: actions/cache@v3
         with:
