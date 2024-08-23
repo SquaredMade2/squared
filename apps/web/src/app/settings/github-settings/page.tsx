@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getGithubUserData } from "@/store/userSettings/thunks";
 import GithubSettings from "@/components/GithubSettings";
