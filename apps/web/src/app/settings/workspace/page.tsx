@@ -7,7 +7,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { getWorkspace, deleteWorkspace } from "@/store/taskData/thunks";
-import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import DeleteButton from "@/components/DeleteButton";
 import BlueButton from "@/components/BlueButton";
