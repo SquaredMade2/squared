@@ -1,58 +1,38 @@
-name: Build
+name: Build & Test
 
 on:
   pull_request:
     branches:
-      - develop
+      - "**"
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Read Node version
-        id: node_version
-        run: echo "NVMRC=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - name: Set Node version
-        uses: actions/setup-node@v2
-        with:
-          node-version: "${{ steps.node_version.outputs.NVMRC }}"
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install turbo
-        run: npm install -g turbo
-
-      - name: Get pnpm store path
-        id: pnpm-cache-dir-path
-        run: echo "storePath=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm dependencies
+      - name: Cache Docker layers
         uses: actions/cache@v2
         with:
-          path: ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/.nvmrc') }}
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-            ${{ runner.os }}-pnpm-
+            ${{ runner.os }}-docker-
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Build Docker Compose
+        run: |
+          DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
 
-      - name: Cache Cypress binary
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
+      - name: Run Tests
+        run: |
+          docker-compose run web pnpm test
 
-      - name: Run linting check
-        run: pnpm lint
-
-      - name: Run tests
-        run: pnpm test:ci
+      - name: Push Docker Images
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          docker-compose push
