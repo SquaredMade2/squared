@@ -7,7 +7,7 @@ import type { InputChangeEvent } from "types";
 import { updateProfile, getUser } from "@/store/userSettings/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
 import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";

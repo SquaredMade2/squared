@@ -6,7 +6,7 @@ import axios, { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { deleteTeam, getTeam, getWorkspace } from "@/store/taskData/thunks";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
 import type { TeamData } from "./teams.interfaces";
 import type { FormSubmitEvent } from "@/types";
 import BlueButton from "@/components/BlueButton";

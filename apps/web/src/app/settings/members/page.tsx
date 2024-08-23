@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
 import { getListOfUsers } from "@/store/userSettings/thunks";

@@ -4,15 +4,10 @@ import {
 	DialogContent,
 	DialogTitle,
 	DialogFooter,
-	DialogClose,
+	DialogHeader,
 } from "../ui/dialog";
-
 import { useSelector } from "react-redux";
 import { useToast } from "../ui/use-toast";
-import { ClickAwayListener } from "@mui/base/ClickAwayListener";
-import { motion, AnimatePresence } from "framer-motion";
-import { Separator } from "@repo/ui/menu";
-
 import {
 	getAllTasks,
 	createNewTask,
@@ -29,6 +24,8 @@ import {
 } from "@/store/taskData";
 import DesignationsContainer from "@/components/DesignationsContainer";
 import NewIssueTopRow from "@/components/NewIssueTopRow";
+import { ChevronLeft, LayoutGrid } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import MentionInput from "@/components/MentionsInput";
 import { getListOfUsers } from "@/store/userSettings/thunks";
@@ -42,7 +39,6 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
-import { Button } from "../ui/button";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
@@ -69,7 +65,6 @@ const NewIssueModal = () => {
 	const [titleInput, setTitleInput] = useState("");
 	const [descriptionInput, setDescriptionInput] = useState("");
 	const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>([]);
-	const [showCloseModal, setShowCloseModal] = useState(false); // confirmation modal
 
 	const socket = useContext(SocketContext);
 	const user = useSelector((state: RootState) => state.userSettings.user);
@@ -116,46 +111,23 @@ const NewIssueModal = () => {
 			dueDate ||
 			effortEstimate
 		) {
-			setShowCloseModal(true);
-			// dispatch(setResumeNewIssue(true));
+			dispatch(setResumeNewIssue(true));
+			dispatch(setShowNewIssue(false));
 		} else {
 			dispatch(setShowNewIssue(false));
-			setShowCloseModal(false);
 		}
 	};
 
-	const handleCancelClose = () => {
-		setShowCloseModal(false);
-	};
-
 	const handleDiscard = () => {
-		setShowCloseModal(false);
 		setTitleInput("");
-		dispatch(setShowNewIssue(false));
 		setDescriptionInput("");
+		dispatch(setShowNewIssue(false));
 		dispatch(setResumeNewIssue(false));
 		dispatch(setStatus("Todo"));
 		dispatch(setPriority(""));
 		dispatch(setLabels([]));
 		dispatch(setDueDate(null));
 		dispatch(setEffortEstimate(null));
-	};
-
-	const handleClickAway = (titleInput: string, descriptionInput: string) => {
-		if (
-			!titleInput &&
-			!descriptionInput &&
-			!priority &&
-			labels.length === 0 &&
-			!dueDate &&
-			!effortEstimate
-		) {
-			dispatch(setShowNewIssue(false));
-			dispatch(setResumeNewIssue(false));
-		} else {
-			dispatch(setResumeNewIssue(true));
-			dispatch(setShowNewIssue(false));
-		}
 	};
 
 	const handleCreateIssue = async () => {
@@ -223,37 +195,37 @@ const NewIssueModal = () => {
 	};
 
 	return (
-		<Dialog
-			open={showNewIssue}
-			onOpenChange={() => handleClickAway(titleInput, descriptionInput)}
-		>
-			<DialogContent className="max-w-full bg-popover" showCloseButton={false}>
-				<DialogTitle>
-					<NewIssueTopRow
-						showCloseModal={showCloseModal}
-						handleCancelClose={handleCancelClose}
-						handleDiscard={handleDiscard}
-						handleCloseClick={handleCloseClick}
-					/>
-				</DialogTitle>
+		<Dialog open={showNewIssue} onOpenChange={() => handleCloseClick()}>
+			<DialogContent className="max-w-full bg-popover">
+				<DialogHeader>
+					<div className="flex items-center">
+						<div className="inline-flex items-center justify-center text-muted-foreground border border-border rounded-md shadow-md px-2 py-0.5 mr-3">
+							<LayoutGrid className="text-[#9577FF] w-4 h-4" />
+						</div>
+						<DialogTitle className="text-sm">New Issue</DialogTitle>
+					</div>
+				</DialogHeader>
 				<input
 					value={titleInput}
 					onChange={handleTitleChange}
 					placeholder={"Issue title..."}
-					className="focus:outline-none bg-transparent"
+					className="focus:outline-none bg-transparent text-2xl"
 				/>
 				<MentionInput
 					data={listOfUsers}
 					value={descriptionInput}
 					placeholder={"Add description..."}
 					className={
-						"w-full leading-6 min-h-min h-full py-4 text-xl mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none break-words break-all whitespace-normal"
+						"w-full leading-6 min-h-min h-full py-4 text-lg mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none break-words break-all whitespace-normal"
 					}
 					name={"addDescription"}
 					onChange={handleDescriptionChange}
 				/>
 				<DesignationsContainer location={"newIssue"} />
 				<DialogFooter>
+					<Button onClick={handleDiscard} className="hover:cursor-pointer">
+						Discard
+					</Button>
 					<Button onClick={handleCreateIssue} className="hover:cursor-pointer">
 						Create Issue
 					</Button>

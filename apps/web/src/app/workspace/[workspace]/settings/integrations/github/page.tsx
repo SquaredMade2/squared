@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { navBarToggle } from "@/store/userSettings";
 import { GithubIcon } from "@/components/Svg";

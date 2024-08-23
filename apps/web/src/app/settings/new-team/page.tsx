@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { createTeam, teamExists } from "@/store/taskData/thunks";
 import { useRouter } from "next/navigation";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/StatusDropdown/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
 import { navBarToggle } from "@/store/userSettings";
 

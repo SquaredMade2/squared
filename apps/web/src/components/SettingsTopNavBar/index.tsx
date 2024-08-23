@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { SettingsTopNavbarProps } from "@/components/SettingsTopNavBar/SettingsTopNavbar.interfaces";
+import type { SettingsTopNavbarProps } from "@/components/StatusDropdown/SettingsTopNavBar/SettingsTopNavbar.interfaces";
 import { ChevronLeft, PanelLeft } from "lucide-react";
 
 const SettingsTopNavBar = ({ setShowNavBar }: SettingsTopNavbarProps) => {
