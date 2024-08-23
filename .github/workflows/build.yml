@@ -13,18 +13,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Docker Compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
         with:
-          compose-file: "./docker-compose.yml"
-          services: |
-            web
-            api
-          up-flags: "--build"
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Build and Start Services
+        run: |
+          DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml up --build -d
 
       - name: Run Tests
         run: |
           docker-compose exec web pnpm test
+
+      - name: Stop and Remove Services
+        if: always()
+        run: |
+          docker-compose down
 
       - name: Push Docker Images
         if: github.ref == 'refs/heads/develop'
