@@ -76,9 +76,10 @@ const SettingsNavBar = ({
 					</button>
 					<button
 						type="button"
+						onClick={() => router.push(integrationsUrl)}
 						className="flex w-32 ml-6 mb-4 p-0.5 cursor-pointer"
 					>
-						Github Settings
+						Integrations
 					</button>
 					<div className="mb-1 pl-0.5 flex items-center">
 						<CircleUser className="size-4 text-[#6A6F75]" />
