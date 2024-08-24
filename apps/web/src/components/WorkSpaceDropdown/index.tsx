@@ -31,13 +31,18 @@ const WorkSpaceDropDown = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant={"ghost"} className="cursor-pointer gap-1">
-					<WorkspaceInitials
-						workspaceName={currentWorkspace.name}
-						backgroundColor={index}
-						location="workspaceMenu"
-					/>
-					{handleWorkspaceNameOverflow(currentWorkspace.name)}
+				<Button
+					variant={"ghost"}
+					className="cursor-pointer w-full flex justify-between px-0  focus:outline-none focus:ring-0"
+				>
+					<div className="flex">
+						<WorkspaceInitials
+							workspaceName={currentWorkspace.name}
+							backgroundColor={index}
+							location="workspaceMenu"
+						/>
+						{handleWorkspaceNameOverflow(currentWorkspace.name)}
+					</div>
 					{user && (
 						<ProfileImage profileName={user.name} location="dropdownMenu" />
 					)}
