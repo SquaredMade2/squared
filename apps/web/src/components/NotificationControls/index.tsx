@@ -7,7 +7,7 @@ import UnsubscribeNotification from "../UnsubscribeNotification";
 
 const Notificationcontrols = () => {
 	return (
-		<div className="flex-grow sm:pr-2 flex gap-2 sm:gap-3 items-center justify-end">
+		<div className="flex-grow mr:2 md:mr-5 xl:mr-10 flex gap-2 sm:gap-9 items-center justify-end">
 			<Expand />
 			<DeleteNotification />
 			<FavNotification />

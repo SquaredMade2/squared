@@ -10,6 +10,7 @@ import {
 	setShowLabels,
 	setShowDateTime,
 } from "@/store/toggleTaskFeatures";
+import DisplayPreferences from "../DisplayPreferences";
 
 const TopNavBarDisplay = () => {
 	const dispatch = useAppDispatch();
@@ -102,32 +103,8 @@ const TopNavBarDisplay = () => {
 								</div>
 							</div>
 							<span className="w-full border-t border-border block my-1" />
-							<ul>
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-sm py-1 mb-1 last:mb-0">
-										Priority
-									</p>
-									<Switch
-										checked={showPriority}
-										onCheckedChange={handlePriority}
-									/>
-								</div>
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-sm py-1 mb-1 last:mb-0">
-										Labels
-									</p>
-									<Switch checked={showLabels} onCheckedChange={handleLabels} />
-								</div>
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-sm py-1 mb-1 last:mb-0">
-										Date and Time
-									</p>
-									<Switch
-										checked={showDateTime}
-										onCheckedChange={handleDateTime}
-									/>
-								</div>
-							</ul>
+
+							<DisplayPreferences />
 						</motion.div>
 					</ClickAwayListener>
 				)}

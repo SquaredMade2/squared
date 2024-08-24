@@ -9,7 +9,7 @@ services:
     image: squared-www:latest
     restart: always
     ports:
-      - 4000:3000
+      - 4000:4000
     networks:
       - app_network
     env_file:
@@ -36,7 +36,7 @@ services:
       dockerfile: ./apps/api/Dockerfile
     restart: always
     ports:
-      - 3001:3001
+      - 5173:5173
     networks:
       - app_network
     env_file:
