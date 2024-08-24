@@ -6,31 +6,34 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      pnpm_cache_path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache global pnpm
-        uses: actions/cache@v4
-        id: pnpm-cache
-        with:
-          path: ~/.local/share/pnpm
-          key: ${{ runner.os }}-pnpm-global-${{ hashFiles('**/.nvmrc') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-global-
-
-      - name: Install pnpm globally
-        if: steps.pnpm-cache.outputs.cache-hit != 'true'
-        run: npm install -g pnpm
-
-      - name: Setup Node.js and pnpm cache
+      - name: Setup Node.js and pnpm
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
+      - name: Get pnpm store path
+        id: pnpm-cache-path
+        run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
+
       - name: Install dependencies
         run: pnpm install
+
+      - name: Cache node_modules and pnpm store
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
   lint:
     runs-on: ubuntu-latest
@@ -38,22 +41,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm globally
-        run: npm install -g pnpm
-
-      - name: Setup Node.js
+      - name: Setup Node.js and pnpm
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Restore pnpm cache
+      - name: Restore pnpm cache and node_modules
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: |
+            node_modules
+            ${{ needs.setup.outputs.pnpm_cache_path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-      
+
       - name: Run linting check
         run: pnpm lint
 
@@ -63,21 +63,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm globally
-        run: npm install -g pnpm
-
-      - name: Setup Node.js
+      - name: Setup Node.js and pnpm
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Restore pnpm cache
+      - name: Restore pnpm cache and node_modules
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: |
+            node_modules
+            ${{ needs.setup.outputs.pnpm_cache_path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+
+      - name: Install Cypress
+        run: npx cypress install
 
       - name: Run tests
         run: pnpm test:ci
