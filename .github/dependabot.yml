@@ -1,0 +1,44 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/apps/api"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+  - package-ecosystem: "npm"
+    directory: "/apps/www"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+  - package-ecosystem: "npm"
+    directory: "/packages/jest-presets"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+  - package-ecosystem: "npm"
+    directory: "/packages/logger"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+  - package-ecosystem: "npm"
+    directory: "/packages/typescript-config"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+  - package-ecosystem: "npm"
+    directory: "/packages/ui"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
