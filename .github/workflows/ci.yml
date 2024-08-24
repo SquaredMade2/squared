@@ -6,39 +6,22 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    outputs:
-      pnpm_cache_path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.7.0
-
-      - name: Setup Node.js and pnpm cache
+      - name: Install pnpm and setup Node.js with cache
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Get pnpm store path
-        id: pnpm-cache-path
-        run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
+      # - name: Install pnpm
+      #   uses: pnpm/action-setup@v4
+      #   with:
+      #     version: 9
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Cache node_modules and pnpm store
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
 
   lint:
     runs-on: ubuntu-latest
@@ -46,23 +29,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.7.0
-
-      - name: Setup Node.js
+      - name: Install pnpm and setup Node.js with cache
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
 
-      - name: Restore pnpm cache and node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            ${{ needs.setup.outputs.pnpm_cache_path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+      # - name: Install pnpm
+      #   uses: pnpm/action-setup@v4
+      #   with:
+      #     version: 9
 
       - name: Run linting check
         run: pnpm lint
@@ -73,23 +49,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.7.0
-
-      - name: Setup Node.js
+      - name: Install pnpm and setup Node.js with cache
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
 
-      - name: Restore pnpm cache and node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            ${{ needs.setup.outputs.pnpm_cache_path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+      # - name: Install pnpm
+      #   uses: pnpm/action-setup@v4
+      #   with:
+      #     version: 9
 
       - name: Install Cypress
         run: npx cypress install
