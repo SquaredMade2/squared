@@ -1,11 +1,14 @@
-name: Build
+name: CI Pipeline
 
 on:
   pull_request:
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
+    outputs:
+      node_version: ${{ steps.node_version.outputs.NVMRC }}
+      pnpm_cache_dir: ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -46,11 +49,38 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
 
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Node version
+        uses: actions/setup-node@v2
+        with:
+          node-version: "${{ needs.setup.outputs.node_version }}"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Run linting check
         run: pnpm lint
 
-      - name: Install Cypress
-        run: npx cypress install
+  test:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Node version
+        uses: actions/setup-node@v2
+        with:
+          node-version: "${{ needs.setup.outputs.node_version }}"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Run tests
         run: pnpm test:ci
