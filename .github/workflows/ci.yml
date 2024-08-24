@@ -32,7 +32,9 @@ jobs:
       - name: Cache pnpm dependencies
         uses: actions/cache@v2
         with:
-          path: ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
+          path: |
+            ${{ steps.pnpm-cache-dir-path.outputs.storePath }}
+            node_modules
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/.nvmrc') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -56,13 +58,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
       - name: Set Node version
         uses: actions/setup-node@v2
         with:
           node-version: "${{ needs.setup.outputs.node_version }}"
-
-      - name: Install pnpm
-        run: npm install -g pnpm
 
       - name: Run linting check
         run: pnpm lint
@@ -74,13 +79,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Restore node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
       - name: Set Node version
         uses: actions/setup-node@v2
         with:
           node-version: "${{ needs.setup.outputs.node_version }}"
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Install Cypress
+        run: npx cypress install
 
       - name: Run tests
         run: pnpm test:ci
