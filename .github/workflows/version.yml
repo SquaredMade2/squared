@@ -2,8 +2,6 @@ name: Version
 
 on:
   pull_request:
-    branches:
-      - develop
 
 jobs:
   check:
@@ -23,17 +21,24 @@ jobs:
         with:
           node-version: "${{ steps.node_version.outputs.NVMRC }}"
 
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
       - name: Get pnpm cache directory path
         id: pnpm-cache-dir-path
         run: echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v1
+      - name: Cache pnpm store
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        if: steps.pnpm-cache-dir-path.outputs.cache-hit != 'true'
         run: pnpm install
 
       - name: Check
