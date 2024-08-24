@@ -18,6 +18,12 @@
     "clean": {
       "cache": false
     },
+    "db:generate": {
+      "dependsOn": ["^db:generate"]
+    },
+    "db:push": {
+      "dependsOn": ["^db:push"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
