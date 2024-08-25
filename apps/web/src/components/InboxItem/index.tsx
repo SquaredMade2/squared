@@ -5,8 +5,7 @@ import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useRouter } from "next/navigation";
 import { setCurrentTaskId } from "@/store/currentTask";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { faEnvelopeOpen } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
 import { getNotifications } from "@/store/notifications";
 import { useTheme } from "next-themes";
@@ -85,11 +84,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 				<div className="flex justify-between">
 					<p className="text-foreground truncate ">{title}</p>
 					<div className="text-xs">
-						{read ? (
-							<FontAwesomeIcon icon={faEnvelopeOpen} />
-						) : (
-							<FontAwesomeIcon icon={faEnvelope} />
-						)}
+						<FontAwesomeIcon icon={read ? faEnvelopeOpen : faEnvelope} />
 					</div>
 				</div>
 

@@ -50,16 +50,13 @@ const ButtonIcon: FC<Props> = ({
 	children,
 }) => {
 	const [isHovering, setIsHovering] = useState(false);
-	const switchHover = () => {
-		setIsHovering(!isHovering);
-	};
 	const iconHover = hoverBg ? `hover:${hoverBg}` : "";
 
 	return (
 		<div
 			className="relative flex whitespace-nowrap text-muted-foreground cursor-pointer hover:text-foreground"
-			onMouseEnter={switchHover}
-			onMouseLeave={switchHover}
+			onMouseEnter={() => setIsHovering(true)}
+			onMouseLeave={() => setIsHovering(false)}
 			onClick={handleClick}
 		>
 			<div
@@ -69,7 +66,7 @@ const ButtonIcon: FC<Props> = ({
 			</div>
 			{isHovering && tooltipLabel !== null && (
 				<div
-					className={`${"opacity-0 sm:opacity-100 absolute z-40 text-xs border rounded bg-popover w-auto flex items-center gap-1 px-1 py-1"} ${getPositionClasses(labelPosition)}`}
+					className={`${"opacity-0 sm:opacity-100 absolute z-40 text-xs border rounded bg-popover w-auto flex items-center gap-1 p-2"} ${getPositionClasses(labelPosition)}`}
 				>
 					<p className="flex">{tooltipLabel}</p>
 					{children}
