@@ -5,8 +5,7 @@ import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useRouter } from "next/navigation";
 import { setCurrentTaskId } from "@/store/currentTask";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { faEnvelopeOpen } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
 import { getNotifications } from "@/store/notifications";
 import { useTheme } from "next-themes";
@@ -34,19 +33,14 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const isActive = currentTaskId === id;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 	const { theme } = useTheme();
-	const inactiveNotread =
-		theme === "dark"
-			? "bg-accent text-muted-foreground"
-			: "bg-muted  text-muted-foreground";
+	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
+
 	const inactiveRead =
-		theme === "dark"
-			? "bg-popover text-muted-foreground"
-			: "bg-popover border text-muted-foreground";
+		"bg-popover text-muted-foreground border dark:border-none";
 
 	const active =
-		theme === "dark"
-			? "text-foreground bg-[#282E43] border-indigo-400 shadow shadow-indigo-400"
-			: "bg-popover border border-indigo-400 shadow shadow-indigo-400";
+		"border border-indigo-400 shadow shadow-indigo-400 bg-popover dark:bg-[#282E43] text-foreground";
+
 	const hover = isActive
 		? ""
 		: theme === "dark"
@@ -90,11 +84,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 				<div className="flex justify-between">
 					<p className="text-foreground truncate ">{title}</p>
 					<div className="text-xs">
-						{read ? (
-							<FontAwesomeIcon icon={faEnvelopeOpen} />
-						) : (
-							<FontAwesomeIcon icon={faEnvelope} />
-						)}
+						<FontAwesomeIcon icon={read ? faEnvelopeOpen : faEnvelope} />
 					</div>
 				</div>
 

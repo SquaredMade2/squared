@@ -32,18 +32,20 @@ const WorkspaceInitials = ({
 	const getStyle = () => {
 		switch (location) {
 			case "workspaceList":
-				return "flex items-center justify-center w-5 h-5 text-xxs rounded mr-2 text-white font-normal";
+				return " w-5 h-5 text-xxs rounded mr-2 font-normal";
 			case "workspaceMenu":
-				return "flex items-center justify-center w-5 h-5 text-xxs rounded mr-2 text-white";
+				return " w-5 h-5 text-xxs rounded mr-2";
 			case "workspaceSettings":
-				return "flex  items-center justify-center w-16 h-16  mb-10 mt-5 text-xl rounded text-white";
+				return " w-16 h-16  mb-10 mt-5 text-xl rounded-md";
 			default:
 				return "";
 		}
 	};
 
 	return (
-		<div className={`${getStyle()} ${colors[backgroundColor]}`}>
+		<div
+			className={`flex items-center justify-center text-foreground ${getStyle()} ${colors[backgroundColor]}`}
+		>
 			{getInitials(workspaceName)}
 		</div>
 	);

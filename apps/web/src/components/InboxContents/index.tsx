@@ -4,8 +4,7 @@ import Task from "@/components/Task";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { NotificationProps } from "@/store/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
-import { faInbox } from "@fortawesome/free-solid-svg-icons";
+import { faInbox, faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
 
 export default function InboxContents(): React.JSX.Element {
 	const theCurrentTask = useAppSelector(
@@ -23,18 +22,17 @@ export default function InboxContents(): React.JSX.Element {
 		<>
 			{theCurrentTask !== null && (
 				<div>
-					<Task />
+					<Task mailTask={true} />
 				</div>
 			)}
 			{theCurrentTask === null && (
 				<div className=" h-full flex items-center justify-center ">
 					<div className="flex flex-col gap-2 text-secondary items-center">
 						<div className="text-muted-foreground">
-							{hasUnreadNotification ? (
-								<FontAwesomeIcon className="w-16 h-16" icon={faEnvelopesBulk} />
-							) : (
-								<FontAwesomeIcon className="w-16 h-16" icon={faInbox} />
-							)}
+							<FontAwesomeIcon
+								className="w-16 h-16"
+								icon={hasUnreadNotification ? faEnvelopesBulk : faInbox}
+							/>
 						</div>
 						<div className="text-foreground text-lg">Inbox</div>
 						<div className="text-muted-foreground text-sm">
