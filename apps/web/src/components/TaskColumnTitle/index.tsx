@@ -14,6 +14,7 @@ import HideStatus from "@/components/HideStatus/HideStatus";
 import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
 import { useTheme } from "next-themes";
+import { cn } from "@/utils/cn";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -51,13 +52,13 @@ const TaskColumnTitle = ({
 	return (
 		<div className={isListView ? "" : "pr-2 min-w-80"}>
 			<div
-				className={
+				className={cn(
+					"flex w-full bg-muted dark:bg-accent items-center justify-between font-medium transition-all",
 					isListView
-						? numberOfTasks > 0
-							? "flex w-full bg-muted dark:bg-accent items-center justify-between rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2 font-medium transition-all"
-							: "flex w-full bg-muted dark:bg-accent items-center justify-between rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2 font-medium transition-all rounded-b-lg"
-						: "flex flex-row w-full justify-between bg-muted dark:bg-accent rounded-lg px-2 h-10 mb-2 font-bold"
-				}
+						? "rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2"
+						: "flex-row rounded-lg px-2 h-10 mb-2 font-bold",
+					isListView && numberOfTasks === 0 ? "rounded-b-lg" : "",
+				)}
 			>
 				{!isListView && (
 					<div

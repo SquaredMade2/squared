@@ -4,8 +4,7 @@ import Task from "@/components/Task";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { NotificationProps } from "@/store/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
-import { faInbox } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelopesBulk, faInbox } from "@fortawesome/free-solid-svg-icons";
 
 export default function InboxContents(): React.JSX.Element {
 	const theCurrentTask = useAppSelector(
