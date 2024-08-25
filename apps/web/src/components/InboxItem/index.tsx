@@ -33,19 +33,14 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const isActive = currentTaskId === id;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 	const { theme } = useTheme();
-	const inactiveNotread =
-		theme === "dark"
-			? "bg-accent text-muted-foreground"
-			: "bg-muted  text-muted-foreground";
+	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
+
 	const inactiveRead =
-		theme === "dark"
-			? "bg-popover text-muted-foreground"
-			: "bg-popover border text-muted-foreground";
+		"bg-popover text-muted-foreground border dark:border-none";
 
 	const active =
-		theme === "dark"
-			? "text-foreground bg-[#282E43] border-indigo-400 shadow shadow-indigo-400"
-			: "bg-popover border border-indigo-400 shadow shadow-indigo-400";
+		"border border-indigo-400 shadow shadow-indigo-400 bg-popover dark:bg-[#282E43] text-foreground";
+
 	const hover = isActive
 		? ""
 		: theme === "dark"
