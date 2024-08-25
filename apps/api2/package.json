@@ -16,9 +16,11 @@
     "@repo/db": "workspace:*",
     "@repo/test-db": "workspace:*",
     "@types/qs": "^6.9.15",
+    "@types/uuid": "^10.0.0",
     "@vercel/postgres": "^0.7.2",
     "dotenv": "^16.4.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

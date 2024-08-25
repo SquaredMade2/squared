@@ -3,7 +3,7 @@
 import express from "express";
 import { Router } from "express";
 import { Route, toQueryHandler, toMutationHandler } from "./route";
-import { PrismaClient } from "@repo/test-db";
+import { PrismaClient } from "@repo/db";
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
@@ -14,12 +14,14 @@ import * as $230080 from "./workspace/[workspaceId]/team";
 import * as $61fb65 from "./team/[teamId]/task";
 import * as $0a9f89 from "./team/[teamId]";
 import * as $abb393 from "./task/[taskId]";
+import * as $5925fb from "./activity/[taskId]";
 
 export type AllRouteDeps =
   & Parameters<typeof $230080.createRoute>[0]
   & Parameters<typeof $61fb65.createRoute>[0]
   & Parameters<typeof $0a9f89.createRoute>[0]
   & Parameters<typeof $abb393.createRoute>[0]
+  & Parameters<typeof $5925fb.createRoute>[0]
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
 
@@ -61,6 +63,16 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     router.post("/api/task/:taskId", toMutationHandler(r.POST));
     router.put("/api/task/:taskId", toMutationHandler(r.PUT));
     router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
+  }
+
+  {
+    type Params = { taskId: string };
+    const r: Route<Params> = $5925fb.createRoute(deps);
+
+    router.get("/api/activity/:taskId", toQueryHandler(r.GET));
+    router.post("/api/activity/:taskId", toMutationHandler(r.POST));
+    router.put("/api/activity/:taskId", toMutationHandler(r.PUT));
+    router.delete("/api/activity/:taskId", toQueryHandler(r.DELETE));
   }
 
   // Setup Swagger documentation

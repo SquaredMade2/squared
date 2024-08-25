@@ -33,6 +33,11 @@ enum Label {
   Test
 }
 
+enum ActivityType {
+  TASK_EVENT
+  COMMIT
+}
+
 model Commit {
   id                String   @id
   tree_id           String?
@@ -51,6 +56,9 @@ model Commit {
   modified          String[]
   repoName          String?
   owner             String?
+  activityId        String   @unique
+
+  activity Activity @relation(fields: [activityId], references: [id])
 }
 
 model TaskEventLog {
@@ -58,9 +66,23 @@ model TaskEventLog {
   authorId   String
   authorName String
   createdAt  DateTime @default(now())
-  taskId     String
+  taskId     String   @unique
 
-  taskEvents TaskEvent[] @relation("EventLogs")
+  activities Activity[]
+
+  Task Task @relation(fields: [taskId], references: [id])
+}
+
+model Activity {
+  id         String     @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  commit     Commit?
+  taskEvent  TaskEvent?
+  eventLogId String
+
+  type ActivityType
+
+  taskEventLog TaskEventLog @relation(fields: [eventLogId], references: [id])
 }
 
 model TaskEvent {
@@ -68,10 +90,8 @@ model TaskEvent {
   type                 String
   authorId             String
   authorName           String
-  taskId               String
-  updatedAt            DateTime @default(now())
-  originalLabels       Label[]
-  updatedLabels        Label[]
+  activityId           String   @unique
+  createdAt            DateTime @default(now())
   originalValue        String?
   updatedValue         String?
   originalAssigneeId   String?
@@ -79,7 +99,10 @@ model TaskEvent {
   updatedAssigneeId    String?
   updatedAssigneeName  String?
 
-  taskEventLog TaskEventLog @relation("EventLogs", fields: [taskId], references: [id])
+  originalLabels Label[]
+  updatedLabels  Label[]
+
+  activity Activity @relation(fields: [activityId], references: [id])
 }
 
 model Comment {
@@ -118,10 +141,7 @@ model Task {
   authorId       String
   title          String
   description    String?
-  status         Status
   identifier     String
-  priority       Priority?
-  labels         Label[]
   dueDate        DateTime?
   effortEstimate Int?
   teamId         String
@@ -129,9 +149,14 @@ model Task {
   assigneeId     String?
   assigneeName   String?
 
-  Author  User      @relation(fields: [authorId], references: [id])
-  Team    Team      @relation(fields: [teamId], references: [id])
-  Comment Comment[]
+  status   Status
+  priority Priority?
+  labels   Label[]
+  Comments Comment[]
+  Events   TaskEventLog?
+
+  Author User @relation(fields: [authorId], references: [id])
+  Team   Team @relation(fields: [teamId], references: [id])
 }
 
 model Team {
