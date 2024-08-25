@@ -32,7 +32,7 @@ const PriorityButton = ({ location }: PriorityButtonProps) => {
 				className={`${
 					labelsSelected?.length > 0 && !newIssuePriority
 						? `border border-[0.8px] border-border rounded py-1 px-0.5 mr-2 cursor-pointer ${handleBackground()}`
-						: `flex cursor-pointer items-center h-7 justify-center w-[60px] border-[0.8px] border border-border rounded px-2 py-0.5 mr-2 text-card-foreground text-sm shadow-md cursor-pointer ${handleBackground()}`
+						: `flex cursor-pointer items-center h-7 justify-center border-[0.8px] border border-border rounded px-2 py-0.5 mr-2 text-card-foreground text-sm shadow-md cursor-pointer ${handleBackground()}`
 				}`}
 				onClick={handleButtonClick}
 			>
