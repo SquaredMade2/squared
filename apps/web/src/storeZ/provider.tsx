@@ -53,3 +53,7 @@ export const useTeamStore = () => {
 export const useWorkspaceStore = () => {
 	return useSquaredStore((state) => state.workspaces.getState());
 };
+
+export const useViewsStore = () => {
+	return useSquaredStore((state) => state.views.getState());
+};

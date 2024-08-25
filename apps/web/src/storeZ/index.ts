@@ -6,11 +6,14 @@ import { createWorkspaceStore } from "./workspaces";
 import type { WorkspaceStore } from "./workspaces";
 import { createTeamStore } from "./teams";
 import type { TeamStore } from "./teams";
+import { createViewsStore } from "./views";
+import type { ViewsStore } from "./views";
 
 export type SquaredState = {
 	tasks: StoreApi<TaskStore>;
 	workspaces: StoreApi<WorkspaceStore>;
 	teams: StoreApi<TeamStore>;
+	views: StoreApi<ViewsStore>;
 };
 
 export const createSquaredStore = () => {
@@ -18,5 +21,6 @@ export const createSquaredStore = () => {
 		tasks: createTaskStore(),
 		workspaces: createWorkspaceStore(),
 		teams: createTeamStore(),
+		views: createViewsStore(),
 	}));
 };
