@@ -29,10 +29,10 @@ const Navbar = () => {
 						</div>
 						<div>
 							<Accordion type="single" collapsible>
-								{workspace?.teams.map((team: Team) => {
+								{workspace?.teams?.map((team: Team) => {
 									return (
 										<AccordionItem key={team._id} value={team._id}>
-											<AccordionTrigger className="text-sm">
+											<AccordionTrigger className="text-sm h-12">
 												<LayoutGrid className="text-[#9577FF] size-4" />
 												{team.name}
 											</AccordionTrigger>
