@@ -100,7 +100,7 @@ const DateButton = ({ location }: { location: string }) => {
 					</span>
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-auto p-0" side="left">
+			<PopoverContent className="w-auto p-0 mr-4" side="left">
 				<Calendar
 					mode="single"
 					selected={selectedDate}
