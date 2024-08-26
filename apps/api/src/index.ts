@@ -3,9 +3,9 @@ import "tslib";
 import * as Sentry from "@sentry/node";
 import express from "express";
 import type { Request, Response, NextFunction, Express } from "express";
+import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import AppError from "./utils/AppError";
 import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventsRoutes";
@@ -93,47 +93,38 @@ mongoose
 		console.log("Database Connection Error", err);
 	});
 
-const vercelAccess: StaticOrigin = /[\w-\/:]*squared-52c50d26\.vercel\.app/;
-
-const whitelist = [
-	"http://localhost:3000",
-	`http://localhost:${PORT}`,
-	"https://app.squaredmade.com",
-	"https://develop.squaredmade.com",
-	"https://squared-web.vercel.app",
-	vercelAccess,
-];
-
 type StaticOrigin =
 	| boolean
 	| string
 	| RegExp
 	| Array<boolean | string | RegExp>;
 
-type CustomOrigin = (
-	requestOrigin: string | undefined,
-	callback: (err: Error | null, origin?: StaticOrigin) => void,
-) => void;
+const vercelBranchPattern =
+	/^https:\/\/squared-[a-z0-9-]+-squared-52c50d26\.vercel\.app$/;
+const productionDomain = "https://squared-web.vercel.app";
+const localDevDomain = "http://localhost:3000";
 
-const corsOptions = {
-	credentials: true,
-	origin: (
-		origin: StaticOrigin | CustomOrigin | undefined,
-		callback: (err: Error | null, allow?: boolean) => void,
-	): void => {
-		if (whitelist.indexOf(String(origin)) !== -1 || !origin) {
-			callback(null, true);
-		} else {
-			callback(new Error("Not allowed by CORS"), false);
-		}
-	},
-};
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			// Allow requests from Vercel branch deployments, production domain, and local development
+			if (
+				!origin ||
+				vercelBranchPattern.test(origin) ||
+				origin === productionDomain ||
+				origin === localDevDomain // Allow local development domain
+			) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true, // Allows credentials to be sent in requests
+	}),
+);
 
-const io = new Server(server, {
-	cors: {
-		origin: whitelist,
-	},
-});
+const io = new Server(server);
 
 const userSocketId: { [key: string]: string } = {};
 
@@ -165,7 +156,6 @@ io.on("connection", (socket: Socket) => {
 app.use(Sentry.Handlers.errorHandler());
 
 // middlewere
-app.use(cors(corsOptions));
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
