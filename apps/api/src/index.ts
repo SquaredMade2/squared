@@ -99,17 +99,19 @@ type StaticOrigin =
 	| RegExp
 	| Array<boolean | string | RegExp>;
 
-const allowedOrigins = [
-	"https://squared-web.vercel.app", // Production domain
-	"http://localhost:3000", // Localhost with default port
-	"http://127.0.0.1:3000", // Localhost using IP address
-];
+const vercelBranchPattern =
+	/^https:\/\/squared-[a-z0-9-]+-squared-52c50d26\.vercel\.app$/;
+const productionDomain = "https://squared-web.vercel.app";
 
 app.use(
 	cors({
 		origin: (origin, callback) => {
-			// Check if origin is undefined or in the allowed origins array
-			if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+			// Allow requests from Vercel branch deployments and production domain
+			if (
+				!origin ||
+				vercelBranchPattern.test(origin) ||
+				origin === productionDomain
+			) {
 				callback(null, true);
 			} else {
 				callback(new Error("Not allowed by CORS"));
