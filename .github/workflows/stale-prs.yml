@@ -5,6 +5,11 @@ on:
     - cron: "0 19 * * *" # Runs daily at 5 AM GMT+10
   workflow_dispatch: # Allows manual trigger
 
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write # If you need to modify content like labels
+
 jobs:
   stale:
     runs-on: ubuntu-latest
@@ -12,18 +17,19 @@ jobs:
       - uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-stale: 7
-          days-before-pr-stale: 7
+          days-before-stale: 3
+          days-before-pr-stale: 3
           stale-pr-message: "This PR is stale because it has been open for 7 days with no activity."
           stale-pr-label: "Stale"
-          days-before-close: 2
-          days-before-pr-close: 2
+          days-before-close: 14
+          days-before-pr-close: 14
           close-pr-message: "This PR was closed because it has been stalled for 2 days with no activity."
 
       - name: Send notification to Discord
         if: always()
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Set the GH_TOKEN here
         run: |
           PR_NUMBER=$(gh pr list --state=open --json number --jq '.[0].number')
           PR_TITLE=$(gh pr view $PR_NUMBER --json title -q .title)
