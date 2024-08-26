@@ -19,7 +19,8 @@
       "cache": false
     },
     "db:generate": {
-      "dependsOn": ["^db:generate"]
+      "dependsOn": ["^db:generate"],
+      "cache": false
     },
     "db:push": {
       "dependsOn": ["^db:push"]
