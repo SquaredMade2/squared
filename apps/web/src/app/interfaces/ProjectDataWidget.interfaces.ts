@@ -10,6 +10,10 @@ export type FavoritedType = () => React.JSX.Element;
 
 export type NotFavoritedType = () => React.JSX.Element;
 
+export interface NotFavoritedTypeParam {
+	location: string;
+}
+
 export interface AssigneesDataInterface {
 	unassigned: number;
 	[key: string]: number;
