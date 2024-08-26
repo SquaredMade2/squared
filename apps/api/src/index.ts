@@ -3,6 +3,7 @@ import "tslib";
 import * as Sentry from "@sentry/node";
 import express from "express";
 import type { Request, Response, NextFunction, Express } from "express";
+import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import AppError from "./utils/AppError";
@@ -97,6 +98,14 @@ type StaticOrigin =
 	| string
 	| RegExp
 	| Array<boolean | string | RegExp>;
+
+app.use(
+	cors({
+		origin: "https://squared-web.vercel.app",
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		allowedHeaders: ["Content-Type", "Authorization"],
+	}),
+);
 
 const io = new Server(server);
 
