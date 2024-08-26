@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/apps/web"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     groups:
       lexical-packages:
         patterns:
@@ -19,7 +19,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/apps/api"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     groups:
       sentry-packages:
         patterns:
@@ -33,7 +33,7 @@ updates:
       - "/packages/test-db"
       - "/packages/ui"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     groups:
       storybook-packages:
         patterns:
