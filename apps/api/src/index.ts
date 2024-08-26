@@ -102,15 +102,17 @@ type StaticOrigin =
 const vercelBranchPattern =
 	/^https:\/\/squared-[a-z0-9-]+-squared-52c50d26\.vercel\.app$/;
 const productionDomain = "https://squared-web.vercel.app";
+const localDevDomain = "http://localhost:3000";
 
 app.use(
 	cors({
 		origin: (origin, callback) => {
-			// Allow requests from Vercel branch deployments and production domain
+			// Allow requests from Vercel branch deployments, production domain, and local development
 			if (
 				!origin ||
 				vercelBranchPattern.test(origin) ||
-				origin === productionDomain
+				origin === productionDomain ||
+				origin === localDevDomain // Allow local development domain
 			) {
 				callback(null, true);
 			} else {
