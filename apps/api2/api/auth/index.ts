@@ -1,7 +1,7 @@
-import { User, Workspace } from "@repo/db";
+import type { User, Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
-import { Route } from "@/api/route";
+import type { Route } from "@/api/route";
 import { comparePassword, hashPassword, sendMail } from "./helpers";
 
 type Login = {
@@ -31,10 +31,11 @@ type AuthReturn = {
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export function createRoute({}): Route<Params> {
+export function createRoute(): Route<Params> {
   return {
     POST: async ({ userId }, body: Body): Promise<AuthReturn> => {
       try {
+        console.log(body)
         const { email, password, provider, type, name, username } = body.login;
 
         // Validation for Login Data
@@ -70,8 +71,7 @@ export function createRoute({}): Route<Params> {
               },
             };
           }
-
-          if (password!.length < 6) {
+          if (!password || password.length < 6) {
             return {
               data: {
                 user: null,
@@ -95,7 +95,7 @@ export function createRoute({}): Route<Params> {
           }
 
           // Creating the user
-          const hashedPassword = await hashPassword(password!);
+          const hashedPassword = await hashPassword(password);
 
           const user = await prisma.user.create({
             data: {
@@ -114,6 +114,7 @@ export function createRoute({}): Route<Params> {
             { expiresIn: "1d" }
           );
 
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           await sendMail(email, username!, emailToken, "confirmation");
 
           return {

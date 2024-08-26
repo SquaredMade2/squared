@@ -19,7 +19,7 @@ import * as $abb393 from "./task/[taskId]";
 import * as $8f61d9 from "./task/[taskId]/comment";
 import * as $302cff from "./notification/[notificationId]";
 import * as $97a568 from "./comment/[commentId]";
-import * as $4e2f25 from "./auth/[userId]";
+import * as $20ac97 from "./auth";
 import * as $5925fb from "./activity/[taskId]";
 
 export type AllRouteDeps =
@@ -31,7 +31,7 @@ export type AllRouteDeps =
   & Parameters<typeof $8f61d9.createRoute>[0]
   & Parameters<typeof $302cff.createRoute>[0]
   & Parameters<typeof $97a568.createRoute>[0]
-  & Parameters<typeof $4e2f25.createRoute>[0]
+  & Parameters<typeof $20ac97.createRoute>[0]
   & Parameters<typeof $5925fb.createRoute>[0]
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
@@ -117,13 +117,13 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
   }
 
   {
-    type Params = { userId: string };
-    const r: Route<Params> = $4e2f25.createRoute(deps);
+    type Params = {  };
+    const r: Route<Params> = $20ac97.createRoute(deps);
 
-    router.get("/api/auth/:userId", toQueryHandler(r.GET));
-    router.post("/api/auth/:userId", toMutationHandler(r.POST));
-    router.put("/api/auth/:userId", toMutationHandler(r.PUT));
-    router.delete("/api/auth/:userId", toQueryHandler(r.DELETE));
+    router.get("/api/auth", toQueryHandler(r.GET));
+    router.post("/api/auth", toMutationHandler(r.POST));
+    router.put("/api/auth", toMutationHandler(r.PUT));
+    router.delete("/api/auth", toQueryHandler(r.DELETE));
   }
 
   {
