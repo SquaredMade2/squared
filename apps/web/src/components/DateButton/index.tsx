@@ -32,8 +32,10 @@ const DateButton = ({ location }: { location: string }) => {
 			>
 				<Button
 					variant="outline"
-					className={`${"inline-flex items-center border border-border text-sm bg-popover hover:bg-muted dark:bg-muted dark:hover:bg-popover"} ${location === "newIssue" && "px-2 py-0.5 mr-3 text-popover-foreground shadow-md"} 
-				${location === "issueSidebar" && "hover:border-border rounded-3xl px-3 py-1 m-1"}`}
+					size="sm"
+					className={`${"inline-flex items-center bg-popover hover:bg-muted"} 
+					${location === "newIssue" && "px-2 py-0.5 mr-3 shadow-md"} 
+				${location === "issueSidebar" && "rounded-3xl px-3 py-1 m-1"}`}
 				>
 					<CalendarIcon className="size-4" />
 					<span className="text-sm font-semibold text-popover-foreground ml-2 hover:cursor-pointer">

@@ -102,16 +102,14 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 				<div className="my-5 flex justify-end gap-3">
 					{location !== "contextMenu" && (
 						<Button
-							className="p-2.5 rounded-md text-primary-foreground bg-primary"
+							variant="outline"
+							className="p-2.5 rounded-md"
 							onClick={() => setDropdownOpen(false)}
 						>
 							Cancel
 						</Button>
 					)}
-					<Button
-						className="p-2.5 rounded-md text-primary-foreground bg-primary"
-						onClick={handleSave}
-					>
+					<Button className="p-2.5 rounded-md" onClick={handleSave}>
 						Save
 					</Button>
 				</div>
