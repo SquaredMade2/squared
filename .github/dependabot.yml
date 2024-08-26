@@ -12,9 +12,34 @@ updates:
       sentry-packages:
         patterns:
           - "@sentry/*"
-      mui-packages:
+      ui-packages:
         patterns:
           - "@mui/*"
+          - "@fortawesome/*"
+          - "@headlessui/*"
+          - "@heroicons/*"
+      react-packages:
+        patterns:
+          - "react*"
+          - "react-*"
+          - "@react*"
+          - "@react-*"
+      storybook-packages:
+        patterns:
+          - "@storybook/*"
+          - "@babel/*"
+          - "@chromatic-com/*"
+      types-packages:
+        patterns:
+          - "@types/*"
+          - "types/*"
+      testing-packages:
+        patterns:
+          - "@testing-library/*"
+          - "jest*"
+          - "jest-*"
+          - "@cypress/*"
+          - "cypress*"
 
   - package-ecosystem: "npm"
     directory: "/apps/api"
@@ -39,3 +64,20 @@ updates:
         patterns:
           - "@storybook/*"
           - "@babel/*"
+      react-packages:
+        patterns:
+          - "react*"
+          - "react-*"
+          - "@react*"
+          - "@react-*"
+      types-packages:
+        patterns:
+          - "@types/*"
+          - "types/*"
+      testing-packages:
+        patterns:
+          - "@testing-library/*"
+          - "jest*"
+          - "jest-*"
+          - "@cypress/*"
+          - "cypress*"
