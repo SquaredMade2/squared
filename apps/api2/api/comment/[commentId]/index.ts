@@ -1,12 +1,12 @@
-import { Comment } from "@repo/db";
+import type { Comment } from "@repo/db";
 import { prisma } from "@/api";
-import { Route } from "@/api/route";
+import type { Route } from "@/api/route";
 
 type Params = {
 	commentId: string;
 };
 
-export function createRoute({}): Route<Params> {
+export function createRoute(): Route<Params> {
 	return {
 		GET: async ({ commentId }) => {
 			try {
