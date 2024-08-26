@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  url       = env("TEST_POSTGRES_PRISMA_URL")
+  directUrl = env("TEST_POSTGRES_URL_NON_POOLING")
 }
 
 enum Status {
@@ -39,8 +39,8 @@ enum ActivityType {
 }
 
 model Commit {
-  id                String   @id
-  tree_id           String?
+  id                String   @id @default(uuid())
+  treeId            String
   distinct          Boolean?
   message           String
   timestamp         String
@@ -56,11 +56,23 @@ model Commit {
   modified          String[]
   repoName          String?
   owner             String?
-  eventLogId        String
   activityId        String   @unique
 
-  activity     Activity     @relation(fields: [activityId], references: [id])
-  taskEventLog TaskEventLog @relation(fields: [eventLogId], references: [id])
+  activity Activity @relation(fields: [activityId], references: [id])
+
+  Branch Branch @relation(fields: [treeId], references: [id])
+}
+
+model Branch {
+  id               String @id @default(uuid())
+  name             String
+  taskId           String @unique
+  githubRepoInfoId String
+
+  commits Commit[]
+
+  task           Task            @relation(fields: [taskId], references: [id])
+  GithubRepoInfo GithubRepoInfo? @relation(fields: [githubRepoInfoId], references: [id])
 }
 
 model TaskEventLog {
@@ -70,11 +82,10 @@ model TaskEventLog {
   createdAt  DateTime @default(now())
   taskId     String   @unique
 
-  taskEvents TaskEvent[]
-  commits    Commit[]
   activities Activity[]
 
-  Task Task @relation(fields: [taskId], references: [id])
+  Task      Task        @relation(fields: [taskId], references: [id])
+  TaskEvent TaskEvent[]
 }
 
 model Activity {
@@ -94,9 +105,9 @@ model TaskEvent {
   type                 String
   authorId             String
   authorName           String
-  eventLogId           String
   activityId           String   @unique
   createdAt            DateTime @default(now())
+  taskId               String
   originalValue        String?
   updatedValue         String?
   originalAssigneeId   String?
@@ -108,7 +119,7 @@ model TaskEvent {
   updatedLabels  Label[]
 
   activity     Activity     @relation(fields: [activityId], references: [id])
-  taskEventLog TaskEventLog @relation(fields: [eventLogId], references: [id])
+  taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])
 }
 
 model Comment {
@@ -160,6 +171,7 @@ model Task {
   labels   Label[]
   Comments Comment[]
   Events   TaskEventLog?
+  Branch   Branch?
 
   Author User @relation(fields: [authorId], references: [id])
   Team   Team @relation(fields: [teamId], references: [id])
@@ -171,10 +183,11 @@ model Team {
   identifier  String
   workspaceId String
 
+  Tasks   Task[]
+  Project Project[]
+
   Users     User[]    @relation("TeamUsers")
-  Tasks     Task[]
   Workspace Workspace @relation(fields: [workspaceId], references: [id])
-  Project   Project[]
 }
 
 model User {
@@ -188,12 +201,28 @@ model User {
   onBoarding         Boolean  @default(false)
   defaultWorkspaceId String?
 
-  DefaultWorkspace Workspace?      @relation(fields: [defaultWorkspaceId], references: [id])
-  Workspaces       UserWorkspace[]
-  Teams            Team[]          @relation("TeamUsers")
-  Notification     Notification[]
-  Comment          Comment[]
-  Task             Task[]
+  Workspaces   UserWorkspace[]
+  Notification Notification[]
+  Comment      Comment[]
+  Task         Task[]
+  SavedFilters SavedFilter[]
+
+  DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id])
+  Teams            Team[]     @relation("TeamUsers")
+}
+
+model SavedFilter {
+  id             String    @id @default(uuid())
+  userId         String
+  title          String
+  identifier     String
+  status         Status?
+  priority       Priority?
+  labels         Label[]
+  dueDate        DateTime?
+  effortEstimate Int?
+
+  User User @relation(fields: [userId], references: [id])
 }
 
 model Workspace {
@@ -205,10 +234,10 @@ model Workspace {
   universalTokenLinkId String?
   githubRepoInfoId     String?
 
-  universalTokenLink UniversalTokenLink? @relation(fields: [universalTokenLinkId], references: [id])
+  universalTokenLink UniversalTokenLink?
   teams              Team[]
   projects           Project[]
-  githubRepoInfo     GithubRepoInfo?     @relation(fields: [githubRepoInfoId], references: [id])
+  githubRepoInfo     GithubRepoInfo?
   Users              UserWorkspace[]
   User               User[]
 }
@@ -224,19 +253,22 @@ model UserWorkspace {
 }
 
 model UniversalTokenLink {
-  id        String  @id @default(uuid())
-  token     String  @default("")
-  isEnabled Boolean @default(true)
+  id          String  @id @default(uuid())
+  token       String  @default("")
+  isEnabled   Boolean @default(true)
+  workspaceId String  @unique
 
-  Workspace Workspace[]
+  Workspace Workspace @relation(fields: [workspaceId], references: [id])
 }
 
 model GithubRepoInfo {
-  id       String @id @default(uuid())
-  repoName String @default("")
-  owner    String @default("")
+  id          String   @id @default(uuid())
+  repoName    String   @default("")
+  owner       String   @default("")
+  workspaceId String   @unique
+  branches    Branch[]
 
-  Workspace Workspace[]
+  Workspace Workspace @relation(fields: [workspaceId], references: [id])
 }
 
 model Project {

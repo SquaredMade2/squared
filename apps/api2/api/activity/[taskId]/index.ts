@@ -97,7 +97,7 @@ export function createRoute({}): Route<Params> {
 					return newActivityWithTaskEvent;
 				}
 
-        throw new Error("Invalid activity type");
+				throw new Error("Invalid activity type");
 			} catch (error) {
 				console.error("Error creating task:", error);
 				throw new Error("Internal server error");
