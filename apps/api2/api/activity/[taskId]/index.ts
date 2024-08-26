@@ -1,6 +1,6 @@
-import { Prisma, Task } from "@repo/db";
+import type { Prisma, Task } from "@repo/db";
 import { prisma } from "@/api";
-import { Route } from "@/api/route";
+import type { Route } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
 
 type Params = {
@@ -11,7 +11,7 @@ type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
 
-export function createRoute({}): Route<Params> {
+export function createRoute(): Route<Params> {
 	return {
 		GET: async ({ taskId }) => {
 			try {
@@ -88,7 +88,8 @@ export function createRoute({}): Route<Params> {
 						include: { commit: true },
 					});
 					return newActivityWithCommit;
-				} else if (body.type === "TASK_EVENT") {
+				}
+				if (body.type === "TASK_EVENT") {
 					// Assuming that taskEvent should be eagerly loaded
 					const newActivityWithTaskEvent = await prisma.activity.findUnique({
 						where: { id: newActivity.id },
