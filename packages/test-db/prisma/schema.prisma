@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/client"
 }
 
 datasource db {
@@ -34,6 +33,11 @@ enum Label {
   Test
 }
 
+enum ActivityType {
+  TASK_EVENT
+  COMMIT
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -52,6 +56,9 @@ model Commit {
   modified          String[]
   repoName          String?
   owner             String?
+  activityId        String   @unique
+
+  activity Activity @relation(fields: [activityId], references: [id])
 
   Branch Branch @relation(fields: [treeId], references: [id])
 }
@@ -73,9 +80,24 @@ model TaskEventLog {
   authorId   String
   authorName String
   createdAt  DateTime @default(now())
-  taskId     String
+  taskId     String   @unique
 
-  taskEvents TaskEvent[] @relation("EventLogs")
+  activities Activity[]
+
+  Task      Task        @relation(fields: [taskId], references: [id])
+  TaskEvent TaskEvent[]
+}
+
+model Activity {
+  id         String     @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  commit     Commit?
+  taskEvent  TaskEvent?
+  eventLogId String
+
+  type ActivityType
+
+  taskEventLog TaskEventLog @relation(fields: [eventLogId], references: [id])
 }
 
 model TaskEvent {
@@ -83,8 +105,9 @@ model TaskEvent {
   type                 String
   authorId             String
   authorName           String
+  activityId           String   @unique
+  createdAt            DateTime @default(now())
   taskId               String
-  updatedAt            DateTime @default(now())
   originalValue        String?
   updatedValue         String?
   originalAssigneeId   String?
@@ -95,7 +118,8 @@ model TaskEvent {
   originalLabels Label[]
   updatedLabels  Label[]
 
-  taskEventLog TaskEventLog @relation("EventLogs", fields: [taskId], references: [id])
+  activity     Activity     @relation(fields: [activityId], references: [id])
+  taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])
 }
 
 model Comment {
@@ -145,8 +169,9 @@ model Task {
   status   Status
   priority Priority?
   labels   Label[]
+  Comments Comment[]
+  Events   TaskEventLog?
   Branch   Branch?
-  Comment  Comment[]
 
   Author User @relation(fields: [authorId], references: [id])
   Team   Team @relation(fields: [teamId], references: [id])

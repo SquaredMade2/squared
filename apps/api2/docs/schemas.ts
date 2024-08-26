@@ -1,11 +1,21 @@
 import { TaskSchema } from "./task/schema";
 import { TeamSchema } from "./team/schema";
+import {
+	ActivitySchema,
+	CommitSchema,
+	TaskEventSchema,
+	TaskEventLogSchema,
+} from "./activity/schema";
 import { CommentSchema } from "./comment/schema";
 import { NotificationSchema } from "./notification/schema";
 
 const schemas = {
 	Task: TaskSchema,
 	Team: TeamSchema,
+	Activity: ActivitySchema,
+	Commit: CommitSchema,
+	TaskEvent: TaskEventSchema,
+	TaskEventLog: TaskEventLogSchema,
 	User: {
 		type: "object",
 		properties: {
@@ -85,96 +95,6 @@ const schemas = {
 	},
 	Comment: CommentSchema,
 	Notification: NotificationSchema,
-	TaskEventLog: {
-		type: "object",
-		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the task event log",
-			},
-			authorId: {
-				type: "string",
-				description: "ID of the author who created the log",
-			},
-			authorName: {
-				type: "string",
-				description: "Name of the author who created the log",
-			},
-			createdAt: {
-				type: "string",
-				format: "date-time",
-				description: "Date when the task event log was created",
-			},
-			taskId: {
-				type: "string",
-				description: "ID of the task associated with the event log",
-			},
-		},
-	},
-	TaskEvent: {
-		type: "object",
-		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the task event",
-			},
-			type: {
-				type: "string",
-				description: "Type of the task event",
-			},
-			authorId: {
-				type: "string",
-				description: "ID of the author who created the event",
-			},
-			authorName: {
-				type: "string",
-				description: "Name of the author who created the event",
-			},
-			taskId: {
-				type: "string",
-				description: "ID of the task associated with the event",
-			},
-			updatedAt: {
-				type: "string",
-				format: "date-time",
-				description: "Date when the task event was last updated",
-			},
-			originalLabels: {
-				type: "array",
-				items: { type: "string" },
-				description: "Original labels before the event",
-			},
-			updatedLabels: {
-				type: "array",
-				items: { type: "string" },
-				description: "Updated labels after the event",
-			},
-			originalValue: {
-				type: "string",
-				description: "Original value before the event",
-			},
-			updatedValue: {
-				type: "string",
-				description: "Updated value after the event",
-			},
-			originalAssigneeId: {
-				type: "string",
-				description: "ID of the original assignee before the event",
-			},
-			originalAssigneeName: {
-				type: "string",
-				description: "Name of the original assignee before the event",
-			},
-			updatedAssigneeId: {
-				type: "string",
-				description: "ID of the updated assignee after the event",
-			},
-			updatedAssigneeName: {
-				type: "string",
-				description: "Name of the updated assignee after the event",
-			},
-		},
-	},
 	PageFilterModel: {
 		type: "object",
 		properties: {
@@ -252,82 +172,6 @@ const schemas = {
 			workspaceId: {
 				type: "string",
 				description: "ID of the workspace associated with the project",
-			},
-		},
-	},
-	Commit: {
-		type: "object",
-		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the commit",
-			},
-			tree_id: {
-				type: "string",
-				description: "Tree ID associated with the commit",
-			},
-			distinct: {
-				type: "boolean",
-				description: "Indicates if the commit is distinct",
-			},
-			message: {
-				type: "string",
-				description: "Commit message",
-			},
-			timestamp: {
-				type: "string",
-				description: "Timestamp of the commit",
-			},
-			url: {
-				type: "string",
-				description: "URL of the commit",
-			},
-			authorName: {
-				type: "string",
-				description: "Name of the commit author",
-			},
-			authorEmail: {
-				type: "string",
-				description: "Email of the commit author",
-			},
-			authorUsername: {
-				type: "string",
-				description: "Username of the commit author",
-			},
-			committerName: {
-				type: "string",
-				description: "Name of the committer",
-			},
-			committerEmail: {
-				type: "string",
-				description: "Email of the committer",
-			},
-			committerUsername: {
-				type: "string",
-				description: "Username of the committer",
-			},
-			added: {
-				type: "array",
-				items: { type: "string" },
-				description: "Files added in the commit",
-			},
-			removed: {
-				type: "array",
-				items: { type: "string" },
-				description: "Files removed in the commit",
-			},
-			modified: {
-				type: "array",
-				items: { type: "string" },
-				description: "Files modified in the commit",
-			},
-			repoName: {
-				type: "string",
-				description: "Name of the repository",
-			},
-			owner: {
-				type: "string",
-				description: "Owner of the repository",
 			},
 		},
 	},
