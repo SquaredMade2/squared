@@ -54,6 +54,9 @@ export const useWorkspaceStore = () => {
 	return useSquaredStore((state) => state.workspaces.getState());
 };
 
+export const useModalStore = () => {
+	return useSquaredStore((state) => state.modals.getState());
+};
 export const useViewsStore = () => {
 	return useSquaredStore((state) => state.views.getState());
 };
