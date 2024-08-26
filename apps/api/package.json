@@ -67,7 +67,7 @@
     "@types/node": "^22.5.0",
     "@types/swagger-jsdoc": "^6.0.3",
     "chai": "^4.3.10",
-    "chai-http": "^4.4.0",
+    "chai-http": "^5.0.0",
     "concurrently": "^8.2.2",
     "husky": "^9.1.4",
     "mocha": "^10.2.0",
