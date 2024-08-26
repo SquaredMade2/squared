@@ -3,7 +3,7 @@ name: Check Stale Pull Requests
 on:
   schedule:
     - cron: "0 19 * * *" # Every day 5am GMT+10 (19:00 UTC)
-  workflow_dispatch:
+  workflow_dispatch: # Enable manual trigger
 
 jobs:
   check-stale-prs:
@@ -12,7 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up GitHub CLI
+        run: |
+          echo "Setting up GitHub CLI"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Get list of stale pull requests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           STALE_PRS=$(gh pr list --state=open --json number,title,updatedAt,assignee,reviewRequests --jq '.[] | select(.updatedAt <= (now - 172800))')
 
