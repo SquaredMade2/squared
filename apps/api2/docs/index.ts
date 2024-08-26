@@ -1,8 +1,9 @@
 import taskDocs from "./task";
 import teamDocs from "./team";
 import activityDocs from "./activity";
-import schemas from "./schemas";
 import notificationDocs from "./notification";
+import commentDocs from "./comment";
+import schemas from "./schemas";
 
 const docs = {
 	paths: {
@@ -10,6 +11,7 @@ const docs = {
 		...teamDocs,
 		...activityDocs,
 		...notificationDocs,
+		...commentDocs,
 	},
 	components: {
 		schemas: schemas,

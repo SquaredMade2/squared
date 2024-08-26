@@ -15,7 +15,9 @@ import * as $31d753 from "./user/[userId]/notification";
 import * as $61fb65 from "./team/[teamId]/task";
 import * as $0a9f89 from "./team/[teamId]";
 import * as $abb393 from "./task/[taskId]";
+import * as $8f61d9 from "./task/[taskId]/comment";
 import * as $302cff from "./notification/[notificationId]";
+import * as $97a568 from "./comment/[commentId]";
 import * as $5925fb from "./activity/[taskId]";
 
 export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
@@ -23,7 +25,9 @@ export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
 	Parameters<typeof $61fb65.createRoute>[0] &
 	Parameters<typeof $0a9f89.createRoute>[0] &
 	Parameters<typeof $abb393.createRoute>[0] &
+	Parameters<typeof $8f61d9.createRoute>[0] &
 	Parameters<typeof $302cff.createRoute>[0] &
+	Parameters<typeof $97a568.createRoute>[0] &
 	Parameters<typeof $5925fb.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
@@ -78,6 +82,16 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 	}
 
 	{
+		type Params = { taskId: string };
+		const r: Route<Params> = $8f61d9.createRoute(deps);
+
+		router.get("/api/task/:taskId/comment", toQueryHandler(r.GET));
+		router.post("/api/task/:taskId/comment", toMutationHandler(r.POST));
+		router.put("/api/task/:taskId/comment", toMutationHandler(r.PUT));
+		router.delete("/api/task/:taskId/comment", toQueryHandler(r.DELETE));
+	}
+
+	{
 		type Params = { notificationId: string };
 		const r: Route<Params> = $302cff.createRoute(deps);
 
@@ -88,6 +102,16 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 			"/api/notification/:notificationId",
 			toQueryHandler(r.DELETE),
 		);
+	}
+
+	{
+		type Params = { commentId: string };
+		const r: Route<Params> = $97a568.createRoute(deps);
+
+		router.get("/api/comment/:commentId", toQueryHandler(r.GET));
+		router.post("/api/comment/:commentId", toMutationHandler(r.POST));
+		router.put("/api/comment/:commentId", toMutationHandler(r.PUT));
+		router.delete("/api/comment/:commentId", toQueryHandler(r.DELETE));
 	}
 
 	{
