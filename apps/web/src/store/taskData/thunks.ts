@@ -72,6 +72,31 @@ export const deleteAllTasks = createAsyncThunk(
 	},
 );
 
+export const deleteTask = createAsyncThunk(
+	"taskData/deleteTask",
+	async (taskId: string, { rejectWithValue }) => {
+		try {
+			const { data } = await axios({
+				method: "DELETE",
+				url: `${process.env.NEXT_PUBLIC_SERVER}/task/delete`,
+				data: {
+					id: taskId,
+				},
+				withCredentials: true,
+			});
+			return taskId;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				return rejectWithValue(error.response?.data);
+			}
+			if (error instanceof Error) {
+				return rejectWithValue(error.message);
+			}
+			return rejectWithValue("An unknown error occurred");
+		}
+	},
+);
+
 export const getAllTasks = createAsyncThunk(
 	"taskData/getAllTasks",
 	async (team: Team, { rejectWithValue }) => {

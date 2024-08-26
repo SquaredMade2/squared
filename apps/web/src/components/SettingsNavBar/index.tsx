@@ -18,6 +18,7 @@ import { useTheme } from "next-themes";
 
 const SettingsNavBar = ({
 	setLoading,
+	toggleNavbar,
 }: SettingsNavbarProps): React.ReactElement => {
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -26,21 +27,17 @@ const SettingsNavBar = ({
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
 
-	const baseUrl = "/settings";
-	const teamUrl = `${baseUrl}/teams`;
-	const addTeamUrl = `${baseUrl}/new-team`;
-	const profileUrl = `${baseUrl}/profile`;
-	const generalUrl = `${baseUrl}/workspace`;
-	const membersUrl = `${baseUrl}/members`;
-	const integrationsUrl = `${baseUrl}/integrations`;
+	const navigateTo = (targetRoute: string) => {
+		router.replace(`/settings/${targetRoute}`);
+		toggleNavbar?.();
+	};
 
 	const handleTeamClick: handleTeamClickNavbar = (team: Team) => {
 		if (setLoading) {
 			setLoading(true);
 		}
 		dispatch(setCurrentTeam(team));
-		router.push(`${teamUrl}/${team.identifier}`);
-		console.log(`${teamUrl}/${team.identifier}`);
+		navigateTo(`teams/${team.identifier}`);
 	};
 
 	return (
@@ -63,13 +60,13 @@ const SettingsNavBar = ({
 					<button
 						type="button"
 						className="flex w-24 ml-6 p-0.5 cursor-pointer"
-						onClick={() => router.push(generalUrl)}
+						onClick={() => navigateTo("workspace")}
 					>
 						<p>General</p>
 					</button>
 					<button
 						type="button"
-						onClick={() => router.push(membersUrl)}
+						onClick={() => navigateTo("members")}
 						className="flex w-24 ml-6 p-0.5 cursor-pointer"
 					>
 						Members
@@ -88,7 +85,7 @@ const SettingsNavBar = ({
 						<button
 							type="button"
 							className="rounded flex w-24 ml-6  p-0.5"
-							onClick={() => router.push(profileUrl)}
+							onClick={() => navigateTo("profile")}
 						>
 							<p className="cursor-pointer">Profile</p>
 						</button>
@@ -112,7 +109,7 @@ const SettingsNavBar = ({
 					)}
 					<div
 						className="flex items-center justify-center p-1 ml-3 rounded"
-						onClick={() => router.push(addTeamUrl)}
+						onClick={() => navigateTo("new-team")}
 					>
 						<span className="mr-2 rounded p-1 cursor-pointer">
 							<Plus className="size-5 cursor-pointer" />

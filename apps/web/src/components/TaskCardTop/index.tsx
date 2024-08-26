@@ -4,10 +4,10 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
-	BreadcrumbLink,
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "../ui/breadcrumb";
+import Link from "next/link";
 
 const TaskCardTop = () => {
 	const workspace = useAppSelector(
@@ -26,7 +26,7 @@ const TaskCardTop = () => {
 			<Breadcrumb>
 				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
 					<BreadcrumbItem>
-						<BreadcrumbLink
+						<Link
 							className="flex items-center text-muted-foreground hover:text-foreground"
 							href={`/${workspace.url}`}
 						>
@@ -38,7 +38,7 @@ const TaskCardTop = () => {
 								/>
 							</div>
 							<p>{workspace.url}</p>
-						</BreadcrumbLink>
+						</Link>
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem className="truncate max-w-full">
