@@ -14,16 +14,19 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           days-before-stale: 3
           days-before-pr-stale: 3
-          stale-pr-message: "This PR is stale because it has been open for 7 days with no activity."
+          stale-pr-message: "This PR is stale because it has been open for 3 days with no activity."
           stale-pr-label: "Stale"
           days-before-close: 14
           days-before-pr-close: 14
-          close-pr-message: "This PR was closed because it has been stalled for 2 days with no activity."
+          close-pr-message: "This PR was closed because it has been stalled for 14 days with no activity."
 
       - name: Send notification to Discord
         if: always()
