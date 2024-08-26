@@ -6,7 +6,7 @@ import {
 	CircleX,
 	Copy,
 } from "lucide-react";
-import { put as axiosPut } from "axios";
+import axios from "axios";
 import type { StatusSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import { inProgress } from "../Svg";
 import {
@@ -27,7 +27,7 @@ const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
 	const handleSetStatus: (status: string) => void = async (status) => {
 		if (task._id !== undefined) {
 			try {
-				await axiosPut(
+				await axios.put(
 					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
 					{
 						status,
