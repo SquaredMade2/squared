@@ -440,8 +440,8 @@ importers:
         specifier: ^5.0.8
         version: 5.0.13
       '@fontsource/chivo-mono':
-        specifier: ^5.0.11
-        version: 5.0.20
+        specifier: ^5.0.21
+        version: 5.0.21
       astro:
         specifier: ^2.10.7
         version: 2.10.15(@types/node@22.5.0)(sharp@0.33.4)(terser@5.31.5)
@@ -2449,8 +2449,8 @@ packages:
   '@floating-ui/utils@0.2.7':
     resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
 
-  '@fontsource/chivo-mono@5.0.20':
-    resolution: {integrity: sha512-hKWCeT/RxP3h//AirEx+1OHtnnvSr4hCP1sC42M+bbEwVTC9u1kGsZo9EyEOC4FAeR1XZmt2oGW90xJO3YoDFQ==}
+  '@fontsource/chivo-mono@5.0.21':
+    resolution: {integrity: sha512-ubKMvzMSy6kARF8RZ8kxvxoHmS9XsLxMkpVDLU+DaPlgOWOR29hJcigzfqUl3PAubQ1pu947PHccuYB08MmURA==}
 
   '@fontsource/chivo@5.0.13':
     resolution: {integrity: sha512-P7JTmWc/AuXQywcy3zJqZBJXdgLeOgIX0+2Ju/JKn73OI34HTMRBxYpUyMgErQRcfU1BbKv1+LrdERsnP/2rkw==}
@@ -13811,7 +13811,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.7': {}
 
-  '@fontsource/chivo-mono@5.0.20': {}
+  '@fontsource/chivo-mono@5.0.21': {}
 
   '@fontsource/chivo@5.0.13': {}
 
