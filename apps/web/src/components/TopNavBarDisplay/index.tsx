@@ -10,6 +10,9 @@ import {
 	setShowLabels,
 	setShowDateTime,
 } from "@/store/toggleTaskFeatures";
+import DisplayPreferences from "../DisplayPreferences";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 const TopNavBarDisplay = () => {
 	const dispatch = useAppDispatch();
@@ -49,89 +52,44 @@ const TopNavBarDisplay = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-2 items-end relative h-10 hover:bg-accent">
-			<div className="group" onClick={handleDropDown}>
-				<button
-					type="button"
-					className="border border-solid border-border rounded flex flex-row gap-2 items-center px-2 h-10 py-0.5 text-sm text-muted-foreground cursor-pointer shadow-md bg-card  hover:bg-accent hover:shadow-lg active:shadow-sm"
-				>
-					<SlidersVertical className="size-4" />
-					<span className="cursor-pointer text-foreground"> Display</span>
-					<ChevronDown className="size-4" />
-				</button>
-			</div>
-			<AnimatePresence>
-				{dropDownOpen && (
-					<ClickAwayListener onClickAway={handleClickAway}>
-						<motion.div
-							className="bg-popover border border-solid border-border rounded px-4 py-3 shadow transition-opacity duration-300 absolute w-[300px] z-10 top-[41px]"
-							initial={{ opacity: 0, scale: 0.95 }}
-							animate={{ opacity: 1, scale: 1 }}
-							exit={{ opacity: 0, scale: 0.95 }}
-							transition={{ duration: 0.1 }}
-						>
-							<div className="flex flex-row justify-between items-center my-1">
-								<span className="text-foreground text-sm">Layout</span>
-								<div>
-									<button
-										type="button"
-										onClick={() => {
-											handleListClick();
-										}}
-										className={`bg-popover px-2 mr-1 text-sm ${
-											view === "list"
-												? "border border-solid border-border rounded bg-purpleButton text-foreground cursor-pointer"
-												: "text-popover-foreground cursor-pointer"
-										}`}
-									>
-										List
-									</button>
-									<button
-										type="button"
-										onClick={() => {
-											handleGridClick();
-										}}
-										className={`bg-popover px-2 text-sm ${
-											view === "grid"
-												? "border border-solid border-border rounded bg-purpleButton text-foreground cursor-pointer"
-												: "text-foreground cursor-pointer"
-										}`}
-									>
-										Grid
-									</button>
-								</div>
+		<div className="flex flex-col gap-2 items-end relative h-10 ">
+			<Popover>
+				<PopoverTrigger asChild>
+					<Button variant={"outline"} className="gap-2">
+						<SlidersVertical className="size-4" />
+						Display
+						<ChevronDown className="size-4" />
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent>
+					<div className="flex flex-col">
+						<div className=" w-full items-center justify-between flex mb-3">
+							<span className="text-foreground text-sm">Layout</span>
+							<div className="flex gap-2 items-center">
+								<Button
+									type="button"
+									onClick={() => {
+										handleListClick();
+									}}
+									variant={view === "list" ? "outline" : "ghost"}
+								>
+									List
+								</Button>
+								<Button
+									type="button"
+									onClick={() => {
+										handleGridClick();
+									}}
+									variant={view === "grid" ? "outline" : "ghost"}
+								>
+									Grid
+								</Button>
 							</div>
-							<span className="w-full border-t border-border block my-1" />
-							<ul>
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-sm py-1 mb-1 last:mb-0">
-										Priority
-									</p>
-									<Switch
-										checked={showPriority}
-										onCheckedChange={handlePriority}
-									/>
-								</div>
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-sm py-1 mb-1 last:mb-0">
-										Labels
-									</p>
-									<Switch checked={showLabels} onCheckedChange={handleLabels} />
-								</div>
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-sm py-1 mb-1 last:mb-0">
-										Date and Time
-									</p>
-									<Switch
-										checked={showDateTime}
-										onCheckedChange={handleDateTime}
-									/>
-								</div>
-							</ul>
-						</motion.div>
-					</ClickAwayListener>
-				)}
-			</AnimatePresence>
+						</div>
+						<DisplayPreferences />
+					</div>
+				</PopoverContent>
+			</Popover>
 		</div>
 	);
 };

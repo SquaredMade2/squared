@@ -13,6 +13,7 @@ import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import type { ViewTopNavBarProps } from "./ViewTopNavBar.interfaces";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { ChevronRight, PanelLeft, Plus, Search } from "lucide-react";
+import { Button } from "../ui/button";
 
 const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 	const router = useRouter();
@@ -46,7 +47,7 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 	const handleNewView = (): void => {
 		dispatch(deleteAllCurrentFilters());
 		router.push(
-			`/workspace/${currentWorkspace.url}/team/${currentTeam.identifier}/views/new`,
+			`/${currentWorkspace.url}/team/${currentTeam.identifier}/views/new`,
 		);
 	};
 
@@ -90,14 +91,16 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 						/>
 					</div>
 					<TopNavBarDisplay />
-					<button
-						className="bg-card flex items-center border border-solid border-border md:flex md:text-sm hidden hidden rounded m-1 px-3 h-10 py-0.5 text-foreground space-x-2 cursor-pointer hover:bg-accent"
+
+					<Button
+						className="flex items-center hidden md:flex gap-2 cursor-pointer"
 						onClick={handleNewView}
 						type="button"
+						variant={"outline"}
 					>
-						<Plus className="size-4 text-[#858699]" />
+						<Plus className="size-4" />
 						<p>New View</p>
-					</button>
+					</Button>
 				</div>
 			</nav>
 		</header>

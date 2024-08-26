@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "daily"
+    groups:
+      lexical-packages:
+        patterns:
+          - "lexical*"
+          - "@lexical/*"
+      sentry-packages:
+        patterns:
+          - "@sentry/*"
+      mui-packages:
+        patterns:
+          - "@mui/*"
+
+  - package-ecosystem: "npm"
+    directory: "/apps/api"
+    schedule:
+      interval: "daily"
+    groups:
+      sentry-packages:
+        patterns:
+          - "@sentry/*"
+
+  - package-ecosystem: "npm"
+    directories:
+      - "/packages/db"
+      - "/packages/jest-presets"
+      - "/packages/logger"
+      - "/packages/test-db"
+      - "/packages/ui"
+    schedule:
+      interval: "daily"
+    groups:
+      storybook-packages:
+        patterns:
+          - "@storybook/*"
+          - "@babel/*"
