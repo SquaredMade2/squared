@@ -8,6 +8,7 @@ updates:
       lexical-packages:
         patterns:
           - "lexical*"
+          - "@lexical/*"
       sentry-packages:
         patterns:
           - "@sentry/*"
