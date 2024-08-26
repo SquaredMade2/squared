@@ -1,0 +1,64 @@
+name: Check Stale Pull Requests
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # Every day 5am GMT+10 (19:00 UTC)
+
+jobs:
+  check-stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get list of stale pull requests
+        run: |
+          STALE_PRS=$(gh pr list --state=open --json number,title,updatedAt,assignee,reviewRequests --jq '.[] | select(.updatedAt <= (now - 172800))')
+
+          for pr in $(echo "${STALE_PRS}" | jq -c '.'); do
+            NUMBER=$(echo "$pr" | jq '.number')
+            TITLE=$(echo "$pr" | jq -r '.title')
+            UPDATED_AT=$(echo "$pr" | jq -r '.updatedAt')
+            ASSIGNEE=$(echo "$pr" | jq -r '.assignee.login // "unassigned"')
+            REVIEWER=$(echo "$pr" | jq -r '.reviewRequests[]?.login // empty')
+
+            # Calculate staleness
+            DAYS_STALE=$(echo "(($(date +%s) - $(date -d $UPDATED_AT +%s)) / 86400)" | bc)
+
+            # Determine the Discord mention
+            MENTION=""
+            if [ "$ASSIGNEE" != "unassigned" ]; then
+              case "$ASSIGNEE" in
+                Chase-T-White) MENTION="<@414567565843759105>" ;;
+                edchrepo) MENTION="<@300515474322489344>" ;;
+                ellischung) MENTION="<@273201608685387786>" ;;
+                klexup) MENTION="<@1220824900365844522>" ;;
+                napqueenkaila) MENTION="<@1074750793128882247>" ;;
+                NateCummens) MENTION="<@447548944122380309>" ;;
+                oerkperl) MENTION="<@1084769574098047059>" ;;
+                SerhiiDer) MENTION="<@791023762124308500>" ;;
+                Smerly) MENTION="<@277576312686641153>" ;;
+                THEjacob1000) MENTION="<@213438742315139073>" ;;
+              esac
+            fi
+
+            if [ -n "$REVIEWER" ]; then
+              case "$REVIEWER" in
+                Chase-T-White) MENTION="<@414567565843759105>" ;;
+                edchrepo) MENTION="<@300515474322489344>" ;;
+                ellischung) MENTION="<@273201608685387786>" ;;
+                klexup) MENTION="<@1220824900365844522>" ;;
+                napqueenkaila) MENTION="<@1074750793128882247>" ;;
+                NateCummens) MENTION="<@447548944122380309>" ;;
+                oerkperl) MENTION="<@1084769574098047059>" ;;
+                SerhiiDer) MENTION="<@791023762124308500>" ;;
+                Smerly) MENTION="<@277576312686641153>" ;;
+                THEjacob1000) MENTION="<@213438742315139073>" ;;
+              esac
+            fi
+
+            # Post to Discord
+            curl -H "Content-Type: application/json" -X POST \
+              -d "{\"content\": \"PR #$NUMBER ($TITLE) is $DAYS_STALE days stale. $MENTION\"}" \
+              "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          done
