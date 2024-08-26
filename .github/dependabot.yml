@@ -79,3 +79,8 @@ updates:
           - "jest-*"
           - "@cypress/*"
           - "cypress*"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
