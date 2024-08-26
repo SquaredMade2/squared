@@ -18,6 +18,7 @@ import { useTheme } from "next-themes";
 
 const SettingsNavBar = ({
 	setLoading,
+	toggleNavbar,
 }: SettingsNavbarProps): React.ReactElement => {
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -26,30 +27,26 @@ const SettingsNavBar = ({
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
 
-	const baseUrl = "/settings";
-	const teamUrl = `${baseUrl}/teams`;
-	const addTeamUrl = `${baseUrl}/new-team`;
-	const profileUrl = `${baseUrl}/profile`;
-	const generalUrl = `${baseUrl}/workspace`;
-	const membersUrl = `${baseUrl}/members`;
-	const integrationsUrl = `${baseUrl}/integrations`;
+	const navigateTo = (targetRoute: string) => {
+		router.replace(`/settings/${targetRoute}`);
+		toggleNavbar?.();
+	};
 
 	const handleTeamClick: handleTeamClickNavbar = (team: Team) => {
 		if (setLoading) {
 			setLoading(true);
 		}
 		dispatch(setCurrentTeam(team));
-		router.push(`${teamUrl}/${team.identifier}`);
-		console.log(`${teamUrl}/${team.identifier}`);
+		navigateTo(`teams/${team.identifier}`);
 	};
 
 	return (
-		<div className="bg-accent border border-border min-w-[296px] min-h-screen h-full flex flex-col">
+		<div className="bg-card min-w-64 min-h-screen h-full flex flex-col">
 			<div className="flex flex-col items-center pb-6 text-foreground">
 				<div>
 					<div
 						className="text-xl flex items-center py-6"
-						onClick={() => router.push(`/${workspace.url}`)}
+						onClick={() => router.back()}
 					>
 						<span className="h-3 mr-3 hover:cursor-pointer">
 							<ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
@@ -63,23 +60,22 @@ const SettingsNavBar = ({
 					<button
 						type="button"
 						className="flex w-24 ml-6 p-0.5 cursor-pointer"
-						onClick={() => router.push(generalUrl)}
+						onClick={() => navigateTo("workspace")}
 					>
 						<p>General</p>
 					</button>
 					<button
 						type="button"
-						onClick={() => router.push(membersUrl)}
+						onClick={() => navigateTo("members")}
 						className="flex w-24 ml-6 p-0.5 cursor-pointer"
 					>
 						Members
 					</button>
 					<button
 						type="button"
-						onClick={() => router.push(integrationsUrl)}
 						className="flex w-32 ml-6 mb-4 p-0.5 cursor-pointer"
 					>
-						Integrations
+						Github Settings
 					</button>
 					<div className="mb-1 pl-0.5 flex items-center">
 						<CircleUser className="size-4 text-[#6A6F75]" />
@@ -89,7 +85,7 @@ const SettingsNavBar = ({
 						<button
 							type="button"
 							className="rounded flex w-24 ml-6  p-0.5"
-							onClick={() => router.push(profileUrl)}
+							onClick={() => navigateTo("profile")}
 						>
 							<p className="cursor-pointer">Profile</p>
 						</button>
@@ -113,7 +109,7 @@ const SettingsNavBar = ({
 					)}
 					<div
 						className="flex items-center justify-center p-1 ml-3 rounded"
-						onClick={() => router.push(addTeamUrl)}
+						onClick={() => navigateTo("new-team")}
 					>
 						<span className="mr-2 rounded p-1 cursor-pointer">
 							<Plus className="size-5 cursor-pointer" />

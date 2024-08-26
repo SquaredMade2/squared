@@ -1,6 +1,5 @@
 import TaskCard from "@/components/TaskCard";
 import type { TaskStatusSectionProps } from "./TaskStatusSection.interfaces";
-import { Button } from "../ui/button";
 import { GridColumnNewIssueButton } from "../NewIssueButton";
 
 const TaskStatusSection = ({
@@ -17,12 +16,9 @@ const TaskStatusSection = ({
 	return (
 		<div
 			className={
-				(isListView
+				isListView
 					? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-					: "flex flex-col gap-2 z-30 w-full min-h-[135px] h-full overflow-x-hidden") +
-					isListView && filteredTasks.length < 1
-					? " pb-1"
-					: ""
+					: "flex flex-col z-30 w-full min-h-[135px] pb-1"
 			}
 		>
 			{showTasks && (
