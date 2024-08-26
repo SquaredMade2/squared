@@ -81,6 +81,7 @@ const DateButton = ({ location }: { location: string }) => {
 						location={location}
 						handleButtonClick={handleButtonClick}
 						handleClickAway={handleClickAway}
+						injectedTaskId=""
 					/>
 				)}
 			</div>
