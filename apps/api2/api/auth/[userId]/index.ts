@@ -1,4 +1,4 @@
-import { User, Workspace } from "@repo/db/src";
+import { User, Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
 import { Route } from "@/api/route";
