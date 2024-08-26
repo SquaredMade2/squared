@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directory: "/apps/web"
     schedule:
       interval: "weekly"
@@ -15,7 +15,7 @@ updates:
         patterns:
           - "@mui/*"
 
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directory: "/apps/api"
     schedule:
       interval: "weekly"
@@ -24,7 +24,7 @@ updates:
         patterns:
           - "@sentry/*"
 
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directories:
       - "/packages/db"
       - "/packages/jest-presets"
