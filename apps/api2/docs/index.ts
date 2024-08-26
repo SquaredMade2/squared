@@ -1,6 +1,7 @@
 import taskDocs from "./task";
 import teamDocs from "./team";
 import notificationDocs from "./notification";
+import commentDocs from "./comment";
 import schemas from "./schemas";
 
 const docs = {
@@ -8,6 +9,7 @@ const docs = {
 		...taskDocs,
 		...teamDocs,
 		...notificationDocs,
+		...commentDocs,
 	},
 	components: {
 		schemas: schemas,
