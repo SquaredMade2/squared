@@ -4,14 +4,14 @@ import notificationDocs from "./notification";
 import schemas from "./schemas";
 
 const docs = {
-  paths: {
-    ...taskDocs,
-    ...teamDocs,
-    ...notificationDocs,
-  },
-  components: {
-    schemas: schemas,
-  },
+	paths: {
+		...taskDocs,
+		...teamDocs,
+		...notificationDocs,
+	},
+	components: {
+		schemas: schemas,
+	},
 };
 
 export default docs;
