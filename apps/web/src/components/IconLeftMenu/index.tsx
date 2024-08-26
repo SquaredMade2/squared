@@ -21,17 +21,15 @@ const IconLeftMenu = () => {
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
 	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
 
-	const checkRouteIncludes = (pathname: string, ...args: string[]): boolean => {
-		return args.some((arg) => pathname.includes(arg));
-	};
-
 	const navigateTo = (childRoute: string): void => {
-		currentRoute.includes(workspace.url) && childRoute === ""
-			? ""
-			: router.push(`${baseUrl}/${childRoute}`);
+		router.push(`${baseUrl}/${childRoute}`);
+	};
+	const toHome = () => {
+		homeRoute && !viewsRoute ? "" : navigateTo(`${workspace.url}`);
 	};
 
-	const homeRoute = checkRouteIncludes(currentRoute, "/team");
+	const homeRoute = currentRoute.includes(`${workspace.url}`);
+	const viewsRoute = currentRoute.includes("/views");
 
 	const iconStyle = "w-full h-12 flex items-center ";
 	return (
@@ -47,7 +45,7 @@ const IconLeftMenu = () => {
 						icon={<FontAwesomeIcon icon={faHouse} />}
 						tooltipLabel={"Home"}
 						labelPosition="right"
-						handleClick={() => navigateTo(`${workspace.url}`)}
+						handleClick={toHome}
 						hoverBg="bg-card"
 					/>
 				</div>

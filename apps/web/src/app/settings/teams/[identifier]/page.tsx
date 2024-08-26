@@ -6,12 +6,10 @@ import axios, { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { deleteTeam, getTeam, getWorkspace } from "@/store/taskData/thunks";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import type { TeamData } from "./teams.interfaces";
 import type { FormSubmitEvent } from "@/types";
 import BlueButton from "@/components/BlueButton";
 import DeleteButton from "@/components/DeleteButton";
-import { navBarToggle } from "@/store/userSettings";
 import { X } from "lucide-react";
 
 export default function TeamsSetting() {
@@ -29,7 +27,6 @@ export default function TeamsSetting() {
 		currentTeam.identifier,
 	);
 	const [loading, setLoading] = useState<boolean>(false);
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
 	const [fillColor, setFillColor] = useState<string>("text-[#9c9eac]");
 	const { user, theme } = useAppSelector((state) => state.userSettings);
 
@@ -77,11 +74,6 @@ export default function TeamsSetting() {
 			router.push(`/${workspace?.url}`);
 			toast({ title: "Team deleted" });
 		}
-	};
-
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
 	};
 
 	const handleSubmit = async (e: FormSubmitEvent) => {
@@ -157,9 +149,6 @@ export default function TeamsSetting() {
 		<>
 			{!error && (
 				<div className="flex bg-background text-foreground mdsm:flex-col min-h-screen w-full">
-					<div className="lg:hidden mdsm:visible">
-						<SettingsTopNavBar setShowNavBar={handleNavToggle} />
-					</div>
 					<div className="flex flex-col h-screen xs:h-full w-full items-center pt-20">
 						<div className="w-1/3 mdsm:w-3/4">
 							<dialog
