@@ -3,6 +3,7 @@ name: Check Stale Branches
 on:
   schedule:
     - cron: "0 19 * * 1" # Monday 5am GMT+10 (19:00 UTC Sunday)
+  workflow_dispatch:
 
 jobs:
   check-stale-branches:

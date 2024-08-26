@@ -3,6 +3,7 @@ name: Check Stale Pull Requests
 on:
   schedule:
     - cron: "0 19 * * *" # Every day 5am GMT+10 (19:00 UTC)
+  workflow_dispatch:
 
 jobs:
   check-stale-prs:
