@@ -83,7 +83,7 @@
     "typescript": "^5.4.5",
     "unlighthouse": "^0.13.2",
     "utf-8-validate": "^5.0.10",
-    "uuid": "^9.0.1"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.5.0",
