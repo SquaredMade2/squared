@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { put as axiosPut } from "axios";
+import axios from "axios";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import type { PrioritySubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import {
@@ -41,7 +41,7 @@ const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	const updateItem = async (newPriority: string) => {
 		if (task._id !== undefined) {
 			try {
-				await axiosPut(
+				await axios.put(
 					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
 					{
 						priority: newPriority,
