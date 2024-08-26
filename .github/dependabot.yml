@@ -3,13 +3,12 @@ updates:
   - package-ecosystem: "npm"
     directory: "/apps/web"
     schedule:
-      interval: "weekly"
-    assignees:
-      - "THEjacob1000"
+      interval: "daily"
     groups:
       lexical-packages:
         patterns:
           - "lexical*"
+          - "@lexical/*"
       sentry-packages:
         patterns:
           - "@sentry/*"
@@ -20,20 +19,21 @@ updates:
   - package-ecosystem: "npm"
     directory: "/apps/api"
     schedule:
-      interval: "weekly"
-    assignees:
-      - "THEjacob1000"
+      interval: "daily"
     groups:
       sentry-packages:
         patterns:
           - "@sentry/*"
 
   - package-ecosystem: "npm"
-    directory: "/packages/ui"
+    directories:
+      - "/packages/db"
+      - "/packages/jest-presets"
+      - "/packages/logger"
+      - "/packages/test-db"
+      - "/packages/ui"
     schedule:
-      interval: "weekly"
-    assignees:
-      - "THEjacob1000"
+      interval: "daily"
     groups:
       storybook-packages:
         patterns:
