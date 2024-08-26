@@ -20,8 +20,8 @@ jobs:
       - uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-stale: 3
-          days-before-pr-stale: 3
+          days-before-stale: 1
+          days-before-pr-stale: 1
           stale-pr-message: "This PR is stale because it has been open for 3 days with no activity."
           stale-pr-label: "Stale"
           days-before-close: 14
