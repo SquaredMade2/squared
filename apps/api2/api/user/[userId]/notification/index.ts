@@ -1,12 +1,12 @@
-import { Notification, User } from "@repo/db";
+import type { Notification, User } from "@repo/db";
 import { prisma } from "@/api";
-import { Route } from "@/api/route";
+import type { Route } from "@/api/route";
 
 type Params = {
 	userId: string;
 };
 
-export function createRoute({}): Route<Params> {
+export function createRoute(): Route<Params> {
 	return {
 		GET: async ({ userId }) => {
 			try {
