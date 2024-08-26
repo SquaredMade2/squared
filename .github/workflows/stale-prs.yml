@@ -22,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          STALE_PRS=$(gh pr list --state=open --json number,title,updatedAt,assignee,reviewRequests --jq '.[] | select(.updatedAt <= (now - 172800))')
+          STALE_PRS=$(gh pr list --state=open --json number,title,updatedAt,assignees,reviewRequests --jq '.[] | select(.updatedAt <= (now - 172800))')
 
           for pr in $(echo "${STALE_PRS}" | jq -c '.'); do
             NUMBER=$(echo "$pr" | jq '.number')
