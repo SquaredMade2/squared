@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { Types } from "mongoose";
 import Team from "../models/team";
+import type ITeam from "../interface/team";
 import Workspace from "../models/workspace";
 import Task from "../models/task";
 import WorkspaceModel from "../models/workspace";
@@ -26,41 +27,43 @@ const getTeam = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
-	const currentTeam = req.query.team;
-	const { identifier, workspace } = req.query;
-	if (currentTeam) {
-		const team = await Team.aggregate([
-			{
-				$match: {
-					_id: currentTeam,
-				},
-			},
-			tasksOfTeamFieldsDirect,
-			getLookup("tasks", "tasks", "_id", "tasks"),
-		]);
-		if (!team) {
-			return next(new AppError("$$$ Team not found $$$", 404));
-		}
-		res.json(team[0]);
-	} else if (identifier) {
-		const team = await Team.aggregate([
-			{
-				$match: {
-					identifier: identifier,
-					workspace:
-						typeof workspace === "string"
-							? new Types.ObjectId(workspace)
-							: workspace,
-				},
-			},
-			tasksOfTeamFieldsDirect,
-			getLookup("tasks", "tasks", "_id", "tasks"),
-		]);
+	try {
+		const currentTeam = req.query.team as string | undefined;
+		const { identifier, workspace } = req.query;
 
-		if (!team) {
-			return next(new AppError("$$$ Team not found $$$", 404));
+		let team: ITeam | null = null;
+
+		// Case 1: Get team by ID
+		if (currentTeam) {
+			// Find the team by its ID
+			team = await Team.findById(currentTeam).populate("tasks"); // Adjust the 'tasks' field as necessary
+			if (!team) {
+				return next(new AppError("$$$ Team not found $$$", 404));
+			}
 		}
-		res.json(team[0]);
+		// Case 2: Get team by identifier and workspace
+		else if (identifier) {
+			// Find the team by identifier and workspace
+			team = await Team.findOne({
+				identifier: identifier as string,
+				workspace:
+					typeof workspace === "string"
+						? new Types.ObjectId(workspace)
+						: workspace,
+			}).populate("tasks"); // Adjust the 'tasks' field as necessary
+
+			if (!team) {
+				return next(new AppError("$$$ Team not found $$$", 404));
+			}
+		}
+
+		// If the team is found, send it as the response
+		if (team) {
+			res.json(team);
+		}
+	} catch (error) {
+		// Handle any errors that occur during the query
+		next(error);
 	}
 };
 
