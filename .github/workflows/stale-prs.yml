@@ -39,6 +39,12 @@ jobs:
           PR_URL=$(gh pr view $PR_NUMBER --json url -q .url)
           PR_ASSIGNEE=$(gh pr view $PR_NUMBER --json assignees -q .assignees[0].login)
 
+          # Debugging output to verify values
+          echo "PR Number: $PR_NUMBER"
+          echo "PR Title: $PR_TITLE"
+          echo "PR URL: $PR_URL"
+          echo "PR Assignee: $PR_ASSIGNEE"
+
           # Mapping GitHub usernames to Discord IDs
           MENTION=""
           case "$PR_ASSIGNEE" in
@@ -55,6 +61,7 @@ jobs:
             *) MENTION="Unassigned or no mapping found" ;;
           esac
 
+          # Send the notification to Discord
           curl -H "Content-Type: application/json" -X POST \
             -d "{\"content\": \"The PR titled **$PR_TITLE** (URL: $PR_URL) by @$PR_ASSIGNEE has been marked as stale or closed. $MENTION\"}" \
             "${DISCORD_WEBHOOK_URL}"
