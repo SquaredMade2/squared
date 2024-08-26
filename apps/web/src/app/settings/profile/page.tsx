@@ -5,11 +5,9 @@ import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
 import type { InputChangeEvent } from "types";
 import { updateProfile, getUser } from "@/store/userSettings/thunks";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import BlueButton from "@/components/BlueButton";
-import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
 
 const styles = {
@@ -45,11 +43,8 @@ export default function Profile(): ReactElement {
 	const dispatch = useAppDispatch();
 
 	const user = useSelector((state: RootState) => state.userSettings.user);
-
 	const [fullName, setFullName] = useState<string>(user.name);
 	const [username, setUsername] = useState<string>(user.username);
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
-
 	const prevFullname = user.name;
 	const prevUsername = user.username;
 	const valueChanged = fullName !== prevFullname || username !== prevUsername;
@@ -78,16 +73,8 @@ export default function Profile(): ReactElement {
 		setUsername(newValue);
 	};
 
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
-
 	return (
 		<div className={styles.mainContainer}>
-			<div className={styles.TopNavbar}>
-				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
-			</div>
 			<div className={styles.pageContainer}>
 				<div className={styles.pageWrapper}>
 					<div>

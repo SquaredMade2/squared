@@ -22,17 +22,20 @@ import {
 } from "date-fns";
 import { DAYS_OF_WEEK } from "@/constants/app_constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getAllTasks } from "@/store/taskData/thunks";
 import { useToast } from "../ui/use-toast";
 
 const DateDropdown: React.FC<DateDropdownProps> = ({
 	handleButtonClick,
 	handleClickAway,
 	location,
+	injectedTaskId,
 }) => {
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 	const newIssueDate = useAppSelector((state) => state.taskData.dueDate);
+	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 	const sidebarDate = useAppSelector((state) => state.singleTask.data?.dueDate);
 	const initialDate = location === "issueSidebar" ? sidebarDate : newIssueDate;
 	const initialTime = initialDate
@@ -43,9 +46,18 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 		initialDate ? new Date(initialDate) : new Date(),
 	);
 	const [currentMonth, setCurrentMonth] = useState(startOfMonth(selectedDate));
-	const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${
-		location === "newIssue" ? "absolute top-8" : "absolute top-0 -left-[300px]"
-	}`;
+
+	const containerClassLocation = () => {
+		switch (location) {
+			case "newIssue":
+				return "absolute top-8";
+			case "contextMenu":
+				return "";
+			default:
+				return "absolute top-0 -left-[300px]";
+		}
+	};
+	const containerClass = `border border-border bg-popover p-3.5 text-sm shadow-lg rounded-md w-72 ${containerClassLocation()}`;
 
 	const isDateInPast = (date: Date) => isBefore(endOfDay(date), new Date());
 
@@ -68,20 +80,23 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 	};
 
 	const handleSave = () => {
-		if (location === "issueSidebar") updateItem(selectedDate);
+		if (location === "issueSidebar" && taskId) updateItem(selectedDate, taskId);
 		if (location === "newIssue") dispatch(setDueDate(selectedDate));
+		if (location === "contextMenu") updateItem(selectedDate, injectedTaskId);
 		handleButtonClick();
 	};
 
-	const updateItem = async (newDate: Date) => {
+	const updateItem = async (newDate: Date, updateId: string) => {
 		try {
 			await axios.put(
-				`${process.env.NEXT_PUBLIC_SERVER}/task/update/${taskId}`,
+				`${process.env.NEXT_PUBLIC_SERVER}/task/update/${updateId}`,
 				{
 					dueDate: newDate,
 				},
 			);
-			dispatch(getSingleTask(taskId as string));
+			location === "contextMenu"
+				? dispatch(getAllTasks(currentTeam))
+				: dispatch(getSingleTask(taskId as string));
 		} catch (err) {
 			toast({
 				title: "Error",
@@ -171,13 +186,15 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 					</div>
 				</div>
 				<div className="mt-10 flex justify-end gap-3">
-					<button
-						type="button"
-						className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border"
-						onClick={handleClickAway}
-					>
-						Cancel
-					</button>
+					{location !== "contextMenu" && (
+						<button
+							type="button"
+							className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary border-2 border-border"
+							onClick={handleClickAway}
+						>
+							Cancel
+						</button>
+					)}
 					<button
 						type="button"
 						className="cursor-pointer p-2.5 rounded-md text-primary-foreground bg-primary"

@@ -52,7 +52,7 @@ const TopNavBarDisplay = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-2 items-end relative h-10 hover:bg-accent">
+		<div className="flex flex-col gap-2 items-end relative h-10 ">
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button variant={"outline"} className="gap-2">
@@ -89,7 +89,6 @@ const TopNavBarDisplay = () => {
 						<DisplayPreferences />
 					</div>
 				</PopoverContent>
-				<span className="w-full border-t border-border block my-1" />
 			</Popover>
 		</div>
 	);
