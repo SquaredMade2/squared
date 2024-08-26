@@ -124,8 +124,8 @@ importers:
         specifier: ^4.17.17
         version: 4.17.21
       '@types/heic-convert':
-        specifier: ^1.2.3
-        version: 1.2.3
+        specifier: ^2.1.0
+        version: 2.1.0
       '@types/jsonwebtoken':
         specifier: ^9.0.2
         version: 9.0.6
@@ -5307,8 +5307,8 @@ packages:
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
 
-  '@types/heic-convert@1.2.3':
-    resolution: {integrity: sha512-5LJ2fGuVk/gnOLihoT56xJwrXxfnNepGvrHwlW5ZtT3HS4jO1AqBaAHCxXUpnY9UaD3zYcyxXMRM2fNN1AFF/Q==}
+  '@types/heic-convert@2.1.0':
+    resolution: {integrity: sha512-Cf5Sdc2Gm2pfZ0uN1zjj35wcf3mF1lJCMIzws5OdJynrdMJRTIRUGa5LegbVg0hatzOPkH2uAf2JRjPYgl9apg==}
 
   '@types/hoist-non-react-statics@3.3.5':
     resolution: {integrity: sha512-SbcrWzkKBw2cdwRTwQAswfpB9g9LJWfjtUeW/jvNwbhC8cpmmNYVePa+ncbUe0rGTQ7G3Ff6mYUN2VMfLVr+Sg==}
@@ -19268,7 +19268,7 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.2
 
-  '@types/heic-convert@1.2.3': {}
+  '@types/heic-convert@2.1.0': {}
 
   '@types/hoist-non-react-statics@3.3.5':
     dependencies:
