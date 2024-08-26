@@ -10,62 +10,59 @@ import "dotenv/config";
 
 export const prisma = new PrismaClient();
 
-
 import * as $230080 from "./workspace/[workspaceId]/team";
 import * as $61fb65 from "./team/[teamId]/task";
 import * as $0a9f89 from "./team/[teamId]";
 import * as $abb393 from "./task/[taskId]";
 
-export type AllRouteDeps =
-  & Parameters<typeof $230080.createRoute>[0]
-  & Parameters<typeof $61fb65.createRoute>[0]
-  & Parameters<typeof $0a9f89.createRoute>[0]
-  & Parameters<typeof $abb393.createRoute>[0]
+export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
+	Parameters<typeof $61fb65.createRoute>[0] &
+	Parameters<typeof $0a9f89.createRoute>[0] &
+	Parameters<typeof $abb393.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
+	{
+		type Params = { workspaceId: string };
+		const r: Route<Params> = $230080.createRoute(deps);
 
-  {
-    type Params = { workspaceId: string };
-    const r: Route<Params> = $230080.createRoute(deps);
+		router.get("/api/workspace/:workspaceId/team", toQueryHandler(r.GET));
+		router.post("/api/workspace/:workspaceId/team", toMutationHandler(r.POST));
+		router.put("/api/workspace/:workspaceId/team", toMutationHandler(r.PUT));
+		router.delete("/api/workspace/:workspaceId/team", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/workspace/:workspaceId/team", toQueryHandler(r.GET));
-    router.post("/api/workspace/:workspaceId/team", toMutationHandler(r.POST));
-    router.put("/api/workspace/:workspaceId/team", toMutationHandler(r.PUT));
-    router.delete("/api/workspace/:workspaceId/team", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { teamId: string };
+		const r: Route<Params> = $61fb65.createRoute(deps);
 
-  {
-    type Params = { teamId: string };
-    const r: Route<Params> = $61fb65.createRoute(deps);
+		router.get("/api/team/:teamId/task", toQueryHandler(r.GET));
+		router.post("/api/team/:teamId/task", toMutationHandler(r.POST));
+		router.put("/api/team/:teamId/task", toMutationHandler(r.PUT));
+		router.delete("/api/team/:teamId/task", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/team/:teamId/task", toQueryHandler(r.GET));
-    router.post("/api/team/:teamId/task", toMutationHandler(r.POST));
-    router.put("/api/team/:teamId/task", toMutationHandler(r.PUT));
-    router.delete("/api/team/:teamId/task", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { teamId: string };
+		const r: Route<Params> = $0a9f89.createRoute(deps);
 
-  {
-    type Params = { teamId: string };
-    const r: Route<Params> = $0a9f89.createRoute(deps);
+		router.get("/api/team/:teamId", toQueryHandler(r.GET));
+		router.post("/api/team/:teamId", toMutationHandler(r.POST));
+		router.put("/api/team/:teamId", toMutationHandler(r.PUT));
+		router.delete("/api/team/:teamId", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/team/:teamId", toQueryHandler(r.GET));
-    router.post("/api/team/:teamId", toMutationHandler(r.POST));
-    router.put("/api/team/:teamId", toMutationHandler(r.PUT));
-    router.delete("/api/team/:teamId", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { taskId: string };
+		const r: Route<Params> = $abb393.createRoute(deps);
 
-  {
-    type Params = { taskId: string };
-    const r: Route<Params> = $abb393.createRoute(deps);
+		router.get("/api/task/:taskId", toQueryHandler(r.GET));
+		router.post("/api/task/:taskId", toMutationHandler(r.POST));
+		router.put("/api/task/:taskId", toMutationHandler(r.PUT));
+		router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/task/:taskId", toQueryHandler(r.GET));
-    router.post("/api/task/:taskId", toMutationHandler(r.POST));
-    router.put("/api/task/:taskId", toMutationHandler(r.PUT));
-    router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
-  }
-
-  // Setup Swagger documentation
-  setupSwagger(router);
+	// Setup Swagger documentation
+	setupSwagger(router);
 }
 
 const app = express();
@@ -82,6 +79,5 @@ app.use(router);
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+	console.log(`Server is running on http://localhost:${port}`);
 });
-
