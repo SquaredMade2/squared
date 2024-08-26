@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { put as axiosPut } from "axios";
+import axios from "axios";
 import { Tag } from "lucide-react";
 import type { LabelSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
 import {
@@ -46,7 +46,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const updateItem = async (newLabelSelection: string[]) => {
 		if (task._id !== undefined) {
 			try {
-				await axiosPut(
+				await axios.put(
 					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
 					{
 						labels: newLabelSelection,
