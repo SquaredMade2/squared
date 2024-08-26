@@ -58,7 +58,7 @@ export default function Login() {
 					password: "",
 				});
 				if (responseData.redirectTo) {
-					router.push(`workspace/${responseData.redirectTo}`);
+					router.push(`${responseData.redirectTo}`);
 				} else {
 					toast({
 						title: "No workspace found for redirection.",
