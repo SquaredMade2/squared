@@ -1,11 +1,9 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/apps/web"
     schedule:
       interval: "weekly"
-    assignees:
-      - "THEjacob1000"
     groups:
       lexical-packages:
         patterns:
@@ -17,23 +15,24 @@ updates:
         patterns:
           - "@mui/*"
 
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/apps/api"
     schedule:
       interval: "weekly"
-    assignees:
-      - "THEjacob1000"
     groups:
       sentry-packages:
         patterns:
           - "@sentry/*"
 
-  - package-ecosystem: "npm"
-    directory: "/packages/ui"
+  - package-ecosystem: "pnpm"
+    directories:
+      - "/packages/db"
+      - "/packages/jest-presets"
+      - "/packages/logger"
+      - "/packages/test-db"
+      - "/packages/ui"
     schedule:
       interval: "weekly"
-    assignees:
-      - "THEjacob1000"
     groups:
       storybook-packages:
         patterns:
