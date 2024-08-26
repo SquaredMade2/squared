@@ -16,6 +16,8 @@ const ProfileImage = ({ profileName, location }: ProfileImageProps) => {
 				return "h-5 w-5 mx-1 mr-2 rounded-full bg-purpleButtonHover flex items-center justify-center text-foreground text-tiny my-2";
 			case "activityItem":
 				return "h-5 w-5 mx-1 mr-2 rounded-full bg-purpleButtonHover flex items-center justify-center text-foreground text-tiny my-2";
+			case "contextMenu":
+				return "h-5 w-5 mr-2 rounded-full bg-purpleButtonHover flex items-center justify-center text-foreground text-tiny";
 			default:
 				return "";
 		}

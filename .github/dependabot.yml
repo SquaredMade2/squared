@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+    groups:
+      lexical-packages:
+        patterns:
+          - "lexical*"
+      sentry-packages:
+        patterns:
+          - "@sentry/*"
+      mui-packages:
+        patterns:
+          - "@mui/*"
+
+  - package-ecosystem: "npm"
+    directory: "/apps/api"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+    groups:
+      sentry-packages:
+        patterns:
+          - "@sentry/*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/ui"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "THEjacob1000"
+    groups:
+      storybook-packages:
+        patterns:
+          - "@storybook/*"
+          - "@babel/*"
