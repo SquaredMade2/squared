@@ -250,8 +250,8 @@ importers:
         specifier: ^8.26.0
         version: 8.26.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(next@14.2.5(@babel/core@7.25.2)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.93.0(@swc/core@1.7.6(@swc/helpers@0.5.5))(esbuild@0.20.2))
       '@sentry/utils':
-        specifier: ^8.20.0
-        version: 8.24.0
+        specifier: ^8.26.0
+        version: 8.26.0
       axios:
         specifier: ^1.7.2
         version: 1.7.3(debug@4.3.4)
@@ -4115,10 +4115,6 @@ packages:
     resolution: {integrity: sha512-jH84pDYE+hHIbVnab3Hr+ZXr1v8QABfhx39KknxqKWr2l0oEItzepV0URvbEhB446lk/S/59230dlUUIBGsXbg==}
     engines: {node: '>=6'}
 
-  '@sentry/types@8.24.0':
-    resolution: {integrity: sha512-5QWXARoFrvTvnS19ip+ha0x4nWIv/RvoCTnqCsgrNTjypbk1+KMSMQQhGMo8OuEBFhdGyTs1BqfxVV82URHh3w==}
-    engines: {node: '>=14.18'}
-
   '@sentry/types@8.26.0':
     resolution: {integrity: sha512-zKmh6SWsJh630rpt7a9vP4Cm4m1C2gDTUqUiH565CajCL/4cePpNWYrNwalSqsOSL7B9OrczA1+n6a6XvND+ng==}
     engines: {node: '>=14.18'}
@@ -4126,10 +4122,6 @@ packages:
   '@sentry/utils@6.19.7':
     resolution: {integrity: sha512-z95ECmE3i9pbWoXQrD/7PgkBAzJYR+iXtPuTkpBjDKs86O3mT+PXOT3BAn79w2wkn7/i3vOGD2xVr1uiMl26dA==}
     engines: {node: '>=6'}
-
-  '@sentry/utils@8.24.0':
-    resolution: {integrity: sha512-AGo5PldxCJYn3g0IYXeBkeALNa+NieJaaCDpYyzrKAFdxoA6Qp+Z/wmN9m5BYZ9eHx9N+xMOoz2aIh4hG48VbQ==}
-    engines: {node: '>=14.18'}
 
   '@sentry/utils@8.26.0':
     resolution: {integrity: sha512-xvlPU9Hd2BlyT+FhWHGNwnxWqdVRk2AHnDtVcW4Ma0Ri5EwS+uy4Jeik5UkSv8C5RVb9VlxFmS8LN3I1MPJsLw==}
@@ -15872,18 +15864,12 @@ snapshots:
 
   '@sentry/types@6.19.7': {}
 
-  '@sentry/types@8.24.0': {}
-
   '@sentry/types@8.26.0': {}
 
   '@sentry/utils@6.19.7':
     dependencies:
       '@sentry/types': 6.19.7
       tslib: 1.14.1
-
-  '@sentry/utils@8.24.0':
-    dependencies:
-      '@sentry/types': 8.24.0
 
   '@sentry/utils@8.26.0':
     dependencies:
