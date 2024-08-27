@@ -81,6 +81,7 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 	writeLn(`
 const app = express();
 const port = process.env.PORT || 5173;
+app.use(express.json());
 
 // Initialize the router
 const router = express.Router();

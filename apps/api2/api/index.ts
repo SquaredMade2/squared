@@ -4,7 +4,7 @@ import express from "express";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
-import { PrismaClient } from "@repo/db";
+import { PrismaClient } from "@repo/test-db";
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
@@ -130,6 +130,7 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 
 const app = express();
 const port = process.env.PORT || 5173;
+app.use(express.json());
 
 // Initialize the router
 const router = express.Router();
