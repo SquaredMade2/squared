@@ -29,7 +29,6 @@
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "postinstall": "pnpm run api:gen && pnpm run db:gen",
     "test:ci": "turbo run test:ci"
   },
   "devDependencies": {

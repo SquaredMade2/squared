@@ -10,7 +10,6 @@ import "dotenv/config";
 
 export const prisma = new PrismaClient();
 
-
 import * as $230080 from "./workspace/[workspaceId]/team";
 import * as $31d753 from "./user/[userId]/notification";
 import * as $61fb65 from "./team/[teamId]/task";
@@ -21,111 +20,112 @@ import * as $302cff from "./notification/[notificationId]";
 import * as $97a568 from "./comment/[commentId]";
 import * as $5925fb from "./activity/[taskId]";
 
-export type AllRouteDeps =
-  & Parameters<typeof $230080.createRoute>[0]
-  & Parameters<typeof $31d753.createRoute>[0]
-  & Parameters<typeof $61fb65.createRoute>[0]
-  & Parameters<typeof $0a9f89.createRoute>[0]
-  & Parameters<typeof $abb393.createRoute>[0]
-  & Parameters<typeof $8f61d9.createRoute>[0]
-  & Parameters<typeof $302cff.createRoute>[0]
-  & Parameters<typeof $97a568.createRoute>[0]
-  & Parameters<typeof $5925fb.createRoute>[0]
+export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
+	Parameters<typeof $31d753.createRoute>[0] &
+	Parameters<typeof $61fb65.createRoute>[0] &
+	Parameters<typeof $0a9f89.createRoute>[0] &
+	Parameters<typeof $abb393.createRoute>[0] &
+	Parameters<typeof $8f61d9.createRoute>[0] &
+	Parameters<typeof $302cff.createRoute>[0] &
+	Parameters<typeof $97a568.createRoute>[0] &
+	Parameters<typeof $5925fb.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
+	{
+		type Params = { workspaceId: string };
+		const r: Route<Params> = $230080.createRoute(deps);
 
-  {
-    type Params = { workspaceId: string };
-    const r: Route<Params> = $230080.createRoute(deps);
+		router.get("/api/workspace/:workspaceId/team", toQueryHandler(r.GET));
+		router.post("/api/workspace/:workspaceId/team", toMutationHandler(r.POST));
+		router.put("/api/workspace/:workspaceId/team", toMutationHandler(r.PUT));
+		router.delete("/api/workspace/:workspaceId/team", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/workspace/:workspaceId/team", toQueryHandler(r.GET));
-    router.post("/api/workspace/:workspaceId/team", toMutationHandler(r.POST));
-    router.put("/api/workspace/:workspaceId/team", toMutationHandler(r.PUT));
-    router.delete("/api/workspace/:workspaceId/team", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { userId: string };
+		const r: Route<Params> = $31d753.createRoute(deps);
 
-  {
-    type Params = { userId: string };
-    const r: Route<Params> = $31d753.createRoute(deps);
+		router.get("/api/user/:userId/notification", toQueryHandler(r.GET));
+		router.post("/api/user/:userId/notification", toMutationHandler(r.POST));
+		router.put("/api/user/:userId/notification", toMutationHandler(r.PUT));
+		router.delete("/api/user/:userId/notification", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/user/:userId/notification", toQueryHandler(r.GET));
-    router.post("/api/user/:userId/notification", toMutationHandler(r.POST));
-    router.put("/api/user/:userId/notification", toMutationHandler(r.PUT));
-    router.delete("/api/user/:userId/notification", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { teamId: string };
+		const r: Route<Params> = $61fb65.createRoute(deps);
 
-  {
-    type Params = { teamId: string };
-    const r: Route<Params> = $61fb65.createRoute(deps);
+		router.get("/api/team/:teamId/task", toQueryHandler(r.GET));
+		router.post("/api/team/:teamId/task", toMutationHandler(r.POST));
+		router.put("/api/team/:teamId/task", toMutationHandler(r.PUT));
+		router.delete("/api/team/:teamId/task", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/team/:teamId/task", toQueryHandler(r.GET));
-    router.post("/api/team/:teamId/task", toMutationHandler(r.POST));
-    router.put("/api/team/:teamId/task", toMutationHandler(r.PUT));
-    router.delete("/api/team/:teamId/task", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { teamId: string };
+		const r: Route<Params> = $0a9f89.createRoute(deps);
 
-  {
-    type Params = { teamId: string };
-    const r: Route<Params> = $0a9f89.createRoute(deps);
+		router.get("/api/team/:teamId", toQueryHandler(r.GET));
+		router.post("/api/team/:teamId", toMutationHandler(r.POST));
+		router.put("/api/team/:teamId", toMutationHandler(r.PUT));
+		router.delete("/api/team/:teamId", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/team/:teamId", toQueryHandler(r.GET));
-    router.post("/api/team/:teamId", toMutationHandler(r.POST));
-    router.put("/api/team/:teamId", toMutationHandler(r.PUT));
-    router.delete("/api/team/:teamId", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { taskId: string };
+		const r: Route<Params> = $abb393.createRoute(deps);
 
-  {
-    type Params = { taskId: string };
-    const r: Route<Params> = $abb393.createRoute(deps);
+		router.get("/api/task/:taskId", toQueryHandler(r.GET));
+		router.post("/api/task/:taskId", toMutationHandler(r.POST));
+		router.put("/api/task/:taskId", toMutationHandler(r.PUT));
+		router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/task/:taskId", toQueryHandler(r.GET));
-    router.post("/api/task/:taskId", toMutationHandler(r.POST));
-    router.put("/api/task/:taskId", toMutationHandler(r.PUT));
-    router.delete("/api/task/:taskId", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { taskId: string };
+		const r: Route<Params> = $8f61d9.createRoute(deps);
 
-  {
-    type Params = { taskId: string };
-    const r: Route<Params> = $8f61d9.createRoute(deps);
+		router.get("/api/task/:taskId/comment", toQueryHandler(r.GET));
+		router.post("/api/task/:taskId/comment", toMutationHandler(r.POST));
+		router.put("/api/task/:taskId/comment", toMutationHandler(r.PUT));
+		router.delete("/api/task/:taskId/comment", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/task/:taskId/comment", toQueryHandler(r.GET));
-    router.post("/api/task/:taskId/comment", toMutationHandler(r.POST));
-    router.put("/api/task/:taskId/comment", toMutationHandler(r.PUT));
-    router.delete("/api/task/:taskId/comment", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { notificationId: string };
+		const r: Route<Params> = $302cff.createRoute(deps);
 
-  {
-    type Params = { notificationId: string };
-    const r: Route<Params> = $302cff.createRoute(deps);
+		router.get("/api/notification/:notificationId", toQueryHandler(r.GET));
+		router.post("/api/notification/:notificationId", toMutationHandler(r.POST));
+		router.put("/api/notification/:notificationId", toMutationHandler(r.PUT));
+		router.delete(
+			"/api/notification/:notificationId",
+			toQueryHandler(r.DELETE),
+		);
+	}
 
-    router.get("/api/notification/:notificationId", toQueryHandler(r.GET));
-    router.post("/api/notification/:notificationId", toMutationHandler(r.POST));
-    router.put("/api/notification/:notificationId", toMutationHandler(r.PUT));
-    router.delete("/api/notification/:notificationId", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { commentId: string };
+		const r: Route<Params> = $97a568.createRoute(deps);
 
-  {
-    type Params = { commentId: string };
-    const r: Route<Params> = $97a568.createRoute(deps);
+		router.get("/api/comment/:commentId", toQueryHandler(r.GET));
+		router.post("/api/comment/:commentId", toMutationHandler(r.POST));
+		router.put("/api/comment/:commentId", toMutationHandler(r.PUT));
+		router.delete("/api/comment/:commentId", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/comment/:commentId", toQueryHandler(r.GET));
-    router.post("/api/comment/:commentId", toMutationHandler(r.POST));
-    router.put("/api/comment/:commentId", toMutationHandler(r.PUT));
-    router.delete("/api/comment/:commentId", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = { taskId: string };
+		const r: Route<Params> = $5925fb.createRoute(deps);
 
-  {
-    type Params = { taskId: string };
-    const r: Route<Params> = $5925fb.createRoute(deps);
+		router.get("/api/activity/:taskId", toQueryHandler(r.GET));
+		router.post("/api/activity/:taskId", toMutationHandler(r.POST));
+		router.put("/api/activity/:taskId", toMutationHandler(r.PUT));
+		router.delete("/api/activity/:taskId", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/activity/:taskId", toQueryHandler(r.GET));
-    router.post("/api/activity/:taskId", toMutationHandler(r.POST));
-    router.put("/api/activity/:taskId", toMutationHandler(r.PUT));
-    router.delete("/api/activity/:taskId", toQueryHandler(r.DELETE));
-  }
-
-  // Setup Swagger documentation
-  setupSwagger(router);
+	// Setup Swagger documentation
+	setupSwagger(router);
 }
 
 const app = express();
@@ -142,6 +142,5 @@ app.use(router);
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+	console.log(`Server is running on http://localhost:${port}`);
 });
-
