@@ -47,7 +47,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Run turbo-ignore to skip unchanged tasks
-        run: npx turbo-ignore .
+        run: npx turbo-ignore --fallback=HEAD^
 
       - name: Run linting check
         run: pnpm lint
