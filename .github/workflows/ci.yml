@@ -49,5 +49,8 @@ jobs:
       - name: Run linting check
         run: pnpm lint
 
+      - name: Ensure prisma is generated
+        run: pnpm db:gen
+
       - name: Run tests
         run: pnpm test:ci
