@@ -78,12 +78,12 @@ export const sendMail = async (
 			attachments: [
 				{
 					filename: "sqLogo.png",
-					path: `${__dirname}/../../src/asset/sqLogo.png`,
+					path: `${__dirname}/asset/sqLogo.png`,
 					cid: "sqLogo",
 				},
 				{
 					filename: "sqBg.png",
-					path: `${__dirname}/../../src/asset/sqBg.png`,
+					path: `${__dirname}/asset/sqBg.png`,
 					cid: "sqBg",
 				},
 			],
