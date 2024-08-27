@@ -1,8 +1,9 @@
 {
     "name": "Auto-Assign PR to Author",
-    "description": "Automatically assigns the PR to the author",
+    "description": "Automatically assigns the PR to the author, excluding bots",
     "action": "assign",
     "users": [
         "@{{ author }}"
-    ]
+    ],
+    "eventJsonPath": "$..[?(@.author.login !~ /.*bot.*/)]"
 }
