@@ -71,7 +71,7 @@
 		"socket.io-client": "^4.7.5",
 		"tailwind-merge": "^2.3.0",
 		"tailwindcss-animate": "^1.0.7",
-		"typescript": "^5.4.5",
+		"typescript": "^5.5.4",
 		"unlighthouse": "^0.13.2",
 		"utf-8-validate": "^5.0.10",
 		"uuid": "^10.0.0"
