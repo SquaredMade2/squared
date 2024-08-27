@@ -1,17 +1,39 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/apps/web"
+    directory: "/"
     schedule:
       interval: "daily"
     groups:
+      storybook-packages:
+        patterns:
+          - "@storybook/*"
+          - "@babel/*"
+          - "@chromatic-com/*"
+      react-packages:
+        patterns:
+          - "react*"
+          - "react-*"
+          - "@react*"
+          - "@react-*"
+      types-packages:
+        patterns:
+          - "@types/*"
+          - "types/*"
+      testing-packages:
+        patterns:
+          - "@testing-library/*"
+          - "jest*"
+          - "jest-*"
+          - "@cypress/*"
+          - "cypress*"
+      sentry-packages:
+        patterns:
+          - "@sentry/*"
       lexical-packages:
         patterns:
           - "lexical*"
           - "@lexical/*"
-      sentry-packages:
-        patterns:
-          - "@sentry/*"
       ui-packages:
         patterns:
           - "@mui/*"
@@ -24,63 +46,9 @@ updates:
           - "react-*"
           - "@react*"
           - "@react-*"
-      storybook-packages:
-        patterns:
-          - "@storybook/*"
-          - "@babel/*"
-          - "@chromatic-com/*"
-      types-packages:
-        patterns:
-          - "@types/*"
-          - "types/*"
-      testing-packages:
-        patterns:
-          - "@testing-library/*"
-          - "jest*"
-          - "jest-*"
-          - "@cypress/*"
-          - "cypress*"
-
-  - package-ecosystem: "npm"
-    directory: "/apps/api"
-    schedule:
-      interval: "daily"
-    groups:
-      sentry-packages:
-        patterns:
-          - "@sentry/*"
-
-  - package-ecosystem: "npm"
-    directories:
-      - "/packages/jest-presets"
-      - "/packages/logger"
-      - "/packages/ui"
-    schedule:
-      interval: "daily"
-    groups:
-      storybook-packages:
-        patterns:
-          - "@storybook/*"
-          - "@babel/*"
-      react-packages:
-        patterns:
-          - "react*"
-          - "react-*"
-          - "@react*"
-          - "@react-*"
-      types-packages:
-        patterns:
-          - "@types/*"
-          - "types/*"
-      testing-packages:
-        patterns:
-          - "@testing-library/*"
-          - "jest*"
-          - "jest-*"
-          - "@cypress/*"
-          - "cypress*"
-
-  - package-ecosystem: "npm"
+    open-pull-requests-limit: 10
+    
+  - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: daily
