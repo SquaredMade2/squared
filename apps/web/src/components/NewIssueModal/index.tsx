@@ -23,8 +23,7 @@ import {
 	setEffortEstimate,
 } from "@/store/taskData";
 import DesignationsContainer from "@/components/DesignationsContainer";
-import NewIssueTopRow from "@/components/NewIssueTopRow";
-import { ChevronLeft, LayoutGrid } from "lucide-react";
+import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import MentionInput from "@/components/MentionsInput";
@@ -199,9 +198,10 @@ const NewIssueModal = () => {
 			<DialogContent className="max-w-full bg-popover">
 				<DialogHeader>
 					<div className="flex items-center">
-						<div className="inline-flex items-center justify-center text-muted-foreground border border-border rounded-md shadow-md px-2 py-0.5 mr-3">
+						<div className="inline-flex items-center justify-center text-muted-foreground border border-border rounded-md shadow-md px-2 py-0.5 mr-2">
 							<LayoutGrid className="text-[#9577FF] w-4 h-4" />
 						</div>
+						<ChevronRight />
 						<DialogTitle className="text-sm">New Issue</DialogTitle>
 					</div>
 				</DialogHeader>
@@ -223,7 +223,11 @@ const NewIssueModal = () => {
 				/>
 				<DesignationsContainer location={"newIssue"} />
 				<DialogFooter>
-					<Button onClick={handleDiscard} className="hover:cursor-pointer">
+					<Button
+						onClick={handleDiscard}
+						className="hover:cursor-pointer bg-transparent"
+						variant="destructive"
+					>
 						Discard
 					</Button>
 					<Button onClick={handleCreateIssue} className="hover:cursor-pointer">
