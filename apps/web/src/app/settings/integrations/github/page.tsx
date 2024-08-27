@@ -34,7 +34,7 @@ const GithubSettings: React.FC = () => {
 				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
 			</div>
 			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4">
-				<div className="sm:w-full sm:p-0 xs:w-full xl:w-2/5 md:w-3/4">
+				<div className="w-full md:px-20 lg:px-80">
 					<div className="flex flex-row items-center mb-8 space-x-6">
 						<div className="flex flex-row justify-center items-center w-16 h-16 bg-white rounded-lg">
 							<div className="w-[50px]">
@@ -46,7 +46,7 @@ const GithubSettings: React.FC = () => {
 						</header>
 					</div>
 					<span className="block w-full border-t border-border" />
-					<div className="flex items-center justify-between">
+					<div className="flex items-center justify-between space-x-60">
 						<div className="flex flex-col justify-center h-24">
 							<h3 className="text-2xl text-foreground font-medium">
 								Connect Personal Account

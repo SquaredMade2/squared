@@ -19,8 +19,8 @@ const IntegrationSettings: React.FC = () => {
 			<div className="lg:hidden mdsm:visible bg-background">
 				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
 			</div>
-			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4">
-				<div className="sm:w-full sm:p-0 xs:w-full xl:w-2/5 md:w-3/4">
+			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-10">
+				<div className="w-full md:px-20 lg:px-80">
 					<div className="flex-col mb-8">
 						<h3 className="text-2xl text-foreground mb-3 font-medium">
 							Integrations
