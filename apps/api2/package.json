@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
-		"dev": "ts-node api/index.ts",
+		"dev": "nodemon api/index.ts",
 		"gen": "ts-node api/generate-index.ts",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
@@ -33,6 +33,7 @@
 		"@types/swagger-jsdoc": "^6.0.3",
 		"@types/swagger-ui-express": "^4.1.6",
 		"cross-env": "^7.0.3",
+		"nodemon": "^3.0.1",
 		"qs": "^6.13.0",
 		"swagger-jsdoc": "^6.2.8",
 		"swagger-ui-express": "^5.0.0",
