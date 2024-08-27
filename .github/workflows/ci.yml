@@ -46,9 +46,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Run turbo-ignore to skip unchanged tasks
-        run: npx turbo-ignore --fallback=HEAD^ "./apps/*"
-
       - name: Run linting check
         run: pnpm lint
 
