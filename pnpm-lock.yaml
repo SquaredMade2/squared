@@ -55,7 +55,7 @@ importers:
         version: 2.1683.0
       axios:
         specifier: ^1.7.5
-        version: 1.7.5(debug@4.3.4)
+        version: 1.7.5(debug@4.3.6)
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -254,7 +254,7 @@ importers:
         version: 8.26.0
       axios:
         specifier: ^1.7.5
-        version: 1.7.5(debug@4.3.4)
+        version: 1.7.5(debug@4.3.6)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -664,8 +664,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       start-server-and-test:
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.5
+        version: 2.0.5
       storybook:
         specifier: ^8.2.9
         version: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -10040,8 +10040,8 @@ packages:
     resolution: {integrity: sha512-KJP1OCML99+8fhOHxwwzyWrlUuVX5GQ0ZpJTd1DFXhdkrvg1szxfHhawXUZ3g9TkXORQd4/WG68jMlQZ2p8wlg==}
     engines: {node: '>=6'}
 
-  start-server-and-test@2.0.3:
-    resolution: {integrity: sha512-QsVObjfjFZKJE6CS6bSKNwWZCKBG6975/jKRPPGFfFh+yOQglSeGXiNWjzgQNXdphcBI9nXbyso9tPfX4YAUhg==}
+  start-server-and-test@2.0.5:
+    resolution: {integrity: sha512-2CV4pz69NJVJKQmJeSr+O+SPtOreu0yxvhPmSXclzmAKkPREuMabyMh+Txpzemjx0RDzXOcG2XkhiUuxjztSQw==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -16550,7 +16550,7 @@ snapshots:
       '@unrouted/plugins': 0.6.0(rollup@3.29.4)
       '@unrouted/preset-api': 0.6.0
       '@unrouted/preset-node': 0.6.0(rollup@3.29.4)
-      axios: 1.7.5(debug@4.3.4)
+      axios: 1.7.5(debug@4.3.6)
       boxen: 8.0.1
       chalk: 5.3.0
       cheerio: 1.0.0-rc.12
@@ -17174,9 +17174,9 @@ snapshots:
 
   axe-core@4.9.1: {}
 
-  axios@1.7.5(debug@4.3.4):
+  axios@1.7.5(debug@4.3.6):
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.3.6)
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -18996,9 +18996,9 @@ snapshots:
 
   flow-parser@0.243.0: {}
 
-  follow-redirects@1.15.6(debug@4.3.4):
+  follow-redirects@1.15.6(debug@4.3.6):
     optionalDependencies:
-      debug: 4.3.4
+      debug: 4.3.6(supports-color@5.5.0)
 
   for-each@0.3.3:
     dependencies:
@@ -23152,16 +23152,16 @@ snapshots:
     dependencies:
       type-fest: 0.7.1
 
-  start-server-and-test@2.0.3:
+  start-server-and-test@2.0.5:
     dependencies:
       arg: 5.0.2
       bluebird: 3.7.2
       check-more-types: 2.24.0
-      debug: 4.3.4
+      debug: 4.3.6(supports-color@5.5.0)
       execa: 5.1.1
       lazy-ass: 1.6.0
       ps-tree: 1.2.0
-      wait-on: 7.2.0(debug@4.3.4)
+      wait-on: 7.2.0(debug@4.3.6)
     transitivePeerDependencies:
       - supports-color
 
@@ -24136,9 +24136,9 @@ snapshots:
     dependencies:
       xml-name-validator: 4.0.0
 
-  wait-on@7.2.0(debug@4.3.4):
+  wait-on@7.2.0(debug@4.3.6):
     dependencies:
-      axios: 1.7.5(debug@4.3.4)
+      axios: 1.7.5(debug@4.3.6)
       joi: 17.13.3
       lodash: 4.17.21
       minimist: 1.2.8
