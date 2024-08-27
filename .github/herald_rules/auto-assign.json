@@ -1,0 +1,8 @@
+{
+    "name": "Auto-Assign PR to Author",
+    "description": "Automatically assigns the PR to the author",
+    "action": "assign",
+    "users": [
+        "@{{ author }}"
+    ]
+}
