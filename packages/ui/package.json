@@ -181,7 +181,7 @@
     "react-dom": "^18.3.1",
     "react-remove-scroll": "2.5.10",
     "tailwind-merge": "^2.3.0",
-    "tslib": "^2.6.3"
+    "tslib": "^2.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
