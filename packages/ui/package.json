@@ -163,8 +163,7 @@
     "lint:fix": "biome lint --write .",
     "format:write": "biome format --write .",
     "format:check": "biome format .",
-    "test": "jest",
-    "test:ci": "pnpm check-types && jest --ci",
+    "test": "jest --ci",
     "storybook": "cross-env BROWSER=none storybook dev -p 9009"
   },
   "dependencies": {

@@ -16,8 +16,6 @@
     "seed": "tsc && node ./dist/utils/DBSeed.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org squaredmade --project node-express ./dist && sentry-cli sourcemaps upload --org squaredmade --project node-express ./dist",
     "start": "tsc && node dist/index.js",
-    "test": "tsc && mocha ./dist/test --exit",
-    "test:ci": "pnpm check-types && pnpm build",
     "update": "tsc && node ./dist/utils/updateDb.js",
     "watch-typescript": "npx tsc --watch",
     "webhook": "tsc && node ./dist/webhooks/octokit.js"

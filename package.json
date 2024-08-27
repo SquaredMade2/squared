@@ -22,7 +22,7 @@
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "test:ci": "turbo run test:ci"
+    "test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
