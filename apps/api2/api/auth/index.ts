@@ -124,7 +124,8 @@ export function createRoute(): Route<Params> {
               variant: "default"
             },
           };
-        } else if (type === "login") {
+        }
+        if (type === "login") {
           // Check if the user exists
           const user: User | null = await prisma.user.findUnique({ where: { email } });
 
@@ -159,6 +160,7 @@ export function createRoute(): Route<Params> {
 
           // Logic for if they logged in with email and password
           if (provider === "credentials") {
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
             const passwordMatch = await comparePassword(password!, user.password);
 
             if (!passwordMatch) {
