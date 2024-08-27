@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, type FC } from "react";
 import { Calendar } from "lucide-react";
 import type { DateSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
@@ -11,18 +10,10 @@ import {
 import DateDropdown from "../DateDropdown";
 
 const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
-	const [showDropdown, setShowDropdown] = useState(true);
-
-	const handleButtonClick = () => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleClickAway = () => {
-		setShowDropdown(!showDropdown);
-	};
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 
 	return (
-		<ContextMenuSub>
+		<ContextMenuSub open={dropdownOpen} onOpenChange={setDropdownOpen}>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
 					<Calendar className="cursor-pointer size-4" />
@@ -32,8 +23,7 @@ const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
 			<ContextMenuSubContent>
 				<DateDropdown
 					location={"contextMenu"}
-					handleButtonClick={handleButtonClick}
-					handleClickAway={handleClickAway}
+					setDropdownOpen={setDropdownOpen}
 					injectedTaskId={task._id}
 				/>
 			</ContextMenuSubContent>
