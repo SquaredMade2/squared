@@ -1,4 +1,6 @@
 {
   "editor.defaultFormatter": "biomejs.biome",
-  "biomejs.biome.linting.enable": true
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }
