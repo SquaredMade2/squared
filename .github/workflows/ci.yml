@@ -17,7 +17,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.8.0
+          version: 9.9.0
 
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
@@ -45,9 +45,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
-
-      - name: Run turbo-ignore to skip unchanged tasks
-        run: npx turbo-ignore .
 
       - name: Run linting check
         run: pnpm lint
