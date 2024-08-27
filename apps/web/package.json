@@ -76,7 +76,7 @@
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.4.5",
 		"unlighthouse": "^0.13.2",
-		"utf-8-validate": "^5.0.10",
+		"utf-8-validate": "^6.0.4",
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
