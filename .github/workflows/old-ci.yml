@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Old CI
 
 on:
   pull_request:
