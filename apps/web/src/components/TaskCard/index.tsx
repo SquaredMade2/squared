@@ -12,7 +12,7 @@ import TaskCardTitle from "@/components/TaskCardTitle";
 import TaskCardPriority from "@/components/TaskCardPriority";
 import TaskCardLabels from "@/components/TaskCardLabels";
 import TaskCardDate from "@/components/TaskCardDate";
-import format from "date-fns/format";
+import { formatDate } from "date-fns/format";
 import { setTaskPage } from "@/store/taskData";
 import ProfileImage from "@/components/ProfileImage";
 import { SocketContext } from "@/app/SocketProvider";
@@ -258,7 +258,7 @@ const TaskCard = ({
 																>
 																	Due Date:{" "}
 																	{task.dueDate
-																		? format(
+																		? formatDate(
 																				new Date(task.dueDate),
 																				"M/d/yy, h:mm a",
 																			)
@@ -395,7 +395,7 @@ const TaskCard = ({
 																>
 																	Due Date:{" "}
 																	{task.dueDate
-																		? format(
+																		? formatDate(
 																				new Date(task.dueDate),
 																				"M/d/yy, h:mm a",
 																			)
