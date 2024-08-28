@@ -1,5 +1,6 @@
 import taskDocs from "./task";
 import teamDocs from "./team";
+import userDocs from "./user";
 import activityDocs from "./activity";
 import notificationDocs from "./notification";
 import commentDocs from "./comment";
@@ -9,6 +10,7 @@ const docs = {
 	paths: {
 		...taskDocs,
 		...teamDocs,
+		...userDocs,
 		...activityDocs,
 		...notificationDocs,
 		...commentDocs,

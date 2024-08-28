@@ -9,6 +9,7 @@ export type UserActions = {
     updateUser: (userId: string, user: Partial<User>) => (state: UserState) => Promise<User>
     deleteUser: (userId: string) => (state: UserState) => void;
     getUser: (userId: string) => (state: UserState) => Promise<User | undefined>
+    getAllUsers: (workspaceId: string) => () => Promise<User[]>
 }
 
 export type UserStore = UserState & UserActions
