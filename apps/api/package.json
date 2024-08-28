@@ -23,7 +23,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@9.9.0",
   "dependencies": {
     "@repo/jest-presets": "workspace:*",
     "@repo/logger": "workspace:*",
