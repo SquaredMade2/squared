@@ -1,5 +1,5 @@
 export interface NewIssuePopUpCloseModalProps {
-	showCloseModal: boolean;
+	// showCloseModal: boolean;
 	handleCloseClick?: () => void;
 	handleCancelClose: () => void;
 	handleDiscard: () => void;
