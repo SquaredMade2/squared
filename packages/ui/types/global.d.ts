@@ -1,10 +1,10 @@
-export {};
+export type {};
 
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {
-  timeout: number;
+	timeout: number;
 };
 type RequestIdleCallbackDeadline = {
-  readonly didTimeout: boolean;
-  timeRemaining: () => number;
+	readonly didTimeout: boolean;
+	timeRemaining: () => number;
 };

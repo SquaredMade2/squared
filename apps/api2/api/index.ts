@@ -18,6 +18,8 @@ import * as $abb393 from "./task/[taskId]";
 import * as $8f61d9 from "./task/[taskId]/comment";
 import * as $302cff from "./notification/[notificationId]";
 import * as $97a568 from "./comment/[commentId]";
+import * as $20ac97 from "./auth";
+import * as $b27241 from "./auth/[token]";
 import * as $5925fb from "./activity/[taskId]";
 
 export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
@@ -28,6 +30,8 @@ export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
 	Parameters<typeof $8f61d9.createRoute>[0] &
 	Parameters<typeof $302cff.createRoute>[0] &
 	Parameters<typeof $97a568.createRoute>[0] &
+	Parameters<typeof $20ac97.createRoute>[0] &
+	Parameters<typeof $b27241.createRoute>[0] &
 	Parameters<typeof $5925fb.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
@@ -112,6 +116,26 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 		router.post("/api/comment/:commentId", toMutationHandler(r.POST));
 		router.put("/api/comment/:commentId", toMutationHandler(r.PUT));
 		router.delete("/api/comment/:commentId", toQueryHandler(r.DELETE));
+	}
+
+	{
+		type Params = {};
+		const r: Route<Params> = $20ac97.createRoute(deps);
+
+		router.get("/api/auth", toQueryHandler(r.GET));
+		router.post("/api/auth", toMutationHandler(r.POST));
+		router.put("/api/auth", toMutationHandler(r.PUT));
+		router.delete("/api/auth", toQueryHandler(r.DELETE));
+	}
+
+	{
+		type Params = { token: string };
+		const r: Route<Params> = $b27241.createRoute(deps);
+
+		router.get("/api/auth/:token", toQueryHandler(r.GET));
+		router.post("/api/auth/:token", toMutationHandler(r.POST));
+		router.put("/api/auth/:token", toMutationHandler(r.PUT));
+		router.delete("/api/auth/:token", toQueryHandler(r.DELETE));
 	}
 
 	{
