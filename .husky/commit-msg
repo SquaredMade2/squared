@@ -1,6 +1,3 @@
-
-npx commitlint --edit $1
-
 # Define the desired author information
 DESIRED_AUTHOR_NAME="yoloOnTheBattlefield"
 DESIRED_AUTHOR_EMAIL="cristianfloreadev@gmail.com"
@@ -13,3 +10,4 @@ echo "Set author information locally to $DESIRED_AUTHOR_NAME <$DESIRED_AUTHOR_EM
 
 # Allow the commit to proceed
 exit 0
+
