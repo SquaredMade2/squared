@@ -31,8 +31,8 @@ jobs:
                 echo "$workspace"
               fi
             fi
-          done)
-          echo "workspaces=$(jq -n --arg workspaces "$filtered_workspaces" '$workspaces' | jq -s .)" >> $GITHUB_OUTPUT
+          done | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          echo "workspaces=$filtered_workspaces" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
