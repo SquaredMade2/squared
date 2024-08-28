@@ -209,7 +209,7 @@
     "@types/react-test-renderer": "^18.3.0",
     "@types/resize-observer-browser": "^0.1.11",
     "babel-jest": "^29.7.0",
-    "cypress": "^13.0.0",
+    "cypress": "^13.14.0",
     "cypress-real-events": "^1.13.0",
     "esbuild": "0.23.1",
     "fs-extra": "^11.2.0",
