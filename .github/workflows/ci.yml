@@ -21,7 +21,18 @@ jobs:
 
       - name: Get list of workspaces
         id: get-workspaces
-        run: echo "workspaces=$(pnpm recursive exec -- pwd)" >> $GITHUB_OUTPUT
+        run: |
+          workspaces=$(pnpm recursive exec -- pwd)
+          filtered_workspaces=$(echo "$workspaces" | while read workspace; do
+            if [ -f "$workspace/package.json" ]; then
+              has_test=$(jq -r '.scripts.test // empty' "$workspace/package.json")
+              has_build=$(jq -r '.scripts.build // empty' "$workspace/package.json")
+              if [ -n "$has_test" ] || [ -n "$has_build" ]; then
+                echo "$workspace"
+              fi
+            fi
+          done)
+          echo "workspaces=$(jq -n --arg workspaces "$filtered_workspaces" '$workspaces' | jq -s .)" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
