@@ -10,7 +10,7 @@ jobs:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     outputs:
-      pnpm_cache_path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
+      workspace_list: ${{ steps.get-workspaces.outputs.workspaces }}
     steps:
       - uses: actions/checkout@v4
 
@@ -18,6 +18,10 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.9.0
+
+      - name: Get list of workspaces
+        id: get-workspaces
+        run: echo "workspaces=$(pnpm recursive exec -- pwd)" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
@@ -33,11 +37,9 @@ jobs:
         id: pnpm-cache-path
         run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Cache node_modules and pnpm store
         uses: actions/cache@v4
+        id: cache-npm
         with:
           path: |
             node_modules
@@ -46,8 +48,72 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
+      - name: Install dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: pnpm install
+
       - name: Run linting check
         run: pnpm lint
 
+  typecheck:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.setup.outputs.workspace_list) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
+
+      - name: Run turbo-ignore for typecheck
+        run: npx turbo-ignore ${{ matrix.workspace }} --task=typecheck
+
+      - name: Run typecheck
+        run: pnpm typecheck
+        if: ${{ success() }}
+
+  test:
+    needs: typecheck
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.setup.outputs.workspace_list) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
+
+      - name: Run turbo-ignore for tests
+        run: npx turbo-ignore ${{ matrix.workspace }} --task=test
+
       - name: Run tests
         run: pnpm test:ci
+        if: ${{ success() }}
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        workspace: ${{ fromJSON(needs.setup.outputs.workspace_list) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
+
+      - name: Run turbo-ignore for build
+        run: npx turbo-ignore ${{ matrix.workspace }} --task=build
+
+      - name: Run build
+        run: pnpm build
+        if: ${{ success() }}
