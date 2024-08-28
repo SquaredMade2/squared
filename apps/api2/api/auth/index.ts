@@ -35,7 +35,6 @@ export function createRoute(): Route<Params> {
   return {
     POST: async ({ userId }, body: Body): Promise<AuthReturn> => {
       try {
-        console.log(body)
         const { email, password, provider, type, name, username } = body.login;
 
         // Validation for Login Data
@@ -191,6 +190,7 @@ export function createRoute(): Route<Params> {
           );
 
           // You would typically set the token in the user's state or storage here
+          res.cookie('token', token);
 
           return {
             data: {

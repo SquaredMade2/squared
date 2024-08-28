@@ -5,7 +5,7 @@ export type Route<P = Record<string, string>> = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	GET?: (params: P, query: ParsedQs) => Promise<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	POST?: (params: P, body: any, query: ParsedQs) => Promise<any>;
+	POST?: (params: P, body: any, res:Response, query: ParsedQs) => Promise<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	PUT?: (params: P, body: any, query: ParsedQs) => Promise<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -28,11 +28,11 @@ export function toQueryHandler<P = Record<string, string>>(
 
 export function toMutationHandler<P = Record<string, string>>(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	f?: (params: P, body: any, query: ParsedQs) => Promise<unknown>,
+	f?: (params: P, body: any, res: Response, query: ParsedQs) => Promise<unknown>,
 ) {
 	if (!f) return handleNotSupported;
 
 	return (req: Request<P>, res: Response, next: NextFunction) => {
-		f(req.params, req.body, req.query).then((data) => res.json(data), next);
+		f(req.params, req.body, res, req.query).then((data) => res.json(data), next);
 	};
 }
