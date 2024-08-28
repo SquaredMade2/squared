@@ -22,13 +22,14 @@ jobs:
       - name: Get list of workspaces
         id: get-workspaces
         run: |
-          workspaces=$(pnpm recursive exec -- pwd)
-          filtered_workspaces=$(echo "$workspaces" | while read workspace; do
+          workspaces=$(pnpm recursive exec --workspace-concurrency 1 pwd)
+          filtered_workspaces=$(echo "$workspaces" | while read -r workspace; do
             if [ -f "$workspace/package.json" ]; then
               has_test=$(jq -r '.scripts.test // empty' "$workspace/package.json")
               has_build=$(jq -r '.scripts.build // empty' "$workspace/package.json")
               if [ -n "$has_test" ] || [ -n "$has_build" ]; then
-                echo "$workspace"
+                relative_path=$(realpath --relative-to="$(pwd)" "$workspace")
+                echo "$relative_path"
               fi
             fi
           done | jq -R -s -c 'split("\n") | map(select(. != ""))')
@@ -88,7 +89,7 @@ jobs:
         if: ${{ success() }}
 
   test:
-    needs: typecheck
+    needs: [typecheck, setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -109,7 +110,7 @@ jobs:
         if: ${{ success() }}
 
   build:
-    needs: test
+    needs: [test, setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
