@@ -6,7 +6,7 @@ import { comparePassword, hashPassword, sendMail } from "./helpers";
 
 type Login = {
   provider: "credentials" | "oauth";
-  type: "register" | "login";
+  type: "register" | "login"| "logout";
   email: string;
   password?: string;
   name?: string;
@@ -33,7 +33,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
   return {
-    POST: async ({ userId }, body: Body): Promise<AuthReturn> => {
+    POST: async ({ userId }, body: Body, res): Promise<AuthReturn> => {
       try {
         const { email, password, provider, type, name, username } = body.login;
 
@@ -199,6 +199,17 @@ export function createRoute(): Route<Params> {
               variant: "default",
             },
           };
+        }
+        if(type === "logout"){
+          res.clearCookie("token");
+          return {
+            data: {
+              user:null,
+              message: "logout successful.",
+              variant: "default",
+            },
+          };
+
         }
 
         // Default case if the type is neither 'register' nor 'login'
