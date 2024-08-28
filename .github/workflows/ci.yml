@@ -1,0 +1,56 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    outputs:
+      pnpm_cache_path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.9.0
+
+      - name: Setup Node.js with pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            apps/**/pnpm-lock.yaml
+            packages/**/pnpm-lock.yaml
+
+      - name: Get pnpm store path
+        id: pnpm-cache-path
+        run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Cache node_modules and pnpm store
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Run linting check
+        run: pnpm lint
+
+      - name: Ensure prisma is generated
+        run: pnpm db:gen
+
+      - name: Run tests
+        run: pnpm test:ci

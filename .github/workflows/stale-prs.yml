@@ -1,0 +1,78 @@
+name: "Mark stale issues and PRs"
+
+on:
+  schedule:
+    - cron: "0 19 * * *" # Runs daily at 5 AM GMT+10
+  workflow_dispatch: # Allows manual trigger
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write # If you need to modify content like labels
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 1
+          days-before-pr-stale: 1
+          stale-pr-message: "This PR is stale because it has been open for 3 days with no activity."
+          stale-pr-label: "Stale"
+          days-before-close: 14
+          days-before-pr-close: 14
+          close-pr-message: "This PR was closed because it has been stalled for 14 days with no activity."
+
+      - name: Send notification to Discord
+        if: always()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch all open PRs with updatedAt field and filter for PRs older than 3 days
+          STALE_PR=$(gh pr list --state=open --json number,title,url,updatedAt,assignees --jq '.[] | select((now - (.updatedAt | fromdateiso8601)) > (3 * 86400))')
+
+          if [ -n "$STALE_PR" ]; then
+            PR_NUMBER=$(echo "$STALE_PR" | jq -r '.number')
+            PR_TITLE=$(echo "$STALE_PR" | jq -r '.title')
+            PR_URL=$(echo "$STALE_PR" | jq -r '.url')
+            PR_ASSIGNEE=$(echo "$STALE_PR" | jq -r '.assignees[0].login // "Unassigned"')
+
+            # Debugging output to verify values
+            echo "PR Number: $PR_NUMBER"
+            echo "PR Title: $PR_TITLE"
+            echo "PR URL: $PR_URL"
+            echo "PR Assignee: $PR_ASSIGNEE"
+
+            # Mapping GitHub usernames to Discord IDs
+            MENTION=""
+            if [ "$PR_ASSIGNEE" == "Unassigned" ]; then
+              MENTION="Unassigned"
+            else
+              case "$PR_ASSIGNEE" in
+                Chase-T-White) MENTION="<@414567565843759105>" ;;
+                edchrepo) MENTION="<@300515474322489344>" ;;
+                ellischung) MENTION="<@273201608685387786>" ;;
+                klexup) MENTION="<@1220824900365844522>" ;;
+                napqueenkaila) MENTION="<@1074750793128882247>" ;;
+                NateCummens) MENTION="<@447548944122380309>" ;;
+                oerkperl) MENTION="<@1084769574098047059>" ;;
+                SerhiiDer) MENTION="<@791023762124308500>" ;;
+                Smerly) MENTION="<@277576312686641153>" ;;
+                THEjacob1000) MENTION="<@213438742315139073>" ;;
+                *) MENTION="Unassigned or no mapping found" ;;
+              esac
+            fi
+
+            # Send the notification to Discord
+            curl -H "Content-Type: application/json" -X POST \
+              -d "{\"content\": \"The PR titled **$PR_TITLE** (URL: $PR_URL) by @$PR_ASSIGNEE has been marked as stale or closed. $MENTION\"}" \
+              "${DISCORD_WEBHOOK_URL}"
+          else
+            echo "No stale PRs found."
+          fi
