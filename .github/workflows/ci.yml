@@ -22,7 +22,13 @@ jobs:
       - name: Get list of workspaces
         id: get-workspaces
         run: |
+          set -e  # Exit immediately if a command exits with a non-zero status
+          
+          echo "Getting all workspaces..."
           workspaces=$(pnpm recursive exec --workspace-concurrency 1 pwd)
+          echo "Workspaces found: $workspaces"
+
+          echo "Filtering workspaces..."
           filtered_workspaces=$(echo "$workspaces" | while read -r workspace; do
             if [ -f "$workspace/package.json" ]; then
               has_test=$(jq -r '.scripts.test // empty' "$workspace/package.json")
@@ -33,7 +39,15 @@ jobs:
               fi
             fi
           done | jq -R -s -c 'split("\n") | map(select(. != ""))')
+
+          if [ -z "$filtered_workspaces" ]; then
+            echo "No valid workspaces found."
+            exit 0
+          fi
+
+          echo "Filtered workspaces: $filtered_workspaces"
           echo "workspaces=$filtered_workspaces" >> $GITHUB_OUTPUT
+        shell: /usr/bin/bash -e {0}
 
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
