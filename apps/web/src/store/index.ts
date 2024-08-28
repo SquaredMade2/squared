@@ -1,5 +1,17 @@
-import { combineReducers } from "redux";
+import { combineReducers, type Store } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import {
+	FLUSH,
+	REHYDRATE,
+	PAUSE,
+	PERSIST,
+	PURGE,
+	REGISTER,
+} from "redux-persist";
+
+// Import your slices or reducers
 import isCmdPalette from "./isCmdPalette";
 import showTaskForm from "./showTaskForm";
 import toggleTaskFeatures from "./toggleTaskFeatures";
@@ -13,18 +25,8 @@ import events from "./events";
 import getListOfMembersReducer from "./workspaceMembers";
 import notificationReducer from "./notifications";
 import currentTaskReducer from "./currentTask";
-import storage from "redux-persist/lib/storage";
-import {
-	persistReducer,
-	FLUSH,
-	PAUSE,
-	PERSIST,
-	persistStore,
-	PURGE,
-	REGISTER,
-	REHYDRATE,
-} from "redux-persist";
 
+// Combine all slice reducers into a rootReducer using combineReducers
 const rootReducer = combineReducers({
 	toggleTaskFeatures: toggleTaskFeatures.reducer,
 	userSettings: userSettings.reducer,
@@ -41,15 +43,18 @@ const rootReducer = combineReducers({
 	events,
 });
 
+// Configure persistence
 const persistConfig = {
 	key: "root",
 	storage,
-	whitelist: ["userSettings", "toggleTaskFeatures", "taskData"],
+	whitelist: ["userSettings", "toggleTaskFeatures", "taskData"], // Only persist specific slices
 	debug: true,
 };
 
+// Create a persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+// Configure the store
 export const store = configureStore({
 	reducer: persistedReducer,
 	middleware: (getDefaultMiddleware) =>
@@ -60,7 +65,8 @@ export const store = configureStore({
 		}),
 });
 
-export const persistor = persistStore(store);
+// Create the persistor
+export const persistor = persistStore(store as unknown as Store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
