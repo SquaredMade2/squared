@@ -1,6 +1,10 @@
 import bcrypt from "bcryptjs";
-import { emailTemplate, joinWorkspaceTemplate, passwordResetTemplate } from "./templates";
-import { createTransport} from "nodemailer"
+import {
+	emailTemplate,
+	joinWorkspaceTemplate,
+	passwordResetTemplate,
+} from "./templates";
+import { createTransport } from "nodemailer";
 
 const EMAIL_USERNAME = process.env.EMAIL_USERNAME;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
@@ -91,4 +95,3 @@ export const sendMail = async (
 		return sendResult;
 	} catch (error) {}
 };
-
