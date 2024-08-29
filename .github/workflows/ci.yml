@@ -9,8 +9,6 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-    outputs:
-      workspace_list: ${{ steps.get-workspaces.outputs.workspaces }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
