@@ -85,7 +85,7 @@ jobs:
           version: 9.9.0
 
       - name: Run turbo-ignore for typecheck
-        run: npx turbo-ignore ${{ matrix.workspace }} --task=typecheck
+        run: npx turbo-ignore ${{ matrix.workspace }} --task=typecheck || true
 
       - name: Run typecheck
         run: pnpm typecheck
@@ -106,7 +106,7 @@ jobs:
           version: 9.9.0
 
       - name: Run turbo-ignore for tests
-        run: npx turbo-ignore ${{ matrix.workspace }} --task=test
+        run: npx turbo-ignore ${{ matrix.workspace }} --task=test || true
 
       - name: Run tests
         run: pnpm test:ci
@@ -127,7 +127,7 @@ jobs:
           version: 9.9.0
 
       - name: Run turbo-ignore for build
-        run: npx turbo-ignore ${{ matrix.workspace }} --task=build
+        run: npx turbo-ignore ${{ matrix.workspace }} --task=build || true
 
       - name: Run build
         run: pnpm build
