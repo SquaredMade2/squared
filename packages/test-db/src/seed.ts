@@ -67,7 +67,11 @@ async function addWorkspace(user: User) {
 			name: workspaceName,
 			companySize: workspaceCompanySize,
 			Users: {
-				connect: { id: user.id },
+				create: {
+					user: {
+						connect: { id: user.id },
+					},
+				},
 			},
 		},
 	});
