@@ -6,7 +6,7 @@ type Params = {
   workspaceId: string;
 };
 
-export function createRoute({}): Route<Params> {
+export function createRoute(): Route<Params> {
   return {
     GET: async ({ workspaceId }) => {
       try {
