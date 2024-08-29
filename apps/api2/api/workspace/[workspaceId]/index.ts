@@ -11,7 +11,7 @@ export function createRoute(): Route<Params> {
     GET: async ({ workspaceId }) => {
       try {
         // Find workspace by workspace ID
-        const workspace: Workspace | null = await prisma.workspace.findUnique({
+        const workspace = await prisma.workspace.findUnique({
           where: { id: workspaceId },
         });
 
@@ -22,13 +22,13 @@ export function createRoute(): Route<Params> {
         // Return the found workspace
         return workspace;
       } catch (error) {
-        console.error("Error finding teams:", error);
+        console.error("Error finding workspace:", error);
         throw new Error("Internal server error");
       }
     },
     PUT: async ({ workspaceId }, body) => {
       try {
-        const workspace: Workspace | null = await prisma.workspace.update({
+        const workspace = await prisma.workspace.update({
           where: { id: workspaceId },
           data: body,
         });
@@ -73,7 +73,7 @@ export function createRoute(): Route<Params> {
     },
     DELETE: async ({ workspaceId }) => {
       try {
-        const workspace: Workspace | null = await prisma.workspace.delete({
+        const workspace = await prisma.workspace.delete({
           where: { id: workspaceId },
         });
         if (!workspace) {
