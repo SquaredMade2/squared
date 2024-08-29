@@ -2,13 +2,12 @@ import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
-import type { User } from "@repo/db";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/auth/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/auth/${path}`;
 
-export const createTaskStore = (initState: AuthState = { user: null }) => {
+export const createAuthStore = (initState: AuthState = { user: null }) => {
 	return createStore<AuthStore>()((set) => ({
 		...initState,
 		login: (userId: string, login: Login) => async () => {

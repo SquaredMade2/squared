@@ -5,7 +5,7 @@ import axios from "axios";
 import type { Team } from "@repo/db";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/team/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${path}`;
 
 export const createTeamStore = (initState: TeamState = { teams: [] }) => {
 	return createStore<TeamStore>()((set) => ({

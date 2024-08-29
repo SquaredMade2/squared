@@ -6,7 +6,7 @@ import type { Task } from "@repo/db";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/task/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${path}`;
 
 export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 	return createStore<TaskStore>()((set) => ({
@@ -37,7 +37,7 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 		},
 		getAllTasks: (teamId) => async (state) => {
 			const response: { data: Task[] } = await axios.get(
-				`${process.env.SERVER_URL}/api/team/${teamId}/task`,
+				`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${teamId}/task`,
 			);
 			set({ tasks: response.data });
 			return response.data;

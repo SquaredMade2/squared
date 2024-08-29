@@ -5,7 +5,7 @@ import type { Workspace } from "@repo/db";
 import axios from "axios";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/workspace/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${path}`;
 
 export const createWorkspaceStore = (
 	initState: WorkspaceState = {

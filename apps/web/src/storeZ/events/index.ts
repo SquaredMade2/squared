@@ -4,7 +4,7 @@ import type { ActivityState, ActivityStore, ActivityType } from "./interfaces";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/activity/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/activity/${path}`;
 
 export const createActivityStore = (
 	initState: ActivityState = { events: [] },

@@ -6,7 +6,7 @@ import type { Comment } from "@repo/db";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/comment/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/comment/${path}`;
 
 export const createCommentStore = (
 	initState: CommentState = { comments: [] },
@@ -41,7 +41,7 @@ export const createCommentStore = (
 		},
 		getAllComments: (taskId) => async (state) => {
 			const response: { data: Comment[] } = await axios.get(
-				`${process.env.SERVER_URL}/api/team/${taskId}/comment`,
+				`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${taskId}/comment`,
 			);
 			set({ comments: response.data });
 			return response.data;

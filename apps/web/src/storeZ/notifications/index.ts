@@ -6,7 +6,7 @@ import type { Notification } from "@repo/db";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/notification/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/notification/${path}`;
 
 export const createNotificationStore = (
 	initState: NotificationState = { notifications: [] },
@@ -28,14 +28,14 @@ export const createNotificationStore = (
 		},
 		getAllNotifications: (userId) => async (state) => {
 			const response: { data: Notification[] } = await axios.get(
-				`${process.env.SERVER_URL}/api/user/${userId}/notification`,
+				`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
 			);
 			set({ notifications: response.data });
 			return response.data;
 		},
 		clearNotifications: (userId) => async (state) => {
 			const response: { data: Notification[] } = await axios.get(
-				`${process.env.SERVER_URL}/api/user/${userId}/notification`,
+				`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
 			);
 			set({ notifications: response.data });
 			return response.data;
