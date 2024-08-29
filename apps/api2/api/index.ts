@@ -3,7 +3,7 @@
 import express from "express";
 import { Router } from "express";
 import { Route, toQueryHandler, toMutationHandler } from "./route";
-import { PrismaClient } from "@repo/test-db";
+import { PrismaClient } from "@repo/db";
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
@@ -11,12 +11,14 @@ export const prisma = new PrismaClient();
 
 
 import * as $230080 from "./workspace/[workspaceId]/team";
+import * as $01aef2 from "./workspace/[workspaceId]";
 import * as $61fb65 from "./team/[teamId]/task";
 import * as $0a9f89 from "./team/[teamId]";
 import * as $abb393 from "./task/[taskId]";
 
 export type AllRouteDeps =
   & Parameters<typeof $230080.createRoute>[0]
+  & Parameters<typeof $01aef2.createRoute>[0]
   & Parameters<typeof $61fb65.createRoute>[0]
   & Parameters<typeof $0a9f89.createRoute>[0]
   & Parameters<typeof $abb393.createRoute>[0]
@@ -31,6 +33,16 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     router.post("/api/workspace/:workspaceId/team", toMutationHandler(r.POST));
     router.put("/api/workspace/:workspaceId/team", toMutationHandler(r.PUT));
     router.delete("/api/workspace/:workspaceId/team", toQueryHandler(r.DELETE));
+  }
+
+  {
+    type Params = { workspaceId: string };
+    const r: Route<Params> = $01aef2.createRoute(deps);
+
+    router.get("/api/workspace/:workspaceId", toQueryHandler(r.GET));
+    router.post("/api/workspace/:workspaceId", toMutationHandler(r.POST));
+    router.put("/api/workspace/:workspaceId", toMutationHandler(r.PUT));
+    router.delete("/api/workspace/:workspaceId", toQueryHandler(r.DELETE));
   }
 
   {
