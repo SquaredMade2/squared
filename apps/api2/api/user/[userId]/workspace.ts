@@ -1,4 +1,4 @@
-import { Workspace } from "@repo/db";
+import type { Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route } from "@/api/route";
 
@@ -7,7 +7,7 @@ type Params = {
 	workspaceId: string;
 };
 
-export function createRoute({}): Route<Params> {
+export function createRoute(): Route<Params> {
 	return {
 		GET: async ({ userId }) => {
 			try {

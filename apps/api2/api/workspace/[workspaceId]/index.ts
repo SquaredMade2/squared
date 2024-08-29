@@ -1,4 +1,4 @@
-import { Workspace } from "@repo/db";
+import type { Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route } from "@/api/route";
 
