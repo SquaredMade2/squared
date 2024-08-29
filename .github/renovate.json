@@ -1,0 +1,19 @@
+{
+    "extends": [
+        "config:base"
+    ],
+    "schedule": [
+        "every weekend"
+    ],
+    "automerge": false,
+    "labels": [
+        "dependencies"
+    ],
+    "prCreation": "not-pending",
+    "packageRules": [
+        {
+            "automerge": false,
+            "enabled": true
+        }
+    ]
+}
