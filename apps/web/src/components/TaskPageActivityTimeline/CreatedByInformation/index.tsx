@@ -1,8 +1,8 @@
 import React from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
-import { parseISO } from "date-fns/parseISO";
-import { formatDate } from "date-fns/format";
+import parseISO from "date-fns/parseISO";
+import format from "date-fns/format";
 
 const CreatedByInformation = () => {
 	const { author, createdAt } = useAppSelector(
@@ -11,7 +11,7 @@ const CreatedByInformation = () => {
 	const displayDate = () => {
 		if (createdAt) {
 			const date = parseISO(createdAt as string);
-			const formattedDate = formatDate(date, "dd MMM yyyy");
+			const formattedDate = format(date, "dd MMM yyyy");
 			return formattedDate;
 		}
 	};

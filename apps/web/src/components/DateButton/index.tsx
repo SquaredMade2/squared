@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { RootState } from "@/store";
-import { formatDate } from "date-fns/format";
+import format from "date-fns/format";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
@@ -40,9 +40,9 @@ const DateButton = ({ location }: { location: string }) => {
 					<CalendarIcon className="size-4" />
 					<span className="text-sm font-semibold text-popover-foreground ml-2 hover:cursor-pointer">
 						{location === "issueSidebar" && sidebarDate
-							? formatDate(new Date(sidebarDate), "M/d/yy")
+							? format(new Date(sidebarDate), "M/d/yy")
 							: newIssueDate
-								? formatDate(new Date(newIssueDate), "M/d/yy")
+								? format(new Date(newIssueDate), "M/d/yy")
 								: "Due Date"}
 					</span>
 				</Button>

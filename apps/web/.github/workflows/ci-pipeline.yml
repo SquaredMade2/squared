@@ -8,11 +8,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v4.0.3
+      - uses: actions/setup-node@v4.0.2
         with:
           node-version: 20.x
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: install pnpm
         run: npm install -g pnpm@9.3.0

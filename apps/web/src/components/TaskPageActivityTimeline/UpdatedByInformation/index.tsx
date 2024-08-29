@@ -1,8 +1,8 @@
 import React from "react";
 import ProfileImage from "@/components/ProfileImage";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { parseISO } from "date-fns/parseISO";
-import { formatDate } from "date-fns/format";
+import parseISO from "date-fns/parseISO";
+import format from "date-fns/format";
 import {
 	type Assignee,
 	type Author,
@@ -187,7 +187,7 @@ const UpdatedByInformation = () => {
 	const displayDate = (date: string) => {
 		if (date) {
 			const parsedDate = parseISO(date);
-			const formattedDate = formatDate(parsedDate, "dd MMM yyyy");
+			const formattedDate = format(parsedDate, "dd MMM yyyy");
 			return formattedDate;
 		}
 	};

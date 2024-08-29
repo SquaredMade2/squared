@@ -27,9 +27,9 @@ export function toQueryHandler<P = Record<string, string>>(
 }
 
 export function toMutationHandler<P = Record<string, string>>(
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	f?: (
 		params: P,
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		body: any,
 		res: Response,
 		query: ParsedQs,

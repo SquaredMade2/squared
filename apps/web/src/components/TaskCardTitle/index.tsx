@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState } from "react";
-import { formatDate } from "date-fns/format";
+import format from "date-fns/format";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import TaskCardPriority from "@/components/TaskCardPriority";
 import TaskCardStatus from "@/components/TaskCardStatus";
@@ -92,7 +92,7 @@ const TaskCardTitle = ({
 							{showDateTime && (
 								<div className="text-muted-foreground md:flex xs:hidden sm:hidden mr-2 mdsm:mr-3">
 									{task.dueDate
-										? formatDate(new Date(task.dueDate), "MMM dd")
+										? format(new Date(task.dueDate), "MMM dd")
 										: "No Date"}
 								</div>
 							)}

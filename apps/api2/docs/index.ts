@@ -4,7 +4,6 @@ import userDocs from "./user";
 import activityDocs from "./activity";
 import notificationDocs from "./notification";
 import commentDocs from "./comment";
-import workspaceDocs from "./workspace";
 import schemas from "./schemas";
 
 const docs = {
@@ -15,7 +14,6 @@ const docs = {
 		...activityDocs,
 		...notificationDocs,
 		...commentDocs,
-		...workspaceDocs,
 	},
 	components: {
 		schemas: schemas,

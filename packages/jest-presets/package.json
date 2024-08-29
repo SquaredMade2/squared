@@ -10,6 +10,6 @@
     "ts-jest": "^29.2.5"
   },
   "devDependencies": {
-    "@types/node": "^22.5.1"
+    "@types/node": "^22.5.0"
   }
 }

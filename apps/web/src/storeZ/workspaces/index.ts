@@ -26,27 +26,5 @@ export const createWorkspaceStore = (
 			});
 			return newWorkspace;
 		},
-		getWorkspace: (workspaceId) => async (state) => {
-			const stateWorkspace = state.workspaces.find((t) => t.id === workspaceId);
-			return stateWorkspace || (await axios.get(apiString(workspaceId)));
-		},
-		updateWorkspace: (workspaceId, workspace) => async (state) => {
-			const updatedWorkspace: Workspace = await axios.put(
-				apiString(workspaceId),
-				workspace,
-			);
-			set({
-				workspaces: state.workspaces.map((t) =>
-					t.id === workspaceId ? updatedWorkspace : t,
-				),
-			});
-			return updatedWorkspace;
-		},
-		deleteWorkspace: (workspaceId) => (state) => {
-			axios.delete(apiString(workspaceId));
-			set({
-				workspaces: state.workspaces.filter((t) => t.id !== workspaceId),
-			});
-		},
 	}));
 };

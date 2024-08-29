@@ -161,17 +161,9 @@ export function createRoute(): Route<Params> {
 
 					// Logic for if they logged in with email and password
 					if (provider === "credentials") {
-						if (!password) {
-							return {
-								data: {
-									user: null,
-									message: "Password is required.",
-									variant: "destructive",
-								},
-							};
-						}
+						// biome-ignore lint/style/noNonNullAssertion: <explanation>
 						const passwordMatch = await comparePassword(
-							password,
+							password!,
 							user.password,
 						);
 
