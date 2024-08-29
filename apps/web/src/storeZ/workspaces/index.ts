@@ -48,5 +48,13 @@ export const createWorkspaceStore = (
 				workspaces: state.workspaces.filter((t) => t.id !== workspaceId),
 			});
 		},
+		getAllWorkspaces: (userId) =>
+			axios
+				.get(`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspaces`)
+				.then((response) => {
+					set({ workspaces: response.data });
+					return response.data;
+				})
+				.catch((err) => console.error(err)),
 	}));
 };

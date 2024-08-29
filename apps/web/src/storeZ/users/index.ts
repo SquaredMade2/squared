@@ -7,6 +7,7 @@ import {
 import { createStore } from "zustand/vanilla";
 import type { UserState, UserStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
+export * from "./interfaces";
 
 const apiString = (path: string) =>
 	`${process.env.SERVER_URL}/api/user/${path}`;

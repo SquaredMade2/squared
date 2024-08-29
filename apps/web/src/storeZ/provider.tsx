@@ -70,6 +70,10 @@ export const useTeamStore = () => {
 	return useSquaredStore((state) => state.teams.getState());
 };
 
+export const useUserStore = () => {
+	return useSquaredStore((state) => state.users.getState());
+};
+
 export const useViewsStore = () => {
 	return useSquaredStore((state) => state.views.getState());
 };

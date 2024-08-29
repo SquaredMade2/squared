@@ -17,6 +17,7 @@ export type WorkspaceActions = {
 		workspace: Partial<Workspace>,
 	) => (state: WorkspaceState) => Promise<Workspace>;
 	deleteWorkspace: (workspaceId: string) => (state: WorkspaceState) => void;
+	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 };
 
 export type WorkspaceStore = WorkspaceActions & WorkspaceState;
