@@ -4,21 +4,17 @@ import jwt from "jsonwebtoken";
 import type { Route } from "@/api/route";
 import { comparePassword, hashPassword, sendMail } from "./helpers";
 
-type Login = {
+type Params = {
+	userId: string;
+};
+
+type Body = {
 	provider: "credentials" | "oauth";
 	type: "register" | "login" | "logout";
 	email: string;
 	password?: string;
 	name?: string;
 	username?: string;
-};
-
-type Params = {
-	userId: string;
-};
-
-type Body = {
-	login: Login;
 };
 
 type AuthReturn = {
@@ -35,7 +31,7 @@ export function createRoute(): Route<Params> {
 	return {
 		POST: async ({ userId }, body: Body, res): Promise<AuthReturn> => {
 			try {
-				const { email, password, provider, type, name, username } = body.login;
+				const { email, password, provider, type, name, username } = body;
 
 				// Validation for Login Data
 				if (!email || (provider === "credentials" && !password)) {
