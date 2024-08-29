@@ -88,7 +88,7 @@ jobs:
         run: npx turbo-ignore ${{ matrix.workspace }} --task=typecheck || true
 
       - name: Run typecheck
-        run: pnpm typecheck
+        run: pnpm --filter=${{ matrix.workspace }} check-types
         if: ${{ success() }}
 
   test:
@@ -109,7 +109,7 @@ jobs:
         run: npx turbo-ignore ${{ matrix.workspace }} --task=test || true
 
       - name: Run tests
-        run: pnpm test:ci
+        run: pnpm --filter=${{ matrix.workspace }} test
         if: ${{ success() }}
 
   build:
@@ -130,5 +130,5 @@ jobs:
         run: npx turbo-ignore ${{ matrix.workspace }} --task=build || true
 
       - name: Run build
-        run: pnpm build
+        run: pnpm --filter=${{ matrix.workspace }} build
         if: ${{ success() }}
