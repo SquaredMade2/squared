@@ -17,7 +17,7 @@ const schemas = {
 	Commit: CommitSchema,
 	TaskEvent: TaskEventSchema,
 	TaskEventLog: TaskEventLogSchema,
-  Workspace: WorkspaceSchema,
+	Workspace: WorkspaceSchema,
 	User: {
 		type: "object",
 		properties: {

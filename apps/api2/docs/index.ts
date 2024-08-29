@@ -3,7 +3,7 @@ import teamDocs from "./team";
 import activityDocs from "./activity";
 import notificationDocs from "./notification";
 import commentDocs from "./comment";
-import workspaceDocs from "./workspace"
+import workspaceDocs from "./workspace";
 import schemas from "./schemas";
 
 const docs = {
@@ -13,7 +13,7 @@ const docs = {
 		...activityDocs,
 		...notificationDocs,
 		...commentDocs,
-    ...workspaceDocs
+		...workspaceDocs,
 	},
 	components: {
 		schemas: schemas,
