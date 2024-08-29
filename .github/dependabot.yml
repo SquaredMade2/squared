@@ -1,41 +1,54 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/apps/web"
+    directory: "/"
     schedule:
-      interval: "weekly"
-    assignees:
-      - "THEjacob1000"
-    groups:
-      lexical-packages:
-        patterns:
-          - "lexical*"
-      sentry-packages:
-        patterns:
-          - "@sentry/*"
-      mui-packages:
-        patterns:
-          - "@mui/*"
-
-  - package-ecosystem: "npm"
-    directory: "/apps/api"
-    schedule:
-      interval: "weekly"
-    assignees:
-      - "THEjacob1000"
-    groups:
-      sentry-packages:
-        patterns:
-          - "@sentry/*"
-
-  - package-ecosystem: "npm"
-    directory: "/packages/ui"
-    schedule:
-      interval: "weekly"
-    assignees:
-      - "THEjacob1000"
+      interval: "daily"
     groups:
       storybook-packages:
         patterns:
           - "@storybook/*"
           - "@babel/*"
+          - "@chromatic-com/*"
+      react-packages:
+        patterns:
+          - "react*"
+          - "react-*"
+          - "@react*"
+          - "@react-*"
+      types-packages:
+        patterns:
+          - "@types/*"
+          - "types/*"
+      testing-packages:
+        patterns:
+          - "@testing-library/*"
+          - "jest*"
+          - "jest-*"
+          - "@cypress/*"
+          - "cypress*"
+      sentry-packages:
+        patterns:
+          - "@sentry/*"
+      lexical-packages:
+        patterns:
+          - "lexical*"
+          - "@lexical/*"
+      ui-packages:
+        patterns:
+          - "@mui/*"
+          - "@fortawesome/*"
+          - "@headlessui/*"
+          - "@heroicons/*"
+      react-packages:
+        patterns:
+          - "react*"
+          - "react-*"
+          - "@react*"
+          - "@react-*"
+    open-pull-requests-limit: 10
+    
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily

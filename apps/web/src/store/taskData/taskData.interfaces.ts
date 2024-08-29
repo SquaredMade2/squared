@@ -3,7 +3,7 @@ export interface TaskDataState {
 	error: boolean;
 	status: string;
 	priority: string | null;
-	dueDate: Date | null;
+	dueDate: Date | undefined;
 	effortEstimate: number | null;
 	taskPage: Task;
 	taskList: Task[];
@@ -102,7 +102,7 @@ export interface Task {
 	identifier: string;
 	priority: string | null;
 	labels: string[];
-	dueDate: Date | null;
+	dueDate: Date | undefined;
 	effortEstimate: number | null;
 	team: Team;
 	dateCreated: Date;

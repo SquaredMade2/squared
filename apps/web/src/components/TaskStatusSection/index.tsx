@@ -18,7 +18,7 @@ const TaskStatusSection = ({
 			className={
 				isListView
 					? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-					: "flex flex-col z-30 w-full min-h-[135px] pb-1"
+					: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2"
 			}
 		>
 			{showTasks && (

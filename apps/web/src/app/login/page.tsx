@@ -58,7 +58,7 @@ export default function Login() {
 					password: "",
 				});
 				if (responseData.redirectTo) {
-					router.push(`workspace/${responseData.redirectTo}`);
+					router.push(`${responseData.redirectTo}`);
 				} else {
 					toast({
 						title: "No workspace found for redirection.",
@@ -123,9 +123,7 @@ export default function Login() {
 				const actionResult = await dispatch(getUser());
 				const userData = actionResult.payload as LocalUser;
 				if (userData?.on_boarding && userData.workspaces.length) {
-					router.replace(
-						`${process.env.NEXT_PUBLIC_URL}/${userData.workspaces[0].url}`,
-					);
+					router.push(`/${userData.workspaces[0].url}`);
 				} else if (userData?.on_boarding && !userData.workspaces.length) {
 					router.push("/join");
 				} else if (userData && !userData.on_boarding) {

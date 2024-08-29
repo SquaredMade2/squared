@@ -45,7 +45,7 @@ const initialState: TaskDataState = {
 		identifier: "",
 		priority: null,
 		labels: [],
-		dueDate: null,
+		dueDate: undefined,
 		effortEstimate: null,
 		description: "",
 		team: null as unknown as Team,
@@ -87,7 +87,7 @@ const initialState: TaskDataState = {
 	status: "Todo",
 	priority: "",
 	labels: [],
-	dueDate: null,
+	dueDate: undefined,
 	effortEstimate: null,
 	isLoading: false,
 	currentCommits: [],
@@ -112,7 +112,7 @@ const taskData = createSlice({
 		setLabels(state, action: PayloadAction<string[]>) {
 			state.labels = action.payload;
 		},
-		setDueDate(state, action: PayloadAction<Date | null>) {
+		setDueDate(state, action: PayloadAction<Date | undefined>) {
 			state.dueDate = action.payload;
 		},
 		setEffortEstimate(state, action: PayloadAction<number | null>) {

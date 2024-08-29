@@ -1,11 +1,13 @@
+require("./instrument"); // Ensure Sentry is initialized before other imports
+
 import "dotenv/config";
 import "tslib";
-import * as Sentry from "@sentry/node";
 import express from "express";
 import type { Request, Response, NextFunction, Express } from "express";
+import * as Sentry from "@sentry/node";
+import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import AppError from "./utils/AppError";
 import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventsRoutes";
@@ -14,7 +16,7 @@ import teamRoutes from "./routes/teamRoutes";
 import workspaceRoutes from "./routes/workspaceRoutes";
 import filterRoutes from "./routes/pageFilterRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
-import githubRoutes from "./routes/githubRoutes"; // for github integration
+import githubRoutes from "./routes/githubRoutes"; // for GitHub integration
 import type { Socket } from "socket.io";
 // import webhookRoutes from "./routes/ghWebhookRoutes";
 // import commitsRoutes from "./routes/commitsRoutes";
@@ -34,25 +36,9 @@ const PORT = process.env.PORT || 5173;
 const app: Express = express();
 const server = createServer(app);
 
-Sentry.init({
-	dsn: "https://ca633bd0aa68f0c8d9a9e5fadbd04945@o4506289111302144.ingest.sentry.io/4506289115168768",
-	integrations: [
-		// enable HTTP calls tracing
-		new Sentry.Integrations.Http({ tracing: true }),
-		// enable Express.js middleware tracing
-		new Sentry.Integrations.Express({ app }),
-	],
-	// Performance Monitoring
-	tracesSampleRate: 1.0,
-	// Set sampling rate for profiling - this is relative to tracesSampleRate
-	profilesSampleRate: 1.0,
-});
-
-// The request handler must be the first middleware on the app
-app.use(Sentry.Handlers.requestHandler());
-
-// TracingHandler creates a trace for every incoming request
-app.use(Sentry.Handlers.tracingHandler());
+// Setup Sentry error handler
+require("./instrument"); // Ensure this is called before importing other modules
+Sentry.setupExpressErrorHandler(app);
 
 const swaggerUI = require("swagger-ui-express");
 const swaggerjsdoc = require("swagger-jsdoc");
@@ -78,7 +64,7 @@ const options = {
 };
 const swaggerDocument = swaggerjsdoc(options);
 
-// database connection
+// Database connection
 let dbname = "test";
 if (process.env.NODE_ENV === "test") {
 	dbname = "testing";
@@ -86,54 +72,39 @@ if (process.env.NODE_ENV === "test") {
 mongoose.set("strictQuery", false);
 mongoose
 	.connect(MONGO_URL, { dbName: dbname })
-	.then((): void => {
+	.then(() => {
 		console.log("Database Connected");
 	})
-	.catch((err: string): void => {
+	.catch((err) => {
 		console.log("Database Connection Error", err);
 	});
 
-const vercelAccess: StaticOrigin = /[\w-\/:]*squared-52c50d26\.vercel\.app/;
+const vercelBranchPattern =
+	/^https:\/\/squared-[a-z0-9-]+-squared-52c50d26\.vercel\.app$/;
+const productionDomain = "https://squared-web.vercel.app";
+const localDevDomain = "http://localhost:3000";
 
-const whitelist = [
-	"http://localhost:3000",
-	`http://localhost:${PORT}`,
-	"https://app.squaredmade.com",
-	"https://develop.squaredmade.com",
-	"https://squared-web.vercel.app",
-	vercelAccess,
-];
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			// Allow requests from Vercel branch deployments, production domain, and local development
+			if (
+				!origin ||
+				vercelBranchPattern.test(origin) ||
+				origin === productionDomain ||
+				origin === localDevDomain
+			) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true, // Allows credentials to be sent in requests
+	}),
+);
 
-type StaticOrigin =
-	| boolean
-	| string
-	| RegExp
-	| Array<boolean | string | RegExp>;
-
-type CustomOrigin = (
-	requestOrigin: string | undefined,
-	callback: (err: Error | null, origin?: StaticOrigin) => void,
-) => void;
-
-const corsOptions = {
-	credentials: true,
-	origin: (
-		origin: StaticOrigin | CustomOrigin | undefined,
-		callback: (err: Error | null, allow?: boolean) => void,
-	): void => {
-		if (whitelist.indexOf(String(origin)) !== -1 || !origin) {
-			callback(null, true);
-		} else {
-			callback(new Error("Not allowed by CORS"), false);
-		}
-	},
-};
-
-const io = new Server(server, {
-	cors: {
-		origin: whitelist,
-	},
-});
+const io = new Server(server);
 
 const userSocketId: { [key: string]: string } = {};
 
@@ -162,19 +133,15 @@ io.on("connection", (socket: Socket) => {
 	);
 });
 
-app.use(Sentry.Handlers.errorHandler());
-
-// middlewere
-app.use(cors(corsOptions));
+// Middleware
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-// middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-// routes
+// Routes
 app.use("/auth", authRoutes);
 app.use("/event", eventRoutes);
 app.use("/task", taskRoutes);
@@ -189,12 +156,12 @@ app.get("/ping", (_req, res) => {
 	res.send("pong");
 });
 
-// if url path does not match with route path
+// Default 404 handler
 app.all("*", (req: Request, res: Response, next: NextFunction): void => {
 	next(new AppError("$$$ Page Not Found $$$", 404));
 });
 
-// default error
+// Default error handler
 app.use(
 	(
 		err: { status: number; message: string },
@@ -204,12 +171,13 @@ app.use(
 	): void => {
 		const { status = 500 } = err;
 		if (!err.message) err.message = "$$$ Internal Server Error $$$";
-
 		res.status(status).send(err.message);
 	},
 );
 
-server.listen(PORT, (): void => {});
+server.listen(PORT, (): void => {
+	console.log(`Server is running on port ${PORT}`);
+});
 
 module.exports = app;
 export default app;
