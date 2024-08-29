@@ -64,8 +64,8 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: pnpm install
+        # if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: pnpm install --recursive --workspace-concurrency 1
 
       - name: Run linting check
         run: pnpm lint
