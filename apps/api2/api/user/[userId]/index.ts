@@ -53,6 +53,7 @@ export function createRoute(): Route<Params> {
 				const newUser = await prisma.user.create({
 					data: {
 						id: userId,
+						defaultWorkspaceId: null,
 						...body,
 					} as User,
 				});
