@@ -1,7 +1,2 @@
-# Define the desired author information
-DESIRED_AUTHOR_NAME="yoloOnTheBattlefield"
-DESIRED_AUTHOR_EMAIL="cristianfloreadev@gmail.com"
-
-# Allow the commit to proceed
-exit 0
-
+# lint the commit message
+npx commitlint --edit $1
