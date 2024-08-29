@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import StatusDropdown from "@/components/StatusDropdown";
+import { Button } from "@/components/ui/button";
 import { setBackgroundColor } from "../DesignationsContainer";
 import type { StatusButtonProps } from "./StatusButton.interfaces";
 import {
@@ -52,20 +53,33 @@ const StatusButton = ({ location }: StatusButtonProps) => {
 		}
 	};
 
+	// const newIssueButton = () => {
+	// 	return (
+	// 		<button
+	// 			type="button"
+	// 			className={`inline-flex items-center h-7 border-[0.8px] border-border rounded px-2 py-0.5 mr-2 text-card-foreground text-sm shadow-md cursor-pointer ${handleBackground()}`}
+	// 			onClick={handleButtonClick}
+	// 		>
+	// 			<span className="hover:bg-nav-hover w-4 h-4 mr-2 cursor-pointer">
+	// 				{showIcon(newIssueStatus)}
+	// 			</span>
+	// 			<span className="text-sm font-semibold text-card-foreground ml-1 cursor-pointer">
+	// 				{newIssueStatus}
+	// 			</span>
+	// 		</button>
+	// 	);
+	// };
+
 	const newIssueButton = () => {
 		return (
-			<button
-				type="button"
-				className={`inline-flex items-center h-7 border-[0.8px] border-border rounded px-2 py-0.5 mr-2 text-card-foreground text-sm shadow-md cursor-pointer ${handleBackground()}`}
-				onClick={handleButtonClick}
-			>
+			<Button variant="outline" onClick={handleButtonClick}>
 				<span className="hover:bg-nav-hover w-4 h-4 mr-2 cursor-pointer">
 					{showIcon(newIssueStatus)}
 				</span>
 				<span className="text-sm font-semibold text-card-foreground ml-1 cursor-pointer">
 					{newIssueStatus}
 				</span>
-			</button>
+			</Button>
 		);
 	};
 

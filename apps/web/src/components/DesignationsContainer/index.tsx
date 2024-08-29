@@ -2,6 +2,7 @@ import { useState } from "react";
 import LabelButton from "@/components/LabelButton";
 import PriorityButton from "@/components/PriorityButton";
 import StatusButton from "@/components/StatusButton";
+import { StatusDropdownRefactored } from "../StatusDropdownRefactored/intex";
 import DateButton from "@/components/DateButton";
 import EffortEstimateButton from "@/components/EffortEstimateButton";
 import HelpButton from "@/components/HelpButton";
@@ -119,11 +120,11 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 		<>
 			{location === "newIssue" && (
 				<div className="flex flex-row flex-start items-center h-9">
-					<StatusButton location={location} />
-					<PriorityButton location={location} />
+					<StatusDropdownRefactored location={location} />
+					{/* <PriorityButton location={location} />
 					<LabelButton location={location} />
 					<DateButton location={location} />
-					<EffortEstimateButton location={location} />
+					<EffortEstimateButton location={location} /> */}
 				</div>
 			)}
 

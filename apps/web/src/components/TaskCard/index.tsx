@@ -12,7 +12,7 @@ import TaskCardTitle from "@/components/TaskCardTitle";
 import TaskCardPriority from "@/components/TaskCardPriority";
 import TaskCardLabels from "@/components/TaskCardLabels";
 import TaskCardDate from "@/components/TaskCardDate";
-import { formatDate } from "date-fns/format";
+import formatDate from "date-fns/format";
 import { setTaskPage } from "@/store/taskData";
 import ProfileImage from "@/components/ProfileImage";
 import { SocketContext } from "@/app/SocketProvider";
