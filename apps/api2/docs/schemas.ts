@@ -8,6 +8,7 @@ import {
 } from "./activity/schema";
 import { CommentSchema } from "./comment/schema";
 import { NotificationSchema } from "./notification/schema";
+import { WorkspaceSchema } from "./workspace";
 
 const schemas = {
 	Task: TaskSchema,
@@ -16,6 +17,7 @@ const schemas = {
 	Commit: CommitSchema,
 	TaskEvent: TaskEventSchema,
 	TaskEventLog: TaskEventLogSchema,
+	Workspace: WorkspaceSchema,
 	User: {
 		type: "object",
 		properties: {
@@ -55,41 +57,6 @@ const schemas = {
 			defaultWorkspaceId: {
 				type: "string",
 				description: "ID of the user's default workspace",
-			},
-		},
-	},
-	Workspace: {
-		type: "object",
-		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the workspace",
-			},
-			name: {
-				type: "string",
-				description: "Name of the workspace",
-			},
-			url: {
-				type: "string",
-				description: "URL of the workspace",
-			},
-			companySize: {
-				type: "integer",
-				description: "Size of the company associated with the workspace",
-			},
-			issuesCreated: {
-				type: "integer",
-				description: "Number of issues created in the workspace",
-			},
-			universalTokenLinkId: {
-				type: "string",
-				description:
-					"ID of the universal token link associated with the workspace",
-			},
-			githubRepoInfoId: {
-				type: "string",
-				description:
-					"ID of the GitHub repository info associated with the workspace",
 			},
 		},
 	},
