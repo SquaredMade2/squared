@@ -1,7 +1,15 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "files": {
-    "ignore": ["node_modules", ".next", "dist", "coverage"]
+    "ignore": [
+      "node_modules",
+      ".next",
+      "dist",
+      "coverage",
+      "generated",
+      ".storybook",
+      "cypress"
+    ]
   },
   "organizeImports": {
     "enabled": true
@@ -20,7 +28,9 @@
   },
   "overrides": [
     {
-      "include": ["packages/ui/**"],
+      "include": [
+        "packages/ui/**"
+      ],
       "linter": {
         "rules": {
           "suspicious": {
@@ -43,6 +53,18 @@
           },
           "performance": {
             "noAccumulatingSpread": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": [
+        "apps/api2/api/index.ts"
+      ],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noBannedTypes": "off"
           }
         }
       }
