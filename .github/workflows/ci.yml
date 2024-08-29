@@ -57,8 +57,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      - name: Ensure prisma is generated
-        run: pnpm db:gen
-
       - name: Run tests
         run: pnpm test:ci
