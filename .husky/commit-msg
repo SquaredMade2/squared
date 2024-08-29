@@ -1,2 +1,2 @@
-# lint the commit message
+# Lint the commit message
 npx commitlint --edit $1
