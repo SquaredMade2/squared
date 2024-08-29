@@ -91,26 +91,7 @@ jobs:
         run: npx turbo-ignore ${{ matrix.workspace }} --task=test || true
 
       - name: Run tests
-        run: pnpm --filter=${{ matrix.workspace }} test
-        if: ${{ success() }}
-
-  build:
-    needs: [test, setup]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        workspace: ${{ fromJSON(needs.setup.outputs.workspace_list) }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.9.0
-
-      - name: Run turbo-ignore for build
-        run: npx turbo-ignore ${{ matrix.workspace }} --task=build || true
+        run: npx turbo --filter=${{ matrix.workspace }} test
 
       - name: Run build
-        run: pnpm --filter=${{ matrix.workspace }} build
-        if: ${{ success() }}
+        run: npx turbo --filter=${{ matrix.workspace }} build
