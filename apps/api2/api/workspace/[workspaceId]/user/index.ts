@@ -14,7 +14,7 @@ export function createRoute(): Route<Params> {
 					where: {
 						Workspaces: {
 							some: {
-								id: workspaceId,
+								workspaceId: workspaceId,
 							},
 						},
 					},

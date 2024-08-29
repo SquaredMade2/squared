@@ -43,10 +43,9 @@ export function createRoute(): Route<Params> {
 		},
 		POST: async ({ userId }, body) => {
 			try {
-				const ifUserExists = await prisma.user.findUnique({
+				const ifUserExists: User | null = await prisma.user.findUnique({
 					where: { id: userId },
 				});
-
 				if (ifUserExists) {
 					throw new Error("User already exists");
 				}
@@ -80,7 +79,7 @@ export function createRoute(): Route<Params> {
 
 				return { message: "User deleted." };
 			} catch (err) {
-				console.error("Error while creatig new user", err);
+				console.error("Error while creating new user", err);
 				throw new Error("Failed to delete user");
 			}
 		},

@@ -4,7 +4,7 @@ import express from "express";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
-import { PrismaClient } from "@repo/db";
+import { PrismaClient } from "@repo/test-db";
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
@@ -25,17 +25,20 @@ import * as $20ac97 from "./auth";
 import * as $b27241 from "./auth/[token]";
 import * as $5925fb from "./activity/[taskId]";
 
-export type AllRouteDeps = Parameters<typeof $230080.createRoute>[0] &
-	Parameters<typeof $31d753.createRoute>[0] &
-	Parameters<typeof $61fb65.createRoute>[0] &
-	Parameters<typeof $0a9f89.createRoute>[0] &
-	Parameters<typeof $abb393.createRoute>[0] &
-	Parameters<typeof $8f61d9.createRoute>[0] &
-	Parameters<typeof $302cff.createRoute>[0] &
-	Parameters<typeof $97a568.createRoute>[0] &
-	Parameters<typeof $20ac97.createRoute>[0] &
-	Parameters<typeof $b27241.createRoute>[0] &
-	Parameters<typeof $5925fb.createRoute>[0];
+export type AllRouteDeps =
+  & Parameters<typeof $2d5459.createRoute>[0]
+  & Parameters<typeof $230080.createRoute>[0]
+  & Parameters<typeof $31d753.createRoute>[0]
+  & Parameters<typeof $d8d9aa.createRoute>[0]
+  & Parameters<typeof $61fb65.createRoute>[0]
+  & Parameters<typeof $0a9f89.createRoute>[0]
+  & Parameters<typeof $abb393.createRoute>[0]
+  & Parameters<typeof $8f61d9.createRoute>[0]
+  & Parameters<typeof $302cff.createRoute>[0]
+  & Parameters<typeof $97a568.createRoute>[0]
+  & Parameters<typeof $20ac97.createRoute>[0]
+  & Parameters<typeof $b27241.createRoute>[0]
+  & Parameters<typeof $5925fb.createRoute>[0]
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
 
@@ -113,29 +116,11 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     type Params = { taskId: string };
     const r: Route<Params> = $8f61d9.createRoute(deps);
 
-	{
-		type Params = {};
-		const r: Route<Params> = $20ac97.createRoute(deps);
-
-		router.get("/api/auth", toQueryHandler(r.GET));
-		router.post("/api/auth", toMutationHandler(r.POST));
-		router.put("/api/auth", toMutationHandler(r.PUT));
-		router.delete("/api/auth", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = { token: string };
-		const r: Route<Params> = $b27241.createRoute(deps);
-
-		router.get("/api/auth/:token", toQueryHandler(r.GET));
-		router.post("/api/auth/:token", toMutationHandler(r.POST));
-		router.put("/api/auth/:token", toMutationHandler(r.PUT));
-		router.delete("/api/auth/:token", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = { taskId: string };
-		const r: Route<Params> = $5925fb.createRoute(deps);
+    router.get("/api/task/:taskId/comment", toQueryHandler(r.GET));
+    router.post("/api/task/:taskId/comment", toMutationHandler(r.POST));
+    router.put("/api/task/:taskId/comment", toMutationHandler(r.PUT));
+    router.delete("/api/task/:taskId/comment", toQueryHandler(r.DELETE));
+  }
 
   {
     type Params = { notificationId: string };
@@ -155,6 +140,26 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     router.post("/api/comment/:commentId", toMutationHandler(r.POST));
     router.put("/api/comment/:commentId", toMutationHandler(r.PUT));
     router.delete("/api/comment/:commentId", toQueryHandler(r.DELETE));
+  }
+
+  {
+    type Params = {  };
+    const r: Route<Params> = $20ac97.createRoute(deps);
+
+    router.get("/api/auth", toQueryHandler(r.GET));
+    router.post("/api/auth", toMutationHandler(r.POST));
+    router.put("/api/auth", toMutationHandler(r.PUT));
+    router.delete("/api/auth", toQueryHandler(r.DELETE));
+  }
+
+  {
+    type Params = { token: string };
+    const r: Route<Params> = $b27241.createRoute(deps);
+
+    router.get("/api/auth/:token", toQueryHandler(r.GET));
+    router.post("/api/auth/:token", toMutationHandler(r.POST));
+    router.put("/api/auth/:token", toMutationHandler(r.PUT));
+    router.delete("/api/auth/:token", toQueryHandler(r.DELETE));
   }
 
   {
