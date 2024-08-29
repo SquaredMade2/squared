@@ -2,12 +2,6 @@
 DESIRED_AUTHOR_NAME="yoloOnTheBattlefield"
 DESIRED_AUTHOR_EMAIL="cristianfloreadev@gmail.com"
 
-# Set the author information locally
-git config user.name "$DESIRED_AUTHOR_NAME"
-git config user.email "$DESIRED_AUTHOR_EMAIL"
-
-echo "Set author information locally to $DESIRED_AUTHOR_NAME <$DESIRED_AUTHOR_EMAIL>."
-
 # Allow the commit to proceed
 exit 0
 
