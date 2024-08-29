@@ -12,7 +12,10 @@ jobs:
     outputs:
       workspace_list: ${{ steps.get-workspaces.outputs.workspaces }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
