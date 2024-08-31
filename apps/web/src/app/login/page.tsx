@@ -88,7 +88,7 @@ export default function Login() {
 					if (workspaces?.length) {
 						router.push(`/${workspaces[0].url}`);
 					} else {
-						router.push("/join");
+						user.onBoarding ? router.push("/onboarding") : router.push("/join");
 					}
 				}
 				setLoading(false);
