@@ -1,15 +1,11 @@
 import React, { useState } from "react";
 import ButtonIcon from "../ButtonIcon";
-import ViewButton from "../ViewButton";
 import LogoutButton from "../LogoutButton";
 import ThemeSwitcher from "../ThemeSwitcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faInbox, faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useRouter, usePathname } from "next/navigation";
-import ToggleNavBar from "../ToggleNavBar";
-import WorkspaceButton from "../WorkspaceButton";
-import { SideNavNewIssueButton } from "../NewIssueButton";
 import SearchButton from "../SearchButton";
 import SearchCommand from "../SearchCommand";
 
@@ -17,7 +13,6 @@ const IconLeftMenu = () => {
 	const router = useRouter();
 	const currentRoute = usePathname();
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-	const { showNavBar } = useAppSelector((state) => state.userSettings);
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
 	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
 

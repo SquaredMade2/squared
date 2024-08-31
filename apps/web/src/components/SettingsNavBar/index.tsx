@@ -2,13 +2,7 @@
 import type React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import {
-	BriefcaseBusiness,
-	ChevronLeft,
-	CircleUser,
-	Plus,
-	Users,
-} from "lucide-react";
+import { BriefcaseBusiness, CircleUser, Plus, Users } from "lucide-react";
 import { setCurrentTeam } from "@/store/taskData";
 import type { RootState } from "@/store";
 import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces";
