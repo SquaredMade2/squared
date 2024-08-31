@@ -11,13 +11,13 @@ export const createModalStore = (
 ) => {
 	return createStore<ModalStore>()((set) => ({
 		...initState,
-		setShowTaskForm: (input) => async () => {
+		setShowTaskForm: (input) => {
 			set({ showTaskForm: input });
 		},
-		setTaskFormData: (task) => async () => {
+		setTaskFormData: (task) => {
 			set({ taskFormData: task });
 		},
-		setShowCommand: (input) => async () => {
+		setShowCommand: (input) => {
 			set({ showCommand: input });
 		},
 	}));
