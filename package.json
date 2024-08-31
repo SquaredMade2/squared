@@ -12,7 +12,7 @@
     "docker:db:down": "pnpm --filter=test-db run docker:db:down",
     "docker:db:seed": "pnpm --filter=test-db run db:seed",
     "docker:up": "docker-compose up",
-    "dev": "turbo run dev --filter=web --filter=api2 --filter=api",
+    "dev": "turbo run dev --filter=web --filter=api2",
     "check-types": "turbo run check-types",
     "clean": "turbo run clean",
     "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
