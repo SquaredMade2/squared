@@ -35,11 +35,6 @@ const IconLeftMenu = () => {
 	return (
 		<div className="flex flex-col h-full items-center w-full">
 			<div className="flex flex-col items-center">
-				{homeRoute && (
-					<div className={iconStyle}>
-						<ToggleNavBar hover="bg-card" />
-					</div>
-				)}
 				<div className={iconStyle}>
 					<ButtonIcon
 						icon={<FontAwesomeIcon icon={faHouse} />}
@@ -56,17 +51,6 @@ const IconLeftMenu = () => {
 						setIsSearchCommand={setIsSearchCommand}
 					/>
 				</div>
-				{!showNavBar && homeRoute && (
-					<>
-						<div className={iconStyle}>
-							<WorkspaceButton />
-						</div>
-
-						<div className={iconStyle}>
-							<SideNavNewIssueButton />
-						</div>
-					</>
-				)}
 
 				<div className={iconStyle}>
 					<ButtonIcon
@@ -86,11 +70,7 @@ const IconLeftMenu = () => {
 						hoverBg="bg-card"
 					/>
 				</div>
-				{homeRoute && (
-					<div className={iconStyle}>
-						<ViewButton />
-					</div>
-				)}
+
 				<div className={iconStyle}>
 					<ThemeSwitcher />
 				</div>

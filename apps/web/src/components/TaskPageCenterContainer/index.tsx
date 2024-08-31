@@ -3,21 +3,26 @@ import EventTabs from "../TaskPageActivityTimeline/EventTabs";
 import TaskPageTitle from "@/components/taskPageTitle/index";
 import TaskCardTop from "@/components/TaskCardTop";
 import ButtonIcon from "../ButtonIcon";
+import BackButton from "../BackButton";
 import type { TaskPageCenterContainerProps } from "./TaskPageCenterContainer.interfaces";
-
 import { ScrollArea } from "../ui/scroll-area";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { usePathname } from "next/navigation";
 
 const TaskPageCenterContainer = ({
 	setShowSideNav,
 }: TaskPageCenterContainerProps) => {
+	const path = usePathname();
+	const inboxPath = path.includes("/inbox");
 	return (
 		<div className="w-full snap-start z-0 overflow-x-hidden ">
 			<div className="flex items-center gap-2">
-				{/* <div className=" hidden mdsm:block">
-          <ToggleNavBar />
-        </div> */}
+				{!inboxPath && (
+					<div>
+						<BackButton hoverbackground="bg-card" />
+					</div>
+				)}
 				<div className=" w-full max850:w-10/12 overflow-hidden">
 					<TaskCardTop />
 				</div>

@@ -24,7 +24,6 @@ export default function RootLayout({
 						disableTransitionOnChange
 					>
 						<div className="h-full flex flex-row overflow-hidden">
-							<CurrentNavbar />
 							{children}
 						</div>
 					</ThemeProvider>

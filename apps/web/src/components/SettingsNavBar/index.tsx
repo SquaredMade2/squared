@@ -15,6 +15,7 @@ import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces"
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
+import BackButton from "../BackButton";
 
 const SettingsNavBar = ({
 	setLoading,
@@ -44,13 +45,8 @@ const SettingsNavBar = ({
 		<div className="bg-card min-w-64 min-h-screen h-full flex flex-col">
 			<div className="flex flex-col items-center pb-6 text-foreground">
 				<div>
-					<div
-						className="text-xl flex items-center py-6"
-						onClick={() => router.back()}
-					>
-						<span className="h-3 mr-3 hover:cursor-pointer">
-							<ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
-						</span>
+					<div className="text-lg flex items-center gap-2 py-6">
+						<BackButton hoverbackground="bg-accent" />
 						<h1 className="text-foreground cursor-pointer">Settings</h1>
 					</div>
 					<div className="mb-1 pl-0.5 flex items-center">
