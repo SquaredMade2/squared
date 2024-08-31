@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import * as DialogPrimitive from "@repo/ui/dialog";
 import { X } from "lucide-react";
 import { cn } from "@/utils/cn";
 
@@ -50,6 +50,7 @@ const DialogContent = React.forwardRef<
 		</DialogPrimitive.Content>
 	</DialogPortal>
 ));
+
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({

@@ -19,7 +19,7 @@ const NewIssueCloseButton = ({
 				<X className="size-5 cursor-pointer" />
 			</button>
 			<NewIssuePopUpCloseModal
-				showCloseModal={showCloseModal}
+				handleCloseClick={handleCancelClose}
 				handleCancelClose={handleCancelClose}
 				handleDiscard={handleDiscard}
 			/>

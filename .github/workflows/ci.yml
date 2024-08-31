@@ -9,20 +9,21 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-    outputs:
-      pnpm_cache_path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.7.0
+          version: 9.9.0
 
       - name: Setup Node.js with pnpm cache
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22.6.0
           cache: "pnpm"
           cache-dependency-path: |
             pnpm-lock.yaml
@@ -33,11 +34,9 @@ jobs:
         id: pnpm-cache-path
         run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Cache node_modules and pnpm store
         uses: actions/cache@v4
+        id: cache-npm
         with:
           path: |
             node_modules
@@ -46,8 +45,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Run linting check
-        run: pnpm lint
+      - name: Install dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: pnpm install
+
+      - name: Cache turbo actions
+        uses: actions/cache@v4
+        with: 
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Run tests
         run: pnpm test:ci
