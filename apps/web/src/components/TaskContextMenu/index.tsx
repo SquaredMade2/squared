@@ -94,8 +94,8 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>
-			
 			<ContextMenuSeparator />
+			
 			<ContextMenuItem onClick={deleteCurrentTask}>
 				<div className="mr-2">
 					<Trash className="size-4" color="red" />
