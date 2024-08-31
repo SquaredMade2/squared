@@ -10,7 +10,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 	return createStore<AuthStore>()((set) => ({
 		...initState,
 		login: async (login: Login) => {
-			const response: AuthReturn = await axios.post(apiString(""), { login });
+			const response: AuthReturn = await axios.post(apiString(""), login);
 			set({ user: response.data.user });
 			return response.data;
 		},

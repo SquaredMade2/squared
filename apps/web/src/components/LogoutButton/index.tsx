@@ -1,37 +1,27 @@
 import React from "react";
 import ButtonIcon from "../ButtonIcon";
-import axios from "axios";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
-import { clearUser } from "@/store/userSettings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { useAuthStore } from "@/storeZ/provider";
 
 const LogoutButton = () => {
-	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const { toast } = useToast();
-	const signOutHandler = async () => {
-		await signOut({ redirect: false }).then(() => {
-			router.push("/login");
-		});
-	};
+	const { logout } = useAuthStore();
 
 	const handleLogout = async (): Promise<void> => {
-		await signOutHandler();
 		try {
-			const response = await axios({
-				method: "POST",
-				url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
-				withCredentials: true,
-			});
-			dispatch(clearUser());
-			router.replace(`${process.env.NEXT_PUBLIC_URL}`);
+			await logout();
 
-			toast({ title: response.data.success });
-		} catch (error) {}
+			router.replace("/login");
+
+			toast({ title: "Logged out successfully." });
+		} catch (error) {
+			console.error("Logout failed", error);
+			toast({ title: "Failed to log out", variant: "destructive" });
+		}
 	};
 	return (
 		<ButtonIcon

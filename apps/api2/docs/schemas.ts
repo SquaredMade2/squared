@@ -9,6 +9,7 @@ import {
 import { CommentSchema } from "./comment/schema";
 import { NotificationSchema } from "./notification/schema";
 import { WorkspaceSchema } from "./workspace";
+import { UserSchema } from "./user";
 
 const schemas = {
 	Task: TaskSchema,
@@ -18,48 +19,7 @@ const schemas = {
 	TaskEvent: TaskEventSchema,
 	TaskEventLog: TaskEventLogSchema,
 	Workspace: WorkspaceSchema,
-	User: {
-		type: "object",
-		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the user",
-			},
-			name: {
-				type: "string",
-				description: "Name of the user",
-			},
-			username: {
-				type: "string",
-				description: "Username of the user",
-			},
-			email: {
-				type: "string",
-				description: "Email address of the user",
-			},
-			password: {
-				type: "string",
-				description: "Hashed password of the user",
-			},
-			verified: {
-				type: "boolean",
-				description: "Indicates whether the user's email is verified",
-			},
-			lastLogin: {
-				type: "string",
-				format: "date-time",
-				description: "The last login time of the user",
-			},
-			onBoarding: {
-				type: "boolean",
-				description: "Indicates whether the user has completed onboarding",
-			},
-			defaultWorkspaceId: {
-				type: "string",
-				description: "ID of the user's default workspace",
-			},
-		},
-	},
+	User: UserSchema,
 	Comment: CommentSchema,
 	Notification: NotificationSchema,
 	PageFilterModel: {

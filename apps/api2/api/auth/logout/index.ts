@@ -58,7 +58,10 @@ export function createRoute(): Route<Params> {
 				return {
 					data: {
 						user: null,
-						message: "Internal server error",
+						message:
+							error instanceof Error
+								? `Error logging out: ${error.message}`
+								: "Error logging out: Internal server error",
 						variant: "destructive",
 					},
 				};

@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className="text-sm">
+			<body className="text-sm min-h-[100vh]">
 				<Providers>
 					<CommandPalette />
 					<ThemeProvider

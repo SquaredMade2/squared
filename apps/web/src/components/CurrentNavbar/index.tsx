@@ -4,7 +4,10 @@ import { usePathname } from "next/navigation";
 
 const CurrentNavbar = () => {
 	const currentRoute = usePathname();
-	const isLoginRoute = currentRoute.includes("/login");
+	const isLoginRoute =
+		currentRoute.includes("/login") ||
+		currentRoute.includes("/register") ||
+		currentRoute === "/";
 	return (
 		!isLoginRoute && (
 			<>
