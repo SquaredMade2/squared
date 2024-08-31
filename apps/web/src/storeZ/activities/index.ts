@@ -2,6 +2,7 @@ import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import type { ActivityState, ActivityStore, ActivityType } from "./interfaces";
 import { persist } from "zustand/middleware";
+import { useActivityStore } from "../provider";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
@@ -14,15 +15,16 @@ export const createActivityStore = (
 		persist(
 			(set) => ({
 				...initState,
-				addTaskEvent: (event, taskId, author) => async (state) => {
+				addTaskEvent: async (event, taskId, author) => {
 					const response: { data: ActivityType } = await axios.post(
 						apiString(taskId),
 						{ ...event, type: "TASK_EVENT", author },
 					);
-					set({ events: [...state.events, response.data] });
+					const { events } = useActivityStore();
+					set({ events: [...events, response.data] });
 					return response.data.taskEvent;
 				},
-				addCommitEvent: (event, taskId, author) => async (state) => {
+				addCommitEvent: async (event, taskId, author) => {
 					const response: { data: ActivityType } = await axios.post(
 						apiString(taskId),
 						{
@@ -31,10 +33,11 @@ export const createActivityStore = (
 							author,
 						},
 					);
-					set({ events: [...state.events, response.data] });
+					const { events } = useActivityStore();
+					set({ events: [...events, response.data] });
 					return response.data.commit;
 				},
-				getTaskEvents: (taskId) => async () => {
+				getTaskEvents: async (taskId) => {
 					const response: { data: ActivityType[] } = await axios.get(
 						apiString(taskId),
 					);

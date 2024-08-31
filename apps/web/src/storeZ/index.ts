@@ -1,5 +1,5 @@
 import { createStore, type StoreApi } from "zustand/vanilla";
-import { createActivityStore, type ActivityStore } from "./events";
+import { createActivityStore, type ActivityStore } from "./activities";
 import { createAuthStore, type AuthStore } from "./auth";
 import { createCommentStore, type CommentStore } from "./comments";
 import { createModalStore, type ModalStore } from "./modals";
