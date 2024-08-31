@@ -1,6 +1,5 @@
 "use client";
 
-import { NextAuthProvider } from "@/app/Providers";
 import SocketProvider from "@/app/SocketProvider";
 import AuthProvider from "@/components/AuthProvider";
 import { store, persistor } from "@/store/index";
@@ -13,11 +12,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 		<Provider store={store}>
 			<SquaredStoreProvider>
 				<PersistGate loading={null} persistor={persistor}>
-					<NextAuthProvider>
-						<AuthProvider>
-							<SocketProvider>{children}</SocketProvider>
-						</AuthProvider>
-					</NextAuthProvider>
+					<AuthProvider>
+						<SocketProvider>{children}</SocketProvider>
+					</AuthProvider>
 				</PersistGate>
 			</SquaredStoreProvider>
 		</Provider>
