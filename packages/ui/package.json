@@ -10,6 +10,10 @@
       "import": "./src/arrow/index.ts",
       "require": "./src/arrow/index.ts"
     },
+    "./avatar": {
+      "import": "./src/avatar/index.ts",
+      "require": "./src/avatar/index.ts"
+    },
     "./collapsible": {
       "import": "./src/collapsible/index.ts",
       "require": "./src/collapsible/index.ts"
