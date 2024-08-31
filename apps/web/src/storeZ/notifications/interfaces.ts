@@ -5,16 +5,10 @@ export type NotificationState = {
 };
 
 export type NotificationActions = {
-	addNotification: (
-		notification: Notification,
-	) => (state: NotificationState) => Promise<Notification>;
-	deleteNotification: (
-		notificationId: string,
-	) => (state: NotificationState) => void;
-	getAllNotifications: (
-		userId: string,
-	) => (state: NotificationState) => Promise<Notification[]>;
-	clearNotifications: (userId: string) => (state: NotificationState) => void;
+	addNotification: (notification: Notification) => Promise<Notification>;
+	deleteNotification: (notificationId: string) => void;
+	getAllNotifications: (userId: string) => Promise<Notification[]>;
+	clearNotifications: (userId: string) => void;
 };
 
 export type NotificationStore = NotificationState & NotificationActions;

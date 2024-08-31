@@ -4,6 +4,7 @@ import type { NotificationState, NotificationStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import type { Notification } from "@repo/db";
 import { persist } from "zustand/middleware";
+import { useNotificationStore } from "../provider";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
@@ -16,27 +17,27 @@ export const createNotificationStore = (
 		persist(
 			(set) => ({
 				...initState,
-				addNotification: (notification) => async (state) => {
+				addNotification: async (notification) => {
 					const response = await axios.post(apiString(uuidv4()), notification);
-					set({ notifications: [...state.notifications, response.data] });
+					const { notifications } = useNotificationStore();
+					set({ notifications: [...notifications, response.data] });
 					return response.data;
 				},
-				deleteNotification: (notificationId) => async (state) => {
+				deleteNotification: async (notificationId) => {
 					await axios.delete(apiString(notificationId));
+					const { notifications } = useNotificationStore();
 					set({
-						notifications: state.notifications.filter(
-							(t) => t.id !== notificationId,
-						),
+						notifications: notifications.filter((t) => t.id !== notificationId),
 					});
 				},
-				getAllNotifications: (userId) => async (state) => {
+				getAllNotifications: async (userId) => {
 					const response: { data: Notification[] } = await axios.get(
 						`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
 					);
 					set({ notifications: response.data });
 					return response.data;
 				},
-				clearNotifications: (userId) => async (state) => {
+				clearNotifications: async (userId) => {
 					const response: { data: Notification[] } = await axios.get(
 						`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
 					);
