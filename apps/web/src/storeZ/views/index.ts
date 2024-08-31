@@ -2,6 +2,7 @@ import { createStore } from "zustand/vanilla";
 export * from "./interfaces";
 import type { ViewsStore, ViewsState } from "./interfaces";
 import { persist } from "zustand/middleware";
+import { useViewsStore } from "../provider";
 
 export const createViewsStore = (
 	initState: ViewsState = {
@@ -15,25 +16,26 @@ export const createViewsStore = (
 		persist(
 			(set) => ({
 				...initState,
-				setCurrentFilter: (filter) => () => {
+				setCurrentFilter: (filter) => {
 					set({ currentFilter: filter });
 				},
-				updateCurrentFilter: (filter) => (state) => {
-					set({ currentFilter: { ...state.currentFilter, ...filter } });
+				updateCurrentFilter: (filter) => {
+					const { currentFilter } = useViewsStore();
+					set({ currentFilter: { ...currentFilter, ...filter } });
 				},
-				removeFilter: () => () => {
+				removeFilter: () => {
 					set({ currentFilter: null });
 				},
 				getCurrentFilter: () => {
 					return initState.currentFilter;
 				},
-				setShowDateTime: (input) => () => {
+				setShowDateTime: (input) => {
 					set({ showDateTime: input });
 				},
-				setShowPriority: (input) => () => {
+				setShowPriority: (input) => {
 					set({ showPriority: input });
 				},
-				setShowLabels: (input) => () => {
+				setShowLabels: (input) => {
 					set({ showLabels: input });
 				},
 			}),
