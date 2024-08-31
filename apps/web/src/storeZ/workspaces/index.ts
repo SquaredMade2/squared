@@ -4,6 +4,7 @@ import type { WorkspaceState, WorkspaceStore } from "./interfaces";
 import type { Workspace } from "@repo/db";
 import axios from "axios";
 import { persist } from "zustand/middleware";
+import { useWorkspaceStore } from "../provider";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${path}`;
@@ -18,42 +19,44 @@ export const createWorkspaceStore = (
 		persist(
 			(set) => ({
 				...initState,
-				addWorkspace: (workspace) => async (state) => {
+				addWorkspace: async (workspace) => {
 					const newWorkspace: Workspace = await axios.post(
 						apiString(workspace.id),
 						workspace,
 					);
-
+					const { workspaces } = useWorkspaceStore();
 					set({
-						workspaces: [...state.workspaces, newWorkspace],
+						workspaces: [...workspaces, newWorkspace],
+						currentWorkspace: newWorkspace,
 					});
 					return newWorkspace;
 				},
-				getWorkspace: (workspaceId) => async (state) => {
-					const stateWorkspace = state.workspaces.find(
-						(t) => t.id === workspaceId,
-					);
+				getWorkspace: async (workspaceId) => {
+					const { workspaces } = useWorkspaceStore();
+					const stateWorkspace = workspaces.find((t) => t.id === workspaceId);
 					return stateWorkspace || (await axios.get(apiString(workspaceId)));
 				},
-				updateWorkspace: (workspaceId, workspace) => async (state) => {
+				updateWorkspace: async (workspaceId, workspace) => {
 					const updatedWorkspace: Workspace = await axios.put(
 						apiString(workspaceId),
 						workspace,
 					);
+					const { workspaces } = useWorkspaceStore();
 					set({
-						workspaces: state.workspaces.map((t) =>
+						workspaces: workspaces.map((t) =>
 							t.id === workspaceId ? updatedWorkspace : t,
 						),
 					});
 					return updatedWorkspace;
 				},
-				deleteWorkspace: (workspaceId) => (state) => {
+				deleteWorkspace: async (workspaceId) => {
 					axios.delete(apiString(workspaceId));
+					const { workspaces } = useWorkspaceStore();
 					set({
-						workspaces: state.workspaces.filter((t) => t.id !== workspaceId),
+						workspaces: workspaces.filter((t) => t.id !== workspaceId),
 					});
 				},
-				getAllWorkspaces: (userId) =>
+				getAllWorkspaces: async (userId) =>
 					axios
 						.get(
 							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspaces`,

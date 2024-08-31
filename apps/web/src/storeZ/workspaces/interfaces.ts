@@ -6,17 +6,13 @@ export type WorkspaceState = {
 };
 
 export type WorkspaceActions = {
-	addWorkspace: (
-		workspace: Workspace,
-	) => (state: WorkspaceState) => Promise<Workspace>;
-	getWorkspace: (
-		workspaceId: string,
-	) => (state: WorkspaceState) => Promise<Workspace | undefined>;
+	addWorkspace: (workspace: Workspace) => Promise<Workspace>;
+	getWorkspace: (workspaceId: string) => Promise<Workspace | undefined>;
 	updateWorkspace: (
 		workspaceId: string,
 		workspace: Partial<Workspace>,
-	) => (state: WorkspaceState) => Promise<Workspace>;
-	deleteWorkspace: (workspaceId: string) => (state: WorkspaceState) => void;
+	) => Promise<Workspace>;
+	deleteWorkspace: (workspaceId: string) => void;
 	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 };
 
