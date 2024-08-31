@@ -36,6 +36,13 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					);
 					set({ user: null });
 					sessionStorage.removeItem("auth-store");
+					sessionStorage.removeItem("activity-store");
+					sessionStorage.removeItem("task-store");
+					sessionStorage.removeItem("notification-store");
+					sessionStorage.removeItem("team-store");
+					sessionStorage.removeItem("workspace-store");
+					sessionStorage.removeItem("user-store");
+					sessionStorage.removeItem("view-store");
 					return response.data;
 				},
 				resetPassword: async (email: string) => {
