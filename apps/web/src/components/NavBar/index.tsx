@@ -1,7 +1,9 @@
 "use client";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
+import NewIssueModal from "../NewIssueModal";
 import NewIssueButton from "@/components/NewIssueButton";
+import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { Team } from "@/store/taskData/taskData.interfaces";
 import {
 	Accordion,
@@ -56,6 +58,9 @@ const Navbar = () => {
 							</div>
 						</div>
 					</div>
+				</div>
+				<div className="absolute top-[100px] left-full">
+					<NewIssueModal />
 				</div>
 			</div>
 		</>
