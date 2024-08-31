@@ -40,7 +40,7 @@ export default function Login() {
 				if (response.user.defaultWorkspaceId) {
 					const workspace = await getWorkspace(
 						response.user.defaultWorkspaceId,
-					)({ workspaces, currentWorkspace });
+					);
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}
@@ -76,10 +76,7 @@ export default function Login() {
 			const checkUserWorkspaces = async () => {
 				setLoading(true);
 				if (user.defaultWorkspaceId) {
-					const workspace = await getWorkspace(user.defaultWorkspaceId)({
-						workspaces,
-						currentWorkspace,
-					});
+					const workspace = await getWorkspace(user.defaultWorkspaceId);
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}
