@@ -46,7 +46,6 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: pnpm install
 
       - name: Cache turbo actions
