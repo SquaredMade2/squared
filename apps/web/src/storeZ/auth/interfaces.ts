@@ -22,11 +22,11 @@ export type Login = {
 };
 
 export type AuthActions = {
-	login: (userId: string, login: Login) => () => Promise<AuthReturn["data"]>;
-	register: (login: Login) => () => Promise<AuthReturn["data"]>;
-	verifyUser: (token: string) => () => Promise<AuthReturn["data"]>;
-	logout: () => () => Promise<boolean>;
-	resetPassword: (email: string) => () => Promise<boolean>;
+	login: (login: Login) => Promise<AuthReturn["data"]>;
+	register: (login: Login) => Promise<AuthReturn["data"]>;
+	verifyUser: (token: string) => Promise<AuthReturn["data"]>;
+	logout: () => Promise<boolean>;
+	resetPassword: (email: string) => Promise<boolean>;
 };
 
 export type AuthStore = AuthState & AuthActions;

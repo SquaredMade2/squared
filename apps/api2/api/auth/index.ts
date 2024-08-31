@@ -216,16 +216,6 @@ export function createRoute(): Route<Params> {
 						},
 					};
 				}
-				if (type === "logout") {
-					res.clearCookie("token");
-					return {
-						data: {
-							user: null,
-							message: "logout successful.",
-							variant: "default",
-						},
-					};
-				}
 
 				// Default case if the type is neither 'register' nor 'login'
 				return {

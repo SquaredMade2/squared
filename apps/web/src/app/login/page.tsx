@@ -12,17 +12,18 @@ export default function Login() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const { user, login } = useAuthStore();
-	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore();
+	const { getWorkspace, getAllWorkspaces, workspaces, currentWorkspace } =
+		useWorkspaceStore();
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-			const response = await login("someUserId", {
+			const response = await login({
 				provider: "credentials",
 				type: "login",
 				email: data.email,
 				password: data.password,
-			})();
+			});
 
 			if (response?.user) {
 				toast({ title: "Login Successful, Welcome!" });
@@ -30,7 +31,7 @@ export default function Login() {
 				if (response.user.defaultWorkspaceId) {
 					const workspace = await getWorkspace(
 						response.user.defaultWorkspaceId,
-					);
+					)({ workspaces, currentWorkspace });
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}
@@ -63,7 +64,10 @@ export default function Login() {
 			const checkUserWorkspaces = async () => {
 				setLoading(true);
 				if (user.defaultWorkspaceId) {
-					const workspace = await getWorkspace(user.defaultWorkspaceId);
+					const workspace = await getWorkspace(user.defaultWorkspaceId)({
+						workspaces,
+						currentWorkspace,
+					});
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}
