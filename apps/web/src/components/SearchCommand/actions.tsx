@@ -1,6 +1,5 @@
 import axios from "axios";
 import type { RootState } from "@/store";
-import { signOut } from "next-auth/react";
 import { clearUser } from "@/store/userSettings";
 import { setShowNewIssue } from "@/store/showNewIssue";
 import { usePathname, useRouter } from "next/navigation";
@@ -24,6 +23,7 @@ import {
 	ArrowLeftRight,
 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import { useAuthStore } from "@/storeZ/provider";
 
 export class commandSchema {
 	router = useRouter();
@@ -309,19 +309,13 @@ export class commandSchema {
 					icon: <LogOut />,
 					text: "Log out",
 					function: async () => {
-						await signOut({ redirect: false }).then(() => {
-							this.router.push("/login");
-						});
+						const { logout } = useAuthStore();
 						try {
-							const response = await axios({
-								method: "POST",
-								url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
-								withCredentials: true,
-							});
-							this.dispatch(clearUser());
-							this.router.push(`${process.env.NEXT_PUBLIC_URL}`);
-							this.showToast("Logged out successfully");
-						} catch (error) {}
+							await logout();
+							this.showToast("Logged out successfully", "default");
+						} catch (error) {
+							this.showToast("Failed to log out", "destructive");
+						}
 					},
 					shortcut: ["Alt", "Shift", "Q"],
 				},
