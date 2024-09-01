@@ -10,13 +10,15 @@ import { ScrollArea } from "../ui/scroll-area";
 type Props = {
 	showInboxList: boolean;
 	closeBackdrop: () => void;
+	notifications: NotificationProps[];
 };
-const InboxList: React.FC<Props> = ({ showInboxList, closeBackdrop }) => {
+const InboxList: React.FC<Props> = ({
+	showInboxList,
+	closeBackdrop,
+	notifications,
+}) => {
 	const socket = useContext(SocketContext);
 	const user = useAppSelector((state) => state.userSettings.user);
-	const notifications: NotificationProps[] = useAppSelector(
-		(state) => state.notifications.notifications,
-	);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
