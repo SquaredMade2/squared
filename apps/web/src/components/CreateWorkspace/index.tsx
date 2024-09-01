@@ -2,15 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { isRejected } from "@reduxjs/toolkit";
-import { addWorkspace, getAllWorkspaces } from "@/store/taskData/thunks";
 import { useToast } from "../ui/use-toast";
 import { ChevronLeft } from "lucide-react";
-import { getUser } from "@/store/userSettings/thunks";
 import type { CreateWorkspaceProps } from "./CreateWorkspace.interfaces";
-import type { AppDispatch, RootState } from "@/store";
 import { Button } from "../ui/button";
+import { useAuthStore, useWorkspaceStore } from "@/storeZ/provider";
 // import { linkTo } from "@storybook/addon-links/*";
 
 const CreateWorkspace = ({
@@ -19,19 +15,13 @@ const CreateWorkspace = ({
 }: CreateWorkspaceProps) => {
 	const { toast } = useToast();
 	const router = useRouter();
-	const dispatch = useDispatch<AppDispatch>();
 
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
 	const urlRegex = /^[a-z0-9-]*$/;
 	const nameRegex = /^[a-zA-Z0-9-& ']+$/;
-	const workspaceList = useSelector(
-		(state: RootState) => state.taskData.workspaces,
-	);
-	const taskDataLoadingState = useSelector(
-		(state: RootState) => state.taskData.isLoading,
-	);
-	const user = useSelector((state: RootState) => state.userSettings.user);
+	const { workspaces, addWorkspace } = useWorkspaceStore();
+	const { user } = useAuthStore();
 
 	const checkUrl = (str: string) => {
 		const newStr = str.trim();
@@ -86,22 +76,19 @@ const CreateWorkspace = ({
 			name: inputValue,
 			url: finalWorkspaceUrl,
 		};
-
-		const createWorkspace = await dispatch(addWorkspace(workspaceData));
-
-		if (isRejected(createWorkspace)) {
-			toast({
-				title: "Workspace Url already exists.",
-				variant: "destructive",
-			});
-		} else {
-			dispatch(getUser());
-			setInputValue("");
-			setUrlInputValue("");
-			toast({ title: "Workspace created successfully!" });
-			!onboarding || !handleNextPage
-				? router.push(`/${finalWorkspaceUrl}`)
-				: handleNextPage();
+		try {
+			const { workspace, message, variant } = await addWorkspace(workspaceData);
+			toast({ title: message, variant });
+			// dispatch(getUser());
+			// setInputValue("");
+			// setUrlInputValue("");
+			// toast({ title: "Workspace created successfully!" });
+			// !onboarding || !handleNextPage
+			// 	? router.push(`/${finalWorkspaceUrl}`)
+			// 	: handleNextPage();
+		} catch (error) {
+			console.error("Error creating workspace:", error);
+			throw new Error(`Internal server error: ${error}`);
 		}
 	};
 
@@ -117,23 +104,17 @@ const CreateWorkspace = ({
 		setUrlInputValue(formattedUrlInput);
 	}, [inputValue]);
 
-	useEffect(() => {
-		if (!taskDataLoadingState) {
-			user && dispatch(getAllWorkspaces());
-		}
-	}, []);
-
 	return (
 		<div className="h-screen w-full bg-card relative flex flex-col items-center justify-center">
-			{!onboarding && workspaceList.length > 0 && (
+			{!onboarding && workspaces.length > 0 && (
 				<div className="w-screen absolute top-0 p-10 flex justify-between">
 					<div className="flex flex-col text-sm">
 						<span className="text-xs text-muted-foreground">Logged in as:</span>
-						<span className="text-foreground">{user.email}</span>
+						<span className="text-foreground">{user?.email}</span>
 					</div>
 					<div className="flex items-center space-x-1 text-foreground">
 						<ChevronLeft className="text-[#858699] size-5" />
-						<a href={`/${workspaceList[0].url}`}>Back to Squared</a>
+						<a href={`/${workspaces[0].url}`}>Back to Squared</a>
 					</div>
 				</div>
 			)}

@@ -1,17 +1,25 @@
 import { createStore } from "zustand/vanilla";
-export * from "./interfaces";
+import { persist } from "zustand/middleware";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 import type {
-	WorkspaceResponse,
 	WorkspaceState,
 	WorkspaceStore,
+	WorkspaceResponse,
 } from "./interfaces";
 import type { Workspace } from "@repo/db";
-import axios from "axios";
-import { persist } from "zustand/middleware";
-import { useWorkspaceStore } from "../provider";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${path}`;
+
+const WORKSPACE_TEMPLATE: Partial<Workspace> = {
+	name: "",
+	url: "",
+	companySize: null,
+	issuesCreated: null,
+	universalTokenLinkId: null,
+	githubRepoInfoId: null,
+};
 
 export const createWorkspaceStore = (
 	initState: WorkspaceState = {
@@ -21,62 +29,109 @@ export const createWorkspaceStore = (
 ) => {
 	return createStore<WorkspaceStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
-				addWorkspace: async (workspace) => {
-					const {
-						workspace: newWorkspace,
-						message,
-						variant,
-					}: WorkspaceResponse = await axios.post(
-						apiString(workspace.id),
-						workspace,
-					);
-					const { workspaces } = useWorkspaceStore();
-					if (!newWorkspace) {
-						return { workspace: null, message, variant };
+				addWorkspace: async (
+					workspace: Partial<Workspace>,
+				): Promise<WorkspaceResponse> => {
+					const workspaceId = uuidv4();
+
+					try {
+						const response = await axios.post<WorkspaceResponse>(
+							apiString(workspaceId),
+							{
+								id: workspaceId,
+								...WORKSPACE_TEMPLATE,
+								...workspace,
+							},
+						);
+
+						const { message, variant, workspace: newWorkspace } = response.data;
+
+						if (!newWorkspace) {
+							return { workspace: null, message, variant };
+						}
+
+						set((state) => ({
+							...state,
+							workspaces: [...state.workspaces, newWorkspace],
+							currentWorkspace: newWorkspace,
+						}));
+
+						return { workspace: newWorkspace, message, variant };
+					} catch (error) {
+						console.error("Error in addWorkspace:", error);
+						return {
+							workspace: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
 					}
-					set({
-						workspaces: [...workspaces, newWorkspace],
-						currentWorkspace: newWorkspace,
-					});
-					return { workspace: newWorkspace, message, variant };
 				},
-				getWorkspace: async (workspaceId) => {
-					const { workspaces } = useWorkspaceStore();
+				getWorkspace: async (
+					workspaceId: string,
+				): Promise<Workspace | undefined> => {
+					const { workspaces } = get();
 					const stateWorkspace = workspaces.find((t) => t.id === workspaceId);
-					return stateWorkspace || (await axios.get(apiString(workspaceId)));
+					if (stateWorkspace) {
+						return stateWorkspace;
+					}
+
+					try {
+						const response = await axios.get<Workspace>(apiString(workspaceId));
+						return response.data;
+					} catch (error) {
+						console.error("Error in getWorkspace:", error);
+						return undefined;
+					}
 				},
-				updateWorkspace: async (workspaceId, workspace) => {
-					const updatedWorkspace: Workspace = await axios.put(
-						apiString(workspaceId),
-						workspace,
-					);
-					const { workspaces } = useWorkspaceStore();
-					set({
-						workspaces: workspaces.map((t) =>
-							t.id === workspaceId ? updatedWorkspace : t,
-						),
-					});
-					return updatedWorkspace;
+				updateWorkspace: async (
+					workspaceId: string,
+					workspace: Partial<Workspace>,
+				): Promise<Workspace> => {
+					try {
+						const response = await axios.put<Workspace>(
+							apiString(workspaceId),
+							workspace,
+						);
+						const updatedWorkspace = response.data;
+
+						set((state) => ({
+							workspaces: state.workspaces.map((t) =>
+								t.id === workspaceId ? updatedWorkspace : t,
+							),
+						}));
+
+						return updatedWorkspace;
+					} catch (error) {
+						console.error("Error in updateWorkspace:", error);
+						throw error;
+					}
 				},
-				deleteWorkspace: async (workspaceId) => {
-					axios.delete(apiString(workspaceId));
-					const { workspaces } = useWorkspaceStore();
-					set({
-						workspaces: workspaces.filter((t) => t.id !== workspaceId),
-					});
+				deleteWorkspace: (workspaceId: string): void => {
+					try {
+						axios.delete(apiString(workspaceId));
+						set((state) => ({
+							workspaces: state.workspaces.filter((t) => t.id !== workspaceId),
+						}));
+					} catch (error) {
+						console.error("Error in deleteWorkspace:", error);
+					}
 				},
-				getAllWorkspaces: async (userId) =>
-					axios
-						.get(
+				getAllWorkspaces: async (userId: string): Promise<Workspace[]> => {
+					try {
+						const response = await axios.get<Workspace[]>(
 							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspaces`,
-						)
-						.then((response) => {
-							set({ workspaces: response.data });
-							return response.data;
-						})
-						.catch((err) => console.error(err)),
+						);
+
+						set({ workspaces: response.data });
+
+						return response.data;
+					} catch (error) {
+						console.error("Error in getAllWorkspaces:", error);
+						return [];
+					}
+				},
 			}),
 			{
 				name: "workspace-store",

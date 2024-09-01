@@ -12,7 +12,7 @@ export interface WorkspaceResponse {
 }
 
 export type WorkspaceActions = {
-	addWorkspace: (workspace: Workspace) => Promise<WorkspaceResponse>;
+	addWorkspace: (workspace: Partial<Workspace>) => Promise<WorkspaceResponse>;
 	getWorkspace: (workspaceId: string) => Promise<Workspace | undefined>;
 	updateWorkspace: (
 		workspaceId: string,
