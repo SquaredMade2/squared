@@ -8,6 +8,7 @@ import type {
 	WorkspaceResponse,
 } from "./interfaces";
 import type { Workspace } from "@repo/db";
+export { type WorkspaceStore } from "./interfaces";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${path}`;
