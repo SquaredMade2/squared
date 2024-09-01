@@ -1,8 +1,12 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "files": {
-    "ignore": ["node_modules"],
-    "include": ["src"]
+    "ignore": [
+      "node_modules"
+    ],
+    "include": [
+      "src"
+    ]
   },
   "organizeImports": {
     "enabled": true
@@ -19,36 +23,6 @@
       }
     }
   },
-  "overrides": [
-    {
-      "include": ["packages/ui/**"],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noExplicitAny": "off",
-            "noArrayIndexKey": "off"
-          },
-          "style": {
-            "noNonNullAssertion": "off"
-          },
-          "a11y": {
-            "useButtonType": "off",
-            "noSvgWithoutTitle": "off",
-            "useValidAnchor": "off"
-          },
-          "correctness": {
-            "noChildrenProp": "off"
-          },
-          "complexity": {
-            "noForEach": "off"
-          },
-          "performance": {
-            "noAccumulatingSpread": "off"
-          }
-        }
-      }
-    }
-  ],
   "javascript": {
     "globals": [
       "$",
