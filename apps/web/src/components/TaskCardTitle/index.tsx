@@ -71,7 +71,6 @@ const TaskCardTitle = ({
 							{isShown && (
 								<div className="flex items-center">
 									<TaskCardPriority task={task} border={false} />
-									test
 								</div>
 							)}
 							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer">
@@ -81,9 +80,9 @@ const TaskCardTitle = ({
 								<TaskCardStatus task={task} />
 							</div>
 							{location === "search" ? (
-								<span>{highlightText(taskTitle)}</span>
+								<span className="truncate">{highlightText(taskTitle)}</span>
 							) : (
-								<span className="cursor-pointer">{taskTitle}</span>
+								<span className="cursor-pointer truncate">{taskTitle}</span>
 							)}
 						</div>
 						<div className="flex flex-row gap-2 pr-2" />
