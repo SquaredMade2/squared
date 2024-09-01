@@ -1,10 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getUser } from "@/store/userSettings/thunks";
-import type { LocalUser } from "./login/login.interfaces";
 
 export default function Landingpage() {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -18,7 +16,7 @@ export default function Landingpage() {
 			setLoading(true);
 			if (user) {
 				const actionResult = await dispatch(getUser());
-				const userData = actionResult.payload as LocalUser;
+				const userData = actionResult.payload;
 				if (userData?.on_boarding && userData.workspaces.length) {
 					router.push(`/${userData.workspaces[0].url}`);
 				} else if (userData?.on_boarding && !userData.workspaces.length) {

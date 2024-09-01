@@ -93,5 +93,8 @@ export const sendMail = async (
 			],
 		});
 		return sendResult;
-	} catch (error) {}
+	} catch (error) {
+		console.error("Error sending email:", error);
+		throw error;
+	}
 };

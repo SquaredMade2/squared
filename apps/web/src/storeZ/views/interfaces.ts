@@ -8,13 +8,13 @@ export type ViewsState = {
 };
 
 export type ViewsActions = {
-	setCurrentFilter: (filter: Partial<Task>) => (state: ViewsState) => void;
-	updateCurrentFilter: (filter: Partial<Task>) => (state: ViewsState) => void;
-	removeFilter: () => () => void;
+	setCurrentFilter: (filter: Partial<Task>) => void;
+	updateCurrentFilter: (filter: Partial<Task>) => void;
+	removeFilter: () => void;
 	getCurrentFilter: () => Partial<Task> | null;
-	setShowDateTime: (input: boolean) => () => void;
-	setShowPriority: (input: boolean) => () => void;
-	setShowLabels: (input: boolean) => () => void;
+	setShowDateTime: (input: boolean) => void;
+	setShowPriority: (input: boolean) => void;
+	setShowLabels: (input: boolean) => void;
 };
 
 export type ViewsStore = ViewsState & ViewsActions;

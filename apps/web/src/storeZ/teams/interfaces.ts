@@ -5,16 +5,11 @@ export type TeamState = {
 };
 
 export type TeamActions = {
-	addTeam: (team: Team) => (state: TeamState) => Promise<Team>;
-	getTeam: (
-		teamId: string,
-	) => (state: TeamState) => Promise<Team | undefined> | Team;
-	updateTeam: (
-		teamId: string,
-		team: Partial<Team>,
-	) => (state: TeamState) => Promise<Team>;
-	deleteTeam: (teamId: string) => (state: TeamState) => void;
-	getAllTeams: (workspaceId: string) => (state: TeamState) => Promise<Team[]>;
+	addTeam: (team: Team) => Promise<Team>;
+	getTeam: (teamId: string) => Promise<Team | undefined> | Team;
+	updateTeam: (teamId: string, team: Partial<Team>) => Promise<Team>;
+	deleteTeam: (teamId: string) => void;
+	getAllTeams: (workspaceId: string) => Promise<Team[]>;
 };
 
 export type TeamStore = TeamState & TeamActions;

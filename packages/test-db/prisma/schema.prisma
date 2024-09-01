@@ -199,7 +199,7 @@ model User {
   password           String
   verified           Boolean  @default(false)
   lastLogin          DateTime @default(now())
-  onBoarding         Boolean  @default(false)
+  onBoarding         Boolean  @default(true)
   defaultWorkspaceId String?
 
   Workspaces   UserWorkspace[]

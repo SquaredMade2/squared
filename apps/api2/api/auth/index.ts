@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import type { Route } from "@/api/route";
 import { comparePassword, hashPassword, sendMail } from "./helpers";
 
-type Login = {
+type Body = {
 	provider: "credentials" | "oauth";
 	type: "register" | "login" | "logout";
 	email: string;
@@ -17,16 +17,10 @@ type Params = {
 	userId: string;
 };
 
-type Body = {
-	login: Login;
-};
-
 type AuthReturn = {
-	data: {
-		user: User | null;
-		message: string;
-		variant: "destructive" | "default";
-	};
+	user: User | null;
+	message: string;
+	variant: "destructive" | "default";
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -35,49 +29,41 @@ export function createRoute(): Route<Params> {
 	return {
 		POST: async ({ userId }, body: Body, res): Promise<AuthReturn> => {
 			try {
-				const { email, password, provider, type, name, username } = body.login;
+				const { email, password, provider, type, name, username } = body;
 
 				// Validation for Login Data
 				if (!email || (provider === "credentials" && !password)) {
 					return {
-						data: {
-							user: null,
-							message: "Email and password are required.",
-							variant: "destructive",
-						},
+						user: null,
+						message: "Email and password are required.",
+						variant: "destructive",
 					};
 				}
 
 				if (!JWT_SECRET) {
 					return {
-						data: {
-							user: null,
-							message: "JWT_SECRET is not defined.",
-							variant: "destructive",
-						},
+						user: null,
+						message: "JWT_SECRET is not defined.",
+						variant: "destructive",
 					};
 				}
 
 				// Registration Logic
 				if (type === "register") {
 					// Registration Validation
-					if (!name) {
+					if (!name || !username) {
 						return {
-							data: {
-								user: null,
-								message: "Name is required.",
-								variant: "destructive",
-							},
+							user: null,
+							message: "Name is required.",
+							variant: "destructive",
 						};
 					}
 					if (!password || password.length < 6) {
 						return {
-							data: {
-								user: null,
-								message:
-									"Password is required and should be at least 6 characters long.",
-								variant: "destructive",
-							},
+							user: null,
+							message:
+								"Password is required and should be at least 6 characters long.",
+							variant: "destructive",
 						};
 					}
 
@@ -88,24 +74,22 @@ export function createRoute(): Route<Params> {
 
 					if (existingUser) {
 						return {
-							data: {
-								user: null,
-								message: "This email is already registered.",
-								variant: "destructive",
-							},
+							user: null,
+							message: "This email is already registered.",
+							variant: "destructive",
 						};
 					}
 
 					// Creating the user
 					const hashedPassword = await hashPassword(password);
 
+					// TODO: FIX EMAIL VERIFICATION
 					const user = await prisma.user.create({
 						data: {
 							name,
 							username,
 							email,
 							password: hashedPassword,
-							verified: false,
 						},
 					});
 
@@ -113,17 +97,28 @@ export function createRoute(): Route<Params> {
 					const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {
 						expiresIn: "1d",
 					});
-
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
-					await sendMail(email, username!, emailToken, "confirmation");
+					try {
+						await sendMail(email, username, emailToken, "confirmation");
+					} catch (error) {
+						console.error("Error sending email:", error);
+						await prisma.user.delete({ where: { id: user.id } });
+						return {
+							user: null,
+							message: "Error sending email.",
+							variant: "destructive",
+						};
+					}
 
 					return {
-						data: {
-							user,
-							message: `Sent a verification email to ${email}`,
-							variant: "default",
-						},
+						user,
+						message: `Sent a verification email to ${email}`,
+						variant: "default",
 					};
+					// return {
+					// 	user,
+					// 	message: "Registration successful, please login now.",
+					// 	variant: "default",
+					// };
 				}
 				if (type === "login") {
 					// Check if the user exists
@@ -133,11 +128,9 @@ export function createRoute(): Route<Params> {
 
 					if (!user) {
 						return {
-							data: {
-								user: null,
-								message: "No user found, please register.",
-								variant: "destructive",
-							},
+							user: null,
+							message: "No user found, please register.",
+							variant: "destructive",
 						};
 					}
 
@@ -150,12 +143,10 @@ export function createRoute(): Route<Params> {
 						await sendMail(email, user.name, emailToken, "confirmation");
 
 						return {
-							data: {
-								user: null,
-								message:
-									"Your email is not verified. A verification link has been sent to your email.",
-								variant: "destructive",
-							},
+							user: null,
+							message:
+								"Your email is not verified. A verification link has been sent to your email.",
+							variant: "destructive",
 						};
 					}
 
@@ -163,11 +154,9 @@ export function createRoute(): Route<Params> {
 					if (provider === "credentials") {
 						if (!password) {
 							return {
-								data: {
-									user: null,
-									message: "Password is required.",
-									variant: "destructive",
-								},
+								user: null,
+								message: "Password is required.",
+								variant: "destructive",
 							};
 						}
 						const passwordMatch = await comparePassword(
@@ -177,11 +166,9 @@ export function createRoute(): Route<Params> {
 
 						if (!passwordMatch) {
 							return {
-								data: {
-									user: null,
-									message: "Incorrect Password",
-									variant: "destructive",
-								},
+								user: null,
+								message: "Incorrect Password",
+								variant: "destructive",
 							};
 						}
 					}
@@ -209,40 +196,24 @@ export function createRoute(): Route<Params> {
 					res.cookie("token", token);
 
 					return {
-						data: {
-							user,
-							message: "Login successful.",
-							variant: "default",
-						},
-					};
-				}
-				if (type === "logout") {
-					res.clearCookie("token");
-					return {
-						data: {
-							user: null,
-							message: "logout successful.",
-							variant: "default",
-						},
+						user,
+						message: "Login successful.",
+						variant: "default",
 					};
 				}
 
 				// Default case if the type is neither 'register' nor 'login'
 				return {
-					data: {
-						user: null,
-						message: "Invalid request type.",
-						variant: "destructive",
-					},
+					user: null,
+					message: "Invalid request type.",
+					variant: "destructive",
 				};
 			} catch (error) {
 				console.error("Error with auth request:", error);
 				return {
-					data: {
-						user: null,
-						message: "Internal server error",
-						variant: "destructive",
-					},
+					user: null,
+					message: "Internal server error",
+					variant: "destructive",
 				};
 			}
 		},

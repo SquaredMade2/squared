@@ -21,7 +21,7 @@ export function createRoute(): Route<Params> {
 				return user;
 			} catch (err) {
 				console.error("Error finding user:", err);
-				throw new Error("Internal server error");
+				throw new Error(err?.toString() || "Internal server error");
 			}
 		},
 		PUT: async ({ userId }, body) => {
@@ -70,7 +70,7 @@ export function createRoute(): Route<Params> {
 		},
 		DELETE: async ({ userId }) => {
 			try {
-				const user = prisma.user.delete({
+				const user = await prisma.user.delete({
 					where: { id: userId },
 				});
 

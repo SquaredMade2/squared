@@ -42,6 +42,26 @@ export const useSquaredStore = <T,>(
 	return useStore(counterStoreContext, selector);
 };
 
+export const useActivityStore = () => {
+	return useSquaredStore((state) => state.activities.getState());
+};
+
+export const useAuthStore = () => {
+	return useSquaredStore((state) => state.auth.getState());
+};
+
+export const useCommentStore = () => {
+	return useSquaredStore((state) => state.comments.getState());
+};
+
+export const useModalStore = () => {
+	return useSquaredStore((state) => state.modals.getState());
+};
+
+export const useNotificationStore = () => {
+	return useSquaredStore((state) => state.notifications.getState());
+};
+
 export const useTaskStore = () => {
 	return useSquaredStore((state) => state.tasks.getState());
 };
@@ -50,13 +70,14 @@ export const useTeamStore = () => {
 	return useSquaredStore((state) => state.teams.getState());
 };
 
-export const useWorkspaceStore = () => {
-	return useSquaredStore((state) => state.workspaces.getState());
+export const useUserStore = () => {
+	return useSquaredStore((state) => state.users.getState());
 };
 
-export const useModalStore = () => {
-	return useSquaredStore((state) => state.modals.getState());
-};
 export const useViewsStore = () => {
 	return useSquaredStore((state) => state.views.getState());
+};
+
+export const useWorkspaceStore = () => {
+	return useSquaredStore((state) => state.workspaces.getState());
 };

@@ -13,15 +13,13 @@ export type ActivityActions = {
 		event: TaskEvent,
 		taskId: string,
 		author: string,
-	) => (state: ActivityState) => Promise<TaskEvent | null>;
+	) => Promise<TaskEvent | null>;
 	addCommitEvent: (
 		event: Commit,
 		taskId: string,
 		author: string,
-	) => (state: ActivityState) => Promise<Commit | null>;
-	getTaskEvents: (
-		taskId: string,
-	) => (state: ActivityState) => Promise<ActivityType[]>;
+	) => Promise<Commit | null>;
+	getTaskEvents: (taskId: string) => Promise<ActivityType[]>;
 };
 
 export type ActivityStore = ActivityState & ActivityActions;

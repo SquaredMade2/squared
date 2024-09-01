@@ -2,9 +2,19 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import axios from "axios";
+import { useAuthStore } from "@/storeZ/provider";
 import { SqLogo } from "@/components/Svg";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function RegisterUser() {
 	const [data, setData] = useState({
@@ -13,124 +23,101 @@ export default function RegisterUser() {
 		password: "",
 	});
 	const [hidePassword, setHidePassword] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const { toast } = useToast();
+	const { register } = useAuthStore();
 
 	const handlePushLogin = () => {
 		router.push("/login");
 	};
-	const { toast } = useToast();
+
 	const registerUser = async (
 		e: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
 		e.preventDefault();
+		setIsLoading(true);
 		const { name, email, password } = data;
-		const username: string = name;
 		try {
-			const { data }: { data: { error: string; message: string } } =
-				await axios({
-					method: "POST",
-					url: `${process.env.NEXT_PUBLIC_SERVER}/auth/register`,
-					data: { name, username, email, password },
-				});
+			const response = await register({
+				name,
+				username: name.split(" ").join(".").toLocaleLowerCase(),
+				email,
+				password,
+				type: "register",
+				provider: "credentials",
+			});
 
-			if (data.error) {
-				toast({ title: data.error, variant: "destructive" });
-			} else {
-				setData({
-					name: "",
-					email: "",
-					password: "",
-				});
-				toast({ title: data.message });
-				router.push("/login");
-			}
+			toast({ title: response.message, variant: response.variant });
 		} catch (error) {
 			if (error instanceof Error)
 				toast({ title: error.message, variant: "destructive" });
 		}
+		setIsLoading(false);
 	};
 
-	const displayPasswordIcon = () => {
-		if (hidePassword) {
-			return <Eye className="size-4 text-[#D8D8D8]" />;
-		}
-		return <EyeOff className="size-4 text-[#D8D8D8]" />;
-	};
+	const displayPasswordIcon = hidePassword ? (
+		<Eye className="size-4 text-[#D8D8D8]" />
+	) : (
+		<EyeOff className="size-4 text-[#D8D8D8]" />
+	);
 	const displayPassword = hidePassword ? "text" : "password";
-	const passwordIconVisible = displayPasswordIcon();
 
 	return (
-		<div className="absolute z-20 bg-[#141414] w-screen flex justify-center items-center h-[100vh] max-h-auto">
-			<div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-16 max-w-fit mx-auto bg-gradient-to-b from-[#17181c] to-[#23293b] align-middle rounded-lg">
-				<div className="flex items-center justify-center gap-2 uppercase text-[#D8D8D8] font-semibold">
-					<SqLogo /> squared
-				</div>
-				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
-					<h2 className="uppercase text-[#D8D8D8] mt-6 text-center text-4xl xs:text-2xl font-bold leading-9 tracking-wide">
-						Register your account
-					</h2>
-				</div>
-
-				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-					<form className="space-y-3" onSubmit={registerUser}>
-						<div>
-							<input
-								placeholder=" Your name.."
+		<div className="top-0 w-full flex items-center justify-center h-[100vh]">
+			<Card className="w-5/6 lg:w-1/3 bg-gradient-to-b from-primary/10 to-bg-card">
+				<CardHeader>
+					<CardTitle className="uppercase">Register your account</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<form className="mt-10 space-y-6" onSubmit={registerUser}>
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="name">Name</Label>
+							<Input
 								type="text"
+								placeholder="Your name.."
 								value={data.name}
 								onChange={(e) => setData({ ...data, name: e.target.value })}
-								className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
 							/>
 						</div>
-						<div>
-							<input
-								placeholder=" Email Address.."
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="email">Email address</Label>
+							<Input
 								type="email"
+								placeholder="Email address.."
 								value={data.email}
 								onChange={(e) => setData({ ...data, email: e.target.value })}
-								className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
 							/>
 						</div>
-						<div className="relative">
-							<input
-								placeholder=" Password.."
+						<div className="flex flex-col gap-3 relative">
+							<Label htmlFor="password">Password</Label>
+							<Input
 								type={displayPassword}
+								placeholder="Password.."
 								value={data.password}
 								onChange={(e) => setData({ ...data, password: e.target.value })}
 								autoComplete="new-password"
-								className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
 							/>
 							<button
 								type="button"
 								onClick={() => setHidePassword((prev) => !prev)}
-								className="absolute top-5 right-5 cursor-pointer"
+								className="absolute right-3 top-10 cursor-pointer"
 							>
-								{passwordIconVisible}
+								{displayPasswordIcon}
 							</button>
 						</div>
-
-						<div>
-							<button
-								type="submit"
-								className="flex w-full justify-center rounded-md bg-[#174EFF] px-3 py-1.5 text-sm font-semibold leading-6 text-[#D8D8D8] shadow-sm hover:bg-indigo-500 hover:cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-							>
-								Register
-							</button>
-						</div>
+						<Button type="submit" className="w-full" disabled={isLoading}>
+							{isLoading ? <Loader2 className="animate-spin" /> : "Register"}
+						</Button>
 					</form>
-
-					<p className="mt-10 text-center text-sm text-gray-500">
-						Already a member ?{" "}
-						<button
-							type="button"
-							onClick={handlePushLogin}
-							className="font-semibold leading-6 text-[#5d76c9] hover:text-indigo-500 hover:cursor-pointer"
-						>
-							Click here to Log in
-						</button>
-					</p>
-				</div>
-			</div>
+				</CardContent>
+				<CardFooter className="text-center">
+					Already a member?{" "}
+					<Button onClick={handlePushLogin} variant={"link"}>
+						Click here to Log in
+					</Button>
+				</CardFooter>
+			</Card>
 		</div>
 	);
 }
