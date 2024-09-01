@@ -1,7 +1,8 @@
+import type { Dispatch, SetStateAction } from "react";
+
 export type DateDropdownProps = {
 	location: string;
-	handleButtonClick: () => void;
-	handleClickAway: () => void;
+	setDropdownOpen: Dispatch<SetStateAction<boolean>>;
 	injectedTaskId: string;
 };
 

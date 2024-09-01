@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState } from "react";
-import format from "date-fns/format";
+import { formatDate } from "date-fns/format";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import TaskCardPriority from "@/components/TaskCardPriority";
 import TaskCardStatus from "@/components/TaskCardStatus";
@@ -71,7 +71,6 @@ const TaskCardTitle = ({
 							{isShown && (
 								<div className="flex items-center">
 									<TaskCardPriority task={task} border={false} />
-									test
 								</div>
 							)}
 							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer">
@@ -81,9 +80,9 @@ const TaskCardTitle = ({
 								<TaskCardStatus task={task} />
 							</div>
 							{location === "search" ? (
-								<span>{highlightText(taskTitle)}</span>
+								<span className="truncate">{highlightText(taskTitle)}</span>
 							) : (
-								<span className="cursor-pointer">{taskTitle}</span>
+								<span className="cursor-pointer truncate">{taskTitle}</span>
 							)}
 						</div>
 						<div className="flex flex-row gap-2 pr-2" />
@@ -92,7 +91,7 @@ const TaskCardTitle = ({
 							{showDateTime && (
 								<div className="text-muted-foreground md:flex xs:hidden sm:hidden mr-2 mdsm:mr-3">
 									{task.dueDate
-										? format(new Date(task.dueDate), "MMM dd")
+										? formatDate(new Date(task.dueDate), "MMM dd")
 										: "No Date"}
 								</div>
 							)}
