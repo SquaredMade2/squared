@@ -6,14 +6,26 @@ type Params = {
 	workspaceId: string;
 };
 
+interface WorkspaceResponse {
+	workspace: Workspace | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
+
 export function createRoute(): Route<Params> {
 	return {
 		GET: async ({ workspaceId }) => {
 			try {
 				// Find workspace by workspace ID
-				const workspace = await prisma.workspace.findUnique({
+				const idWorkspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
 				});
+
+				const urlWorkspace = await prisma.workspace.findUnique({
+					where: { url: workspaceId },
+				});
+
+				const workspace = idWorkspace || urlWorkspace;
 
 				if (!workspace) {
 					throw new Error("Workspace not found");
@@ -43,32 +55,70 @@ export function createRoute(): Route<Params> {
 				throw new Error("Internal server error");
 			}
 		},
-		POST: async ({ workspaceId }, body) => {
+		POST: async (
+			{ workspaceId },
+			body: { workspace: Workspace; userId: string },
+		): Promise<WorkspaceResponse> => {
 			try {
 				const existingWorkspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
 				});
 
 				if (existingWorkspace) {
-					throw new Error("Workspace already exists");
+					console.error("Workspace already exists");
+					return {
+						workspace: null,
+						message: "Workspace already exists",
+						variant: "destructive",
+					};
 				}
 
 				const newWorkspace = await prisma.workspace.create({
 					data: {
-						id: workspaceId,
-						...body,
-					} as Workspace,
+						...body.workspace,
+						Users: {
+							create: {
+								userId: body.userId,
+							},
+						},
+					},
 				});
 
 				if (!newWorkspace) {
-					throw new Error("Workspace not created");
+					console.error("Workspace not created");
+					return {
+						workspace: null,
+						message: "Workspace not created",
+						variant: "destructive",
+					};
 				}
 
+				await prisma.team.create({
+					data: {
+						workspaceId: newWorkspace.id,
+						name: newWorkspace.name,
+						identifier: newWorkspace.url.slice(0, 3),
+						Users: {
+							create: {
+								userId: body.userId,
+							},
+						},
+					},
+				});
+
 				// Return the new workspace
-				return newWorkspace;
+				return {
+					workspace: newWorkspace,
+					variant: "default",
+					message: "Workspace created successfully",
+				};
 			} catch (error) {
 				console.error("Error creating workspace:", error);
-				throw new Error("Internal server error");
+				return {
+					workspace: null,
+					message: "Internal server error",
+					variant: "destructive",
+				};
 			}
 		},
 		DELETE: async ({ workspaceId }) => {

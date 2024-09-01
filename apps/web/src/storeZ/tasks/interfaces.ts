@@ -5,14 +5,11 @@ export type TaskState = {
 };
 
 export type TaskActions = {
-	addTask: (task: Task) => (state: TaskState) => Promise<Task>;
-	updateTask: (
-		taskId: string,
-		task: Partial<Task>,
-	) => (state: TaskState) => Promise<Task>;
-	deleteTask: (taskId: string) => (state: TaskState) => void;
-	getTask: (taskId: string) => (state: TaskState) => Promise<Task | undefined>;
-	getAllTasks: (teamId: string) => (state: TaskState) => Promise<Task[]>;
+	addTask: (task: Task) => Promise<Task>;
+	updateTask: (taskId: string, task: Partial<Task>) => Promise<Task>;
+	deleteTask: (taskId: string) => void;
+	getTask: (taskId: string) => Promise<Task | undefined>;
+	getAllTasks: (teamId: string) => Promise<Task[]>;
 };
 
 export type TaskStore = TaskState & TaskActions;

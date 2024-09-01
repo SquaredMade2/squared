@@ -5,18 +5,14 @@ export type CommentState = {
 };
 
 export type CommentActions = {
-	addComment: (comment: Comment) => (state: CommentState) => Promise<Comment>;
+	addComment: (comment: Comment) => Promise<Comment>;
 	updateComment: (
 		commentId: string,
 		comment: Partial<Comment>,
-	) => (state: CommentState) => Promise<Comment>;
-	deleteComment: (commentId: string) => (state: CommentState) => void;
-	getComment: (
-		commentId: string,
-	) => (state: CommentState) => Promise<Comment | undefined>;
-	getAllComments: (
-		taskId: string,
-	) => (state: CommentState) => Promise<Comment[]>;
+	) => Promise<Comment>;
+	deleteComment: (commentId: string) => void;
+	getComment: (commentId: string) => Promise<Comment | undefined>;
+	getAllComments: (taskId: string) => Promise<Comment[]>;
 };
 
 export type CommentStore = CommentState & CommentActions;

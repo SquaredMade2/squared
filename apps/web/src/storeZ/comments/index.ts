@@ -3,45 +3,48 @@ import axios from "axios";
 import type { CommentState, CommentStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import type { Comment } from "@repo/db";
+import { useCommentStore } from "../provider";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/comment/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/comment/${path}`;
 
 export const createCommentStore = (
 	initState: CommentState = { comments: [] },
 ) => {
 	return createStore<CommentStore>()((set) => ({
 		...initState,
-		addComment: (comment) => async (state) => {
+		addComment: async (comment) => {
 			const response = await axios.post(apiString(uuidv4()), comment);
-			set({ comments: [...state.comments, response.data] });
+			const { comments } = useCommentStore();
+			set({ comments: [...comments, response.data] });
 			return response.data;
 		},
-		updateComment: (commentId, comment) => async (state) => {
+		updateComment: async (commentId, comment) => {
 			const response = await axios.put(apiString(commentId), comment);
+			const { comments } = useCommentStore();
 			set({
-				comments: state.comments.map((t) =>
-					t.id === commentId ? response.data : t,
-				),
+				comments: comments.map((t) => (t.id === commentId ? response.data : t)),
 			});
 			return response.data;
 		},
-		deleteComment: (commentId) => async (state) => {
+		deleteComment: async (commentId) => {
 			await axios.delete(apiString(commentId));
+			const { comments } = useCommentStore();
 			set({
-				comments: state.comments.filter((t) => t.id !== commentId),
+				comments: comments.filter((t) => t.id !== commentId),
 			});
 		},
-		getComment: (commentId) => async (state) => {
-			const existing = state.comments.find((t) => t.id === commentId);
+		getComment: async (commentId) => {
+			const { comments } = useCommentStore();
+			const existing = comments.find((t) => t.id === commentId);
 			if (existing) return existing;
 			const response = await axios.get(apiString(commentId));
 			return response.data;
 		},
-		getAllComments: (taskId) => async (state) => {
+		getAllComments: async (taskId) => {
 			const response: { data: Comment[] } = await axios.get(
-				`${process.env.SERVER_URL}/api/team/${taskId}/comment`,
+				`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${taskId}/comment`,
 			);
 			set({ comments: response.data });
 			return response.data;

@@ -5,18 +5,24 @@ export type WorkspaceState = {
 	currentWorkspace: Workspace | null;
 };
 
+export interface WorkspaceResponse {
+	workspace: Workspace | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
+
 export type WorkspaceActions = {
 	addWorkspace: (
-		workspace: Workspace,
-	) => (state: WorkspaceState) => Promise<Workspace>;
-	getWorkspace: (
-		workspaceId: string,
-	) => (state: WorkspaceState) => Promise<Workspace | undefined>;
+		workspace: Partial<Workspace>,
+		userId: string,
+	) => Promise<WorkspaceResponse>;
+	getWorkspace: (workspaceId: string) => Promise<Workspace | undefined>;
 	updateWorkspace: (
 		workspaceId: string,
 		workspace: Partial<Workspace>,
-	) => (state: WorkspaceState) => Promise<Workspace>;
-	deleteWorkspace: (workspaceId: string) => (state: WorkspaceState) => void;
+	) => Promise<Workspace>;
+	deleteWorkspace: (workspaceId: string) => void;
+	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 };
 
 export type WorkspaceStore = WorkspaceActions & WorkspaceState;
