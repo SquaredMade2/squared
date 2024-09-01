@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ/provider";
+import {
+	useAuthStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/storeZ/provider";
 import { ChevronLeft } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -15,6 +19,7 @@ const Join = () => {
 	const [urlInputValue, setUrlInputValue] = useState("");
 	const { getAllWorkspaces, workspaces, addWorkspace } = useWorkspaceStore();
 	const { user } = useAuthStore();
+	const { updateUser } = useUserStore();
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -59,6 +64,9 @@ const Join = () => {
 			const { workspace, message, variant } = response;
 			toast({ title: message, variant });
 			if (workspace) {
+				if (user.onBoarding) {
+					updateUser(user.id, { onBoarding: false });
+				}
 				router.push(`/${workspace.url}`);
 			}
 		} catch (error) {
