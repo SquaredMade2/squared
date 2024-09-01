@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import StatusDropdown from "@/components/StatusDropdown";
-import { setBackgroundColor } from "../DesignationsContainer";
 import type { StatusButtonProps } from "./StatusButton.interfaces";
 import {
 	Circle,
@@ -11,29 +10,16 @@ import {
 	Copy,
 } from "lucide-react";
 import { inProgress } from "../Svg";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 const StatusButton = ({ location }: StatusButtonProps) => {
 	const newIssueStatus = useAppSelector((state) => state.taskData.status);
 	const sidebarStatus: string | undefined = useAppSelector(
 		(state) => state.singleTask.data?.status,
 	);
-	const { theme } = useAppSelector((state) => state.userSettings);
 
-	const [showDropdown, setShowDropdown] = useState(false);
-
-	const handleButtonClick = () => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleClickAway = () => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleBackground = () => {
-		return theme === "light"
-			? "bg-popover hover:bg-popoverHover"
-			: "bg-popoverHover hover:bg-popover";
-	};
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 
 	const showIcon = (name: string | undefined) => {
 		switch (name) {
@@ -52,57 +38,41 @@ const StatusButton = ({ location }: StatusButtonProps) => {
 		}
 	};
 
-	const newIssueButton = () => {
-		return (
-			<button
-				type="button"
-				className={`inline-flex items-center h-7 border-[0.8px] border-border rounded px-2 py-0.5 mr-2 text-card-foreground text-sm shadow-md cursor-pointer ${handleBackground()}`}
-				onClick={handleButtonClick}
-			>
-				<span className="hover:bg-nav-hover w-4 h-4 mr-2 cursor-pointer">
-					{showIcon(newIssueStatus)}
-				</span>
-				<span className="text-sm font-semibold text-card-foreground ml-1 cursor-pointer">
-					{newIssueStatus}
-				</span>
-			</button>
-		);
-	};
-
-	const issueSidebarButton = () => {
-		return (
-			<button
-				type="button"
-				className={`grow flex flex-row w-36 items-center border-[0.8px] border-transparent hover:border-border rounded px-2 py-2 mr-2 text-card-foreground text-sm cursor-pointer ${setBackgroundColor(
-					theme,
-				)}`}
-				onClick={handleButtonClick}
-			>
-				<span className="hover:bg-nav-hover w-4 h-4 mr-2 cursor-pointer">
-					{showIcon(sidebarStatus)}
-				</span>
-				<span className="text-sm font-semibold text-card-foreground ml-1 cursor-pointer">
-					{sidebarStatus}
-				</span>
-			</button>
-		);
-	};
-
 	return (
-		<>
-			<div className={location === "newIssue" ? "relative" : "relative mr-12"}>
-				{location === "newIssue" && newIssueButton()}
-				{location === "issueSidebar" && issueSidebarButton()}
-				{showDropdown && (
-					<StatusDropdown
-						handleButtonClick={handleButtonClick}
-						showIcon={showIcon}
-						location={location}
-						handleClickAway={handleClickAway}
-					/>
-				)}
-			</div>
-		</>
+		<Popover open={dropdownOpen} onOpenChange={setDropdownOpen}>
+			<PopoverTrigger
+				asChild
+				className={
+					location === "newIssue"
+						? "relative"
+						: "relative flex flex-row flex-wrap"
+				}
+			>
+				<Button
+					variant="outline"
+					size="sm"
+					className={`${"inline-flex items-center bg-popover hover:bg-muted"} 
+					${location === "newIssue" && "px-2 py-0.5 mr-3 shadow-md"} 
+				${location === "issueSidebar" && "rounded-3xl px-3 py-1 m-1"}`}
+				>
+					<span className="hover:bg-nav-hover w-4 h-4 mr-2 cursor-pointer">
+						{location === "newIssue"
+							? showIcon(newIssueStatus)
+							: showIcon(sidebarStatus)}
+					</span>
+					<span className="text-sm font-semibold text-card-foreground ml-1 cursor-pointer">
+						{location === "newIssue" ? newIssueStatus : sidebarStatus}
+					</span>
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent>
+				<StatusDropdown
+					showIcon={showIcon}
+					location={location}
+					setDropdownOpen={setDropdownOpen}
+				/>
+			</PopoverContent>
+		</Popover>
 	);
 };
 

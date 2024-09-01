@@ -1,6 +1,7 @@
+import type { Dispatch, SetStateAction } from "react";
+
 export interface StatusDropdownProps {
 	location: string;
-	handleButtonClick: () => void;
-	handleClickAway: () => void;
 	showIcon(name: string): React.ReactNode;
+	setDropdownOpen: Dispatch<SetStateAction<boolean>>;
 }

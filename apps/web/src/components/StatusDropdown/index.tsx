@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import axios from "axios";
-import { Combobox } from "@headlessui/react";
-import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { statusOptions } from "@/constants/designations";
 import { setStatus } from "@/store/taskData";
 import { getSingleTask } from "@/store/task/thunks";
@@ -11,12 +9,18 @@ import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import {
+	Command,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "../ui/command";
 
 const StatusDropdown = ({
-	handleButtonClick,
-	handleClickAway,
 	showIcon,
 	location,
+	setDropdownOpen,
 }: StatusDropdownProps) => {
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
@@ -27,34 +31,24 @@ const StatusDropdown = ({
 		(state) => state.singleTask?.data?.status,
 	);
 
-	const [selectedStatus, setSelectedStatus] = useState("");
-	const [query, setQuery] = useState("");
-
 	const {
 		author,
 		storeCommonFields,
 		storeType,
 		storeTaskValue,
 		updateTaskValue,
-		taskEvent,
 	} = useLogTaskEvent();
 
 	const handleSelectStatus = (newStatus: string) => {
 		if (location === "newIssue") dispatch(setStatus(newStatus));
 		if (location === "issueSidebar") {
-			if (newStatus === sidebarStatus) return;
+			if (newStatus === sidebarStatus) setDropdownOpen(false);
 			if (taskId !== undefined) storeCommonFields(author, taskId);
 			logEvent(newStatus);
 			updateItem(newStatus);
 		}
+		setDropdownOpen(false);
 	};
-
-	const filteredStatusOptions =
-		query === ""
-			? statusOptions
-			: statusOptions.filter((name) => {
-					return name.toLowerCase().includes(query.toLowerCase());
-				});
 
 	const updateItem = async (newStatus: string) => {
 		if (taskId !== undefined) {
@@ -83,62 +77,32 @@ const StatusDropdown = ({
 		}
 	};
 
-	const closeDropdown = () => {
-		handleButtonClick();
-	};
-
-	useEffect(() => {
-		if (taskEvent.updatedValue) {
-			closeDropdown();
-		}
-	}, [taskEvent.updatedValue]);
-
 	return (
-		<ClickAwayListener onClickAway={() => handleClickAway()}>
-			<Combobox value={selectedStatus} onChange={setSelectedStatus}>
-				<div
-					className={
-						location === "newIssue"
-							? "absolute top-8"
-							: "absolute top-0 -left-[220px] "
-					}
-				>
-					<div className="relative z-[1] max-w-[220px] border border-border bg-popover p-1.5 font-medium text-foreground text-sm shadow-lg rounded-md">
-						<Combobox.Input
-							placeholder={"Change status..."}
-							onChange={(event) => setQuery(event.target.value)}
-							className="p-2 mb-3 border-b border-border focus:outline-none bg-popover"
-						/>
-
-						<Combobox.Options static>
-							{filteredStatusOptions.map((name) => {
-								let isChecked = false;
-								if (location === "newIssue")
-									isChecked = newIssueStatus === name;
-								if (location === "issueSidebar")
-									isChecked = sidebarStatus === name;
-								return (
-									<Combobox.Option
-										onClick={() => handleSelectStatus(name)}
-										key={name}
-										value={name}
-										className="flex flex-row text-center justify-between hover:bg-popoverHover rounded-md py-1 px-2"
-									>
-										<div className="flex flex-row items-center">
-											<div className="w-4 h-4 mx-2">{showIcon(name)}</div>
-											<span>{name}</span>
-										</div>
-										<div>
-											{isChecked && <Check className="cursor-pointer size-5" />}
-										</div>
-									</Combobox.Option>
-								);
-							})}
-						</Combobox.Options>
-					</div>
-				</div>
-			</Combobox>
-		</ClickAwayListener>
+		<Command>
+			<CommandInput placeholder="Change status..." />
+			<CommandList>
+				<CommandGroup>
+					{statusOptions.map((name) => {
+						let isChecked = false;
+						if (location === "newIssue") isChecked = newIssueStatus === name;
+						if (location === "issueSidebar") isChecked = sidebarStatus === name;
+						return (
+							<CommandItem
+								key={name}
+								onSelect={() => handleSelectStatus(name)}
+								className="cursor-pointer justify-between"
+							>
+								<div className="flex flex-row items-center">
+									<div className="mx-2">{showIcon(name)}</div>
+									<span>{name}</span>
+								</div>
+								<div>{isChecked && <Check className=" size-5" />}</div>
+							</CommandItem>
+						);
+					})}
+				</CommandGroup>
+			</CommandList>
+		</Command>
 	);
 };
 
