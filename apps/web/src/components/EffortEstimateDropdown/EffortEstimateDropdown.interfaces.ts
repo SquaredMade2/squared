@@ -1,8 +1,9 @@
+import type { Dispatch, SetStateAction } from "react";
+
 export type EffortEstimateDropdownProps = {
 	location: string;
 	showIcon(estimate: number): React.ReactNode;
-	handleButtonClick: () => void;
-	handleClickAway: () => void;
+	setDropdownOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export type Params = {
