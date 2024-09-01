@@ -17,9 +17,15 @@ export function createRoute(): Route<Params> {
 		GET: async ({ workspaceId }) => {
 			try {
 				// Find workspace by workspace ID
-				const workspace = await prisma.workspace.findUnique({
+				const idWorkspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
 				});
+
+				const urlWorkspace = await prisma.workspace.findUnique({
+					where: { url: workspaceId },
+				});
+
+				const workspace = idWorkspace || urlWorkspace;
 
 				if (!workspace) {
 					throw new Error("Workspace not found");
@@ -86,6 +92,19 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
+
+				await prisma.team.create({
+					data: {
+						workspaceId: newWorkspace.id,
+						name: newWorkspace.name,
+						identifier: newWorkspace.url.slice(0, 3),
+						Users: {
+							create: {
+								userId: body.userId,
+							},
+						},
+					},
+				});
 
 				// Return the new workspace
 				return {
