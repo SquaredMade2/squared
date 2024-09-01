@@ -15,6 +15,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 				...initState,
 				login: async (login: Login) => {
 					const response: AuthReturn = await axios.post(apiString(""), login);
+					console.log("Response:", response);
 					set({ user: response.data.user });
 					return response.data;
 				},

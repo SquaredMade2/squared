@@ -38,6 +38,7 @@ const Join = () => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (!user) return;
 
 		if (inputValue.length === 0) {
 			alert("Please enter a workspace name");
@@ -54,7 +55,7 @@ const Join = () => {
 			url: urlInputValue,
 		};
 		try {
-			const response = await addWorkspace(newWorkspaceInput);
+			const response = await addWorkspace(newWorkspaceInput, user.id);
 			const { workspace, message, variant } = response;
 			toast({ title: message, variant });
 			if (workspace) {

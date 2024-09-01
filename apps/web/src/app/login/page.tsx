@@ -33,6 +33,7 @@ export default function Login() {
 				email: data.email,
 				password: data.password,
 			});
+			console.log("Response:", response);
 
 			if (response?.user) {
 				toast({ title: "Login Successful, Welcome!" });

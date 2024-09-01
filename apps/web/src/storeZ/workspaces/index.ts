@@ -34,6 +34,7 @@ export const createWorkspaceStore = (
 				...initState,
 				addWorkspace: async (
 					workspace: Partial<Workspace>,
+					userId: string,
 				): Promise<WorkspaceResponse> => {
 					const workspaceId = uuidv4();
 
@@ -41,9 +42,12 @@ export const createWorkspaceStore = (
 						const response = await axios.post<WorkspaceResponse>(
 							apiString(workspaceId),
 							{
-								id: workspaceId,
-								...WORKSPACE_TEMPLATE,
-								...workspace,
+								workspace: {
+									id: workspaceId,
+									...WORKSPACE_TEMPLATE,
+									...workspace,
+								},
+								userId,
 							},
 						);
 

@@ -51,7 +51,7 @@ export function createRoute(): Route<Params> {
 		},
 		POST: async (
 			{ workspaceId },
-			body: Workspace,
+			body: { workspace: Workspace; userId: string },
 		): Promise<WorkspaceResponse> => {
 			try {
 				const existingWorkspace = await prisma.workspace.findUnique({
@@ -68,7 +68,14 @@ export function createRoute(): Route<Params> {
 				}
 
 				const newWorkspace = await prisma.workspace.create({
-					data: body,
+					data: {
+						...body.workspace,
+						Users: {
+							create: {
+								userId: body.userId,
+							},
+						},
+					},
 				});
 
 				if (!newWorkspace) {
