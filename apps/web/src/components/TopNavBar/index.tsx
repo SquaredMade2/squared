@@ -146,7 +146,7 @@ const TopNavBar = ({
 			<nav className="h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]">
 				<div className="flex flex-none justify-start items-center">
 					<div className="w-full flex flex-none justify-start items-center">
-						<div className="lg:hidden cursor-pointer mr-2">
+						<div className="md:hidden cursor-pointer mr-2">
 							<ToggleNavBar />
 						</div>
 						<button
