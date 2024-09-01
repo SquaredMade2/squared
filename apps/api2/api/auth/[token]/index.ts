@@ -19,11 +19,9 @@ export function createRoute(): Route<Params> {
 			try {
 				if (!JWT_SECRET) {
 					return {
-						data: {
-							user: null,
-							message: "JWT_SECRET is not defined.",
-							variant: "destructive",
-						},
+						user: null,
+						message: "JWT_SECRET is not defined.",
+						variant: "destructive",
 					};
 				}
 				if (token) {
@@ -31,25 +29,22 @@ export function createRoute(): Route<Params> {
 						token,
 						JWT_SECRET,
 					) as JwtPayload;
-					await prisma.user.update({
+					const user = await prisma.user.update({
 						where: { id: decoded.user },
 						data: { verified: true },
 					});
 					return {
-						data: {
-							message: "User verified",
-							variant: "successful",
-						},
+						user,
+						message: "User verified",
+						variant: "default",
 					};
 				}
 			} catch (error) {
 				console.error("Error with auth request:", error);
 				return {
-					data: {
-						user: null,
-						message: "Internal server error",
-						variant: "destructive",
-					},
+					user: null,
+					message: "Internal server error",
+					variant: "destructive",
 				};
 			}
 		},

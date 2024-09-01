@@ -90,36 +90,35 @@ export function createRoute(): Route<Params> {
 							username,
 							email,
 							password: hashedPassword,
-							verified: true,
 						},
 					});
 
 					// Send a verification email
-					// const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {
-					// 	expiresIn: "1d",
-					// });
-					// try {
-					// 	await sendMail(email, username, emailToken, "confirmation");
-					// } catch (error) {
-					// 	console.error("Error sending email:", error);
-					// 	await prisma.user.delete({ where: { id: user.id } });
-					// 	return {
-					// 		user: null,
-					// 		message: "Error sending email.",
-					// 		variant: "destructive",
-					// 	};
-					// }
+					const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {
+						expiresIn: "1d",
+					});
+					try {
+						await sendMail(email, username, emailToken, "confirmation");
+					} catch (error) {
+						console.error("Error sending email:", error);
+						await prisma.user.delete({ where: { id: user.id } });
+						return {
+							user: null,
+							message: "Error sending email.",
+							variant: "destructive",
+						};
+					}
 
-					// return {
-					// 	user,
-					// 	message: `Sent a verification email to ${email}`,
-					// 	variant: "default",
-					// };
 					return {
 						user,
-						message: "Registration successful, please login now.",
+						message: `Sent a verification email to ${email}`,
 						variant: "default",
 					};
+					// return {
+					// 	user,
+					// 	message: "Registration successful, please login now.",
+					// 	variant: "default",
+					// };
 				}
 				if (type === "login") {
 					// Check if the user exists

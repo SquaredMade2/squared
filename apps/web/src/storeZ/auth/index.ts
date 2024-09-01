@@ -24,7 +24,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					return response.data;
 				},
 				verifyUser: async (token: string) => {
-					const response: AuthReturn = await axios.post(apiString(""), {
+					const response: AuthReturn = await axios.post(apiString(token), {
 						token,
 					});
 					set({ user: response.data.user });
