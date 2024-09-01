@@ -187,8 +187,8 @@ model Team {
   Tasks   Task[]
   Project Project[]
 
-  Users     User[]    @relation("TeamUsers")
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace  @relation(fields: [workspaceId], references: [id])
+  Users     UserTeam[]
 }
 
 model User {
@@ -209,7 +209,7 @@ model User {
   SavedFilters SavedFilter[]
 
   DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id])
-  Teams            Team[]     @relation("TeamUsers")
+  Teams            UserTeam[]
 }
 
 model SavedFilter {
@@ -251,6 +251,16 @@ model UserWorkspace {
   workspace Workspace @relation(fields: [workspaceId], references: [id])
 
   @@id([userId, workspaceId])
+}
+
+model UserTeam {
+  userId String
+  teamId String
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@id([userId, teamId])
 }
 
 model UniversalTokenLink {

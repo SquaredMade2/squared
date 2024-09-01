@@ -1,47 +1,61 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { getWorkspace } from "@/store/taskData/thunks";
 import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Team } from "@/store/taskData/taskData.interfaces";
+import {
+	useAuthStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/storeZ/provider";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
-	const dispatch = useAppDispatch();
+	const [loading, setLoading] = useState(true);
 	const router = useRouter();
 	const params = useParams();
 
-	const error = useSelector((state: RootState) => state.taskData.error);
-	const user = useSelector((state: RootState) => state.userSettings.user);
-	const workspaceUrl = params.workspace;
+	const { user } = useAuthStore();
+	const { getWorkspace } = useWorkspaceStore();
+	const { getTeam } = useTeamStore();
+	let workspaceUrl = params.workspace;
+	if (Array.isArray(workspaceUrl)) {
+		workspaceUrl = workspaceUrl[0];
+	}
 
 	useEffect(() => {
+		setLoading(true);
 		if (!user) {
 			router.push("/login");
-		} else if (!user?.on_boarding) {
-			router.push("/onboarding");
+		} else if (!user?.onBoarding) {
+			router.push("/join");
 		} else {
 			const fetchWorkspace = async () => {
-				const updatedCurrentTeam = await dispatch(
-					getWorkspace({ url: workspaceUrl as string, id: "" }),
-				);
-				if (updatedCurrentTeam.payload) {
-					router.push(
-						`/${workspaceUrl}/team/${(updatedCurrentTeam.payload as Team).identifier}/all`,
-					);
+				const currentWorkspace = await getWorkspace(workspaceUrl);
+				if (!currentWorkspace) return;
+				const currentTeam = await getTeam(currentWorkspace.id);
+				if (currentTeam) {
+					router.push(`/${workspaceUrl}/team/${currentTeam.identifier}/all`);
 				}
 			};
 			fetchWorkspace();
 		}
-	}, [dispatch, router, user, workspaceUrl]);
+		setLoading(false);
+	}, [router, user, workspaceUrl]);
 
 	return (
 		<>
-			{!error ? (
-				<div className="h-screen w-full bg-card" />
+			{loading ? (
+				<div className="h-screen w-full">
+					<div className="flex h-full justify-center items-center">
+						<div className="flex flex-col gap-4">
+							<div className="font-bold text-3xl">
+								Loading Workspace, please wait...
+							</div>
+							<Loader2 size={64} className="animate-spin" />
+						</div>
+					</div>
+				</div>
 			) : (
 				<WorkspaceNotFoundPage />
 			)}
