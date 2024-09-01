@@ -9,6 +9,9 @@
       "generated",
       ".storybook",
       "cypress"
+    ],
+    "include": [
+      "src"
     ]
   },
   "organizeImports": {
@@ -32,24 +35,30 @@
         "packages/ui/**"
       ],
       "linter": {
+        "enabled": true,
         "rules": {
-          "suspicious": {
-            "noExplicitAny": "off",
-            "noArrayIndexKey": "off"
-          },
-          "style": {
-            "noNonNullAssertion": "off"
-          },
+          "recommended": true,
           "a11y": {
+            "useKeyWithClickEvents": "off",
             "useButtonType": "off",
             "noSvgWithoutTitle": "off",
             "useValidAnchor": "off"
           },
           "correctness": {
-            "noChildrenProp": "off"
+            "useExhaustiveDependencies": "off",
+            "noChildrenProp": "off",
+            "noConstructorReturn": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noArrayIndexKey": "off"
           },
           "complexity": {
             "noForEach": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off",
+            "noInferrableTypes": "off"
           },
           "performance": {
             "noAccumulatingSpread": "off"
