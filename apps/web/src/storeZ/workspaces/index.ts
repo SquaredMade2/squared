@@ -1,6 +1,10 @@
 import { createStore } from "zustand/vanilla";
 export * from "./interfaces";
-import type { WorkspaceState, WorkspaceStore } from "./interfaces";
+import type {
+	WorkspaceResponse,
+	WorkspaceState,
+	WorkspaceStore,
+} from "./interfaces";
 import type { Workspace } from "@repo/db";
 import axios from "axios";
 import { persist } from "zustand/middleware";
@@ -20,16 +24,23 @@ export const createWorkspaceStore = (
 			(set) => ({
 				...initState,
 				addWorkspace: async (workspace) => {
-					const newWorkspace: Workspace = await axios.post(
+					const {
+						workspace: newWorkspace,
+						message,
+						variant,
+					}: WorkspaceResponse = await axios.post(
 						apiString(workspace.id),
 						workspace,
 					);
 					const { workspaces } = useWorkspaceStore();
+					if (!newWorkspace) {
+						return { workspace: null, message, variant };
+					}
 					set({
 						workspaces: [...workspaces, newWorkspace],
 						currentWorkspace: newWorkspace,
 					});
-					return newWorkspace;
+					return { workspace: newWorkspace, message, variant };
 				},
 				getWorkspace: async (workspaceId) => {
 					const { workspaces } = useWorkspaceStore();
