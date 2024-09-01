@@ -20,7 +20,7 @@ export default function VerifyUserToken(): void {
 				toast({ title: message, variant });
 				console.log("Variant:", variant);
 				if (variant === "default" && user) {
-					router.push(user.onBoarding ? "/onboarding" : "/join");
+					router.push("/join");
 				}
 			} catch (error) {
 				console.error(error);

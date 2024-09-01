@@ -49,7 +49,7 @@ export default function Login() {
 					if (workspaces?.length) {
 						router.push(`/${workspaces[0].url}`);
 					} else {
-						router.push("/onboarding");
+						router.push("/join");
 					}
 				}
 			} else {
@@ -85,7 +85,7 @@ export default function Login() {
 					if (workspaces?.length) {
 						router.push(`/${workspaces[0].url}`);
 					} else {
-						user.onBoarding ? router.push("/onboarding") : router.push("/join");
+						router.push("/join");
 					}
 				}
 				setLoading(false);
