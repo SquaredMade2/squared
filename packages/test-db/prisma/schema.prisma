@@ -229,7 +229,7 @@ model SavedFilter {
 model Workspace {
   id                   String  @id @default(uuid())
   name                 String?
-  url                  String?
+  url                  String  @unique
   companySize          Int?
   issuesCreated        Int?
   universalTokenLinkId String?

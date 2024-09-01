@@ -5,8 +5,17 @@ export type WorkspaceState = {
 	currentWorkspace: Workspace | null;
 };
 
+export interface WorkspaceResponse {
+	workspace: Workspace | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
+
 export type WorkspaceActions = {
-	addWorkspace: (workspace: Workspace) => Promise<Workspace>;
+	addWorkspace: (
+		workspace: Partial<Workspace>,
+		userId: string,
+	) => Promise<WorkspaceResponse>;
 	getWorkspace: (workspaceId: string) => Promise<Workspace | undefined>;
 	updateWorkspace: (
 		workspaceId: string,
