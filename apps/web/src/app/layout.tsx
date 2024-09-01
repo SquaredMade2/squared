@@ -4,7 +4,6 @@ import { Providers } from "@/store/provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
 import CommandPalette from "@/components/CommandPalette";
-import CurrentNavbar from "@/components/CurrentNavbar";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
@@ -24,7 +23,6 @@ export default function RootLayout({
 						disableTransitionOnChange
 					>
 						<div className="h-full flex flex-row overflow-hidden">
-							<CurrentNavbar />
 							{children}
 						</div>
 					</ThemeProvider>

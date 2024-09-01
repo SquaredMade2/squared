@@ -27,11 +27,11 @@ export default function TeamLayout({
 			)}
 			<div
 				className={cn(
-					"absolute md:static transition-all duration-500 ease-in-out z-10 h-full",
-					showNavBar ? "w-64 left-0 top-0" : "w-0 -left-[100%]",
+					"absolute md:static transition-all duration-500 ease-in-out z-10 w-72 h-full",
+					showNavBar ? "left-0 top-0" : "-left-[100%]",
 				)}
 			>
-				{showNavBar && <Navbar />}
+				<Navbar />
 			</div>
 
 			<main className="flex flex-grow overflow-hidden">{children}</main>

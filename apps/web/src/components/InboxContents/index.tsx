@@ -6,12 +6,11 @@ import type { NotificationProps } from "@/store/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInbox, faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
 
-export default function InboxContents(): React.JSX.Element {
+export default function InboxContents({
+	notifications,
+}: { notifications: NotificationProps[] }): React.JSX.Element {
 	const theCurrentTask = useAppSelector(
 		(state) => state.currentTask.currentTaskId,
-	);
-	const notifications: NotificationProps[] = useAppSelector(
-		(state) => state.notifications.notifications,
 	);
 
 	const hasUnreadNotification = notifications.some(
@@ -30,7 +29,7 @@ export default function InboxContents(): React.JSX.Element {
 					<div className="flex flex-col gap-2 text-secondary items-center">
 						<div className="text-muted-foreground">
 							<FontAwesomeIcon
-								className="w-16 h-16"
+								className="text-4xl"
 								icon={hasUnreadNotification ? faEnvelopesBulk : faInbox}
 							/>
 						</div>
