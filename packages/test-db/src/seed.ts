@@ -66,11 +66,10 @@ async function addWorkspace(user: User) {
 		data: {
 			name: workspaceName,
 			companySize: workspaceCompanySize,
+			url: faker.internet.url(),
 			Users: {
 				create: {
-					user: {
-						connect: { id: user.id },
-					},
+					userId: user.id,
 				},
 			},
 		},
@@ -92,7 +91,9 @@ async function addTeam(workspace: Workspace, user: User) {
 			identifier: teamIdentifier,
 			workspaceId: workspace.id,
 			Users: {
-				connect: { id: user.id },
+				create: {
+					userId: user.id,
+				},
 			},
 		},
 	});
