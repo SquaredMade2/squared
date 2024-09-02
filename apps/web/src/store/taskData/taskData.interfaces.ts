@@ -1,3 +1,5 @@
+import type { Commit } from "@repo/db";
+
 export interface TaskDataState {
 	access: Access;
 	error: boolean;
@@ -14,7 +16,7 @@ export interface TaskDataState {
 	prevWorkspaceUrl: string;
 	labels: string[];
 	isLoading: boolean;
-	currentCommits: Commits[];
+	currentCommits: Commit[];
 }
 
 export interface GithubRepo {
@@ -38,22 +40,6 @@ interface Commiter {
 	name: string;
 	email: string;
 	username: string;
-}
-
-export interface Commits {
-	id: string;
-	tree_id: string;
-	distinct: boolean;
-	message: string;
-	timestamp: string;
-	url: string;
-	author: Author;
-	committer: Commiter;
-	added: [];
-	removed: [];
-	modified: string[];
-	repoName: string;
-	owner: string;
 }
 
 export interface CurrentWorkspace {
