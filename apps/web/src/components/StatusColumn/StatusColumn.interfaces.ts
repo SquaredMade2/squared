@@ -1,4 +1,4 @@
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import type { Dispatch, SetStateAction } from "react";
 
 export interface StatusColumnProps {

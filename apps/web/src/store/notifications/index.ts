@@ -1,11 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-interface Task {
-	_id: string;
-	title: string;
-	description: string;
-}
-
+import type { Task } from "@repo/db";
 export interface NotificationProps {
 	description: string;
 	name: string;

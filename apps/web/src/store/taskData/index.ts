@@ -4,11 +4,11 @@ import type {
 	Commits,
 	CurrentWorkspace,
 	GithubRepo,
-	Task,
 	TaskDataState,
 	Team,
 	Workspace,
 } from "./taskData.interfaces";
+import type { Task } from "@repo/db";
 import {
 	addWorkspace,
 	createNewTask,

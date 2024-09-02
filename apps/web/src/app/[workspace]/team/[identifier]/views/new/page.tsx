@@ -48,7 +48,7 @@ const ViewsPage: React.FC = () => {
 		}
 
 		const draggedTaskFound = taskList.find(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 
 		if (!draggedTaskFound) {
@@ -61,10 +61,10 @@ const ViewsPage: React.FC = () => {
 		};
 
 		const sourceIndex = taskList.findIndex(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 		const destinationIndex = taskList.findIndex(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 
 		const updatedTaskList = [...taskList];

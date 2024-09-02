@@ -5,10 +5,10 @@ import type {
 	Assignee,
 	GetTeamInterface,
 	GetWorkspaceInterface,
-	Task,
 	Team,
 	Workspace,
 } from "./taskData.interfaces";
+import type { Task } from "@repo/db";
 import type { RootState } from "..";
 import {
 	getTeamFailure,
@@ -36,7 +36,7 @@ export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 				url: `${process.env.NEXT_PUBLIC_SERVER}/task/create`,
 				data: task,
 			});
-			const { _id: taskId } = response.data;
+			const { id: taskId } = response.data;
 			dispatch(createTaskEventLog(taskId, author));
 			dispatch(getAllTasks(currentTeam));
 			return response.data;

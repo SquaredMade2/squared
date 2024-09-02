@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import StatusColumn from "@/components/StatusColumn";
 import type { FilterViewProps } from "./FilterView.interfaces";
 import type { RootState } from "@/store";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 
 // eslint-disable-next-line no-unused-vars
 const FilterView = ({ handleDragEnd }: FilterViewProps) => {
@@ -32,7 +32,7 @@ const FilterView = ({ handleDragEnd }: FilterViewProps) => {
 				});
 				const matchedTasks = taskList.filter((task: Task) =>
 					filteredTask.some(
-						(filteredTask) => filteredTask._id.toString() === task._id,
+						(filteredTask) => filteredTask.id.toString() === task.id,
 					),
 				);
 

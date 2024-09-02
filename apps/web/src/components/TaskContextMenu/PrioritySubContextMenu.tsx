@@ -39,22 +39,22 @@ const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	};
 
 	const updateItem = async (newPriority: string) => {
-		if (task._id !== undefined) {
+		if (task.id !== undefined) {
 			try {
 				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
+					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task.id}`,
 					{
 						priority: newPriority,
 					},
 				);
-				dispatch(getSingleTask(task._id as string));
+				dispatch(getSingleTask(task.id as string));
 			} catch (err) {}
 		}
 	};
 
 	const handleSelectPriority = async (newPriority: string) => {
 		if (newPriority === task.priority) return;
-		if (task._id !== undefined) storeCommonFields(author, task._id);
+		if (task.id !== undefined) storeCommonFields(author, task.id);
 		logEvent(newPriority);
 		updateItem(newPriority);
 		if (newPriority === "No priority") {

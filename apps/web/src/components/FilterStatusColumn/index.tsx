@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import TaskStatusSection from "@/components/TaskStatusSection";
 import type { FilterStatusColumnProps } from "./FilterStatusColumn.interfaces";
 import type { RootState } from "@/store";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 
 const StatusColumn = ({ columnType }: FilterStatusColumnProps) => {
 	const filteredTaskList = useSelector(
@@ -14,7 +14,7 @@ const StatusColumn = ({ columnType }: FilterStatusColumnProps) => {
 
 	const matchedTasks = taskList.filter((task: Task) =>
 		filteredTaskList.some(
-			(filteredTask) => filteredTask._id.toString() === task._id,
+			(filteredTask) => filteredTask.id.toString() === task.id,
 		),
 	);
 

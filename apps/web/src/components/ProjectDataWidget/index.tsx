@@ -7,7 +7,7 @@ import type {
 	AssigneesDataInterface,
 	LabelsDataInterface,
 } from "@/app/interfaces/ProjectDataWidget.interfaces";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import { LayoutGrid, Star } from "lucide-react";
 
 export const ProjectDataWidget = () => {

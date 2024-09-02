@@ -76,7 +76,7 @@ export default function Home() {
 		}
 
 		const draggedTaskFound = taskList.find(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 
 		if (!draggedTaskFound) {
@@ -89,10 +89,10 @@ export default function Home() {
 		};
 
 		const sourceIndex = taskList.findIndex(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 		const destinationIndex = taskList.findIndex(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 
 		const updatedTaskList = [...taskList];

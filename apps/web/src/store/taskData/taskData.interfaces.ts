@@ -1,3 +1,5 @@
+import type { Task } from "@repo/db";
+
 export interface TaskDataState {
 	access: Access;
 	error: boolean;
@@ -91,24 +93,6 @@ export interface Access {
 	status: boolean;
 	id: string;
 }
-
-export interface Task {
-	authorId: string;
-	taskName: string;
-	_id: string;
-	title: string;
-	description: string;
-	status: string;
-	identifier: string;
-	priority: string | null;
-	labels: string[];
-	dueDate: Date | undefined;
-	effortEstimate: number | null;
-	team: Team;
-	dateCreated: Date;
-	assignee: Assignee | null;
-}
-
 export interface Assignee {
 	name: string | null;
 	id: string | null;

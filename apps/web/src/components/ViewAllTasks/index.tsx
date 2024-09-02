@@ -10,7 +10,7 @@ import { getFilteredTasks } from "@/store/filterPage/actions";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Status } from "@/interfaces/event.interfaces";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 
 const ViewAllTasks = ({
 	handleDragEnd,

@@ -36,7 +36,7 @@ import {
 import { SocketContext } from "@/app/SocketProvider";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import type { OnChangeHandlerFunc } from "react-mentions";
 
 const NewIssueModal = () => {
@@ -178,7 +178,7 @@ const NewIssueModal = () => {
 			socket.emit(
 				"user_mentioned",
 				[...mentionedUserId],
-				taskCreatedResponse._id,
+				taskCreatedResponse.id,
 				user._id,
 			);
 			dispatch(getAllTasks(currentTeam));

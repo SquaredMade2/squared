@@ -54,7 +54,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	};
 
 	const handleStoreCurrentAssignee = (): void => {
-		const noUserAssigned = task.assignee?.name === null;
+		const noUserAssigned = task.assigneeName === null;
 		if (taskDataReceived) {
 			if (noUserAssigned) {
 				const assignee = {
@@ -80,7 +80,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	const assigneeParams: AssigneeParams = (taskId, user) => {
 		dispatch(getAllTasks(currentTeam));
 		if (task !== undefined) {
-			dispatch(getSingleTask(task._id));
+			dispatch(getSingleTask(task.id));
 		}
 		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
 	};
@@ -88,13 +88,13 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
 		dispatch(setAssignee(assigneeParams(taskId, user)));
 		if (task !== undefined) {
-			dispatch(getSingleTask(task._id));
+			dispatch(getSingleTask(task.id));
 		}
 		await dispatch(getAllTasks(currentTeam));
 	};
 
 	const handleClickAssignee = (taskId: string, newAssignee: Assignee): void => {
-		if (newAssignee.name === task.assignee?.name) return;
+		if (newAssignee.name === task.assigneeName) return;
 		storeCommonFields(author, taskId);
 		storeType(EventType.AssigneeUpdated);
 		handleStoreCurrentAssignee();
@@ -118,7 +118,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 					<ContextMenuItem
 						className="w-40"
 						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
+							handleClickAssignee(task.id, { id: null, name: null })
 						}
 					>
 						Unassign
@@ -132,7 +132,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 						return (
 							<ContextMenuItem
 								key={assignee.user}
-								onClick={() => handleClickAssignee(task._id, formattedAssignee)}
+								onClick={() => handleClickAssignee(task.id, formattedAssignee)}
 							>
 								<ProfileImage
 									profileName={assignee.username}
