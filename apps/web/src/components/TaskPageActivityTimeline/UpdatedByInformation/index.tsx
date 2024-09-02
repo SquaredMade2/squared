@@ -1,6 +1,5 @@
 import React from "react";
 import ProfileImage from "@/components/ProfileImage";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import {
@@ -12,9 +11,10 @@ import {
 } from "@/interfaces/event.interfaces";
 
 const UpdatedByInformation = () => {
-	const eventLogs = useAppSelector(
-		(state) => state.events.taskEventLog.eventsLog,
-	) as TaskEvent[];
+	// const eventLogs = [useAppSelector(
+	// 	(state) => state.events.taskEventLog.eventsLog,
+	// )] as TaskEvent[];
+	const eventLogs = [] as TaskEvent[];
 
 	const findLabelAdded = (
 		originalLabels: Labels[],

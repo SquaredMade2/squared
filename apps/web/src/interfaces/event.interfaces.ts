@@ -43,14 +43,6 @@ export interface Assignee {
 	name: string | null;
 }
 
-export type TaskEventLog = {
-	taskId: string;
-	author: Author;
-	createdAt: Date | string | null;
-	eventsLog: TaskEvent[];
-	_id: string;
-};
-
 export interface TaskEvent {
 	type: "" | EventType;
 	author: Author;
