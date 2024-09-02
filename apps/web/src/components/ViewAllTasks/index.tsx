@@ -9,7 +9,7 @@ import RenameModal from "@/components/RenameModal";
 import { getFilteredTasks } from "@/store/filterPage/actions";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Status } from "@/interfaces/event.interfaces";
+import type { Status } from "@repo/db";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 
 const ViewAllTasks = ({
