@@ -1,3 +1,5 @@
+import type { User } from "@repo/db";
+
 export interface TaskDataState {
 	access: Access;
 	error: boolean;
@@ -106,27 +108,8 @@ export interface Task {
 	effortEstimate: number | null;
 	team: Team;
 	dateCreated: Date;
-	assignee: Assignee | null;
+	assignee: User | null;
 }
-
-export interface Assignee {
-	name: string | null;
-	id: string | null;
-}
-
-export interface User {
-	default_workspace: null;
-	email: string;
-	last_login: string;
-	name: string;
-	on_boarding: boolean;
-	password: string;
-	teams: [];
-	username: string;
-	workspaces: CurrentWorkspace[];
-	_id: string;
-}
-
 export interface AccessId {
 	status: boolean;
 	id: string;

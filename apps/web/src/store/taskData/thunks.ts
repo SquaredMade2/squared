@@ -2,7 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import type {
 	AddWorkspaceInterface,
-	Assignee,
 	GetTeamInterface,
 	GetWorkspaceInterface,
 	Task,
@@ -20,6 +19,7 @@ import {
 	setWorkspace,
 } from ".";
 import { createTaskEventLog } from "../events/actions";
+import type { User } from "@repo/db";
 
 export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 	"taskData/createNewTask",
@@ -29,6 +29,13 @@ export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 		const author = {
 			id: authorId,
 			name: authorName,
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
 		};
 		try {
 			const response: AxiosResponse<Task> = await axios({
@@ -629,7 +636,7 @@ export const enableUniversalLink = createAsyncThunk(
 export const setAssignee = createAsyncThunk(
 	"taskData/setAssignee",
 	async (
-		id: { taskId: string; assignee: Assignee | null },
+		id: { taskId: string; assignee: User | null },
 		{ rejectWithValue },
 	) => {
 		const taskId = id.taskId;

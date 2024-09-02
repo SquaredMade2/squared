@@ -384,6 +384,13 @@ const taskData = createSlice({
 						state.taskList[indexOfTask].assignee = {
 							id: action.payload.id,
 							name: action.payload.name,
+							username: action.payload.name,
+							email: "",
+							password: "",
+							verified: true,
+							lastLogin: new Date(),
+							onBoarding: false,
+							defaultWorkspaceId: "",
 						};
 					}
 				}

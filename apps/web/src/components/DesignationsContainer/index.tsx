@@ -68,7 +68,17 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 		}
 		return {
 			taskId: taskId,
-			assignee: { id: user.id, name: user.name },
+			assignee: {
+				id: user.id,
+				name: user.name,
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
+			},
 		};
 	};
 
