@@ -2,16 +2,13 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type {
-	getTeamInfoType,
-	handleActiveParamsType,
-} from "@/app/interfaces/Navbars.interfaces";
-import type { Team as TaskDataTeam } from "@/store/taskData/taskData.interfaces";
+import type { handleActiveParamsType } from "@/app/interfaces/Navbars.interfaces";
 import { Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getTeam } from "@/store/taskData/thunks";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
 import { useTheme } from "next-themes";
+import type { Team } from "@repo/db";
 
 const NavBarTeams = ({
 	teamName,
@@ -26,6 +23,7 @@ const NavBarTeams = ({
 	const currentWorkspace = useAppSelector(
 		(state) => state.taskData.currentWorkspace,
 	);
+	const teams = [] as Team[];
 	const router = useRouter();
 
 	const handleActiveParams: handleActiveParamsType = (param: string): void => {
@@ -44,9 +42,7 @@ const NavBarTeams = ({
 		setIsHovered("#858699");
 	};
 
-	const getTeamInfo: getTeamInfoType = async (
-		teamIdArray: TaskDataTeam[],
-	): Promise<void> => {
+	const getTeamInfo = async (teamIdArray: Team[]): Promise<void> => {
 		try {
 			await axios({
 				method: "GET",
@@ -69,7 +65,7 @@ const NavBarTeams = ({
 	};
 
 	useEffect(() => {
-		getTeamInfo(currentWorkspace.teams);
+		getTeamInfo(teams);
 	}, []);
 
 	return (

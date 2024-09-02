@@ -8,5 +8,3 @@ export type handleNavbarType = () => void;
 export type handleSearchType = (e: ChangeEvent<HTMLInputElement>) => void;
 
 export type handleActiveParamsType = (param: string) => void;
-
-export type getTeamInfoType = (teamIdArray: TaskDataTeam[]) => Promise<void>;

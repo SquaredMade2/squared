@@ -1,5 +1,3 @@
-import type { HandleWorkspaceNameOverflowType } from "@/app/interfaces/Workspace.interface";
-
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
 		let lastSpace = string.lastIndexOf(" ", maxLength);
@@ -13,9 +11,7 @@ export const replaceSpacesWithDashes = (str: string): string => {
 	return str?.replace(/\s+/g, "-");
 };
 
-export const handleWorkspaceNameOverflow: HandleWorkspaceNameOverflowType = (
-	workspaceName: string,
-) => {
+export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 	return typeof workspaceName === "string" && workspaceName.length > 20
 		? `${workspaceName.slice(0, 20)}...`
 		: workspaceName;

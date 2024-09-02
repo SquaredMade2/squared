@@ -7,7 +7,6 @@ import type {
 	GetWorkspaceInterface,
 	Task,
 	Team,
-	Workspace,
 } from "./taskData.interfaces";
 import type { RootState } from "..";
 import {
@@ -20,6 +19,7 @@ import {
 	setWorkspace,
 } from ".";
 import { createTaskEventLog } from "../events/actions";
+import type { Workspace } from "@repo/db";
 
 export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 	"taskData/createNewTask",
@@ -229,7 +229,7 @@ export const getTeam = createAsyncThunk<Team, string, { state: RootState }>(
 				withCredentials: true,
 				params: {
 					identifier: identifier,
-					workspace: workspace._id,
+					workspace: workspace.id,
 				},
 			});
 			dispatch(setCurrentTeam(data));
@@ -324,9 +324,10 @@ export const deleteWorkspace = createAsyncThunk<
 >(
 	"taskData/deleteWorkspace",
 	async (workspaceId: string, { rejectWithValue, getState, dispatch }) => {
-		const teamIds = getState().taskData.currentWorkspace.teams.map(
-			(item: Team) => item._id,
-		);
+		// const teamIds = getState().taskData.currentWorkspace.teams.map(
+		// 	(item: Team) => item._id,
+		// );
+		const teamIds = [] as Team[];
 		const userId = getState().userSettings.user._id;
 		try {
 			const { data } = await axios({
@@ -356,10 +357,10 @@ export const deleteWorkspace = createAsyncThunk<
 export const deleteTeam = createAsyncThunk<Team, string, { state: RootState }>(
 	"taskData/deleteTeam",
 	async (teamId: string, { rejectWithValue, getState, dispatch }) => {
-		const { url, _id } = getState().taskData.currentWorkspace;
+		const { url, id } = getState().taskData.currentWorkspace;
 		const identification: GetWorkspaceInterface = {
 			url: url,
-			id: _id,
+			id: id,
 		};
 		try {
 			const { data } = await axios({

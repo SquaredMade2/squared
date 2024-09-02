@@ -38,6 +38,7 @@ import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { Task } from "@/store/taskData/taskData.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
+import type { User } from "@repo/db";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
@@ -67,12 +68,13 @@ const NewIssueModal = () => {
 
 	const socket = useContext(SocketContext);
 	const user = useSelector((state: RootState) => state.userSettings.user);
+	const users = [] as User[];
 
 	const getListOfWorkspaceMembers = async () => {
 		try {
 			const members = (await Promise.all(
-				currentWorkspace.users.map(async (member) => {
-					const user = await getListOfUsers(member?.user);
+				users.map(async (member) => {
+					const user = await getListOfUsers(member?.id);
 					return {
 						display: user?.name,
 						id: user?._id.toString(),
@@ -144,7 +146,7 @@ const NewIssueModal = () => {
 			});
 			return;
 		}
-		dispatch(incrementCreatedIssues(currentWorkspace._id));
+		dispatch(incrementCreatedIssues(currentWorkspace.id));
 		try {
 			const { transformedInput: transformedTitle, userIds: titleUserId } =
 				transformingMentionInputs(titleInput);

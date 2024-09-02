@@ -1,4 +1,4 @@
-import type { CurrentWorkspace } from "../taskData/taskData.interfaces";
+import type { Workspace } from "@repo/db";
 
 export interface User {
 	default_workspace: null;
@@ -9,7 +9,7 @@ export interface User {
 	password: string;
 	teams: [];
 	username: string;
-	workspaces: CurrentWorkspace[];
+	workspaces: Workspace[];
 	_id: string;
 }
 

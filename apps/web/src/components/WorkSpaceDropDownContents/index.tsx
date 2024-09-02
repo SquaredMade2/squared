@@ -28,7 +28,7 @@ const WorkSpaceDropDownContents = () => {
 		<div className="w-full flex flex-col">
 			{allWorkspaces.map((workspace, index) => (
 				<DropdownMenuItem
-					key={workspace._id}
+					key={workspace.id}
 					onClick={() => router.push(`/${workspace.url}`)}
 					className="cursor-pointer"
 				>

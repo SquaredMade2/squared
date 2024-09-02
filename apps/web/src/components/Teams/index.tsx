@@ -9,6 +9,7 @@ const Teams = () => {
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+	const teams = [] as Team[];
 	const handleTeamClick = (team: Team): void => {
 		dispatch(setCurrentTeam(team));
 		router.push(`/${workspace.url}/team/${team.identifier}/all`);
@@ -16,7 +17,7 @@ const Teams = () => {
 
 	return (
 		<>
-			{workspace?.teams.map((team: Team) => {
+			{teams.map((team: Team) => {
 				return (
 					<div key={team._id}>
 						<NavBarTeams

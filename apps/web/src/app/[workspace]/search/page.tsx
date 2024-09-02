@@ -46,7 +46,7 @@ const Search = () => {
 			replace(`${pathname}?${params.toString()}`);
 			setSearchQuery(inputValue);
 			const searchedItems = await dispatch(
-				searchTasks({ query: inputValue, workspace: workspace._id }),
+				searchTasks({ query: inputValue, workspace: workspace.id }),
 			);
 			setFilteredTasks(searchedItems.payload);
 		}
@@ -116,7 +116,7 @@ const Search = () => {
 				const tasks = await dispatch(
 					searchTasks({
 						query: searchParams.get("query")?.toString() as string,
-						workspace: workspace._id,
+						workspace: workspace.id,
 					}),
 				);
 				setFilteredTasks(tasks.payload);

@@ -112,8 +112,8 @@ const TaskCard = ({
 	};
 
 	useEffect(() => {
-		dispatch(getAllUsers(currentWorkspace._id));
-	}, [currentWorkspace._id, dispatch]);
+		dispatch(getAllUsers(currentWorkspace.id));
+	}, [currentWorkspace.id, dispatch]);
 
 	useEffect(() => {
 		function handleClickAway(e: MouseEvent) {

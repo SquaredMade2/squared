@@ -19,7 +19,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const task = useAppSelector((state) => state.singleTask.data) || null;
 	const isLoading = useAppSelector((state) => state.singleTask.isLoading);
 	const currentRepo = useAppSelector(
-		(state) => state.taskData.currentWorkspace.githubRepoInfo,
+		(state) => state.taskData.currentWorkspace.githubRepoInfoId,
 	);
 	const navbarToggled = useAppSelector(
 		(state) => state.userSettings.showNavBar,
@@ -78,8 +78,8 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 		if (currentRepo) {
 			dispatch(
 				getCommitsByRepo({
-					repoName: currentRepo.repoName,
-					owner: currentRepo.owner,
+					repoName: currentRepo,
+					owner: currentRepo,
 				}),
 			);
 		}

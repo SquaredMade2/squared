@@ -70,7 +70,7 @@ export default function CreateTeam() {
 		} else {
 			const doesTeamExist = await dispatch(
 				teamExists({
-					workspace: workspace._id,
+					workspace: workspace.id,
 					identifier: teamIdentifier,
 					name: teamName.trim(),
 				}),
@@ -81,7 +81,7 @@ export default function CreateTeam() {
 					createTeam({
 						name: teamName.trim(),
 						identifier: teamIdentifier,
-						workspaceId: workspace._id,
+						workspaceId: workspace.id,
 					}),
 				);
 				router.push(`/${workspace?.url}/team/${teamIdentifier}/all`);

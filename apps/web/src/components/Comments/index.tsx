@@ -15,7 +15,7 @@ const CommentForm = (): React.ReactElement => {
 	const userName = useAppSelector((state) => state.userSettings.user.name);
 
 	const currentRepo = useAppSelector(
-		(state) => state.taskData.currentWorkspace.githubRepoInfo,
+		(state) => state.taskData.currentWorkspace.githubRepoInfoId,
 	);
 
 	const taskPageCommentData = useAppSelector((state) => {
@@ -57,7 +57,7 @@ const CommentForm = (): React.ReactElement => {
 	useEffect(() => {
 		dispatch(getTaskComments(taskId as string));
 		if (currentRepo) {
-			dispatch(getCommitsByRepo(currentRepo));
+			dispatch(getCommitsByRepo({ repoName: currentRepo, owner: currentRepo }));
 		}
 	}, [taskPageCommentData.length]);
 
