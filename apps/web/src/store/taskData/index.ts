@@ -441,7 +441,7 @@ const taskData = createSlice({
 				if (action.payload) {
 					state.isLoading = false;
 					state.currentTeam.tasks = state.currentTeam.tasks.filter((task) => {
-						if (task._id === action.payload) {
+						if (task.id === action.payload) {
 							return false;
 						}
 						return true;
