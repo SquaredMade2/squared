@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Status, Task } from "@repo/db";
 
 export interface TaskStatusSectionProps {
 	isListView: boolean;
@@ -6,5 +6,5 @@ export interface TaskStatusSectionProps {
 	setShowRenameModal?: (value: boolean) => void;
 	setTaskData?: (taskData: Task) => void;
 	showTasks: boolean;
-	title: string;
+	title: Status;
 }

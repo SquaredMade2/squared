@@ -50,7 +50,7 @@ const TaskCardTitle = ({
 	};
 
 	const teamIdentifier =
-		location === "dashboard" ? currentTeam.identifier : task.team.identifier;
+		location === "dashboard" ? currentTeam.identifier : task.teamId;
 
 	const assigneeParams: AssigneeParams = (taskId, user) => {
 		dispatch(getAllTasks(currentTeam));

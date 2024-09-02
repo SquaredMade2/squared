@@ -16,6 +16,7 @@ import { setPriority } from "@/store/taskData";
 import { priorityOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { high, low, medium } from "../Svg";
+import type { Priority } from "@repo/db";
 
 const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
@@ -52,13 +53,13 @@ const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 		}
 	};
 
-	const handleSelectPriority = async (newPriority: string) => {
+	const handleSelectPriority = async (newPriority: Priority) => {
 		if (newPriority === task.priority) return;
 		if (task.id !== undefined) storeCommonFields(author, task.id);
 		logEvent(newPriority);
 		updateItem(newPriority);
-		if (newPriority === "No priority") {
-			await dispatch(setPriority(null));
+		if (newPriority === "noPriority") {
+			await dispatch(setPriority("noPriority"));
 		} else {
 			await dispatch(setPriority(newPriority));
 		}

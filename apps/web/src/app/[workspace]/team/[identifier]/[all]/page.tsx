@@ -15,6 +15,7 @@ import type { RootState } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import type { Status } from "@repo/db";
 
 export default function Home() {
 	const dispatch = useDispatch();
@@ -85,7 +86,7 @@ export default function Home() {
 
 		const taskWithNewStatus = {
 			...draggedTaskFound,
-			status: destination.droppableId,
+			status: destination.droppableId as Status,
 		};
 
 		const sourceIndex = taskList.findIndex(

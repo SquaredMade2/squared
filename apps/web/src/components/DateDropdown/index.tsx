@@ -49,7 +49,8 @@ const DateDropdown: React.FC<DateDropdownProps> = ({
 
 	const handleSave = () => {
 		if (location === "issueSidebar" && taskId) updateItem(selectedDate, taskId);
-		if (location === "newIssue") dispatch(setDueDate(selectedDate));
+		if (location === "newIssue")
+			dispatch(setDueDate(selectedDate || new Date()));
 		if (location === "contextMenu") updateItem(selectedDate, injectedTaskId);
 		setDropdownOpen(false);
 	};

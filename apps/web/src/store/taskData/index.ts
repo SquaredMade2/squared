@@ -8,7 +8,7 @@ import type {
 	Team,
 	Workspace,
 } from "./taskData.interfaces";
-import type { Task } from "@repo/db";
+import type { Label, Priority, Status, Task } from "@repo/db";
 import {
 	addWorkspace,
 	createNewTask,
@@ -39,21 +39,22 @@ import { useToast } from "@/components/ui/use-toast";
 const initialState: TaskDataState = {
 	taskList: [],
 	taskPage: {
-		_id: "",
+		id: "",
 		title: "",
-		status: "Todo",
+		status: "todo",
 		identifier: "",
 		priority: null,
 		labels: [],
-		dueDate: undefined,
+		dueDate: new Date(),
 		effortEstimate: null,
 		description: "",
-		team: null as unknown as Team,
-		assignee: null,
+		teamId: "",
+		assigneeName: "",
+		assigneeId: "",
 		dateCreated: new Date(),
 		authorId: "",
-		taskName: "",
 	},
+	loadingState: "",
 	workspaces: [],
 	currentWorkspace: {
 		companySize: 0,
@@ -84,10 +85,10 @@ const initialState: TaskDataState = {
 		id: "",
 	},
 	error: false,
-	status: "Todo",
-	priority: "",
+	status: "todo",
+	priority: "noPriority",
 	labels: [],
-	dueDate: undefined,
+	dueDate: new Date(),
 	effortEstimate: null,
 	isLoading: false,
 	currentCommits: [],
@@ -103,16 +104,16 @@ const taskData = createSlice({
 		setTaskPage(state, action: PayloadAction<Task>) {
 			state.taskPage = action.payload;
 		},
-		setStatus(state, action: PayloadAction<string>) {
+		setStatus(state, action: PayloadAction<Status>) {
 			state.status = action.payload;
 		},
-		setPriority(state, action: PayloadAction<string | null>) {
+		setPriority(state, action: PayloadAction<Priority>) {
 			state.priority = action.payload;
 		},
-		setLabels(state, action: PayloadAction<string[]>) {
+		setLabels(state, action: PayloadAction<Label[]>) {
 			state.labels = action.payload;
 		},
-		setDueDate(state, action: PayloadAction<Date | undefined>) {
+		setDueDate(state, action: PayloadAction<Date>) {
 			state.dueDate = action.payload;
 		},
 		setEffortEstimate(state, action: PayloadAction<number | null>) {
@@ -213,19 +214,19 @@ const taskData = createSlice({
 				console.error(action.payload);
 			})
 			.addCase(getAllWorkspaces.pending, (state) => {
-				state.status = "loading";
+				state.loadingState = "loading";
 				state.isLoading = true;
 			})
 			.addCase(
 				getAllWorkspaces.fulfilled,
 				(state, action: PayloadAction<Workspace[]>) => {
-					state.status = "succeded";
+					state.loadingState = "succeded";
 					state.isLoading = false;
 					state.workspaces = action.payload;
 				},
 			)
 			.addCase(getAllWorkspaces.rejected, (state, action) => {
-				state.status = "failed";
+				state.loadingState = "failed";
 				state.isLoading = false;
 				console.error(action);
 			})
@@ -379,12 +380,12 @@ const taskData = createSlice({
 			.addCase(setAssignee.fulfilled, (state, action) => {
 				state.isLoading = false;
 				for (const task of state.taskList) {
-					if (task.assignee && task.assignee.id === action.payload.id) {
+					if (task.assigneeName && task.assigneeId === action.payload.id) {
 						const indexOfTask = state.taskList.indexOf(task);
-						state.taskList[indexOfTask].assignee = {
-							id: action.payload.id,
-							name: action.payload.name,
-						};
+						// state.taskList[indexOfTask].assignee = {
+						// id: action.payload.id,
+						// name: action.payload.name,
+						// };
 					}
 				}
 			})

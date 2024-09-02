@@ -24,13 +24,13 @@ export const ProjectDataWidget = () => {
 
 	const assigneesData: AssigneesDataInterface = tasksInWorkspace.reduce(
 		(obj: AssigneesDataInterface, task: Task) => {
-			if (!task.assignee) return obj;
-			if (task.assignee.name === null) {
+			if (!task.assigneeId) return obj;
+			if (task.assigneeName === null) {
 				obj.unassigned++;
-			} else if (task.assignee.name in obj) {
-				obj[task.assignee.name]++;
+			} else if (task.assigneeName in obj) {
+				obj[task.assigneeName]++;
 			} else {
-				obj[task.assignee.name] = 1;
+				obj[task.assigneeName] = 1;
 			}
 			return obj;
 		},

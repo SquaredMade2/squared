@@ -122,10 +122,10 @@ const NewIssueModal = () => {
 		setDescriptionInput("");
 		dispatch(setShowNewIssue(false));
 		dispatch(setResumeNewIssue(false));
-		dispatch(setStatus("Todo"));
-		dispatch(setPriority(""));
+		dispatch(setStatus("todo"));
+		dispatch(setPriority("noPriority"));
 		dispatch(setLabels([]));
-		dispatch(setDueDate(undefined));
+		dispatch(setDueDate(new Date()));
 		dispatch(setEffortEstimate(null));
 	};
 
@@ -163,11 +163,11 @@ const NewIssueModal = () => {
 				labels: labels,
 				dueDate: dueDate,
 				effortEstimate: effortEstimate,
-				team: currentTeam,
 				dateCreated: new Date(),
-				assignee: null,
-				taskName: titleInput,
-				_id: "",
+				assigneeId: null,
+				assigneeName: "",
+				teamId: "",
+				id: "",
 			};
 			const taskCreatedResponse = await dispatch(
 				createNewTask(newTask as Task),
@@ -185,10 +185,10 @@ const NewIssueModal = () => {
 			dispatch(setShowNewIssue(false));
 			setTitleInput("");
 			setDescriptionInput("");
-			dispatch(setStatus("Todo"));
-			dispatch(setPriority(""));
+			dispatch(setStatus("todo"));
+			dispatch(setPriority("noPriority"));
 			dispatch(setLabels([]));
-			dispatch(setDueDate(undefined));
+			dispatch(setDueDate(new Date()));
 			dispatch(setEffortEstimate(null));
 		} catch (err) {}
 	};

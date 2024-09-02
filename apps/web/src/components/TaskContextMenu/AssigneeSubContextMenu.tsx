@@ -63,7 +63,10 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 				};
 				storeTaskAssignee(assignee);
 			} else {
-				storeTaskAssignee(task.assignee as Assignee);
+				storeTaskAssignee({
+					id: task.assigneeId,
+					name: task.assigneeName,
+				} as Assignee);
 			}
 		}
 	};

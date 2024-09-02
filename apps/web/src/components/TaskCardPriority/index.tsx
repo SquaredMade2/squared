@@ -15,16 +15,16 @@ const TaskCardPriority = ({ task, border }: TaskCardPriorityProps) => {
 			case null:
 				setSvg(<Ellipsis className="size-4" />);
 				break;
-			case "Low":
+			case "low":
 				setSvg(low);
 				break;
-			case "Medium":
+			case "medium":
 				setSvg(medium);
 				break;
-			case "High":
+			case "high":
 				setSvg(high);
 				break;
-			case "Urgent":
+			case "urgent":
 				setSvg(
 					<FontAwesomeIcon
 						className="text-muted-foreground"

@@ -1,11 +1,11 @@
-import type { Task } from "@repo/db";
+import type { Label, Priority, Status, Task } from "@repo/db";
 
 export interface TaskDataState {
 	access: Access;
 	error: boolean;
-	status: string;
-	priority: string | null;
-	dueDate: Date | undefined;
+	status: Status;
+	priority: Priority;
+	dueDate: Date;
 	effortEstimate: number | null;
 	taskPage: Task;
 	taskList: Task[];
@@ -14,8 +14,9 @@ export interface TaskDataState {
 	currentTeam: Team;
 	allUsersInWorkspace: UsersInWorkspace[];
 	prevWorkspaceUrl: string;
-	labels: string[];
+	labels: Label[];
 	isLoading: boolean;
+	loadingState: string;
 	currentCommits: Commits[];
 }
 

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import StatusColumn from "@/components/StatusColumn";
 import type { FilterViewProps } from "./FilterView.interfaces";
 import type { RootState } from "@/store";
-import type { Task } from "@repo/db";
+import type { Status, Task } from "@repo/db";
 
 // eslint-disable-next-line no-unused-vars
 const FilterView = ({ handleDragEnd }: FilterViewProps) => {
@@ -14,7 +14,7 @@ const FilterView = ({ handleDragEnd }: FilterViewProps) => {
 		(state: RootState) => state.filterPage.filteredTaskList,
 	);
 	// eslint-disable-next-line no-unused-vars
-	const [uniqueColumns, setUniqueColumns] = useState<string[]>([]);
+	const [uniqueColumns, setUniqueColumns] = useState<Status[]>([]);
 	useEffect(() => {
 		const columns = filteredTaskList?.map((element) => {
 			return element.status;
