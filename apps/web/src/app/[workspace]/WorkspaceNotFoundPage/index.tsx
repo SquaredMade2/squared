@@ -11,25 +11,14 @@ import type { Workspace } from "@repo/db";
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [allWorkspaces, setAllWorkspaces] = useState<Workspace[]>([]);
 	const { user } = useAuthStore();
-	const { getAllWorkspaces } = useWorkspaceStore();
+	const { workspaces } = useWorkspaceStore();
 	const { theme } = useAppSelector((state) => state.userSettings);
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {
 			setMenuOpen(false);
 		}
 	};
-
-	useEffect(() => {
-		const handleGetAllWorkspaces = async () => {
-			if (user) {
-				const response = await getAllWorkspaces(user.id);
-				setAllWorkspaces(response);
-			}
-		};
-		handleGetAllWorkspaces();
-	}, []);
 
 	return (
 		<div
@@ -64,7 +53,7 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						<div className="py-3 px-3.5">
 							<p className="mb-3 text-muted-foreground text-sm">{user.email}</p>
 							<ul>
-								{allWorkspaces.map((workspace, index) => (
+								{workspaces.map((workspace: Workspace, index: number) => (
 									<Link
 										legacyBehavior
 										href={`workspace/${workspace.url}`}
