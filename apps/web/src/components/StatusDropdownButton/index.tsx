@@ -11,7 +11,7 @@ import { inProgress } from "../Svg";
 import { statusOptions } from "@/constants/designations";
 import { setStatus } from "@/store/taskData";
 import { getSingleTask } from "@/store/task/thunks";
-import type { StatusDropdownButtonProps } from "./StatusDropdownRefactored.interfaces";
+import type { StatusDropdownButtonProps } from "./StatusDropdown.interfaces";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
@@ -23,7 +23,6 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuRadioGroup,
 } from "../ui/dropdown-menu";
 
@@ -160,7 +159,6 @@ export const StatusDropdownButton = ({
 						</DropdownMenuItem>
 					))}
 				</DropdownMenuRadioGroup>
-				<DropdownMenuSeparator />
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
