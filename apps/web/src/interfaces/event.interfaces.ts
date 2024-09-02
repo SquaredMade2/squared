@@ -1,3 +1,5 @@
+import type { Priority } from "@repo/db";
+
 export enum Status {
 	backlog = "backlog",
 	todo = "todo",
@@ -5,14 +7,6 @@ export enum Status {
 	done = "done",
 	canceled = "canceled",
 	duplicate = "duplicate",
-}
-
-export enum Priority {
-	noPriority = "noPriority",
-	urgent = "urgent",
-	high = "high",
-	medium = "medium",
-	low = "low",
 }
 
 export enum Labels {
