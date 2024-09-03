@@ -20,6 +20,25 @@ jobs:
 
     - name: List All Open PRs
       run: |
+        # Define the map_github_to_discord function
+        map_github_to_discord() {
+          case "$1" in
+            "Chase-T-White") echo "414567565843759105" ;;
+            "duncanwhyte") echo "223870029660160001" ;;
+            "edchrepo") echo "300515474322489344" ;;
+            "ellischung") echo "273201608685387786" ;;
+            "klexup") echo "1220824900365844522" ;;
+            "napqueenkaila") echo "1074750793128882247" ;;
+            "NateCummens") echo "447548944122380309" ;;
+            "Npinak") echo "748245605587091577" ;;
+            "oerkperl") echo "1084769574098047059" ;;
+            "SerhiiDer") echo "791023762124308500" ;;
+            "Smerly") echo "277576312686641153" ;;
+            "THEjacob1000") echo "213438742315139073" ;;
+            *) echo "" ;;
+          esac
+        }
+
         # Fetch all open PRs and store them in an array
         prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author)
         echo "Raw PR data: $prs"
@@ -55,23 +74,3 @@ jobs:
             "content": "[#'"$pr_number"'] '"$pr_title"' (by '"$pr_author"')\n'"$pr_stale_hours"' hours stale · '"$pr_age_days"' days old · Waiting on '"$mentions"' \n[View PR]('"$pr_url"')"
           }' ${{ secrets.DISCORD_WEBHOOK_URL }}
         done
-
-    - name: Map GitHub usernames to Discord IDs
-      run: |
-        map_github_to_discord() {
-          case "$1" in
-            "Chase-T-White") echo "414567565843759105" ;;
-            "duncanwhyte") echo "223870029660160001" ;;
-            "edchrepo") echo "300515474322489344" ;;
-            "ellischung") echo "273201608685387786" ;;
-            "klexup") echo "1220824900365844522" ;;
-            "napqueenkaila") echo "1074750793128882247" ;;
-            "NateCummens") echo "447548944122380309" ;;
-            "Npinak") echo "748245605587091577" ;;
-            "oerkperl") echo "1084769574098047059" ;;
-            "SerhiiDer") echo "791023762124308500" ;;
-            "Smerly") echo "277576312686641153" ;;
-            "THEjacob1000") echo "213438742315139073" ;;
-            *) echo "" ;;
-          esac
-        }
