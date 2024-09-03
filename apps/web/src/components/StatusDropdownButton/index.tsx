@@ -25,6 +25,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 } from "../ui/dropdown-menu";
+import type { Status } from "@repo/db";
 
 export const StatusDropdownButton = ({
 	location,
@@ -66,7 +67,7 @@ export const StatusDropdownButton = ({
 	};
 
 	const handleSelectStatus = (newStatus: string) => {
-		if (location === "newIssue") dispatch(setStatus(newStatus));
+		if (location === "newIssue") dispatch(setStatus(newStatus as Status));
 		if (location === "issueSidebar") {
 			if (newStatus === sidebarStatus) return;
 			if (taskId !== undefined) storeCommonFields(author, taskId);
