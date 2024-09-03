@@ -31,7 +31,7 @@ const RenameModal = ({
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
 		if (inputValue !== taskData?.title) {
-			await updateTitle(inputValue.trim(), taskData._id);
+			await updateTitle(inputValue.trim(), taskData.id);
 			dispatch(getAllTasks(currentTeam));
 			if (searchSubmit) {
 				searchSubmit(e);

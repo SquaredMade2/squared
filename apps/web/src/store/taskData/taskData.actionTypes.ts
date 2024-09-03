@@ -1,5 +1,5 @@
-import type { Workspace } from "@repo/db";
-import type { Team, Access, Task } from "./taskData.interfaces";
+import type { Workspace, Task } from "@repo/db";
+import type { Team, Access } from "./taskData.interfaces";
 
 export enum ActionType {
 	CREATE_NEW_TASK = "CREATE_NEW_TASK",

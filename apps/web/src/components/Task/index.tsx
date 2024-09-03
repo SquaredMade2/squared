@@ -25,7 +25,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 		(state) => state.userSettings.showNavBar,
 	);
 	const taskList = useAppSelector((state) => state.taskData.taskList);
-	const taskPageId = useAppSelector((state) => state.taskData.taskPage._id);
+	const taskPageId = useAppSelector((state) => state.taskData.taskPage.id);
 	const showBackdrop = showSideNav || navbarToggled;
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
@@ -37,7 +37,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const currentTaskId = useAppSelector(
 		(state) => state.currentTask.currentTaskId,
 	);
-	const taskId = taskList.find((el) => formatUrl(el.title) === taskName)?._id;
+	const taskId = taskList.find((el) => formatUrl(el.title) === taskName)?.id;
 
 	const dataForDispatch = taskId || taskPageId || currentTaskId;
 

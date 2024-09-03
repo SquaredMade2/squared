@@ -34,8 +34,8 @@ const TaskCardTitle = ({
 	);
 
 	const handleAssigneeIcon: () => React.JSX.Element = () => {
-		return task.assignee?.name !== null && task.assignee ? (
-			<ProfileImage profileName={task.assignee.name} location={"taskCard"} />
+		return task.assigneeName !== null && task.assigneeName ? (
+			<ProfileImage profileName={task.assigneeName} location={"taskCard"} />
 		) : (
 			<UserSearch className="size-5 text-[#9597AD]" />
 		);
@@ -50,11 +50,24 @@ const TaskCardTitle = ({
 	};
 
 	const teamIdentifier =
-		location === "dashboard" ? currentTeam.identifier : task.team.identifier;
+		location === "dashboard" ? currentTeam.identifier : task.teamId;
 
 	const assigneeParams: AssigneeParams = (taskId, user) => {
 		dispatch(getAllTasks(currentTeam));
-		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
+		return {
+			taskId: taskId,
+			assignee: {
+				id: user.id,
+				name: user.name,
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
+			},
+		};
 	};
 
 	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
@@ -105,7 +118,7 @@ const TaskCardTitle = ({
 							<div className="absolute mr-40 mt-10 cursor-pointer">
 								{showAssigneeDropdown && (
 									<AssigneeDropdown
-										taskId={task._id}
+										taskId={task.id}
 										location="Dashboard"
 										setShowAssigneeDropdown={setShowAssigneeDropdown}
 										handleAssigneeChange={handleAssigneeChange}
@@ -138,7 +151,7 @@ const TaskCardTitle = ({
 					<div className="">
 						{showAssigneeDropdown && (
 							<AssigneeDropdown
-								taskId={task._id}
+								taskId={task.id}
 								location={"Grid"}
 								setShowAssigneeDropdown={setShowAssigneeDropdown}
 								handleAssigneeChange={handleAssigneeChange}

@@ -6,7 +6,7 @@ import useSearchParams from "@/hooks/typeScriptReduxHooks";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 import { searchTasks } from "@/store/taskData/thunks";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import TaskCard from "@/components/TaskCard";
 import RenameModal from "@/components/RenameModal";
 import type { RootState } from "@/store";

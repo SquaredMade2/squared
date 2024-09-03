@@ -2,12 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import type {
 	AddWorkspaceInterface,
-	Assignee,
 	GetTeamInterface,
 	GetWorkspaceInterface,
-	Task,
 	Team,
 } from "./taskData.interfaces";
+import type { Task } from "@repo/db";
 import type { RootState } from "..";
 import {
 	getTeamFailure,
@@ -19,7 +18,7 @@ import {
 	setWorkspace,
 } from ".";
 import { createTaskEventLog } from "../events/actions";
-import type { Workspace } from "@repo/db";
+import type { Workspace, User } from "@repo/db";
 
 export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 	"taskData/createNewTask",
@@ -29,6 +28,13 @@ export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 		const author = {
 			id: authorId,
 			name: authorName,
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
 		};
 		try {
 			const response: AxiosResponse<Task> = await axios({
@@ -36,7 +42,7 @@ export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 				url: `${process.env.NEXT_PUBLIC_SERVER}/task/create`,
 				data: task,
 			});
-			const { _id: taskId } = response.data;
+			const { id: taskId } = response.data;
 			dispatch(createTaskEventLog(taskId, author));
 			dispatch(getAllTasks(currentTeam));
 			return response.data;
@@ -630,7 +636,7 @@ export const enableUniversalLink = createAsyncThunk(
 export const setAssignee = createAsyncThunk(
 	"taskData/setAssignee",
 	async (
-		id: { taskId: string; assignee: Assignee | null },
+		id: { taskId: string; assignee: User | null },
 		{ rejectWithValue },
 	) => {
 		const taskId = id.taskId;

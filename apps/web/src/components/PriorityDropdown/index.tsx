@@ -11,6 +11,7 @@ import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import type { Priority } from "@repo/db";
 
 const PriorityDropdown = ({
 	handleButtonClick,
@@ -37,7 +38,7 @@ const PriorityDropdown = ({
 
 	const [query, setQuery] = useState("");
 
-	const handleSelectPriority = (newPriority: string) => {
+	const handleSelectPriority = (newPriority: Priority) => {
 		if (location === "issueSidebar") {
 			if (newPriority === sidebarPriority) return;
 			if (taskId !== undefined) storeCommonFields(author, taskId);
@@ -45,8 +46,8 @@ const PriorityDropdown = ({
 			updateItem(newPriority);
 		}
 		if (location === "newIssue") {
-			if (newPriority === "No priority") {
-				dispatch(setPriority(null));
+			if (newPriority === "noPriority") {
+				dispatch(setPriority("noPriority"));
 			} else {
 				dispatch(setPriority(newPriority));
 			}

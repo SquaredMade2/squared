@@ -19,7 +19,7 @@ import { SocketContext } from "@/app/SocketProvider";
 import { getAllTasks, getAllUsers } from "@/store/taskData/thunks";
 import type { TaskCardProps } from "./TaskCard.interfaces";
 import type { AppDispatch, RootState } from "@/store";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import { deleteTaskCard } from "@/api/taskApi";
 import { formatUrl } from "@/utils/formatting";
 import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
@@ -69,12 +69,12 @@ const TaskCard = ({
 	const getNotificationId = notifications.map((noti) => noti._id);
 
 	const handleDeleteTaskCard = async (task: Task) => {
-		await deleteTaskCard(task._id);
+		await deleteTaskCard(task.id);
 		dispatch(getAllTasks(currentTeam));
 		setShowDeleteCard(false);
 		setDeleteFade(false);
 
-		socket.emit("remove_notification", task._id, getNotificationId);
+		socket.emit("remove_notification", task.id, getNotificationId);
 	};
 
 	const handleCloseDeleteCard = () => {
@@ -136,7 +136,7 @@ const TaskCard = ({
 			{view === "list" &&
 				location === "dashboard" &&
 				filteredTasks?.map((task, index) => (
-					<Draggable draggableId={task._id} index={index} key={task._id}>
+					<Draggable draggableId={task.id} index={index} key={task.id}>
 						{(provided) => (
 							<div
 								id={"this"}
@@ -150,7 +150,7 @@ const TaskCard = ({
 									<ContextMenuTrigger>
 										<div
 											ref={(el: HTMLDivElement | null) => {
-												taskRefs.current[task._id] = el;
+												taskRefs.current[task.id] = el;
 											}}
 										>
 											<TaskContextMenu
@@ -183,7 +183,7 @@ const TaskCard = ({
 											>
 												<div className="col-span-10 text-foreground">
 													<TaskCardTitle
-														key={task._id}
+														key={task.id}
 														task={task}
 														isShown={showPriority}
 														taskTitle={task.title}
@@ -210,7 +210,7 @@ const TaskCard = ({
 					})
 					.map((task, index) => {
 						return (
-							<Draggable draggableId={task._id} index={index} key={task._id}>
+							<Draggable draggableId={task.id} index={index} key={task.id}>
 								{(provided) => (
 									<div
 										{...provided.draggableProps}
@@ -223,7 +223,7 @@ const TaskCard = ({
 											<ContextMenuTrigger>
 												<div
 													ref={(el: HTMLDivElement | null) => {
-														taskRefs.current[task._id] = el;
+														taskRefs.current[task.id] = el;
 													}}
 												>
 													<TaskContextMenu
@@ -238,7 +238,7 @@ const TaskCard = ({
 												>
 													<div className="relative w-[325px]">
 														<div
-															key={task._id}
+															key={task.id}
 															className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
 																theme === "light" ? "bg-card" : "bg-background"
 															}`}
@@ -285,11 +285,11 @@ const TaskCard = ({
 					})}
 			{location === "search" &&
 				filteredTasks?.map((task, index) => (
-					<Draggable draggableId={task._id} index={index} key={task._id}>
+					<Draggable draggableId={task.id} index={index} key={task.id}>
 						{(provided) => (
 							<div
 								id={"this"}
-								key={task._id}
+								key={task.id}
 								onClick={handleGlobalClick}
 								onContextMenu={(e) => handleContextMenu(e, task)}
 							>
@@ -297,7 +297,7 @@ const TaskCard = ({
 									<ContextMenuTrigger>
 										<div
 											ref={(el: HTMLDivElement | null) => {
-												taskRefs.current[task._id] = el;
+												taskRefs.current[task.id] = el;
 											}}
 										>
 											<TaskContextMenu
@@ -314,13 +314,13 @@ const TaskCard = ({
 										>
 											<div className="relative w-[325px] mb-2">
 												<div
-													key={task._id}
+													key={task.id}
 													className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
 														theme === "light" ? "bg-card" : "bg-background"
 													}`}
 												>
 													<TaskCardTitle
-														key={task._id}
+														key={task.id}
 														task={task}
 														isShown={showPriority}
 														taskTitle={task.title}
@@ -347,7 +347,7 @@ const TaskCard = ({
 					})
 					.map((task, index) => {
 						return (
-							<Draggable draggableId={task._id} index={index} key={task._id}>
+							<Draggable draggableId={task.id} index={index} key={task.id}>
 								{(provided) => (
 									<div
 										{...provided.draggableProps}
@@ -360,7 +360,7 @@ const TaskCard = ({
 											<ContextMenuTrigger>
 												<div
 													ref={(el: HTMLDivElement | null) => {
-														taskRefs.current[task._id] = el;
+														taskRefs.current[task.id] = el;
 													}}
 												>
 													<TaskContextMenu
@@ -375,7 +375,7 @@ const TaskCard = ({
 												>
 													<div className="relative w-[325px]">
 														<div
-															key={task._id}
+															key={task.id}
 															className={`cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground bg-card rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 ${
 																theme === "light" ? "bg-card" : "bg-background"
 															}`}
@@ -424,7 +424,7 @@ const TaskCard = ({
 				filteredTasks?.map((task) => (
 					<div
 						id={"this"}
-						key={task._id}
+						key={task.id}
 						onClick={handleGlobalClick}
 						onContextMenu={(e) => handleContextMenu(e, task)}
 					>
@@ -432,7 +432,7 @@ const TaskCard = ({
 							<ContextMenuTrigger>
 								<div
 									ref={(el: HTMLDivElement | null) => {
-										taskRefs.current[task._id] = el;
+										taskRefs.current[task.id] = el;
 									}}
 								>
 									<TaskContextMenu
@@ -461,7 +461,7 @@ const TaskCard = ({
 									>
 										<div className="col-span-10 text-foreground">
 											<TaskCardTitle
-												key={task._id}
+												key={task.id}
 												task={task}
 												isShown={showPriority}
 												taskTitle={task.title}

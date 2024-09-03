@@ -17,7 +17,7 @@ import {
 	DELETE_VIEW_SUCCESS,
 	DELETE_VIEW_ERROR,
 } from "./actions";
-import type { Task } from "../taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 
 export interface Filters {
 	filterOption: { priority: string[]; status: string[] };
