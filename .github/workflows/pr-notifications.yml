@@ -71,6 +71,6 @@ jobs:
 
           # Send notification to Discord
           curl -X POST -H "Content-Type: application/json" -d '{
-            "content": "[#'"$pr_number"'] '"$pr_title"' (by '"$pr_author"')\n'"$pr_stale_hours"' hours stale · '"$pr_age_days"' days old · Waiting on '"$mentions"' \n[View PR]('"$pr_url"')"
+            "content": "[**[#'"$pr_number"'] '"$pr_title"'**]('"$pr_url"')\n*'"$pr_stale_hours"' hours stale · '"$pr_age_days"' days old* · Waiting on '"$mentions"' (by *'"$pr_author"'*)"
           }' ${{ secrets.DISCORD_WEBHOOK_URL }}
         done
