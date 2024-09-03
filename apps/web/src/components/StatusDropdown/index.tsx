@@ -11,6 +11,7 @@ import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import type { Status } from "@repo/db";
 
 const StatusDropdown = ({
 	handleButtonClick,
@@ -39,7 +40,7 @@ const StatusDropdown = ({
 		taskEvent,
 	} = useLogTaskEvent();
 
-	const handleSelectStatus = (newStatus: string) => {
+	const handleSelectStatus = (newStatus: Status) => {
 		if (location === "newIssue") dispatch(setStatus(newStatus));
 		if (location === "issueSidebar") {
 			if (newStatus === sidebarStatus) return;
@@ -119,7 +120,7 @@ const StatusDropdown = ({
 									isChecked = sidebarStatus === name;
 								return (
 									<Combobox.Option
-										onClick={() => handleSelectStatus(name)}
+										onClick={() => handleSelectStatus(name as Status)}
 										key={name}
 										value={name}
 										className="flex flex-row text-center justify-between hover:bg-popoverHover rounded-md py-1 px-2"

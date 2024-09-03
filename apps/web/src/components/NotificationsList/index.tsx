@@ -135,8 +135,8 @@ function NotificationsList({
 					noti.task.map(
 						(t: {
 							title: string;
-							description: string;
-							_id: string;
+							description: string | null;
+							id: string;
 						}) => (
 							<div
 								key={`${noti._id}`}
@@ -154,7 +154,7 @@ function NotificationsList({
 									</p>
 								</div>
 								<p className="text-[#ACAFCE]">
-									{summarizeInputText(t.description, 8)}
+									{summarizeInputText(t.description ?? "", 8)}
 								</p>
 								<div className="flex justify-between items-center text-[#9CA6C9]">
 									<div className="flex items-center gap-1">
@@ -169,7 +169,7 @@ function NotificationsList({
 											title="button"
 											type="button"
 											className="cursor-pointer"
-											onClick={() => handleRemoveNotification(t._id)}
+											onClick={() => handleRemoveNotification(t.id)}
 										>
 											<Trash2 className="size-4" />
 										</button>

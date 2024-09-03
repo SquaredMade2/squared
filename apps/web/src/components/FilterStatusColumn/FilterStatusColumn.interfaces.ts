@@ -1,5 +1,7 @@
+import type { Status } from "@repo/db";
+
 export interface FilterStatusColumnProps {
-	columnType: string;
+	columnType: Status;
 	title: string;
 	handleDeleteTask: (id: string) => void;
 }

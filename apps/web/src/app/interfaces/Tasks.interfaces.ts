@@ -1,5 +1,4 @@
-import type { Task } from "@/store/taskData/taskData.interfaces";
-import type { User } from "@repo/db";
+import type { User, Task } from "@repo/db";
 
 export interface TaskCardStatusProps {
 	task: Task;

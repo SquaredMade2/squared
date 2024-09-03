@@ -1,11 +1,11 @@
-import type { User } from "@repo/db";
+import type { Label, Priority, Status, Task, User } from "@repo/db";
 
 export interface TaskDataState {
 	access: Access;
 	error: boolean;
-	status: string;
-	priority: string | null;
-	dueDate: Date | undefined;
+	status: Status;
+	priority: Priority;
+	dueDate: Date;
 	effortEstimate: number | null;
 	taskPage: Task;
 	taskList: Task[];
@@ -14,8 +14,9 @@ export interface TaskDataState {
 	currentTeam: Team;
 	allUsersInWorkspace: UsersInWorkspace[];
 	prevWorkspaceUrl: string;
-	labels: string[];
+	labels: Label[];
 	isLoading: boolean;
+	loadingState: string;
 	currentCommits: Commits[];
 }
 
@@ -94,22 +95,6 @@ export interface Access {
 	id: string;
 }
 
-export interface Task {
-	authorId: string;
-	taskName: string;
-	_id: string;
-	title: string;
-	description: string;
-	status: string;
-	identifier: string;
-	priority: string | null;
-	labels: string[];
-	dueDate: Date | undefined;
-	effortEstimate: number | null;
-	team: Team;
-	dateCreated: Date;
-	assignee: User | null;
-}
 export interface AccessId {
 	status: boolean;
 	id: string;

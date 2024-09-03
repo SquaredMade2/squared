@@ -13,6 +13,7 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType, type Labels } from "@/interfaces/event.interfaces";
 import { Check } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import type { Label } from "@repo/db";
 
 export default function LabelDropdown({
 	labelOptions,
@@ -48,7 +49,7 @@ export default function LabelDropdown({
 					return name.toLowerCase().includes(query.toLowerCase());
 				});
 
-	const newLabelSelection = (currentLabels: string[], labelName: string) => {
+	const newLabelSelection = (currentLabels: Label[], labelName: Label) => {
 		let newSelection = [];
 		if (currentLabels.length === 0) {
 			newSelection = [labelName];
@@ -63,8 +64,8 @@ export default function LabelDropdown({
 		return newSelection;
 	};
 
-	const handleSelectLabels = (labelName: string) => {
-		let newLabelsSelected = [];
+	const handleSelectLabels = (labelName: Label) => {
+		let newLabelsSelected: Label[] = [];
 		if (location === "newIssue") {
 			newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
 			dispatch(setLabels(newLabelsSelected));
@@ -109,7 +110,7 @@ export default function LabelDropdown({
 
 	useEffect(() => {
 		if (sidebarLabels) {
-			storeTaskLabels(sidebarLabels as Labels[]);
+			storeTaskLabels(sidebarLabels as unknown as Labels[]);
 		}
 	}, []);
 
@@ -130,7 +131,7 @@ export default function LabelDropdown({
 							className="p-2 mb-2 border-b border-border focus:outline-none text-secondary-foreground bg-popover"
 						/>
 						<Combobox.Options static>
-							{filteredLabelOptions.map((labelName) => {
+							{filteredLabelOptions.map((labelName: Label) => {
 								let isChecked = false;
 								if (location === "newIssue")
 									isChecked = !!newIssueLabels?.find(

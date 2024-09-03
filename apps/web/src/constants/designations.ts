@@ -1,3 +1,5 @@
+import type { Label, Priority } from "@repo/db";
+
 export const statusOptions = [
 	"Backlog",
 	"Todo",
@@ -7,15 +9,21 @@ export const statusOptions = [
 	"Duplicate",
 ];
 
-export const priorityOptions = [
-	"No priority",
-	"Urgent",
-	"High",
-	"Medium",
-	"Low",
+export const priorityOptions: Priority[] = [
+	"noPriority",
+	"urgent",
+	"high",
+	"medium",
+	"low",
 ];
 
-export const labelOptions = ["Bug", "Feature", "Improvement", "Red", "Test"];
+export const labelOptions: Label[] = [
+	"Bug",
+	"Feature",
+	"Improvement",
+	"Red",
+	"Test",
+];
 
 export const effortEstimateOptions = [
 	"1 - Very quick delivery",
