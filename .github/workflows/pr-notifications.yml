@@ -1,0 +1,76 @@
+name: Daily PR Notifications
+
+permissions:
+  pull-requests: write
+  contents: read
+
+on:
+  schedule:
+    - cron: '0 19 * * *'  # Runs every day at 10 AM UTC
+  workflow_dispatch: 
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set GH_TOKEN using GitHub's token
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3
+
+    - name: List All Open PRs
+      run: |
+        # Define the map_github_to_discord function
+        map_github_to_discord() {
+          case "$1" in
+            "Chase-T-White") echo "414567565843759105" ;;
+            "duncanwhyte") echo "223870029660160001" ;;
+            "edchrepo") echo "300515474322489344" ;;
+            "ellischung") echo "273201608685387786" ;;
+            "klexup") echo "1220824900365844522" ;;
+            "napqueenkaila") echo "1074750793128882247" ;;
+            "NateCummens") echo "447548944122380309" ;;
+            "Npinak") echo "748245605587091577" ;;
+            "oerkperl") echo "1084769574098047059" ;;
+            "SerhiiDer") echo "791023762124308500" ;;
+            "Smerly") echo "277576312686641153" ;;
+            "THEjacob1000") echo "213438742315139073" ;;
+            *) echo "" ;;
+          esac
+        }
+
+        # Fetch all open PRs and store them in an array
+        prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author)
+        echo "Raw PR data: $prs"
+
+        # Process each PR individually using jq
+        echo "$prs" | jq -c '.[]' | while read pr; do
+          pr_number=$(echo "$pr" | jq -r '.number')
+          pr_title=$(echo "$pr" | jq -r '.title')
+          pr_author=$(echo "$pr" | jq -r '.author.login')
+          pr_url=$(echo "$pr" | jq -r '.url')
+          pr_created_at=$(echo "$pr" | jq -r '.createdAt')
+          reviewers=$(echo "$pr" | jq -r '.reviewRequests[].login')
+
+          # Calculate PR age and stale time
+          current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          pr_age_days=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 86400 ))
+          pr_stale_hours=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 3600 ))
+
+          # Prepare mentions
+          mentions=""
+          if [[ "$reviewers" != "" ]]; then
+            for reviewer in $reviewers; do
+              discord_id=$(map_github_to_discord "$reviewer")
+              mentions="$mentions <@$discord_id>"
+            done
+          else
+            discord_id=$(map_github_to_discord "$pr_author")
+            mentions="<@$discord_id>"
+          fi
+
+          # Send notification to Discord
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "content": "[**[#'"$pr_number"'] '"$pr_title"'**]('"$pr_url"')\n*'"$pr_stale_hours"' hours stale · '"$pr_age_days"' days old* · Waiting on '"$mentions"' (by *'"$pr_author"'*)"
+          }' ${{ secrets.DISCORD_WEBHOOK_URL }}
+        done
