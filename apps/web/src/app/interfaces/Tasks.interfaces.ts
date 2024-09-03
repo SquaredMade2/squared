@@ -1,4 +1,5 @@
-import type { Assignee, Task } from "@/store/taskData/taskData.interfaces";
+import type { Assignee } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 
 export interface TaskCardStatusProps {
 	task: Task;

@@ -44,15 +44,15 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	};
 
 	const updateItem = async (newLabelSelection: string[]) => {
-		if (task._id !== undefined) {
+		if (task.id !== undefined) {
 			try {
 				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
+					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task.id}`,
 					{
 						labels: newLabelSelection,
 					},
 				);
-				dispatch(getSingleTask(task._id));
+				dispatch(getSingleTask(task.id));
 			} catch (err) {}
 		}
 	};
@@ -84,7 +84,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 		newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
 		if (task.labels) {
 			newLabelsSelected = newLabelSelection(task.labels, labelName);
-			if (task._id !== undefined) storeCommonFields(author, task._id);
+			if (task.id !== undefined) storeCommonFields(author, task.id);
 			logEvent(newLabelsSelected);
 			await updateItem(newLabelsSelected);
 		}

@@ -7,7 +7,8 @@ import { Button } from "../ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import ButtonIcon from "../ButtonIcon";
-const titleArr = { value: "Todo", id: 2 };
+import type { Status } from "@repo/db";
+const titleArr: { status: Status; id: string } = { status: "todo", id: "2" };
 const NewIssueButton = () => {
 	const dispatch = useDispatch();
 	const showNewIssue = useSelector(
@@ -21,7 +22,7 @@ const NewIssueButton = () => {
 	const fillColor = () => (theme === "light" ? "#174EFF" : "white");
 	const handleOpen = () => {
 		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(titleArr.value));
+		dispatch(setStatus(titleArr.status));
 	};
 
 	return (
@@ -43,7 +44,7 @@ const NewIssueButton = () => {
 	);
 };
 
-export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
+export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
 	const dispatch = useDispatch();
 	const { theme } = useSelector((state: RootState) => state.userSettings);
 	const fillColor = () => (theme === "light" ? "#174EFF" : "white");
@@ -62,7 +63,7 @@ export const SideNavNewIssueButton = () => {
 	const dispatch = useDispatch();
 	const handleOpen = () => {
 		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(titleArr.value));
+		dispatch(setStatus(titleArr.status));
 	};
 	return (
 		<ButtonIcon
