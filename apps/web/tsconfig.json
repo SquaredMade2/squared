@@ -1,20 +1,14 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
-  "compilerOptions": {
-    "outDir": "dist/",
-    "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    },
-    "moduleResolution": "node16",
-    "module": "Node16",
-    "types": ["jest", "jest-extended"]
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [".next"]
+	"extends": "@repo/typescript-config/nextjs.json",
+	"compilerOptions": {
+		"outDir": "dist/",
+		"baseUrl": "src",
+		"paths": {
+			"@/*": ["*"]
+		},
+		"moduleResolution": "node16",
+		"module": "Node16",
+		"types": ["jest", "jest-extended"]
+	},
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
 }
