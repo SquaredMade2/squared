@@ -13,46 +13,47 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Set GH_TOKEN using GitHub's token
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3
 
-    - name: Find Open PRs
-      id: find_pr
-      uses: juliangruber/find-pull-request-action@v1
-      with:
-        state: open  # Find open PRs
-        repo: ${{ github.repository }}
-        sort: updated
-        direction: desc
-
-    - name: Send Discord notification
-      if: ${{ steps.find_pr.outputs.number != '' }}
+    - name: List All Open PRs
       run: |
-        pr_number="${{ steps.find_pr.outputs.number }}"
-        pr_title="${{ steps.find_pr.outputs.title }}"
-        pr_author="${{ steps.find_pr.outputs.head-ref }}"
-        pr_state="${{ steps.find_pr.outputs.state }}"
-        pr_url="${{ steps.find_pr.outputs.url }}"
-        reviewers=$(gh pr view $pr_number --json reviewRequests --jq '.reviewRequests[].login')
+        # Fetch all open PRs
+        prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author --jq '.[]')
 
-        # Prepare mentions
-        mentions=""
-        if [[ "$pr_state" == "changes_requested" ]]; then
-          discord_id=$(map_github_to_discord "$pr_author")
-          mentions="<@$discord_id>"
-        elif [[ "$reviewers" != "" ]]; then
-          for reviewer in $reviewers; do
-            discord_id=$(map_github_to_discord "$reviewer")
-            mentions="$mentions <@$discord_id>"
-          done
-        fi
+        # Iterate over each PR and process it
+        for pr in $(echo "${prs}" | jq -c '.'); do
+          pr_number=$(echo "$pr" | jq -r '.number')
+          pr_title=$(echo "$pr" | jq -r '.title')
+          pr_author=$(echo "$pr" | jq -r '.author.login')
+          pr_url=$(echo "$pr" | jq -r '.url')
+          pr_created_at=$(echo "$pr" | jq -r '.createdAt')
+          reviewers=$(echo "$pr" | jq -r '.reviewRequests[].login')
 
-        # Send notification to Discord
-        curl -X POST -H "Content-Type: application/json" -d '{
-          "content": "'"$mentions"' - PR #'"$pr_number"' (`'"$pr_title"'`) needs attention. [View PR]('"$pr_url"')"
-        }' ${{ secrets.DISCORD_WEBHOOK_URL }}
+          # Calculate PR age and stale time
+          current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          pr_age_days=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 86400 ))
+          pr_stale_hours=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 3600 ))
+
+          # Prepare mentions
+          mentions=""
+          if [[ "$reviewers" != "" ]]; then
+            for reviewer in $reviewers; do
+              discord_id=$(map_github_to_discord "$reviewer")
+              mentions="$mentions <@$discord_id>"
+            done
+          else
+            discord_id=$(map_github_to_discord "$pr_author")
+            mentions="<@$discord_id>"
+          fi
+
+          # Send notification to Discord
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "content": "[#'"$pr_number"'] '"$pr_title"' (by '"$pr_author"')\n'"$pr_stale_hours"' hours stale · '"$pr_age_days"' days old · Waiting on '"$mentions"' \n[View PR]('"$pr_url"')"
+          }' ${{ secrets.DISCORD_WEBHOOK_URL }}
+        done
 
     - name: Map GitHub usernames to Discord IDs
       run: |
