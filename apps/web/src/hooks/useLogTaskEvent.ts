@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
-import type {
-	Assignee,
-	Author,
-	EventType,
-	Labels,
-} from "@/interfaces/event.interfaces";
+import type { EventType, Labels } from "@/interfaces/event.interfaces";
 import { addTaskEvent } from "@/store/events/actions";
 import { useAppSelector, useAppDispatch } from "./typeScriptReduxHooks";
-import type { TaskEvent } from "@repo/db";
+import type { TaskEvent, User } from "@repo/db";
 
 const useLogTaskEvent = () => {
 	const [taskEvent, setTaskEvent] = useState<TaskEvent>({
@@ -37,9 +32,16 @@ const useLogTaskEvent = () => {
 		(state) => state.userSettings.user,
 	);
 
-	const author: Author = {
+	const author: User = {
 		id: userId,
 		name: userName,
+		username: "",
+		email: "",
+		password: "",
+		verified: true,
+		lastLogin: new Date(),
+		onBoarding: false,
+		defaultWorkspaceId: "",
 	};
 
 	useEffect(() => {
@@ -54,7 +56,7 @@ const useLogTaskEvent = () => {
 		}
 	}, [taskEvent]);
 
-	const storeCommonFields = (author: Author, taskId: string) => {
+	const storeCommonFields = (author: User, taskId: string) => {
 		setTaskEvent({
 			...taskEvent,
 			authorId: author.id,
@@ -90,7 +92,7 @@ const useLogTaskEvent = () => {
 		}));
 	};
 
-	const storeTaskAssignee = (assignee: Assignee) => {
+	const storeTaskAssignee = (assignee: User) => {
 		setTaskEvent((taskEvent) => ({
 			...taskEvent,
 			originalAssignee: assignee,
@@ -106,7 +108,7 @@ const useLogTaskEvent = () => {
 	// 	setLabelsUpdated(true);
 	// };
 
-	const updateTaskAssignee = (assignee: Assignee) => {
+	const updateTaskAssignee = (assignee: User) => {
 		setTaskEvent((taskEvent) => ({
 			...taskEvent,
 			updatedAssignee: assignee,

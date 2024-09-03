@@ -3,12 +3,8 @@ import ProfileImage from "@/components/ProfileImage";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
-import {
-	type Assignee,
-	type Author,
-	EventType,
-} from "@/interfaces/event.interfaces";
-import type { TaskEvent, Label } from "@repo/db";
+import { EventType } from "@/interfaces/event.interfaces";
+import type { TaskEvent, Label, User } from "@repo/db";
 
 const UpdatedByInformation = () => {
 	const eventLogs = [] as TaskEvent[];
@@ -185,7 +181,7 @@ const UpdatedByInformation = () => {
 		}
 	};
 
-	const displayAuthorProfile = (author: Author) => {
+	const displayAuthorProfile = (author: User) => {
 		return (
 			<>
 				<ProfileImage profileName={author.name} location={"activityItem"} />

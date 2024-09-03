@@ -1,8 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { getSingleTask } from "@/store/task/thunks";
-import type { Assignee } from "../taskData/taskData.interfaces";
-import { useToast } from "@/components/ui/use-toast";
-import type { Label } from "@repo/db";
+import type { Label, User } from "@repo/db";
 
 export interface TaskInitialState {
 	isLoading: boolean;
@@ -22,7 +20,7 @@ export interface SingleTaskDataInterface {
 	effortEstimate: number;
 	team: string;
 	dateCreated: string;
-	assignee: Assignee;
+	assignee: User;
 	identifier: number;
 }
 

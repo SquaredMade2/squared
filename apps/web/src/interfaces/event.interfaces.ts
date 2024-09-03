@@ -1,4 +1,4 @@
-import type { Priority } from "@repo/db";
+import type { User, Priority } from "@repo/db";
 
 export enum Status {
 	backlog = "backlog",
@@ -25,14 +25,4 @@ export enum EventType {
 	CommentUpdated = "commentUpdated",
 	StatusUpdated = "statusUpdated",
 	PriorityUpdated = "priorityUpdated",
-}
-
-export interface Author {
-	id: string;
-	name: string;
-}
-
-export interface Assignee {
-	id: string | null;
-	name: string | null;
 }
