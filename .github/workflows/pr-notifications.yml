@@ -20,18 +20,12 @@ jobs:
 
     - name: List All Open PRs
       run: |
-        # Fetch all open PRs and print the raw JSON for debugging
+        # Fetch all open PRs and store them in an array
         prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author)
         echo "Raw PR data: $prs"
-        
-        # Check if PR list is empty
-        if [[ -z "$prs" ]]; then
-          echo "No open PRs found."
-          exit 0
-        fi
 
-        # Iterate over each PR and process it
-        for pr in $(echo "${prs}" | jq -c '.[]'); do
+        # Process each PR individually using jq
+        echo "$prs" | jq -c '.[]' | while read pr; do
           pr_number=$(echo "$pr" | jq -r '.number')
           pr_title=$(echo "$pr" | jq -r '.title')
           pr_author=$(echo "$pr" | jq -r '.author.login')
