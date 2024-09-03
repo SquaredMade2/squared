@@ -1,11 +1,16 @@
-import type { Task } from "@repo/db";
+import type { Label, Task } from "@repo/db";
 
 type FilterValue = string | number | Date | boolean | null;
 
 export type FilterCondition = {
 	field: keyof Task;
-	value: FilterValue;
-	operator: "equals" | "contains" | "greaterThan" | "lessThan"; // Add more operators as needed
+	value: FilterValue | Label[];
+	operator:
+		| "equals"
+		| "contains"
+		| "greaterThan"
+		| "lessThan"
+		| "arrayIncludesAll"; // Add more operators as needed
 };
 
 type TaskFilter = {

@@ -28,6 +28,12 @@ export function checkCondition(
 				typeof condition.value === "number" &&
 				taskValue < condition.value
 			);
+		case "arrayIncludesAll":
+			return (
+				Array.isArray(taskValue) &&
+				Array.isArray(condition.value) &&
+				condition.value.every((val) => taskValue.includes(val))
+			);
 		default:
 			return false;
 	}
