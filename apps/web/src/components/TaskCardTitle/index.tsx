@@ -54,7 +54,20 @@ const TaskCardTitle = ({
 
 	const assigneeParams: AssigneeParams = (taskId, user) => {
 		dispatch(getAllTasks(currentTeam));
-		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
+		return {
+			taskId: taskId,
+			assignee: {
+				id: user.id,
+				name: user.name,
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
+			},
+		};
 	};
 
 	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
