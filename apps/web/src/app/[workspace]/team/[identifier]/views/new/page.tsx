@@ -16,6 +16,7 @@ import ViewNewTopNavBar from "@/components/ViewNewTopNavBar";
 import type { DragResult } from "@/components/ViewAllTasks/ViewAllTasks.interfaces";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import type { Status } from "@repo/db";
 
 const ViewsPage: React.FC = () => {
 	const params = useParams();
@@ -48,7 +49,7 @@ const ViewsPage: React.FC = () => {
 		}
 
 		const draggedTaskFound = taskList.find(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 
 		if (!draggedTaskFound) {
@@ -57,14 +58,14 @@ const ViewsPage: React.FC = () => {
 
 		const taskWithNewStatus = {
 			...draggedTaskFound,
-			status: destination.droppableId,
+			status: destination.droppableId as Status,
 		};
 
 		const sourceIndex = taskList.findIndex(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 		const destinationIndex = taskList.findIndex(
-			(task) => task && task._id === draggableId,
+			(task) => task && task.id === draggableId,
 		);
 
 		const updatedTaskList = [...taskList];

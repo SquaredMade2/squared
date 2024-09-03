@@ -29,16 +29,16 @@ const RenameSubContextMenu: FC<RenameSubContextMenuProps> = ({ task }) => {
 
 	const logEvent = () => {
 		storeType(EventType.TitleUpdated);
-		if (task._id !== undefined) storeTaskValue(task.title ?? "");
+		if (task.id !== undefined) storeTaskValue(task.title ?? "");
 		updateTaskValue(renamedTask.current ?? "");
 	};
 
 	const handleChangeTitle = async () => {
 		const changeMade: boolean = renamedTask.current !== task.title;
-		if (changeMade && task._id !== undefined) {
-			storeCommonFields(author, task._id);
+		if (changeMade && task.id !== undefined) {
+			storeCommonFields(author, task.id);
 			logEvent();
-			await dispatch(updateTitle(renamedTask.current, task._id));
+			await dispatch(updateTitle(renamedTask.current, task.id));
 			await dispatch(getAllTasks(currentTeam));
 		}
 	};

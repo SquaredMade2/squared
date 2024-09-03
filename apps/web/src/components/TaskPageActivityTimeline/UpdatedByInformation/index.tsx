@@ -3,12 +3,11 @@ import ProfileImage from "@/components/ProfileImage";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import {
-	type Assignee,
-	type Author,
 	EventType,
 	type TaskEvent,
 	type Labels,
 } from "@/interfaces/event.interfaces";
+import type { User } from "@repo/db";
 
 const UpdatedByInformation = () => {
 	// const eventLogs = [useAppSelector(
@@ -101,8 +100,8 @@ const UpdatedByInformation = () => {
 		);
 	};
 	const getAssigneeActions = (
-		originalAssignee: Assignee,
-		updatedAssignee: Assignee,
+		originalAssignee: User,
+		updatedAssignee: User,
 	) => {
 		const noPreviousAssignee =
 			originalAssignee?.name === "not Assigned" &&
@@ -119,8 +118,8 @@ const UpdatedByInformation = () => {
 	const displayAssigneeUpdate = (log: TaskEvent) => {
 		const { originalAssignee, updatedAssignee, author } = log;
 		const { noPreviousAssignee, assigneeRemoved } = getAssigneeActions(
-			originalAssignee as Assignee,
-			updatedAssignee as Assignee,
+			originalAssignee as User,
+			updatedAssignee as User,
 		);
 		const selfAssigned = author.name === updatedAssignee?.name;
 		if (noPreviousAssignee && selfAssigned) {
@@ -192,7 +191,7 @@ const UpdatedByInformation = () => {
 		}
 	};
 
-	const displayAuthorProfile = (author: Author) => {
+	const displayAuthorProfile = (author: User) => {
 		return (
 			<>
 				<ProfileImage profileName={author.name} location={"activityItem"} />

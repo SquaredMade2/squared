@@ -4,9 +4,9 @@ import type {
 	Comment,
 	NewComment,
 } from "@/components/Comments/Comments.interfaces";
-import type { Author, TaskEvent } from "@/interfaces/event.interfaces";
+import type { TaskEvent } from "@/interfaces/event.interfaces";
 import { type Action, ActionType } from "@/store/events/events.actionTypes";
-import type { TaskEventLog } from "@repo/db";
+import type { TaskEventLog, User } from "@repo/db";
 
 // Leave in for clarity
 // note the difference with UPDATE_COMMENTS and UPDATE_COMMENT
@@ -123,7 +123,7 @@ export const deleteComment =
 	};
 
 export const createTaskEventLog =
-	(taskId: string, author: Author) => async (dispatch: Dispatch<Action>) => {
+	(taskId: string, author: User) => async (dispatch: Dispatch<Action>) => {
 		try {
 			const response = await axios.post(
 				`${process.env.NEXT_PUBLIC_SERVER}/event/create-log`,

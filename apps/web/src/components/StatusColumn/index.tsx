@@ -4,7 +4,7 @@ import TaskStatusSection from "@/components/TaskStatusSection";
 import TaskColumnTitle from "@/components/TaskColumnTitle";
 import type { RootState } from "@/store";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import type { HideStatusProps } from "../HideStatus/HideStatusProps";
 import type { StatusColumnProps } from "./StatusColumn.interfaces";
 import { ScrollArea } from "../ui/scroll-area";

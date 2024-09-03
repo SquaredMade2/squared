@@ -24,7 +24,7 @@ const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
 				<DateDropdown
 					location={"contextMenu"}
 					setDropdownOpen={setDropdownOpen}
-					injectedTaskId={task._id}
+					injectedTaskId={task.id}
 				/>
 			</ContextMenuSubContent>
 		</ContextMenuSub>
