@@ -6,20 +6,15 @@ The Task Filtering System allows you to filter tasks based on various conditions
 
 ## Table of Contents
 
-1. [Installation](#installation)
-2. [FilterCondition Type](#filtercondition-type)
-3. [TaskFilter Type](#taskfilter-type)
-4. [checkCondition Function](#checkcondition-function)
-5. [filterTasks Function](#filtertasks-function)
-6. [Usage Examples](#usage-examples)
+1. [FilterCondition Type](#filtercondition-type)
+2. [TaskFilter Type](#taskfilter-type)
+3. [checkCondition Function](#checkcondition-function)
+4. [filterTasks Function](#filtertasks-function)
+5. [Usage Examples](#usage-examples)
     - [Easy Example](#easy-example)
     - [Medium Example](#medium-example)
     - [Advanced Example](#advanced-example)
     - [Label Matching Example](#label-matching-example)
-
-## Installation
-
-This filtering system is designed to work in a TypeScript environment. To integrate it into your project, simply copy the relevant type definitions and functions into your project files.
 
 ## FilterCondition Type
 
