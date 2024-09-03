@@ -1,4 +1,4 @@
-import type { Label, Priority, Status, Task } from "@repo/db";
+import type { Label, Priority, Status, Task, User } from "@repo/db";
 
 export interface TaskDataState {
 	access: Access;
@@ -93,23 +93,6 @@ export interface Workspace {
 export interface Access {
 	status: boolean;
 	id: string;
-}
-export interface Assignee {
-	name: string | null;
-	id: string | null;
-}
-
-export interface User {
-	default_workspace: null;
-	email: string;
-	last_login: string;
-	name: string;
-	on_boarding: boolean;
-	password: string;
-	teams: [];
-	username: string;
-	workspaces: CurrentWorkspace[];
-	_id: string;
 }
 
 export interface AccessId {

@@ -9,7 +9,7 @@ import {
 } from "../ui/context-menu";
 import ProfileImage from "../ProfileImage";
 import type { AssigneeSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
-import { type Assignee, EventType } from "@/interfaces/event.interfaces";
+import { EventType } from "@/interfaces/event.interfaces";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import type {
 	AssigneeParams,
@@ -18,6 +18,7 @@ import type {
 import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { getSingleTask } from "@/store/task/thunks";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
+import type { User } from "@repo/db";
 
 const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
@@ -60,23 +61,37 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 				const assignee = {
 					id: "",
 					name: "not Assigned",
+					username: "",
+					email: "",
+					password: "",
+					verified: true,
+					lastLogin: new Date(),
+					onBoarding: false,
+					defaultWorkspaceId: "",
 				};
 				storeTaskAssignee(assignee);
 			} else {
-				storeTaskAssignee({
-					id: task.assigneeId,
-					name: task.assigneeName,
-				} as Assignee);
+				// storeTaskAssignee(task.assignee as User);
 			}
 		}
 	};
 
-	const logAssigneeChangeEvent = (newAssignee: Assignee): void => {
+	const logAssigneeChangeEvent = (newAssignee: User): void => {
 		const userIsAssigned = newAssignee.id && newAssignee.name;
 		if (userIsAssigned) {
 			updateTaskAssignee(newAssignee);
 		} else {
-			updateTaskAssignee({ id: "", name: "not Assigned" });
+			updateTaskAssignee({
+				id: "",
+				name: "not Assigned",
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
+			});
 		}
 	};
 
@@ -85,7 +100,20 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 		if (task !== undefined) {
 			dispatch(getSingleTask(task.id));
 		}
-		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
+		return {
+			taskId: taskId,
+			assignee: {
+				id: user.id,
+				name: user.name,
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
+			},
+		};
 	};
 
 	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
@@ -96,7 +124,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 		await dispatch(getAllTasks(currentTeam));
 	};
 
-	const handleClickAssignee = (taskId: string, newAssignee: Assignee): void => {
+	const handleClickAssignee = (taskId: string, newAssignee: User): void => {
 		if (newAssignee.name === task.assigneeName) return;
 		storeCommonFields(author, taskId);
 		storeType(EventType.AssigneeUpdated);
@@ -121,7 +149,17 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 					<ContextMenuItem
 						className="w-40"
 						onClick={() =>
-							handleClickAssignee(task.id, { id: null, name: null })
+							handleClickAssignee(task.id, {
+								id: "",
+								name: "",
+								username: "",
+								email: "",
+								password: "",
+								verified: true,
+								lastLogin: new Date(),
+								onBoarding: false,
+								defaultWorkspaceId: "",
+							})
 						}
 					>
 						Unassign
@@ -131,6 +169,13 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 						const formattedAssignee = {
 							id: assignee.user,
 							name: assignee.username,
+							username: "",
+							email: "",
+							password: "",
+							verified: true,
+							lastLogin: new Date(),
+							onBoarding: false,
+							defaultWorkspaceId: "",
 						};
 						return (
 							<ContextMenuItem

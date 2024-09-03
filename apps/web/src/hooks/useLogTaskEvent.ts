@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import type {
-	Assignee,
-	Author,
 	EventType,
 	TaskEvent,
 	Labels,
 } from "@/interfaces/event.interfaces";
 import { addTaskEvent } from "@/store/events/actions";
 import { useAppSelector, useAppDispatch } from "./typeScriptReduxHooks";
+import type { User } from "@repo/db";
 
 const useLogTaskEvent = () => {
 	const [taskEvent, setTaskEvent] = useState<TaskEvent>({
@@ -15,6 +14,13 @@ const useLogTaskEvent = () => {
 		author: {
 			id: "",
 			name: "",
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
 		},
 		taskId: "",
 		updatedAt: null,
@@ -26,10 +32,24 @@ const useLogTaskEvent = () => {
 		originalAssignee: {
 			id: "",
 			name: "not Assigned",
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
 		},
 		updatedAssignee: {
 			id: "",
 			name: "",
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
 		},
 	});
 	const [valueUpdated, setValueUpdated] = useState(false);
@@ -42,9 +62,16 @@ const useLogTaskEvent = () => {
 		(state) => state.userSettings.user,
 	);
 
-	const author: Author = {
+	const author: User = {
 		id: userId,
 		name: userName,
+		username: "",
+		email: "",
+		password: "",
+		verified: true,
+		lastLogin: new Date(),
+		onBoarding: false,
+		defaultWorkspaceId: "",
 	};
 
 	useEffect(() => {
@@ -59,7 +86,7 @@ const useLogTaskEvent = () => {
 		}
 	}, [taskEvent]);
 
-	const storeCommonFields = (author: Author, taskId: string) => {
+	const storeCommonFields = (author: User, taskId: string) => {
 		setTaskEvent({
 			...taskEvent,
 			author,
@@ -95,7 +122,7 @@ const useLogTaskEvent = () => {
 		}));
 	};
 
-	const storeTaskAssignee = (assignee: Assignee) => {
+	const storeTaskAssignee = (assignee: User) => {
 		setTaskEvent((taskEvent) => ({
 			...taskEvent,
 			originalAssignee: assignee,
@@ -111,7 +138,7 @@ const useLogTaskEvent = () => {
 		setLabelsUpdated(true);
 	};
 
-	const updateTaskAssignee = (assignee: Assignee) => {
+	const updateTaskAssignee = (assignee: User) => {
 		setTaskEvent((taskEvent) => ({
 			...taskEvent,
 			updatedAssignee: assignee,
@@ -168,6 +195,13 @@ const useLogTaskEvent = () => {
 			author: {
 				id: "",
 				name: "",
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
 			},
 			taskId: "",
 			updatedAt: null,
@@ -179,10 +213,24 @@ const useLogTaskEvent = () => {
 			originalAssignee: {
 				id: "",
 				name: "",
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
 			},
 			updatedAssignee: {
 				id: "",
 				name: "",
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
 			},
 		});
 	};

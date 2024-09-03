@@ -5,9 +5,10 @@ import ProfileImage from "../ProfileImage";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import { UserSearch } from "lucide-react";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import { EventType, type Assignee } from "@/interfaces/event.interfaces";
+import { EventType } from "@/interfaces/event.interfaces";
 import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
 import { useTheme } from "next-themes";
+import type { User } from "@repo/db";
 
 export const AssigneeDropdown = ({
 	taskId,
@@ -73,15 +74,22 @@ export const AssigneeDropdown = ({
 				const assignee = {
 					id: "",
 					name: "not Assigned",
+					username: "",
+					email: "",
+					password: "",
+					verified: true,
+					lastLogin: new Date(),
+					onBoarding: false,
+					defaultWorkspaceId: "",
 				};
 				storeTaskAssignee(assignee);
 			} else {
-				storeTaskAssignee(currentAssignee as Assignee);
+				storeTaskAssignee(currentAssignee as User);
 			}
 		}
 	};
 
-	const handleClickAssignee = (taskId: string, newAssignee: Assignee): void => {
+	const handleClickAssignee = (taskId: string, newAssignee: User): void => {
 		if (newAssignee.name === currentAssignee?.name) return;
 		storeCommonFields(author, taskId);
 		storeType(EventType.AssigneeUpdated);
@@ -90,12 +98,22 @@ export const AssigneeDropdown = ({
 		logAssigneeChangeEvent(newAssignee);
 	};
 
-	const logAssigneeChangeEvent = (newAssignee: Assignee): void => {
+	const logAssigneeChangeEvent = (newAssignee: User): void => {
 		const userIsAssigned = newAssignee.id && newAssignee.name;
 		if (userIsAssigned) {
 			updateTaskAssignee(newAssignee);
 		} else {
-			updateTaskAssignee({ id: "", name: "not Assigned" });
+			updateTaskAssignee({
+				id: "",
+				name: "not Assigned",
+				username: "",
+				email: "",
+				password: "",
+				verified: true,
+				lastLogin: new Date(),
+				onBoarding: false,
+				defaultWorkspaceId: "",
+			});
 		}
 	};
 
@@ -110,7 +128,19 @@ export const AssigneeDropdown = ({
 				<button
 					type="button"
 					className="flex flex-row items-center mx-1"
-					onClick={() => handleClickAssignee(taskId, { id: null, name: null })}
+					onClick={() =>
+						handleClickAssignee(taskId, {
+							id: "",
+							name: "",
+							username: "",
+							email: "",
+							password: "",
+							verified: true,
+							lastLogin: new Date(),
+							onBoarding: false,
+							defaultWorkspaceId: "",
+						})
+					}
 				>
 					<UserSearch className="size-4 mr-2" />
 					Unassign
@@ -122,6 +152,13 @@ export const AssigneeDropdown = ({
 							const assignee = {
 								id: user.user,
 								name: user.username,
+								username: "",
+								email: "",
+								password: "",
+								verified: true,
+								lastLogin: new Date(),
+								onBoarding: false,
+								defaultWorkspaceId: "",
 							};
 							return (
 								<li key={user.user}>
