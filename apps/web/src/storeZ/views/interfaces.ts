@@ -10,7 +10,8 @@ export type FilterCondition = {
 		| "contains"
 		| "greaterThan"
 		| "lessThan"
-		| "arrayIncludesAll"; // Add more operators as needed
+		| "arrayIncludesAll"
+		| "arrayIncludesAny"; // Add more operators as needed
 };
 
 type TaskFilter = {

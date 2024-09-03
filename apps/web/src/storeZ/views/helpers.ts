@@ -34,6 +34,12 @@ export function checkCondition(
 				Array.isArray(condition.value) &&
 				condition.value.every((val) => taskValue.includes(val))
 			);
+		case "arrayIncludesAny":
+			return (
+				Array.isArray(taskValue) &&
+				Array.isArray(condition.value) &&
+				condition.value.some((val) => taskValue.includes(val))
+			);
 		default:
 			return false;
 	}
