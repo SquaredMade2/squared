@@ -31,6 +31,13 @@ const initialState: Events = {
 		author: {
 			id: "",
 			name: "",
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
 		},
 		createdAt: null,
 		eventsLog: [],

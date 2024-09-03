@@ -8,19 +8,19 @@ const TaskCardStatus = ({ task }: TaskCardStatusProps) => {
 
 	useEffect(() => {
 		switch (task.status) {
-			case "Todo":
+			case "todo":
 				setSvg(<Circle className="size-4" />);
 				break;
-			case "In Progress":
+			case "inProgress":
 				setSvg(filterInProgress);
 				break;
-			case "Backlog":
+			case "backlog":
 				setSvg(<CircleDashed className="size-4" />);
 				break;
-			case "Done":
+			case "done":
 				setSvg(<CircleCheckBig className="size-4 text-[#7394FF]" />);
 				break;
-			case "Canceled":
+			case "canceled":
 				setSvg(<CircleX className="size-4" />);
 				break;
 			default:

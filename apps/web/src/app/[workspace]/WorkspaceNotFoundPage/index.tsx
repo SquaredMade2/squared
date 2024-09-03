@@ -1,23 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check, FileSearch } from "lucide-react";
+import { useAuthStore, useWorkspaceStore } from "@/storeZ/provider";
+import type { Workspace } from "@repo/db";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
-
 	const [menuOpen, setMenuOpen] = useState(false);
-
-	const user = useAppSelector((state) => state.userSettings.user);
-	const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
+	const { user } = useAuthStore();
+	const { workspaces } = useWorkspaceStore();
 	const { theme } = useAppSelector((state) => state.userSettings);
-	const currentWorkspace = useAppSelector(
-		(state) => state.taskData.currentWorkspace,
-	);
-
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {
 			setMenuOpen(false);
@@ -57,27 +53,24 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 						<div className="py-3 px-3.5">
 							<p className="mb-3 text-muted-foreground text-sm">{user.email}</p>
 							<ul>
-								{allWorkspaces.map((workspace, index) => (
+								{workspaces.map((workspace: Workspace, index: number) => (
 									<Link
 										legacyBehavior
 										href={`workspace/${workspace.url}`}
 										className="px-3 py-1.5 flex items-center hover:bg-popoverHover rounded text-sm font-medium cursor-default justify-between"
-										key={workspace._id}
+										key={workspace.id}
 									>
 										<div>
 											<div className="flex">
 												<WorkspaceInitials
-													workspaceName={workspace.name}
+													workspaceName={workspace.name ?? ""}
 													backgroundColor={index}
 													location="workspaceList"
 												/>
-												<li>{handleWorkspaceNameOverflow(workspace.name)}</li>
+												<li>
+													{handleWorkspaceNameOverflow(workspace.name ?? "")}
+												</li>
 											</div>
-											{workspace.name === currentWorkspace.name && (
-												<div>
-													<Check className="text-[#575BC7] size-5" />
-												</div>
-											)}
 										</div>
 									</Link>
 								))}

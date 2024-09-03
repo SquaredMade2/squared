@@ -7,7 +7,7 @@ import { Dialog, Combobox, Transition } from "@headlessui/react";
 import { setIsCmdPalette } from "@/store/isCmdPalette";
 // Line 10 setTaskPage should be set to getSingleTask I think
 import { setTaskPage } from "@/store/taskData";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import { Search } from "lucide-react";
 import { formatUrl } from "@/utils/formatting";
 
@@ -21,7 +21,7 @@ const CommandPalette = () => {
 
 	const filteredTaskTitle = query
 		? taskList?.filter((task) =>
-				task?.taskName?.toLowerCase().includes(query.toLowerCase()),
+				task?.title?.toLowerCase().includes(query.toLowerCase()),
 			)
 		: [];
 	const router = useRouter();
@@ -99,7 +99,7 @@ const CommandPalette = () => {
 										{filteredTaskTitle?.map((task) => (
 											<Combobox.Option
 												className="list-none"
-												key={task._id}
+												key={task.id}
 												value={task}
 											>
 												{({ active }) => (
@@ -117,7 +117,7 @@ const CommandPalette = () => {
 																	: "font-md text-gray-900"
 															}
 														>
-															{task.taskName?.toUpperCase()}
+															{task.title?.toUpperCase()}
 														</span>
 														<span
 															className={

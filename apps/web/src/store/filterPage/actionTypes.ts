@@ -1,4 +1,4 @@
-import type { Task } from "../taskData/taskData.interfaces";
+import type { Task } from "@repo/db";
 import type { Filters, CurrentFilters } from "./index";
 import type { FilterType } from "./types";
 

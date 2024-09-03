@@ -9,8 +9,7 @@ import RenameModal from "@/components/RenameModal";
 import { getFilteredTasks } from "@/store/filterPage/actions";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Status } from "@repo/db";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import { Status, type Task } from "@repo/db";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -70,22 +69,22 @@ const ViewAllTasks = ({
 		}
 	}, [dispatch, teamId, currentFilters, filterType]);
 
-	const titleArr = [
-		{ value: "Backlog", id: 1 },
-		{ value: "Todo", id: 2 },
-		{ value: "In Progress", id: 3 },
-		{ value: "Done", id: 4 },
-		{ value: "Canceled", id: 5 },
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.done, id: 4 },
+		{ value: Status.canceled, id: 5 },
 	];
 	const getFilteredStatuses = () => {
 		const allStatuses = titleArr.map((t) => t.value);
 		if (activeSelected) {
 			return allStatuses.filter(
-				(status) => status === "Todo" || status === "In Progress",
+				(status) => status === "todo" || status === "inProgress",
 			);
 		}
 		if (backlogSelected) {
-			return allStatuses.filter((status) => status === "Backlog");
+			return allStatuses.filter((status) => status === "backlog");
 		}
 		return allStatuses;
 	};

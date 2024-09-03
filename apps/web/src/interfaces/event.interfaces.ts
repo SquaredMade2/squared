@@ -1,12 +1,4 @@
-import type { Status } from "@repo/db";
-
-export enum Priority {
-	noPriority = "noPriority",
-	urgent = "urgent",
-	high = "high",
-	medium = "medium",
-	low = "low",
-}
+import type { User, Priority, Status } from "@repo/db";
 
 export enum Labels {
 	bug = "bug",
@@ -26,19 +18,9 @@ export enum EventType {
 	PriorityUpdated = "priorityUpdated",
 }
 
-export interface Author {
-	id: string;
-	name: string;
-}
-
-export interface Assignee {
-	id: string | null;
-	name: string | null;
-}
-
 export type TaskEventLog = {
 	taskId: string;
-	author: Author;
+	author: User;
 	createdAt: Date | string | null;
 	eventsLog: TaskEvent[];
 	_id: string;
@@ -46,14 +28,14 @@ export type TaskEventLog = {
 
 export interface TaskEvent {
 	type: "" | EventType;
-	author: Author;
+	author: User;
 	taskId: string;
 	updatedAt: Date | string | null;
 	originalLabels?: Labels[] | [];
 	updatedLabels?: Labels[] | [];
 	originalValue?: string | Status | Priority | null;
 	updatedValue?: string | Status | Priority | null;
-	originalAssignee?: Assignee;
-	updatedAssignee?: Assignee;
+	originalAssignee?: User;
+	updatedAssignee?: User;
 	commentRef?: string;
 }

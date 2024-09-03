@@ -1,5 +1,6 @@
 import { type Action, ActionType } from "./taskData.actionTypes";
-import type { Team, Workspace, Access, Task } from "./taskData.interfaces";
+import type { Team, Workspace, Access } from "./taskData.interfaces";
+import type { Task } from "@repo/db";
 
 export const CREATE_NEW_TASK = "CREATE_NEW_TASK";
 export const SET_TASKLIST = "SET_TASKLIST";
