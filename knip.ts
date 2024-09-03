@@ -4,11 +4,13 @@ const config = {
       entry: ["src/app/**/*.tsx", "**/page.tsx", "**/route.ts"],
       project: ["**/*.{js,ts,tsx}"],
       ignore: [
-        "**/node_modules/**",
-        "**/.next/**",
-        "**/.turbo/**",
-        "**/coverage/**",
-        "**/dist/**",
+        "src/node_modules/**",
+        "src/.next/**",
+        "src/.turbo/**",
+        "src/coverage/**",
+        "src/dist/**",
+        "src/__mocks__/**",
+        "src/cypress/**"
       ],
     },
   },
