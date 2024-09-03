@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 export * from "./interfaces";
 import type { ViewsStore, ViewsState } from "./interfaces";
 import { persist } from "zustand/middleware";
-import { useViewsStore } from "../provider";
+import { checkCondition } from "./helpers";
 
 export const createViewsStore = (
 	initState: ViewsState = {
@@ -19,12 +19,19 @@ export const createViewsStore = (
 				setCurrentFilter: (filter) => {
 					set({ currentFilter: filter });
 				},
-				updateCurrentFilter: (filter) => {
-					const { currentFilter } = useViewsStore();
-					set({ currentFilter: { ...currentFilter, ...filter } });
-				},
 				removeFilter: () => {
 					set({ currentFilter: null });
+				},
+				filterTasks: (tasks, filter) => {
+					return tasks.filter((task) => {
+						return filter.logic === "AND"
+							? filter.conditions.every((condition) =>
+									checkCondition(task, condition),
+								)
+							: filter.conditions.some((condition) =>
+									checkCondition(task, condition),
+								);
+					});
 				},
 				getCurrentFilter: () => {
 					return initState.currentFilter;
