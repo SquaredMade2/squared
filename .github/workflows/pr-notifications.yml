@@ -3,6 +3,7 @@ name: Daily PR Notifications
 on:
   schedule:
     - cron: '0 10 * * *'  # Runs every day at 10 AM UTC
+  workflow_dispatch: 
 
 jobs:
   notify:
