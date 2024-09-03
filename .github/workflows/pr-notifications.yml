@@ -1,0 +1,68 @@
+name: Daily PR Notifications
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # Runs every day at 10 AM UTC
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3
+
+    - name: Find Open PRs
+      id: find_pr
+      uses: juliangruber/find-pull-request-action@v1
+      with:
+        state: open  # Find open PRs
+        repo: ${{ github.repository }}
+        sort: updated
+        direction: desc
+
+    - name: Send Discord notification
+      if: ${{ steps.find_pr.outputs.number != '' }}
+      run: |
+        pr_number="${{ steps.find_pr.outputs.number }}"
+        pr_title="${{ steps.find_pr.outputs.title }}"
+        pr_author="${{ steps.find_pr.outputs.head-ref }}"
+        pr_state="${{ steps.find_pr.outputs.state }}"
+        pr_url="${{ steps.find_pr.outputs.url }}"
+        reviewers=$(gh pr view $pr_number --json reviewRequests --jq '.reviewRequests[].login')
+
+        # Prepare mentions
+        mentions=""
+        if [[ "$pr_state" == "changes_requested" ]]; then
+          discord_id=$(map_github_to_discord "$pr_author")
+          mentions="<@$discord_id>"
+        elif [[ "$reviewers" != "" ]]; then
+          for reviewer in $reviewers; do
+            discord_id=$(map_github_to_discord "$reviewer")
+            mentions="$mentions <@$discord_id>"
+          done
+        fi
+
+        # Send notification to Discord
+        curl -X POST -H "Content-Type: application/json" -d '{
+          "content": "'"$mentions"' - PR #'"$pr_number"' (`'"$pr_title"'`) needs attention. [View PR]('"$pr_url"')"
+        }' ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    - name: Map GitHub usernames to Discord IDs
+      run: |
+        map_github_to_discord() {
+          case "$1" in
+            "Chase-T-White") echo "414567565843759105" ;;
+            "duncanwhyte") echo "223870029660160001" ;;
+            "edchrepo") echo "300515474322489344" ;;
+            "ellischung") echo "273201608685387786" ;;
+            "klexup") echo "1220824900365844522" ;;
+            "napqueenkaila") echo "1074750793128882247" ;;
+            "NateCummens") echo "447548944122380309" ;;
+            "Npinak") echo "748245605587091577" ;;
+            "oerkperl") echo "1084769574098047059" ;;
+            "SerhiiDer") echo "791023762124308500" ;;
+            "Smerly") echo "277576312686641153" ;;
+            "THEjacob1000") echo "213438742315139073" ;;
+            *) echo "" ;;
+          esac
+        }

@@ -105,9 +105,9 @@ app.use(
 );
 
 const io = new Server(server, {
-	cors:{
+	cors: {
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-				origin: (origin: string, callback:any) => {
+		origin: (origin: string, callback: any) => {
 			// Allow requests from Vercel branch deployments, production domain, and local development
 			if (
 				!origin ||
@@ -120,8 +120,8 @@ const io = new Server(server, {
 				callback(new Error("Not allowed by CORS"));
 			}
 		},
-		methods:['GET', 'POST']
-	}
+		methods: ["GET", "POST"],
+	},
 });
 
 const userSocketId: { [key: string]: string } = {};
