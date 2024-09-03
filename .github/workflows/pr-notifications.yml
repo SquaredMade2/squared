@@ -1,5 +1,9 @@
 name: Daily PR Notifications
 
+permissions:
+  pull-requests: write
+  contents: read
+
 on:
   schedule:
     - cron: '0 10 * * *'  # Runs every day at 10 AM UTC
