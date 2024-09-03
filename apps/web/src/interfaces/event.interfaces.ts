@@ -36,25 +36,3 @@ export interface Assignee {
 	id: string | null;
 	name: string | null;
 }
-
-export type TaskEventLog = {
-	taskId: string;
-	author: Author;
-	createdAt: Date | string | null;
-	eventsLog: TaskEvent[];
-	_id: string;
-};
-
-export interface TaskEvent {
-	type: "" | EventType;
-	author: Author;
-	taskId: string;
-	updatedAt: Date | string | null;
-	originalLabels?: Labels[] | [];
-	updatedLabels?: Labels[] | [];
-	originalValue?: string | Status | Priority | null;
-	updatedValue?: string | Status | Priority | null;
-	originalAssignee?: Assignee;
-	updatedAssignee?: Assignee;
-	commentRef?: string;
-}

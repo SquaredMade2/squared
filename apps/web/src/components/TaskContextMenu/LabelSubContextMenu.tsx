@@ -23,8 +23,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 
 	const newIssueLabels = useAppSelector((state) => state.taskData.labels);
 
-	const { author, storeCommonFields, storeType, updateTaskLabels } =
-		useLogTaskEvent();
+	const { author, storeCommonFields, storeType } = useLogTaskEvent();
 
 	const renderLabelIcon = (label: string) => {
 		switch (label) {
@@ -59,9 +58,9 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 
 	const logEvent = (newLabels: string[]) => {
 		storeType(EventType.LabelsUpdated);
-		if (task.labels) {
-			updateTaskLabels(newLabels as Labels[]);
-		}
+		// if (task.labels) {
+		// 	updateTaskLabels(newLabels as Labels[]);
+		// }
 	};
 
 	const newLabelSelection = (currentLabels: string[], labelName: string) => {

@@ -3,34 +3,29 @@ import type {
 	Assignee,
 	Author,
 	EventType,
-	TaskEvent,
 	Labels,
 } from "@/interfaces/event.interfaces";
 import { addTaskEvent } from "@/store/events/actions";
 import { useAppSelector, useAppDispatch } from "./typeScriptReduxHooks";
+import type { TaskEvent } from "@repo/db";
 
 const useLogTaskEvent = () => {
 	const [taskEvent, setTaskEvent] = useState<TaskEvent>({
 		type: "",
-		author: {
-			id: "",
-			name: "",
-		},
+		authorId: "",
 		taskId: "",
-		updatedAt: null,
+		createdAt: new Date(),
 		originalLabels: [],
 		updatedLabels: [],
 		originalValue: "",
 		updatedValue: "",
-		commentRef: "",
-		originalAssignee: {
-			id: "",
-			name: "not Assigned",
-		},
-		updatedAssignee: {
-			id: "",
-			name: "",
-		},
+		originalAssigneeId: "",
+		updatedAssigneeId: "",
+		id: "",
+		authorName: "",
+		activityId: "",
+		originalAssigneeName: "",
+		updatedAssigneeName: "",
 	});
 	const [valueUpdated, setValueUpdated] = useState(false);
 	const [assigneeUpdated, setAssigneeUpdated] = useState(false);
@@ -62,7 +57,7 @@ const useLogTaskEvent = () => {
 	const storeCommonFields = (author: Author, taskId: string) => {
 		setTaskEvent({
 			...taskEvent,
-			author,
+			authorId: author.id,
 			taskId,
 		});
 	};
@@ -81,12 +76,12 @@ const useLogTaskEvent = () => {
 		}));
 	};
 
-	const storeTaskLabels = (originalLabels: Labels[]) => {
-		setTaskEvent((taskEvent) => ({
-			...taskEvent,
-			originalLabels,
-		}));
-	};
+	// const storeTaskLabels = (originalLabels: Labels[]) => {
+	// 	setTaskEvent((taskEvent) => ({
+	// 		...taskEvent,
+	// 		originalLabels,
+	// 	}));
+	// };
 
 	const storeTaskValue = (originalValue: string) => {
 		setTaskEvent((taskEvent) => ({
@@ -102,14 +97,14 @@ const useLogTaskEvent = () => {
 		}));
 	};
 
-	const updateTaskLabels = (updatedLabels: Labels[]) => {
-		setTaskEvent((taskEvent) => ({
-			...taskEvent,
-			updatedLabels,
-			updatedAt: new Date(),
-		}));
-		setLabelsUpdated(true);
-	};
+	// const updateTaskLabels = (updatedLabels: Labels[]) => {
+	// 	setTaskEvent((taskEvent) => ({
+	// 		...taskEvent,
+	// 		updatedLabels,
+	// 		updatedAt: new Date(),
+	// 	}));
+	// 	setLabelsUpdated(true);
+	// };
 
 	const updateTaskAssignee = (assignee: Assignee) => {
 		setTaskEvent((taskEvent) => ({
@@ -165,25 +160,20 @@ const useLogTaskEvent = () => {
 	const resetTaskEvent = () => {
 		setTaskEvent({
 			type: "",
-			author: {
-				id: "",
-				name: "",
-			},
+			authorId: "",
 			taskId: "",
-			updatedAt: null,
+			createdAt: new Date(),
 			originalLabels: [],
 			updatedLabels: [],
 			originalValue: "",
 			updatedValue: "",
-			commentRef: "",
-			originalAssignee: {
-				id: "",
-				name: "",
-			},
-			updatedAssignee: {
-				id: "",
-				name: "",
-			},
+			originalAssigneeId: "",
+			updatedAssigneeId: "",
+			id: "",
+			authorName: "",
+			activityId: "",
+			originalAssigneeName: "",
+			updatedAssigneeName: "",
 		});
 	};
 
@@ -195,10 +185,8 @@ const useLogTaskEvent = () => {
 		storeType,
 		storeCommentRef,
 		storeTaskAssignee,
-		storeTaskLabels,
 		storeTaskValue,
 		updateTaskAssignee,
-		updateTaskLabels,
 		updateTaskValue,
 		resetTaskEvent,
 	};

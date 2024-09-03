@@ -7,19 +7,13 @@ import {
 	type Assignee,
 	type Author,
 	EventType,
-	type TaskEvent,
-	type Labels,
 } from "@/interfaces/event.interfaces";
+import type { TaskEvent, Label } from "@repo/db";
 
 const UpdatedByInformation = () => {
-	const eventLogs = useAppSelector(
-		(state) => state.events.taskEventLog.eventsLog,
-	) as TaskEvent[];
+	const eventLogs = [] as TaskEvent[];
 
-	const findLabelAdded = (
-		originalLabels: Labels[],
-		updatedLabels: Labels[],
-	) => {
+	const findLabelAdded = (originalLabels: Label[], updatedLabels: Label[]) => {
 		const labelName = updatedLabels.filter(
 			(label) => !originalLabels.includes(label),
 		);
@@ -27,8 +21,8 @@ const UpdatedByInformation = () => {
 	};
 
 	const findLabelRemoved = (
-		originalLabels: Labels[],
-		updatedLabels: Labels[],
+		originalLabels: Label[],
+		updatedLabels: Label[],
 	) => {
 		const labelName = originalLabels.filter(
 			(label) => !updatedLabels.includes(label),
@@ -37,7 +31,7 @@ const UpdatedByInformation = () => {
 		return labelName;
 	};
 
-	const displayLabelNames = (labels: Labels[]) => {
+	const displayLabelNames = (labels: Label[]) => {
 		return labels.join(", ");
 	};
 
@@ -101,14 +95,13 @@ const UpdatedByInformation = () => {
 		);
 	};
 	const getAssigneeActions = (
-		originalAssignee: Assignee,
-		updatedAssignee: Assignee,
+		originalAssignee: string,
+		updatedAssignee: string,
 	) => {
 		const noPreviousAssignee =
-			originalAssignee?.name === "not Assigned" &&
-			updatedAssignee?.name !== "not Assigned";
+			originalAssignee === "not Assigned" && updatedAssignee !== "not Assigned";
 
-		const assigneeRemoved = updatedAssignee?.name === "not Assigned";
+		const assigneeRemoved = updatedAssignee === "not Assigned";
 
 		return {
 			noPreviousAssignee,
@@ -117,12 +110,12 @@ const UpdatedByInformation = () => {
 	};
 
 	const displayAssigneeUpdate = (log: TaskEvent) => {
-		const { originalAssignee, updatedAssignee, author } = log;
+		const { originalAssigneeId, updatedAssigneeId, authorId } = log;
 		const { noPreviousAssignee, assigneeRemoved } = getAssigneeActions(
-			originalAssignee as Assignee,
-			updatedAssignee as Assignee,
+			originalAssigneeId ?? "",
+			updatedAssigneeId ?? "",
 		);
-		const selfAssigned = author.name === updatedAssignee?.name;
+		const selfAssigned = authorId === updatedAssigneeId;
 		if (noPreviousAssignee && selfAssigned) {
 			return <p>self assigned task</p>;
 		}
@@ -130,7 +123,7 @@ const UpdatedByInformation = () => {
 			return (
 				<p>
 					assigned task to{" "}
-					<span className="text-foreground">{updatedAssignee?.name}</span>
+					<span className="text-foreground">{updatedAssigneeId}</span>
 				</p>
 			);
 		}
@@ -140,8 +133,8 @@ const UpdatedByInformation = () => {
 		return (
 			<p>
 				changed assignee from{" "}
-				<span className="text-foreground">{originalAssignee?.name}</span> to{" "}
-				<span className="text-foreground">{updatedAssignee?.name}</span>
+				<span className="text-foreground">{originalAssigneeId}</span> to{" "}
+				<span className="text-foreground">{updatedAssigneeId}</span>
 			</p>
 		);
 	};
@@ -204,15 +197,15 @@ const UpdatedByInformation = () => {
 		<div className="w-full">
 			<ul className="list-none px-8">
 				{eventLogs?.map((log: TaskEvent) => {
-					const { updatedAt, author } = log;
+					const { createdAt, authorId } = log;
 					return (
 						<li
 							className="flex items-center text-foreground border-t border-border py-1 list-none"
-							key={updatedAt as string}
+							key={createdAt.toLocaleDateString()}
 						>
-							<div className="mr-4 text-muted-foreground">{`${displayDate(updatedAt as string)}`}</div>
+							<div className="mr-4 text-muted-foreground">{`${displayDate(createdAt.toLocaleDateString())}`}</div>
 							<div className="flex items-center mr-4">
-								{displayAuthorProfile(author)}
+								{/* {displayAuthorProfile(authorId)} */}
 							</div>
 							<div className="text-muted-foreground text-ellipses">
 								{displayUpdate(log)}

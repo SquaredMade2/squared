@@ -15,7 +15,7 @@ import {
 } from "@/store/events/actions";
 
 import type { Comments } from "@/components/Comments/Comments.interfaces";
-import type { TaskEvent, TaskEventLog } from "@/interfaces/event.interfaces";
+import type { TaskEvent, TaskEventLog } from "@repo/db";
 import type { RootState } from "..";
 
 interface Events extends Comments {
@@ -28,13 +28,10 @@ const initialState: Events = {
 	isError: false,
 	taskEventLog: {
 		taskId: "",
-		author: {
-			id: "",
-			name: "",
-		},
-		createdAt: null,
-		eventsLog: [],
-		_id: "",
+		authorId: "",
+		createdAt: new Date(),
+		id: "",
+		authorName: "",
 	},
 };
 
@@ -94,22 +91,18 @@ const eventsReducer = (
 				...state,
 				taskEventLog: {
 					...state.taskEventLog,
-					eventsLog: action.payload,
 				},
 			};
-		case ADD_TASK_EVENT: {
-			const updatedEventLog = [
-				...state.taskEventLog.eventsLog,
-				action.payload,
-			] as TaskEvent[];
-			return {
-				...state,
-				taskEventLog: {
-					...state.taskEventLog,
-					eventsLog: updatedEventLog,
-				},
-			};
-		}
+		// case ADD_TASK_EVENT: {
+		// 	const updatedEventLog = [action.payload] as TaskEvent[];
+		// 	return {
+		// 		...state,
+		// 		taskEventLog: {
+		// 			...state.taskEventLog,
+		// 			eventsLog: updatedEventLog,
+		// 		},
+		// 	};
+		// }
 		case CLEAR_TASK_EVENT_LOG:
 			return {
 				...state,
