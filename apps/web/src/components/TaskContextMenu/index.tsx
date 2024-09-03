@@ -43,7 +43,7 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 	};
 
 	const deleteCurrentTask = async () => {
-		await dispatch(deleteTask(task._id));
+		await dispatch(deleteTask(task.id));
 		await dispatch(getAllTasks(currentTeam));
 		alertDeletedTask();
 	};
@@ -81,7 +81,7 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 				Subscribe
 			</ContextMenuItem> */}
 			{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
-			<ContextMenuItem onClick={() => copyToClipboard(task._id)}>
+			<ContextMenuItem onClick={() => copyToClipboard(task.id)}>
 				Copy Link
 			</ContextMenuItem>
 
@@ -90,7 +90,7 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 			</ContextMenuItem>
 
 			<ContextMenuItem>
-				<Link href={`/tasks/${task._id}`} target="_blank">
+				<Link href={`/tasks/${task.id}`} target="_blank">
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>

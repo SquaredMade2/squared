@@ -3,8 +3,8 @@ import type {
 	Team,
 	Workspace,
 	Access,
-	Task,
 } from "./taskData.interfaces";
+import type { Task } from "@repo/db";
 
 export enum ActionType {
 	CREATE_NEW_TASK = "CREATE_NEW_TASK",

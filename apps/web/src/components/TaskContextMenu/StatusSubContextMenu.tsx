@@ -25,15 +25,15 @@ const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
 
 	const dispatch = useAppDispatch();
 	const handleSetStatus: (status: string) => void = async (status) => {
-		if (task._id !== undefined) {
+		if (task.id !== undefined) {
 			try {
 				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
+					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task.id}`,
 					{
 						status,
 					},
 				);
-				dispatch(getSingleTask(task._id as string));
+				dispatch(getSingleTask(task.id as string));
 				dispatch(getAllTasks(currentTeam));
 			} catch (err) {
 				console.error(err);
