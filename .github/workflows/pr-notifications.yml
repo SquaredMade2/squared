@@ -12,6 +12,8 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3
