@@ -1,4 +1,4 @@
-import type { Comment } from "@/components/Comments/Comments.interfaces";
+import type { Comment } from "@repo/db";
 import type { TaskEventLog, TaskEvent } from "@/interfaces/event.interfaces";
 
 export enum ActionType {

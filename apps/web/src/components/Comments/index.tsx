@@ -3,9 +3,9 @@ import { format } from "date-fns";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getTaskComments } from "@/store/events/actions";
 import CommentsTextEditor from "@/components/CommentsTextEditor";
-import type { Comment } from "@/components/Comments/Comments.interfaces";
 import type { Commits } from "@/store/taskData/taskData.interfaces";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
+import type { Comment } from "@repo/db";
 
 const CommentForm = (): React.ReactElement => {
 	const dispatch = useAppDispatch();
@@ -19,7 +19,7 @@ const CommentForm = (): React.ReactElement => {
 	);
 
 	const taskPageCommentData = useAppSelector((state) => {
-		return state.events.taskPageCommentData;
+		return state.events;
 	});
 
 	// An issues has been raised with this code. commits was returning undefined at runtime and crashing the app.
@@ -38,34 +38,36 @@ const CommentForm = (): React.ReactElement => {
 		return "committer" in object;
 	}
 
-	const taskPageData = [...taskPageCommentData, ...commits].sort((a, b) => {
-		let aDate = 0;
-		let bDate = 0;
-		if (instanceOfCommit(a)) {
-			aDate = new Date(a.timestamp).getTime();
-		} else {
-			aDate = new Date(a.date).getTime();
-		}
-		if (instanceOfCommit(b)) {
-			bDate = new Date(b.timestamp).getTime();
-		} else {
-			bDate = new Date(b.date).getTime();
-		}
-		return aDate > bDate ? 1 : -1;
-	});
+	// const taskPageData = [[{date: new Date()}, {date:new Date()}], ...commits].sort((a, b) => {
+	// 	let aDate = 0;
+	// 	let bDate = 0;
+	// 	if (instanceOfCommit(a)) {
+	// 		aDate = new Date(a.timestamp).getTime();
+	// 	} else {
+	// 		aDate = new Date(a.date).getTime();
+	// 	}
+	// 	if (instanceOfCommit(b)) {
+	// 		bDate = new Date(b.timestamp).getTime();
+	// 	} else {
+	// 		bDate = new Date(b.date).getTime();
+	// 	}
+	// 	return aDate > bDate ? 1 : -1;
+	// });
 
 	useEffect(() => {
 		dispatch(getTaskComments(taskId as string));
 		if (currentRepo) {
 			dispatch(getCommitsByRepo(currentRepo));
 		}
-	}, [taskPageCommentData.length]);
+	}, [taskPageCommentData]);
+
+	const comments = [] as Comment[];
 
 	return (
 		<>
 			<div className="flex-col mdsm:w-full">
 				<ul>
-					{taskPageData.map((taskPageItem) => {
+					{comments?.map((taskPageItem) => {
 						if (instanceOfCommit(taskPageItem)) {
 							const commit = taskPageItem;
 							return (
@@ -84,14 +86,14 @@ const CommentForm = (): React.ReactElement => {
 						}
 						const comment = taskPageItem;
 						return (
-							<li key={comment._id}>
+							<li key={comment.id}>
 								<div className="relative flex flex-col">
 									<div className="flex">
 										<CommentsTextEditor
 											placeholderText="Add a comment..."
-											commentId={comment._id}
-											authorId={comment.author}
-											commentDate={comment.date}
+											commentId={comment.id}
+											authorId={comment.authorId}
+											commentDate={comment.date.toLocaleDateString()}
 											userId={userId}
 											initialState={comment.comment}
 											userName={userName}

@@ -1,9 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Dispatch } from "redux";
-import type {
-	Comment,
-	NewComment,
-} from "@/components/Comments/Comments.interfaces";
+import type { Comment } from "@repo/db";
 import type {
 	Author,
 	TaskEvent,
@@ -29,7 +26,7 @@ export const GET_TASK_EVENTS = "GET_TASK_EVENTS";
 export const CLEAR_TASK_EVENT_LOG = "CLEAR_TASK_EVENT_LOG";
 
 export const createComment =
-	(comment: NewComment) =>
+	(comment: Comment) =>
 	async (dispatch: Dispatch<Action>): Promise<void> => {
 		try {
 			const response: AxiosResponse<Comment> = await axios({
