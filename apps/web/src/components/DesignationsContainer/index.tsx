@@ -132,7 +132,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 				<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
 					{generateItemContainer("Status", StatusDropdownButton, location)}
 					{generateItemContainer("Priority", PriorityButton, location)}
-					{generateItemContainer("Labels", LabelButton, location)}
+					{generateItemContainer("Labels", LabelDropdownButton, location)}
 					{generateItemContainer("Due Date", DateButton, location)}
 					{generateItemContainer(
 						"Effort",
