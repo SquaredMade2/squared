@@ -6,9 +6,15 @@ type Params = {
 	commentId: string;
 };
 
+type CommentReturn = {
+	comment : Comment | null,
+	message: string,
+	variant: "default" | "destructive"
+}
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ commentId }) => {
+		GET: async (res, { commentId }): Promise<CommentReturn> => {
 			try {
 				// Find the comment by its ID
 				const comment: Comment | null = await prisma.comment.findUnique({
@@ -16,41 +22,69 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!comment) {
-					throw new Error("Comment not found");
+					return {
+						comment: null,
+						message: "comment not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the found comment
-				return comment;
+				return {
+					comment: comment,
+					message:"",
+					variant:"default"
+				};
 			} catch (error) {
 				console.error("Error finding comment:", error);
-				throw new Error("Internal server error");
+				return {
+					comment: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		PUT: async ({ commentId }, body) => {
+		PUT: async (res, { commentId }, body): Promise<CommentReturn> => {
 			try {
 				const comment: Comment | null = await prisma.comment.update({
 					where: { id: commentId },
 					data: body,
 				});
 				if (!comment) {
-					throw new Error("Comment not found");
+					return {
+						comment: null,
+						message: "Comment not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the updated comment
-				return comment;
+				return {
+					comment: comment,
+					message: "",
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error updating comment:", error);
-				throw new Error("Internal server error");
+				return {
+					comment: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		POST: async ({ commentId }, body) => {
+		POST: async (res, { commentId }, body): Promise<CommentReturn> => {
 			try {
 				const existingComment = await prisma.comment.findUnique({
 					where: { id: commentId },
 				});
 
 				if (existingComment) {
-					throw new Error("Comment already exists");
+					return {
+						comment: null,
+						message: "Comment already exists",
+						variant: "destructive"
+					};
 				}
 
 				const newComment = await prisma.comment.create({
@@ -61,30 +95,54 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newComment) {
-					throw new Error("Comment not created");
+					return {
+						comment: null,
+						message: "Comment not created",
+						variant: "destructive"
+					};
 				}
 
 				// Return the new comment
-				return newComment;
+				return {
+					comment: newComment,
+					message: "",
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error creating comment:", error);
-				throw new Error("Internal server error");
+				return {
+					comment: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		DELETE: async ({ commentId }) => {
+		DELETE: async (res, { commentId }): Promise<CommentReturn> => {
 			try {
 				const comment: Comment | null = await prisma.comment.delete({
 					where: { id: commentId },
 				});
 				if (!comment) {
-					throw new Error("Comment not found");
+					return {
+						comment: null,
+						message: "Comment not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return success message
-				return { message: "Comment deleted" };
+				return { 
+					comment: null,
+					message: "Comment deleted",
+					variant: "default" 
+				};
 			} catch (error) {
 				console.error("Error deleting comment:", error);
-				throw new Error("Internal server error");
+				return {
+					comment: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};

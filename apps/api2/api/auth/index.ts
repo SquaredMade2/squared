@@ -114,11 +114,6 @@ export function createRoute(): Route<Params> {
 						message: `Sent a verification email to ${email}`,
 						variant: "default",
 					};
-					// return {
-					// 	user,
-					// 	message: "Registration successful, please login now.",
-					// 	variant: "default",
-					// };
 				}
 				if (type === "login") {
 					// Check if the user exists
