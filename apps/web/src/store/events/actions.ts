@@ -1,8 +1,8 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Dispatch } from "redux";
-import type { TaskEvent, TaskEventLog } from "@/interfaces/event.interfaces";
+import type { User, Comment, TaskEventLog } from "@repo/db";
+import type { TaskEvent } from "@/interfaces/event.interfaces";
 import { type Action, ActionType } from "@/store/events/events.actionTypes";
-import type { User, Comment } from "@repo/db";
 
 // Leave in for clarity
 // note the difference with UPDATE_COMMENTS and UPDATE_COMMENT

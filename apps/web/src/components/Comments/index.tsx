@@ -3,9 +3,8 @@ import { format } from "date-fns";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { getTaskComments } from "@/store/events/actions";
 import CommentsTextEditor from "@/components/CommentsTextEditor";
-import type { Commits } from "@/store/taskData/taskData.interfaces";
+import type { Commit, Comment } from "@repo/db";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
-import type { Comment } from "@repo/db";
 
 const CommentForm = (): React.ReactElement => {
 	const dispatch = useAppDispatch();
@@ -34,7 +33,7 @@ const CommentForm = (): React.ReactElement => {
 	const commits =
 		useAppSelector((state) => state.taskData.currentCommits) || [];
 
-	function instanceOfCommit(object: Comment | Commits): object is Commits {
+	function instanceOfCommit(object: Comment | Commit): object is Commit {
 		return "committer" in object;
 	}
 
@@ -79,7 +78,7 @@ const CommentForm = (): React.ReactElement => {
 										{" "}
 										{format(new Date(commit.timestamp), "M/d/yy, h:mm a")}{" "}
 									</header>
-									<header className="mr-2">{commit.author.name}</header>
+									<header className="mr-2">{commit.authorName}</header>
 									<p className="text-muted-foreground">{commit.message}</p>
 								</div>
 							);
