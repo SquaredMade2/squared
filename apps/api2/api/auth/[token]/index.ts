@@ -10,11 +10,17 @@ type JwtPayload = {
 	user: string;
 };
 
+type AuthReturn = {
+	user : User | null,
+	message: string,
+	variant: "default" | "destructive"
+}
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (params: Params) => {
+		POST: async (res, params: Params): Promise<AuthReturn> => {
 			const { token } = params;
 			try {
 				if (!JWT_SECRET) {
@@ -37,6 +43,12 @@ export function createRoute(): Route<Params> {
 						user,
 						message: "User verified",
 						variant: "default",
+					};
+				} else{
+					return {
+						user: null,
+						message: "invalid token",
+						variant: "destructive",
 					};
 				}
 			} catch (error) {

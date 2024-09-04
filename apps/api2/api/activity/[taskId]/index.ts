@@ -2,6 +2,7 @@ import type { Prisma, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
+import { Activity } from "@repo/test-db";
 
 type Params = {
 	taskId: string;
@@ -11,8 +12,8 @@ type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
 
-export type ActivityReturn = {
-	activity : Object | null,
+type ActivityReturn = {
+	activity : Activity | Activity[] | null,
 	message: string,
 	variant: "default" | "destructive"
 }
