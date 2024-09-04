@@ -13,6 +13,7 @@ export enum EventType {
 	LabelsUpdated = "labelsUpdated",
 	TitleUpdated = "titleUpdated",
 	DescriptionUpdated = "descriptionUpdated",
+	GitUpdated = "gitUpdated",
 	CommentUpdated = "commentUpdated",
 	StatusUpdated = "statusUpdated",
 	PriorityUpdated = "priorityUpdated",
