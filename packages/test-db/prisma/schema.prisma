@@ -39,6 +39,23 @@ enum ActivityType {
   COMMIT
 }
 
+enum FilterLogic {
+  AND
+  OR
+}
+
+model Filter {
+  id         String   @id @default(uuid())
+  conditions Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String
+
+  logic FilterLogic
+
+  User User @relation(fields: [userId], references: [id])
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -146,14 +163,6 @@ model Notification {
   User User @relation(fields: [userId], references: [id])
 }
 
-model PageFilterModel {
-  id                String  @id @default(uuid())
-  filterTitle       String
-  filterOption      Json
-  filterDescription String?
-  teamId            String
-}
-
 model Task {
   id             String    @id @default(uuid())
   authorId       String
@@ -206,24 +215,10 @@ model User {
   Notification Notification[]
   Comment      Comment[]
   Task         Task[]
-  SavedFilters SavedFilter[]
+  SavedFilters Filter[]
 
   DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id])
   Teams            UserTeam[]
-}
-
-model SavedFilter {
-  id             String    @id @default(uuid())
-  userId         String
-  title          String
-  identifier     String
-  status         Status?
-  priority       Priority?
-  labels         Label[]
-  dueDate        DateTime?
-  effortEstimate Int?
-
-  User User @relation(fields: [userId], references: [id])
 }
 
 model Workspace {
