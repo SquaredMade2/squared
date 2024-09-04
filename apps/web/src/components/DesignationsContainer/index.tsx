@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LabelButton from "@/components/LabelButton";
 import PriorityButton from "@/components/PriorityButton";
-import StatusButton from "@/components/StatusButton";
+import { StatusDropdownButton } from "@/components/StatusDropdownButton";
 import DateButton from "@/components/DateButton";
 import EffortEstimateButton from "@/components/EffortEstimateButton";
 import HelpButton from "@/components/HelpButton";
@@ -119,7 +119,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 		<>
 			{location === "newIssue" && (
 				<div className="flex flex-row flex-start items-center h-9">
-					<StatusButton location={location} />
+					<StatusDropdownButton location={location} />
 					<PriorityButton location={location} />
 					<LabelButton location={location} />
 					<DateButton location={location} />
@@ -129,7 +129,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 
 			{location === "issueSidebar" && (
 				<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
-					{generateItemContainer("Status", StatusButton, location)}
+					{generateItemContainer("Status", StatusDropdownButton, location)}
 					{generateItemContainer("Priority", PriorityButton, location)}
 					{generateItemContainer("Labels", LabelButton, location)}
 					{generateItemContainer("Due Date", DateButton, location)}

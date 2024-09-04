@@ -95,7 +95,7 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 				</Link>
 			</ContextMenuItem>
 			<ContextMenuSeparator />
-			
+
 			<ContextMenuItem onClick={deleteCurrentTask}>
 				<div className="mr-2">
 					<Trash className="size-4" color="red" />
