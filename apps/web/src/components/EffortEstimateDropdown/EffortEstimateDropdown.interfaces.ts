@@ -4,7 +4,3 @@ export type EffortEstimateDropdownProps = {
 	handleButtonClick: () => void;
 	handleClickAway: () => void;
 };
-
-export type Params = {
-	taskId: string;
-};

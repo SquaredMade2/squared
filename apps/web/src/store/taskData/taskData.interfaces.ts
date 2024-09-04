@@ -53,16 +53,6 @@ export interface Access {
 	id: string;
 }
 
-export interface Assignee {
-	name: string | null;
-	id: string | null;
-}
-
-export interface AccessId {
-	status: boolean;
-	id: string;
-}
-
 export interface GetWorkspaceInterface {
 	url: string;
 	id: string;

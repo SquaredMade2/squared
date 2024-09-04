@@ -4,16 +4,10 @@ export interface TaskCardStatusProps {
 	task: Task;
 }
 
-export interface TaskCardTopProps {
-	task: Task;
-}
-
-export interface SetAssigneeObject {
+interface SetAssigneeObject {
 	taskId: string;
 	assignee: User;
 }
-
-export type SetNoAssignee = (taskId: string) => SetAssigneeObject;
 
 export type HandleAssigneeChange = (taskId: string, user: User) => void;
 

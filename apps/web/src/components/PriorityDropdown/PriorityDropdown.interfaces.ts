@@ -5,7 +5,3 @@ export type PriorityDropdownProps = {
 	showIcon(name: string): React.ReactNode;
 	// new entry; not sure why this is prop in React Dev Tools
 };
-
-export type Params = {
-	taskId: string;
-};
