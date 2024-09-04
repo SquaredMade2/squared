@@ -25,7 +25,7 @@ const WorkSpaceDropDown = () => {
 	}, [dispatch]);
 
 	const index: number = allWorkspaces.findIndex(
-		(item) => item._id === currentWorkspace._id,
+		(item) => item.id === currentWorkspace.id,
 	);
 
 	return (

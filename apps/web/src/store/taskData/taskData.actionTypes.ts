@@ -1,10 +1,5 @@
-import type {
-	CurrentWorkspace,
-	Team,
-	Workspace,
-	Access,
-} from "./taskData.interfaces";
-import type { Task } from "@repo/db";
+import type { Workspace, Task } from "@repo/db";
+import type { Team, Access } from "./taskData.interfaces";
 
 export enum ActionType {
 	CREATE_NEW_TASK = "CREATE_NEW_TASK",
@@ -60,7 +55,7 @@ interface IncrementWorkspaceIssues {
 
 interface GetWorkspaceSuccess {
 	type: ActionType.GET_WORKSPACE_SUCCESS;
-	payload: CurrentWorkspace;
+	payload: Workspace;
 }
 
 interface GetWorkspaceFailure {

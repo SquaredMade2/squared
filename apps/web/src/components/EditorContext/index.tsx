@@ -12,7 +12,6 @@ import {
 	$getSelection,
 	$isRangeSelection,
 } from "lexical";
-import type { NewComment } from "@/components/Comments/Comments.interfaces";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { defaultEditorState } from "@/components/CommentsTextEditor";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
@@ -27,6 +26,7 @@ import type {
 	EditorContextType,
 	EditorProviderProps,
 } from "@/components/EditorContext/EditorContext.interfaces";
+import type { Comment } from "@repo/db";
 
 export const EditorContext = createContext<EditorContextType>({
 	closeUpdateComment: () => {
@@ -148,10 +148,12 @@ export const EditorProvider = ({
 	const handleCreateComment = (editorString: string): void => {
 		if (commentsTaskId && userId) {
 			try {
-				const newComment: NewComment = {
+				const newComment: Comment = {
+					authorId: userId,
+					id: "",
 					comment: editorString,
-					author: userId,
-					task: commentsTaskId,
+					date: new Date(),
+					taskId: commentsTaskId,
 				};
 				dispatch(createComment(newComment));
 			} catch (err) {}

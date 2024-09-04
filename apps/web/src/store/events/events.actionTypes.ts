@@ -1,5 +1,4 @@
-import type { Comment } from "@/components/Comments/Comments.interfaces";
-import type { TaskEventLog, TaskEvent } from "@repo/db";
+import type { Comment, TaskEvent, TaskEventLog } from "@repo/db";
 
 export enum ActionType {
 	UPDATE_COMMENTS = "UPDATE_COMMENTS",

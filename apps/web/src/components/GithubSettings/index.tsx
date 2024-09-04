@@ -17,7 +17,7 @@ const GithubSettings = () => {
 	const githubUser = useAppSelector((state) => state.userSettings.githubUser);
 	const { theme } = useTheme();
 	const currentRepo = useAppSelector(
-		(state) => state.taskData.currentWorkspace.githubRepoInfo,
+		(state) => state.taskData.currentWorkspace.githubRepoInfoId,
 	);
 	const ghAuthToken = useAppSelector((state) => state.userSettings.ghAuthToken);
 	const currentWorkspace = useAppSelector(
@@ -35,7 +35,7 @@ const GithubSettings = () => {
 		}
 	}, []);
 
-	const [selectedRepo, setSelectedRepo] = useState(currentRepo.repoName);
+	const [selectedRepo, setSelectedRepo] = useState(currentRepo);
 
 	const addWebhook: (
 		ghToken: string,
@@ -55,8 +55,8 @@ const GithubSettings = () => {
 		if (currentRepo) {
 			dispatch(
 				getCommitsByRepo({
-					repoName: currentRepo.repoName,
-					owner: currentRepo.owner,
+					repoName: currentRepo,
+					owner: currentRepo,
 				}),
 			);
 		}
@@ -100,7 +100,7 @@ const GithubSettings = () => {
 						{githubUser && (
 							<RepositoryDropdown
 								githubUser={githubUser}
-								selectedRepo={selectedRepo}
+								selectedRepo={selectedRepo ?? ""}
 								setSelectedRepo={setSelectedRepo}
 							/>
 						)}
@@ -117,8 +117,8 @@ const GithubSettings = () => {
 									addWebhook(
 										ghAuthToken,
 										githubUser.login,
-										selectedRepo,
-										currentWorkspace._id,
+										selectedRepo ?? "",
+										currentWorkspace.id,
 									);
 								}
 							}}

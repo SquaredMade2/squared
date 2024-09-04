@@ -46,7 +46,7 @@ const WorkspaceInitials = ({
 		<div
 			className={`flex items-center justify-center text-foreground ${getStyle()} ${colors[backgroundColor]}`}
 		>
-			{getInitials(workspaceName)}
+			{getInitials(workspaceName ?? "")}
 		</div>
 	);
 };

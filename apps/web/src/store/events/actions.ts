@@ -1,11 +1,8 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Dispatch } from "redux";
-import type {
-	Comment,
-	NewComment,
-} from "@/components/Comments/Comments.interfaces";
+import type { TaskEvent, TaskEventLog, User, Comment } from "@repo/db";
+
 import { type Action, ActionType } from "@/store/events/events.actionTypes";
-import type { TaskEvent, TaskEventLog, User } from "@repo/db";
 
 // Leave in for clarity
 // note the difference with UPDATE_COMMENTS and UPDATE_COMMENT
@@ -25,7 +22,7 @@ export const GET_TASK_EVENTS = "GET_TASK_EVENTS";
 export const CLEAR_TASK_EVENT_LOG = "CLEAR_TASK_EVENT_LOG";
 
 export const createComment =
-	(comment: NewComment) =>
+	(comment: Comment) =>
 	async (dispatch: Dispatch<Action>): Promise<void> => {
 		try {
 			const response: AxiosResponse<Comment> = await axios({

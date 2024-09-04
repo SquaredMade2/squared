@@ -14,18 +14,15 @@ import {
 	CLEAR_TASK_EVENT_LOG,
 } from "@/store/events/actions";
 
-import type { Comments } from "@/components/Comments/Comments.interfaces";
-import type { TaskEvent, TaskEventLog } from "@repo/db";
 import type { RootState } from "..";
+import type { Comment, TaskEventLog } from "@repo/db";
 
-interface Events extends Comments {
+interface Events extends Comment {
 	taskEventLog: TaskEventLog;
+	isLoading: boolean;
 }
 
 const initialState: Events = {
-	taskPageCommentData: [],
-	isLoading: false,
-	isError: false,
 	taskEventLog: {
 		id: "",
 		authorName: "",
@@ -33,6 +30,12 @@ const initialState: Events = {
 		authorId: "",
 		createdAt: new Date(),
 	},
+	id: "",
+	comment: "",
+	authorId: "",
+	date: new Date(),
+	taskId: "",
+	isLoading: false,
 };
 
 const eventsReducer = (
@@ -44,12 +47,11 @@ const eventsReducer = (
 		case UPDATE_COMMENTS:
 			return {
 				...state,
-				taskPageCommentData: [...state.taskPageCommentData, action.payload],
 			};
 		case GET_TASK_COMMENTS:
 			return {
 				...state,
-				taskPageCommentData: action.payload,
+
 				isLoading: false,
 			};
 		case COMMENT_IS_LOADING:
@@ -60,19 +62,14 @@ const eventsReducer = (
 		case GET_COMMENT_ERROR:
 			return {
 				...state,
-				isError: action.payload,
 			};
 		case DELETE_COMMENT:
 			return {
 				...state,
-				taskPageCommentData: state.taskPageCommentData.filter(
-					(comment) => comment._id !== action.payload,
-				),
 			};
 		case CLEAR_TASKPAGE_COMMENTS:
 			return {
 				...state,
-				taskPageCommentData: [],
 			};
 
 		case CREATE_TASK_EVENT_LOG:
@@ -116,7 +113,7 @@ const eventsReducer = (
 };
 
 export function hasComment(state: RootState) {
-	return !state.events.isLoading && state.events.taskPageCommentData.length > 0;
+	return !state.events.isLoading;
 }
 
 export default eventsReducer;

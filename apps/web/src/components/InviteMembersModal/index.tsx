@@ -3,7 +3,7 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { X } from "lucide-react";
 import type { MembersModalProp } from "@/components/InviteMembersModal/members-modal.interace";
-import type { Workspace } from "@/store/taskData/taskData.interfaces";
+import type { Workspace } from "@repo/db";
 
 const InviteMembersModal = ({
 	handleSubmit,
@@ -13,7 +13,7 @@ const InviteMembersModal = ({
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
 	const index = allWorkspaces.findIndex(
-		(item: Workspace) => item._id === workspace._id,
+		(item: Workspace) => item.id === workspace.id,
 	);
 	return (
 		<div className="fixed z-10 top-0 left-26 flex items-start justify-center w-screen h-[703.2px] px-2 py-[30vh]">

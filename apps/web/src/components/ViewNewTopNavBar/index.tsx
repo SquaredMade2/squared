@@ -14,7 +14,7 @@ const ViewNewTopNavBar = ({ showFilterSaveForm }: ViewNewTopNavBarProps) => {
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
 	const index: number = allWorkspaces.findIndex(
-		(item) => item._id === currentWorkspace._id,
+		(item) => item.id === currentWorkspace.id,
 	);
 
 	return (
