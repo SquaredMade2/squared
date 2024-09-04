@@ -5,17 +5,25 @@ import type { Route } from "@/api/route";
 type Params = {
 	notificationId: string;
 };
-
+type NotificationReturn = {
+	notification : Notification | null,
+	message: string,
+	variant: "default" | "destructive"
+}
 export function createRoute(): Route<Params> {
 	return {
-		POST: async ({ notificationId }, body) => {
+		POST: async (res, { notificationId }, body): Promise<NotificationReturn> => {
 			try {
 				const existingUser = await prisma.user.findUnique({
 					where: { id: body.userId },
 				});
 
 				if (!existingUser) {
-					throw new Error("Cannot find User");
+					return {
+						notification: null,
+						message: "Cannot find user",
+						variant: "destructive"
+					};
 				}
 
 				const newNotification = await prisma.notification.create({
@@ -26,31 +34,55 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newNotification) {
-					throw new Error("Notification not created");
+					return {
+						notification: null,
+						message: "notification not created",
+						variant: "destructive"
+					};
 				}
 
 				// Return the new notification
-				return newNotification;
+				return {
+					notification: newNotification,
+					message: "",
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error creating notification:", error);
-				throw new Error("Internal server error");
+				return {
+					notification: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		DELETE: async ({ notificationId }) => {
+		DELETE: async (res, { notificationId }): Promise<NotificationReturn> => {
 			try {
 				const notification: Notification | null =
 					await prisma.notification.delete({
 						where: { id: notificationId },
 					});
 				if (!notification) {
-					throw new Error("Notification not found");
+					return {
+						notification: null,
+						message: "Notification not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return success message
-				return { message: "Notification deleted" };
+				return {
+					notification: null,
+					message: "Notification deleted",
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error deleting notification:", error);
-				throw new Error("Internal server error");
+				return {
+					notification: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};
