@@ -5,7 +5,7 @@ import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 
 const CreatedByInformation = () => {
-	const { authorName, createdAt } = useAppSelector(
+	const { authorName, authorId, createdAt } = useAppSelector(
 		(state) => state.events.taskEventLog,
 	);
 	const displayDate = () => {

@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Dispatch } from "redux";
-import type { User, Comment, TaskEventLog } from "@repo/db";
-import type { TaskEvent } from "@/interfaces/event.interfaces";
+import type { TaskEvent, TaskEventLog, User, Comment } from "@repo/db";
+
 import { type Action, ActionType } from "@/store/events/events.actionTypes";
 
 // Leave in for clarity

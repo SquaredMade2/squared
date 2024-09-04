@@ -15,7 +15,7 @@ import {
 } from "@/store/events/actions";
 
 import type { RootState } from "..";
-import type { Comment, TaskEvent, TaskEventLog } from "@repo/db";
+import type { Comment, TaskEventLog } from "@repo/db";
 
 interface Events extends Comment {
 	taskEventLog: TaskEventLog;
@@ -90,15 +90,16 @@ const eventsReducer = (
 					...state.taskEventLog,
 				},
 			};
-		case ADD_TASK_EVENT: {
-			const updatedEventLog = [] as TaskEvent[];
-			return {
-				...state,
-				taskEventLog: {
-					...state.taskEventLog,
-				},
-			};
-		}
+		// case ADD_TASK_EVENT: {
+		// 	const updatedEventLog = [action.payload] as TaskEvent[];
+		// 	return {
+		// 		...state,
+		// 		taskEventLog: {
+		// 			...state.taskEventLog,
+		// 			eventsLog: updatedEventLog,
+		// 		},
+		// 	};
+		// }
 		case CLEAR_TASK_EVENT_LOG:
 			return {
 				...state,

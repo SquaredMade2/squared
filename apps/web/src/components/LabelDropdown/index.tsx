@@ -32,13 +32,7 @@ export default function LabelDropdown({
 	);
 	const taskId = useSelector((state: RootState) => state.singleTask?.data?._id);
 
-	const {
-		author,
-		storeCommonFields,
-		storeType,
-		storeTaskLabels,
-		updateTaskLabels,
-	} = useLogTaskEvent();
+	const { author, storeCommonFields, storeType } = useLogTaskEvent();
 
 	const [query, setQuery] = useState("");
 
@@ -99,20 +93,20 @@ export default function LabelDropdown({
 
 	const logEvent = (newLabels: string[]) => {
 		storeType(EventType.LabelsUpdated);
-		if (sidebarLabels) {
-			updateTaskLabels(newLabels as Labels[]);
-		}
+		// if (sidebarLabels) {
+		// 	updateTaskLabels(newLabels as Labels[]);
+		// }
 	};
 
 	const handleCloseDropdown = () => {
 		handleClickAway();
 	};
 
-	useEffect(() => {
-		if (sidebarLabels) {
-			storeTaskLabels(sidebarLabels as unknown as Labels[]);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	if (sidebarLabels) {
+	// 		storeTaskLabels(sidebarLabels as unknown as Labels[]);
+	// 	}
+	// }, []);
 
 	return (
 		<ClickAwayListener onClickAway={() => handleCloseDropdown()}>

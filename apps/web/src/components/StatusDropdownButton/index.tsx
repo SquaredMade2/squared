@@ -148,7 +148,7 @@ export const StatusDropdownButton = ({
 					{statusOptions.map((status) => (
 						<DropdownMenuItem
 							key={status}
-							onSelect={() => handleSelectStatus(status)}
+							onSelect={() => handleSelectStatus(status as Status)}
 							className="flex justify-between items-center px-2 py-1.5"
 						>
 							<div className="flex items-center">

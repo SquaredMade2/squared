@@ -17,17 +17,3 @@ export enum EventType {
 	StatusUpdated = "statusUpdated",
 	PriorityUpdated = "priorityUpdated",
 }
-
-export interface TaskEvent {
-	type: "" | EventType;
-	author: User;
-	taskId: string;
-	updatedAt: Date | string | null;
-	originalLabels?: Labels[] | [];
-	updatedLabels?: Labels[] | [];
-	originalValue?: string | Status | Priority | null;
-	updatedValue?: string | Status | Priority | null;
-	originalAssignee?: User;
-	updatedAssignee?: User;
-	commentRef?: string;
-}
