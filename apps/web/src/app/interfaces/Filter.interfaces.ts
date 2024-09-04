@@ -16,7 +16,6 @@ export interface NavbarVisibitliyProps {
 export interface DueDateFilterDropDownProps {
 	showDueDateFilterDropDown: boolean;
 	setShowDueDateFilterDropDown: Dispatch<SetStateAction<boolean>>;
-	handleFilter: (filterOption: FilterOption) => void;
 }
 
 export type clearFilterType = () => void;

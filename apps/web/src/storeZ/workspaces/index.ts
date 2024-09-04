@@ -113,6 +113,9 @@ export const createWorkspaceStore = (
 						throw error;
 					}
 				},
+				setCurrentWorkspace: (workspace: Workspace): void => {
+					set({ currentWorkspace: workspace });
+				},
 				deleteWorkspace: (workspaceId: string): void => {
 					try {
 						axios.delete(apiString(workspaceId));

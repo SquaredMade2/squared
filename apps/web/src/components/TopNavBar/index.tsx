@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { getNotifications, newNotification } from "@/store/notifications";
+import { useState, useEffect, useRef, useContext } from "react";
+import type React from "react";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdown";
-import SelectedFiltersBar from "@/components/SelectedFiltersBar";
 import { Filter } from "lucide-react";
-import type { TopNavBarProps } from "@/components/TopNavBar/TopNavBar.interfaces";
 import { ProjectDataWidget } from "@/components/ProjectDataWidget";
 import { SocketContext } from "@/app/SocketProvider";
 import NotificationsList from "@/components/NotificationsList";
-import type { AnyAction } from "@reduxjs/toolkit";
 import ToggleNavBar from "../ToggleNavBar";
+import { useAuthStore, useViewsStore } from "@/storeZ/provider";
 
 export const setFillColor = (theme: string): undefined | string => {
 	switch (true) {
@@ -24,31 +20,17 @@ export const setFillColor = (theme: string): undefined | string => {
 	}
 };
 
-const TopNavBar = ({
-	filterOption,
-	handleFilter,
-	showFilterSaveForm,
-	handleFilterSaveForm,
-}: TopNavBarProps) => {
+const TopNavBar: React.FC = () => {
 	const [showFilterDropDown, setShowFilterDropDown] = useState(false);
-	const [showFilterStatusBar, setShowFilterStatusBar] = useState(false);
 	const [showNotification, setShowNotification] = useState(false);
-	const currentFilters = useAppSelector(
-		(state) => state.filterPage.currentFilters,
-	);
-
 	const menuRef = useRef<HTMLDivElement>(null);
 	const notificationButtonRef = useRef(null);
-	const dispatch = useAppDispatch();
 
 	const [screenSize, setScreenSize] = useState(getCurrentDimension());
+	const { currentFilter, removeFilter } = useViewsStore().getState();
 
 	const socket = useContext(SocketContext);
-	const user = useAppSelector((state) => state.userSettings.user);
-
-	// const notifications = useAppSelector(
-	// 	(state) => state.notifications.notifications
-	// ); //fix disabled until inbox works -- https://linear.app/project-tasklist/issue/PRO-780/re-enable-inbox-when-fixed-on-develop
+	const { user } = useAuthStore().getState();
 
 	function getCurrentDimension(): { width: number; height: number } {
 		return {
@@ -56,11 +38,6 @@ const TopNavBar = ({
 			height: window.innerHeight,
 		};
 	}
-
-	// const handleNotification = (e: React.MouseEvent): void => {
-	// 	e.stopPropagation();
-	// 	setShowNotification((prev) => !prev);
-	// }; This has been disabled until the inbox is fully functional
 
 	useEffect(() => {
 		const updateDimension = (): void => {
@@ -72,15 +49,6 @@ const TopNavBar = ({
 			window.removeEventListener("resize", updateDimension);
 		};
 	}, [screenSize]);
-
-	useEffect(() => {
-		if (filterOption) {
-			setShowFilterDropDown(false);
-			handleFilter(filterOption);
-		} else if (!filterOption) {
-			handleFilter(null);
-		}
-	}, [filterOption, handleFilter]);
 
 	useEffect(() => {
 		const handler = (e: MouseEvent): void => {
@@ -100,46 +68,23 @@ const TopNavBar = ({
 	});
 
 	useEffect(() => {
-		socket.emit("socketId", user._id);
-		socket.emit("getUser", user._id);
+		socket.emit("socketId", user?.id);
+		socket.emit("getUser", user?.id);
 		socket.on("send_notification", (data: unknown) => {
-			const notificationData =
-				typeof data === "string" ? JSON.parse(data) : data;
-			dispatch(getNotifications(notificationData));
+			// Handle incoming notifications
 		});
 		socket.on("new_notification", (data: unknown) => {
-			const notificationData =
-				typeof data === "string" ? JSON.parse(data) : data;
-			dispatch(newNotification(notificationData));
+			// Handle new notifications
 		});
-		socket.on("notification_removed", (data: AnyAction) => {
-			dispatch(getNotifications(data));
+		socket.on("notification_removed", (data: unknown) => {
+			// Handle notification removal
 		});
 		return () => {
 			socket.off("send_notification");
 			socket.off("new_notification");
 			socket.off("notification_removed");
 		};
-	}, [socket.id, dispatch]);
-
-	useEffect(() => {
-		// hide FilterStatusBar if no filters -- leave comment in for clarity
-		if (
-			currentFilters.status.length === 0 &&
-			currentFilters.priority.length === 0 &&
-			currentFilters.labels.length === 0 &&
-			currentFilters.dueDate.length === 0 &&
-			currentFilters.effortEstimate.length === 0
-		) {
-			setShowFilterStatusBar(false);
-		} else {
-			setShowFilterStatusBar(true);
-		}
-	}, [currentFilters]);
-
-	// const notificationNotRead = notifications.filter(
-	// 	(noti: { read: boolean }) => !noti.read
-	// );  //fix disabled until inbox works -- https://linear.app/project-tasklist/issue/PRO-780/re-enable-inbox-when-fixed-on-develop
+	}, [socket.id]);
 
 	return (
 		<header className="max-w-screen">
@@ -158,19 +103,15 @@ const TopNavBar = ({
 						{screenSize.width > 640 && (
 							<div
 								ref={menuRef}
-								className="relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent group"
+								className="relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border text-foreground hover:bg-accent group"
 							>
 								<button
 									type="button"
 									onClick={
-										currentFilters.priority.length > 0 ||
-										currentFilters.status.length > 0 ||
-										currentFilters.labels.length > 0 ||
-										currentFilters.dueDate.length > 0 ||
-										currentFilters.effortEstimate.length > 0
+										currentFilter?.conditions.length &&
+										currentFilter?.conditions?.length > 0
 											? () => {
-													handleFilter(null);
-													dispatch(deleteAllCurrentFilters());
+													removeFilter();
 												}
 											: () => {
 													setShowFilterDropDown(true);
@@ -181,13 +122,14 @@ const TopNavBar = ({
 									<div className="mr-2">
 										<Filter className="size-5" />
 									</div>
-									<p>{showFilterStatusBar ? "Clear Filters x" : "Filter"}</p>
+									<p>
+										{currentFilter?.conditions.length &&
+										currentFilter?.conditions?.length > 0
+											? "Clear Filters x"
+											: "Filter"}
+									</p>
 								</button>
-								<FilterDropDown
-									showFilterDropDown={showFilterDropDown} // used to keep track of filter being show or not
-									setShowFilterDropDown={setShowFilterDropDown} // used to toggle filter on and off
-									handleFilter={handleFilter} // used to set filter being used -- future todo: change to redux
-								/>
+								<FilterDropDown />
 							</div>
 						)}
 					</div>
@@ -197,19 +139,15 @@ const TopNavBar = ({
 						{screenSize.width < 640 && (
 							<div
 								ref={menuRef}
-								className="relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border border-gray-500 text-foreground hover:bg-accent"
+								className="relative px-2.5 cursor-pointer text-xs xs:w-1/3 xs:flex w-22 bg-card ml-4 xs:ml-0 mr-2 rounded border border-border text-foreground hover:bg-accent"
 							>
 								<button
 									type="button"
 									onClick={
-										currentFilters.priority.length > 0 ||
-										currentFilters.status.length > 0 ||
-										currentFilters.labels.length > 0 ||
-										currentFilters.dueDate.length > 0 ||
-										currentFilters.effortEstimate.length > 0
+										currentFilter?.conditions.length &&
+										currentFilter?.conditions?.length > 0
 											? () => {
-													handleFilter(null);
-													dispatch(deleteAllCurrentFilters());
+													removeFilter();
 												}
 											: () => {
 													setShowFilterDropDown(true);
@@ -217,29 +155,18 @@ const TopNavBar = ({
 									}
 									className="text-xs w-full flex items-center justify-center h-10 mr-2 p-0.5 border-border bg-card text-foreground cursor-pointer hover:bg-accent"
 								>
-									<p>{showFilterStatusBar ? "Clear Filters x" : "+ Filter"}</p>
+									<p>
+										{currentFilter?.conditions.length &&
+										currentFilter?.conditions?.length > 0
+											? "Clear Filters x"
+											: "+ Filter"}
+									</p>
 								</button>
-								<FilterDropDown
-									showFilterDropDown={showFilterDropDown} // used to keep track of filter being show or not
-									setShowFilterDropDown={setShowFilterDropDown} // used to toggle filter on and off
-									handleFilter={handleFilter} // used to set filter being used -- future todo: change to redux
-								/>
+								<FilterDropDown />
 							</div>
 						)}
 					</div>
 					<div className="flex items-center mr-6 mt-2 relative">
-						{/* <button
-							ref={notificationButtonRef}
-							onClick={handleNotification}
-							className={style.notificationBtn}
-						>
-							{BellIcon(theme)}
-						</button> */}
-						{/* Button does not match the design of the other Icons. This has been disabled until a suitable icon has been found and the inbox is fully functional */}
-						{/* <span className={style.amountOfNotifications}>
-							{!notificationNotRead.length ? '' : notificationNotRead.length}
-						</span> //fix disabled until inbox works -- https://linear.app/project-tasklist/issue/PRO-780/re-enable-inbox-when-fixed-on-develop */}
-						{/* Create component that'll show the notification here */}
 						{showNotification && (
 							<NotificationsList
 								notificationButtonRef={notificationButtonRef}
@@ -253,15 +180,6 @@ const TopNavBar = ({
 					</div>
 				</div>
 			</nav>
-
-			<div className={`${showFilterStatusBar ? "block" : "hidden"} w-full`}>
-				<SelectedFiltersBar
-					filterOption={filterOption}
-					showFilterSaveForm={showFilterSaveForm}
-					handleFilterSaveForm={handleFilterSaveForm}
-					handleFilter={handleFilter}
-				/>
-			</div>
 		</header>
 	);
 };

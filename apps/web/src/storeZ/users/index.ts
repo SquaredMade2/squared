@@ -12,17 +12,17 @@ const apiString = (path: string) =>
 export const createUserStore = (initState: UserState = { users: [] }) => {
 	return createStore<UserStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				addUser: async (user) => {
 					const response = await axios.post(apiString(uuidv4()), user);
-					const { users } = useUserStore();
+					const { users } = get();
 					set({ users: [...users, response.data] });
 					return response.data;
 				},
 				updateUser: async (userId, user) => {
 					const response = await axios.put(apiString(userId), user);
-					const { users } = useUserStore();
+					const { users } = get();
 					set({
 						users: users.map((user) =>
 							user.id === userId ? response.data : user,
@@ -32,13 +32,13 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 				},
 				deleteUser: async (userId) => {
 					await axios.delete(apiString(userId));
-					const { users } = useUserStore();
+					const { users } = get();
 					set({
 						users: users.filter((user) => user.id !== userId),
 					});
 				},
 				getUser: async (userId) => {
-					const { users } = useUserStore();
+					const { users } = get();
 					const existing = users.find((user) => user.id === userId);
 					if (existing) return existing;
 					const response = await axios.get(apiString(userId));

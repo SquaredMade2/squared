@@ -15,6 +15,7 @@ import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
 import { useTheme } from "next-themes";
 import { cn } from "@/utils/cn";
+import { useModalStore, useViewsStore } from "@/storeZ/provider";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -24,8 +25,8 @@ const TaskColumnTitle = ({
 	toggleShowTasks,
 }: TaskColumnTitleProps) => {
 	const { theme } = useTheme();
-	const dispatch = useAppDispatch();
 	const arrowColor = theme === "light" ? "black" : "white";
+	const { showNewIssue, setNewIssueData } = useModalStore().getState();
 
 	const showIcon = (name: string): React.ReactNode => {
 		switch (name) {
@@ -45,8 +46,8 @@ const TaskColumnTitle = ({
 	};
 
 	const handleClick = (): void => {
-		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(title));
+		setShowNewIssue(true);
+		setNewIssueData({ status: title });
 	};
 
 	return (
