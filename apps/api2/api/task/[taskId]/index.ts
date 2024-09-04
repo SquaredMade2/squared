@@ -6,15 +6,15 @@ type Params = {
 	taskId: string;
 };
 
-type TaskReturn = {
+type TaskResponse = {
 	task : Task | null,
-	message: string,
+	message?: string,
 	variant: "default" | "destructive"
 }
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { taskId }): Promise<TaskReturn> => {
+		GET: async (res, { taskId }): Promise<TaskResponse> => {
 			try {
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
@@ -32,7 +32,6 @@ export function createRoute(): Route<Params> {
 				// Return the found task
 				return {
 					task: task,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
@@ -44,7 +43,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		PUT: async (res, { taskId }, body): Promise<TaskReturn> => {
+		PUT: async (res, { taskId }, body): Promise<TaskResponse> => {
 			try {
 				const task: Task | null = await prisma.task.update({
 					where: { id: taskId },
@@ -61,7 +60,6 @@ export function createRoute(): Route<Params> {
 				// Return the updated task
 				return {
 					task: task,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
@@ -73,7 +71,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		POST: async (res, { taskId }, body): Promise<TaskReturn> => {
+		POST: async (res, { taskId }, body): Promise<TaskResponse> => {
 			try {
 				const existingTask = await prisma.task.findUnique({
 					where: { id: taskId },
@@ -105,7 +103,6 @@ export function createRoute(): Route<Params> {
 				// Return the new task
 				return {
 					task: newTask,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
@@ -117,7 +114,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		DELETE: async (res, { taskId }): Promise<TaskReturn> => {
+		DELETE: async (res, { taskId }): Promise<TaskResponse> => {
 			try {
 				const task: Task | null = await prisma.task.delete({
 					where: { id: taskId },

@@ -6,9 +6,15 @@ type Params = {
 	workspaceId: string;
 };
 
+type UserResponse = {
+	users : User[] | null,
+	message?: string,
+	variant: "default" | "destructive"
+}
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ workspaceId }) => {
+		GET: async (res, { workspaceId }): Promise<UserResponse> => {
 			try {
 				const users: User[] | null = await prisma.user.findMany({
 					where: {
@@ -21,13 +27,24 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!users) {
-					throw new Error("No users found");
+					return {
+						users: null,
+						message: "No Users found",
+						variant: "destructive"
+					};
 				}
 
-				return users;
+				return {
+					users: users,
+					variant: "default"
+				};
 			} catch (err) {
 				console.error("Error finding users:", err);
-				throw new Error("Internal server error");
+				return {
+					users: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};

@@ -17,7 +17,7 @@ type Params = {
 	userId: string;
 };
 
-type AuthReturn = {
+type AuthResponse = {
 	user: User | null;
 	message: string;
 	variant: "destructive" | "default";
@@ -27,7 +27,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { userId }, body: Body): Promise<AuthReturn> => {
+		POST: async (res, { userId }, body: Body): Promise<AuthResponse> => {
 			try {
 				const { email, password, provider, type, name, username } = body;
 

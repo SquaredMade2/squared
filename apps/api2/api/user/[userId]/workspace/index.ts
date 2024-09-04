@@ -7,9 +7,15 @@ type Params = {
 	workspaceId: string;
 };
 
+type WorkspaceResponse = {
+	workspaces : Workspace[] | null,
+	message: string,
+	variant: "default" | "destructive"
+}
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ userId }) => {
+		GET: async (res, { userId }): Promise<WorkspaceResponse> => {
 			try {
 				// Find workspaces a certain user belongs to
 
@@ -20,14 +26,26 @@ export function createRoute(): Route<Params> {
 					);
 
 				if (!userWorkspaces) {
-					throw new Error("Workspace not found");
+					return {
+						workspaces: null,
+						message: "Workspace not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the found workspaces
-				return userWorkspaces;
+				return {
+					workspaces: userWorkspaces,
+					message: "",
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error finding user workspaces:", error);
-				throw new Error("Internal server error");
+				return {
+					workspaces: null,
+					message: "Internal Sever Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};

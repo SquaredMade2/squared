@@ -6,15 +6,15 @@ type Params = {
 	commentId: string;
 };
 
-type CommentReturn = {
+type CommentResponse = {
 	comment : Comment | null,
-	message: string,
+	message?: string,
 	variant: "default" | "destructive"
 }
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { commentId }): Promise<CommentReturn> => {
+		GET: async (res, { commentId }): Promise<CommentResponse> => {
 			try {
 				// Find the comment by its ID
 				const comment: Comment | null = await prisma.comment.findUnique({
@@ -32,7 +32,6 @@ export function createRoute(): Route<Params> {
 				// Return the found comment
 				return {
 					comment: comment,
-					message:"",
 					variant:"default"
 				};
 			} catch (error) {
@@ -44,7 +43,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		PUT: async (res, { commentId }, body): Promise<CommentReturn> => {
+		PUT: async (res, { commentId }, body): Promise<CommentResponse> => {
 			try {
 				const comment: Comment | null = await prisma.comment.update({
 					where: { id: commentId },
@@ -61,7 +60,6 @@ export function createRoute(): Route<Params> {
 				// Return the updated comment
 				return {
 					comment: comment,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
@@ -73,7 +71,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		POST: async (res, { commentId }, body): Promise<CommentReturn> => {
+		POST: async (res, { commentId }, body): Promise<CommentResponse> => {
 			try {
 				const existingComment = await prisma.comment.findUnique({
 					where: { id: commentId },
@@ -105,7 +103,6 @@ export function createRoute(): Route<Params> {
 				// Return the new comment
 				return {
 					comment: newComment,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
@@ -117,7 +114,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		DELETE: async (res, { commentId }): Promise<CommentReturn> => {
+		DELETE: async (res, { commentId }): Promise<CommentResponse> => {
 			try {
 				const comment: Comment | null = await prisma.comment.delete({
 					where: { id: commentId },

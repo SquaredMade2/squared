@@ -6,9 +6,15 @@ type Params = {
 	teamId: string;
 };
 
+type TaskResponse = {
+	tasks : Task[] | null,
+	message?: string,
+	variant: "default" | "destructive"
+}
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ teamId }, query) => {
+		GET: async (res, { teamId }, query): Promise<TaskResponse> => {
 			try {
 				// Find tasks by team ID
 				const tasks: Task[] | null = await prisma.task.findMany({
@@ -16,14 +22,25 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!tasks) {
-					throw new Error("Tasks not found");
+					return {
+						tasks: null,
+						message: "Tasks not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the found tasks
-				return tasks;
+				return {
+					tasks: tasks,
+					variant:"default"
+				};
 			} catch (error) {
 				console.error("Error finding tasks:", error);
-				throw new Error("Internal server error");
+				return {
+					tasks: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};

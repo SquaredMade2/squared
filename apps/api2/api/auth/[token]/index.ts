@@ -10,9 +10,9 @@ type JwtPayload = {
 	user: string;
 };
 
-type AuthReturn = {
+type AuthResponse = {
 	user : User | null,
-	message: string,
+	message?: string,
 	variant: "default" | "destructive"
 }
 
@@ -20,7 +20,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, params: Params): Promise<AuthReturn> => {
+		POST: async (res, params: Params): Promise<AuthResponse> => {
 			const { token } = params;
 			try {
 				if (!JWT_SECRET) {

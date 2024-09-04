@@ -12,15 +12,15 @@ type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
 
-type ActivityReturn = {
+type ActivityResponse = {
 	activity : Activity | Activity[] | null,
-	message: string,
+	message?: string,
 	variant: "default" | "destructive"
 }
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { taskId }): Promise<ActivityReturn> => {
+		GET: async (res, { taskId }): Promise<ActivityResponse> => {
 			try {
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
@@ -54,7 +54,6 @@ export function createRoute(): Route<Params> {
 				// Return the found activities
 				return {
 					activity: taskEventLogWithActivities.activities,
-					message:"",
 					variant:"default"
 				}
 			} catch (error) {
@@ -66,14 +65,18 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		POST: async (res, { taskId }, body): Promise<ActivityReturn> => {
+		POST: async (res, { taskId }, body): Promise<ActivityResponse> => {
 			try {
 				const task = await prisma.task.findUnique({
 					where: { id: taskId },
 				});
 
 				if (!task) {
-					throw new Error("Task not found");
+					return {
+						activity: null,
+						message:"Task not found",
+						variant:"destructive"
+					};
 				}
 
 				// Check if a TaskEventLog exists for the task
@@ -112,7 +115,6 @@ export function createRoute(): Route<Params> {
 					});
 					return {
 						activity: newActivityWithCommit,
-						message:"",
 						variant:"default"
 					}
 				}
@@ -124,15 +126,22 @@ export function createRoute(): Route<Params> {
 					});
 					return {
 						activity:newActivityWithTaskEvent,
-						message:"",
 						variant:"default"
 					};
 				}
 
-				throw new Error("Invalid activity type");
+				return {
+					activity: null,
+					message:"Invalid Activity type",
+					variant:"destructive"
+				};
 			} catch (error) {
 				console.error("Error creating task:", error);
-				throw new Error("Internal server error");
+				return {
+					activity: null,
+					message:"Internal server error",
+					variant:"destructive"
+				};
 			}
 		},
 	};

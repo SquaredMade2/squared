@@ -5,14 +5,14 @@ import type { Route } from "@/api/route";
 type Params = {
 	notificationId: string;
 };
-type NotificationReturn = {
+type NotificationResponse = {
 	notification : Notification | null,
-	message: string,
+	message?: string,
 	variant: "default" | "destructive"
 }
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { notificationId }, body): Promise<NotificationReturn> => {
+		POST: async (res, { notificationId }, body): Promise<NotificationResponse> => {
 			try {
 				const existingUser = await prisma.user.findUnique({
 					where: { id: body.userId },
@@ -44,7 +44,6 @@ export function createRoute(): Route<Params> {
 				// Return the new notification
 				return {
 					notification: newNotification,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
@@ -56,7 +55,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		DELETE: async (res, { notificationId }): Promise<NotificationReturn> => {
+		DELETE: async (res, { notificationId }): Promise<NotificationResponse> => {
 			try {
 				const notification: Notification | null =
 					await prisma.notification.delete({

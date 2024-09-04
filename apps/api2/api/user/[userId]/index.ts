@@ -6,25 +6,42 @@ type Params = {
 	userId: string;
 };
 
+type UserResponse = {
+	user : User | null,
+	message?: string,
+	variant: "default" | "destructive"
+}
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ userId }) => {
+		GET: async (res, { userId }): Promise<UserResponse> => {
 			try {
 				const user: User | null = await prisma.user.findUnique({
 					where: { id: userId },
 				});
 
 				if (!user) {
-					throw new Error("User not found.");
+					return {
+						user: null,
+						message: "User not found",
+						variant: "destructive"
+					};
 				}
 
-				return user;
+				return {
+					user: user,
+					variant:"default"
+				};
 			} catch (err) {
 				console.error("Error finding user:", err);
-				throw new Error(err?.toString() || "Internal server error");
+				return {
+					user: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		PUT: async ({ userId }, body) => {
+		PUT: async (res, { userId }, body): Promise<UserResponse> => {
 			try {
 				const user: User | null = await prisma.user.update({
 					where: { id: userId },
@@ -32,22 +49,37 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					throw new Error("User not found");
+					return {
+						user: null,
+						message: "User not found",
+						variant: "destructive"
+					};
 				}
 
-				return user;
+				return {
+					user: user,
+					variant:"default"
+				};
 			} catch (err) {
 				console.error("Error updating user:", err);
-				throw new Error("Internal server error");
+				return {
+					user: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		POST: async ({ userId }, body) => {
+		POST: async (res, { userId }, body): Promise<UserResponse> => {
 			try {
 				const ifUserExists: User | null = await prisma.user.findUnique({
 					where: { id: userId },
 				});
 				if (ifUserExists) {
-					throw new Error("User already exists");
+					return {
+						user: null,
+						message: "User already exists",
+						variant: "destructive"
+					};
 				}
 
 				const newUser = await prisma.user.create({
@@ -59,29 +91,52 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newUser) {
-					throw new Error("Failed to create new user");
+					return {
+						user: null,
+						message: "failed to created new user",
+						variant: "destructive"
+					};
 				}
 
-				return newUser;
+				return {
+					user: newUser,
+					variant:"default"
+				};
 			} catch (err) {
 				console.error("Error while creating new user:", err);
-				throw new Error("Failed to create new user");
+				return {
+					user: null,
+					message: "failed to created new user",
+					variant: "destructive"
+				};
 			}
 		},
-		DELETE: async ({ userId }) => {
+		DELETE: async (res, { userId }): Promise<UserResponse> => {
 			try {
 				const user = await prisma.user.delete({
 					where: { id: userId },
 				});
 
 				if (!user) {
-					throw new Error("Failed to delete user");
+				return {
+					user: null,
+					message: "Failed to delete User",
+					variant: "destructive"
+				};
 				}
 
-				return { message: "User deleted." };
+				return {
+					user: null,
+					message:"User deleted",
+					variant:"default"
+				};
 			} catch (err) {
 				console.error("Error while creating new user", err);
-				throw new Error("Failed to delete user");
+				return {
+					user: null,
+					message: "Failed to delete User",
+					variant: "destructive"
+				};
 			}
 		},
 	};

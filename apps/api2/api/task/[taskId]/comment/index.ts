@@ -6,15 +6,15 @@ type Params = {
 	taskId: string;
 };
 
-type CommentReturn = {
+type CommentResponse = {
 	comments : Comment[] | null,
-	message: string,
+	message?: string,
 	variant: "default" | "destructive"
 }
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { taskId }): Promise<CommentReturn> => {
+		GET: async (res, { taskId }): Promise<CommentResponse> => {
 			try {
 				// Find comments by team ID
 				const comments: Comment[] | null = await prisma.comment.findMany({
@@ -32,7 +32,6 @@ export function createRoute(): Route<Params> {
 				// Return the found comments
 				return { 
 					comments: comments,
-					message: "",
 					variant: "default"
 				};
 			} catch (error) {
