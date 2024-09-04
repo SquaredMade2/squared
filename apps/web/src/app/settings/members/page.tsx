@@ -25,6 +25,7 @@ import {
 	updateUsersInfo,
 } from "@/utils/workspace-members-utils";
 import { useTheme } from "next-themes";
+import type { User } from "@repo/db";
 
 const styles = {
 	mainContainer:
@@ -89,42 +90,34 @@ export default function Members() {
 	const [commandOptions, setCommandOptions] = useState<Record<string, boolean>>(
 		{},
 	);
-	const [listOfUsers, setListOfUsers] = useState<ListOfUsersProps[]>([]);
+	const [listOfUsers, setListOfUsers] = useState<User[]>([]);
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const [isActive, setIsActive] = useState<boolean>(
-		workspace.universalTokenLink.isEnabled,
+		!!workspace.universalTokenLinkId,
 	);
 	const currentUser = useAppSelector((state) => state.userSettings.user);
 	const { theme } = useTheme();
+	const users = [] as User[];
 
 	const dispatch = useAppDispatch();
 
 	const handleButtonStyle = (): string =>
 		theme === "dark" ? styles.inviteButtonDark : styles.inviteButtonLight;
-	const getMembersRole = (userId: string) => {
-		const membersRole = workspace.users.find(
-			(member) => member.user === userId,
-		)?.role;
-		if (membersRole) {
-			return membersRole[0].toUpperCase() + membersRole?.slice(1);
-		}
-		return membersRole;
-	};
 
 	const getMembers = async () => {
 		try {
-			const members = await Promise.all(
-				workspace?.users.map(async (member) => {
-					const user = await getListOfUsers(member?.user);
+			const members = (await Promise.all(
+				users.map(async (member) => {
+					const user = await getListOfUsers(member?.id);
 					return {
-						_id: user?._id,
+						id: user?.id,
 						name: user?.name,
-						role: member.role,
+						role: member,
 						username: user?.username,
 						email: user?.email,
 					};
 				}),
-			);
+			)) as unknown as User[];
 			setListOfUsers(members);
 		} catch (error) {
 			console.error("Error fetching member data:", error);
@@ -137,7 +130,7 @@ export default function Members() {
 				if (data?.success) {
 					setListOfUsers((prev) => {
 						return prev.map((user) => {
-							if (user._id === id) {
+							if (user.id === id) {
 								return { ...user, name: name, username: username };
 							}
 							return user;
@@ -165,15 +158,15 @@ export default function Members() {
 				setListOfUsers((users) => {
 					return users.map((user) => {
 						const updatedUserRole = data.updatedUserWorkspace.find(
-							(u: { user: string }) => u.user === user._id,
+							(u: { user: string }) => u.user === user.id,
 						);
-						return user._id === userId
+						return user.id === userId
 							? { ...user, role: updatedUserRole.role }
 							: user;
 					});
 				});
 				await dispatch(
-					getWorkspace({ url: workspace?.url, id: workspace?._id }),
+					getWorkspace({ url: workspace?.url, id: workspace?.id }),
 				);
 				handleCommandOptions(userId);
 				toast({ title: "Users role updated successfully" });
@@ -196,21 +189,21 @@ export default function Members() {
 	};
 	const createWorkspaceLink = async () => {
 		try {
-			await dispatch(createWorkspaceLinkToken(workspace._id));
-			dispatch(getWorkspace({ url: workspace?.url, id: workspace?._id }));
+			await dispatch(createWorkspaceLinkToken(workspace.id));
+			dispatch(getWorkspace({ url: workspace?.url, id: workspace?.id }));
 		} catch (error) {
 			console.error("Error in createworkspacelink: ", error);
 		}
 	};
 	const deleteUserFromWorkspace = async (memberId: string) => {
 		try {
-			const data = await deletingUserFromWorkspace(memberId, workspace?._id);
+			const data = await deletingUserFromWorkspace(memberId, workspace?.id);
 			if (data?.success) {
 				setListOfUsers((users) => {
-					return users.filter((user) => user._id !== memberId);
+					return users.filter((user) => user.id !== memberId);
 				});
 				await dispatch(
-					getWorkspace({ url: workspace?.url, id: workspace?._id }),
+					getWorkspace({ url: workspace?.url, id: workspace?.id }),
 				);
 				toast({ title: data.success });
 			} else {
@@ -233,15 +226,15 @@ export default function Members() {
 			owner: [
 				{
 					text: "Make Owner",
-					action: () => updatingUsersRole(memberId, "owner", workspace?._id),
+					action: () => updatingUsersRole(memberId, "owner", workspace?.id),
 				},
 				{
 					text: "Make Admin",
-					action: () => updatingUsersRole(memberId, "admin", workspace?._id),
+					action: () => updatingUsersRole(memberId, "admin", workspace?.id),
 				},
 				{
 					text: "Make Member",
-					action: () => updatingUsersRole(memberId, "member", workspace?._id),
+					action: () => updatingUsersRole(memberId, "member", workspace?.id),
 				},
 				{
 					text: "Remove User",
@@ -298,37 +291,37 @@ export default function Members() {
 		};
 	};
 
-	const renderUserOptions = (
-		memberId: string,
-		name?: string,
-		username?: string,
-	) => {
-		const currentUserRole = getMembersRole(currentUser?._id)?.toLowerCase();
-		const memberRole = getMembersRole(memberId)?.toLowerCase();
-		let options: { text: string; action: () => void }[] = [];
-		const roleActions = getRoleActions(memberId, name, username);
-		if (currentUserRole === "owner" && currentUser?._id !== memberId) {
-			options = roleActions.owner;
-		} else if (currentUserRole === "owner" && currentUser?._id === memberId) {
-			options = roleActions.self;
-		} else if (currentUserRole === "admin" && memberRole !== "owner") {
-			options = roleActions.admin;
-		} else if (currentUser?._id === memberId) {
-			options = roleActions.self;
-		}
-		return options.map((option, i) => (
-			<RolesButtonOptions
-				key={`${i}${option.text}`}
-				text={option.text}
-				action={option.action}
-			/>
-		));
-	};
+	// const renderUserOptions = (
+	// 	memberId: string,
+	// 	name?: string,
+	// 	username?: string,
+	// ) => {
+	// 	const currentUserRole = getMembersRole(currentUser?.id)?.toLowerCase();
+	// 	const memberRole = getMembersRole(memberId)?.toLowerCase();
+	// 	let options: { text: string; action: () => void }[] = [];
+	// 	const roleActions = getRoleActions(memberId, name, username);
+	// 	if (currentUserRole === "owner" && currentUser?.id !== memberId) {
+	// 		options = roleActions.owner;
+	// 	} else if (currentUserRole === "owner" && currentUser?.id === memberId) {
+	// 		options = roleActions.self;
+	// 	} else if (currentUserRole === "admin" && memberRole !== "owner") {
+	// 		options = roleActions.admin;
+	// 	} else if (currentUser?.id === memberId) {
+	// 		options = roleActions.self;
+	// 	}
+	// 	return options.map((option, i) => (
+	// 		<RolesButtonOptions
+	// 			key={`${i}${option.text}`}
+	// 			text={option.text}
+	// 			action={option.action}
+	// 		/>
+	// 	));
+	// };
 
 	const invitingUserToWorkspace = async () => {
 		try {
 			const data = await dispatch(
-				joinWorkspace({ id: workspace._id, email: email }),
+				joinWorkspace({ id: workspace.id, email: email }),
 			);
 			console.log(data);
 			return data;
@@ -347,9 +340,9 @@ export default function Members() {
 		}
 	};
 
-	const currentUserRole =
-		getMembersRole(currentUser._id) === "Admin" ||
-		getMembersRole(currentUser._id) === "Owner";
+	// const currentUserRole =
+	// 	getMembersRole(currentUser.id) === "Admin" ||
+	// 	getMembersRole(currentUser.id) === "Owner";
 
 	const handleCommandOptions = (memberId: string) => {
 		setCommandOptions((prevState: Record<string, boolean>) => {
@@ -379,7 +372,7 @@ export default function Members() {
 		setOpenUpdateMemberModal(false);
 	};
 	useEffect(() => {
-		setIsActive(workspace.universalTokenLink.isEnabled);
+		setIsActive(!!workspace.universalTokenLinkId);
 	}, []);
 	const handleToggleLink = async () => {
 		setIsActive((prev) => !prev);
@@ -390,10 +383,10 @@ export default function Members() {
 			await dispatch(
 				enableUniversalLink({
 					isEnabled: isActive ?? true,
-					workspaceId: workspace?._id,
+					workspaceId: workspace?.id,
 				}),
 			);
-			dispatch(getWorkspace({ url: workspace.url, id: workspace._id }));
+			dispatch(getWorkspace({ url: workspace.url, id: workspace.id }));
 		} catch (error) {
 			console.error(error);
 		}
@@ -402,7 +395,7 @@ export default function Members() {
 		getMembers();
 		enablingUniversalLink();
 	}, [isActive]);
-	const workspaceLink = `${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/accept/${workspace?.universalTokenLink.token}`;
+	const workspaceLink = `${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/accept/${workspace?.universalTokenLinkId}`;
 
 	const filteredMembers = listOfUsers.filter(
 		(user) =>
@@ -420,9 +413,7 @@ export default function Members() {
 					</p>
 					<span className={styles.line} />
 
-					<div
-						className={`${currentUserRole ? "flex" : "hidden "} flex-col gap-1`}
-					>
+					<div className={`${currentUser ? "flex" : "hidden "} flex-col gap-1`}>
 						<div className={styles.bodyWrapper}>
 							<p className={styles.textPrimary}>Invite Link</p>
 							<Switch checked={isActive} onCheckedChange={handleToggleLink} />
@@ -502,40 +493,38 @@ export default function Members() {
 							</button>
 						</div>
 					</div>
-					<p className={styles.membersLengthTitle}>
-						{workspace?.users.length} members
-					</p>
-					{filteredMembers?.map(
-						({ _id, name, email, username }: ListOfUsersProps) => (
+					<p className={styles.membersLengthTitle}>{users.length} members</p>
+					{/* {filteredMembers?.map(
+						({ id, name, email, username }: ListOfUsersProps) => (
 							<div key={name} className={styles.membersDescriptionContainer}>
 								<div className={styles.membersInfo}>
 									<p className={styles.membersNameOrRole}>{name}</p>
 									<p className={styles.membersEmail}>{email}</p>
 								</div>
 								<span className={styles.membersNameOrRole}>
-									{getMembersRole(_id)}
+									{getMembersRole(id)}
 								</span>
 								<div className={styles.membersButtonWrapper}>
 									<button
 										title="button"
 										type="button"
-										onClick={() => handleCommandOptions(_id)}
+										onClick={() => handleCommandOptions(id)}
 										className={`${
-											commandOptions[_id] ? "focus:bg-[#333]" : ""
+											commandOptions[id] ? "focus:bg-[#333]" : ""
 										}  block px-1 py-0.5 rounded`}
 									>
 										<Ellipsis className="cursor-pointer size-4 text-[#858699]" />
 									</button>
 									<div
 										className={`${
-											commandOptions[_id] ? "absolute " : "hidden"
+											commandOptions[id] ? "absolute " : "hidden"
 										} ${styles.buttonsOptionContainer}`}
 									>
-										{renderUserOptions(_id, name, username)}
+										{renderUserOptions(id, name, username)}
 									</div>
 								</div>
 								{/* Modal to update member's info info */}
-								{openUpdateMemberModal && (
+					{/* {openUpdateMemberModal && (
 									<UpdateMembersInfoModal
 										handleSubmit={handleUpdateSubmit}
 										setOpenUserUpdateModal={setOpenUpdateMemberModal}
@@ -544,17 +533,9 @@ export default function Members() {
 								)}
 							</div>
 						),
-					)}
+					)} */}
 				</div>
 			</div>
-			{/* Modal to invite users */}
-			{openInviteModal && (
-				<InviteMembersModal
-					setEmail={setEmail}
-					handleSubmit={handleSubmit}
-					setOpenModal={setInviteOpenModal}
-				/>
-			)}
 		</div>
 	);
 }

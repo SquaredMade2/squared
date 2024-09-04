@@ -1,11 +1,9 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
 	Access,
-	CurrentWorkspace,
 	GithubRepo,
 	TaskDataState,
 	Team,
-	Workspace,
 } from "./taskData.interfaces";
 import type { Label, Priority, Status, Task } from "@repo/db";
 import {
@@ -34,7 +32,7 @@ import {
 	workspaceExists,
 } from "@/store/taskData/thunks";
 import { useToast } from "@/components/ui/use-toast";
-import type { Commit } from "@repo/db";
+import type { Workspace, Commit } from "@repo/db";
 
 const initialState: TaskDataState = {
 	taskList: [],
@@ -59,16 +57,11 @@ const initialState: TaskDataState = {
 	currentWorkspace: {
 		companySize: 0,
 		name: "",
-		teams: [],
 		url: "",
-		users: [],
-		_id: "",
-		universalTokenLink: { token: "", isEnabled: true },
+		id: "",
+		universalTokenLinkId: "",
 		issuesCreated: 1,
-		githubRepoInfo: {
-			repoName: "",
-			owner: "",
-		},
+		githubRepoInfoId: "",
 	},
 	currentTeam: {
 		identifier: "",
@@ -129,9 +122,17 @@ const taskData = createSlice({
 			state.workspaces = action.payload;
 		},
 		incrementWorkspaceIssues(state) {
-			state.currentWorkspace.issuesCreated += 1;
+			if (state.currentWorkspace.issuesCreated !== null) {
+				if (state.currentWorkspace.issuesCreated !== null) {
+					state.currentWorkspace.issuesCreated += 1;
+				} else {
+					state.currentWorkspace.issuesCreated = 1;
+				}
+			} else {
+				state.currentWorkspace.issuesCreated = 1;
+			}
 		},
-		getWorkspaceSuccess(state, action: PayloadAction<CurrentWorkspace>) {
+		getWorkspaceSuccess(state, action: PayloadAction<Workspace>) {
 			state.error = false;
 			state.currentWorkspace = action.payload;
 		},
@@ -156,10 +157,7 @@ const taskData = createSlice({
 			state.currentCommits = [];
 		},
 		disconnectGithubRepo(state) {
-			state.currentWorkspace.githubRepoInfo = {
-				repoName: "",
-				owner: "",
-			};
+			state.currentWorkspace.githubRepoInfoId = "";
 		},
 	},
 	extraReducers: (builder) => {
@@ -245,7 +243,9 @@ const taskData = createSlice({
 			})
 			.addCase(incrementCreatedIssues.fulfilled, (state) => {
 				state.isLoading = false;
-				state.currentWorkspace.issuesCreated += 1;
+				if (state.currentWorkspace.issuesCreated) {
+					state.currentWorkspace.issuesCreated += 1;
+				}
 			})
 			.addCase(incrementCreatedIssues.rejected, (state, action) => {
 				state.isLoading = false;
@@ -279,7 +279,7 @@ const taskData = createSlice({
 				if (action.payload) {
 					const indexOfDeletedWorkspace = state.workspaces
 						.map((each) => {
-							return each._id;
+							return each.id;
 						})
 						.indexOf(action.payload._id);
 
@@ -412,7 +412,7 @@ const taskData = createSlice({
 				setRepo.fulfilled,
 				(state, action: PayloadAction<GithubRepo>) => {
 					state.isLoading = false;
-					state.currentWorkspace.githubRepoInfo = action.payload;
+					state.currentWorkspace.githubRepoInfoId = action.payload.repoName;
 				},
 			)
 			.addCase(setRepo.rejected, (state, action) => {

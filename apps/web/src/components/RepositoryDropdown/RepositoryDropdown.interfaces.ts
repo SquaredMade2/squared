@@ -4,5 +4,5 @@ import type { Dispatch, SetStateAction } from "react";
 export interface RepositoryDropdownProps {
 	githubUser: GithubUser;
 	selectedRepo: string;
-	setSelectedRepo: Dispatch<SetStateAction<string>>;
+	setSelectedRepo: Dispatch<SetStateAction<string | null>>;
 }

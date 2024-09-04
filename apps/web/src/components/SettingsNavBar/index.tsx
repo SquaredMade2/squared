@@ -21,6 +21,7 @@ const SettingsNavBar = ({
 	const workspace = useSelector(
 		(state: RootState) => state.taskData.currentWorkspace,
 	);
+	const teams = [] as Team[];
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
@@ -86,7 +87,7 @@ const SettingsNavBar = ({
 					</div>
 					{workspace && (
 						<ul>
-							{workspace?.teams?.map((team) => (
+							{teams?.map((team) => (
 								<li
 									key={team._id}
 									onClick={() => handleTeamClick(team)}

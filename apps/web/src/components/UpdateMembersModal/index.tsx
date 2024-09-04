@@ -6,7 +6,7 @@ import type {
 	MemberDetails,
 	UpdateMemberProps,
 } from "./update-member.interface";
-import type { Workspace } from "@/store/taskData/taskData.interfaces";
+import type { Workspace } from "@repo/db";
 
 const UpdateMembersInfoModal = ({
 	handleSubmit,
@@ -17,7 +17,7 @@ const UpdateMembersInfoModal = ({
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const allWorkspaces = useAppSelector((state) => state.taskData.workspaces);
 	const index = allWorkspaces.findIndex(
-		(item: Workspace) => item._id === workspace._id,
+		(item: Workspace) => item.id === workspace.id,
 	);
 
 	return (

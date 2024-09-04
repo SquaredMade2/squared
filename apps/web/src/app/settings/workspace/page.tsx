@@ -13,6 +13,7 @@ import BlueButton from "@/components/BlueButton";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { X } from "lucide-react";
+import type { User } from "@repo/db";
 
 export default function WorkspaceSettings() {
 	const { toast } = useToast();
@@ -26,19 +27,19 @@ export default function WorkspaceSettings() {
 		(state: RootState) => state.taskData.workspaces,
 	);
 	const access = useSelector((state: RootState) => state.taskData.access);
-	const { user } = useSelector((state: RootState) => state.userSettings);
+	// const { user } = useSelector((state: RootState) => state.userSettings);
+	const user = {} as User;
 	const [workspaceName, setWorkspaceName] = useState(workspace.name);
 	const [workspaceURL, setWorkspaceURL] = useState(workspace.url);
 	const [deletingWorkspace, setDeletingWorkspace] = useState(false);
 	const [fillColor, setFillColor] = useState("text-[#9c9eac]");
 	const urlRegex = /^[a-z0-9-]*$/;
 	const dialogRef = useRef<HTMLDialogElement | null>(null);
-	const index = workspaceList.findIndex((item) => item._id === workspace._id);
-	const userHasAccess = access && access.id === user?._id;
+	const index = workspaceList.findIndex((item) => item.id === workspace.id);
+	const userHasAccess = access && access.id === user?.id;
+	const users = [] as User[];
 
-	const currentUserRole = workspace.users.find(
-		(u) => u.user === user._id,
-	)?.role;
+	const currentUserRole = "owner";
 
 	const deleteOrLeaveBtnLabel =
 		currentUserRole === "owner" ? "Delete this workspace" : "Leave";
@@ -65,7 +66,7 @@ export default function WorkspaceSettings() {
 
 	const handleDelete = async () => {
 		try {
-			const actionResult = await dispatch(deleteWorkspace(workspace._id));
+			const actionResult = await dispatch(deleteWorkspace(workspace.id));
 			unwrapResult(actionResult);
 
 			setDeletingWorkspace(true);
@@ -85,7 +86,7 @@ export default function WorkspaceSettings() {
 	): Promise<void> => {
 		e.preventDefault();
 		const urlCheck: boolean = checkURL(workspaceURL.trim());
-		const name: string = workspaceName.trim();
+		const name = workspaceName?.trim();
 		const url: string = workspaceURL.trim();
 		if (!urlCheck) {
 			toast({
@@ -99,7 +100,7 @@ export default function WorkspaceSettings() {
 			});
 		} else {
 			await updateWorkspace(name, url);
-			await dispatch(getWorkspace({ url: workspace.url, id: workspace._id }));
+			await dispatch(getWorkspace({ url: workspace.url, id: workspace.id }));
 			router.push("/settings/workspace");
 			toast({ title: "Workspace Updated" });
 		}
@@ -114,7 +115,7 @@ export default function WorkspaceSettings() {
 				params: {
 					name: name,
 					url: url,
-					id: workspace._id,
+					id: workspace.id,
 				},
 			});
 		} catch (error) {
@@ -201,7 +202,7 @@ export default function WorkspaceSettings() {
 								type="text"
 								className="flex border border-border py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded w-3/4 xs:w-full pl-1.5 text-foreground text-sm bg-textField"
 								onChange={(e) => setWorkspaceName(e.target.value)}
-								value={workspaceName}
+								value={workspaceName ?? ""}
 							/>
 						</div>
 						<div>

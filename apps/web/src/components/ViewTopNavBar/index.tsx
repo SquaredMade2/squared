@@ -31,7 +31,7 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
 	const index: number = allWorkspaces.findIndex(
-		(item) => item._id === currentWorkspace._id,
+		(item) => item.id === currentWorkspace.id,
 	);
 
 	const handleNavBar: handleNavbarType = () => {

@@ -18,6 +18,7 @@ import IconLeftMenu from "../IconLeftMenu";
 const Navbar = () => {
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const currentYear: number = new Date().getFullYear();
+	const teams = [] as Team[];
 
 	return (
 		<>
@@ -36,7 +37,7 @@ const Navbar = () => {
 							</div>
 							<div>
 								<Accordion type="single" collapsible>
-									{workspace?.teams?.map((team: Team) => {
+									{teams?.map((team: Team) => {
 										return (
 											<AccordionItem key={team._id} value={team._id}>
 												<AccordionTrigger className="text-sm h-12">

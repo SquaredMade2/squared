@@ -1,4 +1,12 @@
-import type { Label, Priority, Status, Task, User, Commit } from "@repo/db";
+import type {
+	Label,
+	Priority,
+	Status,
+	Task,
+	User,
+	Workspace,
+	Commit,
+} from "@repo/db";
 
 export interface TaskDataState {
 	access: Access;
@@ -10,7 +18,7 @@ export interface TaskDataState {
 	taskPage: Task;
 	taskList: Task[];
 	workspaces: Workspace[];
-	currentWorkspace: CurrentWorkspace;
+	currentWorkspace: Workspace;
 	currentTeam: Team;
 	allUsersInWorkspace: UsersInWorkspace[];
 	prevWorkspaceUrl: string;
@@ -31,30 +39,6 @@ export interface UsersInWorkspace {
 	user: string;
 }
 
-interface Author {
-	name: string;
-	email: string;
-	username: string;
-}
-
-interface Commiter {
-	name: string;
-	email: string;
-	username: string;
-}
-
-export interface CurrentWorkspace {
-	companySize: number;
-	name: string;
-	teams: Team[];
-	url: string;
-	users: { name: string; user: string; role: string }[];
-	_id: string;
-	universalTokenLink: { token: string; isEnabled: boolean };
-	issuesCreated: number;
-	githubRepoInfo: GithubRepo;
-}
-
 export interface Team {
 	identifier: string;
 	name: string;
@@ -64,19 +48,14 @@ export interface Team {
 	users: User[];
 }
 
-export interface Workspace {
-	companySize: number;
-	name: string;
-	teams: string[];
-	url: string;
-	users: string[];
-	_id: string;
-	issuesCreated: number;
-}
-
 export interface Access {
 	status: boolean;
 	id: string;
+}
+
+export interface Assignee {
+	name: string | null;
+	id: string | null;
 }
 
 export interface AccessId {

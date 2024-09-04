@@ -11,6 +11,7 @@ import type { FormSubmitEvent } from "@/types";
 import BlueButton from "@/components/BlueButton";
 import DeleteButton from "@/components/DeleteButton";
 import { X } from "lucide-react";
+import type { Team } from "@repo/db";
 
 export default function TeamsSetting() {
 	const { toast } = useToast();
@@ -35,6 +36,8 @@ export default function TeamsSetting() {
 	const prevIdentifier = currentTeam.identifier;
 	const valueChanged =
 		(prevName !== teamName || prevIdentifier !== teamIdentifier) && !loading;
+
+	const teams = [] as Team[];
 
 	const userHasAccess =
 		typeof access === "object" &&
@@ -63,7 +66,7 @@ export default function TeamsSetting() {
 	};
 
 	const handleDelete = (): void => {
-		if (workspace.teams.length === 1) {
+		if (teams.length === 1) {
 			toast({
 				title: "This is your only team; it cannot be deleted.",
 				variant: "destructive",
@@ -96,10 +99,10 @@ export default function TeamsSetting() {
 					name: teamName,
 					identifier: teamIdentifier,
 					id: currentTeam._id,
-					workspaceId: workspace._id,
+					workspaceId: workspace.id,
 				});
 				if (update) {
-					dispatch(getWorkspace({ url: workspace?.url, id: workspace._id }));
+					dispatch(getWorkspace({ url: workspace?.url, id: workspace.id }));
 					await dispatch(getTeam(teamIdentifier));
 					const url = `/${workspace.url}/settings/teams/${teamIdentifier}`;
 					router.push(url);
@@ -118,7 +121,7 @@ export default function TeamsSetting() {
 					name: teamData.name.trim(),
 					identifier: teamData.identifier,
 					id: teamData.id,
-					workspaceId: workspace._id,
+					workspaceId: workspace.id,
 				},
 			});
 			const response = update.data?.message;
