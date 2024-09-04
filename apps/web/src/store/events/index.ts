@@ -27,11 +27,11 @@ const initialState: Events = {
 	isLoading: false,
 	isError: false,
 	taskEventLog: {
+		id: "",
+		authorName: "",
 		taskId: "",
 		authorId: "",
 		createdAt: new Date(),
-		id: "",
-		authorName: "",
 	},
 };
 

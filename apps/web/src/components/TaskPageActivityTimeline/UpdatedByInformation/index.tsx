@@ -1,6 +1,5 @@
 import React from "react";
 import ProfileImage from "@/components/ProfileImage";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import { EventType } from "@/interfaces/event.interfaces";

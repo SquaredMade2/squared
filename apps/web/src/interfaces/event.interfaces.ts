@@ -1,13 +1,4 @@
-import type { User, Priority } from "@repo/db";
-
-export enum Status {
-	backlog = "backlog",
-	todo = "todo",
-	inProgress = "inProgress",
-	done = "done",
-	canceled = "canceled",
-	duplicate = "duplicate",
-}
+import type { User, Priority, Status } from "@repo/db";
 
 export enum Labels {
 	bug = "bug",
