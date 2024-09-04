@@ -89,6 +89,35 @@ const UpdatedByInformation = () => {
 			</p>
 		);
 	};
+
+	const displayGitUpdate = (log: TaskEvent) => {
+		const gitUpdateText = log.gitUpdated || "";
+		const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+		// Split the gitUpdateText into an array of strings and URLs
+		const parts = gitUpdateText.split(urlPattern);
+
+		return (
+			<p>
+				{parts.map((part) =>
+					urlPattern.test(part) ? (
+						<a
+							key={`-${part}-`}
+							href={part}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-blue-500 underline hover:text-blue-700 font-semibold"
+						>
+							{part}
+						</a>
+					) : (
+						part
+					),
+				)}
+			</p>
+		);
+	};
+
 	const getAssigneeActions = (
 		originalAssignee: string,
 		updatedAssignee: string,
@@ -147,6 +176,8 @@ const UpdatedByInformation = () => {
 
 			case EventType.DescriptionUpdated:
 				return displayDescriptionUpdate(log);
+			case EventType.GitUpdated:
+				return displayGitUpdate(log);
 			case EventType.StatusUpdated:
 				return (
 					<p>

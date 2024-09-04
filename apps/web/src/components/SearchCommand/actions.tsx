@@ -295,11 +295,11 @@ export class commandSchema {
 					},
 					shortcut: [],
 				},
-				githubSettings: {
+				integrationSettings: {
 					icon: <Settings />,
-					text: "Github Settings",
+					text: "Integration Settings",
 					function: () => {
-						this.router.push("/settings/github-settings");
+						this.router.push("/settings/integrations");
 					},
 					shortcut: [],
 				},
