@@ -67,7 +67,7 @@ const TaskColumnTitle = ({
 	};
 
 	return (
-		<div className={isListView ? "" : "pr-2 min-w-72"}>
+		<div className={isListView ? "" : "pr-2 min-w-64"}>
 			<div
 				className={cn(
 					"flex w-full bg-muted dark:bg-accent items-center justify-between font-medium transition-all",
@@ -96,8 +96,8 @@ const TaskColumnTitle = ({
 							}
 						>
 							<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-							<span>{formatTitle(title)}</span>
-							<span className="ml-2 text-muted-foreground">
+							<span className="text-sm">{formatTitle(title)}</span>
+							<span className="ml-1 text-muted-foreground">
 								{numberOfTasks}
 							</span>
 						</div>
