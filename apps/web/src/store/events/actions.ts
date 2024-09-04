@@ -4,9 +4,9 @@ import type {
 	Comment,
 	NewComment,
 } from "@/components/Comments/Comments.interfaces";
-import type { TaskEvent, TaskEventLog } from "@/interfaces/event.interfaces";
+import type { TaskEvent } from "@/interfaces/event.interfaces";
 import { type Action, ActionType } from "@/store/events/events.actionTypes";
-import type { User } from "@repo/db";
+import type { TaskEventLog, User } from "@repo/db";
 
 // Leave in for clarity
 // note the difference with UPDATE_COMMENTS and UPDATE_COMMENT

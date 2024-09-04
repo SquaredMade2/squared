@@ -18,14 +18,6 @@ export enum EventType {
 	PriorityUpdated = "priorityUpdated",
 }
 
-export type TaskEventLog = {
-	taskId: string;
-	author: User;
-	createdAt: Date | string | null;
-	eventsLog: TaskEvent[];
-	_id: string;
-};
-
 export interface TaskEvent {
 	type: "" | EventType;
 	author: User;
