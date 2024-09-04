@@ -1,4 +1,12 @@
-import type { Label, Priority, Status, Task, User, Workspace } from "@repo/db";
+import type {
+	Label,
+	Priority,
+	Status,
+	Task,
+	User,
+	Workspace,
+	Commit,
+} from "@repo/db";
 
 export interface TaskDataState {
 	access: Access;
@@ -16,8 +24,8 @@ export interface TaskDataState {
 	prevWorkspaceUrl: string;
 	labels: Label[];
 	isLoading: boolean;
+	currentCommits: Commit[];
 	loadingState: string;
-	currentCommits: Commits[];
 }
 
 export interface GithubRepo {
@@ -29,34 +37,6 @@ export interface UsersInWorkspace {
 	username: string;
 	role: string;
 	user: string;
-}
-
-interface Author {
-	name: string;
-	email: string;
-	username: string;
-}
-
-interface Commiter {
-	name: string;
-	email: string;
-	username: string;
-}
-
-export interface Commits {
-	id: string;
-	tree_id: string;
-	distinct: boolean;
-	message: string;
-	timestamp: string;
-	url: string;
-	author: Author;
-	committer: Commiter;
-	added: [];
-	removed: [];
-	modified: string[];
-	repoName: string;
-	owner: string;
 }
 
 export interface Team {

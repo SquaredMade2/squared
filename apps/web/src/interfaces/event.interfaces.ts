@@ -1,13 +1,4 @@
-import type { User, Priority } from "@repo/db";
-
-export enum Status {
-	backlog = "backlog",
-	todo = "todo",
-	inProgress = "inProgress",
-	done = "done",
-	canceled = "canceled",
-	duplicate = "duplicate",
-}
+import type { User, Priority, Status } from "@repo/db";
 
 export enum Labels {
 	bug = "bug",
@@ -26,14 +17,6 @@ export enum EventType {
 	StatusUpdated = "statusUpdated",
 	PriorityUpdated = "priorityUpdated",
 }
-
-export type TaskEventLog = {
-	taskId: string;
-	author: User;
-	createdAt: Date | string | null;
-	eventsLog: TaskEvent[];
-	_id: string;
-};
 
 export interface TaskEvent {
 	type: "" | EventType;

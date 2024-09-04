@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
 	Access,
-	Commits,
 	GithubRepo,
 	TaskDataState,
 	Team,
@@ -33,7 +32,7 @@ import {
 	workspaceExists,
 } from "@/store/taskData/thunks";
 import { useToast } from "@/components/ui/use-toast";
-import type { Workspace } from "@repo/db";
+import type { Workspace, Commit } from "@repo/db";
 
 const initialState: TaskDataState = {
 	taskList: [],
@@ -425,7 +424,7 @@ const taskData = createSlice({
 			})
 			.addCase(
 				getCommitsByRepo.fulfilled,
-				(state, action: PayloadAction<Commits[]>) => {
+				(state, action: PayloadAction<Commit[]>) => {
 					if (action.payload) {
 						state.isLoading = false;
 						state.currentCommits = action.payload;
