@@ -38,6 +38,7 @@ export default function Home() {
 	const { currentTeam, teams, getAllTeams, setCurrentTeam } =
 		useTeamStore().getState();
 	const { getAllUsers } = useUserStore().getState();
+	const { currentFilter, filterTasks } = useViewsStore().getState();
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
@@ -85,11 +86,6 @@ export default function Home() {
 	const activeSelected = params.all === "active";
 	const backlogSelected = params.all === "backlog";
 
-	const handleDeleteTask = async (taskId: string) => {
-		await deleteTask(taskId);
-		currentTeam && (await getAllTasks(currentTeam.id));
-	};
-
 	const handleDragEnd: OnDragEndResponder = async (result) => {
 		const { destination, source, draggableId } = result;
 
@@ -124,8 +120,6 @@ export default function Home() {
 	useEffect(() => {
 		// Apply filters based on the current filter settings in your Zustand store
 		const applyFilters = () => {
-			const { currentFilter, filterTasks } = useViewsStore().getState();
-
 			if (currentFilter) {
 				const filtered = filterTasks(tasks, currentFilter);
 				setFilteredTasks(filtered);

@@ -42,9 +42,11 @@ export const createTeamStore = (
 					set({ teams: teams.filter((t) => t.id !== teamId) });
 				},
 				getAllTeams: async (workspaceId) => {
-					const teams: Team[] = await axios.get(apiString(workspaceId));
-					set({ teams: teams });
-					return teams;
+					const response: { data: Team[] } = await axios.get(
+						`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/team`,
+					);
+					set({ teams: response.data });
+					return response.data;
 				},
 			}),
 			{

@@ -7,7 +7,7 @@ import { useUserStore } from "../provider";
 export * from "./interfaces";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/user/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${path}`;
 
 export const createUserStore = (initState: UserState = { users: [] }) => {
 	return createStore<UserStore>()(
@@ -46,7 +46,7 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 				},
 				getAllUsers: async (workspaceId) => {
 					const response = await axios.get(
-						`${process.env.SERVER_URL}/api/workspace/${workspaceId}/user`,
+						`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
 					);
 					set({ users: response.data });
 					return response.data;
