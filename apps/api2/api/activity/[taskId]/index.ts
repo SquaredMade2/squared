@@ -11,9 +11,15 @@ type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
 
+export type ActivityReturn = {
+	activity : Object | null,
+	message: string,
+	variant: "default" | "destructive"
+}
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ taskId }) => {
+		GET: async (res, { taskId }): Promise<ActivityReturn> => {
 			try {
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
@@ -37,13 +43,17 @@ export function createRoute(): Route<Params> {
 				}
 
 				// Return the found activities
-				return taskEventLogWithActivities.activities;
+				return {
+					activity: taskEventLogWithActivities.activities,
+					message:"",
+					variant:"default"
+				}
 			} catch (error) {
 				console.error("Error finding task:", error);
 				throw new Error("Internal server error");
 			}
 		},
-		POST: async ({ taskId }, body) => {
+		POST: async (res, { taskId }, body): Promise<ActivityReturn> => {
 			try {
 				const task = await prisma.task.findUnique({
 					where: { id: taskId },
@@ -87,7 +97,11 @@ export function createRoute(): Route<Params> {
 						where: { id: newActivity.id },
 						include: { commit: true },
 					});
-					return newActivityWithCommit;
+					return {
+						activity: newActivityWithCommit,
+						message:"",
+						variant:"default"
+					}
 				}
 				if (body.type === "TASK_EVENT") {
 					// Assuming that taskEvent should be eagerly loaded
@@ -95,7 +109,11 @@ export function createRoute(): Route<Params> {
 						where: { id: newActivity.id },
 						include: { taskEvent: true },
 					});
-					return newActivityWithTaskEvent;
+					return {
+						activity:newActivityWithTaskEvent,
+						message:"",
+						variant:"default"
+					};
 				}
 
 				throw new Error("Invalid activity type");
