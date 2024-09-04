@@ -3,13 +3,13 @@ import type { ParsedQs } from "qs";
 
 export type Route<P = Record<string, string>> = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	GET?: (params: P, query: ParsedQs) => Promise<any>;
+	GET?: (res: Response, params: P, query: ParsedQs) => Promise<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	POST?: (params: P, body: any, res: Response, query: ParsedQs) => Promise<any>;
+	POST?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	PUT?: (params: P, body: any, query: ParsedQs) => Promise<any>;
+	PUT?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<any>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	DELETE?: (params: P, query: ParsedQs) => Promise<any>;
+	DELETE?: (res: Response, params: P, query: ParsedQs) => Promise<any>;
 };
 
 function handleNotSupported(_: unknown, res: Response) {
