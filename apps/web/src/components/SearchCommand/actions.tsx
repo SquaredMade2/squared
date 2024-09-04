@@ -309,7 +309,7 @@ export class commandSchema {
 					icon: <LogOut />,
 					text: "Log out",
 					function: async () => {
-						const { logout } = useAuthStore();
+						const { logout } = useAuthStore().getState();
 						try {
 							await logout();
 							this.showToast("Logged out successfully", "default");
