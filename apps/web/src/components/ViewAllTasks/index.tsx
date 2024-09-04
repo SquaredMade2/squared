@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
 import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
+import { useViewsStore } from "@/storeZ/provider";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -15,6 +16,17 @@ const ViewAllTasks = ({
 }: ViewAllTasksProps) => {
 	const [showRenameModal, setShowRenameModal] = useState(false);
 	const [taskData, setTaskData] = useState<Task | null>(null);
+	const { view } = useViewsStore().getState();
+	const [currentView, setCurrentView] = useState(view);
+	const subscribe = useViewsStore().subscribe;
+
+	useEffect(() => {
+		const unsubscribe = subscribe((state) => {
+			setCurrentView(state.view);
+		});
+
+		return () => unsubscribe();
+	}, [subscribe]);
 
 	const titleArr: { value: Status; id: number }[] = [
 		{ value: Status.backlog, id: 1 },
@@ -49,6 +61,7 @@ const ViewAllTasks = ({
 				<div key={status}>
 					<StatusColumn
 						key={status}
+						currentView={currentView}
 						columnType={status}
 						title={status}
 						tasks={tasksForStatus}
@@ -68,7 +81,9 @@ const ViewAllTasks = ({
 				taskData={taskData ? taskData : ({} as Task)}
 			/>
 			<DragDropContext onDragEnd={handleDragEnd}>
-				<div className="flex">{filteredColumns()}</div>
+				<div className={view === "list" ? "block" : "flex"}>
+					{filteredColumns()}
+				</div>
 			</DragDropContext>
 		</>
 	);

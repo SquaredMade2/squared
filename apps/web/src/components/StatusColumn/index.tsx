@@ -13,9 +13,9 @@ const StatusColumn = ({
 	setShowRenameModal,
 	setTaskData,
 	tasks,
+	currentView: view,
 }: StatusColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
-	const { view } = useViewsStore().getState();
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
 
@@ -24,7 +24,7 @@ const StatusColumn = ({
 	};
 
 	return (
-		<div className={isListView ? "mb-2" : "pb-2"}>
+		<div className={isListView ? "mb-2 w-full" : "pb-2 flex-grow"}>
 			<TaskColumnTitle
 				isListView={isListView}
 				showTasks={showTasks}

@@ -7,4 +7,5 @@ export interface StatusColumnProps {
 	setShowRenameModal?: Dispatch<SetStateAction<boolean>>;
 	setTaskData?: Dispatch<SetStateAction<Task | null>>;
 	tasks: Task[];
+	currentView: "list" | "grid";
 }
