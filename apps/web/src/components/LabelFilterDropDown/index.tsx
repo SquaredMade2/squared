@@ -21,35 +21,35 @@ const groupLabel = [
 		id: 0,
 		name: "Bug",
 		border: false,
-		svg: <div className="h-[20px] w-[20px] rounded-full bg-[#DD2E44]" />,
+		svg: <div className="size-3 rounded-full bg-[#DD2E44]" />,
 		group: "labels",
 	},
 	{
 		id: 1,
 		name: "Feature",
 		border: false,
-		svg: <div className="h-[20px] w-[20px] rounded-full bg-[#AA8ED6]" />,
+		svg: <div className="size-3 rounded-full bg-[#AA8ED6]" />,
 		group: "labels",
 	},
 	{
 		id: 2,
 		name: "Improvement",
 		border: false,
-		svg: <div className="h-[20px] w-[20px] rounded-full bg-[#55ACEE]" />,
+		svg: <div className="size-3 rounded-full bg-[#55ACEE]" />,
 		group: "labels",
 	},
 	{
 		id: 3,
 		name: "Red",
 		border: false,
-		svg: <div className="h-[20px] w-[20px] rounded-full bg-[#F4900C]" />,
+		svg: <div className="size-3 rounded-full bg-[#F4900C]" />,
 		group: "labels",
 	},
 	{
 		id: 4,
 		name: "Test",
 		border: false,
-		svg: <div className="h-[20px] w-[20px] rounded-full bg-[#808080]" />,
+		svg: <div className="size-3 rounded-full bg-[#808080]" />,
 		group: "labels",
 	},
 ];
@@ -87,19 +87,10 @@ const LabelFilterDropDown = ({
 			open={showLabelFilterDropDown}
 			onOpenChange={setShowLabelFilterDropDown}
 		>
-			<PopoverTrigger asChild>
-				<button
-					className="flex items-center space-x-2 py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-secondary focus-visible:outline-none"
-					type="button"
-				>
-					<span>Filter by Label</span>
-					<ChevronUpDownIcon
-						className="h-5 w-5 text-gray-400"
-						aria-hidden="true"
-					/>
-				</button>
+			<PopoverTrigger>
+				<div className="hidden" aria-hidden="true" />
 			</PopoverTrigger>
-			<PopoverContent className="w-72 p-0">
+			<PopoverContent className="w-72 p-0 mt-4 mr-32" sideOffset={10}>
 				<Command>
 					<CommandInput placeholder="Search labels..." />
 					<CommandList>

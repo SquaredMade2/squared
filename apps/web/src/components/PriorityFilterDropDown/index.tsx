@@ -86,19 +86,10 @@ const PriorityFilterDropDown = ({
 			open={showPriorityFilterDropDown}
 			onOpenChange={setShowPriorityFilterDropDown}
 		>
-			<DropdownMenuTrigger asChild>
-				<button
-					className="flex items-center space-x-2 py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-secondary focus-visible:outline-none"
-					type="button"
-				>
-					<span>Filter by Priority</span>
-					<ChevronUpDownIcon
-						className="h-5 w-5 text-gray-400"
-						aria-hidden="true"
-					/>
-				</button>
+			<DropdownMenuTrigger>
+				<div className="hidden" aria-hidden="true" />
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-72 p-0">
+			<DropdownMenuContent className="w-72 p-0 mt-6 mr-32">
 				{filteredGroup.map((item) => (
 					<DropdownMenuItem
 						key={item.id}

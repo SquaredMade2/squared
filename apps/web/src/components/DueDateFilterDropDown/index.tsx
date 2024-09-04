@@ -22,9 +22,9 @@ const DueDateFilterDropDown = ({
 }: DueDateFilterDropDownProps) => {
 	const { addFilter } = useViewsStore().getState();
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-	const [selectedToggle, setSelectedToggle] = useState<
-		"before" | "after" | null
-	>(null);
+	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(
+		"before",
+	);
 
 	const handleSelectDate = (date: Date) => {
 		if (selectedToggle && date) {
@@ -39,43 +39,29 @@ const DueDateFilterDropDown = ({
 	};
 
 	const handleToggleClick = (type: "before" | "after") => {
-		setSelectedToggle(type === selectedToggle ? null : type);
+		setSelectedToggle(type === "before" ? "before" : "after");
 	};
-
-	const toggleButtonClass = (type: "before" | "after") =>
-		`flex-1 p-2 rounded-md text-center cursor-pointer ${
-			selectedToggle === type
-				? "bg-[#123abc] text-foreground"
-				: "bg-gray-400 text-foreground"
-		}`;
 
 	return (
 		<Popover
 			open={showDueDateFilterDropDown}
 			onOpenChange={setShowDueDateFilterDropDown}
 		>
-			<PopoverTrigger asChild>
-				<Button variant="outline" className="w-full justify-start">
-					<CalendarIcon className="mr-2 h-4 w-4" />
-					{selectedDate ? (
-						format(selectedDate, "PPP")
-					) : (
-						<span>Pick a due date</span>
-					)}
-				</Button>
+			<PopoverTrigger>
+				<div className="hidden" aria-hidden="true" />
 			</PopoverTrigger>
-			<PopoverContent className="w-auto p-4">
-				<div className="flex gap-2 mb-4">
+			<PopoverContent className="w-auto p-4 mr-32 mt-5">
+				<div className="flex gap-2 mb-4 w-full justify-center">
 					<Button
-						variant="secondary"
-						className={toggleButtonClass("before")}
+						variant={selectedToggle === "before" ? "secondary" : "ghost"}
+						className={selectedToggle === "before" ? "hover:bg-accent" : ""}
 						onClick={() => handleToggleClick("before")}
 					>
 						Before Date
 					</Button>
 					<Button
-						variant="secondary"
-						className={toggleButtonClass("after")}
+						variant={selectedToggle === "after" ? "secondary" : "ghost"}
+						className={selectedToggle === "after" ? "hover:bg-accent" : ""}
 						onClick={() => handleToggleClick("after")}
 					>
 						After Date

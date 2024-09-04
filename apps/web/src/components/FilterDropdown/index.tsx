@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { CircleDashed, Calendar, Clock, Tag } from "lucide-react";
+import { CircleDashed, Calendar, Clock, Tag, Filter } from "lucide-react";
 import { high } from "@/components/Svg";
 
 import PriorityFilterDropDown from "@/components/PriorityFilterDropDown";
@@ -23,8 +23,7 @@ import {
 	CommandEmpty,
 } from "@/components/ui/command";
 import type { FilterOption } from "./FilterDropdown.interfaces";
-import type { Task } from "@repo/db";
-import type { TaskFilter } from "@/storeZ/views";
+import { Button } from "../ui/button";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
@@ -82,6 +81,7 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
+	const { currentFilter, removeFilter } = useViewsStore().getState();
 
 	const handleSelect = (option: FilterOption) => {
 		setFilterOption(option);
@@ -112,16 +112,29 @@ const FilterDropDown: React.FunctionComponent = () => {
 		<>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
-					<button
-						className="flex items-center space-x-2 py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-secondary focus-visible:outline-none"
-						type="button"
+					<Button
+						onClick={
+							currentFilter?.conditions.length &&
+							currentFilter?.conditions?.length > 0
+								? () => {
+										removeFilter();
+									}
+								: () => {
+										setOpen(true);
+									}
+						}
+						variant={"ghost"}
 					>
-						<span>Filter</span>
-						<ChevronUpDownIcon
-							className="h-5 w-5 text-gray-400"
-							aria-hidden="true"
-						/>
-					</button>
+						<div className="flex gap-2 items-center">
+							<Filter className="size-5" />
+							<p>
+								{currentFilter?.conditions.length &&
+								currentFilter?.conditions?.length > 0
+									? "Clear Filters x"
+									: "Filter"}
+							</p>
+						</div>
+					</Button>
 				</PopoverTrigger>
 				<PopoverContent className="w-72 p-0">
 					<Command>

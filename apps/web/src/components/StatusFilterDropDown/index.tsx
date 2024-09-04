@@ -94,18 +94,6 @@ const StatusFilterDropDown = ({
 			open={showStatusFilterDropDown}
 			onOpenChange={setShowStatusFilterDropDown}
 		>
-			<DropdownMenuTrigger asChild>
-				<button
-					className="flex items-center space-x-2 py-2 pl-3 pr-10 text-sm leading-5 text-foreground bg-secondary focus-visible:outline-none"
-					type="button"
-				>
-					<span>Filter by Status</span>
-					<ChevronUpDownIcon
-						className="h-5 w-5 text-gray-400"
-						aria-hidden="true"
-					/>
-				</button>
-			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-72 p-0">
 				{filteredGroup.map((item) => (
 					<DropdownMenuItem
