@@ -27,7 +27,11 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					throw new Error("Task not found");
+					return {
+						activity: null,
+						message:"Task not found",
+						variant:"destructive"
+					};
 				}
 
 				// Find all the activities associated with the task
@@ -39,7 +43,11 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!taskEventLogWithActivities) {
-					throw new Error("Task event log not found");
+					return {
+						activity: null,
+						message:"Task event log not found",
+						variant:"destructive"
+					};
 				}
 
 				// Return the found activities
@@ -50,7 +58,11 @@ export function createRoute(): Route<Params> {
 				}
 			} catch (error) {
 				console.error("Error finding task:", error);
-				throw new Error("Internal server error");
+				return {
+					activity: null,
+					message:"Internal server error",
+					variant:"destructive"
+				};
 			}
 		},
 		POST: async (res, { taskId }, body): Promise<ActivityReturn> => {
