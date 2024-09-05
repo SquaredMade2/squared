@@ -4,18 +4,18 @@ export * from "./interfaces";
 
 export const createModalStore = (
 	initState: ModalState = {
-		showTaskForm: false,
+		showNewIssue: false,
 		showCommand: false,
-		taskFormData: {},
+		newIssueData: {},
 	},
 ) => {
 	return createStore<ModalStore>()((set) => ({
 		...initState,
-		setShowTaskForm: (input) => {
-			set({ showTaskForm: input });
+		setShowNewIssue: (input) => {
+			set({ showNewIssue: input });
 		},
-		setTaskFormData: (task) => {
-			set({ taskFormData: task });
+		setNewIssueData: (task) => {
+			set({ newIssueData: task });
 		},
 		setShowCommand: (input) => {
 			set({ showCommand: input });

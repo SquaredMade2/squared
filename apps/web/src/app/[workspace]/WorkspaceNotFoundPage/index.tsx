@@ -11,8 +11,8 @@ import type { Workspace } from "@repo/db";
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
-	const { user } = useAuthStore();
-	const { workspaces } = useWorkspaceStore();
+	const { user } = useAuthStore().getState();
+	const { workspaces } = useWorkspaceStore().getState();
 	const { theme } = useAppSelector((state) => state.userSettings);
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {

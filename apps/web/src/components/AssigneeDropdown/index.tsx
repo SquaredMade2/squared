@@ -1,13 +1,27 @@
-import { useState } from "react";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { UsersInWorkspace } from "@/store/taskData/taskData.interfaces";
-import ProfileImage from "../ProfileImage";
-import { ClickAwayListener } from "@mui/base/ClickAwayListener";
+import { useEffect, useState } from "react";
 import { UserSearch } from "lucide-react";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import { EventType } from "@/interfaces/event.interfaces";
-import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
+import ProfileImage from "../ProfileImage";
 import { useTheme } from "next-themes";
+import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
+import {
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+} from "@/components/ui/popover";
+import {
+	Command,
+	CommandInput,
+	CommandList,
+	CommandItem,
+	CommandEmpty,
+} from "@/components/ui/command";
+import {
+	useAuthStore,
+	useTaskStore,
+	useUserStore,
+	useViewsStore,
+	useWorkspaceStore,
+} from "@/storeZ/provider";
 import type { User } from "@repo/db";
 
 export const AssigneeDropdown = ({
@@ -16,168 +30,95 @@ export const AssigneeDropdown = ({
 	setShowAssigneeDropdown,
 	handleAssigneeChange,
 }: AssigneeDropdownProps) => {
-	const [userFilter, setUserFilter] = useState("");
+	const [query, setQuery] = useState("");
 	const { theme } = useTheme();
-	const allUsers = useAppSelector(
-		(state) => state.taskData.allUsersInWorkspace,
-	);
+	const { currentWorkspace } = useWorkspaceStore().getState();
+	const { getAllUsers, users } = useUserStore().getState();
 
-	const currentAssignee =
-		useAppSelector((state) => state.singleTask?.data?.assignee) || null;
+	useEffect(() => {
+		const fetchUsers = async () => {
+			if (currentWorkspace?.id) {
+				await getAllUsers(currentWorkspace.id);
+			}
+		};
 
-	const taskDataReceived =
-		useAppSelector((state) => state.singleTask?.data) || null;
+		fetchUsers();
+	}, [currentWorkspace?.id, getAllUsers]);
 
-	const {
-		author,
-		storeCommonFields,
-		storeTaskAssignee,
-		storeType,
-		updateTaskAssignee,
-	} = useLogTaskEvent();
-
-	const preventDefault: (e: React.MouseEvent<HTMLDivElement>) => void = (
-		e: React.MouseEvent<HTMLDivElement>,
-	) => {
-		e.preventDefault();
-		e.stopPropagation();
+	const handleSelectAssignee = (user: User) => {
+		handleAssigneeChange(taskId, user);
+		setShowAssigneeDropdown(false);
 	};
 
-	const handleLocation: () => string = () => {
+	const handleUnassign = () => {
+		handleAssigneeChange(taskId, {
+			id: "",
+			name: "Unassigned",
+			username: "",
+			email: "",
+			password: "",
+			verified: true,
+			lastLogin: new Date(),
+			onBoarding: false,
+			defaultWorkspaceId: "",
+		});
+		setShowAssigneeDropdown(false);
+	};
+
+	const containerClassNames = () => {
 		switch (location) {
 			case "Grid":
-				return "absolute top-10 right-1 flex flex-col bg-card click-event-none border border-border rounded-lg overflow-hidden z-30 w-50 h-60 flex flex-col";
+				return "absolute top-10 right-1 flex flex-col bg-card border border-border rounded-lg overflow-hidden z-30 w-60 h-auto";
 			case "Dashboard":
-				return "absolute flex flex-col bg-card click-event-none border border-border rounded-lg overflow-hidden ml-auto z-30 flex-end col-span-6 flex flex-col";
+				return "absolute bg-card border border-border rounded-lg overflow-hidden z-30 w-60 h-auto";
 			case "taskPage":
-				return "flex flex-col text-foreground bg-card border border-border rounded-lg overflow-hidden ml-20 flex-end col-span-6 flex flex-col";
+				return "flex flex-col bg-card border border-border rounded-lg overflow-hidden z-30 w-60 h-auto";
 			default:
 				return "";
 		}
 	};
 
-	const handleClickOffDropdown: () => void = () => {
-		setShowAssigneeDropdown(false);
-	};
-
-	const handleFilter: (username: string) => boolean = (username) => {
-		if (userFilter.length !== 0) {
-			return username.includes(userFilter);
-		}
-		return true;
-	};
-
-	const handleStoreCurrentAssignee = (): void => {
-		const noUserAssigned = currentAssignee?.name === null;
-		if (taskDataReceived) {
-			if (noUserAssigned) {
-				const assignee = {
-					id: "",
-					name: "not Assigned",
-					username: "",
-					email: "",
-					password: "",
-					verified: true,
-					lastLogin: new Date(),
-					onBoarding: false,
-					defaultWorkspaceId: "",
-				};
-				storeTaskAssignee(assignee);
-			} else {
-				storeTaskAssignee(currentAssignee as User);
-			}
-		}
-	};
-
-	const handleClickAssignee = (taskId: string, newAssignee: User): void => {
-		if (newAssignee.name === currentAssignee?.name) return;
-		storeCommonFields(author, taskId);
-		storeType(EventType.AssigneeUpdated);
-		handleStoreCurrentAssignee();
-		handleAssigneeChange(taskId, newAssignee);
-		logAssigneeChangeEvent(newAssignee);
-	};
-
-	const logAssigneeChangeEvent = (newAssignee: User): void => {
-		const userIsAssigned = newAssignee.id && newAssignee.name;
-		if (userIsAssigned) {
-			updateTaskAssignee(newAssignee);
-		} else {
-			updateTaskAssignee({
-				id: "",
-				name: "not Assigned",
-				username: "",
-				email: "",
-				password: "",
-				verified: true,
-				lastLogin: new Date(),
-				onBoarding: false,
-				defaultWorkspaceId: "",
-			});
-		}
-	};
-
 	return (
-		<ClickAwayListener onClickAway={handleClickOffDropdown}>
-			<div onClick={(e) => preventDefault(e)} className={handleLocation()}>
-				<input
-					className="bg-card h-10 p-1 border-b border-border"
-					type="text"
-					onChange={(e) => setUserFilter(e.target.value)}
-				/>
-				<button
-					type="button"
-					className="flex flex-row items-center mx-1"
-					onClick={() =>
-						handleClickAssignee(taskId, {
-							id: "",
-							name: "",
-							username: "",
-							email: "",
-							password: "",
-							verified: true,
-							lastLogin: new Date(),
-							onBoarding: false,
-							defaultWorkspaceId: "",
-						})
-					}
-				>
-					<UserSearch className="size-4 mr-2" />
-					Unassign
+		<Popover>
+			<PopoverTrigger asChild>
+				<button className="flex items-center space-x-2" type="button">
+					<UserSearch className="size-4" />
+					<span>Assign to...</span>
 				</button>
-				<ul className="overflow-scroll-y">
-					{allUsers
-						?.filter((user) => handleFilter(user.username))
-						.map((user: UsersInWorkspace) => {
-							const assignee = {
-								id: user.user,
-								name: user.username,
-								username: "",
-								email: "",
-								password: "",
-								verified: true,
-								lastLogin: new Date(),
-								onBoarding: false,
-								defaultWorkspaceId: "",
-							};
-							return (
-								<li key={user.user}>
-									<button
-										type="button"
-										className="flex flex-row items-center mx-1"
-										onClick={() => handleClickAssignee(taskId, assignee)}
-									>
-										<ProfileImage
-											profileName={user.username}
-											location={"assigneeDropdown"}
-										/>
-										{user.username}
-									</button>
-								</li>
-							);
-						})}
-				</ul>
-			</div>
-		</ClickAwayListener>
+			</PopoverTrigger>
+			<PopoverContent className={containerClassNames()}>
+				<Command>
+					<CommandInput
+						placeholder="Search users..."
+						onValueChange={(value) => setQuery(value)}
+					/>
+					<CommandList>
+						<CommandItem
+							onSelect={handleUnassign}
+							className="flex items-center space-x-2"
+						>
+							<UserSearch className="size-4 mr-2" />
+							<span>Unassign</span>
+						</CommandItem>
+						<CommandEmpty>No results found.</CommandEmpty>
+						{users.map((user) => (
+							<CommandItem
+								key={user.id}
+								onSelect={() => handleSelectAssignee(user)}
+								className="flex items-center space-x-2"
+							>
+								<ProfileImage
+									profileName={user.name}
+									location="assigneeDropdown"
+								/>
+								<span>{user.username}</span>
+							</CommandItem>
+						))}
+					</CommandList>
+				</Command>
+			</PopoverContent>
+		</Popover>
 	);
 };
+
+export default AssigneeDropdown;

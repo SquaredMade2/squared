@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface ToggleTaskInitialState {
+interface ToggleTaskInitialState {
 	showDateTime: boolean;
 	showPriority: boolean;
 	showLabels: boolean;

@@ -152,7 +152,6 @@ export default function SelectedFilter({
 						<StatusFilterDropDown
 							showStatusFilterDropDown={showStatusFilterDropDown}
 							setShowStatusFilterDropDown={setShowStatusFilterDropDown}
-							handleFilter={handleFilter}
 						/>
 					</div>
 					<div
@@ -160,7 +159,6 @@ export default function SelectedFilter({
 						className="absolute w-72 top-full left-0"
 					>
 						<PriorityFilterDropDown
-							handleFilter={handleFilter}
 							setShowPriorityFilterDropDown={setShowPriorityFilterDropDown}
 							showPriorityFilterDropDown={showPriorityFilterDropDown}
 						/>
@@ -170,7 +168,6 @@ export default function SelectedFilter({
 						className="absolute w-72 top-full left-0"
 					>
 						<LabelFilterDropDown
-							handleFilter={handleFilter}
 							setShowLabelFilterDropDown={setShowLabelFilterDropDown}
 							showLabelFilterDropDown={showLabelFilterDropDown}
 						/>
@@ -180,7 +177,6 @@ export default function SelectedFilter({
 						className={`$"absolute w-72 top-full left-0" -mt-20`}
 					>
 						<DueDateFilterDropDown
-							handleFilter={handleFilter}
 							setShowDueDateFilterDropDown={setShowDueDateFilterDropDown}
 							showDueDateFilterDropDown={showDueDateFilterDropDown}
 						/>
@@ -190,7 +186,6 @@ export default function SelectedFilter({
 						className="absolute w-72 top-full left-0"
 					>
 						<EffortFilterDropDown
-							handleFilter={handleFilter}
 							setShowEffortFilterDropDown={setShowEffortFilterDropDown}
 							showEffortFilterDropDown={showEffortFilterDropDown}
 						/>

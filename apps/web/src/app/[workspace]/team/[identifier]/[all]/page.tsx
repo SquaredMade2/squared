@@ -1,82 +1,99 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useSelector, useDispatch } from "react-redux";
-import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
-import { getTeam, getAllTasks } from "@/store/taskData/thunks";
-import { setTaskList } from "@/store/taskData";
 import TopNavBar from "@/components/TopNavBar";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import SelectedFiltersBar from "@/components/SelectedFiltersBar/index";
-import FilterSaveForm from "@/components/FilterSaveForm";
-import { navBarToggle } from "@/store/userSettings";
-import type { RootState } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Loader2 } from "lucide-react";
+import {
+	useAuthStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useViewsStore,
+	useWorkspaceStore,
+} from "@/storeZ/provider";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status } from "@repo/db";
+import type { Task } from "@repo/db";
 
 export default function Home() {
-	const dispatch = useDispatch();
+	const [loading, setLoading] = useState(true);
+	const [authorized, setAuthorized] = useState(false);
+	const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 	const router = useRouter();
 	const params = useParams();
-	const { theme, view, user, showNavBar } = useSelector(
-		(state: RootState) => state.userSettings,
-	);
 
-	const workSpaceError = useSelector(
-		(state: RootState) => state.taskData.error,
-	);
-	const { currentTeam, access, currentWorkspace } = useSelector(
-		(state: RootState) => state.taskData,
-	);
+	const { view } = useViewsStore().getState();
+	const { user } = useAuthStore().getState();
+	const { tasks, getAllTasks, updateTask, setTaskList, deleteTask } =
+		useTaskStore().getState();
+	const {
+		currentWorkspace,
+		getAllWorkspaces,
+		workspaces,
+		setCurrentWorkspace,
+	} = useWorkspaceStore().getState();
+	const { currentTeam, teams, getAllTeams, setCurrentTeam } =
+		useTeamStore().getState();
+	const { getAllUsers } = useUserStore().getState();
+	const { currentFilter, filterTasks } = useViewsStore().getState();
 
-	const taskList = useSelector((state: RootState) => state.taskData.taskList);
-	const [isLoading] = useState(false);
-	const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
-	const [showFilterSaveForm, setShowFilterSaveForm] = useState(false);
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
-	const userHasAccess =
-		access && access.id === user?._id && workspaceUrl === currentWorkspace.url;
-	const navbarRef = useRef(null);
-
-	const handleFilter = (filterValue: FilterOption | null) => {
-		setFilterOption(filterValue);
-	};
-
-	const handleFilterSaveForm = (value: boolean) => {
-		setShowFilterSaveForm(value);
-	};
 
 	useEffect(() => {
-		if (userHasAccess) {
-			dispatch(getTeam(teamIdentifier as string) as never);
-		} else {
-			router.push(`/${workspaceUrl}`);
-		}
-	}, [dispatch, teamIdentifier, userHasAccess, workspaceUrl, router]);
+		const initiateStore = async () => {
+			setLoading(true);
+			if (!currentWorkspace && !workspaces && user) {
+				const workspaces = await getAllWorkspaces(user.id);
+				if (workspaces.length) {
+					const workspace = workspaces.find(
+						(workspace) => workspace.url === workspaceUrl,
+					);
+					if (workspace) {
+						await setCurrentWorkspace(workspace);
+					}
+				}
+			}
+			if (user && currentWorkspace) {
+				const allUsers = await getAllUsers(currentWorkspace.id);
+				const userHasAccess = allUsers.some((u) => u.id === user.id);
+				setAuthorized(userHasAccess);
+				if (authorized) {
+					if (!teams) {
+						await getAllTeams(currentWorkspace.id);
+					}
+					if (teams.length) {
+						const team = teams.find(
+							(team) => team.identifier === teamIdentifier,
+						);
+						if (team) {
+							setCurrentTeam(team);
+							const tasks = await getAllTasks(team.id);
+							setFilteredTasks(tasks); // Initially, show all tasks
+						}
+					}
+				}
+			}
+			setLoading(false);
+		};
+
+		initiateStore();
+	}, [currentWorkspace, user, workspaces, workspaceUrl]);
 
 	const activeSelected = params.all === "active";
 	const backlogSelected = params.all === "backlog";
 
-	const handleDeleteTask = async (taskId: string) => {
-		await deleteTaskCard(taskId);
-		dispatch(getAllTasks(currentTeam) as never);
-	};
-
 	const handleDragEnd: OnDragEndResponder = async (result) => {
 		const { destination, source, draggableId } = result;
 
-		const destinationUnchanged =
-			destination?.droppableId === source.droppableId;
-
-		if (!destination || destinationUnchanged) {
+		if (!destination || destination.droppableId === source.droppableId) {
 			return;
 		}
 
-		const draggedTaskFound = taskList.find(
+		const draggedTaskFound = filteredTasks.find(
 			(task) => task && task.id === draggableId,
 		);
 
@@ -84,140 +101,74 @@ export default function Home() {
 			return;
 		}
 
-		const taskWithNewStatus = {
+		const updatedTask = {
 			...draggedTaskFound,
 			status: destination.droppableId as Status,
 		};
 
-		const sourceIndex = taskList.findIndex(
-			(task) => task && task.id === draggableId,
-		);
-		const destinationIndex = taskList.findIndex(
-			(task) => task && task.id === draggableId,
+		// Update task list in the local state
+		const updatedTaskList = filteredTasks.map((task) =>
+			task.id === draggableId ? updatedTask : task,
 		);
 
-		const updatedTaskList = [...taskList];
-		updatedTaskList.splice(sourceIndex, 1);
-		updatedTaskList.splice(destinationIndex, 0, taskWithNewStatus);
+		setFilteredTasks(updatedTaskList);
 
-		const droppableId = destination.droppableId;
-
-		dispatch(setTaskList(updatedTaskList));
-		await updateTaskAfterDrag(draggedTaskFound, droppableId);
+		// Update task in the backend
+		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
 	useEffect(() => {
-		function handleClickAway(event: MouseEvent) {
-			if (
-				navbarRef.current &&
-				event.target &&
-				(navbarRef.current as HTMLElement).contains(event.target as Node)
-			) {
-				dispatch(navBarToggle(false));
+		// Apply filters based on the current filter settings in your Zustand store
+		const applyFilters = () => {
+			if (currentFilter) {
+				const filtered = filterTasks(tasks, currentFilter);
+				setFilteredTasks(filtered);
+			} else {
+				setFilteredTasks(tasks);
 			}
-		}
-
-		document.addEventListener("mousedown", handleClickAway);
-		return () => {
-			document.removeEventListener("mousedown", handleClickAway);
 		};
-	}, [dispatch]);
+
+		applyFilters();
+	}, [tasks]);
+
+	if (loading) {
+		return (
+			<div className="w-full h-full flex items-center justify-center">
+				<Loader2 className="animate-spin size-12" />
+			</div>
+		);
+	}
 
 	return (
-		<>
-			{!isLoading && !workSpaceError && (
-				<div className="w-full flex flex-col h-screen overflow-hidden ">
-					<div>
-						{!showFilterSaveForm && (
-							<div className="w-full px-2 ">
-								<TopNavBar
-									showNavBar={showNavBar}
-									handleFilter={handleFilter}
-									filterOption={filterOption}
-									showFilterSaveForm={showFilterSaveForm}
-									handleFilterSaveForm={handleFilterSaveForm}
-								/>
-							</div>
-						)}
-						{showFilterSaveForm && (
-							<div className="w-[98%] m-3">
-								<FilterSaveForm
-									filterOption={filterOption}
-									handleFilter={handleFilter}
-									handleFilterSaveForm={handleFilterSaveForm}
-									setShowFilterSaveForm={setShowFilterSaveForm}
-								/>
-							</div>
-						)}
-					</div>
-					<div
-						className={`flex flex-col flex-grow ${view === "grid" ? "mx-2" : ""}`}
+		<div className="w-full flex flex-col h-screen overflow-hidden">
+			<div className="w-full px-2 sm:px-5">
+				<TopNavBar />
+			</div>
+
+			{currentWorkspace ? (
+				<div
+					className={`flex flex-col flex-grow ${view === "grid" ? "mx-2" : ""}`}
+				>
+					<ScrollArea
+						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""}`}
 					>
-						<ScrollArea
-							className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""}`}
-						>
-							<ViewAllTasks
-								activeSelected={activeSelected}
-								backlogSelected={backlogSelected}
-								handleDragEnd={handleDragEnd}
-								handleDeleteTask={handleDeleteTask}
-							/>
-							{view === "grid" && <ScrollBar orientation="horizontal" />}
-						</ScrollArea>
+						<ViewAllTasks
+							activeSelected={activeSelected}
+							backlogSelected={backlogSelected}
+							handleDragEnd={handleDragEnd}
+							tasks={filteredTasks}
+						/>
+						{view === "grid" && <ScrollBar orientation="horizontal" />}
+					</ScrollArea>
+				</div>
+			) : (
+				<div className="flex items-center flex-col w-screen h-full bg-background">
+					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
+						<h1 className="text-2xl">Team not found</h1>
+						<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
 					</div>
 				</div>
 			)}
-
-			{workSpaceError && (
-				<div className="flex flex-row relative">
-					<div
-						className={`h-screen lg:left-0 lg:relative z-40 transition-all duration-300 ease-in-out ${showNavBar ? "absolute -left-full" : "absolute left-0"}`}
-					>
-						{/* <Navbar /> */}
-					</div>
-
-					<div className="flex items-center flex-col w-screen h-full bg-background">
-						<div className=" flex flex-col items-center justify-between">
-							{!showFilterSaveForm && (
-								<div className="w-full px-2 sm:px-5">
-									<TopNavBar
-										handleFilter={handleFilter}
-										filterOption={filterOption}
-										showFilterSaveForm={showFilterSaveForm}
-										handleFilterSaveForm={handleFilterSaveForm}
-										showNavBar={showNavBar}
-									/>
-								</div>
-							)}
-
-							{filterOption && !showFilterSaveForm && (
-								<div className="w-full">
-									<SelectedFiltersBar
-										showFilterSaveForm={showFilterSaveForm}
-										filterOption={filterOption}
-										handleFilter={handleFilter}
-										handleFilterSaveForm={handleFilterSaveForm}
-									/>
-								</div>
-							)}
-							{showFilterSaveForm && (
-								<div className="w-[98%] m-3">
-									<FilterSaveForm
-										filterOption={filterOption}
-										setShowFilterSaveForm={setShowFilterSaveForm}
-										handleFilter={handleFilter}
-										handleFilterSaveForm={handleFilterSaveForm}
-									/>
-								</div>
-							)}
-						</div>
-						<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
-							<h1 className="text-2xl">Team not found</h1>
-							<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
-						</div>
-					</div>
-				</div>
-			)}
-		</>
+		</div>
 	);
 }

@@ -14,7 +14,7 @@ export type FilterCondition = {
 		| "arrayIncludesAny"; // Add more operators as needed
 };
 
-type TaskFilter = {
+export type TaskFilter = {
 	logic: "AND" | "OR";
 	conditions: FilterCondition[];
 };
@@ -24,13 +24,18 @@ export type ViewsState = {
 	showDateTime: boolean;
 	showPriority: boolean;
 	showLabels: boolean;
+	showNavbar: boolean;
+	view: "list" | "grid";
 };
 
 export type ViewsActions = {
 	setCurrentFilter: (filter: TaskFilter) => void;
+	addFilter: (filter: FilterCondition) => void;
 	removeFilter: () => void;
 	filterTasks: (tasks: Task[], filter: TaskFilter) => Task[];
+	setView: (view: "list" | "grid") => void;
 	getCurrentFilter: () => Partial<Task> | null;
+	setShowNavbar: (input: boolean) => void;
 	setShowDateTime: (input: boolean) => void;
 	setShowPriority: (input: boolean) => void;
 	setShowLabels: (input: boolean) => void;

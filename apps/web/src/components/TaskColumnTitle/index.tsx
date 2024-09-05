@@ -15,6 +15,8 @@ import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
 import { useTheme } from "next-themes";
 import { cn } from "@/utils/cn";
+import { useModalStore, useViewsStore } from "@/storeZ/provider";
+import type { Status } from "@repo/db";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -23,9 +25,7 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	toggleShowTasks,
 }: TaskColumnTitleProps) => {
-	const { theme } = useTheme();
-	const dispatch = useAppDispatch();
-	const arrowColor = theme === "light" ? "black" : "white";
+	const { showNewIssue, setNewIssueData } = useModalStore().getState();
 
 	const showIcon = (name: string): React.ReactNode => {
 		switch (name) {
@@ -44,13 +44,30 @@ const TaskColumnTitle = ({
 		}
 	};
 
+	const formatTitle = (title: Status): string => {
+		switch (title) {
+			case "backlog":
+				return "Backlog";
+			case "todo":
+				return "To Do";
+			case "inProgress":
+				return "In Progress";
+			case "done":
+				return "Done";
+			case "canceled":
+				return "Canceled";
+			case "duplicate":
+				return "Duplicate";
+		}
+	};
+
 	const handleClick = (): void => {
-		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(title));
+		setShowNewIssue(true);
+		setNewIssueData({ status: title });
 	};
 
 	return (
-		<div className={isListView ? "" : "pr-2 min-w-80"}>
+		<div className={isListView ? "" : "pr-2 min-w-64"}>
 			<div
 				className={cn(
 					"flex w-full bg-muted dark:bg-accent items-center justify-between font-medium transition-all",
@@ -79,8 +96,8 @@ const TaskColumnTitle = ({
 							}
 						>
 							<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-							<span>{title}</span>
-							<span className="ml-2 text-muted-foreground">
+							<span className="text-sm">{formatTitle(title)}</span>
+							<span className="ml-1 text-muted-foreground">
 								{numberOfTasks}
 							</span>
 						</div>

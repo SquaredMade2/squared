@@ -2,14 +2,14 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { getSingleTask } from "@/store/task/thunks";
 import type { Label, User } from "@repo/db";
 
-export interface TaskInitialState {
+interface TaskInitialState {
 	isLoading: boolean;
 	data: undefined | SingleTaskDataInterface;
 	isError: boolean;
 }
 
 // future todo: this interface has to be moved to a seperate file.
-export interface SingleTaskDataInterface {
+interface SingleTaskDataInterface {
 	_id: string;
 	title: string;
 	description: string;

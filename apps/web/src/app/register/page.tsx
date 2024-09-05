@@ -26,7 +26,7 @@ export default function RegisterUser() {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const { toast } = useToast();
-	const { register } = useAuthStore();
+	const { register } = useAuthStore().getState();
 
 	const handlePushLogin = () => {
 		router.push("/login");

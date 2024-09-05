@@ -9,7 +9,7 @@ import { useAuthStore } from "@/storeZ/provider";
 const LogoutButton = () => {
 	const router = useRouter();
 	const { toast } = useToast();
-	const { logout } = useAuthStore();
+	const { logout } = useAuthStore().getState();
 
 	const handleLogout = async (): Promise<void> => {
 		try {
