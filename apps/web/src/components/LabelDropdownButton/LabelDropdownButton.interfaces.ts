@@ -1,4 +1,4 @@
-import type { labelStyle } from "@/components/LabelButton";
+import type { labelStyle } from "@/components/LabelDropdownButton";
 
 export interface LabelColorProps {
 	name: keyof typeof labelStyle;
