@@ -1,5 +1,4 @@
 import { useState } from "react";
-import LabelButton from "@/components/LabelButton";
 import PriorityButton from "@/components/PriorityButton";
 import { StatusDropdownButton } from "@/components/StatusDropdownButton";
 import DateButton from "@/components/DateButton";

@@ -8,8 +8,6 @@ import type { RootState } from "@/store";
 import { getSingleTask } from "@/store/task/thunks";
 import { setLabels } from "@/store/taskData";
 import { labelOptions } from "@/constants/designations";
-import { setBackgroundColor } from "../DesignationsContainer";
-import LabelDropdown from "@/components/LabelDropdown";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -24,18 +22,8 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-
 import { EventType, type Labels } from "@/interfaces/event.interfaces";
-
 import { Plus, Tag, Check } from "lucide-react";
-// import {
-// 	DropdownMenu,
-// 	DropdownMenuTrigger,
-// 	DropdownMenuContent,
-// 	DropdownMenuItem,
-// 	DropdownMenuRadioGroup,
-// } from "../ui/dropdown-menu";
-
 import type {
 	LabelDropdownButtonProps,
 	LabelColorProps,
@@ -55,8 +43,6 @@ export const LabelColor = ({ name }: LabelColorProps) => {
 
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	const [open, setOpen] = useState(false);
-	const [showDropdown, setShowDropdown] = useState(false);
-	const [value, setValue] = useState("");
 
 	const dispatch = useAppDispatch();
 
@@ -73,22 +59,12 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	const newIssueLabels = useAppSelector(
 		(state: RootState) => state.taskData.labels,
 	);
-	const newIssuePriority = useAppSelector(
-		(state: RootState) => state.taskData.priority,
-	);
 	const sidebarLabels = useAppSelector(
 		(state: RootState) => state.singleTask.data?.labels,
 	);
 	const taskId = useAppSelector(
 		(state: RootState) => state.singleTask?.data?._id,
 	);
-	const { theme } = useAppSelector((state: RootState) => state.userSettings);
-
-	const handleBackground = () => {
-		return theme === "light"
-			? "bg-popover hover:bg-popoverHover"
-			: "bg-popoverHover hover:bg-popover";
-	};
 
 	const newIssueLabelButton = () => (
 		<Button variant="outline" className="w-[170px] mr-2">
@@ -137,17 +113,17 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 		</Button>
 	);
 
-	const issueSideBarBtn = () => (
+	const issueSidebarButton = () => (
 		<div>
 			{sidebarLabels?.map((name: string) => (
-				<Button variant="outline" key={name} className="mb-1">
+				<Button variant="outline" key={name} className="mb-1 rounded-full">
 					<LabelColor name={name} />
 					<span className="ml-3 text-sm font-semibold text-card-foreground cursor-pointer group-hover:text-foreground">
 						{name}
 					</span>
 				</Button>
 			))}
-			<Button variant="outline">
+			<Button variant="ghost">
 				<span className="w-3 cursor-pointer">
 					<Plus className="size-4 cursor-pointer mr-2" />
 				</span>
@@ -157,42 +133,6 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 			</Button>
 		</div>
 	);
-
-	const issueSidebarButton = () => {
-		return (
-			<div>
-				{sidebarLabels?.map((name: string) => {
-					return (
-						<button
-							type="button"
-							key={name}
-							className={`inline-flex cursor-pointer items-center border border-border hover:border-border rounded-3xl px-3 py-1 m-1 text-sm ${setBackgroundColor(
-								theme,
-							)} ${handleBackground()} group`}
-							onClick={handleButtonClick}
-						>
-							<LabelColor name={name} />
-							<span className="ml-3 text-sm font-semibold text-card-foreground cursor-pointer group-hover:text-foreground">
-								{name}
-							</span>
-						</button>
-					);
-				})}
-				<button
-					type="button"
-					className="inline-flex cursor-pointer items-center border border-border hover:border-border rounded-3xl px-3 py-1 my-1 ml-0.5 text-card-foreground text-xs"
-					onClick={handleButtonClick}
-				>
-					<span className="w-3 cursor-pointer">
-						<Plus className="size-4 cursor-pointer mr-2" />
-					</span>
-					<span className="ml-1.5 text-sm font-semibold text-card-foreground cursor-pointer">
-						Add label
-					</span>
-				</button>
-			</div>
-		);
-	};
 
 	const updateItem = async (newLabelSelection: string[]) => {
 		if (taskId !== undefined) {
@@ -222,6 +162,7 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 
 	const handleSelectLabels = (labelName: string) => {
 		let newLabelsSelected = [];
+
 		if (location === "newIssue") {
 			newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
 			dispatch(setLabels(newLabelsSelected));
@@ -249,12 +190,8 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 		return newSelection;
 	};
 
-	const handleButtonClick = () => {
-		setShowDropdown(!showDropdown);
-	};
-
 	const renderButton = () =>
-		location === "newIssue" ? newIssueLabelButton() : issueSideBarBtn();
+		location === "newIssue" ? newIssueLabelButton() : issueSidebarButton();
 
 	useEffect(() => {
 		if (sidebarLabels) {
@@ -293,25 +230,6 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 					</CommandList>
 				</Command>
 			</PopoverContent>
-
-			{/* <div
-				className={
-					location === "newIssue"
-						? "relative"
-						: "relative flex flex-row flex-wrap"
-				}
-			>
-				{location === "newIssue" && newIssueLabelButton()}
-				{location === "issueSidebar" && issueSidebarButton()}
-				{showDropdown && (
-					<LabelDropdown
-						labelOptions={labelOptions}
-						location={location}
-						handleButtonClick={handleButtonClick}
-						handleClickAway={handleClickAway}
-					/>
-				)}
-			</div> */}
 		</Popover>
 	);
 };
