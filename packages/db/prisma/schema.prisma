@@ -131,6 +131,7 @@ model TaskEvent {
   originalAssigneeName String?
   updatedAssigneeId    String?
   updatedAssigneeName  String?
+  gitUpdated           String?
 
   originalLabels Label[]
   updatedLabels  Label[]
