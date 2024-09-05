@@ -29,16 +29,18 @@ import type {
 	LabelColorProps,
 } from "./LabelDropdownButton.interfaces";
 
+const baseClass = "w-3 h-3 rounded-lg";
+
 export const labelStyle: Record<string, string> = {
-	Bug: "w-3 h-3 rounded-lg bg-[#EB5757]",
-	Feature: "w-3 h-3 rounded-lg bg-[#BB87FC]",
-	Improvement: "w-3 h-3 rounded-lg bg-[#4EA7FC]",
-	Red: "w-3 h-3 rounded-lg bg-[#DB6E1F]",
-	Test: "w-3 h-3 rounded-lg bg-[#95A2B3]",
+	Bug: "bg-[#EB5757]",
+	Feature: "bg-[#BB87FC]",
+	Improvement: "bg-[#4EA7FC]",
+	Red: "bg-[#DB6E1F]",
+	Test: "bg-[#95A2B3]",
 };
 
 export const LabelColor = ({ name }: LabelColorProps) => {
-	return <div className={labelStyle[name]} />;
+	return <div className={`${baseClass} ${labelStyle[name]}`} />;
 };
 
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
@@ -70,24 +72,18 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 		<Button variant="outline" className="w-[170px] mr-2">
 			{newIssueLabels.length === 0 && (
 				<>
-					<div>
-						<Tag className="size-4 cursor-pointer" />
-					</div>
-					<span className="text-sm font-semibold text-card-foreground ml-2">
-						Label
-					</span>
+					<Tag className="size-4 cursor-pointer" />
+					<span className="ml-2 cursor-pointer">Label</span>
 				</>
 			)}
 			{newIssueLabels.length === 1 && (
-				<div className="flex items-center">
+				<>
 					<LabelColor name={newIssueLabels[0]} />
-					<span className="text-sm font-semibold text-card-foreground ml-2">
-						{newIssueLabels[0]}
-					</span>
-				</div>
+					<span className="ml-2 cursor-pointer">{newIssueLabels[0]}</span>
+				</>
 			)}
 			{newIssueLabels && newIssueLabels.length > 1 && (
-				<div className="flex items-center">
+				<>
 					{
 						// eslint-disable-next-line array-callback-return
 						newIssueLabels.map((name, i) => {
@@ -107,8 +103,8 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 							}
 						})
 					}
-					<span className="text-sm font-semibold text-card-foreground ml-2 cursor-pointer">{`${newIssueLabels.length} labels`}</span>
-				</div>
+					<span className="ml-2 cursor-pointer">{`${newIssueLabels.length} labels`}</span>
+				</>
 			)}
 		</Button>
 	);
@@ -118,18 +114,14 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 			{sidebarLabels?.map((name: string) => (
 				<Button variant="outline" key={name} className="mb-1 rounded-full">
 					<LabelColor name={name} />
-					<span className="ml-3 text-sm font-semibold text-card-foreground cursor-pointer group-hover:text-foreground">
-						{name}
-					</span>
+					<span className="ml-3 cursor-pointer">{name}</span>
 				</Button>
 			))}
 			<Button variant="ghost">
 				<span className="w-3 cursor-pointer">
 					<Plus className="size-4 cursor-pointer mr-2" />
 				</span>
-				<span className="ml-1.5 text-sm font-semibold text-card-foreground cursor-pointer">
-					Add label
-				</span>
+				<span className="ml-1.5 cursor-pointer">Add label</span>
 			</Button>
 		</div>
 	);
@@ -202,9 +194,13 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>{renderButton()}</PopoverTrigger>
-			<PopoverContent className="w-[170px] p-0" side="bottom">
+			<PopoverContent
+				className="w-[170px] p-0"
+				side={location === "issueSidebar" ? "left" : "bottom"}
+				align="start"
+			>
 				<Command>
-					<CommandInput placeholder="Search framework..." />
+					<CommandInput placeholder="Search labels..." />
 					<CommandList>
 						<CommandEmpty>No label found.</CommandEmpty>
 						<CommandGroup>
