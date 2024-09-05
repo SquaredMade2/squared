@@ -44,7 +44,7 @@ async function addUser() {
 	const fullName = `${firstName} ${lastName}`;
 	const username = faker.internet.userName({ firstName, lastName });
 	const email = faker.internet.email({ firstName, lastName });
-	const password = faker.internet.password(); // Use hashing if needed
+	const password = process.env.SEED_PASSWORD || faker.internet.password();
 
 	const user = await prisma.user.create({
 		data: {
