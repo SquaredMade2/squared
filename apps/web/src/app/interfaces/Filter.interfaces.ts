@@ -9,10 +9,6 @@ export interface FilterOption {
 	comparison?: string | null;
 }
 
-export interface NavbarVisibitliyProps {
-	showNavBar: boolean;
-}
-
 export interface DueDateFilterDropDownProps {
 	showDueDateFilterDropDown: boolean;
 	setShowDueDateFilterDropDown: Dispatch<SetStateAction<boolean>>;

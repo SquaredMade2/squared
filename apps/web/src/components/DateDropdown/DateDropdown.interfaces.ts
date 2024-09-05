@@ -5,7 +5,3 @@ export type DateDropdownProps = {
 	setDropdownOpen: Dispatch<SetStateAction<boolean>>;
 	injectedTaskId: string;
 };
-
-export type Params = {
-	taskId: string;
-};

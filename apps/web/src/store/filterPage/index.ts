@@ -26,18 +26,6 @@ export interface Filters {
 	teamId: Types.ObjectId;
 }
 
-export interface FilteredTaskList {
-	description: string;
-	labels: string;
-	priority: string;
-	dueDate: Types.ObjectId;
-	effortEstimate: number;
-	status: string;
-	team: Types.ObjectId;
-	title: string;
-	_id: Types.ObjectId;
-}
-
 export interface DateFilter {
 	name: string;
 	comparison?: "before" | "after";
@@ -52,7 +40,7 @@ export interface CurrentFilters {
 	effortEstimate: number[];
 }
 
-export interface State {
+interface State {
 	filters: Filters[];
 	filteredTaskList: Task[];
 	currentFilters: CurrentFilters;
