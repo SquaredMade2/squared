@@ -6,7 +6,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "db:generate": "prisma generate",
+    "db:gen": "prisma generate",
     "db:push": "prisma db push --skip-generate",
     "db:seed": "cross-env NODE_ENV=test ts-node src/seed.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
