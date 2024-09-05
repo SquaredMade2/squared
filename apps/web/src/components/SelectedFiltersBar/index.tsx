@@ -102,11 +102,7 @@ const SelectedFiltersBar = ({
 							<Plus className="size-4 text-[#858699]" />
 						</button>
 						<div ref={dropdownRef} className="relative left-3">
-							<FilterDropDown
-								showFilterDropDown={showFilterDropDown}
-								setShowFilterDropDown={setShowFilterDropDown}
-								handleFilter={handleFilter}
-							/>
+							<FilterDropDown />
 						</div>
 					</div>
 				</div>

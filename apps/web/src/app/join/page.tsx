@@ -17,9 +17,10 @@ import { Input } from "@/components/ui/input";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
-	const { getAllWorkspaces, workspaces, addWorkspace } = useWorkspaceStore();
-	const { user } = useAuthStore();
-	const { updateUser } = useUserStore();
+	const { getAllWorkspaces, workspaces, addWorkspace } =
+		useWorkspaceStore().getState();
+	const { user } = useAuthStore().getState();
+	const { updateUser } = useUserStore().getState();
 	const { toast } = useToast();
 	const router = useRouter();
 

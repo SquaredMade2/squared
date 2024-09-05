@@ -1,3 +1,6 @@
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import type { Task } from "@repo/db";
+
 export interface DragResult {
 	draggableId: string;
 	source: {
@@ -8,4 +11,11 @@ export interface DragResult {
 		index: number;
 		droppableId: string;
 	};
+}
+
+export interface ViewAllTasksProps {
+	tasks: Task[];
+	activeSelected: boolean;
+	backlogSelected: boolean;
+	handleDragEnd: OnDragEndResponder;
 }

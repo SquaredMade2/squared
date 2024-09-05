@@ -20,9 +20,9 @@ export default function Login() {
 	const [data, setData] = useState({ email: "", password: "" });
 	const router = useRouter();
 	const { toast } = useToast();
-	const { user, login } = useAuthStore();
+	const { user, login } = useAuthStore().getState();
 	const { getWorkspace, getAllWorkspaces, workspaces, currentWorkspace } =
-		useWorkspaceStore();
+		useWorkspaceStore().getState();
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();

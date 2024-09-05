@@ -10,6 +10,8 @@ export const createViewsStore = (
 		showDateTime: true,
 		showPriority: true,
 		showLabels: true,
+		showNavbar: true,
+		view: "list",
 	},
 ) => {
 	return createStore<ViewsStore>()(
@@ -21,6 +23,21 @@ export const createViewsStore = (
 				},
 				removeFilter: () => {
 					set({ currentFilter: null });
+				},
+				addFilter: (filter) => {
+					set((state) => {
+						return {
+							currentFilter: state.currentFilter
+								? {
+										logic: "AND",
+										conditions: [...state.currentFilter.conditions, filter],
+									}
+								: {
+										logic: "AND",
+										conditions: [filter],
+									},
+						};
+					});
 				},
 				filterTasks: (tasks, filter) => {
 					return tasks.filter((task) => {
@@ -35,6 +52,12 @@ export const createViewsStore = (
 				},
 				getCurrentFilter: () => {
 					return initState.currentFilter;
+				},
+				setView: (view) => {
+					set({ view });
+				},
+				setShowNavbar: (input) => {
+					set({ showNavbar: input });
 				},
 				setShowDateTime: (input) => {
 					set({ showDateTime: input });

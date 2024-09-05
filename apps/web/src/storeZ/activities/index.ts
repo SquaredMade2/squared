@@ -13,14 +13,14 @@ export const createActivityStore = (
 ) => {
 	return createStore<ActivityStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				addTaskEvent: async (event, taskId, author) => {
 					const response: { data: ActivityType } = await axios.post(
 						apiString(taskId),
 						{ ...event, type: "TASK_EVENT", author },
 					);
-					const { events } = useActivityStore();
+					const { events } = get();
 					set({ events: [...events, response.data] });
 					return response.data.taskEvent;
 				},
@@ -33,7 +33,7 @@ export const createActivityStore = (
 							author,
 						},
 					);
-					const { events } = useActivityStore();
+					const { events } = get();
 					set({ events: [...events, response.data] });
 					return response.data.commit;
 				},
