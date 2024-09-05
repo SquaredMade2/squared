@@ -91,7 +91,7 @@ const UpdatedByInformation = () => {
 	};
 
 	const displayGitUpdate = (log: TaskEvent) => {
-		const gitUpdateText = log.type || "";
+		const gitUpdateText = log.gitUpdated || "";
 		const urlPattern = /(https?:\/\/[^\s]+)/g;
 
 		// Split the gitUpdateText into an array of strings and URLs
