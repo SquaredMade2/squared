@@ -1,8 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { navBarToggle } from "@/store/userSettings";
 import { GithubIcon } from "@/components/Svg";
 import {
 	Card,
@@ -11,16 +9,10 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useUserSettingsStore } from "@/storeZ/provider";
 
 const GithubSettings: React.FC = () => {
-	const dispatch = useAppDispatch();
-
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
-
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
+	const { navBarToggle } = useUserSettingsStore();
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -38,7 +30,7 @@ const GithubSettings: React.FC = () => {
 	return (
 		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">
 			<div className="lg:hidden mdsm:visible bg-background">
-				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
+				<SettingsTopNavBar setShowNavBar={navBarToggle} />
 			</div>
 			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4">
 				<div className="w-full md:px-20 lg:px-40 xl:px-80">

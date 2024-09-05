@@ -81,3 +81,7 @@ export const useViewsStore = () => {
 export const useWorkspaceStore = () => {
 	return useSquaredStore((state) => state.workspaces.getState());
 };
+
+export const useUserSettingsStore = () => {
+	return useSquaredStore((state) => state.userSettings.getState());
+};

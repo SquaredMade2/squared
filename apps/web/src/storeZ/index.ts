@@ -12,6 +12,12 @@ import { createTeamStore, type TeamStore } from "./teams";
 import { createUserStore, type UserStore } from "./users";
 import { createViewsStore, type ViewsStore } from "./views";
 import { createWorkspaceStore, type WorkspaceStore } from "./workspaces";
+import userSettings from "../store/userSettings/index";
+import { create } from "axios";
+import {
+	createUserSettingsStore,
+	type UserSettingsStore,
+} from "./userSettings";
 
 export type SquaredState = {
 	activities: StoreApi<ActivityStore>;
@@ -24,6 +30,7 @@ export type SquaredState = {
 	users: StoreApi<UserStore>;
 	views: StoreApi<ViewsStore>;
 	workspaces: StoreApi<WorkspaceStore>;
+	userSettings: StoreApi<UserSettingsStore>;
 };
 
 export const createSquaredStore = () => {
@@ -38,5 +45,6 @@ export const createSquaredStore = () => {
 		users: createUserStore(),
 		views: createViewsStore(),
 		workspaces: createWorkspaceStore(),
+		userSettings: createUserSettingsStore(),
 	}));
 };
