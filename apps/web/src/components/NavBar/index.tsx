@@ -22,7 +22,7 @@ const Navbar = () => {
 	return (
 		<>
 			<div className="h-full flex">
-				<div className="w-12 bg-muted dark:bg-accent">
+				<div className="w-14 bg-muted dark:bg-accent">
 					<IconLeftMenu />
 				</div>
 				<div className="flex h-full justify-center bg-popover border- w-72">
