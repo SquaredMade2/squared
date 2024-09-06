@@ -17,6 +17,7 @@ export type WorkspaceActions = {
 		userId: string,
 	) => Promise<WorkspaceResponse>;
 	getWorkspace: (workspaceId: string) => Promise<Workspace | undefined>;
+	setCurrentWorkspace: (workspace: Workspace) => void;
 	updateWorkspace: (
 		workspaceId: string,
 		workspace: Partial<Workspace>,

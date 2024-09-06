@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export interface showTaskFormState {
+interface showTaskFormState {
 	isOpen: boolean;
 }
 

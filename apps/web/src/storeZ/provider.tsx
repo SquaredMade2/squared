@@ -43,41 +43,41 @@ export const useSquaredStore = <T,>(
 };
 
 export const useActivityStore = () => {
-	return useSquaredStore((state) => state.activities.getState());
+	return useSquaredStore((state) => state.activities);
 };
 
 export const useAuthStore = () => {
-	return useSquaredStore((state) => state.auth.getState());
+	return useSquaredStore((state) => state.auth);
 };
 
 export const useCommentStore = () => {
-	return useSquaredStore((state) => state.comments.getState());
+	return useSquaredStore((state) => state.comments);
 };
 
 export const useModalStore = () => {
-	return useSquaredStore((state) => state.modals.getState());
+	return useSquaredStore((state) => state.modals);
 };
 
 export const useNotificationStore = () => {
-	return useSquaredStore((state) => state.notifications.getState());
+	return useSquaredStore((state) => state.notifications);
 };
 
 export const useTaskStore = () => {
-	return useSquaredStore((state) => state.tasks.getState());
+	return useSquaredStore((state) => state.tasks);
 };
 
 export const useTeamStore = () => {
-	return useSquaredStore((state) => state.teams.getState());
+	return useSquaredStore((state) => state.teams);
 };
 
 export const useUserStore = () => {
-	return useSquaredStore((state) => state.users.getState());
+	return useSquaredStore((state) => state.users);
 };
 
 export const useViewsStore = () => {
-	return useSquaredStore((state) => state.views.getState());
+	return useSquaredStore((state) => state.views);
 };
 
 export const useWorkspaceStore = () => {
-	return useSquaredStore((state) => state.workspaces.getState());
+	return useSquaredStore((state) => state.workspaces);
 };

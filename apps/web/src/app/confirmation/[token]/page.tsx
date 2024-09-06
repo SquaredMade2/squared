@@ -9,7 +9,7 @@ export default function VerifyUserToken(): void {
 	const { token } = useParams();
 	const singleToken = Array.isArray(token) ? token[0] : token;
 	const { toast } = useToast();
-	const { verifyUser } = useAuthStore();
+	const { verifyUser } = useAuthStore().getState();
 
 	useEffect(() => {
 		const verifyingUser = async (): Promise<void> => {

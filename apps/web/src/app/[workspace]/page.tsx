@@ -15,9 +15,9 @@ export default function Home() {
 	const router = useRouter();
 	const params = useParams();
 
-	const { user } = useAuthStore();
-	const { getWorkspace } = useWorkspaceStore();
-	const { getTeam } = useTeamStore();
+	const { user } = useAuthStore().getState();
+	const { getWorkspace } = useWorkspaceStore().getState();
+	const { getAllTeams } = useTeamStore().getState();
 	let workspaceUrl = params.workspace;
 	if (Array.isArray(workspaceUrl)) {
 		workspaceUrl = workspaceUrl[0];
@@ -33,9 +33,10 @@ export default function Home() {
 			const fetchWorkspace = async () => {
 				const currentWorkspace = await getWorkspace(workspaceUrl);
 				if (!currentWorkspace) return;
-				const currentTeam = await getTeam(currentWorkspace.id);
+				const currentTeam = await getAllTeams(currentWorkspace.id);
+				// console.log("Current Team:", currentTeam);
 				if (currentTeam) {
-					router.push(`/${workspaceUrl}/team/${currentTeam.identifier}/all`);
+					router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
 				}
 			};
 			fetchWorkspace();

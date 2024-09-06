@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { setView } from "@/store/userSettings";
-import { ClickAwayListener } from "@mui/base/ClickAwayListener";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, SlidersVertical } from "lucide-react";
 import { Switch } from "../ui/switch";
 import {
@@ -13,42 +11,28 @@ import {
 import DisplayPreferences from "../DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
+import { useViewsStore } from "@/storeZ/provider";
 
 const TopNavBarDisplay = () => {
-	const dispatch = useAppDispatch();
-	const view = useAppSelector((state) => state.userSettings.view);
-	const { showPriority, showLabels, showDateTime } = useAppSelector(
-		(state) => state.toggleTaskFeatures,
-	);
+	const { setView, view } = useViewsStore().getState();
+	const [currentView, setCurrentView] = useState(view);
+	const subscribe = useViewsStore().subscribe;
 
-	const [dropDownOpen, setDropDownOpen] = useState(false);
+	useEffect(() => {
+		const unsubscribe = subscribe((state) => {
+			setCurrentView(state.view);
+		});
 
-	const handleDropDown = (): void => {
-		setDropDownOpen(!dropDownOpen);
-	};
-
-	const handleClickAway = (): void => {
-		setDropDownOpen(false);
-	};
+		return () => unsubscribe();
+	}, [subscribe]);
 
 	const handleListClick = (): void => {
-		dispatch(setView("list"));
+		setView("list");
 	};
 
 	const handleGridClick = (): void => {
-		dispatch(setView("grid"));
-	};
-
-	const handlePriority = (): void => {
-		dispatch(setShowPriority());
-	};
-
-	const handleLabels = (): void => {
-		dispatch(setShowLabels());
-	};
-
-	const handleDateTime = (): void => {
-		dispatch(setShowDateTime());
+		console.log("grid");
+		setView("grid");
 	};
 
 	return (
@@ -68,18 +52,14 @@ const TopNavBarDisplay = () => {
 							<div className="flex gap-2 items-center">
 								<Button
 									type="button"
-									onClick={() => {
-										handleListClick();
-									}}
+									onClick={handleListClick}
 									variant={view === "list" ? "outline" : "ghost"}
 								>
 									List
 								</Button>
 								<Button
 									type="button"
-									onClick={() => {
-										handleGridClick();
-									}}
+									onClick={handleGridClick}
 									variant={view === "grid" ? "outline" : "ghost"}
 								>
 									Grid

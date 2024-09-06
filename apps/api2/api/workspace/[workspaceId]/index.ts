@@ -82,8 +82,13 @@ export function createRoute(): Route<Params> {
 			body: { workspace: Workspace; userId: string },
 		): Promise<APIResponse<Workspace>> => {
 			try {
-				const existingWorkspace = await prisma.workspace.findUnique({
-					where: { id: workspaceId },
+				const existingWorkspace = await prisma.workspace.findFirst({
+					where: {
+						OR: [
+						{ id: workspaceId },
+						{ url: body.workspace.url },
+						],
+					},
 				});
 
 				if (existingWorkspace) {
