@@ -129,7 +129,7 @@ export const createWorkspaceStore = (
 				getAllWorkspaces: async (userId: string): Promise<Workspace[]> => {
 					try {
 						const response = await axios.get<Workspace[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspaces`,
+							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
 						);
 
 						set({ workspaces: response.data });
