@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createTaskStore, type TaskState } from ".";
+import { createTaskStore, type TaskStore } from ".";
 
 export type TaskStoreApi = ReturnType<typeof createTaskStore>;
 
@@ -23,7 +23,7 @@ export const TaskStoreProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useTaskStore = <T,>(selector: (store: TaskState) => T): T => {
+export const useTaskStore = <T,>(selector: (store: TaskStore) => T): T => {
 	const context = useContext(TaskStoreContext);
 	if (!context) {
 		throw new Error("useTaskStore must be used within TaskStoreProvider");

@@ -11,20 +11,10 @@ import {
 import DisplayPreferences from "../DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { useViewsStore } from "@/storeZ/provider";
+import { useViewsStore } from "@/storeZ";
 
 const TopNavBarDisplay = () => {
-	const { setView, view } = useViewsStore().getState();
-	const [currentView, setCurrentView] = useState(view);
-	const subscribe = useViewsStore().subscribe;
-
-	useEffect(() => {
-		const unsubscribe = subscribe((state) => {
-			setCurrentView(state.view);
-		});
-
-		return () => unsubscribe();
-	}, [subscribe]);
+	const [view, setView] = useViewsStore((state) => [state.view, state.setView]);
 
 	const handleListClick = (): void => {
 		setView("list");

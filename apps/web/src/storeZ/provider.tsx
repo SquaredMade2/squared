@@ -10,7 +10,7 @@ import { TaskStoreProvider } from "./tasks";
 import { TeamStoreProvider } from "./teams";
 import { UserStoreProvider } from "./users";
 import { ViewsStoreProvider } from "./views";
-import { WorkspacesStoreProvider } from "./workspaces";
+import { WorkspaceStoreProvider } from "./workspaces";
 
 // Create the combined provider component
 export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
@@ -24,9 +24,9 @@ export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 								<TeamStoreProvider>
 									<UserStoreProvider>
 										<ViewsStoreProvider>
-											<WorkspacesStoreProvider>
+											<WorkspaceStoreProvider>
 												{children}
-											</WorkspacesStoreProvider>
+											</WorkspaceStoreProvider>
 										</ViewsStoreProvider>
 									</UserStoreProvider>
 								</TeamStoreProvider>

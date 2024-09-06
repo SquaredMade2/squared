@@ -11,8 +11,7 @@ import {
 	CommandItem,
 	CommandEmpty,
 } from "@/components/ui/command";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { useViewsStore } from "@/storeZ/provider";
+import { useViewsStore } from "@/storeZ";
 import type { LabelFilterDropDownProps } from "./LabelFilterDropDown.interfaces";
 import type { FilterCondition } from "@/storeZ/views";
 
@@ -59,8 +58,7 @@ const LabelFilterDropDown = ({
 	setShowLabelFilterDropDown,
 }: LabelFilterDropDownProps): React.ReactElement => {
 	const [query, setQuery] = useState("");
-	const { addFilter } = useViewsStore().getState();
-
+	const addFilter = useViewsStore((state) => state.addFilter);
 	const filteredOptions =
 		query === ""
 			? groupLabel

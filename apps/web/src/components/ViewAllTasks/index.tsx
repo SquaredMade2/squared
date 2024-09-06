@@ -6,7 +6,7 @@ import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
 import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
-import { useViewsStore } from "@/storeZ/provider";
+import { useViewsStore } from "@/storeZ";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -16,17 +16,8 @@ const ViewAllTasks = ({
 }: ViewAllTasksProps) => {
 	const [showRenameModal, setShowRenameModal] = useState(false);
 	const [taskData, setTaskData] = useState<Task | null>(null);
-	const { view } = useViewsStore().getState();
-	const [currentView, setCurrentView] = useState(view);
-	const subscribe = useViewsStore().subscribe;
 
-	useEffect(() => {
-		const unsubscribe = subscribe((state) => {
-			setCurrentView(state.view);
-		});
-
-		return () => unsubscribe();
-	}, [subscribe]);
+	const currentView = useViewsStore((state) => state.view);
 
 	const titleArr: { value: Status; id: number }[] = [
 		{ value: Status.backlog, id: 1 },
@@ -81,7 +72,7 @@ const ViewAllTasks = ({
 				taskData={taskData ? taskData : ({} as Task)}
 			/>
 			<DragDropContext onDragEnd={handleDragEnd}>
-				<div className={view === "list" ? "block" : "flex"}>
+				<div className={currentView === "list" ? "block" : "flex"}>
 					{filteredColumns()}
 				</div>
 			</DragDropContext>

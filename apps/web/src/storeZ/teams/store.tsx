@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createTeamStore, type TeamState } from ".";
+import { createTeamStore, type TeamStore } from ".";
 
 export type TeamStoreApi = ReturnType<typeof createTeamStore>;
 
@@ -23,7 +23,7 @@ export const TeamStoreProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useTeamStore = <T,>(selector: (store: TeamState) => T): T => {
+export const useTeamStore = <T,>(selector: (store: TeamStore) => T): T => {
 	const context = useContext(TeamStoreContext);
 	if (!context) {
 		throw new Error("useTeamStore must be used within TeamStoreProvider");

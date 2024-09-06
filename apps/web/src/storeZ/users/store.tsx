@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createUserStore, type UserState } from ".";
+import { createUserStore, type UserStore } from ".";
 
 export type UserStoreApi = ReturnType<typeof createUserStore>;
 
@@ -23,7 +23,7 @@ export const UserStoreProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useUserStore = <T,>(selector: (store: UserState) => T): T => {
+export const useUserStore = <T,>(selector: (store: UserStore) => T): T => {
 	const context = useContext(UserStoreContext);
 	if (!context) {
 		throw new Error("useUserStore must be used within UserStoreProvider");

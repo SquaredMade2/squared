@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createActivityStore, type ActivityState } from ".";
+import { type ActivityStore, createActivityStore } from ".";
 
 export type ActivityStoreApi = ReturnType<typeof createActivityStore>;
 
@@ -26,7 +26,7 @@ export const ActivityStoreProvider = ({
 };
 
 export const useActivityStore = <T,>(
-	selector: (store: ActivityState) => T,
+	selector: (store: ActivityStore) => T,
 ): T => {
 	const context = useContext(ActivityStoreContext);
 	if (!context) {

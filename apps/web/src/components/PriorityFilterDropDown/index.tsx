@@ -5,9 +5,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { high, medium, low } from "@/components/Svg";
-import { useViewsStore } from "@/storeZ/provider";
+import { useViewsStore } from "@/storeZ";
 import type { PriorityFilterDropDownProps } from "./PriorityFilterDropDown.interfaces";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import type { FilterCondition, TaskFilter } from "@/storeZ/views";
@@ -56,7 +55,7 @@ const PriorityFilterDropDown = ({
 }: PriorityFilterDropDownProps) => {
 	const [query, setQuery] = useState("");
 	const [filterOption, setFilterOption] = useState("");
-	const { addFilter } = useViewsStore().getState();
+	const addFilter = useViewsStore((state) => state.addFilter);
 
 	const filteredGroup =
 		query === ""

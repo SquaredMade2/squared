@@ -13,7 +13,7 @@ import {
 	useUserStore,
 	useViewsStore,
 	useWorkspaceStore,
-} from "@/storeZ/provider";
+} from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status } from "@repo/db";
 import type { Task } from "@repo/db";
@@ -22,69 +22,83 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
 	const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+
 	const router = useRouter();
 	const params = useParams();
 
-	const { view } = useViewsStore().getState();
-	const { user } = useAuthStore().getState();
-	const { tasks, getAllTasks, updateTask, setTaskList, deleteTask } =
-		useTaskStore().getState();
-	const {
-		currentWorkspace,
-		getAllWorkspaces,
-		workspaces,
-		setCurrentWorkspace,
-	} = useWorkspaceStore().getState();
-	const { currentTeam, teams, getAllTeams, setCurrentTeam } =
-		useTeamStore().getState();
-	const { getAllUsers } = useUserStore().getState();
-	const { currentFilter, filterTasks } = useViewsStore().getState();
+	// Using Zustand hooks to subscribe to changes
+	const view = useViewsStore((state) => state.view);
+	const user = useAuthStore((state) => state.user);
+	const tasks = useTaskStore((state) => state.tasks);
+	const getAllTasks = useTaskStore((state) => state.getAllTasks);
+	const updateTask = useTaskStore((state) => state.updateTask);
+
+	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+	const getAllWorkspaces = useWorkspaceStore((state) => state.getAllWorkspaces);
+	const setCurrentWorkspace = useWorkspaceStore(
+		(state) => state.setCurrentWorkspace,
+	);
+
+	const currentTeam = useTeamStore((state) => state.currentTeam);
+	const getAllTeams = useTeamStore((state) => state.getAllTeams);
+	const setCurrentTeam = useTeamStore((state) => state.setCurrentTeam);
+
+	const getAllUsers = useUserStore((state) => state.getAllUsers);
+
+	const currentFilter = useViewsStore((state) => state.currentFilter);
+	const filterTasks = useViewsStore((state) => state.filterTasks);
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
 
+	// Combining loading logic in a single useEffect
 	useEffect(() => {
 		const initiateStore = async () => {
 			setLoading(true);
-			if (!currentWorkspace && !workspaces && user) {
+
+			// Fetch workspaces if not already present
+			if (!currentWorkspace && user) {
 				const workspaces = await getAllWorkspaces(user.id);
-				if (workspaces.length) {
-					const workspace = workspaces.find(
-						(workspace) => workspace.url === workspaceUrl,
-					);
-					if (workspace) {
-						await setCurrentWorkspace(workspace);
-					}
+				const workspace = workspaces.find((ws) => ws.url === workspaceUrl);
+				if (workspace) {
+					setCurrentWorkspace(workspace);
 				}
 			}
+
+			// Fetch teams and tasks when the workspace is set
 			if (user && currentWorkspace) {
 				const allUsers = await getAllUsers(currentWorkspace.id);
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
-				if (authorized) {
-					if (!teams) {
-						await getAllTeams(currentWorkspace.id);
-					}
-					if (teams.length) {
-						const team = teams.find(
-							(team) => team.identifier === teamIdentifier,
-						);
-						if (team) {
-							setCurrentTeam(team);
-							const tasks = await getAllTasks(team.id);
-							setFilteredTasks(tasks); // Initially, show all tasks
-						}
+
+				if (userHasAccess && !currentTeam) {
+					const teams = await getAllTeams(currentWorkspace.id);
+					const team = teams.find((t) => t.identifier === teamIdentifier);
+					if (team) {
+						setCurrentTeam(team);
+						const tasks = await getAllTasks(team.id);
+						setFilteredTasks(tasks);
 					}
 				}
 			}
+
 			setLoading(false);
 		};
 
 		initiateStore();
-	}, [currentWorkspace, user, workspaces, workspaceUrl]);
-
-	const activeSelected = params.all === "active";
-	const backlogSelected = params.all === "backlog";
+	}, [
+		currentWorkspace,
+		user,
+		getAllWorkspaces,
+		setCurrentWorkspace,
+		workspaceUrl,
+		currentTeam,
+		getAllTeams,
+		teamIdentifier,
+		getAllUsers,
+		setCurrentTeam,
+		getAllTasks,
+	]);
 
 	const handleDragEnd: OnDragEndResponder = async (result) => {
 		const { destination, source, draggableId } = result;
@@ -117,19 +131,14 @@ export default function Home() {
 		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
+	// Apply filters whenever tasks or currentFilter change
 	useEffect(() => {
-		// Apply filters based on the current filter settings in your Zustand store
-		const applyFilters = () => {
-			if (currentFilter) {
-				const filtered = filterTasks(tasks, currentFilter);
-				setFilteredTasks(filtered);
-			} else {
-				setFilteredTasks(tasks);
-			}
-		};
-
-		applyFilters();
-	}, [tasks]);
+		if (currentFilter) {
+			setFilteredTasks(filterTasks(tasks, currentFilter));
+		} else {
+			setFilteredTasks(tasks);
+		}
+	}, [tasks, currentFilter, filterTasks]);
 
 	if (loading) {
 		return (
@@ -138,6 +147,9 @@ export default function Home() {
 			</div>
 		);
 	}
+
+	const activeSelected = params.all === "active";
+	const backlogSelected = params.all === "backlog";
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">

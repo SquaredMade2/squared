@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createNotificationStore, type NotificationState } from ".";
+import { createNotificationStore, type NotificationStore } from ".";
 
 export type NotificationStoreApi = ReturnType<typeof createNotificationStore>;
 
@@ -26,7 +26,7 @@ export const NotificationStoreProvider = ({
 };
 
 export const useNotificationStore = <T,>(
-	selector: (store: NotificationState) => T,
+	selector: (store: NotificationStore) => T,
 ): T => {
 	const context = useContext(NotificationStoreContext);
 	if (!context) {

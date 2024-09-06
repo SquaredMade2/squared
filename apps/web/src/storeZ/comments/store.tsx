@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createCommentStore, type CommentState } from ".";
+import { type CommentStore, createCommentStore } from ".";
 
 export type CommentStoreApi = ReturnType<typeof createCommentStore>;
 
@@ -24,7 +24,7 @@ export const CommentStoreProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useCommentStore = <T,>(
-	selector: (store: CommentState) => T,
+	selector: (store: CommentStore) => T,
 ): T => {
 	const context = useContext(CommentStoreContext);
 	if (!context) {

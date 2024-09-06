@@ -2,21 +2,21 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createWorkspaceStore, type WorkspaceState } from "."; // Import your store creation and types
+import { createWorkspaceStore, type WorkspaceStore } from "."; // Import your store creation and types
 
-// Define the type for Workspaces Store API
-export type WorkspacesStoreApi = ReturnType<typeof createWorkspaceStore>;
+// Define the type for Workspace Store API
+export type WorkspaceStoreApi = ReturnType<typeof createWorkspaceStore>;
 
-// Create a context for the Workspaces Store
-export const WorkspacesStoreContext = createContext<
-	WorkspacesStoreApi | undefined
+// Create a context for the Workspace Store
+export const WorkspaceStoreContext = createContext<
+	WorkspaceStoreApi | undefined
 >(undefined);
 
-// Create the Workspaces Store Provider component
-export const WorkspacesStoreProvider = ({
+// Create the Workspace Store Provider component
+export const WorkspaceStoreProvider = ({
 	children,
 }: { children: ReactNode }) => {
-	const storeRef = useRef<WorkspacesStoreApi>();
+	const storeRef = useRef<WorkspaceStoreApi>();
 
 	// Initialize the store in the ref
 	if (!storeRef.current) {
@@ -24,21 +24,21 @@ export const WorkspacesStoreProvider = ({
 	}
 
 	return (
-		<WorkspacesStoreContext.Provider value={storeRef.current}>
+		<WorkspaceStoreContext.Provider value={storeRef.current}>
 			{children}
-		</WorkspacesStoreContext.Provider>
+		</WorkspaceStoreContext.Provider>
 	);
 };
 
-// Create a hook to access the Workspaces Store
+// Create a hook to access the Workspace Store
 export const useWorkspaceStore = <T,>(
-	selector: (store: WorkspaceState) => T,
+	selector: (store: WorkspaceStore) => T,
 ): T => {
-	const context = useContext(WorkspacesStoreContext);
+	const context = useContext(WorkspaceStoreContext);
 
 	if (!context) {
 		throw new Error(
-			"useWorkspaceStore must be used within WorkspacesStoreProvider",
+			"useWorkspacetore must be used within WorkspaceStoreProvider",
 		);
 	}
 

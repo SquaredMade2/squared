@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createAuthStore, type AuthState } from ".";
+import { type AuthStore, createAuthStore } from ".";
 
 export type AuthStoreApi = ReturnType<typeof createAuthStore>;
 
@@ -23,7 +23,7 @@ export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useAuthStore = <T,>(selector: (store: AuthState) => T): T => {
+export const useAuthStore = <T,>(selector: (store: AuthStore) => T): T => {
 	const context = useContext(AuthStoreContext);
 	if (!context) {
 		throw new Error("useAuthStore must be used within AuthStoreProvider");

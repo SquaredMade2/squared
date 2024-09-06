@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createModalStore, type ModalState } from ".";
+import { createModalStore, type ModalStore } from ".";
 
 export type ModalStoreApi = ReturnType<typeof createModalStore>;
 
@@ -23,7 +23,7 @@ export const ModalStoreProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useModalStore = <T,>(selector: (store: ModalState) => T): T => {
+export const useModalStore = <T,>(selector: (store: ModalStore) => T): T => {
 	const context = useContext(ModalStoreContext);
 	if (!context) {
 		throw new Error("useModalStore must be used within ModalStoreProvider");

@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createViewsStore, type ViewsState } from ".";
+import { createViewsStore, type ViewsStore } from ".";
 
 export type ViewsStoreApi = ReturnType<typeof createViewsStore>;
 
@@ -24,7 +24,7 @@ export const ViewsStoreProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useViewsStore = <T,>(selector: (store: ViewsState) => T): T => {
+export const useViewsStore = <T,>(selector: (store: ViewsStore) => T): T => {
 	const context = useContext(ViewsStoreContext);
 
 	if (!context) {
