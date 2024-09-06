@@ -7,17 +7,6 @@ import NotificationsList from "@/components/NotificationsList";
 import ToggleNavBar from "../ToggleNavBar";
 import { useAuthStore } from "@/storeZ";
 
-export const setFillColor = (theme: string): undefined | string => {
-	switch (true) {
-		case theme === "light":
-			return "black";
-		case theme === "dark":
-			return "white";
-		default:
-			return;
-	}
-};
-
 const TopNavBar: React.FC = () => {
 	const [showFilterDropDown, setShowFilterDropDown] = useState(false);
 	const [showNotification, setShowNotification] = useState(false);
