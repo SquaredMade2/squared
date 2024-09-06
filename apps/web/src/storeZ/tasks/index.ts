@@ -4,8 +4,8 @@ import type { TaskState, TaskStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import type { Task } from "@repo/db";
 import { persist } from "zustand/middleware";
-import { useTaskStore } from "../provider";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${path}`;

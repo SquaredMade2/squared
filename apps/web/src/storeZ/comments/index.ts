@@ -4,6 +4,7 @@ import type { CommentState, CommentStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import type { Comment } from "@repo/db";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/comment/${path}`;
