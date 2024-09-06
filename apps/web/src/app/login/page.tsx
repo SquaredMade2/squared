@@ -21,8 +21,7 @@ export default function Login() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const { user, login } = useAuthStore().getState();
-	const { getWorkspace, getAllWorkspaces, workspaces, currentWorkspace } =
-		useWorkspaceStore().getState();
+	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore().getState();
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -33,7 +32,6 @@ export default function Login() {
 				email: data.email,
 				password: data.password,
 			});
-			console.log("Response:", response);
 
 			if (response?.user) {
 				toast({ title: "Login Successful, Welcome!" });

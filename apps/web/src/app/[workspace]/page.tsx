@@ -27,7 +27,7 @@ export default function Home() {
 		setLoading(true);
 		if (!user) {
 			router.push("/login");
-		} else if (!user?.onBoarding) {
+		} else if (user?.onBoarding) {
 			router.push("/join");
 		} else {
 			const fetchWorkspace = async () => {
