@@ -5,9 +5,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { filterInProgress } from "@/components/Svg";
-import { useViewsStore } from "@/storeZ/provider"; // Correct import for Zustand store
+import { useViewsStore } from "@/storeZ"; // Correct import for Zustand store
 import type { StatusFilterDropDownProps } from "./StatusFilterDropDown.interfaces";
 import { Circle, CircleCheckBig, CircleDashed, CircleX } from "lucide-react";
 import type { FilterCondition } from "@/storeZ/views";
@@ -64,7 +63,7 @@ const StatusFilterDropDown = ({
 	const [query, setQuery] = useState("");
 	const [filterOption, setFilterOption] = useState<string | null>(null);
 
-	const { addFilter } = useViewsStore().getState(); // Correct method usage from Zustand store
+	const addFilter = useViewsStore((state) => state.addFilter);
 
 	const filteredGroup =
 		query === ""

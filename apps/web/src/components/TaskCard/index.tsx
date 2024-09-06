@@ -18,12 +18,11 @@ import { formatUrl } from "@/utils/formatting";
 import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
 import TaskContextMenu from "../TaskContextMenu";
 import {
-	useAuthStore,
 	useTaskStore,
 	useTeamStore,
 	useViewsStore,
 	useWorkspaceStore,
-} from "@/storeZ/provider";
+} from "@/storeZ";
 
 const TaskCard = ({
 	filteredTasks,
@@ -32,13 +31,28 @@ const TaskCard = ({
 	location,
 }: TaskCardProps) => {
 	const router = useRouter();
-	const uniqueTasks: Task[] = [];
 
-	const { showDateTime, showPriority, showLabels, view } =
-		useViewsStore().getState();
-	const { getAllTasks, deleteTask } = useTaskStore().getState();
-	const { currentWorkspace } = useWorkspaceStore().getState();
-	const { currentTeam } = useTeamStore().getState();
+	const { showDateTime, showPriority, showLabels, view } = useViewsStore(
+		(state) => ({
+			showDateTime: state.showDateTime,
+			showPriority: state.showPriority,
+			showLabels: state.showLabels,
+			view: state.view,
+		}),
+	);
+
+	const { getAllTasks, deleteTask } = useTaskStore((state) => ({
+		getAllTasks: state.getAllTasks,
+		deleteTask: state.deleteTask,
+	}));
+
+	const { currentWorkspace } = useWorkspaceStore((state) => ({
+		currentWorkspace: state.currentWorkspace,
+	}));
+
+	const { currentTeam } = useTeamStore((state) => ({
+		currentTeam: state.currentTeam,
+	}));
 
 	const [deleteFade, setDeleteFade] = useState(false);
 	const [selectedTask, setSelectedTask] = useState<Task | null>(null);

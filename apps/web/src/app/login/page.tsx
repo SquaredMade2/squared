@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ/provider";
+import { useAuthStore, useWorkspaceStore } from "@/storeZ";
 import {
 	Card,
 	CardContent,
@@ -20,8 +20,10 @@ export default function Login() {
 	const [data, setData] = useState({ email: "", password: "" });
 	const router = useRouter();
 	const { toast } = useToast();
-	const { user, login } = useAuthStore().getState();
-	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore().getState();
+	const { user, login } = useAuthStore((state) => state);
+	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
+		(state) => state,
+	);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();

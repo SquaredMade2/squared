@@ -3,8 +3,8 @@ import { createStore } from "zustand/vanilla";
 import type { UserState, UserStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
-import { useUserStore } from "../provider";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${path}`;

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { Notification } from "@repo/db";
 import { persist } from "zustand/middleware";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/notification/${path}`;

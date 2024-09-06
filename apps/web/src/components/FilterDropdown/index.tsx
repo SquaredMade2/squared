@@ -9,7 +9,7 @@ import LabelFilterDropDown from "@/components/LabelFilterDropDown";
 import DueDateFilterDropDown from "@/components/DueDateFilterDropDown";
 import EffortFilterDropDown from "@/components/EffortFilterDropDown";
 
-import { useViewsStore } from "@/storeZ/provider";
+import { useViewsStore } from "@/storeZ";
 import {
 	Popover,
 	PopoverTrigger,
@@ -81,7 +81,10 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
-	const { currentFilter, removeFilter } = useViewsStore().getState();
+	const { currentFilter, removeFilter } = useViewsStore((state) => ({
+		currentFilter: state.currentFilter,
+		removeFilter: state.removeFilter,
+	}));
 
 	const handleSelect = (option: FilterOption) => {
 		setFilterOption(option);

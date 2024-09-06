@@ -5,14 +5,14 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check, FileSearch } from "lucide-react";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ/provider";
+import { useAuthStore, useWorkspaceStore } from "@/storeZ";
 import type { Workspace } from "@repo/db";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
-	const { user } = useAuthStore().getState();
-	const { workspaces } = useWorkspaceStore().getState();
+	const user = useAuthStore((state) => state.user);
+	const workspaces = useWorkspaceStore((state) => state.workspaces);
 	const { theme } = useAppSelector((state) => state.userSettings);
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {

@@ -15,13 +15,7 @@ import {
 	CommandItem,
 	CommandEmpty,
 } from "@/components/ui/command";
-import {
-	useAuthStore,
-	useTaskStore,
-	useUserStore,
-	useViewsStore,
-	useWorkspaceStore,
-} from "@/storeZ/provider";
+import { useUserStore, useWorkspaceStore } from "@/storeZ";
 import type { User } from "@repo/db";
 
 export const AssigneeDropdown = ({
@@ -31,9 +25,11 @@ export const AssigneeDropdown = ({
 	handleAssigneeChange,
 }: AssigneeDropdownProps) => {
 	const [query, setQuery] = useState("");
-	const { theme } = useTheme();
-	const { currentWorkspace } = useWorkspaceStore().getState();
-	const { getAllUsers, users } = useUserStore().getState();
+	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+	const { getAllUsers, users } = useUserStore((state) => ({
+		getAllUsers: state.getAllUsers,
+		users: state.users,
+	}));
 
 	useEffect(() => {
 		const fetchUsers = async () => {

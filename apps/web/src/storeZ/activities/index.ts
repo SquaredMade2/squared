@@ -2,8 +2,8 @@ import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import type { ActivityState, ActivityStore, ActivityType } from "./interfaces";
 import { persist } from "zustand/middleware";
-import { useActivityStore } from "../provider";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/activity/${path}`;

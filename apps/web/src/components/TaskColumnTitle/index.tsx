@@ -15,7 +15,7 @@ import { setShowNewIssue } from "@/store/showNewIssue";
 import { setStatus } from "@/store/taskData";
 import { useTheme } from "next-themes";
 import { cn } from "@/utils/cn";
-import { useModalStore, useViewsStore } from "@/storeZ/provider";
+import { useModalStore } from "@/storeZ";
 import type { Status } from "@repo/db";
 
 const TaskColumnTitle = ({
@@ -25,7 +25,7 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	toggleShowTasks,
 }: TaskColumnTitleProps) => {
-	const { showNewIssue, setNewIssueData } = useModalStore().getState();
+	const setNewIssueData = useModalStore((state) => state.setNewIssueData);
 
 	const showIcon = (name: string): React.ReactNode => {
 		switch (name) {

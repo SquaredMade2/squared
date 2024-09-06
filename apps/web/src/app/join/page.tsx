@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import {
-	useAuthStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/storeZ/provider";
+import { useAuthStore, useUserStore, useWorkspaceStore } from "@/storeZ";
 import { ChevronLeft } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -17,10 +13,11 @@ import { Input } from "@/components/ui/input";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
-	const { getAllWorkspaces, workspaces, addWorkspace } =
-		useWorkspaceStore().getState();
-	const { user } = useAuthStore().getState();
-	const { updateUser } = useUserStore().getState();
+	const { getAllWorkspaces, workspaces, addWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
+	const user = useAuthStore((state) => state.user);
+	const updateUser = useUserStore((state) => state.updateUser);
 	const { toast } = useToast();
 	const router = useRouter();
 
