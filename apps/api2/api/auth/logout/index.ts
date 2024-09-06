@@ -1,5 +1,5 @@
 import type { User } from "@repo/db";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Login = {
 	provider: "credentials" | "oauth";
@@ -18,24 +18,19 @@ type Body = {
 	login: Login;
 };
 
-type AuthResponse = {
-	user : User | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { userId }, body: Body): Promise<AuthResponse> => {
+		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
 			try {
 				const { type } = body.login;
 
 				if (type === "logout") {
 					res.clearCookie("token");
 					return {
-						user: null,
+						data: null,
 						message: "logout successful.",
 						variant: "default",
 					}
@@ -43,7 +38,7 @@ export function createRoute(): Route<Params> {
 				// Default case if the type is neither 'register' nor 'login'
 				res.status(401);
 				return {
-					user: null,
+					data: null,
 					message: "Invalid request type.",
 					variant: "destructive",
 				}
@@ -51,7 +46,7 @@ export function createRoute(): Route<Params> {
 				console.error("Error with auth request:", error);
 				res.status(500);
 				return {
-					user: null,
+					data: null,
 					message:
 						error instanceof Error
 							? `Error logging out: ${error.message}`
