@@ -2,10 +2,8 @@ import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskStatusSection from "@/components/TaskStatusSection";
 import TaskColumnTitle from "@/components/TaskColumnTitle";
-import type { Task } from "@repo/db";
 import type { StatusColumnProps } from "./StatusColumn.interfaces";
 import { ScrollArea } from "../ui/scroll-area";
-import { useViewsStore } from "@/storeZ/provider";
 
 const StatusColumn = ({
 	columnType,

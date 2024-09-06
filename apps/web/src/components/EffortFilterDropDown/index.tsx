@@ -6,9 +6,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { low, medium, high } from "@/components/Svg";
-import { useViewsStore } from "@/storeZ/provider"; // Adjust as necessary
+import { useViewsStore } from "@/storeZ"; // Adjust as necessary
 import type { EffortFilterDropDownProps } from "./EffortFilterDropDown.interfaces";
 import type { FilterCondition } from "@/storeZ/views";
 
@@ -69,7 +68,7 @@ const EffortFilterDropDown = ({
 	setShowEffortFilterDropDown,
 }: EffortFilterDropDownProps) => {
 	const [query, setQuery] = useState("");
-	const { addFilter } = useViewsStore().getState(); // Use the correct state management
+	const addFilter = useViewsStore((state) => state.addFilter);
 
 	const filteredGroup =
 		query === ""

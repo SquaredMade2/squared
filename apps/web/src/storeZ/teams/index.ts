@@ -1,10 +1,10 @@
 import { createStore } from "zustand/vanilla";
-export * from "./interfaces";
 import type { TeamState, TeamStore } from "./interfaces";
 import axios from "axios";
 import type { Team } from "@repo/db";
 import { persist } from "zustand/middleware";
-import { useTeamStore } from "../provider";
+export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${path}`;

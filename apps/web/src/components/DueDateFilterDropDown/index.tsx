@@ -10,21 +10,20 @@ import {
 	PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format, isBefore, isAfter, addMonths, subMonths } from "date-fns";
 import type { DueDateFilterDropDownProps } from "@/app/interfaces/Filter.interfaces";
 import { Button } from "@/components/ui/button";
-import { useViewsStore } from "@/storeZ/provider"; // Adjust this import as needed
+import { useViewsStore } from "@/storeZ";
 import type { FilterCondition } from "@/storeZ/views";
 
 const DueDateFilterDropDown = ({
 	showDueDateFilterDropDown,
 	setShowDueDateFilterDropDown,
 }: DueDateFilterDropDownProps) => {
-	const { addFilter } = useViewsStore().getState();
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(
 		"before",
 	);
+	const addFilter = useViewsStore((state) => state.addFilter);
 
 	const handleSelectDate = (date: Date) => {
 		if (selectedToggle && date) {

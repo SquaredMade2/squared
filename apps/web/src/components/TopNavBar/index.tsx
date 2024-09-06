@@ -5,7 +5,7 @@ import FilterDropDown from "@/components/FilterDropdown";
 import { SocketContext } from "@/app/SocketProvider";
 import NotificationsList from "@/components/NotificationsList";
 import ToggleNavBar from "../ToggleNavBar";
-import { useAuthStore } from "@/storeZ/provider";
+import { useAuthStore } from "@/storeZ";
 
 export const setFillColor = (theme: string): undefined | string => {
 	switch (true) {
@@ -27,7 +27,7 @@ const TopNavBar: React.FC = () => {
 	const [screenSize, setScreenSize] = useState(getCurrentDimension());
 
 	const socket = useContext(SocketContext);
-	const { user } = useAuthStore().getState();
+	const user = useAuthStore((state) => state.user);
 
 	function getCurrentDimension(): { width: number; height: number } {
 		return {

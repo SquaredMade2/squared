@@ -5,6 +5,7 @@ import "dotenv/config";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
+const vercelRegex = /^https:\/\/web-production-(\w+)-squaredmade\.vercel\.app$/;
 
 // Ensure the file is empty before writing to it
 fs.writeFileSync(outputPath, "");
@@ -83,7 +84,28 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 const app = express();
 const port = process.env.PORT || 5555;
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+const productionDomain = "https://app.squaredmade.com";
+const localDevDomain = "http://localhost:3000";
+
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			// Allow requests from Vercel branch deployments, production domain, and local development
+			if (
+				!origin ||
+				${vercelRegex}.test(origin) ||
+				origin === productionDomain ||
+				origin === localDevDomain
+			) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true, // Allows credentials to be sent in requests
+	}),
+);
 
 app.use(express.json());
 

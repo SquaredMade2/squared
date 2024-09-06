@@ -1,6 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import type { ModalState, ModalStore } from "./interfaces";
 export * from "./interfaces";
+export * from "./store";
 
 export const createModalStore = (
 	initState: ModalState = {

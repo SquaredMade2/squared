@@ -1,8 +1,9 @@
 import { createStore } from "zustand/vanilla";
-export * from "./interfaces";
 import type { ViewsStore, ViewsState } from "./interfaces";
 import { persist } from "zustand/middleware";
 import { checkCondition } from "./helpers";
+export * from "./interfaces";
+export * from "./store";
 
 export const createViewsStore = (
 	initState: ViewsState = {

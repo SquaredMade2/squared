@@ -2,14 +2,14 @@
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useParams, useRouter } from "next/navigation";
-import { useAuthStore } from "@/storeZ/provider";
+import { useAuthStore } from "@/storeZ";
 
 export default function VerifyUserToken(): void {
 	const router = useRouter();
 	const { token } = useParams();
 	const singleToken = Array.isArray(token) ? token[0] : token;
 	const { toast } = useToast();
-	const { verifyUser } = useAuthStore().getState();
+	const verifyUser = useAuthStore((state) => state.verifyUser);
 
 	useEffect(() => {
 		const verifyingUser = async (): Promise<void> => {

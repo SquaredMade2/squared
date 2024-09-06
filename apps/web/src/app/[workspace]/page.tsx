@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
-import {
-	useAuthStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/storeZ/provider";
+import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/storeZ";
 import { Loader2 } from "lucide-react";
 
 export default function Home() {
@@ -15,9 +11,9 @@ export default function Home() {
 	const router = useRouter();
 	const params = useParams();
 
-	const { user } = useAuthStore().getState();
-	const { getWorkspace } = useWorkspaceStore().getState();
-	const { getAllTeams } = useTeamStore().getState();
+	const user = useAuthStore((state) => state.user);
+	const getWorkspace = useWorkspaceStore((state) => state.getWorkspace);
+	const getAllTeams = useTeamStore((state) => state.getAllTeams);
 	let workspaceUrl = params.workspace;
 	if (Array.isArray(workspaceUrl)) {
 		workspaceUrl = workspaceUrl[0];
@@ -27,7 +23,7 @@ export default function Home() {
 		setLoading(true);
 		if (!user) {
 			router.push("/login");
-		} else if (!user?.onBoarding) {
+		} else if (user?.onBoarding) {
 			router.push("/join");
 		} else {
 			const fetchWorkspace = async () => {

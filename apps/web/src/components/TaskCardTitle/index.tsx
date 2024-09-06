@@ -14,7 +14,7 @@ import {
 	useTaskStore,
 	useTeamStore,
 	useViewsStore,
-} from "@/storeZ/provider";
+} from "@/storeZ";
 import type { User } from "@repo/db";
 
 const TaskCardTitle = ({
@@ -24,10 +24,17 @@ const TaskCardTitle = ({
 	highlightText,
 	location,
 }: TaskCardTitleProps) => {
-	const { view, showDateTime, showLabels } = useViewsStore().getState();
-	const { user } = useAuthStore().getState();
-	const { getAllTasks, updateTask } = useTaskStore().getState();
-	const { currentTeam } = useTeamStore().getState();
+	const [view, showDateTime, showLabels] = useViewsStore((state) => [
+		state.view,
+		state.showDateTime,
+		state.showLabels,
+	]);
+	const user = useAuthStore((state) => state.user);
+	const [getAllTasks, updateTask] = useTaskStore((state) => [
+		state.getAllTasks,
+		state.updateTask,
+	]);
+	const currentTeam = useTeamStore((state) => state.currentTeam);
 
 	const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
 

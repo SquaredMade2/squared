@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useAuthStore } from "@/storeZ/provider";
+import { useAuthStore } from "@/storeZ";
 
 const LogoutButton = () => {
 	const router = useRouter();
 	const { toast } = useToast();
-	const { logout } = useAuthStore().getState();
+	const logout = useAuthStore((state) => state.logout);
 
 	const handleLogout = async (): Promise<void> => {
 		try {
