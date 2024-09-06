@@ -4,11 +4,17 @@ export type UserState = {
 	users: User[];
 };
 
+export interface UserResponse {
+	user: User | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
+
 export type UserActions = {
-	addUser: (user: User) => Promise<User>;
-	updateUser: (userId: string, user: Partial<User>) => Promise<User>;
-	deleteUser: (userId: string) => void;
-	getUser: (userId: string) => Promise<User | undefined>;
+	addUser: (user: Partial<User>) => Promise<UserResponse>;
+	updateUser: (userId: string, user: Partial<User>) => Promise<UserResponse>;
+	deleteUser: (userId: string) => Promise<void>;
+	getUser: (userId: string) => Promise<UserResponse>;
 	getAllUsers: (workspaceId: string) => Promise<User[]>;
 };
 

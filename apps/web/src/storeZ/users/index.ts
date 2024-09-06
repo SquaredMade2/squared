@@ -1,8 +1,10 @@
 import axios from "axios";
 import { createStore } from "zustand/vanilla";
-import type { UserState, UserStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
+import type { UserState, UserStore, UserResponse } from "./interfaces";
+import type { User } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -14,42 +16,117 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 		persist(
 			(set, get) => ({
 				...initState,
-				addUser: async (user) => {
-					const response = await axios.post(apiString(uuidv4()), user);
-					const { users } = get();
-					set({ users: [...users, response.data] });
-					return response.data;
+				addUser: async (user: Partial<User>): Promise<UserResponse> => {
+					const userId = uuidv4();
+					try {
+						const response: { data: ApiReturnType<User> } = await axios.post(
+							apiString(userId),
+							{
+								...user,
+								id: userId,
+							},
+						);
+
+						const { data: newUser, message, variant } = response.data;
+						if (!newUser) {
+							return { user: null, message, variant };
+						}
+
+						set((state) => ({
+							...state,
+							users: [...state.users, newUser],
+						}));
+
+						return { user: newUser, message, variant };
+					} catch (error) {
+						return {
+							user: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
-				updateUser: async (userId, user) => {
-					const response = await axios.put(apiString(userId), user);
-					const { users } = get();
-					set({
-						users: users.map((user) =>
-							user.id === userId ? response.data : user,
-						),
-					});
-					return response.data;
+				updateUser: async (
+					userId: string,
+					user: Partial<User>,
+				): Promise<UserResponse> => {
+					try {
+						const response: { data: ApiReturnType<User> } = await axios.put(
+							apiString(userId),
+							user,
+						);
+						const updatedUser = response.data.data;
+						if (!updatedUser) {
+							return {
+								user: null,
+								message: response.data.message,
+								variant: response.data.variant,
+							};
+						}
+						set((state) => ({
+							users: state.users.map((u) =>
+								u.id === userId ? updatedUser : u,
+							),
+						}));
+
+						return {
+							user: updatedUser,
+							message: response.data.message,
+							variant: response.data.variant,
+						};
+					} catch (error) {
+						return {
+							user: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
-				deleteUser: async (userId) => {
-					await axios.delete(apiString(userId));
-					const { users } = get();
-					set({
-						users: users.filter((user) => user.id !== userId),
-					});
+				deleteUser: async (userId: string): Promise<void> => {
+					try {
+						await axios.delete(apiString(userId));
+						set((state) => ({
+							users: state.users.filter((u) => u.id !== userId),
+						}));
+					} catch (error) {
+						console.error("Error in deleteUser:", error);
+					}
 				},
-				getUser: async (userId) => {
+				getUser: async (userId: string): Promise<UserResponse> => {
 					const { users } = get();
-					const existing = users.find((user) => user.id === userId);
-					if (existing) return existing;
-					const response = await axios.get(apiString(userId));
-					return response.data;
+					const existingUser = users.find((u) => u.id === userId);
+					if (existingUser) {
+						return {
+							user: existingUser,
+							message: "User found",
+							variant: "default",
+						};
+					}
+
+					try {
+						const response: { data: ApiReturnType<User> } = await axios.get(
+							apiString(userId),
+						);
+						return { ...response.data, user: response.data.data };
+					} catch (error) {
+						return {
+							user: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
-				getAllUsers: async (workspaceId) => {
-					const response = await axios.get(
-						`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
-					);
-					set({ users: response.data });
-					return response.data;
+				getAllUsers: async (workspaceId: string): Promise<User[]> => {
+					try {
+						const response = await axios.get<User[]>(
+							`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
+						);
+						set({ users: response.data });
+						return response.data;
+					} catch (error) {
+						console.error("Error in getAllUsers:", error);
+						return [];
+					}
 				},
 			}),
 			{
