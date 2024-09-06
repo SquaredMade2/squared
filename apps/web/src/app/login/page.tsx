@@ -39,7 +39,7 @@ export default function Login() {
 				toast({ title: "Login Successful, Welcome!" });
 
 				if (response.user.defaultWorkspaceId) {
-					const workspace = await getWorkspace(
+					const { workspace } = await getWorkspace(
 						response.user.defaultWorkspaceId,
 					);
 					if (workspace?.url) {
@@ -77,7 +77,7 @@ export default function Login() {
 			const checkUserWorkspaces = async () => {
 				setLoading(true);
 				if (user.defaultWorkspaceId) {
-					const workspace = await getWorkspace(user.defaultWorkspaceId);
+					const { workspace } = await getWorkspace(user.defaultWorkspaceId);
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}
