@@ -85,6 +85,7 @@ const app = express();
 const port = process.env.PORT || 5555;
 
 const productionDomain = "https://app.squaredmade.com";
+const localDevDomain = "http://localhost:3000";
 
 app.use(
 	cors({
