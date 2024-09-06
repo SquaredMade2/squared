@@ -1,18 +1,14 @@
 import type { Notification } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	notificationId: string;
 };
-type NotificationResponse = {
-	notification : Notification | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
+
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { notificationId }, body): Promise<NotificationResponse> => {
+		POST: async (res, { notificationId }, body): Promise<APIResponse<Notification>> => {
 			try {
 				const existingUser = await prisma.user.findUnique({
 					where: { id: body.userId },
@@ -20,7 +16,7 @@ export function createRoute(): Route<Params> {
 
 				if (!existingUser) {
 					return {
-						notification: null,
+						data: null,
 						message: "Cannot find user",
 						variant: "destructive"
 					};
@@ -35,7 +31,7 @@ export function createRoute(): Route<Params> {
 
 				if (!newNotification) {
 					return {
-						notification: null,
+						data: null,
 						message: "notification not created",
 						variant: "destructive"
 					};
@@ -43,19 +39,19 @@ export function createRoute(): Route<Params> {
 
 				// Return the new notification
 				return {
-					notification: newNotification,
+					data: newNotification,
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error creating notification:", error);
 				return {
-					notification: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		DELETE: async (res, { notificationId }): Promise<NotificationResponse> => {
+		DELETE: async (res, { notificationId }): Promise<APIResponse<Notification>> => {
 			try {
 				const notification: Notification | null =
 					await prisma.notification.delete({
@@ -63,7 +59,7 @@ export function createRoute(): Route<Params> {
 					});
 				if (!notification) {
 					return {
-						notification: null,
+						data: null,
 						message: "Notification not found",
 						variant: "destructive"
 					};
@@ -71,14 +67,14 @@ export function createRoute(): Route<Params> {
 
 				// Return success message
 				return {
-					notification: null,
+					data: null,
 					message: "Notification deleted",
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error deleting notification:", error);
 				return {
-					notification: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};

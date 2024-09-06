@@ -1,20 +1,14 @@
 import type { User } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	userId: string;
 };
 
-type UserResponse = {
-	user : User | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
-
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { userId }): Promise<UserResponse> => {
+		GET: async (res, { userId }): Promise<APIResponse<User>> => {
 			try {
 				const user: User | null = await prisma.user.findUnique({
 					where: { id: userId },
@@ -22,26 +16,26 @@ export function createRoute(): Route<Params> {
 
 				if (!user) {
 					return {
-						user: null,
+						data: null,
 						message: "User not found",
 						variant: "destructive"
 					};
 				}
 
 				return {
-					user: user,
+					data: user,
 					variant:"default"
 				};
 			} catch (err) {
 				console.error("Error finding user:", err);
 				return {
-					user: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		PUT: async (res, { userId }, body): Promise<UserResponse> => {
+		PUT: async (res, { userId }, body): Promise<APIResponse<User>> => {
 			try {
 				const user: User | null = await prisma.user.update({
 					where: { id: userId },
@@ -50,33 +44,33 @@ export function createRoute(): Route<Params> {
 
 				if (!user) {
 					return {
-						user: null,
+						data: null,
 						message: "User not found",
 						variant: "destructive"
 					};
 				}
 
 				return {
-					user: user,
+					data: user,
 					variant:"default"
 				};
 			} catch (err) {
 				console.error("Error updating user:", err);
 				return {
-					user: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		POST: async (res, { userId }, body): Promise<UserResponse> => {
+		POST: async (res, { userId }, body): Promise<APIResponse<User>> => {
 			try {
 				const ifUserExists: User | null = await prisma.user.findUnique({
 					where: { id: userId },
 				});
 				if (ifUserExists) {
 					return {
-						user: null,
+						data: null,
 						message: "User already exists",
 						variant: "destructive"
 					};
@@ -92,26 +86,26 @@ export function createRoute(): Route<Params> {
 
 				if (!newUser) {
 					return {
-						user: null,
+						data: null,
 						message: "failed to created new user",
 						variant: "destructive"
 					};
 				}
 
 				return {
-					user: newUser,
+					data: newUser,
 					variant:"default"
 				};
 			} catch (err) {
 				console.error("Error while creating new user:", err);
 				return {
-					user: null,
+					data: null,
 					message: "failed to created new user",
 					variant: "destructive"
 				};
 			}
 		},
-		DELETE: async (res, { userId }): Promise<UserResponse> => {
+		DELETE: async (res, { userId }): Promise<APIResponse<User>> => {
 			try {
 				const user = await prisma.user.delete({
 					where: { id: userId },
@@ -119,21 +113,21 @@ export function createRoute(): Route<Params> {
 
 				if (!user) {
 				return {
-					user: null,
+					data: null,
 					message: "Failed to delete User",
 					variant: "destructive"
 				};
 				}
 
 				return {
-					user: null,
+					data: null,
 					message:"User deleted",
 					variant:"default"
 				};
 			} catch (err) {
 				console.error("Error while creating new user", err);
 				return {
-					user: null,
+					data: null,
 					message: "Failed to delete User",
 					variant: "destructive"
 				};

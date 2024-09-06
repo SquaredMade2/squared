@@ -1,20 +1,15 @@
 import type { Workspace } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	workspaceId: string;
 };
 
-type WorkspaceResponse = {
-	workspace: Workspace | null;
-	message?: string;
-	variant: "default" | "destructive";
-}
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { workspaceId }): Promise<WorkspaceResponse> => {
+		GET: async (res, { workspaceId }): Promise<APIResponse<Workspace>> => {
 			try {
 				// Find workspace by workspace ID
 				const idWorkspace = await prisma.workspace.findUnique({
@@ -29,7 +24,7 @@ export function createRoute(): Route<Params> {
 
 				if (!workspace) {
 					return {
-						workspace: null,
+						data: null,
 						message: "Workspace not found",
 						variant: "destructive",
 					};
@@ -37,19 +32,19 @@ export function createRoute(): Route<Params> {
 
 				// Return the found workspace
 				return {
-					workspace: workspace,
+					data: workspace,
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error finding workspace:", error);
 				return {
-					workspace: null,
+					data: null,
 					message: "Internal server error",
 					variant: "destructive",
 				};
 			}
 		},
-		PUT: async (res, { workspaceId }, body): Promise<WorkspaceResponse> => {
+		PUT: async (res, { workspaceId }, body): Promise<APIResponse<Workspace>> => {
 			try {
 				const workspace = await prisma.workspace.update({
 					where: { id: workspaceId },
@@ -57,7 +52,7 @@ export function createRoute(): Route<Params> {
 				});
 				if (!workspace) {
 					return {
-						workspace: null,
+						data: null,
 						message: "Workspace not found",
 						variant: "destructive",
 					};
@@ -65,13 +60,13 @@ export function createRoute(): Route<Params> {
 
 				// Return the updated workspace
 				return {
-					workspace: workspace,
+					data: workspace,
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error updating workspace:", error);
 				return {
-					workspace: null,
+					data: null,
 					message: "Internal server error",
 					variant: "destructive",
 				};
@@ -81,7 +76,7 @@ export function createRoute(): Route<Params> {
 			res,
 			{ workspaceId },
 			body: { workspace: Workspace; userId: string },
-		): Promise<WorkspaceResponse> => {
+		): Promise<APIResponse<Workspace>> => {
 			try {
 				const existingWorkspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
@@ -90,7 +85,7 @@ export function createRoute(): Route<Params> {
 				if (existingWorkspace) {
 					console.error("Workspace already exists");
 					return {
-						workspace: null,
+						data: null,
 						message: "Workspace already exists",
 						variant: "destructive",
 					};
@@ -110,7 +105,7 @@ export function createRoute(): Route<Params> {
 				if (!newWorkspace) {
 					console.error("Workspace not created");
 					return {
-						workspace: null,
+						data: null,
 						message: "Workspace not created",
 						variant: "destructive",
 					};
@@ -131,27 +126,27 @@ export function createRoute(): Route<Params> {
 
 				// Return the new workspace
 				return {
-					workspace: newWorkspace,
+					data: newWorkspace,
 					variant: "default",
 					message: "Workspace created successfully",
 				};
 			} catch (error) {
 				console.error("Error creating workspace:", error);
 				return {
-					workspace: null,
+					data: null,
 					message: "Internal server error",
 					variant: "destructive",
 				};
 			}
 		},
-		DELETE: async (res, { workspaceId }): Promise<WorkspaceResponse> => {
+		DELETE: async (res, { workspaceId }): Promise<APIResponse<Workspace>> => {
 			try {
 				const workspace = await prisma.workspace.delete({
 					where: { id: workspaceId },
 				});
 				if (!workspace) {
 					return {
-						workspace: null,
+						data: null,
 						message: "Workspace not found",
 						variant: "destructive",
 					};
@@ -159,14 +154,14 @@ export function createRoute(): Route<Params> {
 
 				// Return success message
 				return {
-					workspace: workspace,
+					data: workspace,
 					message:"Workspace deleted",
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error deleting workspace:", error);
 				return {
-					workspace: null,
+					data: null,
 					message: "Internal server error",
 					variant: "destructive",
 				};

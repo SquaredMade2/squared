@@ -1,20 +1,15 @@
 import type { User } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	workspaceId: string;
 };
 
-type UserResponse = {
-	users : User[] | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { workspaceId }): Promise<UserResponse> => {
+		GET: async (res, { workspaceId }): Promise<APIResponse<User>> => {
 			try {
 				const users: User[] | null = await prisma.user.findMany({
 					where: {
@@ -28,20 +23,20 @@ export function createRoute(): Route<Params> {
 
 				if (!users) {
 					return {
-						users: null,
+						data: null,
 						message: "No Users found",
 						variant: "destructive"
 					};
 				}
 
 				return {
-					users: users,
+					data: users,
 					variant: "default"
 				};
 			} catch (err) {
 				console.error("Error finding users:", err);
 				return {
-					users: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};

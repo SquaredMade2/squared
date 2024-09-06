@@ -1,15 +1,21 @@
 import type { Request, Response, NextFunction } from "express";
 import type { ParsedQs } from "qs";
 
+export type APIResponse<Type> = {
+	data : Type | Type[] | null,
+	message?: string,
+	variant: "default" | "destructive"
+}
+
 export type Route<P = Record<string, string>> = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	GET?: (res: Response, params: P, query: ParsedQs) => Promise<any>;
+	GET?: (res: Response, params: P, query: ParsedQs) => Promise<APIResponse<Object>>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	POST?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<any>;
+	POST?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<APIResponse<Object>>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	PUT?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<any>;
+	PUT?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<APIResponse<Object>>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	DELETE?: (res: Response, params: P, query: ParsedQs) => Promise<any>;
+	DELETE?: (res: Response, params: P, query: ParsedQs) => Promise<APIResponse<Object>>;
 };
 
 function handleNotSupported(_: unknown, res: Response) {
@@ -17,28 +23,28 @@ function handleNotSupported(_: unknown, res: Response) {
 }
 
 export function toQueryHandler<P = Record<string, string>>(
-	f?: (params: P, query: ParsedQs) => Promise<unknown>,
+	f?: (res:Response, params: P, query: ParsedQs) => Promise<unknown>,
 ) {
 	if (!f) return handleNotSupported;
 
 	return (req: Request<P>, res: Response, next: NextFunction) => {
-		f(req.params, req.query).then((data) => res.json(data), next);
+		f(res, req.params, req.query).then((data) => res.json(data), next);
 	};
 }
 
 export function toMutationHandler<P = Record<string, string>>(
-	f?: (
+	f?: (	
+		res: Response,
 		params: P,
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		body: any,
-		res: Response,
 		query: ParsedQs,
 	) => Promise<unknown>,
 ) {
 	if (!f) return handleNotSupported;
 
 	return (req: Request<P>, res: Response, next: NextFunction) => {
-		f(req.params, req.body, res, req.query).then(
+		f(res, req.params, req.body, req.query).then(
 			(data) => res.json(data),
 			next,
 		);

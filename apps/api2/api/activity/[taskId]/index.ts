@@ -1,6 +1,6 @@
 import type { Prisma, Task } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
 import { Activity } from "@repo/test-db";
 
@@ -12,15 +12,10 @@ type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
 
-type ActivityResponse = {
-	activity : Activity | Activity[] | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { taskId }): Promise<ActivityResponse> => {
+		GET: async (res, { taskId }): Promise<APIResponse<Activity>> => {
 			try {
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
@@ -28,8 +23,9 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
+					res.status(404);
 					return {
-						activity: null,
+						data: null,
 						message:"Task not found",
 						variant:"destructive"
 					};
@@ -44,8 +40,9 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!taskEventLogWithActivities) {
+					res.status(404);
 					return {
-						activity: null,
+						data: null,
 						message:"Task event log not found",
 						variant:"destructive"
 					};
@@ -53,27 +50,29 @@ export function createRoute(): Route<Params> {
 
 				// Return the found activities
 				return {
-					activity: taskEventLogWithActivities.activities,
+					data: taskEventLogWithActivities.activities,
 					variant:"default"
 				}
 			} catch (error) {
 				console.error("Error finding task:", error);
+				res.status(500);
 				return {
-					activity: null,
+					data: null,
 					message:"Internal server error",
 					variant:"destructive"
 				};
 			}
 		},
-		POST: async (res, { taskId }, body): Promise<ActivityResponse> => {
+		POST: async (res, { taskId }, body): Promise<APIResponse<Activity>> => {
 			try {
 				const task = await prisma.task.findUnique({
 					where: { id: taskId },
 				});
 
 				if (!task) {
+					res.status(404);
 					return {
-						activity: null,
+						data: null,
 						message:"Task not found",
 						variant:"destructive"
 					};
@@ -114,7 +113,7 @@ export function createRoute(): Route<Params> {
 						include: { commit: true },
 					});
 					return {
-						activity: newActivityWithCommit,
+						data: newActivityWithCommit,
 						variant:"default"
 					}
 				}
@@ -125,20 +124,22 @@ export function createRoute(): Route<Params> {
 						include: { taskEvent: true },
 					});
 					return {
-						activity:newActivityWithTaskEvent,
+						data:newActivityWithTaskEvent,
 						variant:"default"
 					};
 				}
-
+				
+				res.status(401);
 				return {
-					activity: null,
+					data: null,
 					message:"Invalid Activity type",
 					variant:"destructive"
 				};
 			} catch (error) {
 				console.error("Error creating task:", error);
+				res.status(500);
 				return {
-					activity: null,
+					data: null,
 					message:"Internal server error",
 					variant:"destructive"
 				};

@@ -1,7 +1,7 @@
 import type { User, Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 import { comparePassword, hashPassword, sendMail } from "./helpers";
 
 type Body = {
@@ -17,22 +17,19 @@ type Params = {
 	userId: string;
 };
 
-type AuthResponse = {
-	user: User | null;
-	message: string;
-	variant: "destructive" | "default";
-};
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { userId }, body: Body): Promise<AuthResponse> => {
+		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
 			try {
-				const { email, password, provider, type, name, username } = body;
+				const
+				 { email, password, provider, type, name, username } = body;
 
 				// Validation for Login Data
 				if (!email || (provider === "credentials" && !password)) {
+					res.status(401);
 					return {
 						user: null,
 						message: "Email and password are required.",
@@ -41,6 +38,7 @@ export function createRoute(): Route<Params> {
 				}
 
 				if (!JWT_SECRET) {
+					res.status(500);
 					return {
 						user: null,
 						message: "JWT_SECRET is not defined.",
@@ -52,6 +50,7 @@ export function createRoute(): Route<Params> {
 				if (type === "register") {
 					// Registration Validation
 					if (!name || !username) {
+						res.status(401);
 						return {
 							user: null,
 							message: "Name is required.",
@@ -59,6 +58,7 @@ export function createRoute(): Route<Params> {
 						};
 					}
 					if (!password || password.length < 6) {
+						res.status(401);
 						return {
 							user: null,
 							message:
@@ -73,6 +73,7 @@ export function createRoute(): Route<Params> {
 					});
 
 					if (existingUser) {
+						res.status(401);
 						return {
 							user: null,
 							message: "This email is already registered.",
@@ -102,6 +103,7 @@ export function createRoute(): Route<Params> {
 					} catch (error) {
 						console.error("Error sending email:", error);
 						await prisma.user.delete({ where: { id: user.id } });
+						res.status(500);
 						return {
 							user: null,
 							message: "Error sending email.",
@@ -109,6 +111,7 @@ export function createRoute(): Route<Params> {
 						};
 					}
 
+					res.status(201);
 					return {
 						user,
 						message: `Sent a verification email to ${email}`,
@@ -122,6 +125,7 @@ export function createRoute(): Route<Params> {
 					});
 
 					if (!user) {
+						res.status(404);
 						return {
 							user: null,
 							message: "No user found, please register.",
@@ -136,7 +140,7 @@ export function createRoute(): Route<Params> {
 
 						// Send verification email if they're not verified
 						await sendMail(email, user.name, emailToken, "confirmation");
-
+						res.status(401);
 						return {
 							user: null,
 							message:
@@ -148,6 +152,7 @@ export function createRoute(): Route<Params> {
 					// Logic for if they logged in with email and password
 					if (provider === "credentials") {
 						if (!password) {
+							res.status(401);
 							return {
 								user: null,
 								message: "Password is required.",
@@ -160,6 +165,7 @@ export function createRoute(): Route<Params> {
 						);
 
 						if (!passwordMatch) {
+							res.status(401);
 							return {
 								user: null,
 								message: "Incorrect Password",
@@ -198,6 +204,7 @@ export function createRoute(): Route<Params> {
 				}
 
 				// Default case if the type is neither 'register' nor 'login'
+				res.status(401);
 				return {
 					user: null,
 					message: "Invalid request type.",
@@ -205,6 +212,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error with auth request:", error);
+				res.status(500);
 				return {
 					user: null,
 					message: "Internal server error",

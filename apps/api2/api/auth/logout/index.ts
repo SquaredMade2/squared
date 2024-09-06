@@ -41,6 +41,7 @@ export function createRoute(): Route<Params> {
 					}
 				}
 				// Default case if the type is neither 'register' nor 'login'
+				res.status(401);
 				return {
 					user: null,
 					message: "Invalid request type.",
@@ -48,6 +49,7 @@ export function createRoute(): Route<Params> {
 				}
 			} catch (error) {
 				console.error("Error with auth request:", error);
+				res.status(500);
 				return {
 					user: null,
 					message:

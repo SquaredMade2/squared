@@ -1,20 +1,15 @@
 import type { Team } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	teamId: string;
 };
 
-type TeamResponse = {
-	team : Team | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { teamId }, query): Promise<TeamResponse> => {
+		GET: async (res, { teamId }, query): Promise<APIResponse<Team>> => {
 			try {
 				// Find team by ID
 				const team: Team | null = await prisma.team.findFirst({
@@ -23,7 +18,7 @@ export function createRoute(): Route<Params> {
 
 				if (!team) {
 					return {
-						team: null,
+						data: null,
 						message: "Team not found",
 						variant: "destructive"
 					};
@@ -31,19 +26,19 @@ export function createRoute(): Route<Params> {
 
 				// Return the found team
 				return {
-					team: team,
+					data: team,
 					variant:"default"
 				};
 			} catch (error) {
 				console.error("Error finding team:", error);
 				return {
-					team: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		POST: async (res, { teamId }, body): Promise<TeamResponse> => {
+		POST: async (res, { teamId }, body): Promise<APIResponse<Team>> => {
 			try {
 				const existingTeam = await prisma.team.findFirst({
 					where: { id: teamId },
@@ -51,7 +46,7 @@ export function createRoute(): Route<Params> {
 
 				if (existingTeam) {
 					return {
-						team: null,
+						data: null,
 						message: "Team already exists",
 						variant: "destructive"
 					};
@@ -66,19 +61,19 @@ export function createRoute(): Route<Params> {
 
 				// Return the new task
 				return {
-					team: newTeam,
+					data: newTeam,
 					variant:"default"
 				};
 			} catch (error) {
 				console.error("Error creating team:", error);
 				return {
-					team: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		PUT: async (res, { teamId }, body): Promise<TeamResponse> => {
+		PUT: async (res, { teamId }, body): Promise<APIResponse<Team>> => {
 			try {
 				const team: Team | null = await prisma.team.update({
 					where: { id: teamId },
@@ -87,7 +82,7 @@ export function createRoute(): Route<Params> {
 
 				if (!team) {
 					return {
-						team: null,
+						data: null,
 						message: "Team not found",
 						variant: "destructive"
 					};
@@ -95,19 +90,19 @@ export function createRoute(): Route<Params> {
 
 				// Return the updated team
 				return {
-					team: team,
+					data: team,
 					variant:"default"
 				};
 			} catch (error) {
 				console.error("Error updating team:", error);
 				return {
-					team: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		DELETE: async (res, { teamId }): Promise<TeamResponse> => {
+		DELETE: async (res, { teamId }): Promise<APIResponse<Team>> => {
 			try {
 				const team: Team | null = await prisma.team.delete({
 					where: { id: teamId },
@@ -115,7 +110,7 @@ export function createRoute(): Route<Params> {
 
 				if (!team) {
 					return {
-						team: null,
+						data: null,
 						message: "Team not found",
 						variant: "destructive"
 					};
@@ -123,14 +118,14 @@ export function createRoute(): Route<Params> {
 
 				// Return success message
 				return {
-					team: null,
+					data: null,
 					message:"team deleted",
 					variant:"default"
 				};
 			} catch (error) {
 				console.error("Error deleting team:", error);
 				return {
-					team: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};

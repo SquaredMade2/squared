@@ -1,20 +1,15 @@
 import type { Notification, User } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	userId: string;
 };
 
-type NotificationResponse = {
-	notifications : Notification[] | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { userId }): Promise<NotificationResponse> => {
+		GET: async (res, { userId }): Promise<APIResponse<Notification>> => {
 			try {
 				// Find the task by its ID
 				const user: User | null = await prisma.user.findUnique({
@@ -23,7 +18,7 @@ export function createRoute(): Route<Params> {
 
 				if (!user) {
 					return {
-						notifications: null,
+						data: null,
 						message: "User not found",
 						variant: "destructive"
 					};
@@ -37,19 +32,19 @@ export function createRoute(): Route<Params> {
 
 				// Return the found notifications
 				return {
-					notifications: notifications,
+					data: notifications,
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error finding notifications:", error);
 				return {
-					notifications: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};
 			}
 		},
-		DELETE: async (res, { userId }): Promise<NotificationResponse> => {
+		DELETE: async (res, { userId }): Promise<APIResponse<Notification>> => {
 			try {
 				await prisma.notification.deleteMany({
 					where: { userId },
@@ -57,14 +52,14 @@ export function createRoute(): Route<Params> {
 
 				// Return success message
 				return {
-					notifications: null,
+					data: null,
 					message: "Notifications cleared",
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error deleting notification:", error);
 				return {
-					notifications: null,
+					data: null,
 					message: "Internal Server Error",
 					variant: "destructive"
 				};

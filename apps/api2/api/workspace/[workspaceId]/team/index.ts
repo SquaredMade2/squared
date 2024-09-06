@@ -1,20 +1,14 @@
 import type { Team } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	workspaceId: string;
 };
 
-type TeamResponse = {
-	teams : Team[] | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
-
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { workspaceId }, query): Promise<TeamResponse> => {
+		GET: async (res, { workspaceId }, query): Promise<APIResponse<Team>> => {
 			try {
 				// Find teams by team ID
 				const teams: Team[] | null = await prisma.team.findMany({
@@ -23,7 +17,7 @@ export function createRoute(): Route<Params> {
 
 				if (!teams) {
 					return {
-						teams: teams,
+						data: teams,
 						message:"Teams not found",
 						variant: "destructive"
 					};
@@ -31,13 +25,13 @@ export function createRoute(): Route<Params> {
 
 				// Return the found teams
 				return {
-					teams: teams,
+					data: teams,
 					variant: "default"
 				};
 			} catch (error) {
 				console.error("Error finding teams:", error);
 				return {
-					teams: null,
+					data: null,
 					message: "Internal server error",
 					variant: "destructive"
 				};
