@@ -31,6 +31,7 @@ const useLogTaskEvent = () => {
 			id: "",
 			name: "",
 		},
+		gitUpdated: "",
 	});
 	const [valueUpdated, setValueUpdated] = useState(false);
 	const [assigneeUpdated, setAssigneeUpdated] = useState(false);
@@ -184,6 +185,7 @@ const useLogTaskEvent = () => {
 				id: "",
 				name: "",
 			},
+			gitUpdated: "",
 		});
 	};
 
