@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export interface resumeNewIssueState {
+interface resumeNewIssueState {
 	hasData: boolean;
 }
 

@@ -2,8 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore } from "@/storeZ/provider";
-import { SqLogo } from "@/components/Svg";
+import { useAuthStore } from "@/storeZ";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
 	Card,
@@ -26,7 +25,7 @@ export default function RegisterUser() {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const { toast } = useToast();
-	const { register } = useAuthStore();
+	const register = useAuthStore((state) => state.register);
 
 	const handlePushLogin = () => {
 		router.push("/login");

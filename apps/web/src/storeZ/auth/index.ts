@@ -2,8 +2,8 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
-import { useAuthStore } from "../provider";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/auth/${path}`;

@@ -4,5 +4,4 @@ import type { Dispatch, SetStateAction } from "react";
 export interface StatusFilterDropDownProps {
 	showStatusFilterDropDown: boolean;
 	setShowStatusFilterDropDown: Dispatch<SetStateAction<boolean>>;
-	handleFilter: (filterOption: FilterOption) => void;
 }

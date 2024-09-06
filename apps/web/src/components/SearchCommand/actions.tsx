@@ -23,7 +23,7 @@ import {
 	ArrowLeftRight,
 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
-import { useAuthStore } from "@/storeZ/provider";
+import { useAuthStore } from "@/storeZ";
 
 export class commandSchema {
 	router = useRouter();
@@ -309,7 +309,7 @@ export class commandSchema {
 					icon: <LogOut />,
 					text: "Log out",
 					function: async () => {
-						const { logout } = useAuthStore();
+						const logout = useAuthStore((state) => state.logout);
 						try {
 							await logout();
 							this.showToast("Logged out successfully", "default");

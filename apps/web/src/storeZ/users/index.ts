@@ -3,26 +3,26 @@ import { createStore } from "zustand/vanilla";
 import type { UserState, UserStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
-import { useUserStore } from "../provider";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.SERVER_URL}/api/user/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${path}`;
 
 export const createUserStore = (initState: UserState = { users: [] }) => {
 	return createStore<UserStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				addUser: async (user) => {
 					const response = await axios.post(apiString(uuidv4()), user);
-					const { users } = useUserStore();
+					const { users } = get();
 					set({ users: [...users, response.data] });
 					return response.data;
 				},
 				updateUser: async (userId, user) => {
 					const response = await axios.put(apiString(userId), user);
-					const { users } = useUserStore();
+					const { users } = get();
 					set({
 						users: users.map((user) =>
 							user.id === userId ? response.data : user,
@@ -32,13 +32,13 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 				},
 				deleteUser: async (userId) => {
 					await axios.delete(apiString(userId));
-					const { users } = useUserStore();
+					const { users } = get();
 					set({
 						users: users.filter((user) => user.id !== userId),
 					});
 				},
 				getUser: async (userId) => {
-					const { users } = useUserStore();
+					const { users } = get();
 					const existing = users.find((user) => user.id === userId);
 					if (existing) return existing;
 					const response = await axios.get(apiString(userId));
@@ -46,7 +46,7 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 				},
 				getAllUsers: async (workspaceId) => {
 					const response = await axios.get(
-						`${process.env.SERVER_URL}/api/workspace/${workspaceId}/user`,
+						`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
 					);
 					set({ users: response.data });
 					return response.data;

@@ -8,7 +8,8 @@ import type {
 	WorkspaceResponse,
 } from "./interfaces";
 import type { Workspace } from "@repo/db";
-export { type WorkspaceStore } from "./interfaces";
+export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${path}`;
@@ -113,6 +114,9 @@ export const createWorkspaceStore = (
 						throw error;
 					}
 				},
+				setCurrentWorkspace: (workspace: Workspace): void => {
+					set({ currentWorkspace: workspace });
+				},
 				deleteWorkspace: (workspaceId: string): void => {
 					try {
 						axios.delete(apiString(workspaceId));
@@ -126,7 +130,7 @@ export const createWorkspaceStore = (
 				getAllWorkspaces: async (userId: string): Promise<Workspace[]> => {
 					try {
 						const response = await axios.get<Workspace[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspaces`,
+							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
 						);
 
 						set({ workspaces: response.data });

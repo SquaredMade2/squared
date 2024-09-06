@@ -4,8 +4,8 @@ import type { NotificationState, NotificationStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
 import type { Notification } from "@repo/db";
 import { persist } from "zustand/middleware";
-import { useNotificationStore } from "../provider";
 export * from "./interfaces";
+export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/notification/${path}`;
@@ -15,17 +15,17 @@ export const createNotificationStore = (
 ) => {
 	return createStore<NotificationStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				addNotification: async (notification) => {
 					const response = await axios.post(apiString(uuidv4()), notification);
-					const { notifications } = useNotificationStore();
+					const { notifications } = get();
 					set({ notifications: [...notifications, response.data] });
 					return response.data;
 				},
 				deleteNotification: async (notificationId) => {
 					await axios.delete(apiString(notificationId));
-					const { notifications } = useNotificationStore();
+					const { notifications } = get();
 					set({
 						notifications: notifications.filter((t) => t.id !== notificationId),
 					});

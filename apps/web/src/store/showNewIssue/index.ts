@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface showNewIssueState {
+interface showNewIssueState {
 	isOpen: boolean;
 }
 

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface isCmdPaletteInitialState {
+interface isCmdPaletteInitialState {
 	isCmdPalette: boolean;
 }
 

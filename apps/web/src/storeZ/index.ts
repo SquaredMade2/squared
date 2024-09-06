@@ -1,42 +1,14 @@
-import { createStore, type StoreApi } from "zustand/vanilla";
-import { createActivityStore, type ActivityStore } from "./activities";
-import { createAuthStore, type AuthStore } from "./auth";
-import { createCommentStore, type CommentStore } from "./comments";
-import { createModalStore, type ModalStore } from "./modals";
-import {
-	createNotificationStore,
-	type NotificationStore,
+export { SquaredStoreProvider } from "./provider";
+export { useActivityStore, ActivityStoreContext } from "./activities";
+export { useAuthStore, AuthStoreContext } from "./auth";
+export { useCommentStore, CommentStoreContext } from "./comments";
+export { useModalStore, ModalStoreContext } from "./modals";
+export {
+	useNotificationStore,
+	NotificationStoreContext,
 } from "./notifications";
-import { createTaskStore, type TaskStore } from "./tasks";
-import { createTeamStore, type TeamStore } from "./teams";
-import { createUserStore, type UserStore } from "./users";
-import { createViewsStore, type ViewsStore } from "./views";
-import { createWorkspaceStore, type WorkspaceStore } from "./workspaces";
-
-export type SquaredState = {
-	activities: StoreApi<ActivityStore>;
-	auth: StoreApi<AuthStore>;
-	comments: StoreApi<CommentStore>;
-	modals: StoreApi<ModalStore>;
-	notifications: StoreApi<NotificationStore>;
-	tasks: StoreApi<TaskStore>;
-	teams: StoreApi<TeamStore>;
-	users: StoreApi<UserStore>;
-	views: StoreApi<ViewsStore>;
-	workspaces: StoreApi<WorkspaceStore>;
-};
-
-export const createSquaredStore = () => {
-	return createStore<SquaredState>()(() => ({
-		activities: createActivityStore(),
-		auth: createAuthStore(),
-		comments: createCommentStore(),
-		modals: createModalStore(),
-		notifications: createNotificationStore(),
-		tasks: createTaskStore(),
-		teams: createTeamStore(),
-		users: createUserStore(),
-		views: createViewsStore(),
-		workspaces: createWorkspaceStore(),
-	}));
-};
+export { useTaskStore, TaskStoreContext } from "./tasks";
+export { useTeamStore, TeamStoreContext } from "./teams";
+export { useUserStore, UserStoreContext } from "./users";
+export { useViewsStore, ViewsStoreContext } from "./views";
+export { useWorkspaceStore, WorkspaceStoreContext } from "./workspaces";
