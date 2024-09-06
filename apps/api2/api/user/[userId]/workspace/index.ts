@@ -1,15 +1,16 @@
 import type { Workspace } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	userId: string;
 	workspaceId: string;
 };
 
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ userId }) => {
+		GET: async (res, { userId }): Promise<APIResponse<Workspace>> => {
 			try {
 				// Find workspaces a certain user belongs to
 
@@ -20,14 +21,28 @@ export function createRoute(): Route<Params> {
 					);
 
 				if (!userWorkspaces) {
-					throw new Error("Workspace not found");
+					res.status(404);
+					return {
+						data: null,
+						message: "Workspace not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the found workspaces
-				return userWorkspaces;
+				return {
+					data: userWorkspaces,
+					message: "",
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error finding user workspaces:", error);
-				throw new Error("Internal server error");
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal Sever Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};
