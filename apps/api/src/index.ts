@@ -80,8 +80,9 @@ mongoose
 	});
 
 const vercelBranchPattern =
-	/^https:\/\/squared-[a-z0-9-]+-squared-52c50d26\.vercel\.app$/;
-const productionDomain = "https://squared-web.vercel.app";
+	/^https:\/\/web-production-(\w+)-squaredmade\.vercel\.app$/;
+const productionDomain = "https://app.squaredmade.com";
+const developDomain = "https://app-develop.squaredmade.com";
 const localDevDomain = "http://localhost:3000";
 
 app.use(
@@ -92,6 +93,7 @@ app.use(
 				!origin ||
 				vercelBranchPattern.test(origin) ||
 				origin === productionDomain ||
+				origin === developDomain ||
 				origin === localDevDomain
 			) {
 				callback(null, true);
