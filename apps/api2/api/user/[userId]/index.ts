@@ -15,6 +15,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
+					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -28,6 +29,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (err) {
 				console.error("Error finding user:", err);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -43,6 +45,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
+					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -56,6 +59,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (err) {
 				console.error("Error updating user:", err);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -69,6 +73,7 @@ export function createRoute(): Route<Params> {
 					where: { id: userId },
 				});
 				if (ifUserExists) {
+					res.status(401);
 					return {
 						data: null,
 						message: "User already exists",
@@ -85,6 +90,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newUser) {
+					res.status(500);
 					return {
 						data: null,
 						message: "failed to created new user",
@@ -98,6 +104,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (err) {
 				console.error("Error while creating new user:", err);
+				res.status(500);
 				return {
 					data: null,
 					message: "failed to created new user",
@@ -112,6 +119,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
+					res.status(500);
 				return {
 					data: null,
 					message: "Failed to delete User",
@@ -126,6 +134,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (err) {
 				console.error("Error while creating new user", err);
+				res.status(500);
 				return {
 					data: null,
 					message: "Failed to delete User",

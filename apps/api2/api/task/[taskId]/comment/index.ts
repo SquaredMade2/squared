@@ -17,6 +17,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!comments) {
+					res.status(404);
 					return { 
 						data: comments,
 						message: "comments not found",
@@ -31,6 +32,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding comments:", error);
+				res.status(500);
 				return { 
 					data: null,
 					message: "Internal Server Error",

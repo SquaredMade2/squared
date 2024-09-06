@@ -17,6 +17,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -31,6 +32,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding task:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal server error",
@@ -45,6 +47,7 @@ export function createRoute(): Route<Params> {
 					data: body,
 				});
 				if (!task) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -59,6 +62,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error updating task:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal server error",
@@ -73,6 +77,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingTask) {
+					res.status(401);
 					return {
 						data: null,
 						message: "Task already exists",
@@ -88,6 +93,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newTask) {
+					res.status(500);
 					return {
 						data: null,
 						message: "Task not created",
@@ -102,6 +108,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error creating task:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal server error",
@@ -115,6 +122,7 @@ export function createRoute(): Route<Params> {
 					where: { id: taskId },
 				});
 				if (!task) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -130,6 +138,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error deleting task:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal server error",

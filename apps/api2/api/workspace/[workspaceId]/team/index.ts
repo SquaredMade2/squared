@@ -16,6 +16,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!teams) {
+					res.status(404);
 					return {
 						data: teams,
 						message:"Teams not found",
@@ -30,6 +31,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding teams:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal server error",

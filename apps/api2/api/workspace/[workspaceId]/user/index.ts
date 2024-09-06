@@ -22,6 +22,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!users) {
+					res.status(404);
 					return {
 						data: null,
 						message: "No Users found",
@@ -35,6 +36,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (err) {
 				console.error("Error finding users:", err);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",

@@ -21,6 +21,7 @@ export function createRoute(): Route<Params> {
 					);
 
 				if (!userWorkspaces) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
@@ -36,6 +37,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding user workspaces:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Sever Error",

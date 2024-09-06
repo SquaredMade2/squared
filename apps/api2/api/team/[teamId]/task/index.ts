@@ -17,6 +17,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!tasks) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Tasks not found",
@@ -31,6 +32,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding tasks:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",

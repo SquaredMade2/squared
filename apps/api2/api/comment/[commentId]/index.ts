@@ -108,6 +108,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error creating comment:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -121,6 +122,7 @@ export function createRoute(): Route<Params> {
 					where: { id: commentId },
 				});
 				if (!comment) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Comment not found",
@@ -136,6 +138,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error deleting comment:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",

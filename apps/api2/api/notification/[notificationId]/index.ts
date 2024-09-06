@@ -15,6 +15,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!existingUser) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Cannot find user",
@@ -30,6 +31,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newNotification) {
+					res.status(500);
 					return {
 						data: null,
 						message: "notification not created",
@@ -44,6 +46,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error creating notification:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -58,6 +61,7 @@ export function createRoute(): Route<Params> {
 						where: { id: notificationId },
 					});
 				if (!notification) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Notification not found",
@@ -73,6 +77,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error deleting notification:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",

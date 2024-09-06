@@ -17,6 +17,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Team not found",
@@ -31,6 +32,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding team:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -45,6 +47,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingTeam) {
+					res.status(401);
 					return {
 						data: null,
 						message: "Team already exists",
@@ -66,6 +69,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error creating team:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -81,6 +85,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Team not found",
@@ -95,6 +100,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error updating team:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
@@ -109,6 +115,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
+					res.status(404);
 					return {
 						data: null,
 						message: "Team not found",
@@ -124,6 +131,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error deleting team:", error);
+				res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
