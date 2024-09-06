@@ -41,7 +41,7 @@ export const StatusDropdownButton = ({
 	);
 
 	const {
-		author,
+		user,
 		storeCommonFields,
 		storeType,
 		storeTaskValue,
@@ -70,7 +70,7 @@ export const StatusDropdownButton = ({
 		if (location === "newIssue") dispatch(setStatus(newStatus as Status));
 		if (location === "issueSidebar") {
 			if (newStatus === sidebarStatus) return;
-			if (taskId !== undefined) storeCommonFields(author, taskId);
+			if (taskId !== undefined) storeCommonFields(user, taskId);
 			logEvent(newStatus);
 			updateItem(newStatus);
 		}

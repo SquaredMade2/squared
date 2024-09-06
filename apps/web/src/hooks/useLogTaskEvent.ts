@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import type { EventType, Labels } from "@/interfaces/event.interfaces";
-import { addTaskEvent } from "@/store/events/actions";
-import { useAppSelector, useAppDispatch } from "./typeScriptReduxHooks";
-import type { TaskEvent, User } from "@repo/db";
+import type { ActivityType, TaskEvent, TaskEventLog, User } from "@repo/db";
+import { useActivityStore, useAuthStore } from "@/storeZ";
 
 const useLogTaskEvent = () => {
 	const [taskEvent, setTaskEvent] = useState<TaskEvent>({
@@ -27,23 +25,8 @@ const useLogTaskEvent = () => {
 	const [assigneeUpdated, setAssigneeUpdated] = useState(false);
 	const [labelsUpdated, setLabelsUpdated] = useState(false);
 
-	const dispatch = useAppDispatch();
-
-	const { _id: userId, name: userName } = useAppSelector(
-		(state) => state.userSettings.user,
-	);
-
-	const author: User = {
-		id: userId,
-		name: userName,
-		username: "",
-		email: "",
-		password: "",
-		verified: true,
-		lastLogin: new Date(),
-		onBoarding: false,
-		defaultWorkspaceId: "",
-	};
+	const user = useAuthStore((state) => state.user);
+	const addTaskEvent = useActivityStore((state) => state.addTaskEvent);
 
 	useEffect(() => {
 		if (valueUpdated) {
@@ -57,15 +40,15 @@ const useLogTaskEvent = () => {
 		}
 	}, [taskEvent]);
 
-	const storeCommonFields = (author: User, taskId: string) => {
+	const storeCommonFields = (author: User | null, taskId: string) => {
 		setTaskEvent({
 			...taskEvent,
-			authorId: author.id,
+			authorId: author?.id ?? "",
 			taskId,
 		});
 	};
 
-	const storeType = (type: EventType) => {
+	const storeType = (type: string) => {
 		setTaskEvent((taskEvent) => ({
 			...taskEvent,
 			type,
@@ -145,18 +128,18 @@ const useLogTaskEvent = () => {
 	};
 
 	const handleLabelsUpdated = () => {
-		dispatch(addTaskEvent(taskEvent));
+		addTaskEvent(taskEvent, taskEvent.taskId, user?.id ?? "");
 		resetUpdatedTaskLabels();
 	};
 
 	const handleValueUpdated = () => {
-		dispatch(addTaskEvent(taskEvent));
+		addTaskEvent(taskEvent, taskEvent.taskId, user?.id ?? "");
 		taskEvent.updatedValue && storeTaskValue(taskEvent.updatedValue);
 		resetUpdatedTaskValue();
 	};
 
 	const handleAssigneeUpdate = () => {
-		dispatch(addTaskEvent(taskEvent));
+		addTaskEvent(taskEvent, taskEvent.taskId, user?.id ?? "");
 		setAssigneeUpdated(false);
 	};
 
@@ -182,7 +165,6 @@ const useLogTaskEvent = () => {
 	};
 
 	return {
-		author,
 		handleLabelsUpdated,
 		taskEvent,
 		storeCommonFields,
@@ -193,6 +175,7 @@ const useLogTaskEvent = () => {
 		updateTaskAssignee,
 		updateTaskValue,
 		resetTaskEvent,
+		user,
 	};
 };
 

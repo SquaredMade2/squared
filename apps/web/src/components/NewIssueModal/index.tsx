@@ -8,92 +8,42 @@ import {
 } from "../ui/dialog";
 import { useSelector } from "react-redux";
 import { useToast } from "../ui/use-toast";
-import {
-	getAllTasks,
-	createNewTask,
-	incrementCreatedIssues,
-} from "@/store/taskData/thunks";
-import { setShowNewIssue } from "@/store/showNewIssue";
-import { setResumeNewIssue } from "@/store/resumeNewIssue";
-import {
-	setStatus,
-	setLabels,
-	setPriority,
-	setDueDate,
-	setEffortEstimate,
-} from "@/store/taskData";
 import DesignationsContainer from "@/components/DesignationsContainer";
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import MentionInput from "@/components/MentionsInput";
-import { getListOfUsers } from "@/store/userSettings/thunks";
-import "@/components/NewIssueModal/NewIssueModal.style.css";
-import {
-	type WorkspaceMember,
-	getListOfMembers,
-} from "@/store/workspaceMembers";
 import { SocketContext } from "@/app/SocketProvider";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Task } from "@repo/db";
+import type { Task, User } from "@repo/db";
 import type { OnChangeHandlerFunc } from "react-mentions";
-import type { User } from "@repo/db";
+import {
+	useAuthStore,
+	useModalStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/storeZ";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
-	const dispatch = useAppDispatch();
-	const showNewIssue = useSelector(
-		(state: RootState) => state.showNewIssue.isOpen,
+	const { showNewIssue, newIssueData, setNewIssueData, setShowNewIssue } =
+		useModalStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { currentTeam } = useTeamStore((state) => state);
+	const { currentWorkspace, updateWorkspace } = useWorkspaceStore(
+		(state) => state,
 	);
-	const authorId = useSelector(
-		(state: RootState) => state.userSettings.user?._id,
-	);
+	const { users } = useUserStore((state) => state);
+	const { tasks, addTask } = useTaskStore((state) => state);
 
-	const {
-		currentTeam,
-		status,
-		priority,
-		labels,
-		dueDate,
-		effortEstimate,
-		currentWorkspace,
-		taskList,
-	} = useSelector((state: RootState) => state.taskData);
+	const authorId = user?.id;
+	const { status, priority, labels, dueDate, effortEstimate } = newIssueData;
 
-	const taskListTitle = taskList.map((el) => el.title);
 	const [titleInput, setTitleInput] = useState("");
 	const [descriptionInput, setDescriptionInput] = useState("");
-	const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>([]);
 
 	const socket = useContext(SocketContext);
-	const user = useSelector((state: RootState) => state.userSettings.user);
-	const users = [] as User[];
-
-	const getListOfWorkspaceMembers = async () => {
-		try {
-			const members = (await Promise.all(
-				users.map(async (member) => {
-					const user = await getListOfUsers(member?.id);
-					return {
-						display: user?.name,
-						id: user?._id.toString(),
-						email: user?.email,
-					} as {
-						display: string;
-						id: string;
-						email: string;
-					};
-				}),
-			)) as unknown as WorkspaceMember[];
-			dispatch(getListOfMembers(members));
-			SetListOfUsers(members);
-		} catch (error) {}
-	};
-
-	useEffect(() => {
-		getListOfWorkspaceMembers();
-	}, []);
 
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setTitleInput(e.target.value);
@@ -103,32 +53,8 @@ const NewIssueModal = () => {
 		setDescriptionInput(e.target.value);
 	};
 
-	const handleCloseClick = () => {
-		if (
-			titleInput ||
-			descriptionInput ||
-			priority ||
-			labels.length > 0 ||
-			dueDate ||
-			effortEstimate
-		) {
-			dispatch(setResumeNewIssue(true));
-			dispatch(setShowNewIssue(false));
-		} else {
-			dispatch(setShowNewIssue(false));
-		}
-	};
-
 	const handleDiscard = () => {
-		setTitleInput("");
-		setDescriptionInput("");
-		dispatch(setShowNewIssue(false));
-		dispatch(setResumeNewIssue(false));
-		dispatch(setStatus("todo"));
-		dispatch(setPriority("noPriority"));
-		dispatch(setLabels([]));
-		dispatch(setDueDate(new Date()));
-		dispatch(setEffortEstimate(null));
+		setNewIssueData({});
 	};
 
 	const handleCreateIssue = async () => {
@@ -139,14 +65,23 @@ const NewIssueModal = () => {
 			});
 			return;
 		}
-		if (taskListTitle.includes(titleInput)) {
+		if (tasks.some((task) => task.title === titleInput)) {
 			toast({
 				title: `${titleInput} already exists`,
 				variant: "destructive",
 			});
 			return;
 		}
-		dispatch(incrementCreatedIssues(currentWorkspace.id));
+		if (!currentWorkspace || !currentTeam || !user) {
+			toast({
+				title: "Error authenticating user",
+				variant: "destructive",
+			});
+			return;
+		}
+		updateWorkspace(currentWorkspace?.id, {
+			issuesCreated: (currentWorkspace.issuesCreated ?? 0) + 1,
+		});
 		try {
 			const { transformedInput: transformedTitle, userIds: titleUserId } =
 				transformingMentionInputs(titleInput);
@@ -156,47 +91,41 @@ const NewIssueModal = () => {
 			} = transformingMentionInputs(descriptionInput);
 			const mentionedUserId = new Set([...descriptionUserId, ...titleUserId]);
 			const newTask: Task = {
-				authorId: authorId,
+				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
 				identifier: `${currentTeam.identifier}-${currentWorkspace.issuesCreated}`,
-				status: status,
-				priority: priority,
-				labels: labels,
-				dueDate: dueDate,
-				effortEstimate: effortEstimate,
+				status: status ?? "todo",
+				priority: priority ?? "noPriority",
+				labels: labels ?? [],
+				dueDate: dueDate ?? null,
+				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
 				assigneeId: null,
 				assigneeName: "",
-				teamId: "",
+				teamId: currentTeam.id,
 				id: "",
 			};
-			const taskCreatedResponse = await dispatch(
-				createNewTask(newTask as Task),
-			).unwrap();
-
-			dispatch(setResumeNewIssue(false));
+			const taskCreatedResponse = await addTask(newTask);
 
 			socket.emit(
 				"user_mentioned",
 				[...mentionedUserId],
 				taskCreatedResponse.id,
-				user._id,
+				user.id,
 			);
-			dispatch(getAllTasks(currentTeam));
-			dispatch(setShowNewIssue(false));
-			setTitleInput("");
-			setDescriptionInput("");
-			dispatch(setStatus("todo"));
-			dispatch(setPriority("noPriority"));
-			dispatch(setLabels([]));
-			dispatch(setDueDate(new Date()));
-			dispatch(setEffortEstimate(null));
-		} catch (err) {}
+			setShowNewIssue(false);
+			setNewIssueData({});
+		} catch (err) {
+			toast({
+				title: "Error creating issue",
+				variant: "destructive",
+			});
+		}
 	};
 
 	return (
-		<Dialog open={showNewIssue} onOpenChange={() => handleCloseClick()}>
+		<Dialog open={showNewIssue} onOpenChange={setShowNewIssue}>
 			<DialogContent className="max-w-full bg-popover">
 				<DialogHeader>
 					<div className="flex items-center">
@@ -214,7 +143,7 @@ const NewIssueModal = () => {
 					className="focus:outline-none bg-transparent text-2xl"
 				/>
 				<MentionInput
-					data={listOfUsers}
+					data={users}
 					value={descriptionInput}
 					placeholder={"Add description..."}
 					className={
