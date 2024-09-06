@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Home() {
 	const [loading, setLoading] = useState(true);
+	const [workspaceFound, setWorkspaceFound] = useState(true); // To track if workspace exists
 	const router = useRouter();
 	const params = useParams();
 
@@ -20,32 +21,39 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		setLoading(true);
-		if (!user) {
-			router.push("/login");
-		} else if (user?.onBoarding) {
-			router.push("/join");
-		} else {
-			const fetchWorkspace = async () => {
-				const currentWorkspace = await getWorkspace(workspaceUrl);
-				if (!currentWorkspace) return;
-				const currentTeam = await getAllTeams(currentWorkspace.id);
-				// console.log("Current Team:", currentTeam);
-				if (currentTeam) {
-					router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
-				}
-			};
-			fetchWorkspace();
-		}
-		setLoading(false);
+		const fetchWorkspace = async () => {
+			setLoading(true);
+			if (!user) {
+				router.push("/login");
+				return;
+			}
+			if (user?.onBoarding) {
+				router.push("/join");
+				return;
+			}
+
+			const currentWorkspace = await getWorkspace(workspaceUrl);
+			if (!currentWorkspace) {
+				setWorkspaceFound(false);
+				setLoading(false);
+				return;
+			}
+
+			const currentTeam = await getAllTeams(currentWorkspace.id);
+			if (currentTeam) {
+				router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
+			}
+			setLoading(false);
+		};
+		fetchWorkspace();
 	}, [router, user, workspaceUrl]);
 
 	return (
 		<>
-			{loading ? (
+			{loading || workspaceFound ? (
 				<div className="h-screen w-full">
 					<div className="flex h-full justify-center items-center">
-						<div className="flex flex-col gap-4">
+						<div className="flex flex-col gap-4 items-center">
 							<div className="font-bold text-3xl">
 								Loading Workspace, please wait...
 							</div>
