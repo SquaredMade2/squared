@@ -29,8 +29,6 @@ import type {
 	LabelColorProps,
 } from "./LabelDropdownButton.interfaces";
 
-const baseClass = "w-3 h-3 rounded-lg";
-
 export const labelStyle: Record<string, string> = {
 	Bug: "bg-[#EB5757]",
 	Feature: "bg-[#BB87FC]",
@@ -40,7 +38,7 @@ export const labelStyle: Record<string, string> = {
 };
 
 export const LabelColor = ({ name }: LabelColorProps) => {
-	return <div className={`${baseClass} ${labelStyle[name]}`} />;
+	return <div className={`w-3 h-3 rounded-lg ${labelStyle[name]}`} />;
 };
 
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
