@@ -87,9 +87,17 @@ export const createWorkspaceStore = (
 					}
 
 					try {
-						const response: { data: ApiReturnType<Workspace> } =
+						const { data: response }: { data: ApiReturnType<Workspace> } =
 							await axios.get(apiString(workspaceId));
-						return { ...response.data, workspace: response.data.data };
+						const { data: workspace, message, variant } = response;
+						if (!workspace) {
+							return {
+								workspace: null,
+								message,
+								variant,
+							};
+						}
+						return { workspace, message, variant };
 					} catch (error) {
 						console.error("Error in getWorkspace:", error);
 						return {
@@ -137,13 +145,18 @@ export const createWorkspaceStore = (
 				},
 				getAllWorkspaces: async (userId: string): Promise<Workspace[]> => {
 					try {
-						const response = await axios.get<Workspace[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
-						);
+						const { data: response }: { data: ApiReturnType<Workspace[]> } =
+							await axios.get(
+								`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
+							);
+						const { data: workspaces, message, variant } = response;
+						if (!workspaces) {
+							set({ workspaces: [] });
+							return [];
+						}
+						set({ workspaces });
 
-						set({ workspaces: response.data });
-
-						return response.data;
+						return workspaces;
 					} catch (error) {
 						console.error("Error in getAllWorkspaces:", error);
 						return [];

@@ -116,11 +116,18 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 				},
 				getAllTasks: async (teamId: string): Promise<Task[]> => {
 					try {
-						const response = await axios.get<Task[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${teamId}/task`,
-						);
-						set({ tasks: response.data });
-						return response.data;
+						const { data: response }: { data: ApiReturnType<Task[]> } =
+							await axios.get(
+								`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${teamId}/task`,
+							);
+						const { data: tasks, message, variant } = response;
+						if (!tasks) {
+							set({ tasks: [] });
+							return [];
+						}
+						console.log("tasks for getAll", tasks);
+						set({ tasks });
+						return tasks;
 					} catch (error) {
 						console.error("Error in getAllTasks:", error);
 						return [];

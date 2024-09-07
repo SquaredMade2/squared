@@ -41,6 +41,7 @@ const ViewAllTasks = ({
 	};
 
 	const getTasksForStatus = (status: Status) => {
+		console.log("tasks", tasks);
 		return tasks.filter((task) => task.status === status);
 	};
 
