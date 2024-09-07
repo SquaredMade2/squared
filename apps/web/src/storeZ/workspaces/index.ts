@@ -149,7 +149,7 @@ export const createWorkspaceStore = (
 							await axios.get(
 								`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
 							);
-						const { data: workspaces, message, variant } = response;
+						const { data: workspaces } = response;
 						if (!workspaces) {
 							set({ workspaces: [] });
 							return [];

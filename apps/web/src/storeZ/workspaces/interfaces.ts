@@ -23,7 +23,7 @@ export type WorkspaceActions = {
 		workspace: Partial<Workspace>,
 	) => Promise<Workspace>;
 	deleteWorkspace: (workspaceId: string) => void;
-	getAllWorkspaces: (userId: string) => Promise<Workspace[] | null>;
+	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 };
 
 export type WorkspaceStore = WorkspaceActions & WorkspaceState;

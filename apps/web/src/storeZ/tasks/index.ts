@@ -125,7 +125,6 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 							set({ tasks: [] });
 							return [];
 						}
-						console.log("tasks for getAll", tasks);
 						set({ tasks });
 						return tasks;
 					} catch (error) {
