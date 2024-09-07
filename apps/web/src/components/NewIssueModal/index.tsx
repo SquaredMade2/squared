@@ -106,22 +106,24 @@ const NewIssueModal = () => {
 				teamId: currentTeam.id,
 				id: "",
 			};
-			const taskCreatedResponse = await addTask(newTask);
-			if (!taskCreatedResponse.task) {
-				toast({
-					title: `Error creating issue: ${taskCreatedResponse.message}`,
-					variant: "destructive",
-				});
-				return;
-			}
+			const {
+				task: taskCreatedResponse,
+				message,
+				variant,
+			} = await addTask(newTask);
+
+			toast({
+				title: message,
+				variant: variant,
+			});
+			if (!taskCreatedResponse) return;
+
 			socket.emit(
 				"user_mentioned",
 				[...mentionedUserId],
-				taskCreatedResponse.task.id,
+				taskCreatedResponse.id,
 				user.id,
 			);
-			setTitleInput("");
-			setDescriptionInput("");
 			setShowNewIssue(false);
 			setNewIssueData({});
 		} catch (err) {
