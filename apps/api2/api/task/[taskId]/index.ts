@@ -85,10 +85,10 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
+				const {id, ...taskData} = body;
 				const newTask = await prisma.task.create({
 					data: {
-						id: taskId,
-						...body,
+						...taskData,
 					} as Task,
 				});
 

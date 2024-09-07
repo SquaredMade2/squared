@@ -23,7 +23,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 
 	const newIssueLabels = useAppSelector((state) => state.taskData.labels);
 
-	const { author, storeCommonFields, storeType } = useLogTaskEvent();
+	const { user, storeCommonFields, storeType } = useLogTaskEvent();
 
 	const renderLabelIcon = (label: string) => {
 		switch (label) {
@@ -83,7 +83,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 		newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
 		if (task.labels) {
 			newLabelsSelected = newLabelSelection(task.labels, labelName);
-			if (task.id !== undefined) storeCommonFields(author, task.id);
+			if (task.id !== undefined) storeCommonFields(user, task.id);
 			logEvent(newLabelsSelected);
 			await updateItem(newLabelsSelected);
 		}

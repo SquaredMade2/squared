@@ -33,7 +33,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	);
 
 	const {
-		author,
+		user,
 		storeCommonFields,
 		storeTaskAssignee,
 		storeType,
@@ -126,7 +126,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 
 	const handleClickAssignee = (taskId: string, newAssignee: User): void => {
 		if (newAssignee.name === task.assigneeName) return;
-		storeCommonFields(author, taskId);
+		storeCommonFields(user, taskId);
 		storeType(EventType.AssigneeUpdated);
 		handleStoreCurrentAssignee();
 		handleAssigneeChange(taskId, newAssignee);

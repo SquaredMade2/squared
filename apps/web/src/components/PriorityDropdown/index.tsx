@@ -28,7 +28,7 @@ const PriorityDropdown = ({
 	const taskId = useAppSelector((state) => state.singleTask?.data?._id);
 
 	const {
-		author,
+		user,
 		storeCommonFields,
 		storeType,
 		storeTaskValue,
@@ -41,7 +41,7 @@ const PriorityDropdown = ({
 	const handleSelectPriority = (newPriority: Priority) => {
 		if (location === "issueSidebar") {
 			if (newPriority === sidebarPriority) return;
-			if (taskId !== undefined) storeCommonFields(author, taskId);
+			if (taskId !== undefined) storeCommonFields(user, taskId);
 			logEvent(newPriority);
 			updateItem(newPriority);
 		}
