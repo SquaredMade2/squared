@@ -8,31 +8,33 @@ export type APIResponse<Type> = {
 };
 
 export type Route<P = Record<string, string>> = {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	GET?: (
 		res: Response,
 		params: P,
 		query: ParsedQs,
+		// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	) => Promise<APIResponse<Object>>;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	POST?: (
 		res: Response,
 		params: P,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		body: any,
 		query: ParsedQs,
+		// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	) => Promise<APIResponse<Object>>;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	PUT?: (
 		res: Response,
 		params: P,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		body: any,
 		query: ParsedQs,
+		// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	) => Promise<APIResponse<Object>>;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	DELETE?: (
 		res: Response,
 		params: P,
 		query: ParsedQs,
+		// biome-ignore lint/complexity/noBannedTypes: <explanation>
 	) => Promise<APIResponse<Object>>;
 };
 

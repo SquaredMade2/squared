@@ -2,7 +2,7 @@ import type { Prisma, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
-import { Activity } from "@repo/test-db";
+import type { Activity } from "@repo/test-db";
 
 type Params = {
 	taskId: string;
