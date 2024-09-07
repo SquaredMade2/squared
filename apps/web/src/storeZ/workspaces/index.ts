@@ -162,6 +162,42 @@ export const createWorkspaceStore = (
 						return [];
 					}
 				},
+				inviteToWorkspace: async (workspaceId: string, email: string) => {
+					try {
+						const response = await axios.post(
+							`${apiString(workspaceId)}/invite`,
+							{ email },
+						);
+
+						return response.data;
+					} catch (error) {
+						console.error("Error inviting user to workspace:", error);
+						throw new Error(
+							error instanceof Error ? error.message : "Unknown error",
+						);
+					}
+				},
+				joinWorkspace: async (token: string) => {
+					try {
+						const response = await axios.post(`${apiString("join")}`, {
+							token,
+						});
+
+						const { workspace, message, variant } = response.data;
+						if (workspace) {
+							set((state) => ({
+								workspaces: [...state.workspaces, workspace],
+								currentWorkspace: workspace,
+							}));
+						}
+						return { workspace, message, variant };
+					} catch (error) {
+						console.error("Error joining workspace:", error);
+						throw new Error(
+							error instanceof Error ? error.message : "Unknown error",
+						);
+					}
+				},
 			}),
 			{
 				name: "workspace-store",

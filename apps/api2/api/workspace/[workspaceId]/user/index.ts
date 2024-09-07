@@ -6,7 +6,6 @@ type Params = {
 	workspaceId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<User>> => {
@@ -26,13 +25,13 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "No Users found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				return {
 					data: users,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (err) {
 				console.error("Error finding users:", err);
@@ -40,7 +39,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

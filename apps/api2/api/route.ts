@@ -2,20 +2,38 @@ import type { Request, Response, NextFunction } from "express";
 import type { ParsedQs } from "qs";
 
 export type APIResponse<Type> = {
-	data : Type | Type[] | null,
-	message?: string,
-	variant: "default" | "destructive"
-}
+	data: Type | Type[] | null;
+	message?: string;
+	variant: "default" | "destructive";
+};
 
 export type Route<P = Record<string, string>> = {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	GET?: (res: Response, params: P, query: ParsedQs) => Promise<APIResponse<Object>>;
+	GET?: (
+		res: Response,
+		params: P,
+		query: ParsedQs,
+	) => Promise<APIResponse<Object>>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	POST?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<APIResponse<Object>>;
+	POST?: (
+		res: Response,
+		params: P,
+		body: any,
+		query: ParsedQs,
+	) => Promise<APIResponse<Object>>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	PUT?: (res: Response, params: P, body: any, query: ParsedQs) => Promise<APIResponse<Object>>;
+	PUT?: (
+		res: Response,
+		params: P,
+		body: any,
+		query: ParsedQs,
+	) => Promise<APIResponse<Object>>;
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	DELETE?: (res: Response, params: P, query: ParsedQs) => Promise<APIResponse<Object>>;
+	DELETE?: (
+		res: Response,
+		params: P,
+		query: ParsedQs,
+	) => Promise<APIResponse<Object>>;
 };
 
 function handleNotSupported(_: unknown, res: Response) {
@@ -23,7 +41,7 @@ function handleNotSupported(_: unknown, res: Response) {
 }
 
 export function toQueryHandler<P = Record<string, string>>(
-	f?: (res:Response, params: P, query: ParsedQs) => Promise<unknown>,
+	f?: (res: Response, params: P, query: ParsedQs) => Promise<unknown>,
 ) {
 	if (!f) return handleNotSupported;
 
@@ -33,7 +51,7 @@ export function toQueryHandler<P = Record<string, string>>(
 }
 
 export function toMutationHandler<P = Record<string, string>>(
-	f?: (	
+	f?: (
 		res: Response,
 		params: P,
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>

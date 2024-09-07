@@ -6,7 +6,6 @@ type Params = {
 	teamId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { teamId }, query): Promise<APIResponse<Team>> => {
@@ -21,14 +20,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Team not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the found team
 				return {
 					data: team,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding team:", error);
@@ -36,7 +35,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -51,7 +50,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Team already exists",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -65,7 +64,7 @@ export function createRoute(): Route<Params> {
 				// Return the new task
 				return {
 					data: newTeam,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error creating team:", error);
@@ -73,7 +72,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -89,14 +88,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Team not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the updated team
 				return {
 					data: team,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error updating team:", error);
@@ -104,7 +103,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -119,15 +118,15 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Team not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return success message
 				return {
 					data: null,
-					message:"team deleted",
-					variant:"default"
+					message: "team deleted",
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error deleting team:", error);
@@ -135,7 +134,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

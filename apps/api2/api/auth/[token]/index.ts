@@ -10,7 +10,6 @@ type JwtPayload = {
 	user: string;
 };
 
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
@@ -40,7 +39,7 @@ export function createRoute(): Route<Params> {
 						message: "User verified",
 						variant: "default",
 					};
-				} else{
+				} else {
 					res.status(403);
 					return {
 						data: null,

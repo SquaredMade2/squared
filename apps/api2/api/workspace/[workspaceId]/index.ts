@@ -6,7 +6,6 @@ type Params = {
 	workspaceId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<Workspace>> => {
@@ -34,7 +33,7 @@ export function createRoute(): Route<Params> {
 				// Return the found workspace
 				return {
 					data: workspace,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding workspace:", error);
@@ -46,7 +45,11 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		PUT: async (res, { workspaceId }, body): Promise<APIResponse<Workspace>> => {
+		PUT: async (
+			res,
+			{ workspaceId },
+			body,
+		): Promise<APIResponse<Workspace>> => {
 			try {
 				const workspace = await prisma.workspace.update({
 					where: { id: workspaceId },
@@ -64,7 +67,7 @@ export function createRoute(): Route<Params> {
 				// Return the updated workspace
 				return {
 					data: workspace,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error updating workspace:", error);
@@ -84,10 +87,7 @@ export function createRoute(): Route<Params> {
 			try {
 				const existingWorkspace = await prisma.workspace.findFirst({
 					where: {
-						OR: [
-						{ id: workspaceId },
-						{ url: body.workspace.url },
-						],
+						OR: [{ id: workspaceId }, { url: body.workspace.url }],
 					},
 				});
 
@@ -168,8 +168,8 @@ export function createRoute(): Route<Params> {
 				// Return success message
 				return {
 					data: workspace,
-					message:"Workspace deleted",
-					variant: "default"
+					message: "Workspace deleted",
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error deleting workspace:", error);
