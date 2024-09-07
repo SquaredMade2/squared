@@ -1,14 +1,15 @@
 import type { Comment } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	taskId: string;
 };
 
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ taskId }) => {
+		GET: async (res, { taskId }): Promise<APIResponse<Comment>> => {
 			try {
 				// Find comments by team ID
 				const comments: Comment[] | null = await prisma.comment.findMany({
@@ -16,14 +17,27 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!comments) {
-					throw new Error("Comments not found");
+					res.status(404);
+					return { 
+						data: comments,
+						message: "comments not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the found comments
-				return comments;
+				return { 
+					data: comments,
+					variant: "default"
+				};
 			} catch (error) {
 				console.error("Error finding comments:", error);
-				throw new Error("Internal server error");
+				res.status(500);
+				return { 
+					data: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};

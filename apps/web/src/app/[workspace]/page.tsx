@@ -32,7 +32,7 @@ export default function Home() {
 				return;
 			}
 
-			const currentWorkspace = await getWorkspace(workspaceUrl);
+			const { workspace: currentWorkspace } = await getWorkspace(workspaceUrl);
 			if (!currentWorkspace) {
 				setWorkspaceFound(false);
 				setLoading(false);

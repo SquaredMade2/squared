@@ -1,14 +1,15 @@
 import type { Team } from "@repo/db";
 import { prisma } from "@/api";
-import type { Route } from "@/api/route";
+import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	teamId: string;
 };
 
+
 export function createRoute(): Route<Params> {
 	return {
-		GET: async ({ teamId }, query) => {
+		GET: async (res, { teamId }, query): Promise<APIResponse<Team>> => {
 			try {
 				// Find team by ID
 				const team: Team | null = await prisma.team.findFirst({
@@ -16,24 +17,42 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
-					throw new Error("Team not found");
+					res.status(404);
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the found team
-				return team;
+				return {
+					data: team,
+					variant:"default"
+				};
 			} catch (error) {
 				console.error("Error finding team:", error);
-				throw new Error("Internal server error");
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		POST: async ({ teamId }, body) => {
+		POST: async (res, { teamId }, body): Promise<APIResponse<Team>> => {
 			try {
 				const existingTeam = await prisma.team.findFirst({
 					where: { id: teamId },
 				});
 
 				if (existingTeam) {
-					throw new Error("Team already exists");
+					res.status(401);
+					return {
+						data: null,
+						message: "Team already exists",
+						variant: "destructive"
+					};
 				}
 
 				const newTeam = await prisma.team.create({
@@ -44,13 +63,21 @@ export function createRoute(): Route<Params> {
 				});
 
 				// Return the new task
-				return newTeam;
+				return {
+					data: newTeam,
+					variant:"default"
+				};
 			} catch (error) {
 				console.error("Error creating team:", error);
-				throw new Error("Internal server error");
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		PUT: async ({ teamId }, body) => {
+		PUT: async (res, { teamId }, body): Promise<APIResponse<Team>> => {
 			try {
 				const team: Team | null = await prisma.team.update({
 					where: { id: teamId },
@@ -58,31 +85,58 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
-					throw new Error("Team not found");
+					res.status(404);
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return the updated team
-				return team;
+				return {
+					data: team,
+					variant:"default"
+				};
 			} catch (error) {
 				console.error("Error updating team:", error);
-				throw new Error("Internal server error");
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
-		DELETE: async ({ teamId }) => {
+		DELETE: async (res, { teamId }): Promise<APIResponse<Team>> => {
 			try {
 				const team: Team | null = await prisma.team.delete({
 					where: { id: teamId },
 				});
 
 				if (!team) {
-					throw new Error("Team not found");
+					res.status(404);
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive"
+					};
 				}
 
 				// Return success message
-				return { message: "Task deleted" };
+				return {
+					data: null,
+					message:"team deleted",
+					variant:"default"
+				};
 			} catch (error) {
 				console.error("Error deleting team:", error);
-				throw new Error("Internal server error");
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal Server Error",
+					variant: "destructive"
+				};
 			}
 		},
 	};
