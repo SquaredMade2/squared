@@ -149,11 +149,9 @@ export default function Home() {
 			</div>
 
 			{currentWorkspace ? (
-				<div
-					className={`flex flex-col flex-grow ${view === "grid" ? "mx-2" : ""}`}
-				>
+				<div className={"flex flex-col flex-grow mx-2"}>
 					<ScrollArea
-						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""}`}
+						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
 					>
 						<ViewAllTasks
 							activeSelected={activeSelected}
