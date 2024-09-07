@@ -1,8 +1,10 @@
 import { createStore } from "zustand/vanilla";
-import type { TeamState, TeamStore } from "./interfaces";
 import axios from "axios";
-import type { Team } from "@repo/db";
 import { persist } from "zustand/middleware";
+import type { TeamState, TeamStore, TeamResponse } from "./interfaces";
+import type { Team } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
+import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";
 export * from "./store";
 
@@ -16,37 +18,114 @@ export const createTeamStore = (
 		persist(
 			(set, get) => ({
 				...initState,
-				addTeam: async (team) => {
-					const newTeam: Team = await axios.post(apiString(team.id), team);
-					const { teams } = get();
-					set({ teams: [...teams, newTeam] });
-					return team;
+				addTeam: async (team: Partial<Team>): Promise<TeamResponse> => {
+					try {
+						const response: { data: ApiReturnType<Team> } = await axios.post(
+							apiString(team.id ?? uuidv4()),
+							team,
+						);
+						const { data: newTeam, message, variant } = response.data;
+
+						if (!newTeam) {
+							return { team: null, message, variant };
+						}
+
+						const { teams } = get();
+						set({ teams: [...teams, newTeam] });
+
+						return { team: newTeam, message, variant };
+					} catch (error) {
+						return {
+							team: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
-				getTeam: async (teamId) => {
+				getTeam: async (teamId: string): Promise<TeamResponse> => {
 					const { teams } = get();
-					const stateTeam = teams.find((t) => t.id === teamId);
-					return stateTeam || (await axios.get(apiString(teamId)));
+					const existingTeam = teams.find((t) => t.id === teamId);
+					if (existingTeam) {
+						return {
+							team: existingTeam,
+							message: "Team found",
+							variant: "default",
+						};
+					}
+
+					try {
+						const response: { data: ApiReturnType<Team> } = await axios.get(
+							apiString(teamId),
+						);
+						return { ...response.data, team: response.data.data };
+					} catch (error) {
+						return {
+							team: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
-				setCurrentTeam: (team) => {
+				setCurrentTeam: (team: Team): void => {
 					set({ currentTeam: team });
 				},
-				updateTeam: async (teamId, team) => {
-					const updatedTeam: Team = await axios.put(apiString(teamId), team);
-					const { teams } = get();
-					set({ teams: teams.map((t) => (t.id === teamId ? updatedTeam : t)) });
-					return updatedTeam;
+				updateTeam: async (
+					teamId: string,
+					team: Partial<Team>,
+				): Promise<TeamResponse> => {
+					try {
+						const response: { data: ApiReturnType<Team> } = await axios.put(
+							apiString(teamId),
+							team,
+						);
+						const updatedTeam = response.data.data;
+						if (!updatedTeam) {
+							return {
+								team: null,
+								message: response.data.message,
+								variant: response.data.variant,
+							};
+						}
+						set((state) => ({
+							teams: state.teams.map((t) =>
+								t.id === teamId ? updatedTeam : t,
+							),
+						}));
+
+						return {
+							team: updatedTeam,
+							message: response.data.message,
+							variant: response.data.variant,
+						};
+					} catch (error) {
+						return {
+							team: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
-				deleteTeam: async (teamId) => {
-					await axios.delete(apiString(teamId));
-					const { teams } = get();
-					set({ teams: teams.filter((t) => t.id !== teamId) });
+				deleteTeam: async (teamId: string): Promise<void> => {
+					try {
+						await axios.delete(apiString(teamId));
+						set((state) => ({
+							teams: state.teams.filter((t) => t.id !== teamId),
+						}));
+					} catch (error) {
+						console.error("Error in deleteTeam:", error);
+					}
 				},
-				getAllTeams: async (workspaceId) => {
-					const response: { data: Team[] } = await axios.get(
-						`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/team`,
-					);
-					set({ teams: response.data });
-					return response.data;
+				getAllTeams: async (workspaceId: string): Promise<Team[]> => {
+					try {
+						const response = await axios.get<Team[]>(
+							`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/team`,
+						);
+						set({ teams: response.data });
+						return response.data;
+					} catch (error) {
+						console.error("Error in getAllTeams:", error);
+						return [];
+					}
 				},
 			}),
 			{

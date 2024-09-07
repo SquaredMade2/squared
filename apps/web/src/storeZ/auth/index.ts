@@ -14,20 +14,29 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 			(set) => ({
 				...initState,
 				login: async (login: Login) => {
-					const response: AuthReturn = await axios.post(apiString(""), login);
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(""),
+						login,
+					);
 					console.log("Response:", response);
 					set({ user: response.data.user });
 					return response.data;
 				},
 				register: async (login: Login) => {
-					const response: AuthReturn = await axios.post(apiString(""), login);
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(""),
+						login,
+					);
 					set({ user: response.data.user });
 					return response.data;
 				},
 				verifyUser: async (token: string) => {
-					const response: AuthReturn = await axios.post(apiString(token), {
-						token,
-					});
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(token),
+						{
+							token,
+						},
+					);
 					set({ user: response.data.user });
 					return response.data;
 				},

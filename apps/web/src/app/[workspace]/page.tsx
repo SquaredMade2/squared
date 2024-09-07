@@ -27,7 +27,8 @@ export default function Home() {
 			router.push("/join");
 		} else {
 			const fetchWorkspace = async () => {
-				const currentWorkspace = await getWorkspace(workspaceUrl);
+				const { workspace: currentWorkspace } =
+					await getWorkspace(workspaceUrl);
 				if (!currentWorkspace) return;
 				const currentTeam = await getAllTeams(currentWorkspace.id);
 				// console.log("Current Team:", currentTeam);

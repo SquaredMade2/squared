@@ -636,9 +636,15 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
       '@types/node':
         specifier: ^22.4.1
         version: 22.4.1
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3

@@ -4,14 +4,20 @@ export type CommentState = {
 	comments: Comment[];
 };
 
+export interface CommentResponse {
+	comment: Comment | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
+
 export type CommentActions = {
-	addComment: (comment: Comment) => Promise<Comment>;
+	addComment: (comment: Partial<Comment>) => Promise<CommentResponse>;
 	updateComment: (
 		commentId: string,
 		comment: Partial<Comment>,
-	) => Promise<Comment>;
-	deleteComment: (commentId: string) => void;
-	getComment: (commentId: string) => Promise<Comment | undefined>;
+	) => Promise<CommentResponse>;
+	deleteComment: (commentId: string) => Promise<void>;
+	getComment: (commentId: string) => Promise<CommentResponse>;
 	getAllComments: (taskId: string) => Promise<Comment[]>;
 };
 

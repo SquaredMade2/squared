@@ -13,5 +13,3 @@ export interface DueDateFilterDropDownProps {
 	showDueDateFilterDropDown: boolean;
 	setShowDueDateFilterDropDown: Dispatch<SetStateAction<boolean>>;
 }
-
-export type clearFilterType = () => void;
