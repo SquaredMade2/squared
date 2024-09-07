@@ -2,6 +2,8 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
+import type { User } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -14,13 +16,15 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 			(set) => ({
 				...initState,
 				login: async (login: Login) => {
-					const response: { data: AuthReturn } = await axios.post(
-						apiString(""),
-						login,
-					);
-					console.log("Response:", response);
-					set({ user: response.data.user });
-					return response.data;
+					const { data: response }: { data: ApiReturnType<User> } =
+						await axios.post(apiString(""), login);
+					const { data: user, message, variant } = response;
+					set({ user });
+					return {
+						user,
+						message,
+						variant,
+					};
 				},
 				register: async (login: Login) => {
 					const response: { data: AuthReturn } = await axios.post(

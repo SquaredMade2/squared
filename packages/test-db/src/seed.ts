@@ -71,6 +71,7 @@ async function addUser() {
 			email,
 			password: hashedPassword,
 			verified: true,
+			onBoarding: false,
 		},
 	});
 	return user;
@@ -84,7 +85,7 @@ async function addWorkspace(user: User) {
 		data: {
 			name: workspaceName,
 			companySize: workspaceCompanySize,
-			url: faker.internet.url(),
+			url: workspaceName.split(" ").join("-").toLowerCase(),
 			Users: {
 				create: {
 					userId: user.id,
