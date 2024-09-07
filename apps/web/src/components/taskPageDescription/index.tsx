@@ -25,7 +25,7 @@ const TaskPageDescription = () => {
 	const [updatedDescription, setUpdatedDescription] = useState(description);
 
 	const {
-		author,
+		user,
 		storeCommonFields,
 		storeType,
 		storeTaskValue,
@@ -36,7 +36,6 @@ const TaskPageDescription = () => {
 	const listOfMembers = useSelector(
 		(state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers,
 	);
-	const user = useSelector((state: RootState) => state.userSettings.user);
 	const handleChange: OnChangeHandlerFunc = (e) => {
 		setUpdatedDescription(e.target.value);
 	};
@@ -64,7 +63,7 @@ const TaskPageDescription = () => {
 					"user_mentioned",
 					[...mentionedUserIds],
 					updatedTaskDescription._id,
-					user._id,
+					user?.id,
 				);
 			} catch (err) {
 				if (err instanceof Error) {
@@ -87,7 +86,7 @@ const TaskPageDescription = () => {
 	const handleBlur = () => {
 		const changeMade = updatedDescription !== description;
 		if (changeMade && taskId !== undefined) {
-			storeCommonFields(author, taskId);
+			storeCommonFields(user, taskId);
 			logEvent();
 			updateDescription();
 		}
