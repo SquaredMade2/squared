@@ -5,11 +5,9 @@ export type AuthState = {
 };
 
 export type AuthReturn = {
-	data: {
-		user: User | null;
-		message: string;
-		variant: "destructive" | "default";
-	};
+	user: User | null;
+	message: string;
+	variant: "destructive" | "default";
 };
 
 export type Login = {
@@ -22,9 +20,9 @@ export type Login = {
 };
 
 export type AuthActions = {
-	login: (login: Login) => Promise<AuthReturn["data"]>;
-	register: (login: Login) => Promise<AuthReturn["data"]>;
-	verifyUser: (token: string) => Promise<AuthReturn["data"]>;
+	login: (login: Login) => Promise<AuthReturn>;
+	register: (login: Login) => Promise<AuthReturn>;
+	verifyUser: (token: string) => Promise<AuthReturn>;
 	logout: () => Promise<boolean>;
 	resetPassword: (email: string) => Promise<boolean>;
 };

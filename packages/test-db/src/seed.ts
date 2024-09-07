@@ -1,8 +1,25 @@
 import { PrismaClient, Status, Priority, Label } from "../generated/client";
 import type { Team, User, Workspace } from "../generated/client";
 import { faker } from "@faker-js/faker";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
+
+const hashPassword = (password: string): Promise<string> => {
+	return new Promise((resolve, reject) => {
+		bcrypt.genSalt(10, (error, salt) => {
+			if (error) {
+				reject(error);
+			}
+			bcrypt.hash(password, salt, (error, hash) => {
+				if (error) {
+					reject(error);
+				}
+				resolve(hash);
+			});
+		});
+	});
+};
 
 async function seedDB() {
 	const numUsers = faker.number.int({ min: 5, max: 10 });
@@ -45,14 +62,16 @@ async function addUser() {
 	const username = faker.internet.userName({ firstName, lastName });
 	const email = faker.internet.email({ firstName, lastName });
 	const password = process.env.SEED_PASSWORD || faker.internet.password();
+	const hashedPassword = await hashPassword(password);
 
 	const user = await prisma.user.create({
 		data: {
 			name: fullName,
 			username,
 			email,
-			password,
+			password: hashedPassword,
 			verified: true,
+			onBoarding: false,
 		},
 	});
 	return user;
@@ -66,7 +85,7 @@ async function addWorkspace(user: User) {
 		data: {
 			name: workspaceName,
 			companySize: workspaceCompanySize,
-			url: faker.internet.url(),
+			url: workspaceName.split(" ").join("-").toLowerCase(),
 			Users: {
 				create: {
 					userId: user.id,
