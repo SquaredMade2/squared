@@ -1,4 +1,4 @@
-import type { Workspace } from "@repo/db";
+import type { User, Workspace } from "@repo/db";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];
@@ -24,7 +24,7 @@ export type WorkspaceActions = {
 	) => Promise<Workspace>;
 	deleteWorkspace: (workspaceId: string) => void;
 	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
-	joinWorkspace: (token: string) => Promise<WorkspaceResponse>;
+	joinWorkspace: (token: string, user: User) => Promise<WorkspaceResponse>;
 	inviteToWorkspace: (workspaceId: string, email: string) => Promise<void>;
 };
 

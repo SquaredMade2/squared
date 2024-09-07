@@ -72,6 +72,12 @@ export function createRoute(): Route {
 					include: { Users: true, teams: { include: { Tasks: true } } },
 				});
 
+				if (user.onBoarding) {
+					await prisma.user.update({
+						where: { id: user.id },
+						data: { onBoarding: false },
+					});
+				}
 				res.status(200);
 				return {
 					data: updatedWorkspace,

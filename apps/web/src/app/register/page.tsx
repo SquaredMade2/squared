@@ -51,7 +51,7 @@ export default function RegisterUser() {
 				provider: "credentials",
 			});
 			if (response.user && inviteToken) {
-				const { workspace } = await joinWorkspace(inviteToken); // Handle invite token
+				const { workspace } = await joinWorkspace(inviteToken, response.user);
 				if (workspace?.url) {
 					router.push(`/${workspace.url}`);
 				}

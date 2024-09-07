@@ -42,7 +42,7 @@ export default function Login() {
 				toast({ title: "Login Successful, Welcome!" });
 
 				if (inviteToken) {
-					const { workspace } = await joinWorkspace(inviteToken);
+					const { workspace } = await joinWorkspace(inviteToken, response.user);
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}

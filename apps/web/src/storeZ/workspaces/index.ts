@@ -7,7 +7,7 @@ import type {
 	WorkspaceStore,
 	WorkspaceResponse,
 } from "./interfaces";
-import type { Workspace } from "@repo/db";
+import type { User, Workspace } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
@@ -177,10 +177,11 @@ export const createWorkspaceStore = (
 						);
 					}
 				},
-				joinWorkspace: async (token: string) => {
+				joinWorkspace: async (token: string, user: User) => {
 					try {
 						const response = await axios.post(`${apiString("join")}`, {
 							token,
+							user,
 						});
 
 						const { workspace, message, variant } = response.data;
