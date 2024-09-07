@@ -118,11 +118,17 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 				},
 				getAllUsers: async (workspaceId: string): Promise<User[]> => {
 					try {
-						const response = await axios.get<User[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
-						);
-						set({ users: response.data });
-						return response.data;
+						const { data: response }: { data: ApiReturnType<User[]> } =
+							await axios.get(
+								`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
+							);
+						const { data: users, message, variant } = response;
+						if (!users) {
+							set({ users: [] });
+							return [];
+						}
+						set({ users });
+						return users;
 					} catch (error) {
 						console.error("Error in getAllUsers:", error);
 						return [];
