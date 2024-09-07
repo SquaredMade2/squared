@@ -120,6 +120,8 @@ const NewIssueModal = () => {
 				taskCreatedResponse.task.id,
 				user.id,
 			);
+			setTitleInput("");
+			setDescriptionInput("");
 			setShowNewIssue(false);
 			setNewIssueData({});
 		} catch (err) {
