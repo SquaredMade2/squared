@@ -106,7 +106,17 @@ const NewIssueModal = () => {
 				teamId: currentTeam.id,
 				id: "",
 			};
-			const taskCreatedResponse = await addTask(newTask);
+			const {
+				task: taskCreatedResponse,
+				message,
+				variant,
+			} = await addTask(newTask);
+
+			toast({
+				title: message,
+				variant: variant,
+			});
+			if (!taskCreatedResponse) return;
 
 			socket.emit(
 				"user_mentioned",
