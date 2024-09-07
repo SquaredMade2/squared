@@ -8,6 +8,7 @@ import type {
 	WorkspaceResponse,
 } from "./interfaces";
 import type { Workspace } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -40,19 +41,17 @@ export const createWorkspaceStore = (
 					const workspaceId = uuidv4();
 
 					try {
-						const response = await axios.post<WorkspaceResponse>(
-							apiString(workspaceId),
-							{
+						const response: { data: ApiReturnType<Workspace> } =
+							await axios.post(apiString(workspaceId), {
 								workspace: {
 									id: workspaceId,
 									...WORKSPACE_TEMPLATE,
 									...workspace,
 								},
 								userId,
-							},
-						);
+							});
 
-						const { message, variant, workspace: newWorkspace } = response.data;
+						const { message, variant, data: newWorkspace } = response.data;
 
 						if (!newWorkspace) {
 							return { workspace: null, message, variant };
@@ -76,19 +75,28 @@ export const createWorkspaceStore = (
 				},
 				getWorkspace: async (
 					workspaceId: string,
-				): Promise<Workspace | undefined> => {
+				): Promise<WorkspaceResponse> => {
 					const { workspaces } = get();
 					const stateWorkspace = workspaces.find((t) => t.id === workspaceId);
 					if (stateWorkspace) {
-						return stateWorkspace;
+						return {
+							workspace: stateWorkspace,
+							message: "Workspace found successfully",
+							variant: "default",
+						};
 					}
 
 					try {
-						const response = await axios.get<Workspace>(apiString(workspaceId));
-						return response.data;
+						const response: { data: ApiReturnType<Workspace> } =
+							await axios.get(apiString(workspaceId));
+						return { ...response.data, workspace: response.data.data };
 					} catch (error) {
 						console.error("Error in getWorkspace:", error);
-						return undefined;
+						return {
+							workspace: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
 					}
 				},
 				updateWorkspace: async (
