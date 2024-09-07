@@ -107,11 +107,17 @@ const NewIssueModal = () => {
 				id: "",
 			};
 			const taskCreatedResponse = await addTask(newTask);
-
+			if (!taskCreatedResponse.task) {
+				toast({
+					title: `Error creating issue: ${taskCreatedResponse.message}`,
+					variant: "destructive",
+				});
+				return;
+			}
 			socket.emit(
 				"user_mentioned",
 				[...mentionedUserId],
-				taskCreatedResponse.id,
+				taskCreatedResponse.task.id,
 				user.id,
 			);
 			setShowNewIssue(false);
