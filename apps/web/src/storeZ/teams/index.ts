@@ -117,11 +117,17 @@ export const createTeamStore = (
 				},
 				getAllTeams: async (workspaceId: string): Promise<Team[]> => {
 					try {
-						const response = await axios.get<Team[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/team`,
-						);
-						set({ teams: response.data });
-						return response.data;
+						const { data: response }: { data: ApiReturnType<Team[]> } =
+							await axios.get(
+								`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/team`,
+							);
+						const { data: teams, message, variant } = response;
+						if (!teams) {
+							set({ teams: [] });
+							return [];
+						}
+						set({ teams });
+						return teams;
 					} catch (error) {
 						console.error("Error in getAllTeams:", error);
 						return [];
