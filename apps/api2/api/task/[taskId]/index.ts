@@ -6,7 +6,6 @@ type Params = {
 	taskId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { taskId }): Promise<APIResponse<Task>> => {
@@ -21,14 +20,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Task not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the found task
 				return {
 					data: task,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding task:", error);
@@ -36,7 +35,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal server error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -51,14 +50,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Task not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the updated task
 				return {
 					data: task,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error updating task:", error);
@@ -66,7 +65,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal server error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -81,11 +80,11 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Task already exists",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
-				const {id, ...taskData} = body;
+				const { id, ...taskData } = body;
 				const newTask = await prisma.task.create({
 					data: {
 						...taskData,
@@ -97,14 +96,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Task not created",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the new task
 				return {
 					data: newTask,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error creating task:", error);
@@ -112,7 +111,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal server error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -126,7 +125,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Task not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -134,7 +133,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Task deleted",
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error deleting task:", error);
@@ -142,7 +141,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal server error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

@@ -19,13 +19,13 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "User not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				return {
 					data: user,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (err) {
 				console.error("Error finding user:", err);
@@ -33,7 +33,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -49,13 +49,13 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "User not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				return {
 					data: user,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (err) {
 				console.error("Error updating user:", err);
@@ -63,7 +63,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -77,7 +77,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "User already exists",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -94,13 +94,13 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "failed to created new user",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				return {
 					data: newUser,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (err) {
 				console.error("Error while creating new user:", err);
@@ -108,7 +108,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "failed to created new user",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -120,17 +120,17 @@ export function createRoute(): Route<Params> {
 
 				if (!user) {
 					res.status(500);
-				return {
-					data: null,
-					message: "Failed to delete User",
-					variant: "destructive"
-				};
+					return {
+						data: null,
+						message: "Failed to delete User",
+						variant: "destructive",
+					};
 				}
 
 				return {
 					data: null,
-					message:"User deleted",
-					variant:"default"
+					message: "User deleted",
+					variant: "default",
 				};
 			} catch (err) {
 				console.error("Error while creating new user", err);
@@ -138,7 +138,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Failed to delete User",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

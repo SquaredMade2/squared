@@ -10,7 +10,7 @@
 			".storybook",
 			"cypress"
 		],
-		"include": ["src"]
+		"include": ["src", "api"]
 	},
 	"organizeImports": {
 		"enabled": true

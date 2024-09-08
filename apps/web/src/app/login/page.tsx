@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 import { setCookie } from "nookies";
 
 export default function Login() {
@@ -22,9 +23,11 @@ export default function Login() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const { user, login } = useAuthStore((state) => state);
-	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
+	const { getWorkspace, getAllWorkspaces, joinWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
+	const searchParams = useSearchParams();
+	const inviteToken = searchParams.get("token");
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -43,7 +46,12 @@ export default function Login() {
 					path: "/",
 				});
 
-				if (response.user.defaultWorkspaceId) {
+				if (inviteToken) {
+					const { workspace } = await joinWorkspace(inviteToken, response.user);
+					if (workspace?.url) {
+						router.push(`/${workspace.url}`);
+					}
+				} else if (response.user.defaultWorkspaceId) {
 					const { workspace } = await getWorkspace(
 						response.user.defaultWorkspaceId,
 					);

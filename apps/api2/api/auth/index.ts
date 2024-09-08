@@ -2,7 +2,8 @@ import type { User, Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
 import type { Route, APIResponse } from "@/api/route";
-import { comparePassword, hashPassword, sendMail } from "./helpers";
+import { comparePassword, hashPassword } from "./helpers";
+import { sendMail } from "@/utils/mail";
 
 type Body = {
 	provider: "credentials" | "oauth";
@@ -17,15 +18,13 @@ type Params = {
 	userId: string;
 };
 
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
 			try {
-				const
-				 { email, password, provider, type, name, username } = body;
+				const { email, password, provider, type, name, username } = body;
 
 				// Validation for Login Data
 				if (!email || (provider === "credentials" && !password)) {

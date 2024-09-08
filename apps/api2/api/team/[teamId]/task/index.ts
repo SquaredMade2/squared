@@ -6,7 +6,6 @@ type Params = {
 	teamId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { teamId }, query): Promise<APIResponse<Task>> => {
@@ -21,14 +20,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Tasks not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the found tasks
 				return {
 					data: tasks,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding tasks:", error);
@@ -36,7 +35,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
