@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore } from "@/storeZ";
+import { useAuthStore, useWorkspaceStore } from "@/storeZ";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
 	Card,
@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 export default function RegisterUser() {
 	const [data, setData] = useState({
@@ -26,6 +27,9 @@ export default function RegisterUser() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const register = useAuthStore((state) => state.register);
+	const joinWorkspace = useWorkspaceStore((state) => state.joinWorkspace);
+	const searchParams = useSearchParams();
+	const inviteToken = searchParams.get("token");
 
 	const handlePushLogin = () => {
 		router.push("/login");
@@ -46,7 +50,12 @@ export default function RegisterUser() {
 				type: "register",
 				provider: "credentials",
 			});
-
+			if (response.user && inviteToken) {
+				const { workspace } = await joinWorkspace(inviteToken, response.user);
+				if (workspace?.url) {
+					router.push(`/${workspace.url}`);
+				}
+			}
 			toast({ title: response.message, variant: response.variant });
 		} catch (error) {
 			if (error instanceof Error)

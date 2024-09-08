@@ -2,6 +2,7 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
+import { destroyCookie } from "nookies";
 import type { User } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
@@ -57,6 +58,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					sessionStorage.removeItem("workspace-store");
 					sessionStorage.removeItem("user-store");
 					sessionStorage.removeItem("view-store");
+					destroyCookie(null, "auth-store");
 					return response.data;
 				},
 				resetPassword: async (email: string) => {

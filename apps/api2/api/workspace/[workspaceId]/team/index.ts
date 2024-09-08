@@ -19,15 +19,15 @@ export function createRoute(): Route<Params> {
 					res.status(404);
 					return {
 						data: teams,
-						message:"Teams not found",
-						variant: "destructive"
+						message: "Teams not found",
+						variant: "destructive",
 					};
 				}
 
 				// Return the found teams
 				return {
 					data: teams,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding teams:", error);
@@ -35,7 +35,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal server error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

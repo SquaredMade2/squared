@@ -2,7 +2,7 @@ import type { Prisma, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
-import { Activity } from "@repo/test-db";
+import type { Activity } from "@repo/test-db";
 
 type Params = {
 	taskId: string;
@@ -11,7 +11,6 @@ type Params = {
 type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
-
 
 export function createRoute(): Route<Params> {
 	return {
@@ -26,8 +25,8 @@ export function createRoute(): Route<Params> {
 					res.status(404);
 					return {
 						data: null,
-						message:"Task not found",
-						variant:"destructive"
+						message: "Task not found",
+						variant: "destructive",
 					};
 				}
 
@@ -43,23 +42,23 @@ export function createRoute(): Route<Params> {
 					res.status(404);
 					return {
 						data: null,
-						message:"Task event log not found",
-						variant:"destructive"
+						message: "Task event log not found",
+						variant: "destructive",
 					};
 				}
 
 				// Return the found activities
 				return {
 					data: taskEventLogWithActivities.activities,
-					variant:"default"
-				}
+					variant: "default",
+				};
 			} catch (error) {
 				console.error("Error finding task:", error);
 				res.status(500);
 				return {
 					data: null,
-					message:"Internal server error",
-					variant:"destructive"
+					message: "Internal server error",
+					variant: "destructive",
 				};
 			}
 		},
@@ -73,8 +72,8 @@ export function createRoute(): Route<Params> {
 					res.status(404);
 					return {
 						data: null,
-						message:"Task not found",
-						variant:"destructive"
+						message: "Task not found",
+						variant: "destructive",
 					};
 				}
 
@@ -114,8 +113,8 @@ export function createRoute(): Route<Params> {
 					});
 					return {
 						data: newActivityWithCommit,
-						variant:"default"
-					}
+						variant: "default",
+					};
 				}
 				if (body.type === "TASK_EVENT") {
 					// Assuming that taskEvent should be eagerly loaded
@@ -124,24 +123,24 @@ export function createRoute(): Route<Params> {
 						include: { taskEvent: true },
 					});
 					return {
-						data:newActivityWithTaskEvent,
-						variant:"default"
+						data: newActivityWithTaskEvent,
+						variant: "default",
 					};
 				}
-				
+
 				res.status(401);
 				return {
 					data: null,
-					message:"Invalid Activity type",
-					variant:"destructive"
+					message: "Invalid Activity type",
+					variant: "destructive",
 				};
 			} catch (error) {
 				console.error("Error creating task:", error);
 				res.status(500);
 				return {
 					data: null,
-					message:"Internal server error",
-					variant:"destructive"
+					message: "Internal server error",
+					variant: "destructive",
 				};
 			}
 		},

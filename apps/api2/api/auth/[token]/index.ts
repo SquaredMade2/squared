@@ -10,7 +10,6 @@ type JwtPayload = {
 	user: string;
 };
 
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
@@ -40,14 +39,14 @@ export function createRoute(): Route<Params> {
 						message: "User verified",
 						variant: "default",
 					};
-				} else{
-					res.status(403);
-					return {
-						data: null,
-						message: "invalid token",
-						variant: "destructive",
-					};
 				}
+
+				res.status(403);
+				return {
+					data: null,
+					message: "invalid token",
+					variant: "destructive",
+				};
 			} catch (error) {
 				console.error("Error with auth request:", error);
 				res.status(500);

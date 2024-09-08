@@ -6,7 +6,6 @@ type Params = {
 	userId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { userId }): Promise<APIResponse<Notification>> => {
@@ -21,7 +20,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "User not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -34,7 +33,7 @@ export function createRoute(): Route<Params> {
 				// Return the found notifications
 				return {
 					data: notifications,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding notifications:", error);
@@ -42,7 +41,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -56,7 +55,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Notifications cleared",
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error deleting notification:", error);
@@ -64,7 +63,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

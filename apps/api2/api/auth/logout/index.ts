@@ -18,19 +18,29 @@ type Body = {
 	login: Login;
 };
 
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
 			try {
-				res.clearCookie("token");
+				const { type } = body.login;
+
+				if (type === "logout") {
+					res.clearCookie("token");
+					return {
+						data: null,
+						message: "logout successful.",
+						variant: "default",
+					};
+				}
+				// Default case if the type is neither 'register' nor 'login'
+				res.status(401);
 				return {
 					data: null,
-					message: "logout successful.",
-					variant: "default",
-				}
+					message: "Invalid request type.",
+					variant: "destructive",
+				};
 			} catch (error) {
 				console.error("Error with auth request:", error);
 				res.status(500);
@@ -41,8 +51,7 @@ export function createRoute(): Route<Params> {
 							? `Error logging out: ${error.message}`
 							: "Error logging out: Internal server error",
 					variant: "destructive",
-				}
-
+				};
 			}
 		},
 	};

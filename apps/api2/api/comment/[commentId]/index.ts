@@ -6,7 +6,6 @@ type Params = {
 	commentId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { commentId }): Promise<APIResponse<Comment>> => {
@@ -21,14 +20,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "comment not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the found comment
 				return {
 					data: comment,
-					variant:"default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding comment:", error);
@@ -36,7 +35,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -51,14 +50,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Comment not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the updated comment
 				return {
 					data: comment,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error updating comment:", error);
@@ -66,7 +65,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -81,7 +80,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Comment already exists",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -97,14 +96,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Comment not created",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the new comment
 				return {
 					data: newComment,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error creating comment:", error);
@@ -112,7 +111,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
@@ -126,15 +125,15 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Comment not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return success message
-				return { 
+				return {
 					data: null,
 					message: "Comment deleted",
-					variant: "default" 
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error deleting comment:", error);
@@ -142,7 +141,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

@@ -6,7 +6,6 @@ type Params = {
 	taskId: string;
 };
 
-
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { taskId }): Promise<APIResponse<Comment>> => {
@@ -18,25 +17,25 @@ export function createRoute(): Route<Params> {
 
 				if (!comments) {
 					res.status(404);
-					return { 
+					return {
 						data: comments,
 						message: "comments not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the found comments
-				return { 
+				return {
 					data: comments,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error finding comments:", error);
 				res.status(500);
-				return { 
+				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

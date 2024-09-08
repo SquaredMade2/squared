@@ -24,7 +24,7 @@ const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
 	const {
-		author,
+		user,
 		storeCommonFields,
 		storeType,
 		storeTaskValue,
@@ -55,7 +55,7 @@ const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 
 	const handleSelectPriority = async (newPriority: Priority) => {
 		if (newPriority === task.priority) return;
-		if (task.id !== undefined) storeCommonFields(author, task.id);
+		if (task.id !== undefined) storeCommonFields(user, task.id);
 		logEvent(newPriority);
 		updateItem(newPriority);
 		if (newPriority === "noPriority") {
