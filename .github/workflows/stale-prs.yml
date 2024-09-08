@@ -2,13 +2,13 @@ name: "Mark stale issues and PRs"
 
 on:
   schedule:
-    - cron: "50 18 * * *"
-  workflow_dispatch: 
+    - cron: "0 19 * * *" # Runs daily at 5 AM GMT+10
+  workflow_dispatch: # Allows manual trigger
 
 permissions:
   issues: write
   pull-requests: write
-  contents: write
+  contents: write # If you need to modify content like labels
 
 jobs:
   stale:
@@ -33,8 +33,8 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Fetch all open PRs with the correct last activity timestamp (including comments and reviews)
-          STALE_PR=$(gh pr list --state=open --json number,title,url,updatedAt,comments,lastCommit,lastReview --jq '.[] | select((now - (max(.comments[].updatedAt // "1970-01-01T00:00:00Z", .lastCommit?.pushedDate // "1970-01-01T00:00:00Z", .lastReview?.submittedAt // "1970-01-01T00:00:00Z")) | fromdateiso8601)) > (3 * 86400) )')
+          # Fetch all open PRs with updatedAt field and filter for PRs older than 3 days
+          STALE_PR=$(gh pr list --state=open --json number,title,url,updatedAt,assignees --jq '.[] | select((now - (.updatedAt | fromdateiso8601)) > (3 * 86400))')
 
           if [ -n "$STALE_PR" ]; then
             PR_NUMBER=$(echo "$STALE_PR" | jq -r '.number')
