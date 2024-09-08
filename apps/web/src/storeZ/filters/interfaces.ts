@@ -36,6 +36,9 @@ export type FilterActions = {
 	addFilter: (filter: FilterCondition) => void;
 	removeFilter: () => void;
 	filterTasks: (tasks: Task[], filter: TaskFilter) => Task[];
+	saveFilter: (userId: string, filter: TaskFilter) => Promise<FilterResponse>;
+	deleteFilter: (filterId: string) => Promise<FilterResponse>;
+	getSavedFilters: (userId: string) => Promise<TaskFilter[]>;
 };
 
 export type FilterStore = FilterState & FilterActions;

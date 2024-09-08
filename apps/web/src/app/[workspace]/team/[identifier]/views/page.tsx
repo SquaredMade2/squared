@@ -28,7 +28,7 @@ const ViewsPage: React.FC = () => {
 							<ViewTopNavBar setSearchInput={setSearchInput} />
 						</div>
 					</div>
-					<FilterList searchInput={searchInput} />
+					<FilterList />
 				</div>
 			</div>
 		</div>

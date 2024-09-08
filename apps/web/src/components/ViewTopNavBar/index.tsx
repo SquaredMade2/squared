@@ -30,15 +30,6 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
 
-	const index: number = allWorkspaces.findIndex(
-		(item) => item.id === currentWorkspace.id,
-	);
-
-	const handleNavBar: handleNavbarType = () => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
-	};
-
 	const handleSearch: handleSearchType = (e: React.SyntheticEvent) => {
 		const target = e.target as HTMLInputElement; // Type assertion
 		setSearchInput(target.value);
@@ -55,45 +46,13 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 		<header>
 			<nav className="w-full items-center h-full flex">
 				<div className="flex items-center w-3/12 h-full">
-					<div
-						onClick={() => {
-							handleNavBar();
-						}}
-						className="lg:hidden cursor-pointer z-50 ml-5"
-					>
-						<PanelLeft className="text-[#6B6F76] size-5" />
-					</div>
-					<div className="space-x-4 flex items-center">
-						<div className="flex flex-row items-center rounded-lg text-foreground">
-							<WorkspaceInitials
-								workspaceName={currentTeam.name}
-								backgroundColor={index}
-								location="workspaceMenu"
-							/>
-							{handleWorkspaceNameOverflow(currentTeam.name)}
-						</div>
-						<ChevronRight className="size-4 stroke-gray-500" />
-						<div className="text-foreground">Views</div>
-					</div>
-					{/* <button className="ml-2 p-1 bg-card rounded hover:bg-background">{Star()}</button> -- commented out until feature added -Pinak */}
+					<div className="text-foreground">Views</div>
 				</div>
 				<div className="flex items-center w-9/12 justify-end h-[7vh] space-x-3">
-					<div className="flex items-center border border-solid border-border rounded ml-24">
-						<div className="m-1">
-							<Search className="size-4 text-[#858699]" />
-						</div>
-						<input
-							className="bg-background text-muted-foreground rounded focus-visible:outline-none py-[7px]"
-							placeholder="Find a view..."
-							onChange={(e) => {
-								handleSearch(e);
-							}}
-						/>
-					</div>
 					<TopNavBarDisplay />
 
 					<Button
-						className="flex items-center hidden md:flex gap-2 cursor-pointer"
+						className="gap-2"
 						onClick={handleNewView}
 						type="button"
 						variant={"outline"}

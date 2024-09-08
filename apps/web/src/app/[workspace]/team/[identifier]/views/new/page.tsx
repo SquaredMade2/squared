@@ -1,12 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import FilterSaveForm from "@/components/FilterSaveForm";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import ViewNewFilters from "@/components/ViewNewFilters";
-import ViewNewTopNavBar from "@/components/ViewNewTopNavBar";
-import type { DragResult } from "@/components/ViewAllTasks/ViewAllTasks.interfaces";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@repo/db";
@@ -65,31 +61,6 @@ const ViewsPage: React.FC = () => {
 		<div className="flex flex-row overflow-hidden relative">
 			<div className="flex items-center flex-col w-full h-screen bg-background">
 				<div className="w-full px-8 h-screen snap-x relative">
-					<ViewNewTopNavBar showFilterSaveForm={showFilterSaveForm} />
-					<div className="bg-card w-full flex flex-col items-center justify-between mb-2">
-						<div className="w-full">
-							{!showFilterSaveForm && (
-								<ViewNewFilters
-									handleFilter={handleFilter}
-									filterOption={filterOption}
-									showFilterSaveForm={showFilterSaveForm}
-									handleFilterSaveForm={handleFilterSaveForm}
-								/>
-							)}
-
-							{showFilterSaveForm && (
-								<div className="w-[98%] m-3">
-									<FilterSaveForm
-										filterOption={filterOption}
-										handleFilter={handleFilter}
-										handleFilterSaveForm={handleFilterSaveForm}
-										setShowFilterSaveForm={setShowFilterSaveForm}
-										redirectToViewsOnCreate={true}
-									/>
-								</div>
-							)}
-						</div>
-					</div>
 					<ViewAllTasks
 						activeSelected={activeSelected}
 						backlogSelected={backlogSelected}

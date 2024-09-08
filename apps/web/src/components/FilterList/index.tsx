@@ -1,82 +1,86 @@
-import { useEffect } from "react";
-import Link from "next/link";
-import FilterListDropDown from "@/components/FilterListDropDown";
+import React, { useEffect, useState } from "react";
+import { useFilterStore } from "@/storeZ";
+import type { TaskFilter } from "@/storeZ/filters";
+import { useToast } from "../ui/use-toast";
+import { Button } from "../ui/button";
 
-import { CircleUser, Layers3 } from "lucide-react";
-import type { FilterListProps } from "./FilterList.interfaces";
-import { useTheme } from "next-themes";
+const FiltersPage = () => {
+	const [userId, setUserId] = useState<string>("");
+	const {
+		currentFilter,
+		deleteFilter,
+		saveFilter,
+		removeFilter,
+		getSavedFilters,
+		savedFilters,
+	} = useFilterStore((state) => state);
+	const { toast } = useToast();
 
-const FilterList = ({ searchInput }: FilterListProps) => {
-	const { theme } = useTheme();
-	const filters = useSelector((state: RootState) => state.filterPage.filters);
-	const teamId = useSelector(
-		(state: RootState) => state.taskData.currentTeam._id,
-	);
-	const userName = useSelector((state: RootState) => state.userSettings.user);
-	const dispatch = useDispatch<AppDispatch>();
-
+	// Load saved filters when the page loads
 	useEffect(() => {
-		dispatch(getFilteredViews(teamId));
-	}, []);
+		async function fetchFilters() {
+			await getSavedFilters(userId);
+		}
 
+		if (userId) {
+			fetchFilters();
+		}
+	}, [userId]);
+
+	// Handler to save the current filter
+	const handleSaveFilter = async () => {
+		if (currentFilter) {
+			const response = await saveFilter(userId, currentFilter);
+			return toast(response);
+		}
+	};
+
+	// Handler to delete a filter
+	const handleDeleteFilter = async (filterId: string) => {
+		const response = await deleteFilter(filterId);
+		return toast(response);
+	};
+
+	// Render the list of saved filters and control actions
 	return (
-		<div className="pt-3.5">
-			{filters.length > 0 ? (
-				<div className="h-full bg-card overflow-hidden border border-border rounded-lg">
-					{filters
-						.filter((filter) => {
-							return filter.filterTitle
-								.toString()
-								.replace(/\s/g, "")
-								.toLowerCase()
-								.includes(searchInput.replace(/\s/g, "").toLowerCase());
-						})
-						.map((filter) => {
-							return (
-								<div
-									key={filter._id.toString()}
-									className={`grid grid-cols-2 h-[7vh] items-center bg-gradient-to-r ${
-										theme === "dark"
-											? "from-[#1d2029] to-[#0e0f11]"
-											: "from-[#F7F7F7] to-[#FFFFFF]"
-									} border-b border-border`}
-								>
-									<Link href={`/filter/${filter._id}`}>
-										<div className="flex items-center">
-											<div className="ml-5">
-												<Layers3 className="size-4 text-[#858699]" />
-											</div>
-											<div className="ml-4 text-foreground">
-												{filters.length > 0
-													? filter.filterTitle.toString()
-													: null}
-											</div>
-										</div>
-									</Link>
-									<div className="flex items-center justify-end">
-										<Link
-											href={`/filter/${filter._id}`}
-											className="md:flex hidden items-center"
-										>
-											<div className="mr-3">
-												<CircleUser className="size-4 text-[#6A6F75]" />
-											</div>
-											<div className="mr-3 text-foreground">
-												<p>{userName.name}</p>
-											</div>
-										</Link>
-										<FilterListDropDown
-											filterId={filter._id.toString()}
-											filterTitle={filter.filterTitle.toString()}
-										/>
-									</div>
-								</div>
-							);
-						})}
-				</div>
-			) : null}
+		<div>
+			<h1>Saved Filters</h1>
+
+			{/* List of saved filters */}
+			<ul>
+				{savedFilters.map((filter) => (
+					<li key={filter.id}>
+						Filter ID: {filter.id}, Logic: {filter.logic}
+						<Button
+							variant={"destructive"}
+							onClick={() => handleDeleteFilter(filter.id || "")}
+						>
+							Delete
+						</Button>
+					</li>
+				))}
+			</ul>
+
+			{/* Current filter actions */}
+			<div>
+				<h2>Current Filter</h2>
+				{currentFilter ? (
+					<>
+						<p>
+							Logic: {currentFilter.logic} | Conditions:{" "}
+							{currentFilter.conditions.length}
+						</p>
+						<Button onClick={handleSaveFilter}>Save Filter</Button>
+						<Button variant={"destructive"} onClick={removeFilter}>
+							Remove Filter
+						</Button>
+					</>
+				) : (
+					<p>No current filter applied</p>
+				)}
+			</div>
 		</div>
 	);
 };
 
-export default FilterList;
+export default FiltersPage;

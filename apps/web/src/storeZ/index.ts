@@ -2,6 +2,7 @@ export { SquaredStoreProvider } from "./provider";
 export { useActivityStore, ActivityStoreContext } from "./activities";
 export { useAuthStore, AuthStoreContext } from "./auth";
 export { useCommentStore, CommentStoreContext } from "./comments";
+export { useFilterStore, FilterStoreContext } from "./filters";
 export { useModalStore, ModalStoreContext } from "./modals";
 export {
 	useNotificationStore,

@@ -18,7 +18,7 @@ export * from "./store";
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/filter/${path}`;
 
-export const createFiltersStore = (
+export const createFilterStore = (
 	initState: FilterState = {
 		currentFilter: null,
 		savedFilters: [],
@@ -93,6 +93,11 @@ export const createFiltersStore = (
 							),
 						});
 						await axios.delete(apiString(`${filterId}`));
+						return {
+							filter: null,
+							message: "Filter deleted",
+							variant: "default",
+						};
 					} catch (error) {
 						console.error("Error deleting filter:", error);
 						return {
