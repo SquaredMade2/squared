@@ -47,6 +47,7 @@ export const createWorkspaceStore = (
 									id: workspaceId,
 									...WORKSPACE_TEMPLATE,
 									...workspace,
+									issuesCreated: 0,
 								},
 								userId,
 							});
