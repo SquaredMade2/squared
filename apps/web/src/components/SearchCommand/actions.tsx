@@ -1,11 +1,11 @@
-import axios from "axios";
-import type { RootState } from "@/store";
-import { clearUser } from "@/store/userSettings";
-import { setShowNewIssue } from "@/store/showNewIssue";
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./SearchCommand.interface";
-import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import {
+	useModalStore,
+	useWorkspaceStore,
+	useTeamStore,
+	useViewsStore,
+} from "@/storeZ";
 import {
 	Box,
 	Copy,
@@ -28,13 +28,10 @@ import { useAuthStore } from "@/storeZ";
 export class commandSchema {
 	router = useRouter();
 	pathname = usePathname();
-	dispatch = useAppDispatch();
-	currentWorkspace = useAppSelector(
-		(state: RootState) => state.taskData.currentWorkspace,
-	);
-	currentTeam = useAppSelector(
-		(state: RootState) => state.taskData.currentTeam,
-	);
+	setShowNewIssue = useModalStore((state) => state.setShowNewIssue);
+	currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+	currentTeam = useTeamStore((state) => state.currentTeam);
+	removeFilter = useViewsStore((state) => state.removeFilter);
 	showToast(title: string, variant?: "destructive" | "default" | null) {
 		const { toast } = useToast();
 		toast({ title, variant });
@@ -46,7 +43,7 @@ export class commandSchema {
 					icon: <Plus className="mr-2 h-4 w-4" />,
 					text: "Create new issue...",
 					function: () => {
-						this.dispatch(setShowNewIssue(true));
+						this.setShowNewIssue(true);
 					},
 					shortcut: ["C"],
 				},
@@ -82,10 +79,14 @@ export class commandSchema {
 					icon: <Layers3 />,
 					text: "Create new view",
 					function: () => {
-						this.dispatch(deleteAllCurrentFilters());
-						this.router.push(
-							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
-						);
+						this.removeFilter();
+						if (this.currentWorkspace && this.currentTeam) {
+							this.router.push(
+								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
+							);
+						} else {
+							console.error("Current workspace or team is null");
+						}
 					},
 					shortcut: [],
 				},
@@ -154,9 +155,13 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to active issues",
 				function: () => {
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`,
-					);
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "A"],
 			},
@@ -164,9 +169,13 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to backlog",
 				function: () => {
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`,
-					);
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "B"],
 			},
@@ -174,9 +183,13 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to all issues",
 				function: () => {
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`,
-					);
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "E"],
 			},
@@ -192,10 +205,14 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to views",
 				function: () => {
-					this.dispatch(deleteAllCurrentFilters());
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,
-					);
+					this.removeFilter();
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "U"],
 			},
@@ -291,7 +308,13 @@ export class commandSchema {
 					icon: <Settings />,
 					text: "Team Settings",
 					function: () => {
-						this.router.push(`/settings/teams/${this.currentTeam.identifier}`);
+						if (this.currentWorkspace && this.currentTeam) {
+							this.router.push(
+								`/settings/teams/${this.currentTeam.identifier}`,
+							);
+						} else {
+							console.error("Current workspace or team is null null");
+						}
 					},
 					shortcut: [],
 				},
