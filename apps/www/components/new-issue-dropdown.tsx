@@ -24,19 +24,21 @@ export const NewIssueDropDown = ({ options }: Props) => {
 
 	const handleSelection = (e: React.MouseEvent) => {
 		setTitle(options[Number(e.currentTarget.id)].value);
+
+		setIcon(options[Number(e.currentTarget.id)].icon);
 	};
 	return (
 		<div>
 			<button
 				type="button"
 				onClick={handleMenu}
-				className="relative border max-w-[220px] items-center rounded-md p-0.5 flex gap-2"
+				className="relative bg-background-darkSecondary border border-[#2b2c3b] max-w-[220px] items-center rounded-md p-0.5 flex gap-2"
 			>
 				{Icon}
 				{title}
 			</button>
 			<menu
-				className={`absolute ${openMenu ? "flex" : "hidden"} flex-col top-[318px] border rounded-md bg-red-500`}
+				className={`absolute ${openMenu ? "flex" : "hidden"} flex-col top-[318px] border-[#2b2c3b] border rounded-md bg-background-darkSecondary`}
 			>
 				{options.map((option) => {
 					return (

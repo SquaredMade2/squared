@@ -4,7 +4,7 @@ import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { Globe } from "../globe";
 export const SkeletonFour = () => {
 	return (
-		<div className="h-full  flex flex-col items-center relative bg-white dark:bg-black mt-10">
+		<div className="h-full  flex flex-col items-center relative bg-white dark:bg-[#1E2437] mt-10">
 			<InfiniteMovingCards speed="fast" direction="left">
 				<MovingGrid />
 			</InfiniteMovingCards>
@@ -66,7 +66,8 @@ const MovingGrid = () => {
 				</svg>
 				<span>Digital Ocean</span>
 			</span>
-			<span
+			{/* Commented out because it is not relevant to Squared intergrations */}
+			{/* <span
 				className={cn(
 					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-neutral-900 px-2 py-1 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
@@ -85,8 +86,8 @@ const MovingGrid = () => {
 					/>
 				</svg>
 				<span>Tailwind CSS</span>
-			</span>
-			<span
+			</span> */}
+			{/* <span
 				className={cn(
 					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-neutral-900 px-2 py-1 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
@@ -116,7 +117,7 @@ const MovingGrid = () => {
 					<path d="M9 7L16 13.6667H23V7H9Z" fill="#88DDFF" />
 				</svg>
 				<span>Framer Motion</span>
-			</span>
+			</span> */}
 			<span
 				className={cn(
 					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-neutral-900 px-2 py-1 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",

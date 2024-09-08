@@ -16,8 +16,8 @@ import LowEffort from "../SVG/low-effort";
 
 export const SkeletonThree = () => {
 	return (
-		<div className="h-full w-full sm:w-[100%] mx-auto bg-white dark:bg-neutral-800 shadow-2xl dark:shadow-white/40 mt-10 group rounded-md">
-			<div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-black dark:via-black to-transparent w-full pointer-events-none z-[11]" />
+		<div className="h-full w-full sm:w-[100%] mx-auto bg-white dark:bg-background-darkSecondary shadow-2xl dark:shadow-white/40 mt-10 group rounded-md">
+			<div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-background-darkAccent dark:via-background-darkAccent to-transparent w-full pointer-events-none z-[11]" />
 
 			<div className="flex flex-1 w-full h-full flex-col space-y-2 ">
 				<div className="flex justify-between border-b dark:border-neutral-700 pb-2 p-4">
@@ -37,17 +37,17 @@ export const SkeletonThree = () => {
 						{/* todo add background */}
 						<input
 							placeholder="Add description..."
-							className="bg-transparent"
+							className="bg-transparent w-full focus:outline-none "
 							type="text"
 						/>
 					</div>
 
-					<div className="flex gap-5">
+					<div className="flex gap-7">
 						<NewIssueDropDown
 							options={[
 								{ value: "Todo", id: 0, icon: TodoIcon },
 								{ value: "Backlog", id: 1, icon: BacklogIcon },
-								{ value: "Done", id: 3, icon: DoneIcon },
+								{ value: "Done", id: 2, icon: DoneIcon },
 							]}
 						/>
 						{/* Priority */}

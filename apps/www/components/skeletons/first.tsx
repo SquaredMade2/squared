@@ -53,8 +53,9 @@ export const SkeletonOne = () => {
 					</div>
 				</div>
 			</div>
-			<div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-white dark:from-black via-white dark:via-black to-transparent w-full pointer-events-none" />
-			<div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-white dark:from-black via-transparent to-transparent w-full pointer-events-none" />
+			{/* Divs are disabled because they don't look good in dark mode.  */}
+			<div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-white dark:from-background-darkAccent via-white dark:via-background-darkAccent to-transparent w-full pointer-events-none" />
+			<div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-white dark:from-background-darkAccent via-transparent to-transparent w-full pointer-events-none" />
 		</div>
 	);
 };
