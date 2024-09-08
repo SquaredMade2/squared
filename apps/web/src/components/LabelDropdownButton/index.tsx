@@ -214,10 +214,14 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 										<span className="ml-2">{label}</span>
 									</div>
 									{location === "newIssue" &&
-										newIssueLabels.includes(label) && <Check />}
+										newIssueLabels.includes(label) && (
+											<Check className="size-4" />
+										)}
 									{location === "issueSidebar" &&
 										sidebarLabels &&
-										sidebarLabels.includes(label) && <Check />}
+										sidebarLabels.includes(label) && (
+											<Check className="size-4" />
+										)}
 								</CommandItem>
 							))}
 						</CommandGroup>
