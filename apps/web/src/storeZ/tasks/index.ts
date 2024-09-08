@@ -77,6 +77,9 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 						};
 					}
 				},
+				setCurrentTask: (task: Task): void => {
+					set({ currentTask: task });
+				},
 				deleteTask: async (taskId: string): Promise<void> => {
 					try {
 						await axios.delete(apiString(taskId));
