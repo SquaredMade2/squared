@@ -78,6 +78,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 				lastLogin: new Date(),
 				onBoarding: false,
 				defaultWorkspaceId: "",
+				avatarUrl: "",
 			},
 		};
 	};
