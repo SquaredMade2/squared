@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { setCookie } from "nookies";
 
 export default function Login() {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -37,6 +38,10 @@ export default function Login() {
 
 			if (response?.user) {
 				toast({ title: "Login Successful, Welcome!" });
+				setCookie(null, "auth-store", JSON.stringify(response.user), {
+					maxAge: 30 * 24 * 60 * 60,
+					path: "/",
+				});
 
 				if (response.user.defaultWorkspaceId) {
 					const { workspace } = await getWorkspace(
