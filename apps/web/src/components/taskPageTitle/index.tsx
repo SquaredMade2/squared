@@ -24,11 +24,11 @@ const TaskPageTitle = () => {
 	const [updatedTitle, setUpdatedTitle] = useState(title);
 	const [isFocused, setIsFocused] = useState(false);
 	const {
-		author,
 		storeCommonFields,
 		storeType,
 		storeTaskValue,
 		updateTaskValue,
+		user,
 	} = useLogTaskEvent();
 
 	const styles = {
@@ -60,7 +60,7 @@ const TaskPageTitle = () => {
 		e.preventDefault();
 		const changeMade: boolean = updatedTitle !== title;
 		if (changeMade && taskId !== undefined) {
-			storeCommonFields(author, taskId);
+			storeCommonFields(user, taskId);
 			logEvent();
 			dispatch(updateTitle(transformedTitleInput, taskId));
 		}
@@ -82,7 +82,7 @@ const TaskPageTitle = () => {
 		}
 		const changeMade: boolean = updatedTitle !== title;
 		if (changeMade && taskId !== undefined) {
-			storeCommonFields(author, taskId);
+			storeCommonFields(user, taskId);
 			logEvent();
 			dispatch(updateTitle(transformedTitleInput, taskId));
 		}

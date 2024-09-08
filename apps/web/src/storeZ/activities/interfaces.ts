@@ -12,12 +12,12 @@ export type ActivityActions = {
 	addTaskEvent: (
 		event: TaskEvent,
 		taskId: string,
-		author: string,
+		authorId: string,
 	) => Promise<TaskEvent | null>;
 	addCommitEvent: (
 		event: Commit,
 		taskId: string,
-		author: string,
+		authorId: string,
 	) => Promise<Commit | null>;
 	getTaskEvents: (taskId: string) => Promise<ActivityType[]>;
 };

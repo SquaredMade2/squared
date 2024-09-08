@@ -9,12 +9,7 @@ import { AssigneeDropdown } from "@/components/AssigneeDropdown";
 import TaskCardLabels from "@/components/TaskCardLabels";
 import { UserSearch } from "lucide-react";
 import type { TaskCardTitleProps } from "./TaskCardTitle.interfaces";
-import {
-	useAuthStore,
-	useTaskStore,
-	useTeamStore,
-	useViewsStore,
-} from "@/storeZ";
+import { useTaskStore, useTeamStore, useViewsStore } from "@/storeZ";
 import type { User } from "@repo/db";
 
 const TaskCardTitle = ({
@@ -29,7 +24,6 @@ const TaskCardTitle = ({
 		state.showDateTime,
 		state.showLabels,
 	]);
-	const user = useAuthStore((state) => state.user);
 	const [getAllTasks, updateTask] = useTaskStore((state) => [
 		state.getAllTasks,
 		state.updateTask,
@@ -63,8 +57,8 @@ const TaskCardTitle = ({
 	};
 
 	const renderTaskInfo = () => (
-		<>
-			<div className="flex items-center flex-row gap-2 text-base">
+		<div className="flex justify-between w-full">
+			<div className="flex items-center gap-2 text-base">
 				{isShown && <TaskCardPriority task={task} border={false} />}
 				<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer">
 					{teamIdentifier}
@@ -101,7 +95,7 @@ const TaskCardTitle = ({
 					</div>
 				)}
 			</div>
-		</>
+		</div>
 	);
 
 	const renderGridTaskInfo = () => (

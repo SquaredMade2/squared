@@ -32,7 +32,7 @@ export default function LabelDropdown({
 	);
 	const taskId = useSelector((state: RootState) => state.singleTask?.data?._id);
 
-	const { author, storeCommonFields, storeType } = useLogTaskEvent();
+	const { user, storeCommonFields, storeType } = useLogTaskEvent();
 
 	const [query, setQuery] = useState("");
 
@@ -66,7 +66,7 @@ export default function LabelDropdown({
 		}
 		if (location === "issueSidebar" && sidebarLabels) {
 			newLabelsSelected = newLabelSelection(sidebarLabels, labelName);
-			if (taskId !== undefined) storeCommonFields(author, taskId);
+			if (taskId !== undefined) storeCommonFields(user, taskId);
 			logEvent(newLabelsSelected);
 			updateItem(newLabelsSelected);
 		}
