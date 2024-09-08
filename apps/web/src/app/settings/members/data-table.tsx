@@ -15,18 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useModalStore } from "@/storeZ";
-import { AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Avatar } from "@/components/ui/avatar";
 import type { Workspace } from "@repo/db";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
