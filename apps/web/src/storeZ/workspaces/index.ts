@@ -19,7 +19,7 @@ const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	name: "",
 	url: "",
 	companySize: null,
-	issuesCreated: null,
+	issuesCreated: 0,
 	universalTokenLinkId: null,
 	githubRepoInfoId: null,
 };
