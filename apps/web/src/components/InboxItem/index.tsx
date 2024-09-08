@@ -9,9 +9,10 @@ import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
 import { getNotifications } from "@/store/notifications";
 import { useTheme } from "next-themes";
+import { useAuthStore, useNotificationStore } from "@/storeZ";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
-	id,
+	taskId,
 	date,
 	title,
 	read,
@@ -20,17 +21,18 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 }) => {
 	const route = useRouter();
 	const isoDateString = Date.parse(date);
-	const toDayString = Date.now();
-	const timeSinceCreation = toDayString - isoDateString;
+	const todayString = Date.now();
+	const timeSinceCreation = todayString - isoDateString;
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 	const dispatch = useAppDispatch();
 	const currentTaskId = useAppSelector(
 		(state) => state.currentTask.currentTaskId,
 	);
+
 	const socket = useContext(SocketContext);
-	const user = useAppSelector((state) => state.userSettings.user);
-	const isActive = currentTaskId === id;
+	const { user } = useAuthStore((state) => state);
+	const isActive = currentTaskId === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 	const { theme } = useTheme();
 	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
@@ -47,8 +49,8 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 			? "hover:text-foreground hover:bg-[#282E43]"
 			: "hover:border hover:border-gray-500 hover:shadow hover:text-foreground";
 
-	const handleMarkRead = (id: string) => {
-		socket.emit("sending_notificationId", id, user._id);
+	const handleMarkRead = (notificationId: string) => {
+		user && socket.emit("sending_notificationId", notificationId, user.id);
 	};
 
 	const handleClick = (taskId: string, notificationId: string): void => {
@@ -75,7 +77,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 
 	return (
 		<div
-			onClick={() => handleClick(id, notificationId)}
+			onClick={() => handleClick(taskId, notificationId)}
 			className={`p-2 w-80 rounded-md cursor-pointer  ${
 				isActive ? active : read ? inactiveRead : inactiveNotread
 			} ${hover}`}

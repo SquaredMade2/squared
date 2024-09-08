@@ -2,15 +2,16 @@
 import "@/app/globals.css";
 import { SocketContext } from "@/app/SocketProvider";
 import { InboxItem } from "@/components/InboxItem";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useContext, useEffect } from "react";
 import { getNotifications, newNotification } from "@/store/notifications";
-import type { NotificationProps } from "@/store/notifications";
 import { ScrollArea } from "../ui/scroll-area";
+import type { Notification } from "@repo/db";
+import { useAuthStore } from "@/storeZ";
 type Props = {
 	showInboxList: boolean;
 	closeBackdrop: () => void;
-	notifications: NotificationProps[];
+	notifications: Notification[];
 };
 const InboxList: React.FC<Props> = ({
 	showInboxList,
@@ -18,32 +19,34 @@ const InboxList: React.FC<Props> = ({
 	notifications,
 }) => {
 	const socket = useContext(SocketContext);
-	const user = useAppSelector((state) => state.userSettings.user);
+	const { user } = useAuthStore((state) => state);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		socket.emit("socketId", user._id);
-		socket.emit("getUser", user._id);
-		socket.on("send_notification", (data: unknown) => {
-			const notificationData =
-				typeof data === "string" ? JSON.parse(data) : data;
-			dispatch(getNotifications(notificationData));
-		});
-		socket.on("new_notification", (data: unknown) => {
-			const notificationData =
-				typeof data === "string" ? JSON.parse(data) : data;
-			dispatch(newNotification(notificationData));
-		});
-		socket.on("notification_removed", (data) => {
-			dispatch(getNotifications(data));
-		});
-		return () => {
-			socket.off("send_notification");
-			socket.off("new_notification");
-			socket.off("notification_removed");
-		};
+		if (user) {
+			socket.emit("socketId", user.id);
+			socket.emit("getUser", user.id);
+			socket.on("send_notification", (data: unknown) => {
+				const notificationData =
+					typeof data === "string" ? JSON.parse(data) : data;
+				dispatch(getNotifications(notificationData));
+			});
+			socket.on("new_notification", (data: unknown) => {
+				const notificationData =
+					typeof data === "string" ? JSON.parse(data) : data;
+				dispatch(newNotification(notificationData));
+			});
+			socket.on("notification_removed", (data) => {
+				dispatch(getNotifications(data));
+			});
+			return () => {
+				socket.off("send_notification");
+				socket.off("new_notification");
+				socket.off("notification_removed");
+			};
+		}
 	}, [socket.id, dispatch]);
-
+	// console.log(notifications.map((obj) => typeof (obj.createdAt)));
 	useEffect(() => {
 		// return () => {
 		// 	dispatch(clearCurrentTaskId());
@@ -57,12 +60,12 @@ const InboxList: React.FC<Props> = ({
 		>
 			<ScrollArea className="h-full w-full p-2 border-r transition-all duration-500 ease-in-out">
 				<div className="flex flex-col gap-2 justify-center">
-					{notifications?.map((obj: NotificationProps) => (
+					{notifications?.map((obj: Notification) => (
 						<InboxItem
-							key={obj._id}
-							notificationId={obj._id}
-							id={obj.task[0].id}
-							title={obj.task[0].title}
+							key={obj.id}
+							notificationId={obj.id}
+							taskId={obj.taskIds[0]}
+							title={obj.description}
 							date={obj.createdAt}
 							read={obj.read}
 							closeBackdrop={closeBackdrop}

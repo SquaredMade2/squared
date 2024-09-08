@@ -2,17 +2,17 @@
 import "@/app/globals.css";
 import Task from "@/components/Task";
 import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { NotificationProps } from "@/store/notifications";
+// import type { NotificationProps } from "@/store/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInbox, faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
+import type { Notification } from "@repo/db";
 
 export default function InboxContents({
 	notifications,
-}: { notifications: NotificationProps[] }): React.JSX.Element {
+}: { notifications: Notification[] }): React.JSX.Element {
 	const theCurrentTask = useAppSelector(
 		(state) => state.currentTask.currentTaskId,
 	);
-
 	const hasUnreadNotification = notifications.some(
 		(notification) => notification.read === false,
 	);
