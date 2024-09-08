@@ -19,7 +19,7 @@ const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	name: "",
 	url: "",
 	companySize: null,
-	issuesCreated: null,
+	issuesCreated: 0,
 	universalTokenLinkId: null,
 	githubRepoInfoId: null,
 };
@@ -47,7 +47,6 @@ export const createWorkspaceStore = (
 									id: workspaceId,
 									...WORKSPACE_TEMPLATE,
 									...workspace,
-									issuesCreated: 0,
 								},
 								userId,
 							});
