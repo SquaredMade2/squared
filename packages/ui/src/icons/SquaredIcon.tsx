@@ -1,10 +1,10 @@
-import { createElement,forwardRef } from "react"
-import { icons } from "./icons"
-export const SquaredIcon = ({icon,className,...rest}) => {
-    const component = forwardRef(() => createElement(icons[icon], {
+import React, {createElement} from "react";
+import { getSvgs } from "./getSvgs";
+export async function SquaredIcon(icon, className = "", ...rest) {
+    const svgs = getSvgs();
+    const component = createElement(svgs[icon], {
         className,
-        rest
-    }))
-    component.displayName = "SquaredIcon"
+        ...rest
+    })
     return component
-}
+};

@@ -62,6 +62,10 @@
       "import": "./src/focus-scope/index.ts",
       "require": "./src/focus-scope/index.ts"
     },
+    "./icons": {
+      "import": "./src/icons/index.ts",
+      "require": "./src/icons/index.ts"
+    },
     "./id": {
       "import": "./src/id/index.ts",
       "require": "./src/id/index.ts"
