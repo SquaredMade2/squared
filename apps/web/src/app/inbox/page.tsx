@@ -5,7 +5,6 @@ import InboxTopMenu from "@/components/InboxTopMenu";
 import { useEffect, useState } from "react";
 import InboxContents from "@/components/InboxContents";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useAuthStore, useNotificationStore } from "@/storeZ";
 
 export default function Inbox(): React.JSX.Element {
@@ -17,9 +16,6 @@ export default function Inbox(): React.JSX.Element {
 	const toggleInboxList = () => {
 		setShowInboxList(!showInboxList);
 	};
-	// const notifications = useAppSelector(
-	// 	(state) => state.notifications.notifications,
-	// );
 
 	const { user } = useAuthStore((state) => state);
 	const { notifications, getAllNotifications } = useNotificationStore(

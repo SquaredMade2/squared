@@ -46,7 +46,7 @@ const InboxList: React.FC<Props> = ({
 			};
 		}
 	}, [socket.id, dispatch]);
-	// console.log(notifications.map((obj) => typeof (obj.createdAt)));
+
 	useEffect(() => {
 		// return () => {
 		// 	dispatch(clearCurrentTaskId());
