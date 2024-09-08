@@ -2,10 +2,10 @@ name: "Send meeting notifications"
 
 on:
   schedule:
-    - cron: "0 19 * * 0" 
-    - cron: "0 19 * * 4"
-    - cron: "0 19 1-7,15-21 * 2" 
-  workflow_dispatch:
+    - cron: "45 18 * * 0" # Runs every Sunday at 4:45 AM GMT+10
+    - cron: "45 18 * * 4" # Runs every Thursday at 4:45 AM GMT+10
+    - cron: "45 18 1-7,15-21 * 2" # Runs every second Tuesday at 4:45 AM GMT+10
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
   send-notifications:
@@ -15,13 +15,7 @@ jobs:
         env:
           DISCORD_MEETINGS_URL: ${{ secrets.DISCORD_MEETINGS_URL }}
         run: |
-          # Check if today is Tuesday (to ping @everyone)
-          DAY_OF_WEEK=$(date +%u)
-
-          MESSAGE="There is a meeting scheduled."
-          if [ "$DAY_OF_WEEK" -eq 2 ]; then
-            MESSAGE="@everyone There is a meeting scheduled today!"
-          fi
+          MESSAGE="@everyone There is a meeting scheduled today!"
 
           # Send the notification to Discord
           curl -H "Content-Type: application/json" -X POST \
