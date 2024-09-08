@@ -67,7 +67,7 @@ const InboxList: React.FC<Props> = ({
 							<InboxItem
 								key={obj._id}
 								notificationId={obj._id}
-								id={obj.task[0]._id}
+								id={obj.task[0].id}
 								title={obj.task[0].title}
 								date={obj.createdAt}
 								read={obj.read}
