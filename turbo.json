@@ -2,9 +2,16 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_API_HOST"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NEXT_PUBLIC_API_HOST"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
       "outputs": [
         "dist/**",
         ".next/**",
@@ -13,46 +20,74 @@
       ]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": [
+        "^check-types"
+      ]
     },
     "clean": {
       "cache": false
     },
     "db:generate": {
-      "dependsOn": ["^db:generate"],
+      "dependsOn": [
+        "^db:generate"
+      ],
       "cache": false
     },
     "db:push": {
-      "dependsOn": ["^db:push"]
+      "dependsOn": [
+        "^db:push"
+      ]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "format:check": {
-      "dependsOn": ["^format:check"]
+      "dependsOn": [
+        "^format:check"
+      ]
     },
     "format:write": {
-      "dependsOn": ["^format:write"]
+      "dependsOn": [
+        "^format:write"
+      ]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+      "dependsOn": [
+        "^lint:fix"
+      ]
     },
     "reset": {
-      "dependsOn": ["^reset"]
+      "dependsOn": [
+        "^reset"
+      ]
     },
     "start": {
-      "dependsOn": ["^start", "build"]
+      "dependsOn": [
+        "^start",
+        "build"
+      ]
+    },
+    "studio": {
+      "dependsOn": [
+        "^studio"
+      ]
     },
     "test": {
       "dependsOn": [],
-      "outputs": ["coverage/**"]
+      "outputs": [
+        "coverage/**"
+      ]
     },
     "test:ci": {
-      "dependsOn": ["^test:ci"]
+      "dependsOn": [
+        "^test:ci"
+      ]
     }
   },
   "ui": "tui"

@@ -33,6 +33,11 @@ export function middleware(request: NextRequest) {
 }
 
 function isPublicRoute(pathname: string) {
-	const PUBLIC_ROUTES = ["/login", "/register", "/[workspace]/join/[token]"];
-	return PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
+	const PUBLIC_ROUTES = ["/login", "/register"];
+	const workspaceJoinRegex = /^\/[^\/]+\/join\/[^\/]+$/;
+
+	return (
+		PUBLIC_ROUTES.some((route) => pathname.startsWith(route)) ||
+		workspaceJoinRegex.test(pathname)
+	);
 }

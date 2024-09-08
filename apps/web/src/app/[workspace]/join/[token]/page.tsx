@@ -24,6 +24,9 @@ const JoinWorkspacePage = () => {
 
 		const fetchWorkspaceName = async () => {
 			try {
+				if (!user) {
+					router.push(`/login?token=${token}`);
+				}
 				const response = await getWorkspace(workspaceId as string);
 				if (!response.workspace) {
 					toast({
@@ -45,13 +48,7 @@ const JoinWorkspacePage = () => {
 		};
 
 		fetchWorkspaceName();
-	}, [token]);
-
-	useEffect(() => {
-		if (!user) {
-			router.push(`/login?token=${token}`);
-		}
-	}, [user, token, router]);
+	}, [token, user]);
 
 	const handleJoinWorkspace = async () => {
 		setLoading(true);
