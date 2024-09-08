@@ -11,6 +11,7 @@ import { getUser } from "@/store/userSettings/thunks";
 import type { CreateWorkspaceProps } from "./CreateWorkspace.interfaces";
 import type { AppDispatch, RootState } from "@/store";
 import { Button } from "../ui/button";
+import BackButton from "../BackButton";
 // import { linkTo } from "@storybook/addon-links/*";
 
 const CreateWorkspace = ({
@@ -126,18 +127,20 @@ const CreateWorkspace = ({
 	return (
 		<div className="h-screen w-full bg-card relative flex flex-col items-center justify-center">
 			{!onboarding && workspaceList.length > 0 && (
-				<div className="w-screen absolute top-0 p-10 flex justify-between">
-					<div className="flex flex-col text-sm">
-						<span className="text-xs text-muted-foreground">Logged in as:</span>
-						<span className="text-foreground">{user.email}</span>
-					</div>
+				<div className="w-screen absolute top-0 py-8 px-2 sm:px-8 flex gap-2 sm:justify-between">
 					<div className="flex items-center space-x-1 text-foreground">
-						<ChevronLeft className="text-[#858699] size-5" />
-						<a href={`/${workspaceList[0].url}`}>Back to Squared</a>
+						<BackButton hoverbackground="bg-accent" />
+						<a className="hidden sm:block" href={`/${workspaceList[0].url}`}>
+							Back to Squared
+						</a>
+					</div>
+					<div className="flex gap-2 items-center text-sm">
+						<span className="text-muted-foreground">Logged in as:</span>
+						<span className="text-foreground">{user.email}</span>
 					</div>
 				</div>
 			)}
-			<div className="p-8 flex flex-col space-y-6">
+			<div className="p-2 sm:p-8 flex flex-col space-y-6">
 				<div className="text-center">
 					<span className="text-2xl text-foreground font-medium">
 						Create a new workspace
@@ -181,7 +184,9 @@ const CreateWorkspace = ({
 							</div>
 						</div>
 					</div>
-					<Button type="submit">Create workspace</Button>
+					<Button className="w-full" type="submit">
+						Create workspace
+					</Button>
 				</form>
 			</div>
 		</div>
