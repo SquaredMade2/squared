@@ -210,6 +210,7 @@ model User {
   lastLogin          DateTime @default(now())
   onBoarding         Boolean  @default(true)
   defaultWorkspaceId String?
+  avatarUrl          String?
 
   Workspaces   UserWorkspace[]
   Notification Notification[]
