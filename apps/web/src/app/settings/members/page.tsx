@@ -74,7 +74,13 @@ export default function WorkspaceMembersPage() {
 				</p>
 			</div>
 			<Separator className="mb-8" />
-			{workspace && <DataTable columns={columns} data={members} />}
+			{workspace && (
+				<DataTable
+					columns={columns}
+					data={members}
+					workspace={currentWorkspace}
+				/>
+			)}
 		</div>
 	);
 }

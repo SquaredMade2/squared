@@ -13,7 +13,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<User>[] = [
 	{
-		accessorKey: "avatarUrl",
+		accessorKey: "name",
 		cell: ({ row }) => {
 			const user = row.original;
 			const placeholder = user.name
@@ -21,21 +21,17 @@ export const columns: ColumnDef<User>[] = [
 				.map((name) => name[0])
 				.join("");
 			return (
-				<Avatar>
-					<AvatarImage src={user.avatarUrl ?? undefined} />
-					<AvatarFallback>{placeholder}</AvatarFallback>
-				</Avatar>
-			);
-		},
-	},
-	{
-		accessorKey: "name",
-		cell: ({ row }) => {
-			const user = row.original;
-			return (
-				<div className="flex items-start flex-col w-96">
-					<div className="ml-2">{user.name}</div>
-					<div className="ml-2 text-sm text-muted-foreground">{user.email}</div>
+				<div className="flex gap-2">
+					<Avatar>
+						<AvatarImage src={user.avatarUrl ?? undefined} />
+						<AvatarFallback>{placeholder}</AvatarFallback>
+					</Avatar>
+					<div className="flex items-start flex-col">
+						<div className="ml-2">{user.name}</div>
+						<div className="ml-2 text-sm text-muted-foreground">
+							{user.email}
+						</div>
+					</div>
 				</div>
 			);
 		},

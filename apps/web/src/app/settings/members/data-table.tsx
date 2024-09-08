@@ -14,18 +14,34 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useModalStore } from "@/storeZ";
+import { AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { Avatar } from "@/components/ui/avatar";
+import type { Workspace } from "@repo/db";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	workspace: Workspace | null;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	workspace,
 }: DataTableProps<TData, TValue>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState<string>("");
+	const { setShowWorkspaceInvite } = useModalStore((state) => state);
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -46,6 +62,10 @@ export function DataTable<TData, TValue>({
 		},
 	});
 
+	const handleWorkspaceInvite = () => {
+		setShowWorkspaceInvite(true);
+	};
+
 	return (
 		<div className="flex flex-col items-start gap-4">
 			<div>
@@ -60,13 +80,15 @@ export function DataTable<TData, TValue>({
 				</p>
 			</div>
 			<div className="w-full">
-				<div className="flex items-center py-4">
+				<div className="flex items-center py-4 w-full justify-between">
 					<Input
 						placeholder="Search by name or email"
 						value={searchTerm}
 						onChange={handleSearch}
 						className="max-w-xs"
 					/>
+
+					<Button onClick={handleWorkspaceInvite}>Invite People</Button>
 				</div>
 				<Table>
 					<TableBody className="divide-y divide-border">

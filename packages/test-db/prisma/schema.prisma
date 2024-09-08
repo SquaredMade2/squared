@@ -231,6 +231,7 @@ model Workspace {
   issuesCreated        Int?
   universalTokenLinkId String?
   githubRepoInfoId     String?
+  avatarUrl            String?
 
   universalTokenLink UniversalTokenLink?
   teams              Team[]

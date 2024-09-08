@@ -25,7 +25,10 @@ export type WorkspaceActions = {
 	deleteWorkspace: (workspaceId: string) => void;
 	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 	joinWorkspace: (token: string, user: User) => Promise<WorkspaceResponse>;
-	inviteToWorkspace: (workspaceId: string, email: string) => Promise<void>;
+	inviteToWorkspace: (
+		workspaceId: string,
+		email: string | string[],
+	) => Promise<void>;
 };
 
 export type WorkspaceStore = WorkspaceActions & WorkspaceState;
