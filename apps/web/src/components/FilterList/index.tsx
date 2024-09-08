@@ -1,12 +1,9 @@
 import { useEffect } from "react";
 import Link from "next/link";
-import { useSelector, useDispatch } from "react-redux";
-import { getFilteredViews } from "@/store/filterPage/actions";
 import FilterListDropDown from "@/components/FilterListDropDown";
 
 import { CircleUser, Layers3 } from "lucide-react";
 import type { FilterListProps } from "./FilterList.interfaces";
-import type { AppDispatch, RootState } from "@/store";
 import { useTheme } from "next-themes";
 
 const FilterList = ({ searchInput }: FilterListProps) => {

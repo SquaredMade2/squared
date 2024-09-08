@@ -1,14 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { getFilteredViews } from "@/store/filterPage/actions";
-import type { RootState } from "@/store";
-import { deleteTaskCard, updateTaskAfterDrag } from "@/api/taskApi";
-import { getAllTasks } from "@/store/taskData/thunks";
-import { setTaskList } from "@/store/taskData";
 import FilterSaveForm from "@/components/FilterSaveForm";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import ViewNewFilters from "@/components/ViewNewFilters";
@@ -17,17 +10,15 @@ import type { DragResult } from "@/components/ViewAllTasks/ViewAllTasks.interfac
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@repo/db";
+import { useTaskStore, useTeamStore } from "@/storeZ";
 
 const ViewsPage: React.FC = () => {
 	const params = useParams();
-	const dispatch = useAppDispatch();
 	const [showFilterSaveForm, setShowFilterSaveForm] = useState(false);
 	const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
-	const { currentTeam } = useSelector((state: RootState) => state.taskData);
-	const taskList = useSelector((state: RootState) => state.taskData.taskList);
-	const teamId = useSelector(
-		(state: RootState) => state.taskData.currentTeam._id,
-	);
+	const { currentTeam } = useTeamStore((state) => state);
+	const { tasks, setTaskList, updateTask } = useTaskStore((state) => state);
+	const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
 	const activeSelected = params.all === "active";
 	const backlogSelected = params.all === "backlog";
 
@@ -39,16 +30,14 @@ const ViewsPage: React.FC = () => {
 		setShowFilterSaveForm(value);
 	};
 
-	const handleDragEnd = async (result: DragResult) => {
+	const handleDragEnd: OnDragEndResponder = async (result) => {
 		const { destination, source, draggableId } = result;
 
-		const destinationUnchanged = destination.droppableId === source.droppableId;
-
-		if (!destination || destinationUnchanged) {
+		if (!destination || destination.droppableId === source.droppableId) {
 			return;
 		}
 
-		const draggedTaskFound = taskList.find(
+		const draggedTaskFound = filteredTasks.find(
 			(task) => task && task.id === draggableId,
 		);
 
@@ -56,36 +45,21 @@ const ViewsPage: React.FC = () => {
 			return;
 		}
 
-		const taskWithNewStatus = {
+		const updatedTask = {
 			...draggedTaskFound,
 			status: destination.droppableId as Status,
 		};
 
-		const sourceIndex = taskList.findIndex(
-			(task) => task && task.id === draggableId,
-		);
-		const destinationIndex = taskList.findIndex(
-			(task) => task && task.id === draggableId,
+		// Update task list in the local state
+		const updatedTaskList = filteredTasks.map((task) =>
+			task.id === draggableId ? updatedTask : task,
 		);
 
-		const updatedTaskList = [...taskList];
-		updatedTaskList.splice(sourceIndex, 1);
-		updatedTaskList.splice(destinationIndex, 0, taskWithNewStatus);
+		setFilteredTasks(updatedTaskList);
 
-		const droppableId = destination.droppableId;
-
-		dispatch(setTaskList(updatedTaskList));
-		await updateTaskAfterDrag(draggedTaskFound, droppableId);
+		// Update task in the backend
+		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
-
-	const handleDeleteTask = async (taskId: string) => {
-		await deleteTaskCard(taskId);
-		dispatch(getAllTasks(currentTeam));
-	};
-
-	useEffect(() => {
-		dispatch(getFilteredViews(teamId));
-	}, [dispatch, teamId]);
 
 	return (
 		<div className="flex flex-row overflow-hidden relative">
@@ -120,8 +94,7 @@ const ViewsPage: React.FC = () => {
 						activeSelected={activeSelected}
 						backlogSelected={backlogSelected}
 						handleDragEnd={handleDragEnd as OnDragEndResponder}
-						// TODO: Fix this
-						tasks={[{}] as Task[]}
+						tasks={filteredTasks}
 					/>
 				</div>
 			</div>
