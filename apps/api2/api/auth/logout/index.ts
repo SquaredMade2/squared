@@ -18,7 +18,6 @@ type Body = {
 	login: Login;
 };
 
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
@@ -33,7 +32,7 @@ export function createRoute(): Route<Params> {
 						data: null,
 						message: "logout successful.",
 						variant: "default",
-					}
+					};
 				}
 				// Default case if the type is neither 'register' nor 'login'
 				res.status(401);
@@ -41,7 +40,7 @@ export function createRoute(): Route<Params> {
 					data: null,
 					message: "Invalid request type.",
 					variant: "destructive",
-				}
+				};
 			} catch (error) {
 				console.error("Error with auth request:", error);
 				res.status(500);
@@ -52,8 +51,7 @@ export function createRoute(): Route<Params> {
 							? `Error logging out: ${error.message}`
 							: "Error logging out: Internal server error",
 					variant: "destructive",
-				}
-
+				};
 			}
 		},
 	};

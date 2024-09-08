@@ -7,7 +7,7 @@ import type {
 	WorkspaceStore,
 	WorkspaceResponse,
 } from "./interfaces";
-import type { Workspace } from "@repo/db";
+import type { User, Workspace } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
@@ -160,6 +160,43 @@ export const createWorkspaceStore = (
 					} catch (error) {
 						console.error("Error in getAllWorkspaces:", error);
 						return [];
+					}
+				},
+				inviteToWorkspace: async (workspaceId: string, email: string) => {
+					try {
+						const response = await axios.post(
+							`${apiString(workspaceId)}/invite`,
+							{ email },
+						);
+
+						return response.data;
+					} catch (error) {
+						console.error("Error inviting user to workspace:", error);
+						throw new Error(
+							error instanceof Error ? error.message : "Unknown error",
+						);
+					}
+				},
+				joinWorkspace: async (token: string, user: User) => {
+					try {
+						const response = await axios.post(`${apiString("join")}`, {
+							token,
+							user,
+						});
+
+						const { workspace, message, variant } = response.data;
+						if (workspace) {
+							set((state) => ({
+								workspaces: [...state.workspaces, workspace],
+								currentWorkspace: workspace,
+							}));
+						}
+						return { workspace, message, variant };
+					} catch (error) {
+						console.error("Error joining workspace:", error);
+						throw new Error(
+							error instanceof Error ? error.message : "Unknown error",
+						);
 					}
 				},
 			}),

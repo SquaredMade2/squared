@@ -8,7 +8,11 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { notificationId }, body): Promise<APIResponse<Notification>> => {
+		POST: async (
+			res,
+			{ notificationId },
+			body,
+		): Promise<APIResponse<Notification>> => {
 			try {
 				const existingUser = await prisma.user.findUnique({
 					where: { id: body.userId },
@@ -19,7 +23,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Cannot find user",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -35,14 +39,14 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "notification not created",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
 				// Return the new notification
 				return {
 					data: newNotification,
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error creating notification:", error);
@@ -50,11 +54,14 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},
-		DELETE: async (res, { notificationId }): Promise<APIResponse<Notification>> => {
+		DELETE: async (
+			res,
+			{ notificationId },
+		): Promise<APIResponse<Notification>> => {
 			try {
 				const notification: Notification | null =
 					await prisma.notification.delete({
@@ -65,7 +72,7 @@ export function createRoute(): Route<Params> {
 					return {
 						data: null,
 						message: "Notification not found",
-						variant: "destructive"
+						variant: "destructive",
 					};
 				}
 
@@ -73,7 +80,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Notification deleted",
-					variant: "default"
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error deleting notification:", error);
@@ -81,7 +88,7 @@ export function createRoute(): Route<Params> {
 				return {
 					data: null,
 					message: "Internal Server Error",
-					variant: "destructive"
+					variant: "destructive",
 				};
 			}
 		},

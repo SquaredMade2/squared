@@ -14,16 +14,22 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { setCookie } from "nookies";
 
 export default function Login() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [data, setData] = useState({ email: "", password: "" });
+	const [hidePassword, setHidePassword] = useState(false);
 	const router = useRouter();
 	const { toast } = useToast();
 	const { user, login } = useAuthStore((state) => state);
-	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
+	const { getWorkspace, getAllWorkspaces, joinWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
+	const searchParams = useSearchParams();
+	const inviteToken = searchParams.get("token");
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -37,8 +43,17 @@ export default function Login() {
 
 			if (response?.user) {
 				toast({ title: "Login Successful, Welcome!" });
+				setCookie(null, "auth-store", JSON.stringify(response.user), {
+					maxAge: 30 * 24 * 60 * 60,
+					path: "/",
+				});
 
-				if (response.user.defaultWorkspaceId) {
+				if (inviteToken) {
+					const { workspace } = await joinWorkspace(inviteToken, response.user);
+					if (workspace?.url) {
+						router.push(`/${workspace.url}`);
+					}
+				} else if (response.user.defaultWorkspaceId) {
 					const { workspace } = await getWorkspace(
 						response.user.defaultWorkspaceId,
 					);
@@ -72,6 +87,12 @@ export default function Login() {
 		router.push("/register");
 	};
 
+	const displayPasswordIcon = hidePassword ? (
+		<Eye className="size-4 text-[#D8D8D8]" />
+	) : (
+		<EyeOff className="size-4 text-[#D8D8D8]" />
+	);
+
 	useEffect(() => {
 		if (user) {
 			const checkUserWorkspaces = async () => {
@@ -97,6 +118,7 @@ export default function Login() {
 			setLoading(false);
 		}
 	}, []);
+	const displayPassword = hidePassword ? "text" : "password";
 
 	return (
 		<div className="top-0 w-full flex items-center justify-center h-[100vh]">
@@ -115,15 +137,22 @@ export default function Login() {
 									onChange={(e) => setData({ ...data, email: e.target.value })}
 								/>
 							</div>
-							<div className="flex flex-col gap-3">
+							<div className="flex flex-col gap-3 relative">
 								<Label htmlFor="password">Password</Label>
 								<Input
-									type="password"
+									type={displayPassword}
 									value={data.password}
 									onChange={(e) =>
 										setData({ ...data, password: e.target.value })
 									}
 								/>
+								<button
+									type="button"
+									onClick={() => setHidePassword((prev) => !prev)}
+									className="absolute right-3 top-10 cursor-pointer"
+								>
+									{displayPasswordIcon}
+								</button>
 							</div>
 							<Button type="submit" className="w-full">
 								Sign in
