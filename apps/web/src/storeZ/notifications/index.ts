@@ -72,7 +72,15 @@ export const createNotificationStore = (
 							set({ notifications: [] });
 							return [];
 						}
-						set({ notifications });
+						const sortedNotifications = notifications.sort(
+							(a: Notification, b: Notification) => {
+								return (
+									new Date(b.createdAt).getTime() -
+									new Date(a.createdAt).getTime()
+								);
+							},
+						);
+						set({ notifications: sortedNotifications });
 						return notifications;
 					} catch (error) {
 						console.error("Error in getAllNotifications:", error);

@@ -1,15 +1,14 @@
 "use client";
 import { useEffect, useRef, useContext } from "react";
 import type { InboxItemProps } from "./InboxItem.interfaces";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useRouter } from "next/navigation";
-import { setCurrentTaskId } from "@/store/currentTask";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
 import { getNotifications } from "@/store/notifications";
 import { useTheme } from "next-themes";
-import { useAuthStore, useNotificationStore } from "@/storeZ";
+import { useAuthStore, useNotificationStore, useTaskStore } from "@/storeZ";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,
@@ -20,20 +19,21 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	closeBackdrop,
 }) => {
 	const route = useRouter();
-	const isoDateString = Date.parse(date);
+	const isoDateString = Date.parse(date.toString());
 	const todayString = Date.now();
 	const timeSinceCreation = todayString - isoDateString;
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
+
 	const dispatch = useAppDispatch();
-	const currentTaskId = useAppSelector(
-		(state) => state.currentTask.currentTaskId,
-	);
+	const { getAllNotifications } = useNotificationStore((state) => state);
+	const { currentTaskId, setCurrentTaskId } = useTaskStore((state) => state);
+	const { user } = useAuthStore((state) => state);
 
 	const socket = useContext(SocketContext);
-	const { user } = useAuthStore((state) => state);
 	const isActive = currentTaskId === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
+
 	const { theme } = useTheme();
 	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
 
@@ -54,10 +54,11 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	};
 
 	const handleClick = (taskId: string, notificationId: string): void => {
-		dispatch(setCurrentTaskId(taskId));
+		setCurrentTaskId(taskId);
 		handleMarkRead(notificationId);
 		closeBackdrop();
 	};
+
 	useEffect(() => {
 		if (activeDivRef.current) {
 			activeDivRef.current.scrollIntoView({
@@ -71,7 +72,8 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 		socket.on("receiving_updatedMarkedNotification", (data: unknown) => {
 			const updatedNotificationData =
 				typeof data === "string" ? JSON.parse(data) : data;
-			dispatch(getNotifications(updatedNotificationData));
+			getAllNotifications(updatedNotificationData);
+			// dispatch(getNotifications(updatedNotificationData));
 		});
 	}, [socket.id, dispatch]);
 

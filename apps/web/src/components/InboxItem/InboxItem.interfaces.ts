@@ -1,6 +1,6 @@
 export interface InboxItemProps {
 	taskId: string;
-	date: string;
+	date: Date;
 	title: string | null;
 	read: boolean;
 	notificationId: string;

@@ -1,30 +1,29 @@
 "use client";
 import "@/app/globals.css";
 import Task from "@/components/Task";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-// import type { NotificationProps } from "@/store/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInbox, faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
 import type { Notification } from "@repo/db";
+import { useTaskStore } from "@/storeZ";
 
 export default function InboxContents({
 	notifications,
-}: { notifications: Notification[] }): React.JSX.Element {
-	const theCurrentTask = useAppSelector(
-		(state) => state.currentTask.currentTaskId,
-	);
+}: {
+	notifications: Notification[];
+}): React.JSX.Element {
+	const { currentTaskId } = useTaskStore((state) => state);
 	const hasUnreadNotification = notifications.some(
 		(notification) => notification.read === false,
 	);
 
 	return (
 		<>
-			{theCurrentTask !== null && (
+			{currentTaskId !== null && (
 				<div>
 					<Task mailTask={true} />
 				</div>
 			)}
-			{theCurrentTask === null && (
+			{currentTaskId === null && (
 				<div className=" h-full flex items-center justify-center ">
 					<div className="flex flex-col gap-2 text-secondary items-center">
 						<div className="text-muted-foreground">

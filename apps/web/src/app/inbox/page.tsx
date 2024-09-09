@@ -9,7 +9,7 @@ import { useAuthStore, useNotificationStore } from "@/storeZ";
 import IconLeftMenu from "@/components/IconLeftMenu";
 
 export default function Inbox(): React.JSX.Element {
-	const [showInboxList, setShowInboxList] = useState(true);
+	const [showInboxList, setShowInboxList] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const closeBackdrop = () => {
 		setShowInboxList(false);

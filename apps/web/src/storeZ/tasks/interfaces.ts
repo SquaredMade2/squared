@@ -2,7 +2,7 @@ import type { Task } from "@repo/db";
 
 export type TaskState = {
 	tasks: Task[];
-	currentTask: Task | null;
+	currentTaskId: string | null;
 };
 
 export interface TaskResponse {
@@ -14,7 +14,7 @@ export interface TaskResponse {
 export type TaskActions = {
 	addTask: (task: Partial<Task>) => Promise<TaskResponse>;
 	updateTask: (taskId: string, task: Partial<Task>) => Promise<TaskResponse>;
-	setCurrentTask: (task: Task) => void;
+	setCurrentTaskId: (taskId: string) => void;
 	deleteTask: (taskId: string) => Promise<void>;
 	setTaskList: (tasks: Task[]) => void;
 	getTask: (taskId: string) => Promise<TaskResponse>;
