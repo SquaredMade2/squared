@@ -1,8 +1,6 @@
 "use client";
 import { useEffect } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { navBarToggle } from "@/store/userSettings";
 import { GithubIcon } from "@/components/Svg";
 import {
 	Card,
@@ -11,15 +9,15 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useViewsStore } from "@/storeZ";
 
 const GithubSettings: React.FC = () => {
-	const dispatch = useAppDispatch();
-
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
+	const setShowNavBar = useViewsStore((state) => state.setShowNavbar);
+	const showNavBar = useViewsStore((state) => state.showNavbar);
 
 	const handleNavToggle = (): void => {
 		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
+		setShowNavBar(navBarValue);
 	};
 
 	useEffect(() => {

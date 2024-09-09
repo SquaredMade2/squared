@@ -28,7 +28,7 @@ const ThemeSwitcher: React.FC = () => {
 		<FontAwesomeIcon icon={theme === "light" ? faMoon : faLightbulb} />
 	);
 
-	const tooltip = theme === "light" ? "Dark mode" : "Light mode";
+	const tooltip = theme === "light" ? "Dark" : "Bright";
 
 	return (
 		<ButtonIcon
