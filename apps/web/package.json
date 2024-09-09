@@ -32,6 +32,7 @@
 		"@headlessui/tailwindcss": "^0.2.1",
 		"@hello-pangea/dnd": "^16.6.0",
 		"@heroicons/react": "^2.1.3",
+		"@hookform/resolvers": "^3.9.0",
 		"@lexical/clipboard": "^0.17.1",
 		"@lexical/code": "^0.17.1",
 		"@lexical/link": "^0.17.1",
@@ -64,6 +65,7 @@
 		"octokit": "^4.0.2",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-hook-form": "^7.53.0",
 		"react-mentions": "^4.4.10",
 		"react-redux": "^9.1.2",
 		"redux": "^5.0.1",
@@ -76,6 +78,7 @@
 		"unlighthouse": "^0.13.2",
 		"utf-8-validate": "^6.0.4",
 		"uuid": "^10.0.0",
+		"zod": "^3.23.8",
 		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
