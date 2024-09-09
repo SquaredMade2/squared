@@ -11,7 +11,9 @@ export * from "./store";
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${path}`;
 
-export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
+export const createTaskStore = (
+	initState: TaskState = { tasks: [], currentTask: null },
+) => {
 	return createStore<TaskStore>()(
 		persist(
 			(set, get) => ({
@@ -76,6 +78,9 @@ export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
 							variant: "destructive",
 						};
 					}
+				},
+				setCurrentTask: (task: Task): void => {
+					set({ currentTask: task });
 				},
 				deleteTask: async (taskId: string): Promise<void> => {
 					try {
