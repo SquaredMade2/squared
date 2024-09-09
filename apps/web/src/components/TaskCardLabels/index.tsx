@@ -1,5 +1,5 @@
 import React from "react";
-import { LabelColor } from "@/components/LabelButton";
+import { LabelColor } from "../LabelDropdownButton";
 import type { TaskCardLabelsProps } from "./TaskCardLabels.interfaces";
 
 function TaskCardLabels({ task, view }: TaskCardLabelsProps) {
