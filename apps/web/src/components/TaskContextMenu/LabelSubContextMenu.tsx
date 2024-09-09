@@ -14,7 +14,7 @@ import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { labelOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
-import { LabelColor } from "../LabelButton";
+import { LabelColor } from "../LabelDropdownButton";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
