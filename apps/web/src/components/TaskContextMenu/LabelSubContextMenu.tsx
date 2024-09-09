@@ -10,9 +10,9 @@ import {
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
 import { labelOptions } from "@/constants/designations";
-import { LabelColor } from "../LabelButton";
 import { useTaskStore } from "@/storeZ";
 import type { Label } from "@repo/db";
+import { LabelColor } from "../LabelDropdownButton";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const [labels, setLabels] = useState<Label[]>(task.labels);

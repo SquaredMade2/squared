@@ -15,18 +15,17 @@ const IconLeftMenu = () => {
 	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
 	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
+	const homeRoute = currentRoute.includes(`${workspace.url}`);
+	const viewsRoute = currentRoute.includes("/views");
+	const iconStyle = "w-full h-12 flex items-center ";
 
 	const navigateTo = (childRoute: string): void => {
 		router.push(`${baseUrl}/${childRoute}`);
 	};
 	const toHome = () => {
-		homeRoute && !viewsRoute ? "" : navigateTo(`${workspace.url}`);
+		homeRoute && !viewsRoute ? "" : router.back();
 	};
 
-	const homeRoute = currentRoute.includes(`${workspace.url}`);
-	const viewsRoute = currentRoute.includes("/views");
-
-	const iconStyle = "w-full h-12 flex items-center ";
 	return (
 		<div className="flex flex-col h-full items-center w-full">
 			<div className="flex flex-col items-center">
