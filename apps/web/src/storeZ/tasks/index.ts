@@ -11,7 +11,9 @@ export * from "./store";
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${path}`;
 
-export const createTaskStore = (initState: TaskState = { tasks: [] }) => {
+export const createTaskStore = (
+	initState: TaskState = { tasks: [], currentTask: null },
+) => {
 	return createStore<TaskStore>()(
 		persist(
 			(set, get) => ({
