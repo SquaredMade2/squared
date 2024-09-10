@@ -28,7 +28,14 @@ export const labelStyle: Record<string, string> = {
 };
 
 export const LabelColor = ({ label }: { label: Label }) => {
-	return <div className={`w-3 h-3 rounded-lg bg-[${label.color}]`} />;
+	const { color } = label;
+	const validatedColor = color.startsWith("#") ? color : `#${color}`;
+	return (
+		<div
+			className="w-3 h-3 rounded-lg"
+			style={{ backgroundColor: validatedColor }}
+		/>
+	);
 };
 
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
