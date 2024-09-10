@@ -3,11 +3,11 @@ import {
 	Circle,
 	CircleCheckBig,
 	CircleDashed,
+	CircleFadingPlus,
 	CircleX,
 	Copy,
 } from "lucide-react";
-import axios from "axios";
-import type { StatusSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
+import type { StatusSubContextMenuProps } from "./interfaces";
 import { inProgress } from "../Svg";
 import {
 	ContextMenuItem,
@@ -15,48 +15,39 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { getSingleTask } from "@/store/task/thunks";
 import { statusOptions } from "@/constants/designations";
-import { getAllTasks } from "@/store/taskData/thunks";
+import { useTaskStore, useTeamStore } from "@/storeZ";
+import type { Status } from "@repo/db";
 
 const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
+	const { updateTask } = useTaskStore((state) => state);
 
-	const dispatch = useAppDispatch();
-	const handleSetStatus: (status: string) => void = async (status) => {
+	const handleSetStatus: (status: Status) => void = async (status) => {
 		if (task.id !== undefined) {
 			try {
-				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task.id}`,
-					{
-						status,
-					},
-				);
-				dispatch(getSingleTask(task.id as string));
-				dispatch(getAllTasks(currentTeam));
+				const response = await updateTask(task.id, {
+					status,
+				});
 			} catch (err) {
 				console.error(err);
 			}
 		}
 	};
 
-	const handleRenderIcon = (status: string) => {
+	const handleRenderIcon = (status: Status) => {
 		switch (status) {
-			case "Backlog":
+			case "backlog":
 				return <CircleDashed className="size-4" />;
-			case "Todo":
+			case "todo":
 				return <Circle className="size-4" />;
-			case "In Progress":
+			case "inProgress":
 				return inProgress();
-			case "Done":
+			case "inReview":
+				return <CircleFadingPlus className="size-4 text-green-400" />;
+			case "done":
 				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			case "Canceled":
-				return <CircleX className="size-4" />;
-			case "Duplicate":
-				return <Copy className="size-4" />;
 			default:
-				return null;
+				return <CircleDashed className="size-4" />;
 		}
 	};
 	return (

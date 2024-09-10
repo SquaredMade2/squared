@@ -13,7 +13,7 @@ import TaskCardDate from "@/components/TaskCardDate";
 import { formatDate } from "date-fns/format";
 import { SocketContext } from "@/app/SocketProvider";
 import type { TaskCardProps } from "./TaskCard.interfaces";
-import type { Task } from "@repo/db";
+import type { Task } from "@/storeZ";
 import { formatUrl } from "@/utils/formatting";
 import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
 import TaskContextMenu from "../TaskContextMenu";
@@ -137,6 +137,7 @@ const TaskCard = ({
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
 					ref={provided.innerRef}
+					key={task.id}
 					onClick={handleGlobalClick}
 					onContextMenu={(e) => handleContextMenu(e, task)}
 				>

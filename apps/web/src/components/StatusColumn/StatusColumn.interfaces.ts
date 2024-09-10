@@ -1,4 +1,5 @@
-import type { Task, Status } from "@repo/db";
+import type { Status } from "@repo/db";
+import type { Task } from "@/storeZ";
 import type { Dispatch, SetStateAction } from "react";
 
 export interface StatusColumnProps {

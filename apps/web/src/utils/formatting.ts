@@ -1,3 +1,5 @@
+import { Status } from "@repo/db";
+
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
 		let lastSpace = string.lastIndexOf(" ", maxLength);
@@ -36,4 +38,21 @@ export const formatUrl = (title: string) => {
 		.replace(/[^a-z0-9]+/g, "-")
 		.replace(/(^-|-$)/g, "");
 	return titleSlug;
+};
+
+export const formatStatus = (status: Status) => {
+	switch (status) {
+		case Status.backlog:
+			return "Backlog";
+		case Status.todo:
+			return "To Do";
+		case Status.inProgress:
+			return "In Progress";
+		case Status.inReview:
+			return "In Review";
+		case Status.done:
+			return "Done";
+		default:
+			return "Backlog";
+	}
 };

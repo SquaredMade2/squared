@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
-import { Status, type Task } from "@repo/db";
+import { Status } from "@repo/db";
+import type { Task } from "@/storeZ";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
 import { useViewsStore } from "@/storeZ";
 
@@ -23,8 +23,8 @@ const ViewAllTasks = ({
 		{ value: Status.backlog, id: 1 },
 		{ value: Status.todo, id: 2 },
 		{ value: Status.inProgress, id: 3 },
-		{ value: Status.done, id: 4 },
-		{ value: Status.canceled, id: 5 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
 	];
 
 	const getFilteredStatuses = () => {
@@ -66,11 +66,7 @@ const ViewAllTasks = ({
 
 	return (
 		<>
-			<RenameModal
-				showRenameModal={showRenameModal}
-				setShowRenameModal={setShowRenameModal}
-				taskData={taskData ? taskData : ({} as Task)}
-			/>
+			<RenameModal />
 			<DragDropContext onDragEnd={handleDragEnd}>
 				<div className={currentView === "list" ? "block" : "flex"}>
 					{filteredColumns()}

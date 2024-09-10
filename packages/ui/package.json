@@ -114,6 +114,10 @@
       "import": "./src/scroll-area/index.ts",
       "require": "./src/scroll-area/index.ts"
     },
+    "./select": {
+      "import": "./src/select/index.ts",
+      "require": "./src/select/index.ts"
+    },
     "./separator": {
       "import": "./src/separator/index.ts",
       "require": "./src/separator/index.ts"

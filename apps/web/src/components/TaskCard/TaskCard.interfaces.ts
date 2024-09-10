@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
-import type { Task } from "@repo/db";
+import type { Task } from "@/storeZ";
 
 export interface TaskCardProps {
 	filteredTasks: Task[];

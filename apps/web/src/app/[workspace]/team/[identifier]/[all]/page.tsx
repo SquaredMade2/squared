@@ -7,6 +7,7 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import {
+	type Task,
 	useAuthStore,
 	useTaskStore,
 	useTeamStore,
@@ -16,7 +17,6 @@ import {
 } from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status } from "@repo/db";
-import type { Task } from "@repo/db";
 
 export default function Home() {
 	const [loading, setLoading] = useState(true);

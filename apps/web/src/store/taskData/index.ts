@@ -5,7 +5,7 @@ import type {
 	TaskDataState,
 	Team,
 } from "./taskData.interfaces";
-import type { Label, Priority, Status, Task } from "@repo/db";
+import type { Priority, Status } from "@repo/db";
 import {
 	addWorkspace,
 	createNewTask,
@@ -31,8 +31,8 @@ import {
 	teamExists,
 	workspaceExists,
 } from "@/store/taskData/thunks";
-import { useToast } from "@/components/ui/use-toast";
 import type { Workspace, Commit } from "@repo/db";
+import type { Task } from "@/storeZ";
 
 const initialState: TaskDataState = {
 	taskList: [],
@@ -41,7 +41,7 @@ const initialState: TaskDataState = {
 		title: "",
 		status: "todo",
 		identifier: "",
-		priority: null,
+		priority: "noPriority",
 		labels: [],
 		dueDate: new Date(),
 		effortEstimate: null,
@@ -104,7 +104,7 @@ const taskData = createSlice({
 		setPriority(state, action: PayloadAction<Priority>) {
 			state.priority = action.payload;
 		},
-		setLabels(state, action: PayloadAction<Label[]>) {
+		setLabels(state, action: PayloadAction<string[]>) {
 			state.labels = action.payload;
 		},
 		setDueDate(state, action: PayloadAction<Date>) {
