@@ -24,7 +24,7 @@ const Navbar = () => {
 	useEffect(() => {
 		if (!workspace) return;
 		getAllTeams(workspace.id);
-	});
+	}, []);
 
 	return (
 		<>
