@@ -151,6 +151,11 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		1, 2, 3, 5, 8, 13, 21,
 	]);
 
+	const updatedWorkspace = await prisma.workspace.update({
+		where: { id: workspace.id },
+		data: { issuesCreated: { increment: 1 } },
+	});
+
 	// Format the workspace name to get the identifier prefix
 	const formattedName = workspace.name
 		.replace(/\s+/g, "") // Remove spaces
@@ -158,7 +163,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		.toUpperCase(); // Convert to uppercase
 
 	// Use the current issuesCreated count to create the identifier
-	const identifier = `${formattedName}-${workspace.issuesCreated + 1}`;
+	const identifier = `${formattedName}-${updatedWorkspace.issuesCreated + 1}`;
 
 	// Create the task with the generated identifier
 	const task = await prisma.task.create({
@@ -174,12 +179,6 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			identifier: identifier,
 			teamId: team.id,
 		},
-	});
-
-	// Increment the issuesCreated count in the workspace
-	await prisma.workspace.update({
-		where: { id: workspace.id },
-		data: { issuesCreated: { increment: 1 } },
 	});
 
 	// Add a notification for the task creation (if needed)
