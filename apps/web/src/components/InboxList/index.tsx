@@ -2,13 +2,12 @@
 import "@/app/globals.css";
 import { SocketContext } from "@/app/SocketProvider";
 import { InboxItem } from "@/components/InboxItem";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useContext, useEffect } from "react";
-import { getNotifications, newNotification } from "@/store/notifications";
 import { ScrollArea } from "../ui/scroll-area";
 import IconLeftMenu from "../IconLeftMenu";
 import type { Notification } from "@repo/db";
 import { useAuthStore, useNotificationStore } from "@/storeZ";
+
 type Props = {
 	showInboxList: boolean;
 	closeBackdrop: () => void;
@@ -23,7 +22,6 @@ const InboxList: React.FC<Props> = ({
 	const { user } = useAuthStore((state) => state);
 	const { getAllNotifications, addNotification, deleteNotification } =
 		useNotificationStore((state) => state);
-	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		if (user) {
@@ -33,17 +31,14 @@ const InboxList: React.FC<Props> = ({
 				const notificationData =
 					typeof data === "string" ? JSON.parse(data) : data;
 				getAllNotifications(notificationData);
-				// dispatch(getNotifications(notificationData));
 			});
 			socket.on("new_notification", (data: unknown) => {
 				const notificationData =
 					typeof data === "string" ? JSON.parse(data) : data;
 				addNotification(notificationData);
-				// dispatch(newNotification(notificationData));
 			});
 			socket.on("notification_removed", (data) => {
 				deleteNotification(data);
-				// dispatch(getNotifications(data));
 			});
 			return () => {
 				socket.off("send_notification");
@@ -51,7 +46,7 @@ const InboxList: React.FC<Props> = ({
 				socket.off("notification_removed");
 			};
 		}
-	}, [socket.id, dispatch]);
+	}, [socket.id]);
 
 	useEffect(() => {
 		// return () => {

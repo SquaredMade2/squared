@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useRef, useContext } from "react";
 import type { InboxItemProps } from "./InboxItem.interfaces";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
-import { getNotifications } from "@/store/notifications";
 import { useTheme } from "next-themes";
 import { useAuthStore, useNotificationStore, useTaskStore } from "@/storeZ";
 
@@ -25,7 +23,6 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 
-	const dispatch = useAppDispatch();
 	const { getAllNotifications, updateNotification } = useNotificationStore(
 		(state) => state,
 	);
@@ -76,9 +73,8 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 			const updatedNotificationData =
 				typeof data === "string" ? JSON.parse(data) : data;
 			getAllNotifications(updatedNotificationData);
-			// dispatch(getNotifications(updatedNotificationData));
 		});
-	}, [socket.id, dispatch]);
+	}, [socket.id]);
 
 	return (
 		<div
