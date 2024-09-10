@@ -12,10 +12,10 @@ function TaskCardLabels({ task, view }: TaskCardLabelsProps) {
 			{task.labels.map((el) => (
 				<div
 					className="flex items-center p-1 mr-1 mb-1 border border-border rounded"
-					key={el}
+					key={el.id}
 				>
-					<LabelColor name={el} />
-					<span className="ml-1">{el}</span>
+					<LabelColor label={el} />
+					<span className="ml-1">{el.name}</span>
 				</div>
 			))}
 		</div>

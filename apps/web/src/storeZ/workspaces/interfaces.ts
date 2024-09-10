@@ -1,8 +1,9 @@
-import type { User, Workspace } from "@repo/db";
+import type { Label, User, Workspace } from "@repo/db";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];
 	currentWorkspace: Workspace | null;
+	workspaceLabels: Label[];
 };
 
 export interface WorkspaceResponse {
@@ -17,6 +18,7 @@ export type WorkspaceActions = {
 		userId: string,
 	) => Promise<WorkspaceResponse>;
 	getWorkspace: (workspaceId: string) => Promise<WorkspaceResponse>;
+	getWorkspaceLabels: (workspaceId: string) => Promise<Label[]>;
 	setCurrentWorkspace: (workspace: Workspace) => void;
 	updateWorkspace: (
 		workspaceId: string,
@@ -25,7 +27,10 @@ export type WorkspaceActions = {
 	deleteWorkspace: (workspaceId: string) => void;
 	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 	joinWorkspace: (token: string, user: User) => Promise<WorkspaceResponse>;
-	inviteToWorkspace: (workspaceId: string, email: string) => Promise<void>;
+	inviteToWorkspace: (
+		workspaceId: string,
+		email: string | string[],
+	) => Promise<void>;
 };
 
 export type WorkspaceStore = WorkspaceActions & WorkspaceState;

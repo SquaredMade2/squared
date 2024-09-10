@@ -12,9 +12,8 @@ enum Status {
   backlog
   todo
   inProgress
+  inReview
   done
-  canceled
-  duplicate
 }
 
 enum Priority {
@@ -23,14 +22,6 @@ enum Priority {
   high
   medium
   low
-}
-
-enum Label {
-  Bug
-  Feature
-  Improvement
-  Red
-  Test
 }
 
 enum ActivityType {
@@ -132,9 +123,8 @@ model TaskEvent {
   updatedAssigneeId    String?
   updatedAssigneeName  String?
   gitUpdated           String?
-
-  originalLabels Label[]
-  updatedLabels  Label[]
+  originalLabels       String[]
+  updatedLabels        String[]
 
   activity     Activity     @relation(fields: [activityId], references: [id])
   taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])
@@ -168,7 +158,7 @@ model Task {
   authorId       String
   title          String
   description    String?
-  identifier     String
+  identifier     String    @unique
   dueDate        DateTime?
   effortEstimate Int?
   teamId         String
@@ -176,15 +166,15 @@ model Task {
   assigneeId     String?
   assigneeName   String?
 
-  status   Status
-  priority Priority?
-  labels   Label[]
+  status   Status        @default(todo)
+  priority Priority      @default(noPriority)
   Comments Comment[]
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author User @relation(fields: [authorId], references: [id])
-  Team   Team @relation(fields: [teamId], references: [id])
+  Author     User         @relation(fields: [authorId], references: [id])
+  Team       Team         @relation(fields: [teamId], references: [id])
+  TaskLabels TaskLabels[]
 }
 
 model Team {
@@ -210,6 +200,7 @@ model User {
   lastLogin          DateTime @default(now())
   onBoarding         Boolean  @default(true)
   defaultWorkspaceId String?
+  avatarUrl          String?
 
   Workspaces   UserWorkspace[]
   Notification Notification[]
@@ -221,14 +212,37 @@ model User {
   Teams            UserTeam[]
 }
 
+model Label {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  color       String
+  workspaceId String
+
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id])
+  TaskLabels TaskLabels[]
+}
+
+model TaskLabels {
+  taskId  String
+  labelId String
+
+  Task  Task  @relation(fields: [taskId], references: [id])
+  Label Label @relation(fields: [labelId], references: [id])
+
+  @@id([taskId, labelId])
+}
+
 model Workspace {
   id                   String  @id @default(uuid())
-  name                 String?
+  name                 String
   url                  String  @unique
   companySize          Int?
-  issuesCreated        Int?
+  issuesCreated        Int     @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
+  avatarUrl            String?
+  Label                Label[]
 
   universalTokenLink UniversalTokenLink?
   teams              Team[]

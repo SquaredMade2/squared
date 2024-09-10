@@ -13,6 +13,13 @@ export function createRoute(): Route<Params> {
 				// Find tasks by team ID
 				const tasks: Task[] | null = await prisma.task.findMany({
 					where: { teamId },
+					include: {
+						TaskLabels: {
+							include: {
+								Label: true,
+							},
+						},
+					},
 				});
 
 				if (!tasks) {

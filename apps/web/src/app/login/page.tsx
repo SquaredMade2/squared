@@ -49,8 +49,13 @@ export default function Login() {
 				});
 
 				if (inviteToken) {
-					const { workspace } = await joinWorkspace(inviteToken, response.user);
+					const { workspace, message, variant } = await joinWorkspace(
+						inviteToken,
+						response.user,
+					);
+
 					if (workspace?.url) {
+						toast({ title: message, variant });
 						router.push(`/${workspace.url}`);
 					}
 				} else if (response.user.defaultWorkspaceId) {
@@ -84,6 +89,10 @@ export default function Login() {
 	};
 
 	const handleRegisterPush = () => {
+		if (inviteToken) {
+			router.push(`/register?token=${inviteToken}`);
+			return;
+		}
 		router.push("/register");
 	};
 

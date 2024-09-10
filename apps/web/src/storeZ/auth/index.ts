@@ -58,7 +58,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					sessionStorage.removeItem("workspace-store");
 					sessionStorage.removeItem("user-store");
 					sessionStorage.removeItem("view-store");
-					destroyCookie(null, "auth-store");
+					destroyCookie(undefined, "auth-store");
 					return response.data;
 				},
 				resetPassword: async (email: string) => {
