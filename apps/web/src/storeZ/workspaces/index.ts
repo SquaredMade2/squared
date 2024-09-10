@@ -7,7 +7,7 @@ import type {
 	WorkspaceStore,
 	WorkspaceResponse,
 } from "./interfaces";
-import type { User, Workspace } from "@repo/db";
+import type { Label, User, Workspace } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
@@ -28,6 +28,7 @@ export const createWorkspaceStore = (
 	initState: WorkspaceState = {
 		workspaces: [],
 		currentWorkspace: null,
+		workspaceLabels: [],
 	},
 ) => {
 	return createStore<WorkspaceStore>()(
@@ -105,6 +106,22 @@ export const createWorkspaceStore = (
 							message: error instanceof Error ? error.message : "Unknown error",
 							variant: "destructive",
 						};
+					}
+				},
+				getWorkspaceLabels: async (workspaceId: string): Promise<Label[]> => {
+					try {
+						const { data: response }: { data: ApiReturnType<Label[]> } =
+							await axios.get(`${apiString(workspaceId)}/label`);
+						const { data: labels } = response;
+						if (!labels) {
+							return [];
+						}
+						set({ workspaceLabels: labels });
+
+						return labels;
+					} catch (error) {
+						console.error("Error in getWorkspaceLabels:", error);
+						return [];
 					}
 				},
 				updateWorkspace: async (

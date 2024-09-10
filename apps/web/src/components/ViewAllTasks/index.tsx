@@ -1,13 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
-import { Status, type Task } from "@repo/db";
+import { Status } from "@repo/db";
+import type { Task } from "@/storeZ";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
 import { useViewsStore } from "@/storeZ";
-import { formatStatus } from "@/utils/formatting";
 
 const ViewAllTasks = ({
 	handleDragEnd,

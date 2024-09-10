@@ -11,29 +11,17 @@ import {
 import { useTaskStore } from "@/storeZ";
 import { LabelColor } from "../LabelDropdownButton";
 import { useWorkspaceStore } from "@/storeZ";
+import type { Label } from "@repo/db";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
+		useWorkspaceStore((state) => state);
 
-	const [labels, setLabels] = useState<string[]>(task.labels);
+	const [labels, setLabels] = useState<Label[]>(task.labels);
 	const { updateTask } = useTaskStore((state) => state);
-
-	const renderLabelIcon = (label: string) => {
-		switch (label) {
-			case "Bug":
-				return <LabelColor name={"Bug"} />;
-			case "Feature":
-				return <LabelColor name={"Feature"} />;
-			case "Improvement":
-				return <LabelColor name={"Improvement"} />;
-			case "Red":
-				return <LabelColor name={"Red"} />;
-			case "Test":
-				return <LabelColor name={"Test"} />;
-			default:
-				return null;
-		}
-	};
+	if (!workspaceLabels) {
+		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
+	}
 
 	return (
 		<ContextMenuSub>
@@ -44,10 +32,10 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{currentWorkspace?.workspaceLabels.map((label) => {
+				{workspaceLabels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
-							key={label}
+							key={label.id}
 							checked={labels.includes(label)}
 							onCheckedChange={(checked) => {
 								if (checked) {
@@ -58,8 +46,8 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 								updateTask(task.id, { labels });
 							}}
 						>
-							<div className="mr-2">{renderLabelIcon(label)}</div>
-							{label}
+							<div className="mr-2">{<LabelColor label={label} />}</div>
+							{label.name}
 						</ContextMenuCheckboxItem>
 					);
 				})}

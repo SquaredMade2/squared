@@ -165,7 +165,6 @@ model Task {
   dateCreated    DateTime  @default(now())
   assigneeId     String?
   assigneeName   String?
-  labels         String[]
 
   status   Status        @default(todo)
   priority Priority      @default(noPriority)
@@ -173,8 +172,9 @@ model Task {
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author User @relation(fields: [authorId], references: [id])
-  Team   Team @relation(fields: [teamId], references: [id])
+  Author     User         @relation(fields: [authorId], references: [id])
+  Team       Team         @relation(fields: [teamId], references: [id])
+  TaskLabels TaskLabels[]
 }
 
 model Team {
@@ -212,16 +212,37 @@ model User {
   Teams            UserTeam[]
 }
 
+model Label {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  color       String
+  workspaceId String
+
+  Workspace  Workspace    @relation(fields: [workspaceId], references: [id])
+  TaskLabels TaskLabels[]
+}
+
+model TaskLabels {
+  taskId  String
+  labelId String
+
+  Task  Task  @relation(fields: [taskId], references: [id])
+  Label Label @relation(fields: [labelId], references: [id])
+
+  @@id([taskId, labelId])
+}
+
 model Workspace {
-  id                   String   @id @default(uuid())
+  id                   String  @id @default(uuid())
   name                 String
-  url                  String   @unique
+  url                  String  @unique
   companySize          Int?
-  issuesCreated        Int      @default(0)
+  issuesCreated        Int     @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
   avatarUrl            String?
-  workspaceLabels      String[] @default(["Feature", "Bug", "Chore", "Refactor", "Docs", "Test", "Design"])
+  Label                Label[]
 
   universalTokenLink UniversalTokenLink?
   teams              Team[]

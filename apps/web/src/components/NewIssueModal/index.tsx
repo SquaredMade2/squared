@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import MentionInput from "@/components/MentionsInput";
 import { SocketContext } from "@/app/SocketProvider";
-import type { Task, User } from "@repo/db";
+import type { Task } from "@/storeZ";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import {
 	useAuthStore,

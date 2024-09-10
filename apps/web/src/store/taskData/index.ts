@@ -5,7 +5,7 @@ import type {
 	TaskDataState,
 	Team,
 } from "./taskData.interfaces";
-import type { Priority, Status, Task } from "@repo/db";
+import type { Priority, Status } from "@repo/db";
 import {
 	addWorkspace,
 	createNewTask,
@@ -31,8 +31,8 @@ import {
 	teamExists,
 	workspaceExists,
 } from "@/store/taskData/thunks";
-import { useToast } from "@/components/ui/use-toast";
 import type { Workspace, Commit } from "@repo/db";
+import type { Task } from "@/storeZ";
 
 const initialState: TaskDataState = {
 	taskList: [],
@@ -63,15 +63,6 @@ const initialState: TaskDataState = {
 		issuesCreated: 1,
 		githubRepoInfoId: "",
 		avatarUrl: "",
-		workspaceLabels: [
-			"Feature",
-			"Bug",
-			"Chore",
-			"Refactor",
-			"Docs",
-			"Test",
-			"Design",
-		],
 	},
 	currentTeam: {
 		identifier: "",

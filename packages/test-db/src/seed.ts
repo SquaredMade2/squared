@@ -81,6 +81,7 @@ async function addWorkspace(user: User) {
 	const workspaceName = faker.internet.domainWord();
 	const workspaceCompanySize = faker.number.int({ max: 1000 });
 
+	// Create the workspace
 	const workspace = await prisma.workspace.create({
 		data: {
 			name: workspaceName,
@@ -92,6 +93,25 @@ async function addWorkspace(user: User) {
 				},
 			},
 		},
+	});
+
+	// Define default labels with name, description, and color
+	const defaultLabels = [
+		{ name: "Feature", description: "New feature", color: "#FF5733" },
+		{ name: "Bug", description: "Bug fix", color: "#C70039" },
+		{ name: "Chore", description: "General task", color: "#900C3F" },
+		{ name: "Refactor", description: "Code refactor", color: "#581845" },
+		{ name: "Docs", description: "Documentation", color: "#FFC300" },
+		{ name: "Test", description: "Testing task", color: "#DAF7A6" },
+		{ name: "Design", description: "Design related task", color: "#33FFBD" },
+	];
+
+	// Add default labels to the workspace
+	await prisma.label.createMany({
+		data: defaultLabels.map((label) => ({
+			...label,
+			workspaceId: workspace.id, // Associate the label with the workspace
+		})),
 	});
 
 	return workspace;
@@ -138,14 +158,12 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Priority.medium,
 		Priority.low,
 	]);
-	const taskLabels = faker.helpers.arrayElements([
-		"Bug",
-		"Feature",
-		"Improvement",
-		"Refactor",
-		"Test",
-		"Design",
-	]);
+
+	// Fetch labels for the workspace
+	const taskLabels = await prisma.label.findMany({
+		where: { workspaceId: workspace.id },
+	});
+
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([
 		1, 2, 3, 5, 8, 13, 21,
@@ -173,11 +191,17 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			description: taskDescription,
 			status: taskStatus,
 			priority: taskPriority,
-			labels: taskLabels,
 			dueDate: taskDueDate,
 			effortEstimate: taskEffortEstimate,
 			identifier: identifier,
 			teamId: team.id,
+			TaskLabels: {
+				create: taskLabels.map((label) => ({
+					Label: {
+						connect: { id: label.id },
+					},
+				})),
+			},
 		},
 	});
 

@@ -1,4 +1,5 @@
-import type { Task } from "@repo/db";
+import type { Task } from "..";
+import type { Label } from "@repo/db";
 import type { FilterCondition } from "./interfaces";
 
 export function checkCondition(
@@ -32,13 +33,21 @@ export function checkCondition(
 			return (
 				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
-				condition.value.every((val) => taskValue.includes(val))
+				condition.value.every((val) =>
+					(taskValue as Label[]).some(
+						(label) => label.name === val || label.id === val,
+					),
+				)
 			);
 		case "arrayIncludesAny":
 			return (
 				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
-				condition.value.some((val) => taskValue.includes(val))
+				condition.value.some((val) =>
+					(taskValue as Label[]).some(
+						(label) => label.name === val || label.id === val,
+					),
+				)
 			);
 		default:
 			return false;
