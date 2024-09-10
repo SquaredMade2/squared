@@ -1,11 +1,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./SearchCommand.interface";
-import {
-	useModalStore,
-	useWorkspaceStore,
-	useTeamStore,
-	useViewsStore,
-} from "@/storeZ";
+import { useWorkspaceStore, useTeamStore } from "@/storeZ";
 import {
 	Box,
 	Copy,
@@ -22,36 +17,37 @@ import {
 	ClipboardCopy,
 	ArrowLeftRight,
 } from "lucide-react";
-import { useToast } from "../ui/use-toast";
 import { useAuthStore } from "@/storeZ";
 
 export class commandSchema {
 	router = useRouter();
 	pathname = usePathname();
-	// setShowNewIssue = useModalStore((state) => state.setShowNewIssue);
-	toggleNewIssue(input: boolean) {
-		const { setShowNewIssue } = useModalStore((state) => state);
-		setShowNewIssue(input);
-	}
 	currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	currentTeam = useTeamStore((state) => state.currentTeam);
-	removingFilters() {
-		const { removeFilter } = useViewsStore((state) => state);
-		removeFilter();
-	}
-	// removeFilter = useViewsStore((state) => state.removeFilter);
-	showToast(title: string, variant?: "destructive" | "default" | null) {
-		const { toast } = useToast();
-		toast({ title, variant });
-	}
-	constructor() {
+	setShowNewIssue: (input: boolean) => void;
+	removeFilter: () => void;
+	showToast: (
+		title: string,
+		variant?: "destructive" | "default" | null,
+	) => void;
+	constructor(
+		setShowNewIssue: (input: boolean) => void,
+		removeFilter: () => void,
+		showToast: (
+			title: string,
+			variant?: "destructive" | "default" | null,
+		) => void,
+	) {
+		this.setShowNewIssue = setShowNewIssue;
+		this.removeFilter = removeFilter;
+		this.showToast = showToast;
 		this.currentSchema = {
 			Issue: {
 				createNewIssue: {
 					icon: <Plus className="mr-2 h-4 w-4" />,
 					text: "Create new issue...",
 					function: () => {
-						this.toggleNewIssue(true);
+						this.setShowNewIssue(true);
 					},
 					shortcut: ["C"],
 				},
@@ -87,7 +83,7 @@ export class commandSchema {
 					icon: <Layers3 />,
 					text: "Create new view",
 					function: () => {
-						this.removingFilters();
+						this.removeFilter();
 						if (this.currentWorkspace && this.currentTeam) {
 							this.router.push(
 								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
@@ -213,7 +209,7 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to views",
 				function: () => {
-					this.removingFilters();
+					this.removeFilter();
 					if (this.currentWorkspace && this.currentTeam) {
 						this.router.push(
 							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,
