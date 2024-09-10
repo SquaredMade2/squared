@@ -12,9 +12,8 @@ enum Status {
   backlog
   todo
   inProgress
+  inReview
   done
-  canceled
-  duplicate
 }
 
 enum Priority {
@@ -23,14 +22,6 @@ enum Priority {
   high
   medium
   low
-}
-
-enum Label {
-  Bug
-  Feature
-  Improvement
-  Red
-  Test
 }
 
 enum ActivityType {
@@ -132,9 +123,8 @@ model TaskEvent {
   updatedAssigneeId    String?
   updatedAssigneeName  String?
   gitUpdated           String?
-
-  originalLabels Label[]
-  updatedLabels  Label[]
+  originalLabels       String[]
+  updatedLabels        String[]
 
   activity     Activity     @relation(fields: [activityId], references: [id])
   taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])
@@ -175,10 +165,10 @@ model Task {
   dateCreated    DateTime  @default(now())
   assigneeId     String?
   assigneeName   String?
+  labels         String[]
 
-  status   Status
-  priority Priority?
-  labels   Label[]
+  status   Status        @default(todo)
+  priority Priority      @default(noPriority)
   Comments Comment[]
   Events   TaskEventLog?
   Branch   Branch?
@@ -223,14 +213,15 @@ model User {
 }
 
 model Workspace {
-  id                   String  @id @default(uuid())
+  id                   String   @id @default(uuid())
   name                 String
-  url                  String  @unique
+  url                  String   @unique
   companySize          Int?
-  issuesCreated        Int     @default(0)
+  issuesCreated        Int      @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
   avatarUrl            String?
+  workspaceLabels      String[] @default(["Feature", "Bug", "Chore", "Refactor", "Docs", "Test", "Design"])
 
   universalTokenLink UniversalTokenLink?
   teams              Team[]

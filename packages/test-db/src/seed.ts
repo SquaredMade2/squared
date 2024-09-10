@@ -1,4 +1,4 @@
-import { PrismaClient, Status, Priority, Label } from "../generated/client";
+import { PrismaClient, Status, Priority } from "../generated/client";
 import type { Team, User, Workspace } from "../generated/client";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
@@ -129,8 +129,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Status.todo,
 		Status.inProgress,
 		Status.done,
-		Status.canceled,
-		Status.duplicate,
+		Status.inReview,
 	]);
 	const taskPriority = faker.helpers.arrayElement([
 		Priority.noPriority,
@@ -140,11 +139,12 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Priority.low,
 	]);
 	const taskLabels = faker.helpers.arrayElements([
-		Label.Bug,
-		Label.Feature,
-		Label.Improvement,
-		Label.Red,
-		Label.Test,
+		"Bug",
+		"Feature",
+		"Improvement",
+		"Refactor",
+		"Test",
+		"Design",
 	]);
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([
