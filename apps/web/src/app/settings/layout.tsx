@@ -23,7 +23,7 @@ export default function TeamLayout({
 			)}
 
 			<div className="overflow-hidden relative">
-				<div className="h-full w-full h-12 md:hidden sticky top-0">
+				<div className="w-full h-12 md:hidden sticky top-0">
 					<SettingsTopNavBar setShowNavBar={toggleNavbar} />
 				</div>
 				<div className="flex">

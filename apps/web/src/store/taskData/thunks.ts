@@ -35,6 +35,7 @@ export const createNewTask = createAsyncThunk<Task, Task, { state: RootState }>(
 			lastLogin: new Date(),
 			onBoarding: false,
 			defaultWorkspaceId: "",
+			avatarUrl: "",
 		};
 		try {
 			const response: AxiosResponse<Task> = await axios({

@@ -10,22 +10,33 @@ import { Loader2 } from "lucide-react";
 
 const JoinWorkspacePage = () => {
 	const [loading, setLoading] = useState(true);
-	const { token } = useParams();
-	const tokenString = Array.isArray(token) ? token[0] : token;
+	const { token, workspace: workspaceId } = useParams();
 	const router = useRouter();
 	const { user } = useAuthStore((state) => state);
 	const { joinWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
+	const { getWorkspace } = useWorkspaceStore((state) => state);
 
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!tokenString) return;
+		if (!token) return;
 
 		const fetchWorkspaceName = async () => {
 			try {
-				const response = await axios.get(`/api/workspace/${tokenString}`);
-				setWorkspaceName(response.data.workspace.name);
+				if (!user) {
+					router.push(`/login?token=${token}`);
+				}
+				const response = await getWorkspace(workspaceId as string);
+				if (!response.workspace) {
+					toast({
+						title: "Workspace not found",
+						variant: "destructive",
+					});
+					router.push("/login");
+					return;
+				}
+				setWorkspaceName(response.workspace.name);
 			} catch (error) {
 				toast({
 					title: "Error fetching workspace",
@@ -37,13 +48,7 @@ const JoinWorkspacePage = () => {
 		};
 
 		fetchWorkspaceName();
-	}, [tokenString]);
-
-	useEffect(() => {
-		if (!user) {
-			router.push(`/login?token=${tokenString}`);
-		}
-	}, [user, tokenString, router]);
+	}, [token, user]);
 
 	const handleJoinWorkspace = async () => {
 		setLoading(true);
@@ -53,10 +58,10 @@ const JoinWorkspacePage = () => {
 					title: "Please login to join workspace",
 					variant: "default",
 				});
-				router.push(`/login?token=${tokenString}`);
+				router.push(`/login?token=${token}`);
 				return;
 			}
-			const response = await joinWorkspace(tokenString, user);
+			const response = await joinWorkspace(token as string, user);
 			if (response.workspace) {
 				toast({
 					title: `Successfully joined ${response.workspace.name}`,

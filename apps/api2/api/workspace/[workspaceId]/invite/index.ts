@@ -8,7 +8,7 @@ type Params = {
 };
 
 type InviteBody = {
-	email: string;
+	email: string | string[];
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -55,15 +55,19 @@ export function createRoute(): Route<Params> {
 					expiresIn: "1h",
 				});
 
+				const emailsToSend = Array.isArray(email) ? email : [email];
+
 				// Send email with the token
-				await sendMail(
-					email,
-					"Workspace Invitation",
-					token,
-					"invite",
-					`${workspace.url}/join`,
-					workspace.name ?? "Squared Worspace",
-				);
+				for (const email of emailsToSend) {
+					await sendMail(
+						email,
+						"Workspace Invitation",
+						token,
+						`${workspace.url}/join`,
+						workspace.id,
+						workspace.name ?? "Squared Workspace",
+					);
+				}
 
 				res.status(200);
 				return {

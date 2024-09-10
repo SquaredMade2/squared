@@ -1,541 +1,86 @@
 "use client";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { Copy, Ellipsis, RefreshCw, Search } from "lucide-react";
-import { getListOfUsers } from "@/store/userSettings/thunks";
-import {
-	joinWorkspace,
-	getWorkspace,
-	createWorkspaceLinkToken,
-	enableUniversalLink,
-} from "@/store/taskData/thunks";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import type { Workspace, User } from "@repo/db";
+import { useUserStore, useWorkspaceStore } from "@/storeZ";
 import { useToast } from "@/components/ui/use-toast";
-import type {
-	ListOfUsersProps,
-	SelectedMemberProps,
-} from "./members.interfaces";
-import InviteMembersModal from "@/components/InviteMembersModal";
-import { RolesButtonOptions } from "@/components/RolesButtonOptions";
-import UpdateMembersInfoModal from "@/components/UpdateMembersModal";
-import { Switch } from "@/components/ui/switch";
-import {
-	deletingUserFromWorkspace,
-	updateTheUsersRole,
-	updateUsersInfo,
-} from "@/utils/workspace-members-utils";
-import { useTheme } from "next-themes";
-import type { User } from "@repo/db";
+import { Separator } from "@/components/ui/separator";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
 
-const styles = {
-	mainContainer:
-		"flex mdsm:flex-col relative h-auto min-h-screen xs:p-0 w-full",
-	pageContainer:
-		"flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4 ",
-	TopNavbar: "lg:hidden mdsm:visible bg-background",
-	navbarWrapper:
-		"relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out z-10",
-	pageWrapper: " sm:w-full  sm:p-0 xs:w-full xl:w-2/5 md:w-3/4 ",
-	line: "block w-full border-t border-border my-6",
-	title: "text-2xl text-foreground mb-1 font-medium",
-	subtitle: "text-muted-foreground text-sm",
-	manageMemberTitle: "text-lg text-foreground mb-1 font-medium ",
-	inviteButtonLight:
-		"bg-blueGlowLight py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
-	inviteButtonDark:
-		"bg-blueGlow py-2 px-3 rounded text-blue shadow-lg active:shadow-lg hover:shadow-glow border border-blueGlow cursor-pointer",
-	goToPlan: "text-[#575bc7] text-opacity-1 font-semibold",
-	searchIconSVG: " fill-white h-5 w-5",
-	userInputsContainer:
-		"flex gap-3 mt-6 items-center justify-between w-full sm:justify-between md:w-full lg:w-full",
-	userInputSubContainer:
-		"relative gap-2 flex items-center md:w-2/3 lg:w-3/5 bg-textField rounded",
-	searchInput:
-		"border border-border bg-transparent text-sm py-1.5 w-full rounded-md w-full text-foreground placeholder:text-[#999] px-8 xs:py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400",
-	searchIcon: "absolute left-2 top-2.5",
-	membersLengthTitle: "mt-6 text-foreground text-sm",
-	membersDescriptionContainer:
-		"flex items-center border-border border-b pb-2 mt-4 md:text-sm justify-between xs:text-sm",
-	membersInfo: "flex flex-col w-2/4",
-	membersNameOrRole: "text-foreground",
-	membersEmail: "text-muted-foreground",
-	buttonsOptionContainer:
-		"flex flex-col -left-28 top-6 bg-background border border-border rounded gap-1 ",
-	universalInviteLinkContainer:
-		"gap-4 flex justify-between items-center mdsm:w-full ",
-	createLinkButton:
-		"hover:bg-[#999] hover:bg-opacity-20 p-1 mr-2 rounded w-[20px]",
-	inviteLinkInput:
-		"flex border border-border rounded w-full justify-between items-center bg-textField",
-	inviteLinkText:
-		"text-foreground p-1.5 overflow-hidden text-ellipsis whitespace-nowrap  text-sm",
-	bodyWrapper: "flex justify-between",
-	textPrimary: "text-foreground",
-	membersButtonWrapper: "ml-auto relative",
-};
-
-export default function Members() {
-	const [openInviteModal, setInviteOpenModal] = useState<boolean>(false);
-	const [openUpdateMemberModal, setOpenUpdateMemberModal] =
-		useState<boolean>(false);
-	const [selectedMember, setSelectedMember] = useState<SelectedMemberProps>({
-		id: "",
-		name: "",
-		username: "",
-	});
+export default function WorkspaceMembersPage() {
+	const params = useParams();
+	const { workspaceId } = params;
+	const {
+		currentWorkspace,
+		getWorkspace,
+		setCurrentWorkspace,
+		inviteToWorkspace,
+	} = useWorkspaceStore((state) => state);
+	const [workspace, setWorkspace] = useState<Workspace | null>(
+		currentWorkspace,
+	);
+	const { users, getAllUsers } = useUserStore((state) => state);
+	const [members, setMembers] = useState<User[]>(users);
+	const [inviteEmail, setInviteEmail] = useState("");
+	const [loading, setLoading] = useState(false);
 	const { toast } = useToast();
-	const [search, setSearch] = useState<string>("");
-	const [email, setEmail] = useState<string>("");
 
-	const [commandOptions, setCommandOptions] = useState<Record<string, boolean>>(
-		{},
-	);
-	const [listOfUsers, setListOfUsers] = useState<User[]>([]);
-	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-	const [isActive, setIsActive] = useState<boolean>(
-		!!workspace.universalTokenLinkId,
-	);
-	const currentUser = useAppSelector((state) => state.userSettings.user);
-	const { theme } = useTheme();
-	const users = [] as User[];
-
-	const dispatch = useAppDispatch();
-
-	const handleButtonStyle = (): string =>
-		theme === "dark" ? styles.inviteButtonDark : styles.inviteButtonLight;
-
-	const getMembers = async () => {
-		try {
-			const members = (await Promise.all(
-				users.map(async (member) => {
-					const user = await getListOfUsers(member?.id);
-					return {
-						id: user?.id,
-						name: user?.name,
-						role: member,
-						username: user?.username,
-						email: user?.email,
-					};
-				}),
-			)) as unknown as User[];
-			setListOfUsers(members);
-		} catch (error) {
-			console.error("Error fetching member data:", error);
-		}
-	};
-	const updateMembersInfo =
-		(name: string, username: string, id: string) => async () => {
-			try {
-				const data = await updateUsersInfo(id, username, name);
-				if (data?.success) {
-					setListOfUsers((prev) => {
-						return prev.map((user) => {
-							if (user.id === id) {
-								return { ...user, name: name, username: username };
-							}
-							return user;
-						});
-					});
-					toast({ title: data.message });
-				}
-				return data;
-			} catch (err) {
-				toast({
-					title: "Could not update username.",
-					variant: "destructive",
-				});
-			}
-		};
-	const updatingUsersRole = async (
-		userId: string,
-		role: string,
-		workspace_Id: string,
-	) => {
-		try {
-			const data = await updateTheUsersRole(userId, workspace_Id, role);
-			const listOfUserCopy = [...listOfUsers];
-			if (data?.success) {
-				setListOfUsers((users) => {
-					return users.map((user) => {
-						const updatedUserRole = data.updatedUserWorkspace.find(
-							(u: { user: string }) => u.user === user.id,
-						);
-						return user.id === userId
-							? { ...user, role: updatedUserRole.role }
-							: user;
-					});
-				});
-				await dispatch(
-					getWorkspace({ url: workspace?.url, id: workspace?.id }),
-				);
-				handleCommandOptions(userId);
-				toast({ title: "Users role updated successfully" });
-			} else {
-				toast({
-					title: "Failed to update user role",
-					variant: "destructive",
-				});
-				setListOfUsers(listOfUserCopy);
-			}
-		} catch (err) {
-			console.log("error on members page: ", err);
-			if (axios.isAxiosError(err)) {
-				const serverError = err?.response?.data;
-				if (serverError) {
-					toast({ title: serverError, variant: "destructive" });
-				}
-			}
-		}
-	};
-	const createWorkspaceLink = async () => {
-		try {
-			await dispatch(createWorkspaceLinkToken(workspace.id));
-			dispatch(getWorkspace({ url: workspace?.url, id: workspace?.id }));
-		} catch (error) {
-			console.error("Error in createworkspacelink: ", error);
-		}
-	};
-	const deleteUserFromWorkspace = async (memberId: string) => {
-		try {
-			const data = await deletingUserFromWorkspace(memberId, workspace?.id);
-			if (data?.success) {
-				setListOfUsers((users) => {
-					return users.filter((user) => user.id !== memberId);
-				});
-				await dispatch(
-					getWorkspace({ url: workspace?.url, id: workspace?.id }),
-				);
-				toast({ title: data.success });
-			} else {
-				toast({
-					title: "Cannot delete member",
-					variant: "destructive",
-				});
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const getRoleActions = (
-		memberId: string,
-		name?: string,
-		username?: string,
-	) => {
-		return {
-			owner: [
-				{
-					text: "Make Owner",
-					action: () => updatingUsersRole(memberId, "owner", workspace?.id),
-				},
-				{
-					text: "Make Admin",
-					action: () => updatingUsersRole(memberId, "admin", workspace?.id),
-				},
-				{
-					text: "Make Member",
-					action: () => updatingUsersRole(memberId, "member", workspace?.id),
-				},
-				{
-					text: "Remove User",
-					action: () => deleteUserFromWorkspace(memberId),
-				},
-				{
-					text: "Update User",
-					action: () => {
-						setOpenUpdateMemberModal(true);
-						handleCommandOptions(memberId);
-						setSelectedMember((prev: SelectedMemberProps) => ({
-							...prev,
-							id: memberId,
-							name: name,
-							username: username,
-						}));
-					},
-				},
-			],
-			admin: [
-				{
-					text: "Remove Member",
-					action: () => deleteUserFromWorkspace(memberId),
-				},
-				{
-					text: "Update User",
-					action: () => {
-						setOpenUpdateMemberModal(true);
-						handleCommandOptions(memberId);
-						setSelectedMember((prev: SelectedMemberProps) => ({
-							...prev,
-							id: memberId,
-							name: name,
-							username: username,
-						}));
-					},
-				},
-			],
-			self: [
-				{
-					text: "Update Profile",
-					action: () => {
-						setOpenUpdateMemberModal(true);
-						handleCommandOptions(memberId);
-						setSelectedMember((prev: SelectedMemberProps) => ({
-							...prev,
-							id: memberId,
-							name: name,
-							username: username,
-						}));
-					},
-				},
-			],
-		};
-	};
-
-	// const renderUserOptions = (
-	// 	memberId: string,
-	// 	name?: string,
-	// 	username?: string,
-	// ) => {
-	// 	const currentUserRole = getMembersRole(currentUser?.id)?.toLowerCase();
-	// 	const memberRole = getMembersRole(memberId)?.toLowerCase();
-	// 	let options: { text: string; action: () => void }[] = [];
-	// 	const roleActions = getRoleActions(memberId, name, username);
-	// 	if (currentUserRole === "owner" && currentUser?.id !== memberId) {
-	// 		options = roleActions.owner;
-	// 	} else if (currentUserRole === "owner" && currentUser?.id === memberId) {
-	// 		options = roleActions.self;
-	// 	} else if (currentUserRole === "admin" && memberRole !== "owner") {
-	// 		options = roleActions.admin;
-	// 	} else if (currentUser?.id === memberId) {
-	// 		options = roleActions.self;
-	// 	}
-	// 	return options.map((option, i) => (
-	// 		<RolesButtonOptions
-	// 			key={`${i}${option.text}`}
-	// 			text={option.text}
-	// 			action={option.action}
-	// 		/>
-	// 	));
-	// };
-
-	const invitingUserToWorkspace = async () => {
-		try {
-			const data = await dispatch(
-				joinWorkspace({ id: workspace.id, email: email }),
-			);
-			console.log(data);
-			return data;
-		} catch (error) {
-			if (axios.isAxiosError(error)) {
-				const serverError = error?.response?.data;
-				if (serverError) {
-					toast({ title: serverError, variant: "destructive" });
-				} else {
-					toast({
-						title: "Something with wrong",
-						variant: "destructive",
-					});
-				}
-			}
-		}
-	};
-
-	// const currentUserRole =
-	// 	getMembersRole(currentUser.id) === "Admin" ||
-	// 	getMembersRole(currentUser.id) === "Owner";
-
-	const handleCommandOptions = (memberId: string) => {
-		setCommandOptions((prevState: Record<string, boolean>) => {
-			const newState: Record<string, boolean> = {};
-			for (const key in prevState) {
-				newState[key] = false;
-			}
-			newState[memberId] = !prevState[memberId];
-			return newState;
-		});
-	};
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-		e.preventDefault();
-		invitingUserToWorkspace();
-		setEmail("");
-		setInviteOpenModal(false);
-	};
-
-	const handleUpdateSubmit = async (
-		e: React.FormEvent<HTMLFormElement>,
-		name: string,
-		username: string,
-		id: string,
-	): Promise<void> => {
-		e.preventDefault();
-		await dispatch(updateMembersInfo(name, username, id));
-		setOpenUpdateMemberModal(false);
-	};
 	useEffect(() => {
-		setIsActive(!!workspace.universalTokenLinkId);
-	}, []);
-	const handleToggleLink = async () => {
-		setIsActive((prev) => !prev);
-	};
+		if (
+			workspaceId &&
+			workspaceId !== workspace?.id &&
+			typeof workspaceId === "string"
+		) {
+			getWorkspace(workspaceId).then(({ workspace, variant }) => {
+				if (workspace) {
+					setWorkspace(workspace);
+					setCurrentWorkspace(workspace);
+				}
+			});
+		}
+		if (workspaceId && !members.length && typeof workspaceId === "string") {
+			getAllUsers(workspaceId).then((users) => {
+				setMembers(users);
+			});
+		}
+	}, [workspaceId]);
 
-	const enablingUniversalLink = async () => {
+	const handleInvite = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setLoading(true);
+
 		try {
-			await dispatch(
-				enableUniversalLink({
-					isEnabled: isActive ?? true,
-					workspaceId: workspace?.id,
-				}),
-			);
-			dispatch(getWorkspace({ url: workspace.url, id: workspace.id }));
+			await inviteToWorkspace(workspaceId as string, inviteEmail);
+			toast({ title: `Invitation sent to ${inviteEmail}` });
+			setInviteEmail("");
 		} catch (error) {
-			console.error(error);
+			toast({
+				title:
+					error instanceof Error ? error.message : "Failed to invite user.",
+				variant: "destructive",
+			});
+		} finally {
+			setLoading(false);
 		}
 	};
-	useEffect(() => {
-		getMembers();
-		enablingUniversalLink();
-	}, [isActive]);
-	const workspaceLink = `${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/accept/${workspace?.universalTokenLinkId}`;
 
-	const filteredMembers = listOfUsers.filter(
-		(user) =>
-			user.name.toLowerCase().includes(search.toLowerCase()) ||
-			user.email?.toLowerCase().includes(search.toLowerCase()),
-	);
 	return (
-		<div className={styles.mainContainer}>
-			<div className={styles.pageContainer}>
-				<div className={styles.pageWrapper}>
-					<p className={styles.title}>Members</p>
-
-					<p className={styles.subtitle}>
-						Manage who has access to this workspace
-					</p>
-					<span className={styles.line} />
-
-					<div className={`${currentUser ? "flex" : "hidden "} flex-col gap-1`}>
-						<div className={styles.bodyWrapper}>
-							<p className={styles.textPrimary}>Invite Link</p>
-							<Switch checked={isActive} onCheckedChange={handleToggleLink} />
-						</div>
-						{isActive ? (
-							<>
-								<p className="text-muted-foreground">
-									Share this link with others you&apos;d like to join your
-									workspace.
-								</p>
-								<div className={styles.universalInviteLinkContainer}>
-									<div className={styles.inviteLinkInput}>
-										<p className={styles.inviteLinkText}>{workspaceLink}</p>
-										<button
-											title="button"
-											type="button"
-											onClick={createWorkspaceLink}
-											className={styles.createLinkButton}
-										>
-											<RefreshCw className="size-4 text-[#858699]" />
-										</button>
-									</div>
-									<button
-										type="button"
-										onClick={() => navigator.clipboard.writeText(workspaceLink)}
-										className={`${handleButtonStyle()} flex items-center gap-1 font-semibold`}
-									>
-										<Copy
-											className={
-												"size-4 cursor-pointer text-white dark:text-[#174eff]"
-											}
-										/>
-										Copy
-									</button>
-								</div>
-							</>
-						) : (
-							<p className="text-muted-foreground">
-								Invite links provided a unique URL that allows anyone to join
-								your workspace.
-							</p>
-						)}
-						<span className={styles.line} />
-					</div>
-
-					<div>
-						<p className={styles.manageMemberTitle}>Manage members</p>
-						<p className={styles.subtitle}>
-							On the Free plan all members in a workspace are administrators.
-							Upgrade to the standard plan to add the ability to assign or
-							remove administrator roles.{" "}
-							<a href="www.example.com" className={styles.goToPlan}>
-								Go to Plans!
-							</a>
-						</p>
-					</div>
-					<div className={styles.userInputsContainer}>
-						<div className={styles.userInputSubContainer}>
-							<input
-								className={styles.searchInput}
-								type="text"
-								placeholder="Search by name/email"
-								value={search}
-								onChange={(e) => setSearch(e.target.value)}
-							/>
-							<span className={styles.searchIcon}>
-								<Search className="size-4 text-[#999999]" />
-							</span>
-						</div>
-						<div>
-							<button
-								type="button"
-								onClick={() => setInviteOpenModal(true)}
-								className={handleButtonStyle()}
-							>
-								Invite
-							</button>
-						</div>
-					</div>
-					<p className={styles.membersLengthTitle}>{users.length} members</p>
-					{/* {filteredMembers?.map(
-						({ id, name, email, username }: ListOfUsersProps) => (
-							<div key={name} className={styles.membersDescriptionContainer}>
-								<div className={styles.membersInfo}>
-									<p className={styles.membersNameOrRole}>{name}</p>
-									<p className={styles.membersEmail}>{email}</p>
-								</div>
-								<span className={styles.membersNameOrRole}>
-									{getMembersRole(id)}
-								</span>
-								<div className={styles.membersButtonWrapper}>
-									<button
-										title="button"
-										type="button"
-										onClick={() => handleCommandOptions(id)}
-										className={`${
-											commandOptions[id] ? "focus:bg-[#333]" : ""
-										}  block px-1 py-0.5 rounded`}
-									>
-										<Ellipsis className="cursor-pointer size-4 text-[#858699]" />
-									</button>
-									<div
-										className={`${
-											commandOptions[id] ? "absolute " : "hidden"
-										} ${styles.buttonsOptionContainer}`}
-									>
-										{renderUserOptions(id, name, username)}
-									</div>
-								</div>
-								{/* Modal to update member's info info */}
-					{/* {openUpdateMemberModal && (
-									<UpdateMembersInfoModal
-										handleSubmit={handleUpdateSubmit}
-										setOpenUserUpdateModal={setOpenUpdateMemberModal}
-										memberDetails={selectedMember}
-									/>
-								)}
-							</div>
-						),
-					)} */}
-				</div>
+		<div className="w-full flex flex-col px-56 py-8 container gap-4">
+			<div className="flex flex-col gap-2 items-start">
+				<h1 className="text-2xl">Members</h1>
+				<p className="text-xs text-muted-foreground">
+					Manage members for this workspace
+				</p>
 			</div>
+			<Separator className="mb-8" />
+			{workspace && (
+				<DataTable
+					columns={columns}
+					data={members}
+					workspace={currentWorkspace}
+				/>
+			)}
 		</div>
 	);
 }
