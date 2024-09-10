@@ -68,6 +68,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 					lastLogin: new Date(),
 					onBoarding: false,
 					defaultWorkspaceId: "",
+					avatarUrl: "",
 				};
 				storeTaskAssignee(assignee);
 			} else {
@@ -91,6 +92,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 				lastLogin: new Date(),
 				onBoarding: false,
 				defaultWorkspaceId: "",
+				avatarUrl: "",
 			});
 		}
 	};
@@ -112,6 +114,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 				lastLogin: new Date(),
 				onBoarding: false,
 				defaultWorkspaceId: "",
+				avatarUrl: "",
 			},
 		};
 	};
@@ -159,6 +162,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 								lastLogin: new Date(),
 								onBoarding: false,
 								defaultWorkspaceId: "",
+								avatarUrl: "",
 							})
 						}
 					>
@@ -176,6 +180,7 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 							lastLogin: new Date(),
 							onBoarding: false,
 							defaultWorkspaceId: "",
+							avatarUrl: "",
 						};
 						return (
 							<ContextMenuItem

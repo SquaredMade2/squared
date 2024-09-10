@@ -162,7 +162,10 @@ export const createWorkspaceStore = (
 						return [];
 					}
 				},
-				inviteToWorkspace: async (workspaceId: string, email: string) => {
+				inviteToWorkspace: async (
+					workspaceId: string,
+					email: string | string[],
+				) => {
 					try {
 						const response = await axios.post(
 							`${apiString(workspaceId)}/invite`,

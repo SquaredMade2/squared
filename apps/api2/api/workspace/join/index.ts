@@ -54,7 +54,7 @@ export function createRoute(): Route {
 					return {
 						data: workspace,
 						message: "You're already a member of this workspace!",
-						variant: "destructive",
+						variant: "default",
 					};
 				}
 

@@ -9,6 +9,7 @@ export const createModalStore = (
 		showCommand: false,
 		showRename: false,
 		renameData: null,
+		showWorkspaceInvite: false,
 		newIssueData: {},
 	},
 ) => {
@@ -28,6 +29,9 @@ export const createModalStore = (
 		},
 		setShowCommand: (input) => {
 			set({ showCommand: input });
+		},
+		setShowWorkspaceInvite: (input) => {
+			set({ showWorkspaceInvite: input });
 		},
 	}));
 };
