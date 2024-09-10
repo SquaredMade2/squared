@@ -1,4 +1,4 @@
-import type { Label, Priority } from "@repo/db";
+import type { Priority } from "@repo/db";
 
 export const statusOptions = [
 	"Backlog",
@@ -15,14 +15,6 @@ export const priorityOptions: Priority[] = [
 	"high",
 	"medium",
 	"low",
-];
-
-export const labelOptions: Label[] = [
-	"Bug",
-	"Feature",
-	"Improvement",
-	"Red",
-	"Test",
 ];
 
 export const effortEstimateOptions = [

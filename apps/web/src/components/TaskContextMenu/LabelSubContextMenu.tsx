@@ -12,15 +12,15 @@ import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import { EventType, type Labels } from "@/interfaces/event.interfaces";
 import { getSingleTask } from "@/store/task/thunks";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { labelOptions } from "@/constants/designations";
 import { getAllTasks } from "@/store/taskData/thunks";
 import { LabelColor } from "../LabelDropdownButton";
+import { useWorkspaceStore } from "@/storeZ";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const dispatch = useAppDispatch();
 
 	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-
+	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const newIssueLabels = useAppSelector((state) => state.taskData.labels);
 
 	const { user, storeCommonFields, storeType } = useLogTaskEvent();
@@ -99,7 +99,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{labelOptions.map((label) => {
+				{currentWorkspace?.workspaceLabels.map((label) => {
 					return (
 						<ContextMenuItem
 							key={label}

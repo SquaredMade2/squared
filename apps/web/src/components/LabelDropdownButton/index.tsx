@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useToast } from "../ui/use-toast";
-import { labelOptions } from "@/constants/designations";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -21,8 +19,7 @@ import type {
 	LabelDropdownButtonProps,
 	LabelColorProps,
 } from "./LabelDropdownButton.interfaces";
-import { useModalStore, useTaskStore } from "@/storeZ";
-import type { Label } from "@repo/db";
+import { useModalStore, useTaskStore, useWorkspaceStore } from "@/storeZ";
 
 export const labelStyle: Record<string, string> = {
 	Bug: "bg-[#EB5757]",
@@ -39,10 +36,9 @@ export const LabelColor = ({ name }: LabelColorProps) => {
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	const [open, setOpen] = useState(false);
 
-	const { toast } = useToast();
-
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const { currentTask, getTask, updateTask } = useTaskStore((state) => state);
+	const { currentTask, updateTask } = useTaskStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	const newIssueLabels = newIssueData.labels;
 	const sidebarLabels = currentTask?.labels;
@@ -106,7 +102,7 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 		</div>
 	);
 
-	const handleSelectLabels = (labelName: Label) => {
+	const handleSelectLabels = (labelName: string) => {
 		let newLabelsSelected = [];
 
 		if (location === "newIssue") {
@@ -121,8 +117,8 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	};
 
 	const newLabelSelection = (
-		currentLabels: Label[] | undefined,
-		labelName: Label,
+		currentLabels: string[] | undefined,
+		labelName: string,
 	) => {
 		let newSelection = [];
 		if (currentLabels === undefined) {
@@ -156,11 +152,11 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 					<CommandList>
 						<CommandEmpty>No label found.</CommandEmpty>
 						<CommandGroup>
-							{labelOptions.map((label) => (
+							{currentWorkspace?.workspaceLabels.map((label) => (
 								<CommandItem
 									key={label}
 									value={label}
-									onSelect={(label) => handleSelectLabels(label as Label)}
+									onSelect={(label) => handleSelectLabels(label)}
 									className="flex justify-between items-center px-2 py-1.5"
 								>
 									<div className="flex items-center">

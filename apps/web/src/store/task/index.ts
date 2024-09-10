@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { getSingleTask } from "@/store/task/thunks";
-import type { Label, User } from "@repo/db";
+import type { User } from "@repo/db";
 
 interface TaskInitialState {
 	isLoading: boolean;
@@ -15,7 +15,7 @@ interface SingleTaskDataInterface {
 	description: string;
 	status: string;
 	priority: string;
-	labels: Label[];
+	labels: string[];
 	dueDate: Date;
 	effortEstimate: number;
 	team: string;
