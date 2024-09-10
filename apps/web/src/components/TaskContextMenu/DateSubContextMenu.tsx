@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FC } from "react";
 import { Calendar } from "lucide-react";
-import type { DateSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
+import type { DateSubContextMenuProps } from "./interfaces";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,

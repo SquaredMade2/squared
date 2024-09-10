@@ -67,11 +67,7 @@ const ViewAllTasks = ({
 
 	return (
 		<>
-			<RenameModal
-				showRenameModal={showRenameModal}
-				setShowRenameModal={setShowRenameModal}
-				taskData={taskData ? taskData : ({} as Task)}
-			/>
+			<RenameModal />
 			<DragDropContext onDragEnd={handleDragEnd}>
 				<div className={currentView === "list" ? "block" : "flex"}>
 					{filteredColumns()}
