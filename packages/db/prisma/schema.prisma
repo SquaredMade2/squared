@@ -227,7 +227,7 @@ model Workspace {
   name                 String
   url                  String  @unique
   companySize          Int?
-  issuesCreated        Int?    @default(0)
+  issuesCreated        Int     @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
   avatarUrl            String?
