@@ -1,12 +1,12 @@
-import type { Label, Priority } from "@repo/db";
+import type { Label, Priority, Status } from "@repo/db";
 
-export const statusOptions = [
-	"Backlog",
-	"Todo",
-	"In Progress",
-	"Done",
-	"Canceled",
-	"Duplicate",
+export const statusOptions: Status[] = [
+	"backlog",
+	"todo",
+	"inProgress",
+	"done",
+	"canceled",
+	"duplicate",
 ];
 
 export const priorityOptions: Priority[] = [

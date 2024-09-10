@@ -7,6 +7,8 @@ export const createModalStore = (
 	initState: ModalState = {
 		showNewIssue: false,
 		showCommand: false,
+		showRename: false,
+		renameData: null,
 		showWorkspaceInvite: false,
 		newIssueData: {},
 	},
@@ -15,6 +17,12 @@ export const createModalStore = (
 		...initState,
 		setShowNewIssue: (input) => {
 			set({ showNewIssue: input });
+		},
+		setShowRename: (input) => {
+			set({ showRename: input });
+		},
+		setRenameData: (input) => {
+			set({ renameData: input });
 		},
 		setNewIssueData: (task) => {
 			set({ newIssueData: task });

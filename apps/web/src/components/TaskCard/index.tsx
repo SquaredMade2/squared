@@ -137,6 +137,7 @@ const TaskCard = ({
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
 					ref={provided.innerRef}
+					key={task.id}
 					onClick={handleGlobalClick}
 					onContextMenu={(e) => handleContextMenu(e, task)}
 				>
