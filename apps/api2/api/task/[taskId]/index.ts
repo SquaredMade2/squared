@@ -111,13 +111,40 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				const { id, labels, ...taskData } = body;
+				const { id, labels, teamId, ...taskData } = body;
+
+				const team = await prisma.team.findUnique({
+					where: { id: teamId },
+					include: { Workspace: true },
+				});
+
+				if (!team || !team.Workspace) {
+					throw new Error("Workspace not found");
+				}
+
+				const workspace = team.Workspace;
+				const formattedName = workspace.name
+					.replace(/\s+/g, "")
+					.substring(0, 3)
+					.toUpperCase();
+
+				const newIssueCount = (workspace.issuesCreated ?? 0) + 1;
+
+				await prisma.workspace.update({
+					where: { id: workspace.id },
+					data: { issuesCreated: newIssueCount },
+				});
+
+				const identifier = `${formattedName}-${newIssueCount}`;
+
 				const newTask = await prisma.task.create({
 					data: {
 						...taskData,
+						identifier,
+						teamId,
 						TaskLabels: {
 							create: labels.map((labelId: string) => ({
-								Label: { connect: { id: labelId } },
+								label: { connect: { id: labelId } },
 							})),
 						},
 					},
@@ -154,6 +181,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
+
 		DELETE: async (res, { taskId }): Promise<APIResponse<Task>> => {
 			try {
 				const task: Task | null = await prisma.task.delete({
