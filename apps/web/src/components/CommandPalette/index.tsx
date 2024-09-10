@@ -7,9 +7,9 @@ import { Dialog, Combobox, Transition } from "@headlessui/react";
 import { setIsCmdPalette } from "@/store/isCmdPalette";
 // Line 10 setTaskPage should be set to getSingleTask I think
 import { setTaskPage } from "@/store/taskData";
-import type { Task } from "@/storeZ";
 import { Search } from "lucide-react";
 import { formatUrl } from "@/utils/formatting";
+import type { Task } from "@repo/db";
 
 const CommandPalette = () => {
 	const dispatch = useAppDispatch();

@@ -13,7 +13,7 @@ import TaskCardDate from "@/components/TaskCardDate";
 import { formatDate } from "date-fns/format";
 import { SocketContext } from "@/app/SocketProvider";
 import type { TaskCardProps } from "./TaskCard.interfaces";
-import type { Task } from "@/storeZ";
+import type { Label, Task } from "@repo/db";
 import { formatUrl } from "@/utils/formatting";
 import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
 import TaskContextMenu from "../TaskContextMenu";
@@ -41,14 +41,19 @@ const TaskCard = ({
 		}),
 	);
 
-	const { getAllTasks, deleteTask } = useTaskStore((state) => ({
-		getAllTasks: state.getAllTasks,
-		deleteTask: state.deleteTask,
-	}));
+	const { getAllTasks, deleteTask } = useTaskStore((state) => state);
 
-	const { currentWorkspace } = useWorkspaceStore((state) => ({
-		currentWorkspace: state.currentWorkspace,
-	}));
+	const { currentWorkspace, getWorkspaceLabels, workspaceLabels } =
+		useWorkspaceStore((state) => state);
+
+	useEffect(() => {
+		const fetchWorkspaceLabels = async () => {
+			if (!workspaceLabels && currentWorkspace) {
+				await getWorkspaceLabels(currentWorkspace.id);
+			}
+		};
+		fetchWorkspaceLabels();
+	}, [currentWorkspace]);
 
 	const { currentTeam } = useTeamStore((state) => ({
 		currentTeam: state.currentTeam,
@@ -130,118 +135,125 @@ const TaskCard = ({
 		};
 	}, []);
 
-	const renderTaskCard = (task: Task, index: number) => (
-		<Draggable draggableId={task.id} index={index} key={task.id}>
-			{(provided) => (
-				<div
-					{...provided.draggableProps}
-					{...provided.dragHandleProps}
-					ref={provided.innerRef}
-					key={task.id}
-					onClick={handleGlobalClick}
-					onContextMenu={(e) => handleContextMenu(e, task)}
-				>
-					<ContextMenu>
-						<ContextMenuTrigger>
-							<div
-								ref={(el: HTMLDivElement | null) => {
-									taskRefs.current[task.id] = el;
-								}}
-							>
-								<TaskContextMenu
-									task={task}
-									copyToClipboard={copyToClipboard}
-									setIsCopied={setIsCopied}
-								/>
-							</div>
-							{view === "grid" ? (
-								<Link
-									href={`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`}
-									onClick={() =>
-										router.push(
-											`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`,
-										)
-									}
+	const renderTaskCard = (task: Task, index: number) => {
+		const taskLabels = workspaceLabels?.filter((label) =>
+			task.labels.includes(label.id),
+		);
+		return (
+			<Draggable draggableId={task.id} index={index} key={task.id}>
+				{(provided) => (
+					<div
+						{...provided.draggableProps}
+						{...provided.dragHandleProps}
+						ref={provided.innerRef}
+						key={task.id}
+						onClick={handleGlobalClick}
+						onContextMenu={(e) => handleContextMenu(e, task)}
+					>
+						<ContextMenu>
+							<ContextMenuTrigger>
+								<div
+									ref={(el: HTMLDivElement | null) => {
+										taskRefs.current[task.id] = el;
+									}}
 								>
-									<div className="relative w-[325px]">
+									<TaskContextMenu
+										task={task}
+										copyToClipboard={copyToClipboard}
+										setIsCopied={setIsCopied}
+									/>
+								</div>
+								{view === "grid" ? (
+									<Link
+										href={`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`}
+										onClick={() =>
+											router.push(
+												`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`,
+											)
+										}
+									>
+										<div className="relative w-[325px]">
+											<div
+												key={task.id}
+												className={
+													"cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 bg-card"
+												}
+											>
+												<TaskCardTitle
+													task={task}
+													taskTitle={task.title}
+													location={location}
+													highlightText={highlightText}
+													isShown={showPriority}
+												/>
+												{showDateTime && (
+													<TaskCardDate
+														icon={
+															<Calendar className="cursor-pointer size-4" />
+														}
+													>
+														Due Date:{" "}
+														{task.dueDate
+															? formatDate(
+																	new Date(task.dueDate),
+																	"M/d/yy, h:mm a",
+																)
+															: "No Date Set"}
+													</TaskCardDate>
+												)}
+												<div className="flex flex-row items-center space-x-4">
+													{showPriority && (
+														<TaskCardPriority border={true} task={task} />
+													)}
+													{showLabels && (
+														<TaskCardLabels labels={taskLabels} view="grid" />
+													)}
+												</div>
+											</div>
+										</div>
+									</Link>
+								) : (
+									<div
+										className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
+											index === filteredTasks.length - 1 && "rounded-b-lg"
+										}`}
+									>
+										<div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
+											<div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
+												<GripVertical className="size-5" />
+											</div>
+											<div className="xs:mr-5 sm:mr-5 md:mr-4">
+												<input
+													title="input"
+													className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
+													type="checkbox"
+												/>
+											</div>
+										</div>
 										<div
-											key={task.id}
-											className={
-												"cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 bg-card"
-											}
+											onClick={() => navigateToTask(task)}
+											className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
 										>
-											<TaskCardTitle
-												task={task}
-												taskTitle={task.title}
-												location={location}
-												highlightText={highlightText}
-												isShown={showPriority}
-											/>
-											{showDateTime && (
-												<TaskCardDate
-													icon={<Calendar className="cursor-pointer size-4" />}
-												>
-													Due Date:{" "}
-													{task.dueDate
-														? formatDate(
-																new Date(task.dueDate),
-																"M/d/yy, h:mm a",
-															)
-														: "No Date Set"}
-												</TaskCardDate>
-											)}
-											<div className="flex flex-row items-center space-x-4">
-												{showPriority && (
-													<TaskCardPriority border={true} task={task} />
-												)}
-												{showLabels && (
-													<TaskCardLabels task={task} view="grid" />
-												)}
+											<div className="col-span-10 text-foreground">
+												<TaskCardTitle
+													key={task.id}
+													task={task}
+													isShown={showPriority}
+													taskTitle={task.title}
+													location={location}
+													highlightText={highlightText}
+												/>
 											</div>
 										</div>
 									</div>
-								</Link>
-							) : (
-								<div
-									className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
-										index === filteredTasks.length - 1 && "rounded-b-lg"
-									}`}
-								>
-									<div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
-										<div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
-											<GripVertical className="size-5" />
-										</div>
-										<div className="xs:mr-5 sm:mr-5 md:mr-4">
-											<input
-												title="input"
-												className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
-												type="checkbox"
-											/>
-										</div>
-									</div>
-									<div
-										onClick={() => navigateToTask(task)}
-										className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
-									>
-										<div className="col-span-10 text-foreground">
-											<TaskCardTitle
-												key={task.id}
-												task={task}
-												isShown={showPriority}
-												taskTitle={task.title}
-												location={location}
-												highlightText={highlightText}
-											/>
-										</div>
-									</div>
-								</div>
-							)}
-						</ContextMenuTrigger>
-					</ContextMenu>
-				</div>
-			)}
-		</Draggable>
-	);
+								)}
+							</ContextMenuTrigger>
+						</ContextMenu>
+					</div>
+				)}
+			</Draggable>
+		);
+	};
 
 	return (
 		<>

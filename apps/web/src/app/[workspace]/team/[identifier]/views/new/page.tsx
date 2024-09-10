@@ -16,8 +16,7 @@ import ViewNewTopNavBar from "@/components/ViewNewTopNavBar";
 import type { DragResult } from "@/components/ViewAllTasks/ViewAllTasks.interfaces";
 import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status } from "@repo/db";
-import type { Task } from "@/storeZ";
+import type { Status, Task } from "@repo/db";
 
 const ViewsPage: React.FC = () => {
 	const params = useParams();
