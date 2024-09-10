@@ -7,6 +7,7 @@ import RenameModal from "@/components/RenameModal";
 import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
 import { useViewsStore } from "@/storeZ";
+import { formatStatus } from "@/utils/formatting";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -23,8 +24,8 @@ const ViewAllTasks = ({
 		{ value: Status.backlog, id: 1 },
 		{ value: Status.todo, id: 2 },
 		{ value: Status.inProgress, id: 3 },
-		{ value: Status.done, id: 4 },
-		{ value: Status.canceled, id: 5 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
 	];
 
 	const getFilteredStatuses = () => {

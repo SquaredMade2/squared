@@ -13,9 +13,8 @@ enum Status {
   backlog
   todo
   inProgress
+  inReview
   done
-  canceled
-  duplicate
 }
 
 enum Priority {

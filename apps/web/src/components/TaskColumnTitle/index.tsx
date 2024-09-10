@@ -1,4 +1,3 @@
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import {
 	ChevronDown,
 	Circle,
@@ -12,11 +11,9 @@ import { inProgress } from "../Svg";
 import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
 import HideStatus from "@/components/HideStatus/HideStatus";
 import { setShowNewIssue } from "@/store/showNewIssue";
-import { setStatus } from "@/store/taskData";
-import { useTheme } from "next-themes";
 import { cn } from "@/utils/cn";
 import { useModalStore } from "@/storeZ";
-import type { Status } from "@repo/db";
+import { formatStatus } from "@/utils/formatting";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -41,23 +38,6 @@ const TaskColumnTitle = ({
 				return <CircleX className="size-4" />;
 			case "Duplicate":
 				return <Copy className="size-4" />;
-		}
-	};
-
-	const formatTitle = (title: Status): string => {
-		switch (title) {
-			case "backlog":
-				return "Backlog";
-			case "todo":
-				return "To Do";
-			case "inProgress":
-				return "In Progress";
-			case "done":
-				return "Done";
-			case "canceled":
-				return "Canceled";
-			case "duplicate":
-				return "Duplicate";
 		}
 	};
 
@@ -96,7 +76,7 @@ const TaskColumnTitle = ({
 							}
 						>
 							<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-							<span className="text-sm">{formatTitle(title)}</span>
+							<span className="text-sm">{formatStatus(title)}</span>
 							<span className="ml-1 text-muted-foreground">
 								{numberOfTasks}
 							</span>
@@ -111,7 +91,7 @@ const TaskColumnTitle = ({
 						}
 					>
 						<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-						<span>{title}</span>
+						<span>{formatStatus(title)}</span>
 						<span className="ml-2 text-muted-foreground">{numberOfTasks}</span>
 					</div>
 				)}
