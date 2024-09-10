@@ -11,19 +11,19 @@ export default function InboxContents({
 }: {
 	notifications: Notification[];
 }): React.JSX.Element {
-	const { currentTaskId } = useTaskStore((state) => state);
+	const { currentTask } = useTaskStore((state) => state);
 	const hasUnreadNotification = notifications.some(
 		(notification) => notification.read === false,
 	);
 
 	return (
 		<>
-			{currentTaskId !== null && (
+			{currentTask !== null && (
 				<div>
 					<Task mailTask={true} />
 				</div>
 			)}
-			{currentTaskId === null && (
+			{currentTask === null && (
 				<div className=" h-full flex items-center justify-center ">
 					<div className="flex flex-col gap-2 text-secondary items-center">
 						<div className="text-muted-foreground">

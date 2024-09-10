@@ -1,12 +1,13 @@
 "use client";
-import { useEffect, useRef, useContext } from "react";
+import { useEffect, useRef, useContext, useState } from "react";
 import type { InboxItemProps } from "./InboxItem.interfaces";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
-import { useTheme } from "next-themes";
 import { useAuthStore, useNotificationStore, useTaskStore } from "@/storeZ";
+import type { Task } from "@/storeZ/tasks/interfaces";
+import { TaskResponse } from "@/storeZ/tasks";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,
@@ -23,14 +24,21 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 
+	const [newCurrentTask, setNewCurrentTask] = useState<Omit<
+		Task,
+		"labels"
+	> | null>(null);
+
 	const { getAllNotifications, updateNotification } = useNotificationStore(
 		(state) => state,
 	);
-	const { currentTaskId, setCurrentTaskId } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, getTask } = useTaskStore(
+		(state) => state,
+	);
 	const { user } = useAuthStore((state) => state);
 
 	const socket = useContext(SocketContext);
-	const isActive = currentTaskId === taskId;
+	const isActive = currentTask && currentTask.id === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 
 	const handleMarkRead = (notificationId: string) => {
@@ -38,12 +46,21 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 		updateNotification(notificationId, { read: true });
 	};
 
-	const handleClick = (taskId: string, notificationId: string): void => {
-		setCurrentTaskId(taskId);
+	const handleCurrentTaskChange = async () => {
+		const { task } = await getTask(taskId);
+		setNewCurrentTask(task);
+	};
+
+	const handleClick = (
+		newCurrentTask: Omit<Task, "labels">,
+		notificationId: string,
+	): void => {
+		handleCurrentTaskChange();
+		setCurrentTask(newCurrentTask);
 		handleMarkRead(notificationId);
 		closeBackdrop();
 	};
-
+	console.log(currentTask, newCurrentTask);
 	useEffect(() => {
 		if (activeDivRef.current) {
 			activeDivRef.current.scrollIntoView({
@@ -63,7 +80,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 
 	return (
 		<div
-			onClick={() => handleClick(taskId, notificationId)}
+			onClick={() => handleClick(newCurrentTask, notificationId)}
 			className={`p-2 w-80 rounded-md text-muted-foreground bg-popover border cursor-pointer  ${
 				isActive
 					? "border-indigo-400 shadow shadow-indigo-400 dark:bg-[#282E43] text-foreground"

@@ -6,7 +6,7 @@ export interface Task extends TaskType {
 
 export type TaskState = {
 	tasks: Task[];
-	currentTaskId: string | null;
+	currentTask: Task | null;
 };
 
 export interface TaskResponse {
@@ -18,7 +18,7 @@ export interface TaskResponse {
 export type TaskActions = {
 	addTask: (task: Partial<Task>) => Promise<TaskResponse>;
 	updateTask: (taskId: string, task: Partial<Task>) => Promise<TaskResponse>;
-	setCurrentTaskId: (taskId: string) => void;
+	setCurrentTask: (task: Task) => void;
 	deleteTask: (taskId: string) => Promise<void>;
 	setTaskList: (tasks: Task[]) => void;
 	getTask: (taskId: string) => Promise<TaskResponse>;

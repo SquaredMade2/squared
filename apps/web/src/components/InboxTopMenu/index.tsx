@@ -12,7 +12,7 @@ type Props = {
 	toggleInboxList: () => void;
 };
 const InboxTopMenu: React.FC<Props> = ({ toggleInboxList }) => {
-	const { currentTaskId } = useTaskStore((state) => state);
+	const { currentTask } = useTaskStore((state) => state);
 
 	return (
 		<div className="w-full h-10 flex justify-between bg-popover py-2 border-b text-foreground sticky top-0 z-10">
@@ -29,7 +29,7 @@ const InboxTopMenu: React.FC<Props> = ({ toggleInboxList }) => {
 				<p className="hidden xl:block">Inbox</p>
 			</div>
 			<div className="flex items-center">
-				{currentTaskId !== null && <Notificationcontrols />}
+				{currentTask !== null && <Notificationcontrols />}
 			</div>
 		</div>
 	);

@@ -12,7 +12,7 @@ const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${path}`;
 
 export const createTaskStore = (
-	initState: TaskState = { tasks: [], currentTaskId: null },
+	initState: TaskState = { tasks: [], currentTask: null },
 ) => {
 	return createStore<TaskStore>()(
 		persist(
@@ -79,8 +79,8 @@ export const createTaskStore = (
 						};
 					}
 				},
-				setCurrentTaskId: (taskId: string): void => {
-					set({ currentTaskId: taskId });
+				setCurrentTask: (task: Task): void => {
+					set({ currentTask: task });
 				},
 				deleteTask: async (taskId: string): Promise<void> => {
 					try {
