@@ -26,7 +26,9 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 
 	const dispatch = useAppDispatch();
-	const { getAllNotifications } = useNotificationStore((state) => state);
+	const { getAllNotifications, updateNotification } = useNotificationStore(
+		(state) => state,
+	);
 	const { currentTaskId, setCurrentTaskId } = useTaskStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 
@@ -51,6 +53,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 
 	const handleMarkRead = (notificationId: string) => {
 		user && socket.emit("sending_notificationId", notificationId, user.id);
+		updateNotification(notificationId, { read: true });
 	};
 
 	const handleClick = (taskId: string, notificationId: string): void => {

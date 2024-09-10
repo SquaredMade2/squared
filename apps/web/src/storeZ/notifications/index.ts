@@ -47,6 +47,42 @@ export const createNotificationStore = (
 						};
 					}
 				},
+				updateNotification: async (
+					notificationId: string,
+					notification: Partial<Notification>,
+				): Promise<NotificationResponse> => {
+					try {
+						const response: { data: ApiReturnType<Notification> } =
+							await axios.put(apiString(notificationId), notification);
+						const updatedNotification = response.data.data;
+						if (!updatedNotification) {
+							return {
+								notification: null,
+								message: response.data.message,
+								variant: response.data.variant,
+							};
+						}
+						set((state) => ({
+							notifications: state.notifications.map((n) =>
+								n.id === notificationId ? updatedNotification : n,
+							),
+						}));
+						return {
+							notification: updatedNotification,
+							message: response.data.message,
+							variant: response.data.variant,
+						};
+					} catch (error) {
+						return {
+							notification: null,
+							message:
+								error instanceof Error
+									? error.message
+									: "Error updating notification",
+							variant: "destructive",
+						};
+					}
+				},
 				deleteNotification: async (notificationId: string): Promise<void> => {
 					try {
 						await axios.delete(apiString(notificationId));
