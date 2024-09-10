@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Label, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
@@ -8,10 +8,14 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { teamId }, query): Promise<APIResponse<Task>> => {
+		GET: async (
+			res,
+			{ teamId },
+			query,
+		): Promise<APIResponse<Task & { labels: Label[] }>> => {
 			try {
 				// Find tasks by team ID
-				const tasks: Task[] | null = await prisma.task.findMany({
+				const tasks = await prisma.task.findMany({
 					where: { teamId },
 					include: {
 						TaskLabels: {
@@ -30,10 +34,18 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
+				const mappedTasks = tasks.map((task) => {
+					const labels = task.TaskLabels.map((taskLabel) => taskLabel.Label);
+					const { TaskLabels, ...taskData } = task;
+					return {
+						...taskData,
+						labels,
+					};
+				});
 
 				// Return the found tasks
 				return {
-					data: tasks,
+					data: mappedTasks,
 					variant: "default",
 				};
 			} catch (error) {
