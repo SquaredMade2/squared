@@ -4,18 +4,18 @@ import { Tag } from "lucide-react";
 import type { LabelSubContextMenuProps } from "./interfaces";
 import {
 	ContextMenuCheckboxItem,
-	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-import { labelOptions } from "@/constants/designations";
 import { useTaskStore } from "@/storeZ";
-import type { Label } from "@repo/db";
 import { LabelColor } from "../LabelDropdownButton";
+import { useWorkspaceStore } from "@/storeZ";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
-	const [labels, setLabels] = useState<Label[]>(task.labels);
+	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+
+	const [labels, setLabels] = useState<string[]>(task.labels);
 	const { updateTask } = useTaskStore((state) => state);
 
 	const renderLabelIcon = (label: string) => {
@@ -44,7 +44,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{labelOptions.map((label) => {
+				{currentWorkspace?.workspaceLabels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
 							key={label}

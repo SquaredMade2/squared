@@ -1,10 +1,10 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 
-type FilterValue = string | number | Date | boolean | null;
+type FilterValue = string | number | Date | boolean | null | string[];
 
 export type FilterCondition = {
 	field: keyof Task;
-	value: FilterValue | Label[];
+	value: FilterValue;
 	operator:
 		| "equals"
 		| "contains"

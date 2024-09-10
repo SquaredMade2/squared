@@ -3,12 +3,15 @@ import ProfileImage from "@/components/ProfileImage";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import { EventType } from "@/interfaces/event.interfaces";
-import type { TaskEvent, Label, User } from "@repo/db";
+import type { TaskEvent, User } from "@repo/db";
 
 const UpdatedByInformation = () => {
 	const eventLogs = [] as TaskEvent[];
 
-	const findLabelAdded = (originalLabels: Label[], updatedLabels: Label[]) => {
+	const findLabelAdded = (
+		originalLabels: string[],
+		updatedLabels: string[],
+	) => {
 		const labelName = updatedLabels.filter(
 			(label) => !originalLabels.includes(label),
 		);
@@ -16,8 +19,8 @@ const UpdatedByInformation = () => {
 	};
 
 	const findLabelRemoved = (
-		originalLabels: Label[],
-		updatedLabels: Label[],
+		originalLabels: string[],
+		updatedLabels: string[],
 	) => {
 		const labelName = originalLabels.filter(
 			(label) => !updatedLabels.includes(label),
@@ -26,7 +29,7 @@ const UpdatedByInformation = () => {
 		return labelName;
 	};
 
-	const displayLabelNames = (labels: Label[]) => {
+	const displayLabelNames = (labels: string[]) => {
 		return labels.join(", ");
 	};
 
