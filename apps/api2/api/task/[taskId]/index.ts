@@ -13,6 +13,13 @@ export function createRoute(): Route<Params> {
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
 					where: { id: taskId },
+					include: {
+						TaskLabels: {
+							include: {
+								Label: true,
+							},
+						},
+					},
 				});
 
 				if (!task) {
@@ -41,9 +48,28 @@ export function createRoute(): Route<Params> {
 		},
 		PUT: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
+				const taskData = {
+					...body,
+					// If labels are included in the body, update them
+					TaskLabels: body.labels
+						? {
+								deleteMany: {}, // Remove existing labels
+								create: body.labels.map((labelId: string) => ({
+									label: { connect: { id: labelId } },
+								})),
+							}
+						: undefined,
+				};
 				const task: Task | null = await prisma.task.update({
 					where: { id: taskId },
-					data: body,
+					data: taskData,
+					include: {
+						TaskLabels: {
+							include: {
+								Label: true, // Include related labels
+							},
+						},
+					},
 				});
 				if (!task) {
 					res.status(404);
@@ -85,11 +111,23 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				const { id, ...taskData } = body;
+				const { id, labels, ...taskData } = body;
 				const newTask = await prisma.task.create({
 					data: {
 						...taskData,
-					} as Task,
+						TaskLabels: {
+							create: labels.map((labelId: string) => ({
+								Label: { connect: { id: labelId } },
+							})),
+						},
+					},
+					include: {
+						TaskLabels: {
+							include: {
+								Label: true,
+							},
+						},
+					},
 				});
 
 				if (!newTask) {

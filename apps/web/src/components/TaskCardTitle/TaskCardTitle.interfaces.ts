@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Task } from "@/storeZ";
 
 export interface TaskCardTitleProps {
 	taskTitle: string;

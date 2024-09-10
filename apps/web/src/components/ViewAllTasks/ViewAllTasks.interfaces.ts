@@ -1,5 +1,5 @@
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Task } from "@repo/db";
+import type { Task } from "@/storeZ";
 
 export interface DragResult {
 	draggableId: string;

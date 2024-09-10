@@ -1,4 +1,5 @@
-import type { Priority, Status, Task, User, Workspace, Commit } from "@repo/db";
+import type { Task } from "@/storeZ";
+import type { Priority, Status, User, Workspace, Commit } from "@repo/db";
 
 export interface TaskDataState {
 	access: Access;

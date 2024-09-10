@@ -1,4 +1,5 @@
-import type { Status, Task } from "@repo/db";
+import type { Task } from "@/storeZ";
+import type { Status } from "@repo/db";
 
 export interface TaskStatusSectionProps {
 	isListView: boolean;
