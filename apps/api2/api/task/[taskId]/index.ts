@@ -109,7 +109,11 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		POST: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
+		POST: async (
+			res,
+			{ taskId },
+			body,
+		): Promise<APIResponse<Task & { labels: Label[] }>> => {
 			try {
 				const existingTask = await prisma.task.findUnique({
 					where: { id: taskId },
@@ -156,8 +160,8 @@ export function createRoute(): Route<Params> {
 						identifier,
 						teamId,
 						TaskLabels: {
-							create: labels.map((labelId: string) => ({
-								label: { connect: { id: labelId } },
+							create: labels.map((label: Label) => ({
+								label: { connect: { id: label.id } },
 							})),
 						},
 					},
@@ -179,9 +183,14 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
+				const newLabels = newTask.TaskLabels.map(
+					(taskLabel) => taskLabel.Label,
+				);
+
 				// Return the new task
+				const { TaskLabels, ...task } = newTask;
 				return {
-					data: newTask,
+					data: { ...task, labels: newLabels },
 					variant: "default",
 				};
 			} catch (error) {
