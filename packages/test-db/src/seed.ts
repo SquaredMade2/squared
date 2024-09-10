@@ -128,8 +128,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Status.todo,
 		Status.inProgress,
 		Status.done,
-		Status.canceled,
-		Status.duplicate,
+		Status.inReview,
 	]);
 	const taskPriority = faker.helpers.arrayElement([
 		Priority.noPriority,

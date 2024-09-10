@@ -41,7 +41,7 @@ const initialState: TaskDataState = {
 		title: "",
 		status: "todo",
 		identifier: "",
-		priority: null,
+		priority: "noPriority",
 		labels: [],
 		dueDate: new Date(),
 		effortEstimate: null,

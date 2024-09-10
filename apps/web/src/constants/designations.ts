@@ -4,9 +4,8 @@ export const statusOptions: Status[] = [
 	"backlog",
 	"todo",
 	"inProgress",
+	"inReview",
 	"done",
-	"canceled",
-	"duplicate",
 ];
 
 export const priorityOptions: Priority[] = [
