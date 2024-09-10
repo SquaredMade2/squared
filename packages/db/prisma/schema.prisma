@@ -167,8 +167,8 @@ model Task {
   assigneeName   String?
   labels         String[]
 
-  status   Status
-  priority Priority?
+  status   Status        @default(todo)
+  priority Priority      @default(noPriority)
   Comments Comment[]
   Events   TaskEventLog?
   Branch   Branch?

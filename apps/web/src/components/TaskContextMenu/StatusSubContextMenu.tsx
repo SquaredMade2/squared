@@ -3,6 +3,7 @@ import {
 	Circle,
 	CircleCheckBig,
 	CircleDashed,
+	CircleFadingPlus,
 	CircleX,
 	Copy,
 } from "lucide-react";
@@ -41,14 +42,12 @@ const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
 				return <Circle className="size-4" />;
 			case "inProgress":
 				return inProgress();
+			case "inReview":
+				return <CircleFadingPlus className="size-4 text-green-400" />;
 			case "done":
 				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			case "canceled":
-				return <CircleX className="size-4" />;
-			case "duplicate":
-				return <Copy className="size-4" />;
 			default:
-				return null;
+				return <CircleDashed className="size-4" />;
 		}
 	};
 	return (
