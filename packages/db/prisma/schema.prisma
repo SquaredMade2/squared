@@ -224,10 +224,10 @@ model User {
 
 model Workspace {
   id                   String  @id @default(uuid())
-  name                 String?
+  name                 String
   url                  String  @unique
   companySize          Int?
-  issuesCreated        Int?
+  issuesCreated        Int?    @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
   avatarUrl            String?
