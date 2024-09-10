@@ -21,6 +21,17 @@ const Join = () => {
 	const { toast } = useToast();
 	const router = useRouter();
 
+	// List of restricted routes (initial set)
+	const restrictedRoutes = [
+		"confirmation",
+		"inbox",
+		"join",
+		"login",
+		"password",
+		"register",
+		"settings",
+	];
+
 	useEffect(() => {
 		if (user) {
 			getAllWorkspaces(user.id);
@@ -39,6 +50,12 @@ const Join = () => {
 		setUrlInputValue(formattedUrlInput);
 	}, [inputValue]);
 
+	const isUrlTaken = (url: string) => {
+		// Check against both restricted routes and existing workspaces
+		const takenUrls = [...restrictedRoutes, ...workspaces.map((ws) => ws.url)];
+		return takenUrls.includes(url);
+	};
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!user) return;
@@ -50,6 +67,16 @@ const Join = () => {
 
 		if (urlInputValue.length === 0) {
 			alert("Please enter a workspace URL");
+			return;
+		}
+
+		if (isUrlTaken(urlInputValue)) {
+			alert("Workspace URL is already taken");
+			return;
+		}
+
+		if (urlInputValue.includes("/")) {
+			alert("Workspace URL cannot contain '/'");
 			return;
 		}
 
