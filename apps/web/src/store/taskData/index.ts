@@ -5,7 +5,7 @@ import type {
 	TaskDataState,
 	Team,
 } from "./taskData.interfaces";
-import type { Label, Priority, Status, Task } from "@repo/db";
+import type { Priority, Status, Task } from "@repo/db";
 import {
 	addWorkspace,
 	createNewTask,
@@ -63,6 +63,15 @@ const initialState: TaskDataState = {
 		issuesCreated: 1,
 		githubRepoInfoId: "",
 		avatarUrl: "",
+		workspaceLabels: [
+			"Feature",
+			"Bug",
+			"Chore",
+			"Refactor",
+			"Docs",
+			"Test",
+			"Design",
+		],
 	},
 	currentTeam: {
 		identifier: "",
@@ -104,7 +113,7 @@ const taskData = createSlice({
 		setPriority(state, action: PayloadAction<Priority>) {
 			state.priority = action.payload;
 		},
-		setLabels(state, action: PayloadAction<Label[]>) {
+		setLabels(state, action: PayloadAction<string[]>) {
 			state.labels = action.payload;
 		},
 		setDueDate(state, action: PayloadAction<Date>) {
