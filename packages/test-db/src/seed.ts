@@ -140,6 +140,11 @@ async function addTeam(workspace: Workspace, user: User) {
 	return team;
 }
 
+const getRandomLabels = (labels: { id: string }[]) => {
+	const numLabels = faker.number.int({ min: 1, max: labels.length });
+	return faker.helpers.shuffle(labels).slice(0, numLabels);
+};
+
 async function addTask(team: Team, workspace: Workspace, user: User) {
 	// Generate task details using faker
 	const taskTitle = faker.lorem.words({ min: 1, max: 3 });
@@ -182,6 +187,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 
 	// Use the current issuesCreated count to create the identifier
 	const identifier = `${formattedName}-${updatedWorkspace.issuesCreated + 1}`;
+	const randomLabels = getRandomLabels(taskLabels);
 
 	// Create the task with the generated identifier
 	const task = await prisma.task.create({
@@ -196,7 +202,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			identifier: identifier,
 			teamId: team.id,
 			TaskLabels: {
-				create: taskLabels.map((label) => ({
+				create: randomLabels.map((label) => ({
 					Label: {
 						connect: { id: label.id },
 					},
