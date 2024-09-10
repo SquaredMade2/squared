@@ -33,21 +33,6 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const isActive = currentTaskId === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 
-	const { theme } = useTheme();
-	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
-
-	const inactiveRead =
-		"bg-popover text-muted-foreground border dark:border-none";
-
-	const active =
-		"border border-indigo-400 shadow shadow-indigo-400 bg-popover dark:bg-[#282E43] text-foreground";
-
-	const hover = isActive
-		? ""
-		: theme === "dark"
-			? "hover:text-foreground hover:bg-[#282E43]"
-			: "hover:border hover:border-gray-500 hover:shadow hover:text-foreground";
-
 	const handleMarkRead = (notificationId: string) => {
 		user && socket.emit("sending_notificationId", notificationId, user.id);
 		updateNotification(notificationId, { read: true });
@@ -79,9 +64,13 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	return (
 		<div
 			onClick={() => handleClick(taskId, notificationId)}
-			className={`p-2 w-80 rounded-md cursor-pointer  ${
-				isActive ? active : read ? inactiveRead : inactiveNotread
-			} ${hover}`}
+			className={`p-2 w-80 rounded-md text-muted-foreground bg-popover border cursor-pointer  ${
+				isActive
+					? "border-indigo-400 shadow shadow-indigo-400 dark:bg-[#282E43] text-foreground"
+					: read
+						? "dark:border-none"
+						: "bg-muted dark:bg-accent"
+			} ${!isActive ? "hover:text-foreground hover:border hover:shadow dark:hover:bg-[#282E43] hover:border-gray-500" : ""}`}
 		>
 			<div ref={isActive ? activeDivRef : null}>
 				<div className="flex justify-between">
