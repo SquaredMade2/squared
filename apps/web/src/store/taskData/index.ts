@@ -62,6 +62,7 @@ const initialState: TaskDataState = {
 		universalTokenLinkId: "",
 		issuesCreated: 1,
 		githubRepoInfoId: "",
+		avatarUrl: "",
 	},
 	currentTeam: {
 		identifier: "",

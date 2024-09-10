@@ -19,7 +19,7 @@ const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	name: "",
 	url: "",
 	companySize: null,
-	issuesCreated: null,
+	issuesCreated: 0,
 	universalTokenLinkId: null,
 	githubRepoInfoId: null,
 };
@@ -162,7 +162,10 @@ export const createWorkspaceStore = (
 						return [];
 					}
 				},
-				inviteToWorkspace: async (workspaceId: string, email: string) => {
+				inviteToWorkspace: async (
+					workspaceId: string,
+					email: string | string[],
+				) => {
 					try {
 						const response = await axios.post(
 							`${apiString(workspaceId)}/invite`,

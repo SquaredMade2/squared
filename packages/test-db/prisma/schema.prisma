@@ -211,6 +211,7 @@ model User {
   lastLogin          DateTime @default(now())
   onBoarding         Boolean  @default(true)
   defaultWorkspaceId String?
+  avatarUrl          String?
 
   Workspaces   UserWorkspace[]
   Notification Notification[]
@@ -230,6 +231,7 @@ model Workspace {
   issuesCreated        Int?
   universalTokenLinkId String?
   githubRepoInfoId     String?
+  avatarUrl            String?
 
   universalTokenLink UniversalTokenLink?
   teams              Team[]

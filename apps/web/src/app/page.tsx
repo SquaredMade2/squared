@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 const HomePage = () => {
 	const router = useRouter();
-	const { user } = useAuthStore((state) => state);
+	const { user, logout } = useAuthStore((state) => state);
 	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
 		(state) => state,
 	);
@@ -30,7 +30,7 @@ const HomePage = () => {
 					router.push("/join");
 				}
 			} else {
-				// If not logged in, redirect to login
+				await logout();
 				router.push("/login");
 			}
 		};

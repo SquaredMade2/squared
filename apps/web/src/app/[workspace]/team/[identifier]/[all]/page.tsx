@@ -61,8 +61,7 @@ export default function Home() {
 				const allUsers = await getAllUsers(currentWorkspace.id);
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
-
-				if (userHasAccess && !currentTeam) {
+				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const teams = await getAllTeams(currentWorkspace.id);
 					const team = teams.find((t) => t.identifier === teamIdentifier);
 					if (team) {

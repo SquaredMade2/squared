@@ -1,45 +1,19 @@
 import type { User } from "@repo/db";
 import type { Route, APIResponse } from "@/api/route";
 
-type Login = {
-	provider: "credentials" | "oauth";
-	type: "register" | "login" | "logout";
-	email: string;
-	password?: string;
-	name?: string;
-	username?: string;
-};
-
 type Params = {
 	userId: string;
 };
-
-type Body = {
-	login: Login;
-};
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
 			try {
-				const { type } = body.login;
-
-				if (type === "logout") {
-					res.clearCookie("token");
-					return {
-						data: null,
-						message: "logout successful.",
-						variant: "default",
-					};
-				}
-				// Default case if the type is neither 'register' nor 'login'
-				res.status(401);
+				res.clearCookie("token");
 				return {
 					data: null,
-					message: "Invalid request type.",
-					variant: "destructive",
+					message: "logout successful.",
+					variant: "default",
 				};
 			} catch (error) {
 				console.error("Error with auth request:", error);

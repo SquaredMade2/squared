@@ -7,6 +7,7 @@ export const createModalStore = (
 	initState: ModalState = {
 		showNewIssue: false,
 		showCommand: false,
+		showWorkspaceInvite: false,
 		newIssueData: {},
 	},
 ) => {
@@ -20,6 +21,9 @@ export const createModalStore = (
 		},
 		setShowCommand: (input) => {
 			set({ showCommand: input });
+		},
+		setShowWorkspaceInvite: (input) => {
+			set({ showWorkspaceInvite: input });
 		},
 	}));
 };
