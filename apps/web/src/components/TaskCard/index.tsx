@@ -166,7 +166,7 @@ const TaskCard = ({
 										<div
 											key={task.id}
 											className={
-												"cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 bg-background"
+												"cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 bg-card"
 											}
 										>
 											<TaskCardTitle

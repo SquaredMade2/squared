@@ -7,7 +7,8 @@ import type {
 	WorkspaceStore,
 	WorkspaceResponse,
 } from "./interfaces";
-import type { Workspace } from "@repo/db";
+import type { User, Workspace } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -18,7 +19,7 @@ const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	name: "",
 	url: "",
 	companySize: null,
-	issuesCreated: null,
+	issuesCreated: 0,
 	universalTokenLinkId: null,
 	githubRepoInfoId: null,
 };
@@ -40,19 +41,17 @@ export const createWorkspaceStore = (
 					const workspaceId = uuidv4();
 
 					try {
-						const response = await axios.post<WorkspaceResponse>(
-							apiString(workspaceId),
-							{
+						const response: { data: ApiReturnType<Workspace> } =
+							await axios.post(apiString(workspaceId), {
 								workspace: {
 									id: workspaceId,
 									...WORKSPACE_TEMPLATE,
 									...workspace,
 								},
 								userId,
-							},
-						);
+							});
 
-						const { message, variant, workspace: newWorkspace } = response.data;
+						const { message, variant, data: newWorkspace } = response.data;
 
 						if (!newWorkspace) {
 							return { workspace: null, message, variant };
@@ -76,19 +75,36 @@ export const createWorkspaceStore = (
 				},
 				getWorkspace: async (
 					workspaceId: string,
-				): Promise<Workspace | undefined> => {
+				): Promise<WorkspaceResponse> => {
 					const { workspaces } = get();
 					const stateWorkspace = workspaces.find((t) => t.id === workspaceId);
 					if (stateWorkspace) {
-						return stateWorkspace;
+						return {
+							workspace: stateWorkspace,
+							message: "Workspace found successfully",
+							variant: "default",
+						};
 					}
 
 					try {
-						const response = await axios.get<Workspace>(apiString(workspaceId));
-						return response.data;
+						const { data: response }: { data: ApiReturnType<Workspace> } =
+							await axios.get(apiString(workspaceId));
+						const { data: workspace, message, variant } = response;
+						if (!workspace) {
+							return {
+								workspace: null,
+								message,
+								variant,
+							};
+						}
+						return { workspace, message, variant };
 					} catch (error) {
 						console.error("Error in getWorkspace:", error);
-						return undefined;
+						return {
+							workspace: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
 					}
 				},
 				updateWorkspace: async (
@@ -129,16 +145,61 @@ export const createWorkspaceStore = (
 				},
 				getAllWorkspaces: async (userId: string): Promise<Workspace[]> => {
 					try {
-						const response = await axios.get<Workspace[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
-						);
+						const { data: response }: { data: ApiReturnType<Workspace[]> } =
+							await axios.get(
+								`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
+							);
+						const { data: workspaces } = response;
+						if (!workspaces) {
+							set({ workspaces: [] });
+							return [];
+						}
+						set({ workspaces });
 
-						set({ workspaces: response.data });
-
-						return response.data;
+						return workspaces;
 					} catch (error) {
 						console.error("Error in getAllWorkspaces:", error);
 						return [];
+					}
+				},
+				inviteToWorkspace: async (
+					workspaceId: string,
+					email: string | string[],
+				) => {
+					try {
+						const response = await axios.post(
+							`${apiString(workspaceId)}/invite`,
+							{ email },
+						);
+
+						return response.data;
+					} catch (error) {
+						console.error("Error inviting user to workspace:", error);
+						throw new Error(
+							error instanceof Error ? error.message : "Unknown error",
+						);
+					}
+				},
+				joinWorkspace: async (token: string, user: User) => {
+					try {
+						const response = await axios.post(`${apiString("join")}`, {
+							token,
+							user,
+						});
+
+						const { workspace, message, variant } = response.data;
+						if (workspace) {
+							set((state) => ({
+								workspaces: [...state.workspaces, workspace],
+								currentWorkspace: workspace,
+							}));
+						}
+						return { workspace, message, variant };
+					} catch (error) {
+						console.error("Error joining workspace:", error);
+						throw new Error(
+							error instanceof Error ? error.message : "Unknown error",
+						);
 					}
 				},
 			}),

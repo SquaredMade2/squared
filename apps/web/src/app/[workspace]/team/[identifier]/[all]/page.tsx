@@ -21,32 +21,23 @@ import type { Task } from "@repo/db";
 export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
-	const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
 
-	const router = useRouter();
 	const params = useParams();
 
 	// Using Zustand hooks to subscribe to changes
-	const view = useViewsStore((state) => state.view);
-	const user = useAuthStore((state) => state.user);
-	const tasks = useTaskStore((state) => state.tasks);
-	const getAllTasks = useTaskStore((state) => state.getAllTasks);
-	const updateTask = useTaskStore((state) => state.updateTask);
+	const { view, currentFilter, filterTasks } = useViewsStore((state) => state);
+	const { user } = useAuthStore((state) => state);
 
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const getAllWorkspaces = useWorkspaceStore((state) => state.getAllWorkspaces);
-	const setCurrentWorkspace = useWorkspaceStore(
-		(state) => state.setCurrentWorkspace,
+	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
+
+	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
+		(state) => state,
 	);
 
-	const currentTeam = useTeamStore((state) => state.currentTeam);
-	const getAllTeams = useTeamStore((state) => state.getAllTeams);
-	const setCurrentTeam = useTeamStore((state) => state.setCurrentTeam);
-
 	const getAllUsers = useUserStore((state) => state.getAllUsers);
-
-	const currentFilter = useViewsStore((state) => state.currentFilter);
-	const filterTasks = useViewsStore((state) => state.filterTasks);
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
@@ -59,7 +50,7 @@ export default function Home() {
 			// Fetch workspaces if not already present
 			if (!currentWorkspace && user) {
 				const workspaces = await getAllWorkspaces(user.id);
-				const workspace = workspaces.find((ws) => ws.url === workspaceUrl);
+				const workspace = workspaces?.find((ws) => ws.url === workspaceUrl);
 				if (workspace) {
 					setCurrentWorkspace(workspace);
 				}
@@ -70,8 +61,7 @@ export default function Home() {
 				const allUsers = await getAllUsers(currentWorkspace.id);
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
-
-				if (userHasAccess && !currentTeam) {
+				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const teams = await getAllTeams(currentWorkspace.id);
 					const team = teams.find((t) => t.identifier === teamIdentifier);
 					if (team) {
@@ -158,11 +148,9 @@ export default function Home() {
 			</div>
 
 			{currentWorkspace ? (
-				<div
-					className={`flex flex-col flex-grow ${view === "grid" ? "mx-2" : ""}`}
-				>
+				<div className={"flex flex-col flex-grow mx-2"}>
 					<ScrollArea
-						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""}`}
+						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
 					>
 						<ViewAllTasks
 							activeSelected={activeSelected}

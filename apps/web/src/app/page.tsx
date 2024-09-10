@@ -1,38 +1,53 @@
 "use client";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { getUser } from "@/store/userSettings/thunks";
+import { useAuthStore, useWorkspaceStore } from "@/storeZ";
+import { Loader2 } from "lucide-react";
 
-export default function Landingpage() {
-	const [loading, setLoading] = useState<boolean>(true);
-	const user = useAppSelector((state) => state.userSettings.user);
-
+const HomePage = () => {
 	const router = useRouter();
-	const dispatch = useAppDispatch();
+	const { user, logout } = useAuthStore((state) => state);
+	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
+		(state) => state,
+	);
 
 	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
+		const handleRedirection = async () => {
 			if (user) {
-				const actionResult = await dispatch(getUser());
-				const userData = actionResult.payload;
-				if (userData?.on_boarding && userData.workspaces.length) {
-					router.push(`/${userData.workspaces[0].url}`);
-				} else if (userData?.on_boarding && !userData.workspaces.length) {
-					router.push("/join");
-				} else if (userData && !userData.on_boarding) {
-					router.push("/onboarding");
+				// If user is logged in, redirect to the correct workspace
+				if (user.defaultWorkspaceId) {
+					const { workspace } = await getWorkspace(user.defaultWorkspaceId);
+					if (workspace?.url) {
+						router.push(`/${workspace.url}`);
+						return;
+					}
+				}
+
+				const workspaces = await getAllWorkspaces(user.id);
+				if (workspaces.length) {
+					router.push(`/${workspaces[0].url}`);
 				} else {
-					setLoading(false);
+					router.push("/join");
 				}
 			} else {
-				setLoading(false);
+				await logout();
 				router.push("/login");
 			}
 		};
-		fetchData();
-	}, [user, dispatch, router]);
 
-	return <div className="w-full flex items-center h-[100vh] bg-[#141414]" />;
-}
+		handleRedirection();
+	}, [user, router]);
+
+	return (
+		<div className="h-screen w-full">
+			<div className="flex h-full justify-center items-center">
+				<div className="flex flex-col gap-4 items-center">
+					<div className="font-bold text-3xl">Loading...</div>
+					<Loader2 size={64} className="animate-spin" />
+				</div>
+			</div>
+		</div>
+	);
+};
+
+export default HomePage;

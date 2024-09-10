@@ -57,6 +57,7 @@ export const AssigneeDropdown = ({
 			lastLogin: new Date(),
 			onBoarding: false,
 			defaultWorkspaceId: "",
+			avatarUrl: "",
 		});
 		setShowAssigneeDropdown(false);
 	};

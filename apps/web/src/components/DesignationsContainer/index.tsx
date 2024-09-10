@@ -1,9 +1,9 @@
 import { useState } from "react";
-import LabelButton from "@/components/LabelButton";
 import PriorityButton from "@/components/PriorityButton";
 import { StatusDropdownButton } from "@/components/StatusDropdownButton";
 import DateButton from "@/components/DateButton";
 import EffortEstimateButton from "@/components/EffortEstimateButton";
+import LabelDropdownButton from "../LabelDropdownButton";
 import HelpButton from "@/components/HelpButton";
 import EffortModal from "@/components/EffortModal";
 import { AssigneeButton } from "@/components/AssigneeButton";
@@ -78,6 +78,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 				lastLogin: new Date(),
 				onBoarding: false,
 				defaultWorkspaceId: "",
+				avatarUrl: "",
 			},
 		};
 	};
@@ -128,10 +129,10 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 	return (
 		<>
 			{location === "newIssue" && (
-				<div className="flex flex-row flex-start items-center h-9">
+				<div className="flex flex-row flex-start items-center space-between">
 					<StatusDropdownButton location={location} />
 					<PriorityButton location={location} />
-					<LabelButton location={location} />
+					<LabelDropdownButton location={location} />
 					<DateButton location={location} />
 					<EffortEstimateButton location={location} />
 				</div>
@@ -141,7 +142,7 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 				<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
 					{generateItemContainer("Status", StatusDropdownButton, location)}
 					{generateItemContainer("Priority", PriorityButton, location)}
-					{generateItemContainer("Labels", LabelButton, location)}
+					{generateItemContainer("Labels", LabelDropdownButton, location)}
 					{generateItemContainer("Due Date", DateButton, location)}
 					{generateItemContainer(
 						"Effort",

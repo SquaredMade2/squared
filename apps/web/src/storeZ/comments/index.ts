@@ -1,8 +1,9 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
-import type { CommentState, CommentStore } from "./interfaces";
 import { v4 as uuidv4 } from "uuid";
+import type { CommentState, CommentStore, CommentResponse } from "./interfaces";
 import type { Comment } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -14,40 +15,113 @@ export const createCommentStore = (
 ) => {
 	return createStore<CommentStore>()((set, get) => ({
 		...initState,
-		addComment: async (comment) => {
-			const response = await axios.post(apiString(uuidv4()), comment);
-			const { comments } = get();
-			set({ comments: [...comments, response.data] });
-			return response.data;
+		addComment: async (comment: Partial<Comment>): Promise<CommentResponse> => {
+			try {
+				const commentId = uuidv4();
+				const response: { data: ApiReturnType<Comment> } = await axios.post(
+					apiString(commentId),
+					comment,
+				);
+				const { data: newComment, message, variant } = response.data;
+
+				if (!newComment) {
+					return { comment: null, message, variant };
+				}
+
+				const { comments } = get();
+				set({ comments: [...comments, newComment] });
+
+				return { comment: newComment, message, variant };
+			} catch (error) {
+				return {
+					comment: null,
+					message: error instanceof Error ? error.message : "Unknown error",
+					variant: "destructive",
+				};
+			}
 		},
-		updateComment: async (commentId, comment) => {
-			const response = await axios.put(apiString(commentId), comment);
-			const { comments } = get();
-			set({
-				comments: comments.map((t) => (t.id === commentId ? response.data : t)),
-			});
-			return response.data;
+		updateComment: async (
+			commentId: string,
+			comment: Partial<Comment>,
+		): Promise<CommentResponse> => {
+			try {
+				const response: { data: ApiReturnType<Comment> } = await axios.put(
+					apiString(commentId),
+					comment,
+				);
+				const updatedComment = response.data.data;
+				if (!updatedComment) {
+					return {
+						comment: null,
+						message: response.data.message,
+						variant: response.data.variant,
+					};
+				}
+
+				set((state) => ({
+					comments: state.comments.map((c) =>
+						c.id === commentId ? updatedComment : c,
+					),
+				}));
+
+				return {
+					comment: updatedComment,
+					message: response.data.message,
+					variant: response.data.variant,
+				};
+			} catch (error) {
+				return {
+					comment: null,
+					message: error instanceof Error ? error.message : "Unknown error",
+					variant: "destructive",
+				};
+			}
 		},
-		deleteComment: async (commentId) => {
-			await axios.delete(apiString(commentId));
-			const { comments } = get();
-			set({
-				comments: comments.filter((t) => t.id !== commentId),
-			});
+		deleteComment: async (commentId: string): Promise<void> => {
+			try {
+				await axios.delete(apiString(commentId));
+				set((state) => ({
+					comments: state.comments.filter((c) => c.id !== commentId),
+				}));
+			} catch (error) {
+				console.error("Error in deleteComment:", error);
+			}
 		},
-		getComment: async (commentId) => {
+		getComment: async (commentId: string): Promise<CommentResponse> => {
 			const { comments } = get();
-			const existing = comments.find((t) => t.id === commentId);
-			if (existing) return existing;
-			const response = await axios.get(apiString(commentId));
-			return response.data;
+			const existingComment = comments.find((c) => c.id === commentId);
+			if (existingComment) {
+				return {
+					comment: existingComment,
+					message: "Comment found",
+					variant: "default",
+				};
+			}
+
+			try {
+				const response: { data: ApiReturnType<Comment> } = await axios.get(
+					apiString(commentId),
+				);
+				return { ...response.data, comment: response.data.data };
+			} catch (error) {
+				return {
+					comment: null,
+					message: error instanceof Error ? error.message : "Unknown error",
+					variant: "destructive",
+				};
+			}
 		},
-		getAllComments: async (taskId) => {
-			const response: { data: Comment[] } = await axios.get(
-				`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${taskId}/comment`,
-			);
-			set({ comments: response.data });
-			return response.data;
+		getAllComments: async (taskId: string): Promise<Comment[]> => {
+			try {
+				const response = await axios.get<Comment[]>(
+					`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${taskId}/comment`,
+				);
+				set({ comments: response.data });
+				return response.data;
+			} catch (error) {
+				console.error("Error in getAllComments:", error);
+				return [];
+			}
 		},
 	}));
 };
