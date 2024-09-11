@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { getWorkspace, deleteWorkspace } from "@/store/taskData/thunks";
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import DeleteButton from "@/components/DeleteButton";
 import BlueButton from "@/components/BlueButton";
 import type { RootState } from "@/store";
 import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { X } from "lucide-react";
 import type { User } from "@repo/db";
+import { Button } from "@/components/ui/button";
 
 export default function WorkspaceSettings() {
 	const { toast } = useToast();
@@ -168,10 +168,9 @@ export default function WorkspaceSettings() {
 								Are you sure you want to {deleteOrLeaveBtnLabel.toUpperCase()}?
 							</h1>
 							<div className="flex mb-5">
-								<DeleteButton
-									description={deleteOrLeaveBtnLabel}
-									handleAction={handleDelete}
-								/>
+								<Button variant={"destructive"} onClick={handleDelete}>
+									{deleteOrLeaveBtnLabel}
+								</Button>
 							</div>
 						</div>
 					</dialog>
@@ -230,10 +229,9 @@ export default function WorkspaceSettings() {
 							data, including but not limited to users, issues, and comments,
 							you can do so below.
 						</p>
-						<DeleteButton
-							description={deleteOrLeaveBtnLabel}
-							handleAction={handleOpen}
-						/>
+						<Button variant={"destructive"} onClick={handleOpen}>
+							{deleteOrLeaveBtnLabel}
+						</Button>
 					</div>
 				</div>
 			</div>
