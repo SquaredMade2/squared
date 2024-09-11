@@ -14,7 +14,7 @@ import type {
 	SavedFilter as SavedFilterType,
 } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
-import type { SavedFilter, TaskFilter } from "../views";
+import type { SavedFilter, TaskFilter } from "../filters";
 export * from "./interfaces";
 export * from "./store";
 
