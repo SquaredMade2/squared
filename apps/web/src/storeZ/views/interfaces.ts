@@ -1,4 +1,4 @@
-import type { Task } from "..";
+import type { Task } from "@repo/db";
 
 type FilterValue = string | number | Date | boolean | null | string[];
 

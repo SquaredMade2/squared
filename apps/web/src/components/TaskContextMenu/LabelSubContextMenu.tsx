@@ -17,7 +17,9 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
 		useWorkspaceStore((state) => state);
 
-	const [labels, setLabels] = useState<Label[]>(task.labels);
+	const [labels, setLabels] = useState<Label[]>(
+		workspaceLabels.filter((label) => task.labels.includes(label.id)),
+	);
 	const { updateTask } = useTaskStore((state) => state);
 	if (!workspaceLabels) {
 		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
@@ -43,7 +45,8 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 								} else {
 									setLabels(labels.filter((l) => l !== label));
 								}
-								updateTask(task.id, { labels });
+								const lableIds = labels.map((l) => l.id);
+								updateTask(task.id, { labels: lableIds });
 							}}
 						>
 							<div className="mr-2">{<LabelColor label={label} />}</div>

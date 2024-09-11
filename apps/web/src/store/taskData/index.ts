@@ -31,8 +31,7 @@ import {
 	teamExists,
 	workspaceExists,
 } from "@/store/taskData/thunks";
-import type { Workspace, Commit } from "@repo/db";
-import type { Task } from "@/storeZ";
+import type { Workspace, Commit, Task } from "@repo/db";
 
 const initialState: TaskDataState = {
 	taskList: [],

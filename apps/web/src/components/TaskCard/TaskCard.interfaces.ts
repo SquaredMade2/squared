@@ -1,4 +1,4 @@
-import type { Task } from "@/storeZ";
+import type { Task } from "@repo/db";
 
 export interface TaskCardProps {
 	filteredTasks: Task[];
