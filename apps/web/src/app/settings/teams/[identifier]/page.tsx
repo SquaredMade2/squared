@@ -9,9 +9,9 @@ import { deleteTeam, getTeam, getWorkspace } from "@/store/taskData/thunks";
 import type { TeamData } from "./teams.interfaces";
 import type { FormSubmitEvent } from "@/types";
 import BlueButton from "@/components/BlueButton";
-import DeleteButton from "@/components/DeleteButton";
 import { X } from "lucide-react";
 import type { Team } from "@repo/db";
+import { Button } from "@/components/ui/button";
 
 export default function TeamsSetting() {
 	const { toast } = useToast();
@@ -171,10 +171,9 @@ export default function TeamsSetting() {
 								<div className="h-full w-full flex flex-col items-center mt-5 py-2 px-8">
 									<h1>Are you sure you want to delete this team?</h1>
 									<div className="flex mb-5">
-										<DeleteButton
-											description="Delete my team"
-											handleAction={handleDelete}
-										/>
+										<Button variant={"destructive"} onClick={handleDelete}>
+											Delete my team
+										</Button>
 									</div>
 								</div>
 							</dialog>
@@ -230,10 +229,9 @@ export default function TeamsSetting() {
 									associated with it. This can't be undone and your data cannot
 									be recovered by Squared.
 								</p>
-								<DeleteButton
-									description="Delete Team"
-									handleAction={handleOpen}
-								/>
+								<Button variant={"destructive"} onClick={handleOpen}>
+									Delete Team
+								</Button>
 							</div>
 						</div>
 					</div>
