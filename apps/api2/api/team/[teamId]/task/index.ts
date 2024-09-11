@@ -8,22 +8,11 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (
-			res,
-			{ teamId },
-			query,
-		): Promise<APIResponse<Task & { labels: Label[] }>> => {
+		GET: async (res, { teamId }, query): Promise<APIResponse<Task>> => {
 			try {
 				// Find tasks by team ID
 				const tasks = await prisma.task.findMany({
 					where: { teamId },
-					include: {
-						TaskLabels: {
-							include: {
-								Label: true,
-							},
-						},
-					},
 				});
 
 				if (!tasks) {
@@ -34,18 +23,10 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
-				const mappedTasks = tasks.map((task) => {
-					const labels = task.TaskLabels.map((taskLabel) => taskLabel.Label);
-					const { TaskLabels, ...taskData } = task;
-					return {
-						...taskData,
-						labels,
-					};
-				});
 
 				// Return the found tasks
 				return {
-					data: mappedTasks,
+					data: tasks,
 					variant: "default",
 				};
 			} catch (error) {

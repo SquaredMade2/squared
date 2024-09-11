@@ -13,10 +13,16 @@ export function createRoute(): Route<Params> {
 				// Find workspace by workspace ID
 				const idWorkspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
+					include: {
+						Label: true,
+					},
 				});
 
 				const urlWorkspace = await prisma.workspace.findUnique({
 					where: { url: workspaceId },
+					include: {
+						Label: true,
+					},
 				});
 
 				const workspace = idWorkspace || urlWorkspace;

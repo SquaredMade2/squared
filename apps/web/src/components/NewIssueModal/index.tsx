@@ -6,7 +6,6 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
-import { useSelector } from "react-redux";
 import { useToast } from "../ui/use-toast";
 import DesignationsContainer from "@/components/DesignationsContainer";
 import { LayoutGrid, ChevronRight } from "lucide-react";
@@ -14,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import MentionInput from "@/components/MentionsInput";
 import { SocketContext } from "@/app/SocketProvider";
-import type { Task } from "@/storeZ";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import {
 	useAuthStore,
@@ -24,6 +22,7 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/storeZ";
+import type { Task } from "@repo/db";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();

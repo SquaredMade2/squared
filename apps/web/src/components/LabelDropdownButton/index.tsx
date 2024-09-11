@@ -40,14 +40,26 @@ export const LabelColor = ({ label }: { label: Label }) => {
 
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	const [open, setOpen] = useState(false);
+	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
+		useWorkspaceStore((state) => state);
+	const [taskLabels, setTaskLabels] = useState<Label[]>(workspaceLabels);
 
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const { currentTask, updateTask } = useTaskStore((state) => state);
-	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
-		useWorkspaceStore((state) => state);
 
-	const newIssueLabels = newIssueData.labels;
-	const sidebarLabels = currentTask?.labels;
+	useEffect(() => {
+		const fetchLabels = async () => {
+			if (currentWorkspace) {
+				const labels = await getWorkspaceLabels(currentWorkspace.id);
+				setTaskLabels(labels);
+			}
+		};
+		fetchLabels();
+	}, [currentWorkspace]);
+
+	const newIssueLabels = workspaceLabels.filter((label) =>
+		newIssueData.labels?.includes(label.id),
+	);
 	const taskId = currentTask?.id;
 
 	const newIssueLabelButton = () => (
@@ -68,7 +80,7 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 				<>
 					{
 						// eslint-disable-next-line array-callback-return
-						newIssueLabels.map((label, i) => {
+						taskLabels.map((label, i) => {
 							const multipleLabels = {
 								1: "-mr-[5px]",
 								2: "-mr-[5px]",
@@ -93,7 +105,7 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 
 	const issueSidebarButton = () => (
 		<div>
-			{sidebarLabels?.map((label: Label) => (
+			{taskLabels?.map((label: Label) => (
 				<Button variant="outline" key={label.id} className="mb-1 rounded-full">
 					<LabelColor label={label} />
 					<span className="ml-3 cursor-pointer">{label.name}</span>
@@ -113,12 +125,16 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 
 		if (location === "newIssue") {
 			newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
-			setNewIssueData({ ...newIssueData, labels: newLabelsSelected ?? [] });
+			setNewIssueData({
+				...newIssueData,
+				labels: newLabelsSelected.map((el) => el.id) ?? [],
+			});
 		}
-		if (location === "issueSidebar" && sidebarLabels) {
-			newLabelsSelected = newLabelSelection(sidebarLabels, labelName);
+		if (location === "issueSidebar" && taskLabels) {
+			newLabelsSelected = newLabelSelection(taskLabels, labelName);
 			if (taskId === undefined) return;
-			updateTask(taskId, { labels: newLabelsSelected });
+			const labelIds = newLabelsSelected.map((label) => label.id);
+			updateTask(taskId, { labels: labelIds });
 		}
 	};
 
@@ -178,10 +194,8 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 											<Check className="size-4" />
 										)}
 									{location === "issueSidebar" &&
-										sidebarLabels &&
-										sidebarLabels.includes(label) && (
-											<Check className="size-4" />
-										)}
+										taskLabels &&
+										taskLabels.includes(label) && <Check className="size-4" />}
 								</CommandItem>
 							))}
 						</CommandGroup>

@@ -1,8 +1,4 @@
-import type { Task as TaskType, Label } from "@repo/db";
-
-export interface Task extends TaskType {
-	labels: Label[];
-}
+import type { Task } from "@repo/db";
 
 export type TaskState = {
 	tasks: Task[];
