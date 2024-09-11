@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, useWorkspaceStore } from "@/storeZ";
 import { Loader2 } from "lucide-react";
+import { parseCookies, destroyCookie } from "nookies";
 
 const HomePage = () => {
 	const router = useRouter();
@@ -13,6 +14,15 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const handleRedirection = async () => {
+			const cookies = parseCookies();
+			const authCookie = cookies["auth-store"];
+			if (authCookie && !user) {
+				destroyCookie(undefined, "auth-store");
+				await logout();
+				router.push("/login");
+				return;
+			}
+
 			if (user) {
 				// If user is logged in, redirect to the correct workspace
 				if (user.defaultWorkspaceId) {
@@ -36,7 +46,7 @@ const HomePage = () => {
 		};
 
 		handleRedirection();
-	}, [user, router]);
+	}, [user, router, getWorkspace, getAllWorkspaces, logout]);
 
 	return (
 		<div className="h-screen w-full">
