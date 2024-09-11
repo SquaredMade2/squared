@@ -7,8 +7,14 @@ import type {
 	WorkspaceStore,
 	WorkspaceResponse,
 } from "./interfaces";
-import type { Label, SavedFilter, User, Workspace } from "@repo/db";
+import type {
+	Label,
+	User,
+	Workspace,
+	SavedFilter as SavedFilterType,
+} from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
+import type { SavedFilter, TaskFilter } from "../views";
 export * from "./interfaces";
 export * from "./store";
 
@@ -64,7 +70,7 @@ export const createWorkspaceStore = (
 							...state,
 							workspaces: [...state.workspaces, newWorkspace],
 							currentWorkspace: newWorkspace,
-							workspaceFilters: newWorkspace.SavedFilter,
+							workspaceFilters: [],
 						}));
 
 						return { workspace: newWorkspace, message, variant };
@@ -134,15 +140,36 @@ export const createWorkspaceStore = (
 					workspaceId: string,
 				): Promise<SavedFilter[]> => {
 					try {
-						const { data: response }: { data: ApiReturnType<SavedFilter[]> } =
-							await axios.get(`${apiString(workspaceId)}/filter`);
+						const {
+							data: response,
+						}: { data: ApiReturnType<SavedFilterType[]> } = await axios.get(
+							`${apiString(workspaceId)}/filter`,
+						);
 						const { data: filters } = response;
 						if (!filters) {
 							return [];
 						}
-						set({ workspaceFilters: filters });
+						const taskFilters: SavedFilter[] = filters.map((savedFilter) => {
+							const parsedFilter = savedFilter.filter as TaskFilter;
 
-						return filters;
+							return {
+								id: savedFilter.id,
+								name: savedFilter.name,
+								workspaceId: savedFilter.workspaceId,
+								filter: {
+									logic: parsedFilter.logic,
+									conditions: parsedFilter.conditions.map((condition) => ({
+										field: condition.field,
+										value: condition.value,
+										operator: condition.operator,
+									})),
+								},
+							};
+						});
+						set({
+							workspaceFilters: taskFilters,
+						});
+						return taskFilters;
 					} catch (error) {
 						console.error("Error in getWorkspaceFilters:", error);
 						return [];

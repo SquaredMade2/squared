@@ -1,9 +1,21 @@
 import { createStore } from "zustand/vanilla";
-import type { ViewsStore, ViewsState } from "./interfaces";
+import type {
+	ViewsStore,
+	ViewsState,
+	FilterResponse,
+	SavedFilter,
+	TaskFilter,
+} from "./interfaces";
 import { persist } from "zustand/middleware";
 import { checkCondition } from "./helpers";
+import type { SavedFilter as SavedFilterType } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
+import axios from "axios";
 export * from "./interfaces";
 export * from "./store";
+
+const apiString = (path: string) =>
+	`${process.env.NEXT_PUBLIC_SERVERZ}/api/filter/${path}`;
 
 export const createViewsStore = (
 	initState: ViewsState = {
@@ -51,8 +63,100 @@ export const createViewsStore = (
 								);
 					});
 				},
-				getCurrentFilter: () => {
-					return initState.currentFilter;
+				saveFilter: async (filter: SavedFilter): Promise<FilterResponse> => {
+					try {
+						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
+							await axios.post(apiString("create"), filter);
+						const { data: filters } = response;
+
+						if (!filter) {
+							return {
+								filter: null,
+								message: "Failed to save filter",
+								variant: "destructive",
+							};
+						}
+						const parsedFilter = filter.filter as TaskFilter;
+
+						const newFilter: SavedFilter = {
+							id: filter.id,
+							name: filter.name,
+							workspaceId: filter.workspaceId,
+							filter: {
+								logic: parsedFilter.logic,
+								conditions: parsedFilter.conditions.map((condition) => ({
+									field: condition.field,
+									value: condition.value,
+									operator: condition.operator,
+								})),
+							},
+						};
+						set({ currentFilter: newFilter.filter });
+
+						return {
+							filter: newFilter,
+							message: response.message,
+							variant: response.variant,
+						};
+					} catch (error) {
+						return {
+							filter: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
+				updateSavedFilter: async (
+					filterId: string,
+					filter: Partial<SavedFilter>,
+				): Promise<FilterResponse> => {
+					try {
+						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
+							await axios.put(apiString(filterId), filter);
+						const { data: filters } = response;
+
+						if (!filters) {
+							return {
+								filter: null,
+								message: "Failed to update filter",
+								variant: "destructive",
+							};
+						}
+						const parsedFilter = filter.filter as TaskFilter;
+
+						const newFilter: SavedFilter = {
+							id: filters.id,
+							name: filters.name,
+							workspaceId: filters.workspaceId,
+							filter: {
+								logic: parsedFilter.logic,
+								conditions: parsedFilter.conditions.map((condition) => ({
+									field: condition.field,
+									value: condition.value,
+									operator: condition.operator,
+								})),
+							},
+						};
+						set({ currentFilter: newFilter.filter });
+
+						return {
+							filter: newFilter,
+							message: response.message,
+							variant: response.variant,
+						};
+					} catch (error) {
+						return {
+							filter: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
+				deleteSavedFilter: async (filterId) => {
+					const response = await axios.delete(apiString(filterId));
+					if (response.status === 200) {
+						set({ currentFilter: null });
+					}
 				},
 				setView: (view) => {
 					set({ view });

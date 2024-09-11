@@ -18,7 +18,7 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { SavedFilter, Status } from "@repo/db";
 
 export default function Home() {
-	const { view, currentFilter, addFilter, filterTasks } = useViewsStore(
+	const { view, currentFilter, filterTasks, setCurrentFilter } = useViewsStore(
 		(state) => state,
 	);
 	const { user } = useAuthStore((state) => state);
@@ -40,20 +40,11 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
 	const [tasks, setTasks] = useState(initialTasks);
-	const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
 
 	const params = useParams();
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
-
-	const applyFilters = () => {
-		if (currentFilter) {
-			setTasks(filterTasks(initialTasks, currentFilter)); // Directly update tasks with filtered result
-		} else {
-			setTasks(initialTasks); // Reset to initial tasks if no filter
-		}
-	};
 
 	// Combining loading logic in a single useEffect
 	useEffect(() => {
@@ -79,6 +70,11 @@ export default function Home() {
 					if (team) {
 						const tasks = await getAllTasks(team.id);
 						setTasks(tasks);
+						if (currentFilter) {
+							setTasks(filterTasks(tasks, currentFilter));
+						} else {
+							setTasks(tasks);
+						}
 					}
 				}
 			}
@@ -111,11 +107,7 @@ export default function Home() {
 	};
 
 	useEffect(() => {
-		const loadFilters = async () => {
-			const filters =
-				currentWorkspace && (await getWorkspaceFilters(currentWorkspace.id));
-			setSavedFilters(filters ?? []);
-		};
+		const loadFilters = async () => {};
 		loadFilters();
 	}, [currentWorkspace]);
 
