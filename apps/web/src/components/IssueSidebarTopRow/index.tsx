@@ -4,16 +4,20 @@ import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
 import CopyTaskUrl from "../CopyTaskUrl";
 import CopyTaskId from "../CopyTaskId";
 import CopyGitBranchName from "../CopyGitBranchName";
+import { useTaskStore, useTeamStore } from "@/storeZ";
 
 const IssueSidebarTopRow = () => {
-	const task = useAppSelector((state) => state.singleTask.data);
+	// const task = useAppSelector((state) => state.singleTask.data);
+	const currentTask = useTaskStore((state) => state.currentTask);
 	const [isUrlClicked, setIsUrlClicked] = useState(false);
 	const [isIdClicked, setIsIdClicked] = useState(false);
 	const [isBranchClicked, setIsBranchClicked] = useState(false);
-	const identifier = task?.identifier;
-	const title = task !== undefined ? task.title : "";
-	const { currentTeam } = useAppSelector((state) => state.taskData);
-	const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(title)}`;
+
+	const identifier = currentTask?.identifier ?? "";
+	const title = currentTask?.title ?? "";
+
+	const currentTeam = useTeamStore((state) => state.currentTeam);
+	const TaskUrl = `/${currentTeam?.name ?? ""}/task/${currentTask?.identifier ?? ""}/${formatUrl(title)}`;
 	const gitBranchName = `
 			${replaceSpacesWithDashes(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
@@ -29,7 +33,7 @@ const IssueSidebarTopRow = () => {
 
 	const copyIssueId = async (): Promise<void> => {
 		await navigator.clipboard.writeText(
-			`${replaceSpacesWithDashes(title)}-${task?.identifier}`,
+			`${replaceSpacesWithDashes(title)}-${currentTask?.identifier}`,
 		);
 		setIsIdClicked(true);
 		setTimeout(() => {

@@ -96,7 +96,7 @@ const TaskCard = ({
 
 	const navigateToTask = (task: Task) => {
 		router.push(
-			`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`,
+			`/${currentTeam?.name}/task/${task.identifier}/${formatUrl(task.title)}`,
 		);
 	};
 

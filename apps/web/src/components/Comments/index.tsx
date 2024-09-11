@@ -54,7 +54,7 @@ const CommentForm = (): React.ReactElement => {
 	// });
 
 	useEffect(() => {
-		dispatch(getTaskComments(taskId as string));
+		// dispatch(getTaskComments(taskId as string));
 		if (currentRepo) {
 			dispatch(getCommitsByRepo({ repoName: currentRepo, owner: currentRepo }));
 		}
