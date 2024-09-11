@@ -3,8 +3,7 @@ import { useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
-import { Status } from "@repo/db";
-import type { Task } from "@/storeZ";
+import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
 import { useViewsStore } from "@/storeZ";
 

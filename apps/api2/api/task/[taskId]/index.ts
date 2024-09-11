@@ -8,21 +8,11 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (
-			res,
-			{ taskId },
-		): Promise<APIResponse<Task & { labels: Label[] }>> => {
+		GET: async (res, { taskId }): Promise<APIResponse<Task>> => {
 			try {
 				// Find the task by its ID
 				const task = await prisma.task.findUnique({
 					where: { id: taskId },
-					include: {
-						TaskLabels: {
-							include: {
-								Label: true,
-							},
-						},
-					},
 				});
 
 				if (!task) {
@@ -34,12 +24,9 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				// Map labels to be returned
-				const labels = task.TaskLabels.map((taskLabel) => taskLabel.Label);
-
 				// Return the found task with labels
 				return {
-					data: { ...task, labels },
+					data: task,
 					variant: "default",
 				};
 			} catch (error) {
@@ -52,34 +39,11 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		PUT: async (
-			res,
-			{ taskId },
-			body,
-		): Promise<APIResponse<Task & { labels: Label[] }>> => {
+		PUT: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
-				const taskData = {
-					...body,
-					TaskLabels: body.labels
-						? {
-								deleteMany: {}, // Remove existing labels
-								create: body.labels.map((labelId: string) => ({
-									label: { connect: { id: labelId } },
-								})),
-							}
-						: undefined,
-				};
-
 				const task = await prisma.task.update({
 					where: { id: taskId },
-					data: taskData,
-					include: {
-						TaskLabels: {
-							include: {
-								Label: true,
-							},
-						},
-					},
+					data: body,
 				});
 
 				if (!task) {
@@ -91,12 +55,9 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				// Map labels to be returned
-				const labels = task.TaskLabels.map((taskLabel) => taskLabel.Label);
-
 				// Return the updated task with labels
 				return {
-					data: { ...task, labels },
+					data: task,
 					variant: "default",
 				};
 			} catch (error) {
@@ -109,11 +70,7 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
-		POST: async (
-			res,
-			{ taskId },
-			body,
-		): Promise<APIResponse<Task & { labels: Label[] }>> => {
+		POST: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
 				const existingTask = await prisma.task.findUnique({
 					where: { id: taskId },
@@ -128,10 +85,10 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				const { id, labels, teamId, ...taskData } = body;
+				const { id, ...taskData } = body;
 
 				const team = await prisma.team.findUnique({
-					where: { id: teamId },
+					where: { id: body.teamId },
 					include: { Workspace: true },
 				});
 
@@ -158,19 +115,6 @@ export function createRoute(): Route<Params> {
 					data: {
 						...taskData,
 						identifier,
-						teamId,
-						TaskLabels: {
-							create: labels.map((label: Label) => ({
-								label: { connect: { id: label.id } },
-							})),
-						},
-					},
-					include: {
-						TaskLabels: {
-							include: {
-								Label: true,
-							},
-						},
 					},
 				});
 
@@ -183,14 +127,9 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				const newLabels = newTask.TaskLabels.map(
-					(taskLabel) => taskLabel.Label,
-				);
-
 				// Return the new task
-				const { TaskLabels, ...task } = newTask;
 				return {
-					data: { ...task, labels: newLabels },
+					data: newTask,
 					variant: "default",
 				};
 			} catch (error) {

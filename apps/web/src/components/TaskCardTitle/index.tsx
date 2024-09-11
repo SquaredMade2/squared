@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type React from "react";
 import { formatDate } from "date-fns/format";
 import TaskCardPriority from "@/components/TaskCardPriority";
@@ -9,8 +9,13 @@ import { AssigneeDropdown } from "@/components/AssigneeDropdown";
 import TaskCardLabels from "@/components/TaskCardLabels";
 import { UserSearch } from "lucide-react";
 import type { TaskCardTitleProps } from "./TaskCardTitle.interfaces";
-import { useTaskStore, useTeamStore, useViewsStore } from "@/storeZ";
-import type { User } from "@repo/db";
+import {
+	useTaskStore,
+	useTeamStore,
+	useViewsStore,
+	useWorkspaceStore,
+} from "@/storeZ";
+import type { Label, User } from "@repo/db";
 
 const TaskCardTitle = ({
 	taskTitle,
@@ -18,6 +23,7 @@ const TaskCardTitle = ({
 	isShown,
 	highlightText,
 	location,
+	labels,
 }: TaskCardTitleProps) => {
 	const [view, showDateTime, showLabels] = useViewsStore((state) => [
 		state.view,
@@ -69,7 +75,7 @@ const TaskCardTitle = ({
 				</span>
 			</div>
 			<div className="flex col-span-4 items-center lg:pr-5 justify-end">
-				{showLabels && <TaskCardLabels task={task} view="list" />}
+				{showLabels && <TaskCardLabels labels={labels} view="list" />}
 				{showDateTime && (
 					<div className="text-muted-foreground md:flex xs:hidden sm:hidden mr-2 mdsm:mr-3">
 						{task.dueDate
