@@ -66,6 +66,7 @@ export function createRoute(): Route<Params> {
 						`${workspace.url}/join`,
 						workspace.id,
 						workspace.name ?? "Squared Workspace",
+						"invite",
 					);
 				}
 

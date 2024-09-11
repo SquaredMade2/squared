@@ -31,9 +31,10 @@ export const sendMail = async (
 	confirmationRouteOption: string,
 	workspace?: string,
 	workspaceName?: string,
+	type: "verify" | "invite" = "verify"
 ) => {
 	try {
-		const url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
+		const url = type === "verify" ?  `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}` : `${NEXT_PUBLIC_CONFIRM_URL}/login?token=${emailToken}`;
 		let subject = "Confirm Email!";
 		let htmlContent: string;
 
