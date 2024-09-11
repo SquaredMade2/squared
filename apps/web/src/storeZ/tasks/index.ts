@@ -3,7 +3,6 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
 import type { TaskState, TaskStore, TaskResponse, Task } from "./interfaces";
-import type { Task as TaskType, Label } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
@@ -21,9 +20,10 @@ export const createTaskStore = (
 				addTask: async (task: Partial<Task>): Promise<TaskResponse> => {
 					try {
 						const taskId = uuidv4();
+						const { tasks } = get();
 						const response: { data: ApiReturnType<Task> } = await axios.post(
 							apiString(taskId),
-							task,
+							{ ...task, displayOrder: tasks.length },
 						);
 						const { data: newTask, message, variant } = response.data;
 
@@ -31,7 +31,6 @@ export const createTaskStore = (
 							return { task: null, message, variant };
 						}
 
-						const { tasks } = get();
 						set({ tasks: [...tasks, newTask] });
 
 						return { task: newTask, message, variant };
@@ -92,8 +91,20 @@ export const createTaskStore = (
 						console.error("Error in deleteTask:", error);
 					}
 				},
-				setTaskList: (tasks: Task[]): void => {
-					set({ tasks });
+				setTaskList: async (tasks: Task[]): Promise<void> => {
+					const sortedTasks = tasks.sort(
+						(a, b) => a.displayOrder - b.displayOrder,
+					);
+					set({ tasks: sortedTasks });
+					try {
+						const response: { data: ApiReturnType<Task> } = await axios.put(
+							`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${tasks[0].teamId}/task`,
+							sortedTasks,
+						);
+					} catch (error) {
+						console.error("Error in setTaskList:", error);
+						set({ tasks });
+					}
 				},
 				getTask: async (taskId: string): Promise<TaskResponse> => {
 					const { tasks } = get();

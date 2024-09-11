@@ -51,6 +51,7 @@ const initialState: TaskDataState = {
 		assigneeId: "",
 		dateCreated: new Date(),
 		authorId: "",
+		displayOrder: 0,
 	},
 	loadingState: "",
 	workspaces: [],

@@ -20,7 +20,7 @@ export type TaskActions = {
 	updateTask: (taskId: string, task: Partial<Task>) => Promise<TaskResponse>;
 	setCurrentTask: (task: Task) => void;
 	deleteTask: (taskId: string) => Promise<void>;
-	setTaskList: (tasks: Task[]) => void;
+	setTaskList: (tasks: Task[]) => Promise<void>;
 	getTask: (taskId: string) => Promise<TaskResponse>;
 	getAllTasks: (teamId: string) => Promise<Task[]>;
 };

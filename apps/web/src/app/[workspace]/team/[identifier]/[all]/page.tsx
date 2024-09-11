@@ -21,7 +21,7 @@ import type { Status } from "@repo/db";
 export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const { tasks, getAllTasks, setTaskList } = useTaskStore((state) => state);
 	const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
 
 	const params = useParams();
@@ -93,10 +93,12 @@ export default function Home() {
 	const handleDragEnd: OnDragEndResponder = async (result) => {
 		const { destination, source, draggableId } = result;
 
-		if (!destination || destination.droppableId === source.droppableId) {
+		// If no destination or task was dropped in the same position, do nothing
+		if (!destination) {
 			return;
 		}
 
+		// Find the dragged task
 		const draggedTaskFound = filteredTasks.find(
 			(task) => task && task.id === draggableId,
 		);
@@ -105,20 +107,83 @@ export default function Home() {
 			return;
 		}
 
-		const updatedTask = {
-			...draggedTaskFound,
-			status: destination.droppableId as Status,
-		};
+		// If the task was dropped in the same column but reordered
+		if (destination.droppableId === source.droppableId) {
+			// Reorder tasks within the same column
+			const tasksInSameStatus = filteredTasks.filter(
+				(task) => task.status === source.droppableId,
+			);
 
-		// Update task list in the local state
-		const updatedTaskList = filteredTasks.map((task) =>
-			task.id === draggableId ? updatedTask : task,
+			const reorderedTasks = [...tasksInSameStatus];
+			const [movedTask] = reorderedTasks.splice(source.index, 1);
+			reorderedTasks.splice(destination.index, 0, movedTask);
+
+			// Update displayOrder based on new positions
+			const updatedReorderedTasks = reorderedTasks.map((task, index) => ({
+				...task,
+				displayOrder: index,
+			}));
+
+			// Update the task list in local state and backend
+			await setTaskList(
+				filteredTasks.map((task) =>
+					task.status === source.droppableId
+						? updatedReorderedTasks.find((t) => t.id === task.id) || task
+						: task,
+				),
+			);
+
+			return;
+		}
+
+		// If the task was moved to a different column (status)
+		const tasksInSourceStatus = filteredTasks.filter(
+			(task) => task.status === source.droppableId,
+		);
+		const tasksInDestinationStatus = filteredTasks.filter(
+			(task) => task.status === destination.droppableId,
 		);
 
-		setFilteredTasks(updatedTaskList);
+		// Remove task from source status and insert it into destination status
+		const updatedSourceTasks = [...tasksInSourceStatus];
+		updatedSourceTasks.splice(source.index, 1);
 
-		// Update task in the backend
-		await updateTask(updatedTask.id, { status: updatedTask.status });
+		const updatedDestinationTasks = [...tasksInDestinationStatus];
+		updatedDestinationTasks.splice(destination.index, 0, {
+			...draggedTaskFound,
+			status: destination.droppableId as Status,
+		});
+
+		// Update displayOrder for tasks in both columns
+		const updatedSourceReordered = updatedSourceTasks.map((task, index) => ({
+			...task,
+			displayOrder: index,
+		}));
+
+		const updatedDestinationReordered = updatedDestinationTasks.map(
+			(task, index) => ({
+				...task,
+				displayOrder: index,
+			}),
+		);
+
+		// Update the task list in local state and backend
+		await setTaskList(
+			filteredTasks.map((task) =>
+				task.id === draggableId
+					? {
+							...task,
+							status: destination.droppableId as Status,
+							displayOrder: destination.index,
+						}
+					: task.status === source.droppableId
+						? updatedSourceReordered.find((t) => t.id === task.id) || task
+						: task.status === destination.droppableId
+							? updatedDestinationReordered.find((t) => t.id === task.id) ||
+								task
+							: task,
+			),
+		);
 	};
 
 	// Apply filters whenever tasks or currentFilter change

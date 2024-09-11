@@ -105,6 +105,7 @@ const NewIssueModal = () => {
 				assigneeName: "",
 				teamId: currentTeam.id,
 				id: "",
+				displayOrder: tasks.length + 1,
 			};
 			const {
 				task: taskCreatedResponse,

@@ -165,6 +165,7 @@ model Task {
   dateCreated    DateTime  @default(now())
   assigneeId     String?
   assigneeName   String?
+  displayOrder   Int       @default(0)
 
   status   Status        @default(todo)
   priority Priority      @default(noPriority)
