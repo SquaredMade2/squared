@@ -16,22 +16,35 @@ import {
 	useWorkspaceStore,
 } from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status } from "@repo/db";
+import type { SavedFilter, Status } from "@repo/db";
+import type { FilterCondition } from "@/storeZ/views";
 
 export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const {
+		tasks: initialTasks,
+		getAllTasks,
+		updateTask,
+	} = useTaskStore((state) => state);
+	const [tasks, setTasks] = useState(initialTasks);
 	const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+	const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
 
 	const params = useParams();
 
 	// Using Zustand hooks to subscribe to changes
-	const { view, currentFilter, filterTasks } = useViewsStore((state) => state);
+	const { view, currentFilter, addFilter, filterTasks } = useViewsStore(
+		(state) => state,
+	);
 	const { user } = useAuthStore((state) => state);
 
-	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const {
+		currentWorkspace,
+		getAllWorkspaces,
+		setCurrentWorkspace,
+		getWorkspaceFilters,
+	} = useWorkspaceStore((state) => state);
 
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
@@ -41,6 +54,24 @@ export default function Home() {
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
+
+	const applyFilters = () => {
+		if (currentFilter) {
+			const filteredTasks = filterTasks(tasks, currentFilter);
+			setTasks(filteredTasks);
+		} else {
+			setTasks(initialTasks);
+		}
+	};
+
+	const handleFilterChange = (
+		field: keyof Task,
+		value: string,
+		operator: FilterCondition["operator"] = "contains",
+	) => {
+		addFilter({ field, value, operator });
+		applyFilters();
+	};
 
 	// Combining loading logic in a single useEffect
 	useEffect(() => {
@@ -76,19 +107,7 @@ export default function Home() {
 		};
 
 		initiateStore();
-	}, [
-		currentWorkspace,
-		user,
-		getAllWorkspaces,
-		setCurrentWorkspace,
-		workspaceUrl,
-		currentTeam,
-		getAllTeams,
-		teamIdentifier,
-		getAllUsers,
-		setCurrentTeam,
-		getAllTasks,
-	]);
+	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
 
 	const handleDragEnd: OnDragEndResponder = async (result) => {
 		const { destination, source, draggableId } = result;
@@ -123,12 +142,13 @@ export default function Home() {
 
 	// Apply filters whenever tasks or currentFilter change
 	useEffect(() => {
-		if (currentFilter) {
-			setFilteredTasks(filterTasks(tasks, currentFilter));
-		} else {
-			setFilteredTasks(tasks);
-		}
-	}, [tasks, currentFilter, filterTasks]);
+		const loadSavedFilters = async () => {
+			const filters =
+				currentWorkspace && (await getWorkspaceFilters(currentWorkspace.id));
+			setSavedFilters(filters ?? []);
+		};
+		loadSavedFilters();
+	}, []);
 
 	if (loading) {
 		return (
