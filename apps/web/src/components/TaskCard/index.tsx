@@ -45,7 +45,6 @@ const TaskCard = ({
 
 	const { currentWorkspace, getWorkspaceLabels, workspaceLabels } =
 		useWorkspaceStore((state) => state);
-
 	useEffect(() => {
 		const fetchWorkspaceLabels = async () => {
 			if (!workspaceLabels && currentWorkspace) {
@@ -139,6 +138,7 @@ const TaskCard = ({
 		const taskLabels = workspaceLabels?.filter((label) =>
 			task.labels.includes(label.id),
 		);
+
 		return (
 			<Draggable draggableId={task.id} index={index} key={task.id}>
 				{(provided) => (
@@ -185,6 +185,7 @@ const TaskCard = ({
 													location={location}
 													highlightText={highlightText}
 													isShown={showPriority}
+													labels={taskLabels}
 												/>
 												{showDateTime && (
 													<TaskCardDate
@@ -242,6 +243,7 @@ const TaskCard = ({
 													taskTitle={task.title}
 													location={location}
 													highlightText={highlightText}
+													labels={taskLabels}
 												/>
 											</div>
 										</div>

@@ -23,6 +23,7 @@ const TaskCardTitle = ({
 	isShown,
 	highlightText,
 	location,
+	labels,
 }: TaskCardTitleProps) => {
 	const [view, showDateTime, showLabels] = useViewsStore((state) => [
 		state.view,
@@ -34,20 +35,6 @@ const TaskCardTitle = ({
 		state.updateTask,
 	]);
 	const currentTeam = useTeamStore((state) => state.currentTeam);
-	const { workspaceLabels, getWorkspaceLabels, currentWorkspace } =
-		useWorkspaceStore((state) => state);
-	const [taskLabels, setTaskLabels] = useState<Label[]>([]);
-	useEffect(() => {
-		const fetchWorkspaceLabels = async () => {
-			if (!workspaceLabels && currentWorkspace) {
-				const workLabels = await getWorkspaceLabels(currentWorkspace.id);
-				setTaskLabels(
-					workLabels.filter((label) => task.labels.includes(label.id)),
-				);
-			}
-		};
-		fetchWorkspaceLabels();
-	}, [currentWorkspace]);
 
 	const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
 
@@ -88,7 +75,7 @@ const TaskCardTitle = ({
 				</span>
 			</div>
 			<div className="flex col-span-4 items-center lg:pr-5 justify-end">
-				{showLabels && <TaskCardLabels labels={taskLabels} view="list" />}
+				{showLabels && <TaskCardLabels labels={labels} view="list" />}
 				{showDateTime && (
 					<div className="text-muted-foreground md:flex xs:hidden sm:hidden mr-2 mdsm:mr-3">
 						{task.dueDate
