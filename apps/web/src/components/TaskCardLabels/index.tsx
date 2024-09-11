@@ -11,13 +11,17 @@ import { DropdownMenuContent } from "@repo/ui/dropdown-menu";
 
 export default function TaskCardLabels({ labels, view }: TaskCardLabelsProps) {
 	const isGridView = view === "grid";
-	const maxLabels = isGridView ? labels.length : 4;
-	const maxLabelsMobile = isGridView ? labels.length : 2;
+	const maxLabels = isGridView ? 5 : 4;
+	const maxLabelsMobile = isGridView ? 5 : 2;
 
 	const visibleLabels = labels.slice(0, maxLabels);
 	const visibleLabelsMobile = labels.slice(0, maxLabelsMobile);
 	const hasMoreLabels = labels.length > maxLabels;
 	const hasMoreLabelsMobile = labels.length > maxLabelsMobile;
+	const getMaxLabels = (isMobile: boolean) => {
+		if (isGridView) return 5;
+		return isMobile ? 2 : 4;
+	};
 
 	const renderLabels = (labelsToRender: typeof labels, isMobile: boolean) => (
 		<>
@@ -46,14 +50,12 @@ export default function TaskCardLabels({ labels, view }: TaskCardLabelsProps) {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent className="z-50 bg-popover border border-border">
-						{labels
-							.slice(isMobile ? maxLabelsMobile : maxLabels)
-							.map((label) => (
-								<DropdownMenuItem key={label.id}>
-									<LabelColor label={label} />
-									<span className="ml-1">{label.name}</span>
-								</DropdownMenuItem>
-							))}
+						{labels.slice(getMaxLabels(isMobile)).map((label) => (
+							<DropdownMenuItem key={label.id}>
+								<LabelColor label={label} />
+								<span className="ml-1">{label.name}</span>
+							</DropdownMenuItem>
+						))}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			)}
