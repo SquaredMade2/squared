@@ -1,5 +1,4 @@
-import type { Task } from "..";
-import type { Label } from "@repo/db";
+import type { Label, Task } from "@repo/db";
 import type { FilterCondition } from "./interfaces";
 
 export function checkCondition(
@@ -34,9 +33,7 @@ export function checkCondition(
 				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
 				condition.value.every((val) =>
-					(taskValue as Label[]).some(
-						(label) => label.name === val || label.id === val,
-					),
+					taskValue.some((label) => label === val || label === val),
 				)
 			);
 		case "arrayIncludesAny":
@@ -44,9 +41,7 @@ export function checkCondition(
 				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
 				condition.value.some((val) =>
-					(taskValue as Label[]).some(
-						(label) => label.name === val || label.id === val,
-					),
+					taskValue.some((label) => label === val || label === val),
 				)
 			);
 		default:

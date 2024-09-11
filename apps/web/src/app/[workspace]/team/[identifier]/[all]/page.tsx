@@ -7,7 +7,6 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import {
-	type Task,
 	useAuthStore,
 	useTaskStore,
 	useTeamStore,
@@ -17,7 +16,6 @@ import {
 } from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { SavedFilter, Status } from "@repo/db";
-import type { FilterCondition } from "@/storeZ/views";
 
 export default function Home() {
 	const { view, currentFilter, addFilter, filterTasks } = useViewsStore(

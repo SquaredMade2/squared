@@ -149,6 +149,7 @@ model Task {
   dateCreated    DateTime  @default(now())
   assigneeId     String?
   assigneeName   String?
+  labels         String[]
 
   status   Status        @default(todo)
   priority Priority      @default(noPriority)
@@ -156,9 +157,8 @@ model Task {
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author     User         @relation(fields: [authorId], references: [id])
-  Team       Team         @relation(fields: [teamId], references: [id])
-  TaskLabels TaskLabels[]
+  Author User @relation(fields: [authorId], references: [id])
+  Team   Team @relation(fields: [teamId], references: [id])
 }
 
 model Team {
@@ -202,18 +202,7 @@ model Label {
   color       String
   workspaceId String
 
-  Workspace  Workspace    @relation(fields: [workspaceId], references: [id])
-  TaskLabels TaskLabels[]
-}
-
-model TaskLabels {
-  taskId  String
-  labelId String
-
-  Task  Task  @relation(fields: [taskId], references: [id])
-  Label Label @relation(fields: [labelId], references: [id])
-
-  @@id([taskId, labelId])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id])
 }
 
 model SavedFilter {

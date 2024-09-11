@@ -1,4 +1,4 @@
-import type { Task } from "..";
+import type { Task } from "@repo/db";
 
 export type ModalState = {
 	showNewIssue: boolean;

@@ -91,9 +91,12 @@ export const createWorkspaceStore = (
 					}
 
 					try {
-						const { data: response }: { data: ApiReturnType<Workspace> } =
+						const {
+							data: response,
+						}: { data: ApiReturnType<Workspace & { Label: Label[] }> } =
 							await axios.get(apiString(workspaceId));
 						const { data: workspace, message, variant } = response;
+						set({ workspaceLabels: workspace?.Label });
 						if (!workspace) {
 							return {
 								workspace: null,
