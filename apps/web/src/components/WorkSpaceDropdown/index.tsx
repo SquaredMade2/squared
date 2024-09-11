@@ -12,17 +12,24 @@ import { Button } from "../ui/button";
 import { useAuthStore, useWorkspaceStore } from "@/storeZ";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
+import type { Workspace } from "@repo/db";
 const WorkSpaceDropDown = () => {
-	const { currentWorkspace, workspaces, getAllWorkspaces } = useWorkspaceStore(
-		(state) => state,
-	);
+	const {
+		currentWorkspace,
+		workspaces,
+		getAllWorkspaces,
+		setCurrentWorkspace,
+	} = useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const router = useRouter();
 
 	useEffect(() => {
 		user && getAllWorkspaces(user.id);
 	}, []);
-
+	const handleWorkspaceClick = (workspace: Workspace) => {
+		setCurrentWorkspace(workspace);
+		router.push(`/${workspace.url}`);
+	};
 	const workspaceSettings = (workspaceSettingsOption: string) => {
 		return `/settings/${workspaceSettingsOption}`;
 	};
@@ -55,7 +62,7 @@ const WorkSpaceDropDown = () => {
 				{workspaces.map((workspace, index) => (
 					<DropdownMenuItem
 						key={workspace.id}
-						onClick={() => router.push(`/${workspace.url}`)}
+						onClick={() => handleWorkspaceClick(workspace)}
 						className="cursor-pointer"
 					>
 						<WorkspaceInitials
