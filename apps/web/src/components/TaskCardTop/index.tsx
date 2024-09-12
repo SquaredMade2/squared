@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -13,30 +13,13 @@ import Link from "next/link";
 import { useTaskStore, useWorkspaceStore } from "@/storeZ";
 
 const TaskCardTop = () => {
-	const [currentTaskTitle, setCurrentTaskTitle] = useState("");
-	const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
-		null,
-	);
-
 	const currentTask = useTaskStore((state) => state.currentTask);
-	const workspaceZ = useWorkspaceStore((state) => state.currentWorkspace);
 	const allWorkspaces = useWorkspaceStore((state) => state.workspaces);
+	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 
 	const index: number = currentWorkspace
 		? allWorkspaces.findIndex((item) => item.id === currentWorkspace.id)
 		: -1;
-
-	useEffect(() => {
-		if (currentTask) {
-			setCurrentTaskTitle(currentTask.title);
-		}
-	}, [currentTask]);
-
-	useEffect(() => {
-		if (workspaceZ) {
-			setCurrentWorkspace(workspaceZ);
-		}
-	}, [workspaceZ]);
 
 	return (
 		<>
@@ -61,7 +44,7 @@ const TaskCardTop = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem className="truncate max-w-full">
-						{currentTaskTitle}
+						{currentTask?.title ?? ""}
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>

@@ -1,7 +1,5 @@
 import { useSelector } from "react-redux";
 import { useState, useContext, useEffect } from "react";
-import axios from "axios";
-import { getSingleTask } from "@/store/task/thunks";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
@@ -15,7 +13,6 @@ import { useToast } from "../ui/use-toast";
 import { useTaskStore } from "@/storeZ";
 
 const TaskPageDescription = () => {
-	const dispatch = useAppDispatch();
 	const { toast } = useToast();
 
 	const currentTask = useTaskStore((state) => state.currentTask);
@@ -51,9 +48,6 @@ const TaskPageDescription = () => {
 	const updateDescription = async () => {
 		if (taskId !== undefined) {
 			try {
-				// const updatedTaskDescription = await dispatch(
-				// 	getSingleTask(taskId),
-				// ).unwrap();
 				if (currentTask) {
 					const newTask = { ...currentTask };
 					newTask.description = updatedDescription;

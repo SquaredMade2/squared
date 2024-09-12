@@ -1,5 +1,4 @@
 import React from "react";
-import ProfileImage from "@/components/ProfileImage";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import { EventType } from "@/interfaces/event.interfaces";
@@ -7,6 +6,8 @@ import type { TaskEvent } from "@repo/db";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useActivityStore } from "@/storeZ";
 import type { ActivityType } from "@/storeZ/activities";
+import { Avatar } from "@/components/ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 const UpdatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
@@ -220,8 +221,7 @@ const UpdatedByInformation = () => {
 	const displayAuthorProfile = (authorName: string) => {
 		return (
 			<>
-				<ProfileImage profileName={authorName} location={"activityItem"} />
-				<p className="ml-2">{authorName}</p>
+				<Avatar title={getInitials("hi")} />
 			</>
 		);
 	};
@@ -231,19 +231,6 @@ const UpdatedByInformation = () => {
 			<ul className="list-none px-8">
 				{eventLogs?.map((log: ActivityType) => {
 					return (
-						// 	<li
-						// 	className="flex items-center text-foreground border-t border-border py-1 list-none"
-						// 	key={createdAt.toLocaleDateString()}
-						// >
-						// 		<div className="mr-4 text-muted-foreground">{`${displayDate(createdAt.toLocaleDateString())}`}</div>
-						// 		<div className="flex items-center mr-4">
-						// 			{/* {displayAuthorProfile(authorId)} */}
-						// 		</div>
-						// 		<div className="text-muted-foreground text-ellipses">
-						// 			{displayUpdate(log)}
-						// 		</div>
-						// 	</li>
-
 						<Table key={log.id}>
 							<TableBody>
 								{eventLogs?.map((log: ActivityType) => (

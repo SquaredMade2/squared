@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
 import CopyTaskUrl from "../CopyTaskUrl";
 import CopyTaskId from "../CopyTaskId";
@@ -7,7 +6,6 @@ import CopyGitBranchName from "../CopyGitBranchName";
 import { useTaskStore, useTeamStore } from "@/storeZ";
 
 const IssueSidebarTopRow = () => {
-	// const task = useAppSelector((state) => state.singleTask.data);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const [isUrlClicked, setIsUrlClicked] = useState(false);
 	const [isIdClicked, setIsIdClicked] = useState(false);
@@ -33,7 +31,7 @@ const IssueSidebarTopRow = () => {
 
 	const copyIssueId = async (): Promise<void> => {
 		await navigator.clipboard.writeText(
-			`${replaceSpacesWithDashes(title)}-${currentTask?.identifier}`,
+			`${replaceSpacesWithDashes(title)}-${identifier}`,
 		);
 		setIsIdClicked(true);
 		setTimeout(() => {

@@ -1,61 +1,60 @@
 "use client";
-import IssueSidebarContainer from "../IssueSidebarContainer";
-import TaskPageCenterContainer from "../TaskPageCenterContainer";
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
+import IssueSidebarContainer from "../IssueSidebarContainer";
+import TaskPageCenterContainer from "../TaskPageCenterContainer";
 import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { setGetSingleTaskError, removeTaskData } from "@/store/task";
-import { getSingleTask } from "@/store/task/thunks";
-import { getTaskComments, getTaskEventLog } from "@/store/events/actions";
 import { ActionType } from "@/store/events/events.actionTypes";
 import { getCommitsByRepo } from "@/store/taskData/thunks";
 import { LoadingTask } from "../LoadingTask";
 import { useToast } from "../ui/use-toast";
-import { formatUrl } from "@/utils/formatting";
-import { useTaskStore, useTeamStore } from "@/storeZ";
+import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/storeZ";
 import { setTaskList } from "@/store/taskData";
 
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const { tasks, currentTask, getAllTasks, setCurrentTask } = useTaskStore(
 		(state) => state,
 	);
-	const { currentTeam, getTeam, setCurrentTeam } = useTeamStore(
-		(state) => state,
+
+	const { currentTeam, teams, setCurrentTeam } = useTeamStore((state) => state);
+
+	const currentRepo = useWorkspaceStore(
+		(state) => state.currentWorkspace?.githubRepoInfoId,
 	);
 
 	const [render, setRender] = useState(false);
 	const [showSideNav, setShowSideNav] = useState(false);
-	const [task, setTask] = useState(currentTask);
-	const [loading, setLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
 	const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
 
-	const isLoading = useAppSelector((state) => state.singleTask.isLoading);
-	const currentRepo = useAppSelector(
-		(state) => state.taskData.currentWorkspace.githubRepoInfoId,
-	);
 	const navbarToggled = useAppSelector(
 		(state) => state.userSettings.showNavBar,
 	);
-	const taskList = useAppSelector((state) => state.taskData.taskList);
-	const taskPageId = useAppSelector((state) => state.taskData.taskPage.id);
+
 	const showBackdrop = showSideNav || navbarToggled;
 	const dispatch = useAppDispatch();
 	const { toast } = useToast();
 	const { taskIdentifier } = useParams();
+	const { teamIdentifier } = useParams();
+	console.log(teamIdentifier);
 
 	useEffect(() => {
-		setLoading(true);
+		setIsLoading(true);
 
 		const initializeTaskPage = async () => {
 			try {
 				if (!currentTeam) {
-					console.error("Current Team does not exist");
-					toast({
-						title: "Error getting current team",
-						description: "Current Team does not exist",
-						variant: "destructive",
-					});
-					setLoading(false);
+					const team = teams.find((t) => t.identifier === teamIdentifier);
+					if (team) {
+						setCurrentTeam(team);
+					} else {
+						toast({
+							title: "Error getting current team",
+							description: "Current Team does not exist",
+							variant: "destructive",
+						});
+					}
 				}
 				if (!currentTask || currentTask.identifier !== taskIdentifier) {
 					if (currentTeam) {
@@ -69,16 +68,14 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 				if (foundTask) {
 					setCurrentTask(foundTask);
 					setCurrentTaskId(foundTask.id);
-					setTask(foundTask);
-					setLoading(false);
+					setIsLoading(false);
 				} else {
-					console.error("404 Cannot find task from current team.");
 					toast({
 						title: "Error finding task",
 						description: "404 Cannot find task from current team.",
 						variant: "destructive",
 					});
-					setLoading(false);
+					setIsLoading(false);
 				}
 			} catch (err) {
 				if (err instanceof Error) {
@@ -96,25 +93,13 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const sideNav = useRef(null);
 	const svgRef = useRef(null);
 
-	const dataForDispatch = taskPageId || currentTaskId;
+	const dataForDispatch = currentTaskId;
 
 	const toggleNav = () => {
 		setShowSideNav(!showSideNav);
 	};
 
 	useEffect(() => {
-		// if (dataForDispatch) {
-		// 	try {
-		// 		dispatch(getTaskComments(dataForDispatch as string));
-		// 		dispatch(getSingleTask(dataForDispatch as string));
-		// 		dispatch(getTaskEventLog(dataForDispatch as string));
-		// 	} catch (error) {
-		// 		toast({
-		// 			title: "An unexpected error occured",
-		// 			variant: "destructive",
-		// 		});
-		// 	}
-		// }
 		return () => {
 			dispatch(setGetSingleTaskError(false));
 			dispatch(removeTaskData());
@@ -129,10 +114,10 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 		const fetchAsyncTask = async () => {
 			// loading state
 		};
-		if (task !== undefined && isLoading !== true) {
+		if (currentTask !== undefined && isLoading !== true) {
 			setRender(true);
 		}
-	}, [task]);
+	}, [currentTask]);
 
 	useEffect(() => {
 		if (currentRepo) {
@@ -163,8 +148,8 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 
 	return (
 		<>
-			{((!render && !task) || !task) && <LoadingTask />}
-			{render && task && (
+			{((!render && !currentTask) || !currentTask) && <LoadingTask />}
+			{render && currentTask && (
 				<>
 					<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
 						{showBackdrop && (
