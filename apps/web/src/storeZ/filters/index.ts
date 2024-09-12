@@ -81,11 +81,16 @@ export const createFilterStore = (
 					}
 
 					return tasks.filter((task) => {
-						return currentFilters.every((condition) =>
-							checkCondition(task, condition),
-						);
+						const matchesAll = currentFilters.every((condition) => {
+							const result = checkCondition(task, condition);
+
+							return result;
+						});
+
+						return matchesAll;
 					});
 				},
+
 				saveFilter: async (filter: SavedFilter): Promise<FilterResponse> => {
 					try {
 						const { data: response }: { data: ApiReturnType<SavedFilterType> } =

@@ -1,4 +1,4 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import type { FilterCondition } from "./interfaces";
 
 export function checkCondition(
@@ -35,12 +35,19 @@ export function checkCondition(
 				condition.value.every((val) => taskValue.includes(val))
 			);
 		case "arrayIncludesAny":
+			if (Array.isArray(taskValue)) {
+				return (
+					Array.isArray(condition.value) &&
+					condition.value.some((val) => taskValue.includes(val))
+				);
+			}
 			return (
-				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
-				condition.value.some((val) => taskValue.includes(val))
+				condition.value.includes(taskValue?.toLocaleString() ?? "")
 			);
+
 		default:
+			console.warn(`Unknown operator: ${condition.operator}`);
 			return false;
 	}
 }
