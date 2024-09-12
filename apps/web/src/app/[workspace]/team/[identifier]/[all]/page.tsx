@@ -20,7 +20,7 @@ import type { SavedFilter, Status } from "@repo/db";
 
 export default function Home() {
 	const { view } = useViewStore((state) => state);
-	const { currentFilter, filterTasks } = useFilterStore((state) => state);
+	const { currentFilters, filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
@@ -75,9 +75,11 @@ export default function Home() {
 
 		initiateStore();
 	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
-	console.log("currentFilter: ", currentFilter);
-	currentFilter &&
-		console.log("Filtered Tasks: ", filterTasks(initialTasks, currentFilter));
+	useEffect(() => {
+		console.log("currentFilter: ", currentFilters);
+		currentFilters &&
+			console.log("Filtered Tasks: ", filterTasks(initialTasks));
+	}, [currentFilters]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -140,7 +142,7 @@ export default function Home() {
 							activeSelected={activeSelected}
 							backlogSelected={backlogSelected}
 							handleDragEnd={handleDragEnd}
-							tasks={currentFilter ? filterTasks(tasks, currentFilter) : tasks}
+							tasks={filterTasks(tasks)}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</ScrollArea>

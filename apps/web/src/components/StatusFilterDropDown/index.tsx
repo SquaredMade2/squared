@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import type { StatusFilterDropDownProps } from "./StatusFilterDropDown.interfaces";
 import { Button } from "../ui/button";
-import type { FilterCondition } from "@/storeZ/filters";
 import { Status } from "@repo/db";
 
 const groupStatus = [
@@ -69,33 +68,31 @@ const StatusFilterDropDown = ({
 	setShowStatusFilterDropDown,
 }: StatusFilterDropDownProps) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
-
 	const { addFilter, removeFilter } = useFilterStore((state) => state);
 
 	const handleStatusChange = (status: Status, checked: boolean) => {
 		setSelectedStatuses((prev) =>
 			checked ? [...prev, status] : prev.filter((item) => item !== status),
 		);
-		console.log("selectedStatuses", selectedStatuses);
 	};
 
 	useEffect(() => {
-		// Create filter conditions for selected statuses
 		if (selectedStatuses.length > 0) {
-			for (const status of selectedStatuses) {
-				const taskFilter: FilterCondition = {
-					field: "status",
-					value: status,
-					operator: "equals",
-				};
-				addFilter(taskFilter);
-			}
+			console.log("StatusFilter: ", {
+				field: "status",
+				value: selectedStatuses,
+				operator: "arrayIncludesAny",
+			});
+			const newFilter = addFilter({
+				field: "status",
+				value: selectedStatuses,
+				operator: "arrayIncludesAny",
+			});
+			console.log("New Filter: ", newFilter);
 		} else {
-			removeFilter();
+			removeFilter("status");
 		}
-
-		setShowStatusFilterDropDown(false);
-	}, [selectedStatuses]);
+	}, [selectedStatuses, addFilter, removeFilter]);
 
 	return (
 		<DropdownMenu

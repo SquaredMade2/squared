@@ -4,7 +4,7 @@ import type {
 	FilterState,
 	FilterResponse,
 	SavedFilter,
-	TaskFilter,
+	FilterCondition,
 } from "./interfaces";
 import { persist } from "zustand/middleware";
 import { checkCondition } from "./helpers";
@@ -19,56 +19,71 @@ const apiString = (path: string) =>
 
 export const createFilterStore = (
 	initState: FilterState = {
-		currentFilter: null,
-		filters: [],
+		currentFilters: [],
 	},
 ) => {
 	return createStore<FilterStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				setCurrentFilter: (filter) => {
-					set({ currentFilter: filter });
+					set({ currentFilters: filter });
 				},
-				removeFilter: () => {
-					set({ currentFilter: null });
+				clearFilter: () => {
+					set({ currentFilters: [] });
 				},
-				addFilter: (filter) => {
-					set((state) => {
-						return {
-							currentFilter: state.currentFilter
+				addFilter: (filter: FilterCondition) => {
+					const state = get();
+					const currentFilters = state.currentFilters || [];
+
+					const existingConditionIndex = currentFilters.findIndex(
+						(condition) => condition.field === filter.field,
+					);
+
+					let updatedConditions: FilterCondition[];
+
+					if (existingConditionIndex !== -1) {
+						// Update existing condition
+						updatedConditions = currentFilters.map((condition, index) =>
+							index === existingConditionIndex
 								? {
-										logic: "AND",
-										conditions: [...state.currentFilter.conditions, filter],
+										...condition,
+										value: filter.value,
+										operator: filter.operator,
 									}
-								: {
-										logic: "AND",
-										conditions: [filter],
-									},
-						};
+								: condition,
+						);
+					} else {
+						// Add new condition
+						updatedConditions = [...currentFilters, filter];
+					}
+
+					set({ currentFilters: updatedConditions });
+
+					return updatedConditions;
+				},
+				removeFilter: (field: string) => {
+					const state = get();
+					const updatedConditions =
+						state.currentFilters.filter(
+							(condition) => condition.field !== field,
+						) || [];
+					set({
+						currentFilters: updatedConditions,
 					});
 				},
-				filterTasks: (tasks, filter) => {
+				filterTasks: (tasks) => {
+					const state = get();
+					const currentFilters = state.currentFilters;
+
+					if (!currentFilters || currentFilters.length === 0) {
+						return tasks;
+					}
+
 					return tasks.filter((task) => {
-						let match = filter.logic === "AND";
-
-						for (const condition of filter.conditions) {
-							if (filter.logic === "AND") {
-								// If any condition fails, return false (for AND logic)
-								if (!checkCondition(task, condition)) {
-									match = false;
-									break;
-								}
-							} else if (filter.logic === "OR") {
-								// If any condition passes, return true (for OR logic)
-								if (checkCondition(task, condition)) {
-									match = true;
-									break;
-								}
-							}
-						}
-
-						return match;
+						return currentFilters.every((condition) =>
+							checkCondition(task, condition),
+						);
 					});
 				},
 				saveFilter: async (filter: SavedFilter): Promise<FilterResponse> => {
@@ -84,25 +99,22 @@ export const createFilterStore = (
 								variant: "destructive",
 							};
 						}
-						const parsedFilter = filter.filter as TaskFilter;
+						const parsedFilter = filter.filter;
 
 						const newFilter: SavedFilter = {
 							id: filter.id,
 							name: filter.name,
 							workspaceId: filter.workspaceId,
-							filter: {
-								logic: parsedFilter.logic,
-								conditions: parsedFilter.conditions.map((condition) => ({
-									field: condition.field,
-									value: condition.value,
-									operator: condition.operator,
-								})),
-							},
+							filter: parsedFilter.map((condition) => ({
+								field: condition.field,
+								value: condition.value,
+								operator: condition.operator,
+							})),
 						};
-						set({ currentFilter: newFilter.filter });
+						set({ currentFilters: newFilter.filter });
 
 						return {
-							filter: newFilter,
+							filter: newFilter.filter,
 							message: response.message,
 							variant: response.variant,
 						};
@@ -130,25 +142,21 @@ export const createFilterStore = (
 								variant: "destructive",
 							};
 						}
-						const parsedFilter = filter.filter as TaskFilter;
-
+						const parsedFilter = filters.filter as FilterCondition[];
 						const newFilter: SavedFilter = {
 							id: filters.id,
 							name: filters.name,
 							workspaceId: filters.workspaceId,
-							filter: {
-								logic: parsedFilter.logic,
-								conditions: parsedFilter.conditions.map((condition) => ({
-									field: condition.field,
-									value: condition.value,
-									operator: condition.operator,
-								})),
-							},
+							filter: parsedFilter.map((condition) => ({
+								field: condition.field,
+								value: condition.value,
+								operator: condition.operator,
+							})),
 						};
-						set({ currentFilter: newFilter.filter });
+						set({ currentFilters: newFilter.filter });
 
 						return {
-							filter: newFilter,
+							filter: newFilter.filter,
 							message: response.message,
 							variant: response.variant,
 						};
@@ -163,7 +171,7 @@ export const createFilterStore = (
 				deleteSavedFilter: async (filterId) => {
 					const response = await axios.delete(apiString(filterId));
 					if (response.status === 200) {
-						set({ currentFilter: null });
+						set({ currentFilters: [] });
 					}
 				},
 			}),

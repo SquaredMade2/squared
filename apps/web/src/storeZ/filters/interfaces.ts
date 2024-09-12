@@ -15,40 +15,35 @@ export type FilterCondition = {
 		| "arrayIncludesAny"; // Add more operators as needed
 };
 
-export type TaskFilter = {
-	logic: "AND" | "OR";
-	conditions: FilterCondition[];
-};
-
 export type SavedFilter = {
 	id: string;
 	name: string;
 	workspaceId: string;
-	filter: TaskFilter;
+	filter: FilterCondition[];
 };
 
 export type FilterState = {
-	currentFilter: TaskFilter | null;
-	filters: SavedFilter[];
+	currentFilters: FilterCondition[];
 };
 
 export interface FilterResponse {
-	filter: SavedFilter | null;
+	filter: FilterCondition[] | null;
 	message?: string;
 	variant: "default" | "destructive";
 }
 
 export type FilterActions = {
-	setCurrentFilter: (filter: TaskFilter) => void;
+	setCurrentFilter: (filter: FilterCondition[]) => void;
 	addFilter: (filter: FilterCondition) => void;
-	removeFilter: () => void;
+	clearFilter: () => void;
+	removeFilter: (field: keyof Task) => void;
 	saveFilter: (filter: SavedFilter) => Promise<FilterResponse>;
 	updateSavedFilter: (
 		filterId: string,
 		filter: Partial<SavedFilter>,
 	) => Promise<FilterResponse>;
 	deleteSavedFilter: (filterId: string) => Promise<void>;
-	filterTasks: (tasks: Task[], filter: TaskFilter) => Task[];
+	filterTasks: (tasks: Task[]) => Task[];
 };
 
 export type FilterStore = FilterState & FilterActions;
