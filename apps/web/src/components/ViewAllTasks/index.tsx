@@ -5,7 +5,7 @@ import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
 import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
-import { useViewsStore } from "@/storeZ";
+import { useViewStore } from "@/storeZ";
 
 const ViewAllTasks = ({
 	handleDragEnd,
@@ -16,7 +16,7 @@ const ViewAllTasks = ({
 	const [showRenameModal, setShowRenameModal] = useState(false);
 	const [taskData, setTaskData] = useState<Task | null>(null);
 
-	const currentView = useViewsStore((state) => state.view);
+	const currentView = useViewStore((state) => state.view);
 
 	const titleArr: { value: Status; id: number }[] = [
 		{ value: Status.backlog, id: 1 },

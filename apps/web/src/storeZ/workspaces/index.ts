@@ -7,8 +7,14 @@ import type {
 	WorkspaceStore,
 	WorkspaceResponse,
 } from "./interfaces";
-import type { Label, User, Workspace } from "@repo/db";
+import type {
+	Label,
+	User,
+	Workspace,
+	SavedFilter as SavedFilterType,
+} from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
+import type { FilterCondition, SavedFilter } from "../filters";
 export * from "./interfaces";
 export * from "./store";
 
@@ -29,6 +35,7 @@ export const createWorkspaceStore = (
 		workspaces: [],
 		currentWorkspace: null,
 		workspaceLabels: [],
+		workspaceFilters: [],
 	},
 ) => {
 	return createStore<WorkspaceStore>()(
@@ -42,15 +49,16 @@ export const createWorkspaceStore = (
 					const workspaceId = uuidv4();
 
 					try {
-						const response: { data: ApiReturnType<Workspace> } =
-							await axios.post(apiString(workspaceId), {
-								workspace: {
-									id: workspaceId,
-									...WORKSPACE_TEMPLATE,
-									...workspace,
-								},
-								userId,
-							});
+						const response: {
+							data: ApiReturnType<Workspace & { SavedFilter: SavedFilter[] }>;
+						} = await axios.post(apiString(workspaceId), {
+							workspace: {
+								id: workspaceId,
+								...WORKSPACE_TEMPLATE,
+								...workspace,
+							},
+							userId,
+						});
 
 						const { message, variant, data: newWorkspace } = response.data;
 
@@ -62,6 +70,7 @@ export const createWorkspaceStore = (
 							...state,
 							workspaces: [...state.workspaces, newWorkspace],
 							currentWorkspace: newWorkspace,
+							workspaceFilters: [],
 						}));
 
 						return { workspace: newWorkspace, message, variant };
@@ -124,6 +133,42 @@ export const createWorkspaceStore = (
 						return labels;
 					} catch (error) {
 						console.error("Error in getWorkspaceLabels:", error);
+						return [];
+					}
+				},
+				getWorkspaceFilters: async (
+					workspaceId: string,
+				): Promise<SavedFilter[]> => {
+					try {
+						const {
+							data: response,
+						}: { data: ApiReturnType<SavedFilterType[]> } = await axios.get(
+							`${apiString(workspaceId)}/filter`,
+						);
+						const { data: filters } = response;
+						if (!filters) {
+							return [];
+						}
+						const taskFilters: SavedFilter[] = filters.map((savedFilter) => {
+							const parsedFilter = savedFilter.filter as FilterCondition[];
+
+							return {
+								id: savedFilter.id,
+								name: savedFilter.name,
+								workspaceId: savedFilter.workspaceId,
+								filter: parsedFilter.map((condition) => ({
+									field: condition.field,
+									value: condition.value,
+									operator: condition.operator,
+								})),
+							};
+						});
+						set({
+							workspaceFilters: taskFilters,
+						});
+						return taskFilters;
+					} catch (error) {
+						console.error("Error in getWorkspaceFilters:", error);
 						return [];
 					}
 				},

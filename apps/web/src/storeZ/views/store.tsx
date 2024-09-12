@@ -2,33 +2,33 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createViewsStore, type ViewsStore } from ".";
+import { createViewStore, type ViewStore } from ".";
 
-export type ViewsStoreApi = ReturnType<typeof createViewsStore>;
+export type ViewStoreApi = ReturnType<typeof createViewStore>;
 
-export const ViewsStoreContext = createContext<ViewsStoreApi | undefined>(
+export const ViewStoreContext = createContext<ViewStoreApi | undefined>(
 	undefined,
 );
 
-export const ViewsStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<ViewsStoreApi>();
+export const ViewStoreProvider = ({ children }: { children: ReactNode }) => {
+	const storeRef = useRef<ViewStoreApi>();
 
 	if (!storeRef.current) {
-		storeRef.current = createViewsStore();
+		storeRef.current = createViewStore();
 	}
 
 	return (
-		<ViewsStoreContext.Provider value={storeRef.current}>
+		<ViewStoreContext.Provider value={storeRef.current}>
 			{children}
-		</ViewsStoreContext.Provider>
+		</ViewStoreContext.Provider>
 	);
 };
 
-export const useViewsStore = <T,>(selector: (store: ViewsStore) => T): T => {
-	const context = useContext(ViewsStoreContext);
+export const useViewStore = <T,>(selector: (store: ViewStore) => T): T => {
+	const context = useContext(ViewStoreContext);
 
 	if (!context) {
-		throw new Error("useViewsStore must be used within ViewsStoreProvider");
+		throw new Error("useViewStore must be used within ViewStoreProvider");
 	}
 
 	return useStore(context, selector);

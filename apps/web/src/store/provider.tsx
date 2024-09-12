@@ -1,7 +1,6 @@
 "use client";
 
 import SocketProvider from "@/app/SocketProvider";
-import AuthProvider from "@/components/AuthProvider";
 import { store, persistor } from "@/store/index";
 import { SquaredStoreProvider } from "@/storeZ/provider";
 import { Provider } from "react-redux";
@@ -12,9 +11,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 		<Provider store={store}>
 			<SquaredStoreProvider>
 				<PersistGate loading={null} persistor={persistor}>
-					<AuthProvider>
-						<SocketProvider>{children}</SocketProvider>
-					</AuthProvider>
+					<SocketProvider>{children}</SocketProvider>
 				</PersistGate>
 			</SquaredStoreProvider>
 		</Provider>
