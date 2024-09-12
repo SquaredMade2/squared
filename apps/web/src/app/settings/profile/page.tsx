@@ -77,7 +77,7 @@ export default function Profile() {
 	if (!user) return null;
 
 	return (
-		<div className="w-full flex flex-col px-56 py-8 container gap-4">
+		<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">
 			<div className="flex flex-col gap-2 items-start">
 				<h1 className="text-2xl">Profile</h1>
 				<p className="text-xs text-muted-foreground">
@@ -85,14 +85,16 @@ export default function Profile() {
 				</p>
 			</div>
 			<Separator className="mb-8" />
-			<div className="max-w-2xl w-full">
+			<div className="w-full">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						<FormItem>
+						<FormItem className="flex items-center w-full lg:w-1/2 justify-between">
 							<FormLabel>Profile picture</FormLabel>
-							<Avatar>
+							<Avatar className="size-32">
 								<AvatarImage src={user.avatarUrl ?? undefined} />
-								<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+								<AvatarFallback className="text-3xl">
+									{getInitials(user.name)}
+								</AvatarFallback>
 							</Avatar>
 						</FormItem>
 						<FormItem>

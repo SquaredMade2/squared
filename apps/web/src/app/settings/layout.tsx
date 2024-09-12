@@ -16,7 +16,7 @@ export default function TeamLayout({
 		<div className="h-full w-full relative flex">
 			<SettingsTopNavBar />
 			<SettingsNavBar toggleNavbar={toggleNavbar} />
-			<main className="md:ml-64 mt-12">{children}</main>
+			<main className="md:ml-72 w-full mt-12">{children}</main>
 		</div>
 	);
 }
