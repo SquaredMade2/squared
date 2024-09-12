@@ -6,8 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
 import { useAuthStore, useNotificationStore, useTaskStore } from "@/storeZ";
-import type { Task } from "@/storeZ/tasks/interfaces";
-import { TaskResponse } from "@/storeZ/tasks";
+import type { Task } from "@repo/db";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,
@@ -24,10 +23,7 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 
-	const [newCurrentTask, setNewCurrentTask] = useState<Omit<
-		Task,
-		"labels"
-	> | null>(null);
+	const [newCurrentTask, setNewCurrentTask] = useState<Task | null>(null);
 
 	const { getAllNotifications, updateNotification } = useNotificationStore(
 		(state) => state,
@@ -52,13 +48,15 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	};
 
 	const handleClick = (
-		newCurrentTask: Omit<Task, "labels">,
+		newCurrentTask: Task | null,
 		notificationId: string,
 	): void => {
-		handleCurrentTaskChange();
-		setCurrentTask(newCurrentTask);
-		handleMarkRead(notificationId);
-		closeBackdrop();
+		if (newCurrentTask) {
+			handleCurrentTaskChange();
+			setCurrentTask(newCurrentTask);
+			handleMarkRead(notificationId);
+			closeBackdrop();
+		}
 	};
 	console.log(currentTask, newCurrentTask);
 	useEffect(() => {
