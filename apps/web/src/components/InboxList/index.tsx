@@ -48,12 +48,6 @@ const InboxList: React.FC<Props> = ({
 		}
 	}, [socket.id]);
 
-	useEffect(() => {
-		// return () => {
-		// 	dispatch(clearCurrentTaskId());
-		// }; //uncomment if you decide to flush inbox view when component unmounts, the current logic continues from where left off
-	}, []);
-
 	return (
 		<div
 			className={`$w-auto h-full flex absolute z-10 bg-background xl:static transition-all duration-300 ease-in-out
