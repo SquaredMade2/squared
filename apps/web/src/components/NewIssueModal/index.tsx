@@ -221,7 +221,7 @@ const NewIssueModal = () => {
 											<Textarea
 												{...field}
 												placeholder="Add Description"
-												className="text-lg"
+												className="text-lg resize-none"
 												rows={4}
 											/>
 										</FormControl>
@@ -231,10 +231,6 @@ const NewIssueModal = () => {
 						</div>
 						<Separator orientation="vertical" />
 						<div className="w-1/4 space-y-4">
-							<Button>TEST BTN</Button>
-							<Button>TEST BTN</Button>
-							<Button>TEST BTN</Button>
-							<Button>TEST BTN</Button>
 							<DialogFooter>
 								<Button
 									onClick={handleDiscard}
