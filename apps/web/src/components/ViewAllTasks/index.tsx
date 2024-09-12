@@ -14,7 +14,6 @@ const ViewAllTasks = ({
 	tasks,
 }: ViewAllTasksProps) => {
 	const [showRenameModal, setShowRenameModal] = useState(false);
-	const [taskData, setTaskData] = useState<Task | null>(null);
 
 	const currentView = useViewStore((state) => state.view);
 
@@ -56,7 +55,6 @@ const ViewAllTasks = ({
 						title={status}
 						tasks={tasksForStatus}
 						setShowRenameModal={setShowRenameModal}
-						setTaskData={setTaskData}
 					/>
 				</div>
 			);

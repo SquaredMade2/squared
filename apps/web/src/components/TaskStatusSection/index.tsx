@@ -8,8 +8,6 @@ import type { Status, Task } from "@repo/db";
 interface TaskStatusSectionProps {
 	isListView: boolean;
 	filteredTasks: Task[];
-	setShowRenameModal: (show: boolean) => void;
-	setTaskData: (task: Task) => void;
 	showTasks: boolean;
 	title: string;
 }
@@ -17,8 +15,6 @@ interface TaskStatusSectionProps {
 const TaskStatusSection: React.FC<TaskStatusSectionProps> = ({
 	isListView,
 	filteredTasks,
-	setShowRenameModal,
-	setTaskData,
 	showTasks,
 	title,
 }) => {
@@ -40,7 +36,6 @@ const TaskStatusSection: React.FC<TaskStatusSectionProps> = ({
 							key={task.id}
 							task={task}
 							index={index}
-							setTaskData={setTaskData}
 							location={location}
 							highlightText={highlightText}
 						/>

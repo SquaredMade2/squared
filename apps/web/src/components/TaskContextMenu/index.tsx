@@ -21,12 +21,7 @@ import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
 import { useModalStore, useTaskStore } from "@/storeZ";
 
-const TaskContextMenu: FC<TaskContextMenuProps> = ({
-	task,
-	// Keep below here for future
-	setIsCopied,
-	copyToClipboard,
-}) => {
+const TaskContextMenu: FC<TaskContextMenuProps> = ({ task }) => {
 	const { toast } = useToast();
 	const { deleteTask } = useTaskStore((state) => state);
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
@@ -86,9 +81,9 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 				Subscribe
 			</ContextMenuItem> */}
 			{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
-			<ContextMenuItem onClick={() => copyToClipboard(task.id)}>
+			{/* <ContextMenuItem onClick={() => copyToClipboard(task.id)}>
 				Copy Link
-			</ContextMenuItem>
+			</ContextMenuItem> */}
 
 			<ContextMenuItem onClick={copyBranchName}>
 				Copy Branch Name
