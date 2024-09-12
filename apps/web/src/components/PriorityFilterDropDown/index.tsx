@@ -76,7 +76,7 @@ const PriorityFilterDropDown = ({
 				addFilter(taskFilter);
 			}
 		} else {
-			removeFilter();
+			removeFilter("priority");
 		}
 		setShowPriorityFilterDropDown(false);
 	}, [selectedPriorities]);

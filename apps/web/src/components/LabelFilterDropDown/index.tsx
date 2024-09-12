@@ -44,7 +44,7 @@ const LabelFilterDropDown = ({
 				addFilter(filterCondition);
 			}
 		} else {
-			removeFilter();
+			removeFilter("labels");
 		}
 		setShowLabelFilterDropDown(false);
 	}, [selectedLabels]);

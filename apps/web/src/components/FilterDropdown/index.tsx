@@ -81,7 +81,9 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
-	const { currentFilter, removeFilter } = useFilterStore((state) => state);
+	const { currentFilters, removeFilter, clearFilter } = useFilterStore(
+		(state) => state,
+	);
 
 	const handleSelect = (option: FilterOption) => {
 		setFilterOption(option);
@@ -114,10 +116,9 @@ const FilterDropDown: React.FunctionComponent = () => {
 				<PopoverTrigger asChild>
 					<Button
 						onClick={
-							currentFilter?.conditions.length &&
-							currentFilter?.conditions?.length > 0
+							currentFilters?.length && currentFilters?.length > 0
 								? () => {
-										removeFilter();
+										clearFilter();
 									}
 								: () => {
 										setOpen(true);
@@ -128,15 +129,14 @@ const FilterDropDown: React.FunctionComponent = () => {
 						<div className="flex gap-2 items-center">
 							<Filter className="size-5" />
 							<p>
-								{currentFilter?.conditions.length &&
-								currentFilter?.conditions?.length > 0
+								{currentFilters.length && currentFilters.length > 0
 									? "Clear Filters x"
 									: "Filter"}
 							</p>
 						</div>
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-72 p-0">
+				<PopoverContent className="w-72 p-0 ml-32">
 					<Command>
 						<CommandInput placeholder="Search filters..." />
 						<CommandList>

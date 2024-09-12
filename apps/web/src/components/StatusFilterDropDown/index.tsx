@@ -88,7 +88,6 @@ const StatusFilterDropDown = ({
 				value: selectedStatuses,
 				operator: "arrayIncludesAny",
 			});
-			console.log("New Filter: ", newFilter);
 		} else {
 			removeFilter("status");
 		}
@@ -99,10 +98,8 @@ const StatusFilterDropDown = ({
 			open={showStatusFilterDropDown}
 			onOpenChange={setShowStatusFilterDropDown}
 		>
-			<DropdownMenuTrigger asChild>
-				<Button variant={"outline"}>Select Status</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-72 p-0">
+			<DropdownMenuTrigger />
+			<DropdownMenuContent className="w-72 p-0" sideOffset={20}>
 				<DropdownMenuLabel>Status</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				{groupStatus.map((item) => (
