@@ -40,7 +40,7 @@ export default function WorkspaceMembersPage() {
 	}, [workspaceId]);
 
 	return (
-		<div className="w-full flex flex-col px-56 py-8 container gap-4">
+		<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">
 			<div className="flex flex-col gap-2 items-start">
 				<h1 className="text-2xl">Members</h1>
 				<p className="text-xs text-muted-foreground">

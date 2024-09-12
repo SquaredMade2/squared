@@ -42,7 +42,7 @@ const SettingsNavBar = ({
 	};
 
 	return (
-		<div className="bg-card w-64 h-screen flex flex-col fixed left-0">
+		<div className="bg-card w-64 h-screen md:flex flex-col fixed left-0 hidden">
 			<ScrollArea className="flex-grow">
 				<div className="p-6 space-y-6">
 					<div className="flex items-center space-x-2">
