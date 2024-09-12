@@ -17,12 +17,18 @@ export function checkCondition(
 				taskValue.includes(condition.value)
 			);
 		case "greaterThan":
+			if (taskValue instanceof Date || typeof taskValue === "string") {
+				return new Date(taskValue) > new Date(condition.value as string);
+			}
 			return (
 				typeof taskValue === "number" &&
 				typeof condition.value === "number" &&
 				taskValue > condition.value
 			);
 		case "lessThan":
+			if (taskValue instanceof Date || typeof taskValue === "string") {
+				return new Date(taskValue) < new Date(condition.value as string);
+			}
 			return (
 				typeof taskValue === "number" &&
 				typeof condition.value === "number" &&

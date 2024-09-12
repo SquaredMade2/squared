@@ -75,6 +75,10 @@ export default function Home() {
 
 		initiateStore();
 	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
+	useEffect(() => {
+		console.log("currentFilters", currentFilters);
+		console.log("filteredTasks", filterTasks(tasks));
+	}, [currentFilters]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
