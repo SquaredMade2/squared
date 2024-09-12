@@ -1,15 +1,16 @@
 import React from "react";
-import DesignationsContainer from "@/components/DesignationsContainer";
+import TaskDesignationsContainer from "../TaskDesignationsContainer";
 import IssueSidebarTopRow from "../IssueSidebarTopRow";
+import type { Task } from "@repo/db";
 
-const IssueSidebarContainer = () => {
+const IssueSidebarContainer = ({currentTask}: {currentTask: Task | null}) => {
 	return (
 		<>
 			<div className="w-full">
 				<IssueSidebarTopRow />
 			</div>
 			<div className="flex flex-col min-h-[320px] w-[300px] text-foreground bg-popover rounded-lg mt-5">
-				<DesignationsContainer location={"issueSidebar"} />
+				<TaskDesignationsContainer currentTask={currentTask} />
 			</div>
 		</>
 	);
