@@ -3,10 +3,13 @@ import ProfileImage from "@/components/ProfileImage";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import { EventType } from "@/interfaces/event.interfaces";
-import type { TaskEvent, User } from "@repo/db";
+import type { TaskEvent } from "@repo/db";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useActivityStore } from "@/storeZ";
+import type { ActivityType } from "@/storeZ/activities";
 
 const UpdatedByInformation = () => {
-	const eventLogs = [] as TaskEvent[];
+	const eventLogs = useActivityStore((state) => state.events);
 
 	const findLabelAdded = (
 		originalLabels: string[],
@@ -214,32 +217,50 @@ const UpdatedByInformation = () => {
 		}
 	};
 
-	const displayAuthorProfile = (author: User) => {
+	const displayAuthorProfile = (authorName: string) => {
 		return (
 			<>
-				<ProfileImage profileName={author.name} location={"activityItem"} />
-				<p className="ml-2">{author.name}</p>
+				<ProfileImage profileName={authorName} location={"activityItem"} />
+				<p className="ml-2">{authorName}</p>
 			</>
 		);
 	};
+
 	return (
 		<div className="w-full">
 			<ul className="list-none px-8">
-				{eventLogs?.map((log: TaskEvent) => {
-					const { createdAt, authorId } = log;
+				{eventLogs?.map((log: ActivityType) => {
 					return (
-						<li
-							className="flex items-center text-foreground border-t border-border py-1 list-none"
-							key={createdAt.toLocaleDateString()}
-						>
-							<div className="mr-4 text-muted-foreground">{`${displayDate(createdAt.toLocaleDateString())}`}</div>
-							<div className="flex items-center mr-4">
-								{/* {displayAuthorProfile(authorId)} */}
-							</div>
-							<div className="text-muted-foreground text-ellipses">
-								{displayUpdate(log)}
-							</div>
-						</li>
+						// 	<li
+						// 	className="flex items-center text-foreground border-t border-border py-1 list-none"
+						// 	key={createdAt.toLocaleDateString()}
+						// >
+						// 		<div className="mr-4 text-muted-foreground">{`${displayDate(createdAt.toLocaleDateString())}`}</div>
+						// 		<div className="flex items-center mr-4">
+						// 			{/* {displayAuthorProfile(authorId)} */}
+						// 		</div>
+						// 		<div className="text-muted-foreground text-ellipses">
+						// 			{displayUpdate(log)}
+						// 		</div>
+						// 	</li>
+
+						<Table key={log.id}>
+							<TableBody>
+								{eventLogs?.map((log: ActivityType) => (
+									<TableRow key={log.createdAt.toLocaleDateString()}>
+										<TableCell>
+											{displayDate(log.createdAt.toLocaleDateString())}
+										</TableCell>
+										<TableCell>
+											{displayAuthorProfile(log.taskEvent?.authorName ?? "")}
+										</TableCell>
+										{log.taskEvent && (
+											<TableCell>{displayUpdate(log.taskEvent)}</TableCell>
+										)}
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
 					);
 				})}
 			</ul>
