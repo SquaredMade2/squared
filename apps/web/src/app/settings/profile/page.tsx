@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import ProfileImage from "@/components/ProfileImage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
