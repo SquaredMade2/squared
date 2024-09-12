@@ -9,8 +9,15 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
+import PriorityButton from "@/components/PriorityButton";
+import { StatusDropdownButton } from "@/components/StatusDropdownButton";
+import DateButton from "@/components/DateButton";
+import EffortEstimateButton from "@/components/EffortEstimateButton";
+import LabelDropdownButton from "../LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import DesignationsContainer from "@/components/DesignationsContainer";
+
+import { Separator } from "../ui/separator";
 import {
 	Form,
 	FormItem,
@@ -183,8 +190,11 @@ const NewIssueModal = () => {
 					</div>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(handleCreateIssue)}>
-						<div className="mb-6">
+					<form
+						onSubmit={form.handleSubmit(handleCreateIssue)}
+						className="flex space-x-4"
+					>
+						<div className="w-3/4 space-y-4">
 							<FormField
 								control={form.control}
 								name="title"
@@ -200,38 +210,44 @@ const NewIssueModal = () => {
 										</FormControl>
 									</FormItem>
 								)}
-							></FormField>
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-2xl">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="text-lg"
+												rows={4}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 						</div>
-						<FormField
-							control={form.control}
-							name="description"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className="text-2xl">Description</FormLabel>
-									<FormControl>
-										<Textarea
-											{...field}
-											placeholder="Add Description"
-											className="text-lg"
-											rows={4}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-						<DesignationsContainer location={"newIssue"} />
-						<DialogFooter>
-							<Button
-								onClick={handleDiscard}
-								className="hover:cursor-pointer bg-transparent"
-								variant="destructive"
-							>
-								Discard
-							</Button>
-							<Button type="submit" className="hover:cursor-pointer">
-								Create Issue
-							</Button>
-						</DialogFooter>
+						<Separator orientation="vertical" />
+						<div className="w-1/4 space-y-4">
+							<Button>TEST BTN</Button>
+							<Button>TEST BTN</Button>
+							<Button>TEST BTN</Button>
+							<Button>TEST BTN</Button>
+							<DialogFooter>
+								<Button
+									onClick={handleDiscard}
+									className="hover:cursor-pointer bg-transparent"
+									variant="destructive"
+								>
+									Discard
+								</Button>
+								<Button type="submit" className="hover:cursor-pointer">
+									Create Issue
+								</Button>
+							</DialogFooter>
+						</div>
 					</form>
 				</Form>
 			</DialogContent>

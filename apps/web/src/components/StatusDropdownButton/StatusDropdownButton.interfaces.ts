@@ -1,3 +1,3 @@
 export interface StatusDropdownButtonProps {
-	location: string;
+	location?: string;
 }
