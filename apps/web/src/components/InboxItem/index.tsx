@@ -1,17 +1,19 @@
 "use client";
 import { useEffect, useRef, useContext } from "react";
 import type { InboxItemProps } from "./InboxItem.interfaces";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { useRouter } from "next/navigation";
-import { setCurrentTaskId } from "@/store/currentTask";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { SocketContext } from "@/app/SocketProvider";
-import { getNotifications } from "@/store/notifications";
-import { useTheme } from "next-themes";
+import {
+	useAuthStore,
+	useNotificationStore,
+	useTaskStore,
+	useWorkspaceStore,
+} from "@/storeZ";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
-	id,
+	taskId,
 	date,
 	title,
 	read,
@@ -19,40 +21,32 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	closeBackdrop,
 }) => {
 	const route = useRouter();
-	const isoDateString = Date.parse(date);
+	const isoDateString = Date.parse(date.toString());
 	const toDayString = Date.now();
 	const timeSinceCreation = toDayString - isoDateString;
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
-	const dispatch = useAppDispatch();
-	const currentTaskId = useAppSelector(
-		(state) => state.currentTask.currentTaskId,
+
+	const { currentTask, setCurrentTask, tasks } = useTaskStore((state) => state);
+	const { getAllNotifications, updateNotification } = useNotificationStore(
+		(state) => state,
 	);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	if (!currentWorkspace) return null;
+	const { user } = useAuthStore((state) => state);
 	const socket = useContext(SocketContext);
-	const user = useAppSelector((state) => state.userSettings.user);
-	const isActive = currentTaskId === id;
+
+	const isActive = currentTask?.id === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
-	const { theme } = useTheme();
-	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
 
-	const inactiveRead =
-		"bg-popover text-muted-foreground border dark:border-none";
-
-	const active =
-		"border border-indigo-400 shadow shadow-indigo-400 bg-popover dark:bg-[#282E43] text-foreground";
-
-	const hover = isActive
-		? ""
-		: theme === "dark"
-			? "hover:text-foreground hover:bg-[#282E43]"
-			: "hover:border hover:border-gray-500 hover:shadow hover:text-foreground";
-
-	const handleMarkRead = (id: string) => {
-		socket.emit("sending_notificationId", id, user._id);
+	const handleMarkRead = (notificationId: string) => {
+		user && socket.emit("sending_notificationId", notificationId, user.id);
+		updateNotification(notificationId, { read: true });
 	};
 
-	const handleClick = (taskId: string, notificationId: string): void => {
-		dispatch(setCurrentTaskId(taskId));
+	const handleClick = async (taskId: string, notificationId: string) => {
+		const task = tasks.find((task) => task.id === taskId);
+		task && setCurrentTask(task);
 		handleMarkRead(notificationId);
 		closeBackdrop();
 	};
@@ -69,16 +63,20 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 		socket.on("receiving_updatedMarkedNotification", (data: unknown) => {
 			const updatedNotificationData =
 				typeof data === "string" ? JSON.parse(data) : data;
-			dispatch(getNotifications(updatedNotificationData));
+			getAllNotifications(updatedNotificationData);
 		});
-	}, [socket.id, dispatch]);
+	}, [socket.id]);
 
 	return (
 		<div
-			onClick={() => handleClick(id, notificationId)}
-			className={`p-2 w-80 rounded-md cursor-pointer  ${
-				isActive ? active : read ? inactiveRead : inactiveNotread
-			} ${hover}`}
+			onClick={() => handleClick(taskId, notificationId)}
+			className={`p-2 w-80 rounded-md text-muted-foreground bg-popover border cursor-pointer  ${
+				isActive
+					? "border-indigo-400 shadow shadow-indigo-400 dark:bg-[#282E43] text-foreground"
+					: read
+						? "dark:border-none"
+						: "bg-muted dark:bg-accent"
+			} ${!isActive ? "hover:text-foreground hover:border hover:shadow dark:hover:bg-[#282E43] hover:border-gray-500" : ""}`}
 		>
 			<div ref={isActive ? activeDivRef : null}>
 				<div className="flex justify-between">
