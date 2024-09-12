@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
 	Popover,
@@ -14,22 +16,23 @@ import {
 } from "@/components/ui/command";
 import { useFilterStore, useWorkspaceStore } from "@/storeZ";
 import type { LabelFilterDropDownProps } from "./LabelFilterDropDown.interfaces";
-import type { FilterCondition } from "@/storeZ/filters";
 import type { Label } from "@repo/db";
-import { LabelColor } from "../LabelDropdownButton";
 import { Check } from "lucide-react";
 
-const LabelFilterDropDown = ({
+export default function LabelFilterDropDown({
 	showLabelFilterDropDown,
 	setShowLabelFilterDropDown,
-}: LabelFilterDropDownProps): React.ReactElement => {
+}: LabelFilterDropDownProps) {
 	const { workspaceLabels } = useWorkspaceStore((state) => state);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
 	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleLabelChange = (label: Label, checked: boolean) => {
+	const handleLabelChange = (label: Label) => {
 		setSelectedLabels((prev) =>
-			checked ? [...prev, label] : prev.filter((item) => item !== label),
+			prev.some((l) => l.id === label.id)
+				? prev.filter((l) => l.id !== label.id)
+				: [...prev, label],
 		);
 	};
 
@@ -45,33 +48,40 @@ const LabelFilterDropDown = ({
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
 
+	const filteredLabels = workspaceLabels.filter((label) =>
+		label.name.toLowerCase().includes(searchQuery.toLowerCase()),
+	);
+
 	return (
 		<Popover
 			open={showLabelFilterDropDown}
 			onOpenChange={setShowLabelFilterDropDown}
 		>
 			<PopoverTrigger />
-			<PopoverContent className="w-72 p-0" sideOffset={20}>
+			<PopoverContent className="w-72 p-0" sideOffset={5}>
 				<Command>
-					<CommandInput placeholder="Search labels..." />
-					<CommandEmpty>No Labels Found</CommandEmpty>
+					<CommandInput
+						placeholder="Search labels..."
+						value={searchQuery}
+						onValueChange={setSearchQuery}
+					/>
 					<CommandList>
+						<CommandEmpty>No labels found.</CommandEmpty>
 						<CommandGroup>
-							{workspaceLabels.map((label) => (
+							{filteredLabels.map((label) => (
 								<CommandItem
 									key={label.id}
-									onClick={() =>
-										handleLabelChange(label, selectedLabels.includes(label))
-									}
+									onSelect={() => handleLabelChange(label)}
+									className="flex items-center space-x-2 cursor-pointer"
 								>
-									<div className="flex items-center space-x-2">
-										{selectedLabels.includes(label) ? (
-											<Check className="size-3" />
+									<div className="flex items-center flex-1 space-x-2">
+										{selectedLabels.some((l) => l.id === label.id) ? (
+											<Check className="w-4 h-4" />
 										) : (
-											<div className="size-3" />
+											<div className="w-4 h-4" />
 										)}
 										<div
-											className="w-3 h-3 rounded-lg"
+											className="w-3 h-3 rounded-full"
 											style={{ backgroundColor: label.color }}
 										/>
 										<span>{label.name}</span>
@@ -84,6 +94,4 @@ const LabelFilterDropDown = ({
 			</PopoverContent>
 		</Popover>
 	);
-};
-
-export default LabelFilterDropDown;
+}
