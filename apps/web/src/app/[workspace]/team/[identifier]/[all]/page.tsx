@@ -8,35 +8,36 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import {
 	useAuthStore,
+	useFilterStore,
 	useTaskStore,
 	useTeamStore,
 	useUserStore,
-	useViewsStore,
+	useViewStore,
 	useWorkspaceStore,
 } from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status, Task } from "@repo/db";
+import type { SavedFilter, Status } from "@repo/db";
 
 export default function Home() {
-	const [loading, setLoading] = useState(true);
-	const [authorized, setAuthorized] = useState(false);
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
-	const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
-
-	const params = useParams();
-
-	// Using Zustand hooks to subscribe to changes
-	const { view, currentFilter, filterTasks } = useViewsStore((state) => state);
+	const { view } = useViewStore((state) => state);
+	const { currentFilters, filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
-
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-
+	const {
+		tasks: initialTasks,
+		updateTask,
+		getAllTasks,
+	} = useTaskStore((state) => state);
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
 	);
-
 	const getAllUsers = useUserStore((state) => state.getAllUsers);
+	const [loading, setLoading] = useState(true);
+	const [authorized, setAuthorized] = useState(false);
+	const [tasks, setTasks] = useState(initialTasks);
+
+	const params = useParams();
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
@@ -46,27 +47,25 @@ export default function Home() {
 		const initiateStore = async () => {
 			setLoading(true);
 
-			// Fetch workspaces if not already present
-			if (!currentWorkspace && user) {
+			if (user && !currentWorkspace) {
 				const workspaces = await getAllWorkspaces(user.id);
 				const workspace = workspaces?.find((ws) => ws.url === workspaceUrl);
-				if (workspace) {
-					setCurrentWorkspace(workspace);
-				}
+				workspace && setCurrentWorkspace(workspace);
 			}
 
-			// Fetch teams and tasks when the workspace is set
 			if (user && currentWorkspace) {
 				const allUsers = await getAllUsers(currentWorkspace.id);
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
+
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const teams = await getAllTeams(currentWorkspace.id);
 					const team = teams.find((t) => t.identifier === teamIdentifier);
+					team && setCurrentTeam(team);
+
 					if (team) {
-						setCurrentTeam(team);
 						const tasks = await getAllTasks(team.id);
-						setFilteredTasks(tasks);
+						setTasks(tasks);
 					}
 				}
 			}
@@ -75,59 +74,37 @@ export default function Home() {
 		};
 
 		initiateStore();
-	}, [
-		currentWorkspace,
-		user,
-		getAllWorkspaces,
-		setCurrentWorkspace,
-		workspaceUrl,
-		currentTeam,
-		getAllTeams,
-		teamIdentifier,
-		getAllUsers,
-		setCurrentTeam,
-		getAllTasks,
-	]);
+	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
+	useEffect(() => {
+		console.log("currentFilters", currentFilters);
+		console.log("filteredTasks", filterTasks(tasks));
+	}, [currentFilters]);
 
-	const handleDragEnd: OnDragEndResponder = async (result) => {
-		const { destination, source, draggableId } = result;
+	const handleDragEnd: OnDragEndResponder = async ({
+		destination,
+		source,
+		draggableId,
+	}) => {
+		if (!destination || destination.droppableId === source.droppableId) return;
 
-		if (!destination || destination.droppableId === source.droppableId) {
-			return;
-		}
-
-		const draggedTaskFound = filteredTasks.find(
-			(task) => task && task.id === draggableId,
-		);
-
-		if (!draggedTaskFound) {
-			return;
-		}
+		const draggedTask = tasks.find((task) => task.id === draggableId);
+		if (!draggedTask) return;
 
 		const updatedTask = {
-			...draggedTaskFound,
+			...draggedTask,
 			status: destination.droppableId as Status,
 		};
-
-		// Update task list in the local state
-		const updatedTaskList = filteredTasks.map((task) =>
+		const updatedTasks = tasks.map((task) =>
 			task.id === draggableId ? updatedTask : task,
 		);
-
-		setFilteredTasks(updatedTaskList);
-
-		// Update task in the backend
-		await updateTask(updatedTask.id, { status: updatedTask.status });
+		setTasks(updatedTasks); // Directly set updated tasks
+		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
 	};
 
-	// Apply filters whenever tasks or currentFilter change
 	useEffect(() => {
-		if (currentFilter) {
-			setFilteredTasks(filterTasks(tasks, currentFilter));
-		} else {
-			setFilteredTasks(tasks);
-		}
-	}, [tasks, currentFilter, filterTasks]);
+		const loadFilters = async () => {};
+		loadFilters();
+	}, [currentWorkspace]);
 
 	if (loading) {
 		return (
@@ -145,8 +122,17 @@ export default function Home() {
 			<div className="w-full px-2 sm:px-5">
 				<TopNavBar />
 			</div>
-
-			{currentWorkspace ? (
+			{!authorized ? (
+				<div className="flex items-center flex-col w-screen h-full bg-background">
+					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
+						<h1 className="text-2xl">Not Authorized</h1>
+						<p>
+							You are not authorized to access team with identifier{" "}
+							{`"${teamIdentifier}"`}
+						</p>
+					</div>
+				</div>
+			) : currentWorkspace ? (
 				<div className={"flex flex-col flex-grow mx-2"}>
 					<ScrollArea
 						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
@@ -155,7 +141,7 @@ export default function Home() {
 							activeSelected={activeSelected}
 							backlogSelected={backlogSelected}
 							handleDragEnd={handleDragEnd}
-							tasks={filteredTasks}
+							tasks={filterTasks(tasks)}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</ScrollArea>
