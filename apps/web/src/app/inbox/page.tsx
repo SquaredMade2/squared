@@ -2,23 +2,37 @@
 import "@/app/globals.css";
 import InboxList from "@/components/InboxList";
 import InboxTopMenu from "@/components/InboxTopMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InboxContents from "@/components/InboxContents";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useAuthStore, useNotificationStore } from "@/storeZ";
 import IconLeftMenu from "@/components/IconLeftMenu";
 
 export default function Inbox(): React.JSX.Element {
 	const [showInboxList, setShowInboxList] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const closeBackdrop = () => {
 		setShowInboxList(false);
 	};
 	const toggleInboxList = () => {
 		setShowInboxList(!showInboxList);
 	};
-	const notifications = useAppSelector(
-		(state) => state.notifications.notifications,
+
+	const { user } = useAuthStore((state) => state);
+	const { notifications, getAllNotifications } = useNotificationStore(
+		(state) => state,
 	);
+
+	useEffect(() => {
+		const initiateStore = async () => {
+			setLoading(true);
+			if (user) {
+				const notifications = await getAllNotifications(user.id);
+			}
+			setLoading(false);
+		};
+		initiateStore();
+	}, [user]);
 
 	return (
 		<div className="flex w-full">

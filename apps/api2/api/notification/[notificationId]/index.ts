@@ -92,5 +92,40 @@ export function createRoute(): Route<Params> {
 				};
 			}
 		},
+		PUT: async (
+			res,
+			{ notificationId },
+			body,
+		): Promise<APIResponse<Notification>> => {
+			try {
+				const notification = await prisma.notification.update({
+					where: { id: notificationId },
+					data: body,
+				});
+
+				if (!notification) {
+					res.status(404);
+					return {
+						data: null,
+						message: "Notification not found",
+						variant: "destructive",
+					};
+				}
+
+				// Return the updated notification
+				return {
+					data: notification,
+					variant: "default",
+				};
+			} catch (error) {
+				console.error("Error updating notification:", error);
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal server error",
+					variant: "destructive",
+				};
+			}
+		},
 	};
 }
