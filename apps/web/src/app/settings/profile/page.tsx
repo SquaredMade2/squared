@@ -1,125 +1,141 @@
 "use client";
 
-import { useState, type ReactElement } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import type { InputChangeEvent } from "types";
-import { updateProfile, getUser } from "@/store/userSettings/thunks";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
-import BlueButton from "@/components/BlueButton";
-import type { RootState } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useAuthStore, useUserStore } from "@/storeZ";
+import type { User } from "@repo/db";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
-const styles = {
-	mainContainer: "flex mdsm:flex-col bg-card h-screen min-h-screen w-full",
-	pageContainer: "flex flex-col h-full w-full items-center bg-background pt-20",
-	pageWrapper: "w-1/3 mdsm:w-3/4",
-	title: "text-2xl text-foreground mb-1 font-medium",
-	profileSubTitle: "text-muted-foreground text-sm",
-	line: "block w-full border-t border-border my-6",
-	pictureTitle: "text-foreground text-sm mb-1.5",
-	emailTitle: "text-foreground text-sm",
-	email: "text-muted-foreground text-sm",
-	marginBottomSix: "mb-6",
-	fullNameTitle: "text-foreground text-sm",
-	input:
-		"w-full border border-border rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
-	usernameTitleWrapper: "flex items-center",
-	usernameTitle: "text-foreground text-sm",
-	usernameSubTitle: "text-muted-foreground font-normal text-xs ml-1",
-	updateButtonLight:
-		"mb-20 px-4 py-1 rounded text-foreground bg-purpleButtonHover hover:bg-purpleButton transition ease-out duration-100 box-content",
-	updateButtonDark:
-		"mb-20 px-4 py-1 rounded text-foreground bg-purpleButton hover:bg-purpleButtonHover transition ease-out duration-100 box-content",
-	navbarWrapper:
-		"relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out",
-	TopNavbar: "lg:hidden mdsm:visible bg-background",
-	visible: "opacity-0 transition-all duration-300 ease-in-out",
-	notVisible: "opacity-100 transition-all duration-300 ease-in-out",
-};
+const formSchema = z.object({
+	fullName: z.string().min(1, "Full name is required"),
+	username: z.string().min(1, "Username is required").nullable(),
+});
 
-export default function Profile(): ReactElement {
+export default function Profile() {
 	const { toast } = useToast();
-	const dispatch = useAppDispatch();
+	const { user: authUser } = useAuthStore((state) => state);
+	const [user, setUser] = useState<User | null>(authUser);
+	const { updateUser } = useUserStore((state) => state);
 
-	const user = useSelector((state: RootState) => state.userSettings.user);
-	const [fullName, setFullName] = useState<string>(user.name);
-	const [username, setUsername] = useState<string>(user.username);
-	const prevFullname = user.name;
-	const prevUsername = user.username;
-	const valueChanged = fullName !== prevFullname || username !== prevUsername;
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			fullName: user?.name || "",
+			username: user?.username || "",
+		},
+	});
 
-	const handleUpdate = async () => {
-		if (username.trim().length <= 0 || fullName.trim().length <= 0) {
-			return toast({
-				title: "One or more fields can not be empty.",
-				variant: "destructive",
+	useEffect(() => {
+		if (user) {
+			form.reset({
+				fullName: user.name,
+				username: user.username,
 			});
 		}
-		if (valueChanged) {
-			const data = { name: fullName, username, id: user._id };
-			await dispatch(updateProfile(data));
-			dispatch(getUser());
+	}, [user, form]);
+
+	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		if (!user) return;
+
+		const { fullName, username } = values;
+		if (fullName.trim() === user.name && username?.trim() === user.username) {
+			return toast({
+				title: "No changes detected",
+				description: "Your profile information remains the same.",
+			});
 		}
+
+		const data = {
+			name: fullName.trim(),
+			username: username?.trim(),
+			id: user.id,
+		};
+		await updateUser(user.id, data);
+		toast({
+			title: "Profile updated",
+			description: "Your profile information has been successfully updated.",
+		});
 	};
 
-	const handlefullNameChange = (e: InputChangeEvent): void => {
-		const newValue = e.target.value;
-		setFullName(newValue);
-	};
-
-	const handleUsernameChange = (e: InputChangeEvent): void => {
-		const newValue = e.target.value;
-		setUsername(newValue);
-	};
+	if (!user) return null;
 
 	return (
-		<div className={styles.mainContainer}>
-			<div className={styles.pageContainer}>
-				<div className={styles.pageWrapper}>
-					<div>
-						<h1 className={styles.title}>Profile</h1>
-						<p className={styles.profileSubTitle}>
-							Manage your Squared profile
-						</p>
-					</div>
-					<span className={styles.line} />
-					<p className={styles.pictureTitle}>Profile picture</p>
-					<ProfileImage profileName={fullName} location="settings" />
-					<div className={styles.marginBottomSix}>
-						<p className={styles.emailTitle}>Email</p>
-						<p className={styles.email}>{user.email}</p>
-					</div>
-					<div className={styles.marginBottomSix}>
-						<p className={styles.fullNameTitle}>Full name</p>
-						<input
-							type="text"
-							className={`${styles.input} bg-background`}
-							value={fullName}
-							onChange={handlefullNameChange}
+		<div className="w-full flex flex-col px-56 py-8 container gap-4">
+			<div className="flex flex-col gap-2 items-start">
+				<h1 className="text-2xl">Profile</h1>
+				<p className="text-xs text-muted-foreground">
+					Manage your Squared profile
+				</p>
+			</div>
+			<Separator className="mb-8" />
+			<div className="max-w-2xl w-full">
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+						<FormItem>
+							<FormLabel>Profile picture</FormLabel>
+							<Avatar>
+								<AvatarImage src={user.avatarUrl ?? undefined} />
+								<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+							</Avatar>
+						</FormItem>
+						<FormItem>
+							<FormLabel>Email</FormLabel>
+							<FormDescription>{user.email}</FormDescription>
+						</FormItem>
+						<FormField
+							control={form.control}
+							name="fullName"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Full name</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-					</div>
-					<div className={styles.marginBottomSix}>
-						<div className={styles.usernameTitleWrapper}>
-							<p className={styles.usernameTitle}>Username</p>
-							<p className={styles.usernameSubTitle}>
-								- Nickname or first name, however you want to be called in
-								Squared
-							</p>
-						</div>
-						<input
-							type="text"
-							className={`${styles.input} bg-background`}
-							value={username}
-							onChange={handleUsernameChange}
+						<FormField
+							control={form.control}
+							name="username"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Username</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											value={field.value ?? ""}
+											onChange={(e) => field.onChange(e.target.value)}
+										/>
+									</FormControl>
+									<FormDescription>
+										Nickname or first name, however you want to be called in
+										Squared
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-					</div>
-					<div
-						className={`${valueChanged ? styles.notVisible : styles.visible}`}
-					>
-						<BlueButton description="Update" handleAction={handleUpdate} />
-					</div>
-				</div>
+						<Button type="submit">Update</Button>
+					</form>
+				</Form>
 			</div>
 		</div>
 	);
