@@ -1,4 +1,4 @@
-import type { FilterOption } from "@/app/interfaces/Filter.interfaces";
+import type { FilterOption } from "../FilterDropdowns/interfaces";
 
 export interface TopNavBarProps {
 	filterOption: FilterOption | null;

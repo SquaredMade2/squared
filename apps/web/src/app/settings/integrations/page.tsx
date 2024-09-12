@@ -7,12 +7,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { useViewStore } from "@/storeZ";
 import Link from "next/link";
-import { useViewsStore } from "@/storeZ";
 
 const IntegrationSettings: React.FC = () => {
-	const showNavbar = useViewsStore((state) => state.showNavbar);
-	const setShowNavbar = useViewsStore((state) => state.setShowNavbar);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 
 	const handleNavToggle = (): void => {
 		const navBarValue = !showNavbar;

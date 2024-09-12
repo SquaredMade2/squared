@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check, FileSearch } from "lucide-react";
@@ -13,7 +12,6 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const user = useAuthStore((state) => state.user);
 	const workspaces = useWorkspaceStore((state) => state.workspaces);
-	const { theme } = useAppSelector((state) => state.userSettings);
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {
 			setMenuOpen(false);
@@ -34,11 +32,9 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 				<button
 					type="button"
 					onClick={() => setMenuOpen(!menuOpen)}
-					className={`w-1/7 h-20 duration-200 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-3xl cursor-pointer hover:shadow-glow text-2xl px-5 ${
-						theme === "dark"
-							? "bg-blueButton"
-							: "bg-blueGlowLight border border-blueGlow"
-					}`}
+					className={
+						"w-1/7 h-20 duration-200 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-3xl cursor-pointer hover:shadow-glow text-2xl px-5 bg-blueGlowLight border border-blueGlow dark:bg-blueButton"
+					}
 				>
 					Select Another Workspace
 				</button>
