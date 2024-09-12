@@ -9,8 +9,9 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
+
 import PriorityButton from "@/components/PriorityButton";
-import { StatusDropdownButton } from "@/components/StatusDropdownButton";
+import { StatusDropdownButton } from "./StatusDropdownButton";
 import DateButton from "@/components/DateButton";
 import EffortEstimateButton from "@/components/EffortEstimateButton";
 import LabelDropdownButton from "../LabelDropdownButton";
@@ -231,6 +232,9 @@ const NewIssueModal = () => {
 						</div>
 						<Separator orientation="vertical" />
 						<div className="w-1/4 space-y-4">
+							<div>
+								<StatusDropdownButton />
+							</div>
 							<DialogFooter>
 								<Button
 									onClick={handleDiscard}
