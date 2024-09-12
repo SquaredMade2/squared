@@ -11,7 +11,6 @@ import {
 	useTaskStore,
 	useWorkspaceStore,
 } from "@/storeZ";
-import { useTheme } from "next-themes";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,
@@ -29,7 +28,9 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 
 	const { currentTask, setCurrentTask, tasks } = useTaskStore((state) => state);
-	const { getAllNotifications } = useNotificationStore((state) => state);
+	const { getAllNotifications, updateNotification } = useNotificationStore(
+		(state) => state,
+	);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	if (!currentWorkspace) return null;
 	const { user } = useAuthStore((state) => state);
@@ -38,8 +39,9 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const isActive = currentTask?.id === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 
-	const handleMarkRead = (id: string) => {
-		socket.emit("sending_notificationId", id, user?.id);
+	const handleMarkRead = (notificationId: string) => {
+		user && socket.emit("sending_notificationId", notificationId, user.id);
+		updateNotification(notificationId, { read: true });
 	};
 
 	const handleClick = async (taskId: string, notificationId: string) => {
