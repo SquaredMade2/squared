@@ -10,7 +10,7 @@ import {
 import { high, medium, low } from "@/components/Svg";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { useFilterStore } from "@/storeZ";
-import type { PriorityFilterDropDownProps } from "./PriorityFilterDropDown.interfaces";
+import type { PriorityFilterDropDownProps } from "./interfaces";
 import { Priority } from "@repo/db";
 
 const groupPriority = [

@@ -3,15 +3,12 @@ import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuCheckboxItem,
 	DropdownMenuRadioItem,
 	DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
 import { low, medium, high } from "@/components/Svg";
-import type { EffortFilterDropDownProps } from "./EffortFilterDropDown.interfaces";
-import { useFilterStore, type FilterCondition } from "@/storeZ/filters";
+import type { EffortFilterDropDownProps } from "./interfaces";
+import { useFilterStore } from "@/storeZ/filters";
 
 const groupEffort = [
 	{

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import type React from "react";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
-import FilterDropDown from "@/components/FilterDropdown";
+import FilterDropDown from "@/components/FilterDropdowns";
 import { SocketContext } from "@/app/SocketProvider";
 import NotificationsList from "@/components/NotificationsList";
 import ToggleNavBar from "../ToggleNavBar";

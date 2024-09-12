@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { CircleDashed, Calendar, Clock, Tag, Filter } from "lucide-react";
 import { high } from "@/components/Svg";
 
-import PriorityFilterDropDown from "@/components/PriorityFilterDropDown";
-import StatusFilterDropDown from "@/components/StatusFilterDropDown";
-import LabelFilterDropDown from "@/components/LabelFilterDropDown";
-import DueDateFilterDropDown from "@/components/DueDateFilterDropDown";
-import EffortFilterDropDown from "@/components/EffortFilterDropDown";
+import PriorityFilterDropDown from "./PriorityFilter";
+import StatusFilterDropDown from "./StatusFilter";
+import EffortFilterDropDown from "./EffortFilter";
 
 import {
 	Popover,
@@ -21,9 +18,11 @@ import {
 	CommandItem,
 	CommandEmpty,
 } from "@/components/ui/command";
-import type { FilterOption } from "./FilterDropdown.interfaces";
+import type { FilterOption } from "./interfaces";
 import { Button } from "../ui/button";
 import { useFilterStore } from "@/storeZ";
+import LabelFilterDropDown from "./LabelFilter";
+import DueDateFilterDropDown from "./DueDateFilter";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [

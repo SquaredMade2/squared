@@ -30,7 +30,7 @@ const SearchCommand = ({
 	const [lastKey, setLastKey] = useState<string>("");
 	const [isInputFocus, setIsInputFocus] = useState<boolean>(true);
 	const { setShowNewIssue } = useModalStore((state) => state);
-	const { removeFilter } = useFilterStore((state) => state);
+	const { clearFilter } = useFilterStore((state) => state);
 	const showToast = (
 		title: string,
 		variant?: "destructive" | "default" | null,
@@ -39,7 +39,7 @@ const SearchCommand = ({
 	};
 	const commandItems = new commandSchema(
 		setShowNewIssue,
-		removeFilter,
+		clearFilter,
 		showToast,
 	);
 

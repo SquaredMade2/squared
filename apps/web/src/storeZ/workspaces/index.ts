@@ -14,7 +14,7 @@ import type {
 	SavedFilter as SavedFilterType,
 } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
-import type { SavedFilter, TaskFilter } from "../filters";
+import type { FilterCondition, SavedFilter } from "../filters";
 export * from "./interfaces";
 export * from "./store";
 
@@ -150,20 +150,17 @@ export const createWorkspaceStore = (
 							return [];
 						}
 						const taskFilters: SavedFilter[] = filters.map((savedFilter) => {
-							const parsedFilter = savedFilter.filter as TaskFilter;
+							const parsedFilter = savedFilter.filter as FilterCondition[];
 
 							return {
 								id: savedFilter.id,
 								name: savedFilter.name,
 								workspaceId: savedFilter.workspaceId,
-								filter: {
-									logic: parsedFilter.logic,
-									conditions: parsedFilter.conditions.map((condition) => ({
-										field: condition.field,
-										value: condition.value,
-										operator: condition.operator,
-									})),
-								},
+								filter: parsedFilter.map((condition) => ({
+									field: condition.field,
+									value: condition.value,
+									operator: condition.operator,
+								})),
 							};
 						});
 						set({

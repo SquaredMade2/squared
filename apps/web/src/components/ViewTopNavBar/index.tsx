@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
 import { navBarToggle } from "@/store/userSettings";
 import type { RootState } from "@/store";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
@@ -44,13 +43,6 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 		setSearchInput(target.value);
 	};
 
-	const handleNewView = (): void => {
-		dispatch(deleteAllCurrentFilters());
-		router.push(
-			`/${currentWorkspace.url}/team/${currentTeam.identifier}/views/new`,
-		);
-	};
-
 	return (
 		<header>
 			<nav className="w-full items-center h-full flex">
@@ -91,16 +83,6 @@ const ViewTopNavBar = ({ setSearchInput }: ViewTopNavBarProps) => {
 						/>
 					</div>
 					<TopNavBarDisplay />
-
-					<Button
-						className="flex items-center hidden md:flex gap-2 cursor-pointer"
-						onClick={handleNewView}
-						type="button"
-						variant={"outline"}
-					>
-						<Plus className="size-4" />
-						<p>New View</p>
-					</Button>
 				</div>
 			</nav>
 		</header>

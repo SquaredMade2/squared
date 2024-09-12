@@ -16,7 +16,7 @@ import {
 	CircleFadingPlus,
 	CircleX,
 } from "lucide-react";
-import type { StatusFilterDropDownProps } from "./StatusFilterDropDown.interfaces";
+import type { StatusFilterDropDownProps } from "./interfaces";
 import { Button } from "../ui/button";
 import { Status } from "@repo/db";
 

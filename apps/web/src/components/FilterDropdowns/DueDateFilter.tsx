@@ -1,16 +1,11 @@
 import { useState } from "react";
 import {
-	ChevronLeft,
-	ChevronRight,
-	Calendar as CalendarIcon,
-} from "lucide-react";
-import {
 	Popover,
 	PopoverTrigger,
 	PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import type { DueDateFilterDropDownProps } from "@/app/interfaces/Filter.interfaces";
+import type { DueDateFilterDropDownProps } from "./interfaces";
 import { Button } from "@/components/ui/button";
 import { useFilterStore } from "@/storeZ";
 import type { FilterCondition } from "@/storeZ/filters";
