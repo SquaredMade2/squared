@@ -1,13 +1,11 @@
 import { createStore } from "zustand/vanilla";
-import type { ViewsStore, ViewsState } from "./interfaces";
+import type { ViewStore, ViewState } from "./interfaces";
 import { persist } from "zustand/middleware";
-import { checkCondition } from "./helpers";
 export * from "./interfaces";
 export * from "./store";
 
-export const createViewsStore = (
-	initState: ViewsState = {
-		currentFilter: null,
+export const createViewStore = (
+	initState: ViewState = {
 		showDateTime: true,
 		showPriority: true,
 		showLabels: true,
@@ -15,45 +13,10 @@ export const createViewsStore = (
 		view: "list",
 	},
 ) => {
-	return createStore<ViewsStore>()(
+	return createStore<ViewStore>()(
 		persist(
 			(set) => ({
 				...initState,
-				setCurrentFilter: (filter) => {
-					set({ currentFilter: filter });
-				},
-				removeFilter: () => {
-					set({ currentFilter: null });
-				},
-				addFilter: (filter) => {
-					set((state) => {
-						return {
-							currentFilter: state.currentFilter
-								? {
-										logic: "AND",
-										conditions: [...state.currentFilter.conditions, filter],
-									}
-								: {
-										logic: "AND",
-										conditions: [filter],
-									},
-						};
-					});
-				},
-				filterTasks: (tasks, filter) => {
-					return tasks.filter((task) => {
-						return filter.logic === "AND"
-							? filter.conditions.every((condition) =>
-									checkCondition(task, condition),
-								)
-							: filter.conditions.some((condition) =>
-									checkCondition(task, condition),
-								);
-					});
-				},
-				getCurrentFilter: () => {
-					return initState.currentFilter;
-				},
 				setView: (view) => {
 					set({ view });
 				},
