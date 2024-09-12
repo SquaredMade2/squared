@@ -9,15 +9,14 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useViewsStore } from "@/storeZ";
+import { useViewStore } from "@/storeZ";
 
 const GithubSettings: React.FC = () => {
-	const setShowNavBar = useViewsStore((state) => state.setShowNavbar);
-	const showNavBar = useViewsStore((state) => state.showNavbar);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 
 	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		setShowNavBar(navBarValue);
+		const navBarValue = !showNavbar;
+		setShowNavbar(navBarValue);
 	};
 
 	useEffect(() => {

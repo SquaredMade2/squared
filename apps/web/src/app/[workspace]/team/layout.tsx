@@ -1,14 +1,14 @@
 "use client";
 import Navbar from "@/components/NavBar";
 import { cn } from "@/utils/cn";
-import { useViewsStore } from "@/storeZ";
+import { useViewStore } from "@/storeZ";
 
 export default function TeamLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	const { showNavbar, setShowNavbar } = useViewsStore((state) => state);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 
 	const toggleNavbar = (): void => {
 		setShowNavbar(!showNavbar);

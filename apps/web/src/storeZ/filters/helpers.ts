@@ -1,4 +1,4 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import type { FilterCondition } from "./interfaces";
 
 export function checkCondition(
@@ -17,12 +17,18 @@ export function checkCondition(
 				taskValue.includes(condition.value)
 			);
 		case "greaterThan":
+			if (taskValue instanceof Date || typeof taskValue === "string") {
+				return new Date(taskValue) > new Date(condition.value as string);
+			}
 			return (
 				typeof taskValue === "number" &&
 				typeof condition.value === "number" &&
 				taskValue > condition.value
 			);
 		case "lessThan":
+			if (taskValue instanceof Date || typeof taskValue === "string") {
+				return new Date(taskValue) < new Date(condition.value as string);
+			}
 			return (
 				typeof taskValue === "number" &&
 				typeof condition.value === "number" &&
@@ -32,19 +38,22 @@ export function checkCondition(
 			return (
 				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
-				condition.value.every((val) =>
-					taskValue.some((label) => label === val || label === val),
-				)
+				condition.value.every((val) => taskValue.includes(val))
 			);
 		case "arrayIncludesAny":
+			if (Array.isArray(taskValue)) {
+				return (
+					Array.isArray(condition.value) &&
+					condition.value.some((val) => taskValue.includes(val))
+				);
+			}
 			return (
-				Array.isArray(taskValue) &&
 				Array.isArray(condition.value) &&
-				condition.value.some((val) =>
-					taskValue.some((label) => label === val || label === val),
-				)
+				condition.value.includes(taskValue?.toLocaleString() ?? "")
 			);
+
 		default:
+			console.warn(`Unknown operator: ${condition.operator}`);
 			return false;
 	}
 }

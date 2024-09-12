@@ -25,21 +25,21 @@ export class commandSchema {
 	currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	currentTeam = useTeamStore((state) => state.currentTeam);
 	setShowNewIssue: (input: boolean) => void;
-	removeFilter: () => void;
+	clearFilter: () => void;
 	showToast: (
 		title: string,
 		variant?: "destructive" | "default" | null,
 	) => void;
 	constructor(
 		setShowNewIssue: (input: boolean) => void,
-		removeFilter: () => void,
+		clearFilter: () => void,
 		showToast: (
 			title: string,
 			variant?: "destructive" | "default" | null,
 		) => void,
 	) {
 		this.setShowNewIssue = setShowNewIssue;
-		this.removeFilter = removeFilter;
+		this.clearFilter = clearFilter;
 		this.showToast = showToast;
 		this.currentSchema = {
 			Issue: {
@@ -83,7 +83,7 @@ export class commandSchema {
 					icon: <Layers3 />,
 					text: "Create new view",
 					function: () => {
-						this.removeFilter();
+						this.clearFilter();
 						if (this.currentWorkspace && this.currentTeam) {
 							this.router.push(
 								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
@@ -209,7 +209,7 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to views",
 				function: () => {
-					this.removeFilter();
+					this.clearFilter();
 					if (this.currentWorkspace && this.currentTeam) {
 						this.router.push(
 							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,

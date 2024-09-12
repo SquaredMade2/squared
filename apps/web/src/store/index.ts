@@ -20,7 +20,6 @@ import taskData from "./taskData";
 import showNewIssue from "./showNewIssue";
 import resumeNewIssue from "./resumeNewIssue";
 import singleTask from "./task";
-import filterPage from "./filterPage";
 import events from "./events";
 import getListOfMembersReducer from "./workspaceMembers";
 import notificationReducer from "./notifications";
@@ -39,7 +38,6 @@ const rootReducer = combineReducers({
 	notifications: notificationReducer,
 	currentTask: currentTaskReducer,
 	listOfWorkspaceMembers: getListOfMembersReducer,
-	filterPage,
 	events,
 });
 

@@ -1,15 +1,11 @@
 import { useState } from "react";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { CircleDashed, Calendar, Clock, Tag, Filter } from "lucide-react";
 import { high } from "@/components/Svg";
 
-import PriorityFilterDropDown from "@/components/PriorityFilterDropDown";
-import StatusFilterDropDown from "@/components/StatusFilterDropDown";
-import LabelFilterDropDown from "@/components/LabelFilterDropDown";
-import DueDateFilterDropDown from "@/components/DueDateFilterDropDown";
-import EffortFilterDropDown from "@/components/EffortFilterDropDown";
+import PriorityFilterDropDown from "./PriorityFilter";
+import StatusFilterDropDown from "./StatusFilter";
+import EffortFilterDropDown from "./EffortFilter";
 
-import { useViewsStore } from "@/storeZ";
 import {
 	Popover,
 	PopoverTrigger,
@@ -22,8 +18,11 @@ import {
 	CommandItem,
 	CommandEmpty,
 } from "@/components/ui/command";
-import type { FilterOption } from "./FilterDropdown.interfaces";
+import type { FilterOption } from "./interfaces";
 import { Button } from "../ui/button";
+import { useFilterStore } from "@/storeZ";
+import LabelFilterDropDown from "./LabelFilter";
+import DueDateFilterDropDown from "./DueDateFilter";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
@@ -81,10 +80,9 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
-	const { currentFilter, removeFilter } = useViewsStore((state) => ({
-		currentFilter: state.currentFilter,
-		removeFilter: state.removeFilter,
-	}));
+	const { currentFilters, removeFilter, clearFilter } = useFilterStore(
+		(state) => state,
+	);
 
 	const handleSelect = (option: FilterOption) => {
 		setFilterOption(option);
@@ -117,10 +115,9 @@ const FilterDropDown: React.FunctionComponent = () => {
 				<PopoverTrigger asChild>
 					<Button
 						onClick={
-							currentFilter?.conditions.length &&
-							currentFilter?.conditions?.length > 0
+							currentFilters?.length && currentFilters?.length > 0
 								? () => {
-										removeFilter();
+										clearFilter();
 									}
 								: () => {
 										setOpen(true);
@@ -131,15 +128,14 @@ const FilterDropDown: React.FunctionComponent = () => {
 						<div className="flex gap-2 items-center">
 							<Filter className="size-5" />
 							<p>
-								{currentFilter?.conditions.length &&
-								currentFilter?.conditions?.length > 0
+								{currentFilters.length && currentFilters.length > 0
 									? "Clear Filters x"
 									: "Filter"}
 							</p>
 						</div>
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-72 p-0">
+				<PopoverContent className="w-72 p-0 ml-32">
 					<Command>
 						<CommandInput placeholder="Search filters..." />
 						<CommandList>
