@@ -80,8 +80,9 @@ mongoose
 	});
 
 const vercelBranchPattern =
-	/^https:\/\/squared-[a-z0-9-]+-squared-52c50d26\.vercel\.app$/;
-const productionDomain = "https://squared-web.vercel.app";
+	/^https:\/\/web-production-(\w+)-squaredmade\.vercel\.app$/;
+const productionDomain = "https://app.squaredmade.com";
+const developDomain = "https://app-develop.squaredmade.com";
 const localDevDomain = "http://localhost:3000";
 
 app.use(
@@ -92,6 +93,7 @@ app.use(
 				!origin ||
 				vercelBranchPattern.test(origin) ||
 				origin === productionDomain ||
+				origin === developDomain ||
 				origin === localDevDomain
 			) {
 				callback(null, true);
@@ -104,7 +106,25 @@ app.use(
 	}),
 );
 
-const io = new Server(server);
+const io = new Server(server, {
+	cors: {
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		origin: (origin: string, callback: any) => {
+			// Allow requests from Vercel branch deployments, production domain, and local development
+			if (
+				!origin ||
+				vercelBranchPattern.test(origin) ||
+				origin === productionDomain ||
+				origin === localDevDomain
+			) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
+		methods: ["GET", "POST"],
+	},
+});
 
 const userSocketId: { [key: string]: string } = {};
 

@@ -15,7 +15,7 @@ const InboxTopMenu: React.FC<Props> = ({ toggleInboxList }) => {
 
 	return (
 		<div className="w-full h-10 flex justify-between bg-popover py-2 border-b text-foreground sticky top-0 z-10">
-			<div className="w-80 lg:px-2 flex items-center">
+			<div className="w-80 lg:px-1 flex gap-2 items-center">
 				<div className={"xl:hidden ml-1"} onClick={toggleInboxList}>
 					<ButtonIcon
 						icon={inboxIcon}

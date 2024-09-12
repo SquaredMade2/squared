@@ -19,7 +19,8 @@
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "off",
-				"noChildrenProp": "off"
+				"noChildrenProp": "off",
+				"noConstructorReturn": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off",
@@ -29,7 +30,8 @@
 				"noForEach": "off"
 			},
 			"style": {
-				"noNonNullAssertion": "off"
+				"noNonNullAssertion": "off",
+				"noInferrableTypes": "off"
 			},
 			"performance": {
 				"noAccumulatingSpread": "off"

@@ -55,6 +55,7 @@ const taskEventSchema = new Schema<TaskEvent>({
 			"priorityUpdated",
 			"labelsUpdated",
 			"assigneeUpdated",
+			"gitUpdated",
 		],
 		required: true,
 	},
@@ -92,6 +93,9 @@ const taskEventSchema = new Schema<TaskEvent>({
 	updatedAssignee: {
 		id: { type: Schema.Types.Mixed, ref: "User" },
 		name: String,
+	},
+	gitUpdated: {
+		type: String,
 	},
 });
 

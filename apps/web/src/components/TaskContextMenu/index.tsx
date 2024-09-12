@@ -89,12 +89,13 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 				Copy Branch Name
 			</ContextMenuItem>
 
-			<ContextMenuSeparator />
 			<ContextMenuItem>
 				<Link href={`/tasks/${task._id}`} target="_blank">
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>
+			<ContextMenuSeparator />
+
 			<ContextMenuItem onClick={deleteCurrentTask}>
 				<div className="mr-2">
 					<Trash className="size-4" color="red" />

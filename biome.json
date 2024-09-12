@@ -5,8 +5,7 @@
       "node_modules"
     ],
     "include": [
-      "src",
-      "apps"
+      "src"
     ]
   },
   "organizeImports": {
@@ -24,38 +23,6 @@
       }
     }
   },
-  "overrides": [
-    {
-      "include": [
-        "packages/ui/**"
-      ],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noExplicitAny": "off",
-            "noArrayIndexKey": "off"
-          },
-          "style": {
-            "noNonNullAssertion": "off"
-          },
-          "a11y": {
-            "useButtonType": "off",
-            "noSvgWithoutTitle": "off",
-            "useValidAnchor": "off"
-          },
-          "correctness": {
-            "noChildrenProp": "off"
-          },
-          "complexity": {
-            "noForEach": "off"
-          },
-          "performance": {
-            "noAccumulatingSpread": "off"
-          }
-        }
-      }
-    }
-  ],
   "javascript": {
     "globals": [
       "$",
