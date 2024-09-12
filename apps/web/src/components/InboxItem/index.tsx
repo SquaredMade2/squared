@@ -12,7 +12,6 @@ import {
 	useWorkspaceStore,
 } from "@/storeZ";
 import { useTheme } from "next-themes";
-import { Task } from "@repo/db";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,
@@ -28,9 +27,8 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const timeSinceCreation = toDayString - isoDateString;
 	const millisecondsPerDay = 1000 * 60 * 60 * 24;
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
-	const { currentTask, setCurrentTask, getAllTasks, tasks } = useTaskStore(
-		(state) => state,
-	);
+
+	const { currentTask, setCurrentTask, tasks } = useTaskStore((state) => state);
 	const { getAllNotifications } = useNotificationStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	if (!currentWorkspace) return null;
@@ -39,20 +37,6 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 
 	const isActive = currentTask?.id === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
-	const { theme } = useTheme();
-	const inactiveNotread = "text-muted-foreground bg-muted dark:bg-accent";
-
-	const inactiveRead =
-		"bg-popover text-muted-foreground border dark:border-none";
-
-	const active =
-		"border border-indigo-400 shadow shadow-indigo-400 bg-popover dark:bg-[#282E43] text-foreground";
-
-	const hover = isActive
-		? ""
-		: theme === "dark"
-			? "hover:text-foreground hover:bg-[#282E43]"
-			: "hover:border hover:border-gray-500 hover:shadow hover:text-foreground";
 
 	const handleMarkRead = (id: string) => {
 		socket.emit("sending_notificationId", id, user?.id);
@@ -84,9 +68,13 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	return (
 		<div
 			onClick={() => handleClick(taskId, notificationId)}
-			className={`p-2 w-80 rounded-md cursor-pointer  ${
-				isActive ? active : read ? inactiveRead : inactiveNotread
-			} ${hover}`}
+			className={`p-2 w-80 rounded-md text-muted-foreground bg-popover border cursor-pointer  ${
+				isActive
+					? "border-indigo-400 shadow shadow-indigo-400 dark:bg-[#282E43] text-foreground"
+					: read
+						? "dark:border-none"
+						: "bg-muted dark:bg-accent"
+			} ${!isActive ? "hover:text-foreground hover:border hover:shadow dark:hover:bg-[#282E43] hover:border-gray-500" : ""}`}
 		>
 			<div ref={isActive ? activeDivRef : null}>
 				<div className="flex justify-between">
