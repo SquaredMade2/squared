@@ -1,6 +1,5 @@
 const fs = require("node:fs")
 import { getSvgPaths } from "./getSvgPaths";
-import makeSvgElement from "./makeSvgElement";
 function minifySvg(string) {
     return string
       ? string

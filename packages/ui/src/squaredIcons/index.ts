@@ -19,6 +19,7 @@ function createReactComponent(name, svgContent) {
     return `import React from 'react';
 
     interface ${name}Props {
+      className?: string;
       size?: number;
       color?: string;
       strokeWidth?: number;
@@ -26,6 +27,7 @@ function createReactComponent(name, svgContent) {
     }
     
     const ${name}: React.FC<${name}Props> = ({
+      className = ""
       size = 24,
       color = 'currentColor',
       strokeWidth = 2,
@@ -36,6 +38,7 @@ function createReactComponent(name, svgContent) {
     
       return (
         <svg
+          className={className}
           width={size}
           height={size}
           viewBox="0 0 24 24"
