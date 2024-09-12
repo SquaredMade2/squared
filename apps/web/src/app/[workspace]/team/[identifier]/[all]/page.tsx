@@ -8,26 +8,22 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import {
 	useAuthStore,
+	useFilterStore,
 	useTaskStore,
 	useTeamStore,
 	useUserStore,
-	useViewsStore,
+	useViewStore,
 	useWorkspaceStore,
 } from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { SavedFilter, Status } from "@repo/db";
 
 export default function Home() {
-	const { view, currentFilter, filterTasks, setCurrentFilter } = useViewsStore(
-		(state) => state,
-	);
+	const { view } = useViewStore((state) => state);
+	const { currentFilter, filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
-	const {
-		currentWorkspace,
-		getAllWorkspaces,
-		setCurrentWorkspace,
-		getWorkspaceFilters,
-	} = useWorkspaceStore((state) => state);
+	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
 	const {
 		tasks: initialTasks,
 		updateTask,
@@ -70,11 +66,6 @@ export default function Home() {
 					if (team) {
 						const tasks = await getAllTasks(team.id);
 						setTasks(tasks);
-						if (currentFilter) {
-							setTasks(filterTasks(tasks, currentFilter));
-						} else {
-							setTasks(tasks);
-						}
 					}
 				}
 			}
@@ -84,6 +75,9 @@ export default function Home() {
 
 		initiateStore();
 	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
+	console.log("currentFilter: ", currentFilter);
+	currentFilter &&
+		console.log("Filtered Tasks: ", filterTasks(initialTasks, currentFilter));
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -127,8 +121,17 @@ export default function Home() {
 			<div className="w-full px-2 sm:px-5">
 				<TopNavBar />
 			</div>
-
-			{currentWorkspace ? (
+			{!authorized ? (
+				<div className="flex items-center flex-col w-screen h-full bg-background">
+					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
+						<h1 className="text-2xl">Not Authorized</h1>
+						<p>
+							You are not authorized to access team with identifier{" "}
+							{`"${teamIdentifier}"`}
+						</p>
+					</div>
+				</div>
+			) : currentWorkspace ? (
 				<div className={"flex flex-col flex-grow mx-2"}>
 					<ScrollArea
 						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
@@ -137,7 +140,7 @@ export default function Home() {
 							activeSelected={activeSelected}
 							backlogSelected={backlogSelected}
 							handleDragEnd={handleDragEnd}
-							tasks={tasks}
+							tasks={currentFilter ? filterTasks(tasks, currentFilter) : tasks}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</ScrollArea>

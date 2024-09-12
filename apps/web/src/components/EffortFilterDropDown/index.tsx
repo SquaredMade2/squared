@@ -7,9 +7,8 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { low, medium, high } from "@/components/Svg";
-import { useViewsStore } from "@/storeZ"; // Adjust as necessary
 import type { EffortFilterDropDownProps } from "./EffortFilterDropDown.interfaces";
-import type { FilterCondition } from "@/storeZ/views";
+import { useFilterStore, type FilterCondition } from "@/storeZ/filters";
 
 const groupEffort = [
 	{
@@ -68,12 +67,7 @@ const EffortFilterDropDown = ({
 	setShowEffortFilterDropDown,
 }: EffortFilterDropDownProps) => {
 	const [query, setQuery] = useState("");
-	const addFilter = useViewsStore((state) => state.addFilter);
-
-	const filteredGroup =
-		query === ""
-			? groupEffort
-			: groupEffort.filter((item) => item.name === Number.parseInt(query));
+	const { addFilter } = useFilterStore((state) => state);
 
 	const handleSelect = (effortValue: number) => {
 		const filterCondition: FilterCondition = {
@@ -94,7 +88,7 @@ const EffortFilterDropDown = ({
 				<div className="hidden" aria-hidden="true" />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-72 p-0 mt-5 mr-32">
-				{filteredGroup.map((item) => (
+				{groupEffort.map((item) => (
 					<DropdownMenuItem
 						key={item.id}
 						onSelect={() => handleSelect(item.name)}

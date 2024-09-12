@@ -1,5 +1,5 @@
 import type { Label, User, Workspace } from "@repo/db";
-import type { SavedFilter, TaskFilter } from "../views";
+import type { SavedFilter } from "../filters";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];

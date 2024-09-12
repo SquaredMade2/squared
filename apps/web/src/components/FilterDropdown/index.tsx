@@ -9,7 +9,6 @@ import LabelFilterDropDown from "@/components/LabelFilterDropDown";
 import DueDateFilterDropDown from "@/components/DueDateFilterDropDown";
 import EffortFilterDropDown from "@/components/EffortFilterDropDown";
 
-import { useViewsStore } from "@/storeZ";
 import {
 	Popover,
 	PopoverTrigger,
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/command";
 import type { FilterOption } from "./FilterDropdown.interfaces";
 import { Button } from "../ui/button";
+import { useFilterStore } from "@/storeZ";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
@@ -81,10 +81,7 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
-	const { currentFilter, removeFilter } = useViewsStore((state) => ({
-		currentFilter: state.currentFilter,
-		removeFilter: state.removeFilter,
-	}));
+	const { currentFilter, removeFilter } = useFilterStore((state) => state);
 
 	const handleSelect = (option: FilterOption) => {
 		setFilterOption(option);

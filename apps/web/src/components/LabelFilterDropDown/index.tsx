@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
 	Popover,
 	PopoverTrigger,
@@ -11,74 +11,43 @@ import {
 	CommandItem,
 	CommandEmpty,
 } from "@/components/ui/command";
-import { useViewsStore } from "@/storeZ";
+import { useFilterStore, useWorkspaceStore } from "@/storeZ";
 import type { LabelFilterDropDownProps } from "./LabelFilterDropDown.interfaces";
-import type { FilterCondition } from "@/storeZ/views";
-
-const groupLabel = [
-	{
-		id: 0,
-		name: "Bug",
-		border: false,
-		svg: <div className="size-3 rounded-full bg-[#DD2E44]" />,
-		group: "labels",
-	},
-	{
-		id: 1,
-		name: "Feature",
-		border: false,
-		svg: <div className="size-3 rounded-full bg-[#AA8ED6]" />,
-		group: "labels",
-	},
-	{
-		id: 2,
-		name: "Improvement",
-		border: false,
-		svg: <div className="size-3 rounded-full bg-[#55ACEE]" />,
-		group: "labels",
-	},
-	{
-		id: 3,
-		name: "Red",
-		border: false,
-		svg: <div className="size-3 rounded-full bg-[#F4900C]" />,
-		group: "labels",
-	},
-	{
-		id: 4,
-		name: "Test",
-		border: false,
-		svg: <div className="size-3 rounded-full bg-[#808080]" />,
-		group: "labels",
-	},
-];
+import type { FilterCondition } from "@/storeZ/filters";
 
 const LabelFilterDropDown = ({
 	showLabelFilterDropDown,
 	setShowLabelFilterDropDown,
 }: LabelFilterDropDownProps): React.ReactElement => {
-	const [query, setQuery] = useState("");
-	const addFilter = useViewsStore((state) => state.addFilter);
-	const filteredOptions =
-		query === ""
-			? groupLabel
-			: groupLabel.filter((item) =>
-					item.name
-						.toLowerCase()
-						.replace(/\s+/g, "")
-						.includes(query.toLowerCase().replace(/\s+/g, "")),
-				);
+	const [query, setQuery] = useState<string>("");
+	const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { workspaceLabels } = useWorkspaceStore((state) => state);
 
-	const handleSelect = (itemName: string) => {
-		const filterCondition: FilterCondition = {
-			field: "labels",
-			value: itemName,
-			operator: "arrayIncludesAny",
-		};
-
-		addFilter(filterCondition);
-		setShowLabelFilterDropDown(false);
+	const handleSelect = (labelName: string) => {
+		setSelectedLabels((prev) =>
+			prev.includes(labelName)
+				? prev.filter((label) => label !== labelName)
+				: [...prev, labelName],
+		);
 	};
+
+	useEffect(() => {
+		// Apply filters based on the selected labels
+		if (selectedLabels.length > 0) {
+			for (const label of selectedLabels) {
+				const filterCondition: FilterCondition = {
+					field: "labels",
+					value: label,
+					operator: "arrayIncludesAny",
+				};
+				addFilter(filterCondition);
+			}
+		} else {
+			removeFilter();
+		}
+		setShowLabelFilterDropDown(false);
+	}, [selectedLabels]);
 
 	return (
 		<Popover
@@ -90,20 +59,21 @@ const LabelFilterDropDown = ({
 			</PopoverTrigger>
 			<PopoverContent className="w-72 p-0 mt-4 mr-32" sideOffset={10}>
 				<Command>
-					<CommandInput placeholder="Search labels..." />
+					<CommandInput
+						placeholder="Search labels..."
+						value={query}
+						onValueChange={setQuery}
+					/>
 					<CommandList>
 						<CommandEmpty>No results found.</CommandEmpty>
-						{filteredOptions.map((item) => (
+						{workspaceLabels.map((item) => (
 							<CommandItem
-								key={item.name}
+								key={item.id}
 								value={item.name}
-								onSelect={() => {
-									handleSelect(item.name);
-									setShowLabelFilterDropDown(false);
-								}}
+								onSelect={() => handleSelect(item.name)}
 							>
 								<div className="flex items-center space-x-2">
-									{item.svg}
+									<div className={`size-3 rounded-full bg-[${item.color}]`} />,
 									<span>{item.name}</span>
 								</div>
 							</CommandItem>

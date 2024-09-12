@@ -7,6 +7,7 @@ export {
 	useNotificationStore,
 	NotificationStoreContext,
 } from "./notifications";
+export { useFilterStore, FilterStoreContext } from "./filters";
 export { useTaskStore, TaskStoreContext } from "./tasks";
 export { useTeamStore, TeamStoreContext } from "./teams";
 export { useUserStore, UserStoreContext } from "./users";

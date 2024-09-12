@@ -12,8 +12,8 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import type { DueDateFilterDropDownProps } from "@/app/interfaces/Filter.interfaces";
 import { Button } from "@/components/ui/button";
-import { useViewsStore } from "@/storeZ";
-import type { FilterCondition } from "@/storeZ/views";
+import { useFilterStore } from "@/storeZ";
+import type { FilterCondition } from "@/storeZ/filters";
 
 const DueDateFilterDropDown = ({
 	showDueDateFilterDropDown,
@@ -23,7 +23,7 @@ const DueDateFilterDropDown = ({
 	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(
 		"before",
 	);
-	const addFilter = useViewsStore((state) => state.addFilter);
+	const { addFilter } = useFilterStore((state) => state);
 
 	const handleSelectDate = (date: Date) => {
 		if (selectedToggle && date) {

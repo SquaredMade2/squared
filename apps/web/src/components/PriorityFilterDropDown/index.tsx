@@ -3,13 +3,15 @@ import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
-	DropdownMenuItem,
+	DropdownMenuCheckboxItem,
+	DropdownMenuSeparator,
+	DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { high, medium, low } from "@/components/Svg";
-import { useViewsStore } from "@/storeZ";
-import type { PriorityFilterDropDownProps } from "./PriorityFilterDropDown.interfaces";
 import { CircleAlert, Ellipsis } from "lucide-react";
-import type { FilterCondition, TaskFilter } from "@/storeZ/views";
+import { useFilterStore } from "@/storeZ";
+import type { FilterCondition } from "@/storeZ/filters";
+import type { PriorityFilterDropDownProps } from "./PriorityFilterDropDown.interfaces";
 
 const groupPriority = [
 	{
@@ -53,32 +55,31 @@ const PriorityFilterDropDown = ({
 	showPriorityFilterDropDown,
 	setShowPriorityFilterDropDown,
 }: PriorityFilterDropDownProps) => {
-	const [query, setQuery] = useState("");
-	const [filterOption, setFilterOption] = useState("");
-	const addFilter = useViewsStore((state) => state.addFilter);
+	const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
+	const { addFilter, removeFilter } = useFilterStore((state) => state);
 
-	const filteredGroup =
-		query === ""
-			? groupPriority
-			: groupPriority.filter((item) =>
-					item.name
-						.toLowerCase()
-						.replace(/\s+/g, "")
-						.includes(query.toLowerCase().replace(/\s+/g, "")),
-				);
+	const handlePriorityChange = (priority: string, checked: boolean) => {
+		setSelectedPriorities((prev) =>
+			checked ? [...prev, priority] : prev.filter((item) => item !== priority),
+		);
+	};
 
 	useEffect(() => {
-		if (filterOption) {
-			const taskFilter: FilterCondition = {
-				field: "priority",
-				value: filterOption,
-				operator: "equals",
-			};
-
-			addFilter(taskFilter);
-			setShowPriorityFilterDropDown(false);
+		// Apply or remove filters based on selected priorities
+		if (selectedPriorities.length > 0) {
+			for (const priority of selectedPriorities) {
+				const taskFilter: FilterCondition = {
+					field: "priority",
+					value: priority,
+					operator: "equals",
+				};
+				addFilter(taskFilter);
+			}
+		} else {
+			removeFilter();
 		}
-	}, [filterOption]);
+		setShowPriorityFilterDropDown(false);
+	}, [selectedPriorities]);
 
 	return (
 		<DropdownMenu
@@ -89,16 +90,21 @@ const PriorityFilterDropDown = ({
 				<div className="hidden" aria-hidden="true" />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-72 p-0 mt-6 mr-32">
-				{filteredGroup.map((item) => (
-					<DropdownMenuItem
+				<DropdownMenuLabel>Priority</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				{groupPriority.map((item) => (
+					<DropdownMenuCheckboxItem
 						key={item.id}
-						onSelect={() => setFilterOption(item.name)}
+						checked={selectedPriorities.includes(item.name)}
+						onCheckedChange={(checked) =>
+							handlePriorityChange(item.name, checked)
+						}
 					>
 						<div className="flex items-center space-x-2">
 							{item.svg}
 							<span>{item.name}</span>
 						</div>
-					</DropdownMenuItem>
+					</DropdownMenuCheckboxItem>
 				))}
 			</DropdownMenuContent>
 		</DropdownMenu>

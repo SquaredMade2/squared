@@ -20,7 +20,7 @@ import TaskContextMenu from "../TaskContextMenu";
 import {
 	useTaskStore,
 	useTeamStore,
-	useViewsStore,
+	useViewStore,
 	useWorkspaceStore,
 } from "@/storeZ";
 
@@ -32,7 +32,7 @@ const TaskCard = ({
 }: TaskCardProps) => {
 	const router = useRouter();
 
-	const { showDateTime, showPriority, showLabels, view } = useViewsStore(
+	const { showDateTime, showPriority, showLabels, view } = useViewStore(
 		(state) => ({
 			showDateTime: state.showDateTime,
 			showPriority: state.showPriority,

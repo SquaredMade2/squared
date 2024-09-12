@@ -50,13 +50,25 @@ export const createFilterStore = (
 				},
 				filterTasks: (tasks, filter) => {
 					return tasks.filter((task) => {
-						return filter.logic === "AND"
-							? filter.conditions.every((condition) =>
-									checkCondition(task, condition),
-								)
-							: filter.conditions.some((condition) =>
-									checkCondition(task, condition),
-								);
+						let match = filter.logic === "AND";
+
+						for (const condition of filter.conditions) {
+							if (filter.logic === "AND") {
+								// If any condition fails, return false (for AND logic)
+								if (!checkCondition(task, condition)) {
+									match = false;
+									break;
+								}
+							} else if (filter.logic === "OR") {
+								// If any condition passes, return true (for OR logic)
+								if (checkCondition(task, condition)) {
+									match = true;
+									break;
+								}
+							}
+						}
+
+						return match;
 					});
 				},
 				saveFilter: async (filter: SavedFilter): Promise<FilterResponse> => {
@@ -156,7 +168,7 @@ export const createFilterStore = (
 				},
 			}),
 			{
-				name: "view-store",
+				name: "filter-store",
 				getStorage: () => sessionStorage,
 			},
 		),
