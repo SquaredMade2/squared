@@ -1,13 +1,12 @@
 import { useRouter } from "next/navigation";
 import { ChevronLeft, PanelLeft } from "lucide-react";
 import { Button } from "../ui/button";
-import { useWorkspaceStore } from "@/storeZ";
+import { useViewStore, useWorkspaceStore } from "@/storeZ";
 
-const SettingsTopNavBar: React.FC<{ setShowNavBar: () => void }> = ({
-	setShowNavBar,
-}) => {
+const SettingsTopNavBar = () => {
 	const router = useRouter();
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 	const handleBackClick = () => {
 		if (currentWorkspace) {
 			router.push(`/${currentWorkspace.url}`);
@@ -20,7 +19,7 @@ const SettingsTopNavBar: React.FC<{ setShowNavBar: () => void }> = ({
 				variant="ghost"
 				size="icon"
 				className="p-2"
-				onClick={setShowNavBar}
+				onClick={() => setShowNavbar(!showNavbar)}
 				aria-label="Toggle navigation menu"
 			>
 				<PanelLeft className="h-5 w-5 text-muted-foreground" />
