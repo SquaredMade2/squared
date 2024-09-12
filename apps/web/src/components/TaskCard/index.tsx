@@ -136,7 +136,7 @@ const TaskCard = ({
 
 	const renderTaskCard = (task: Task, index: number) => {
 		const taskLabels = workspaceLabels?.filter((label) =>
-			task.labels.includes(label.id),
+			task.identifier.includes(label.id),
 		);
 
 		return (
