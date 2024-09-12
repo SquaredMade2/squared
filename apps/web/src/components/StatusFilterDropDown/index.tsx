@@ -78,12 +78,7 @@ const StatusFilterDropDown = ({
 
 	useEffect(() => {
 		if (selectedStatuses.length > 0) {
-			console.log("StatusFilter: ", {
-				field: "status",
-				value: selectedStatuses,
-				operator: "arrayIncludesAny",
-			});
-			const newFilter = addFilter({
+			addFilter({
 				field: "status",
 				value: selectedStatuses,
 				operator: "arrayIncludesAny",

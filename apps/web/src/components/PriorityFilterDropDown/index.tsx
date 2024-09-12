@@ -10,8 +10,8 @@ import {
 import { high, medium, low } from "@/components/Svg";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { useFilterStore } from "@/storeZ";
-import type { FilterCondition } from "@/storeZ/filters";
 import type { PriorityFilterDropDownProps } from "./PriorityFilterDropDown.interfaces";
+import { Priority } from "@repo/db";
 
 const groupPriority = [
 	{
@@ -20,34 +20,39 @@ const groupPriority = [
 		border: false,
 		svg: <Ellipsis className="size-4" />,
 		group: "priority",
+		value: Priority.noPriority,
 	},
 	{
 		id: 1,
-		name: "Urgent",
-		border: false,
-		svg: <CircleAlert className="size-4 fill-destructive" />,
-		group: "priority",
-	},
-	{
-		id: 2,
-		name: "High",
-		border: false,
-		svg: high(),
-		group: "priority",
-	},
-	{
-		id: 3,
-		name: "Medium",
-		border: false,
-		svg: medium(),
-		group: "priority",
-	},
-	{
-		id: 4,
 		name: "Low",
 		border: false,
 		svg: low(),
 		group: "priority",
+		value: Priority.low,
+	},
+	{
+		id: 2,
+		name: "Medium",
+		border: false,
+		svg: medium(),
+		group: "priority",
+		value: Priority.medium,
+	},
+	{
+		id: 3,
+		name: "High",
+		border: false,
+		svg: high(),
+		group: "priority",
+		value: Priority.high,
+	},
+	{
+		id: 4,
+		name: "Urgent",
+		border: false,
+		svg: <CircleAlert className="size-4 fill-destructive" />,
+		group: "priority",
+		value: Priority.urgent,
 	},
 ];
 
@@ -55,31 +60,26 @@ const PriorityFilterDropDown = ({
 	showPriorityFilterDropDown,
 	setShowPriorityFilterDropDown,
 }: PriorityFilterDropDownProps) => {
-	const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
+	const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
 	const { addFilter, removeFilter } = useFilterStore((state) => state);
 
-	const handlePriorityChange = (priority: string, checked: boolean) => {
+	const handlePriorityChange = (priority: Priority, checked: boolean) => {
 		setSelectedPriorities((prev) =>
 			checked ? [...prev, priority] : prev.filter((item) => item !== priority),
 		);
 	};
 
 	useEffect(() => {
-		// Apply or remove filters based on selected priorities
 		if (selectedPriorities.length > 0) {
-			for (const priority of selectedPriorities) {
-				const taskFilter: FilterCondition = {
-					field: "priority",
-					value: priority,
-					operator: "equals",
-				};
-				addFilter(taskFilter);
-			}
+			addFilter({
+				field: "priority",
+				value: selectedPriorities,
+				operator: "arrayIncludesAny",
+			});
 		} else {
-			removeFilter("priority");
+			removeFilter("status");
 		}
-		setShowPriorityFilterDropDown(false);
-	}, [selectedPriorities]);
+	}, [selectedPriorities, addFilter, removeFilter]);
 
 	return (
 		<DropdownMenu
@@ -95,9 +95,9 @@ const PriorityFilterDropDown = ({
 				{groupPriority.map((item) => (
 					<DropdownMenuCheckboxItem
 						key={item.id}
-						checked={selectedPriorities.includes(item.name)}
+						checked={selectedPriorities.includes(item.value)}
 						onCheckedChange={(checked) =>
-							handlePriorityChange(item.name, checked)
+							handlePriorityChange(item.value, checked)
 						}
 					>
 						<div className="flex items-center space-x-2">
