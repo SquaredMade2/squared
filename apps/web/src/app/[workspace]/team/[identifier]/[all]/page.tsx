@@ -16,7 +16,7 @@ import {
 	useWorkspaceStore,
 } from "@/storeZ";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { SavedFilter, Status } from "@repo/db";
+import type { Status } from "@repo/db";
 
 export default function Home() {
 	const { view } = useViewStore((state) => state);
@@ -57,12 +57,13 @@ export default function Home() {
 				const allUsers = await getAllUsers(currentWorkspace.id);
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
-
+				// Because usually currentTeam and teamIdentifier is usually going to be the same,
+				// It never is able to update task state
+				// I'll get rid of this comment when PR is ready for approval
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const teams = await getAllTeams(currentWorkspace.id);
 					const team = teams.find((t) => t.identifier === teamIdentifier);
 					team && setCurrentTeam(team);
-
 					if (team) {
 						const tasks = await getAllTasks(team.id);
 						setTasks(tasks);
@@ -74,7 +75,22 @@ export default function Home() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
+	}, [
+		currentWorkspace,
+		user,
+		workspaceUrl,
+		currentTeam,
+		teamIdentifier,
+		initialTasks,
+	]);
+
+	useEffect(() => {
+		// Whenever task updates, update local task state
+		if (initialTasks) {
+			setTasks(initialTasks);
+		}
+	}, [initialTasks]);
+
 	useEffect(() => {
 		console.log("currentFilters", currentFilters);
 		console.log("filteredTasks", filterTasks(tasks));
