@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import {
 	Circle,
 	CircleCheckBig,
@@ -9,16 +8,10 @@ import {
 } from "lucide-react";
 import { inProgress } from "../Svg";
 import { statusOptions } from "@/constants/designations";
-import { setStatus } from "@/store/taskData";
-import { getSingleTask } from "@/store/task/thunks";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import { EventType } from "@/interfaces/event.interfaces";
 
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useModalStore } from "@/storeZ";
-import { useToast } from "../ui/use-toast";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
