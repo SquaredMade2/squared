@@ -14,7 +14,7 @@ import PriorityButton from "@/components/PriorityButton";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import DateButton from "@/components/DateButton";
 import EffortEstimateButton from "@/components/EffortEstimateButton";
-import LabelDropdownButton from "../LabelDropdownButton";
+import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import DesignationsContainer from "@/components/DesignationsContainer";
 
@@ -234,6 +234,7 @@ const NewIssueModal = () => {
 						<div className="w-1/4 space-y-4">
 							<div>
 								<StatusDropdownButton />
+								<LabelDropdownButton />
 							</div>
 							<DialogFooter>
 								<Button
