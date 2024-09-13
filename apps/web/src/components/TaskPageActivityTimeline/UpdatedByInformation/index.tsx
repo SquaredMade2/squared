@@ -221,7 +221,7 @@ const UpdatedByInformation = () => {
 	const displayAuthorProfile = (authorName: string) => {
 		return (
 			<>
-				<Avatar title={getInitials("hi")} />
+				<Avatar title={getInitials(authorName)} />
 			</>
 		);
 	};
