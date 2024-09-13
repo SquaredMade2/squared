@@ -44,6 +44,7 @@ import {
 	useWorkspaceStore,
 } from "@/storeZ";
 import type { Task } from "@repo/db";
+import LabelButton from "./LabelButton";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
@@ -231,6 +232,9 @@ const NewIssueModal = () => {
 						</div>
 						<Separator orientation="vertical" />
 						<div className="w-1/4 space-y-4">
+							<div>
+								<LabelButton />
+							</div>
 							<DialogFooter>
 								<Button
 									onClick={handleDiscard}
