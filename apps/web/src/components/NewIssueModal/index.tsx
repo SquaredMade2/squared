@@ -17,6 +17,7 @@ import EffortEstimateButton from "@/components/EffortEstimateButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import DesignationsContainer from "@/components/DesignationsContainer";
+import { PriorityDropdownButton } from "./PriorityDropdownButton";
 
 import { Separator } from "../ui/separator";
 import {
@@ -235,6 +236,7 @@ const NewIssueModal = () => {
 							<div>
 								<StatusDropdownButton />
 								<LabelDropdownButton />
+								<PriorityDropdownButton />
 							</div>
 							<DialogFooter>
 								<Button
