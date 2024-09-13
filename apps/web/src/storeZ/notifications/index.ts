@@ -47,6 +47,42 @@ export const createNotificationStore = (
 						};
 					}
 				},
+				updateNotification: async (
+					notificationId: string,
+					notification: Partial<Notification>,
+				): Promise<NotificationResponse> => {
+					try {
+						const response: { data: ApiReturnType<Notification> } =
+							await axios.put(apiString(notificationId), notification);
+						const updatedNotification = response.data.data;
+						if (!updatedNotification) {
+							return {
+								notification: null,
+								message: response.data.message,
+								variant: response.data.variant,
+							};
+						}
+						set((state) => ({
+							notifications: state.notifications.map((n) =>
+								n.id === notificationId ? updatedNotification : n,
+							),
+						}));
+						return {
+							notification: updatedNotification,
+							message: response.data.message,
+							variant: response.data.variant,
+						};
+					} catch (error) {
+						return {
+							notification: null,
+							message:
+								error instanceof Error
+									? error.message
+									: "Error updating notification",
+							variant: "destructive",
+						};
+					}
+				},
 				deleteNotification: async (notificationId: string): Promise<void> => {
 					try {
 						await axios.delete(apiString(notificationId));
@@ -63,11 +99,25 @@ export const createNotificationStore = (
 					userId: string,
 				): Promise<Notification[]> => {
 					try {
-						const response = await axios.get<Notification[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
+						const { data: response }: { data: ApiReturnType<Notification[]> } =
+							await axios.get(
+								`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
+							);
+						const { data: notifications, message, variant } = response;
+						if (!notifications) {
+							set({ notifications: [] });
+							return [];
+						}
+						const sortedNotifications = notifications.sort(
+							(a: Notification, b: Notification) => {
+								return (
+									new Date(b.createdAt).getTime() -
+									new Date(a.createdAt).getTime()
+								);
+							},
 						);
-						set({ notifications: response.data });
-						return response.data;
+						set({ notifications: sortedNotifications });
+						return notifications;
 					} catch (error) {
 						console.error("Error in getAllNotifications:", error);
 						return [];

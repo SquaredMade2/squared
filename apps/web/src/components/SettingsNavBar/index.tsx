@@ -1,13 +1,11 @@
 "use client";
 import type React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { BriefcaseBusiness, CircleUser, Plus, Users } from "lucide-react";
-import { setCurrentTeam } from "@/store/taskData";
-import type { RootState } from "@/store";
-import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces";
-import type { Team } from "@/store/taskData/taskData.interfaces";
+import type { Team } from "@repo/db";
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
+import { useWorkspaceStore } from "@/storeZ";
+import { useTeamStore } from "@/storeZ";
 import { useTheme } from "next-themes";
 import BackButton from "../BackButton";
 
@@ -15,12 +13,10 @@ const SettingsNavBar = ({
 	setLoading,
 	toggleNavbar,
 }: SettingsNavbarProps): React.ReactElement => {
-	const dispatch = useDispatch();
 	const router = useRouter();
 	const { setTheme } = useTheme();
-	const workspace = useSelector(
-		(state: RootState) => state.taskData.currentWorkspace,
-	);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { setCurrentTeam } = useTeamStore((state) => state);
 	const teams = [] as Team[];
 
 	const navigateTo = (targetRoute: string) => {
@@ -28,11 +24,13 @@ const SettingsNavBar = ({
 		toggleNavbar?.();
 	};
 
-	const handleTeamClick: handleTeamClickNavbar = (team: Team) => {
+	const handleTeamClick = (team: Team) => {
 		if (setLoading) {
 			setLoading(true);
 		}
-		dispatch(setCurrentTeam(team));
+
+		setCurrentTeam(team);
+
 		navigateTo(`teams/${team.identifier}`);
 	};
 
@@ -86,11 +84,11 @@ const SettingsNavBar = ({
 						<Users className="size-4 text-[#858699]" />
 						<p className="text-muted-foreground pl-2">Teams</p>
 					</div>
-					{workspace && (
+					{currentWorkspace && (
 						<ul>
 							{teams?.map((team) => (
 								<li
-									key={team._id}
+									key={team.id ?? ""}
 									onClick={() => handleTeamClick(team)}
 									className="rounded flex p-0.5 ml-6 cursor-pointer"
 								>
