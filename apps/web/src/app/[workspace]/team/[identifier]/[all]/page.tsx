@@ -47,6 +47,10 @@ export default function Home() {
 		const initiateStore = async () => {
 			setLoading(true);
 
+			if (initialTasks) {
+				setTasks(initialTasks);
+			}
+
 			if (user && !currentWorkspace) {
 				const workspaces = await getAllWorkspaces(user.id);
 				const workspace = workspaces?.find((ws) => ws.url === workspaceUrl);
@@ -57,9 +61,6 @@ export default function Home() {
 				const allUsers = await getAllUsers(currentWorkspace.id);
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
-				// Because usually currentTeam and teamIdentifier is usually going to be the same,
-				// It never is able to update task state
-				// I'll get rid of this comment when PR is ready for approval
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const teams = await getAllTeams(currentWorkspace.id);
 					const team = teams.find((t) => t.identifier === teamIdentifier);
@@ -83,13 +84,6 @@ export default function Home() {
 		teamIdentifier,
 		initialTasks,
 	]);
-
-	useEffect(() => {
-		// Whenever task updates, update local task state
-		if (initialTasks) {
-			setTasks(initialTasks);
-		}
-	}, [initialTasks]);
 
 	useEffect(() => {
 		console.log("currentFilters", currentFilters);
