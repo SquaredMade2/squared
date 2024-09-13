@@ -17,7 +17,7 @@ export const Footer = () => {
 			href: "/contact",
 		},
 	];
-	const legal = [
+	const legal: any[] = [
 		// {
 		// 	name: "Privacy Policy",
 		// 	href: "#",
