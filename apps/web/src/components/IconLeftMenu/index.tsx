@@ -4,18 +4,18 @@ import LogoutButton from "../LogoutButton";
 import ThemeSwitcher from "../ThemeSwitcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faInbox, faHouse } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { useRouter, usePathname } from "next/navigation";
 import SearchButton from "../SearchButton";
 import SearchCommand from "../SearchCommand";
+import { useWorkspaceStore } from "@/storeZ";
 
 const IconLeftMenu = () => {
 	const router = useRouter();
 	const currentRoute = usePathname();
-	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
+	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
 	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
-	const homeRoute = currentRoute.includes(`${workspace.url}`);
+	const homeRoute = currentRoute.includes(`${workspace?.url}`);
 	const viewsRoute = currentRoute.includes("/views");
 	const iconStyle = "w-full h-12 flex items-center ";
 

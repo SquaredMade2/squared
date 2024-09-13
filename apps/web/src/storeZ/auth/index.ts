@@ -50,6 +50,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						apiString("logout"),
 					);
 					set({ user: null });
+					destroyCookie(undefined, "auth-store");
 					sessionStorage.removeItem("auth-store");
 					sessionStorage.removeItem("activity-store");
 					sessionStorage.removeItem("task-store");
@@ -58,7 +59,6 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					sessionStorage.removeItem("workspace-store");
 					sessionStorage.removeItem("user-store");
 					sessionStorage.removeItem("view-store");
-					destroyCookie(undefined, "auth-store");
 					return response.data;
 				},
 				resetPassword: async (email: string) => {

@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { setView } from "@/store/userSettings";
+import React, {} from "react";
 import { ChevronDown, SlidersVertical } from "lucide-react";
-import { Switch } from "../ui/switch";
-import {
-	setShowPriority,
-	setShowLabels,
-	setShowDateTime,
-} from "@/store/toggleTaskFeatures";
 import DisplayPreferences from "../DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { useViewsStore } from "@/storeZ";
+import { useViewStore } from "@/storeZ";
 
 const TopNavBarDisplay = () => {
-	const [view, setView] = useViewsStore((state) => [state.view, state.setView]);
+	const [view, setView] = useViewStore((state) => [state.view, state.setView]);
 
 	const handleListClick = (): void => {
 		setView("list");

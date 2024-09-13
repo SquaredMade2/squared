@@ -9,12 +9,7 @@ import { AssigneeDropdown } from "@/components/AssigneeDropdown";
 import TaskCardLabels from "@/components/TaskCardLabels";
 import { UserSearch } from "lucide-react";
 import type { TaskCardTitleProps } from "./TaskCardTitle.interfaces";
-import {
-	useTaskStore,
-	useTeamStore,
-	useViewsStore,
-	useWorkspaceStore,
-} from "@/storeZ";
+import { useTaskStore, useTeamStore, useViewStore } from "@/storeZ";
 import type { Label, User } from "@repo/db";
 
 const TaskCardTitle = ({
@@ -25,7 +20,7 @@ const TaskCardTitle = ({
 	location,
 	labels,
 }: TaskCardTitleProps) => {
-	const [view, showDateTime, showLabels] = useViewsStore((state) => [
+	const [view, showDateTime, showLabels] = useViewStore((state) => [
 		state.view,
 		state.showDateTime,
 		state.showLabels,

@@ -9,8 +9,9 @@ import { NotificationStoreProvider } from "./notifications";
 import { TaskStoreProvider } from "./tasks";
 import { TeamStoreProvider } from "./teams";
 import { UserStoreProvider } from "./users";
-import { ViewsStoreProvider } from "./views";
+import { ViewStoreProvider } from "./views";
 import { WorkspaceStoreProvider } from "./workspaces";
+import { FilterStoreProvider } from "./filters";
 
 // Create the combined provider component
 export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
@@ -18,21 +19,23 @@ export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 		<ActivityStoreProvider>
 			<AuthStoreProvider>
 				<CommentStoreProvider>
-					<ModalStoreProvider>
-						<NotificationStoreProvider>
-							<TaskStoreProvider>
-								<TeamStoreProvider>
-									<UserStoreProvider>
-										<ViewsStoreProvider>
-											<WorkspaceStoreProvider>
-												{children}
-											</WorkspaceStoreProvider>
-										</ViewsStoreProvider>
-									</UserStoreProvider>
-								</TeamStoreProvider>
-							</TaskStoreProvider>
-						</NotificationStoreProvider>
-					</ModalStoreProvider>
+					<FilterStoreProvider>
+						<ModalStoreProvider>
+							<NotificationStoreProvider>
+								<TaskStoreProvider>
+									<TeamStoreProvider>
+										<UserStoreProvider>
+											<ViewStoreProvider>
+												<WorkspaceStoreProvider>
+													{children}
+												</WorkspaceStoreProvider>
+											</ViewStoreProvider>
+										</UserStoreProvider>
+									</TeamStoreProvider>
+								</TaskStoreProvider>
+							</NotificationStoreProvider>
+						</ModalStoreProvider>
+					</FilterStoreProvider>
 				</CommentStoreProvider>
 			</AuthStoreProvider>
 		</ActivityStoreProvider>
