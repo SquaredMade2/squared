@@ -29,7 +29,7 @@ export const LabelColor = ({ label }: { label: Label }) => {
 	);
 };
 
-const LabelButton = () => {
+export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
 		useWorkspaceStore((state) => state);
@@ -155,5 +155,3 @@ const LabelButton = () => {
 		</Popover>
 	);
 };
-
-export default LabelButton;

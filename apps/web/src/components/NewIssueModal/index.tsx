@@ -9,11 +9,12 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
+
 import PriorityButton from "@/components/PriorityButton";
-import { StatusDropdownButton } from "@/components/StatusDropdownButton";
+import { StatusDropdownButton } from "./StatusDropdownButton";
 import DateButton from "@/components/DateButton";
 import EffortEstimateButton from "@/components/EffortEstimateButton";
-import LabelDropdownButton from "../LabelDropdownButton";
+import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import DesignationsContainer from "@/components/DesignationsContainer";
 
@@ -44,7 +45,6 @@ import {
 	useWorkspaceStore,
 } from "@/storeZ";
 import type { Task } from "@repo/db";
-import LabelButton from "./LabelButton";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
@@ -94,10 +94,10 @@ const NewIssueModal = () => {
 			description: "",
 		},
 	});
+	console.log("current workspake =====", currentWorkspace);
 
 	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
 		const { title, description } = values;
-		console.log("Title submitted:", title);
 		// if (titleInput.replace(/\s+/g, "").length === 0) {
 		// 	toast({
 		// 		title: "Please Enter a Title!",
@@ -119,7 +119,7 @@ const NewIssueModal = () => {
 			});
 			return;
 		}
-		updateWorkspace(currentWorkspace?.id, {
+		await updateWorkspace(currentWorkspace?.id, {
 			issuesCreated: (currentWorkspace.issuesCreated ?? 0) + 1,
 		});
 		try {
@@ -148,7 +148,7 @@ const NewIssueModal = () => {
 				teamId: currentTeam.id,
 				id: "",
 			};
-			console.log(newTask);
+
 			const {
 				task: taskCreatedResponse,
 				message,
@@ -233,7 +233,8 @@ const NewIssueModal = () => {
 						<Separator orientation="vertical" />
 						<div className="w-1/4 space-y-4">
 							<div>
-								<LabelButton />
+								<StatusDropdownButton />
+								<LabelDropdownButton />
 							</div>
 							<DialogFooter>
 								<Button
