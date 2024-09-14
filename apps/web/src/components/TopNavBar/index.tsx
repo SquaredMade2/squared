@@ -3,13 +3,11 @@ import type React from "react";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { SocketContext } from "@/app/SocketProvider";
-import NotificationsList from "@/components/NotificationsList";
 import ToggleNavBar from "../ToggleNavBar";
 import { useAuthStore } from "@/storeZ";
 
 const TopNavBar: React.FC = () => {
-	const [showFilterDropDown, setShowFilterDropDown] = useState(false);
-	const [showNotification, setShowNotification] = useState(false);
+	const [showNotification, setShowNotification] = useState(true);
 	const menuRef = useRef<HTMLDivElement>(null);
 	const notificationButtonRef = useRef(null);
 
@@ -35,23 +33,6 @@ const TopNavBar: React.FC = () => {
 			window.removeEventListener("resize", updateDimension);
 		};
 	}, [screenSize]);
-
-	useEffect(() => {
-		const handler = (e: MouseEvent): void => {
-			if (
-				menuRef.current != null &&
-				!menuRef.current.contains(e.target as HTMLElement)
-			) {
-				setShowFilterDropDown(false);
-			}
-		};
-
-		document.addEventListener("mousedown", handler);
-
-		return () => {
-			document.removeEventListener("mousedown", handler);
-		};
-	});
 
 	useEffect(() => {
 		socket.emit("socketId", user?.id);
@@ -92,15 +73,6 @@ const TopNavBar: React.FC = () => {
 				<div className="flex flex-none sm:justify-end items-center xs:grid-cols-2">
 					<div className="xs:w-full">
 						{screenSize.width < 640 && <FilterDropDown />}
-					</div>
-					<div className="flex items-center mr-6 mt-2 relative">
-						{showNotification && (
-							<NotificationsList
-								notificationButtonRef={notificationButtonRef}
-								setShowNotification={setShowNotification}
-								showNotification={showNotification}
-							/>
-						)}
 					</div>
 					<div className="">
 						<TopNavBarDisplay />
