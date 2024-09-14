@@ -1,4 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Dialog,
 	DialogContent,
@@ -6,14 +9,21 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
+import { StatusDropdownButton } from "./StatusDropdownButton";
+import { EffortDropdownButton } from "./EffortDropdownButton";
+import DateButton from "@/components/DateButton";
+import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
-import DesignationsContainer from "@/components/DesignationsContainer";
+import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import { Separator } from "../ui/separator";
+import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import MentionInput from "@/components/MentionsInput";
 import { SocketContext } from "@/app/SocketProvider";
-import type { OnChangeHandlerFunc } from "react-mentions";
 import {
 	useAuthStore,
 	useModalStore,
@@ -33,40 +43,46 @@ const NewIssueModal = () => {
 	const { currentWorkspace, updateWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { users } = useUserStore((state) => state);
 	const { tasks, addTask } = useTaskStore((state) => state);
 
-	const authorId = user?.id;
-	const { status, priority, labels, dueDate, effortEstimate } = newIssueData;
-
-	const [titleInput, setTitleInput] = useState("");
-	const [descriptionInput, setDescriptionInput] = useState("");
+	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
 
 	const socket = useContext(SocketContext);
 
-	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setTitleInput(e.target.value);
-	};
-
-	const handleDescriptionChange: OnChangeHandlerFunc = (e) => {
-		setDescriptionInput(e.target.value);
-	};
-
 	const handleDiscard = () => {
 		setNewIssueData({});
+
+		form.reset({
+			title: "",
+			description: "",
+		});
+
+		setShowNewIssue(false);
 	};
 
-	const handleCreateIssue = async () => {
-		if (titleInput.replace(/\s+/g, "").length === 0) {
+	const formSchema = z.object({
+		title: z.string().min(2, {
+			message: "Username must be at least 2 characters.",
+		}),
+		description: z.string().min(2, {
+			message: "Username must be at least 2 characters.",
+		}),
+	});
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			title: "",
+			description: "",
+		},
+	});
+
+	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
+		const { title, description } = values;
+
+		if (tasks.some((task) => task.title === title)) {
 			toast({
-				title: "Please Enter a Title!",
-				variant: "destructive",
-			});
-			return;
-		}
-		if (tasks.some((task) => task.title === titleInput)) {
-			toast({
-				title: `${titleInput} already exists`,
+				title: `${title} already exists`,
 				variant: "destructive",
 			});
 			return;
@@ -78,16 +94,18 @@ const NewIssueModal = () => {
 			});
 			return;
 		}
-		updateWorkspace(currentWorkspace?.id, {
+		await updateWorkspace(currentWorkspace?.id, {
 			issuesCreated: (currentWorkspace.issuesCreated ?? 0) + 1,
 		});
 		try {
 			const { transformedInput: transformedTitle, userIds: titleUserId } =
-				transformingMentionInputs(titleInput);
+				transformingMentionInputs(title);
+
 			const {
 				transformedInput: transformedDescriptionInput,
 				userIds: descriptionUserId,
-			} = transformingMentionInputs(descriptionInput);
+			} = transformingMentionInputs(description);
+
 			const mentionedUserId = new Set([...descriptionUserId, ...titleUserId]);
 			const newTask: Task = {
 				authorId: user.id,
@@ -96,7 +114,7 @@ const NewIssueModal = () => {
 				identifier: `${currentTeam.identifier}-${currentWorkspace.issuesCreated}`,
 				status: status ?? "todo",
 				priority: priority ?? "noPriority",
-				labels: labels ?? [],
+				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
@@ -105,6 +123,7 @@ const NewIssueModal = () => {
 				teamId: currentTeam.id,
 				id: "",
 			};
+
 			const {
 				task: taskCreatedResponse,
 				message,
@@ -126,6 +145,7 @@ const NewIssueModal = () => {
 			setShowNewIssue(false);
 			setNewIssueData({});
 		} catch (err) {
+			console.log(err);
 			toast({
 				title: "Error creating issue",
 				variant: "destructive",
@@ -145,35 +165,71 @@ const NewIssueModal = () => {
 						<DialogTitle className="text-sm">New Issue</DialogTitle>
 					</div>
 				</DialogHeader>
-				<input
-					value={titleInput}
-					onChange={handleTitleChange}
-					placeholder={"Issue title..."}
-					className="focus:outline-none bg-transparent text-2xl"
-				/>
-				<MentionInput
-					data={users}
-					value={descriptionInput}
-					placeholder={"Add description..."}
-					className={
-						"w-full leading-6 min-h-min h-full py-4 text-lg mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none break-words break-all whitespace-normal"
-					}
-					name={"addDescription"}
-					onChange={handleDescriptionChange}
-				/>
-				<DesignationsContainer location={"newIssue"} />
-				<DialogFooter>
-					<Button
-						onClick={handleDiscard}
-						className="hover:cursor-pointer bg-transparent"
-						variant="destructive"
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(handleCreateIssue)}
+						className="flex space-x-4"
 					>
-						Discard
-					</Button>
-					<Button onClick={handleCreateIssue} className="hover:cursor-pointer">
-						Create Issue
-					</Button>
-				</DialogFooter>
+						<div className="w-3/4 space-y-4">
+							<FormField
+								control={form.control}
+								name="title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-2xl">Title</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Title"
+												className="text-lg"
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-2xl">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="text-lg resize-none"
+												rows={4}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
+						<Separator orientation="vertical" />
+						<div className="w-1/4 space-y-4">
+							<div className="space-y-4">
+								<StatusDropdownButton />
+								<LabelDropdownButton />
+								<PriorityDropdownButton />
+								<EffortDropdownButton />
+								<DateButton location="newIssueModal" />
+							</div>
+							<DialogFooter>
+								<Button
+									onClick={handleDiscard}
+									className="hover:cursor-pointer bg-transparent"
+									variant="destructive"
+									type="button"
+								>
+									Discard
+								</Button>
+								<Button type="submit" className="hover:cursor-pointer">
+									Create Issue
+								</Button>
+							</DialogFooter>
+						</div>
+					</form>
+				</Form>
 			</DialogContent>
 		</Dialog>
 	);
