@@ -5,11 +5,7 @@ import {
 	CircleCheckBig,
 	CircleDashed,
 	CircleFadingPlus,
-	CircleX,
-	Copy,
-	Check,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { inProgress } from "@/components/Svg";
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore, useActivityStore } from "@/storeZ";
@@ -21,13 +17,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { setBackgroundColor } from "@/components/TaskDesignationsContainer";
 import type { Status } from "@repo/db";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/Button.interfaces";
+import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 
-export const StatusButton = ({ currentTask }: ButtonProps) => {
+const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
-	const { theme } = useTheme();
 	const { updateTask } = useTaskStore((state) => state);
 	const { getTaskEvents } = useActivityStore((state) => state);
 	const taskId = currentTask ? currentTask.id : "";
@@ -70,9 +64,7 @@ export const StatusButton = ({ currentTask }: ButtonProps) => {
 			onValueChange={(value) => handleSelectStatus(value as Status)}
 			defaultValue={sidebarStatus}
 		>
-			<SelectTrigger
-				className={`grow justify-between hover:cursor-pointer ${setBackgroundColor(theme)}`}
-			>
+			<SelectTrigger className="grow justify-between hover:cursor-pointer bg-transparent">
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
 						{showIcon(sidebarStatus)}
@@ -96,4 +88,4 @@ export const StatusButton = ({ currentTask }: ButtonProps) => {
 	);
 };
 
-export default StatusButton;
+export default StatusDropdown;

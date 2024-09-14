@@ -15,9 +15,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/Button.interfaces";
+import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 
-export const EffortEstimateButton = ({ currentTask }: ButtonProps) => {
+const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
@@ -93,4 +93,4 @@ export const EffortEstimateButton = ({ currentTask }: ButtonProps) => {
 	);
 };
 
-export default EffortEstimateButton;
+export default EffortEstimateDropdown;

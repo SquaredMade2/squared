@@ -1,16 +1,16 @@
 import { useState } from "react";
-import PriorityButton from "./components/Buttons/PriorityButton";
-import StatusButton from "./components/Buttons/StatusButton";
-import DateButton from "./components/Buttons/DateButton";
-import EffortEstimateButton from "./components/Buttons/EffortEstimateButton";
-import LabelButton from "./components/Buttons/LabelButton";
-import { AssigneeButton } from "./components/Buttons/AssigneeButton";
+import PriorityDropdown from "./PriorityDropdown";
+import StatusDropdown from "./StatusDropdown";
+import DatePicker from "./DatePicker";
+import EffortEstimateDropdown from "./EffortEstimateDropdown";
+import LabelCombobox from "./LabelCombobox";
+import AssigneeCombobox from "./AssigneeCombobox.";
 import HelpButton from "@/components/HelpButton";
 import EffortModal from "@/components/EffortModal";
 import { useToast } from "../ui/use-toast";
 import { useTaskStore } from "@/storeZ";
 import type { User, Task } from "@repo/db";
-import type { ButtonProps } from "./Button.interfaces";
+import type { ButtonProps } from "./interfaces";
 
 export const setBackgroundColor = (theme: string | undefined) => {
 	if (theme === "light") {
@@ -63,7 +63,7 @@ export default function TaskDesignationsContainer() {
 					<div className="flex items-center shrink-0 text-muted-foreground text-sm font-semibold my-1 w-[95px]">
 						Assignee
 					</div>
-					<AssigneeButton
+					<AssigneeCombobox
 						currentTask={currentTask}
 						handleAssigneeChange={handleAssigneeChange}
 					/>
@@ -75,13 +75,13 @@ export default function TaskDesignationsContainer() {
 	return (
 		<>
 			<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
-				{generateItemContainer("Status", StatusButton, currentTask)}
-				{generateItemContainer("Priority", PriorityButton, currentTask)}
-				{generateItemContainer("Labels", LabelButton, currentTask)}
-				{generateItemContainer("Due Date", DateButton, currentTask)}
+				{generateItemContainer("Status", StatusDropdown, currentTask)}
+				{generateItemContainer("Priority", PriorityDropdown, currentTask)}
+				{generateItemContainer("Labels", LabelCombobox, currentTask)}
+				{generateItemContainer("Due Date", DatePicker, currentTask)}
 				{generateItemContainer(
 					"Effort",
-					EffortEstimateButton,
+					EffortEstimateDropdown,
 					currentTask,
 					<HelpButton onClick={handleOpenModal} />,
 				)}

@@ -14,7 +14,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Plus, Check } from "lucide-react";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/Button.interfaces";
+import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 import { useTaskStore, useWorkspaceStore, useActivityStore } from "@/storeZ";
 import type { Label } from "@repo/db";
 
@@ -37,7 +37,7 @@ export const LabelColor = ({ label }: { label: Label }) => {
 	);
 };
 
-const LabelButton = ({ currentTask }: ButtonProps) => {
+const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
 		useWorkspaceStore((state) => state);
@@ -142,4 +142,4 @@ const LabelButton = ({ currentTask }: ButtonProps) => {
 	);
 };
 
-export default LabelButton;
+export default LabelCombobox;

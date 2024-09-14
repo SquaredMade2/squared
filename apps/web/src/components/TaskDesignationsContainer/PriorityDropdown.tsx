@@ -9,17 +9,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Check, CircleAlert, Ellipsis } from "lucide-react";
-import { useTheme } from "next-themes";
+import { CircleAlert, Ellipsis } from "lucide-react";
 import { high, medium, low } from "@/components/Svg";
-import { setBackgroundColor } from "@/components/TaskDesignationsContainer";
 import { useTaskStore, useActivityStore } from "@/storeZ";
 import type { Priority } from "@repo/db";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/Button.interfaces";
+import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 
-export const PriorityButton = ({ currentTask }: ButtonProps) => {
+const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
-	const { theme } = useTheme();
 	const { updateTask } = useTaskStore((state) => state);
 	const { getTaskEvents } = useActivityStore((state) => state);
 	const sidebarPriority = currentTask ? currentTask?.priority : "";
@@ -64,9 +61,7 @@ export const PriorityButton = ({ currentTask }: ButtonProps) => {
 			onValueChange={(value) => handleSelectPriority(value as Priority)}
 			defaultValue={sidebarPriority}
 		>
-			<SelectTrigger
-				className={`grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer ${setBackgroundColor(theme)}`}
-			>
+			<SelectTrigger className="grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent">
 				<SelectValue placeholder="Select priority">
 					<div className="w-full flex items-center justify-between">
 						<div className="w-4 h-4 mr-2">
@@ -94,4 +89,4 @@ export const PriorityButton = ({ currentTask }: ButtonProps) => {
 	);
 };
 
-export default PriorityButton;
+export default PriorityDropdown;

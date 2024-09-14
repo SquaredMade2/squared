@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/popover";
 import ProfileImage from "@/components/ProfileImage";
 import { useUserStore, useWorkspaceStore } from "@/storeZ";
-import type { AssigneeButtonProps } from "./AssigneeButton.interfaces";
+import type { AssigneeButtonProps } from "./interfaces";
 
-export const AssigneeButton = ({
+const AssigneeCombobox = ({
 	currentTask,
 	handleAssigneeChange,
 }: AssigneeButtonProps) => {
@@ -138,4 +138,4 @@ export const AssigneeButton = ({
 	);
 };
 
-export default AssigneeButton;
+export default AssigneeCombobox;

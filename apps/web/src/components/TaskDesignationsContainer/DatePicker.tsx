@@ -12,9 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/Button.interfaces";
+import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 
-export default function DateButton({ currentTask }: ButtonProps) {
+const DatePicker = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const { updateTask } = useTaskStore((state) => state);
@@ -123,4 +123,6 @@ export default function DateButton({ currentTask }: ButtonProps) {
 			</PopoverContent>
 		</Popover>
 	);
-}
+};
+
+export default DatePicker;
