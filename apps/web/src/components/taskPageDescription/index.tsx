@@ -1,7 +1,5 @@
 import { useSelector } from "react-redux";
-import { useState, useContext } from "react";
-import axios from "axios";
-import { getSingleTask } from "@/store/task/thunks";
+import { useState, useContext, useEffect } from "react";
 import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
@@ -12,14 +10,18 @@ import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "../ui/use-toast";
+import { useTaskStore } from "@/storeZ";
 
 const TaskPageDescription = () => {
-	const dispatch = useAppDispatch();
 	const { toast } = useToast();
-	const description = useSelector(
-		(state: RootState) => state.singleTask.data?.description,
-	);
-	const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
+
+	const currentTask = useTaskStore((state) => state.currentTask);
+	const setCurrentTask = useTaskStore((state) => state.setCurrentTask);
+	const updateTask = useTaskStore((state) => state.updateTask);
+
+	const description = currentTask?.description ?? "";
+	const taskId = currentTask?.id;
+
 	const socket = useContext(SocketContext);
 
 	const [updatedDescription, setUpdatedDescription] = useState(description);
@@ -46,25 +48,21 @@ const TaskPageDescription = () => {
 	const updateDescription = async () => {
 		if (taskId !== undefined) {
 			try {
-				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${taskId}`,
-					{
-						description: transformedDescriptionInput,
-					},
-				);
-				const updatedTaskDescription = await dispatch(
-					getSingleTask(taskId),
-				).unwrap();
-				const { userIds: userId } = transformingMentionInputs(
-					updatedDescription ?? "",
-				);
-				const mentionedUserIds = new Set([...userId]);
-				socket.emit(
-					"user_mentioned",
-					[...mentionedUserIds],
-					updatedTaskDescription._id,
-					user?.id,
-				);
+				if (currentTask) {
+					const newTask = { ...currentTask };
+					newTask.description = updatedDescription;
+					const updatedTaskDescription = await updateTask(taskId, newTask);
+					const { userIds: userId } = transformingMentionInputs(
+						updatedDescription ?? "",
+					);
+					const mentionedUserIds = new Set([...userId]);
+					socket.emit(
+						"user_mentioned",
+						[...mentionedUserIds],
+						updatedTaskDescription.task?.id,
+						user?.id,
+					);
+				}
 			} catch (err) {
 				if (err instanceof Error) {
 					toast({
@@ -77,6 +75,7 @@ const TaskPageDescription = () => {
 		}
 	};
 
+	// disabled because waiting on events refactor, spammed api calls.
 	const logEvent = () => {
 		storeType(EventType.DescriptionUpdated);
 		storeTaskValue(description ?? "");
@@ -87,11 +86,17 @@ const TaskPageDescription = () => {
 		const changeMade = updatedDescription !== description;
 		if (changeMade && taskId !== undefined) {
 			storeCommonFields(user, taskId);
-			logEvent();
+			// logEvent();
 			updateDescription();
 		}
 		setIsFocused(false);
 	};
+
+	useEffect(() => {
+		if (currentTask) {
+			setUpdatedDescription(currentTask.description ?? "");
+		}
+	}, [currentTask]);
 
 	return (
 		<MentionInput

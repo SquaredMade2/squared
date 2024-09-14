@@ -6,15 +6,16 @@ import CopyGitBranchName from "../CopyGitBranchName";
 import { useTaskStore, useTeamStore } from "@/storeZ";
 
 const IssueSidebarTopRow = () => {
+	const currentTask = useTaskStore((state) => state.currentTask);
 	const [isUrlClicked, setIsUrlClicked] = useState(false);
 	const [isIdClicked, setIsIdClicked] = useState(false);
 	const [isBranchClicked, setIsBranchClicked] = useState(false);
-	const { currentTask: task } = useTaskStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const identifier = task?.identifier;
-	if (!currentTeam || !task) return null;
-	const title = task.title;
-	const TaskUrl = `/${currentTeam.name}/task/${currentTeam.identifier}/${formatUrl(title)}`;
+
+	const identifier = currentTask?.identifier ?? "";
+	const title = currentTask?.title ?? "";
+
+	const currentTeam = useTeamStore((state) => state.currentTeam);
+	const TaskUrl = `/${currentTeam?.name ?? ""}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `
 			${replaceSpacesWithDashes(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
@@ -30,7 +31,7 @@ const IssueSidebarTopRow = () => {
 
 	const copyIssueId = async (): Promise<void> => {
 		await navigator.clipboard.writeText(
-			`${replaceSpacesWithDashes(title)}-${task?.identifier}`,
+			`${replaceSpacesWithDashes(title)}-${identifier}`,
 		);
 		setIsIdClicked(true);
 		setTimeout(() => {

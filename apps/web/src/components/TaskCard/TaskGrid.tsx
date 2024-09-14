@@ -24,7 +24,7 @@ const TaskGrid = ({
 	);
 	return (
 		<Link
-			href={`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`}
+			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<Card className="w-[325px]">
 				<CardContent className="p-4 space-y-4">
