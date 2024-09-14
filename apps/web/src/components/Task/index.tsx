@@ -15,14 +15,8 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 
 	const { currentTeam, teams, setCurrentTeam } = useTeamStore((state) => state);
 
-	const currentRepo = useWorkspaceStore(
-		(state) => state.currentWorkspace?.githubRepoInfoId,
-	);
-
-	const [render, setRender] = useState(false);
 	const [showSideNav, setShowSideNav] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
-	const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
 
 	const showBackdrop = showSideNav;
 	const { toast } = useToast();
@@ -57,7 +51,6 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 				);
 				if (foundTask) {
 					setCurrentTask(foundTask);
-					setCurrentTaskId(foundTask.id);
 					setIsLoading(false);
 				} else {
 					toast({
@@ -105,8 +98,8 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 
 	return (
 		<>
-			{((!render && !currentTask) || !currentTask) && <LoadingTask />}
-			{render && currentTask && (
+			{!currentTask || (isLoading && <LoadingTask />)}
+			{currentTask && (
 				<>
 					<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
 						{showBackdrop && (
