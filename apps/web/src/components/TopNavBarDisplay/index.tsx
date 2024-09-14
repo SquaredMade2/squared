@@ -13,7 +13,6 @@ const TopNavBarDisplay = () => {
 	};
 
 	const handleGridClick = (): void => {
-		console.log("grid");
 		setView("grid");
 	};
 

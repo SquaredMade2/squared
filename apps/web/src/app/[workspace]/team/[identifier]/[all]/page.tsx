@@ -85,11 +85,6 @@ export default function Home() {
 		initialTasks,
 	]);
 
-	useEffect(() => {
-		console.log("currentFilters", currentFilters);
-		console.log("filteredTasks", filterTasks(tasks));
-	}, [currentFilters]);
-
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
 		source,
