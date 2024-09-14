@@ -34,7 +34,6 @@ const RenameModal = () => {
 			const response = await updateTask(task.id, {
 				title: inputValue.trim(),
 			});
-			console.log(response);
 			toast(response);
 			setShowRename(false);
 		}

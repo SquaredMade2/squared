@@ -3,15 +3,20 @@ import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
+import { useActivityStore, useTaskStore } from "@/storeZ";
 
 const CreatedByInformation = () => {
-	const { authorName, authorId, createdAt } = useAppSelector(
-		(state) => state.events.taskEventLog,
-	);
+	const eventLogs = useActivityStore((state) => state.events);
+
+	const authorName = eventLogs[0]?.taskEvent?.authorName ?? "";
+
+	const currentTask = useTaskStore((state) => state.currentTask);
+
 	const displayDate = () => {
-		if (createdAt) {
-			const date = parseISO(createdAt.toLocaleDateString());
-			const formattedDate = formatDate(date, "dd MMM yyyy");
+		if (currentTask) {
+			// Assigning it as a new Date automatically makes it a local date
+			const currentTaskDate = new Date("2024-09-11T21:14:27.222Z");
+			const formattedDate = formatDate(currentTaskDate, "dd MMM yyyy");
 			return formattedDate;
 		}
 	};
