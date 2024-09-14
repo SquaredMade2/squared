@@ -1,73 +1,44 @@
-import { type ReactElement, useState } from "react";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import EffortEstimateDropdown from "@/components/EffortEstimateDropdown";
+"use client";
+
+import { useState } from "react";
+import { effortEstimateOptions } from "@/constants/designations";
+import { useTheme } from "next-themes";
 import { high, medium, low } from "@/components/Svg";
-import { setBackgroundColor } from "../DesignationsContainer";
-import type { EffortEstimateButtonProps } from "./EffortEstimateButton.interfaces";
+import { setBackgroundColor } from "@/components/TaskDesignationsContainer";
+import ProgressBar from "@/components/ProgressBar";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import type { DesignationsContainerProps } from "../DesignationsContainer/DesignationsContainer.interfaces";
 
-const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
-	const newIssueEffortEstimate = useAppSelector(
-		(state) => state.taskData.effortEstimate,
-	);
-	const sidebarEffortEstimate: number | undefined = useAppSelector((state) => {
-		if (location === "issueSidebar") {
-			return state.singleTask.data?.effortEstimate;
+const EffortEstimateButton = ({
+	newIssueData,
+	setNewIssueData,
+}: DesignationsContainerProps) => {
+	const [open, setOpen] = useState(false);
+	const { toast } = useToast();
+	const { theme } = useTheme();
+	const effortEstimate = newIssueData?.effortEstimate;
+
+	const extractNumber = (str: string): number =>
+		Number.parseInt(str.substring(0, 2).trim(), 10);
+
+	const handleSelectEffortEstimate = (newEffortEstimate: number) => {
+		if (newIssueData.effortEstimate === newEffortEstimate) return;
+		try {
+			setNewIssueData({ ...newIssueData, effortEstimate: newEffortEstimate });
+		} catch (err) {
+			toast({
+				title: "Error setting effort estimate",
+				variant: "destructive",
+			});
 		}
-		return undefined;
-	});
-	const { theme } = useAppSelector((state) => state.userSettings);
-	const [showDropdown, setShowDropdown] = useState(false);
-
-	const handleBackground = () => {
-		return theme === "light"
-			? "bg-popover hover:bg-popoverHover"
-			: "bg-popoverHover hover:bg-popover";
-	};
-
-	const newIssueButton = (): ReactElement => {
-		return (
-			<button
-				type="button"
-				className={
-					!newIssueEffortEstimate
-						? `${"flex cursor-pointer items-center border border-[0.8px] border-border rounded py-1 px-2 mr-2 h-7 shadow-md"} ${handleBackground()}`
-						: `${"flex cursor-pointer items-center justify-center border-[0.8px] border border-border rounded py-1 px-2 mr-2 h-7 text-foreground text-sm shadow-md"} ${handleBackground()}`
-				}
-				onClick={handleButtonClick}
-			>
-				<span className="w-4 h-4 mr-2 inline-block cursor-pointer">
-					{newIssueEffortEstimate ? showIcon(newIssueEffortEstimate) : medium()}
-				</span>
-				<span className="text-sm flex font-semibold text-foreground cursor-pointer">
-					{newIssueEffortEstimate || "Effort"}
-				</span>
-			</button>
-		);
-	};
-
-	const issueSidebarButton = () => {
-		return (
-			<button
-				type="button"
-				className={`${"grow flex flex-row items-center border-[0.8px] border border-transparent hover:border-border rounded px-2 py-2 mr-2 text-foreground text-sm"} ${setBackgroundColor(theme)}`}
-				onClick={handleButtonClick}
-			>
-				<span className="w-4 h-4 mr-2 inline-block cursor-pointer">
-					{sidebarEffortEstimate ? showIcon(sidebarEffortEstimate) : medium()}
-				</span>
-				<span className="text-sm flex font-semibold text-foreground cursor-pointer">
-					{sidebarEffortEstimate || "Effort"}
-				</span>
-			</button>
-		);
-	};
-
-	const handleButtonClick = (): void => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleClickAway = (): void => {
-		setShowDropdown(!showDropdown);
+		setOpen(false);
 	};
 
 	const showIcon = (estimate: number): JSX.Element => {
@@ -82,26 +53,41 @@ const EffortEstimateButton = ({ location }: EffortEstimateButtonProps) => {
 	};
 
 	return (
-		<>
-			<div
-				className={
-					location === "newIssue"
-						? "relative flex items-center"
-						: "relative grow mr-12"
-				}
-			>
-				{location === "newIssue" && newIssueButton()}
-				{location === "issueSidebar" && issueSidebarButton()}
-				{showDropdown && (
-					<EffortEstimateDropdown
-						location={location}
-						showIcon={showIcon}
-						handleButtonClick={handleButtonClick}
-						handleClickAway={handleClickAway}
-					/>
-				)}
-			</div>
-		</>
+		<DropdownMenu open={open} onOpenChange={setOpen}>
+			<DropdownMenuTrigger asChild>
+				<Button
+					variant="ghost"
+					className={`grow flex flex-row items-center border-[0.8px] border-transparent hover:border-border rounded px-2 py-2 mr-2 text-foreground text-sm ${setBackgroundColor(theme)}`}
+				>
+					<span className="w-4 h-4 mr-2 inline-block">
+						{effortEstimate ? showIcon(effortEstimate) : medium()}
+					</span>
+					<span className="text-sm font-semibold">
+						{effortEstimate || "Effort"}
+					</span>
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="w-[170px]">
+				{effortEstimateOptions.map((effortEstimate) => {
+					const estimateNumber = extractNumber(effortEstimate);
+					return (
+						<DropdownMenuItem
+							key={estimateNumber}
+							onSelect={() => handleSelectEffortEstimate(estimateNumber)}
+							className="flex justify-between items-center px-2 py-1.5"
+						>
+							<div className="flex items-center">
+								<span className="w-4 h-4 mr-2">{showIcon(estimateNumber)}</span>
+								<span>{estimateNumber}</span>
+							</div>
+							<div className="w-16">
+								<ProgressBar progress={estimateNumber} />
+							</div>
+						</DropdownMenuItem>
+					);
+				})}
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
 

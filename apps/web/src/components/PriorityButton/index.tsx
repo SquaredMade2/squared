@@ -1,96 +1,27 @@
-import { type ReactElement, useState } from "react";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { high, medium, low } from "@/components/Svg";
-import PriorityDropdown from "@/components/PriorityDropdown";
-import { setBackgroundColor } from "../DesignationsContainer";
-import type { PriorityButtonProps } from "./PriorityButton.interfaces";
+"use client";
+
+import { priorityOptions } from "@/constants/designations";
+import { useToast } from "@/components/ui/use-toast";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { CircleAlert, Ellipsis } from "lucide-react";
+import { high, medium, low } from "@/components/Svg";
+import type { Priority } from "@repo/db";
+import type { DesignationsContainerProps } from "../DesignationsContainer/DesignationsContainer.interfaces";
 
-const PriorityButton = ({ location }: PriorityButtonProps) => {
-	const newIssuePriority = useAppSelector((state) => state.taskData.priority);
-	const sidebarPriority: string | undefined = useAppSelector((state) => {
-		if (location === "issueSidebar") {
-			return state.singleTask.data?.priority;
-		}
-		return undefined;
-	});
-	const labelsSelected = useAppSelector((state) => state.taskData.labels);
-	const { theme } = useAppSelector((state) => state.userSettings);
+const PriorityButton = ({
+	newIssueData,
+	setNewIssueData,
+}: DesignationsContainerProps) => {
+	const { toast } = useToast();
+	const priority = newIssueData.priority;
 
-	const handleBackground = () => {
-		return theme === "light"
-			? "bg-popover hover:bg-popoverHover"
-			: "bg-popoverHover hover:bg-popover";
-	};
-
-	const [showDropdown, setShowDropdown] = useState(false);
-
-	const newIssueButton = (): ReactElement => {
-		return (
-			<button
-				type="button"
-				className={`${
-					labelsSelected?.length > 0 && !newIssuePriority
-						? `border border-[0.8px] border-border rounded py-1 px-0.5 mr-2 cursor-pointer ${handleBackground()}`
-						: `flex cursor-pointer items-center h-7 justify-center border-[0.8px] border border-border rounded px-2 py-0.5 mr-2 text-card-foreground text-sm shadow-md cursor-pointer ${handleBackground()}`
-				}`}
-				onClick={handleButtonClick}
-			>
-				<div className="w-4 h-4 cursor-pointer">
-					{newIssuePriority ? (
-						showIcon(newIssuePriority)
-					) : (
-						<Ellipsis className="size-4" />
-					)}
-				</div>
-				{labelsSelected?.length === 0 && (
-					<span className="text-sm flex font-semibold text-card-foreground cursor-pointer ml-3">
-						{newIssuePriority !== null && newIssuePriority.length > 0
-							? newIssuePriority
-							: "Priority"}
-					</span>
-				)}
-				{labelsSelected?.length > 0 && newIssuePriority && (
-					<span className="text-sm flex font-semibold text-card-foreground cursor-pointer ml-3">
-						{newIssuePriority}
-					</span>
-				)}
-			</button>
-		);
-	};
-
-	const issueSidebarButton = () => {
-		return (
-			<button
-				type="button"
-				className={`grow flex flex-row w-36 items-center border-[0.8px] border border-transparent hover:border-border rounded px-2 py-2 mr-2 text-card-foreground text-sm cursor-pointer ${setBackgroundColor(
-					theme,
-				)}`}
-				onClick={handleButtonClick}
-			>
-				<span className="w-4 h-4 cursor-pointer">
-					{sidebarPriority ? (
-						showIcon(sidebarPriority)
-					) : (
-						<Ellipsis className="size-4" />
-					)}
-				</span>
-				<span className="text-sm flex font-semibold text-card-foreground cursor-pointer ml-3">
-					{sidebarPriority ? sidebarPriority : "No priority"}
-				</span>
-			</button>
-		);
-	};
-
-	const handleButtonClick = (): void => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const handleClickAway = (): void => {
-		setShowDropdown(!showDropdown);
-	};
-
-	const showIcon = (name: string): JSX.Element => {
+	const showIcon = (name: string | undefined) => {
 		switch (name) {
 			case "No priority":
 				return <Ellipsis className="size-4" />;
@@ -102,31 +33,55 @@ const PriorityButton = ({ location }: PriorityButtonProps) => {
 				return medium();
 			case "Low":
 				return low();
+			default:
+				return <Ellipsis className="size-4" />;
 		}
-		return <Ellipsis className="size-4" />;
+	};
+
+	const handleSelectPriority = (newPriority: Priority) => {
+		if (newIssueData.priority === newPriority) return;
+		updateItem(newPriority);
+	};
+
+	const updateItem = async (newPriority: Priority) => {
+		try {
+			setNewIssueData({ ...newIssueData, priority: newPriority });
+		} catch (err) {
+			toast({
+				title: "Error updating priority",
+				variant: "destructive",
+			});
+		}
 	};
 
 	return (
-		<>
-			<div
-				className={
-					location === "newIssue"
-						? "relative flex items-center"
-						: "relative grow mr-12"
-				}
-			>
-				{location === "newIssue" && newIssueButton()}
-				{location === "issueSidebar" && issueSidebarButton()}
-				{showDropdown && (
-					<PriorityDropdown
-						location={location}
-						handleButtonClick={handleButtonClick}
-						showIcon={showIcon}
-						handleClickAway={handleClickAway}
-					/>
-				)}
-			</div>
-		</>
+		<Select
+			onValueChange={(value) => handleSelectPriority(value as Priority)}
+			defaultValue={priority}
+		>
+			<SelectTrigger className="grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent">
+				<SelectValue placeholder="Select priority">
+					<div className="w-full flex items-center justify-between">
+						<div className="w-4 h-4 mr-2">{showIcon(priority)}</div>
+						<span className="text-sm font-semibold text-card-foreground">
+							{priority}
+						</span>
+					</div>
+				</SelectValue>
+			</SelectTrigger>
+			<SelectContent>
+				{priorityOptions.map((priority) => (
+					<SelectItem key={priority} value={priority}>
+						<div className="flex items-center justify-between w-full">
+							<div className="flex items-center">
+								{showIcon(priority)}
+								<span className="ml-2">{priority}</span>
+							</div>
+						</div>
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
 	);
 };
 

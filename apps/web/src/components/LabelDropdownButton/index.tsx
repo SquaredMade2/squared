@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useToast } from "../ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -8,15 +7,15 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "../ui/command";
+} from "@/components/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Tag, Check } from "lucide-react";
-import type { LabelDropdownButtonProps } from "./LabelDropdownButton.interfaces";
-import { useModalStore, useTaskStore, useWorkspaceStore } from "@/storeZ";
+import { Plus, Check } from "lucide-react";
+import type { DesignationsContainerProps } from "../DesignationsContainer/DesignationsContainer.interfaces";
+import { useTaskStore, useWorkspaceStore, useActivityStore } from "@/storeZ";
 import type { Label } from "@repo/db";
 
 export const labelStyle: Record<string, string> = {
@@ -38,70 +37,29 @@ export const LabelColor = ({ label }: { label: Label }) => {
 	);
 };
 
-const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
+const LabelDropdownButton = ({
+	newIssueData,
+	setNewIssueData,
+}: DesignationsContainerProps) => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
 		useWorkspaceStore((state) => state);
-	const [taskLabels, setTaskLabels] = useState<Label[]>(workspaceLabels);
-
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const { currentTask, updateTask } = useTaskStore((state) => state);
+	const [taskLabels, setTaskLabels] = useState<Label[]>(
+		workspaceLabels.filter((label) => currentTask?.labels.includes(label.id)),
+	);
+	const taskId = currentTask?.id;
 
 	useEffect(() => {
 		const fetchLabels = async () => {
 			if (currentWorkspace) {
 				const labels = await getWorkspaceLabels(currentWorkspace.id);
-				setTaskLabels(labels);
+				setTaskLabels(
+					labels.filter((label) => currentTask?.labels.includes(label.id)),
+				);
 			}
 		};
 		fetchLabels();
 	}, [currentWorkspace]);
-
-	const newIssueLabels = workspaceLabels.filter((label) =>
-		newIssueData.labels?.includes(label.id),
-	);
-	const taskId = currentTask?.id;
-
-	const newIssueLabelButton = () => (
-		<Button variant="outline" className="w-[170px] mr-2">
-			{newIssueLabels?.length === 0 && (
-				<>
-					<Tag className="size-4 cursor-pointer" />
-					<span className="ml-2 cursor-pointer">Label</span>
-				</>
-			)}
-			{newIssueLabels?.length === 1 && (
-				<>
-					<LabelColor label={newIssueLabels[0]} />
-					<span className="ml-2 cursor-pointer">{newIssueLabels[0].name}</span>
-				</>
-			)}
-			{newIssueLabels && newIssueLabels.length > 1 && (
-				<>
-					{
-						// eslint-disable-next-line array-callback-return
-						taskLabels.map((label, i) => {
-							const multipleLabels = {
-								1: "-mr-[5px]",
-								2: "-mr-[5px]",
-								3: "-mr-[5px]",
-							} as Record<number, string>;
-
-							const selectedMultipleLabels: string = multipleLabels[i + 1];
-							if (i <= 2) {
-								return (
-									<div key={label.id} className={selectedMultipleLabels}>
-										<LabelColor label={label} />
-									</div>
-								);
-							}
-						})
-					}
-					<span className="ml-2 cursor-pointer">{`${newIssueLabels.length} labels`}</span>
-				</>
-			)}
-		</Button>
-	);
 
 	const issueSidebarButton = () => (
 		<div>
@@ -120,21 +78,15 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 		</div>
 	);
 
-	const handleSelectLabels = (labelName: Label) => {
+	const handleSelectLabels = async (labelName: Label) => {
 		let newLabelsSelected = [];
 
-		if (location === "newIssue") {
-			newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
-			setNewIssueData({
-				...newIssueData,
-				labels: newLabelsSelected.map((el) => el.id) ?? [],
-			});
-		}
-		if (location === "issueSidebar" && taskLabels) {
+		if (taskLabels) {
 			newLabelsSelected = newLabelSelection(taskLabels, labelName);
 			if (taskId === undefined) return;
 			const labelIds = newLabelsSelected.map((label) => label.id);
-			updateTask(taskId, { labels: labelIds });
+			await updateTask(taskId, { labels: labelIds });
+			// await getTaskEvents(taskId);
 		}
 	};
 
@@ -158,21 +110,14 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 		return newSelection;
 	};
 
-	const renderButton = () =>
-		location === "newIssue" ? newIssueLabelButton() : issueSidebarButton();
-
 	if (!workspaceLabels) {
 		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
 	}
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>{renderButton()}</PopoverTrigger>
-			<PopoverContent
-				className="w-[170px] p-0"
-				side={location === "issueSidebar" ? "left" : "bottom"}
-				align="start"
-			>
+			<PopoverTrigger asChild>{issueSidebarButton()}</PopoverTrigger>
+			<PopoverContent className="w-[170px] p-0" side="left" align="start">
 				<Command>
 					<CommandInput placeholder="Search labels..." />
 					<CommandList>
@@ -189,13 +134,9 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 										<LabelColor label={label} />
 										<span className="ml-2">{label.name}</span>
 									</div>
-									{location === "newIssue" &&
-										newIssueLabels?.includes(label) && (
-											<Check className="size-4" />
-										)}
-									{location === "issueSidebar" &&
-										taskLabels &&
-										taskLabels.includes(label) && <Check className="size-4" />}
+									{taskLabels.length !== 0 && taskLabels.includes(label) && (
+										<Check className="size-4" />
+									)}
 								</CommandItem>
 							))}
 						</CommandGroup>
