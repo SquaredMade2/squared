@@ -24,7 +24,7 @@ import { getInitials } from "@/utils/formatting";
 
 const formSchema = z.object({
 	fullName: z.string().min(1, "Full name is required"),
-	username: z.string().min(1, "Username is required").nullable(),
+	username: z.string().min(1, "Username is required"),
 });
 
 export default function Profile() {
@@ -45,7 +45,7 @@ export default function Profile() {
 		if (user) {
 			form.reset({
 				fullName: user.name,
-				username: user.username,
+				username: user.username ?? "",
 			});
 		}
 	}, [user, form]);
@@ -87,53 +87,54 @@ export default function Profile() {
 			<div className="w-full">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-						<FormItem className="flex items-center w-full lg:w-1/2 justify-between">
-							<FormLabel>Profile picture</FormLabel>
-							<Avatar className="size-32">
-								<AvatarImage src={user.avatarUrl ?? undefined} />
-								<AvatarFallback className="text-3xl">
-									{getInitials(user.name)}
-								</AvatarFallback>
-							</Avatar>
-						</FormItem>
+						<div className="flex justify-start w-full lg:w-1/2">
+							<FormItem className="flex flex-col items-start justify-center gap-2">
+								<FormLabel>Profile picture</FormLabel>
+								<Avatar className="size-32">
+									<AvatarImage src={user.avatarUrl ?? undefined} />
+									<AvatarFallback className="text-3xl">
+										{getInitials(user.name)}
+									</AvatarFallback>
+								</Avatar>
+							</FormItem>
+						</div>
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormDescription>{user.email}</FormDescription>
 						</FormItem>
-						<FormField
-							control={form.control}
-							name="fullName"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Full name</FormLabel>
-									<FormControl>
-										<Input {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="username"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Username</FormLabel>
-									<FormControl>
-										<Input
-											{...field}
-											value={field.value ?? ""}
-											onChange={(e) => field.onChange(e.target.value)}
-										/>
-									</FormControl>
-									<FormDescription>
-										Nickname or first name, however you want to be called in
-										Squared
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+							<FormField
+								control={form.control}
+								name="fullName"
+								render={({ field }) => (
+									<FormItem className="col-span-1">
+										<FormLabel>Full name</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="username"
+								render={({ field }) => (
+									<FormItem className="col-span-1">
+										<FormLabel>Username</FormLabel>
+										<FormControl>
+											<Input {...field} />
+										</FormControl>
+										<FormDescription>
+											Nickname or first name, however you want to be called in
+											Squared
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
 						<Button type="submit">Update</Button>
 					</form>
 				</Form>
