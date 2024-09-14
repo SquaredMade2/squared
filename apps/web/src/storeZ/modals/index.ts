@@ -10,7 +10,11 @@ export const createModalStore = (
 		showRename: false,
 		renameData: null,
 		showWorkspaceInvite: false,
-		newIssueData: { priority: "noPriority", status: "todo" },
+		newIssueData: {
+			priority: "noPriority",
+			status: "todo",
+			dueDate: new Date(),
+		},
 	},
 ) => {
 	return createStore<ModalStore>()((set) => ({

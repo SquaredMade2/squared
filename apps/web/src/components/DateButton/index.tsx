@@ -19,7 +19,7 @@ const DateButton = ({
 }: DesignationsContainerProps) => {
 	const { toast } = useToast();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const initialDate = sidebarDate;
+	const initialDate = newIssueData.dueDate;
 	const initialTime = initialDate
 		? format(new Date(initialDate), "HH:mm")
 		: "12:00";
@@ -74,7 +74,9 @@ const DateButton = ({
 				>
 					<CalendarIcon className="size-4" />
 					<span className="text-sm font-semibold text-popover-foreground ml-2 hover:cursor-pointer">
-						{sidebarDate ? format(new Date(sidebarDate), "M/d/yy") : "Due Date"}
+						{newIssueData.dueDate
+							? format(new Date(newIssueData.dueDate), "M/d/yy")
+							: "Due Date"}
 					</span>
 				</Button>
 			</PopoverTrigger>
