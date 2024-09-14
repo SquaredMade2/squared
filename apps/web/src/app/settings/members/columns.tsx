@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@repo/db";
 import type { ColumnDef } from "@tanstack/react-table";
+import { Ellipsis } from "lucide-react";
 
 export const columns: ColumnDef<User>[] = [
 	{
@@ -49,7 +50,7 @@ export const columns: ColumnDef<User>[] = [
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" className="items-center">
-							...
+							<Ellipsis className="size-4" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>

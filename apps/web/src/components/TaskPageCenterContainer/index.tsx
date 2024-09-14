@@ -16,7 +16,7 @@ const TaskPageCenterContainer = ({
 	const path = usePathname();
 	const inboxPath = path.includes("/inbox");
 	return (
-		<div className="w-full snap-start z-0 overflow-x-hidden ">
+		<div className="w-full snap-start z-0 overflow-x-hidden">
 			<div className="flex items-center gap-2">
 				{!inboxPath && (
 					<div>

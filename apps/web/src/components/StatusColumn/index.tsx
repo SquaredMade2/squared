@@ -8,8 +8,6 @@ import { ScrollArea } from "../ui/scroll-area";
 const StatusColumn = ({
 	columnType,
 	title,
-	setShowRenameModal,
-	setTaskData,
 	tasks,
 	currentView: view,
 }: StatusColumnProps) => {
@@ -48,8 +46,6 @@ const StatusColumn = ({
 							isListView={isListView}
 							filteredTasks={tasks}
 							showTasks={showTasks}
-							setShowRenameModal={setShowRenameModal}
-							setTaskData={setTaskData}
 							title={columnType}
 						/>
 						{provided.placeholder}

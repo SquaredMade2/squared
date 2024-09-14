@@ -1,28 +1,39 @@
 import { useRouter } from "next/navigation";
 import { ChevronLeft, PanelLeft } from "lucide-react";
-import { useWorkspaceStore } from "@/storeZ";
-const SettingsTopNavBar: React.FC<{ setShowNavBar: () => void }> = ({
-	setShowNavBar,
-}) => {
+import { Button } from "../ui/button";
+import { useViewStore, useWorkspaceStore } from "@/storeZ";
+
+const SettingsTopNavBar = () => {
 	const router = useRouter();
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
+	const handleBackClick = () => {
+		if (currentWorkspace) {
+			router.push(`/${currentWorkspace.url}`);
+		}
+	};
 
 	return (
-		<div>
-			<div className="flex items-center border-b shadow">
-				<span onClick={setShowNavBar} className="px-4">
-					<PanelLeft className="text-[#6B6F76] size-5" />
-				</span>
-				<div
-					className="flex text-foreground items-center py-4 cursor-pointer"
-					onClick={() => router.push(`/${currentWorkspace?.url}`)}
-				>
-					<span className="mr-2 cursor-pointer">
-						<ChevronLeft className="size-4 text-[#6b6f75] cursor-pointer" />
-					</span>
-					<h2>Settings</h2>
-				</div>
-			</div>
+		<div className="flex items-center justify-between px-4 border-b shadow md:hidden min-w-[100vw] h-12 fixed top-0">
+			<Button
+				variant="ghost"
+				size="icon"
+				className="p-2"
+				onClick={() => setShowNavbar(!showNavbar)}
+				aria-label="Toggle navigation menu"
+			>
+				<PanelLeft className="h-5 w-5 text-muted-foreground" />
+			</Button>
+			<h1 className="text-lg font-semibold">Settings</h1>
+			<Button
+				variant="ghost"
+				size="sm"
+				className="flex items-center p-2"
+				onClick={handleBackClick}
+			>
+				<ChevronLeft className="h-4 w-4 mr-1 text-muted-foreground" />
+				<span className="text-sm font-medium">Back</span>
+			</Button>
 		</div>
 	);
 };

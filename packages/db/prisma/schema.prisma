@@ -141,7 +141,7 @@ model Task {
   authorId       String
   title          String
   description    String?
-  identifier     String    
+  identifier     String
   dueDate        DateTime?
   effortEstimate Int?
   teamId         String

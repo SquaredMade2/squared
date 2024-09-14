@@ -1,130 +1,189 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import BlueButton from "@/components/BlueButton";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/storeZ";
-import { useTheme } from "next-themes";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from "@/components/ui/card";
+import {
+	useAuthStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/storeZ";
+import { Separator } from "@/components/ui/separator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+
+const formSchema = z.object({
+	teamName: z.string().min(1, {
+		message: "Team name is required",
+	}),
+	teamIdentifier: z
+		.string()
+		.min(1, {
+			message: "Team identifier is required",
+		})
+		.max(5, {
+			message: "Team identifier must be 5 characters or less",
+		})
+		.regex(/^[A-Za-z0-9]*$/, {
+			message: "Team identifier must only contain letters and numbers",
+		}),
+});
 
 export default function CreateTeam() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const [teamName, setTeamName] = useState<string>("");
-	const [teamIdentifier, setTeamIdentifier] = useState<string>("");
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { users } = useUserStore((state) => state);
+	const { getAllTeams, teams, addTeam } = useTeamStore((state) => state);
+	const access = users.find((u) => u.id === user?.id);
 
-	const workspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const user = useAuthStore((state) => state.user);
-	const getTeam = useTeamStore((state) => state.getTeam);
-	const addTeam = useTeamStore((state) => state.addTeam);
-	const { theme } = useTheme();
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			teamName: "",
+			teamIdentifier: "",
+		},
+	});
 
-	const userHasAccess = user;
+	if (!teams) {
+		currentWorkspace && getAllTeams(currentWorkspace.id);
+	}
 
-	const identifierInputFilter = (e: InputChangeEvent): void => {
-		const identifierFormat = /^[A-Za-z0-9]*$/g;
-		if (identifierFormat.test(e.target.value)) {
-			setTeamIdentifier(e.target.value.toUpperCase());
-		}
-	};
+	const userHasAccess =
+		typeof access === "object" &&
+		access &&
+		"id" in access &&
+		access.id === user?.id;
 
-	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
-		e.preventDefault();
-
-		if (!workspace) {
+	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		if (!currentWorkspace) {
 			toast({
-				title: "Workspace not found",
+				title: "No workspace selected",
 				variant: "destructive",
 			});
 			return;
 		}
 
-		if (!teamName && !teamIdentifier) {
-			toast({
-				title: "Both Name and Identifier required",
-				variant: "destructive",
+		const doesTeamExist = teams.find(
+			(team) =>
+				team.id === values.teamName &&
+				team.identifier === values.teamIdentifier.toUpperCase(),
+		);
+
+		if (!doesTeamExist) {
+			const newTeam = await addTeam({
+				name: values.teamName.trim(),
+				identifier: values.teamIdentifier.toUpperCase(),
+				workspaceId: currentWorkspace.id,
 			});
-		} else if (!teamIdentifier) {
-			toast({
-				title: "Identifier is required",
-				variant: "destructive",
-			});
-		} else if (!teamName) {
-			toast({ title: "Name is required", variant: "destructive" });
+			router.push(
+				`/${currentWorkspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
+			);
+			toast({ title: "Team created" });
 		} else {
-			const { team } = await getTeam(teamName.trim());
-
-			if (!team) {
-				await addTeam({
-					name: teamName.trim(),
-					identifier: teamIdentifier,
-					workspaceId: workspace.id,
-				});
-
-				router.push(`/${workspace?.url}/team/${teamIdentifier}/all`);
-				toast({ title: "Team created" });
-			}
+			toast({
+				title: "Team already exists",
+				variant: "destructive",
+			});
 		}
 	};
 
 	useEffect(() => {
-		if (!userHasAccess) {
-			router.push(`/${workspace?.url}`);
+		if (!userHasAccess && currentWorkspace) {
+			router.push(`/${currentWorkspace.url}`);
+		} else if (!currentWorkspace) {
+			router.push("/");
 		}
 	}, []);
 
 	return (
-		<div className="flex bg-background text-foreground min-h-screen mdsm:flex-col w-full">
+		<div className="flex bg-background text-foreground mdsm:flex-col w-[80vw]">
 			<div className="w-full pt-20 flex justify-center">
-				<div className="flex flex-col w-1/3 mdsm:w-3/4">
-					<div>
-						<h1 className="text-2xl text-foreground mb-1 font-medium">
-							Create Team
-						</h1>
-						<p className="text-sm text-muted-foreground">
+				<Card className="w-full max-w-lg">
+					<CardHeader>
+						<CardTitle>Create Team</CardTitle>
+						<CardDescription>
 							Create a new team to manage separate cycles and workflows
-						</p>
-					</div>
-					<span className="block w-full border-t border-border mt-6" />
-					<form className="flex flex-col" onSubmit={handleSubmit}>
-						<div>
-							<div className="my-6">
-								<p className="text-sm">Team Name</p>
-								<input
-									type="text"
-									value={teamName}
-									placeholder="e.g. Engineering"
-									onChange={(e) => setTeamName(e.target.value)}
-									className={`w-full border border-border rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 ${
-										theme === "dark" ? "bg-background" : "bg-card"
-									}`}
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Separator />
+						<Form {...form}>
+							<form
+								onSubmit={form.handleSubmit(onSubmit)}
+								className="space-y-6 mt-4"
+							>
+								<FormField
+									control={form.control}
+									name="teamName"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Team Name</FormLabel>
+											<FormControl>
+												<Input placeholder="e.g. Engineering" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
 								/>
-							</div>
-							<div className="my-6">
-								<p className="text-sm">Team identifier</p>
-								<div className="flex">
-									<input
-										type="text"
-										value={teamIdentifier}
-										placeholder="e.g. ENG"
-										maxLength={5}
-										onChange={identifierInputFilter}
-										className={`w-20 border border-border max-h-8 rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 ${
-											theme === "dark" ? "bg-background" : "bg-card"
-										}`}
-									/>
-									<p className="text-sm text-muted-foreground pl-5">
-										{
-											"This is used as the identifier (e.g. ENG-123) for all issues of the team. Keep it short and simple."
-										}
-									</p>
-								</div>
-							</div>
-							<BlueButton description="Create Team" />
-						</div>
-					</form>
-				</div>
+								<FormField
+									control={form.control}
+									name="teamIdentifier"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Team identifier</FormLabel>
+											<FormControl>
+												<div className="flex items-center space-x-2">
+													<Input
+														placeholder="e.g. ENG"
+														maxLength={5}
+														className="w-20"
+														{...field}
+														onChange={(e) => {
+															const value = e.target.value.toUpperCase();
+															if (/^[A-Z0-9]*$/.test(value)) {
+																field.onChange(value);
+															}
+														}}
+													/>
+													<FormDescription>
+														This is used as the identifier (e.g. ENG-123) for
+														all issues of the team. Keep it short and simple.
+													</FormDescription>
+												</div>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<Button type="submit" className="w-full">
+									Create Team
+								</Button>
+							</form>
+						</Form>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);
