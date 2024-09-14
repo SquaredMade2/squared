@@ -41,7 +41,9 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
 		useWorkspaceStore((state) => state);
-	const [taskLabels, setTaskLabels] = useState<Label[]>(workspaceLabels);
+	const [taskLabels, setTaskLabels] = useState<Label[]>(
+		workspaceLabels.filter((label) => currentTask?.labels.includes(label.id)),
+	);
 	const { updateTask } = useTaskStore((state) => state);
 	const { getTaskEvents } = useActivityStore((state) => state);
 	const taskId = currentTask?.id;
@@ -50,7 +52,9 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 		const fetchLabels = async () => {
 			if (currentWorkspace) {
 				const labels = await getWorkspaceLabels(currentWorkspace.id);
-				setTaskLabels(labels);
+				setTaskLabels(
+					labels.filter((label) => currentTask?.labels.includes(label.id)),
+				);
 			}
 		};
 		fetchLabels();
