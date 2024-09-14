@@ -37,7 +37,6 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const { toast } = useToast();
 	const { taskIdentifier } = useParams();
 	const { teamIdentifier } = useParams();
-	console.log(teamIdentifier);
 
 	useEffect(() => {
 		setIsLoading(true);

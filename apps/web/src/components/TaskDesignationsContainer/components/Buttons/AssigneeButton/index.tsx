@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import {
 	CommandGroup,
 	CommandInput,
 	CommandItem,
+	CommandList,
 } from "@/components/ui/command";
 import {
 	Popover,
@@ -24,8 +25,8 @@ export const AssigneeButton = ({
 	currentTask,
 	handleAssigneeChange,
 }: AssigneeButtonProps) => {
-	const [open, setOpen] = React.useState(false);
-	const [value, setValue] = React.useState("");
+	const [open, setOpen] = useState(false);
+	const [value, setValue] = useState("");
 
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { getAllUsers, users } = useUserStore((state) => ({
@@ -35,7 +36,7 @@ export const AssigneeButton = ({
 	const taskId = currentTask ? currentTask.id : "";
 	const assigneeName = currentTask ? currentTask.assigneeName : "";
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const fetchUsers = async () => {
 			if (currentWorkspace?.id) {
 				await getAllUsers(currentWorkspace.id);
@@ -98,37 +99,39 @@ export const AssigneeButton = ({
 			<PopoverContent className={cn("p-0 w-[200px]")}>
 				<Command>
 					<CommandInput placeholder="Search users..." />
-					<CommandEmpty>No user found.</CommandEmpty>
-					<CommandGroup>
-						<CommandItem onSelect={handleUnassign}>
-							<UserSearch className="size-4 mr-2" />
-							<span>Unassign</span>
-							<Check
-								className={cn(
-									"ml-auto h-4 w-4",
-									value === "" ? "opacity-100" : "opacity-0",
-								)}
-							/>
-						</CommandItem>
-						{users.map((user) => (
-							<CommandItem
-								key={user.id}
-								onSelect={() => handleSelectAssignee(user.id)}
-							>
-								<ProfileImage
-									profileName={user.name}
-									location="assigneeDropdown"
-								/>
-								<span className="ml-2">{user.username}</span>
+					<CommandList>
+						<CommandEmpty>No user found.</CommandEmpty>
+						<CommandGroup>
+							<CommandItem onSelect={handleUnassign}>
+								<UserSearch className="size-4 mr-2" />
+								<span>Unassign</span>
 								<Check
 									className={cn(
 										"ml-auto h-4 w-4",
-										value === user.id ? "opacity-100" : "opacity-0",
+										value === "" ? "opacity-100" : "opacity-0",
 									)}
 								/>
 							</CommandItem>
-						))}
-					</CommandGroup>
+							{users.map((user) => (
+								<CommandItem
+									key={user.id}
+									onSelect={() => handleSelectAssignee(user.id)}
+								>
+									<ProfileImage
+										profileName={user.name}
+										location="assigneeDropdown"
+									/>
+									<span className="ml-2">{user.username}</span>
+									<Check
+										className={cn(
+											"ml-auto h-4 w-4",
+											value === user.id ? "opacity-100" : "opacity-0",
+										)}
+									/>
+								</CommandItem>
+							))}
+						</CommandGroup>
+					</CommandList>
 				</Command>
 			</PopoverContent>
 		</Popover>

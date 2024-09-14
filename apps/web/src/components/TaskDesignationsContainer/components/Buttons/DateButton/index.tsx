@@ -56,7 +56,7 @@ export default function DateButton({ currentTask }: ButtonProps) {
 	const updateItem = async (newDate: Date | undefined) => {
 		try {
 			await updateTask(taskId, { dueDate: newDate });
-			await getTaskEvents(taskId);
+			// await getTaskEvents(taskId);
 		} catch (err) {
 			toast({
 				title: "Error",

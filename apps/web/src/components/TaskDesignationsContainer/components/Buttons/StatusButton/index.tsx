@@ -56,7 +56,7 @@ export const StatusButton = ({ currentTask }: ButtonProps) => {
 	const updateItem = async (newStatus: Status) => {
 		try {
 			await updateTask(taskId, { status: newStatus });
-			await getTaskEvents(taskId);
+			// await getTaskEvents(taskId);
 		} catch (err) {
 			toast({
 				title: "Error updating status",

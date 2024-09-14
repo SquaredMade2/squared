@@ -60,6 +60,10 @@ export const createTaskStore = (
 								variant: response.data.variant,
 							};
 						}
+						const { currentTask } = get();
+						if (currentTask && currentTask.id === taskId) {
+							set({ currentTask: updatedTask });
+						}
 						set((state) => ({
 							tasks: state.tasks.map((t) =>
 								t.id === taskId ? updatedTask : t,

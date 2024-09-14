@@ -81,7 +81,7 @@ const LabelButton = ({ currentTask }: ButtonProps) => {
 			if (taskId === undefined) return;
 			const labelIds = newLabelsSelected.map((label) => label.id);
 			await updateTask(taskId, { labels: labelIds });
-			await getTaskEvents(taskId);
+			// await getTaskEvents(taskId);
 		}
 	};
 

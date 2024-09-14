@@ -50,7 +50,7 @@ export const PriorityButton = ({ currentTask }: ButtonProps) => {
 	const updateItem = async (newPriority: Priority) => {
 		try {
 			await updateTask(taskId, { priority: newPriority });
-			await getTaskEvents(taskId);
+			// await getTaskEvents(taskId);
 		} catch (err) {
 			toast({
 				title: "Error updating priority",

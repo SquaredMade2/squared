@@ -33,7 +33,7 @@ export const EffortEstimateButton = ({ currentTask }: ButtonProps) => {
 	const handleSelectEffortEstimate = async (newEffortEstimate: number) => {
 		try {
 			await updateTask(taskId, { effortEstimate: newEffortEstimate });
-			await getTaskEvents(taskId);
+			// await getTaskEvents(taskId);
 		} catch (err) {
 			toast({
 				title: "Error updating effort estimate",
