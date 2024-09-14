@@ -175,7 +175,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 									}`}
 								>
 									<div className="" ref={sideNav}>
-										<IssueSidebarContainer currentTask={currentTask}/>
+										<IssueSidebarContainer />
 									</div>
 								</div>
 							</div>

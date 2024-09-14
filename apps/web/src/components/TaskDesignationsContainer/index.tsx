@@ -1,27 +1,18 @@
 import { useState } from "react";
-import PriorityButton from "@/components/PriorityButton";
-import { StatusDropdownButton } from "@/components/StatusDropdownButton";
-import DateButton from "@/components/DateButton";
-import EffortEstimateButton from "@/components/EffortEstimateButton";
-import LabelDropdownButton from "../LabelDropdownButton";
+import PriorityButton from "./components/Buttons/PriorityButton";
+import StatusButton from "./components/Buttons/StatusButton";
+import DateButton from "./components/Buttons/DateButton";
+import EffortEstimateButton from "./components/Buttons/EffortEstimateButton";
+import LabelButton from "./components/Buttons/LabelButton";
+import { AssigneeButton } from "./components/Buttons/AssigneeButton";
 import HelpButton from "@/components/HelpButton";
 import EffortModal from "@/components/EffortModal";
-import { AssigneeButton } from "./components/AssigneeButton";
-// import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-// import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
-import { AssigneeDropdown } from "@/components/AssigneeDropdown";
-// import { getSingleTask } from "@/store/task/thunks";
-import {useTaskStore} from '@/storeZ/tasks'
-import { useActivityStore } from "@/storeZ";
-// import {getAllTasks, getTask, updateTask} from '@/storeZ/tasks'
-import type {
-	// AssigneeParams,
-	HandleAssigneeChange,
-} from "@/app/interfaces/Tasks.interfaces";
-import type { Task } from "@repo/db";
 import { useToast } from "../ui/use-toast";
+import { useTaskStore } from "@/storeZ";
+import type { User, Task } from "@repo/db";
+import type { ButtonProps } from "./Button.interfaces";
 
-export const setBackgroundColor = (theme: string) => {
+export const setBackgroundColor = (theme: string | undefined) => {
 	if (theme === "light") {
 		return "hover:bg-gray-50";
 	}
@@ -30,8 +21,8 @@ export const setBackgroundColor = (theme: string) => {
 
 const generateItemContainer = (
 	text: string,
-	ButtonComponent: React.ComponentType<DesignationsContainerProps>,
-	location: string,
+	ButtonComponent: React.ComponentType<ButtonProps>,
+	currentTask: Task | null,
 	ExtraComponent?: React.ReactNode,
 ): JSX.Element => (
 	<div className="flex flex-row flex-start items-center w-full">
@@ -41,36 +32,28 @@ const generateItemContainer = (
 				<div className="ml-1.5 flex items-center">{ExtraComponent}</div>
 			)}
 		</div>
-		<ButtonComponent location={location} />
+		<ButtonComponent currentTask={currentTask} />
 	</div>
 );
 
-export default function TaskDesignationsContainer ({currentTask}: {currentTask: Task | null}) {
+export default function TaskDesignationsContainer() {
 	const { toast } = useToast();
-  const {updateTask, getTask} = useTaskStore((state) => state);
-  const {getTaskEvents} = useActivityStore((state) => state);
-	// const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-	const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
+	const { updateTask, currentTask } = useTaskStore((state) => state);
 	const [showEffortModal, setShowEffortModal] = useState(false);
 
 	const handleOpenModal = () => setShowEffortModal(true);
 	const handleCloseModal = () => setShowEffortModal(false);
 
-	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
-    await updateTask(taskId, { assigneeId: user.id, assigneeName: user.name });
-    await getTaskEvents(taskId);
-		if (currentTask !== undefined || currentTask !== null) {
-			try {
-				getTask(taskId)
-			} catch (error) {
-				toast({
-					title: "Error",
-					description: "Failed to get task",
-					variant: "destructive",
-				});
-			}
+	const handleAssigneeChange = async (taskId: string, user: User) => {
+		try {
+			await updateTask(taskId, {
+				assigneeId: user.id,
+				assigneeName: user.name,
+			});
+			toast({ title: "Assignee updated successfully" });
+		} catch (error) {
+			toast({ title: "Failed to update assignee", variant: "destructive" });
 		}
-		// await dispatch(getAllTasks(currentTeam));
 	};
 
 	const generateAssigneeContainer: () => React.JSX.Element = () => {
@@ -81,18 +64,9 @@ export default function TaskDesignationsContainer ({currentTask}: {currentTask: 
 						Assignee
 					</div>
 					<AssigneeButton
-						showAssigneeDropdown={showAssigneeDropdown}
-						setShowAssigneeDropdown={setShowAssigneeDropdown}
+						currentTask={currentTask}
+						handleAssigneeChange={handleAssigneeChange}
 					/>
-				</div>
-				<div className="absolute mt-10">
-					{showAssigneeDropdown && task !== undefined && (
-						<AssigneeDropdown
-							taskId={task?._id}
-							setShowAssigneeDropdown={setShowAssigneeDropdown}
-							handleAssigneeChange={handleAssigneeChange}
-						/>
-					)}
 				</div>
 			</div>
 		);
@@ -100,20 +74,20 @@ export default function TaskDesignationsContainer ({currentTask}: {currentTask: 
 
 	return (
 		<>
-				<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
-					{generateItemContainer("Status", StatusDropdownButton, location)}
-					{generateItemContainer("Priority", PriorityButton, location)}
-					{generateItemContainer("Labels", LabelDropdownButton, location)}
-					{generateItemContainer("Due Date", DateButton, location)}
-					{generateItemContainer(
-						"Effort",
-						EffortEstimateButton,
-						location,
-						<HelpButton onClick={handleOpenModal} />,
-					)}
-					{generateAssigneeContainer()}
-				</div>
+			<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
+				{generateItemContainer("Status", StatusButton, currentTask)}
+				{generateItemContainer("Priority", PriorityButton, currentTask)}
+				{generateItemContainer("Labels", LabelButton, currentTask)}
+				{generateItemContainer("Due Date", DateButton, currentTask)}
+				{generateItemContainer(
+					"Effort",
+					EffortEstimateButton,
+					currentTask,
+					<HelpButton onClick={handleOpenModal} />,
+				)}
+				{generateAssigneeContainer()}
+			</div>
 			<EffortModal isOpen={showEffortModal} onClose={handleCloseModal} />
 		</>
 	);
-};
+}
