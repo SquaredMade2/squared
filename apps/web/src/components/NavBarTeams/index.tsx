@@ -1,23 +1,19 @@
 import type React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import type { handleActiveParamsType } from "@/app/interfaces/Navbars.interfaces";
 import { Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getTeam } from "@/store/taskData/thunks";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
-import { useTheme } from "next-themes";
-import type { Team } from "@repo/db";
 import { useTeamStore, useWorkspaceStore } from "@/storeZ";
 
 const NavBarTeams = ({
 	onDropdownClick,
 	teamIdentifier,
 }: NavBarTeamProps): React.ReactElement => {
-	const dispatch = useAppDispatch();
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const { teams, getAllTeams } = useTeamStore((state) => state);
+	const { teams, getAllTeams, getTeam, setCurrentTeam } = useTeamStore(
+		(state) => state,
+	);
 
 	useEffect(() => {
 		if (!currentWorkspace) return;
@@ -33,8 +29,12 @@ const NavBarTeams = ({
 		}
 	};
 
-	const getTeamOnSelect: () => void = () => {
-		dispatch(getTeam(teamIdentifier));
+	const getTeamOnSelect = async () => {
+		const team = teams.find((team) => team.identifier === teamIdentifier);
+		if (team) {
+			const newTeam = await getTeam(team.id);
+			newTeam.team && setCurrentTeam(newTeam.team);
+		}
 	};
 
 	const handleViewsButtonClick: () => void = () => {

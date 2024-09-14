@@ -7,16 +7,11 @@ import LabelDropdownButton from "../LabelDropdownButton";
 import HelpButton from "@/components/HelpButton";
 import EffortModal from "@/components/EffortModal";
 import { AssigneeButton } from "@/components/AssigneeButton";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
 import { AssigneeDropdown } from "@/components/AssigneeDropdown";
-import { getSingleTask } from "@/store/task/thunks";
-import type {
-	AssigneeParams,
-	HandleAssigneeChange,
-} from "@/app/interfaces/Tasks.interfaces";
 import type { DesignationsContainerProps } from "./DesignationsContainer.interfaces";
 import { useToast } from "../ui/use-toast";
+import { useTaskStore, useTeamStore } from "@/storeZ";
+import type { User } from "@repo/db";
 
 export const setBackgroundColor = (theme: string) => {
 	if (theme === "light") {
@@ -43,62 +38,23 @@ const generateItemContainer = (
 );
 
 const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
-	const dispatch = useAppDispatch();
 	const { toast } = useToast();
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-	const task = useAppSelector((state) => state.singleTask.data);
 	const [showAssigneeDropdown, setShowAssigneeDropdown] = useState(false);
 	const [showEffortModal, setShowEffortModal] = useState(false);
-
+	const { currentTask, updateTask } = useTaskStore((state) => state);
 	const handleOpenModal = () => setShowEffortModal(true);
 	const handleCloseModal = () => setShowEffortModal(false);
-
-	const assigneeParams: AssigneeParams = (taskId, user) => {
-		dispatch(getAllTasks(currentTeam));
-		if (task !== undefined) {
-			try {
-				dispatch(getSingleTask(task._id));
-			} catch (error) {
-				toast({
-					title: "Error",
-					description: "Failed to get task",
-					variant: "destructive",
-				});
-			}
+	const handleAssigneeChange = async (taskId: string, user: User) => {
+		try {
+			await updateTask(taskId, {
+				assigneeId: user.id,
+				assigneeName: user.name,
+			});
+			toast({ title: "Assignee updated successfully" });
+		} catch (error) {
+			toast({ title: "Failed to update assignee", variant: "destructive" });
 		}
-		return {
-			taskId: taskId,
-			assignee: {
-				id: user.id,
-				name: user.name,
-				username: "",
-				email: "",
-				password: "",
-				verified: true,
-				lastLogin: new Date(),
-				onBoarding: false,
-				defaultWorkspaceId: "",
-				avatarUrl: "",
-			},
-		};
 	};
-
-	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
-		dispatch(setAssignee(assigneeParams(taskId, user)));
-		if (task !== undefined) {
-			try {
-				dispatch(getSingleTask(task._id));
-			} catch (error) {
-				toast({
-					title: "Error",
-					description: "Failed to get task",
-					variant: "destructive",
-				});
-			}
-		}
-		await dispatch(getAllTasks(currentTeam));
-	};
-
 	const generateAssigneeContainer: () => React.JSX.Element = () => {
 		return (
 			<div className="flex flex-col">
@@ -113,9 +69,9 @@ const DesignationsContainer = ({ location }: DesignationsContainerProps) => {
 					/>
 				</div>
 				<div className="absolute mt-10">
-					{showAssigneeDropdown && task !== undefined && (
+					{showAssigneeDropdown && currentTask && (
 						<AssigneeDropdown
-							taskId={task?._id}
+							taskId={currentTask.id}
 							location={"taskPage"}
 							setShowAssigneeDropdown={setShowAssigneeDropdown}
 							handleAssigneeChange={handleAssigneeChange}
