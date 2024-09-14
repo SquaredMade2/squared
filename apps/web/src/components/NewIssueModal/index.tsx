@@ -161,7 +161,7 @@ const NewIssueModal = () => {
 					name={"addDescription"}
 					onChange={handleDescriptionChange}
 				/>
-				<DesignationsContainer location={"newIssue"} />
+				<DesignationsContainer />
 				<DialogFooter>
 					<Button
 						onClick={handleDiscard}
