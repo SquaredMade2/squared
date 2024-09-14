@@ -100,15 +100,7 @@ model TaskEvent {
   activityId           String   @unique
   createdAt            DateTime @default(now())
   taskId               String
-  originalValue        String?
   updatedValue         String?
-  originalAssigneeId   String?
-  originalAssigneeName String?
-  updatedAssigneeId    String?
-  updatedAssigneeName  String?
-  gitUpdated           String?
-  originalLabels       String[]
-  updatedLabels        String[]
 
   activity     Activity     @relation(fields: [activityId], references: [id])
   taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])

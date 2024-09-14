@@ -1,6 +1,7 @@
 import type { Label, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import { trackChange, createLog } from "@/utils/taskUpdate"
 
 type Params = {
 	taskId: string;
@@ -55,6 +56,21 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
+				const author = await prisma.user.findFirst({
+					where:{id: task.authorId}
+				});
+
+				if(!author){
+					res.status(404);
+					return {
+						data: null,
+						message: "User not found",
+						variant: "destructive",
+					};
+				}
+				
+				trackChange(author, body, task)
+
 				// Return the updated task with labels
 				return {
 					data: task,
@@ -96,6 +112,19 @@ export function createRoute(): Route<Params> {
 					throw new Error("Workspace not found");
 				}
 
+				const author = await prisma.user.findFirst({
+					where:{id: taskData.authorId}
+				});
+
+				if(!author){
+					res.status(404);
+					return {
+						data: null,
+						message: "User not found",
+						variant: "destructive",
+					};
+				}
+
 				const workspace = team.Workspace;
 				const formattedName = workspace.name
 					.replace(/\s+/g, "")
@@ -127,6 +156,8 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
+				createLog(author, newTask);
+
 				// Return the new task
 				return {
 					data: newTask,
@@ -144,7 +175,7 @@ export function createRoute(): Route<Params> {
 		},
 		DELETE: async (res, { taskId }): Promise<APIResponse<Task>> => {
 			try {
-				const task: Task | null = await prisma.task.delete({
+				const task = await prisma.task.delete({
 					where: { id: taskId },
 				});
 				if (!task) {
