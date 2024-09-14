@@ -18,23 +18,21 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import ProfileImage from "@/components/ProfileImage";
-import { useUserStore, useWorkspaceStore } from "@/storeZ";
-import type { AssigneeButtonProps } from "./interfaces";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/storeZ";
+import type { ButtonProps } from "./interfaces";
 
-const AssigneeCombobox = ({
-	currentTask,
-	handleAssigneeChange,
-}: AssigneeButtonProps) => {
+const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState("");
 
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { getAllUsers, users } = useUserStore((state) => ({
 		getAllUsers: state.getAllUsers,
 		users: state.users,
 	}));
+	const { updateTask } = useTaskStore((state) => state);
 	const taskId = currentTask ? currentTask.id : "";
 	const assigneeName = currentTask ? currentTask.assigneeName : "";
+	const assigneeId = currentTask ? currentTask.assigneeId : "";
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -46,28 +44,22 @@ const AssigneeCombobox = ({
 		fetchUsers();
 	}, [currentWorkspace?.id, getAllUsers]);
 
-	const handleSelectAssignee = (userId: string) => {
-		const selectedUser = users.find((user) => user.id === userId);
-		if (selectedUser) {
-			handleAssigneeChange(taskId, selectedUser);
-			setValue(userId);
-			setOpen(false);
+	const handleSelectAssignee = async (userId: string | null) => {
+		if (!userId) {
+			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			return;
 		}
-	};
+		const selectedUser = users.find((user) => user.id === userId);
 
-	const handleUnassign = () => {
-		handleAssigneeChange(taskId, {
-			id: "",
-			name: "Unassigned",
-			username: "",
-			email: "",
-			password: "",
-			verified: true,
-			lastLogin: new Date(),
-			onBoarding: false,
-			defaultWorkspaceId: "",
-			avatarUrl: "",
-		});
+		if (selectedUser) {
+			if (currentTask) {
+				await updateTask(taskId, {
+					assigneeId: selectedUser.id,
+					assigneeName: selectedUser.name,
+				});
+			}
+			// await getTaskEvents(taskId);
+		}
 	};
 
 	return (
@@ -77,15 +69,17 @@ const AssigneeCombobox = ({
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="w-[200px] justify-between"
+					className="justify-between"
 				>
-					{value ? (
-						<div className="flex items-center">
+					{assigneeName ? (
+						<div className="flex items-center w-28">
 							<ProfileImage
 								profileName={assigneeName || ""}
 								location="assigneeDropdown"
 							/>
-							<span className="ml-2">{assigneeName}</span>
+							<span className="ml-2 w-1/2 truncate text-xs">
+								{assigneeName}
+							</span>
 						</div>
 					) : (
 						<div className="flex items-center">
@@ -102,13 +96,13 @@ const AssigneeCombobox = ({
 					<CommandList>
 						<CommandEmpty>No user found.</CommandEmpty>
 						<CommandGroup>
-							<CommandItem onSelect={handleUnassign}>
+							<CommandItem onSelect={() => handleSelectAssignee(null)}>
 								<UserSearch className="size-4 mr-2" />
 								<span>Unassign</span>
 								<Check
 									className={cn(
 										"ml-auto h-4 w-4",
-										value === "" ? "opacity-100" : "opacity-0",
+										assigneeId === "" ? "opacity-100" : "opacity-0",
 									)}
 								/>
 							</CommandItem>
@@ -125,7 +119,7 @@ const AssigneeCombobox = ({
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											value === user.id ? "opacity-100" : "opacity-0",
+											assigneeId === user.id ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
