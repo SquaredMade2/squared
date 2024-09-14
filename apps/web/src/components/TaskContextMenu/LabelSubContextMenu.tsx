@@ -21,9 +21,20 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 		workspaceLabels.filter((label) => task.labels.includes(label.id)),
 	);
 	const { updateTask } = useTaskStore((state) => state);
+
 	if (!workspaceLabels) {
 		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
 	}
+
+	const handleLabelChange = (label: Label, checked: boolean) => {
+		// Calculate the updated labels before setting the state
+		const updatedLabels = checked
+			? [...labels, label]
+			: labels.filter((l) => l.id !== label.id);
+
+		setLabels(updatedLabels); // Update the state
+		updateTask(task.id, { labels: updatedLabels.map((l) => l.id) }); // Update the task
+	};
 
 	return (
 		<ContextMenuSub>
@@ -38,18 +49,12 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 					return (
 						<ContextMenuCheckboxItem
 							key={label.id}
-							checked={labels.includes(label)}
-							onCheckedChange={(checked) => {
-								if (checked) {
-									setLabels([...labels, label]);
-								} else {
-									setLabels(labels.filter((l) => l !== label));
-								}
-								const lableIds = labels.map((l) => l.id);
-								updateTask(task.id, { labels: lableIds });
-							}}
+							checked={labels.some((l) => l.id === label.id)}
+							onCheckedChange={(checked) => handleLabelChange(label, checked)}
 						>
-							<div className="mr-2">{<LabelColor label={label} />}</div>
+							<div className="mr-2">
+								<LabelColor label={label} />
+							</div>
 							{label.name}
 						</ContextMenuCheckboxItem>
 					);
