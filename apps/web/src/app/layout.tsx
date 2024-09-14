@@ -3,7 +3,6 @@ import "./globals.css";
 import { Providers } from "@/store/provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
-import CommandPalette from "@/components/CommandPalette";
 import { Toaster } from "@/components/ui/toaster";
 import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
 
@@ -16,7 +15,6 @@ export default function RootLayout({
 		<html lang="en">
 			<body className="text-sm min-h-[100vh]">
 				<Providers>
-					<CommandPalette />
 					<WorkspaceInviteModal />
 					<ThemeProvider
 						attribute="class"

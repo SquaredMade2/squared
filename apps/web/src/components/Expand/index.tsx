@@ -3,7 +3,6 @@ import Link from "next/link";
 import ButtonIcon from "../ButtonIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { formatUrl } from "@/utils/formatting";
 import { useTaskStore, useTeamStore } from "@/storeZ";
 

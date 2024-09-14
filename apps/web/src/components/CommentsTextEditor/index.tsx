@@ -16,7 +16,7 @@ import ListMaxIndentLevelPlugin from "@/components/CommentsTextEditor/plugins/li
 import CodeHighlightPlugin from "@/components/CommentsTextEditor/plugins/codeHighlight";
 import AutoLinkPlugin from "@/components/CommentsTextEditor/plugins/autolink";
 import type { EditorProps } from "@/components/CommentsTextEditor/TextEditor.interfaces";
-import { EditorProvider } from "@/components/EditorContext";
+// import { EditorProvider } from "@/components/EditorContext";
 import EditorDisplayPlugin from "@/components/CommentsTextEditor/plugins/EditorDisplay";
 
 export const defaultEditorState =
@@ -60,30 +60,32 @@ const CommentsTextEditor = ({
 		},
 	};
 
-	return (
-		<LexicalComposer initialConfig={editorConfig}>
-			<EditorProvider
-				authorId={authorId}
-				commentId={commentId}
-				userId={userId}
-				userName={userName}
-				commentsTaskId={commentsTaskId}
-				commentDate={commentDate}
-				initialState={initialState}
-				placeholderText={placeholderText}
-			>
-				<EditorDisplayPlugin />
-				<HistoryPlugin />
-				<AutoFocusPlugin />
-				<CodeHighlightPlugin />
-				<ListPlugin />
-				<LinkPlugin />
-				<AutoLinkPlugin />
-				<ListMaxIndentLevelPlugin maxDepth={7} />
-				<MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-			</EditorProvider>
-		</LexicalComposer>
-	);
+	return null;
+
+	// return (
+	// 	<LexicalComposer initialConfig={editorConfig}>
+	// 		<EditorProvider
+	// 			authorId={authorId}
+	// 			commentId={commentId}
+	// 			userId={userId}
+	// 			userName={userName}
+	// 			commentsTaskId={commentsTaskId}
+	// 			commentDate={commentDate}
+	// 			initialState={initialState}
+	// 			placeholderText={placeholderText}
+	// 		>
+	// 			<EditorDisplayPlugin />
+	// 			<HistoryPlugin />
+	// 			<AutoFocusPlugin />
+	// 			<CodeHighlightPlugin />
+	// 			<ListPlugin />
+	// 			<LinkPlugin />
+	// 			<AutoLinkPlugin />
+	// 			<ListMaxIndentLevelPlugin maxDepth={7} />
+	// 			<MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+	// 		</EditorProvider>
+	// 	</LexicalComposer>
+	// );
 };
 
 export default CommentsTextEditor;

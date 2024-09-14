@@ -198,9 +198,9 @@ export const createWorkspaceStore = (
 				setCurrentWorkspace: (workspace: Workspace): void => {
 					set({ currentWorkspace: workspace });
 				},
-				deleteWorkspace: (workspaceId: string): void => {
+				deleteWorkspace: async (workspaceId: string): Promise<void> => {
 					try {
-						axios.delete(apiString(workspaceId));
+						await axios.delete(apiString(workspaceId));
 						set((state) => ({
 							workspaces: state.workspaces.filter((t) => t.id !== workspaceId),
 						}));

@@ -3,10 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import IssueSidebarContainer from "../IssueSidebarContainer";
 import TaskPageCenterContainer from "../TaskPageCenterContainer";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { setGetSingleTaskError, removeTaskData } from "@/store/task";
-import { ActionType } from "@/store/events/events.actionTypes";
-import { getCommitsByRepo } from "@/store/taskData/thunks";
 import { LoadingTask } from "../LoadingTask";
 import { useToast } from "../ui/use-toast";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/storeZ";
@@ -28,12 +24,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
 
-	const navbarToggled = useAppSelector(
-		(state) => state.userSettings.showNavBar,
-	);
-
-	const showBackdrop = showSideNav || navbarToggled;
-	const dispatch = useAppDispatch();
+	const showBackdrop = showSideNav;
 	const { toast } = useToast();
 	const { taskIdentifier } = useParams();
 	const { teamIdentifier } = useParams();
@@ -92,42 +83,9 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const sideNav = useRef(null);
 	const svgRef = useRef(null);
 
-	const dataForDispatch = currentTaskId;
-
 	const toggleNav = () => {
 		setShowSideNav(!showSideNav);
 	};
-
-	useEffect(() => {
-		return () => {
-			dispatch(setGetSingleTaskError(false));
-			dispatch(removeTaskData());
-			dispatch({
-				type: ActionType.CLEAR_TASKPAGE_COMMENTS,
-				payload: [],
-			});
-		};
-	}, [currentTaskId]);
-
-	useEffect(() => {
-		const fetchAsyncTask = async () => {
-			// loading state
-		};
-		if (currentTask !== undefined && isLoading !== true) {
-			setRender(true);
-		}
-	}, [currentTask]);
-
-	useEffect(() => {
-		if (currentRepo) {
-			dispatch(
-				getCommitsByRepo({
-					repoName: currentRepo,
-					owner: currentRepo,
-				}),
-			);
-		}
-	}, []);
 
 	useEffect(() => {
 		function handleClickAway(event: MouseEvent) {

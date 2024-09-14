@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { EditorContext } from "@/components/EditorContext";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { Button } from "../ui/button";
 
 const SaveCommentButton = ({
 	getEditorTextContent,
@@ -8,7 +8,6 @@ const SaveCommentButton = ({
 	getEditorTextContent: () => string;
 }): React.ReactElement => {
 	const { handleCreateCommentFromEditor } = useContext(EditorContext);
-	const { theme } = useAppSelector((state) => state.userSettings);
 
 	const handleClick = () => {
 		const content = getEditorTextContent().trim();
@@ -17,15 +16,7 @@ const SaveCommentButton = ({
 		}
 	};
 
-	return (
-		<button
-			type="button"
-			onClick={handleClick}
-			className={`${"absolute bottom-4 right-12 py-1.5 px-5 rounded-md border border-blueGlow focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue"} ${theme === "dark" ? "bg-blueGlow" : "bg-blueGlowLight"}`}
-		>
-			Save
-		</button>
-	);
+	return <Button onClick={handleClick}>Save</Button>;
 };
 
 export default SaveCommentButton;

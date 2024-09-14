@@ -69,9 +69,9 @@ const TaskList = ({
 							)}
 							<Button variant="ghost" size="sm" className="p-0">
 								{task.assigneeName ? (
-									<Avatar>
+									<Avatar className="size-5">
 										<AvatarImage src={user?.avatarUrl ?? undefined} />
-										<AvatarFallback>
+										<AvatarFallback className="text-xxs">
 											{getInitials(task.assigneeName)}
 										</AvatarFallback>
 									</Avatar>
