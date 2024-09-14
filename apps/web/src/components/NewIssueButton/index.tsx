@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
 import { SquarePen } from "lucide-react";
 import { Button } from "../ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -1,148 +1,189 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { createTeam, teamExists } from "@/store/taskData/thunks";
 import { useRouter } from "next/navigation";
-import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import BlueButton from "@/components/BlueButton";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from "@/components/ui/card";
+import {
+	useAuthStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/storeZ";
+import { Separator } from "@/components/ui/separator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
-const styles = {
-	mainContainer:
-		"flex bg-background text-foreground min-h-screen mdsm:flex-col w-full",
-	pageContainer: "w-full pt-20 flex justify-center",
-	pageWrapper: "flex flex-col w-1/3 mdsm:w-3/4",
-	form: "flex flex-col",
-	title: "text-2xl text-foreground mb-1 font-medium",
-	line: "block w-full border-t border-border mt-6",
-	input:
-		"w-full border border-border rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
-	identifierInput:
-		"w-20 border border-border max-h-8 rounded focus:outline-none focus:ring-1 focus:ring-indigo-400 text-foreground py-1.5 px-3 text-sm mt-1.5 bg-textField",
-	inputWrapper: "my-6",
-	TopNavbar: "lg:hidden mdsm:visible",
-	navbarWrapper:
-		"relative mdsm:absolute -left-0 transition-all duration-300 ease-in-out",
-	titleDescription: "text-sm text-muted-foreground",
-	inputLabel: "text-sm",
-	identifierDescription: "text-sm text-muted-foreground pl-5",
-	identifierinputWrapper: "flex",
-};
+const formSchema = z.object({
+	teamName: z.string().min(1, {
+		message: "Team name is required",
+	}),
+	teamIdentifier: z
+		.string()
+		.min(1, {
+			message: "Team identifier is required",
+		})
+		.max(5, {
+			message: "Team identifier must be 5 characters or less",
+		})
+		.regex(/^[A-Za-z0-9]*$/, {
+			message: "Team identifier must only contain letters and numbers",
+		}),
+});
 
 export default function CreateTeam() {
 	const { toast } = useToast();
-	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const [teamName, setTeamName] = useState<string>("");
-	const [teamIdentifier, setTeamIdentifier] = useState<string>("");
-	const workspace = useAppSelector((state) => state.taskData.currentWorkspace);
-	const { user, theme } = useAppSelector((state) => state.userSettings);
-	const access = useAppSelector((state) => state.taskData.access);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { users } = useUserStore((state) => state);
+	const { getAllTeams, teams, addTeam } = useTeamStore((state) => state);
+	const access = users.find((u) => u.id === user?.id);
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			teamName: "",
+			teamIdentifier: "",
+		},
+	});
+
+	if (!teams) {
+		currentWorkspace && getAllTeams(currentWorkspace.id);
+	}
 
 	const userHasAccess =
 		typeof access === "object" &&
 		access &&
 		"id" in access &&
-		access.id === user?._id;
+		access.id === user?.id;
 
-	const identifierInputFilter = (e: InputChangeEvent): void => {
-		const identifierFormat = /^[A-Za-z0-9]*$/g;
-		if (identifierFormat.test(e.target.value)) {
-			setTeamIdentifier(e.target.value.toUpperCase());
+	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		if (!currentWorkspace) {
+			toast({
+				title: "No workspace selected",
+				variant: "destructive",
+			});
+			return;
 		}
-	};
 
-	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
-		e.preventDefault();
-		if (!teamName && !teamIdentifier) {
-			toast({
-				title: "Both Name and Identifier required",
-				variant: "destructive",
+		const doesTeamExist = teams.find(
+			(team) =>
+				team.id === values.teamName &&
+				team.identifier === values.teamIdentifier.toUpperCase(),
+		);
+
+		if (!doesTeamExist) {
+			const newTeam = await addTeam({
+				name: values.teamName.trim(),
+				identifier: values.teamIdentifier.toUpperCase(),
+				workspaceId: currentWorkspace.id,
 			});
-		} else if (!teamIdentifier) {
-			toast({
-				title: "Identifier is required",
-				variant: "destructive",
-			});
-		} else if (!teamName) {
-			toast({ title: "Name is required", variant: "destructive" });
-		} else {
-			const doesTeamExist = await dispatch(
-				teamExists({
-					workspace: workspace.id,
-					identifier: teamIdentifier,
-					name: teamName.trim(),
-				}),
+			router.push(
+				`/${currentWorkspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
 			);
-
-			if (!doesTeamExist.payload) {
-				dispatch(
-					createTeam({
-						name: teamName.trim(),
-						identifier: teamIdentifier,
-						workspaceId: workspace.id,
-					}),
-				);
-				router.push(`/${workspace?.url}/team/${teamIdentifier}/all`);
-				toast({ title: "Team created" });
-			}
+			toast({ title: "Team created" });
+		} else {
+			toast({
+				title: "Team already exists",
+				variant: "destructive",
+			});
 		}
 	};
 
 	useEffect(() => {
-		if (!userHasAccess) {
-			router.push(`/${workspace?.url}`);
+		if (!userHasAccess && currentWorkspace) {
+			router.push(`/${currentWorkspace.url}`);
+		} else if (!currentWorkspace) {
+			router.push("/");
 		}
 	}, []);
 
 	return (
-		<div className={styles.mainContainer}>
-			<div className={styles.pageContainer}>
-				<div className={styles.pageWrapper}>
-					<div>
-						<h1 className={styles.title}>Create Team</h1>
-						<p className={styles.titleDescription}>
+		<div className="flex bg-background text-foreground mdsm:flex-col w-[80vw]">
+			<div className="w-full pt-20 flex justify-center">
+				<Card className="w-full max-w-lg">
+					<CardHeader>
+						<CardTitle>Create Team</CardTitle>
+						<CardDescription>
 							Create a new team to manage separate cycles and workflows
-						</p>
-					</div>
-					<span className={styles.line} />
-					<form className={styles.form} onSubmit={handleSubmit}>
-						<div>
-							<div className={styles.inputWrapper}>
-								<p className={styles.inputLabel}>Team Name</p>
-								<input
-									type="text"
-									value={teamName}
-									placeholder="e.g. Engineering"
-									onChange={(e) => setTeamName(e.target.value)}
-									className={`${styles.input} ${theme === "dark" ? "bg-background" : "bg-card"}`}
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Separator />
+						<Form {...form}>
+							<form
+								onSubmit={form.handleSubmit(onSubmit)}
+								className="space-y-6 mt-4"
+							>
+								<FormField
+									control={form.control}
+									name="teamName"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Team Name</FormLabel>
+											<FormControl>
+												<Input placeholder="e.g. Engineering" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
 								/>
-							</div>
-							<div className={styles.inputWrapper}>
-								<p className={styles.inputLabel}>Team identifier</p>
-								<div className={styles.identifierinputWrapper}>
-									<input
-										type="text"
-										value={teamIdentifier}
-										placeholder="e.g. ENG"
-										maxLength={5}
-										onChange={identifierInputFilter}
-										className={`${styles.identifierInput} ${
-											theme === "dark" ? "bg-background" : "bg-card"
-										}`}
-									/>
-									<p className={styles.identifierDescription}>
-										{
-											"This is used as the identifier (e.g. ENG-123) for all issues of the team. Keep it short and simple."
-										}
-									</p>
-								</div>
-							</div>
-							<BlueButton description="Create Team" />
-						</div>
-					</form>
-				</div>
+								<FormField
+									control={form.control}
+									name="teamIdentifier"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Team identifier</FormLabel>
+											<FormControl>
+												<div className="flex items-center space-x-2">
+													<Input
+														placeholder="e.g. ENG"
+														maxLength={5}
+														className="w-20"
+														{...field}
+														onChange={(e) => {
+															const value = e.target.value.toUpperCase();
+															if (/^[A-Z0-9]*$/.test(value)) {
+																field.onChange(value);
+															}
+														}}
+													/>
+													<FormDescription>
+														This is used as the identifier (e.g. ENG-123) for
+														all issues of the team. Keep it short and simple.
+													</FormDescription>
+												</div>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<Button type="submit" className="w-full">
+									Create Team
+								</Button>
+							</form>
+						</Form>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);
