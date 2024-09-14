@@ -126,43 +126,45 @@ export default function WorkspaceSettings() {
 
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					<FormField
-						control={form.control}
-						name="name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Workspace Name</FormLabel>
-								<FormControl>
-									<Input {...field} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="url"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Workspace URL</FormLabel>
-								<FormControl>
-									<div className="flex">
-										<span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-transparent text-sm mr-0 pr-0 text-muted-foreground">
-											https://app.squaredmade.com/
-										</span>
-										<Input
-											{...field}
-											className="rounded-l-none border-l-0 ml-0 pl-0 focus-visible:ring-offset-0 focus-visible:ring-0"
-										/>
-									</div>
-								</FormControl>
-								<FormDescription>
-									This is your workspace's unique URL on our platform.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+					<div className="grid grid-cols-2 gap-4">
+						<FormField
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace Name</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="url"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace URL</FormLabel>
+									<FormControl>
+										<div className="flex">
+											<span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-transparent text-sm mr-0 pr-0 text-muted-foreground">
+												https://app.squaredmade.com/
+											</span>
+											<Input
+												{...field}
+												className="rounded-l-none border-l-0 ml-0 pl-0 focus-visible:ring-offset-0 focus-visible:ring-0"
+											/>
+										</div>
+									</FormControl>
+									<FormDescription>
+										This is your workspace's unique URL on our platform.
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
 					<Button type="submit" disabled={!isFormChanged}>
 						Update
 					</Button>
