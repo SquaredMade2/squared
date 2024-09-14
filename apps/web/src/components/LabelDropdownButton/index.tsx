@@ -105,9 +105,7 @@ const LabelDropdownButton = ({
 		label: Label,
 	) => {
 		let newSelection = [];
-		if (currentLabels === undefined) {
-			newSelection = [label];
-		} else if (currentLabels.length === 0) {
+		if (currentLabels === undefined || currentLabels.length === 0) {
 			newSelection = [label];
 		} else {
 			const nameFound = currentLabels.find((current) => current === label);
@@ -140,9 +138,10 @@ const LabelDropdownButton = ({
 										<LabelColor label={label} />
 										<span className="ml-2">{label.name}</span>
 									</div>
-									{taskLabels.length !== 0 && taskLabels.includes(label) && (
-										<Check className="size-4" />
-									)}
+									{newIssueLabels.length !== 0 &&
+										newIssueLabels.includes(label) && (
+											<Check className="size-4" />
+										)}
 								</CommandItem>
 							))}
 						</CommandGroup>
