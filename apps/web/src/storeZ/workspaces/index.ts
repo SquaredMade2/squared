@@ -175,21 +175,25 @@ export const createWorkspaceStore = (
 				updateWorkspace: async (
 					workspaceId: string,
 					workspace: Partial<Workspace>,
-				): Promise<Workspace> => {
+				): Promise<WorkspaceResponse> => {
 					try {
-						const response = await axios.put<Workspace>(
-							apiString(workspaceId),
-							workspace,
-						);
-						const updatedWorkspace = response.data;
+						const response: { data: ApiReturnType<Workspace> } =
+							await axios.put(apiString(workspaceId), workspace);
+						const updatedWorkspace = response.data.data;
 
-						set((state) => ({
-							workspaces: state.workspaces.map((t) =>
-								t.id === workspaceId ? updatedWorkspace : t,
-							),
-						}));
+						if (updatedWorkspace) {
+							set((state) => ({
+								workspaces: state.workspaces.map((t) =>
+									t.id === updatedWorkspace.id ? updatedWorkspace : t,
+								),
+							}));
+						}
 
-						return updatedWorkspace;
+						return {
+							workspace: updatedWorkspace,
+							message: response.data.message,
+							variant: response.data.variant,
+						};
 					} catch (error) {
 						console.error("Error in updateWorkspace:", error);
 						throw error;
