@@ -15,7 +15,7 @@ const IssueSidebarTopRow = () => {
 	const title = currentTask?.title ?? "";
 
 	const currentTeam = useTeamStore((state) => state.currentTeam);
-	const TaskUrl = `/${currentTeam?.name ?? ""}/task/${currentTask?.identifier ?? ""}/${formatUrl(title)}`;
+	const TaskUrl = `/${currentTeam?.name ?? ""}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `
 			${replaceSpacesWithDashes(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
