@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWorkspaceStore } from "@/storeZ";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,7 +49,9 @@ export default function WorkspaceSettings() {
 	const { currentWorkspace, deleteWorkspace, updateWorkspace } =
 		useWorkspaceStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
+
 	if (!currentWorkspace) return null;
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -60,6 +62,21 @@ export default function WorkspaceSettings() {
 		},
 	});
 
+	useEffect(() => {
+		const subscription = form.watch((value, { name, type }) => {
+			if (
+				value.name !== currentWorkspace.name ||
+				value.url !==
+					currentWorkspace.url.replace("https://app.squaredmade.com/", "")
+			) {
+				setIsFormChanged(true);
+			} else {
+				setIsFormChanged(false);
+			}
+		});
+		return () => subscription.unsubscribe();
+	}, [form, currentWorkspace]);
+
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
 			const response = await updateWorkspace(currentWorkspace.id, {
@@ -67,6 +84,7 @@ export default function WorkspaceSettings() {
 				url: values.url,
 			});
 			toast(response);
+			setIsFormChanged(false);
 		} catch (error) {
 			console.error("Error updating workspace:", error);
 			toast({
@@ -145,7 +163,9 @@ export default function WorkspaceSettings() {
 							</FormItem>
 						)}
 					/>
-					<Button type="submit">Update</Button>
+					<Button type="submit" disabled={!isFormChanged}>
+						Update
+					</Button>
 				</form>
 			</Form>
 
