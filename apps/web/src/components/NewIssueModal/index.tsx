@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,34 +9,21 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
-
-import PriorityButton from "@/components/PriorityButton";
 import { StatusDropdownButton } from "./StatusDropdownButton";
+import { EffortDropdownButton } from "./EffortDropdownButton";
 import DateButton from "@/components/DateButton";
-import EffortEstimateButton from "@/components/EffortEstimateButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
-import DesignationsContainer from "@/components/DesignationsContainer";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
-
 import { Separator } from "../ui/separator";
-import {
-	Form,
-	FormItem,
-	FormDescription,
-	FormControl,
-	FormField,
-	FormLabel,
-} from "../ui/form";
+import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import MentionInput from "@/components/MentionsInput";
 import { SocketContext } from "@/app/SocketProvider";
-import type { OnChangeHandlerFunc } from "react-mentions";
 import {
 	useAuthStore,
 	useModalStore,
@@ -56,27 +43,21 @@ const NewIssueModal = () => {
 	const { currentWorkspace, updateWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { users } = useUserStore((state) => state);
 	const { tasks, addTask } = useTaskStore((state) => state);
 
-	const authorId = user?.id;
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
-
-	// const [titleInput, setTitleInput] = useState("");
-	// const [descriptionInput, setDescriptionInput] = useState("");
 
 	const socket = useContext(SocketContext);
 
-	// const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	// 	setTitleInput(e.target.value);
-	// };
-
-	// const handleDescriptionChange: OnChangeHandlerFunc = (e) => {
-	// 	setDescriptionInput(e.target.value);
-	// };
-
 	const handleDiscard = () => {
 		setNewIssueData({});
+
+		form.reset({
+			title: "",
+			description: "",
+		});
+
+		setShowNewIssue(false);
 	};
 
 	const formSchema = z.object({
@@ -95,17 +76,10 @@ const NewIssueModal = () => {
 			description: "",
 		},
 	});
-	console.log("current workspake =====", currentWorkspace);
 
 	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
 		const { title, description } = values;
-		// if (titleInput.replace(/\s+/g, "").length === 0) {
-		// 	toast({
-		// 		title: "Please Enter a Title!",
-		// 		variant: "destructive",
-		// 	});
-		// 	return;
-		// }
+
 		if (tasks.some((task) => task.title === title)) {
 			toast({
 				title: `${title} already exists`,
@@ -233,16 +207,19 @@ const NewIssueModal = () => {
 						</div>
 						<Separator orientation="vertical" />
 						<div className="w-1/4 space-y-4">
-							<div>
+							<div className="space-y-4">
 								<StatusDropdownButton />
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
+								<EffortDropdownButton />
+								<DateButton location="newIssueModal" />
 							</div>
 							<DialogFooter>
 								<Button
 									onClick={handleDiscard}
 									className="hover:cursor-pointer bg-transparent"
 									variant="destructive"
+									type="button"
 								>
 									Discard
 								</Button>

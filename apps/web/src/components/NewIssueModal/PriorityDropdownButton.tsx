@@ -21,8 +21,8 @@ export const PriorityDropdownButton = () => {
 
 	return (
 		<Select>
-			<SelectTrigger>
-				<SelectValue placeholder="Set Priority" />
+			<SelectTrigger className="appearance-none grow flex items-center justify-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent text-sm font-semibold">
+				<SelectValue placeholder="Priority" />
 			</SelectTrigger>
 			<SelectContent side={"left"} align="start">
 				<SelectGroup>

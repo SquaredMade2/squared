@@ -33,17 +33,17 @@ export const StatusDropdownButton = () => {
 
 	const showIcon = (name: string | undefined) => {
 		switch (name) {
-			case "Backlog":
+			case "backlog":
 				return <CircleDashed className="size-4" />;
-			case "Todo":
+			case "todo":
 				return <Circle className="size-4" />;
-			case "In Progress":
+			case "inProgress":
 				return inProgress();
-			case "Done":
+			case "done":
 				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
 			case "Canceled":
 				return <CircleX className="size-4" />;
-			case "Duplicate":
+			case "inReview":
 				return <Copy className="size-4" />;
 		}
 	};
@@ -51,14 +51,14 @@ export const StatusDropdownButton = () => {
 	return (
 		<DropdownMenu open={open} onOpenChange={setOpen}>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="cursor-pointer w-[150px] mr-2">
+				<Button variant="outline" className="max-w-full w-full">
 					<span className="cursor-pointer">{showIcon(newIssueStatus)}</span>
 					<span className="ml-3 cursor-pointer">{newIssueStatus}</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
 				sideOffset={4}
-				side={"bottom"}
+				side={"left"}
 				align="start"
 				className={"w-[150px]"}
 			>
