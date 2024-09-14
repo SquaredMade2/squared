@@ -1,30 +1,28 @@
 import React from "react";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import {
-	setShowPriority,
-	setShowLabels,
-	setShowDateTime,
-} from "@/store/toggleTaskFeatures";
 import { useId } from "@repo/ui/id";
 import { Switch } from "../ui/switch";
+import { useViewStore } from "@/storeZ";
 
 const DisplayPreferences = () => {
-	const dispatch = useAppDispatch();
-
-	const { showPriority, showLabels, showDateTime } = useAppSelector(
-		(state) => state.toggleTaskFeatures,
-	);
+	const {
+		showPriority,
+		showLabels,
+		showDateTime,
+		setShowPriority,
+		setShowLabels,
+		setShowDateTime,
+	} = useViewStore((state) => state);
 
 	const handlePriority = (): void => {
-		dispatch(setShowPriority());
+		setShowPriority(!showPriority);
 	};
 
 	const handleLabels = (): void => {
-		dispatch(setShowLabels());
+		setShowLabels(!showLabels);
 	};
 
 	const handleDateTime = (): void => {
-		dispatch(setShowDateTime());
+		setShowDateTime(!showDateTime);
 	};
 
 	const displayOptions = [

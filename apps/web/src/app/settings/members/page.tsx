@@ -11,20 +11,13 @@ import { columns } from "./columns";
 export default function WorkspaceMembersPage() {
 	const params = useParams();
 	const { workspaceId } = params;
-	const {
-		currentWorkspace,
-		getWorkspace,
-		setCurrentWorkspace,
-		inviteToWorkspace,
-	} = useWorkspaceStore((state) => state);
+	const { currentWorkspace, getWorkspace, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
 	const [workspace, setWorkspace] = useState<Workspace | null>(
 		currentWorkspace,
 	);
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const [members, setMembers] = useState<User[]>(users);
-	const [inviteEmail, setInviteEmail] = useState("");
-	const [loading, setLoading] = useState(false);
-	const { toast } = useToast();
 
 	useEffect(() => {
 		if (
@@ -46,27 +39,8 @@ export default function WorkspaceMembersPage() {
 		}
 	}, [workspaceId]);
 
-	const handleInvite = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setLoading(true);
-
-		try {
-			await inviteToWorkspace(workspaceId as string, inviteEmail);
-			toast({ title: `Invitation sent to ${inviteEmail}` });
-			setInviteEmail("");
-		} catch (error) {
-			toast({
-				title:
-					error instanceof Error ? error.message : "Failed to invite user.",
-				variant: "destructive",
-			});
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	return (
-		<div className="w-full flex flex-col px-56 py-8 container gap-4">
+		<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">
 			<div className="flex flex-col gap-2 items-start">
 				<h1 className="text-2xl">Members</h1>
 				<p className="text-xs text-muted-foreground">

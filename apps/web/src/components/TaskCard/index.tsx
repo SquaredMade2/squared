@@ -1,275 +1,115 @@
 "use client";
 
-import { useState, useRef, useEffect, useContext } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import type React from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import DeleteConfirmCard from "@/components/DeleteConfirmCard";
-import { Calendar, GripVertical } from "lucide-react";
-import TaskCardTitle from "@/components/TaskCardTitle";
-import TaskCardPriority from "@/components/TaskCardPriority";
-import TaskCardLabels from "@/components/TaskCardLabels";
-import TaskCardDate from "@/components/TaskCardDate";
-import { formatDate } from "date-fns/format";
-import { SocketContext } from "@/app/SocketProvider";
-import type { TaskCardProps } from "./TaskCard.interfaces";
-import type { Label, Task } from "@repo/db";
-import { formatUrl } from "@/utils/formatting";
-import { ContextMenu, ContextMenuTrigger } from "../ui/context-menu";
-import TaskContextMenu from "../TaskContextMenu";
 import {
-	useTaskStore,
+	Circle,
+	CircleCheckBig,
+	CircleDashed,
+	CircleFadingPlus,
+	Ellipsis,
+} from "lucide-react";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import {
 	useTeamStore,
+	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/storeZ";
+import type { Status } from "@repo/db";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
+import { high, medium, low, filterInProgress } from "@/components/Svg";
+import TaskContextMenu from "../TaskContextMenu";
+import TaskList from "./TaskList";
+import TaskGrid from "./TaskGrid";
+import type { TaskCardProps } from "./interfaces";
 
-const TaskCard = ({
-	filteredTasks,
-	setTaskData,
-	highlightText,
-	location,
-}: TaskCardProps) => {
-	const router = useRouter();
+const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
+	const { view } = useViewStore((state) => state);
+	const { workspaceLabels } = useWorkspaceStore((state) => state);
+	const { users } = useUserStore((state) => state);
+	const { currentTeam } = useTeamStore((state) => state);
 
-	const { showDateTime, showPriority, showLabels, view } = useViewStore(
-		(state) => ({
-			showDateTime: state.showDateTime,
-			showPriority: state.showPriority,
-			showLabels: state.showLabels,
-			view: state.view,
-		}),
-	);
-
-	const { getAllTasks, deleteTask } = useTaskStore((state) => state);
-
-	const { currentWorkspace, getWorkspaceLabels, workspaceLabels } =
-		useWorkspaceStore((state) => state);
-	useEffect(() => {
-		const fetchWorkspaceLabels = async () => {
-			if (!workspaceLabels && currentWorkspace) {
-				await getWorkspaceLabels(currentWorkspace.id);
-			}
-		};
-		fetchWorkspaceLabels();
-	}, [currentWorkspace]);
-
-	const { currentTeam } = useTeamStore((state) => ({
-		currentTeam: state.currentTeam,
-	}));
-
-	const [deleteFade, setDeleteFade] = useState(false);
-	const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-	const [showDeleteCard, setShowDeleteCard] = useState(false);
-	const [menuPosition, setMenuPosition] = useState<{
-		x: number;
-		y: number;
-	} | null>(null);
-	const [isCopied, setIsCopied] = useState(false);
-
-	const taskRefs = useRef<{ [key: string]: HTMLElement | null }>({});
-	const socket = useContext(SocketContext);
-
-	const handleDeleteTaskCard = async (task: Task) => {
-		deleteTask(task.id);
-		currentTeam && (await getAllTasks(currentTeam.id));
-		setShowDeleteCard(false);
-		setDeleteFade(false);
-
-		socket.emit("remove_notification", task.id, socket.id);
-	};
-
-	const handleCloseDeleteCard = () => {
-		setShowDeleteCard(false);
-		setDeleteFade(false);
-	};
-
-	const handleContextMenu = (
-		e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-		task: Task,
-	) => {
-		e.preventDefault();
-		setTaskData?.(task);
-		setSelectedTask(task);
-		setMenuPosition({ x: e.clientX, y: e.clientY });
-	};
-
-	const navigateToTask = (task: Task) => {
-		router.push(
-			`/${currentTeam?.name}/task/${task.identifier}/${formatUrl(task.title)}`,
-		);
-	};
-
-	const copyToClipboard = (taskId: string) => {
-		navigator.clipboard.writeText(`${window.location.origin}/tasks/${taskId}`);
-		setIsCopied(true);
-		setTimeout(() => {
-			setIsCopied(false);
-		}, 3000);
-	};
-
-	const handleGlobalClick = () => {
-		setMenuPosition(null);
-	};
-
-	useEffect(() => {
-		// Fetching all users whenever the component mounts
-		// You can remove this effect if the user list is managed elsewhere
-	}, [currentWorkspace?.id]);
-
-	useEffect(() => {
-		function handleClickAway(e: MouseEvent) {
-			if (
-				!Object.values(taskRefs.current).some((taskEl) =>
-					taskEl?.contains(e.target as Node),
-				)
-			) {
-				setMenuPosition(null);
-			}
+	const getPriorityIcon = () => {
+		switch (task.priority) {
+			case "low":
+				return low();
+			case "medium":
+				return medium();
+			case "high":
+				return high();
+			case "urgent":
+				return (
+					<FontAwesomeIcon
+						className="text-muted-foreground"
+						icon={faExclamation}
+					/>
+				);
+			default:
+				return <Ellipsis className="size-4" />;
 		}
-
-		document.addEventListener("mousedown", handleClickAway);
-		return () => {
-			document.removeEventListener("mousedown", handleClickAway);
-		};
-	}, []);
-
-	const renderTaskCard = (task: Task, index: number) => {
-		const taskLabels = workspaceLabels?.filter((label) =>
-			task.labels.includes(label.id),
-		);
-
-		return (
-			<Draggable draggableId={task.id} index={index} key={task.id}>
-				{(provided) => (
-					<div
-						{...provided.draggableProps}
-						{...provided.dragHandleProps}
-						ref={provided.innerRef}
-						key={task.id}
-						onClick={handleGlobalClick}
-						onContextMenu={(e) => handleContextMenu(e, task)}
-					>
-						<ContextMenu>
-							<ContextMenuTrigger>
-								<div
-									ref={(el: HTMLDivElement | null) => {
-										taskRefs.current[task.id] = el;
-									}}
-								>
-									<TaskContextMenu
-										task={task}
-										copyToClipboard={copyToClipboard}
-										setIsCopied={setIsCopied}
-									/>
-								</div>
-								{view === "grid" ? (
-									<Link
-										href={`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`}
-										onClick={() =>
-											router.push(
-												`/${currentTeam?.name}/task/${currentTeam?.identifier}/${formatUrl(task.title)}`,
-											)
-										}
-									>
-										<div className="relative w-[325px]">
-											<div
-												key={task.id}
-												className={
-													"cursor-pointer flex flex-col justify-center w-full p-4 text-blue text-foreground rounded-lg shadow border dark:border-none hover:bg-accent space-y-4 bg-card"
-												}
-											>
-												<TaskCardTitle
-													task={task}
-													taskTitle={task.title}
-													location={location}
-													highlightText={highlightText}
-													isShown={showPriority}
-													labels={taskLabels}
-												/>
-												{showDateTime && (
-													<TaskCardDate
-														icon={
-															<Calendar className="cursor-pointer size-4" />
-														}
-													>
-														Due Date:{" "}
-														{task.dueDate
-															? formatDate(
-																	new Date(task.dueDate),
-																	"M/d/yy, h:mm a",
-																)
-															: "No Date Set"}
-													</TaskCardDate>
-												)}
-												<div className="flex flex-row items-center space-x-4">
-													{showPriority && (
-														<TaskCardPriority border={true} task={task} />
-													)}
-													{showLabels && (
-														<TaskCardLabels labels={taskLabels} view="grid" />
-													)}
-												</div>
-											</div>
-										</div>
-									</Link>
-								) : (
-									<div
-										className={`relative group/main grid grid-cols-24 items-center w-full py-2 text-blue bg-card border-t border-solid border-border hover:bg-accent ${
-											index === filteredTasks.length - 1 && "rounded-b-lg"
-										}`}
-									>
-										<div className="group/select w-10 col-span-1 flex justify-end items-center pl-2 ml-3.5">
-											<div className="hidden transition ease-in-out duration-200 sm:group-hover/main:hidden xs:group-hover/main:hidden md:group-hover/main:block md:group-hover/select:-translate-x-2">
-												<GripVertical className="size-5" />
-											</div>
-											<div className="xs:mr-5 sm:mr-5 md:mr-4">
-												<input
-													title="input"
-													className="appearance-none checked:bg-primary/80 form-checkbox border border-checkbox md:hidden rounded group-hover/select:block sm:block xs:block w-[13px] h-[13px]"
-													type="checkbox"
-												/>
-											</div>
-										</div>
-										<div
-											onClick={() => navigateToTask(task)}
-											className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0"
-										>
-											<div className="col-span-10 text-foreground">
-												<TaskCardTitle
-													key={task.id}
-													task={task}
-													isShown={showPriority}
-													taskTitle={task.title}
-													location={location}
-													highlightText={highlightText}
-													labels={taskLabels}
-												/>
-											</div>
-										</div>
-									</div>
-								)}
-							</ContextMenuTrigger>
-						</ContextMenu>
-					</div>
-				)}
-			</Draggable>
-		);
 	};
+
+	const getStatusIcon = (status: Status) => {
+		switch (status) {
+			case "backlog":
+				return <CircleDashed className="size-4" />;
+			case "todo":
+				return <Circle className="size-4" />;
+			case "inProgress":
+				return filterInProgress();
+			case "inReview":
+				return <CircleFadingPlus className="size-4 text-green-400" />;
+			case "done":
+				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
+			default:
+				return <Circle className="size-4" />;
+		}
+	};
+	const teamIdentifier =
+		location === "dashboard" ? currentTeam?.identifier : task.teamId;
+
+	const taskLabels =
+		workspaceLabels?.filter((label) => task.labels.includes(label.id)) || [];
 
 	return (
-		<>
-			{filteredTasks?.map((task, index) => renderTaskCard(task, index))}
-
-			{showDeleteCard && selectedTask && (
-				<DeleteConfirmCard
-					task={selectedTask}
-					handleDeleteTaskCard={handleDeleteTaskCard}
-					onClose={handleCloseDeleteCard}
-					deleteFade={deleteFade}
-				/>
+		<Draggable draggableId={task.id} index={index}>
+			{(provided) => (
+				<div
+					{...provided.draggableProps}
+					{...provided.dragHandleProps}
+					ref={provided.innerRef}
+				>
+					<ContextMenu>
+						<ContextMenuTrigger>
+							<TaskContextMenu task={task} />
+							{view === "grid" && location !== "search" ? (
+								<TaskGrid
+									task={task}
+									user={users.filter((u) => u.id === task.assigneeId)[0]}
+									teamIdentifier={teamIdentifier}
+									priorityIcon={getPriorityIcon()}
+									currentTeam={currentTeam}
+									taskLabels={taskLabels}
+								/>
+							) : (
+								<TaskList
+									task={task}
+									user={users.filter((u) => u.id === task.assigneeId)[0]}
+									location={location}
+									priorityIcon={getPriorityIcon()}
+									statusIcon={getStatusIcon(task.status)}
+									highlightText={highlightText}
+									teamIdentifier={teamIdentifier}
+									currentTeam={currentTeam}
+								/>
+							)}
+						</ContextMenuTrigger>
+					</ContextMenu>
+				</div>
 			)}
-		</>
+		</Draggable>
 	);
 };
 

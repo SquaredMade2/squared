@@ -51,7 +51,6 @@ const Index = () => {
 			.filter(Boolean);
 
 		if (!emails.length || !currentWorkspace) return;
-		console.log("Sending invites to:", emails);
 
 		setIsLoading(true);
 

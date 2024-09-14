@@ -3,8 +3,6 @@ import type { Task } from "@repo/db";
 
 export interface TaskContextMenuProps {
 	task: Task;
-	setIsCopied: Dispatch<SetStateAction<boolean>>;
-	copyToClipboard: (taskId: string) => void;
 }
 export interface StatusSubContextMenuProps {
 	task: Task;
