@@ -49,10 +49,11 @@ const DateButton = ({
 
 	const handleSave = () => {
 		updateItem(selectedDate);
+		setDropdownOpen(false);
 	};
 
 	const updateItem = async (newDate: Date | undefined) => {
-		if (newIssueData.dueDate) return;
+		if (newIssueData.dueDate === newDate) return;
 		try {
 			setNewIssueData({ ...newIssueData, dueDate: newDate });
 		} catch (err) {
