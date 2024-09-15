@@ -1,12 +1,6 @@
-import axios from "axios";
-import type { RootState } from "@/store";
-import { signOut } from "next-auth/react";
-import { clearUser } from "@/store/userSettings";
-import { setShowNewIssue } from "@/store/showNewIssue";
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./SearchCommand.interface";
-import { deleteAllCurrentFilters } from "@/store/filterPage/actions";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
+import { useWorkspaceStore, useTeamStore } from "@/store";
 import {
 	Box,
 	Copy,
@@ -23,30 +17,37 @@ import {
 	ClipboardCopy,
 	ArrowLeftRight,
 } from "lucide-react";
-import { useToast } from "../ui/use-toast";
+import { useAuthStore } from "@/store";
 
 export class commandSchema {
 	router = useRouter();
 	pathname = usePathname();
-	dispatch = useAppDispatch();
-	currentWorkspace = useAppSelector(
-		(state: RootState) => state.taskData.currentWorkspace,
-	);
-	currentTeam = useAppSelector(
-		(state: RootState) => state.taskData.currentTeam,
-	);
-	showToast(title: string, variant?: "destructive" | "default" | null) {
-		const { toast } = useToast();
-		toast({ title, variant });
-	}
-	constructor() {
+	currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+	currentTeam = useTeamStore((state) => state.currentTeam);
+	setShowNewIssue: (input: boolean) => void;
+	clearFilter: () => void;
+	showToast: (
+		title: string,
+		variant?: "destructive" | "default" | null,
+	) => void;
+	constructor(
+		setShowNewIssue: (input: boolean) => void,
+		clearFilter: () => void,
+		showToast: (
+			title: string,
+			variant?: "destructive" | "default" | null,
+		) => void,
+	) {
+		this.setShowNewIssue = setShowNewIssue;
+		this.clearFilter = clearFilter;
+		this.showToast = showToast;
 		this.currentSchema = {
 			Issue: {
 				createNewIssue: {
 					icon: <Plus className="mr-2 h-4 w-4" />,
 					text: "Create new issue...",
 					function: () => {
-						this.dispatch(setShowNewIssue(true));
+						this.setShowNewIssue(true);
 					},
 					shortcut: ["C"],
 				},
@@ -82,10 +83,14 @@ export class commandSchema {
 					icon: <Layers3 />,
 					text: "Create new view",
 					function: () => {
-						this.dispatch(deleteAllCurrentFilters());
-						this.router.push(
-							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
-						);
+						this.clearFilter();
+						if (this.currentWorkspace && this.currentTeam) {
+							this.router.push(
+								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
+							);
+						} else {
+							console.error("Current workspace or team is null");
+						}
 					},
 					shortcut: [],
 				},
@@ -154,9 +159,13 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to active issues",
 				function: () => {
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`,
-					);
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "A"],
 			},
@@ -164,9 +173,13 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to backlog",
 				function: () => {
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`,
-					);
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "B"],
 			},
@@ -174,9 +187,13 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to all issues",
 				function: () => {
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`,
-					);
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "E"],
 			},
@@ -192,10 +209,14 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to views",
 				function: () => {
-					this.dispatch(deleteAllCurrentFilters());
-					this.router.push(
-						`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,
-					);
+					this.clearFilter();
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "U"],
 			},
@@ -291,7 +312,13 @@ export class commandSchema {
 					icon: <Settings />,
 					text: "Team Settings",
 					function: () => {
-						this.router.push(`/settings/teams/${this.currentTeam.identifier}`);
+						if (this.currentWorkspace && this.currentTeam) {
+							this.router.push(
+								`/settings/teams/${this.currentTeam.identifier}`,
+							);
+						} else {
+							console.error("Current workspace or team is null null");
+						}
 					},
 					shortcut: [],
 				},
@@ -309,19 +336,13 @@ export class commandSchema {
 					icon: <LogOut />,
 					text: "Log out",
 					function: async () => {
-						await signOut({ redirect: false }).then(() => {
-							this.router.push("/login");
-						});
+						const logout = useAuthStore((state) => state.logout);
 						try {
-							const response = await axios({
-								method: "POST",
-								url: `${process.env.NEXT_PUBLIC_SERVER}/auth/logout`,
-								withCredentials: true,
-							});
-							this.dispatch(clearUser());
-							this.router.push(`${process.env.NEXT_PUBLIC_URL}`);
-							this.showToast("Logged out successfully");
-						} catch (error) {}
+							await logout();
+							this.showToast("Logged out successfully", "default");
+						} catch (error) {
+							this.showToast("Failed to log out", "destructive");
+						}
 					},
 					shortcut: ["Alt", "Shift", "Q"],
 				},

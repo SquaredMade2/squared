@@ -1,42 +1,30 @@
-import { useSelector } from "react-redux";
-import { useState, useContext } from "react";
-import axios from "axios";
-import { getSingleTask } from "@/store/task/thunks";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
+import { useState, useContext, useEffect } from "react";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { SocketContext } from "@/app/SocketProvider";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "../ui/use-toast";
+import {
+	useAuthStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 
 const TaskPageDescription = () => {
-	const dispatch = useAppDispatch();
-	const { toast } = useToast();
-	const description = useSelector(
-		(state: RootState) => state.singleTask.data?.description,
-	);
-	const taskId = useSelector((state: RootState) => state.singleTask.data?._id);
-	const socket = useContext(SocketContext);
-
-	const [updatedDescription, setUpdatedDescription] = useState(description);
-
-	const {
-		author,
-		storeCommonFields,
-		storeType,
-		storeTaskValue,
-		updateTaskValue,
-	} = useLogTaskEvent();
 	const [isFocused, setIsFocused] = useState(false);
 
-	const listOfMembers = useSelector(
-		(state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers,
-	);
-	const user = useSelector((state: RootState) => state.userSettings.user);
+	const { currentTask, updateTask } = useTaskStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { users, getAllUsers } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { toast } = useToast();
+	const socket = useContext(SocketContext);
+
+	const description = currentTask?.description ?? "";
+	const [updatedDescription, setUpdatedDescription] = useState(description);
+
 	const handleChange: OnChangeHandlerFunc = (e) => {
 		setUpdatedDescription(e.target.value);
 	};
@@ -45,27 +33,24 @@ const TaskPageDescription = () => {
 		transformingMentionInputs(updatedDescription ?? "");
 
 	const updateDescription = async () => {
-		if (taskId !== undefined) {
+		if (currentTask?.id) {
 			try {
-				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${taskId}`,
-					{
+				if (currentTask) {
+					const updatedTaskDescription = await updateTask(currentTask.id, {
+						...currentTask,
 						description: transformedDescriptionInput,
-					},
-				);
-				const updatedTaskDescription = await dispatch(
-					getSingleTask(taskId),
-				).unwrap();
-				const { userIds: userId } = transformingMentionInputs(
-					updatedDescription ?? "",
-				);
-				const mentionedUserIds = new Set([...userId]);
-				socket.emit(
-					"user_mentioned",
-					[...mentionedUserIds],
-					updatedTaskDescription._id,
-					user._id,
-				);
+					});
+					const { userIds: userId } = transformingMentionInputs(
+						updatedDescription ?? "",
+					);
+					const mentionedUserIds = new Set([...userId]);
+					socket.emit(
+						"user_mentioned",
+						[...mentionedUserIds],
+						updatedTaskDescription.task?.id,
+						user?.id,
+					);
+				}
 			} catch (err) {
 				if (err instanceof Error) {
 					toast({
@@ -78,25 +63,26 @@ const TaskPageDescription = () => {
 		}
 	};
 
-	const logEvent = () => {
-		storeType(EventType.DescriptionUpdated);
-		storeTaskValue(description ?? "");
-		updateTaskValue(updatedDescription ?? "");
-	};
-
 	const handleBlur = () => {
 		const changeMade = updatedDescription !== description;
-		if (changeMade && taskId !== undefined) {
-			storeCommonFields(author, taskId);
-			logEvent();
+		if (changeMade && currentTask?.id) {
 			updateDescription();
 		}
 		setIsFocused(false);
 	};
 
+	useEffect(() => {
+		if (currentTask) {
+			setUpdatedDescription(currentTask.description ?? "");
+		}
+		if (currentWorkspace) {
+			getAllUsers(currentWorkspace.id);
+		}
+	}, [currentTask]);
+
 	return (
 		<MentionInput
-			data={listOfMembers}
+			data={users}
 			onChange={handleChange}
 			className="resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent "
 			placeholder={"Add description..."}

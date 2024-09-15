@@ -30,11 +30,12 @@ jobs:
             "klexup") echo "1220824900365844522" ;;
             "napqueenkaila") echo "1074750793128882247" ;;
             "NateCummens") echo "447548944122380309" ;;
-            "Npinak") echo "748245605587091577" ;;
+            "npinak") echo "748245605587091577" ;;
             "oerkperl") echo "1084769574098047059" ;;
             "SerhiiDer") echo "791023762124308500" ;;
             "Smerly") echo "277576312686641153" ;;
             "THEjacob1000") echo "213438742315139073" ;;
+            "agreen254") echo "152861183026790402" ;;
             *) echo "" ;;
           esac
         }

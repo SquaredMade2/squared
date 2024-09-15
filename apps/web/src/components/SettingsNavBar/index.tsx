@@ -1,131 +1,202 @@
 "use client";
+
 import type React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { BriefcaseBusiness, CircleUser, Plus, Users } from "lucide-react";
-import { setCurrentTeam } from "@/store/taskData";
-import type { RootState } from "@/store";
-import type { handleTeamClickNavbar } from "@/app/interfaces/Navbars.interfaces";
-import type { Team } from "@/store/taskData/taskData.interfaces";
+import {
+	BriefcaseBusiness,
+	CircleUser,
+	Plus,
+	Users,
+	Sun,
+	Moon,
+} from "lucide-react";
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 import BackButton from "../BackButton";
+import { useTeamStore, useWorkspaceStore, useViewStore } from "@/store";
+import type { Team } from "@repo/db";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+const SidebarContent = ({
+	navigateTo,
+	handleTeamClick,
+	setTheme,
+	theme,
+	teams,
+}: {
+	navigateTo: (targetRoute: string) => void;
+	handleTeamClick: (team: Team) => void;
+	setTheme: (theme: string) => void;
+	theme: string;
+	teams: Team[];
+}) => (
+	<div className="flex flex-col h-full">
+		<ScrollArea className="flex-grow">
+			<div className="p-6 space-y-6">
+				<div className="flex items-center space-x-2">
+					<BackButton hoverbackground="bg-accent" />
+					<h1 className="text-2xl font-semibold">Settings</h1>
+				</div>
+
+				<div className="space-y-4">
+					<div>
+						<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
+							<BriefcaseBusiness className="mr-2 h-4 w-4" />
+							Workspace
+						</h2>
+						<div className="space-y-1 ml-6">
+							<Button
+								variant="ghost"
+								className="w-full justify-start"
+								onClick={() => navigateTo("workspace")}
+							>
+								General
+							</Button>
+							<Button
+								variant="ghost"
+								className="w-full justify-start"
+								onClick={() => navigateTo("members")}
+							>
+								Members
+							</Button>
+							<Button
+								variant="ghost"
+								className="w-full justify-start"
+								onClick={() => navigateTo("integrations")}
+							>
+								Integrations
+							</Button>
+						</div>
+					</div>
+
+					<Separator />
+
+					<div>
+						<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
+							<CircleUser className="mr-2 h-4 w-4" />
+							My Account
+						</h2>
+						<div className="space-y-1 ml-6">
+							<Button
+								variant="ghost"
+								className="w-full justify-start"
+								onClick={() => navigateTo("profile")}
+							>
+								Profile
+							</Button>
+						</div>
+					</div>
+
+					<Separator />
+
+					<div>
+						<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
+							<Users className="mr-2 h-4 w-4" />
+							Teams
+						</h2>
+						<ul className="space-y-1 ml-6">
+							{teams?.map((team) => (
+								<li key={team.id}>
+									<Button
+										variant="ghost"
+										className="w-full justify-start"
+										onClick={() => handleTeamClick(team)}
+									>
+										{team.name}
+									</Button>
+								</li>
+							))}
+						</ul>
+						<Button
+							variant="ghost"
+							className="w-full justify-start mt-2"
+							onClick={() => navigateTo("new-team")}
+						>
+							<Plus className="mr-2 h-4 w-4" />
+							Add team
+						</Button>
+					</div>
+				</div>
+			</div>
+		</ScrollArea>
+
+		<div className="p-6">
+			<Separator className="mb-6" />
+			<div className="flex justify-between">
+				<Button
+					variant="outline"
+					size="icon"
+					onClick={() => setTheme("light")}
+					className={theme === "light" ? "bg-accent" : ""}
+				>
+					<Sun className="h-4 w-4" />
+				</Button>
+				<Button
+					variant="outline"
+					size="icon"
+					onClick={() => setTheme("dark")}
+					className={theme === "dark" ? "bg-accent" : ""}
+				>
+					<Moon className="h-4 w-4" />
+				</Button>
+			</div>
+		</div>
+	</div>
+);
 
 const SettingsNavBar = ({
 	setLoading,
 	toggleNavbar,
 }: SettingsNavbarProps): React.ReactElement => {
-	const dispatch = useDispatch();
 	const router = useRouter();
-	const { setTheme } = useTheme();
-	const workspace = useSelector(
-		(state: RootState) => state.taskData.currentWorkspace,
-	);
+	const { setTheme, theme } = useTheme();
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { setCurrentTeam, teams } = useTeamStore((state) => state);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
 		toggleNavbar?.();
+		setShowNavbar(false);
 	};
 
-	const handleTeamClick: handleTeamClickNavbar = (team: Team) => {
+	const handleTeamClick = (team: Team) => {
 		if (setLoading) {
 			setLoading(true);
 		}
-		dispatch(setCurrentTeam(team));
+		setCurrentTeam(team);
 		navigateTo(`teams/${team.identifier}`);
 	};
 
 	return (
-		<div className="bg-card min-w-64 min-h-screen h-full flex flex-col">
-			<div className="flex flex-col items-center pb-6 text-foreground">
-				<div>
-					<div className="text-lg flex items-center gap-2 py-6">
-						<BackButton hoverbackground="bg-accent" />
-						<h1 className="text-foreground cursor-pointer">Settings</h1>
-					</div>
-					<div className="mb-1 pl-0.5 flex items-center">
-						<BriefcaseBusiness className="size-4 text-[#6A6F75]" />
-						<p className="text-muted-foreground pl-2">Workspace</p>
-					</div>
-					<button
-						type="button"
-						className="flex w-24 ml-6 p-0.5 cursor-pointer"
-						onClick={() => navigateTo("workspace")}
-					>
-						<p>General</p>
-					</button>
-					<button
-						type="button"
-						onClick={() => navigateTo("members")}
-						className="flex w-24 ml-6 p-0.5 cursor-pointer"
-					>
-						Members
-					</button>
-					<button
-						type="button"
-						onClick={() => navigateTo("integrations")}
-						className="flex w-32 ml-6 mb-4 p-0.5 cursor-pointer"
-					>
-						Integrations
-					</button>
-					<div className="mb-1 pl-0.5 flex items-center">
-						<CircleUser className="size-4 text-[#6A6F75]" />
-						<p className="text-muted-foreground pl-2">My Account</p>
-					</div>
-					<div>
-						<button
-							type="button"
-							className="rounded flex w-24 ml-6  p-0.5"
-							onClick={() => navigateTo("profile")}
-						>
-							<p className="cursor-pointer">Profile</p>
-						</button>
-					</div>
-					<div className="pt-5 pb-1 flex items-center">
-						<Users className="size-4 text-[#858699]" />
-						<p className="text-muted-foreground pl-2">Teams</p>
-					</div>
-					{workspace && (
-						<ul>
-							{workspace?.teams?.map((team) => (
-								<li
-									key={team._id}
-									onClick={() => handleTeamClick(team)}
-									className="rounded flex p-0.5 ml-6 cursor-pointer"
-								>
-									{team.name}
-								</li>
-							))}
-						</ul>
-					)}
-					<div
-						className="flex items-center justify-center p-1 ml-3 rounded"
-						onClick={() => navigateTo("new-team")}
-					>
-						<span className="mr-2 rounded p-1 cursor-pointer">
-							<Plus className="size-5 cursor-pointer" />
-						</span>
-						<p className="cursor-pointer">Add team</p>
-					</div>
-					<div className="pt-10 flex w-full justify-center pr-5">
-						<button
-							type="button"
-							onClick={() => setTheme("light")}
-							className="mr-2 rounded p-1 cursor-pointer"
-						>
-							Light
-						</button>
-						<button
-							type="button"
-							className="rounded p-1 cursor-pointer"
-							onClick={() => setTheme("dark")}
-						>
-							Dark
-						</button>
-					</div>
-				</div>
+		<>
+			{/* Desktop Sidebar */}
+			<div className="bg-card w-64 h-screen md:flex flex-col fixed left-0 hidden">
+				<SidebarContent
+					navigateTo={navigateTo}
+					handleTeamClick={handleTeamClick}
+					setTheme={setTheme}
+					theme={theme ?? "dark"}
+					teams={teams}
+				/>
 			</div>
-		</div>
+
+			{/* Mobile Sheet */}
+			<Sheet open={showNavbar} onOpenChange={setShowNavbar}>
+				<SheetContent side="left" className="p-0 w-64 bg-card">
+					<SidebarContent
+						navigateTo={navigateTo}
+						handleTeamClick={handleTeamClick}
+						setTheme={setTheme}
+						theme={theme ?? "dark"}
+						teams={teams}
+					/>
+				</SheetContent>
+			</Sheet>
+		</>
 	);
 };
 

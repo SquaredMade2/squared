@@ -12,25 +12,19 @@ import {
 import StatusSubContextMenu from "./StatusSubContextMenu";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import type { TaskContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
+import type { TaskContextMenuProps } from "./interfaces";
 import LabelSubContextMenu from "./LabelSubContextMenu";
-import { deleteTask, getAllTasks } from "@/store/taskData/thunks";
 import DateSubContextMenu from "./DateSubContextMenu";
 // Will need in future
 // import RenameSubContextMenu from "./RenameSubContextMenu";
 import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
+import { useModalStore, useTaskStore } from "@/store";
 
-const TaskContextMenu: FC<TaskContextMenuProps> = ({
-	task,
-	// Keep below here for future
-	setIsCopied,
-	copyToClipboard,
-}) => {
+const TaskContextMenu: FC<TaskContextMenuProps> = ({ task }) => {
 	const { toast } = useToast();
-	const dispatch = useAppDispatch();
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
+	const { deleteTask } = useTaskStore((state) => state);
+	const { setShowRename, setRenameData } = useModalStore((state) => state);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
@@ -43,8 +37,7 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 	};
 
 	const deleteCurrentTask = async () => {
-		await dispatch(deleteTask(task._id));
-		await dispatch(getAllTasks(currentTeam));
+		await deleteTask(task.id);
 		alertDeletedTask();
 	};
 
@@ -70,7 +63,14 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 			<DateSubContextMenu task={task} />
 
 			{/* Need to make this with a Dialog comp */}
-			{/* <RenameSubContextMenu task={task} /> */}
+			<ContextMenuItem
+				onClick={() => {
+					setRenameData(task);
+					setShowRename(true);
+				}}
+			>
+				Rename Task
+			</ContextMenuItem>
 
 			<ContextMenuSeparator />
 			{/*  No Subscribe feature yet
@@ -81,16 +81,16 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({
 				Subscribe
 			</ContextMenuItem> */}
 			{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
-			<ContextMenuItem onClick={() => copyToClipboard(task._id)}>
+			{/* <ContextMenuItem onClick={() => copyToClipboard(task.id)}>
 				Copy Link
-			</ContextMenuItem>
+			</ContextMenuItem> */}
 
 			<ContextMenuItem onClick={copyBranchName}>
 				Copy Branch Name
 			</ContextMenuItem>
 
 			<ContextMenuItem>
-				<Link href={`/tasks/${task._id}`} target="_blank">
+				<Link href={`/tasks/${task.id}`} target="_blank">
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>

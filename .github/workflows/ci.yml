@@ -4,7 +4,8 @@ on:
   pull_request:
 
 jobs:
-  setup:
+  ci:
+    name: CI Pipeline
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -38,9 +39,7 @@ jobs:
         uses: actions/cache@v4
         id: cache-npm
         with:
-          path: |
-            node_modules
-            ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
+          path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-

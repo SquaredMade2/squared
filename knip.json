@@ -1,0 +1,36 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": [
+        "src/index.ts",
+        "scripts/{build,create}.ts"
+      ],
+      "project": [
+        "src/**/*.ts",
+        "scripts/**/*.ts"
+      ]
+    },
+    "apps/*": {
+      "entry": [
+        "index.ts",
+        "docs/index.ts",
+        "api/index.ts"
+      ],
+      "project": "**/*.ts"
+    },
+    "packages/*": {
+      "entry": [
+        "{index,cli}.ts"
+      ],
+      "project": "**/*.ts"
+    }
+  },
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**"
+  ],
+  "ignoreDependencies": [
+    "turbo"
+  ]
+}

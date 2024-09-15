@@ -1,20 +1,19 @@
 {
-  "extends": "@repo/typescript-config/base.json",
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "outDir": "./dist",
-    "typeRoots": ["./node_modules/@types", "./src/types"],
-    "strict": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "inlineSources": true,
-    "sourceRoot": "/",
-    "importHelpers": true
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "src/test"]
+	"ts-node": {
+		"require": ["tsconfig-paths/register"]
+	},
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "node16",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["*"]
+		}
+	},
+	"include": ["api/**/*.ts"],
+	"exclude": ["node_modules"]
 }

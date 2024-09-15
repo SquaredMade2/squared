@@ -1,6 +1,5 @@
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import { UserSearch } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -8,99 +7,44 @@ import {
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
 import ProfileImage from "../ProfileImage";
-import type { AssigneeSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
-import { type Assignee, EventType } from "@/interfaces/event.interfaces";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import type {
-	AssigneeParams,
-	HandleAssigneeChange,
-} from "@/app/interfaces/Tasks.interfaces";
-import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
-import { getSingleTask } from "@/store/task/thunks";
+import type { AssigneeSubContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
 const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
-	const dispatch = useAppDispatch();
+	const { users, getAllUsers } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { updateTask } = useTaskStore((state) => state);
+	const taskId = task.id;
 
-	const taskDataReceived =
-		useAppSelector((state) => state.singleTask?.data) || null;
-
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-
-	const assignees = useAppSelector(
-		(state) => state.taskData.allUsersInWorkspace,
-	);
-
-	const {
-		author,
-		storeCommonFields,
-		storeTaskAssignee,
-		storeType,
-		updateTaskAssignee,
-	} = useLogTaskEvent();
-
-	const assigneeDropdownHeight = () => {
-		const assigneeLength = assignees.length;
-		switch (assigneeLength) {
-			case 1:
-				return "4rem";
-			case 2:
-				return "6rem";
-			case 3:
-				return "8rem";
-			default:
-				return "12rem";
-		}
-	};
-
-	const handleStoreCurrentAssignee = (): void => {
-		const noUserAssigned = task.assignee?.name === null;
-		if (taskDataReceived) {
-			if (noUserAssigned) {
-				const assignee = {
-					id: "",
-					name: "not Assigned",
-				};
-				storeTaskAssignee(assignee);
-			} else {
-				storeTaskAssignee(task.assignee as Assignee);
+	useEffect(() => {
+		const fetchUsers = async () => {
+			if (currentWorkspace?.id) {
+				await getAllUsers(currentWorkspace.id);
 			}
+		};
+
+		fetchUsers();
+	}, [currentWorkspace?.id, getAllUsers]);
+
+	const handleSelectAssignee = async (userId: string | null) => {
+		if (!userId) {
+			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			return;
+		}
+		const selectedUser = users.find((user) => user.id === userId);
+
+		if (selectedUser) {
+			if (task) {
+				await updateTask(taskId, {
+					assigneeId: selectedUser.id,
+					assigneeName: selectedUser.name,
+				});
+			}
+			// await getTaskEvents(taskId);
 		}
 	};
 
-	const logAssigneeChangeEvent = (newAssignee: Assignee): void => {
-		const userIsAssigned = newAssignee.id && newAssignee.name;
-		if (userIsAssigned) {
-			updateTaskAssignee(newAssignee);
-		} else {
-			updateTaskAssignee({ id: "", name: "not Assigned" });
-		}
-	};
-
-	const assigneeParams: AssigneeParams = (taskId, user) => {
-		dispatch(getAllTasks(currentTeam));
-		if (task !== undefined) {
-			dispatch(getSingleTask(task._id));
-		}
-		return { taskId: taskId, assignee: { id: user.id, name: user.name } };
-	};
-
-	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
-		dispatch(setAssignee(assigneeParams(taskId, user)));
-		if (task !== undefined) {
-			dispatch(getSingleTask(task._id));
-		}
-		await dispatch(getAllTasks(currentTeam));
-	};
-
-	const handleClickAssignee = (taskId: string, newAssignee: Assignee): void => {
-		if (newAssignee.name === task.assignee?.name) return;
-		storeCommonFields(author, taskId);
-		storeType(EventType.AssigneeUpdated);
-		handleStoreCurrentAssignee();
-		handleAssigneeChange(taskId, newAssignee);
-		logAssigneeChangeEvent(newAssignee);
-	};
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
@@ -110,35 +54,25 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 				Assignee
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{/* Has to be incline styling, classes that limit height dont trigger the ScrollArea component */}
-				<ScrollArea
-					className="max-w-96"
-					style={{ height: assigneeDropdownHeight() }}
-				>
+				<ScrollArea className="max-w-96">
 					<ContextMenuItem
 						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task._id, { id: null, name: null })
-						}
+						onClick={() => handleSelectAssignee(null)}
 					>
 						Unassign
 					</ContextMenuItem>
 
-					{assignees.map((assignee) => {
-						const formattedAssignee = {
-							id: assignee.user,
-							name: assignee.username,
-						};
+					{users.map((user) => {
 						return (
 							<ContextMenuItem
-								key={assignee.user}
-								onClick={() => handleClickAssignee(task._id, formattedAssignee)}
+								key={user.id}
+								onClick={() => handleSelectAssignee(user.id)}
 							>
 								<ProfileImage
-									profileName={assignee.username}
+									profileName={user.username ?? ""}
 									location={"contextMenu"}
 								/>
-								{assignee.username}
+								{user.username}
 							</ContextMenuItem>
 						);
 					})}

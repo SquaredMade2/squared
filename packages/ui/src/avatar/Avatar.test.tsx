@@ -37,7 +37,6 @@ describe("given an Avatar with fallback and a working image", () => {
 				setTimeout(() => {
 					this.onload();
 				}, DELAY);
-				// biome-ignore lint/correctness/noConstructorReturn: <explanation>
 				return this;
 			}
 		};

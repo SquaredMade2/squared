@@ -1,136 +1,147 @@
 "use client";
-import { useRouter } from "next/navigation";
+
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import axios from "axios";
-import { SqLogo } from "@/components/Svg";
-import { Eye, EyeOff } from "lucide-react";
+import { useAuthStore, useWorkspaceStore } from "@/store";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-export default function RegisterUser() {
-	const [data, setData] = useState({
-		name: "",
-		email: "",
-		password: "",
-	});
-	const [hidePassword, setHidePassword] = useState(false);
+function RegisterForm() {
+	const [data, setData] = useState({ name: "", email: "", password: "" });
+	const [hidePassword, setHidePassword] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
-
-	const handlePushLogin = () => {
-		router.push("/login");
-	};
 	const { toast } = useToast();
-	const registerUser = async (
-		e: React.FormEvent<HTMLFormElement>,
-	): Promise<void> => {
-		e.preventDefault();
-		const { name, email, password } = data;
-		const username: string = name;
-		try {
-			const { data }: { data: { error: string; message: string } } =
-				await axios({
-					method: "POST",
-					url: `${process.env.NEXT_PUBLIC_SERVER}/auth/register`,
-					data: { name, username, email, password },
-				});
+	const register = useAuthStore((state) => state.register);
+	const joinWorkspace = useWorkspaceStore((state) => state.joinWorkspace);
+	const searchParams = useSearchParams();
+	const inviteToken = searchParams.get("token");
 
-			if (data.error) {
-				toast({ title: data.error, variant: "destructive" });
-			} else {
-				setData({
-					name: "",
-					email: "",
-					password: "",
-				});
-				toast({ title: data.message });
-				router.push("/login");
+	const handleRegister = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
+		try {
+			const response = await register({
+				name: data.name,
+				username: data.name.split(" ").join(".").toLowerCase(),
+				email: data.email,
+				password: data.password,
+				type: "register",
+				provider: "credentials",
+			});
+			if (response.user && inviteToken) {
+				const { workspace } = await joinWorkspace(inviteToken, response.user);
+				if (workspace?.url) {
+					router.push(`/${workspace.url}`);
+				}
 			}
+			toast({ title: response.message, variant: response.variant });
 		} catch (error) {
 			if (error instanceof Error)
 				toast({ title: error.message, variant: "destructive" });
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
-	const displayPasswordIcon = () => {
-		if (hidePassword) {
-			return <Eye className="size-4 text-[#D8D8D8]" />;
-		}
-		return <EyeOff className="size-4 text-[#D8D8D8]" />;
+	const handleLoginPush = () => {
+		router.push(inviteToken ? `/login?token=${inviteToken}` : "/login");
 	};
-	const displayPassword = hidePassword ? "text" : "password";
-	const passwordIconVisible = displayPasswordIcon();
 
 	return (
-		<div className="absolute z-20 bg-[#141414] w-screen flex justify-center items-center h-[100vh] max-h-auto">
-			<div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-16 max-w-fit mx-auto bg-gradient-to-b from-[#17181c] to-[#23293b] align-middle rounded-lg">
-				<div className="flex items-center justify-center gap-2 uppercase text-[#D8D8D8] font-semibold">
-					<SqLogo /> squared
-				</div>
-				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
-					<h2 className="uppercase text-[#D8D8D8] mt-6 text-center text-4xl xs:text-2xl font-bold leading-9 tracking-wide">
-						Register your account
-					</h2>
-				</div>
-
-				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-					<form className="space-y-3" onSubmit={registerUser}>
-						<div>
-							<input
-								placeholder=" Your name.."
-								type="text"
-								value={data.name}
-								onChange={(e) => setData({ ...data, name: e.target.value })}
-								className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
-							/>
-						</div>
-						<div>
-							<input
-								placeholder=" Email Address.."
-								type="email"
-								value={data.email}
-								onChange={(e) => setData({ ...data, email: e.target.value })}
-								className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
-							/>
-						</div>
+		<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
+			<CardHeader>
+				<CardTitle className="text-2xl font-bold text-center">
+					Create an account
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<form onSubmit={handleRegister} className="space-y-4">
+					<div className="space-y-2">
+						<Label htmlFor="name">Name</Label>
+						<Input
+							id="name"
+							type="text"
+							placeholder="Enter your name"
+							value={data.name}
+							onChange={(e) => setData({ ...data, name: e.target.value })}
+							required
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="email">Email address</Label>
+						<Input
+							id="email"
+							type="email"
+							placeholder="Enter your email"
+							value={data.email}
+							onChange={(e) => setData({ ...data, email: e.target.value })}
+							required
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="password">Password</Label>
 						<div className="relative">
-							<input
-								placeholder=" Password.."
-								type={displayPassword}
+							<Input
+								id="password"
+								type={hidePassword ? "password" : "text"}
+								placeholder="Create a password"
 								value={data.password}
 								onChange={(e) => setData({ ...data, password: e.target.value })}
-								autoComplete="new-password"
-								className="bg-[#282E43] text-[#D8D8D8] block w-full rounded-md border-0 pl-3 py-4 shadow-sm placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
+								required
 							/>
-							<button
+							<Button
 								type="button"
-								onClick={() => setHidePassword((prev) => !prev)}
-								className="absolute top-5 right-5 cursor-pointer"
+								variant="ghost"
+								size="icon"
+								className="absolute right-0 top-0 h-full"
+								onClick={() => setHidePassword(!hidePassword)}
 							>
-								{passwordIconVisible}
-							</button>
+								{hidePassword ? (
+									<EyeOff className="h-4 w-4" />
+								) : (
+									<Eye className="h-4 w-4" />
+								)}
+							</Button>
 						</div>
+					</div>
+					<Button type="submit" className="w-full" disabled={isLoading}>
+						{isLoading ? (
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						) : null}
+						Register
+					</Button>
+				</form>
+			</CardContent>
+			<CardFooter className="flex justify-center">
+				<p className="text-sm text-muted-foreground">
+					Already have an account?{" "}
+					<Button variant="link" className="p-0" onClick={handleLoginPush}>
+						Sign in
+					</Button>
+				</p>
+			</CardFooter>
+		</Card>
+	);
+}
 
-						<div>
-							<button
-								type="submit"
-								className="flex w-full justify-center rounded-md bg-[#174EFF] px-3 py-1.5 text-sm font-semibold leading-6 text-[#D8D8D8] shadow-sm hover:bg-indigo-500 hover:cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-							>
-								Register
-							</button>
-						</div>
-					</form>
-
-					<p className="mt-10 text-center text-sm text-gray-500">
-						Already a member ?{" "}
-						<button
-							type="button"
-							onClick={handlePushLogin}
-							className="font-semibold leading-6 text-[#5d76c9] hover:text-indigo-500 hover:cursor-pointer"
-						>
-							Click here to Log in
-						</button>
-					</p>
-				</div>
-			</div>
+export default function Register() {
+	return (
+		<div className="flex items-center justify-center min-h-screen p-4 min-w-full">
+			<Suspense fallback={<div>Loading...</div>}>
+				<RegisterForm />
+			</Suspense>
 		</div>
 	);
 }

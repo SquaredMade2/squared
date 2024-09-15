@@ -1,0 +1,26 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "echo 'Add build script here'",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "dev": "echo 'Add dev script here'",
+    "lint": "echo 'Add lint script here'",
+    "postinstall": "pnpm run db:generate",
+    "studio": "prisma studio",
+    "test": "echo 'Add test script here'"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0"
+  },
+  "devDependencies": {
+    "@repo/logger": "workspace:*",
+    "prisma": "^5.18.0",
+    "ts-node": "^10.9.2"
+  }
+}

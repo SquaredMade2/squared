@@ -1,114 +1,54 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { getAllTasks } from "@/store/taskData/thunks";
+import { useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
-import { getFilteredTasks } from "@/store/filterPage/actions";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Status } from "@/interfaces/event.interfaces";
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import { Status, type Task } from "@repo/db";
+import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
+import { useViewStore } from "@/store";
 
-const ViewAllTasks = ({
-	handleDragEnd,
-	activeSelected,
-	backlogSelected,
-}: {
-	activeSelected: boolean;
-	backlogSelected: boolean;
-	handleDragEnd: OnDragEndResponder;
-	handleDeleteTask: (taskId: string) => void;
-}) => {
-	const dispatch = useAppDispatch();
-	const view = useSelector((state: RootState) => state.userSettings.view);
-	const team = useSelector((state: RootState) => state.taskData.currentTeam);
-	const teamId = useSelector(
-		(state: RootState) => state.taskData.currentTeam._id,
-	);
-	const [loading, setLoading] = useState(true);
+const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 	const [showRenameModal, setShowRenameModal] = useState(false);
-	const [taskData, setTaskData] = useState<Task | null>(null);
-	const taskList = useSelector((state: RootState) => state.taskData.taskList);
-	const [showFilteredView, setShowFilteredView] = useState(false);
-	const filteredTaskList = useSelector(
-		(state: RootState) => state.filterPage.filteredTaskList,
-	);
-	const currentFilters = useSelector(
-		(state: RootState) => state.filterPage.currentFilters,
-	);
-	const filterType = useSelector(
-		(state: RootState) => state.filterPage.filterType,
-	);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			await dispatch(getAllTasks(team));
-			setLoading(false);
-		};
-		fetchData();
-	}, [dispatch, team]);
+	const currentView = useViewStore((state) => state.view);
 
-	useEffect(() => {
-		if (
-			currentFilters.priority.length !== 0 ||
-			currentFilters.status.length !== 0 ||
-			currentFilters.assignee?.length !== 0 ||
-			currentFilters.labels.length !== 0 ||
-			currentFilters.dueDate.length !== 0 ||
-			currentFilters.effortEstimate.length !== 0
-		) {
-			const dashboardPage = true;
-			const filterId = "dashboardPage";
-			dispatch(getFilteredTasks(teamId, filterId, dashboardPage, filterType));
-
-			setShowFilteredView(true);
-		} else {
-			setShowFilteredView(false);
-		}
-	}, [dispatch, teamId, currentFilters, filterType]);
-
-	const titleArr = [
-		{ value: "Backlog", id: 1 },
-		{ value: "Todo", id: 2 },
-		{ value: "In Progress", id: 3 },
-		{ value: "Done", id: 4 },
-		{ value: "Canceled", id: 5 },
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
 	];
+
 	const getFilteredStatuses = () => {
-		const allStatuses = titleArr.map((t) => t.value);
-		if (activeSelected) {
-			return allStatuses.filter(
-				(status) => status === "Todo" || status === "In Progress",
-			);
-		}
-		if (backlogSelected) {
-			return allStatuses.filter((status) => status === "Backlog");
-		}
-		return allStatuses;
+		return titleArr.map((t) => t.value);
+		// if (activeSelected) {									// will uncomment/delete logic in next pr - kaila
+		// 	return allStatuses.filter(
+		// 		(status) => status === Status.todo || status === Status.inProgress,
+		// 	);
+		// }
+		// if (backlogSelected) {
+		// 	return allStatuses.filter((status) => status === Status.backlog);
+		// }
 	};
 
 	const getTasksForStatus = (status: Status) => {
-		if (!activeSelected && !backlogSelected && showFilteredView) {
-			return filteredTaskList.filter((task) => task.status === status);
-		}
-		return taskList.filter((task) => task.status === status);
+		return tasks.filter((task) => task.status === status);
 	};
+
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
-			const tasksForStatus = getTasksForStatus(status as Status);
+			const tasksForStatus = getTasksForStatus(status);
 			return (
 				<div key={status}>
 					<StatusColumn
 						key={status}
+						currentView={currentView}
 						columnType={status}
 						title={status}
-						tasks={tasksForStatus as Task[]}
+						tasks={tasksForStatus}
 						setShowRenameModal={setShowRenameModal}
-						setTaskData={setTaskData}
 					/>
 				</div>
 			);
@@ -117,20 +57,12 @@ const ViewAllTasks = ({
 
 	return (
 		<>
-			{!loading && (
-				<>
-					<RenameModal
-						showRenameModal={showRenameModal}
-						setShowRenameModal={setShowRenameModal}
-						taskData={taskData ? taskData : ({} as Task)}
-					/>
-					<DragDropContext onDragEnd={handleDragEnd}>
-						<div className={view === "list" ? "px-2" : "flex"}>
-							{filteredColumns()}
-						</div>
-					</DragDropContext>
-				</>
-			)}
+			<RenameModal />
+			<DragDropContext onDragEnd={handleDragEnd}>
+				<div className={currentView === "list" ? "block" : "flex"}>
+					{filteredColumns()}
+				</div>
+			</DragDropContext>
 		</>
 	);
 };
