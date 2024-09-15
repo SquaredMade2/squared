@@ -4,6 +4,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
 import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
+import { SquaredStoreProvider } from "@/store";
 
 export default function RootLayout({
 	children,
@@ -13,16 +14,20 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className="text-sm min-h-[100vh]">
-				<WorkspaceInviteModal />
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<div className="h-full flex flex-row overflow-hidden">{children}</div>
-				</ThemeProvider>
-				<Toaster />
+				<SquaredStoreProvider>
+					<WorkspaceInviteModal />
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<div className="h-full flex flex-row overflow-hidden">
+							{children}
+						</div>
+					</ThemeProvider>
+					<Toaster />
+				</SquaredStoreProvider>
 			</body>
 		</html>
 	);
