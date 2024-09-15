@@ -1,22 +1,43 @@
 "use client";
 
-import { NextAuthProvider } from "@/app/Providers";
-import SocketProvider from "@/app/SocketProvider";
-import AuthProvider from "@/components/AuthProvider";
-import { store, persistor } from "@/store/index";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/es/integration/react";
+import type { ReactNode } from "react";
+import { ActivityStoreProvider } from "./activities";
+import { AuthStoreProvider } from "./auth";
+import { CommentStoreProvider } from "./comments";
+import { ModalStoreProvider } from "./modals";
+import { NotificationStoreProvider } from "./notifications";
+import { TaskStoreProvider } from "./tasks";
+import { TeamStoreProvider } from "./teams";
+import { UserStoreProvider } from "./users";
+import { ViewStoreProvider } from "./views";
+import { WorkspaceStoreProvider } from "./workspaces";
+import { FilterStoreProvider } from "./filters";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+// Create the combined provider component
+export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 	return (
-		<Provider store={store}>
-			<PersistGate loading={null} persistor={persistor}>
-				<NextAuthProvider>
-					<AuthProvider>
-						<SocketProvider>{children}</SocketProvider>
-					</AuthProvider>
-				</NextAuthProvider>
-			</PersistGate>
-		</Provider>
+		<ActivityStoreProvider>
+			<AuthStoreProvider>
+				<CommentStoreProvider>
+					<FilterStoreProvider>
+						<ModalStoreProvider>
+							<NotificationStoreProvider>
+								<TaskStoreProvider>
+									<TeamStoreProvider>
+										<UserStoreProvider>
+											<ViewStoreProvider>
+												<WorkspaceStoreProvider>
+													{children}
+												</WorkspaceStoreProvider>
+											</ViewStoreProvider>
+										</UserStoreProvider>
+									</TeamStoreProvider>
+								</TaskStoreProvider>
+							</NotificationStoreProvider>
+						</ModalStoreProvider>
+					</FilterStoreProvider>
+				</CommentStoreProvider>
+			</AuthStoreProvider>
+		</ActivityStoreProvider>
 	);
-}
+};

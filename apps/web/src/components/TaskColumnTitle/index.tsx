@@ -1,4 +1,3 @@
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
 import {
 	ChevronDown,
 	Circle,
@@ -11,10 +10,9 @@ import {
 import { inProgress } from "../Svg";
 import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
 import HideStatus from "@/components/HideStatus/HideStatus";
-import { setShowNewIssue } from "@/store/showNewIssue";
-import { setStatus } from "@/store/taskData";
-import { useTheme } from "next-themes";
 import { cn } from "@/utils/cn";
+import { useModalStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -23,9 +21,7 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	toggleShowTasks,
 }: TaskColumnTitleProps) => {
-	const { theme } = useTheme();
-	const dispatch = useAppDispatch();
-	const arrowColor = theme === "light" ? "black" : "white";
+	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 
 	const showIcon = (name: string): React.ReactNode => {
 		switch (name) {
@@ -45,12 +41,12 @@ const TaskColumnTitle = ({
 	};
 
 	const handleClick = (): void => {
-		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(title));
+		setShowNewIssue(true);
+		setNewIssueData({ status: title });
 	};
 
 	return (
-		<div className={isListView ? "" : "pr-2 min-w-80"}>
+		<div className={isListView ? "" : "pr-2 min-w-64"}>
 			<div
 				className={cn(
 					"flex w-full bg-muted dark:bg-accent items-center justify-between font-medium transition-all",
@@ -79,8 +75,8 @@ const TaskColumnTitle = ({
 							}
 						>
 							<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-							<span>{title}</span>
-							<span className="ml-2 text-muted-foreground">
+							<span className="text-sm">{formatStatus(title)}</span>
+							<span className="ml-1 text-muted-foreground">
 								{numberOfTasks}
 							</span>
 						</div>
@@ -94,7 +90,7 @@ const TaskColumnTitle = ({
 						}
 					>
 						<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-						<span>{title}</span>
+						<span>{formatStatus(title)}</span>
 						<span className="ml-2 text-muted-foreground">{numberOfTasks}</span>
 					</div>
 				)}

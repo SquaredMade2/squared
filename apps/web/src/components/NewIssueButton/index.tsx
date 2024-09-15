@@ -1,27 +1,24 @@
-import { useDispatch, useSelector } from "react-redux";
-import { setShowNewIssue } from "@/store/showNewIssue";
-import { setStatus } from "@/store/taskData";
-import type { RootState } from "@/store";
 import { SquarePen } from "lucide-react";
 import { Button } from "../ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import ButtonIcon from "../ButtonIcon";
-const titleArr = { value: "Todo", id: 2 };
+import type { Status } from "@repo/db";
+import { useModalStore } from "@/store";
+import { useTheme } from "next-themes";
 const NewIssueButton = () => {
-	const dispatch = useDispatch();
-	const showNewIssue = useSelector(
-		(state: RootState) => state.showNewIssue.isOpen,
-	);
-	const resumeNewIssue = useSelector(
-		(state: RootState) => state.resumeNewIssue.hasData,
-	);
-	const { theme } = useSelector((state: RootState) => state.userSettings);
+	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
+		useModalStore((state) => state);
+	const { theme } = useTheme();
+	const titleArr: { status: Status } = { status: "todo" };
 
 	const fillColor = () => (theme === "light" ? "#174EFF" : "white");
 	const handleOpen = () => {
-		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(titleArr.value));
+		setShowNewIssue(true);
+		setNewIssueData({
+			...newIssueData,
+			status: titleArr.status,
+		});
 	};
 
 	return (
@@ -34,22 +31,29 @@ const NewIssueButton = () => {
 				<SquarePen className={`size-5 cursor-pointer fill-[${fillColor()}]`} />
 			</span>
 			<span className="px-2 w-auto text-foreground, cursor-pointer">
-				{resumeNewIssue && !showNewIssue ? "Resume editing" : "New Issue"}
+				{Object.keys(newIssueData).length > 0 && !showNewIssue
+					? "Resume editing"
+					: "New Issue"}
 			</span>
-			{resumeNewIssue && !showNewIssue && (
+			{Object.keys(newIssueData).length > 0 && !showNewIssue && (
 				<div className="w-1.5 h-1.5 rounded-md bg-accent border-border ml-2" />
 			)}
 		</button>
 	);
 };
 
-export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
-	const dispatch = useDispatch();
-	const { theme } = useSelector((state: RootState) => state.userSettings);
+export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
+	const { theme } = useTheme();
+	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
+		(state) => state,
+	);
 	const fillColor = () => (theme === "light" ? "#174EFF" : "white");
 	const handleOpen = () => {
-		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(status));
+		setShowNewIssue(true);
+		setNewIssueData({
+			...newIssueData,
+			status,
+		});
 	};
 	return (
 		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
@@ -59,11 +63,18 @@ export const GridColumnNewIssueButton = ({ status }: { status: string }) => {
 };
 
 export const SideNavNewIssueButton = () => {
-	const dispatch = useDispatch();
+	const titleArr: { status: Status } = { status: "todo" };
+	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
+		(state) => state,
+	);
 	const handleOpen = () => {
-		dispatch(setShowNewIssue(true));
-		dispatch(setStatus(titleArr.value));
+		setShowNewIssue(true);
+		setNewIssueData({
+			...newIssueData,
+			status: titleArr.status,
+		});
 	};
+
 	return (
 		<ButtonIcon
 			icon={<FontAwesomeIcon icon={faPenToSquare} />}

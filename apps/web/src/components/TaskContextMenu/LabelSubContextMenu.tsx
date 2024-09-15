@@ -1,94 +1,39 @@
-import type { FC } from "react";
-import axios from "axios";
+"use client";
+import { useState, type FC } from "react";
 import { Tag } from "lucide-react";
-import type { LabelSubContextMenuProps } from "@/components/TaskContextMenu/ContextMenu.interfaces";
+import type { LabelSubContextMenuProps } from "./interfaces";
 import {
-	ContextMenuItem,
+	ContextMenuCheckboxItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import { EventType, type Labels } from "@/interfaces/event.interfaces";
-import { getSingleTask } from "@/store/task/thunks";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { labelOptions } from "@/constants/designations";
-import { getAllTasks } from "@/store/taskData/thunks";
+import { useTaskStore } from "@/store";
 import { LabelColor } from "../LabelDropdownButton";
+import { useWorkspaceStore } from "@/store";
+import type { Label } from "@repo/db";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
-	const dispatch = useAppDispatch();
+	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
+		useWorkspaceStore((state) => state);
 
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
+	const [labels, setLabels] = useState<Label[]>(
+		workspaceLabels.filter((label) => task.labels.includes(label.id)),
+	);
+	const { updateTask } = useTaskStore((state) => state);
 
-	const newIssueLabels = useAppSelector((state) => state.taskData.labels);
+	if (!workspaceLabels) {
+		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
+	}
 
-	const { author, storeCommonFields, storeType, updateTaskLabels } =
-		useLogTaskEvent();
+	const handleLabelChange = (label: Label, checked: boolean) => {
+		// Calculate the updated labels before setting the state
+		const updatedLabels = checked
+			? [...labels, label]
+			: labels.filter((l) => l.id !== label.id);
 
-	const renderLabelIcon = (label: string) => {
-		switch (label) {
-			case "Bug":
-				return <LabelColor name={"Bug"} />;
-			case "Feature":
-				return <LabelColor name={"Feature"} />;
-			case "Improvement":
-				return <LabelColor name={"Improvement"} />;
-			case "Red":
-				return <LabelColor name={"Red"} />;
-			case "Test":
-				return <LabelColor name={"Test"} />;
-			default:
-				return null;
-		}
-	};
-
-	const updateItem = async (newLabelSelection: string[]) => {
-		if (task._id !== undefined) {
-			try {
-				await axios.put(
-					`${process.env.NEXT_PUBLIC_SERVER}/task/update/${task._id}`,
-					{
-						labels: newLabelSelection,
-					},
-				);
-				dispatch(getSingleTask(task._id));
-			} catch (err) {}
-		}
-	};
-
-	const logEvent = (newLabels: string[]) => {
-		storeType(EventType.LabelsUpdated);
-		if (task.labels) {
-			updateTaskLabels(newLabels as Labels[]);
-		}
-	};
-
-	const newLabelSelection = (currentLabels: string[], labelName: string) => {
-		let newSelection = [];
-		if (currentLabels.length === 0) {
-			newSelection = [labelName];
-		} else {
-			const nameFound = currentLabels.find((current) => current === labelName);
-			if (nameFound) {
-				newSelection = currentLabels.filter((current) => current !== labelName);
-			} else {
-				newSelection = [...currentLabels, labelName];
-			}
-		}
-		return newSelection;
-	};
-
-	const handleSelectLabels = async (labelName: string) => {
-		let newLabelsSelected = [];
-		newLabelsSelected = newLabelSelection(newIssueLabels, labelName);
-		if (task.labels) {
-			newLabelsSelected = newLabelSelection(task.labels, labelName);
-			if (task._id !== undefined) storeCommonFields(author, task._id);
-			logEvent(newLabelsSelected);
-			await updateItem(newLabelsSelected);
-		}
-		await dispatch(getAllTasks(currentTeam));
+		setLabels(updatedLabels); // Update the state
+		updateTask(task.id, { labels: updatedLabels.map((l) => l.id) }); // Update the task
 	};
 
 	return (
@@ -100,15 +45,18 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{labelOptions.map((label) => {
+				{workspaceLabels.map((label) => {
 					return (
-						<ContextMenuItem
-							key={label}
-							onClick={() => handleSelectLabels(label)}
+						<ContextMenuCheckboxItem
+							key={label.id}
+							checked={labels.some((l) => l.id === label.id)}
+							onCheckedChange={(checked) => handleLabelChange(label, checked)}
 						>
-							<div className="mr-2">{renderLabelIcon(label)}</div>
-							{label}
-						</ContextMenuItem>
+							<div className="mr-2">
+								<LabelColor label={label} />
+							</div>
+							{label.name}
+						</ContextMenuCheckboxItem>
 					);
 				})}
 			</ContextMenuSubContent>

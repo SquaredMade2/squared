@@ -6,6 +6,10 @@
       "import": "./src/accordion/index.ts",
       "require": "./src/accordion/index.ts"
     },
+    "./alert-dialog": {
+      "import": "./src/alert-dialog/index.ts",
+      "require": "./src/alert-dialog/index.ts"
+    },
     "./arrow": {
       "import": "./src/arrow/index.ts",
       "require": "./src/arrow/index.ts"
@@ -113,6 +117,14 @@
     "./scroll-area": {
       "import": "./src/scroll-area/index.ts",
       "require": "./src/scroll-area/index.ts"
+    },
+    "./select": {
+      "import": "./src/select/index.ts",
+      "require": "./src/select/index.ts"
+    },
+    "./separator": {
+      "import": "./src/separator/index.ts",
+      "require": "./src/separator/index.ts"
     },
     "./slot": {
       "import": "./src/slot/index.ts",

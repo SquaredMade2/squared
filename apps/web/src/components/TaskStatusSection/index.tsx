@@ -1,15 +1,23 @@
-import TaskCard from "@/components/TaskCard";
-import type { TaskStatusSectionProps } from "./TaskStatusSection.interfaces";
-import { GridColumnNewIssueButton } from "../NewIssueButton";
+"use client";
 
-const TaskStatusSection = ({
+import type React from "react";
+import TaskCard from "@/components/TaskCard";
+import { GridColumnNewIssueButton } from "../NewIssueButton";
+import type { Status, Task } from "@repo/db";
+
+interface TaskStatusSectionProps {
+	isListView: boolean;
+	filteredTasks: Task[];
+	showTasks: boolean;
+	title: string;
+}
+
+const TaskStatusSection: React.FC<TaskStatusSectionProps> = ({
 	isListView,
 	filteredTasks,
-	setShowRenameModal,
-	setTaskData,
 	showTasks,
 	title,
-}: TaskStatusSectionProps) => {
+}) => {
 	const location = "dashboard";
 	const highlightText = (taskTitle: string) => taskTitle;
 
@@ -22,16 +30,21 @@ const TaskStatusSection = ({
 			}
 		>
 			{showTasks && (
-				<TaskCard
-					filteredTasks={filteredTasks}
-					setShowRenameModal={setShowRenameModal}
-					setTaskData={setTaskData}
-					location={location}
-					highlightText={highlightText}
-				/>
+				<>
+					{filteredTasks.map((task, index) => (
+						<TaskCard
+							key={task.id}
+							task={task}
+							index={index}
+							location={location}
+							highlightText={highlightText}
+						/>
+					))}
+				</>
 			)}
-			{!isListView && <GridColumnNewIssueButton status={title} />}
+			{!isListView && <GridColumnNewIssueButton status={title as Status} />}
 		</div>
 	);
 };
+
 export default TaskStatusSection;

@@ -16,6 +16,8 @@ import {
 	CommandShortcut,
 	CommandSeparator,
 } from "../ui/command";
+import { useToast } from "../ui/use-toast";
+import { useModalStore, useFilterStore } from "@/store";
 
 const SearchCommand = ({
 	isSearchCommand,
@@ -24,9 +26,22 @@ const SearchCommand = ({
 	isSearchCommand: boolean;
 	setIsSearchCommand: (open: boolean) => void;
 }) => {
+	const { toast } = useToast();
 	const [lastKey, setLastKey] = useState<string>("");
 	const [isInputFocus, setIsInputFocus] = useState<boolean>(true);
-	const commandItems = new commandSchema();
+	const { setShowNewIssue } = useModalStore((state) => state);
+	const { clearFilter } = useFilterStore((state) => state);
+	const showToast = (
+		title: string,
+		variant?: "destructive" | "default" | null,
+	) => {
+		toast({ title, variant });
+	};
+	const commandItems = new commandSchema(
+		setShowNewIssue,
+		clearFilter,
+		showToast,
+	);
 
 	useEffect(() => {
 		const down = (e: KeyboardEvent): void => {

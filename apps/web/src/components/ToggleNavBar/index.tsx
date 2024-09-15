@@ -1,6 +1,5 @@
 import ButtonIcon from "../ButtonIcon";
-import { navBarToggle } from "@/store/userSettings";
-import { useAppSelector, useAppDispatch } from "@/hooks/typeScriptReduxHooks";
+import { useViewStore } from "@/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faChevronLeft,
@@ -10,20 +9,15 @@ import {
 interface ToggleNavBarProps {
 	hover?: "bg-accent" | "bg-card";
 }
-
 const ToggleNavBar: React.FC<ToggleNavBarProps> = ({ hover }) => {
-	const { showNavBar } = useAppSelector((state) => state.userSettings);
-	const dispatch = useAppDispatch();
-
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 	const handleNavBar = (): void => {
-		dispatch(navBarToggle(!showNavBar));
+		setShowNavbar(!showNavbar);
 	};
 
 	const toggleIcon = (
-		<FontAwesomeIcon icon={showNavBar ? faChevronLeft : faChevronRight} />
+		<FontAwesomeIcon icon={showNavbar ? faChevronLeft : faChevronRight} />
 	);
-
-	const label = showNavBar ? "Hide Navbar" : "Show Navbar";
 
 	return (
 		<ButtonIcon icon={toggleIcon} hoverBg={hover} handleClick={handleNavBar} />

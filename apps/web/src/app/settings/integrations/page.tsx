@@ -1,7 +1,5 @@
 "use client";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
-import { navBarToggle } from "@/store/userSettings";
 import { GithubIcon } from "@/components/Svg";
 import {
 	Card,
@@ -9,21 +7,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { useViewStore } from "@/store";
 import Link from "next/link";
 
 const IntegrationSettings: React.FC = () => {
-	const dispatch = useAppDispatch();
-	const showNavBar = useAppSelector((state) => state.userSettings.showNavBar);
+	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 
 	const handleNavToggle = (): void => {
-		const navBarValue = !showNavBar;
-		dispatch(navBarToggle(navBarValue));
+		const navBarValue = !showNavbar;
+		setShowNavbar(navBarValue);
 	};
 
 	return (
 		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">
 			<div className="lg:hidden mdsm:visible bg-background">
-				<SettingsTopNavBar setShowNavBar={handleNavToggle} />
+				<SettingsTopNavBar />
 			</div>
 			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-10">
 				<div className="w-full md:px-20 lg:px-40 xl:px-80">
