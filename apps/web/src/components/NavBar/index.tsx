@@ -12,7 +12,7 @@ import {
 import { LayoutGrid } from "lucide-react";
 import Teams from "../Teams";
 import IconLeftMenu from "../IconLeftMenu";
-import { useTeamStore, useWorkspaceStore } from "@/storeZ";
+import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";
 import NavBarTeams from "../NavBarTeams";

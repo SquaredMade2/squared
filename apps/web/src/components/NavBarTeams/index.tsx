@@ -1,10 +1,9 @@
 import type React from "react";
-import { useState, useEffect } from "react";
-import type { handleActiveParamsType } from "@/app/interfaces/Navbars.interfaces";
+import { useEffect } from "react";
 import { Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
-import { useTeamStore, useWorkspaceStore } from "@/storeZ";
+import { useTeamStore, useWorkspaceStore } from "@/store";
 
 const NavBarTeams = ({
 	onDropdownClick,
@@ -21,7 +20,7 @@ const NavBarTeams = ({
 	}, []);
 	const router = useRouter();
 
-	const handleActiveParams: handleActiveParamsType = (param: string): void => {
+	const handleActiveParams = (param: string): void => {
 		if (teamIdentifier) {
 			router.push(`/${currentWorkspace?.url}/team/${teamIdentifier}/${param}`);
 		} else {

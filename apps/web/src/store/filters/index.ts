@@ -182,7 +182,18 @@ export const createFilterStore = (
 			}),
 			{
 				name: "filter-store",
-				getStorage: () => sessionStorage,
+				storage: {
+					getItem: (name) => {
+						const storedValue = sessionStorage.getItem(name);
+						return storedValue ? JSON.parse(storedValue) : null;
+					},
+					setItem: (name, value) => {
+						sessionStorage.setItem(name, JSON.stringify(value));
+					},
+					removeItem: (name) => {
+						sessionStorage.removeItem(name);
+					},
+				},
 			},
 		),
 	);

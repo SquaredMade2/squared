@@ -9,7 +9,7 @@ import {
 import ProfileImage from "../ProfileImage";
 import type { AssigneeSubContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/storeZ";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
 const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 	const { users, getAllUsers } = useUserStore((state) => state);

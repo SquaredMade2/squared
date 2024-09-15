@@ -1,9 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ";
+import { useAuthStore, useWorkspaceStore } from "@/store";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
 	Card,
 	CardContent,
@@ -14,17 +16,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { setCookie } from "nookies";
 
-export default function Login() {
-	const [loading, setLoading] = useState<boolean>(true);
+function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
-	const [hidePassword, setHidePassword] = useState(false);
+	const [hidePassword, setHidePassword] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const { toast } = useToast();
-	const { user, login } = useAuthStore((state) => state);
+	const { login } = useAuthStore((state) => state);
 	const { getWorkspace, getAllWorkspaces, joinWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
@@ -33,6 +33,7 @@ export default function Login() {
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setIsLoading(true);
 		try {
 			const response = await login({
 				provider: "credentials",
@@ -53,7 +54,6 @@ export default function Login() {
 						inviteToken,
 						response.user,
 					);
-
 					if (workspace?.url) {
 						toast({ title: message, variant });
 						router.push(`/${workspace.url}`);
@@ -74,108 +74,94 @@ export default function Login() {
 					}
 				}
 			} else {
-				if (response) {
-					toast({
-						title: response.message,
-						variant: response.variant,
-					});
-				} else {
-					toast({ title: "Login failed", variant: "destructive" });
-				}
+				toast({
+					title: response?.message || "Login failed",
+					variant: response?.variant || "destructive",
+				});
 			}
 		} catch (error) {
 			toast({ title: "Login failed", variant: "destructive" });
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	const handleRegisterPush = () => {
-		if (inviteToken) {
-			router.push(`/register?token=${inviteToken}`);
-			return;
-		}
-		router.push("/register");
+		router.push(inviteToken ? `/register?token=${inviteToken}` : "/register");
 	};
 
-	const displayPasswordIcon = hidePassword ? (
-		<Eye className="size-4 text-[#D8D8D8]" />
-	) : (
-		<EyeOff className="size-4 text-[#D8D8D8]" />
-	);
-
-	useEffect(() => {
-		if (user) {
-			const checkUserWorkspaces = async () => {
-				setLoading(true);
-				if (user.defaultWorkspaceId) {
-					const { workspace } = await getWorkspace(user.defaultWorkspaceId);
-					if (workspace?.url) {
-						router.push(`/${workspace.url}`);
-					}
-				} else {
-					const workspaces = await getAllWorkspaces(user.id);
-					if (workspaces?.length) {
-						router.push(`/${workspaces[0].url}`);
-					} else {
-						router.push("/join");
-					}
-				}
-				setLoading(false);
-			};
-
-			checkUserWorkspaces();
-		} else {
-			setLoading(false);
-		}
-	}, []);
-	const displayPassword = hidePassword ? "text" : "password";
-
 	return (
-		<div className="top-0 w-full flex items-center justify-center h-[100vh]">
-			{!loading && (
-				<Card className="w-5/6 lg:w-1/3 bg-gradient-to-b from-primary/10 to-bg-card">
-					<CardHeader>
-						<CardTitle className="uppercase">Sign in to your account</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<form className="mt-10 space-y-6" onSubmit={handleLogin}>
-							<div className="flex flex-col gap-3">
-								<Label htmlFor="email">Email address</Label>
-								<Input
-									type="email"
-									value={data.email}
-									onChange={(e) => setData({ ...data, email: e.target.value })}
-								/>
-							</div>
-							<div className="flex flex-col gap-3 relative">
-								<Label htmlFor="password">Password</Label>
-								<Input
-									type={displayPassword}
-									value={data.password}
-									onChange={(e) =>
-										setData({ ...data, password: e.target.value })
-									}
-								/>
-								<button
-									type="button"
-									onClick={() => setHidePassword((prev) => !prev)}
-									className="absolute right-3 top-10 cursor-pointer"
-								>
-									{displayPasswordIcon}
-								</button>
-							</div>
-							<Button type="submit" className="w-full">
-								Sign in
+		<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
+			<CardHeader>
+				<CardTitle className="text-2xl font-bold text-center">
+					Sign in to your account
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<form onSubmit={handleLogin} className="space-y-4">
+					<div className="space-y-2">
+						<Label htmlFor="email">Email address</Label>
+						<Input
+							id="email"
+							type="email"
+							placeholder="Enter your email"
+							value={data.email}
+							onChange={(e) => setData({ ...data, email: e.target.value })}
+							required
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="password">Password</Label>
+						<div className="relative">
+							<Input
+								id="password"
+								type={hidePassword ? "password" : "text"}
+								placeholder="Enter your password"
+								value={data.password}
+								onChange={(e) => setData({ ...data, password: e.target.value })}
+								required
+							/>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="absolute right-0 top-0 h-full"
+								onClick={() => setHidePassword(!hidePassword)}
+							>
+								{hidePassword ? (
+									<EyeOff className="h-4 w-4" />
+								) : (
+									<Eye className="h-4 w-4" />
+								)}
 							</Button>
-						</form>
-					</CardContent>
-					<CardFooter className="text-center">
-						Not a member?{" "}
-						<Button onClick={handleRegisterPush} variant={"link"}>
-							Sign up for free
-						</Button>
-					</CardFooter>
-				</Card>
-			)}
+						</div>
+					</div>
+					<Button type="submit" className="w-full" disabled={isLoading}>
+						{isLoading ? (
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						) : null}
+						Sign in
+					</Button>
+				</form>
+			</CardContent>
+			<CardFooter className="flex justify-center">
+				<p className="text-sm text-muted-foreground">
+					Not a member?{" "}
+					<Button variant="link" className="p-0" onClick={handleRegisterPush}>
+						Sign up for free
+					</Button>
+				</p>
+			</CardFooter>
+		</Card>
+	);
+}
+
+export default function Login() {
+	return (
+		<div className="flex items-center justify-center min-h-screen p-4">
+			<Suspense fallback={<div>Loading...</div>}>
+				<LoginForm />
+			</Suspense>
 		</div>
 	);
 }

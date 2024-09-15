@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { inProgress } from "@/components/Svg";
 import { statusOptions } from "@/constants/designations";
-import { useTaskStore, useActivityStore } from "@/storeZ";
+import { useTaskStore, useActivityStore } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 import {
 	Select,

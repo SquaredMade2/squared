@@ -9,7 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import type { Workspace } from "@repo/db";

@@ -10,7 +10,7 @@ import {
 import type { Workspace } from "@repo/db";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import Link from "next/link";
-import { useTaskStore, useWorkspaceStore } from "@/storeZ";
+import { useTaskStore, useWorkspaceStore } from "@/store";
 
 const TaskCardTop = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);

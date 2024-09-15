@@ -5,7 +5,7 @@ import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/storeZ";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
 const TaskPageTitle = () => {
 	const { toast } = useToast();

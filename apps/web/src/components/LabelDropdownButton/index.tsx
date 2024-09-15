@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { Plus, Tag, Check } from "lucide-react";
 import type { LabelDropdownButtonProps } from "./LabelDropdownButton.interfaces";
-import { useModalStore, useTaskStore, useWorkspaceStore } from "@/storeZ";
+import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 
 export const labelStyle: Record<string, string> = {

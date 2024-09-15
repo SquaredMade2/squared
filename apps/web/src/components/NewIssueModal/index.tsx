@@ -31,7 +31,7 @@ import {
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
-} from "@/storeZ";
+} from "@/store";
 import type { Task } from "@repo/db";
 
 const NewIssueModal = () => {

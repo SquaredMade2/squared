@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { low, medium, high } from "@/components/Svg";
 import type { EffortFilterDropDownProps } from "./interfaces";
-import { useFilterStore } from "@/storeZ/filters";
+import { useFilterStore } from "@/store/filters";
 
 const groupEffort = [
 	{

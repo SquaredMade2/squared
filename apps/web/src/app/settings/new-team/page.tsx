@@ -17,7 +17,7 @@ import {
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
-} from "@/storeZ";
+} from "@/store";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";

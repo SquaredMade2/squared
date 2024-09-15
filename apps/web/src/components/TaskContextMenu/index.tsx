@@ -19,7 +19,7 @@ import DateSubContextMenu from "./DateSubContextMenu";
 // import RenameSubContextMenu from "./RenameSubContextMenu";
 import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
-import { useModalStore, useTaskStore } from "@/storeZ";
+import { useModalStore, useTaskStore } from "@/store";
 
 const TaskContextMenu: FC<TaskContextMenuProps> = ({ task }) => {
 	const { toast } = useToast();

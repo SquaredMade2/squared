@@ -1,7 +1,7 @@
 import React from "react";
 import { useId } from "@repo/ui/id";
 import { Switch } from "../ui/switch";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 
 const DisplayPreferences = () => {
 	const {

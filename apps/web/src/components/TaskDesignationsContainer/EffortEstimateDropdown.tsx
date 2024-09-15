@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { effortEstimateOptions } from "@/constants/designations";
-import { useTaskStore, useActivityStore } from "@/storeZ";
+import { useTaskStore, useActivityStore } from "@/store";
 import { useTheme } from "next-themes";
 import { high, medium, low } from "@/components/Svg";
 import { setBackgroundColor } from "@/components/TaskDesignationsContainer";

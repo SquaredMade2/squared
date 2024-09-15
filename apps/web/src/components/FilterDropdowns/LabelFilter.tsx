@@ -14,7 +14,7 @@ import {
 	CommandEmpty,
 	CommandGroup,
 } from "@/components/ui/command";
-import { useFilterStore, useWorkspaceStore } from "@/storeZ";
+import { useFilterStore, useWorkspaceStore } from "@/store";
 import type { LabelFilterDropDownProps } from "./interfaces";
 import type { Label } from "@repo/db";
 import { Check } from "lucide-react";

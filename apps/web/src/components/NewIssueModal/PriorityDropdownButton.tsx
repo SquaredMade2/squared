@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useModalStore } from "@/storeZ";
+import { useModalStore } from "@/store";
 import {
 	Select,
 	SelectContent,

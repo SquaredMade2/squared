@@ -5,7 +5,7 @@ import InboxTopMenu from "@/components/InboxTopMenu";
 import { useEffect, useState } from "react";
 import InboxContents from "@/components/InboxContents";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuthStore, useNotificationStore } from "@/storeZ";
+import { useAuthStore, useNotificationStore } from "@/store";
 import IconLeftMenu from "@/components/IconLeftMenu";
 
 export default function Inbox(): React.JSX.Element {

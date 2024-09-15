@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/command";
 import type { FilterOption } from "./interfaces";
 import { Button } from "../ui/button";
-import { useFilterStore } from "@/storeZ";
+import { useFilterStore } from "@/store";
 import LabelFilterDropDown from "./LabelFilter";
 import DueDateFilterDropDown from "./DueDateFilter";
 

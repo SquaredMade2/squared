@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { useAuthStore } from "@/storeZ";
+import { useAuthStore } from "@/store";
 
 const LogoutButton = () => {
 	const router = useRouter();

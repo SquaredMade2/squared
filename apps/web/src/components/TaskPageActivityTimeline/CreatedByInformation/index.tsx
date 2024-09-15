@@ -1,7 +1,7 @@
 import React from "react";
 import ProfileImage from "@/components/ProfileImage";
 import { formatDate } from "date-fns/format";
-import { useActivityStore, useTaskStore } from "@/storeZ";
+import { useActivityStore, useTaskStore } from "@/store";
 
 const CreatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);

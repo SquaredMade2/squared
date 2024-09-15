@@ -12,7 +12,7 @@ import { EventType } from "@/interfaces/event.interfaces";
 import { priorityOptions } from "@/constants/designations";
 import { high, low, medium } from "../Svg";
 import type { Priority } from "@repo/db";
-import { useTaskStore } from "@/storeZ";
+import { useTaskStore } from "@/store";
 
 const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	const { updateTask } = useTaskStore((state) => state);

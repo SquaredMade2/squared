@@ -10,7 +10,7 @@ import {
 	useTaskStore,
 	useUserStore,
 	useWorkspaceStore,
-} from "@/storeZ";
+} from "@/store";
 
 const TaskPageDescription = () => {
 	const [isFocused, setIsFocused] = useState(false);

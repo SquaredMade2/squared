@@ -7,7 +7,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 import Link from "next/link";
 
 const IntegrationSettings: React.FC = () => {

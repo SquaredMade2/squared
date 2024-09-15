@@ -10,7 +10,7 @@ import {
 	useNotificationStore,
 	useTaskStore,
 	useWorkspaceStore,
-} from "@/storeZ";
+} from "@/store";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,

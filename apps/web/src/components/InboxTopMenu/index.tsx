@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons";
 import Notificationcontrols from "../NotificationControls";
 import BackButton from "../BackButton";
-import { useTaskStore } from "@/storeZ";
+import { useTaskStore } from "@/store";
 
 const inboxIcon = <FontAwesomeIcon icon={faBarsStaggered} />;
 type Props = {

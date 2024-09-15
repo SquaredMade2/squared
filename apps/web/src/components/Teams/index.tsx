@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import NavBarTeams from "@/components/NavBarTeams";
 import type { Team } from "@repo/db";
-import { useTeamStore, useWorkspaceStore } from "@/storeZ";
+import { useTeamStore, useWorkspaceStore } from "@/store";
 
 const Teams = () => {
 	const router = useRouter();

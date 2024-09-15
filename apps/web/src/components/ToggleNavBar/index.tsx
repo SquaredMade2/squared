@@ -1,5 +1,5 @@
 import ButtonIcon from "../ButtonIcon";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faChevronLeft,

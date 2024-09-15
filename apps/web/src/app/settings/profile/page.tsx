@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useAuthStore, useUserStore } from "@/storeZ";
+import { useAuthStore, useUserStore } from "@/store";
 import type { User } from "@repo/db";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";

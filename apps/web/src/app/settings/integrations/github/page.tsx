@@ -9,7 +9,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 
 const GithubSettings: React.FC = () => {
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);

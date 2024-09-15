@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import IconLeftMenu from "../IconLeftMenu";
 import type { Notification } from "@repo/db";
-import { useAuthStore, useNotificationStore } from "@/storeZ";
+import { useAuthStore, useNotificationStore } from "@/store";
 
 type Props = {
 	showInboxList: boolean;

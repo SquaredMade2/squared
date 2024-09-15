@@ -4,7 +4,7 @@ import ButtonIcon from "../ButtonIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { formatUrl } from "@/utils/formatting";
-import { useTaskStore, useTeamStore } from "@/storeZ";
+import { useTaskStore, useTeamStore } from "@/store";
 
 const expandIcon = <FontAwesomeIcon icon={faExpand} />;
 

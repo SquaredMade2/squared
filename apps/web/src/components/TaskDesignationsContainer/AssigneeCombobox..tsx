@@ -18,7 +18,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import ProfileImage from "@/components/ProfileImage";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/storeZ";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import type { ButtonProps } from "./interfaces";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {

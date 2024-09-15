@@ -1,19 +1,43 @@
 "use client";
 
-import SocketProvider from "@/app/SocketProvider";
-import { store, persistor } from "@/store/index";
-import { SquaredStoreProvider } from "@/storeZ/provider";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/es/integration/react";
+import type { ReactNode } from "react";
+import { ActivityStoreProvider } from "./activities";
+import { AuthStoreProvider } from "./auth";
+import { CommentStoreProvider } from "./comments";
+import { ModalStoreProvider } from "./modals";
+import { NotificationStoreProvider } from "./notifications";
+import { TaskStoreProvider } from "./tasks";
+import { TeamStoreProvider } from "./teams";
+import { UserStoreProvider } from "./users";
+import { ViewStoreProvider } from "./views";
+import { WorkspaceStoreProvider } from "./workspaces";
+import { FilterStoreProvider } from "./filters";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+// Create the combined provider component
+export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 	return (
-		<Provider store={store}>
-			<SquaredStoreProvider>
-				<PersistGate loading={null} persistor={persistor}>
-					<SocketProvider>{children}</SocketProvider>
-				</PersistGate>
-			</SquaredStoreProvider>
-		</Provider>
+		<ActivityStoreProvider>
+			<AuthStoreProvider>
+				<CommentStoreProvider>
+					<FilterStoreProvider>
+						<ModalStoreProvider>
+							<NotificationStoreProvider>
+								<TaskStoreProvider>
+									<TeamStoreProvider>
+										<UserStoreProvider>
+											<ViewStoreProvider>
+												<WorkspaceStoreProvider>
+													{children}
+												</WorkspaceStoreProvider>
+											</ViewStoreProvider>
+										</UserStoreProvider>
+									</TeamStoreProvider>
+								</TaskStoreProvider>
+							</NotificationStoreProvider>
+						</ModalStoreProvider>
+					</FilterStoreProvider>
+				</CommentStoreProvider>
+			</AuthStoreProvider>
+		</ActivityStoreProvider>
 	);
-}
+};

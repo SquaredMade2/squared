@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/storeZ";
+import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
 import { ChevronLeft } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
