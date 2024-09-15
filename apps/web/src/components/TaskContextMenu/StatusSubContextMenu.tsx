@@ -16,7 +16,7 @@ import {
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
 import { statusOptions } from "@/constants/designations";
-import { useTaskStore, useTeamStore } from "@/storeZ";
+import { useTaskStore, useTeamStore } from "@/store";
 import type { Status } from "@repo/db";
 
 const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {

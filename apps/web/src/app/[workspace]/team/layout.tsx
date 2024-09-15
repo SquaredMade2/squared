@@ -1,7 +1,7 @@
 "use client";
 import Navbar from "@/components/NavBar";
 import { cn } from "@/utils/cn";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 
 export default function TeamLayout({
 	children,

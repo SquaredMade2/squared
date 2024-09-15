@@ -3,7 +3,7 @@ import { ChevronDown, SlidersVertical } from "lucide-react";
 import DisplayPreferences from "../DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 
 const TopNavBarDisplay = () => {
 	const [view, setView] = useViewStore((state) => [state.view, state.setView]);

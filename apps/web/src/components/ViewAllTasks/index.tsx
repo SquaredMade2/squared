@@ -5,7 +5,7 @@ import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
 import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
-import { useViewStore } from "@/storeZ";
+import { useViewStore } from "@/store";
 
 const ViewAllTasks = ({
 	handleDragEnd,

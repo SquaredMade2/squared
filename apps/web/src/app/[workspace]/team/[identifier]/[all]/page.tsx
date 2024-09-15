@@ -14,7 +14,7 @@ import {
 	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
-} from "@/storeZ";
+} from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status } from "@repo/db";
 

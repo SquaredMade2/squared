@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { Workspace, User } from "@repo/db";
-import { useUserStore, useWorkspaceStore } from "@/storeZ";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "./data-table";

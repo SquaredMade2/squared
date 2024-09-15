@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
-import { useTeamStore, useWorkspaceStore } from "@/storeZ";
+import { useTeamStore, useWorkspaceStore } from "@/store";
 
 const NavBarTeams = ({
 	onDropdownClick,

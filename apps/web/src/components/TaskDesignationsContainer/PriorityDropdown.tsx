@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { high, medium, low } from "@/components/Svg";
-import { useTaskStore, useActivityStore } from "@/storeZ";
+import { useTaskStore, useActivityStore } from "@/store";
 import type { Priority } from "@repo/db";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 

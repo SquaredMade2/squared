@@ -15,7 +15,7 @@ import {
 	CommandItem,
 	CommandEmpty,
 } from "@/components/ui/command";
-import { useUserStore, useWorkspaceStore } from "@/storeZ";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import type { User } from "@repo/db";
 
 export const AssigneeDropdown = ({

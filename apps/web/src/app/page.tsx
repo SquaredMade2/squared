@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Loader2 } from "lucide-react";
 import { parseCookies, destroyCookie } from "nookies";
 

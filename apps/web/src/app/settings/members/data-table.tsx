@@ -14,7 +14,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useModalStore } from "@/storeZ";
+import { useModalStore } from "@/store";
 import type { Workspace } from "@repo/db";
 
 interface DataTableProps<TData, TValue> {

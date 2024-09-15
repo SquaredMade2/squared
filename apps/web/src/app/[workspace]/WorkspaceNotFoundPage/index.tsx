@@ -4,7 +4,7 @@ import Link from "next/link";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check, FileSearch } from "lucide-react";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import type { Workspace } from "@repo/db";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {

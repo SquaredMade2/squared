@@ -4,7 +4,7 @@ import Task from "@/components/Task";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInbox, faEnvelopesBulk } from "@fortawesome/free-solid-svg-icons";
 import type { Notification } from "@repo/db";
-import { useTaskStore } from "@/storeZ";
+import { useTaskStore } from "@/store";
 
 export default function InboxContents({
 	notifications,

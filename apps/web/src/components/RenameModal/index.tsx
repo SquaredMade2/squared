@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { Pencil } from "lucide-react";
-import { useModalStore, useTaskStore } from "@/storeZ";
+import { useModalStore, useTaskStore } from "@/store";
 import {
 	Dialog,
 	DialogContent,

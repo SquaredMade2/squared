@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { high, medium, low } from "@/components/Svg";
 import { CircleAlert, Ellipsis } from "lucide-react";
-import { useFilterStore } from "@/storeZ";
+import { useFilterStore } from "@/store";
 import type { PriorityFilterDropDownProps } from "./interfaces";
 import { Priority } from "@repo/db";
 

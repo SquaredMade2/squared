@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useWorkspaceStore } from "@/storeZ";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import {
 	Card,
 	CardContent,

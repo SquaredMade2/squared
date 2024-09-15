@@ -7,8 +7,8 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import type { DueDateFilterDropDownProps } from "./interfaces";
 import { Button } from "@/components/ui/button";
-import { useFilterStore } from "@/storeZ";
-import type { FilterCondition } from "@/storeZ/filters";
+import { useFilterStore } from "@/store";
+import type { FilterCondition } from "@/store/filters";
 
 const DueDateFilterDropDown = ({
 	showDueDateFilterDropDown,

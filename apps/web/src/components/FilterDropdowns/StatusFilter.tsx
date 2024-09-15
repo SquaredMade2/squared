@@ -8,7 +8,7 @@ import {
 	DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { filterInProgress } from "@/components/Svg";
-import { useFilterStore } from "@/storeZ";
+import { useFilterStore } from "@/store";
 import {
 	Circle,
 	CircleCheckBig,

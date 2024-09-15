@@ -11,7 +11,7 @@ import { inProgress } from "../Svg";
 import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
 import HideStatus from "@/components/HideStatus/HideStatus";
 import { cn } from "@/utils/cn";
-import { useModalStore } from "@/storeZ";
+import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 
 const TaskColumnTitle = ({

@@ -4,7 +4,7 @@ import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { SocketContext } from "@/app/SocketProvider";
 import ToggleNavBar from "../ToggleNavBar";
-import { useAuthStore } from "@/storeZ";
+import { useAuthStore } from "@/store";
 
 const TopNavBar: React.FC = () => {
 	const [showNotification, setShowNotification] = useState(true);

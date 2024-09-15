@@ -7,7 +7,7 @@ import { faGear, faInbox, faHouse } from "@fortawesome/free-solid-svg-icons";
 import { useRouter, usePathname } from "next/navigation";
 import SearchButton from "../SearchButton";
 import SearchCommand from "../SearchCommand";
-import { useWorkspaceStore } from "@/storeZ";
+import { useWorkspaceStore } from "@/store";
 
 const IconLeftMenu = () => {
 	const router = useRouter();

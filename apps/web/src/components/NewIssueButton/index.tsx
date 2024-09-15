@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import ButtonIcon from "../ButtonIcon";
 import type { Status } from "@repo/db";
-import { useModalStore } from "@/storeZ";
+import { useModalStore } from "@/store";
 import { useTheme } from "next-themes";
 const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =

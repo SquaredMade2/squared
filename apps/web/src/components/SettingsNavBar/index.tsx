@@ -13,7 +13,7 @@ import {
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 import BackButton from "../BackButton";
-import { useTeamStore, useWorkspaceStore, useViewStore } from "@/storeZ";
+import { useTeamStore, useWorkspaceStore, useViewStore } from "@/store";
 import type { Team } from "@repo/db";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

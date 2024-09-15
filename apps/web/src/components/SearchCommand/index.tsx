@@ -17,7 +17,7 @@ import {
 	CommandSeparator,
 } from "../ui/command";
 import { useToast } from "../ui/use-toast";
-import { useModalStore, useFilterStore } from "@/storeZ";
+import { useModalStore, useFilterStore } from "@/store";
 
 const SearchCommand = ({
 	isSearchCommand,

@@ -7,7 +7,7 @@ import LabelCombobox from "./LabelCombobox";
 import AssigneeCombobox from "./AssigneeCombobox.";
 import HelpButton from "@/components/HelpButton";
 import EffortModal from "@/components/EffortModal";
-import { useTaskStore } from "@/storeZ";
+import { useTaskStore } from "@/store";
 import type { Task } from "@repo/db";
 import type { ButtonProps } from "./interfaces";
 

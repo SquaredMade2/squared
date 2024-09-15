@@ -3,7 +3,7 @@ import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
 import CopyTaskUrl from "../CopyTaskUrl";
 import CopyTaskId from "../CopyTaskId";
 import CopyGitBranchName from "../CopyGitBranchName";
-import { useTaskStore, useTeamStore } from "@/storeZ";
+import { useTaskStore, useTeamStore } from "@/store";
 
 const IssueSidebarTopRow = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);

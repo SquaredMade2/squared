@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import type { Team } from "@repo/db";
 import { Button } from "@/components/ui/button";
-import { useTeamStore, useWorkspaceStore } from "@/storeZ";
+import { useTeamStore, useWorkspaceStore } from "@/store";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {

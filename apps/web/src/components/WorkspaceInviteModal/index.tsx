@@ -1,6 +1,6 @@
 "use client";
 
-import { useModalStore, useWorkspaceStore } from "@/storeZ";
+import { useModalStore, useWorkspaceStore } from "@/store";
 import {
 	Dialog,
 	DialogContent,

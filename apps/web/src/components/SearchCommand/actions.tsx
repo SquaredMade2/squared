@@ -1,6 +1,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./SearchCommand.interface";
-import { useWorkspaceStore, useTeamStore } from "@/storeZ";
+import { useWorkspaceStore, useTeamStore } from "@/store";
 import {
 	Box,
 	Copy,
@@ -17,7 +17,7 @@ import {
 	ClipboardCopy,
 	ArrowLeftRight,
 } from "lucide-react";
-import { useAuthStore } from "@/storeZ";
+import { useAuthStore } from "@/store";
 
 export class commandSchema {
 	router = useRouter();

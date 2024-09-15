@@ -15,7 +15,7 @@ import {
 	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
-} from "@/storeZ";
+} from "@/store";
 import type { Status } from "@repo/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";

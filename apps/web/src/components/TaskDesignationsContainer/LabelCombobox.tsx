@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Plus, Check } from "lucide-react";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
-import { useTaskStore, useWorkspaceStore, useActivityStore } from "@/storeZ";
+import { useTaskStore, useWorkspaceStore, useActivityStore } from "@/store";
 import type { Label } from "@repo/db";
 
 export const labelStyle: Record<string, string> = {

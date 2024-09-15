@@ -4,8 +4,8 @@ import { formatDate } from "date-fns/format";
 import { EventType } from "@/interfaces/event.interfaces";
 import type { TaskEvent } from "@repo/db";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useActivityStore } from "@/storeZ";
-import type { ActivityType } from "@/storeZ/activities";
+import { useActivityStore } from "@/store";
+import type { ActivityType } from "@/store/activities";
 import { Avatar } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
 
