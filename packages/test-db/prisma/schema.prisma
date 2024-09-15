@@ -50,9 +50,9 @@ model Commit {
   owner             String?
   activityId        String   @unique
 
-  activity Activity @relation(fields: [activityId], references: [id])
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
-  Branch Branch @relation(fields: [treeId], references: [id])
+  Branch Branch @relation(fields: [treeId], references: [id], onDelete: Cascade)
 }
 
 model Branch {
@@ -63,8 +63,8 @@ model Branch {
 
   commits Commit[]
 
-  task           Task            @relation(fields: [taskId], references: [id])
-  GithubRepoInfo GithubRepoInfo? @relation(fields: [githubRepoInfoId], references: [id])
+  task           Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  GithubRepoInfo GithubRepoInfo? @relation(fields: [githubRepoInfoId], references: [id], onDelete: Cascade)
 }
 
 model TaskEventLog {
@@ -76,7 +76,7 @@ model TaskEventLog {
 
   activities Activity[]
 
-  Task      Task        @relation(fields: [taskId], references: [id])
+  Task      Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
   TaskEvent TaskEvent[]
 }
 
@@ -89,21 +89,29 @@ model Activity {
 
   type ActivityType
 
-  taskEventLog TaskEventLog @relation(fields: [eventLogId], references: [id])
+  taskEventLog TaskEventLog @relation(fields: [eventLogId], references: [id], onDelete: Cascade)
 }
 
 model TaskEvent {
-  id           String   @id @default(uuid())
-  type         String
-  authorId     String
-  authorName   String
-  activityId   String   @unique
-  createdAt    DateTime @default(now())
-  taskId       String
-  updatedValue String?
+  id                   String   @id @default(uuid())
+  type                 String
+  authorId             String
+  authorName           String
+  activityId           String   @unique
+  createdAt            DateTime @default(now())
+  taskId               String
+  originalValue        String?
+  updatedValue         String?
+  originalAssigneeId   String?
+  originalAssigneeName String?
+  updatedAssigneeId    String?
+  updatedAssigneeName  String?
+  gitUpdated           String?
+  originalLabels       String[]
+  updatedLabels        String[]
 
-  activity     Activity     @relation(fields: [activityId], references: [id])
-  taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])
+  activity     Activity     @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  taskEventLog TaskEventLog @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
@@ -113,8 +121,8 @@ model Comment {
   date     DateTime @default(now())
   taskId   String
 
-  Task   Task @relation(fields: [taskId], references: [id])
-  Author User @relation(fields: [authorId], references: [id])
+  Task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  Author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -126,7 +134,7 @@ model Notification {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  User User @relation(fields: [userId], references: [id])
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Task {
@@ -149,7 +157,7 @@ model Task {
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author User @relation(fields: [authorId], references: [id])
+  Author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   Team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
@@ -183,7 +191,7 @@ model User {
   Comment      Comment[]
   Task         Task[]
 
-  DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id])
+  DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id], onDelete: SetNull)
   Teams            UserTeam[]
 }
 
@@ -203,7 +211,7 @@ model SavedFilter {
   filter      Json
   workspaceId String
 
-  Workspace Workspace? @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
 model Workspace {
@@ -230,8 +238,8 @@ model UserWorkspace {
   userId      String
   workspaceId String
 
-  user      User      @relation(fields: [userId], references: [id])
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@id([userId, workspaceId])
 }
@@ -240,8 +248,8 @@ model UserTeam {
   userId String
   teamId String
 
-  user User @relation(fields: [userId], references: [id])
-  team Team @relation(fields: [teamId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@id([userId, teamId])
 }
@@ -252,7 +260,7 @@ model UniversalTokenLink {
   isEnabled   Boolean @default(true)
   workspaceId String  @unique
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
 model GithubRepoInfo {
@@ -262,7 +270,7 @@ model GithubRepoInfo {
   workspaceId String   @unique
   branches    Branch[]
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
 model Project {
@@ -271,6 +279,6 @@ model Project {
   teamId      String?
   workspaceId String?
 
-  Team      Team?      @relation(fields: [teamId], references: [id])
-  Workspace Workspace? @relation(fields: [workspaceId], references: [id])
+  Team      Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
