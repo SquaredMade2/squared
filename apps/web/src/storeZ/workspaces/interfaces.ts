@@ -26,7 +26,7 @@ export type WorkspaceActions = {
 	updateWorkspace: (
 		workspaceId: string,
 		workspace: Partial<Workspace>,
-	) => Promise<Workspace>;
+	) => Promise<WorkspaceResponse>;
 	deleteWorkspace: (workspaceId: string) => Promise<void>;
 	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
 	joinWorkspace: (token: string, user: User) => Promise<WorkspaceResponse>;
