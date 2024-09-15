@@ -6,6 +6,10 @@
       "import": "./src/accordion/index.ts",
       "require": "./src/accordion/index.ts"
     },
+    "./alert-dialog": {
+      "import": "./src/alert-dialog/index.ts",
+      "require": "./src/alert-dialog/index.ts"
+    },
     "./arrow": {
       "import": "./src/arrow/index.ts",
       "require": "./src/arrow/index.ts"

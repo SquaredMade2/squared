@@ -1,7 +1,7 @@
 import type { Label, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import { trackChange, createLog } from "@/utils/taskUpdate"
+import { trackChange, createLog } from "@/utils/taskUpdate";
 
 type Params = {
 	taskId: string;
@@ -57,10 +57,10 @@ export function createRoute(): Route<Params> {
 				}
 
 				const author = await prisma.user.findFirst({
-					where:{id: task.authorId}
+					where: { id: task.authorId },
 				});
 
-				if(!author){
+				if (!author) {
 					res.status(404);
 					return {
 						data: null,
@@ -68,8 +68,8 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
-				
-				trackChange(author, body, task)
+
+				trackChange(author, body, task);
 
 				// Return the updated task with labels
 				return {
@@ -113,10 +113,10 @@ export function createRoute(): Route<Params> {
 				}
 
 				const author = await prisma.user.findFirst({
-					where:{id: taskData.authorId}
+					where: { id: taskData.authorId },
 				});
 
-				if(!author){
+				if (!author) {
 					res.status(404);
 					return {
 						data: null,
