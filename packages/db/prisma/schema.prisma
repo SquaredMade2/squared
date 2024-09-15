@@ -150,7 +150,7 @@ model Task {
   assigneeName   String?
   labels         String[]
 
-  status   Status        @default(todo)
+  status   Status        @default(backlog)
   priority Priority      @default(noPriority)
   Comments Comment[]
   Events   TaskEventLog?

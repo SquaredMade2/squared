@@ -112,7 +112,7 @@ const NewIssueModal = () => {
 				title: transformedTitle,
 				description: transformedDescriptionInput,
 				identifier: `${currentTeam.identifier}-${currentWorkspace.issuesCreated}`,
-				status: status ?? "todo",
+				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
