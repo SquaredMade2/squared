@@ -13,7 +13,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/notification/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/notification/${path}`;
 
 export const createNotificationStore = (
 	initState: NotificationState = { notifications: [] },
@@ -101,7 +101,7 @@ export const createNotificationStore = (
 					try {
 						const { data: response }: { data: ApiReturnType<Notification[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
 							);
 						const { data: notifications, message, variant } = response;
 						if (!notifications) {
@@ -126,7 +126,7 @@ export const createNotificationStore = (
 				clearNotifications: async (userId: string): Promise<Notification[]> => {
 					try {
 						const response = await axios.get<Notification[]>(
-							`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/notification`,
+							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
 						);
 						set({ notifications: response.data });
 						return response.data;

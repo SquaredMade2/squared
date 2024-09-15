@@ -9,7 +9,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/user/${path}`;
 
 export const createUserStore = (initState: UserState = { users: [] }) => {
 	return createStore<UserStore>()(
@@ -120,7 +120,7 @@ export const createUserStore = (initState: UserState = { users: [] }) => {
 					try {
 						const { data: response }: { data: ApiReturnType<User[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/user`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/user`,
 							);
 						const { data: users, message, variant } = response;
 						if (!users) {

@@ -9,7 +9,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/team/${path}`;
 
 export const createTeamStore = (
 	initState: TeamState = { teams: [], currentTeam: null },
@@ -119,7 +119,7 @@ export const createTeamStore = (
 					try {
 						const { data: response }: { data: ApiReturnType<Team[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${workspaceId}/team`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/team`,
 							);
 						const { data: teams, message, variant } = response;
 						if (!teams) {

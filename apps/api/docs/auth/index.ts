@@ -18,7 +18,7 @@ const AuthDocs = {
 									enum: ["register", "login", "logout"],
 									description: "The type of authentication needed",
 								},
-                                name: {
+								name: {
 									type: "string",
 									description: "the name of the user",
 								},
@@ -28,12 +28,13 @@ const AuthDocs = {
 								},
 								password: {
 									type: "string",
-									description: "the password for the user, should be greater than 6 characters",
+									description:
+										"the password for the user, should be greater than 6 characters",
 								},
-                                username:{
-                                    type:"string",
-                                    description:"the username for the user"
-                                }
+								username: {
+									type: "string",
+									description: "the username for the user",
+								},
 							},
 							required: ["type", "email", "password"],
 						},
@@ -41,7 +42,7 @@ const AuthDocs = {
 				},
 			},
 			responses: {
-                200: {
+				200: {
 					description: "successfully logged user in or out",
 					content: {
 						"application/json": {
@@ -73,41 +74,40 @@ const AuthDocs = {
 			},
 		},
 	},
-    "/api/auth/{token}":{
-        post: {
+	"/api/auth/{token}": {
+		post: {
 			tags: ["Authentication"],
 			summary: "Verifies the user",
 			description:
 				"Uses a JWT from the email sent to the user to verify that the user is real and the email is correct",
-            parameters: [
-                {
-                    in: "path",
-                    name: "token",
-                    schema: {
-                        type: "string",
-                    },
-                    required: true,
-                    description:
-                        "The token the is signed with the user data",
-                },
-            ],
+			parameters: [
+				{
+					in: "path",
+					name: "token",
+					schema: {
+						type: "string",
+					},
+					required: true,
+					description: "The token the is signed with the user data",
+				},
+			],
 			responses: {
-                200: {
+				200: {
 					description: "verified the user",
 					content: {
 						"application/json": {
 							schema: {
 								data: {
-                                    type: "object",
-                                    properties:{
-                                        message:{
-                                            type: "string"
-                                        },
-                                        variant:{
-                                            type: "string"
-                                        }
-                                    }
-                                }
+									type: "object",
+									properties: {
+										message: {
+											type: "string",
+										},
+										variant: {
+											type: "string",
+										},
+									},
+								},
 							},
 						},
 					},
@@ -123,9 +123,7 @@ const AuthDocs = {
 				},
 			},
 		},
-
-    }
+	},
 };
 
 export default AuthDocs;
-

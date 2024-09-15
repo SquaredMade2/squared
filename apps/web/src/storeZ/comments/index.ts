@@ -8,7 +8,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/comment/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/comment/${path}`;
 
 export const createCommentStore = (
 	initState: CommentState = { comments: [] },
@@ -114,7 +114,7 @@ export const createCommentStore = (
 		getAllComments: async (taskId: string): Promise<Comment[]> => {
 			try {
 				const response = await axios.get<Comment[]>(
-					`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${taskId}/comment`,
+					`${process.env.NEXT_PUBLIC_SERVER}/api/task/${taskId}/comment`,
 				);
 				set({ comments: response.data });
 				return response.data;

@@ -19,7 +19,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/workspace/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${path}`;
 
 const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	name: "",
@@ -216,7 +216,7 @@ export const createWorkspaceStore = (
 					try {
 						const { data: response }: { data: ApiReturnType<Workspace[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVERZ}/api/user/${userId}/workspace`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/workspace`,
 							);
 						const { data: workspaces } = response;
 						if (!workspaces) {
