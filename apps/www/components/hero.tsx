@@ -94,7 +94,7 @@ export const Hero = () => {
 				<Button
 					variant="simple"
 					as={Link}
-					href="/cont"
+					href="/contact"
 					className="flex space-x-2 items-center group"
 				>
 					<span>Contact us</span>
