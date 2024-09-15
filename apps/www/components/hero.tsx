@@ -32,7 +32,6 @@ export const Hero = () => {
 				className="flex justify-center"
 			>
 				<Badge onClick={() => router.push("https://app.squaredmade.com/login")}>
-					{/* todo change to register page */}
 					See what it&apos;s about
 				</Badge>
 			</motion.div>
