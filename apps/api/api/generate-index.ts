@@ -82,7 +82,7 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 	// Adding the server setup to the generated index file
 	writeLn(`
 const app = express();
-const port = process.env.PORT || 5555;
+const port = process.env.PORT || 5173;
 
 const productionDomain = "https://app.squaredmade.com";
 const localDevDomain = "http://localhost:3000";

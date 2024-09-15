@@ -22,14 +22,19 @@ const hashPassword = (password: string): Promise<string> => {
 };
 
 async function seedDB() {
-	const numUsers = faker.number.int({ min: 5, max: 10 });
+	const numUsers = 15;
+	const workspaces = await Promise.all([
+		addWorkspace(),
+		addWorkspace(),
+		addWorkspace(),
+	]);
 
 	for (let i = 0; i < numUsers; i++) {
 		const user = await addUser();
-		const numWorkspaces = faker.number.int({ min: 1, max: 2 });
 
-		for (let k = 0; k < numWorkspaces; k++) {
-			const workspace = await addWorkspace(user);
+		for (const workspace of workspaces) {
+			await addUserToWorkspace(user, workspace);
+
 			const numTeams = faker.number.int({ min: 1, max: 2 });
 
 			for (let j = 0; j < numTeams; j++) {
@@ -41,10 +46,6 @@ async function seedDB() {
 					const numComments = faker.number.int({ min: 0, max: 3 });
 
 					for (let c = 0; c < numComments; c++) {
-						const randomUserIndex = faker.number.int({
-							min: 0,
-							max: numUsers - 1,
-						});
 						await addComment(user.id, task.id);
 					}
 				}
@@ -77,16 +78,10 @@ async function addUser() {
 	return user;
 }
 
-async function addWorkspace(user: User) {
-	const workspaceName = faker.internet.domainWord();
-	const workspaceCompanySize = faker.number.int({ max: 1000 });
-
-	// Create the workspace
-	const workspace = await prisma.workspace.create({
+async function addUserToWorkspace(user: User, workspace: Workspace) {
+	await prisma.workspace.update({
+		where: { id: workspace.id },
 		data: {
-			name: workspaceName,
-			companySize: workspaceCompanySize,
-			url: workspaceName.split(" ").join("-").toLowerCase(),
 			Users: {
 				create: {
 					userId: user.id,
@@ -94,8 +89,20 @@ async function addWorkspace(user: User) {
 			},
 		},
 	});
+}
 
-	// Define default labels with name, description, and color
+async function addWorkspace() {
+	const workspaceName = faker.internet.domainWord();
+	const workspaceCompanySize = faker.number.int({ max: 1000 });
+
+	const workspace = await prisma.workspace.create({
+		data: {
+			name: workspaceName,
+			companySize: workspaceCompanySize,
+			url: workspaceName.split(" ").join("-").toLowerCase(),
+		},
+	});
+
 	const defaultLabels = [
 		{ name: "Feature", description: "New feature", color: "#FF5733" },
 		{ name: "Bug", description: "Bug fix", color: "#C70039" },
@@ -106,11 +113,10 @@ async function addWorkspace(user: User) {
 		{ name: "Design", description: "Design related task", color: "#33FFBD" },
 	];
 
-	// Add default labels to the workspace
 	await prisma.label.createMany({
 		data: defaultLabels.map((label) => ({
 			...label,
-			workspaceId: workspace.id, // Associate the label with the workspace
+			workspaceId: workspace.id,
 		})),
 	});
 
@@ -119,10 +125,7 @@ async function addWorkspace(user: User) {
 
 async function addTeam(workspace: Workspace, user: User) {
 	const teamName = faker.internet.domainWord();
-	const teamIdentifier = faker.string.alpha({
-		length: 3,
-		casing: "upper",
-	});
+	const teamIdentifier = faker.string.alpha({ length: 3, casing: "upper" });
 
 	const team = await prisma.team.create({
 		data: {
@@ -149,7 +152,6 @@ const getRandomLabels = (labels: { id: string }[]) => {
 };
 
 async function addTask(team: Team, workspace: Workspace, user: User) {
-	// Generate task details using faker
 	const taskTitle = faker.lorem.words({ min: 1, max: 3 });
 	const taskDescription = faker.lorem.words({ min: 3, max: 5 });
 	const taskStatus = faker.helpers.arrayElement([
@@ -167,7 +169,6 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Priority.low,
 	]);
 
-	// Fetch labels for the workspace
 	const taskLabels = await prisma.label.findMany({
 		where: { workspaceId: workspace.id },
 	});
@@ -182,17 +183,13 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		data: { issuesCreated: { increment: 1 } },
 	});
 
-	// Format the workspace name to get the identifier prefix
 	const formattedName = workspace.name
-		.replace(/\s+/g, "") // Remove spaces
-		.substring(0, 3) // Get the first 3 letters
-		.toUpperCase(); // Convert to uppercase
-
-	// Use the current issuesCreated count to create the identifier
+		.replace(/\s+/g, "")
+		.substring(0, 3)
+		.toUpperCase();
 	const identifier = `${formattedName}-${updatedWorkspace.issuesCreated + 1}`;
 	const randomLabelIds = getRandomLabels(taskLabels);
 
-	// Create the task with the generated identifier
 	const task = await prisma.task.create({
 		data: {
 			authorId: user.id,
@@ -208,7 +205,6 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		},
 	});
 
-	// Add a notification for the task creation (if needed)
 	await addNotification(user.id, task.id);
 
 	return task;
