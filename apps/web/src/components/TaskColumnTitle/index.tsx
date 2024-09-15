@@ -10,7 +10,6 @@ import {
 import { inProgress } from "../Svg";
 import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
 import HideStatus from "@/components/HideStatus/HideStatus";
-import { setShowNewIssue } from "@/store/showNewIssue";
 import { cn } from "@/utils/cn";
 import { useModalStore } from "@/storeZ";
 import { formatStatus } from "@/utils/formatting";
@@ -22,7 +21,7 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	toggleShowTasks,
 }: TaskColumnTitleProps) => {
-	const setNewIssueData = useModalStore((state) => state.setNewIssueData);
+	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 
 	const showIcon = (name: string): React.ReactNode => {
 		switch (name) {
