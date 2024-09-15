@@ -9,7 +9,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/task/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/task/${path}`;
 
 export const createTaskStore = (
 	initState: TaskState = { tasks: [], currentTask: null },
@@ -127,7 +127,7 @@ export const createTaskStore = (
 					try {
 						const { data: response }: { data: ApiReturnType<Task[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVERZ}/api/team/${teamId}/task`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/team/${teamId}/task`,
 							);
 						const { data: tasks, message, variant } = response;
 						if (!tasks) {

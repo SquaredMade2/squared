@@ -15,7 +15,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/filter/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/filter/${path}`;
 
 export const createFilterStore = (
 	initState: FilterState = {
