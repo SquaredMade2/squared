@@ -1,7 +1,5 @@
 import React from "react";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
-import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import { useActivityStore, useTaskStore } from "@/storeZ";
 

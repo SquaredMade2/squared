@@ -1,43 +1,30 @@
-import { useSelector } from "react-redux";
 import { useState, useContext, useEffect } from "react";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { SocketContext } from "@/app/SocketProvider";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { EventType } from "@/interfaces/event.interfaces";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "../ui/use-toast";
-import { useTaskStore } from "@/storeZ";
+import {
+	useAuthStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/storeZ";
 
 const TaskPageDescription = () => {
-	const { toast } = useToast();
-
-	const currentTask = useTaskStore((state) => state.currentTask);
-	const setCurrentTask = useTaskStore((state) => state.setCurrentTask);
-	const updateTask = useTaskStore((state) => state.updateTask);
-
-	const description = currentTask?.description ?? "";
-	const taskId = currentTask?.id;
-
-	const socket = useContext(SocketContext);
-
-	const [updatedDescription, setUpdatedDescription] = useState(description);
-
-	const {
-		user,
-		storeCommonFields,
-		storeType,
-		storeTaskValue,
-		updateTaskValue,
-	} = useLogTaskEvent();
 	const [isFocused, setIsFocused] = useState(false);
 
-	const listOfMembers = useSelector(
-		(state: RootState) => state.listOfWorkspaceMembers.listOfWorkspaceMembers,
-	);
+	const { currentTask, updateTask } = useTaskStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { users, getAllUsers } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { toast } = useToast();
+	const socket = useContext(SocketContext);
+
+	const description = currentTask?.description ?? "";
+	const [updatedDescription, setUpdatedDescription] = useState(description);
+
 	const handleChange: OnChangeHandlerFunc = (e) => {
 		setUpdatedDescription(e.target.value);
 	};
@@ -46,12 +33,13 @@ const TaskPageDescription = () => {
 		transformingMentionInputs(updatedDescription ?? "");
 
 	const updateDescription = async () => {
-		if (taskId !== undefined) {
+		if (currentTask?.id) {
 			try {
 				if (currentTask) {
-					const newTask = { ...currentTask };
-					newTask.description = updatedDescription;
-					const updatedTaskDescription = await updateTask(taskId, newTask);
+					const updatedTaskDescription = await updateTask(currentTask.id, {
+						...currentTask,
+						description: transformedDescriptionInput,
+					});
 					const { userIds: userId } = transformingMentionInputs(
 						updatedDescription ?? "",
 					);
@@ -75,18 +63,9 @@ const TaskPageDescription = () => {
 		}
 	};
 
-	// disabled because waiting on events refactor, spammed api calls.
-	const logEvent = () => {
-		storeType(EventType.DescriptionUpdated);
-		storeTaskValue(description ?? "");
-		updateTaskValue(updatedDescription ?? "");
-	};
-
 	const handleBlur = () => {
 		const changeMade = updatedDescription !== description;
-		if (changeMade && taskId !== undefined) {
-			storeCommonFields(user, taskId);
-			// logEvent();
+		if (changeMade && currentTask?.id) {
 			updateDescription();
 		}
 		setIsFocused(false);
@@ -96,11 +75,14 @@ const TaskPageDescription = () => {
 		if (currentTask) {
 			setUpdatedDescription(currentTask.description ?? "");
 		}
+		if (currentWorkspace) {
+			getAllUsers(currentWorkspace.id);
+		}
 	}, [currentTask]);
 
 	return (
 		<MentionInput
-			data={listOfMembers}
+			data={users}
 			onChange={handleChange}
 			className="resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent "
 			placeholder={"Add description..."}

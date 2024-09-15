@@ -1,6 +1,5 @@
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import { UserSearch } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -9,132 +8,43 @@ import {
 } from "../ui/context-menu";
 import ProfileImage from "../ProfileImage";
 import type { AssigneeSubContextMenuProps } from "./interfaces";
-import { EventType } from "@/interfaces/event.interfaces";
-import useLogTaskEvent from "@/hooks/useLogTaskEvent";
-import type {
-	AssigneeParams,
-	HandleAssigneeChange,
-} from "@/app/interfaces/Tasks.interfaces";
-import { getAllTasks, setAssignee } from "@/store/taskData/thunks";
-import { getSingleTask } from "@/store/task/thunks";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
-import type { User } from "@repo/db";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/storeZ";
 
 const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
-	const dispatch = useAppDispatch();
+	const { users, getAllUsers } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { updateTask } = useTaskStore((state) => state);
+	const taskId = task.id;
 
-	const taskDataReceived =
-		useAppSelector((state) => state.singleTask?.data) || null;
-
-	const currentTeam = useAppSelector((state) => state.taskData.currentTeam);
-
-	const assignees = useAppSelector(
-		(state) => state.taskData.allUsersInWorkspace,
-	);
-
-	const {
-		user,
-		storeCommonFields,
-		storeTaskAssignee,
-		storeType,
-		updateTaskAssignee,
-	} = useLogTaskEvent();
-
-	const assigneeDropdownHeight = () => {
-		const assigneeLength = assignees.length;
-		switch (assigneeLength) {
-			case 1:
-				return "4rem";
-			case 2:
-				return "6rem";
-			case 3:
-				return "8rem";
-			default:
-				return "12rem";
-		}
-	};
-
-	const handleStoreCurrentAssignee = (): void => {
-		const noUserAssigned = task.assigneeName === null;
-		if (taskDataReceived) {
-			if (noUserAssigned) {
-				const assignee = {
-					id: "",
-					name: "not Assigned",
-					username: "",
-					email: "",
-					password: "",
-					verified: true,
-					lastLogin: new Date(),
-					onBoarding: false,
-					defaultWorkspaceId: "",
-					avatarUrl: "",
-				};
-				storeTaskAssignee(assignee);
-			} else {
-				// storeTaskAssignee(task.assignee as User);
+	useEffect(() => {
+		const fetchUsers = async () => {
+			if (currentWorkspace?.id) {
+				await getAllUsers(currentWorkspace.id);
 			}
-		}
-	};
-
-	const logAssigneeChangeEvent = (newAssignee: User): void => {
-		const userIsAssigned = newAssignee.id && newAssignee.name;
-		if (userIsAssigned) {
-			updateTaskAssignee(newAssignee);
-		} else {
-			updateTaskAssignee({
-				id: "",
-				name: "not Assigned",
-				username: "",
-				email: "",
-				password: "",
-				verified: true,
-				lastLogin: new Date(),
-				onBoarding: false,
-				defaultWorkspaceId: "",
-				avatarUrl: "",
-			});
-		}
-	};
-
-	const assigneeParams: AssigneeParams = (taskId, user) => {
-		dispatch(getAllTasks(currentTeam));
-		if (task !== undefined) {
-			dispatch(getSingleTask(task.id));
-		}
-		return {
-			taskId: taskId,
-			assignee: {
-				id: user.id,
-				name: user.name,
-				username: "",
-				email: "",
-				password: "",
-				verified: true,
-				lastLogin: new Date(),
-				onBoarding: false,
-				defaultWorkspaceId: "",
-				avatarUrl: "",
-			},
 		};
-	};
 
-	const handleAssigneeChange: HandleAssigneeChange = async (taskId, user) => {
-		dispatch(setAssignee(assigneeParams(taskId, user)));
-		if (task !== undefined) {
-			dispatch(getSingleTask(task.id));
+		fetchUsers();
+	}, [currentWorkspace?.id, getAllUsers]);
+
+	const handleSelectAssignee = async (userId: string | null) => {
+		if (!userId) {
+			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			return;
 		}
-		await dispatch(getAllTasks(currentTeam));
+		const selectedUser = users.find((user) => user.id === userId);
+
+		if (selectedUser) {
+			if (task) {
+				await updateTask(taskId, {
+					assigneeId: selectedUser.id,
+					assigneeName: selectedUser.name,
+				});
+			}
+			// await getTaskEvents(taskId);
+		}
 	};
 
-	const handleClickAssignee = (taskId: string, newAssignee: User): void => {
-		if (newAssignee.name === task.assigneeName) return;
-		storeCommonFields(user, taskId);
-		storeType(EventType.AssigneeUpdated);
-		handleStoreCurrentAssignee();
-		handleAssigneeChange(taskId, newAssignee);
-		logAssigneeChangeEvent(newAssignee);
-	};
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
@@ -144,54 +54,25 @@ const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
 				Assignee
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{/* Has to be incline styling, classes that limit height dont trigger the ScrollArea component */}
-				<ScrollArea
-					className="max-w-96"
-					style={{ height: assigneeDropdownHeight() }}
-				>
+				<ScrollArea className="max-w-96">
 					<ContextMenuItem
 						className="w-40"
-						onClick={() =>
-							handleClickAssignee(task.id, {
-								id: "",
-								name: "",
-								username: "",
-								email: "",
-								password: "",
-								verified: true,
-								lastLogin: new Date(),
-								onBoarding: false,
-								defaultWorkspaceId: "",
-								avatarUrl: "",
-							})
-						}
+						onClick={() => handleSelectAssignee(null)}
 					>
 						Unassign
 					</ContextMenuItem>
 
-					{assignees.map((assignee) => {
-						const formattedAssignee = {
-							id: assignee.user,
-							name: assignee.username,
-							username: "",
-							email: "",
-							password: "",
-							verified: true,
-							lastLogin: new Date(),
-							onBoarding: false,
-							defaultWorkspaceId: "",
-							avatarUrl: "",
-						};
+					{users.map((user) => {
 						return (
 							<ContextMenuItem
-								key={assignee.user}
-								onClick={() => handleClickAssignee(task.id, formattedAssignee)}
+								key={user.id}
+								onClick={() => handleSelectAssignee(user.id)}
 							>
 								<ProfileImage
-									profileName={assignee.username}
+									profileName={user.username ?? ""}
 									location={"contextMenu"}
 								/>
-								{assignee.username}
+								{user.username}
 							</ContextMenuItem>
 						);
 					})}

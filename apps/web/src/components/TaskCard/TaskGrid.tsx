@@ -26,22 +26,20 @@ const TaskGrid = ({
 		<Link
 			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
-			<Card className="w-[325px]">
+			<Card className="w-80">
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
 						<p className="text-xs text-muted-foreground">{teamIdentifier}</p>
-						<Button variant="ghost" size="sm" className="p-0">
-							{task.assigneeName ? (
-								<Avatar>
-									<AvatarImage src={user?.avatarUrl ?? undefined} />
-									<AvatarFallback>
-										{getInitials(task.assigneeName)}
-									</AvatarFallback>
-								</Avatar>
-							) : (
-								<UserSearch className="size-5 text-[#9597AD]" />
-							)}
-						</Button>
+						{task.assigneeName ? (
+							<Avatar className="size-6">
+								<AvatarImage src={user?.avatarUrl ?? undefined} />
+								<AvatarFallback className="text-xxs">
+									{getInitials(task.assigneeName)}
+								</AvatarFallback>
+							</Avatar>
+						) : (
+							<UserSearch className="size-6 text-[#9597AD]" />
+						)}
 					</div>
 					<div className="text-sm pr-8 cursor-pointer w-full">
 						{truncateString(task.title, 70)}
