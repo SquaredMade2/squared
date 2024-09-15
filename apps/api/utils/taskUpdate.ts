@@ -9,13 +9,14 @@ import { prisma } from "../api";
 
 export async function trackChange(author: User, changes: Task, task: Task) {
 	let changeType = "";
+	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
 	let changeValue;
 	const keys = Object.keys(changes);
 
-	keys.forEach((element: string) => {
+	for (const element of keys) {
 		changeType = element;
 		changeValue = changes[element as keyof typeof changes];
-	});
+	}
 
 	const event = `${author.name}_${changeType}#${changeValue}`;
 
