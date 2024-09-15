@@ -1,239 +1,208 @@
 "use client";
 
-import axios from "axios";
-import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
-import { getWorkspace, deleteWorkspace } from "@/store/taskData/thunks";
-import WorkspaceInitials from "@/components/WorkspaceImage";
-import BlueButton from "@/components/BlueButton";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import { X } from "lucide-react";
-import type { User } from "@repo/db";
+import { useState, useEffect } from "react";
+import { useWorkspaceStore } from "@/storeZ";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/components/ui/use-toast";
+
+const formSchema = z.object({
+	name: z.string().min(2, {
+		message: "Workspace name must be at least 2 characters.",
+	}),
+	url: z
+		.string()
+		.min(1, {
+			message: "Workspace URL is required.",
+		})
+		.regex(/^[a-zA-Z0-9-]+$/, {
+			message: "URL can only contain letters, numbers, and hyphens.",
+		}),
+});
 
 export default function WorkspaceSettings() {
+	const { currentWorkspace, deleteWorkspace, updateWorkspace } =
+		useWorkspaceStore((state) => state);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
-	const router = useRouter();
-	const dispatch = useAppDispatch();
 
-	const workspace = useSelector(
-		(state: RootState) => state.taskData.currentWorkspace,
-	);
-	const workspaceList = useSelector(
-		(state: RootState) => state.taskData.workspaces,
-	);
-	const access = useSelector((state: RootState) => state.taskData.access);
-	// const { user } = useSelector((state: RootState) => state.userSettings);
-	const user = {} as User;
-	const [workspaceName, setWorkspaceName] = useState(workspace.name);
-	const [workspaceURL, setWorkspaceURL] = useState(workspace.url);
-	const [deletingWorkspace, setDeletingWorkspace] = useState(false);
-	const [fillColor, setFillColor] = useState("text-[#9c9eac]");
-	const urlRegex = /^[a-z0-9-]*$/;
-	const dialogRef = useRef<HTMLDialogElement | null>(null);
-	const index = workspaceList.findIndex((item) => item.id === workspace.id);
-	const userHasAccess = access && access.id === user?.id;
-	const users = [] as User[];
+	if (!currentWorkspace) return null;
 
-	const currentUserRole = "owner";
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: currentWorkspace.name,
+			url: currentWorkspace.url.replace("https://app.squaredmade.com/", ""),
+		},
+	});
 
-	const deleteOrLeaveBtnLabel =
-		currentUserRole === "owner" ? "Delete this workspace" : "Leave";
+	useEffect(() => {
+		const subscription = form.watch((value, { name, type }) => {
+			if (
+				value.name !== currentWorkspace.name ||
+				value.url !==
+					currentWorkspace.url.replace("https://app.squaredmade.com/", "")
+			) {
+				setIsFormChanged(true);
+			} else {
+				setIsFormChanged(false);
+			}
+		});
+		return () => subscription.unsubscribe();
+	}, [form, currentWorkspace]);
 
-	const checkURL = (str: string) => {
-		const trimmedStr = str.trim();
-		if (trimmedStr === "") {
-			return false;
-		}
-		return urlRegex.test(trimmedStr);
-	};
-
-	const handleOpen = () => {
-		if (dialogRef.current) {
-			dialogRef.current.showModal();
-		}
-	};
-
-	const handleClose = () => {
-		if (dialogRef.current) {
-			dialogRef.current.close();
+	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		try {
+			const response = await updateWorkspace(currentWorkspace.id, {
+				name: values.name,
+				url: values.url,
+			});
+			toast(response);
+			setIsFormChanged(false);
+		} catch (error) {
+			console.error("Error updating workspace:", error);
+			toast({
+				title: "Internal server error",
+				variant: "destructive",
+			});
 		}
 	};
 
 	const handleDelete = async () => {
-		try {
-			const actionResult = await dispatch(deleteWorkspace(workspace.id));
-			unwrapResult(actionResult);
-
-			setDeletingWorkspace(true);
-			handleClose();
-			toast({ title: "Workspace deleted, redirecting..." });
-		} catch (error) {
-			console.error("Error deleting workspace:", error);
-			toast({
-				title: "Failed to delete workspace. Please try again.",
-				variant: "destructive",
-			});
-		}
+		setIsDeleting(true);
+		deleteWorkspace(currentWorkspace.id);
 	};
-
-	const handleUpdate = async (
-		e: React.FormEvent<HTMLFormElement>,
-	): Promise<void> => {
-		e.preventDefault();
-		const urlCheck: boolean = checkURL(workspaceURL.trim());
-		const name = workspaceName?.trim();
-		const url: string = workspaceURL.trim();
-		if (!urlCheck) {
-			toast({
-				title: "Invalid workspace URL. URL must be in the format hello-world.",
-				variant: "destructive",
-			});
-		} else if (!name) {
-			toast({
-				title: "Workspace name is required.",
-				variant: "destructive",
-			});
-		} else {
-			await updateWorkspace(name, url);
-			await dispatch(getWorkspace({ url: workspace.url, id: workspace.id }));
-			router.push("/settings/workspace");
-			toast({ title: "Workspace Updated" });
-		}
-	};
-
-	const updateWorkspace = async (name: string, url: string) => {
-		try {
-			await axios({
-				method: "PUT",
-				url: `${process.env.NEXT_PUBLIC_SERVER}/workspace/update`,
-				withCredentials: true,
-				params: {
-					name: name,
-					url: url,
-					id: workspace.id,
-				},
-			});
-		} catch (error) {
-			toast({
-				title: "An error occurred trying to update workspace",
-				variant: "destructive",
-			});
-		}
-	};
-
-	useEffect(() => {
-		if (deletingWorkspace) {
-			setTimeout(() => {
-				if (!workspaceList.length) {
-					router.push("/join");
-				} else {
-					router.push(`workspace/${workspaceList[0].url}`);
-				}
-				setDeletingWorkspace(false);
-			}, 2000);
-		}
-	}, [workspaceList, deletingWorkspace, index]);
-
-	useEffect(() => {
-		if (!userHasAccess) {
-			router.push(`workspace/${workspace.url}`);
-		}
-	}, []);
 
 	return (
-		<div className="flex mdsm:flex-col relative bg-background min-h-screen xs:h-full xs:pb-10 w-full">
-			<div className="h-full w-full flex flex-col items-center bg-background text-foreground pt-20">
+		<div className="container mx-auto py-10 md:w-3/4 w-full ">
+			<h1 className="text-3xl font-bold mb-2">Workspace</h1>
+			<p className="text-muted-foreground mb-6">
+				Manage your workspace settings
+			</p>
+
+			<div className="flex items-center space-x-4 mb-6">
+				<Avatar className="size-28">
+					<AvatarImage
+						src={currentWorkspace.avatarUrl ?? ""}
+						alt="Workspace Logo"
+					/>
+					<AvatarFallback className="text-5xl">
+						{currentWorkspace.name[0]}
+					</AvatarFallback>
+				</Avatar>
 				<div>
-					<dialog
-						className="w-84 bg-background text-foreground rounded-lg cursor-default border border-border"
-						ref={dialogRef}
-					>
-						<div className="w-full flex items-center justify-between py-4 px-8 border-b border-border">
-							<h1>Verify workspace deletion</h1>
-							<div
-								onClick={handleClose}
-								onMouseEnter={() => setFillColor("text-[#BDBFC5]")}
-								onMouseLeave={() => setFillColor("text-[#9c9eac]")}
-							>
-								<X className={`cursor-pointer ${fillColor}`} />
-							</div>
-						</div>
-						<div className="h-full w-full flex flex-col items-center mt-5 py-2 px-8">
-							<h1>
-								Are you sure you want to {deleteOrLeaveBtnLabel.toUpperCase()}?
-							</h1>
-							<div className="flex mb-5">
-								<Button variant={"destructive"} onClick={handleDelete}>
-									{deleteOrLeaveBtnLabel}
-								</Button>
-							</div>
-						</div>
-					</dialog>
+					<h2 className="text-xl font-semibold">{currentWorkspace.name}</h2>
+					<p className="text-muted-foreground">{currentWorkspace.url}</p>
 				</div>
-				<div className="w-1/3 mdsm:w-3/4 xs:w-full">
-					<div>
-						<h1 className="text-2xl font-medium">Workspace</h1>
-						<p className="text-sm mb-4 mt-1 text-muted-foreground">
-							Manage your workspace settings
-						</p>
-					</div>
-					<span className="block w-full border-t border-border my-6" />
-					<div className="border-b border-border">
-						<h2>Logo</h2>
-						<WorkspaceInitials
-							workspaceName={workspace.name}
-							backgroundColor={index}
-							location="workspaceSettings"
+			</div>
+
+			<Separator className="my-6" />
+
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<FormField
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace Name</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="url"
+							render={({ field }) => (
+								<FormItem className="col-span-1">
+									<FormLabel>Workspace URL</FormLabel>
+									<FormControl>
+										<div className="flex">
+											<span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-transparent text-sm mr-0 pr-0 text-muted-foreground">
+												https://app.squaredmade.com/
+											</span>
+											<Input
+												{...field}
+												className="rounded-l-none border-l-0 ml-0 pl-0 focus-visible:ring-offset-0 focus-visible:ring-0"
+											/>
+										</div>
+									</FormControl>
+									<FormDescription>
+										This is your workspace's unique URL on our platform.
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
 					</div>
-					<form onSubmit={handleUpdate} className="border-b border-border mt-8">
-						<h2>General</h2>
-						<div className="mb-4 mt-5 text-sm">
-							<p className="text-sm text-muted-foreground mb-1.5">
-								Workspace name
-							</p>
-							<input
-								type="text"
-								className="flex border border-border py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-400 rounded w-3/4 xs:w-full pl-1.5 text-foreground text-sm bg-textField"
-								onChange={(e) => setWorkspaceName(e.target.value)}
-								value={workspaceName ?? ""}
-							/>
-						</div>
-						<div>
-							<p className="text-sm text-muted-foreground mb-1.5">
-								Workspace URL
-							</p>
-							<div className="flex relative items-center">
-								<span className="text-sm text-muted-foreground absolute left-1.5">
-									Squared.com/
-								</span>
-								<input
-									type="text"
-									className="flex border border-border py-1.5 pl-[102px] focus:outline-none focus:ring-1 focus:ring-indigo-400 text-sm rounded w-3/4 xs:w-full bg-textField"
-									onChange={(e) => setWorkspaceURL(e.target.value)}
-									value={workspaceURL}
-								/>
-							</div>
-						</div>
-						<BlueButton description="Update" />
-					</form>
-					<div>
-						<h2 className="mt-10">Delete workspace</h2>
-						<p className="text-sm mb-4 mt-1 text-muted-foreground">
-							If you want to permanently delete this workspace and all of its
-							data, including but not limited to users, issues, and comments,
-							you can do so below.
-						</p>
-						<Button variant={"destructive"} onClick={handleOpen}>
-							{deleteOrLeaveBtnLabel}
-						</Button>
-					</div>
-				</div>
+					<Button type="submit" disabled={!isFormChanged}>
+						Update
+					</Button>
+				</form>
+			</Form>
+
+			<Separator className="my-6" />
+
+			<div className="bg-destructive/10 p-6 rounded-lg">
+				<h2 className="text-xl font-semibold mb-4">Delete Workspace</h2>
+				<p className="text-muted-foreground mb-4">
+					Permanently delete your workspace and all of its contents from the
+					platform. This action is not reversible, so please continue with
+					caution.
+				</p>
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
+						<Button variant="destructive">Delete Workspace</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+							<AlertDialogDescription>
+								This action cannot be undone. This will permanently delete your
+								workspace and remove your data from our servers.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction
+								className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+								onClick={handleDelete}
+							>
+								{isDeleting ? "Deleting..." : "Yes, delete workspace"}
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
 			</div>
 		</div>
 	);
