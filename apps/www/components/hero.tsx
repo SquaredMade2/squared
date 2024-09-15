@@ -31,7 +31,7 @@ export const Hero = () => {
 				}}
 				className="flex justify-center"
 			>
-				<Badge onClick={() => router.push("/blog/top-5-llm-of-all-time")}>
+				<Badge onClick={() => router.push("https://app.squaredmade.com/login")}>
 					{/* todo change to register page */}
 					See what it&apos;s about
 				</Badge>
@@ -90,11 +90,11 @@ export const Hero = () => {
 				}}
 				className="flex items-center gap-4 justify-center mt-6 relative z-10"
 			>
-				<Button>Get started</Button>
+				<Button as={Link} href="https://app.squaredmade.com/register">Get started</Button>
 				<Button
 					variant="simple"
 					as={Link}
-					href="/contact"
+					href="/cont"
 					className="flex space-x-2 items-center group"
 				>
 					<span>Contact us</span>
