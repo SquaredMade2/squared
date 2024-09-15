@@ -11,7 +11,7 @@ import {
 } from "../ui/dialog";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
-import DateButton from "@/components/DateButton";
+// import DateButton from "@/components/DateButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
@@ -212,7 +212,7 @@ const NewIssueModal = () => {
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
 								<EffortDropdownButton />
-								<DateButton location="newIssueModal" />
+								{/* <DateButton location="newIssueModal" /> */}
 							</div>
 							<DialogFooter>
 								<Button
