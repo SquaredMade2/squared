@@ -9,7 +9,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/auth/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/auth/${path}`;
 
 export const createAuthStore = (initState: AuthState = { user: null }) => {
 	return createStore<AuthStore>()(

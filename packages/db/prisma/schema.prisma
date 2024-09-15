@@ -201,7 +201,7 @@ model Label {
   color       String
   workspaceId String
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
 model SavedFilter {

@@ -63,7 +63,7 @@
 			}
 		},
 		{
-			"include": ["apps/api2/api/index.ts"],
+			"include": ["apps/api/api/index.ts"],
 			"linter": {
 				"rules": {
 					"complexity": {

@@ -93,14 +93,14 @@ model Activity {
 }
 
 model TaskEvent {
-  id                   String   @id @default(uuid())
-  type                 String
-  authorId             String
-  authorName           String
-  activityId           String   @unique
-  createdAt            DateTime @default(now())
-  taskId               String
-  updatedValue         String?
+  id           String   @id @default(uuid())
+  type         String
+  authorId     String
+  authorName   String
+  activityId   String   @unique
+  createdAt    DateTime @default(now())
+  taskId       String
+  updatedValue String?
 
   activity     Activity     @relation(fields: [activityId], references: [id])
   taskEventLog TaskEventLog @relation(fields: [taskId], references: [id])
@@ -194,7 +194,7 @@ model Label {
   color       String
   workspaceId String
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id])
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
 
 model SavedFilter {

@@ -6,7 +6,7 @@ export * from "./interfaces";
 export * from "./store";
 
 const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVERZ}/api/activity/${path}`;
+	`${process.env.NEXT_PUBLIC_SERVER}/api/activity/${path}`;
 
 export const createActivityStore = (
 	initState: ActivityState = { events: [] },
