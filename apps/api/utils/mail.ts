@@ -1,13 +1,16 @@
-import emailTemplate from "../helpers/emailTemplate";
-import joinWorkspaceTemplate from "./joinWorkspaceTemplate";
-import mentionedTemplate from "./mentionedTemplate";
-import passwordResetTemplate from "./passwordResetTemplate";
+import bcrypt from "bcryptjs";
+import {
+	emailTemplate,
+	joinWorkspaceTemplate,
+	passwordResetTemplate,
+} from "./templates";
+import { createTransport } from "nodemailer";
 
-const nodemailer = require("nodemailer");
 const EMAIL_USERNAME = process.env.EMAIL_USERNAME;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 const NEXT_PUBLIC_CONFIRM_URL = process.env.NEXT_PUBLIC_CONFIRM_URL;
-const transporter = nodemailer.createTransport({
+
+const transporter = createTransport({
 	host: "smtp.office365.com",
 	secure: false,
 	tls: {
@@ -28,9 +31,13 @@ export const sendMail = async (
 	confirmationRouteOption: string,
 	workspace?: string,
 	workspaceName?: string,
+	type: "verify" | "invite" = "verify",
 ) => {
 	try {
-		const url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
+		const url =
+			type === "verify"
+				? `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`
+				: `${NEXT_PUBLIC_CONFIRM_URL}/login?token=${emailToken}`;
 		let subject = "Confirm Email!";
 		let htmlContent: string;
 
@@ -56,44 +63,19 @@ export const sendMail = async (
 			attachments: [
 				{
 					filename: "sqLogo.png",
-					path: `${__dirname}/../../src/asset/sqLogo.png`,
+					path: `${__dirname}/asset/sqLogo.png`,
 					cid: "sqLogo",
 				},
 				{
 					filename: "sqBg.png",
-					path: `${__dirname}/../../src/asset/sqBg.png`,
+					path: `${__dirname}/asset/sqBg.png`,
 					cid: "sqBg",
 				},
 			],
 		});
 		return sendResult;
-	} catch (error) {}
-};
-
-export const sendMentionedUserMail = async (
-	username: string,
-	task: string,
-	mentionedBy: string,
-	email: string,
-) => {
-	const htmlContent = mentionedTemplate(username, task, mentionedBy);
-
-	return transporter.sendMail({
-		from: `"Squared" ${EMAIL_USERNAME}`,
-		to: email,
-		subject: "You've been mentioned",
-		html: htmlContent,
-		attachments: [
-			{
-				filename: "sqLogo.png",
-				path: `${__dirname}/../../src/asset/sqLogo.png`,
-				cid: "sqLogo",
-			},
-			{
-				filename: "sqBg.png",
-				path: `${__dirname}/../../src/asset/sqBg.png`,
-				cid: "sqBg",
-			},
-		],
-	});
+	} catch (error) {
+		console.error("Error sending email:", error);
+		throw error;
+	}
 };
