@@ -13,7 +13,7 @@ export type Route<P = Record<string, string>> = {
 		params: P,
 		query: ParsedQs,
 		// biome-ignore lint/complexity/noBannedTypes: <explanation>
-	) => Promise<APIResponse<Object>>;
+	) => Promise<APIResponse<Object> | void>;
 	POST?: (
 		res: Response,
 		params: P,
