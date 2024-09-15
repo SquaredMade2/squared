@@ -69,7 +69,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 				<Button variant="simple" as={Link} href="https://app.squaredmade.com/login">
 					Login
 				</Button>
-				<Button as={Link} href="/signup">
+				<Button as={Link} href="https://app.squaredmade.com/register">
 					Sign Up
 				</Button>
 			</div>
