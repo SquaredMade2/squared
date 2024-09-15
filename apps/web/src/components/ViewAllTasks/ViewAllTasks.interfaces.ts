@@ -15,7 +15,5 @@ export interface DragResult {
 
 export interface ViewAllTasksProps {
 	tasks: Task[];
-	activeSelected: boolean;
-	backlogSelected: boolean;
 	handleDragEnd: OnDragEndResponder;
 }
