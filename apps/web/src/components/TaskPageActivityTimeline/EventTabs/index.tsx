@@ -5,7 +5,7 @@ import {
 	Tab,
 	TabPanel,
 } from "@material-tailwind/react";
-import CommentForm from "@/components/Comments";
+// import CommentForm from "@/components/Comments";
 import ActivityItemContainer from "../ActivtyItemContainer";
 
 const EventTabs = () => {
@@ -52,7 +52,8 @@ const EventTabs = () => {
 					<ActivityItemContainer />
 				</TabPanel>
 				<TabPanel key="Comment" value="Comments" className="px-0 py-6">
-					<CommentForm />
+					{/* <CommentForm /> TODO: IMPLEMENT COMMENTS AGAIN */}
+					<div />
 				</TabPanel>
 			</TabsBody>
 		</Tabs>

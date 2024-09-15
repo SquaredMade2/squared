@@ -67,18 +67,16 @@ const TaskList = ({
 										: "No Date"}
 								</div>
 							)}
-							<Button variant="ghost" size="sm" className="p-0">
-								{task.assigneeName ? (
-									<Avatar>
-										<AvatarImage src={user?.avatarUrl ?? undefined} />
-										<AvatarFallback>
-											{getInitials(task.assigneeName)}
-										</AvatarFallback>
-									</Avatar>
-								) : (
-									<UserSearch className="size-5 text-[#9597AD]" />
-								)}
-							</Button>
+							{task.assigneeName ? (
+								<Avatar className="size-6">
+									<AvatarImage src={user?.avatarUrl ?? undefined} />
+									<AvatarFallback className="text-xxs">
+										{getInitials(task.assigneeName)}
+									</AvatarFallback>
+								</Avatar>
+							) : (
+								<UserSearch className="size-6 text-[#9597AD]" />
+							)}
 						</div>
 					</div>
 				</div>
