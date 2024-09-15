@@ -1,6 +1,0 @@
-export type EffortEstimateDropdownProps = {
-	location: string;
-	showIcon(estimate: number): React.ReactNode;
-	handleButtonClick: () => void;
-	handleClickAway: () => void;
-};

@@ -7,7 +7,7 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-import DateDropdown from "../DateDropdown";
+// import DateDropdown from "../DateDropdown";
 
 const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -20,13 +20,13 @@ const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
 				</div>
 				Set due date...
 			</ContextMenuSubTrigger>
-			<ContextMenuSubContent>
+			{/* <ContextMenuSubContent>
 				<DateDropdown
 					location={"contextMenu"}
 					setDropdownOpen={setDropdownOpen}
 					injectedTaskId={task.id}
 				/>
-			</ContextMenuSubContent>
+			</ContextMenuSubContent> */}
 		</ContextMenuSub>
 	);
 };
