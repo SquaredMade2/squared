@@ -300,7 +300,7 @@ importers:
         version: 16.0.0(@testing-library/dom@10.4.0)(@types/react-dom@18.3.0)(@types/react@18.3.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/jest':
         specifier: ^29.5.12
-        version: 29.5.12
+        version: 29.5.13
       '@types/nookies':
         specifier: ^2.0.3
         version: 2.0.3
@@ -516,7 +516,7 @@ importers:
         version: link:../typescript-config
       '@types/jest':
         specifier: ^29.5.12
-        version: 29.5.12
+        version: 29.5.13
       '@types/node':
         specifier: ^22.5.1
         version: 22.5.5
@@ -664,7 +664,7 @@ importers:
         version: 11.0.4
       '@types/jest':
         specifier: ^29.5.12
-        version: 29.5.12
+        version: 29.5.13
       '@types/jest-axe':
         specifier: ^3.5.9
         version: 3.5.9
@@ -3904,8 +3904,8 @@ packages:
   '@types/jest-axe@3.5.9':
     resolution: {integrity: sha512-z98CzR0yVDalCEuhGXXO4/zN4HHuSebAukXDjTLJyjEAgoUf1H1i+sr7SUB/mz8CRS/03/XChsx0dcLjHkndoQ==}
 
-  '@types/jest@29.5.12':
-    resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
+  '@types/jest@29.5.13':
+    resolution: {integrity: sha512-wd+MVEZCHt23V0/L642O5APvspWply/rGY5BcW4SUETo2UzPU3Z26qr8jC2qxpimI2jjx9h7+2cj2FwIr01bXg==}
 
   '@types/jsdom@20.0.1':
     resolution: {integrity: sha512-d0r18sZPmMQr1eG35u12FZfhIXNrnsPU/g5wvRKCUf/tOGilKKwYMYGqh33BNR6ba+2gkHw1EUiHoN3mn7E5IQ==}
@@ -14242,10 +14242,10 @@ snapshots:
 
   '@types/jest-axe@3.5.9':
     dependencies:
-      '@types/jest': 29.5.12
+      '@types/jest': 29.5.13
       axe-core: 3.5.6
 
-  '@types/jest@29.5.12':
+  '@types/jest@29.5.13':
     dependencies:
       expect: 29.7.0
       pretty-format: 29.7.0
