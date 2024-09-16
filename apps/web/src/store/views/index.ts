@@ -9,7 +9,7 @@ export const createViewStore = (
 		showDateTime: true,
 		showPriority: true,
 		showLabels: true,
-		showNavbar: true,
+		showNavbar: false,
 		view: "list",
 	},
 ) => {
