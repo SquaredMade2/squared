@@ -12,6 +12,7 @@ import {
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { high, medium, low } from "@/components/Svg";
 import { useTaskStore, useActivityStore } from "@/store";
+import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@repo/db";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 
@@ -24,15 +25,15 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 
 	const showIcon = (name: string) => {
 		switch (name) {
-			case "No priority":
+			case "noPriority":
 				return <Ellipsis className="size-4" />;
-			case "Urgent":
+			case "urgent":
 				return <CircleAlert className="size-4 fill-destructive" />;
-			case "High":
+			case "high":
 				return high();
-			case "Medium":
+			case "medium":
 				return medium();
-			case "Low":
+			case "low":
 				return low();
 			default:
 				return <Ellipsis className="size-4" />;
@@ -64,11 +65,11 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 			<SelectTrigger className="grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent">
 				<SelectValue placeholder="Select priority">
 					<div className="w-full flex items-center justify-between">
-						<div className="w-4 h-4 mr-2">
-							{showIcon(sidebarPriority || "No priority")}
-						</div>
+						<div className="w-4 h-4 mr-2">{showIcon(sidebarPriority)}</div>
 						<span className="text-sm font-semibold text-card-foreground">
-							{sidebarPriority || "No priority"}
+							{sidebarPriority
+								? formatPriority(sidebarPriority)
+								: sidebarPriority}
 						</span>
 					</div>
 				</SelectValue>
@@ -79,7 +80,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
 								{showIcon(priority)}
-								<span className="ml-2">{priority}</span>
+								<span className="ml-2">{formatPriority(priority)}</span>
 							</div>
 						</div>
 					</SelectItem>
