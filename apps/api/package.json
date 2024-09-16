@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
-		"build": "echo \"Error: no build specified\"",
+		"build": "echo nope",
 		"dev": "nodemon api/index.ts",
 		"gen": "ts-node api/generate-index.ts",
 		"format:check": "biome format .",
