@@ -38,10 +38,6 @@
       "import": "./src/context-menu/index.ts",
       "require": "./src/context-menu/index.ts"
     },
-    "./day-picker": {
-      "import": "./src/day-picker/index.ts",
-      "require": "./src/day-picker/index.ts"
-    },
     "./dialog": {
       "import": "./src/dialog/index.ts",
       "require": "./src/dialog/index.ts"
