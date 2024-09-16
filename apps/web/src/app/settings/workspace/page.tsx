@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -30,6 +36,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -46,11 +53,23 @@ const formSchema = z.object({
 });
 
 export default function WorkspaceSettings() {
-	const { currentWorkspace, deleteWorkspace, updateWorkspace } =
-		useWorkspaceStore((state) => state);
+	const {
+		currentWorkspace,
+		deleteWorkspace,
+		getAllWorkspaces,
+		updateWorkspace,
+		setCurrentWorkspace,
+	} = useWorkspaceStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { getAllTeams, setCurrentTeam, currentTeam } = useTeamStore(
+		(state) => state,
+	);
+	const { getAllUsers } = useUserStore((state) => state);
+	const { getAllTasks } = useTaskStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
+	const router = useRouter();
 
 	if (!currentWorkspace) return null;
 
@@ -96,7 +115,21 @@ export default function WorkspaceSettings() {
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		deleteWorkspace(currentWorkspace.id);
+		await deleteWorkspace(currentWorkspace.id);
+		if (user) {
+			const workspaces = await getAllWorkspaces(user.id);
+			if (workspaces.length > 0) {
+				setCurrentWorkspace(workspaces[0]);
+				const teams = await getAllTeams(currentWorkspace.id);
+				await getAllUsers(currentWorkspace.id);
+				if (teams.length > 0) {
+					setCurrentTeam(teams[0]);
+					await getAllTasks(teams[0].id);
+				}
+			} else {
+				router.push("/join");
+			}
+		}
 	};
 
 	return (
