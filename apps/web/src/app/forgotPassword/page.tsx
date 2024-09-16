@@ -39,6 +39,8 @@ export default function ForgotPassword() {
 	const router = useRouter();
 	const { toast } = useToast();
 
+	// nodemailer for sending email after password has been reset
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
