@@ -44,9 +44,6 @@ importers:
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.18.0(prisma@5.18.0)
-      '@repo/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@repo/test-db':
         specifier: workspace:*
         version: link:../../packages/test-db
