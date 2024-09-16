@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
+		"build": "tsc",
 		"dev": "nodemon api/index.ts",
 		"gen": "ts-node api/generate-index.ts",
 		"format:check": "biome format .",
@@ -11,7 +12,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
-		"start": "ts-node api/index.ts",
+		"start": "ts-node dist/index.js",
 		"test": "echo \"Error: no test specified\""
 	},
 	"keywords": [],
@@ -21,7 +22,7 @@
 		"@repo/db": "workspace:*",
 		"@repo/test-db": "workspace:*",
 		"@types/qs": "^6.9.15",
-		"@vercel/postgres": "^0.7.2",
+		"@vercel/postgres": "^0.10.0",
 		"bcrypt": "^5.1.1",
 		"bcryptjs": "^2.4.3",
 		"cors": "^2.8.5",
@@ -29,7 +30,7 @@
 		"express": "^4.18.2",
 		"jsonwebtoken": "^9.0.2",
 		"nodemailer": "^6.9.14",
-		"uuid": "^9.0.1"
+		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
