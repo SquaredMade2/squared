@@ -22,7 +22,7 @@
 		"@repo/db": "workspace:*",
 		"@repo/test-db": "workspace:*",
 		"@types/qs": "^6.9.15",
-		"@vercel/postgres": "^0.7.2",
+		"@vercel/postgres": "^0.10.0",
 		"bcrypt": "^5.1.1",
 		"bcryptjs": "^2.4.3",
 		"cors": "^2.8.5",
