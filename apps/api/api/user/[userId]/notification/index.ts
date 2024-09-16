@@ -1,4 +1,4 @@
-import type { Notification, User } from "@repo/db";
+import type { Notification, User } from "@prisma/client";
 import { prisma } from "../../..";
 import type { Route, APIResponse } from "../../../route";
 

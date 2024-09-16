@@ -1,4 +1,4 @@
-import type { SavedFilter, Task } from "@repo/db";
+import type { SavedFilter, Task } from "@prisma/client";
 import { prisma } from "../../..";
 import type { Route, APIResponse } from "../../../route";
 

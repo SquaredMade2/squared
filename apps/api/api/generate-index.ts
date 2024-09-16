@@ -21,7 +21,7 @@ import cors from "cors";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
-${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@repo/db";`}
+${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@prisma/client";`}
 import { setupSwagger } from "./swagger"; // Import Swagger setup
 import "dotenv/config";
 

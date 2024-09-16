@@ -1,4 +1,4 @@
-import type { Comment } from "@repo/db";
+import type { Comment } from "@prisma/client";
 import { prisma } from "../..";
 import type { Route, APIResponse } from "../../route";
 

@@ -1,4 +1,4 @@
-import type { Team } from "@repo/db";
+import type { Team } from "@prisma/client";
 import { prisma } from "../../..";
 import type { Route, APIResponse } from "../../../route";
 

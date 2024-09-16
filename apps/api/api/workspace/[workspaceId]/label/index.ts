@@ -1,4 +1,4 @@
-import type { Label } from "@repo/db";
+import type { Label } from "@prisma/client";
 import { prisma } from "../../..";
 import type { Route, APIResponse } from "../../../route";
 

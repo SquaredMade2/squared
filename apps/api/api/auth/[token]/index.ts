@@ -1,4 +1,4 @@
-import type { User } from "@repo/db";
+import type { User } from "@prisma/client";
 import { prisma } from "../..";
 import type { Route, APIResponse } from "../../route";
 import jwt from "jsonwebtoken";
