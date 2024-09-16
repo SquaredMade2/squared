@@ -21,7 +21,7 @@ export type Route<P = Record<string, string>> = {
 		body: any,
 		query: ParsedQs,
 		// biome-ignore lint/complexity/noBannedTypes: <explanation>
-	) => Promise<APIResponse<Object>>;
+	) => Promise<APIResponse<Object>> | Promise<void>;
 	PUT?: (
 		res: Response,
 		params: P,
