@@ -65,7 +65,7 @@
 		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
-		"@chromatic-com/storybook": "^1.7.0",
+		"@chromatic-com/storybook": "^2.0.0",
 		"@repo/db": "workspace:*",
 		"@repo/jest-presets": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
