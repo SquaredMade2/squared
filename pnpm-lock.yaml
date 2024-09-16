@@ -288,7 +288,7 @@ importers:
         version: 8.3.0(storybook@8.3.0(bufferutil@4.0.8))
       '@tailwindcss/forms':
         specifier: ^0.5.7
-        version: 0.5.8(tailwindcss@3.4.11(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.5.5)(typescript@5.6.2)))
+        version: 0.5.9(tailwindcss@3.4.11(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.5.5)(typescript@5.6.2)))
       '@testing-library/cypress':
         specifier: ^10.0.2
         version: 10.0.2(cypress@13.14.2)
@@ -3722,8 +3722,8 @@ packages:
   '@tabler/icons@3.17.0':
     resolution: {integrity: sha512-sCSfAQ0w93KSnSL7tS08n73CdIKpuHP8foeLMWgDKiZaCs8ZE//N3ytazCk651ZtruTtByI3b+ZDj7nRf+hHvA==}
 
-  '@tailwindcss/forms@0.5.8':
-    resolution: {integrity: sha512-DJs7B7NPD0JH7BVvdHWNviWmunlFhuEkz7FyFxE4japOWYMLl9b1D6+Z9mivJJPWr6AEbmlPqgiFRyLwFB1SgQ==}
+  '@tailwindcss/forms@0.5.9':
+    resolution: {integrity: sha512-tM4XVr2+UVTxXJzey9Twx48c1gcxFStqn1pQz0tRsX8o3DvxhN5oY5pvyAbUx7VTaZxpej4Zzvc6h+1RJBzpIg==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20'
 
@@ -14025,7 +14025,7 @@ snapshots:
 
   '@tabler/icons@3.17.0': {}
 
-  '@tailwindcss/forms@0.5.8(tailwindcss@3.4.11(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.5.5)(typescript@5.6.2)))':
+  '@tailwindcss/forms@0.5.9(tailwindcss@3.4.11(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.5.5)(typescript@5.6.2)))':
     dependencies:
       mini-svg-data-uri: 1.4.4
       tailwindcss: 3.4.11(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.5.5)(typescript@5.6.2))
