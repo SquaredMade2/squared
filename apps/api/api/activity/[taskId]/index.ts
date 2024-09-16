@@ -1,6 +1,6 @@
 import type { Prisma, Task } from "@repo/db";
-import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import { prisma } from "../..";
+import type { Route, APIResponse } from "../../route";
 import { v4 as uuidv4 } from "uuid";
 import type { Activity } from "@repo/test-db";
 

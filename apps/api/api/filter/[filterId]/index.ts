@@ -1,6 +1,6 @@
 import type { Label, SavedFilter as SavedFilterType, Task } from "@repo/db";
-import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import { prisma } from "../..";
+import type { Route, APIResponse } from "../../route";
 
 type Params = {
 	filterId: string;

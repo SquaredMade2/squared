@@ -1,7 +1,7 @@
-import { prisma } from "@/api";
+import { prisma } from "../../..";
 import jwt from "jsonwebtoken";
-import type { Route, APIResponse } from "@/api/route";
-import { sendMail } from "@/api/utils/mail";
+import type { Route, APIResponse } from "../../../route";
+import { sendMail } from "../../../utils/mail";
 
 type Params = {
 	workspaceId: string;

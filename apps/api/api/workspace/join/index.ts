@@ -1,7 +1,7 @@
 import type { User, Workspace } from "@repo/db";
-import { prisma } from "@/api";
+import { prisma } from "../../";
 import jwt from "jsonwebtoken";
-import type { Route, APIResponse } from "@/api/route";
+import type { Route, APIResponse } from "../../route";
 
 type JoinBody = {
 	token: string;

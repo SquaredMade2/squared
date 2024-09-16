@@ -1,5 +1,5 @@
 import type { User } from "@repo/db";
-import type { Route, APIResponse } from "@/api/route";
+import type { Route, APIResponse } from "../../route";
 
 type Params = {
 	userId: string;

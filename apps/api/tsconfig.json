@@ -11,10 +11,7 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["*"]
-		}
+		"baseUrl": "."
 	},
 	"include": ["api/**/*.ts"],
 	"exclude": ["node_modules", "dist"]

@@ -5,7 +5,7 @@ import type {
 	Activity,
 	User,
 } from "@repo/test-db";
-import { prisma } from "@/api";
+import { prisma } from "..";
 
 export async function trackChange(author: User, changes: Task, task: Task) {
 	let changeType = "";

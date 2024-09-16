@@ -5,6 +5,7 @@
 	"main": "index.ts",
 	"scripts": {
 		"build": "tsc",
+		"check-types": "tsc --noEmit",
 		"dev": "nodemon dist/index.js",
 		"gen": "ts-node api/generate-index.ts",
 		"format:check": "biome format .",
