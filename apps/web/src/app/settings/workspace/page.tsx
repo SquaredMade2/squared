@@ -126,8 +126,9 @@ export default function WorkspaceSettings() {
 					setCurrentTeam(teams[0]);
 					await getAllTasks(teams[0].id);
 				}
+				router.replace(`/${workspaces[0].id}`);
 			} else {
-				router.push("/join");
+				router.replace("/join");
 			}
 		}
 	};
