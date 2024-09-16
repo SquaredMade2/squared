@@ -22,7 +22,7 @@ import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 ${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@repo/db";`}
-import { setupSwagger } from "../swagger"; // Import Swagger setup
+import { setupSwagger } from "./swagger"; // Import Swagger setup
 import "dotenv/config";
 
 export const prisma = new PrismaClient();
@@ -129,6 +129,8 @@ function getRoutes(dir: string): string[] {
 	const files = fs.readdirSync(dir);
 	const routes: string[] = [];
 
+	const blacklistedRoutes = ["docs", "utils"];
+
 	console.log("Checking directory:", dir);
 
 	files.sort().reverse();
@@ -137,7 +139,9 @@ function getRoutes(dir: string): string[] {
 		const path = `${dir}/${file}`;
 		const stat = fs.statSync(path);
 		if (stat.isDirectory()) {
-			routes.push(...getRoutes(path));
+			if (!blacklistedRoutes.includes(file)) {
+				routes.push(...getRoutes(path));
+			}
 		} else if (path.endsWith("/index.ts")) {
 			console.log("Found route:", path);
 			routes.push(path.replace("/index.ts", ""));

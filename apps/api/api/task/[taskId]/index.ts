@@ -1,7 +1,7 @@
 import type { Label, Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import { trackChange, createLog } from "@/utils/taskUpdate";
+import { trackChange, createLog } from "@/api/utils/taskUpdate";
 
 type Params = {
 	taskId: string;

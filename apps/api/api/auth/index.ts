@@ -3,7 +3,7 @@ import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
 import type { Route, APIResponse } from "@/api/route";
 import { comparePassword, hashPassword } from "./helpers";
-import { sendMail } from "@/utils/mail";
+import { sendMail } from "@/api/utils/mail";
 
 type Body = {
 	provider: "credentials" | "oauth";

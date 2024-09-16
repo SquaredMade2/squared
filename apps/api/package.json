@@ -5,12 +5,13 @@
 	"main": "index.ts",
 	"scripts": {
 		"build": "tsc",
-		"dev": "nodemon api/index.ts",
+		"dev": "nodemon dist/index.js",
 		"gen": "ts-node api/generate-index.ts",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
+		"prebuild": "rm -rf dist",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node dist/index.js",
 		"test": "echo \"Error: no test specified\""
