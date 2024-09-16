@@ -251,8 +251,8 @@ importers:
         version: 4.5.5(@types/react@18.3.4)(immer@9.0.21)(react@18.3.1)
     devDependencies:
       '@chromatic-com/storybook':
-        specifier: ^1.7.0
-        version: 1.9.0(react@18.3.1)
+        specifier: ^2.0.0
+        version: 2.0.2(react@18.3.1)
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -1563,8 +1563,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@chromatic-com/storybook@1.9.0':
-    resolution: {integrity: sha512-vYQ+TcfktEE3GHnLZXHCzXF/sN9dw+KivH8a5cmPyd9YtQs7fZtHrEgsIjWpYycXiweKMo1Lm1RZsjxk8DH3rA==}
+  '@chromatic-com/storybook@2.0.2':
+    resolution: {integrity: sha512-7bPIliISedeIpnVKbzktysFYW5n56bN91kxuOj1XXKixmjbUHRUMvcXd4K2liN6MiR5ZqJtmtcPsZ6CebbGlEA==}
     engines: {node: '>=16.0.0', yarn: '>=1.22.18'}
 
   '@colors/colors@1.5.0':
@@ -11910,7 +11910,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.8.3':
     optional: true
 
-  '@chromatic-com/storybook@1.9.0(react@18.3.1)':
+  '@chromatic-com/storybook@2.0.2(react@18.3.1)':
     dependencies:
       chromatic: 11.10.2
       filesize: 10.1.6
