@@ -1,23 +1,30 @@
 "use client";
-import React from "react";
-import LogoutButton from "../LogoutButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faGear,
-	faInbox,
-	faHouse,
-	faMagnifyingGlass,
-	faArrowRightFromBracket,
-	faSun,
-	faMoon,
-} from "@fortawesome/free-solid-svg-icons";
+
+import { useState, useEffect } from "react";
+import type React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useModalStore, useWorkspaceStore } from "@/store";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { config, type IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import {
+	faHouse,
+	faMagnifyingGlass,
+	faGear,
+	faInbox,
+	faSun,
+	faMoon,
+	faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
+
+// Prevent FontAwesome from adding its CSS since we did it manually above
+config.autoAddCss = false;
 
 const IconLeftMenu = () => {
+	const [mounted, setMounted] = useState(false);
 	const router = useRouter();
 	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
@@ -29,12 +36,14 @@ const IconLeftMenu = () => {
 	const { toast } = useToast();
 	const logout = useAuthStore((state) => state.logout);
 
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	const handleLogout = async (): Promise<void> => {
 		try {
 			await logout();
-
 			router.replace("/login");
-
 			toast({ title: "Logged out successfully." });
 		} catch (error) {
 			console.error("Logout failed", error);
@@ -45,63 +54,49 @@ const IconLeftMenu = () => {
 	const navigateTo = (childRoute: string): void => {
 		router.push(`${baseUrl}/${childRoute}`);
 	};
+
 	const toHome = () => {
 		homeRoute && !viewsRoute ? "" : router.back();
 	};
 
+	if (!mounted) {
+		return null; // Prevent rendering until client-side
+	}
+
 	return (
 		<div className="flex flex-col h-screen items-center justify-between w-full py-2">
-			<div className="flex flex-col items-center">
-				<Button
-					variant={"ghost"}
-					className="text-muted-foreground hover:text-foreground"
-					size="icon"
-					onClick={toHome}
-				>
-					<FontAwesomeIcon icon={faHouse} />
-				</Button>
-				<Button
-					variant={"ghost"}
-					className="text-muted-foreground hover:text-foreground"
-					size="icon"
+			<div className="flex flex-col items-center space-y-4">
+				<IconButton onClick={toHome} icon={faHouse} />
+				<IconButton
 					onClick={() => setShowCommand(true)}
-				>
-					<FontAwesomeIcon icon={faMagnifyingGlass} />
-				</Button>
-				<Button
-					variant={"ghost"}
-					className="text-muted-foreground hover:text-foreground"
-					size="icon"
+					icon={faMagnifyingGlass}
+				/>
+				<IconButton
 					onClick={() => navigateTo("settings/workspace")}
-				>
-					<FontAwesomeIcon icon={faGear} />
-				</Button>
-				<Button
-					variant={"ghost"}
-					className="text-muted-foreground hover:text-foreground"
-					size="icon"
-					onClick={() => navigateTo("inbox")}
-				>
-					<FontAwesomeIcon icon={faInbox} />
-				</Button>
-				<Button
-					variant={"ghost"}
-					className="text-muted-foreground hover:text-foreground"
-					size="icon"
+					icon={faGear}
+				/>
+				<IconButton onClick={() => navigateTo("inbox")} icon={faInbox} />
+				<IconButton
 					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-				>
-					<FontAwesomeIcon icon={theme === "dark" ? faMoon : faSun} />
-				</Button>
+					icon={theme === "dark" ? faMoon : faSun}
+				/>
 			</div>
-			<Button
-				variant={"ghost"}
-				className="text-muted-foreground hover:text-foreground"
-				size="icon"
-				onClick={handleLogout}
-			>
-				<FontAwesomeIcon icon={faArrowRightFromBracket} />
-			</Button>
+			<IconButton onClick={handleLogout} icon={faArrowRightFromBracket} />
 		</div>
 	);
 };
+
+const IconButton = ({
+	onClick,
+	icon,
+}: { onClick: () => void; icon: IconDefinition }) => (
+	<Button
+		variant="ghost"
+		className="text-muted-foreground hover:text-foreground w-10 h-10 p-0"
+		onClick={onClick}
+	>
+		<FontAwesomeIcon icon={icon} className="h-5 w-5" />
+	</Button>
+);
+
 export default IconLeftMenu;
