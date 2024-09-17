@@ -149,6 +149,7 @@ model Task {
   assigneeId     String?
   assigneeName   String?
   labels         String[]
+  workspaceId    String
 
   status   Status        @default(backlog)
   priority Priority      @default(noPriority)
@@ -156,8 +157,9 @@ model Task {
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Team {
@@ -218,7 +220,7 @@ model Workspace {
   name                 String
   url                  String  @unique
   companySize          Int?
-  issuesCreated        Int     @default(0)
+  tasksCreated         Int     @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
   avatarUrl            String?
@@ -231,6 +233,7 @@ model Workspace {
   githubRepoInfo     GithubRepoInfo?
   Users              UserWorkspace[]
   User               User[]
+  Tasks              Task[]
 }
 
 model UserWorkspace {
