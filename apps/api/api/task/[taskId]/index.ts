@@ -99,12 +99,11 @@ export function createRoute(): Route<Params> {
 
 				const { id, ...taskData } = body;
 
-				const team = await prisma.team.findUnique({
-					where: { id: body.teamId },
-					include: { Workspace: true },
+				const workspace = await prisma.workspace.findUnique({
+					where: { id: body.workspaceId },
 				});
 
-				if (!team || !team.Workspace) {
+				if (!workspace) {
 					throw new Error("Workspace not found");
 				}
 
@@ -120,25 +119,21 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				const workspace = team.Workspace;
 				const formattedName = workspace.name
 					.replace(/\s+/g, "")
 					.substring(0, 3)
 					.toUpperCase();
 
-				const newIssueCount = (workspace.tasksCreated ?? 0) + 1;
+				const newIssueCount = workspace.tasksCreated + 1;
 
 				await prisma.workspace.update({
 					where: { id: workspace.id },
 					data: { tasksCreated: newIssueCount },
 				});
 
-				const identifier = `${formattedName}-${newIssueCount}`;
-
 				const newTask = await prisma.task.create({
 					data: {
 						...taskData,
-						identifier,
 					},
 				});
 
