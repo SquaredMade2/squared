@@ -27,7 +27,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="h-full flex">
+			<div className="h-screen flex">
 				<div className="w-14 bg-muted dark:bg-accent">
 					<IconLeftMenu />
 				</div>
