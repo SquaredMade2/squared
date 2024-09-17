@@ -169,12 +169,9 @@ const NewIssueModal = () => {
 					</div>
 				</DialogHeader>
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(handleCreateIssue)}
-						// className="flex space-x-4"
-					>
-						<div className="flex space-x-4">
-							<div className="w-3/4 space-y-4">
+					<form onSubmit={form.handleSubmit(handleCreateIssue)}>
+						<div className="flex space-x-4 ">
+							<div className="w-3/4 space-y-4 ">
 								<FormField
 									control={form.control}
 									name="title"
@@ -209,10 +206,9 @@ const NewIssueModal = () => {
 									)}
 								/>
 							</div>
-							<Separator
-								orientation="vertical"
-								className="bg-gray-300 w-px h-full"
-							/>
+							<div>
+								<Separator orientation="vertical" />
+							</div>
 							<div className="w-1/4 space-y-4">
 								<StatusDropdownButton />
 								<LabelDropdownButton />

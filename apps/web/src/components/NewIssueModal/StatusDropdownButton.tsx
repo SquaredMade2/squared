@@ -22,8 +22,6 @@ import {
 import type { Status } from "@repo/db";
 
 export const StatusDropdownButton = () => {
-	const [open, setOpen] = useState(false);
-
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const newIssueStatus = newIssueData.status;
 
@@ -49,19 +47,14 @@ export const StatusDropdownButton = () => {
 	};
 
 	return (
-		<DropdownMenu open={open} onOpenChange={setOpen}>
+		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="max-w-full w-full">
 					<span className="cursor-pointer">{showIcon(newIssueStatus)}</span>
-					<span className="ml-3 cursor-pointer">{newIssueStatus}</span>
+					<span className="ml-2 cursor-pointer">{newIssueStatus}</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent
-				sideOffset={4}
-				side={"left"}
-				align="start"
-				className={"w-[150px]"}
-			>
+			<DropdownMenuContent side={"left"} align="start" className={"w-[150px]"}>
 				<DropdownMenuRadioGroup
 					value={newIssueStatus}
 					onValueChange={(status) => handleSelectStatus(status as Status)}
