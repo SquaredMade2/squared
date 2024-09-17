@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { Button } from "../ui/button";
+import { useToast } from "../ui/use-toast";
 
 const NavBarTeams = ({
 	teamIdentifier,
@@ -14,6 +15,7 @@ const NavBarTeams = ({
 		(state) => state,
 	);
 	const { getAllTasks } = useTaskStore((state) => state);
+	const { toast } = useToast();
 
 	useEffect(() => {
 		if (!currentWorkspace) return;
@@ -23,26 +25,19 @@ const NavBarTeams = ({
 
 	const handleActiveParams = (param: string): void => {
 		if (teamIdentifier) {
+			getTeamOnSelect();
 			router.push(`/${currentWorkspace?.url}/team/${teamIdentifier}/${param}`);
 		} else {
-			console.error("Team identifier not found");
+			toast({ title: "Team identifier not found", variant: "destructive" });
 		}
 	};
 
 	const getTeamOnSelect = async () => {
 		const team = teams.find((team) => team.identifier === teamIdentifier);
 		if (team) {
-			const newTeam = await getTeam(team.id);
-			if (newTeam.team) {
-				setCurrentTeam(newTeam.team);
-				await getAllTasks(newTeam.team.id);
-			}
+			setCurrentTeam(team);
+			await getAllTasks(team.id);
 		}
-	};
-
-	const handleViewsButtonClick: () => void = () => {
-		getTeamOnSelect();
-		handleActiveParams("views");
 	};
 
 	return (
@@ -79,7 +74,7 @@ const NavBarTeams = ({
 			</div>
 			<Button
 				variant={"ghost"}
-				onClick={handleViewsButtonClick}
+				onClick={() => handleActiveParams("views")}
 				className="w-full justify-start h-6"
 			>
 				<div className="mr-2 p-0.5 rounded">
