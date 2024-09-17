@@ -109,7 +109,7 @@ export const LoadingTask = () => {
 							</div>
 							<div className="h-92 mt-5 text-muted-foreground p-5 rounded-lg flex flex-col gap-8 bg-popover">
 								<div className="flex ">
-									<label className=" w-24">Status</label>
+									<span className=" w-24">Status</span>
 									<div className="flex gap-2">
 										<LoadingSkeleton
 											width="15px"
@@ -122,7 +122,7 @@ export const LoadingTask = () => {
 									</div>
 								</div>
 								<div className="flex">
-									<label className="w-24">Priority</label>
+									<span className="w-24">Priority</span>
 									<div className="flex gap-2">
 										<LoadingSkeleton
 											width="15px"
@@ -135,7 +135,7 @@ export const LoadingTask = () => {
 									</div>
 								</div>
 								<div className="flex items-center">
-									<label className="w-24">Labels</label>
+									<span className="w-24">Labels</span>
 									<div className="flex flex-col gap-2 flex-grow">
 										<div className="flex gap-2 rounded-full border px-2 py-1 w-20">
 											<LoadingSkeleton
@@ -160,7 +160,7 @@ export const LoadingTask = () => {
 									</div>
 								</div>
 								<div className="flex ">
-									<label className="w-24">Due Date</label>
+									<span className="w-24">Due Date</span>
 									<div className="flex items-center px-2 py-1 rounded-full border border-border">
 										<p className="text-muted-foreground filter blur-sm blink">
 											01/07/2023
@@ -168,7 +168,7 @@ export const LoadingTask = () => {
 									</div>
 								</div>
 								<div className="flex ">
-									<label className="w-24">Effort</label>
+									<span className="w-24">Effort</span>
 									<div className="flex gap-2">
 										<LoadingSkeleton
 											width="15px"
@@ -181,7 +181,7 @@ export const LoadingTask = () => {
 									</div>
 								</div>
 								<div className="flex ">
-									<label className="w-24">Assignee</label>
+									<span className="w-24">Assignee</span>
 									<div className="flex gap-2">
 										<LoadingSkeleton
 											width="15px"
