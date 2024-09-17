@@ -1,23 +1,46 @@
-import React, { useState } from "react";
-import ButtonIcon from "../ButtonIcon";
+"use client";
+import React from "react";
 import LogoutButton from "../LogoutButton";
-import ThemeSwitcher from "../ThemeSwitcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faInbox, faHouse } from "@fortawesome/free-solid-svg-icons";
+import {
+	faGear,
+	faInbox,
+	faHouse,
+	faMagnifyingGlass,
+	faArrowRightFromBracket,
+	faSun,
+	faMoon,
+} from "@fortawesome/free-solid-svg-icons";
 import { useRouter, usePathname } from "next/navigation";
-import SearchButton from "../SearchButton";
-import SearchCommand from "../SearchCommand";
-import { useWorkspaceStore } from "@/store";
+import { useAuthStore, useModalStore, useWorkspaceStore } from "@/store";
+import { Button } from "../ui/button";
+import { useTheme } from "next-themes";
+import { useToast } from "../ui/use-toast";
 
 const IconLeftMenu = () => {
 	const router = useRouter();
 	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+	const { setShowCommand } = useModalStore((state) => state);
+	const { theme, setTheme } = useTheme();
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
-	const [isSearchCommand, setIsSearchCommand] = useState<boolean>(false);
 	const homeRoute = currentRoute.includes(`${workspace?.url}`);
 	const viewsRoute = currentRoute.includes("/views");
-	const iconStyle = "w-full h-12 flex items-center ";
+	const { toast } = useToast();
+	const logout = useAuthStore((state) => state.logout);
+
+	const handleLogout = async (): Promise<void> => {
+		try {
+			await logout();
+
+			router.replace("/login");
+
+			toast({ title: "Logged out successfully." });
+		} catch (error) {
+			console.error("Logout failed", error);
+			toast({ title: "Failed to log out", variant: "destructive" });
+		}
+	};
 
 	const navigateTo = (childRoute: string): void => {
 		router.push(`${baseUrl}/${childRoute}`);
@@ -27,51 +50,57 @@ const IconLeftMenu = () => {
 	};
 
 	return (
-		<div className="flex flex-col h-full items-center w-full">
+		<div className="flex flex-col h-screen items-center justify-between w-full py-2">
 			<div className="flex flex-col items-center">
-				<div className={iconStyle}>
-					<ButtonIcon
-						icon={<FontAwesomeIcon icon={faHouse} />}
-						tooltipLabel={"Home"}
-						labelPosition="right"
-						handleClick={toHome}
-						hoverBg="bg-card"
-					/>
-				</div>
-				<div className={iconStyle}>
-					<SearchButton setIsSearchCommand={setIsSearchCommand} />
-					<SearchCommand
-						isSearchCommand={isSearchCommand}
-						setIsSearchCommand={setIsSearchCommand}
-					/>
-				</div>
-
-				<div className={iconStyle}>
-					<ButtonIcon
-						icon={<FontAwesomeIcon icon={faGear} />}
-						tooltipLabel={"Settings"}
-						labelPosition="right"
-						handleClick={() => navigateTo("settings/workspace")}
-						hoverBg="bg-card"
-					/>
-				</div>
-				<div className={iconStyle}>
-					<ButtonIcon
-						icon={<FontAwesomeIcon icon={faInbox} />}
-						tooltipLabel={"Inbox"}
-						labelPosition="right"
-						handleClick={() => navigateTo("inbox")}
-						hoverBg="bg-card"
-					/>
-				</div>
-
-				<div className={iconStyle}>
-					<ThemeSwitcher />
-				</div>
+				<Button
+					variant={"ghost"}
+					className="text-muted-foreground hover:text-foreground"
+					size="icon"
+					onClick={toHome}
+				>
+					<FontAwesomeIcon icon={faHouse} />
+				</Button>
+				<Button
+					variant={"ghost"}
+					className="text-muted-foreground hover:text-foreground"
+					size="icon"
+					onClick={() => setShowCommand(true)}
+				>
+					<FontAwesomeIcon icon={faMagnifyingGlass} />
+				</Button>
+				<Button
+					variant={"ghost"}
+					className="text-muted-foreground hover:text-foreground"
+					size="icon"
+					onClick={() => navigateTo("settings/workspace")}
+				>
+					<FontAwesomeIcon icon={faGear} />
+				</Button>
+				<Button
+					variant={"ghost"}
+					className="text-muted-foreground hover:text-foreground"
+					size="icon"
+					onClick={() => navigateTo("inbox")}
+				>
+					<FontAwesomeIcon icon={faInbox} />
+				</Button>
+				<Button
+					variant={"ghost"}
+					className="text-muted-foreground hover:text-foreground"
+					size="icon"
+					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+				>
+					<FontAwesomeIcon icon={theme === "dark" ? faMoon : faSun} />
+				</Button>
 			</div>
-			<div className="mt-auto mb-1">
-				<LogoutButton />
-			</div>
+			<Button
+				variant={"ghost"}
+				className="text-muted-foreground hover:text-foreground"
+				size="icon"
+				onClick={handleLogout}
+			>
+				<FontAwesomeIcon icon={faArrowRightFromBracket} />
+			</Button>
 		</div>
 	);
 };
