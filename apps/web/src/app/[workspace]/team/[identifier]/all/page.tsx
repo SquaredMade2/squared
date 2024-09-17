@@ -22,8 +22,12 @@ export default function Home() {
 	const { view } = useViewStore((state) => state);
 	const { currentFilters, filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
-	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const {
+		currentWorkspace,
+		getAllWorkspaces,
+		setCurrentWorkspace,
+		getWorkspace,
+	} = useWorkspaceStore((state) => state);
 	const {
 		tasks: initialTasks,
 		updateTask,
@@ -119,8 +123,8 @@ export default function Home() {
 		);
 	}
 
-	const activeSelected = params.all === "active";
-	const backlogSelected = params.all === "backlog";
+	// const activeSelected = params.all === "active";		// will uncomment/delete in next pr - kaila
+	// const backlogSelected = params.all === "backlog";
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">
@@ -143,8 +147,6 @@ export default function Home() {
 						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
 					>
 						<ViewAllTasks
-							activeSelected={activeSelected}
-							backlogSelected={backlogSelected}
 							handleDragEnd={handleDragEnd}
 							tasks={filterTasks(tasks)}
 						/>

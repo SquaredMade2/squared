@@ -1,4 +1,4 @@
-import { Status } from "@repo/db";
+import { Status, Priority } from "@repo/db";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -54,5 +54,22 @@ export const formatStatus = (status: Status) => {
 			return "Done";
 		default:
 			return "Backlog";
+	}
+};
+
+export const formatPriority = (priority: Priority) => {
+	switch (priority) {
+		case Priority.noPriority:
+			return "No priority";
+		case Priority.urgent:
+			return "Urgent";
+		case Priority.high:
+			return "High";
+		case Priority.medium:
+			return "Medium";
+		case Priority.low:
+			return "Low";
+		default:
+			return "No priority";
 	}
 };
