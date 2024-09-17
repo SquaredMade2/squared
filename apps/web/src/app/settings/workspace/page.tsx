@@ -71,18 +71,19 @@ export default function WorkspaceSettings() {
 	const { toast } = useToast();
 	const router = useRouter();
 
-	if (!currentWorkspace) return null;
-
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: currentWorkspace.name,
-			url: currentWorkspace.url.replace("https://app.squaredmade.com/", ""),
+			name: currentWorkspace?.name || "",
+			url:
+				currentWorkspace?.url.replace("https://app.squaredmade.com/", "") || "",
 		},
 	});
 
 	useEffect(() => {
-		const subscription = form.watch((value, { name, type }) => {
+		if (!currentWorkspace) return;
+
+		const subscription = form.watch((value) => {
 			if (
 				value.name !== currentWorkspace.name ||
 				value.url !==
@@ -93,8 +94,11 @@ export default function WorkspaceSettings() {
 				setIsFormChanged(false);
 			}
 		});
+
 		return () => subscription.unsubscribe();
 	}, [form, currentWorkspace]);
+
+	if (!currentWorkspace) return null;
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
