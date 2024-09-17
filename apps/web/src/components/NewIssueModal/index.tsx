@@ -144,8 +144,11 @@ const NewIssueModal = () => {
 			);
 			setShowNewIssue(false);
 			setNewIssueData({});
+			form.reset({
+				title: "",
+				description: "",
+			});
 		} catch (err) {
-			console.log(err);
 			toast({
 				title: "Error creating issue",
 				variant: "destructive",
@@ -168,66 +171,69 @@ const NewIssueModal = () => {
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(handleCreateIssue)}
-						className="flex space-x-4"
+						// className="flex space-x-4"
 					>
-						<div className="w-3/4 space-y-4">
-							<FormField
-								control={form.control}
-								name="title"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className="text-2xl">Title</FormLabel>
-										<FormControl>
-											<Input
-												{...field}
-												placeholder="Title"
-												className="text-lg"
-											/>
-										</FormControl>
-									</FormItem>
-								)}
+						<div className="flex space-x-4">
+							<div className="w-3/4 space-y-4">
+								<FormField
+									control={form.control}
+									name="title"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="text-2xl">Title</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													placeholder="Title"
+													className="text-lg"
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel className="text-2xl">Description</FormLabel>
+											<FormControl>
+												<Textarea
+													{...field}
+													placeholder="Add Description"
+													className="text-lg resize-none"
+													rows={4}
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+							</div>
+							<Separator
+								orientation="vertical"
+								className="bg-gray-300 w-px h-full"
 							/>
-							<FormField
-								control={form.control}
-								name="description"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className="text-2xl">Description</FormLabel>
-										<FormControl>
-											<Textarea
-												{...field}
-												placeholder="Add Description"
-												className="text-lg resize-none"
-												rows={4}
-											/>
-										</FormControl>
-									</FormItem>
-								)}
-							/>
-						</div>
-						<Separator orientation="vertical" />
-						<div className="w-1/4 space-y-4">
-							<div className="space-y-4">
+							<div className="w-1/4 space-y-4">
 								<StatusDropdownButton />
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
 								<EffortDropdownButton />
 								{/* <DateButton location="newIssueModal" /> */}
 							</div>
-							<DialogFooter>
-								<Button
-									onClick={handleDiscard}
-									className="hover:cursor-pointer bg-transparent"
-									variant="destructive"
-									type="button"
-								>
-									Discard
-								</Button>
-								<Button type="submit" className="hover:cursor-pointer">
-									Create Issue
-								</Button>
-							</DialogFooter>
 						</div>
+						<DialogFooter className="mt-6">
+							<Button
+								onClick={handleDiscard}
+								className="hover:cursor-pointer bg-transparent"
+								variant="destructive"
+								type="button"
+							>
+								Discard
+							</Button>
+							<Button type="submit" className="hover:cursor-pointer">
+								Create Issue
+							</Button>
+						</DialogFooter>
 					</form>
 				</Form>
 			</DialogContent>
