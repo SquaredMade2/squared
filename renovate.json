@@ -1,0 +1,97 @@
+{
+    "extends": [
+        "config:base"
+    ],
+    "schedule": [
+        "on the first day of the month"
+    ],
+    "prConcurrentLimit": 10,
+    "automerge": false,
+    "labels": [
+        "Updates"
+    ],
+    "packageRules": [
+        {
+            "packagePatterns": [
+                "*"
+            ],
+            "enabledManagers": [
+                "npm",
+                "nvm",
+                "dockerfile",
+                "docker-compose",
+                "github-actions"
+            ],
+            "groupName": "Grouped Updates",
+            "automerge": false,
+            "schedule": [
+                "on the first day of the month"
+            ],
+            "assignees": [
+                "SquaredMade2/squared-developers"
+            ],
+            "labels": [
+                "Updates"
+            ]
+        },
+        {
+            "packagePatterns": [
+                "*"
+            ],
+            "paths": [
+                "apps/web",
+                "apps/www"
+            ],
+            "assignees": [
+                "SquaredMade2/frontend-developers"
+            ],
+            "labels": [
+                "Updates"
+            ]
+        },
+        {
+            "packagePatterns": [
+                "*"
+            ],
+            "paths": [
+                "apps/api"
+            ],
+            "assignees": [
+                "SquaredMade2/backend-developers"
+            ],
+            "labels": [
+                "Updates"
+            ]
+        },
+        {
+            "packagePatterns": [
+                "*"
+            ],
+            "paths": [
+                "packages/**/*"
+            ],
+            "assignees": [
+                "SquaredMade2/squared-developers"
+            ],
+            "labels": [
+                "Updates"
+            ]
+        },
+        {
+            "packagePatterns": [
+                "*"
+            ],
+            "paths": [
+                "apps/web",
+                "apps/api",
+                "packages/**/*"
+            ],
+            "assignees": [
+                "SquaredMade2/full-stack-developers"
+            ],
+            "labels": [
+                "Updates"
+            ]
+        }
+    ]
+}
