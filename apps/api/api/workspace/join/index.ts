@@ -36,7 +36,6 @@ export function createRoute(): Route {
 				});
 
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found.",
@@ -50,7 +49,6 @@ export function createRoute(): Route {
 				);
 
 				if (userAlreadyInWorkspace) {
-					res.status(400);
 					return {
 						data: workspace,
 						message: "You're already a member of this workspace!",
@@ -78,7 +76,6 @@ export function createRoute(): Route {
 						data: { onBoarding: false },
 					});
 				}
-				res.status(200);
 				return {
 					data: updatedWorkspace,
 					message: "User successfully joined the workspace.",

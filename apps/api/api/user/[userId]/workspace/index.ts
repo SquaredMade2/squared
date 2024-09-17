@@ -20,7 +20,6 @@ export function createRoute(): Route<Params> {
 					);
 
 				if (!userWorkspaces) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
