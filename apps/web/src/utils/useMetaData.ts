@@ -8,7 +8,7 @@ export function useMetaData(
 ) {
 	useEffect(() => {
 		// Set the document title
-		document.title = `${title} | Squared`;
+		document.title = title;
 
 		// Create and set meta tags
 		const metaDescription = document.createElement("meta");
