@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import {
 	type ColumnFiltersState,
@@ -11,15 +12,8 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
 	Table,
@@ -60,63 +54,53 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		},
 	});
 
+	const handleMarkAsRead = () => {
+		// Implement mark as read logic here
+		console.log("Marking selected as read");
+	};
+
+	const handleMarkAsUnread = () => {
+		// Implement mark as unread logic here
+		console.log("Marking selected as unread");
+	};
+
 	return (
 		<div className="w-full">
-			<div className="flex items-center py-4">
+			<div className="flex items-center justify-between py-4">
 				<Input
 					placeholder="Filter notifications..."
-					value={
-						(table.getColumn("taskName")?.getFilterValue() as string) ?? ""
-					}
+					value={(table.getColumn("task")?.getFilterValue() as string) ?? ""}
 					onChange={(event) =>
-						table.getColumn("taskName")?.setFilterValue(event.target.value)
+						table.getColumn("task")?.setFilterValue(event.target.value)
 					}
 					className="max-w-sm"
 				/>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="outline" className="ml-auto">
-							Columns <ChevronDown className="ml-2 h-4 w-4" />
+				{table.getFilteredSelectedRowModel().rows.length > 0 && (
+					<div className="space-x-2">
+						<Button onClick={handleMarkAsRead} variant="outline" size="sm">
+							Mark as Read
 						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						{table
-							.getAllColumns()
-							.filter((column) => column.getCanHide())
-							.map((column) => {
-								return (
-									<DropdownMenuCheckboxItem
-										key={column.id}
-										className="capitalize"
-										checked={column.getIsVisible()}
-										onCheckedChange={(value) =>
-											column.toggleVisibility(!!value)
-										}
-									>
-										{column.id}
-									</DropdownMenuCheckboxItem>
-								);
-							})}
-					</DropdownMenuContent>
-				</DropdownMenu>
+						<Button onClick={handleMarkAsUnread} variant="outline" size="sm">
+							Mark as Unread
+						</Button>
+					</div>
+				)}
 			</div>
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
-									return (
-										<TableHead key={header.id}>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext(),
-													)}
-										</TableHead>
-									);
-								})}
+								{headerGroup.headers.map((header) => (
+									<TableHead key={header.id}>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext(),
+												)}
+									</TableHead>
+								))}
 							</TableRow>
 						))}
 					</TableHeader>
@@ -126,6 +110,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
+									className={row.original.read ? "bg-transparent" : "bg-card"}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>
