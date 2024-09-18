@@ -22,9 +22,6 @@ const IconLeftMenu = () => {
 	const navigateTo = (childRoute: string): void => {
 		router.push(`${baseUrl}/${childRoute}`);
 	};
-	const toHome = () => {
-		homeRoute && !viewsRoute ? "" : router.back();
-	};
 
 	return (
 		<div className="flex flex-col h-full items-center w-full">
@@ -34,7 +31,7 @@ const IconLeftMenu = () => {
 						icon={<FontAwesomeIcon icon={faHouse} />}
 						tooltipLabel={"Home"}
 						labelPosition="right"
-						handleClick={toHome}
+						handleClick={() => navigateTo(workspace?.url || "")}
 						hoverBg="bg-card"
 					/>
 				</div>
