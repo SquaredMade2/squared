@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: "45 18 * * 0" # Runs every Sunday at 4:45 AM GMT+10
     - cron: "45 18 * * 4" # Runs every Thursday at 4:45 AM GMT+10
-    - cron: "45 18 1-7,15-21 * 2" # Runs every second Tuesday at 4:45 AM GMT+10
   workflow_dispatch: # Allows manual trigger
 
 jobs:
