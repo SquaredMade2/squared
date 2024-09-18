@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/table";
 import { columns } from "./columns";
 import type { NotificationTask } from "@/store/notifications";
+import { Checkbox } from "../ui/checkbox";
+import { BellOff, Check } from "lucide-react";
 
 export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -32,7 +34,9 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		[],
 	);
 	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({});
+		React.useState<VisibilityState>({
+			taskTitle: false,
+		});
 	const [rowSelection, setRowSelection] = React.useState({});
 
 	const table = useReactTable({
@@ -55,13 +59,19 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	});
 
 	const handleMarkAsRead = () => {
-		// Implement mark as read logic here
-		console.log("Marking selected as read");
+		const selectedRows = table.getFilteredSelectedRowModel().rows;
+		console.log(
+			"Marking as read:",
+			selectedRows.map((row) => row.original.id),
+		);
 	};
 
 	const handleMarkAsUnread = () => {
-		// Implement mark as unread logic here
-		console.log("Marking selected as unread");
+		const selectedRows = table.getFilteredSelectedRowModel().rows;
+		console.log(
+			"Marking as unread:",
+			selectedRows.map((row) => row.original.id),
+		);
 	};
 
 	return (
@@ -81,40 +91,41 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
-						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => (
-									<TableHead key={header.id}>
-										{header.isPlaceholder
-											? null
-											: flexRender(
-													header.column.columnDef.header,
-													header.getContext(),
-												)}
-									</TableHead>
-								))}
+						<TableRow>
+							<TableHead className="w-[50px]">
+								<Checkbox
+									checked={table.getIsAllPageRowsSelected()}
+									onCheckedChange={(value) =>
+										table.toggleAllPageRowsSelected(!!value)
+									}
+									aria-label="Select all"
+								/>
+							</TableHead>
+							<TableHead colSpan={5}>
 								{table.getFilteredSelectedRowModel().rows.length > 0 && (
-									<TableHead>
-										<div className="flex space-x-2">
-											<Button
-												onClick={handleMarkAsRead}
-												variant="outline"
-												size="sm"
-											>
-												Mark as Read
-											</Button>
-											<Button
-												onClick={handleMarkAsUnread}
-												variant="outline"
-												size="sm"
-											>
-												Mark as Unread
-											</Button>
-										</div>
-									</TableHead>
+									<div className="flex py-2 space-x-2 justify-start">
+										<Button
+											onClick={handleMarkAsRead}
+											variant="outline"
+											size="sm"
+											className="gap-2"
+										>
+											<Check className="size-4" />
+											Mark as Read
+										</Button>
+										<Button
+											onClick={handleMarkAsUnread}
+											variant="outline"
+											size="sm"
+											className="gap-2"
+										>
+											<BellOff className="size-4" />
+											Unsubscribe
+										</Button>
+									</div>
 								)}
-							</TableRow>
-						))}
+							</TableHead>
+						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
@@ -122,7 +133,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									className={row.original.read ? "bg-transparent" : "bg-accent"}
+									className={row.original.read ? "bg-transparent" : "bg-card"}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>

@@ -4,7 +4,7 @@ import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { useId } from "react";
 import type { NotificationTask } from "@/store/notifications";
-import { Button } from "../ui/button";
+import { getStatusIcon } from "@/utils/enumIcons";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -33,7 +33,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 	},
 	{
 		accessorKey: "status",
-		cell: ({ row }) => <div>{row.original.Task.status}</div>,
+		cell: ({ row }) => <div>{getStatusIcon(row.original.Task.status)}</div>,
 	},
 	{
 		accessorKey: "task",
@@ -44,7 +44,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const read = row.original.read;
 
 			return (
-				<div className={`flex flex-col ${read ? "text-muted-foreground" : ""}`}>
+				<div className={`flex flex-col ${read && "text-muted-foreground"}`}>
 					<div className="flex gap-2 text-xxs">
 						<div>{workspaceName}</div>
 						<div>#{taskId}</div>
