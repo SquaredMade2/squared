@@ -1,6 +1,6 @@
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Label } from "@repo/db";
 
 export interface TaskCardLabelsProps {
 	view: string;
-	task: Task;
+	labels: Label[];
 }

@@ -1,10 +1,10 @@
-import type { Task } from "@/store/taskData/taskData.interfaces";
+import type { Status, Task } from "@repo/db";
 import type { Dispatch, SetStateAction } from "react";
 
 export interface StatusColumnProps {
-	columnType: string;
-	title: string;
+	columnType: Status;
+	title: Status;
 	setShowRenameModal?: Dispatch<SetStateAction<boolean>>;
-	setTaskData?: Dispatch<SetStateAction<Task | null>>;
 	tasks: Task[];
+	currentView: "list" | "grid";
 }

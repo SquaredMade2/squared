@@ -1,4 +1,4 @@
-import type { HandleWorkspaceNameOverflowType } from "@/app/interfaces/Workspace.interface";
+import { Status, Priority } from "@repo/db";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -13,9 +13,7 @@ export const replaceSpacesWithDashes = (str: string): string => {
 	return str?.replace(/\s+/g, "-");
 };
 
-export const handleWorkspaceNameOverflow: HandleWorkspaceNameOverflowType = (
-	workspaceName: string,
-) => {
+export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 	return typeof workspaceName === "string" && workspaceName.length > 20
 		? `${workspaceName.slice(0, 20)}...`
 		: workspaceName;
@@ -40,4 +38,38 @@ export const formatUrl = (title: string) => {
 		.replace(/[^a-z0-9]+/g, "-")
 		.replace(/(^-|-$)/g, "");
 	return titleSlug;
+};
+
+export const formatStatus = (status: Status) => {
+	switch (status) {
+		case Status.backlog:
+			return "Backlog";
+		case Status.todo:
+			return "To Do";
+		case Status.inProgress:
+			return "In Progress";
+		case Status.inReview:
+			return "In Review";
+		case Status.done:
+			return "Done";
+		default:
+			return "Backlog";
+	}
+};
+
+export const formatPriority = (priority: Priority) => {
+	switch (priority) {
+		case Priority.noPriority:
+			return "No priority";
+		case Priority.urgent:
+			return "Urgent";
+		case Priority.high:
+			return "High";
+		case Priority.medium:
+			return "Medium";
+		case Priority.low:
+			return "Low";
+		default:
+			return "No priority";
+	}
 };

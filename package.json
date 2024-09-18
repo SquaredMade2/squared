@@ -3,8 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "api:gen": "pnpm run --filter=api gen",
     "build": "turbo run build",
+    "db:gen": "turbo run db:generate",
+    "db:push": "turbo run db:push",
     "docker:build": "docker-compose build",
+    "docker:db": "pnpm --filter=test-db run docker:db && pnpm run db:gen && pnpm run --filter=@repo/test-db db:push",
+    "docker:db:down": "pnpm --filter=test-db run docker:db:down",
+    "docker:db:seed": "pnpm --filter=test-db run db:seed",
     "docker:up": "docker-compose up",
     "dev": "turbo run dev --filter=web --filter=api",
     "check-types": "turbo run check-types",
@@ -12,26 +18,31 @@
     "cypress:ci": "start-server-and-test storybook http://localhost:9009 cypress:run",
     "cypress:dev": "cypress open",
     "cypress:run": "cypress run",
-    "format:write": "turbo run format:write",
-    "format:check": "turbo run format:check",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
+    "format:write": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
     "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
+    "studio": "turbo run studio",
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build"
+    "test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build",
+    "knip": "knip"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
+    "@biomejs/biome": "1.9.1",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.4.1",
+    "@types/node": "^22.5.2",
     "husky": "^9.1.5",
+    "knip": "^5.29.1",
     "rimraf": "^6.0.1",
     "turbo": "^2.1.0",
-    "turbo-ignore": "^2.1.0"
+    "turbo-ignore": "^2.1.0",
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=14.0.0",
@@ -50,5 +61,5 @@
       ]
     }
   },
-  "packageManager": "pnpm@9.9.0"
+  "packageManager": "pnpm@9.10.0"
 }

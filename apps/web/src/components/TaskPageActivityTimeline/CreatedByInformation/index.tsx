@@ -1,17 +1,20 @@
 import React from "react";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import ProfileImage from "@/components/ProfileImage";
-import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
+import { useActivityStore, useTaskStore } from "@/store";
 
 const CreatedByInformation = () => {
-	const { author, createdAt } = useAppSelector(
-		(state) => state.events.taskEventLog,
-	);
+	const eventLogs = useActivityStore((state) => state.events);
+
+	const authorName = eventLogs[0]?.taskEvent?.authorName ?? "";
+
+	const currentTask = useTaskStore((state) => state.currentTask);
+
 	const displayDate = () => {
-		if (createdAt) {
-			const date = parseISO(createdAt as string);
-			const formattedDate = formatDate(date, "dd MMM yyyy");
+		if (currentTask) {
+			// Assigning it as a new Date automatically makes it a local date
+			const currentTaskDate = new Date("2024-09-11T21:14:27.222Z");
+			const formattedDate = formatDate(currentTaskDate, "dd MMM yyyy");
 			return formattedDate;
 		}
 	};
@@ -19,8 +22,8 @@ const CreatedByInformation = () => {
 	return (
 		<div className="flex items-center px-8">
 			<div className="mr-4 text-muted-foreground">{displayDate()}</div>
-			<ProfileImage profileName={author.name} location={"activityItem"} />
-			<p className="text-foreground ml-2 mr-4">{author.name}</p>
+			<ProfileImage profileName={authorName} location={"activityItem"} />
+			<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			<p className="text-sm text-muted-foreground">created the issue</p>
 		</div>
 	);

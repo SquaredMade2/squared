@@ -6,6 +6,10 @@
       "import": "./src/accordion/index.ts",
       "require": "./src/accordion/index.ts"
     },
+    "./alert-dialog": {
+      "import": "./src/alert-dialog/index.ts",
+      "require": "./src/alert-dialog/index.ts"
+    },
     "./arrow": {
       "import": "./src/arrow/index.ts",
       "require": "./src/arrow/index.ts"
@@ -33,10 +37,6 @@
     "./context-menu": {
       "import": "./src/context-menu/index.ts",
       "require": "./src/context-menu/index.ts"
-    },
-    "./day-picker": {
-      "import": "./src/day-picker/index.ts",
-      "require": "./src/day-picker/index.ts"
     },
     "./dialog": {
       "import": "./src/dialog/index.ts",
@@ -114,6 +114,14 @@
       "import": "./src/scroll-area/index.ts",
       "require": "./src/scroll-area/index.ts"
     },
+    "./select": {
+      "import": "./src/select/index.ts",
+      "require": "./src/select/index.ts"
+    },
+    "./separator": {
+      "import": "./src/separator/index.ts",
+      "require": "./src/separator/index.ts"
+    },
     "./slot": {
       "import": "./src/slot/index.ts",
       "require": "./src/slot/index.ts"
@@ -182,12 +190,12 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
-    "date-fns": "^3.6.0",
-    "lucide-react": "^0.436.0",
+    "date-fns": "^4.0.0",
+    "lucide-react": "^0.441.0",
     "mockdate": "^3.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-remove-scroll": "2.5.10",
+    "react-remove-scroll": "2.6.0",
     "tailwind-merge": "^2.5.2",
     "tslib": "^2.7.0"
   },
@@ -229,10 +237,10 @@
     "pretty-quick": "^4.0.0",
     "react-test-renderer": "^18.3.1",
     "replace-in-files": "^3.0.0",
-    "start-server-and-test": "2.0.5",
+    "start-server-and-test": "2.0.8",
     "storybook": "^8.2.9",
     "ts-jest": "^29.2.5",
-    "tsup": "8.2.4",
+    "tsup": "8.3.0",
     "typescript": "^5.5.4"
   },
   "peerDependencies": {

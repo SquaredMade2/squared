@@ -1,5 +1,5 @@
 export interface WorkspaceImageProps {
-	workspaceName: string;
+	workspaceName: string | null;
 	backgroundColor: number;
 	location: string;
 }

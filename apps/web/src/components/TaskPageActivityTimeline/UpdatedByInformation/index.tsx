@@ -1,24 +1,20 @@
 import React from "react";
-import ProfileImage from "@/components/ProfileImage";
-import { useAppSelector } from "@/hooks/typeScriptReduxHooks";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
-import {
-	type Assignee,
-	type Author,
-	EventType,
-	type TaskEvent,
-	type Labels,
-} from "@/interfaces/event.interfaces";
+import { EventType } from "@/interfaces/event.interfaces";
+import type { TaskEvent } from "@repo/db";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useActivityStore } from "@/store";
+import type { ActivityType } from "@/store/activities";
+import { Avatar } from "@/components/ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 const UpdatedByInformation = () => {
-	const eventLogs = useAppSelector(
-		(state) => state.events.taskEventLog.eventsLog,
-	) as TaskEvent[];
+	const eventLogs = useActivityStore((state) => state.events);
 
 	const findLabelAdded = (
-		originalLabels: Labels[],
-		updatedLabels: Labels[],
+		originalLabels: string[],
+		updatedLabels: string[],
 	) => {
 		const labelName = updatedLabels.filter(
 			(label) => !originalLabels.includes(label),
@@ -27,8 +23,8 @@ const UpdatedByInformation = () => {
 	};
 
 	const findLabelRemoved = (
-		originalLabels: Labels[],
-		updatedLabels: Labels[],
+		originalLabels: string[],
+		updatedLabels: string[],
 	) => {
 		const labelName = originalLabels.filter(
 			(label) => !updatedLabels.includes(label),
@@ -37,7 +33,7 @@ const UpdatedByInformation = () => {
 		return labelName;
 	};
 
-	const displayLabelNames = (labels: Labels[]) => {
+	const displayLabelNames = (labels: string[]) => {
 		return labels.join(", ");
 	};
 
@@ -100,15 +96,43 @@ const UpdatedByInformation = () => {
 			</p>
 		);
 	};
+
+	const displayGitUpdate = (log: TaskEvent) => {
+		const gitUpdateText = log.gitUpdated || "";
+		const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+		// Split the gitUpdateText into an array of strings and URLs
+		const parts = gitUpdateText.split(urlPattern);
+
+		return (
+			<p>
+				{parts.map((part) =>
+					urlPattern.test(part) ? (
+						<a
+							key={`-${part}-`}
+							href={part}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-blue-500 underline hover:text-blue-700 font-semibold"
+						>
+							{part}
+						</a>
+					) : (
+						part
+					),
+				)}
+			</p>
+		);
+	};
+
 	const getAssigneeActions = (
-		originalAssignee: Assignee,
-		updatedAssignee: Assignee,
+		originalAssignee: string,
+		updatedAssignee: string,
 	) => {
 		const noPreviousAssignee =
-			originalAssignee?.name === "not Assigned" &&
-			updatedAssignee?.name !== "not Assigned";
+			originalAssignee === "not Assigned" && updatedAssignee !== "not Assigned";
 
-		const assigneeRemoved = updatedAssignee?.name === "not Assigned";
+		const assigneeRemoved = updatedAssignee === "not Assigned";
 
 		return {
 			noPreviousAssignee,
@@ -117,12 +141,12 @@ const UpdatedByInformation = () => {
 	};
 
 	const displayAssigneeUpdate = (log: TaskEvent) => {
-		const { originalAssignee, updatedAssignee, author } = log;
+		const { originalAssigneeId, updatedAssigneeId, authorId } = log;
 		const { noPreviousAssignee, assigneeRemoved } = getAssigneeActions(
-			originalAssignee as Assignee,
-			updatedAssignee as Assignee,
+			originalAssigneeId ?? "",
+			updatedAssigneeId ?? "",
 		);
-		const selfAssigned = author.name === updatedAssignee?.name;
+		const selfAssigned = authorId === updatedAssigneeId;
 		if (noPreviousAssignee && selfAssigned) {
 			return <p>self assigned task</p>;
 		}
@@ -130,7 +154,7 @@ const UpdatedByInformation = () => {
 			return (
 				<p>
 					assigned task to{" "}
-					<span className="text-foreground">{updatedAssignee?.name}</span>
+					<span className="text-foreground">{updatedAssigneeId}</span>
 				</p>
 			);
 		}
@@ -140,8 +164,8 @@ const UpdatedByInformation = () => {
 		return (
 			<p>
 				changed assignee from{" "}
-				<span className="text-foreground">{originalAssignee?.name}</span> to{" "}
-				<span className="text-foreground">{updatedAssignee?.name}</span>
+				<span className="text-foreground">{originalAssigneeId}</span> to{" "}
+				<span className="text-foreground">{updatedAssigneeId}</span>
 			</p>
 		);
 	};
@@ -159,6 +183,8 @@ const UpdatedByInformation = () => {
 
 			case EventType.DescriptionUpdated:
 				return displayDescriptionUpdate(log);
+			case EventType.GitUpdated:
+				return displayGitUpdate(log);
 			case EventType.StatusUpdated:
 				return (
 					<p>
@@ -192,32 +218,36 @@ const UpdatedByInformation = () => {
 		}
 	};
 
-	const displayAuthorProfile = (author: Author) => {
+	const displayAuthorProfile = (authorName: string) => {
 		return (
 			<>
-				<ProfileImage profileName={author.name} location={"activityItem"} />
-				<p className="ml-2">{author.name}</p>
+				<Avatar title={getInitials(authorName)} />
 			</>
 		);
 	};
+
 	return (
 		<div className="w-full">
 			<ul className="list-none px-8">
-				{eventLogs?.map((log: TaskEvent) => {
-					const { updatedAt, author } = log;
+				{eventLogs?.map((log: ActivityType) => {
 					return (
-						<li
-							className="flex items-center text-foreground border-t border-border py-1 list-none"
-							key={updatedAt as string}
-						>
-							<div className="mr-4 text-muted-foreground">{`${displayDate(updatedAt as string)}`}</div>
-							<div className="flex items-center mr-4">
-								{displayAuthorProfile(author)}
-							</div>
-							<div className="text-muted-foreground text-ellipses">
-								{displayUpdate(log)}
-							</div>
-						</li>
+						<Table key={log.id}>
+							<TableBody>
+								{eventLogs?.map((log: ActivityType) => (
+									<TableRow key={log.createdAt.toLocaleDateString()}>
+										<TableCell>
+											{displayDate(log.createdAt.toLocaleDateString())}
+										</TableCell>
+										<TableCell>
+											{displayAuthorProfile(log.taskEvent?.authorName ?? "")}
+										</TableCell>
+										{log.taskEvent && (
+											<TableCell>{displayUpdate(log.taskEvent)}</TableCell>
+										)}
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
 					);
 				})}
 			</ul>

@@ -1,21 +1,20 @@
-export const statusOptions = [
-	"Backlog",
-	"Todo",
-	"In Progress",
-	"Done",
-	"Canceled",
-	"Duplicate",
+import type { Priority, Status } from "@repo/db";
+
+export const statusOptions: Status[] = [
+	"backlog",
+	"todo",
+	"inProgress",
+	"inReview",
+	"done",
 ];
 
-export const priorityOptions = [
-	"No priority",
-	"Urgent",
-	"High",
-	"Medium",
-	"Low",
+export const priorityOptions: Priority[] = [
+	"noPriority",
+	"urgent",
+	"high",
+	"medium",
+	"low",
 ];
-
-export const labelOptions = ["Bug", "Feature", "Improvement", "Red", "Test"];
 
 export const effortEstimateOptions = [
 	"1 - Very quick delivery",

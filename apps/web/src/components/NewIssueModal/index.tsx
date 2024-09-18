@@ -1,4 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	Dialog,
 	DialogContent,
@@ -6,195 +9,159 @@ import {
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
-import { useSelector } from "react-redux";
+import { StatusDropdownButton } from "./StatusDropdownButton";
+import { EffortDropdownButton } from "./EffortDropdownButton";
+// import DateButton from "@/components/DateButton";
+import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
-import {
-	getAllTasks,
-	createNewTask,
-	incrementCreatedIssues,
-} from "@/store/taskData/thunks";
-import { setShowNewIssue } from "@/store/showNewIssue";
-import { setResumeNewIssue } from "@/store/resumeNewIssue";
-import {
-	setStatus,
-	setLabels,
-	setPriority,
-	setDueDate,
-	setEffortEstimate,
-} from "@/store/taskData";
-import DesignationsContainer from "@/components/DesignationsContainer";
+import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import { Separator } from "../ui/separator";
+import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import MentionInput from "@/components/MentionsInput";
-import { getListOfUsers } from "@/store/userSettings/thunks";
-import "@/components/NewIssueModal/NewIssueModal.style.css";
-import {
-	type WorkspaceMember,
-	getListOfMembers,
-} from "@/store/workspaceMembers";
 import { SocketContext } from "@/app/SocketProvider";
-import type { RootState } from "@/store";
-import { useAppDispatch } from "@/hooks/typeScriptReduxHooks";
-import type { Task } from "@/store/taskData/taskData.interfaces";
-import type { OnChangeHandlerFunc } from "react-mentions";
+import {
+	useAuthStore,
+	useModalStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
+import type { Task } from "@repo/db";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
-	const dispatch = useAppDispatch();
-	const showNewIssue = useSelector(
-		(state: RootState) => state.showNewIssue.isOpen,
-	);
-	const authorId = useSelector(
-		(state: RootState) => state.userSettings.user?._id,
-	);
+	const { showNewIssue, newIssueData, setNewIssueData, setShowNewIssue } =
+		useModalStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { currentTeam } = useTeamStore((state) => state);
+	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
+	const { tasks, addTask } = useTaskStore((state) => state);
 
-	const {
-		currentTeam,
-		status,
-		priority,
-		labels,
-		dueDate,
-		effortEstimate,
-		currentWorkspace,
-		taskList,
-	} = useSelector((state: RootState) => state.taskData);
-
-	const taskListTitle = taskList.map((el) => el.title);
-	const [titleInput, setTitleInput] = useState("");
-	const [descriptionInput, setDescriptionInput] = useState("");
-	const [listOfUsers, SetListOfUsers] = useState<WorkspaceMember[]>([]);
+	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
 
 	const socket = useContext(SocketContext);
-	const user = useSelector((state: RootState) => state.userSettings.user);
-
-	const getListOfWorkspaceMembers = async () => {
-		try {
-			const members = (await Promise.all(
-				currentWorkspace.users.map(async (member) => {
-					const user = await getListOfUsers(member?.user);
-					return {
-						display: user?.name,
-						id: user?._id.toString(),
-						email: user?.email,
-					} as {
-						display: string;
-						id: string;
-						email: string;
-					};
-				}),
-			)) as unknown as WorkspaceMember[];
-			dispatch(getListOfMembers(members));
-			SetListOfUsers(members);
-		} catch (error) {}
-	};
-
-	useEffect(() => {
-		getListOfWorkspaceMembers();
-	}, []);
-
-	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setTitleInput(e.target.value);
-	};
-
-	const handleDescriptionChange: OnChangeHandlerFunc = (e) => {
-		setDescriptionInput(e.target.value);
-	};
-
-	const handleCloseClick = () => {
-		if (
-			titleInput ||
-			descriptionInput ||
-			priority ||
-			labels.length > 0 ||
-			dueDate ||
-			effortEstimate
-		) {
-			dispatch(setResumeNewIssue(true));
-			dispatch(setShowNewIssue(false));
-		} else {
-			dispatch(setShowNewIssue(false));
-		}
-	};
 
 	const handleDiscard = () => {
-		setTitleInput("");
-		setDescriptionInput("");
-		dispatch(setShowNewIssue(false));
-		dispatch(setResumeNewIssue(false));
-		dispatch(setStatus("Todo"));
-		dispatch(setPriority(""));
-		dispatch(setLabels([]));
-		dispatch(setDueDate(undefined));
-		dispatch(setEffortEstimate(null));
+		setNewIssueData({});
+
+		form.reset({
+			title: "",
+			description: "",
+		});
+
+		setShowNewIssue(false);
 	};
 
-	const handleCreateIssue = async () => {
-		if (titleInput.replace(/\s+/g, "").length === 0) {
+	const formSchema = z.object({
+		title: z.string().min(2, {
+			message: "Username must be at least 2 characters.",
+		}),
+		description: z.string().min(2, {
+			message: "Username must be at least 2 characters.",
+		}),
+	});
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			title: "",
+			description: "",
+		},
+	});
+
+	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
+		const { title, description } = values;
+
+		if (tasks.some((task) => task.title === title)) {
 			toast({
-				title: "Please Enter a Title!",
+				title: `${title} already exists`,
 				variant: "destructive",
 			});
 			return;
 		}
-		if (taskListTitle.includes(titleInput)) {
+		if (!currentWorkspace || !currentTeam || !user) {
 			toast({
-				title: `${titleInput} already exists`,
+				title: "Error authenticating user",
 				variant: "destructive",
 			});
 			return;
 		}
-		dispatch(incrementCreatedIssues(currentWorkspace._id));
+		await updateWorkspace(currentWorkspace?.id, {
+			tasksCreated: (currentWorkspace.tasksCreated ?? 0) + 1,
+		});
 		try {
 			const { transformedInput: transformedTitle, userIds: titleUserId } =
-				transformingMentionInputs(titleInput);
+				transformingMentionInputs(title);
+
 			const {
 				transformedInput: transformedDescriptionInput,
 				userIds: descriptionUserId,
-			} = transformingMentionInputs(descriptionInput);
+			} = transformingMentionInputs(description);
+
 			const mentionedUserId = new Set([...descriptionUserId, ...titleUserId]);
 			const newTask: Task = {
-				authorId: authorId,
+				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.issuesCreated}`,
-				status: status,
-				priority: priority,
-				labels: labels,
-				dueDate: dueDate,
-				effortEstimate: effortEstimate,
-				team: currentTeam,
+				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
+				status: status ?? "backlog",
+				priority: priority ?? "noPriority",
+				labels: labels || [],
+				dueDate: dueDate ?? null,
+				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
-				assignee: null,
-				taskName: titleInput,
-				_id: "",
+				assigneeId: null,
+				assigneeName: "",
+				teamId: currentTeam.id,
+				id: "",
+				workspaceId: currentWorkspace.id,
 			};
-			const taskCreatedResponse = await dispatch(
-				createNewTask(newTask as Task),
-			).unwrap();
 
-			dispatch(setResumeNewIssue(false));
+			const {
+				task: taskCreatedResponse,
+				message,
+				variant,
+			} = await addTask(newTask);
+			await updateWorkspace(currentWorkspace.id, {
+				tasksCreated: currentWorkspace.tasksCreated + 1,
+			});
+			setCurrentWorkspace({
+				...currentWorkspace,
+				tasksCreated: currentWorkspace.tasksCreated + 1,
+			});
+
+			toast({
+				title: message,
+				variant: variant,
+			});
+			if (!taskCreatedResponse) return;
 
 			socket.emit(
 				"user_mentioned",
 				[...mentionedUserId],
-				taskCreatedResponse._id,
-				user._id,
+				taskCreatedResponse.id,
+				user.id,
 			);
-			dispatch(getAllTasks(currentTeam));
-			dispatch(setShowNewIssue(false));
-			setTitleInput("");
-			setDescriptionInput("");
-			dispatch(setStatus("Todo"));
-			dispatch(setPriority(""));
-			dispatch(setLabels([]));
-			dispatch(setDueDate(undefined));
-			dispatch(setEffortEstimate(null));
-		} catch (err) {}
+			setShowNewIssue(false);
+			setNewIssueData({});
+		} catch (err) {
+			console.log(err);
+			toast({
+				title: "Error creating issue",
+				variant: "destructive",
+			});
+		}
 	};
 
 	return (
-		<Dialog open={showNewIssue} onOpenChange={() => handleCloseClick()}>
+		<Dialog open={showNewIssue} onOpenChange={setShowNewIssue}>
 			<DialogContent className="max-w-full bg-popover">
 				<DialogHeader>
 					<div className="flex items-center">
@@ -205,35 +172,71 @@ const NewIssueModal = () => {
 						<DialogTitle className="text-sm">New Issue</DialogTitle>
 					</div>
 				</DialogHeader>
-				<input
-					value={titleInput}
-					onChange={handleTitleChange}
-					placeholder={"Issue title..."}
-					className="focus:outline-none bg-transparent text-2xl"
-				/>
-				<MentionInput
-					data={listOfUsers}
-					value={descriptionInput}
-					placeholder={"Add description..."}
-					className={
-						"w-full leading-6 min-h-min h-full py-4 text-lg mt-2 bg-transparent rounded-lg mb-1 focus:outline-none resize-none break-words break-all whitespace-normal"
-					}
-					name={"addDescription"}
-					onChange={handleDescriptionChange}
-				/>
-				<DesignationsContainer location={"newIssue"} />
-				<DialogFooter>
-					<Button
-						onClick={handleDiscard}
-						className="hover:cursor-pointer bg-transparent"
-						variant="destructive"
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(handleCreateIssue)}
+						className="flex space-x-4"
 					>
-						Discard
-					</Button>
-					<Button onClick={handleCreateIssue} className="hover:cursor-pointer">
-						Create Issue
-					</Button>
-				</DialogFooter>
+						<div className="w-3/4 space-y-4">
+							<FormField
+								control={form.control}
+								name="title"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-2xl">Title</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												placeholder="Title"
+												className="text-lg"
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-2xl">Description</FormLabel>
+										<FormControl>
+											<Textarea
+												{...field}
+												placeholder="Add Description"
+												className="text-lg resize-none"
+												rows={4}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
+						<Separator orientation="vertical" />
+						<div className="w-1/4 space-y-4">
+							<div className="space-y-4">
+								<StatusDropdownButton />
+								<LabelDropdownButton />
+								<PriorityDropdownButton />
+								<EffortDropdownButton />
+								{/* <DateButton location="newIssueModal" /> */}
+							</div>
+							<DialogFooter>
+								<Button
+									onClick={handleDiscard}
+									className="hover:cursor-pointer bg-transparent"
+									variant="destructive"
+									type="button"
+								>
+									Discard
+								</Button>
+								<Button type="submit" className="hover:cursor-pointer">
+									Create Issue
+								</Button>
+							</DialogFooter>
+						</div>
+					</form>
+				</Form>
 			</DialogContent>
 		</Dialog>
 	);

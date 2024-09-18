@@ -39,3 +39,4 @@ yarn-error.log*
 .vercel
 .elasticbeanstalk
 generated
+apps/api/api/index.ts

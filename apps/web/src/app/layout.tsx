@@ -1,10 +1,11 @@
 "use client";
 import "./globals.css";
-import { Providers } from "@/store/provider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
-import CommandPalette from "@/components/CommandPalette";
 import { Toaster } from "@/components/ui/toaster";
+import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
+import { SquaredStoreProvider } from "@/store";
+import SearchCommand from "@/components/SearchCommand";
 
 export default function RootLayout({
 	children,
@@ -13,21 +14,22 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className="text-sm">
-				<Providers>
-					<CommandPalette />
+			<body className="text-sm min-h-[100vh]">
+				<SquaredStoreProvider>
 					<ThemeProvider
 						attribute="class"
 						defaultTheme="system"
 						enableSystem
 						disableTransitionOnChange
 					>
+						<WorkspaceInviteModal />
+						<SearchCommand />
 						<div className="h-full flex flex-row overflow-hidden">
 							{children}
 						</div>
 					</ThemeProvider>
 					<Toaster />
-				</Providers>
+				</SquaredStoreProvider>
 			</body>
 		</html>
 	);

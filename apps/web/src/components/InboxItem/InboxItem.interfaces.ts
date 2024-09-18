@@ -1,7 +1,7 @@
 export interface InboxItemProps {
-	id: string;
-	date: string;
-	title: string;
+	taskId: string;
+	date: Date;
+	title: string | null;
 	read: boolean;
 	notificationId: string;
 	closeBackdrop: () => void;

@@ -1,42 +1,93 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-  "files": {
-    "ignore": [
-      "node_modules"
-    ],
-    "include": [
-      "src"
-    ]
-  },
-  "organizeImports": {
-    "enabled": true
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "a11y": {
-        "useKeyWithClickEvents": "off"
-      },
-      "correctness": {
-        "useExhaustiveDependencies": "off"
-      }
-    }
-  },
-  "javascript": {
-    "globals": [
-      "$",
-      "_",
-      "externalVariable",
-      "cypress",
-      "it",
-      "cy",
-      "describe",
-      "beforeEach",
-      "jest",
-      "React",
-      "afterEach",
-      "Cypress"
-    ]
-  }
+	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"files": {
+		"ignore": [
+			"node_modules",
+			".next",
+			"dist",
+			"coverage",
+			"generated",
+			".storybook",
+			"cypress",
+			"*.stories.tsx"
+		],
+		"include": ["src", "api"]
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": {
+				"useKeyWithClickEvents": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"include": ["packages/ui/**"],
+			"linter": {
+				"enabled": true,
+				"rules": {
+					"recommended": true,
+					"a11y": {
+						"useKeyWithClickEvents": "off",
+						"useButtonType": "off",
+						"noSvgWithoutTitle": "off",
+						"useValidAnchor": "off"
+					},
+					"correctness": {
+						"useExhaustiveDependencies": "off",
+						"noChildrenProp": "off",
+						"noConstructorReturn": "off"
+					},
+					"suspicious": {
+						"noExplicitAny": "off",
+						"noArrayIndexKey": "off"
+					},
+					"complexity": {
+						"noForEach": "off"
+					},
+					"style": {
+						"noNonNullAssertion": "off",
+						"noInferrableTypes": "off"
+					},
+					"performance": {
+						"noAccumulatingSpread": "off"
+					}
+				}
+			}
+		},
+		{
+			"include": ["apps/api/api/index.ts"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noBannedTypes": "off"
+					}
+				}
+			}
+		}
+	],
+	"javascript": {
+		"globals": [
+			"$",
+			"_",
+			"externalVariable",
+			"cypress",
+			"it",
+			"cy",
+			"describe",
+			"beforeEach",
+			"jest",
+			"React",
+			"afterEach",
+			"Cypress"
+		]
+	}
 }
