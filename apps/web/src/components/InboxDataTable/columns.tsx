@@ -4,6 +4,7 @@ import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { useId } from "react";
 import type { NotificationTask } from "@/store/notifications";
+import { Button } from "../ui/button";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -23,6 +24,11 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			/>
 		),
 		enableSorting: false,
+		enableHiding: false,
+	},
+	{
+		accessorKey: "taskTitle",
+		accessorFn: (row) => row.Task.title,
 		enableHiding: false,
 	},
 	{

@@ -69,22 +69,14 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 			<div className="flex items-center justify-between py-4">
 				<Input
 					placeholder="Filter notifications..."
-					value={(table.getColumn("task")?.getFilterValue() as string) ?? ""}
+					value={
+						(table.getColumn("taskTitle")?.getFilterValue() as string) ?? ""
+					}
 					onChange={(event) =>
-						table.getColumn("task")?.setFilterValue(event.target.value)
+						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
 					}
 					className="max-w-sm"
 				/>
-				{table.getFilteredSelectedRowModel().rows.length > 0 && (
-					<div className="space-x-2">
-						<Button onClick={handleMarkAsRead} variant="outline" size="sm">
-							Mark as Read
-						</Button>
-						<Button onClick={handleMarkAsUnread} variant="outline" size="sm">
-							Mark as Unread
-						</Button>
-					</div>
-				)}
 			</div>
 			<div className="rounded-md border">
 				<Table>
@@ -101,6 +93,26 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 												)}
 									</TableHead>
 								))}
+								{table.getFilteredSelectedRowModel().rows.length > 0 && (
+									<TableHead>
+										<div className="flex space-x-2">
+											<Button
+												onClick={handleMarkAsRead}
+												variant="outline"
+												size="sm"
+											>
+												Mark as Read
+											</Button>
+											<Button
+												onClick={handleMarkAsUnread}
+												variant="outline"
+												size="sm"
+											>
+												Mark as Unread
+											</Button>
+										</div>
+									</TableHead>
+								)}
 							</TableRow>
 						))}
 					</TableHeader>
@@ -110,7 +122,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									className={row.original.read ? "bg-transparent" : "bg-card"}
+									className={row.original.read ? "bg-transparent" : "bg-accent"}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>
