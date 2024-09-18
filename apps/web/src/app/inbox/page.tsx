@@ -47,7 +47,7 @@ export default function InboxPage() {
 	console.log("notifications", notifications);
 
 	return (
-		<div className="flex h-screen w-full">
+		<div className="flex w-full">
 			<IconLeftMenu />
 			<InboxSidebar setFilterType={setFilterType} setWorkspace={setWorkspace} />
 			<div className="flex-1 p-4 container w-full">
