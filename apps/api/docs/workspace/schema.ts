@@ -17,7 +17,7 @@ export const WorkspaceSchema = {
 			type: "number",
 			description: "Size of the company associated with the workspace",
 		},
-		issuesCreated: {
+		tasksCreated: {
 			type: "number",
 			description: "Number of issues created in the workspace",
 		},

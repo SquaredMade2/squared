@@ -22,16 +22,15 @@
                 "docker-compose",
                 "github-actions"
             ],
-            "groupName": "Grouped Updates",
             "automerge": false,
             "schedule": [
                 "on the first day of the month"
             ],
-            "assignees": [
-                "SquaredMade2/squared-developers"
-            ],
             "labels": [
                 "Updates"
+            ],
+            "assignees": [
+                "SquaredMade2/squared-developers"
             ]
         },
         {
@@ -39,14 +38,27 @@
                 "*"
             ],
             "paths": [
-                "apps/web",
+                "apps/web"
+            ],
+            "assignees": [
+                "SquaredMade2/frontend-developers"
+            ],
+            "labels": [
+                "Frontend Updates"
+            ]
+        },
+        {
+            "packagePatterns": [
+                "*"
+            ],
+            "paths": [
                 "apps/www"
             ],
             "assignees": [
                 "SquaredMade2/frontend-developers"
             ],
             "labels": [
-                "Updates"
+                "Frontend Updates"
             ]
         },
         {
@@ -60,7 +72,7 @@
                 "SquaredMade2/backend-developers"
             ],
             "labels": [
-                "Updates"
+                "Backend Updates"
             ]
         },
         {
@@ -74,7 +86,7 @@
                 "SquaredMade2/squared-developers"
             ],
             "labels": [
-                "Updates"
+                "Package Updates"
             ]
         },
         {
@@ -90,7 +102,7 @@
                 "SquaredMade2/fullstack-developers"
             ],
             "labels": [
-                "Updates"
+                "Fullstack Updates"
             ]
         }
     ]
