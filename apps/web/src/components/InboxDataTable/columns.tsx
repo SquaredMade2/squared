@@ -32,14 +32,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const workspaceName = row.original.Workspace.name;
 			const read = row.original.read;
 			const type = row.getValue("type") as string;
-			const avatars = ["", ""]; // Replace with actual avatar data
-			const date: string = row.getValue("createdAt") as string;
-			const formattedDate = formatDistanceToNow(new Date(date), {
-				addSuffix: true,
-			})
-				.split(" ")
-				.slice(-3)
-				.join(" ");
+			const avatars = ["", ""];
 
 			return (
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
@@ -55,21 +48,34 @@ export const columns: ColumnDef<NotificationTask>[] = [
 							<div>{taskName}</div>
 						</div>
 					</div>
-					<div className="flex items-center justify-between sm:justify-end gap-4">
-						<div className="flex items-center gap-2">
-							<div className="text-sm lowercase">{type}</div>
-							<div className="flex -space-x-2">
-								{avatars?.map((avatar, index) => (
-									<Avatar key={useId()}>
-										<AvatarImage src={avatar} />
-										<AvatarFallback>U{index + 1}</AvatarFallback>
-									</Avatar>
-								))}
-							</div>
+					<div className="flex items-center gap-2">
+						<div className="text-sm lowercase">{type}</div>
+						<div className="flex -space-x-2">
+							{avatars?.map((avatar, index) => (
+								<Avatar key={useId()}>
+									<AvatarImage src={avatar} />
+									<AvatarFallback>U{index + 1}</AvatarFallback>
+								</Avatar>
+							))}
 						</div>
-						<div className="text-muted-foreground text-xs">{formattedDate}</div>
 					</div>
 				</div>
+			);
+		},
+	},
+	{
+		id: "timestamp",
+		cell: ({ row }) => {
+			const date = row.original.createdAt;
+			const formattedDate = formatDistanceToNow(date, {
+				addSuffix: true,
+			})
+				.split(" ")
+				.slice(-3)
+				.join(" ");
+
+			return (
+				<div className="text-muted-foreground text-xs">{formattedDate}</div>
 			);
 		},
 	},

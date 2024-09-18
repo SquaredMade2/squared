@@ -29,7 +29,7 @@ const Navbar = () => {
 		<>
 			<div className="h-screen flex">
 				<IconLeftMenu />
-				<div className="flex h-full justify-center bg-popover border- w-72">
+				<div className="flex h-full justify-center bg-popover border border-border ml-14 w-72">
 					<div className="w-11/12 flex flex-col">
 						<div className="w-full h-full flex flex-col cursor-default text-foreground">
 							<div className="h-12 flex items-center mb-4">
