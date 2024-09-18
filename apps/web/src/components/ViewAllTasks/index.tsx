@@ -40,6 +40,7 @@ const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
 			const tasksForStatus = getTasksForStatus(status);
+			if (tasksForStatus.length === 0) return null;
 			return (
 				<div key={status}>
 					<StatusColumn
