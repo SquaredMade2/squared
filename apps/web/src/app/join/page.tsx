@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useMetaData } from "@/utils/useMetaData";
 
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
@@ -98,6 +99,12 @@ const Join = () => {
 			console.error(error);
 		}
 	};
+
+	// Custom hook for metadata
+	useMetaData(
+		"Join",
+		"Join or Create a new workspace where teams can work on projects, cycles and tasks.",
+	);
 
 	return (
 		// testing purpose this is css is not here to stay

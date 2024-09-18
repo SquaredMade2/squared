@@ -8,6 +8,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useViewStore } from "@/store";
+import { useMetaData } from "@/utils/useMetaData";
 import Link from "next/link";
 
 const IntegrationSettings: React.FC = () => {
@@ -17,6 +18,12 @@ const IntegrationSettings: React.FC = () => {
 		const navBarValue = !showNavbar;
 		setShowNavbar(navBarValue);
 	};
+
+	// Custom hook for metadata
+	useMetaData(
+		"Integrations Settings",
+		"Enhance Squared experience by integrating add-ons.",
+	);
 
 	return (
 		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">

@@ -30,6 +30,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import { useMetaData } from "@/utils/useMetaData";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -98,6 +99,9 @@ export default function WorkspaceSettings() {
 		setIsDeleting(true);
 		deleteWorkspace(currentWorkspace.id);
 	};
+
+	// Custom hook for metadata
+	useMetaData("Workspace Settings", "Manage your workspace settings.");
 
 	return (
 		<div className="container mx-auto py-10 md:w-3/4 w-full ">

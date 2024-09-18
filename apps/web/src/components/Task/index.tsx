@@ -6,6 +6,8 @@ import TaskPageCenterContainer from "../TaskPageCenterContainer";
 import { LoadingTask } from "../LoadingTask";
 import { useToast } from "../ui/use-toast";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useMetaData } from "@/utils/useMetaData";
+import { capitalizeFirstLetter } from "@/utils/formatting";
 
 const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const { tasks, currentTask, getAllTasks, setCurrentTask } = useTaskStore(
@@ -21,6 +23,15 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 	const { toast } = useToast();
 	const { taskIdentifier } = useParams();
 	const { teamIdentifier } = useParams();
+
+	// Custom hook for metadata
+	useMetaData(
+		currentTask?.title ? capitalizeFirstLetter(currentTask?.title) : "Task",
+		currentTask?.description
+			? currentTask?.description
+			: "Description of the current task page in Squared",
+		currentTask,
+	);
 
 	useEffect(() => {
 		setIsLoading(true);

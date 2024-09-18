@@ -6,6 +6,7 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import { Check, FileSearch } from "lucide-react";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import type { Workspace } from "@repo/db";
+import { useMetaData } from "@/utils/useMetaData";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
@@ -17,6 +18,12 @@ const WorkspaceNotFoundPage = (): React.ReactElement => {
 			setMenuOpen(false);
 		}
 	};
+
+	// Custom hook for metadata
+	useMetaData(
+		"Workspace not found",
+		"The workspace you are looking for can't be found.",
+	);
 
 	return (
 		<div

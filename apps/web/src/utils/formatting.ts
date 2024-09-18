@@ -1,5 +1,9 @@
 import { Status, Priority } from "@repo/db";
 
+export function capitalizeFirstLetter(string: string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
 		let lastSpace = string.lastIndexOf(" ", maxLength);

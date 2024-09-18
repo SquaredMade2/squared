@@ -31,6 +31,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { useMetaData } from "@/utils/useMetaData";
 
 const formSchema = z.object({
 	teamName: z.string().min(1, {
@@ -116,6 +117,12 @@ export default function CreateTeam() {
 			router.push("/");
 		}
 	}, []);
+
+	// Custom hook for metadata
+	useMetaData(
+		"Add Team",
+		"Create a new team to manage separate cycles and workflows.",
+	);
 
 	return (
 		<div className="flex bg-background text-foreground mdsm:flex-col w-[80vw]">

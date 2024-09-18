@@ -21,6 +21,7 @@ import { useAuthStore, useUserStore } from "@/store";
 import type { User } from "@repo/db";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
+import { useMetaData } from "@/utils/useMetaData";
 
 const formSchema = z.object({
 	fullName: z.string().min(1, "Full name is required"),
@@ -72,6 +73,9 @@ export default function Profile() {
 			description: "Your profile information has been successfully updated.",
 		});
 	};
+
+	// Custom hook for metadata
+	useMetaData("Profile Settings", "Manage your Squared profile.");
 
 	if (!user) return null;
 

@@ -31,6 +31,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useMetaData } from "@/utils/useMetaData";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -126,6 +127,9 @@ export default function TeamsSetting() {
 		}
 		setIsDeleting(false);
 	};
+
+	// Custom hook for metadata
+	useMetaData("Team Settings", "Manage your team settings.");
 
 	return (
 		<div className="container mx-auto py-10 md:w-3/4 w-full">

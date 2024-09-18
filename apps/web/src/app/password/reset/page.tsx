@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { SqLogo } from "@/components/Svg";
 import { ChevronLeft } from "lucide-react";
+import { useMetaData } from "@/utils/useMetaData";
 
 export default function ResetPasswordRequest() {
 	const [email, setEmail] = useState("");
@@ -37,6 +38,12 @@ export default function ResetPasswordRequest() {
 			});
 		}
 	};
+
+	// Custom hook for metadata
+	useMetaData(
+		"Forgot Password",
+		"Enter your email address to receive a link to reset your password and regain access to your account.",
+	);
 
 	return (
 		<div className="w-full flex items-center h-[100vh] bg-[#141414]">

@@ -7,6 +7,7 @@ import InboxContents from "@/components/InboxContents";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuthStore, useNotificationStore } from "@/store";
 import IconLeftMenu from "@/components/IconLeftMenu";
+import { useMetaData } from "@/utils/useMetaData";
 
 export default function Inbox(): React.JSX.Element {
 	const [showInboxList, setShowInboxList] = useState(false);
@@ -22,6 +23,9 @@ export default function Inbox(): React.JSX.Element {
 	const { notifications, getAllNotifications } = useNotificationStore(
 		(state) => state,
 	);
+
+	// Custom hook for metadata
+	useMetaData("Inbox", "View and manage your messages here.");
 
 	useEffect(() => {
 		const initiateStore = async () => {

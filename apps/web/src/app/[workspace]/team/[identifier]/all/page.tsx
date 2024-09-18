@@ -17,6 +17,7 @@ import {
 } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status } from "@repo/db";
+import { useMetaData } from "@/utils/useMetaData";
 
 export default function Home() {
 	const { view } = useViewStore((state) => state);
@@ -41,6 +42,12 @@ export default function Home() {
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
+
+	// Custom hook for metadata
+	useMetaData(
+		"All workspace",
+		"Description of the All workspace page in Squared.",
+	);
 
 	// Combining loading logic in a single useEffect
 	useEffect(() => {

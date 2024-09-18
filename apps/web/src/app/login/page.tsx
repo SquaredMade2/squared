@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { setCookie } from "nookies";
+import { useMetaData } from "@/utils/useMetaData";
 
 function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
@@ -157,6 +158,11 @@ function LoginForm() {
 }
 
 export default function Login() {
+	// Custom hook for metadata
+	useMetaData(
+		"Login",
+		"Login to access your account and manage your settings.",
+	);
 	return (
 		<div className="flex items-center justify-center min-h-screen min-w-full p-4">
 			<Suspense fallback={<div>Loading...</div>}>

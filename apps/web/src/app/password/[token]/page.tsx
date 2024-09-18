@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import type { InputChangeEvent, FormSubmitEvent } from "@/types";
 import { SqLogo } from "@/components/Svg";
 import { ChevronLeft } from "lucide-react";
+import { useMetaData } from "@/utils/useMetaData";
 
 export default function ResetPassword() {
 	const [newPassword, setNewPassword] = useState("");
@@ -52,6 +53,12 @@ export default function ResetPassword() {
 			console.error("Failed to reset password:", error);
 		}
 	};
+
+	// Custom hook for metadata
+	useMetaData(
+		"Reset Password",
+		"Enter and confirm your new password to complete the password reset process and secure your account.",
+	);
 
 	return (
 		<div className="w-full flex items-center h-[100vh] bg-[#141414]">

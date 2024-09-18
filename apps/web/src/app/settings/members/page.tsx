@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { useMetaData } from "@/utils/useMetaData";
 
 export default function WorkspaceMembersPage() {
 	const params = useParams();
@@ -38,6 +39,9 @@ export default function WorkspaceMembersPage() {
 			});
 		}
 	}, [workspaceId]);
+
+	// Custom hook for metadata
+	useMetaData("Members Settings", "Manage your members settings.");
 
 	return (
 		<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">

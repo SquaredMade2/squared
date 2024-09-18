@@ -16,6 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMetaData } from "@/utils/useMetaData";
 
 function RegisterForm() {
 	const [data, setData] = useState({ name: "", email: "", password: "" });
@@ -58,6 +59,12 @@ function RegisterForm() {
 	const handleLoginPush = () => {
 		router.push(inviteToken ? `/login?token=${inviteToken}` : "/login");
 	};
+
+	// Custom hook for metadata
+	useMetaData(
+		"Register",
+		"Create an account to access exclusive features where your teams can work on projects, cycles and tasks.",
+	);
 
 	return (
 		<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
