@@ -30,6 +30,13 @@ enum ActivityType {
   COMMIT
 }
 
+enum NotificationType {
+  ASSIGNED
+  PARTICIPATING
+  MENTIONED
+  CREATED
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -128,13 +135,19 @@ model Comment {
 model Notification {
   id          String   @id @default(uuid())
   userId      String
-  taskIds     String[]
+  taskId      String
   read        Boolean  @default(false)
+  saved       Boolean  @default(false)
   description String?
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now()) @updatedAt
+  workspaceId String
 
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  type NotificationType
+
+  Task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Task {
@@ -149,8 +162,8 @@ model Task {
   dateCreated    DateTime  @default(now())
   assigneeId     String?
   assigneeName   String?
-  workspaceId    String
   labels         String[]
+  workspaceId    String
 
   status   Status        @default(backlog)
   priority Priority      @default(noPriority)
@@ -158,9 +171,10 @@ model Task {
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Team      Team       @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Notification Notification[]
 }
 
 model Team {
@@ -235,6 +249,7 @@ model Workspace {
   Users              UserWorkspace[]
   User               User[]
   Tasks              Task[]
+  notifications      Notification[]
 }
 
 model UserWorkspace {

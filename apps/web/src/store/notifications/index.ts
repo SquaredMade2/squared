@@ -6,8 +6,9 @@ import type {
 	NotificationState,
 	NotificationStore,
 	NotificationResponse,
+	NotificationTask,
 } from "./interfaces";
-import type { Notification } from "@repo/db";
+import type { Notification, Task } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
@@ -27,7 +28,7 @@ export const createNotificationStore = (
 				): Promise<NotificationResponse> => {
 					try {
 						const notificationId = uuidv4();
-						const response: { data: ApiReturnType<Notification> } =
+						const response: { data: ApiReturnType<NotificationTask> } =
 							await axios.post(apiString(notificationId), notification);
 						const { data: newNotification, message, variant } = response.data;
 
@@ -52,7 +53,7 @@ export const createNotificationStore = (
 					notification: Partial<Notification>,
 				): Promise<NotificationResponse> => {
 					try {
-						const response: { data: ApiReturnType<Notification> } =
+						const response: { data: ApiReturnType<NotificationTask> } =
 							await axios.put(apiString(notificationId), notification);
 						const updatedNotification = response.data.data;
 						if (!updatedNotification) {
@@ -99,10 +100,11 @@ export const createNotificationStore = (
 					userId: string,
 				): Promise<Notification[]> => {
 					try {
-						const { data: response }: { data: ApiReturnType<Notification[]> } =
-							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
-							);
+						const {
+							data: response,
+						}: { data: ApiReturnType<NotificationTask[]> } = await axios.get(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
+						);
 						const { data: notifications, message, variant } = response;
 						if (!notifications) {
 							set({ notifications: [] });
@@ -125,7 +127,7 @@ export const createNotificationStore = (
 				},
 				clearNotifications: async (userId: string): Promise<Notification[]> => {
 					try {
-						const response = await axios.get<Notification[]>(
+						const response = await axios.get<NotificationTask[]>(
 							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
 						);
 						set({ notifications: response.data });

@@ -1,7 +1,12 @@
-import type { Notification } from "@repo/db";
+import type { Notification, Task, Workspace } from "@repo/db";
 
 export type NotificationState = {
-	notifications: Notification[];
+	notifications: NotificationTask[];
+};
+
+export type NotificationTask = Notification & {
+	Task: Task;
+	Workspace: Workspace;
 };
 
 export interface NotificationResponse {

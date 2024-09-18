@@ -28,9 +28,7 @@ const Navbar = () => {
 	return (
 		<>
 			<div className="h-screen flex">
-				<div className="w-14 bg-muted dark:bg-accent">
-					<IconLeftMenu />
-				</div>
+				<IconLeftMenu />
 				<div className="flex h-full justify-center bg-popover border- w-72">
 					<div className="w-11/12 flex flex-col">
 						<div className="w-full h-full flex flex-col cursor-default text-foreground">

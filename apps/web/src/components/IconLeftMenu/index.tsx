@@ -64,7 +64,7 @@ const IconLeftMenu = () => {
 	}
 
 	return (
-		<div className="flex flex-col h-screen items-center justify-between w-full py-2">
+		<div className="flex flex-col h-screen items-center justify-between w-14 bg-muted dark:bg-accent py-2">
 			<div className="flex flex-col items-center space-y-4">
 				<IconButton onClick={toHome} icon={faHouse} />
 				<IconButton
