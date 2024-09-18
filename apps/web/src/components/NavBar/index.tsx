@@ -43,9 +43,7 @@ const Navbar = () => {
 								variant="ghost"
 								size="sm"
 								className="justify-start"
-								onClick={() =>
-									router.push(`/${workspace?.url}/my-issues/assigned`)
-								}
+								onClick={() => router.push(`/${workspace?.url}/my-issues`)}
 							>
 								My Issues
 							</Button>

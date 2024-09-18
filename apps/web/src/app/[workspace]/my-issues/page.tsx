@@ -96,19 +96,19 @@ export default function MyIssues() {
 					Created
 				</Button>
 				{/* TODO: Feature not implemented yet */}
-				<Button
+				{/* <Button
 					// onClick={() => setActiveTab("subscribed")}
 					variant="ghost"
 				>
 					Subscribed
 				</Button>
-				{/* TODO: Feature not implemented yet */}
+				TODO: Feature not implemented yet
 				<Button
 					// onClick={() => setActiveTab("activity")}
 					variant="ghost"
 				>
 					Activity
-				</Button>
+				</Button> */}
 			</div>
 
 			{/* <TopNavBar /> */}
