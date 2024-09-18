@@ -53,7 +53,7 @@ export const EffortDropdownButton = () => {
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-64" side={"left"} align="start">
+			<DropdownMenuContent className="w-[150px]" side={"left"} align="start">
 				{effortEstimateOptions.map((effortEstimate, index) => {
 					const estimateNumber = extractNumber(effortEstimate);
 
@@ -66,13 +66,10 @@ export const EffortDropdownButton = () => {
 							{showIcon(estimateNumber)}
 							<div className="flex flex-col">
 								<span>{effortEstimate}</span>
-								<span className="text-muted-foreground">
-									{complexityScale[index]}
-								</span>
 							</div>
-							<div className="w-16 ml-auto">
+							{/* <div className="w-16 ml-auto">
 								<ProgressBar progress={estimateNumber} />
-							</div>
+							</div> */}
 						</DropdownMenuItem>
 					);
 				})}

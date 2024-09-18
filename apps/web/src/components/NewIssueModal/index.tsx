@@ -19,7 +19,6 @@ import { Separator } from "../ui/separator";
 import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -111,8 +110,8 @@ const NewIssueModal = () => {
 				title: transformedTitle,
 				description: transformedDescriptionInput,
 				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
-				status: status ?? "backlog",
-				priority: priority ?? "noPriority",
+				status: status ?? "Backlog",
+				priority: priority ?? "No Priority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,

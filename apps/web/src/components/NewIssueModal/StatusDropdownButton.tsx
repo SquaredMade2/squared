@@ -5,6 +5,7 @@ import {
 	CircleDashed,
 	CircleX,
 	Copy,
+	RotateCw,
 } from "lucide-react";
 import { inProgress } from "../Svg";
 import { statusOptions } from "@/constants/designations";
@@ -39,10 +40,8 @@ export const StatusDropdownButton = () => {
 				return inProgress();
 			case "done":
 				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			case "Canceled":
-				return <CircleX className="size-4" />;
 			case "inReview":
-				return <Copy className="size-4" />;
+				return <RotateCw className="size-4" />;
 		}
 	};
 
