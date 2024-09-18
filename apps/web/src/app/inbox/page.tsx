@@ -48,7 +48,9 @@ export default function InboxPage() {
 
 	return (
 		<div className="flex w-full">
-			<IconLeftMenu />
+			<div className="hidden md:block">
+				<IconLeftMenu />
+			</div>
 			<InboxSidebar setFilterType={setFilterType} setWorkspace={setWorkspace} />
 			<div className="flex-1 p-4 container w-full">
 				<h1 className="text-2xl font-bold mb-4">Inbox</h1>

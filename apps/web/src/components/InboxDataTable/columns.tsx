@@ -25,32 +25,12 @@ export const columns: ColumnDef<NotificationTask>[] = [
 		enableHiding: false,
 	},
 	{
-		id: "leftGroup",
+		id: "content",
 		cell: ({ row }) => {
 			const taskId = row.original.Task.identifier.split("-")[1];
 			const taskName = row.original.Task.title;
 			const workspaceName = row.original.Workspace.name;
 			const read = row.original.read;
-
-			return (
-				<div className="flex items-center gap-4">
-					{getStatusIcon(row.original.Task.status)}
-					<div
-						className={`flex flex-col ${read ? "text-muted-foreground" : ""}`}
-					>
-						<div className="flex gap-2 text-xxs">
-							<div>{workspaceName}</div>
-							<div>#{taskId}</div>
-						</div>
-						<div>{taskName}</div>
-					</div>
-				</div>
-			);
-		},
-	},
-	{
-		id: "rightGroup",
-		cell: ({ row }) => {
 			const type = row.getValue("type") as string;
 			const avatars = ["", ""]; // Replace with actual avatar data
 			const date: string = row.getValue("createdAt") as string;
@@ -62,17 +42,33 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				.join(" ");
 
 			return (
-				<div className="flex items-center justify-end gap-4">
-					<div>{type}</div>
-					<div className="flex -space-x-2">
-						{avatars?.map((avatar, index) => (
-							<Avatar key={useId()}>
-								<AvatarImage src={avatar} />
-								<AvatarFallback>U{index + 1}</AvatarFallback>
-							</Avatar>
-						))}
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+					<div className="flex items-center gap-2 mb-2 sm:mb-0">
+						{getStatusIcon(row.original.Task.status)}
+						<div
+							className={`flex flex-col ${read ? "text-muted-foreground" : ""}`}
+						>
+							<div className="flex gap-2 text-xxs">
+								<div>{workspaceName}</div>
+								<div>#{taskId}</div>
+							</div>
+							<div>{taskName}</div>
+						</div>
 					</div>
-					<div className="text-muted-foreground text-xs">{formattedDate}</div>
+					<div className="flex items-center justify-between sm:justify-end gap-4">
+						<div className="flex items-center gap-2">
+							<div className="text-sm lowercase">{type}</div>
+							<div className="flex -space-x-2">
+								{avatars?.map((avatar, index) => (
+									<Avatar key={useId()}>
+										<AvatarImage src={avatar} />
+										<AvatarFallback>U{index + 1}</AvatarFallback>
+									</Avatar>
+								))}
+							</div>
+						</div>
+						<div className="text-muted-foreground text-xs">{formattedDate}</div>
+					</div>
 				</div>
 			);
 		},

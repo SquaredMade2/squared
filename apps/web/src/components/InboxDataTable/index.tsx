@@ -27,7 +27,6 @@ import { columns } from "./columns";
 import type { NotificationTask } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
 import { BellOff, Check } from "lucide-react";
-import { Label } from "../ui/label";
 
 export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -93,7 +92,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="flex items-center" colSpan={2}>
+							<TableHead className="w-[50px]">
 								<Checkbox
 									checked={table.getIsAllPageRowsSelected()}
 									onCheckedChange={(value) =>
@@ -102,7 +101,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 									aria-label="Select all"
 								/>
 							</TableHead>
-							<TableHead colSpan={2}>
+							<TableHead>
 								{table.getFilteredSelectedRowModel().rows.length > 0 && (
 									<div className="flex py-2 space-x-2 justify-start">
 										<Button
@@ -137,7 +136,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 									className={row.original.read ? "bg-transparent" : "bg-card"}
 								>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+										<TableCell key={cell.id} className="p-2 sm:p-4">
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext(),

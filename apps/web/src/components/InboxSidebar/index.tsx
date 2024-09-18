@@ -9,7 +9,7 @@ type SidebarProps = {
 
 export function InboxSidebar({ setFilterType, setWorkspace }: SidebarProps) {
 	return (
-		<div className="w-64 ml-14 border-r border-border h-full p-4">
+		<div className="w-64 ml-14 border-r border-border h-full md:block hidden p-4">
 			<nav>
 				<ul className="space-y-2">
 					<li>
