@@ -38,10 +38,6 @@
       "import": "./src/context-menu/index.ts",
       "require": "./src/context-menu/index.ts"
     },
-    "./day-picker": {
-      "import": "./src/day-picker/index.ts",
-      "require": "./src/day-picker/index.ts"
-    },
     "./dialog": {
       "import": "./src/dialog/index.ts",
       "require": "./src/dialog/index.ts"
@@ -190,7 +186,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.0.0",
     "lucide-react": "^0.441.0",
     "mockdate": "^3.0.5",
     "react": "^18.3.1",
@@ -237,10 +233,10 @@
     "pretty-quick": "^4.0.0",
     "react-test-renderer": "^18.3.1",
     "replace-in-files": "^3.0.0",
-    "start-server-and-test": "2.0.7",
+    "start-server-and-test": "2.0.8",
     "storybook": "^8.2.9",
     "ts-jest": "^29.2.5",
-    "tsup": "8.2.4",
+    "tsup": "8.3.0",
     "typescript": "^5.5.4"
   },
   "peerDependencies": {
