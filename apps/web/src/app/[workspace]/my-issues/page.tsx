@@ -1,71 +1,58 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import TopNavBar from "@/components/TopNavBar";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
 	useAuthStore,
-	useFilterStore,
 	useTaskStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@repo/db";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
 
 export default function MyIssues() {
-	const { view } = useViewStore((state) => state);
-	const { filterTasks } = useFilterStore((state) => state);
-	const { user } = useAuthStore((state) => state);
-	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
-	const {
-		tasks: initialTasks,
-		updateTask,
-		getAllTasks,
-	} = useTaskStore((state) => state);
-	const [loading, setLoading] = useState(true);
-	const [tasks, setTasks] = useState<Task[]>(initialTasks);
-	const [activeTab, setActiveTab] = useState<"assigned" | "created">(
+	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
 		"assigned",
 	);
-
-	const router = useRouter();
-
+	const {
+		tasks: initialTasks,
+		getAllTasks,
+		updateTask,
+	} = useTaskStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { view } = useViewStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const [tasks, setTasks] = useState<Task[]>(
+		initialTasks.filter((t) => t.assigneeId === user?.id),
+	);
 	useEffect(() => {
 		const initiateStore = async () => {
-			setLoading(true);
-
-			if (user && !currentWorkspace) {
-				const workspaces = await getAllWorkspaces(user.id);
-				const workspace = workspaces?.[0];
-				workspace && setCurrentWorkspace(workspace);
+			if (initialTasks) {
+				setTasks(initialTasks.filter((t) => t.assigneeId === user?.id));
+			} else {
+				await getAllTasks(currentWorkspace?.id ?? "");
 			}
-
-			if (user && currentWorkspace) {
-				const allTasks = await getAllTasks(currentWorkspace.id);
-				const filteredTasks = allTasks.filter((task) => {
-					switch (activeTab) {
-						case "assigned":
-							return task.assigneeId === user.id;
-						case "created":
-							return task.authorId === user.id;
-						default:
-							return false;
-					}
-				});
-				setTasks(filteredTasks);
-			}
-
-			setLoading(false);
 		};
-
 		initiateStore();
-	}, [user, currentWorkspace, activeTab]);
+	}, [user, currentWorkspace]);
+
+	useEffect(() => {
+		switch (activeTab) {
+			case "assigned":
+				setTasks(initialTasks.filter((t) => t.assigneeId === user?.id));
+				break;
+			case "created":
+				setTasks(initialTasks.filter((t) => t.authorId === user?.id));
+				break;
+			default:
+				break;
+		}
+	}, [activeTab, initialTasks]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -84,17 +71,11 @@ export default function MyIssues() {
 		const updatedTasks = tasks.map((task) =>
 			task.id === draggableId ? updatedTask : task,
 		);
-		setTasks(updatedTasks);
-		await updateTask(updatedTask.id, { status: updatedTask.status });
+		setTasks(updatedTasks); // Directly set updated tasks
+		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
 	};
-
-	if (loading) {
-		return (
-			<div className="w-full h-full flex items-center justify-center">
-				<Loader2 className="animate-spin size-12" />
-			</div>
-		);
-	}
+	// TODO: Refactor TopNavBar to be viable in multiple pages
+	// <TopNavBar />;
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden container">
@@ -116,27 +97,24 @@ export default function MyIssues() {
 				</Button>
 				{/* TODO: Feature not implemented yet */}
 				<Button
-					onClick={() => router.push("/my-issues/subscribed")}
+					// onClick={() => setActiveTab("subscribed")}
 					variant="ghost"
 				>
 					Subscribed
 				</Button>
 				{/* TODO: Feature not implemented yet */}
 				<Button
-					onClick={() => router.push("/my-issues/activity")}
+					// onClick={() => setActiveTab("activity")}
 					variant="ghost"
 				>
 					Activity
 				</Button>
 			</div>
 
-			<TopNavBar />
+			{/* <TopNavBar /> */}
 
 			<ScrollArea className={view === "list" ? "max-h-[calc(100vh-55px)]" : ""}>
-				<ViewAllTasks
-					handleDragEnd={handleDragEnd}
-					tasks={filterTasks(tasks)}
-				/>
+				<ViewAllTasks handleDragEnd={handleDragEnd} tasks={tasks} />
 				{view === "grid" && <ScrollBar orientation="horizontal" />}
 			</ScrollArea>
 		</div>
