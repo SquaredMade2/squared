@@ -1,22 +1,8 @@
-import { globSync } from "glob"
-const fs = require("node:fs");
-const path = require("node:path");
-
-const inputDirectory = "./svgs";
-const outputDirectory = "./icons";
-
-const svgFiles = globSync("*.svg", {cwd: inputDirectory})
-
-for (const file of svgFiles) {
-    const svgContent = fs.readFileSync(`${path.join(inputDirectory, file)}`, "utf8");
-    const componentName = path.basename(file, ".svg");
-    const reactComponent = createReactComponent(componentName, svgContent)
-    fs.writeFileSync(outputDirectory, `${componentName}.tsx`, reactComponent)
-}
-
-function createReactComponent(name, svgContent) {
+export default function createSquaredIcon(name, svgContent) {
     const svgElement = svgContent.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
-    return `import React from 'react';
+    return `
+    import * as React from 'react';
+    import type {FC} from 'react';
 
     interface ${name}Props {
       className?: string;
@@ -26,8 +12,8 @@ function createReactComponent(name, svgContent) {
       absoluteStrokeWidth?: boolean;
     }
     
-    const ${name}: React.FC<${name}Props> = ({
-      className = ""
+  export const ${name}: FC<${name}Props> = ({
+      className = "",
       size = 24,
       color = 'currentColor',
       strokeWidth = 2,
@@ -49,11 +35,10 @@ function createReactComponent(name, svgContent) {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
+        <title>${name}</title>
           ${svgElement}
         </svg>
       );
     };
-    
-    export default ${name};
-    `
+    `;
 }

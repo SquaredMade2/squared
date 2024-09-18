@@ -12,7 +12,6 @@ import { SocketContext } from "@/app/SocketProvider";
 import NotificationsList from "@/components/NotificationsList";
 import type { AnyAction } from "@reduxjs/toolkit";
 import ToggleNavBar from "../ToggleNavBar";
-
 export const setFillColor = (theme: string): undefined | string => {
 	switch (true) {
 		case theme === "light":
