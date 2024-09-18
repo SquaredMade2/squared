@@ -10,7 +10,6 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { LayoutGrid } from "lucide-react";
-import Teams from "../Teams";
 import IconLeftMenu from "../IconLeftMenu";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
@@ -28,7 +27,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="h-full flex">
+			<div className="h-screen flex">
 				<div className="w-14 bg-muted dark:bg-accent">
 					<IconLeftMenu />
 				</div>
@@ -51,10 +50,7 @@ const Navbar = () => {
 													{team.name}
 												</AccordionTrigger>
 												<AccordionContent>
-													<NavBarTeams
-														onDropdownClick={() => {}}
-														teamIdentifier={team.identifier}
-													/>
+													<NavBarTeams teamIdentifier={team.identifier} />
 												</AccordionContent>
 											</AccordionItem>
 										);

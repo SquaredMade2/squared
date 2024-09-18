@@ -100,7 +100,7 @@ const TaskContextMenu: FC<TaskContextMenuProps> = ({ task }) => {
 				<div className="mr-2">
 					<Trash className="size-4" color="red" />
 				</div>
-				<label className="text-destructive">Delete</label>
+				<span className="text-destructive">Delete</span>
 			</ContextMenuItem>
 		</ContextMenuContent>
 	);

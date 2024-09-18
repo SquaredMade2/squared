@@ -180,14 +180,14 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 
 	const updatedWorkspace = await prisma.workspace.update({
 		where: { id: workspace.id },
-		data: { issuesCreated: { increment: 1 } },
+		data: { tasksCreated: { increment: 1 } },
 	});
 
 	const formattedName = workspace.name
 		.replace(/\s+/g, "")
 		.substring(0, 3)
 		.toUpperCase();
-	const identifier = `${formattedName}-${updatedWorkspace.issuesCreated + 1}`;
+	const identifier = `${formattedName}-${updatedWorkspace.tasksCreated + 1}`;
 	const randomLabelIds = getRandomLabels(taskLabels);
 
 	const task = await prisma.task.create({
@@ -202,6 +202,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			identifier: identifier,
 			teamId: team.id,
 			labels: randomLabelIds,
+			workspaceId: workspace.id,
 		},
 	});
 
