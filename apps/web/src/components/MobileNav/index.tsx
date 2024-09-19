@@ -10,7 +10,6 @@ import {
 	Sheet,
 	SheetContent,
 	SheetHeader,
-	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import {
@@ -22,23 +21,26 @@ import {
 	Moon,
 	LogOut,
 	Menu,
+	ChevronRight,
 } from "lucide-react";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { VisuallyHidden } from "@repo/ui/visually-hidden";
 
 const MobileMenuSheet = () => {
 	const [mounted, setMounted] = useState(false);
+	const [open, setOpen] = useState(false);
 	const router = useRouter();
 	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const { setShowCommand } = useModalStore((state) => state);
 	const { theme, setTheme } = useTheme();
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
-	const homeRoute = currentRoute.includes(`${workspace?.url}`);
 	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
 	const logout = useAuthStore((state) => state.logout);
+	const { user } = useAuthStore((state) => state);
 
 	useEffect(() => {
 		setMounted(true);
@@ -71,18 +73,24 @@ const MobileMenuSheet = () => {
 
 	const menuItems = [
 		{ name: "Home", icon: Home, onClick: toHome },
-		{ name: "Search", icon: Search, onClick: () => setShowCommand(true) },
+		{
+			name: "Search",
+			icon: Search,
+			onClick: () => {
+				setOpen(false);
+				setShowCommand(true);
+			},
+		},
 		{
 			name: "Settings",
 			icon: Settings,
 			onClick: () => navigateTo("settings/workspace"),
 		},
 		{ name: "Inbox", icon: Inbox, onClick: () => navigateTo("inbox") },
-		{ name: "Logout", icon: LogOut, onClick: handleLogout },
 	];
 
 	return (
-		<Sheet>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
 				<Button variant="ghost" size="icon" className="md:hidden">
 					<Menu className="h-5 w-5" />
@@ -91,36 +99,71 @@ const MobileMenuSheet = () => {
 			</SheetTrigger>
 			<SheetContent
 				side="left"
-				className="w-[300px] sm:w-[400px] flex flex-col h-full bg-card"
+				className="w-[300px] sm:w-[400px] flex flex-col h-full bg-background"
 			>
-				<SheetHeader className="ml-4">
-					<Image src="/logo.png" alt="Logo" width={40} height={40} />
+				<SheetHeader className="p-4 border-b">
+					<div className="flex items-center space-x-3">
+						<Image
+							src="/logo.png"
+							alt="Logo"
+							width={40}
+							height={40}
+							className="rounded-md"
+						/>
+						<div className="flex flex-col items-start">
+							<h2 className="text-lg font-semibold">Squared</h2>
+							<p className="text-sm text-muted-foreground">Welcome back!</p>
+						</div>
+					</div>
 					<VisuallyHidden>
-						<SheetTitle>Menu</SheetTitle>
+						<h1>Menu</h1>
 					</VisuallyHidden>
 				</SheetHeader>
-				<div className="flex flex-col flex-grow justify-between">
-					<div className="flex flex-col space-y-4 mt-4">
+				<div className="flex flex-col flex-grow justify-between py-6">
+					<nav className="space-y-2 px-4">
 						{menuItems.map((item) => (
 							<Button
 								key={item.name}
 								variant="ghost"
-								className="w-full justify-start"
+								className="w-full justify-between text-base font-normal hover:bg-accent"
 								onClick={item.onClick}
 							>
-								<item.icon className="mr-2 h-5 w-5" />
-								{item.name}
+								<div className="flex items-center">
+									<item.icon className="mr-3 h-5 w-5" />
+									{item.name}
+								</div>
+								<ChevronRight className="h-4 w-4 text-muted-foreground" />
 							</Button>
 						))}
-					</div>
-					<div className="mt-auto">
-						<Separator className="mb-6" />
-						<div className="flex justify-between">
+					</nav>
+					<div className="space-y-4">
+						<Separator />
+						<div className="flex items-center justify-between">
+							<div className="flex items-center space-x-3">
+								<Avatar>
+									<AvatarImage src={user?.avatarUrl ?? ""} />
+									<AvatarFallback>
+										{user?.name?.charAt(0) || "U"}
+									</AvatarFallback>
+								</Avatar>
+								<div>
+									<p className="text-sm font-medium">{user?.name || "User"}</p>
+									<p className="text-xs text-muted-foreground truncate w-5/6">
+										{user?.email || "user@example.com"}
+									</p>
+								</div>
+							</div>
+							<Button variant="ghost" size="icon" onClick={handleLogout}>
+								<LogOut className="h-5 w-5" />
+							</Button>
+						</div>
+						<Separator />
+						<div className="flex justify-between items-center">
 							<Button
 								variant="outline"
 								size="icon"
 								onClick={() => setTheme("light")}
-								className={theme === "light" ? "bg-accent" : ""}
+								className={theme === "light" ? "bg-card" : ""}
 							>
 								<Sun className="h-4 w-4" />
 							</Button>
