@@ -97,6 +97,11 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 			selectedRows.map((row) => row.original),
 			{ dismissed: true },
 		);
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
 	};
 
 	return (
