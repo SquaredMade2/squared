@@ -89,7 +89,7 @@ export default function InboxSidebar({
 	);
 
 	return (
-		<div className="w-64 ml-14 border-r border-border h-full md:block hidden p-4 bg-card dark:bg-transparent">
+		<div className="w-64 border-r border-border h-full md:block hidden p-4 bg-card dark:bg-transparent">
 			<nav>
 				<ul className="space-y-4">
 					<div className="space-y-2">
