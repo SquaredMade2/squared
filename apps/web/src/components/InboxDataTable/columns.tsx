@@ -10,7 +10,16 @@ import {
 import { getStatusIcon } from "@/utils/enumIcons";
 import { Button } from "../ui/button";
 import { Check, BellOff, Bookmark, BookmarkMinus } from "lucide-react";
-import { useAuthStore, useUserStore } from "@/store";
+import {
+	useAuthStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { formatUrl } from "@/utils/formatting";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -38,15 +47,57 @@ export const columns: ColumnDef<NotificationTask>[] = [
 	{
 		id: "content",
 		cell: ({ row }) => {
-			const taskId = row.original.Task.identifier.split("-")[1];
-			const taskName = row.original.Task.title;
-			const workspaceName = row.original.Workspace.name;
+			const router = useRouter();
+			const { getWorkspace, currentWorkspace } = useWorkspaceStore(
+				(state) => state,
+			);
+			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
+			const { updateNotification } = useNotificationStore((state) => state);
+			const { getAllTasks } = useTaskStore((state) => state);
+			const {
+				identifier: taskIdentifier,
+				title: taskName,
+				teamId,
+			} = row.original.Task;
+			const taskId = taskIdentifier.split("-")[1];
+			const {
+				name: workspaceName,
+				url: workspaceUrl,
+				id: workspaceId,
+			} = row.original.Workspace;
 			const read = !row.original.read;
 			const type = row.original.type;
 			const avatars = ["", ""];
+			const handleClick = async () => {
+				updateNotification(row.original.id, { read });
+				if (currentWorkspace?.id === workspaceId) {
+					router.push(
+						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
+					);
+				} else {
+					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
+					if (newWorkspace) {
+						const teams = await getAllTeams(newWorkspace.id);
+						const team = teams.find((t) => t.id === teamId);
+						if (team?.id === currentTeam?.id) {
+							router.push(
+								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
+							);
+						} else {
+							await getAllTasks(teamId);
+							router.push(
+								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
+							);
+						}
+					}
+				}
+			};
 
 			return (
-				<div className="flex items-start sm:items-center gap-4 w-full">
+				<div
+					className="flex items-start sm:items-center gap-4 w-full cursor-pointer"
+					onClick={handleClick}
+				>
 					<div className="flex items-center h-full mt-2 sm:mt-0">
 						{getStatusIcon(row.original.Task.status)}
 					</div>
