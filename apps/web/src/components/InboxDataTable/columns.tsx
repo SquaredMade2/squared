@@ -3,8 +3,13 @@ import { Checkbox } from "../ui/checkbox";
 import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { useId } from "react";
-import type { NotificationTask } from "@/store/notifications";
+import {
+	useNotificationStore,
+	type NotificationTask,
+} from "@/store/notifications";
 import { getStatusIcon } from "@/utils/enumIcons";
+import { Button } from "../ui/button";
+import { Check, BellOff, Bookmark } from "lucide-react";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -74,7 +79,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 	},
 	{
 		id: "timestamp",
-		cell: ({ row }) => {
+		cell: ({ row, table }) => {
 			const date = row.original.createdAt;
 			const formattedDate = formatDistanceToNow(date, {
 				addSuffix: true,
@@ -83,9 +88,61 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				.slice(-3)
 				.join(" ");
 
+			const isRowHovered =
+				(table.options.meta as { hoveredRowId: string | null })
+					?.hoveredRowId === row.id;
+
+			const { updateManyNotifications } = useNotificationStore(
+				(state) => state,
+			);
+
+			const handleDismiss = async () => {
+				await updateManyNotifications([row.original], { dismissed: true });
+			};
+
+			const handleUnsubscribe = async () => {
+				await updateManyNotifications([row.original], { read: true });
+			};
+
+			const handleSave = async () => {
+				// Implement save functionality
+				console.log("Save notification", row.original.id);
+			};
+
 			return (
-				<div className="flex justify-end text-muted-foreground text-xs text-right whitespace-nowrap h-full">
-					{formattedDate}
+				<div className="flex justify-end items-center h-full">
+					{!isRowHovered ? (
+						<div className="text-muted-foreground text-xs text-right whitespace-nowrap">
+							{formattedDate}
+						</div>
+					) : (
+						<div className="flex gap-1">
+							<Button
+								onClick={handleDismiss}
+								variant="secondary"
+								size="icon"
+								className="size-8 border border-border bg-accent"
+							>
+								<Check className="size-4" />
+							</Button>
+							<Button
+								onClick={handleUnsubscribe}
+								variant="secondary"
+								size="icon"
+								className="size-8 border border-border bg-accent"
+							>
+								<BellOff className="size-4" />
+							</Button>
+							<Button
+								onClick={handleSave}
+								variant="secondary"
+								size="icon"
+								className="size-8 border border-border bg-accent"
+							>
+								<Bookmark className="size-4" />
+							</Button>
+						</div>
+					)}
 				</div>
 			);
 		},

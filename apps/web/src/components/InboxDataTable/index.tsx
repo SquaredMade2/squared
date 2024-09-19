@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
 	type ColumnFiltersState,
 	type SortingState,
@@ -32,17 +32,15 @@ import { Checkbox } from "../ui/checkbox";
 import { BellOff, Check } from "lucide-react";
 
 export function InboxDataTable({ data }: { data: NotificationTask[] }) {
-	const [sorting, setSorting] = React.useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-		[],
-	);
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({
-			taskTitle: false,
-			read: false,
-		});
-	const [rowSelection, setRowSelection] = React.useState({});
-	const [showUnreadOnly, setShowUnreadOnly] = React.useState(false);
+	const [sorting, setSorting] = useState<SortingState>([]);
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+		taskTitle: false,
+		read: false,
+	});
+	const [rowSelection, setRowSelection] = useState({});
+	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const { updateManyNotifications } = useNotificationStore((state) => state);
 
 	const table = useReactTable({
@@ -64,6 +62,9 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		},
 		filterFns: {
 			unread: (row) => !showUnreadOnly || !row.original.read,
+		},
+		meta: {
+			hoveredRowId,
 		},
 	});
 
@@ -174,7 +175,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 									)}
 								</div>
 							</TableHead>
-							<TableHead className="w-20" />
+							<TableHead className="w-40" />
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -183,11 +184,12 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									className={
-										!row.original.read
-											? "bg-transparent hover:bg-card"
-											: "bg-card hover:bg-primary/20"
-									}
+									className={`
+                    ${!row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}
+                    transition-colors
+                  `}
+									onMouseEnter={() => setHoveredRowId(row.id)}
+									onMouseLeave={() => setHoveredRowId(null)}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id} className="p-2 sm:p-4">
