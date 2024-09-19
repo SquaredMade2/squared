@@ -19,7 +19,7 @@ import {
 } from "@/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { formatUrl } from "@/utils/formatting";
+import { formatUrl, getInitials } from "@/utils/formatting";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -54,6 +54,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
 			const { updateNotification } = useNotificationStore((state) => state);
 			const { getAllTasks } = useTaskStore((state) => state);
+			const { userAvatars } = useUserStore((state) => state);
 			const {
 				identifier: taskIdentifier,
 				title: taskName,
@@ -67,7 +68,12 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			} = row.original.Workspace;
 			const read = !row.original.read;
 			const type = row.original.type;
-			const avatars = ["", ""];
+			const avatars = userAvatars.filter(
+				({ id }) =>
+					id === row.original.Task.assigneeId ||
+					id === row.original.Task.authorId,
+			);
+
 			const handleClick = async () => {
 				updateNotification(row.original.id, { read });
 				if (currentWorkspace?.id === workspaceId) {
@@ -115,10 +121,10 @@ export const columns: ColumnDef<NotificationTask>[] = [
 						<div className="flex items-center gap-2">
 							<div className="text-xs lowercase hidden sm:block">{type}</div>
 							<div className="flex -space-x-6">
-								{avatars?.map((avatar, index) => (
-									<Avatar key={useId()} className="border-2 border-border">
-										<AvatarImage src={avatar} />
-										<AvatarFallback>U{index + 1}</AvatarFallback>
+								{avatars?.map((avatar) => (
+									<Avatar key={avatar.id} className="border-2 border-border">
+										<AvatarImage src={avatar.avatarUrl ?? ""} />
+										<AvatarFallback>{getInitials(avatar.name)}</AvatarFallback>
 									</Avatar>
 								))}
 							</div>

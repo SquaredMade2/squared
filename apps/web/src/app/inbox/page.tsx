@@ -2,7 +2,12 @@
 import { useEffect, useState } from "react";
 import InboxSidebar from "@/components/InboxSidebar";
 import { InboxDataTable } from "@/components/InboxDataTable";
-import { useAuthStore, useNotificationStore, useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useNotificationStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import IconLeftMenu from "@/components/IconLeftMenu";
 import type { NotificationType } from "@repo/db";
 
@@ -23,6 +28,7 @@ export default function InboxPage() {
 	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
 		useState(notifications);
+	const { getUserAvatars } = useUserStore((state) => state);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -82,6 +88,14 @@ export default function InboxPage() {
 				setWorkspace(null);
 		}
 	}, [filterType, notifications, workspace, user]);
+	useEffect(() => {
+		const fetchAvatars = async () => {
+			if (user) {
+				await getUserAvatars(user.id);
+			}
+		};
+		fetchAvatars();
+	}, [user]);
 
 	return (
 		<div className="flex w-full">
