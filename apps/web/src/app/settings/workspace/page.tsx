@@ -61,9 +61,7 @@ export default function WorkspaceSettings() {
 		setCurrentWorkspace,
 	} = useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
-	const { getAllTeams, setCurrentTeam, currentTeam } = useTeamStore(
-		(state) => state,
-	);
+	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
 	const { getAllTasks } = useTaskStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
