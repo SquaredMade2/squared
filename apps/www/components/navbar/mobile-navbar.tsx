@@ -83,10 +83,10 @@ export const MobileNavbar = ({ navItems }: any) => {
             ))}
           </div>
           <div className="flex flex-row w-full items-start gap-2.5  px-8 py-4 ">
-            <Button as={Link} href="https://app.squaredmade.com/register">
+            <Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
               Sign Up
             </Button>
-            <Button variant="simple" as={Link} href="https://app.squaredmade.com/login">
+            <Button variant="simple" as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
               Login
             </Button>
           </div>
