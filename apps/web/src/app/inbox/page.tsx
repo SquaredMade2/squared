@@ -2,16 +2,22 @@
 import { useEffect, useState } from "react";
 import InboxSidebar from "@/components/InboxSidebar";
 import { InboxDataTable } from "@/components/InboxDataTable";
-import { useAuthStore, useNotificationStore } from "@/store";
+import { useAuthStore, useNotificationStore, useWorkspaceStore } from "@/store";
 import IconLeftMenu from "@/components/IconLeftMenu";
 import type { NotificationType } from "@repo/db";
 
-export type NotificationFilter = NotificationType | "INBOX" | "SAVED" | "READ";
+export type NotificationFilter =
+	| NotificationType
+	| "INBOX"
+	| "SAVED"
+	| "READ"
+	| "WORKSPACE";
 
 export default function InboxPage() {
 	const { notifications, getAllNotifications } = useNotificationStore(
 		(state) => state,
 	);
+	const { workspaces } = useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [workspace, setWorkspace] = useState<string | null>(null);
@@ -30,24 +36,29 @@ export default function InboxPage() {
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "ASSIGNED"),
 				);
+				setWorkspace(null);
 				break;
 			case "PARTICIPATING":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "PARTICIPATING"),
 				);
+				setWorkspace(null);
 				break;
 			case "MENTIONED":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "MENTIONED"),
 				);
+				setWorkspace(null);
 				break;
 			case "CREATED":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "CREATED"),
 				);
+				setWorkspace(null);
 				break;
 			case "INBOX":
 				setFilteredNotifications(notifications);
+				setWorkspace(null);
 				break;
 			case "SAVED":
 				setFilteredNotifications(
@@ -55,14 +66,22 @@ export default function InboxPage() {
 						user?.savedNotificationIds?.includes(n.id),
 					),
 				);
+				setWorkspace(null);
 				break;
 			case "READ":
 				setFilteredNotifications(notifications.filter((n) => !n.read));
+				setWorkspace(null);
+				break;
+			case "WORKSPACE":
+				setFilteredNotifications(
+					notifications.filter((n) => n.workspaceId === workspace),
+				);
 				break;
 			default:
 				setFilteredNotifications(notifications);
+				setWorkspace(null);
 		}
-	}, [filterType, notifications]);
+	}, [filterType, notifications, workspace]);
 	// console.log("notifications", notifications);
 
 	return (
@@ -74,7 +93,9 @@ export default function InboxPage() {
 				setFilterType={setFilterType}
 				filterType={filterType}
 				setWorkspace={setWorkspace}
-				notifications={notifications.filter((n) => !n.read)}
+				readNotifications={notifications.filter((n) => !n.read)}
+				workspaces={workspaces}
+				workspace={workspace}
 			/>
 			<div className="flex-1 p-4 container w-full">
 				<h1 className="text-2xl font-bold mb-4">Inbox</h1>
