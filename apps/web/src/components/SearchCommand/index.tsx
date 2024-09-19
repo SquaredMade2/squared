@@ -18,6 +18,7 @@ import {
 } from "../ui/command";
 import { useToast } from "../ui/use-toast";
 import { useModalStore, useFilterStore } from "@/store";
+import { ScrollArea } from "../ui/scroll-area";
 
 const SearchCommand = () => {
 	const { toast } = useToast();
@@ -129,33 +130,35 @@ const SearchCommand = () => {
 				onBlurCapture={() => setIsInputFocus(false)}
 			/>
 			<CommandList>
-				<CommandEmpty>No results found.</CommandEmpty>
-				{Object.entries(commandItems.getSchema()).map(([key, value]) => {
-					if (value === "separator") {
-						return <CommandSeparator key={key} />;
-					}
-					if (isSearchbarItem(value)) {
-						return commandItem(value as SearchbarItem, setShowCommand, key);
-					}
-					return (
-						<CommandGroup
-							key={key}
-							heading={key}
-							style={{ pointerEvents: "auto" }}
-							className="[&_[cmdk-group-heading]]:text-[]"
-						>
-							{Object.entries(value as SearchbarSection).map(
-								([key1, value1]) => {
-									return commandItem(
-										value1 as SearchbarItem,
-										setShowCommand,
-										key1,
-									);
-								},
-							)}
-						</CommandGroup>
-					);
-				})}
+				<ScrollArea className="h-96 pr-1">
+					<CommandEmpty>No results found.</CommandEmpty>
+					{Object.entries(commandItems.getSchema()).map(([key, value]) => {
+						if (value === "separator") {
+							return <CommandSeparator key={key} />;
+						}
+						if (isSearchbarItem(value)) {
+							return commandItem(value as SearchbarItem, setShowCommand, key);
+						}
+						return (
+							<CommandGroup
+								key={key}
+								heading={key}
+								style={{ pointerEvents: "auto" }}
+								className="[&_[cmdk-group-heading]]:text-[]"
+							>
+								{Object.entries(value as SearchbarSection).map(
+									([key1, value1]) => {
+										return commandItem(
+											value1 as SearchbarItem,
+											setShowCommand,
+											key1,
+										);
+									},
+								)}
+							</CommandGroup>
+						);
+					})}
+				</ScrollArea>
 			</CommandList>
 		</CommandDialog>
 	);
