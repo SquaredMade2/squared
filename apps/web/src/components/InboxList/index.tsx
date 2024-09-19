@@ -53,7 +53,7 @@ const InboxList: React.FC<Props> = ({
 			className={`$w-auto h-full flex absolute z-10 bg-background xl:static transition-all duration-300 ease-in-out
         ${showInboxList ? "left-0 top-0" : "-left-[100%]"}`}
 		>
-			<div className="w-14 bg-muted dark:bg-accent h-full border-r md:hidden">
+			<div className="md:hidden">
 				<IconLeftMenu />
 			</div>
 

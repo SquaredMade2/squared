@@ -70,7 +70,7 @@ const WorkSpaceDropDown = () => {
 					)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-60">
+			<DropdownMenuContent className="w-60 mx-2">
 				{workspaces.map((workspace, index) => (
 					<DropdownMenuItem
 						key={workspace.id}
