@@ -90,7 +90,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	return (
 		<div className="w-full">
 			<div className="flex items-center justify-start gap-4 py-4">
-				<div className="border border-border rounded-md hidden sm:block">
+				<div className="border border-border rounded-md hidden sm:block bg-card dark:bg-transparent">
 					<Button
 						variant={showUnreadOnly ? "secondary" : "outline"}
 						onClick={() => setShowUnreadOnly(false)}
@@ -114,7 +114,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 					onChange={(event) =>
 						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
 					}
-					className="max-w-md"
+					className="max-w-md bg-card"
 				/>
 			</div>
 			<div className="rounded-md border">
