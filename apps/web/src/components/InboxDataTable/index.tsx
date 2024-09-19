@@ -90,7 +90,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	return (
 		<div className="w-full">
 			<div className="flex items-center justify-start gap-4 py-4">
-				<div className="border border-border rounded-md">
+				<div className="border border-border rounded-md hidden sm:block">
 					<Button
 						variant={showUnreadOnly ? "secondary" : "outline"}
 						onClick={() => setShowUnreadOnly(false)}
@@ -166,7 +166,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									className={row.original.read ? "bg-transparent" : "bg-card"}
+									className={row.original.read ? "bg-card" : "bg-transparent"}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id} className="p-2 sm:p-4">

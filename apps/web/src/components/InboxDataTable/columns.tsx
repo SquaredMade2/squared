@@ -35,7 +35,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const taskId = row.original.Task.identifier.split("-")[1];
 			const taskName = row.original.Task.title;
 			const workspaceName = row.original.Workspace.name;
-			const read = row.original.read;
+			const read = !row.original.read;
 			const type = row.original.type;
 			const avatars = ["", ""];
 
