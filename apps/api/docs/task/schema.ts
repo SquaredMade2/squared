@@ -19,7 +19,15 @@ export const TaskSchema = {
 		},
 		status: {
 			type: "string",
-			enum: ["backlog", "todo", "inProgress", "done", "canceled", "duplicate"],
+			enum: [
+				"backlog",
+				"todo",
+				"inProgress",
+				"done",
+				"inReview",
+				"canceled",
+				"archived",
+			],
 			description: "Current status of the task",
 		},
 		identifier: {
@@ -64,6 +72,15 @@ export const TaskSchema = {
 		assigneeName: {
 			type: "string",
 			description: "Name of the user assigned to the task",
+		},
+		updatedAt: {
+			type: "string",
+			format: "date-time",
+			description: "Date when the task was last updated",
+		},
+		deleted: {
+			type: "boolean",
+			description: "Flag indicating whether the task has been deleted",
 		},
 	},
 };

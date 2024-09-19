@@ -14,6 +14,8 @@ enum Status {
   inProgress
   inReview
   done
+  canceled
+  archived
 }
 
 enum Priority {
@@ -131,7 +133,7 @@ model Notification {
   read        Boolean  @default(false)
   description String?
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now()) @updatedAt
 
   User User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -150,6 +152,8 @@ model Task {
   assigneeName   String?
   labels         String[]
   workspaceId    String
+  updatedAt      DateTime  @default(now()) @updatedAt
+  deleted        Boolean   @default(false)
 
   status   Status        @default(backlog)
   priority Priority      @default(noPriority)
