@@ -129,7 +129,7 @@ export default function TeamsSetting() {
 	};
 
 	// Custom hook for metadata
-	useMetaData("Team Settings", "Manage your team settings.");
+	useMetaData("Team", "Manage your team settings.");
 
 	return (
 		<div className="container mx-auto py-10 md:w-3/4 w-full">

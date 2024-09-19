@@ -75,7 +75,7 @@ export default function Profile() {
 	};
 
 	// Custom hook for metadata
-	useMetaData("Profile Settings", "Manage your Squared profile.");
+	useMetaData("Profile", "Manage your Squared profile.");
 
 	if (!user) return null;
 

@@ -18,7 +18,10 @@ export function useMetaData(
 
 		// Cleanup function to remove meta tags when the component unmounts
 		return () => {
-			document.head.removeChild(metaDescription);
+			// Ensure that the meta tag is still part of the document before removing it
+			if (document.head.contains(metaDescription)) {
+				document.head.removeChild(metaDescription);
+			}
 		};
 	}, [dependencyArray]);
 }

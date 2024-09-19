@@ -41,7 +41,7 @@ export default function WorkspaceMembersPage() {
 	}, [workspaceId]);
 
 	// Custom hook for metadata
-	useMetaData("Members Settings", "Manage your members settings.");
+	useMetaData("Members", "Manage your members settings.");
 
 	return (
 		<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">

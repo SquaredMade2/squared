@@ -15,6 +15,7 @@ import type { Status, Task } from "@repo/db";
 import { useRouter } from "next/navigation";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import BackButton from "@/components/BackButton";
+import { useMetaData } from "@/utils/useMetaData";
 
 export default function MyIssues() {
 	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
@@ -77,6 +78,8 @@ export default function MyIssues() {
 	};
 	// TODO: Refactor TopNavBar to be viable in multiple pages
 	// <TopNavBar />;
+
+	useMetaData("My Issues", "Description of the my issues in Squared");
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden container">

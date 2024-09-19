@@ -42,7 +42,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
 		useWorkspaceStore((state) => state);
 	const [taskLabels, setTaskLabels] = useState<Label[]>(
-		workspaceLabels.filter((label) => currentTask?.labels.includes(label.id)),
+		workspaceLabels?.filter((label) => currentTask?.labels.includes(label.id)),
 	);
 	const { updateTask } = useTaskStore((state) => state);
 	const { getTaskEvents } = useActivityStore((state) => state);
@@ -122,7 +122,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 					<CommandList>
 						<CommandEmpty>No label found.</CommandEmpty>
 						<CommandGroup>
-							{workspaceLabels.map((label) => (
+							{workspaceLabels?.map((label) => (
 								<CommandItem
 									key={label.id}
 									value={label.name}
@@ -133,7 +133,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 										<LabelColor label={label} />
 										<span className="ml-2">{label.name}</span>
 									</div>
-									{taskLabels.length !== 0 && taskLabels.includes(label) && (
+									{taskLabels?.length !== 0 && taskLabels.includes(label) && (
 										<Check className="size-4" />
 									)}
 								</CommandItem>

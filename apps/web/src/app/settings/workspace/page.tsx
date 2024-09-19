@@ -137,7 +137,7 @@ export default function WorkspaceSettings() {
 	};
 
 	// Custom hook for metadata
-	useMetaData("Workspace Settings", "Manage your workspace settings.");
+	useMetaData("Workspace", "Manage your workspace settings.");
 
 	return (
 		<div className="container mx-auto py-10 md:w-3/4 w-full ">

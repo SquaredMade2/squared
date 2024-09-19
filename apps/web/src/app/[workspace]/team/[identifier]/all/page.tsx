@@ -48,10 +48,7 @@ export default function Home() {
 	const teamIdentifier = params.identifier;
 
 	// Custom hook for metadata
-	useMetaData(
-		"All workspace",
-		"Description of the All workspace page in Squared.",
-	);
+	useMetaData("All Tasks", "Description of the All Tasks in Squared.");
 
 	// Combining loading logic in a single useEffect
 	useEffect(() => {

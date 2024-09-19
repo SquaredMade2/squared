@@ -21,7 +21,7 @@ const IntegrationSettings: React.FC = () => {
 
 	// Custom hook for metadata
 	useMetaData(
-		"Integrations Settings",
+		"Integrations",
 		"Enhance Squared experience by integrating add-ons.",
 	);
 
