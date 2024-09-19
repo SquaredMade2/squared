@@ -38,5 +38,5 @@ yarn-error.log*
 .turbo
 .vercel
 .elasticbeanstalk
-
 generated
+apps/api/api/index.ts

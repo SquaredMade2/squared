@@ -17,6 +17,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@repo/db";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
 
@@ -68,7 +69,9 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
 						{showIcon(sidebarStatus)}
-						<span className="ml-2">{sidebarStatus}</span>
+						<span className="ml-2">
+							{sidebarStatus ? formatStatus(sidebarStatus) : sidebarStatus}
+						</span>
 					</div>
 				</SelectValue>
 			</SelectTrigger>
@@ -78,7 +81,7 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
 								{showIcon(status)}
-								<span className="ml-2">{status}</span>
+								<span className="ml-2">{formatStatus(status)}</span>
 							</div>
 						</div>
 					</SelectItem>

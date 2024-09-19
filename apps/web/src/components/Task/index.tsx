@@ -98,38 +98,36 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 		<>
 			{!currentTask || (isLoading && <LoadingTask />)}
 			{currentTask && (
-				<>
-					<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
-						{showBackdrop && (
-							<div
-								className={
-									showSideNav
-										? "max850:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40"
-										: ""
-								}
+				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
+					{showBackdrop && (
+						<div
+							className={
+								showSideNav
+									? "max850:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40"
+									: ""
+							}
+						/>
+					)}
+					<div className="w-full h-full p-2 md:p-5 xl:px-10 ">
+						<div className="flex w-full relative">
+							<TaskPageCenterContainer
+								setShowSideNav={toggleNav}
+								svgRef={svgRef}
 							/>
-						)}
-						<div className="w-full h-full p-2 md:p-5 xl:px-10 ">
-							<div className="flex w-full relative">
-								<TaskPageCenterContainer
-									setShowSideNav={toggleNav}
-									svgRef={svgRef}
-								/>
-								<div
-									className={`relative max850:absolute transition-all duration-300 ease-in-out ${
-										showSideNav
-											? " z-20 max850:-right-0 "
-											: " max850:-right-[500px] "
-									}`}
-								>
-									<div className="" ref={sideNav}>
-										<IssueSidebarContainer />
-									</div>
+							<div
+								className={`relative max850:absolute transition-all duration-300 ease-in-out ${
+									showSideNav
+										? " z-20 max850:-right-0 "
+										: " max850:-right-[500px] "
+								}`}
+							>
+								<div className="" ref={sideNav}>
+									<IssueSidebarContainer />
 								</div>
 							</div>
 						</div>
 					</div>
-				</>
+				</div>
 			)}
 		</>
 	);
