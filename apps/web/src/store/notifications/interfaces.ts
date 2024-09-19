@@ -26,6 +26,10 @@ export type NotificationActions = {
 	deleteNotification: (notificationId: string) => Promise<void>;
 	getAllNotifications: (userId: string) => Promise<Notification[]>;
 	clearNotifications: (userId: string) => Promise<Notification[]>;
+	updateManyNotifications: (
+		notifications: NotificationTask[],
+		data: Partial<Notification>,
+	) => Promise<NotificationTask[]>;
 };
 
 export type NotificationStore = NotificationState & NotificationActions;

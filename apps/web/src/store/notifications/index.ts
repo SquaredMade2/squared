@@ -137,6 +137,28 @@ export const createNotificationStore = (
 						return [];
 					}
 				},
+				updateManyNotifications: async (
+					notifications: NotificationTask[],
+					data: Partial<Notification>,
+				): Promise<NotificationTask[]> => {
+					try {
+						const response: { data: ApiReturnType<NotificationTask[]> } =
+							await axios.put(apiString(""), { notifications, data });
+						const { data: updatedNotifications } = response.data;
+						if (!updatedNotifications) {
+							return [];
+						}
+						set((state) => ({
+							notifications: state.notifications.map(
+								(n) => updatedNotifications.find((un) => un.id === n.id) || n,
+							),
+						}));
+						return updatedNotifications;
+					} catch (error) {
+						console.error("Error in updateManyNotifications:", error);
+						return [];
+					}
+				},
 			}),
 			{
 				name: "notification-store",

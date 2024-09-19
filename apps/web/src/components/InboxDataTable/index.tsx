@@ -24,7 +24,10 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { columns } from "./columns";
-import type { NotificationTask } from "@/store/notifications";
+import {
+	useNotificationStore,
+	type NotificationTask,
+} from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
 import { BellOff, Check } from "lucide-react";
 
@@ -40,6 +43,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		});
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [showUnreadOnly, setShowUnreadOnly] = React.useState(false);
+	const { updateManyNotifications } = useNotificationStore((state) => state);
 
 	const table = useReactTable({
 		data,
@@ -71,19 +75,27 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		}
 	}, [showUnreadOnly, table]);
 
-	const handleMarkAsRead = () => {
+	const handleMarkAsRead = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		console.log(
-			"Marking as read:",
-			selectedRows.map((row) => row.original.id),
+		await updateManyNotifications(
+			selectedRows.map((row) => row.original),
+			{ read: true },
 		);
 	};
 
-	const handleMarkAsUnread = () => {
+	const handleMarkAsUnread = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		console.log(
-			"Marking as unread:",
-			selectedRows.map((row) => row.original.id),
+		await updateManyNotifications(
+			selectedRows.map((row) => row.original),
+			{ read: false },
+		);
+	};
+
+	const handleMarkAsDismissed = async () => {
+		const selectedRows = table.getFilteredSelectedRowModel().rows;
+		await updateManyNotifications(
+			selectedRows.map((row) => row.original),
+			{ dismissed: true },
 		);
 	};
 
@@ -136,13 +148,13 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 									{table.getFilteredSelectedRowModel().rows.length > 0 && (
 										<div className="flex py-2 space-x-2 justify-start">
 											<Button
-												onClick={handleMarkAsRead}
+												onClick={handleMarkAsDismissed}
 												variant="outline"
 												size="sm"
 												className="gap-2 bg-secondary"
 											>
 												<Check className="size-4" />
-												Mark as Read
+												Dismiss
 											</Button>
 											<Button
 												onClick={handleMarkAsUnread}
@@ -166,7 +178,11 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									className={row.original.read ? "bg-card" : "bg-transparent"}
+									className={
+										!row.original.read
+											? "bg-transparent hover:bg-card"
+											: "bg-card hover:bg-primary/20"
+									}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id} className="p-2 sm:p-4">

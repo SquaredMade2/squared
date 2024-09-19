@@ -57,7 +57,7 @@ export default function InboxPage() {
 				setWorkspace(null);
 				break;
 			case "INBOX":
-				setFilteredNotifications(notifications);
+				setFilteredNotifications(notifications.filter((n) => !n.dismissed));
 				setWorkspace(null);
 				break;
 			case "SAVED":
