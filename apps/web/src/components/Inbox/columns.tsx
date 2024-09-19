@@ -193,7 +193,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 								onClick={handleDismiss}
 								variant="secondary"
 								size="icon"
-								className="size-8 border border-border bg-accent"
+								className="size-8 border border-border bg-accent hover:bg-popover"
 							>
 								<Check className="size-4" />
 							</Button>
@@ -201,7 +201,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 								onClick={handleUnsubscribe}
 								variant="secondary"
 								size="icon"
-								className="size-8 border border-border bg-accent"
+								className="size-8 border border-border bg-accent hover:bg-popover"
 							>
 								<BellOff className="size-4" />
 							</Button>
@@ -209,7 +209,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 								onClick={handleSave}
 								variant="secondary"
 								size="icon"
-								className="size-8 border border-border bg-accent"
+								className="size-8 border border-border bg-accent hover:bg-popover"
 							>
 								{saved ? (
 									<BookmarkMinus className="size-4" />

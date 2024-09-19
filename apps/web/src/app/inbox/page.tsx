@@ -137,6 +137,7 @@ export default function InboxPage() {
 									user,
 								}))
 								.filter((n) => (!filterRead ? true : !n.read))}
+							filterType={filterType}
 						/>
 					</div>
 				</div>

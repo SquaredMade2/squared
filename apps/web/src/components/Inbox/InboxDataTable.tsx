@@ -29,11 +29,14 @@ import {
 	type NotificationTask,
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
-import { BellOff, Check, Circle, Ellipsis } from "lucide-react";
-import type { User } from "@repo/db";
+import { BellOff, Check, Circle, Ellipsis, MoveRight } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import type { NotificationFilter } from "@/app/inbox/page";
 
-export function InboxDataTable({ data }: { data: NotificationTask[] }) {
+export function InboxDataTable({
+	data,
+	filterType,
+}: { data: NotificationTask[]; filterType: NotificationFilter }) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -106,6 +109,18 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		}
 		table.setRowSelection(updatedRowSelection);
 	};
+	const handleMarkAsRestored = async () => {
+		const selectedRows = table.getFilteredSelectedRowModel().rows;
+		await updateManyNotifications(
+			selectedRows.map((row) => row.original),
+			{ dismissed: false },
+		);
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
+	};
 
 	return (
 		<div className="w-full container">
@@ -155,55 +170,69 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 									<div className="text-foreground w-16">Select All</div>
 									{table.getFilteredSelectedRowModel().rows.length > 0 && (
 										<div className="flex py-2 space-x-2 justify-start">
-											<Button
-												onClick={handleMarkAsDismissed}
-												variant="outline"
-												size="sm"
-												className="gap-2 bg-secondary"
-											>
-												<Check className="size-4" />
-												Dismiss
-											</Button>
-											<Button
-												onClick={handleMarkAsUnread}
-												variant="outline"
-												size="sm"
-												className="gap-2 bg-secondary"
-											>
-												<BellOff className="size-4" />
-												Unsubscribe
-											</Button>
-											<Popover>
-												<PopoverTrigger asChild>
+											{filterType !== "DONE" ? (
+												<>
 													<Button
+														onClick={handleMarkAsDismissed}
 														variant="outline"
-														className="bg-secondary"
-														size={"sm"}
+														size="sm"
+														className="gap-2 bg-secondary"
 													>
-														<Ellipsis className="size-4" />
+														<Check className="size-4" />
+														Dismiss
 													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-[200px] p-0">
-													<div className="flex flex-col">
-														<Button
-															variant="ghost"
-															onClick={handleMarkAsRead}
-															className="justify-start gap-3"
-														>
-															<Circle className="size-4" />
-															Mark as Read
-														</Button>
-														<Button
-															variant="ghost"
-															onClick={handleMarkAsUnread}
-															className="justify-start gap-3"
-														>
-															<Circle className="size-4 fill-foreground" />
-															Mark as Unread
-														</Button>
-													</div>
-												</PopoverContent>
-											</Popover>
+													<Button
+														onClick={handleMarkAsUnread}
+														variant="outline"
+														size="sm"
+														className="gap-2 bg-secondary"
+													>
+														<BellOff className="size-4" />
+														Unsubscribe
+													</Button>
+													<Popover>
+														<PopoverTrigger asChild>
+															<Button
+																variant="outline"
+																className="bg-secondary"
+																size={"sm"}
+															>
+																<Ellipsis className="size-4" />
+															</Button>
+														</PopoverTrigger>
+														<PopoverContent className="w-[200px] p-0">
+															<div className="flex flex-col">
+																<Button
+																	variant="ghost"
+																	onClick={handleMarkAsRead}
+																	className="justify-start gap-3"
+																>
+																	<Circle className="size-4" />
+																	Mark as Read
+																</Button>
+																<Button
+																	variant="ghost"
+																	onClick={handleMarkAsUnread}
+																	className="justify-start gap-3"
+																>
+																	<Circle className="size-4 fill-foreground" />
+																	Mark as Unread
+																</Button>
+															</div>
+														</PopoverContent>
+													</Popover>
+												</>
+											) : (
+												<Button
+													onClick={handleMarkAsRestored}
+													variant="outline"
+													size="sm"
+													className="gap-2 bg-secondary"
+												>
+													<MoveRight className="size-4" />
+													Move to inbox
+												</Button>
+											)}
 										</div>
 									)}
 								</div>
