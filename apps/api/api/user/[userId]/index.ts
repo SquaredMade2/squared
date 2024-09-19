@@ -15,7 +15,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -45,7 +44,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -73,7 +71,6 @@ export function createRoute(): Route<Params> {
 					where: { id: userId },
 				});
 				if (ifUserExists) {
-					res.status(401);
 					return {
 						data: null,
 						message: "User already exists",

@@ -14,6 +14,7 @@ import {
 import type { Status, Task } from "@repo/db";
 import { useRouter } from "next/navigation";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import BackButton from "@/components/BackButton";
 
 export default function MyIssues() {
 	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
@@ -80,6 +81,7 @@ export default function MyIssues() {
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden container">
 			<div className="flex justify-start space-x-4 my-4 items-center">
+				<BackButton hoverbackground="bg-card" />
 				<p className="hidden xl:block">My Issues</p>
 				<Button
 					onClick={() => setActiveTab("assigned")}

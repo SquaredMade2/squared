@@ -49,7 +49,7 @@ const TaskColumnTitle = ({
 		<div className={isListView ? "" : "pr-2 min-w-64"}>
 			<div
 				className={cn(
-					"flex w-full bg-muted dark:bg-accent items-center justify-between font-medium transition-all",
+					"flex w-full bg-secondary items-center justify-between font-medium transition-all",
 					isListView
 						? "rounded-t-lg xs:px-5 sm:px-5 lg:px-[42px] py-2"
 						: "flex-row rounded-lg px-2 h-10 mb-2 font-bold",

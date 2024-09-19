@@ -17,7 +17,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -48,7 +47,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -61,7 +59,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!author) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -93,7 +90,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingTask) {
-					res.status(401);
 					return {
 						data: null,
 						message: "Task already exists",
@@ -116,7 +112,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!author) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -175,7 +170,6 @@ export function createRoute(): Route<Params> {
 					where: { id: taskId },
 				});
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
