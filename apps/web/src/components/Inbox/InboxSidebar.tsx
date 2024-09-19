@@ -23,7 +23,7 @@ type SidebarProps = {
 	workspace: string | null;
 };
 
-export default function InboxSidebar({
+export function InboxSidebar({
 	setFilterType,
 	setWorkspace,
 	filterType,

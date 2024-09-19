@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import InboxSidebar from "@/components/InboxSidebar";
-import { InboxDataTable } from "@/components/InboxDataTable";
+import { InboxDataTable, InboxSidebar } from "@/components/Inbox";
 import {
 	useAuthStore,
 	useNotificationStore,
