@@ -52,7 +52,6 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
-
 				return {
 					data: user,
 					variant: "default",

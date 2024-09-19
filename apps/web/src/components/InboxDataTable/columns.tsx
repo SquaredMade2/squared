@@ -9,7 +9,8 @@ import {
 } from "@/store/notifications";
 import { getStatusIcon } from "@/utils/enumIcons";
 import { Button } from "../ui/button";
-import { Check, BellOff, Bookmark } from "lucide-react";
+import { Check, BellOff, Bookmark, BookmarkMinus } from "lucide-react";
+import { useAuthStore, useUserStore } from "@/store";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -92,21 +93,36 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateManyNotifications } = useNotificationStore(
-				(state) => state,
-			);
+			const { updateNotification } = useNotificationStore((state) => state);
+			const { updateUser, getUser } = useUserStore((state) => state);
+			const { user, setUser } = useAuthStore((state) => state);
+			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {
-				await updateManyNotifications([row.original], { dismissed: true });
+				await updateNotification(row.original.id, { dismissed: true });
 			};
 
 			const handleUnsubscribe = async () => {
-				await updateManyNotifications([row.original], { read: true });
+				await updateNotification(row.original.id, { read: true });
 			};
 
 			const handleSave = async () => {
-				// Implement save functionality
-				console.log("Save notification", row.original.id);
+				const currentUser = user && (await getUser(user.id)).user;
+				if (currentUser) {
+					setUser(currentUser);
+				}
+				const response =
+					user &&
+					(await updateUser(user.id, {
+						savedNotificationIds: saved
+							? user.savedNotificationIds?.filter(
+									(id) => id !== row.original.id,
+								)
+							: [...(user.savedNotificationIds || []), row.original.id],
+					}));
+				if (response) {
+					setUser(response.user);
+				}
 			};
 
 			return (
@@ -139,7 +155,11 @@ export const columns: ColumnDef<NotificationTask>[] = [
 								size="icon"
 								className="size-8 border border-border bg-accent"
 							>
-								<Bookmark className="size-4" />
+								{saved ? (
+									<BookmarkMinus className="size-4" />
+								) : (
+									<Bookmark className="size-4" />
+								)}
 							</Button>
 						</div>
 					)}

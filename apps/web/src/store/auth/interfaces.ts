@@ -25,6 +25,7 @@ export type AuthActions = {
 	verifyUser: (token: string) => Promise<AuthReturn>;
 	logout: () => Promise<boolean>;
 	resetPassword: (email: string) => Promise<boolean>;
+	setUser: (user: User | null) => void;
 };
 
 export type AuthStore = AuthState & AuthActions;

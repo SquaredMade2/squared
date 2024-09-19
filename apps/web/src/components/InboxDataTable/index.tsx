@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	type ColumnFiltersState,
 	type SortingState,
@@ -30,6 +30,7 @@ import {
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
 import { BellOff, Check } from "lucide-react";
+import type { User } from "@repo/db";
 
 export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -68,7 +69,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 		},
 	});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (showUnreadOnly) {
 			table.getColumn("read")?.setFilterValue(showUnreadOnly);
 		} else {

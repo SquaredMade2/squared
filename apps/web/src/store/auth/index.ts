@@ -70,6 +70,9 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					);
 					return response.data;
 				},
+				setUser: (user: User | null) => {
+					set({ user });
+				},
 			}),
 			{
 				name: "auth-store",

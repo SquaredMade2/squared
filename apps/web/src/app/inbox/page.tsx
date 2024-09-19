@@ -81,7 +81,7 @@ export default function InboxPage() {
 				setFilteredNotifications(notifications);
 				setWorkspace(null);
 		}
-	}, [filterType, notifications, workspace]);
+	}, [filterType, notifications, workspace, user]);
 
 	return (
 		<div className="flex w-full">
@@ -102,7 +102,12 @@ export default function InboxPage() {
 						workspace={workspace}
 					/>
 
-					<InboxDataTable data={filteredNotifications} />
+					<InboxDataTable
+						data={filteredNotifications.map((n) => ({
+							...n,
+							user,
+						}))}
+					/>
 				</div>
 			</div>
 		</div>
