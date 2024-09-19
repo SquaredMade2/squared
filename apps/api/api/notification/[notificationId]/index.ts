@@ -19,7 +19,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!existingUser) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Cannot find user",
@@ -72,7 +71,6 @@ export function createRoute(): Route<Params> {
 						where: { id: notificationId },
 					});
 				if (!notification) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Notification not found",
@@ -112,7 +110,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!notification) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Notification not found",

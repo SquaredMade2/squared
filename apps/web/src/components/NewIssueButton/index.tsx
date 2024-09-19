@@ -24,7 +24,7 @@ const NewIssueButton = () => {
 	return (
 		<button
 			type="button"
-			className="flex flex-row w-full h-12 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue-600 dark:text-foreground "
+			className="flex flex-row w-full h-10 items-center justify-center border border-blue-800 shadow-lg rounded focus:outline-none focus:shadow-sm active:shadow-lg cursor-pointer hover:shadow-glow text-blue-600 dark:text-foreground "
 			onClick={() => handleOpen()}
 		>
 			<span>

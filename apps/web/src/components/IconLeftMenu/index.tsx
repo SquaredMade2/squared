@@ -35,6 +35,7 @@ const IconLeftMenu = () => {
 	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
 	const logout = useAuthStore((state) => state.logout);
+	const currentYear: number = new Date().getFullYear();
 
 	useEffect(() => {
 		setMounted(true);
@@ -81,6 +82,9 @@ const IconLeftMenu = () => {
 					icon={theme === "dark" ? faMoon : faSun}
 				/>
 			</div>
+			<small className="text-muted-foreground -rotate-90 whitespace-nowrap">
+				&copy; {currentYear} Squared. All rights reserved
+			</small>
 			<IconButton onClick={handleLogout} icon={faArrowRightFromBracket} />
 		</div>
 	);

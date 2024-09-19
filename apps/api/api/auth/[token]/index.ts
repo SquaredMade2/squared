@@ -40,8 +40,6 @@ export function createRoute(): Route<Params> {
 						variant: "default",
 					};
 				}
-
-				res.status(403);
 				return {
 					data: null,
 					message: "invalid token",

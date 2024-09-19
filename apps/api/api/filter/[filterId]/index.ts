@@ -46,7 +46,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!filter) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -80,7 +79,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingFilter) {
-					res.status(401);
 					return {
 						data: null,
 						message: "Filter already exists",
@@ -135,7 +133,6 @@ export function createRoute(): Route<Params> {
 					where: { id: filterId },
 				});
 				if (!filter) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Filter not found",
