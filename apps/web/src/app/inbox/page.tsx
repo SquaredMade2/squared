@@ -10,7 +10,7 @@ export type NotificationFilter =
 	| NotificationType
 	| "INBOX"
 	| "SAVED"
-	| "READ"
+	| "DONE"
 	| "WORKSPACE";
 
 export default function InboxPage() {
@@ -68,8 +68,8 @@ export default function InboxPage() {
 				);
 				setWorkspace(null);
 				break;
-			case "READ":
-				setFilteredNotifications(notifications.filter((n) => !n.read));
+			case "DONE":
+				setFilteredNotifications(notifications.filter((n) => n.dismissed));
 				setWorkspace(null);
 				break;
 			case "WORKSPACE":

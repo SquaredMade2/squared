@@ -50,7 +50,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 						>
 							<div className="flex gap-2 text-xxs">
 								<div>{workspaceName}</div>
-								<div>#{taskId}</div>
+								<div className="text-muted-foreground">#{taskId}</div>
 							</div>
 							<div>{taskName}</div>
 						</div>

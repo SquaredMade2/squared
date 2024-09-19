@@ -4,6 +4,15 @@ import { Separator } from "@/components/ui/separator";
 import type { NotificationTask } from "@/store/notifications";
 import type { Workspace } from "@repo/db";
 import { Label } from "@repo/ui/label";
+import {
+	BadgePlus,
+	Bookmark,
+	Check,
+	Handshake,
+	Inbox,
+	MapPin,
+	MessageCircleMore,
+} from "lucide-react";
 
 type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;
@@ -34,7 +43,7 @@ export default function InboxSidebar({
 		<Button
 			variant="ghost"
 			className={`w-full justify-between relative ${
-				filterType === type ? "bg-accent text-primary" : ""
+				filterType === type ? "bg-accent" : ""
 			}`}
 			onClick={() => setFilterType(type)}
 		>
@@ -65,7 +74,7 @@ export default function InboxSidebar({
 		<Button
 			variant="ghost"
 			className={`w-full justify-between relative ${
-				buttonWorkspace === workspace ? "bg-accent text-primary" : ""
+				buttonWorkspace === workspace ? "bg-accent" : ""
 			}`}
 			onClick={() => {
 				setWorkspace(buttonWorkspace);
@@ -89,20 +98,33 @@ export default function InboxSidebar({
 	);
 
 	return (
-		<div className="w-64 border-r border-border h-full md:block hidden p-4 bg-card dark:bg-transparent">
+		<div className="w-72 border-r border-border h-full md:block hidden p-4 bg-card dark:bg-transparent">
 			<nav>
 				<ul className="space-y-4">
 					<div className="space-y-2">
 						<li>
 							<FilterButton type="INBOX" unreadCount={readNotifications.length}>
-								Inbox
+								<div className="flex gap-2 items-center">
+									<Inbox className="size-5" />
+									Inbox
+								</div>
 							</FilterButton>
 						</li>
 						<li>
-							<FilterButton type="SAVED">Saved</FilterButton>
+							<FilterButton type="SAVED">
+								<div className="flex gap-2 items-center">
+									<Bookmark className="size-5" />
+									Saved
+								</div>
+							</FilterButton>
 						</li>
 						<li>
-							<FilterButton type="READ">Read</FilterButton>
+							<FilterButton type="DONE">
+								<div className="flex gap-2 items-center">
+									<Check className="size-5" />
+									Done
+								</div>
+							</FilterButton>
 						</li>
 					</div>
 					<Separator />
@@ -115,7 +137,10 @@ export default function InboxSidebar({
 									readNotifications.filter((n) => n.type === "ASSIGNED").length
 								}
 							>
-								Assigned
+								<div className="flex gap-2 items-center">
+									<MapPin className="size-5" />
+									Assigned
+								</div>
 							</FilterButton>
 						</li>
 						<li>
@@ -126,7 +151,10 @@ export default function InboxSidebar({
 										.length
 								}
 							>
-								Participating
+								<div className="flex gap-2 items-center">
+									<Handshake className="size-5" />
+									Participating
+								</div>
 							</FilterButton>
 						</li>
 						<li>
@@ -136,7 +164,10 @@ export default function InboxSidebar({
 									readNotifications.filter((n) => n.type === "MENTIONED").length
 								}
 							>
-								Mentioned
+								<div className="flex gap-2 items-center">
+									<MessageCircleMore className="size-5" />
+									Mentioned
+								</div>
 							</FilterButton>
 						</li>
 						<li>
@@ -146,7 +177,10 @@ export default function InboxSidebar({
 									readNotifications.filter((n) => n.type === "CREATED").length
 								}
 							>
-								Created
+								<div className="flex gap-2 items-center">
+									<BadgePlus className="size-5" />
+									Created
+								</div>
 							</FilterButton>
 						</li>
 					</div>
