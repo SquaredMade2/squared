@@ -134,7 +134,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 					onChange={(event) =>
 						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
 					}
-					className="max-w-md bg-card"
+					className="bg-card"
 				/>
 			</div>
 			<div className="rounded-md border">
