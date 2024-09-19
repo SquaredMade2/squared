@@ -24,6 +24,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 		accessorFn: (row) => row.Task.title,
 		enableHiding: false,
 	},
+
 	{
 		id: "content",
 		cell: ({ row }) => {
@@ -31,13 +32,15 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const taskName = row.original.Task.title;
 			const workspaceName = row.original.Workspace.name;
 			const read = row.original.read;
-			const type = row.getValue("type") as string;
+			const type = row.original.type;
 			const avatars = ["", ""];
 
 			return (
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-					<div className="flex items-center gap-2 mb-2 sm:mb-0">
+				<div className="flex items-start sm:items-center gap-4 w-full">
+					<div className="flex items-center h-full mt-2 sm:mt-0">
 						{getStatusIcon(row.original.Task.status)}
+					</div>
+					<div className="flex flex-col sm:flex-row justify-between w-full">
 						<div
 							className={`flex flex-col ${read ? "text-muted-foreground" : ""}`}
 						>
@@ -47,16 +50,18 @@ export const columns: ColumnDef<NotificationTask>[] = [
 							</div>
 							<div>{taskName}</div>
 						</div>
-					</div>
-					<div className="flex items-center gap-2">
-						<div className="text-sm lowercase">{type}</div>
-						<div className="flex -space-x-2">
-							{avatars?.map((avatar, index) => (
-								<Avatar key={useId()}>
-									<AvatarImage src={avatar} />
-									<AvatarFallback>U{index + 1}</AvatarFallback>
-								</Avatar>
-							))}
+
+						<div className="flex items-center gap-2">
+							<div className="text-xs lowercase hidden sm:block">{type}</div>
+							<div className="flex -space-x-6">
+								{avatars?.map((avatar, index) => (
+									<Avatar key={useId()}>
+										<AvatarImage src={avatar} />
+										<AvatarFallback>U{index + 1}</AvatarFallback>
+									</Avatar>
+								))}
+							</div>
+							<div className="text-xs lowercase block sm:hidden">{type}</div>
 						</div>
 					</div>
 				</div>
@@ -75,7 +80,9 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				.join(" ");
 
 			return (
-				<div className="text-muted-foreground text-xs">{formattedDate}</div>
+				<div className="flex justify-end text-muted-foreground text-xs text-right whitespace-nowrap h-full">
+					{formattedDate}
+				</div>
 			);
 		},
 	},

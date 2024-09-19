@@ -90,9 +90,9 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 			</div>
 			<div className="rounded-md border">
 				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead className="w-[50px]">
+					<TableHeader className="bg-popover">
+						<TableRow className="hover:bg-popover">
+							<TableHead className="w-12">
 								<Checkbox
 									checked={table.getIsAllPageRowsSelected()}
 									onCheckedChange={(value) =>
@@ -102,29 +102,33 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								/>
 							</TableHead>
 							<TableHead>
-								{table.getFilteredSelectedRowModel().rows.length > 0 && (
-									<div className="flex py-2 space-x-2 justify-start">
-										<Button
-											onClick={handleMarkAsRead}
-											variant="outline"
-											size="sm"
-											className="gap-2"
-										>
-											<Check className="size-4" />
-											Mark as Read
-										</Button>
-										<Button
-											onClick={handleMarkAsUnread}
-											variant="outline"
-											size="sm"
-											className="gap-2"
-										>
-											<BellOff className="size-4" />
-											Unsubscribe
-										</Button>
-									</div>
-								)}
+								<>
+									<div className="text-foreground">Select All</div>
+									{table.getFilteredSelectedRowModel().rows.length > 0 && (
+										<div className="flex py-2 space-x-2 justify-start">
+											<Button
+												onClick={handleMarkAsRead}
+												variant="outline"
+												size="sm"
+												className="gap-2 bg-secondary"
+											>
+												<Check className="size-4" />
+												Mark as Read
+											</Button>
+											<Button
+												onClick={handleMarkAsUnread}
+												variant="outline"
+												size="sm"
+												className="gap-2 bg-secondary"
+											>
+												<BellOff className="size-4" />
+												Unsubscribe
+											</Button>
+										</div>
+									)}
+								</>
 							</TableHead>
+							<TableHead className="w-20" />
 						</TableRow>
 					</TableHeader>
 					<TableBody>
