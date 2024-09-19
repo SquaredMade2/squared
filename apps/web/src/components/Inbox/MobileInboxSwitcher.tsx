@@ -153,7 +153,7 @@ export function MobileInboxSwitcher({
 	);
 
 	return (
-		<div className="w-full container flex gap-2">
+		<div className="w-full container flex gap-2 md:hidden">
 			<Button
 				variant="secondary"
 				className="w-full justify-between"

@@ -29,8 +29,9 @@ import {
 	type NotificationTask,
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
-import { BellOff, Check } from "lucide-react";
+import { BellOff, Check, Circle, Ellipsis } from "lucide-react";
 import type { User } from "@repo/db";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -151,7 +152,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 							</TableHead>
 							<TableHead>
 								<div className="flex gap-6 items-center">
-									<div className="text-foreground">Select All</div>
+									<div className="text-foreground w-16">Select All</div>
 									{table.getFilteredSelectedRowModel().rows.length > 0 && (
 										<div className="flex py-2 space-x-2 justify-start">
 											<Button
@@ -172,6 +173,37 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 												<BellOff className="size-4" />
 												Unsubscribe
 											</Button>
+											<Popover>
+												<PopoverTrigger asChild>
+													<Button
+														variant="outline"
+														className="bg-secondary"
+														size={"sm"}
+													>
+														<Ellipsis className="size-4" />
+													</Button>
+												</PopoverTrigger>
+												<PopoverContent className="w-[200px] p-0">
+													<div className="flex flex-col">
+														<Button
+															variant="ghost"
+															onClick={handleMarkAsRead}
+															className="justify-start gap-3"
+														>
+															<Circle className="size-4" />
+															Mark as Read
+														</Button>
+														<Button
+															variant="ghost"
+															onClick={handleMarkAsUnread}
+															className="justify-start gap-3"
+														>
+															<Circle className="size-4 fill-foreground" />
+															Mark as Unread
+														</Button>
+													</div>
+												</PopoverContent>
+											</Popover>
 										</div>
 									)}
 								</div>
