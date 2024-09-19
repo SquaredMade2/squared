@@ -31,8 +31,7 @@ export const Hero = () => {
 				}}
 				className="flex justify-center"
 			>
-				<Badge onClick={() => router.push("/blog/top-5-llm-of-all-time")}>
-					{/* todo change to register page */}
+				<Badge onClick={() => router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)}>
 					See what it&apos;s about
 				</Badge>
 			</motion.div>
@@ -90,7 +89,7 @@ export const Hero = () => {
 				}}
 				className="flex items-center gap-4 justify-center mt-6 relative z-10"
 			>
-				<Button>Get started</Button>
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>Get started</Button>
 				<Button
 					variant="simple"
 					as={Link}

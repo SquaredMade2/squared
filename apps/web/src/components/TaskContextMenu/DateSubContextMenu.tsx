@@ -1,32 +1,41 @@
 "use client";
-import { useState, type FC } from "react";
-import { Calendar } from "lucide-react";
+import { useEffect, useState, type FC } from "react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import type { DateSubContextMenuProps } from "./interfaces";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-// import DateDropdown from "../DateDropdown";
+import { Calendar } from "../ui/calendar";
+import { useTaskStore } from "@/store";
 
 const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [date, setDate] = useState<Date>();
+	const { updateTask } = useTaskStore((state) => state);
+	useEffect(() => {
+		if (date) {
+			updateTask(task.id, { dueDate: date });
+		}
+	}, [date]);
 
 	return (
 		<ContextMenuSub open={dropdownOpen} onOpenChange={setDropdownOpen}>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<Calendar className="cursor-pointer size-4" />
+					<CalendarIcon className="cursor-pointer size-4" />
 				</div>
 				Set due date...
 			</ContextMenuSubTrigger>
-			{/* <ContextMenuSubContent>
-				<DateDropdown
-					location={"contextMenu"}
-					setDropdownOpen={setDropdownOpen}
-					injectedTaskId={task.id}
+			<ContextMenuSubContent>
+				<Calendar
+					mode="single"
+					selected={date}
+					onSelect={setDate}
+					initialFocus
 				/>
-			</ContextMenuSubContent> */}
+			</ContextMenuSubContent>
 		</ContextMenuSub>
 	);
 };

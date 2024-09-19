@@ -38,7 +38,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 			className={cn(
 				"w-full flex relative justify-between px-4 py-2 rounded-full bg-transparent transition duration-200",
 				showBackground &&
-					"bg-neutral-50 dark:bg-background-dark shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
+					"bg-neutral-50 dark:bg-background-darkSecondary shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
 			)}
 		>
 			<AnimatePresence>
@@ -50,7 +50,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 						transition={{
 							duration: 1,
 						}}
-						className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-neutral-800 pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-full"
+						className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-background-darkSecondary pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-full"
 					/>
 				)}
 			</AnimatePresence>
@@ -66,10 +66,10 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 			</div>
 			<div className="flex space-x-2 items-center">
 				<ModeToggle />
-				<Button variant="simple" as={Link} href="/login">
+				<Button variant="simple" as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
 					Login
 				</Button>
-				<Button as={Link} href="/signup">
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
 					Sign Up
 				</Button>
 			</div>

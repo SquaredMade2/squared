@@ -14,8 +14,6 @@ export function createRoute(): Route<Params> {
 				const comment: Comment | null = await prisma.comment.findUnique({
 					where: { id: commentId },
 				});
-
-				res.status(404);
 				if (!comment) {
 					return {
 						data: null,
@@ -46,7 +44,6 @@ export function createRoute(): Route<Params> {
 					data: body,
 				});
 				if (!comment) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Comment not found",
@@ -76,7 +73,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingComment) {
-					res.status(401);
 					return {
 						data: null,
 						message: "Comment already exists",
@@ -121,7 +117,6 @@ export function createRoute(): Route<Params> {
 					where: { id: commentId },
 				});
 				if (!comment) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Comment not found",
