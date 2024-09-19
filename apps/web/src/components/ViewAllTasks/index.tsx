@@ -43,7 +43,7 @@ const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 			const tasksForStatus = getTasksForStatus(status);
 			if (tasksForStatus.length === 0) return null;
 			return (
-				<div key={status}>
+				<div key={status} className="px-1">
 					<StatusColumn
 						key={status}
 						currentView={currentView}
