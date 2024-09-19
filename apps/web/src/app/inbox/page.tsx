@@ -13,6 +13,7 @@ import {
 } from "@/store";
 import IconLeftMenu from "@/components/IconLeftMenu";
 import type { NotificationType } from "@repo/db";
+import MobileMenuSheet from "@/components/MobileNav";
 
 export type NotificationFilter =
 	| NotificationType
@@ -107,9 +108,10 @@ export default function InboxPage() {
 				<IconLeftMenu />
 			</div>
 			<div className="flex flex-col w-full sm:ml-14 ml-0">
-				<h1 className="text-2xl font-bold mb-4 py-4 pl-8 border-b border-border">
-					Inbox
-				</h1>
+				<div className="flex gap-4 items-center mb-4 py-4 pl-8 border-b border-border container w-full">
+					<MobileMenuSheet />
+					<h1 className="text-2xl font-bold ">Inbox</h1>
+				</div>
 				<div className="flex">
 					<InboxSidebar
 						setFilterType={setFilterType}
