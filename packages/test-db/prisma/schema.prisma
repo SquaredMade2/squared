@@ -203,6 +203,7 @@ model User {
   defaultWorkspaceId   String?
   avatarUrl            String?
   savedNotificationIds String[] @default([])
+  subscribedTasks      String[] @default([])
 
   Workspaces   UserWorkspace[]
   Notification Notification[]
