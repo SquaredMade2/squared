@@ -29,19 +29,16 @@ const TaskStatusSection: React.FC<TaskStatusSectionProps> = ({
 					: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2"
 			}
 		>
-			{showTasks && (
-				<>
-					{filteredTasks.map((task, index) => (
-						<TaskCard
-							key={task.id}
-							task={task}
-							index={index}
-							location={location}
-							highlightText={highlightText}
-						/>
-					))}
-				</>
-			)}
+			{showTasks &&
+				filteredTasks.map((task, index) => (
+					<TaskCard
+						key={task.id}
+						task={task}
+						index={index}
+						location={location}
+						highlightText={highlightText}
+					/>
+				))}
 			{!isListView && <GridColumnNewIssueButton status={title as Status} />}
 		</div>
 	);

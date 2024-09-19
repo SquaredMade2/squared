@@ -36,7 +36,7 @@ export default function Inbox(): React.JSX.Element {
 
 	return (
 		<div className="flex w-full">
-			<div className="w-12 bg-muted dark:bg-accent hidden md:block">
+			<div className="hidden md:block">
 				<IconLeftMenu />
 			</div>
 			<div className="w-full h-screen flex  overflow-hidden p-0 sm:p-2">
