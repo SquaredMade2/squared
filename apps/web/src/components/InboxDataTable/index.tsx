@@ -120,7 +120,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader className="bg-popover">
-						<TableRow className="hover:bg-popover">
+						<TableRow className="hover:bg-popover h-14">
 							<TableHead className="w-12">
 								<Checkbox
 									checked={table.getIsAllPageRowsSelected()}
@@ -131,7 +131,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 								/>
 							</TableHead>
 							<TableHead>
-								<>
+								<div className="flex gap-6 items-center">
 									<div className="text-foreground">Select All</div>
 									{table.getFilteredSelectedRowModel().rows.length > 0 && (
 										<div className="flex py-2 space-x-2 justify-start">
@@ -155,7 +155,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 											</Button>
 										</div>
 									)}
-								</>
+								</div>
 							</TableHead>
 							<TableHead className="w-20" />
 						</TableRow>
