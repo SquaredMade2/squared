@@ -20,6 +20,7 @@ import {
 import ProfileImage from "@/components/ProfileImage";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import type { ButtonProps } from "./interfaces";
+import { ScrollArea } from "../ui/scroll-area";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
@@ -94,37 +95,40 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 				<Command>
 					<CommandInput placeholder="Search users..." />
 					<CommandList>
-						<CommandEmpty>No user found.</CommandEmpty>
-						<CommandGroup>
-							<CommandItem onSelect={() => handleSelectAssignee(null)}>
-								<UserSearch className="size-4 mr-2" />
-								<span>Unassign</span>
-								<Check
-									className={cn(
-										"ml-auto h-4 w-4",
-										assigneeId === "" ? "opacity-100" : "opacity-0",
-									)}
-								/>
-							</CommandItem>
-							{users.map((user) => (
-								<CommandItem
-									key={user.id}
-									onSelect={() => handleSelectAssignee(user.id)}
-								>
-									<ProfileImage
-										profileName={user.name}
-										location="assigneeDropdown"
-									/>
-									<span className="ml-2">{user.username}</span>
+						<ScrollArea className="h-80 pr-2">
+							<CommandEmpty>No user found.</CommandEmpty>
+							<CommandGroup>
+								<CommandItem onSelect={() => handleSelectAssignee(null)}>
+									<UserSearch className="size-4 mr-2" />
+									<span>Unassign</span>
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											assigneeId === user.id ? "opacity-100" : "opacity-0",
+											assigneeId === "" ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
-							))}
-						</CommandGroup>
+								{users.map((user) => (
+									<CommandItem
+										key={user.id}
+										onSelect={() => handleSelectAssignee(user.id)}
+										className="w-full"
+									>
+										<ProfileImage
+											profileName={user.name}
+											location="assigneeDropdown"
+										/>
+										<span className="w-2/3 truncate">{user.username}</span>
+										<Check
+											className={cn(
+												"ml-auto h-4 w-4",
+												assigneeId === user.id ? "opacity-100" : "opacity-0",
+											)}
+										/>
+									</CommandItem>
+								))}
+							</CommandGroup>
+						</ScrollArea>
 					</CommandList>
 				</Command>
 			</PopoverContent>
