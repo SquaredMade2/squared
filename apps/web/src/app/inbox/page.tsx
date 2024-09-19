@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { InboxDataTable, InboxSidebar } from "@/components/Inbox";
+import {
+	InboxDataTable,
+	InboxSidebar,
+	MobileInboxSwitcher,
+} from "@/components/Inbox";
 import {
 	useAuthStore,
 	useNotificationStore,
@@ -114,13 +118,22 @@ export default function InboxPage() {
 						workspaces={workspaces}
 						workspace={workspace}
 					/>
-
-					<InboxDataTable
-						data={filteredNotifications.map((n) => ({
-							...n,
-							user,
-						}))}
-					/>
+					<div className="flex flex-col gap-4 w-full">
+						<MobileInboxSwitcher
+							setFilterType={setFilterType}
+							filterType={filterType}
+							setWorkspace={setWorkspace}
+							readNotifications={notifications.filter((n) => !n.read)}
+							workspaces={workspaces}
+							workspace={workspace}
+						/>
+						<InboxDataTable
+							data={filteredNotifications.map((n) => ({
+								...n,
+								user,
+							}))}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

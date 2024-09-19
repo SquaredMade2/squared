@@ -108,12 +108,12 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 
 	return (
 		<div className="w-full container">
-			<div className="flex items-center justify-start gap-4 py-4">
-				<div className="border border-border rounded-md hidden sm:block bg-card dark:bg-transparent">
+			<div className="items-center justify-start gap-4 py-4 hidden md:flex">
+				<div className="border border-border rounded-md bg-card dark:bg-transparent w-36 flex">
 					<Button
 						variant={showUnreadOnly ? "secondary" : "outline"}
 						onClick={() => setShowUnreadOnly(false)}
-						className="rounded-r-none"
+						className="rounded-r-none w-full"
 					>
 						All
 					</Button>
