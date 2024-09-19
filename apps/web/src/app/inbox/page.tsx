@@ -57,7 +57,7 @@ export default function InboxPage() {
 				);
 				break;
 			case "READ":
-				setFilteredNotifications(notifications.filter((n) => n.read));
+				setFilteredNotifications(notifications.filter((n) => !n.read));
 				break;
 			default:
 				setFilteredNotifications(notifications);
