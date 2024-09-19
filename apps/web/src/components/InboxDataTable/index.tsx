@@ -36,8 +36,10 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({
 			taskTitle: false,
+			read: false,
 		});
 	const [rowSelection, setRowSelection] = React.useState({});
+	const [showUnreadOnly, setShowUnreadOnly] = React.useState(false);
 
 	const table = useReactTable({
 		data,
@@ -56,7 +58,18 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 			columnVisibility,
 			rowSelection,
 		},
+		filterFns: {
+			unread: (row) => !showUnreadOnly || !row.original.read,
+		},
 	});
+
+	React.useEffect(() => {
+		if (showUnreadOnly) {
+			table.getColumn("read")?.setFilterValue(showUnreadOnly);
+		} else {
+			table.getColumn("read")?.setFilterValue(undefined);
+		}
+	}, [showUnreadOnly, table]);
 
 	const handleMarkAsRead = () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
@@ -76,7 +89,23 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 
 	return (
 		<div className="w-full">
-			<div className="flex items-center justify-between py-4">
+			<div className="flex items-center justify-start gap-4 py-4">
+				<div className="border border-border rounded-md">
+					<Button
+						variant={showUnreadOnly ? "secondary" : "outline"}
+						onClick={() => setShowUnreadOnly(false)}
+						className="rounded-r-none"
+					>
+						All
+					</Button>
+					<Button
+						variant={showUnreadOnly ? "outline" : "secondary"}
+						onClick={() => setShowUnreadOnly(true)}
+						className="rounded-l-none"
+					>
+						Unread
+					</Button>
+				</div>
 				<Input
 					placeholder="Filter notifications..."
 					value={
@@ -85,7 +114,7 @@ export function InboxDataTable({ data }: { data: NotificationTask[] }) {
 					onChange={(event) =>
 						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
 					}
-					className="max-w-sm"
+					className="max-w-md"
 				/>
 			</div>
 			<div className="rounded-md border">

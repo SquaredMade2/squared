@@ -24,7 +24,11 @@ export const columns: ColumnDef<NotificationTask>[] = [
 		accessorFn: (row) => row.Task.title,
 		enableHiding: false,
 	},
-
+	{
+		accessorKey: "read",
+		accessorFn: (row) => row.read,
+		enableHiding: false,
+	},
 	{
 		id: "content",
 		cell: ({ row }) => {
