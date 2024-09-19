@@ -10,16 +10,18 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { LayoutGrid } from "lucide-react";
-import Teams from "../Teams";
 import IconLeftMenu from "../IconLeftMenu";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";
 import NavBarTeams from "../NavBarTeams";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
 	const workspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const currentYear: number = new Date().getFullYear();
+	const router = useRouter();
 	const { teams, getAllTeams } = useTeamStore((state) => state);
 	useEffect(() => {
 		if (!workspace) return;
@@ -28,19 +30,23 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="h-full flex">
+			<div className="h-screen flex">
 				<div className="w-14 bg-muted dark:bg-accent">
 					<IconLeftMenu />
 				</div>
 				<div className="flex h-full justify-center bg-popover border- w-72">
 					<div className="w-11/12 flex flex-col">
-						<div className="w-full h-full flex flex-col cursor-default text-foreground">
-							<div className="h-12 flex items-center mb-4">
-								<WorkSpaceDropDown />
-							</div>
-							<div className="mb-8">
-								<NewIssueButton />
-							</div>
+						<div className="w-full h-full flex flex-col cursor-default text-foreground gap-4 py-2">
+							<WorkSpaceDropDown />
+							<NewIssueButton />
+							<Button
+								variant="ghost"
+								size="sm"
+								className="justify-start"
+								onClick={() => router.push(`/${workspace?.url}/my-issues`)}
+							>
+								My Issues
+							</Button>
 							<div>
 								<Accordion type="single" collapsible>
 									{teams?.map((team: Team) => {
@@ -51,10 +57,7 @@ const Navbar = () => {
 													{team.name}
 												</AccordionTrigger>
 												<AccordionContent>
-													<NavBarTeams
-														onDropdownClick={() => {}}
-														teamIdentifier={team.identifier}
-													/>
+													<NavBarTeams teamIdentifier={team.identifier} />
 												</AccordionContent>
 											</AccordionItem>
 										);

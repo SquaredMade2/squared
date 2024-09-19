@@ -42,7 +42,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found.",
@@ -69,8 +68,6 @@ export function createRoute(): Route<Params> {
 						"invite",
 					);
 				}
-
-				res.status(200);
 				return {
 					data: null,
 					message: "Invitation sent successfully.",

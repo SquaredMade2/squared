@@ -11,7 +11,6 @@ import {
 } from "../ui/dialog";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
-// import DateButton from "@/components/DateButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
@@ -29,10 +28,10 @@ import {
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import type { Task } from "@repo/db";
+import { DateDropdownButton } from "./DateDropdownButton";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
@@ -40,9 +39,8 @@ const NewIssueModal = () => {
 		useModalStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace, updateWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
 	const { tasks, addTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
@@ -95,7 +93,7 @@ const NewIssueModal = () => {
 			return;
 		}
 		await updateWorkspace(currentWorkspace?.id, {
-			issuesCreated: (currentWorkspace.issuesCreated ?? 0) + 1,
+			tasksCreated: (currentWorkspace.tasksCreated ?? 0) + 1,
 		});
 		try {
 			const { transformedInput: transformedTitle, userIds: titleUserId } =
@@ -111,7 +109,7 @@ const NewIssueModal = () => {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.issuesCreated}`,
+				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
@@ -122,6 +120,9 @@ const NewIssueModal = () => {
 				assigneeName: "",
 				teamId: currentTeam.id,
 				id: "",
+				workspaceId: currentWorkspace.id,
+				updatedAt: new Date(),
+				deleted: false,
 			};
 
 			const {
@@ -129,6 +130,13 @@ const NewIssueModal = () => {
 				message,
 				variant,
 			} = await addTask(newTask);
+			await updateWorkspace(currentWorkspace.id, {
+				tasksCreated: currentWorkspace.tasksCreated + 1,
+			});
+			setCurrentWorkspace({
+				...currentWorkspace,
+				tasksCreated: currentWorkspace.tasksCreated + 1,
+			});
 
 			toast({
 				title: message,
@@ -212,7 +220,7 @@ const NewIssueModal = () => {
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
 								<EffortDropdownButton />
-								{/* <DateButton location="newIssueModal" /> */}
+								<DateDropdownButton />
 							</div>
 							<DialogFooter>
 								<Button

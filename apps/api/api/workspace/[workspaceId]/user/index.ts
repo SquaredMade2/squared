@@ -10,18 +10,30 @@ export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<User>> => {
 			try {
-				const users: User[] | null = await prisma.user.findMany({
+				const workspace = await prisma.workspace.findUnique({
+					where: { id: workspaceId },
+					include: {
+						Users: true,
+					},
+				});
+				const userWorkspaces = workspace?.Users;
+				if (!userWorkspaces) {
+					res.status(404);
+					return {
+						data: null,
+						message: "No Users found",
+						variant: "destructive",
+					};
+				}
+				const users = await prisma.user.findMany({
 					where: {
-						Workspaces: {
-							some: {
-								workspaceId: workspaceId,
-							},
+						id: {
+							in: userWorkspaces.map((u) => u.userId),
 						},
 					},
 				});
 
 				if (!users) {
-					res.status(404);
 					return {
 						data: null,
 						message: "No Users found",

@@ -5,7 +5,7 @@
 
 @layer base {
 	body {
-		font-family: "Chivo";
+		font-family: "Chivo", sans-serif;
 	}
 
 	:root {

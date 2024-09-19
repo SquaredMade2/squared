@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
+		"check-types": "tsc --noEmit",
 		"dev": "nodemon api/index.ts",
 		"gen": "ts-node api/generate-index.ts",
 		"format:check": "biome format .",

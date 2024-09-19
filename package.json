@@ -8,6 +8,7 @@
     "db:gen": "turbo run db:generate",
     "db:push": "turbo run db:push",
     "docker:build": "docker-compose build",
+    "docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
     "docker:db": "pnpm --filter=test-db run docker:db && pnpm run db:gen && pnpm run --filter=@repo/test-db db:push",
     "docker:db:down": "pnpm --filter=test-db run docker:db:down",
     "docker:db:seed": "pnpm --filter=test-db run db:seed",
@@ -26,6 +27,8 @@
     "start": "turbo run start",
     "storybook": "pnpm run --filter=@repo/ui storybook",
     "studio": "turbo run studio",
+    "studio:prod": "pnpm --filter=@repo/db studio",
+    "studio:dev": "pnpm --filter=@repo/test-db studio",
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
@@ -33,7 +36,7 @@
     "knip": "knip"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
+    "@biomejs/biome": "1.9.1",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.4.1",
     "@types/node": "^22.5.2",

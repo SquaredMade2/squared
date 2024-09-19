@@ -22,8 +22,12 @@ export default function Home() {
 	const { view } = useViewStore((state) => state);
 	const { currentFilters, filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
-	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const {
+		currentWorkspace,
+		getAllWorkspaces,
+		setCurrentWorkspace,
+		getWorkspace,
+	} = useWorkspaceStore((state) => state);
 	const {
 		tasks: initialTasks,
 		updateTask,
@@ -144,7 +148,7 @@ export default function Home() {
 					>
 						<ViewAllTasks
 							handleDragEnd={handleDragEnd}
-							tasks={filterTasks(tasks)}
+							tasks={filterTasks(tasks).filter((t) => !t.deleted)}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</ScrollArea>
