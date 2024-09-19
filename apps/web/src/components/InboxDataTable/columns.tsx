@@ -59,7 +59,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 							<div className="text-xs lowercase hidden sm:block">{type}</div>
 							<div className="flex -space-x-6">
 								{avatars?.map((avatar, index) => (
-									<Avatar key={useId()}>
+									<Avatar key={useId()} className="border-2 border-border">
 										<AvatarImage src={avatar} />
 										<AvatarFallback>U{index + 1}</AvatarFallback>
 									</Avatar>
