@@ -31,6 +31,7 @@ export default function InboxPage() {
 	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
 		useState(notifications);
+	const [filterRead, setFilterRead] = useState(false);
 	const { getUserAvatars } = useUserStore((state) => state);
 
 	useEffect(() => {
@@ -126,12 +127,16 @@ export default function InboxPage() {
 							readNotifications={notifications.filter((n) => !n.read)}
 							workspaces={workspaces}
 							workspace={workspace}
+							filterRead={filterRead}
+							setFilterRead={setFilterRead}
 						/>
 						<InboxDataTable
-							data={filteredNotifications.map((n) => ({
-								...n,
-								user,
-							}))}
+							data={filteredNotifications
+								.map((n) => ({
+									...n,
+									user,
+								}))
+								.filter((n) => (!filterRead ? true : !n.read))}
 						/>
 					</div>
 				</div>

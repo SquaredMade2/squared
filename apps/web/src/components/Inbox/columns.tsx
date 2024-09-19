@@ -17,7 +17,6 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatUrl, getInitials } from "@/utils/formatting";
 

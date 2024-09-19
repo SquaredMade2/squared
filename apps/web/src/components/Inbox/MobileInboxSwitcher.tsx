@@ -15,6 +15,7 @@ import {
 	BadgePlus,
 	Bookmark,
 	Check,
+	ChevronDown,
 	Handshake,
 	Inbox,
 	MapPin,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 import { DialogTitle } from "@repo/ui/dialog";
 import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type NotificationFilter =
 	| "INBOX"
@@ -47,6 +49,8 @@ interface MobileInboxSwitcherProps {
 	readNotifications: NotificationTask[];
 	workspaces: Workspace[];
 	workspace: string | null;
+	filterRead: boolean;
+	setFilterRead: (value: boolean) => void;
 }
 
 export function MobileInboxSwitcher({
@@ -56,6 +60,8 @@ export function MobileInboxSwitcher({
 	readNotifications,
 	workspaces,
 	workspace,
+	filterRead,
+	setFilterRead,
 }: MobileInboxSwitcherProps) {
 	const [open, setOpen] = useState(false);
 
@@ -147,15 +153,43 @@ export function MobileInboxSwitcher({
 	);
 
 	return (
-		<div className="w-full container">
+		<div className="w-full container flex gap-2">
 			<Button
 				variant="secondary"
 				className="w-full justify-between"
 				onClick={() => setOpen(true)}
 			>
 				Switch Inbox
-				<span className="sr-only">Switch inbox</span>
+				<ChevronDown className="size-4" />
 			</Button>
+			<Popover>
+				<PopoverTrigger asChild>
+					<Button variant="secondary" className="justify-between">
+						{!filterRead ? "All" : "Unread"}
+						<ChevronDown className="ml-2 h-4 w-4" />
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent className="w-[200px] p-0">
+					<div className="flex flex-col">
+						<Button
+							variant="ghost"
+							className="justify-between"
+							onClick={() => setFilterRead(true)}
+						>
+							All
+							{!filterRead && <Check className="h-4 w-4" />}
+						</Button>
+						<Button
+							variant="ghost"
+							className="justify-between"
+							onClick={() => setFilterRead(false)}
+						>
+							Unread
+							{!filterRead && <Check className="h-4 w-4" />}
+						</Button>
+					</div>
+				</PopoverContent>
+			</Popover>
 			<CommandDialog open={open} onOpenChange={setOpen}>
 				<VisuallyHidden>
 					<DialogTitle>Switch Inbox</DialogTitle>
