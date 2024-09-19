@@ -54,7 +54,7 @@ const TopNavBar: React.FC = () => {
 	}, [socket.id]);
 
 	return (
-		<header className="max-w-screen">
+		<header className="w-full max-w-screen px-2 sm:px-5">
 			<nav className="h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]">
 				<div className="flex flex-none justify-start items-center">
 					<div className="w-full flex flex-none justify-start items-center gap-4">
