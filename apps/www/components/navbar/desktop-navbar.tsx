@@ -66,10 +66,10 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 			</div>
 			<div className="flex space-x-2 items-center">
 				<ModeToggle />
-				<Button variant="simple" as={Link} href="/login">
+				<Button variant="simple" as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
 					Login
 				</Button>
-				<Button as={Link} href="/signup">
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
 					Sign Up
 				</Button>
 			</div>
