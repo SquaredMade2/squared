@@ -122,6 +122,8 @@ const NewIssueModal = () => {
 				teamId: currentTeam.id,
 				id: "",
 				workspaceId: currentWorkspace.id,
+				updatedAt: new Date(),
+				deleted: false,
 			};
 
 			const {
