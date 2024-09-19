@@ -12,6 +12,7 @@ import {
 	Inbox,
 	MapPin,
 	MessageCircleMore,
+	type LucideIcon,
 } from "lucide-react";
 
 type SidebarProps = {
@@ -23,6 +24,79 @@ type SidebarProps = {
 	workspace: string | null;
 };
 
+type FilterButtonProps = {
+	type: NotificationFilter;
+	icon: LucideIcon;
+	label: string;
+	unreadCount?: number;
+	isSelected: boolean;
+	onClick: () => void;
+};
+
+type WorkspaceFilterButtonProps = {
+	workspace: Workspace;
+	unreadCount: number;
+	isSelected: boolean;
+	onClick: () => void;
+};
+
+const FilterButton = ({
+	type,
+	icon: Icon,
+	label,
+	unreadCount,
+	isSelected,
+	onClick,
+}: FilterButtonProps) => (
+	<Button
+		variant="ghost"
+		className={`w-full justify-between relative ${isSelected ? "bg-accent" : ""}`}
+		onClick={onClick}
+	>
+		<div className="flex gap-2 items-center">
+			{isSelected && (
+				<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+			)}
+			<Icon className="size-5" />
+			{label}
+		</div>
+		{unreadCount !== undefined && unreadCount > 0 && (
+			<div
+				className={`rounded-full w-7 ${isSelected ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
+			>
+				{unreadCount}
+			</div>
+		)}
+	</Button>
+);
+
+const WorkspaceFilterButton = ({
+	workspace,
+	unreadCount,
+	isSelected,
+	onClick,
+}: WorkspaceFilterButtonProps) => (
+	<Button
+		variant="ghost"
+		className={`w-full justify-between relative ${isSelected ? "bg-accent" : ""}`}
+		onClick={onClick}
+	>
+		<div>
+			{isSelected && (
+				<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+			)}
+			{workspace.name}
+		</div>
+		{unreadCount > 0 && (
+			<div
+				className={`rounded-full w-7 ${isSelected ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
+			>
+				{unreadCount}
+			</div>
+		)}
+	</Button>
+);
+
 export function InboxSidebar({
 	setFilterType,
 	setWorkspace,
@@ -31,158 +105,62 @@ export function InboxSidebar({
 	workspaces,
 	workspace,
 }: SidebarProps) {
-	const FilterButton = ({
-		type,
-		children,
-		unreadCount,
-	}: {
+	const filters: {
 		type: NotificationFilter;
-		children: React.ReactNode;
-		unreadCount?: number;
-	}) => (
-		<Button
-			variant="ghost"
-			className={`w-full justify-between relative ${
-				filterType === type ? "bg-accent" : ""
-			}`}
-			onClick={() => setFilterType(type)}
-		>
-			<div>
-				{filterType === type && (
-					<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
-				)}
-				{children}
-			</div>
-			{unreadCount && (
-				<div
-					className={`rounded-full w-7 ${filterType === type ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
-				>
-					{unreadCount}
-				</div>
-			)}
-		</Button>
-	);
-	const WorkspaceFilterButton = ({
-		buttonWorkspace,
-		children,
-		unreadCount,
-	}: {
-		buttonWorkspace: string;
-		children: React.ReactNode;
-		unreadCount?: number;
-	}) => (
-		<Button
-			variant="ghost"
-			className={`w-full justify-between relative ${
-				buttonWorkspace === workspace ? "bg-accent" : ""
-			}`}
-			onClick={() => {
-				setWorkspace(buttonWorkspace);
-				setFilterType("WORKSPACE");
-			}}
-		>
-			<div>
-				{buttonWorkspace === workspace && (
-					<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
-				)}
-				{children}
-			</div>
-			{unreadCount && (
-				<div
-					className={`rounded-full w-7 ${buttonWorkspace === workspace ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
-				>
-					{unreadCount}
-				</div>
-			)}
-		</Button>
-	);
+		icon: LucideIcon;
+		label: string;
+	}[] = [
+		{ type: "INBOX", icon: Inbox, label: "Inbox" },
+		{ type: "SAVED", icon: Bookmark, label: "Saved" },
+		{ type: "DONE", icon: Check, label: "Done" },
+		{ type: "ASSIGNED", icon: MapPin, label: "Assigned" },
+		{ type: "PARTICIPATING", icon: Handshake, label: "Participating" },
+		{ type: "MENTIONED", icon: MessageCircleMore, label: "Mentioned" },
+		{ type: "CREATED", icon: BadgePlus, label: "Created" },
+	];
+
+	const getUnreadCount = (type: NotificationFilter) => {
+		if (type === "INBOX") return readNotifications.length;
+		return readNotifications.filter((n) => n.type === type).length;
+	};
 
 	return (
 		<div className="w-72 border-r border-border h-full md:block hidden p-4 bg-card dark:bg-transparent">
 			<nav>
 				<ul className="space-y-4">
 					<div className="space-y-2">
-						<li>
-							<FilterButton type="INBOX" unreadCount={readNotifications.length}>
-								<div className="flex gap-2 items-center">
-									<Inbox className="size-5" />
-									Inbox
-								</div>
-							</FilterButton>
-						</li>
-						<li>
-							<FilterButton type="SAVED">
-								<div className="flex gap-2 items-center">
-									<Bookmark className="size-5" />
-									Saved
-								</div>
-							</FilterButton>
-						</li>
-						<li>
-							<FilterButton type="DONE">
-								<div className="flex gap-2 items-center">
-									<Check className="size-5" />
-									Done
-								</div>
-							</FilterButton>
-						</li>
+						{filters.slice(0, 3).map((filter) => (
+							<li key={filter.type}>
+								<FilterButton
+									type={filter.type}
+									icon={filter.icon}
+									label={filter.label}
+									unreadCount={
+										filter.type === "INBOX"
+											? getUnreadCount(filter.type)
+											: undefined
+									}
+									isSelected={filterType === filter.type}
+									onClick={() => setFilterType(filter.type)}
+								/>
+							</li>
+						))}
 					</div>
 					<Separator />
 					<div className="space-y-2">
 						<Label className="text-muted-foreground ml-4">Filters</Label>
-						<li>
-							<FilterButton
-								type="ASSIGNED"
-								unreadCount={
-									readNotifications.filter((n) => n.type === "ASSIGNED").length
-								}
-							>
-								<div className="flex gap-2 items-center">
-									<MapPin className="size-5" />
-									Assigned
-								</div>
-							</FilterButton>
-						</li>
-						<li>
-							<FilterButton
-								type="PARTICIPATING"
-								unreadCount={
-									readNotifications.filter((n) => n.type === "PARTICIPATING")
-										.length
-								}
-							>
-								<div className="flex gap-2 items-center">
-									<Handshake className="size-5" />
-									Participating
-								</div>
-							</FilterButton>
-						</li>
-						<li>
-							<FilterButton
-								type="MENTIONED"
-								unreadCount={
-									readNotifications.filter((n) => n.type === "MENTIONED").length
-								}
-							>
-								<div className="flex gap-2 items-center">
-									<MessageCircleMore className="size-5" />
-									Mentioned
-								</div>
-							</FilterButton>
-						</li>
-						<li>
-							<FilterButton
-								type="CREATED"
-								unreadCount={
-									readNotifications.filter((n) => n.type === "CREATED").length
-								}
-							>
-								<div className="flex gap-2 items-center">
-									<BadgePlus className="size-5" />
-									Created
-								</div>
-							</FilterButton>
-						</li>
+						{filters.slice(3).map((filter) => (
+							<li key={filter.type}>
+								<FilterButton
+									type={filter.type}
+									icon={filter.icon}
+									label={filter.label}
+									unreadCount={getUnreadCount(filter.type)}
+									isSelected={filterType === filter.type}
+									onClick={() => setFilterType(filter.type)}
+								/>
+							</li>
+						))}
 					</div>
 					<Separator />
 					<div className="space-y-2">
@@ -190,14 +168,17 @@ export function InboxSidebar({
 						{workspaces.map((w) => (
 							<li key={w.id}>
 								<WorkspaceFilterButton
-									buttonWorkspace={w.id}
+									workspace={w}
 									unreadCount={
 										readNotifications.filter((n) => n.workspaceId === w.id)
 											.length
 									}
-								>
-									{w.name}
-								</WorkspaceFilterButton>
+									isSelected={workspace === w.id && filterType === "WORKSPACE"}
+									onClick={() => {
+										setWorkspace(w.id);
+										setFilterType("WORKSPACE");
+									}}
+								/>
 							</li>
 						))}
 					</div>
