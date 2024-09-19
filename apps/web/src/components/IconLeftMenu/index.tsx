@@ -92,7 +92,8 @@ const IconButton = ({
 }: { onClick: () => void; icon: IconDefinition }) => (
 	<Button
 		variant="ghost"
-		className="text-muted-foreground hover:text-foreground w-10 h-10 p-0"
+		size="icon"
+		className="text-muted-foreground hover:text-foreground"
 		onClick={onClick}
 	>
 		<FontAwesomeIcon icon={icon} className="h-5 w-5" />
