@@ -66,6 +66,10 @@
       "import": "./src/focus-scope/index.ts",
       "require": "./src/focus-scope/index.ts"
     },
+    "./hover-card": {
+      "import": "./src/hover-card/index.ts",
+      "require": "./src/hover-card/index.ts"
+    },
     "./id": {
       "import": "./src/id/index.ts",
       "require": "./src/id/index.ts"
@@ -133,6 +137,10 @@
     "./switch": {
       "import": "./src/switch/index.ts",
       "require": "./src/switch/index.ts"
+    },
+    "./tabs": {
+      "import": "./src/tabs/index.ts",
+      "require": "./src/tabs/index.ts"
     },
     "./toast": {
       "import": "./src/toast/index.ts",

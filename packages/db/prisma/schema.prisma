@@ -14,6 +14,8 @@ enum Status {
   inProgress
   inReview
   done
+  canceled
+  archived
 }
 
 enum Priority {
@@ -164,6 +166,8 @@ model Task {
   assigneeName   String?
   labels         String[]
   workspaceId    String
+  updatedAt      DateTime  @default(now()) @updatedAt
+  deleted        Boolean   @default(false)
 
   status   Status        @default(backlog)
   priority Priority      @default(noPriority)
