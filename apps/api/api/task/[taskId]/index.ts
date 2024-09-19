@@ -156,6 +156,7 @@ export function createRoute(): Route<Params> {
 				// Return the new task
 				return {
 					data: newTask,
+					message: `Successfully Created New Task: ${newTask.title}`,
 					variant: "default",
 				};
 			} catch (error) {
