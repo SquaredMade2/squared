@@ -1,15 +1,7 @@
-import { useState } from "react";
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleX,
-	Copy,
-	RotateCw,
-} from "lucide-react";
+import { Circle, CircleCheckBig, CircleDashed, RotateCw } from "lucide-react";
 import { inProgress } from "../Svg";
 import { statusOptions } from "@/constants/designations";
-
+import { formatStatus } from "@/utils/formatting";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useModalStore } from "@/store";
@@ -50,7 +42,9 @@ export const StatusDropdownButton = () => {
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="max-w-full w-full">
 					<span className="cursor-pointer">{showIcon(newIssueStatus)}</span>
-					<span className="ml-2 cursor-pointer">{newIssueStatus}</span>
+					<span className="ml-2 cursor-pointer">
+						{formatStatus(newIssueStatus ?? "backlog")}
+					</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent side={"left"} align="start" className={"w-[150px]"}>
@@ -58,19 +52,21 @@ export const StatusDropdownButton = () => {
 					value={newIssueStatus}
 					onValueChange={(status) => handleSelectStatus(status as Status)}
 				>
-					{statusOptions.map((status) => (
-						<DropdownMenuItem
-							key={status}
-							onSelect={() => handleSelectStatus(status as Status)}
-							className="flex justify-between items-center px-2 py-1.5"
-						>
-							<div className="flex items-center">
-								{showIcon(status)}
-								<span className="ml-2">{status}</span>
-							</div>
-							{newIssueStatus === status && <Check className="h-4 w-4" />}
-						</DropdownMenuItem>
-					))}
+					{statusOptions.map((status) => {
+						return (
+							<DropdownMenuItem
+								key={status}
+								onSelect={() => handleSelectStatus(status as Status)}
+								className="flex justify-between items-center px-2 py-1.5"
+							>
+								<div className="flex items-center">
+									{showIcon(status)}
+									<span className="ml-2">{formatStatus(status)}</span>
+								</div>
+								{newIssueStatus === status && <Check className="h-4 w-4" />}
+							</DropdownMenuItem>
+						);
+					})}
 				</DropdownMenuRadioGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>

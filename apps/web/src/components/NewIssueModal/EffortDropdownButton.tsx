@@ -7,11 +7,19 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-	effortEstimateOptions,
-	complexityScale,
-} from "@/constants/designations";
-import ProgressBar from "@/components/ProgressBar";
+import { Check } from "lucide-react";
+// import {
+// 	effortEstimateOptions,
+// 	complexityScale,
+// } from "@/constants/designations";
+
+const difficultyLevels = [
+	"1 - Really easy",
+	"2 - Easy",
+	"3 - Normal",
+	"4 - Hard",
+	"5 - Really hard",
+];
 
 export const EffortDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
@@ -53,9 +61,9 @@ export const EffortDropdownButton = () => {
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[150px]" side={"left"} align="start">
-				{effortEstimateOptions.map((effortEstimate, index) => {
-					const estimateNumber = extractNumber(effortEstimate);
+			<DropdownMenuContent className="w-[180px]" side={"left"} align="start">
+				{difficultyLevels.map((effortLevel) => {
+					const estimateNumber = extractNumber(effortLevel);
 
 					return (
 						<DropdownMenuItem
@@ -65,8 +73,11 @@ export const EffortDropdownButton = () => {
 						>
 							{showIcon(estimateNumber)}
 							<div className="flex flex-col">
-								<span>{effortEstimate}</span>
+								<span>{effortLevel}</span>
 							</div>
+							{estimateNumber === effortEstimate && (
+								<Check className="h-4 w-4" />
+							)}
 							{/* <div className="w-16 ml-auto">
 								<ProgressBar progress={estimateNumber} />
 							</div> */}

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useToast } from "../ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -14,7 +13,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Tag, Check } from "lucide-react";
+import { Tag, Check } from "lucide-react";
 import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 

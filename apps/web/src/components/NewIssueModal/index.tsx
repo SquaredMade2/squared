@@ -11,6 +11,7 @@ import {
 } from "../ui/dialog";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
+
 // import DateButton from "@/components/DateButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
@@ -110,8 +111,8 @@ const NewIssueModal = () => {
 				title: transformedTitle,
 				description: transformedDescriptionInput,
 				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
-				status: status ?? "Backlog",
-				priority: priority ?? "No Priority",
+				status: status ?? "backlog",
+				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
@@ -154,6 +155,10 @@ const NewIssueModal = () => {
 				title: "",
 				description: "",
 			});
+			toast({
+				title: "New Issue Created",
+				variant: variant,
+			});
 		} catch (err) {
 			toast({
 				title: "Error creating issue",
@@ -177,7 +182,7 @@ const NewIssueModal = () => {
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleCreateIssue)}>
 						<div className="flex space-x-4 ">
-							<div className="w-3/4 space-y-4 ">
+							<div className="w-4/5 space-y-4 ">
 								<FormField
 									control={form.control}
 									name="title"
@@ -215,7 +220,7 @@ const NewIssueModal = () => {
 							<div>
 								<Separator orientation="vertical" />
 							</div>
-							<div className="w-1/4 space-y-4">
+							<div className="w-1/5 space-y-4">
 								<StatusDropdownButton />
 								<LabelDropdownButton />
 								<PriorityDropdownButton />

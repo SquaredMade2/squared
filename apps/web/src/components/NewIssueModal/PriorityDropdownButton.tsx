@@ -1,12 +1,6 @@
-import {
-	Circle,
-	AlertTriangle,
-	AlertCircle,
-	CircleCheck,
-	CheckCircle,
-	MinusCircle,
-} from "lucide-react";
+import { Circle, AlertTriangle, AlertCircle, MinusCircle } from "lucide-react";
 import { Check } from "lucide-react";
+import { formatPriority } from "@/utils/formatting";
 import { priorityOptions } from "@/constants/designations";
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store";
@@ -52,7 +46,7 @@ export const PriorityDropdownButton = () => {
 						{showIcon(newIssuePriority || "noPriority")}
 					</span>
 					<span className="ml-2 cursor-pointer">
-						{newIssuePriority || "noPriority"}
+						{formatPriority(newIssuePriority || "noPriority")}
 					</span>
 				</Button>
 			</DropdownMenuTrigger>
@@ -76,7 +70,7 @@ export const PriorityDropdownButton = () => {
 						>
 							<div className="flex items-center">
 								{showIcon(priority)}
-								<span className="ml-2">{priority}</span>
+								<span className="ml-2">{formatPriority(priority)}</span>
 							</div>
 							{newIssuePriority === priority && <Check className="h-4 w-4" />}
 						</DropdownMenuItem>
