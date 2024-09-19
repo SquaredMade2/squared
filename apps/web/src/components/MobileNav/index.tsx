@@ -10,6 +10,7 @@ import {
 	Sheet,
 	SheetContent,
 	SheetHeader,
+	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import {
@@ -116,7 +117,7 @@ const MobileMenuSheet = () => {
 						</div>
 					</div>
 					<VisuallyHidden>
-						<h1>Menu</h1>
+						<SheetTitle>Menu</SheetTitle>
 					</VisuallyHidden>
 				</SheetHeader>
 				<div className="flex flex-col flex-grow justify-between py-6">
