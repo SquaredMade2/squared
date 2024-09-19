@@ -74,6 +74,7 @@ export default function InboxPage() {
 				setFilterType={setFilterType}
 				filterType={filterType}
 				setWorkspace={setWorkspace}
+				notifications={notifications.filter((n) => !n.read)}
 			/>
 			<div className="flex-1 p-4 container w-full">
 				<h1 className="text-2xl font-bold mb-4">Inbox</h1>
