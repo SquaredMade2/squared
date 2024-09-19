@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!tasks) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Tasks not found",

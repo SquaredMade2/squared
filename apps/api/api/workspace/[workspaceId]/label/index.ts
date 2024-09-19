@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!labels) {
-					res.status(404);
 					return {
 						data: labels,
 						message: "Teams not found",

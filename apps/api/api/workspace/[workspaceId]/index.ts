@@ -28,7 +28,6 @@ export function createRoute(): Route<Params> {
 				const workspace = idWorkspace || urlWorkspace;
 
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
@@ -62,7 +61,6 @@ export function createRoute(): Route<Params> {
 					data: body,
 				});
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
@@ -99,7 +97,6 @@ export function createRoute(): Route<Params> {
 
 				if (existingWorkspace) {
 					console.error("Workspace already exists");
-					res.status(401);
 					return {
 						data: null,
 						message: "Workspace already exists",
@@ -163,7 +160,6 @@ export function createRoute(): Route<Params> {
 					where: { id: workspaceId },
 				});
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",

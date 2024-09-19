@@ -34,7 +34,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!users) {
-					res.status(404);
 					return {
 						data: null,
 						message: "No Users found",
