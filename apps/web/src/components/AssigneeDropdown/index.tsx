@@ -58,6 +58,7 @@ export const AssigneeDropdown = ({
 			onBoarding: false,
 			defaultWorkspaceId: "",
 			avatarUrl: "",
+			savedNotificationIds: [],
 		});
 		setShowAssigneeDropdown(false);
 	};
