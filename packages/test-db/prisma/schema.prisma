@@ -191,16 +191,17 @@ model Team {
 }
 
 model User {
-  id                 String   @id @default(uuid())
-  name               String
-  username           String?
-  email              String   @unique
-  password           String
-  verified           Boolean  @default(false)
-  lastLogin          DateTime @default(now())
-  onBoarding         Boolean  @default(true)
-  defaultWorkspaceId String?
-  avatarUrl          String?
+  id                   String   @id @default(uuid())
+  name                 String
+  username             String?
+  email                String   @unique
+  password             String
+  verified             Boolean  @default(false)
+  lastLogin            DateTime @default(now())
+  onBoarding           Boolean  @default(true)
+  defaultWorkspaceId   String?
+  avatarUrl            String?
+  savedNotificationIds String[] @default([])
 
   Workspaces   UserWorkspace[]
   Notification Notification[]

@@ -1,71 +1,64 @@
+import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
-import { Separator } from "../ui/separator";
-import type { NotificationType } from "@repo/db";
+import { Separator } from "@/components/ui/separator";
 
 type SidebarProps = {
-	setFilterType: (type: NotificationType) => void;
+	setFilterType: (type: NotificationFilter) => void;
 	setWorkspace: (workspace: string) => void;
+	filterType: NotificationFilter;
 };
 
-export function InboxSidebar({ setFilterType, setWorkspace }: SidebarProps) {
+export default function InboxSidebar({
+	setFilterType,
+	setWorkspace,
+	filterType,
+}: SidebarProps) {
+	const FilterButton = ({
+		type,
+		children,
+	}: { type: NotificationFilter; children: React.ReactNode }) => (
+		<Button
+			variant="ghost"
+			className={`w-full justify-start relative ${
+				filterType === type ? "bg-accent text-primary" : ""
+			}`}
+			onClick={() => setFilterType(type)}
+		>
+			{filterType === type && (
+				<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+			)}
+			{children}
+		</Button>
+	);
+	console.log("filterType", filterType);
+
 	return (
 		<div className="w-64 ml-14 border-r border-border h-full md:block hidden p-4">
 			<nav>
 				<ul className="space-y-2">
 					<li>
-						<Button variant="ghost" className="w-full justify-start">
-							Inbox
-						</Button>
+						<FilterButton type="INBOX">Inbox</FilterButton>
 					</li>
 					<li>
-						<Button variant="ghost" className="w-full justify-start">
-							Saved
-						</Button>
+						<FilterButton type="SAVED">Saved</FilterButton>
 					</li>
 					<li>
-						<Button variant="ghost" className="w-full justify-start">
-							Read
-						</Button>
+						<FilterButton type="READ">Read</FilterButton>
 					</li>
 					<Separator />
 					<li>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-							onClick={() => setFilterType("ASSIGNED")}
-						>
-							Assigned
-						</Button>
+						<FilterButton type="ASSIGNED">Assigned</FilterButton>
 					</li>
 					<li>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-							onClick={() => setFilterType("PARTICIPATING")}
-						>
-							Participating
-						</Button>
+						<FilterButton type="PARTICIPATING">Participating</FilterButton>
 					</li>
 					<li>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-							onClick={() => setFilterType("MENTIONED")}
-						>
-							Mentioned
-						</Button>
+						<FilterButton type="MENTIONED">Mentioned</FilterButton>
 					</li>
 					<li>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-							onClick={() => setFilterType("CREATED")}
-						>
-							Created
-						</Button>
+						<FilterButton type="CREATED">Created</FilterButton>
 					</li>
 					<Separator />
-					{/* TODO: ADD WORKSPACE FILTERS */}
 					<li>
 						<Button
 							variant="ghost"
@@ -75,7 +68,6 @@ export function InboxSidebar({ setFilterType, setWorkspace }: SidebarProps) {
 							All Workspaces
 						</Button>
 					</li>
-					{/* Add more workspace buttons as needed */}
 				</ul>
 			</nav>
 		</div>
