@@ -6,19 +6,14 @@ import { useAuthStore, useNotificationStore } from "@/store";
 import IconLeftMenu from "@/components/IconLeftMenu";
 import type { NotificationType } from "@repo/db";
 
-export type NotificationFilter =
-	| NotificationType
-	| "INBOX"
-	| "SAVED"
-	| "READ"
-	| null;
+export type NotificationFilter = NotificationType | "INBOX" | "SAVED" | "READ";
 
 export default function InboxPage() {
 	const { notifications, getAllNotifications } = useNotificationStore(
 		(state) => state,
 	);
 	const { user } = useAuthStore((state) => state);
-	const [filterType, setFilterType] = useState<NotificationFilter>(null);
+	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
 		useState(notifications);
