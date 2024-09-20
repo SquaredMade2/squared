@@ -11,7 +11,7 @@
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"postinstall": "pnpm run gen",
+		"preinstall": "pnpm run gen",
 		"start": "ts-node -r tsconfig-paths/register api/index.ts",
 		"test": "echo \"Error: no test specified\""
 	},
