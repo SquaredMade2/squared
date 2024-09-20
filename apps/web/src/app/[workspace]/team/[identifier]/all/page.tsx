@@ -26,7 +26,7 @@ export default function Home() {
 		currentWorkspace,
 		getAllWorkspaces,
 		setCurrentWorkspace,
-		getWorkspace,
+		getWorkspaceLabels,
 	} = useWorkspaceStore((state) => state);
 	const {
 		tasks: initialTasks,
@@ -66,6 +66,7 @@ export default function Home() {
 				const userHasAccess = allUsers.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
+					await getWorkspaceLabels(currentWorkspace.id);
 					const teams = await getAllTeams(currentWorkspace.id);
 					const team = teams.find((t) => t.identifier === teamIdentifier);
 					team && setCurrentTeam(team);
