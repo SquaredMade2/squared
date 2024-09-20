@@ -22,7 +22,7 @@ export function ModeToggle() {
 				onClick={() => {
 					theme === "dark" ? setTheme("light") : setTheme("dark");
 				}}
-				className="w-10 h-10 flex hover:bg-gray-50 dark:hover:bg-background-darkSecondary rounded-lg items-center justify-center outline-none focus:ring-0 focus:outline-none active:ring-0 active:outline-none overflow-hidden"
+				className="w-10 h-10 flex hover:bg-gray-50 dark:hover:bg-background-navBarHover rounded-lg items-center justify-center outline-none focus:ring-0 focus:outline-none active:ring-0 active:outline-none overflow-hidden"
 			>
 				{theme === "light" && (
 					<motion.div
