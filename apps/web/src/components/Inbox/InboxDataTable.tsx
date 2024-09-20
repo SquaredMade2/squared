@@ -81,20 +81,30 @@ export function InboxDataTable({
 		}
 	}, [showUnreadOnly, table]);
 
-	const handleMarkAsRead = async () => {
+	const handleMarkAsUnread = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
 		await updateManyNotifications(
 			selectedRows.map((row) => row.original),
 			{ read: true },
 		);
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
 	};
 
-	const handleMarkAsUnread = async () => {
+	const handleMarkAsRead = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
 		await updateManyNotifications(
 			selectedRows.map((row) => row.original),
 			{ read: false },
 		);
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
 	};
 
 	const handleMarkAsDismissed = async () => {
