@@ -74,7 +74,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			);
 
 			const handleClick = async () => {
-				updateNotification(row.original.id, { read });
+				updateNotification(row.original.id, { read: true });
 				if (currentWorkspace?.id === workspaceId) {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
