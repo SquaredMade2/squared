@@ -20,7 +20,13 @@ const ToggleNavBar: React.FC<ToggleNavBarProps> = ({ hover }) => {
 	);
 
 	return (
-		<ButtonIcon icon={toggleIcon} hoverBg={hover} handleClick={handleNavBar} />
+		<div className="md:hidden cursor-pointer mr-2">
+			<ButtonIcon
+				icon={toggleIcon}
+				hoverBg={hover}
+				handleClick={handleNavBar}
+			/>
+		</div>
 	);
 };
 
