@@ -39,7 +39,7 @@ export type Route<P = Record<string, string>> = {
 };
 
 function handleNotSupported(_: unknown, res: Response) {
-	res.status(405).send("at least its here");
+	res.status(405).send();
 }
 
 export function toQueryHandler<P = Record<string, string>>(
