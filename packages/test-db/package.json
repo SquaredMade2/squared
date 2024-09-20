@@ -11,7 +11,6 @@
     "db:seed": "cross-env NODE_ENV=test ts-node src/seed.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes",
-    "postinstall": "pnpm run db:generate",
     "studio": "prisma studio"
   },
   "dependencies": {
