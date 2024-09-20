@@ -48,7 +48,7 @@ export default function LabelFilterDropDown({
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
 
-	const filteredLabels = workspaceLabels.filter((label) =>
+	const filteredLabels = workspaceLabels?.filter((label) =>
 		label.name.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
@@ -68,7 +68,7 @@ export default function LabelFilterDropDown({
 					<CommandList>
 						<CommandEmpty>No labels found.</CommandEmpty>
 						<CommandGroup>
-							{filteredLabels.map((label) => (
+							{filteredLabels?.map((label) => (
 								<CommandItem
 									key={label.id}
 									onSelect={() => handleLabelChange(label)}
