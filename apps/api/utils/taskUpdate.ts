@@ -4,7 +4,7 @@ import type {
 	TaskEventLog,
 	Activity,
 	User,
-} from "@repo/test-db";
+} from "@repo/db";
 import { prisma } from "../api";
 
 export async function trackChange(author: User, changes: Task, task: Task) {
