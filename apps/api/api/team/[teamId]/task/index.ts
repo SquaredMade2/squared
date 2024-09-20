@@ -1,4 +1,4 @@
-import type { Label, Task } from "@repo/db";
+import type { Label, Task } from "@repo/test-db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
@@ -30,7 +30,7 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error finding tasks:", error);
-				res.status(500);
+				// res.status(500);
 				return {
 					data: null,
 					message: "Internal Server Error",
