@@ -11,9 +11,7 @@ const NavBarTeams = ({
 	teamIdentifier,
 }: NavBarTeamProps): React.ReactElement => {
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const { teams, getAllTeams, getTeam, setCurrentTeam } = useTeamStore(
-		(state) => state,
-	);
+	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getAllTasks } = useTaskStore((state) => state);
 	const { toast } = useToast();
 

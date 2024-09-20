@@ -10,7 +10,6 @@ import IconLeftMenu from "@/components/IconLeftMenu";
 
 export default function Inbox(): React.JSX.Element {
 	const [showInboxList, setShowInboxList] = useState(false);
-	const [loading, setLoading] = useState(true);
 	const closeBackdrop = () => {
 		setShowInboxList(false);
 	};
@@ -25,11 +24,9 @@ export default function Inbox(): React.JSX.Element {
 
 	useEffect(() => {
 		const initiateStore = async () => {
-			setLoading(true);
 			if (user) {
-				const notifications = await getAllNotifications(user.id);
+				await getAllNotifications(user.id);
 			}
-			setLoading(false);
 		};
 		initiateStore();
 	}, [user]);

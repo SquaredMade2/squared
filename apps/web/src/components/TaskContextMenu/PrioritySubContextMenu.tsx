@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import axios from "axios";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import type { PrioritySubContextMenuProps } from "@/components/TaskContextMenu/interfaces";
 import {
@@ -8,7 +7,6 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
-import { EventType } from "@/interfaces/event.interfaces";
 import { priorityOptions } from "@/constants/designations";
 import { high, low, medium } from "../Svg";
 import type { Priority } from "@repo/db";
@@ -19,8 +17,8 @@ const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
 	const updateItem = async (priority: Priority) => {
 		if (task.id !== undefined) {
 			try {
-				const response = await updateTask(task.id, { priority });
-			} catch (err) {}
+				await updateTask(task.id, { priority });
+			} catch {}
 		}
 	};
 

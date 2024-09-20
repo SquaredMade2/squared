@@ -1,6 +1,6 @@
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
-import type { Route, APIResponse } from "@/api/route";
+import type { Route } from "@/api/route";
 import { sendMail } from "@/utils/mail";
 
 type Params = {

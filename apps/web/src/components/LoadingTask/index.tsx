@@ -1,4 +1,3 @@
-import React from "react";
 import { LoadingSkeleton } from "../LoadingSkeleton";
 import { ChevronRight } from "lucide-react";
 

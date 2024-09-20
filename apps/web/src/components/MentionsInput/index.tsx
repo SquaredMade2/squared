@@ -29,8 +29,8 @@ const MentionInput = ({
 				trigger={"@"}
 				data={data}
 				className={mentionClass}
-				displayTransform={(id, display) => `@${display}`}
-				renderSuggestion={(suggestion, search, highlightedDisplay) => (
+				displayTransform={(_, display) => `@${display}`}
+				renderSuggestion={(_, __, highlightedDisplay) => (
 					<div className="text-foreground p-2 bg-slate-200 bg-opacity-20 cursor-default hover:bg-slate-400 hover:bg-opacity-50 rounded-t-sm">
 						{highlightedDisplay}
 					</div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useTaskStore, useActivityStore } from "@/store";
+import { useTaskStore } from "@/store";
 import {
 	Popover,
 	PopoverContent,
@@ -18,7 +18,6 @@ const DatePicker = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const { updateTask } = useTaskStore((state) => state);
-	const { getTaskEvents } = useActivityStore((state) => state);
 	const sidebarDate = currentTask?.dueDate;
 	const taskId = currentTask ? currentTask.id : "";
 	const initialDate = sidebarDate;
@@ -57,7 +56,7 @@ const DatePicker = ({ currentTask }: ButtonProps) => {
 		try {
 			await updateTask(taskId, { dueDate: newDate });
 			// await getTaskEvents(taskId);
-		} catch (err) {
+		} catch {
 			toast({
 				title: "Error",
 				description: "Failed to update due date",

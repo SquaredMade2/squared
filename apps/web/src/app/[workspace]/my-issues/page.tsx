@@ -1,6 +1,5 @@
 "use client";
 
-import TopNavBar from "@/components/TopNavBar";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import type { Status, Task } from "@repo/db";
-import { useRouter } from "next/navigation";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import BackButton from "@/components/BackButton";
 

@@ -121,7 +121,7 @@ export const createTeamStore = (
 							await axios.get(
 								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/team`,
 							);
-						const { data: teams, message, variant } = response;
+						const { data: teams } = response;
 						if (!teams) {
 							set({ teams: [] });
 							return [];

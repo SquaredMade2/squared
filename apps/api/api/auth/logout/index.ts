@@ -7,7 +7,7 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
+		POST: async (res): Promise<APIResponse<User>> => {
 			try {
 				res.clearCookie("token");
 				return {

@@ -4,10 +4,8 @@ import { useModalStore, useWorkspaceStore } from "@/store";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
-	DialogTrigger,
 } from "../ui/dialog";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
