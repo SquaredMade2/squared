@@ -18,6 +18,12 @@ import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfa
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 import LabelBadge from "../LabelBadges";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
 
 const LabelColor = ({ color }: { color: string }) => (
 	<div
@@ -58,9 +64,16 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const renderLabels = () => (
 		<div className="flex flex-col">
 			<div className="mb-2 space-x-1 space-y-1">
-				{taskLabels.map((label: Label) => (
-					<LabelBadge key={label.id} label={label} />
-				))}
+				<TooltipProvider>
+					{taskLabels.map((label: Label) => (
+						<Tooltip key={label.id}>
+							<TooltipTrigger>
+								<LabelBadge label={label} />
+							</TooltipTrigger>
+							<TooltipContent>{label.description}</TooltipContent>
+						</Tooltip>
+					))}
+				</TooltipProvider>
 			</div>
 			<Button variant="ghost">
 				<Plus className="size-4 mr-2" />
