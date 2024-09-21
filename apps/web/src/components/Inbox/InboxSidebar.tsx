@@ -41,7 +41,6 @@ type WorkspaceFilterButtonProps = {
 };
 
 const FilterButton = ({
-	type,
 	icon: Icon,
 	label,
 	unreadCount,
@@ -50,7 +49,7 @@ const FilterButton = ({
 }: FilterButtonProps) => (
 	<Button
 		variant="ghost"
-		className={`w-full justify-between relative ${isSelected ? "bg-accent" : ""}`}
+		className={`w-full justify-between relative ${isSelected && "bg-accent"}`}
 		onClick={onClick}
 	>
 		<div className="flex gap-2 items-center">
@@ -78,7 +77,7 @@ const WorkspaceFilterButton = ({
 }: WorkspaceFilterButtonProps) => (
 	<Button
 		variant="ghost"
-		className={`w-full justify-between relative ${isSelected ? "bg-accent" : ""}`}
+		className={`w-full justify-between relative ${isSelected && "bg-accent"}`}
 		onClick={onClick}
 	>
 		<div>

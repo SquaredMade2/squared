@@ -291,7 +291,11 @@ export function InboxDataTable({
 					{table.getFilteredSelectedRowModel().rows.length} of{" "}
 					{table.getFilteredRowModel().rows.length} row(s) selected.
 				</div>
-				<div className="space-x-2">
+				<div className="flex items-center space-x-2">
+					<span className="text-sm text-muted-foreground">
+						Page {table.getState().pagination.pageIndex + 1} of{" "}
+						{table.getPageCount()}
+					</span>
 					<Button
 						variant="outline"
 						size="sm"

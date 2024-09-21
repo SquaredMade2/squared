@@ -173,7 +173,7 @@ export function MobileInboxSwitcher({
 						<Button
 							variant="ghost"
 							className="justify-between"
-							onClick={() => setFilterRead(true)}
+							onClick={() => setFilterRead(false)}
 						>
 							All
 							{!filterRead && <Check className="h-4 w-4" />}
@@ -181,10 +181,10 @@ export function MobileInboxSwitcher({
 						<Button
 							variant="ghost"
 							className="justify-between"
-							onClick={() => setFilterRead(false)}
+							onClick={() => setFilterRead(true)}
 						>
 							Unread
-							{!filterRead && <Check className="h-4 w-4" />}
+							{filterRead && <Check className="h-4 w-4" />}
 						</Button>
 					</div>
 				</PopoverContent>

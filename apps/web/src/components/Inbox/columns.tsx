@@ -2,7 +2,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
 import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import { useId } from "react";
 import {
 	useNotificationStore,
 	type NotificationTask,
