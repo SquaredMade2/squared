@@ -23,7 +23,7 @@ export default function LabelFilterDropDown({
 	showLabelFilterDropDown,
 	setShowLabelFilterDropDown,
 }: LabelFilterDropDownProps) {
-	const { workspaceLabels } = useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
 	const { addFilter, removeFilter } = useFilterStore((state) => state);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -48,9 +48,10 @@ export default function LabelFilterDropDown({
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
 
-	const filteredLabels = workspaceLabels?.filter((label) =>
-		label.name.toLowerCase().includes(searchQuery.toLowerCase()),
-	);
+	const filteredLabels =
+		currentWorkspace?.Labels.filter((label) =>
+			label.name.toLowerCase().includes(searchQuery.toLowerCase()),
+		) || [];
 
 	return (
 		<Popover
