@@ -19,16 +19,16 @@ const HomePage = () => {
 				const cookies = parseCookies();
 				const authCookie = cookies["auth-store"];
 
-				// If there is a cookie but no user, log out and redirect
 				if (authCookie && !user) {
+					// If there is a cookie but no user, log out and redirect
 					destroyCookie(undefined, "auth-store");
 					await logout();
 					router.push("/login");
 					return;
 				}
 
-				// If there is a user, redirect to appropriate workspace or join page
 				if (user) {
+					// If there is a user, redirect to appropriate workspace or join page
 					if (user.defaultWorkspaceId) {
 						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
 						if (workspace?.url) {
@@ -47,10 +47,8 @@ const HomePage = () => {
 				}
 
 				// If no user and no cookie, redirect to login
-				if (!authCookie && !user) {
-					await logout();
-					router.push("/login");
-				}
+				await logout();
+				router.push("/login");
 			} catch (error) {
 				console.error("Redirection Error: ", error);
 				// Optionally set an error state here to show an error message
