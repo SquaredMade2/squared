@@ -1,39 +1,25 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useEffect, useContext } from "react";
 import type React from "react";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { SocketContext } from "@/app/SocketProvider";
 import ToggleNavBar from "../ToggleNavBar";
-import { useAuthStore, useFilterStore } from "@/store";
-import { Button } from "../ui/button";
+import { useAuthStore } from "@/store";
 
 const TopNavBar: React.FC = () => {
-	const [showNotification, setShowNotification] = useState(true);
-	const menuRef = useRef<HTMLDivElement>(null);
-	const notificationButtonRef = useRef(null);
-
-	const { clearFilter } = useFilterStore((state) => state);
-
 	const socket = useContext(SocketContext);
 	const user = useAuthStore((state) => state.user);
-
-	function getCurrentDimension(): { width: number; height: number } {
-		return {
-			width: window.innerWidth,
-			height: window.innerHeight,
-		};
-	}
 
 	useEffect(() => {
 		socket.emit("socketId", user?.id);
 		socket.emit("getUser", user?.id);
-		socket.on("send_notification", (data: unknown) => {
+		socket.on("send_notification", () => {
 			// Handle incoming notifications
 		});
-		socket.on("new_notification", (data: unknown) => {
+		socket.on("new_notification", () => {
 			// Handle new notifications
 		});
-		socket.on("notification_removed", (data: unknown) => {
+		socket.on("notification_removed", () => {
 			// Handle notification removal
 		});
 		return () => {

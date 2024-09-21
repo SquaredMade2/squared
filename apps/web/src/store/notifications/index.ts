@@ -103,7 +103,7 @@ export const createNotificationStore = (
 							await axios.get(
 								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
 							);
-						const { data: notifications, message, variant } = response;
+						const { data: notifications } = response;
 						if (!notifications) {
 							set({ notifications: [] });
 							return [];

@@ -22,7 +22,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
+		POST: async (res, _, body: Body): Promise<APIResponse<User>> => {
 			try {
 				const { email, password, provider, type, name, username } = body;
 

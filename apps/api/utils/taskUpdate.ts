@@ -39,7 +39,7 @@ export async function trackChange(author: User, changes: Task, task: Task) {
 		} as Activity,
 	});
 
-	const newTaskEvent = await prisma.taskEvent.create({
+	await prisma.taskEvent.create({
 		data: {
 			type: changeType,
 			authorId: author.id,
@@ -71,7 +71,7 @@ export async function createLog(author: User, task: Task) {
 		} as Activity,
 	});
 
-	const newTaskEvent = await prisma.taskEvent.create({
+	await prisma.taskEvent.create({
 		data: {
 			type: "create",
 			authorId: author.id,

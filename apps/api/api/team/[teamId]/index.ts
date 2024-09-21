@@ -8,7 +8,7 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { teamId }, query): Promise<APIResponse<Team>> => {
+		GET: async (res, { teamId }): Promise<APIResponse<Team>> => {
 			try {
 				// Find team by ID
 				const team: Team | null = await prisma.team.findFirst({

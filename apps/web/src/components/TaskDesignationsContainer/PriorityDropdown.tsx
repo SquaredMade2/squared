@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { high, medium, low } from "@/components/Svg";
-import { useTaskStore, useActivityStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@repo/db";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
@@ -19,7 +19,6 @@ import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfa
 const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
-	const { getTaskEvents } = useActivityStore((state) => state);
 	const sidebarPriority = currentTask ? currentTask?.priority : "";
 	const taskId = currentTask ? currentTask.id : "";
 
@@ -49,7 +48,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 		try {
 			await updateTask(taskId, { priority: newPriority });
 			// await getTaskEvents(taskId);
-		} catch (err) {
+		} catch {
 			toast({
 				title: "Error updating priority",
 				variant: "destructive",

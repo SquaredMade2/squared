@@ -45,8 +45,6 @@ const RenameModal = () => {
 		}
 	}, [task]);
 
-	const { title } = task ?? {};
-
 	return (
 		<Dialog open={showRename} onOpenChange={setShowRename}>
 			<DialogContent>

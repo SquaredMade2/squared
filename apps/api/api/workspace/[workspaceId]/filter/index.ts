@@ -1,4 +1,4 @@
-import type { SavedFilter, Task } from "@repo/db";
+import type { SavedFilter } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
@@ -8,11 +8,7 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (
-			res,
-			{ workspaceId },
-			query,
-		): Promise<APIResponse<SavedFilter[]>> => {
+		GET: async (res, { workspaceId }): Promise<APIResponse<SavedFilter[]>> => {
 			try {
 				// Find filters by label ID
 				const filters = await prisma.savedFilter.findMany({

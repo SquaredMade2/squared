@@ -1,4 +1,3 @@
-import React from "react";
 import EventTabs from "../TaskPageActivityTimeline/EventTabs";
 import TaskPageTitle from "@/components/taskPageTitle/index";
 import TaskCardTop from "@/components/TaskCardTop";

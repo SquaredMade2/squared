@@ -1,7 +1,6 @@
 import { UserSearch } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import type React from "react";
 import { useViewStore, useWorkspaceStore } from "@/store";
 import TaskCardLabels from "../TaskCardLabels";
 import { formatDate } from "date-fns";
@@ -22,9 +21,11 @@ const TaskList = ({
 	const { showPriority, showLabels, showDateTime } = useViewStore(
 		(state) => state,
 	);
-	const { workspaceLabels } = useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const taskLabels =
-		workspaceLabels?.filter((label) => task.labels.includes(label.id)) || [];
+		currentWorkspace?.Labels.filter((label) =>
+			task.labels.includes(label.id),
+		) || [];
 	return (
 		<Link
 			className={
