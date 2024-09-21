@@ -1,5 +1,6 @@
 import { cn } from "@/utils/cn";
 import type { Label } from "@repo/db";
+import { useTheme } from "next-themes";
 
 function hexToRGB(hex: string): [number, number, number] {
 	const rgb = Number.parseInt(hex.slice(1), 16);
@@ -37,10 +38,9 @@ function getLuminance(hex: string): number {
 }
 
 export default function LabelBadge({ label }: { label: Label }) {
-	const isDarkMode = window.matchMedia?.(
-		"(prefers-color-scheme: dark)",
-	).matches;
-	const cardColor = isDarkMode ? "#1c1917" : "#ffffff"; // Approximation of the card colors
+	const { theme } = useTheme();
+	const isDarkMode = theme === "dark";
+	const cardColor = isDarkMode ? "#1c1917" : "#ffffff";
 
 	let adjustedColor = label.color;
 	let contrastRatio = getContrastRatio(adjustedColor, cardColor);
