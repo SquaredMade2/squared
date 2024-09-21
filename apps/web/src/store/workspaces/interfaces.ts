@@ -1,11 +1,14 @@
-import type { Label, User, Workspace } from "@repo/db";
+import type { Label, User, Workspace as WorkspaceType } from "@repo/db";
 import type { SavedFilter } from "../filters";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];
 	currentWorkspace: Workspace | null;
-	workspaceLabels: Label[];
 	workspaceFilters: SavedFilter[];
+};
+
+export type Workspace = WorkspaceType & {
+	Labels: Label[];
 };
 
 export interface WorkspaceResponse {
@@ -20,7 +23,6 @@ export type WorkspaceActions = {
 		userId: string,
 	) => Promise<WorkspaceResponse>;
 	getWorkspace: (workspaceId: string) => Promise<WorkspaceResponse>;
-	getWorkspaceLabels: (workspaceId: string) => Promise<Label[]>;
 	getWorkspaceFilters: (workspaceId: string) => Promise<SavedFilter[]>;
 	setCurrentWorkspace: (workspace: Workspace) => void;
 	updateWorkspace: (

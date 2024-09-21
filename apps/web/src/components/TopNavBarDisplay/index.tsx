@@ -1,4 +1,4 @@
-import React, {} from "react";
+import {} from "react";
 import { ChevronDown, SlidersVertical } from "lucide-react";
 import DisplayPreferences from "../DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";

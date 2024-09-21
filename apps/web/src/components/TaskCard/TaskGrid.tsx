@@ -1,4 +1,3 @@
-import type React from "react";
 import { Calendar, UserSearch } from "lucide-react";
 
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";

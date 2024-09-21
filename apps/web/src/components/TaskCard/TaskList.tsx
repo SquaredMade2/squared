@@ -1,7 +1,6 @@
 import { UserSearch } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import type React from "react";
 import { useViewStore, useWorkspaceStore } from "@/store";
 import TaskCardLabels from "../TaskCardLabels";
 import { formatDate } from "date-fns";
@@ -22,9 +21,11 @@ const TaskList = ({
 	const { showPriority, showLabels, showDateTime } = useViewStore(
 		(state) => state,
 	);
-	const { workspaceLabels } = useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const taskLabels =
-		workspaceLabels?.filter((label) => task.labels.includes(label.id)) || [];
+		currentWorkspace?.Labels.filter((label) =>
+			task.labels.includes(label.id),
+		) || [];
 	return (
 		<Link
 			className={
@@ -36,46 +37,52 @@ const TaskList = ({
 			<div className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0">
 				<div className="col-span-10 text-foreground">
 					<div className="flex justify-between w-full">
-						<div className="flex items-center gap-2 text-base">
+						<div className="flex items-center gap-2 text-base min-w-0">
 							{showPriority && (
 								<Button
 									variant="ghost"
 									size="sm"
-									className={"p-0.5 border border-border mb-2 mt-1 w-6 h-5"}
+									className={
+										"p-0.5 border border-border mb-2 mt-1 w-6 h-5 flex-shrink-0"
+									}
 								>
 									{priorityIcon}
 								</Button>
 							)}
-							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer">
+							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0">
 								{teamIdentifier}
 							</span>
-							<Button variant="ghost" size="sm" className="mx-1 p-0">
+							<Button
+								variant="ghost"
+								size="sm"
+								className="mx-1 p-0 flex-shrink-0"
+							>
 								{statusIcon}
 							</Button>
-							<span className="truncate">
+							<span className="truncate min-w-0">
 								{location === "search" && highlightText
 									? highlightText(task.title)
 									: task.title}
 							</span>
 						</div>
-						<div className="flex col-span-4 items-center lg:pr-5 justify-end">
+						<div className="flex col-span-4 items-center lg:pr-5 justify-end gap-2">
 							{showLabels && <TaskCardLabels labels={taskLabels} view="list" />}
 							{showDateTime && (
-								<div className="text-muted-foreground md:flex xs:hidden sm:hidden mr-2 mdsm:mr-3">
+								<div className="text-muted-foreground md:flex xs:hidden sm:hidden flex-shrink-0 whitespace-nowrap">
 									{task.dueDate
 										? formatDate(new Date(task.dueDate), "MMM dd")
 										: "No Date"}
 								</div>
 							)}
 							{task.assigneeName ? (
-								<Avatar className="size-6">
+								<Avatar className="size-6 flex-shrink-0">
 									<AvatarImage src={user?.avatarUrl ?? undefined} />
 									<AvatarFallback className="text-xxs">
 										{getInitials(task.assigneeName)}
 									</AvatarFallback>
 								</Avatar>
 							) : (
-								<UserSearch className="size-6 text-[#9597AD]" />
+								<UserSearch className="size-6 text-[#9597AD] flex-shrink-0" />
 							)}
 						</div>
 					</div>

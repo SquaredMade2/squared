@@ -6,13 +6,9 @@ import type {
 	WorkspaceState,
 	WorkspaceStore,
 	WorkspaceResponse,
-} from "./interfaces";
-import type {
-	Label,
-	User,
 	Workspace,
-	SavedFilter as SavedFilterType,
-} from "@repo/db";
+} from "./interfaces";
+import type { User, SavedFilter as SavedFilterType } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 import type { FilterCondition, SavedFilter } from "../filters";
 export * from "./interfaces";
@@ -34,7 +30,6 @@ export const createWorkspaceStore = (
 	initState: WorkspaceState = {
 		workspaces: [],
 		currentWorkspace: null,
-		workspaceLabels: [],
 		workspaceFilters: [],
 	},
 ) => {
@@ -97,12 +92,9 @@ export const createWorkspaceStore = (
 					}
 
 					try {
-						const {
-							data: response,
-						}: { data: ApiReturnType<Workspace & { Label: Label[] }> } =
+						const { data: response }: { data: ApiReturnType<Workspace> } =
 							await axios.get(apiString(workspaceId));
 						const { data: workspace, message, variant } = response;
-						set({ workspaceLabels: workspace?.Label });
 						if (!workspace) {
 							return {
 								workspace: null,
@@ -118,22 +110,6 @@ export const createWorkspaceStore = (
 							message: error instanceof Error ? error.message : "Unknown error",
 							variant: "destructive",
 						};
-					}
-				},
-				getWorkspaceLabels: async (workspaceId: string): Promise<Label[]> => {
-					try {
-						const { data: response }: { data: ApiReturnType<Label[]> } =
-							await axios.get(`${apiString(workspaceId)}/label`);
-						const { data: labels } = response;
-						if (!labels) {
-							return [];
-						}
-						set({ workspaceLabels: labels });
-
-						return labels;
-					} catch (error) {
-						console.error("Error in getWorkspaceLabels:", error);
-						return [];
 					}
 				},
 				getWorkspaceFilters: async (

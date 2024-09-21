@@ -18,7 +18,7 @@ import {
 } from "@/store";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import type { Workspace } from "@repo/db";
+import type { Workspace } from "@/store/workspaces";
 const WorkSpaceDropDown = () => {
 	const {
 		currentWorkspace,

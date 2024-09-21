@@ -1,4 +1,3 @@
-import React from "react";
 import Expand from "../Expand";
 import DeleteNotification from "../DeleteNotification";
 import FavNotification from "../FavNotification";

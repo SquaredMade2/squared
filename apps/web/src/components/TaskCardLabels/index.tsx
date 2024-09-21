@@ -1,75 +1,48 @@
-import React from "react";
-import { LabelColor } from "../LabelDropdownButton";
+import { useRef, useEffect, useState } from "react";
 import type { TaskCardLabelsProps } from "./TaskCardLabels.interfaces";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { DropdownMenuContent } from "@repo/ui/dropdown-menu";
+import LabelBadge from "../LabelBadges";
+import { cn } from "@/utils/cn";
 
 export default function TaskCardLabels({ labels, view }: TaskCardLabelsProps) {
 	const isGridView = view === "grid";
-	const maxLabels = isGridView ? 5 : 4;
-	const maxLabelsMobile = isGridView ? 5 : 2;
+	const containerRef = useRef<HTMLDivElement>(null);
+	const [minWidth, setMinWidth] = useState<number>(0);
 
-	const visibleLabels = labels.slice(0, maxLabels);
-	const visibleLabelsMobile = labels.slice(0, maxLabelsMobile);
-	const hasMoreLabels = labels.length > maxLabels;
-	const hasMoreLabelsMobile = labels.length > maxLabelsMobile;
-	const getMaxLabels = (isMobile: boolean) => {
-		if (isGridView) return 5;
-		return isMobile ? 2 : 4;
-	};
-
-	const renderLabels = (labelsToRender: typeof labels, isMobile: boolean) => (
-		<>
-			{labelsToRender.map((label) => (
-				<div
-					key={label.id}
-					className={`${
-						isMobile ? "flex lg:hidden" : "hidden lg:flex"
-					} items-center p-1 mr-1 mb-1 border border-border rounded`}
-				>
-					<LabelColor label={label} />
-					<span className="ml-1">{label.name}</span>
-				</div>
-			))}
-			{((isMobile && hasMoreLabelsMobile) || (!isMobile && hasMoreLabels)) && (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
-							variant="outline"
-							size="sm"
-							className={`${
-								isMobile ? "flex lg:hidden" : "hidden lg:flex"
-							} items-center p-1 h-6`}
-						>
-							...
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent className="z-50 bg-popover border border-border">
-						{labels.slice(getMaxLabels(isMobile)).map((label) => (
-							<DropdownMenuItem key={label.id}>
-								<LabelColor label={label} />
-								<span className="ml-1">{label.name}</span>
-							</DropdownMenuItem>
-						))}
-					</DropdownMenuContent>
-				</DropdownMenu>
-			)}
-		</>
-	);
+	useEffect(() => {
+		if (containerRef.current) {
+			const labelElements =
+				containerRef.current.querySelectorAll(".label-badge");
+			let maxWidth = 0;
+			for (const el of labelElements) {
+				const width = (el as HTMLElement).offsetWidth;
+				if (width > maxWidth) {
+					maxWidth = width;
+				}
+			}
+			setMinWidth(maxWidth);
+		}
+	}, [labels]);
 
 	return (
 		<div
-			className={`flex items-center text-muted-foreground text-xs ${
-				isGridView ? "flex-wrap" : "mr-5"
-			}`}
+			ref={containerRef}
+			className={cn(
+				"flex flex-wrap items-center justify-end text-muted-foreground gap-1 w-full",
+				isGridView ? "" : "mx-5",
+			)}
+			style={
+				{
+					"--min-label-width": `${minWidth}px`,
+					minWidth: "var(--min-label-width)",
+					maxWidth: "100%",
+				} as React.CSSProperties
+			}
 		>
-			{renderLabels(visibleLabels, false)}
-			{renderLabels(visibleLabelsMobile, true)}
+			{labels.map((label) => (
+				<div key={label.id} className="label-badge flex-shrink">
+					<LabelBadge label={label} />
+				</div>
+			))}
 		</div>
 	);
 }
