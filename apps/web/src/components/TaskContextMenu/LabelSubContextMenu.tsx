@@ -14,17 +14,14 @@ import { useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
-	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
-		useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
-		workspaceLabels.filter((label) => task.labels.includes(label.id)),
+		currentWorkspace?.Labels.filter((label) =>
+			task.labels.includes(label.id),
+		) || [],
 	);
 	const { updateTask } = useTaskStore((state) => state);
-
-	if (!workspaceLabels) {
-		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
-	}
 
 	const handleLabelChange = (label: Label, checked: boolean) => {
 		// Calculate the updated labels before setting the state
@@ -45,7 +42,7 @@ const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{workspaceLabels.map((label) => {
+				{currentWorkspace?.Labels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
 							key={label.id}

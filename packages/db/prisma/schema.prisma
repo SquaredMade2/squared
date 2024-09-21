@@ -230,7 +230,7 @@ model Workspace {
   avatarUrl            String?
 
   workspaceFilters   SavedFilter[]
-  Label              Label[]
+  Labels             Label[]
   universalTokenLink UniversalTokenLink?
   teams              Team[]
   projects           Project[]

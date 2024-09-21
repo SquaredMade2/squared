@@ -1,4 +1,4 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { trackChange, createLog } from "@/utils/taskUpdate";
@@ -118,11 +118,6 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
-
-				const formattedName = workspace.name
-					.replace(/\s+/g, "")
-					.substring(0, 3)
-					.toUpperCase();
 
 				const newIssueCount = workspace.tasksCreated + 1;
 

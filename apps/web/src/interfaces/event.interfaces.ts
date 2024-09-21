@@ -1,5 +1,3 @@
-import type { User, Priority, Status } from "@repo/db";
-
 export enum Labels {
 	bug = "bug",
 	feature = "feature",

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Plus, Check } from "lucide-react";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
-import { useTaskStore, useWorkspaceStore, useActivityStore } from "@/store";
+import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 
 export const labelStyle: Record<string, string> = {
@@ -39,21 +39,22 @@ export const LabelColor = ({ label }: { label: Label }) => {
 
 const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
-	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
-		useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const [taskLabels, setTaskLabels] = useState<Label[]>(
-		workspaceLabels.filter((label) => currentTask?.labels.includes(label.id)),
+		currentWorkspace?.Labels.filter((label) =>
+			currentTask?.labels.includes(label.id),
+		) || [],
 	);
 	const { updateTask } = useTaskStore((state) => state);
-	const { getTaskEvents } = useActivityStore((state) => state);
 	const taskId = currentTask?.id;
 
 	useEffect(() => {
 		const fetchLabels = async () => {
 			if (currentWorkspace) {
-				const labels = await getWorkspaceLabels(currentWorkspace.id);
 				setTaskLabels(
-					labels.filter((label) => currentTask?.labels.includes(label.id)),
+					currentWorkspace.Labels.filter((label) =>
+						currentTask?.labels.includes(label.id),
+					),
 				);
 			}
 		};
@@ -109,10 +110,6 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 		return newSelection;
 	};
 
-	if (!workspaceLabels) {
-		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
-	}
-
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>{issueSidebarButton()}</PopoverTrigger>
@@ -122,7 +119,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 					<CommandList>
 						<CommandEmpty>No label found.</CommandEmpty>
 						<CommandGroup>
-							{workspaceLabels.map((label) => (
+							{currentWorkspace?.Labels.map((label) => (
 								<CommandItem
 									key={label.id}
 									value={label.name}

@@ -67,9 +67,7 @@ const filterOptions: FilterOption[] = [
 ];
 
 const FilterDropDown: React.FunctionComponent = () => {
-	const [filterOption, setFilterOption] = useState<FilterOption | null>(null);
 	const [open, setOpen] = useState(false);
-	const [query, setQuery] = useState("");
 
 	const [showDueDateFilterDropDown, setShowDueDateFilterDropDown] =
 		useState(false);
@@ -80,12 +78,9 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
-	const { currentFilters, removeFilter, clearFilter } = useFilterStore(
-		(state) => state,
-	);
+	const { currentFilters, clearFilter } = useFilterStore((state) => state);
 
 	const handleSelect = (option: FilterOption) => {
-		setFilterOption(option);
 		setOpen(false);
 
 		switch (option.name) {

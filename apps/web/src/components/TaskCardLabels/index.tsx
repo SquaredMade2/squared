@@ -1,4 +1,3 @@
-import React from "react";
 import { LabelColor } from "../LabelDropdownButton";
 import type { TaskCardLabelsProps } from "./TaskCardLabels.interfaces";
 import { Button } from "@/components/ui/button";

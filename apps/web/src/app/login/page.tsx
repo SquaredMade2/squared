@@ -16,7 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { setCookie } from "nookies";
+import { destroyCookie, setCookie } from "nookies";
 
 function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
@@ -44,6 +44,7 @@ function LoginForm() {
 
 			if (response?.user) {
 				toast({ title: "Login Successful, Welcome!" });
+				destroyCookie(null, "auth-store");
 				setCookie(null, "auth-store", JSON.stringify(response.user), {
 					maxAge: 30 * 24 * 60 * 60,
 					path: "/",
@@ -68,9 +69,11 @@ function LoginForm() {
 				} else {
 					const workspaces = await getAllWorkspaces(response.user.id);
 					if (workspaces?.length) {
-						router.push(`/${workspaces[0].url}`);
+						router.refresh();
+						router.prefetch(`/${workspaces[0].url}`);
 					} else {
-						router.push("/join");
+						router.refresh();
+						router.prefetch("/join");
 					}
 				}
 			} else {
@@ -79,7 +82,7 @@ function LoginForm() {
 					variant: response?.variant || "destructive",
 				});
 			}
-		} catch (error) {
+		} catch {
 			toast({ title: "Login failed", variant: "destructive" });
 		} finally {
 			setIsLoading(false);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
 import CopyTaskUrl from "../CopyTaskUrl";
 import CopyTaskId from "../CopyTaskId";

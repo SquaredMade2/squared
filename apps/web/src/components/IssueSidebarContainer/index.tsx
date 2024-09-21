@@ -1,4 +1,3 @@
-import React from "react";
 import TaskDesignationsContainer from "../TaskDesignationsContainer";
 import IssueSidebarTopRow from "../IssueSidebarTopRow";
 

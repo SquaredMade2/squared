@@ -13,12 +13,12 @@ import {
 import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 import BackButton from "../BackButton";
-import { useTeamStore, useWorkspaceStore, useViewStore } from "@/store";
+import { useTeamStore, useViewStore } from "@/store";
 import type { Team } from "@repo/db";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const SidebarContent = ({
 	navigateTo,
@@ -153,7 +153,6 @@ const SettingsNavBar = ({
 }: SettingsNavbarProps): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, theme } = useTheme();
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 

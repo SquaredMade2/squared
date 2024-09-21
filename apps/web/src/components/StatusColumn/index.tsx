@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
-import TaskStatusSection from "@/components/TaskStatusSection";
 import TaskColumnTitle from "@/components/TaskColumnTitle";
 import type { StatusColumnProps } from "./StatusColumn.interfaces";
 import { ScrollArea } from "../ui/scroll-area";
+import { GridColumnNewIssueButton } from "../NewIssueButton";
+import TaskCard from "../TaskCard";
+import type { Status } from "@repo/db";
 
 const StatusColumn = ({
 	columnType,
@@ -41,13 +43,26 @@ const StatusColumn = ({
 						} 
 						`}
 					>
-						<TaskStatusSection
-							key={columnType}
-							isListView={isListView}
-							filteredTasks={tasks}
-							showTasks={showTasks}
-							title={columnType}
-						/>
+						<div
+							className={
+								isListView
+									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
+									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2"
+							}
+						>
+							{showTasks &&
+								tasks.map((task, index) => (
+									<TaskCard
+										key={task.id}
+										task={task}
+										index={index}
+										location={"dashboard"}
+									/>
+								))}
+							{!isListView && (
+								<GridColumnNewIssueButton status={title as Status} />
+							)}
+						</div>
 						{provided.placeholder}
 					</ScrollArea>
 				)}
