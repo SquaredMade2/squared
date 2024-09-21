@@ -1,4 +1,3 @@
-import { LabelColor } from "../LabelDropdownButton";
 import type { TaskCardLabelsProps } from "./TaskCardLabels.interfaces";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,6 +6,18 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { DropdownMenuContent } from "@repo/ui/dropdown-menu";
+import type { Label } from "@repo/db";
+
+export const LabelColor = ({ label }: { label: Label }) => {
+	const { color } = label;
+	const validatedColor = color.startsWith("#") ? color : `#${color}`;
+	return (
+		<div
+			className="w-3 h-3 rounded-lg"
+			style={{ backgroundColor: validatedColor }}
+		/>
+	);
+};
 
 export default function TaskCardLabels({ labels, view }: TaskCardLabelsProps) {
 	const isGridView = view === "grid";

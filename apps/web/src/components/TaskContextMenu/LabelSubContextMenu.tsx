@@ -9,9 +9,9 @@ import {
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
 import { useTaskStore } from "@/store";
-import { LabelColor } from "../LabelDropdownButton";
 import { useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
+import { LabelColor } from "../TaskCardLabels";
 
 const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
