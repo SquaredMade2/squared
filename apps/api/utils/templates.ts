@@ -51,8 +51,7 @@ export const joinWorkspaceTemplate = (
   `;
 };
 
-export const emailTemplate = (username: string, verificationUrl: string) => {
-	const uppercaseUsername = username[0].toUpperCase() + username.slice(1);
+export const emailTemplate = (_: string, verificationUrl: string) => {
 	return `
 <div style='background:#0C0C0C; margin: 0 auto; padding: 20px 50px;'>
 <div style='padding: 15px 30px; width: 800px; margin: 0 auto;'>

@@ -82,7 +82,7 @@ function LoginForm() {
 					variant: response?.variant || "destructive",
 				});
 			}
-		} catch (error) {
+		} catch {
 			toast({ title: "Login failed", variant: "destructive" });
 		} finally {
 			setIsLoading(false);

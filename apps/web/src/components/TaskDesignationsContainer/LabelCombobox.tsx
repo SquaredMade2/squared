@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Plus, Check } from "lucide-react";
 import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
-import { useTaskStore, useWorkspaceStore, useActivityStore } from "@/store";
+import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 
 export const labelStyle: Record<string, string> = {
@@ -46,7 +46,6 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 		) || [],
 	);
 	const { updateTask } = useTaskStore((state) => state);
-	const { getTaskEvents } = useActivityStore((state) => state);
 	const taskId = currentTask?.id;
 
 	useEffect(() => {

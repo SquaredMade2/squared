@@ -1,5 +1,4 @@
 import type { Task } from "@repo/db";
-import type { ApiReturnType } from "../interfaces";
 
 type FilterValue = string | number | Date | boolean | null | string[];
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { effortEstimateOptions } from "@/constants/designations";
-import { useTaskStore, useActivityStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { useTheme } from "next-themes";
 import { high, medium, low } from "@/components/Svg";
 import { setBackgroundColor } from "@/components/TaskDesignationsContainer";
@@ -22,7 +22,6 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 
 	const { updateTask } = useTaskStore((state) => state);
-	const { getTaskEvents } = useActivityStore((state) => state);
 	const sidebarEffortEstimate = currentTask?.effortEstimate ?? "";
 	const taskId = currentTask?.id ?? "";
 	const { theme } = useTheme();
@@ -34,7 +33,7 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 		try {
 			await updateTask(taskId, { effortEstimate: newEffortEstimate });
 			// await getTaskEvents(taskId);
-		} catch (err) {
+		} catch {
 			toast({
 				title: "Error updating effort estimate",
 				variant: "destructive",
