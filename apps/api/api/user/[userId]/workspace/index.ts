@@ -14,7 +14,16 @@ export function createRoute(): Route<Params> {
 				// Find workspaces a certain user belongs to
 
 				const userWorkspaces: Workspace[] = await prisma.userWorkspace
-					.findMany({ where: { userId }, include: { workspace: true } })
+					.findMany({
+						where: { userId },
+						include: {
+							workspace: {
+								include: {
+									Labels: true,
+								},
+							},
+						},
+					})
 					.then((workspaces) =>
 						workspaces.map((workspace) => workspace.workspace),
 					);
