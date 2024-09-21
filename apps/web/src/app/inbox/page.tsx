@@ -107,40 +107,42 @@ export default function InboxPage() {
 			<div className="hidden md:block">
 				<IconLeftMenu />
 			</div>
-			<div className="flex flex-col w-full sm:ml-14 ml-0">
-				<div className="flex gap-4 items-center mb-4 py-4 pl-8 border-b border-border container w-full">
-					<MobileMenuSheet />
-					<h1 className="text-2xl font-bold ">Inbox</h1>
-				</div>
-				<div className="flex">
-					<InboxSidebar
-						setFilterType={setFilterType}
-						filterType={filterType}
-						setWorkspace={setWorkspace}
-						readNotifications={notifications.filter((n) => !n.read)}
-						workspaces={workspaces}
-						workspace={workspace}
-					/>
-					<div className="flex flex-col gap-4 w-full">
-						<MobileInboxSwitcher
+			<div className="flex flex-col w-full md:ml-14 ml-0">
+				<div className="w-full px-4 md:px-8">
+					<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
+						<MobileMenuSheet />
+						<h1 className="text-2xl font-bold">Inbox</h1>
+					</div>
+					<div className="flex">
+						<InboxSidebar
 							setFilterType={setFilterType}
 							filterType={filterType}
 							setWorkspace={setWorkspace}
 							readNotifications={notifications.filter((n) => !n.read)}
 							workspaces={workspaces}
 							workspace={workspace}
-							filterRead={filterRead}
-							setFilterRead={setFilterRead}
 						/>
-						<InboxDataTable
-							data={filteredNotifications
-								.map((n) => ({
-									...n,
-									user,
-								}))
-								.filter((n) => (!filterRead ? true : n.read))}
-							filterType={filterType}
-						/>
+						<div className="flex flex-col gap-4 w-full">
+							<MobileInboxSwitcher
+								setFilterType={setFilterType}
+								filterType={filterType}
+								setWorkspace={setWorkspace}
+								readNotifications={notifications.filter((n) => !n.read)}
+								workspaces={workspaces}
+								workspace={workspace}
+								filterRead={filterRead}
+								setFilterRead={setFilterRead}
+							/>
+							<InboxDataTable
+								data={filteredNotifications
+									.map((n) => ({
+										...n,
+										user,
+									}))
+									.filter((n) => (!filterRead ? true : n.read))}
+								filterType={filterType}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>

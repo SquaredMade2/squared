@@ -133,7 +133,7 @@ export function InboxDataTable({
 	};
 
 	return (
-		<div className="w-full container">
+		<div className="w-full md:container">
 			<div className="items-center justify-start gap-4 py-4 hidden md:flex">
 				<div className="border border-border rounded-md bg-card dark:bg-transparent w-36 flex">
 					<Button
