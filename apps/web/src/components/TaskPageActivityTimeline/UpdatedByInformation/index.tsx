@@ -1,4 +1,3 @@
-import React from "react";
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
 import { EventType } from "@/interfaces/event.interfaces";

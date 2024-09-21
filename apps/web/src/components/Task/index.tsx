@@ -5,9 +5,9 @@ import IssueSidebarContainer from "../IssueSidebarContainer";
 import TaskPageCenterContainer from "../TaskPageCenterContainer";
 import { LoadingTask } from "../LoadingTask";
 import { useToast } from "../ui/use-toast";
-import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useTeamStore } from "@/store";
 
-const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
+const Task = () => {
 	const { tasks, currentTask, getAllTasks, setCurrentTask } = useTaskStore(
 		(state) => state,
 	);
@@ -41,7 +41,7 @@ const Task: React.FC<{ mailTask?: boolean }> = ({ mailTask }) => {
 				}
 				if (!currentTask || currentTask.identifier !== taskIdentifier) {
 					if (currentTeam) {
-						const allTasksFromTeam = await getAllTasks(currentTeam.id);
+						await getAllTasks(currentTeam.id);
 					}
 				}
 				const foundTask = tasks.find(

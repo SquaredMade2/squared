@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { inProgress } from "@/components/Svg";
 import { statusOptions } from "@/constants/designations";
-import { useTaskStore, useActivityStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
 import {
 	Select,
@@ -24,7 +24,6 @@ import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfa
 const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
-	const { getTaskEvents } = useActivityStore((state) => state);
 	const taskId = currentTask ? currentTask.id : "";
 	const sidebarStatus = currentTask ? currentTask.status : "";
 
@@ -52,7 +51,7 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 		try {
 			await updateTask(taskId, { status: newStatus });
 			// await getTaskEvents(taskId);
-		} catch (err) {
+		} catch {
 			toast({
 				title: "Error updating status",
 				variant: "destructive",

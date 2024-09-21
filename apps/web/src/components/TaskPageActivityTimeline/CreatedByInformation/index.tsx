@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileImage from "@/components/ProfileImage";
 import { formatDate } from "date-fns/format";
 import { useActivityStore, useTaskStore } from "@/store";

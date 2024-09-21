@@ -1,6 +1,4 @@
 "use client";
-
-import type React from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import {
 	Circle,
