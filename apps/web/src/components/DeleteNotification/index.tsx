@@ -1,4 +1,3 @@
-import React from "react";
 import ButtonIcon from "../ButtonIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";

@@ -129,7 +129,7 @@ export const createUserStore = (
 							await axios.get(
 								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/user`,
 							);
-						const { data: users, message, variant } = response;
+						const { data: users } = response;
 						if (!users) {
 							set({ users: [] });
 							return [];

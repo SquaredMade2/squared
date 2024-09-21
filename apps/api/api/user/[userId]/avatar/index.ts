@@ -1,4 +1,3 @@
-import type { User } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 

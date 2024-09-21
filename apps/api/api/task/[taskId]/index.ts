@@ -1,4 +1,4 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { trackChange, createLog, subscribeUser } from "@/utils/taskUpdate";

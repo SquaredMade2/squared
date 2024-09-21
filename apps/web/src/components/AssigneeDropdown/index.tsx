@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { UserSearch } from "lucide-react";
 import ProfileImage from "../ProfileImage";
-import { useTheme } from "next-themes";
 import type { AssigneeDropdownProps } from "./AssigneeDropdown.interfaces";
 import {
 	Popover,
@@ -24,7 +23,6 @@ export const AssigneeDropdown = ({
 	setShowAssigneeDropdown,
 	handleAssigneeChange,
 }: AssigneeDropdownProps) => {
-	const [query, setQuery] = useState("");
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { getAllUsers, users } = useUserStore((state) => ({
 		getAllUsers: state.getAllUsers,
@@ -87,10 +85,7 @@ export const AssigneeDropdown = ({
 			</PopoverTrigger>
 			<PopoverContent className={containerClassNames()}>
 				<Command>
-					<CommandInput
-						placeholder="Search users..."
-						onValueChange={(value) => setQuery(value)}
-					/>
+					<CommandInput placeholder="Search users..." />
 					<CommandList>
 						<CommandItem
 							onSelect={handleUnassign}

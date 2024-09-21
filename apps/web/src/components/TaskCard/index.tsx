@@ -1,14 +1,6 @@
 "use client";
-
-import type React from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleFadingPlus,
-	Ellipsis,
-} from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import {
 	useTeamStore,
@@ -16,10 +8,9 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Status } from "@repo/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { high, medium, low, filterInProgress } from "@/components/Svg";
+import { high, medium, low } from "@/components/Svg";
 import TaskContextMenu from "../TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";

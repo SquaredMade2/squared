@@ -1,4 +1,3 @@
-import React from "react";
 import UpdatedByInformation from "../UpdatedByInformation";
 import CreatedByInformation from "../CreatedByInformation";
 

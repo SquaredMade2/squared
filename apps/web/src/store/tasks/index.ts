@@ -129,7 +129,7 @@ export const createTaskStore = (
 							await axios.get(
 								`${process.env.NEXT_PUBLIC_SERVER}/api/team/${teamId}/task`,
 							);
-						const { data: tasks, message, variant } = response;
+						const { data: tasks } = response;
 						if (!tasks) {
 							set({ tasks: [] });
 							return [];

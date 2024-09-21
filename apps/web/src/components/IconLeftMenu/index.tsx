@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useModalStore, useWorkspaceStore } from "@/store";
 import { Button } from "@/components/ui/button";

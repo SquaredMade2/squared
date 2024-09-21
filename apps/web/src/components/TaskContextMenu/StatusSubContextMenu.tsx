@@ -4,8 +4,6 @@ import {
 	CircleCheckBig,
 	CircleDashed,
 	CircleFadingPlus,
-	CircleX,
-	Copy,
 } from "lucide-react";
 import type { StatusSubContextMenuProps } from "./interfaces";
 import { inProgress } from "../Svg";
@@ -16,7 +14,7 @@ import {
 	ContextMenuSubTrigger,
 } from "../ui/context-menu";
 import { statusOptions } from "@/constants/designations";
-import { useTaskStore, useTeamStore } from "@/store";
+import { useTaskStore } from "@/store";
 import type { Status } from "@repo/db";
 
 const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
@@ -25,7 +23,7 @@ const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
 	const handleSetStatus: (status: Status) => void = async (status) => {
 		if (task.id !== undefined) {
 			try {
-				const response = await updateTask(task.id, {
+				await updateTask(task.id, {
 					status,
 				});
 			} catch (err) {

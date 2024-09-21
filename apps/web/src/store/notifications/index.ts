@@ -8,7 +8,7 @@ import type {
 	NotificationResponse,
 	NotificationTask,
 } from "./interfaces";
-import type { Notification, Task } from "@repo/db";
+import type { Notification } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
@@ -105,7 +105,7 @@ export const createNotificationStore = (
 						}: { data: ApiReturnType<NotificationTask[]> } = await axios.get(
 							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
 						);
-						const { data: notifications, message, variant } = response;
+						const { data: notifications } = response;
 						if (!notifications) {
 							set({ notifications: [] });
 							return [];

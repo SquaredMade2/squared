@@ -21,7 +21,6 @@ import { ScrollArea } from "../ui/scroll-area";
 
 const Navbar = () => {
 	const workspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const currentYear: number = new Date().getFullYear();
 	const router = useRouter();
 	const { teams, getAllTeams } = useTeamStore((state) => state);
 	useEffect(() => {
