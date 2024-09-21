@@ -31,13 +31,14 @@ export const LabelColor = ({ label }: { label: Label }) => {
 
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
-	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
-		useWorkspaceStore((state) => state);
-	const [taskLabels, setTaskLabels] = useState<Label[]>(workspaceLabels);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const [taskLabels, setTaskLabels] = useState<Label[]>(
+		currentWorkspace?.Labels || [],
+	);
 
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 
-	const newIssueLabels = workspaceLabels.filter((label) =>
+	const newIssueLabels = currentWorkspace?.Labels.filter((label) =>
 		newIssueData.labels?.includes(label.id),
 	);
 
@@ -109,15 +110,10 @@ export const LabelDropdownButton = () => {
 		return newSelection;
 	};
 
-	if (!workspaceLabels) {
-		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
-	}
-
 	useEffect(() => {
 		const fetchLabels = async () => {
 			if (currentWorkspace) {
-				const labels = await getWorkspaceLabels(currentWorkspace.id);
-				setTaskLabels(labels);
+				setTaskLabels(currentWorkspace.Labels);
 			}
 		};
 		fetchLabels();
@@ -132,7 +128,7 @@ export const LabelDropdownButton = () => {
 					<CommandList>
 						<CommandEmpty>No label found.</CommandEmpty>
 						<CommandGroup>
-							{workspaceLabels.map((label) => (
+							{currentWorkspace?.Labels.map((label) => (
 								<CommandItem
 									key={label.id}
 									value={label.name}

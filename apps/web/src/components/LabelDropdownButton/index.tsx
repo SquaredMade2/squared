@@ -40,9 +40,10 @@ export const LabelColor = ({ label }: { label: Label }) => {
 
 const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	const [open, setOpen] = useState(false);
-	const { currentWorkspace, workspaceLabels, getWorkspaceLabels } =
-		useWorkspaceStore((state) => state);
-	const [taskLabels, setTaskLabels] = useState<Label[]>(workspaceLabels);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const [taskLabels, setTaskLabels] = useState<Label[]>(
+		currentWorkspace?.Labels || [],
+	);
 
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const { currentTask, updateTask } = useTaskStore((state) => state);
@@ -50,14 +51,13 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	useEffect(() => {
 		const fetchLabels = async () => {
 			if (currentWorkspace) {
-				const labels = await getWorkspaceLabels(currentWorkspace.id);
-				setTaskLabels(labels);
+				setTaskLabels(currentWorkspace.Labels);
 			}
 		};
 		fetchLabels();
 	}, [currentWorkspace]);
 
-	const newIssueLabels = workspaceLabels.filter((label) =>
+	const newIssueLabels = taskLabels.filter((label) =>
 		newIssueData.labels?.includes(label.id),
 	);
 	const taskId = currentTask?.id;
@@ -161,10 +161,6 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 	const renderButton = () =>
 		location === "newIssue" ? newIssueLabelButton() : issueSidebarButton();
 
-	if (!workspaceLabels) {
-		currentWorkspace && getWorkspaceLabels(currentWorkspace.id);
-	}
-
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>{renderButton()}</PopoverTrigger>
@@ -178,7 +174,7 @@ const LabelDropdownButton = ({ location }: LabelDropdownButtonProps) => {
 					<CommandList>
 						<CommandEmpty>No label found.</CommandEmpty>
 						<CommandGroup>
-							{workspaceLabels.map((label) => (
+							{taskLabels.map((label) => (
 								<CommandItem
 									key={label.id}
 									value={label.name}

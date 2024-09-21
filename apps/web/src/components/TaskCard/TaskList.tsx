@@ -22,9 +22,11 @@ const TaskList = ({
 	const { showPriority, showLabels, showDateTime } = useViewStore(
 		(state) => state,
 	);
-	const { workspaceLabels } = useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const taskLabels =
-		workspaceLabels?.filter((label) => task.labels.includes(label.id)) || [];
+		currentWorkspace?.Labels.filter((label) =>
+			task.labels.includes(label.id),
+		) || [];
 	return (
 		<Link
 			className={

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Loader2 } from "lucide-react";
@@ -11,42 +11,58 @@ const HomePage = () => {
 	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
 		(state) => state,
 	);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const handleRedirection = async () => {
-			const cookies = parseCookies();
-			const authCookie = cookies["auth-store"];
-			if (authCookie && !user) {
-				destroyCookie(undefined, "auth-store");
-				await logout();
-				router.push("/login");
-				return;
-			}
+			try {
+				const cookies = parseCookies();
+				const authCookie = cookies["auth-store"];
 
-			if (user) {
-				// If user is logged in, redirect to the correct workspace
-				if (user.defaultWorkspaceId) {
-					const { workspace } = await getWorkspace(user.defaultWorkspaceId);
-					if (workspace?.url) {
-						router.push(`/${workspace.url}`);
+				// If there is a cookie but no user, log out and redirect
+				if (authCookie && !user) {
+					destroyCookie(undefined, "auth-store");
+					await logout();
+					router.push("/login");
+					return;
+				}
+
+				// If there is a user, redirect to appropriate workspace or join page
+				if (user) {
+					if (user.defaultWorkspaceId) {
+						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
+						if (workspace?.url) {
+							router.push(`/${workspace.url}`);
+							return;
+						}
+					}
+
+					const workspaces = await getAllWorkspaces(user.id);
+					if (workspaces.length) {
+						router.push(`/${workspaces[0].url}`);
 						return;
 					}
+					router.push("/join");
+					return;
 				}
 
-				const workspaces = await getAllWorkspaces(user.id);
-				if (workspaces.length) {
-					router.push(`/${workspaces[0].url}`);
-				} else {
-					router.push("/join");
+				// If no user and no cookie, redirect to login
+				if (!authCookie && !user) {
+					await logout();
+					router.push("/login");
 				}
-			} else {
-				await logout();
-				router.push("/login");
+			} catch (error) {
+				console.error("Redirection Error: ", error);
+				// Optionally set an error state here to show an error message
+			} finally {
+				setLoading(false); // Stop loading once redirection is handled
 			}
 		};
 
-		handleRedirection();
-	}, [user, router, getWorkspace, getAllWorkspaces, logout]);
+		if (loading) {
+			handleRedirection();
+		}
+	}, [user, router, getWorkspace, getAllWorkspaces, logout, loading]);
 
 	return (
 		<div className="h-screen w-full">

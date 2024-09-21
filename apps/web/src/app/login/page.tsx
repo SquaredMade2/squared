@@ -48,6 +48,7 @@ function LoginForm() {
 					maxAge: 30 * 24 * 60 * 60,
 					path: "/",
 				});
+				console.log("triggered");
 
 				if (inviteToken) {
 					const { workspace, message, variant } = await joinWorkspace(

@@ -27,7 +27,7 @@ import type { TaskCardProps } from "./interfaces";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
-	const { workspaceLabels } = useWorkspaceStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { users } = useUserStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 
@@ -71,7 +71,9 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 		location === "dashboard" ? currentTeam?.identifier : task.teamId;
 
 	const taskLabels =
-		workspaceLabels?.filter((label) => task.labels.includes(label.id)) || [];
+		currentWorkspace?.Labels.filter((label) =>
+			task.labels.includes(label.id),
+		) || [];
 
 	return (
 		<Draggable draggableId={task.id} index={index}>
