@@ -6,3 +6,11 @@ export interface StatusColumnProps {
 	tasks: Task[];
 	currentView: "list" | "grid";
 }
+
+export type TaskColumnTitleProps = {
+	isListView: boolean;
+	showTasks: boolean;
+	title: Status;
+	numberOfTasks: number;
+	toggleShowTasks: () => void;
+};

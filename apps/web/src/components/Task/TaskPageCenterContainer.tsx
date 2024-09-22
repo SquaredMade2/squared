@@ -1,9 +1,9 @@
-import EventTabs from "../TaskPageActivityTimeline/EventTabs";
-import TaskPageTitle from "@/components/taskPageTitle/index";
-import TaskCardTop from "@/components/TaskCardTop";
+import EventTabs from "./TaskPageActivityTimeline/EventTabs";
+import TaskPageTitle from "./TaskPageTitle";
+import TaskCardTop from "../TaskCard/TaskCardTop";
 import ButtonIcon from "../ButtonIcon";
 import BackButton from "../BackButton";
-import type { TaskPageCenterContainerProps } from "./TaskPageCenterContainer.interfaces";
+import type { TaskPageCenterContainerProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";

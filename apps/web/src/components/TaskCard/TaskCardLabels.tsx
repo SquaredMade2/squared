@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import type { TaskCardLabelsProps } from "./TaskCardLabels.interfaces";
+import type { TaskCardLabelsProps } from "./interfaces";
 import LabelBadge from "../LabelBadges";
 import { cn } from "@/utils/cn";
 import type { Label } from "@repo/db";

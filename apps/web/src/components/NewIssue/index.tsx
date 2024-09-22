@@ -32,6 +32,7 @@ import {
 } from "@/store";
 import type { Task } from "@repo/db";
 import { DateDropdownButton } from "./DateDropdownButton";
+export * from "./NewIssueButton";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();

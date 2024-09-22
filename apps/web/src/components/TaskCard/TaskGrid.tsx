@@ -7,7 +7,7 @@ import { formatDate } from "date-fns";
 import { Card, CardContent } from "../ui/card";
 import Link from "next/link";
 import { useViewStore } from "@/store";
-import TaskCardLabels from "../TaskCardLabels";
+import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 
 const TaskGrid = ({

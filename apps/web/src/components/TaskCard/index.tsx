@@ -18,7 +18,7 @@ import type { Status } from "@repo/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 import { high, medium, low, filterInProgress } from "@/components/Svg";
-import TaskContextMenu from "../TaskContextMenu";
+import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
 import type { TaskCardProps } from "./interfaces";

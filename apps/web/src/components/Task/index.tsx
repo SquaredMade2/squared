@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import IssueSidebarContainer from "../IssueSidebarContainer";
-import TaskPageCenterContainer from "../TaskPageCenterContainer";
+import TaskSidebarContainer from "./TaskSidebarContainer";
+import TaskPageCenterContainer from "./TaskPageCenterContainer";
 import { LoadingTask } from "../LoadingTask";
 import { useToast } from "../ui/use-toast";
 import { useTaskStore, useTeamStore } from "@/store";
@@ -122,7 +122,7 @@ const Task = () => {
 								}`}
 							>
 								<div className="" ref={sideNav}>
-									<IssueSidebarContainer />
+									<TaskSidebarContainer />
 								</div>
 							</div>
 						</div>

@@ -7,7 +7,7 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
+} from "../../ui/context-menu";
 import { useTaskStore } from "@/store";
 import { useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";

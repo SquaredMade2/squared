@@ -8,7 +8,7 @@ import {
 	Copy,
 } from "lucide-react";
 import { inProgress } from "../Svg";
-import type { TaskColumnTitleProps } from "./TaskColumnTitle.interfaces";
+import type { TaskColumnTitleProps } from "./interfaces";
 import HideStatus from "@/components/HideStatus/HideStatus";
 import { cn } from "@/utils/cn";
 import { useModalStore } from "@/store";

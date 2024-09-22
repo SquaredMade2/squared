@@ -2,7 +2,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { NavBarTeamProps } from "./NavBarTeams.interfaces";
+import type { NavBarTeamProps } from "./interfaces";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";

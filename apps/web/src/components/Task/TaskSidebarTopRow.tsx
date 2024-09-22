@@ -5,7 +5,7 @@ import CopyTaskId from "../CopyTaskId";
 import CopyGitBranchName from "../CopyGitBranchName";
 import { useTaskStore, useTeamStore } from "@/store";
 
-const IssueSidebarTopRow = () => {
+const TaskSidebarTopRow = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const [isUrlClicked, setIsUrlClicked] = useState(false);
 	const [isIdClicked, setIsIdClicked] = useState(false);
@@ -29,7 +29,7 @@ const IssueSidebarTopRow = () => {
 		}, 3000);
 	};
 
-	const copyIssueId = async (): Promise<void> => {
+	const copyTaskId = async (): Promise<void> => {
 		await navigator.clipboard.writeText(
 			`${replaceSpacesWithDashes(title)}-${identifier}`,
 		);
@@ -59,7 +59,7 @@ const IssueSidebarTopRow = () => {
 			}
 			if (event.ctrlKey && event.key === ".") {
 				event.preventDefault();
-				copyIssueId();
+				copyTaskId();
 			}
 		},
 		[copyGitBranchName],
@@ -81,7 +81,7 @@ const IssueSidebarTopRow = () => {
 				<div className="flex h-full items-center">
 					<CopyTaskUrl copyUrl={copyUrl} />
 
-					<CopyTaskId copyTaskId={copyIssueId} />
+					<CopyTaskId copyTaskId={copyTaskId} />
 					<CopyGitBranchName copyGitBranchName={copyGitBranchName} />
 				</div>
 				<div
@@ -126,4 +126,4 @@ const IssueSidebarTopRow = () => {
 	);
 };
 
-export default IssueSidebarTopRow;
+export default TaskSidebarTopRow;

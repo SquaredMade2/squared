@@ -5,8 +5,8 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
-import ProfileImage from "../ProfileImage";
+} from "@/components/ui/context-menu";
+import ProfileImage from "@/components/ProfileImage";
 import type { AssigneeSubContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";

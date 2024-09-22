@@ -14,17 +14,27 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Plus, Check } from "lucide-react";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "@/components/Task/TaskDesignationsContainer/interfaces";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
-import LabelBadge from "../LabelBadges";
+import LabelBadge from "../../LabelBadges";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
-import { LabelColor } from "../TaskCardLabels";
+} from "../../ui/tooltip";
+
+const LabelColor = ({ label }: { label: Label }) => {
+	const { color } = label;
+	const validatedColor = color.startsWith("#") ? color : `#${color}`;
+	return (
+		<div
+			className="w-3 h-3 rounded-lg"
+			style={{ backgroundColor: validatedColor }}
+		/>
+	);
+};
 
 const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);

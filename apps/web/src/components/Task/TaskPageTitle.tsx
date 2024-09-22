@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import TaskPageDescription from "@/components/taskPageDescription/index";
+import TaskPageDescription from "./TaskPageDescription";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";

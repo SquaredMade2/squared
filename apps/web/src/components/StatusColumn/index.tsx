@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
-import TaskColumnTitle from "@/components/TaskColumnTitle";
-import type { StatusColumnProps } from "./StatusColumn.interfaces";
+import TaskColumnTitle from "./TaskColumnTitle";
+import type { StatusColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
-import { GridColumnNewIssueButton } from "../NewIssueButton";
+import { GridColumnNewIssueButton } from "../NewIssue/NewIssueButton";
 import TaskCard from "../TaskCard";
 import type { Status } from "@repo/db";
 

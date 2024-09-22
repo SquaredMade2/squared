@@ -6,8 +6,8 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
-import { Calendar } from "../ui/calendar";
+} from "@/components/ui/context-menu";
+import { Calendar } from "@/components/ui/calendar";
 import { useTaskStore } from "@/store";
 
 const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {

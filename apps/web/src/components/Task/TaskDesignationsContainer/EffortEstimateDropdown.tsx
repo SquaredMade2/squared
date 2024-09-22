@@ -5,7 +5,7 @@ import { effortEstimateOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { useTheme } from "next-themes";
 import { high, medium, low } from "@/components/Svg";
-import { setBackgroundColor } from "@/components/TaskDesignationsContainer";
+import { setBackgroundColor } from "@/components/Task/TaskDesignationsContainer";
 import ProgressBar from "@/components/ProgressBar";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ButtonProps } from "@/components/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "@/components/Task/TaskDesignationsContainer/interfaces";
 
 const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);

@@ -26,3 +26,8 @@ export interface TaskCardProps {
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
 }
+
+export interface TaskCardLabelsProps {
+	view: string;
+	labels: Label[];
+}

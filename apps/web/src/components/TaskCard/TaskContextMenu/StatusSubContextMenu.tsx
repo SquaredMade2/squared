@@ -6,13 +6,13 @@ import {
 	CircleFadingPlus,
 } from "lucide-react";
 import type { StatusSubContextMenuProps } from "./interfaces";
-import { inProgress } from "../Svg";
+import { inProgress } from "@/components/Svg";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
+} from "@/components/ui/context-menu";
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import type { Status } from "@repo/db";

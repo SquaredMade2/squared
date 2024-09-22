@@ -20,7 +20,7 @@ import {
 import ProfileImage from "@/components/ProfileImage";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import type { ButtonProps } from "./interfaces";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "../../ui/scroll-area";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);

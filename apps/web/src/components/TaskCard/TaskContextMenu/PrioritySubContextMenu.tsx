@@ -1,14 +1,14 @@
 import type { FC } from "react";
 import { CircleAlert, Ellipsis } from "lucide-react";
-import type { PrioritySubContextMenuProps } from "@/components/TaskContextMenu/interfaces";
+import type { PrioritySubContextMenuProps } from "./interfaces";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "../ui/context-menu";
+} from "@/components/ui/context-menu";
 import { priorityOptions } from "@/constants/designations";
-import { high, low, medium } from "../Svg";
+import { high, low, medium } from "@/components/Svg";
 import type { Priority } from "@repo/db";
 import { useTaskStore } from "@/store";
 
