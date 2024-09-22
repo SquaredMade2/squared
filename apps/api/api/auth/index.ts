@@ -113,9 +113,23 @@ export function createRoute(): Route<Params> {
 				}
 				if (type === "login") {
 					// Check if the user exists
-					const user: User | null = await prisma.user.findUnique({
+					let user: User | null = await prisma.user.findUnique({
 						where: { email },
 					});
+
+					if (provider === "oauth") {
+						if (!user) {
+							// If the user doesn't exist, create them
+							user = await prisma.user.create({
+								data: {
+									email,
+									name: name ?? email.split("@")[0],
+									username,
+									verified: true,
+								},
+							});
+						}
+					}
 
 					if (!user) {
 						return {
@@ -149,6 +163,15 @@ export function createRoute(): Route<Params> {
 								variant: "destructive",
 							};
 						}
+
+						if (!user.password) {
+							return {
+								data: null,
+								message: "This user has no password.",
+								variant: "destructive",
+							};
+						}
+
 						const passwordMatch = await comparePassword(
 							password,
 							user.password,
