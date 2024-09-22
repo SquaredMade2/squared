@@ -4,6 +4,7 @@ import type { Status, Task } from "@repo/db";
 export interface ViewAllTasksProps {
 	tasks: Task[];
 	handleDragEnd: OnDragEndResponder;
+	page: string;
 }
 
 export interface StatusColumnProps {
