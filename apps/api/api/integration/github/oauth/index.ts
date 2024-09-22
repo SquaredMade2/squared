@@ -1,5 +1,5 @@
 const axios = require("axios");
-import type { Route, APIResponse } from "@/api/route";
+import type { Route } from "@/api/route";
 
 const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -17,7 +17,7 @@ export function createRoute(): Route<Params> {
 		GET: async (res, { code }): Promise<void> => {
 			try {
 				// exchange the authorization code for an access token
-				const response = await axios.post(
+				await axios.post(
 					"https://github.com/login/oauth/access_token",
 					{
 						client_id: clientId,
@@ -28,8 +28,6 @@ export function createRoute(): Route<Params> {
 						headers: { Accept: "application/json" },
 					},
 				);
-
-				const { access_token } = response.data;
 
 				// Redirect the user to install the GitHub App
 				res.redirect(
