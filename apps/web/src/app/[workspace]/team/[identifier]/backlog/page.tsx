@@ -120,7 +120,7 @@ export default function Home() {
 					>
 						<ViewAllTasks
 							handleDragEnd={handleDragEnd}
-							tasks={filterTasks(tasks).filter((t) => !t.deleted)}
+							tasks={filterTasks(tasks).filter((t) => t.status === "backlog")}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</ScrollArea>
