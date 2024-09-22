@@ -8,7 +8,7 @@ import {
 } from "@/store/notifications";
 import { getStatusIcon } from "@/utils/enumIcons";
 import { Button } from "../ui/button";
-import { Check, BellOff, Bookmark, BookmarkMinus } from "lucide-react";
+import { Check, BellOff, Bookmark, BookmarkMinus, Trash2 } from "lucide-react";
 import {
 	useAuthStore,
 	useTaskStore,
@@ -148,13 +148,19 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateNotification } = useNotificationStore((state) => state);
+			const { updateNotification, deleteNotification } = useNotificationStore(
+				(state) => state,
+			);
 			const { updateUser, getUser } = useUserStore((state) => state);
 			const { user, setUser } = useAuthStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {
 				await updateNotification(row.original.id, { dismissed: true });
+			};
+
+			const handleDelete = async () => {
+				await deleteNotification(row.original.id);
 			};
 
 			const handleUnsubscribe = async () => {
@@ -189,12 +195,16 @@ export const columns: ColumnDef<NotificationTask>[] = [
 					) : (
 						<div className="flex gap-1">
 							<Button
-								onClick={handleDismiss}
+								onClick={row.original.dismissed ? handleDelete : handleDismiss}
 								variant="secondary"
 								size="icon"
 								className="size-8 border border-border bg-accent hover:bg-popover"
 							>
-								<Check className="size-4" />
+								{row.original.dismissed ? (
+									<Trash2 className="size-4" />
+								) : (
+									<Check className="size-4" />
+								)}
 							</Button>
 							<Button
 								onClick={handleUnsubscribe}
