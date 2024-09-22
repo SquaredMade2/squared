@@ -51,7 +51,7 @@ const IconLeftMenu = () => {
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Button variant="ghost" size="icon" onClick={toHome}>
-								<Home className="h-[1.2rem] w-[1.2rem]" />
+								<Home className="size-4" />
 								<span className="sr-only">Home</span>
 							</Button>
 						</TooltipTrigger>
@@ -66,7 +66,7 @@ const IconLeftMenu = () => {
 								size="icon"
 								onClick={() => setShowCommand(true)}
 							>
-								<Search className="h-[1.2rem] w-[1.2rem]" />
+								<Search className="size-4" />
 								<span className="sr-only">Search</span>
 							</Button>
 						</TooltipTrigger>
@@ -81,7 +81,7 @@ const IconLeftMenu = () => {
 								size="icon"
 								onClick={() => navigateTo("settings/workspace")}
 							>
-								<Settings className="h-[1.2rem] w-[1.2rem]" />
+								<Settings className="size-4" />
 								<span className="sr-only">Settings</span>
 							</Button>
 						</TooltipTrigger>
@@ -96,7 +96,7 @@ const IconLeftMenu = () => {
 								size="icon"
 								onClick={() => navigateTo("inbox")}
 							>
-								<Inbox className="h-[1.2rem] w-[1.2rem]" />
+								<Inbox className="size-4" />
 								<span className="sr-only">Inbox</span>
 							</Button>
 						</TooltipTrigger>
@@ -112,9 +112,9 @@ const IconLeftMenu = () => {
 								onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
 							>
 								{theme === "dark" ? (
-									<Moon className="h-[1.2rem] w-[1.2rem]" />
+									<Moon className="size-4" />
 								) : (
-									<Sun className="h-[1.2rem] w-[1.2rem]" />
+									<Sun className="size-4" />
 								)}
 								<span className="sr-only">Toggle theme</span>
 							</Button>
@@ -130,7 +130,7 @@ const IconLeftMenu = () => {
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button variant="ghost" size="icon" onClick={handleLogout}>
-							<LogOut className="h-[1.2rem] w-[1.2rem]" />
+							<LogOut className="size-4" />
 							<span className="sr-only">Logout</span>
 						</Button>
 					</TooltipTrigger>
