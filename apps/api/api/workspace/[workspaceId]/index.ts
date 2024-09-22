@@ -117,6 +117,7 @@ export function createRoute(): Route<Params> {
 				const newWorkspace = await prisma.workspace.create({
 					data: {
 						...body.workspace,
+						admins: [body.userId],
 						Users: {
 							create: {
 								userId: body.userId,

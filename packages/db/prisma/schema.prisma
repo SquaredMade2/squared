@@ -220,14 +220,15 @@ model SavedFilter {
 }
 
 model Workspace {
-  id                   String  @id @default(uuid())
+  id                   String   @id @default(uuid())
   name                 String
-  url                  String  @unique
+  url                  String   @unique
   companySize          Int?
-  tasksCreated         Int     @default(0)
+  tasksCreated         Int      @default(0)
   universalTokenLinkId String?
   githubRepoInfoId     String?
   avatarUrl            String?
+  admins               String[]
 
   workspaceFilters   SavedFilter[]
   Labels             Label[]
