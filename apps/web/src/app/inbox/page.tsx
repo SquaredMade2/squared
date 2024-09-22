@@ -11,7 +11,7 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import IconLeftMenu from "@/components/IconLeftMenu";
+import IconLeftMenu from "@/components/IconNavbar";
 import type { NotificationType } from "@repo/db";
 import MobileMenuSheet from "@/components/MobileNav";
 
