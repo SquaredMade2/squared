@@ -1,6 +1,6 @@
 import EventTabs from "./TaskPageActivityTimeline/EventTabs";
 import TaskPageTitle from "./TaskPageTitle";
-import TaskCardTop from "../TaskCard/TaskCardTop";
+import TaskBreadcrumbs from "./TaskBreadcrumbs";
 import ButtonIcon from "../ButtonIcon";
 import BackButton from "../BackButton";
 import type { TaskPageCenterContainerProps } from "./interfaces";
@@ -23,7 +23,7 @@ const TaskPageCenterContainer = ({
 					</div>
 				)}
 				<div className=" w-full max850:w-10/12 overflow-hidden">
-					<TaskCardTop />
+					<TaskBreadcrumbs />
 				</div>
 				<span
 					onClick={setShowSideNav}

@@ -1,8 +1,6 @@
-import type React from "react";
-import type { HelpButtonProps } from "./HelpButton.interfaces";
 import { CircleHelp } from "lucide-react";
 
-const HelpButton: React.FC<HelpButtonProps> = ({ onClick }) => {
+const HelpButton = ({ onClick }: { onClick: () => void }) => {
 	return (
 		<button
 			onClick={onClick}

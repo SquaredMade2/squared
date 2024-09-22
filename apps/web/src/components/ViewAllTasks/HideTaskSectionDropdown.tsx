@@ -1,5 +1,5 @@
 import { ClickAwayListener } from "@mui/base";
-import type { HideTaskStatusDropdownProps } from "./HideTaskSectionDropdown.interfaces";
+import type { HideTaskStatusDropdownProps } from "./interfaces";
 
 const HideTaskStatusDropdown = ({
 	toggleHideDropdown,

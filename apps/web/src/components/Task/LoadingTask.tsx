@@ -1,4 +1,4 @@
-import { LoadingSkeleton } from "../LoadingSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronRight } from "lucide-react";
 
 export const LoadingTask = () => {
@@ -10,7 +10,7 @@ export const LoadingTask = () => {
 						<div className="w-full snap-start overflow-x-hidden flex flex-col mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 							<div>
 								<div className="flex items-center gap-2 mt-1">
-									<LoadingSkeleton width="25px" height="25px" rounded={true} />
+									<Skeleton className="size-6 rounded-full" />
 									<p className="text-muted-foreground filter blur-sm blink">
 										It is a long
 									</p>
@@ -51,11 +51,7 @@ export const LoadingTask = () => {
 										<p className="text-muted-foreground filter blur-sm blink">
 											25 Jun 2024
 										</p>
-										<LoadingSkeleton
-											width="25px"
-											height="25px"
-											rounded={true}
-										/>
+										<Skeleton className="size-6 rounded-full" />
 										<p className="text-muted-foreground filter blur-sm blink">
 											Pinak
 										</p>
@@ -67,11 +63,7 @@ export const LoadingTask = () => {
 										<p className="text-muted-foreground filter blur-sm blink">
 											25 Jun 2024
 										</p>
-										<LoadingSkeleton
-											width="25px"
-											height="25px"
-											rounded={true}
-										/>
+										<Skeleton className="size-6 rounded-full" />
 										<p className="text-muted-foreground filter blur-sm blink">
 											John Doe
 										</p>
@@ -90,18 +82,10 @@ export const LoadingTask = () => {
 									</p>
 									<div className="flex gap-2">
 										<span>
-											<LoadingSkeleton
-												width="25px"
-												height="25px"
-												rounded={true}
-											/>
+											<Skeleton className="size-6 rounded-full" />
 										</span>
 										<span>
-											<LoadingSkeleton
-												width="25px"
-												height="25px"
-												rounded={true}
-											/>
+											<Skeleton className="size-6 rounded-full" />
 										</span>
 									</div>
 								</div>
@@ -110,11 +94,7 @@ export const LoadingTask = () => {
 								<div className="flex ">
 									<span className=" w-24">Status</span>
 									<div className="flex gap-2">
-										<LoadingSkeleton
-											width="15px"
-											height="15px"
-											rounded={true}
-										/>
+										<Skeleton className="size-4 rounded-full" />
 										<p className="text-muted-foreground filter blur-sm blink">
 											Todo
 										</p>
@@ -123,11 +103,7 @@ export const LoadingTask = () => {
 								<div className="flex">
 									<span className="w-24">Priority</span>
 									<div className="flex gap-2">
-										<LoadingSkeleton
-											width="15px"
-											height="15px"
-											rounded={true}
-										/>
+										<Skeleton className="size-4 rounded-full" />
 										<p className="text-muted-foreground filter blur-sm blink">
 											No Priority
 										</p>
@@ -137,21 +113,13 @@ export const LoadingTask = () => {
 									<span className="w-24">Labels</span>
 									<div className="flex flex-col gap-2 flex-grow">
 										<div className="flex gap-2 rounded-full border px-2 py-1 w-20">
-											<LoadingSkeleton
-												width="15px"
-												height="15px"
-												rounded={true}
-											/>
+											<Skeleton className="size-4 rounded-full" />
 											<p className="text-muted-foreground filter blur-sm blink">
 												Bug
 											</p>
 										</div>
 										<div className="flex gap-2 px-2 py-1 rounded-full border border-border">
-											<LoadingSkeleton
-												width="15px"
-												height="15px"
-												rounded={true}
-											/>
+											<Skeleton className="size-4 rounded-full" />
 											<p className="text-muted-foreground filter blur-sm blink">
 												Improvement
 											</p>
@@ -169,11 +137,7 @@ export const LoadingTask = () => {
 								<div className="flex ">
 									<span className="w-24">Effort</span>
 									<div className="flex gap-2">
-										<LoadingSkeleton
-											width="15px"
-											height="15px"
-											rounded={true}
-										/>
+										<Skeleton className="size-4 rounded-full" />
 										<p className="text-muted-foreground filter blur-sm blink">
 											Effort
 										</p>
@@ -182,11 +146,7 @@ export const LoadingTask = () => {
 								<div className="flex ">
 									<span className="w-24">Assignee</span>
 									<div className="flex gap-2">
-										<LoadingSkeleton
-											width="15px"
-											height="15px"
-											rounded={true}
-										/>
+										<Skeleton className="size-4 rounded-full" />
 										<p className="text-muted-foreground filter blur-sm blink">
 											Unassigned
 										</p>

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { inProgress } from "../Svg";
 import type { TaskColumnTitleProps } from "./interfaces";
-import HideStatus from "@/components/HideStatus/HideStatus";
+import HideStatus from "./HideStatus";
 import { cn } from "@/utils/cn";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";

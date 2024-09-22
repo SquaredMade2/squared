@@ -1,6 +1,6 @@
 import { UserSearch } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { useViewStore, useWorkspaceStore } from "@/store";
 import TaskCardLabels from "./TaskCardLabels";
 import { formatDate } from "date-fns";

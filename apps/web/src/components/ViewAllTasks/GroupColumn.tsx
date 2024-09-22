@@ -4,7 +4,7 @@ import TaskColumnTitle from "./TaskColumnTitle";
 import type { StatusColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { GridColumnNewIssueButton } from "../NewIssue/NewIssueButton";
-import TaskCard from "../TaskCard";
+import TaskCard from "./TaskCard";
 import type { Status } from "@repo/db";
 
 const StatusColumn = ({

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import HideTaskStatusDropdown from "@/components/HideTaskSectionDropdown";
-import type { HideStatusProps } from "./HideStatusProps";
+import HideTaskStatusDropdown from "./HideTaskSectionDropdown";
+import type { HideStatusProps } from "./interfaces";
 import { EllipsisVertical } from "lucide-react";
 
 const HideStatus = ({ toggleShowTasks, showTasks }: HideStatusProps) => {

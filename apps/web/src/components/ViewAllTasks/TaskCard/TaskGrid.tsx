@@ -1,10 +1,10 @@
 import { Calendar, UserSearch } from "lucide-react";
 
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "date-fns";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useViewStore } from "@/store";
 import TaskCardLabels from "./TaskCardLabels";

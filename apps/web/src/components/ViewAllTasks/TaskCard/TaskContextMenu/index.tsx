@@ -8,7 +8,7 @@ import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
-} from "../../ui/context-menu";
+} from "@/components/ui/context-menu";
 import StatusSubContextMenu from "./StatusSubContextMenu";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
@@ -18,7 +18,7 @@ import DateSubContextMenu from "./DateSubContextMenu";
 // Will need in future
 // import RenameSubContextMenu from "./RenameSubContextMenu";
 import { replaceSpacesWithDashes } from "@/utils/formatting";
-import { useToast } from "../../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useModalStore, useTaskStore } from "@/store";
 
 const TaskContextMenu: FC<TaskContextMenuProps> = ({ task }) => {

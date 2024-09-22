@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import TaskSidebarContainer from "./TaskSidebarContainer";
 import TaskPageCenterContainer from "./TaskPageCenterContainer";
-import { LoadingTask } from "../LoadingTask";
+import { LoadingTask } from "./LoadingTask";
 import { useToast } from "../ui/use-toast";
 import { useTaskStore, useTeamStore } from "@/store";
 

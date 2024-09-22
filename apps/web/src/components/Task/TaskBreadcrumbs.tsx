@@ -4,12 +4,12 @@ import {
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
-} from "../ui/breadcrumb";
+} from "@/components/ui/breadcrumb";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import Link from "next/link";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 
-const TaskCardTop = () => {
+const TaskBreadcrumbs = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const allWorkspaces = useWorkspaceStore((state) => state.workspaces);
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
@@ -49,4 +49,4 @@ const TaskCardTop = () => {
 	);
 };
 
-export default TaskCardTop;
+export default TaskBreadcrumbs;
