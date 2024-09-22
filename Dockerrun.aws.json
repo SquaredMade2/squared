@@ -90,10 +90,6 @@
           "value": "squaredenvs:NEXT_PUBLIC_URL"
         },
         {
-          "name": "NEXT_PUBLIC_CLIENT_ID",
-          "value": "squaredenvs:NEXT_PUBLIC_CLIENT_ID"
-        },
-        {
           "name": "NEXT_PUBLIC_GITHUB_CLIENT_SECRET",
           "value": "squaredenvs:NEXT_PUBLIC_GITHUB_CLIENT_SECRET"
         },
@@ -112,14 +108,6 @@
         {
           "name": "GOOGLE_CLIENT_SECRET",
           "value": "squaredenvs:GOOGLE_CLIENT_SECRET"
-        },
-        {
-          "name": "GITHUB_CLIENT_ID",
-          "value": "squaredenvs:GITHUB_CLIENT_ID"
-        },
-        {
-          "name": "GITHUB_CLIENT_SECRET",
-          "value": "squaredenvs:GITHUB_CLIENT_SECRET"
         },
         {
           "name": "NEXTAUTH_SECRET",
@@ -195,14 +183,6 @@
           "value": "squaredenvs:GITHUB_APP_ID"
         },
         {
-          "name": "GITHUB_CLIENT_ID",
-          "value": "squaredenvs:GITHUB_CLIENT_ID"
-        },
-        {
-          "name": "GITHUB_CLIENT_SECRET",
-          "value": "squaredenvs:GITHUB_CLIENT_SECRET"
-        },
-        {
           "name": "GITHUB_PRIVATE_KEY",
           "value": "squaredenvs:GITHUB_PRIVATE_KEY"
         }
@@ -219,7 +199,11 @@
           "containerPort": 80
         }
       ],
-      "links": ["www", "web", "api"],
+      "links": [
+        "www",
+        "web",
+        "api"
+      ],
       "mountPoints": [
         {
           "sourceVolume": "nginx-proxy-conf",
