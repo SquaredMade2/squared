@@ -1,12 +1,6 @@
 "use client";
 import { Draggable } from "@hello-pangea/dnd";
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleFadingPlus,
-	Ellipsis,
-} from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import {
 	useTeamStore,
@@ -14,14 +8,14 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Status } from "@repo/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { high, medium, low, filterInProgress } from "@/components/Svg";
+import { high, medium, low } from "@/components/Svg";
 import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
 import type { TaskCardProps } from "./interfaces";
+import { getStatusIcon } from "@/utils/enumIcons";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
@@ -49,22 +43,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 		}
 	};
 
-	const getStatusIcon = (status: Status) => {
-		switch (status) {
-			case "backlog":
-				return <CircleDashed className="size-4" />;
-			case "todo":
-				return <Circle className="size-4" />;
-			case "inProgress":
-				return filterInProgress();
-			case "inReview":
-				return <CircleFadingPlus className="size-4 text-green-400" />;
-			case "done":
-				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			default:
-				return <Circle className="size-4" />;
-		}
-	};
 	const teamIdentifier =
 		location === "dashboard" ? currentTeam?.identifier : task.teamId;
 
