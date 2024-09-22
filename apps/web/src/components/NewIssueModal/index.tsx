@@ -11,7 +11,6 @@ import {
 } from "../ui/dialog";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
-// import DateButton from "@/components/DateButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { useToast } from "../ui/use-toast";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
@@ -29,10 +28,10 @@ import {
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import type { Task } from "@repo/db";
+import { DateDropdownButton } from "./DateDropdownButton";
 
 const NewIssueModal = () => {
 	const { toast } = useToast();
@@ -122,6 +121,8 @@ const NewIssueModal = () => {
 				teamId: currentTeam.id,
 				id: "",
 				workspaceId: currentWorkspace.id,
+				updatedAt: new Date(),
+				deleted: false,
 			};
 
 			const {
@@ -219,7 +220,7 @@ const NewIssueModal = () => {
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
 								<EffortDropdownButton />
-								{/* <DateButton location="newIssueModal" /> */}
+								<DateDropdownButton />
 							</div>
 							<DialogFooter>
 								<Button

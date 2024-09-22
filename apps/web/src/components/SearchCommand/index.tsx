@@ -18,18 +18,15 @@ import {
 } from "../ui/command";
 import { useToast } from "../ui/use-toast";
 import { useModalStore, useFilterStore } from "@/store";
+import { ScrollArea } from "../ui/scroll-area";
 
-const SearchCommand = ({
-	isSearchCommand,
-	setIsSearchCommand,
-}: {
-	isSearchCommand: boolean;
-	setIsSearchCommand: (open: boolean) => void;
-}) => {
+const SearchCommand = () => {
 	const { toast } = useToast();
 	const [lastKey, setLastKey] = useState<string>("");
 	const [isInputFocus, setIsInputFocus] = useState<boolean>(true);
-	const { setShowNewIssue } = useModalStore((state) => state);
+	const { setShowNewIssue, showCommand, setShowCommand } = useModalStore(
+		(state) => state,
+	);
 	const { clearFilter } = useFilterStore((state) => state);
 	const showToast = (
 		title: string,
@@ -47,31 +44,31 @@ const SearchCommand = ({
 		const down = (e: KeyboardEvent): void => {
 			if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
 				e.preventDefault();
-				setIsSearchCommand(true);
+				setShowCommand(true);
 			}
 			if (e.key === "Escape") {
-				setIsSearchCommand(false);
+				setShowCommand(false);
 			}
-			if (!isSearchCommand || isInputFocus) return;
+			if (!showCommand || isInputFocus) return;
 
 			if (e.key.toLowerCase() === "c" && lastKey === "shift" && e.ctrlKey) {
 				const item = commandItems.getSchema()["Copy current page URL"];
 				if (isSearchbarItem(item)) {
 					item.function();
 				}
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 			if (e.altKey && e.shiftKey && e.key === "Œ") {
 				// @ts-ignore comment
 				commandItems.getSchema().Account.logOut.function();
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 			if (e.key.toLowerCase() === "c") {
 				// @ts-ignore comment
 				commandItems.getSchema().Issue.createNewIssue.function();
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 			if (lastKey === "g" && e.key.toLowerCase() === "i") {
@@ -79,7 +76,7 @@ const SearchCommand = ({
 				if (isSearchbarItem(item)) {
 					item.function();
 				}
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 			if (lastKey === "g" && e.key.toLowerCase() === "a") {
@@ -87,7 +84,7 @@ const SearchCommand = ({
 				if (isSearchbarItem(item)) {
 					item.function();
 				}
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 
@@ -96,7 +93,7 @@ const SearchCommand = ({
 				if (isSearchbarItem(item)) {
 					item.function();
 				}
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 
@@ -105,7 +102,7 @@ const SearchCommand = ({
 				if (isSearchbarItem(item)) {
 					item.function();
 				}
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 			if (lastKey === "g" && e.key.toLowerCase() === "u") {
@@ -113,17 +110,17 @@ const SearchCommand = ({
 				if (isSearchbarItem(item)) {
 					item.function();
 				}
-				setIsSearchCommand(false);
+				setShowCommand(false);
 				return;
 			}
 			setLastKey(e.key.toLowerCase());
 		};
 		document.addEventListener("keydown", down);
 		return () => document.removeEventListener("keydown", down);
-	}, [isSearchCommand, isInputFocus, lastKey]);
+	}, [showCommand, isInputFocus, lastKey]);
 
 	return (
-		<CommandDialog open={isSearchCommand} onOpenChange={setIsSearchCommand}>
+		<CommandDialog open={showCommand} onOpenChange={setShowCommand}>
 			<VisuallyHidden>
 				<DialogTitle>Searchbar</DialogTitle>
 			</VisuallyHidden>
@@ -133,33 +130,35 @@ const SearchCommand = ({
 				onBlurCapture={() => setIsInputFocus(false)}
 			/>
 			<CommandList>
-				<CommandEmpty>No results found.</CommandEmpty>
-				{Object.entries(commandItems.getSchema()).map(([key, value]) => {
-					if (value === "separator") {
-						return <CommandSeparator key={key} />;
-					}
-					if (isSearchbarItem(value)) {
-						return commandItem(value as SearchbarItem, setIsSearchCommand, key);
-					}
-					return (
-						<CommandGroup
-							key={key}
-							heading={key}
-							style={{ pointerEvents: "auto" }}
-							className="[&_[cmdk-group-heading]]:text-[]"
-						>
-							{Object.entries(value as SearchbarSection).map(
-								([key1, value1]) => {
-									return commandItem(
-										value1 as SearchbarItem,
-										setIsSearchCommand,
-										key1,
-									);
-								},
-							)}
-						</CommandGroup>
-					);
-				})}
+				<ScrollArea className="h-96 pr-1">
+					<CommandEmpty>No results found.</CommandEmpty>
+					{Object.entries(commandItems.getSchema()).map(([key, value]) => {
+						if (value === "separator") {
+							return <CommandSeparator key={key} />;
+						}
+						if (isSearchbarItem(value)) {
+							return commandItem(value as SearchbarItem, setShowCommand, key);
+						}
+						return (
+							<CommandGroup
+								key={key}
+								heading={key}
+								style={{ pointerEvents: "auto" }}
+								className="[&_[cmdk-group-heading]]:text-[]"
+							>
+								{Object.entries(value as SearchbarSection).map(
+									([key1, value1]) => {
+										return commandItem(
+											value1 as SearchbarItem,
+											setShowCommand,
+											key1,
+										);
+									},
+								)}
+							</CommandGroup>
+						);
+					})}
+				</ScrollArea>
 			</CommandList>
 		</CommandDialog>
 	);
@@ -175,12 +174,12 @@ const isSearchbarItem = (
 
 const commandItem = (
 	value: SearchbarItem,
-	setIsSearchCommand: (open: boolean) => void,
+	setShowCommand: (open: boolean) => void,
 	key?: string,
 ) => {
 	function handleClick() {
 		value.function();
-		setIsSearchCommand(false);
+		setShowCommand(false);
 	}
 	return (
 		<CommandItem

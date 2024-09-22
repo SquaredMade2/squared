@@ -1,13 +1,10 @@
 "use client";
-
-import { useState } from "react";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import type { Workspace } from "@repo/db";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import Link from "next/link";
 import { useTaskStore, useWorkspaceStore } from "@/store";

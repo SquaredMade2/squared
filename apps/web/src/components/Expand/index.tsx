@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import ButtonIcon from "../ButtonIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

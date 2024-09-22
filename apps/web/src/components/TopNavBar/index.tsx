@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import type React from "react";
 import TopNavBarDisplay from "@/components/TopNavBarDisplay";
 import FilterDropDown from "@/components/FilterDropdowns";
@@ -7,10 +7,6 @@ import ToggleNavBar from "../ToggleNavBar";
 import { useAuthStore } from "@/store";
 
 const TopNavBar: React.FC = () => {
-	const [showNotification, setShowNotification] = useState(true);
-	const menuRef = useRef<HTMLDivElement>(null);
-	const notificationButtonRef = useRef(null);
-
 	const [screenSize, setScreenSize] = useState(getCurrentDimension());
 
 	const socket = useContext(SocketContext);
@@ -37,13 +33,13 @@ const TopNavBar: React.FC = () => {
 	useEffect(() => {
 		socket.emit("socketId", user?.id);
 		socket.emit("getUser", user?.id);
-		socket.on("send_notification", (data: unknown) => {
+		socket.on("send_notification", () => {
 			// Handle incoming notifications
 		});
-		socket.on("new_notification", (data: unknown) => {
+		socket.on("new_notification", () => {
 			// Handle new notifications
 		});
-		socket.on("notification_removed", (data: unknown) => {
+		socket.on("notification_removed", () => {
 			// Handle notification removal
 		});
 		return () => {
@@ -54,7 +50,7 @@ const TopNavBar: React.FC = () => {
 	}, [socket.id]);
 
 	return (
-		<header className="max-w-screen">
+		<header className="w-full max-w-screen px-2 sm:px-5">
 			<nav className="h-[7vh] grid sm:grid-cols-2 w-full xs:grid-rows-2 xs:h-[14vh]">
 				<div className="flex flex-none justify-start items-center">
 					<div className="w-full flex flex-none justify-start items-center gap-4">

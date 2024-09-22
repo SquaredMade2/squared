@@ -39,13 +39,13 @@ export const columns: ColumnDef<User>[] = [
 	},
 	{
 		accessorKey: "role",
-		cell: ({ row }) => {
+		cell: () => {
 			return "Admin";
 		},
 	},
 	{
 		accessorKey: "manage",
-		cell: ({ row }) => {
+		cell: () => {
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>

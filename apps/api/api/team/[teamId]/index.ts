@@ -8,7 +8,7 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { teamId }, query): Promise<APIResponse<Team>> => {
+		GET: async (res, { teamId }): Promise<APIResponse<Team>> => {
 			try {
 				// Find team by ID
 				const team: Team | null = await prisma.team.findFirst({
@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Team not found",
@@ -46,7 +45,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingTeam) {
-					res.status(401);
 					return {
 						data: null,
 						message: "Team already exists",
@@ -84,7 +82,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Team not found",
@@ -114,7 +111,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!team) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Team not found",

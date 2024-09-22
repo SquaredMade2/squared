@@ -11,24 +11,16 @@ export function createRoute(): Route<Params> {
 		GET: async (res, { workspaceId }): Promise<APIResponse<Workspace>> => {
 			try {
 				// Find workspace by workspace ID
-				const idWorkspace = await prisma.workspace.findUnique({
-					where: { id: workspaceId },
+				const workspace = await prisma.workspace.findFirst({
+					where: {
+						OR: [{ id: workspaceId }, { url: workspaceId }],
+					},
 					include: {
-						Label: true,
+						Labels: true,
 					},
 				});
-
-				const urlWorkspace = await prisma.workspace.findUnique({
-					where: { url: workspaceId },
-					include: {
-						Label: true,
-					},
-				});
-
-				const workspace = idWorkspace || urlWorkspace;
 
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
@@ -60,9 +52,11 @@ export function createRoute(): Route<Params> {
 				const workspace = await prisma.workspace.update({
 					where: { id: workspaceId },
 					data: body,
+					include: {
+						Labels: true,
+					},
 				});
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
@@ -99,13 +93,26 @@ export function createRoute(): Route<Params> {
 
 				if (existingWorkspace) {
 					console.error("Workspace already exists");
-					res.status(401);
 					return {
 						data: null,
 						message: "Workspace already exists",
 						variant: "destructive",
 					};
 				}
+
+				const defaultLabels = [
+					{ name: "Feature", description: "New feature", color: "#FF5733" },
+					{ name: "Bug", description: "Bug fix", color: "#C70039" },
+					{ name: "Chore", description: "General task", color: "#900C3F" },
+					{ name: "Refactor", description: "Code refactor", color: "#581845" },
+					{ name: "Docs", description: "Documentation", color: "#FFC300" },
+					{ name: "Test", description: "Testing task", color: "#DAF7A6" },
+					{
+						name: "Design",
+						description: "Design related task",
+						color: "#33FFBD",
+					},
+				];
 
 				const newWorkspace = await prisma.workspace.create({
 					data: {
@@ -115,6 +122,16 @@ export function createRoute(): Route<Params> {
 								userId: body.userId,
 							},
 						},
+						Labels: {
+							create: defaultLabels.map((label) => ({
+								name: label.name,
+								description: label.description,
+								color: label.color,
+							})),
+						},
+					},
+					include: {
+						Labels: true,
 					},
 				});
 
@@ -163,7 +180,6 @@ export function createRoute(): Route<Params> {
 					where: { id: workspaceId },
 				});
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found",
@@ -173,7 +189,7 @@ export function createRoute(): Route<Params> {
 
 				// Return success message
 				return {
-					data: workspace,
+					data: null,
 					message: "Workspace deleted",
 					variant: "default",
 				};

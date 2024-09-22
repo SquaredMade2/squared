@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import { Check, FileSearch } from "lucide-react";
+import { FileSearch } from "lucide-react";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import type { Workspace } from "@repo/db";
 

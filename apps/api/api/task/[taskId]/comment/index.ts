@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!comments) {
-					res.status(404);
 					return {
 						data: comments,
 						message: "comments not found",

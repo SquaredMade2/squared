@@ -92,7 +92,7 @@ export default function CreateTeam() {
 		);
 
 		if (!doesTeamExist) {
-			const newTeam = await addTeam({
+			await addTeam({
 				name: values.teamName.trim(),
 				identifier: values.teamIdentifier.toUpperCase(),
 				workspaceId: currentWorkspace.id,

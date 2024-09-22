@@ -22,13 +22,12 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (res, { userId }, body: Body): Promise<APIResponse<User>> => {
+		POST: async (res, _, body: Body): Promise<APIResponse<User>> => {
 			try {
 				const { email, password, provider, type, name, username } = body;
 
 				// Validation for Login Data
 				if (!email || (provider === "credentials" && !password)) {
-					res.status(401);
 					return {
 						data: null,
 						message: "Email and password are required.",
@@ -49,7 +48,6 @@ export function createRoute(): Route<Params> {
 				if (type === "register") {
 					// Registration Validation
 					if (!name || !username) {
-						res.status(401);
 						return {
 							data: null,
 							message: "Name is required.",
@@ -57,7 +55,6 @@ export function createRoute(): Route<Params> {
 						};
 					}
 					if (!password || password.length < 6) {
-						res.status(401);
 						return {
 							data: null,
 							message:
@@ -72,7 +69,6 @@ export function createRoute(): Route<Params> {
 					});
 
 					if (existingUser) {
-						res.status(401);
 						return {
 							data: null,
 							message: "This email is already registered.",
@@ -109,8 +105,6 @@ export function createRoute(): Route<Params> {
 							variant: "destructive",
 						};
 					}
-
-					res.status(201);
 					return {
 						data: user,
 						message: `Sent a verification email to ${email}`,
@@ -124,7 +118,6 @@ export function createRoute(): Route<Params> {
 					});
 
 					if (!user) {
-						res.status(404);
 						return {
 							data: null,
 							message: "No user found, please register.",
@@ -139,7 +132,6 @@ export function createRoute(): Route<Params> {
 
 						// Send verification email if they're not verified
 						await sendMail(email, user.name, emailToken, "confirmation");
-						res.status(401);
 						return {
 							data: null,
 							message:
@@ -151,7 +143,6 @@ export function createRoute(): Route<Params> {
 					// Logic for if they logged in with email and password
 					if (provider === "credentials") {
 						if (!password) {
-							res.status(401);
 							return {
 								data: null,
 								message: "Password is required.",
@@ -164,7 +155,6 @@ export function createRoute(): Route<Params> {
 						);
 
 						if (!passwordMatch) {
-							res.status(401);
 							return {
 								data: null,
 								message: "Incorrect Password",
@@ -201,9 +191,7 @@ export function createRoute(): Route<Params> {
 						variant: "default",
 					};
 				}
-
 				// Default case if the type is neither 'register' nor 'login'
-				res.status(401);
 				return {
 					data: null,
 					message: "Invalid request type.",

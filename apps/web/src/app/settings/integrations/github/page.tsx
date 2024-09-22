@@ -9,16 +9,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useViewStore } from "@/store";
 
 const GithubSettings: React.FC = () => {
-	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
-
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavbar;
-		setShowNavbar(navBarValue);
-	};
-
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		const token = params.get("token");

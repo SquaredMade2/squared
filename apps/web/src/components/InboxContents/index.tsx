@@ -20,7 +20,7 @@ export default function InboxContents({
 		<>
 			{currentTask !== null && (
 				<div>
-					<Task mailTask={true} />
+					<Task />
 				</div>
 			)}
 			{currentTask === null && (

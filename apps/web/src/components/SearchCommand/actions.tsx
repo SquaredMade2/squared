@@ -340,7 +340,7 @@ export class commandSchema {
 						try {
 							await logout();
 							this.showToast("Logged out successfully", "default");
-						} catch (error) {
+						} catch {
 							this.showToast("Failed to log out", "destructive");
 						}
 					},

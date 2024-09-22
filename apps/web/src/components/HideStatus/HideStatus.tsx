@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import HideTaskStatusDropdown from "@/components/HideTaskSectionDropdown";
 import type { HideStatusProps } from "./HideStatusProps";
 import { EllipsisVertical } from "lucide-react";

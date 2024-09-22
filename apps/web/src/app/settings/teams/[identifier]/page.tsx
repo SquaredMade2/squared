@@ -76,7 +76,7 @@ export default function TeamsSetting() {
 	});
 
 	useEffect(() => {
-		const subscription = form.watch((value, { name, type }) => {
+		const subscription = form.watch((value) => {
 			if (
 				value.name !== currentTeam.name ||
 				value.identifier !== currentTeam.identifier
@@ -103,7 +103,7 @@ export default function TeamsSetting() {
 					router.push(url);
 					toast({ title: "Team updated successfully" });
 				}
-			} catch (err) {
+			} catch {
 				toast({
 					title: "Failed to update team",
 					variant: "destructive",

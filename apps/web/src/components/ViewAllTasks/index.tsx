@@ -1,15 +1,12 @@
 "use client";
-import { useState } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import StatusColumn from "@/components/StatusColumn";
 import RenameModal from "@/components/RenameModal";
-import { Status, type Task } from "@repo/db";
+import { Status } from "@repo/db";
 import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
 import { useViewStore } from "@/store";
 
 const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
-	const [showRenameModal, setShowRenameModal] = useState(false);
-
 	const currentView = useViewStore((state) => state.view);
 
 	const titleArr: { value: Status; id: number }[] = [
@@ -39,16 +36,17 @@ const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
+			if (status === Status.archived) return null;
 			const tasksForStatus = getTasksForStatus(status);
+			if (tasksForStatus.length === 0) return null;
 			return (
-				<div key={status}>
+				<div key={status} className="px-1">
 					<StatusColumn
 						key={status}
 						currentView={currentView}
 						columnType={status}
 						title={status}
 						tasks={tasksForStatus}
-						setShowRenameModal={setShowRenameModal}
 					/>
 				</div>
 			);

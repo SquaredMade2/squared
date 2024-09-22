@@ -95,7 +95,6 @@ export const createFilterStore = (
 					try {
 						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
 							await axios.post(apiString("create"), filter);
-						const { data: filters } = response;
 
 						if (!filter) {
 							return {

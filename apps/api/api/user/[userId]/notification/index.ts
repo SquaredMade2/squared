@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
