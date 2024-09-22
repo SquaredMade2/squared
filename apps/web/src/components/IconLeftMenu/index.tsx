@@ -10,7 +10,7 @@ import {
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
+} from "@/components/ui/tooltip";
 import { Home, Inbox, LogOut, Moon, Search, Settings, Sun } from "lucide-react";
 
 const IconLeftMenu = () => {
@@ -24,7 +24,6 @@ const IconLeftMenu = () => {
 	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
 	const logout = useAuthStore((state) => state.logout);
-	const currentYear: number = new Date().getFullYear();
 
 	const handleLogout = async (): Promise<void> => {
 		try {
@@ -46,7 +45,7 @@ const IconLeftMenu = () => {
 	};
 
 	return (
-		<TooltipProvider>
+		<TooltipProvider delayDuration={0}>
 			<div className="flex flex-col h-screen items-center justify-between w-12 py-2 bg-secondary">
 				<div className="flex flex-col items-center space-y-4">
 					<Tooltip>
@@ -56,7 +55,7 @@ const IconLeftMenu = () => {
 								<span className="sr-only">Home</span>
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent side="right" align="center">
+						<TooltipContent side="right" className="mb-8">
 							Home
 						</TooltipContent>
 					</Tooltip>
@@ -71,7 +70,7 @@ const IconLeftMenu = () => {
 								<span className="sr-only">Search</span>
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent side="right" align="center">
+						<TooltipContent side="right" className="mb-8">
 							Search
 						</TooltipContent>
 					</Tooltip>
@@ -86,7 +85,7 @@ const IconLeftMenu = () => {
 								<span className="sr-only">Settings</span>
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent side="right" align="center">
+						<TooltipContent side="right" className="mb-8">
 							Settings
 						</TooltipContent>
 					</Tooltip>
@@ -101,7 +100,7 @@ const IconLeftMenu = () => {
 								<span className="sr-only">Inbox</span>
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent side="right" align="center">
+						<TooltipContent side="right" className="mb-8">
 							Inbox
 						</TooltipContent>
 					</Tooltip>
@@ -120,26 +119,22 @@ const IconLeftMenu = () => {
 								<span className="sr-only">Toggle theme</span>
 							</Button>
 						</TooltipTrigger>
-						<TooltipContent side="right" align="center">
+						<TooltipContent side="right" className="mb-8">
 							{theme === "dark"
 								? "Switch to Light Mode"
 								: "Switch to Dark Mode"}
 						</TooltipContent>
 					</Tooltip>
 				</div>
-				<small className="text-muted-foreground -rotate-90 whitespace-nowrap">
-					&copy; {currentYear} Squared. All rights reserved
-				</small>
 
 				<Tooltip>
 					<TooltipTrigger asChild>
-						<Button variant="ghost" size="icon">
-							<LogOut onClick={handleLogout} />
+						<Button variant="ghost" size="icon" onClick={handleLogout}>
+							<LogOut className="h-[1.2rem] w-[1.2rem]" />
+							<span className="sr-only">Logout</span>
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent side="right" align="center">
-						Logout
-					</TooltipContent>
+					<TooltipContent side="right">Logout</TooltipContent>
 				</Tooltip>
 			</div>
 		</TooltipProvider>
