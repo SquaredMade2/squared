@@ -8,10 +8,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-// import {
-// 	effortEstimateOptions,
-// 	complexityScale,
-// } from "@/constants/designations";
 
 const difficultyLevels = [
 	"1 - Really easy",
@@ -27,9 +23,9 @@ export const EffortDropdownButton = () => {
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {
-			case estimate > 8:
-				return high();
 			case estimate > 3:
+				return high();
+			case estimate > 1:
 				return medium();
 			default:
 				return low();
@@ -57,17 +53,17 @@ export const EffortDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full ">
+				<Button variant="outline" className="max-w-full w-full">
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[180px]" side={"left"} align="start">
+			<DropdownMenuContent className="w-[180px]" side="left" align="start">
 				{difficultyLevels.map((effortLevel) => {
 					const estimateNumber = extractNumber(effortLevel);
 
 					return (
 						<DropdownMenuItem
-							key={effortEstimate}
+							key={effortLevel}
 							className="flex gap-2 items-center"
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
@@ -75,12 +71,11 @@ export const EffortDropdownButton = () => {
 							<div className="flex flex-col">
 								<span>{effortLevel}</span>
 							</div>
-							{estimateNumber === effortEstimate && (
-								<Check className="h-4 w-4" />
-							)}
-							{/* <div className="w-16 ml-auto">
-								<ProgressBar progress={estimateNumber} />
-							</div> */}
+							<div className="ml-auto">
+								{estimateNumber === effortEstimate && (
+									<Check className="h-4 w-4" />
+								)}
+							</div>
 						</DropdownMenuItem>
 					);
 				})}

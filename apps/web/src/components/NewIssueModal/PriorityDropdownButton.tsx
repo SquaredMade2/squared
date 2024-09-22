@@ -1,5 +1,10 @@
-import { Circle, AlertTriangle, AlertCircle, MinusCircle } from "lucide-react";
-import { Check } from "lucide-react";
+import {
+	Circle,
+	AlertTriangle,
+	AlertCircle,
+	MinusCircle,
+	Check,
+} from "lucide-react";
 import { formatPriority } from "@/utils/formatting";
 import { priorityOptions } from "@/constants/designations";
 import { Button } from "@/components/ui/button";

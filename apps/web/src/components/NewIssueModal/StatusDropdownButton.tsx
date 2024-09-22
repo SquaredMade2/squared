@@ -1,9 +1,14 @@
-import { Circle, CircleCheckBig, CircleDashed, RotateCw } from "lucide-react";
+import {
+	Circle,
+	CircleCheckBig,
+	CircleDashed,
+	RotateCw,
+	Check,
+} from "lucide-react";
 import { inProgress } from "../Svg";
 import { statusOptions } from "@/constants/designations";
 import { formatStatus } from "@/utils/formatting";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
 import { useModalStore } from "@/store";
 import {
 	DropdownMenu,
@@ -47,26 +52,24 @@ export const StatusDropdownButton = () => {
 					</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent side={"left"} align="start" className={"w-[150px]"}>
+			<DropdownMenuContent side="left" align="start" className="w-[150px]">
 				<DropdownMenuRadioGroup
 					value={newIssueStatus}
 					onValueChange={(status) => handleSelectStatus(status as Status)}
 				>
-					{statusOptions.map((status) => {
-						return (
-							<DropdownMenuItem
-								key={status}
-								onSelect={() => handleSelectStatus(status as Status)}
-								className="flex justify-between items-center px-2 py-1.5"
-							>
-								<div className="flex items-center">
-									{showIcon(status)}
-									<span className="ml-2">{formatStatus(status)}</span>
-								</div>
-								{newIssueStatus === status && <Check className="h-4 w-4" />}
-							</DropdownMenuItem>
-						);
-					})}
+					{statusOptions.map((status) => (
+						<DropdownMenuItem
+							key={status}
+							onSelect={() => handleSelectStatus(status as Status)}
+							className="flex justify-between items-center px-2 py-1.5"
+						>
+							<div className="flex items-center">
+								{showIcon(status)}
+								<span className="ml-2">{formatStatus(status)}</span>
+							</div>
+							{newIssueStatus === status && <Check className="h-4 w-4" />}
+						</DropdownMenuItem>
+					))}
 				</DropdownMenuRadioGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
