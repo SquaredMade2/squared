@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import type { Status } from "@repo/db";
 import { useModalStore } from "@/store";
 
-const NewIssueButton = () => {
+export const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
 		useModalStore((state) => state);
 	const titleArr: { status: Status } = { status: "todo" };
@@ -55,5 +55,3 @@ export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
 		</Button>
 	);
 };
-
-export default NewIssueButton;
