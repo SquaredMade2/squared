@@ -10,7 +10,7 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { LayoutGrid } from "lucide-react";
-import IconLeftMenu from "../IconLeftMenu";
+import IconLeftMenu from "../IconNavbar";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";

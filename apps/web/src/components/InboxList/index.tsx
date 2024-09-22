@@ -4,7 +4,7 @@ import { SocketContext } from "@/app/SocketProvider";
 import { InboxItem } from "@/components/InboxItem";
 import { useContext, useEffect } from "react";
 import { ScrollArea } from "../ui/scroll-area";
-import IconLeftMenu from "../IconLeftMenu";
+import IconLeftMenu from "../IconNavbar";
 import type { Notification } from "@repo/db";
 import { useAuthStore, useNotificationStore } from "@/store";
 

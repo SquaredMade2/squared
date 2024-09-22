@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import InboxContents from "@/components/InboxContents";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuthStore, useNotificationStore } from "@/store";
-import IconLeftMenu from "@/components/IconLeftMenu";
+import IconLeftMenu from "@/components/IconNavbar";
 
 export default function Inbox(): React.JSX.Element {
 	const [showInboxList, setShowInboxList] = useState(false);
