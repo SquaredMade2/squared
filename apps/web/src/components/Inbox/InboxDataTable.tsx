@@ -176,10 +176,9 @@ export function InboxDataTable({
 								/>
 							</TableHead>
 							<TableHead>
-								<div className="flex gap-6 items-center">
-									<div className="text-foreground w-16">Select All</div>
+								<div className="flex flex-col md:flex-row md:items-center md:gap-4">
 									{table.getFilteredSelectedRowModel().rows.length > 0 && (
-										<div className="flex py-2 space-x-2 justify-start">
+										<div className="flex flex-wrap gap-2 py-2">
 											{filterType !== "DONE" ? (
 												<>
 													<Button
@@ -189,7 +188,7 @@ export function InboxDataTable({
 														className="gap-2 bg-secondary"
 													>
 														<Check className="size-4" />
-														Dismiss
+														<span className="hidden sm:inline">Dismiss</span>
 													</Button>
 													<Button
 														onClick={handleMarkAsUnread}
@@ -198,14 +197,16 @@ export function InboxDataTable({
 														className="gap-2 bg-secondary"
 													>
 														<BellOff className="size-4" />
-														Unsubscribe
+														<span className="hidden sm:inline">
+															Unsubscribe
+														</span>
 													</Button>
 													<Popover>
 														<PopoverTrigger asChild>
 															<Button
 																variant="outline"
 																className="bg-secondary"
-																size={"sm"}
+																size="sm"
 															>
 																<Ellipsis className="size-4" />
 															</Button>
@@ -240,7 +241,9 @@ export function InboxDataTable({
 													className="gap-2 bg-secondary"
 												>
 													<MoveRight className="size-4" />
-													Move to inbox
+													<span className="hidden sm:inline">
+														Move to inbox
+													</span>
 												</Button>
 											)}
 										</div>
