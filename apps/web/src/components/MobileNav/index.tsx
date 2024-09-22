@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore, useModalStore, useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useModalStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
@@ -31,7 +36,9 @@ import { VisuallyHidden } from "@repo/ui/visually-hidden";
 
 const MobileMenuSheet = () => {
 	const [mounted, setMounted] = useState(false);
-	const [open, setOpen] = useState(false);
+	const { showMobileNavbar: open, setShowMobileNavbar: setOpen } = useViewStore(
+		(state) => state,
+	);
 	const router = useRouter();
 	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);

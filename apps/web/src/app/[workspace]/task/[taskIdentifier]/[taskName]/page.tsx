@@ -1,8 +1,15 @@
-import Task from "@/components/Task";
+"use client";
 import { LoadingTask } from "@/components/Task/LoadingTask";
-import TaskPageCenterContainer from "@/components/Task/TaskPageCenterContainer";
+import TaskBreadcrumbs from "@/components/Task/TaskBreadcrumbs";
+import TaskDesignationsContainer from "@/components/Task/TaskDesignationsContainer";
+import EventTabs from "@/components/Task/TaskPageActivityTimeline/EventTabs";
+import TaskPageForm from "@/components/Task/TaskPageForm";
+import TaskSidebarTopRow from "@/components/Task/TaskSidebarTopRow";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useTeamStore } from "@/store";
+import { ArrowLeft } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -10,12 +17,10 @@ const TaskPage = () => {
 	const { tasks, currentTask, getAllTasks, setCurrentTask } = useTaskStore(
 		(state) => state,
 	);
-
 	const { currentTeam, teams, setCurrentTeam } = useTeamStore((state) => state);
 
 	const [isLoading, setIsLoading] = useState(true);
 
-	const showBackdrop = showSideNav;
 	const { toast } = useToast();
 	const { taskIdentifier } = useParams();
 	const { teamIdentifier } = useParams();
@@ -75,28 +80,28 @@ const TaskPage = () => {
 				<LoadingTask />
 			) : (
 				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
-					{showBackdrop && (
-						<div
-							className={
-								showSideNav
-									? "max850:block hidden w-full h-screen absolute bg-gray-500 z-10 bg-opacity-40"
-									: ""
-							}
-						/>
-					)}
 					<div className="w-full h-full p-2 md:p-5 xl:px-10 ">
 						<div className="flex w-full relative">
-							<TaskPageCenterContainer />
-							<div
-								className={`relative max850:absolute transition-all duration-300 ease-in-out ${
-									showSideNav
-										? " z-20 max850:-right-0 "
-										: " max850:-right-[500px] "
-								}`}
-							>
-								<div className="" ref={sideNav}>
-									<TaskSidebarContainer />
+							<div className="w-full snap-start z-0 overflow-x-hidden">
+								<div className="flex items-center gap-2">
+									<Button variant={"ghost"} size="icon">
+										<ArrowLeft className="size-4" />
+									</Button>
+									<div className=" w-full max850:w-10/12 overflow-hidden">
+										<TaskBreadcrumbs />
+									</div>
 								</div>
+
+								<ScrollArea className="h-[calc(100vh-5rem)] ">
+									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
+										<TaskPageForm />
+										<EventTabs />
+									</div>
+								</ScrollArea>
+							</div>
+							<div className="flex flex-col gap-4">
+								<TaskSidebarTopRow />
+								<TaskDesignationsContainer />
 							</div>
 						</div>
 					</div>

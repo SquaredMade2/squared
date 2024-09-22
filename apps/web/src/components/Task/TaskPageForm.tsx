@@ -7,7 +7,7 @@ import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
-const TaskPageTitle = () => {
+const TaskPageForm = () => {
 	const { toast } = useToast();
 
 	const { currentTask, updateTask } = useTaskStore((state) => state);
@@ -68,4 +68,4 @@ const TaskPageTitle = () => {
 	);
 };
 
-export default TaskPageTitle;
+export default TaskPageForm;
