@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CircleDashed, Calendar, Clock, Tag, Filter } from "lucide-react";
+import { CircleDashed, Calendar, Clock, Tag, Filter, X } from "lucide-react";
 import { high } from "@/components/Svg";
 
 import PriorityFilterDropDown from "./PriorityFilter";
@@ -105,28 +105,13 @@ const FilterDropDown: React.FunctionComponent = () => {
 	};
 
 	return (
-		<>
+		<div className="flex items-center">
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
-					<Button
-						onClick={
-							currentFilters?.length && currentFilters?.length > 0
-								? () => {
-										clearFilter();
-									}
-								: () => {
-										setOpen(true);
-									}
-						}
-						variant={"ghost"}
-					>
+					<Button onClick={() => setOpen(true)} variant={"ghost"}>
 						<div className="flex gap-2 items-center">
 							<Filter className="size-5" />
-							<p>
-								{currentFilters.length && currentFilters.length > 0
-									? "Clear Filters x"
-									: "Filter"}
-							</p>
+							Filter
 						</div>
 					</Button>
 				</PopoverTrigger>
@@ -151,7 +136,11 @@ const FilterDropDown: React.FunctionComponent = () => {
 					</Command>
 				</PopoverContent>
 			</Popover>
-
+			{currentFilters?.length > 0 && (
+				<Button variant={"outline"} onClick={clearFilter} className="gap-2">
+					Clear Filters <X className="size-4" />
+				</Button>
+			)}
 			<PriorityFilterDropDown
 				setShowPriorityFilterDropDown={setShowPriorityFilterDropDown}
 				showPriorityFilterDropDown={showPriorityFilterDropDown}
@@ -172,7 +161,7 @@ const FilterDropDown: React.FunctionComponent = () => {
 				setShowEffortFilterDropDown={setShowEffortFilterDropDown}
 				showEffortFilterDropDown={showEffortFilterDropDown}
 			/>
-		</>
+		</div>
 	);
 };
 

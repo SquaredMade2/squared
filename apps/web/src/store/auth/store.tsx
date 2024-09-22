@@ -4,11 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { type AuthStore, createAuthStore } from ".";
 
-export type AuthStoreApi = ReturnType<typeof createAuthStore>;
+type AuthStoreApi = ReturnType<typeof createAuthStore>;
 
-export const AuthStoreContext = createContext<AuthStoreApi | undefined>(
-	undefined,
-);
+const AuthStoreContext = createContext<AuthStoreApi | undefined>(undefined);
 
 export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
 	const storeRef = useRef<AuthStoreApi>();

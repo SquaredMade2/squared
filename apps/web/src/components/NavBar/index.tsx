@@ -1,8 +1,8 @@
 "use client";
 
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
-import NewIssueModal from "../NewIssueModal";
-import NewIssueButton from "@/components/NewIssueButton";
+import NewIssueModal from "../NewIssue";
+import NewIssueButton from "@/components/NewIssue";
 import {
 	Accordion,
 	AccordionContent,
@@ -14,7 +14,7 @@ import IconLeftMenu from "../IconLeftMenu";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";
-import NavBarTeams from "../NavBarTeams";
+import NavBarTeams from "./NavBarTeams";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { ScrollArea } from "../ui/scroll-area";
@@ -33,7 +33,7 @@ const Navbar = () => {
 			<div className="h-screen flex">
 				<IconLeftMenu />
 
-				<div className="flex h-full bg-popover w-64">
+				<div className="flex h-full bg-popover w-64 ml-14">
 					<div className="w-full flex flex-col">
 						<div className="w-full h-full flex flex-col cursor-default text-foreground gap-5 py-2">
 							<div className="flex flex-col gap-5 px-2">

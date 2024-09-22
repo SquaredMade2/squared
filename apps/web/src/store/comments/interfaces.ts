@@ -10,7 +10,7 @@ export interface CommentResponse {
 	variant: "default" | "destructive";
 }
 
-export type CommentActions = {
+type CommentActions = {
 	addComment: (comment: Partial<Comment>) => Promise<CommentResponse>;
 	updateComment: (
 		commentId: string,

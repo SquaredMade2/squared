@@ -32,6 +32,13 @@ enum ActivityType {
   COMMIT
 }
 
+enum NotificationType {
+  ASSIGNED
+  PARTICIPATING
+  MENTIONED
+  CREATED
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -130,13 +137,20 @@ model Comment {
 model Notification {
   id          String   @id @default(uuid())
   userId      String
-  taskIds     String[]
+  taskId      String
   read        Boolean  @default(false)
+  saved       Boolean  @default(false)
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+  workspaceId String
+  dismissed   Boolean  @default(false)
 
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  type NotificationType
+
+  Task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Task {
@@ -162,9 +176,10 @@ model Task {
   Events   TaskEventLog?
   Branch   Branch?
 
-  Author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Notification Notification[]
 }
 
 model Team {
@@ -181,16 +196,18 @@ model Team {
 }
 
 model User {
-  id                 String   @id @default(uuid())
-  name               String
-  username           String?
-  email              String   @unique
-  password           String
-  verified           Boolean  @default(false)
-  lastLogin          DateTime @default(now())
-  onBoarding         Boolean  @default(true)
-  defaultWorkspaceId String?
-  avatarUrl          String?
+  id                   String   @id @default(uuid())
+  name                 String
+  username             String?
+  email                String   @unique
+  password             String
+  verified             Boolean  @default(false)
+  lastLogin            DateTime @default(now())
+  onBoarding           Boolean  @default(true)
+  defaultWorkspaceId   String?
+  avatarUrl            String?
+  savedNotificationIds String[] @default([])
+  subscribedTasks      String[] @default([])
 
   Workspaces   UserWorkspace[]
   Notification Notification[]
@@ -239,6 +256,7 @@ model Workspace {
   Users              UserWorkspace[]
   User               User[]
   Tasks              Task[]
+  notifications      Notification[]
 }
 
 model UserWorkspace {

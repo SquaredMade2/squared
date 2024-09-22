@@ -6,7 +6,7 @@ export type ViewState = {
 	view: "list" | "grid";
 };
 
-export type ViewActions = {
+type ViewActions = {
 	setView: (view: "list" | "grid") => void;
 	setShowNavbar: (input: boolean) => void;
 	setShowDateTime: (input: boolean) => void;

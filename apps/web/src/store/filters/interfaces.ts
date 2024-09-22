@@ -31,7 +31,7 @@ export interface FilterResponse {
 	variant: "default" | "destructive";
 }
 
-export type FilterActions = {
+type FilterActions = {
 	setCurrentFilter: (filter: FilterCondition[]) => void;
 	addFilter: (filter: FilterCondition) => void;
 	clearFilter: () => void;
