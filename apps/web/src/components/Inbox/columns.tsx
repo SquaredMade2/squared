@@ -18,6 +18,8 @@ import {
 } from "@/store";
 import { useRouter } from "next/navigation";
 import { formatUrl, getInitials } from "@/utils/formatting";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { TooltipContent } from "@repo/ui/tooltip";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -163,8 +165,9 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				await deleteNotification(row.original.id);
 			};
 
-			const handleUnsubscribe = async () => {
-				await updateNotification(row.original.id, { read: true });
+			const toggleSubscribe = async () => {
+				// await updateNotification(row.original.id, { read: true });
+				// TODO: Implement toggleSubscribe
 			};
 
 			const handleSave = async () => {
@@ -194,38 +197,63 @@ export const columns: ColumnDef<NotificationTask>[] = [
 						</div>
 					) : (
 						<div className="flex gap-1">
-							<Button
-								onClick={row.original.dismissed ? handleDelete : handleDismiss}
-								variant="secondary"
-								size="icon"
-								className="size-8 border border-border bg-accent hover:bg-popover"
-							>
-								{row.original.dismissed ? (
-									<Trash2 className="size-4" />
-								) : (
-									<Check className="size-4" />
-								)}
-							</Button>
-							<Button
-								onClick={handleUnsubscribe}
-								variant="secondary"
-								size="icon"
-								className="size-8 border border-border bg-accent hover:bg-popover"
-							>
-								<BellOff className="size-4" />
-							</Button>
-							<Button
-								onClick={handleSave}
-								variant="secondary"
-								size="icon"
-								className="size-8 border border-border bg-accent hover:bg-popover"
-							>
-								{saved ? (
-									<BookmarkMinus className="size-4" />
-								) : (
-									<Bookmark className="size-4" />
-								)}
-							</Button>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											onClick={
+												row.original.dismissed ? handleDelete : handleDismiss
+											}
+											variant="secondary"
+											size="icon"
+											className="size-8 border border-border bg-accent hover:bg-popover"
+										>
+											{row.original.dismissed ? (
+												<Trash2 className="size-4" />
+											) : (
+												<Check className="size-4" />
+											)}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										{row.original.dismissed
+											? "Delete notification"
+											: "Dismiss notification"}
+									</TooltipContent>
+								</Tooltip>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											onClick={toggleSubscribe}
+											variant="secondary"
+											size="icon"
+											className="size-8 border border-border bg-accent hover:bg-popover"
+										>
+											<BellOff className="size-4" />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>Unsubscribe</TooltipContent>
+								</Tooltip>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											onClick={handleSave}
+											variant="secondary"
+											size="icon"
+											className="size-8 border border-border bg-accent hover:bg-popover"
+										>
+											{saved ? (
+												<BookmarkMinus className="size-4" />
+											) : (
+												<Bookmark className="size-4" />
+											)}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										{saved ? "Remove from saved" : "Save notification"}
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						</div>
 					)}
 				</div>
