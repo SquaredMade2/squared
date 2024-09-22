@@ -1,10 +1,9 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CreatedByInformation from "../CreatedByInformation";
-import UpdatedByInformation from "../UpdatedByInformation";
+import { CreatedByInformation, UpdatedByInformation } from ".";
 
-const EventTabs = () => {
+export const EventTabs = () => {
 	return (
 		<Tabs defaultValue="activity" className="w-full mt-8">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
@@ -24,5 +23,3 @@ const EventTabs = () => {
 		</Tabs>
 	);
 };
-
-export default EventTabs;

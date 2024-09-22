@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import type { Task } from "@repo/db";
 
-const TaskPageForm = ({ task }: { task: Task }) => {
+export const TaskPageForm = ({ task }: { task: Task }) => {
 	const { updateTask } = useTaskStore((state) => state);
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
@@ -86,5 +86,3 @@ const TaskPageForm = ({ task }: { task: Task }) => {
 		</form>
 	);
 };
-
-export default TaskPageForm;

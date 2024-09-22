@@ -10,9 +10,9 @@ import {
 	TooltipTrigger,
 } from "../ui/tooltip";
 import { Button } from "../ui/button";
-import { Copy, Link } from "lucide-react";
+import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 
-const TaskSidebarTopRow = ({ task }: { task: Task }) => {
+export const TaskSidebarTopRow = ({ task }: { task: Task }) => {
 	const { toast } = useToast();
 
 	const identifier = task.identifier;
@@ -113,7 +113,7 @@ const TaskSidebarTopRow = ({ task }: { task: Task }) => {
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Button variant="ghost" size="icon" onClick={copyGitBranchName}>
-								<Link className="size-4" />
+								<GitPullRequestArrow className="size-4" />
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent className="flex gap-4 items-center">
@@ -134,5 +134,3 @@ const TaskSidebarTopRow = ({ task }: { task: Task }) => {
 const KeyboardShortcut = ({ children }: { children: React.ReactNode }) => {
 	return <span className="flex border px-1 rounded">{children}</span>;
 };
-
-export default TaskSidebarTopRow;

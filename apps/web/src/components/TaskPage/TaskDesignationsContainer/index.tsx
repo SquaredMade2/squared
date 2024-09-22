@@ -35,7 +35,7 @@ const generateItemContainer = (
 	</div>
 );
 
-export default function TaskDesignationsContainer() {
+export function TaskDesignationsContainer() {
 	const { currentTask } = useTaskStore((state) => state);
 	const [showEffortModal, setShowEffortModal] = useState(false);
 

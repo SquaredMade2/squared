@@ -9,7 +9,7 @@ import WorkspaceInitials from "@/components/WorkspaceImage";
 import Link from "next/link";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 
-const TaskBreadcrumbs = () => {
+export const TaskBreadcrumbs = () => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const allWorkspaces = useWorkspaceStore((state) => state.workspaces);
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
@@ -48,5 +48,3 @@ const TaskBreadcrumbs = () => {
 		</>
 	);
 };
-
-export default TaskBreadcrumbs;

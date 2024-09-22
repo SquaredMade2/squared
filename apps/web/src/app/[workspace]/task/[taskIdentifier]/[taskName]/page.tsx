@@ -1,10 +1,12 @@
 "use client";
-import { LoadingTask } from "@/components/Task/LoadingTask";
-import TaskBreadcrumbs from "@/components/Task/TaskBreadcrumbs";
-import TaskDesignationsContainer from "@/components/Task/TaskDesignationsContainer";
-import EventTabs from "@/components/Task/TaskPageActivityTimeline/EventTabs";
-import TaskPageForm from "@/components/Task/TaskPageForm";
-import TaskSidebarTopRow from "@/components/Task/TaskSidebarTopRow";
+import { LoadingTask } from "@/components/TaskPage/LoadingTask";
+import {
+	TaskBreadcrumbs,
+	TaskDesignationsContainer,
+	EventTabs,
+	TaskPageForm,
+	TaskSidebarTopRow,
+} from "@/components/TaskPage";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";

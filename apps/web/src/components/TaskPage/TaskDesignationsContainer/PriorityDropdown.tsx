@@ -14,7 +14,7 @@ import { high, medium, low } from "@/components/Svg";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@repo/db";
-import type { ButtonProps } from "@/components/Task/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "@/components/TaskPage/TaskDesignationsContainer/interfaces";
 
 const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
