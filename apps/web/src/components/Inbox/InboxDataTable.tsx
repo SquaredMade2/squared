@@ -327,7 +327,7 @@ export function InboxDataTable({
 				<div className="flex items-center space-x-2">
 					<span className="text-sm text-muted-foreground">
 						Page {table.getState().pagination.pageIndex + 1} of{" "}
-						{table.getPageCount()}
+						{table.getPageCount() ?? 1}
 					</span>
 					<Button
 						variant="outline"
