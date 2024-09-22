@@ -1,26 +1,18 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import { SocketContext } from "@/app/SocketProvider";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "../ui/use-toast";
-import {
-	useAuthStore,
-	useTaskStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
 const TaskPageDescription = () => {
 	const [isFocused, setIsFocused] = useState(false);
 
 	const { currentTask, updateTask } = useTaskStore((state) => state);
-	const { user } = useAuthStore((state) => state);
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
-	const socket = useContext(SocketContext);
 
 	const description = currentTask?.description ?? "";
 	const [updatedDescription, setUpdatedDescription] = useState(description);
@@ -36,20 +28,10 @@ const TaskPageDescription = () => {
 		if (currentTask?.id) {
 			try {
 				if (currentTask) {
-					const updatedTaskDescription = await updateTask(currentTask.id, {
+					await updateTask(currentTask.id, {
 						...currentTask,
 						description: transformedDescriptionInput,
 					});
-					const { userIds: userId } = transformingMentionInputs(
-						updatedDescription ?? "",
-					);
-					const mentionedUserIds = new Set([...userId]);
-					socket.emit(
-						"user_mentioned",
-						[...mentionedUserIds],
-						updatedTaskDescription.task?.id,
-						user?.id,
-					);
 				}
 			} catch (err) {
 				if (err instanceof Error) {
