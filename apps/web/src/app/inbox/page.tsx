@@ -45,25 +45,33 @@ export default function InboxPage() {
 		switch (filterType) {
 			case "ASSIGNED":
 				setFilteredNotifications(
-					notifications.filter((n) => n.type === "ASSIGNED"),
+					notifications
+						.filter((n) => n.type === "ASSIGNED")
+						.filter((n) => !n.dismissed),
 				);
 				setWorkspace(null);
 				break;
 			case "PARTICIPATING":
 				setFilteredNotifications(
-					notifications.filter((n) => n.type === "PARTICIPATING"),
+					notifications
+						.filter((n) => n.type === "PARTICIPATING")
+						.filter((n) => !n.dismissed),
 				);
 				setWorkspace(null);
 				break;
 			case "MENTIONED":
 				setFilteredNotifications(
-					notifications.filter((n) => n.type === "MENTIONED"),
+					notifications
+						.filter((n) => n.type === "MENTIONED")
+						.filter((n) => !n.dismissed),
 				);
 				setWorkspace(null);
 				break;
 			case "CREATED":
 				setFilteredNotifications(
-					notifications.filter((n) => n.type === "CREATED"),
+					notifications
+						.filter((n) => n.type === "CREATED")
+						.filter((n) => !n.dismissed),
 				);
 				setWorkspace(null);
 				break;
@@ -73,9 +81,9 @@ export default function InboxPage() {
 				break;
 			case "SAVED":
 				setFilteredNotifications(
-					notifications.filter((n) =>
-						user?.savedNotificationIds?.includes(n.id),
-					),
+					notifications
+						.filter((n) => user?.savedNotificationIds?.includes(n.id))
+						.filter((n) => !n.dismissed),
 				);
 				setWorkspace(null);
 				break;
@@ -85,7 +93,9 @@ export default function InboxPage() {
 				break;
 			case "WORKSPACE":
 				setFilteredNotifications(
-					notifications.filter((n) => n.workspaceId === workspace),
+					notifications
+						.filter((n) => n.workspaceId === workspace)
+						.filter((n) => !n.dismissed),
 				);
 				break;
 			default:
