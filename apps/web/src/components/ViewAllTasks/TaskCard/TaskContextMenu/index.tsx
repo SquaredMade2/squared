@@ -12,7 +12,7 @@ import {
 import StatusSubContextMenu from "./StatusSubContextMenu";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import PrioritySubContextMenu from "./PrioritySubContextMenu";
-import type { TaskContextMenuProps } from "./interfaces";
+import type { ContextMenuProps } from "./interfaces";
 import LabelSubContextMenu from "./LabelSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 // Will need in future
@@ -21,7 +21,7 @@ import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "@/components/ui/use-toast";
 import { useModalStore, useTaskStore } from "@/store";
 
-const TaskContextMenu: FC<TaskContextMenuProps> = ({ task }) => {
+const TaskContextMenu: FC<ContextMenuProps> = ({ task }) => {
 	const { toast } = useToast();
 	const { deleteTask } = useTaskStore((state) => state);
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
