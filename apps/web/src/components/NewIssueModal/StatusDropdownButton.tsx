@@ -61,11 +61,13 @@ export const StatusDropdownButton = () => {
 						<DropdownMenuItem
 							key={status}
 							onSelect={() => handleSelectStatus(status as Status)}
-							className="flex justify-between items-center px-2 py-1.5"
+							className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
 						>
 							<div className="flex items-center">
 								{showIcon(status)}
-								<span className="ml-2">{formatStatus(status)}</span>
+								<span className="ml-2 cursor-pointer">
+									{formatStatus(status)}
+								</span>
 							</div>
 							{newIssueStatus === status && <Check className="h-4 w-4" />}
 						</DropdownMenuItem>

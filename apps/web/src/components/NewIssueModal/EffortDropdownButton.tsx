@@ -64,12 +64,12 @@ export const EffortDropdownButton = () => {
 					return (
 						<DropdownMenuItem
 							key={effortLevel}
-							className="flex gap-2 items-center"
+							className="flex gap-2 items-center cursor-pointer"
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
 							{showIcon(estimateNumber)}
 							<div className="flex flex-col">
-								<span>{effortLevel}</span>
+								<span className="cursor-pointer">{effortLevel}</span>
 							</div>
 							<div className="ml-auto">
 								{estimateNumber === effortEstimate && (

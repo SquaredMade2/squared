@@ -71,11 +71,13 @@ export const PriorityDropdownButton = () => {
 						<DropdownMenuItem
 							key={priority}
 							onSelect={() => handleSelectPriority(priority as Priority)}
-							className="flex justify-between items-center px-2 py-1.5"
+							className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
 						>
-							<div className="flex items-center">
+							<div className="flex items-center ">
 								{showIcon(priority)}
-								<span className="ml-2">{formatPriority(priority)}</span>
+								<span className="ml-2 cursor-pointer">
+									{formatPriority(priority)}
+								</span>
 							</div>
 							{newIssuePriority === priority && <Check className="h-4 w-4" />}
 						</DropdownMenuItem>

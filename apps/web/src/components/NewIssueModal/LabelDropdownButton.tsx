@@ -103,7 +103,7 @@ export const LabelDropdownButton = () => {
 									key={label.id}
 									value={label.name}
 									onSelect={() => handleSelectLabels(label)}
-									className="flex justify-between items-center px-2 py-1.5"
+									className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
 								>
 									<LabelBadge label={label} />
 									{newIssueLabels.includes(label) && (
