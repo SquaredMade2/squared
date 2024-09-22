@@ -5,6 +5,7 @@ import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
 import { destroyCookie } from "nookies";
 import type { User } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
+import { signOut } from "next-auth/react";
 export * from "./interfaces";
 export * from "./store";
 
@@ -51,6 +52,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					);
 					set({ user: null });
 					destroyCookie(undefined, "auth-store");
+					signOut();
 					sessionStorage.removeItem("auth-store");
 					sessionStorage.removeItem("activity-store");
 					sessionStorage.removeItem("task-store");
