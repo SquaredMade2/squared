@@ -1,61 +1,26 @@
-import {
-	Tabs,
-	TabsHeader,
-	TabsBody,
-	Tab,
-	TabPanel,
-} from "@material-tailwind/react";
-// import CommentForm from "@/components/Comments";
-import ActivityItemContainer from "../ActivtyItemContainer";
+"use client";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CreatedByInformation from "../CreatedByInformation";
+import UpdatedByInformation from "../UpdatedByInformation";
 
 const EventTabs = () => {
 	return (
-		<Tabs value="Activity">
-			<TabsHeader
-				className="bg-background pb-0 px-0"
-				indicatorProps={{
-					className:
-						"bg-muted dark:bg-accent border-t border-x border-transparent rounded-none rounded-t-lg text-foreground mb-0 pb-0",
-				}}
-				placeholder={undefined}
-				onPointerEnterCapture={undefined}
-				onPointerLeaveCapture={undefined}
-			>
-				<Tab
-					key="Activity"
-					value="Activity"
-					className="text-foreground border-t border-x border-transparent w-36 py-2 "
-					placeholder={undefined}
-					onPointerEnterCapture={undefined}
-					onPointerLeaveCapture={undefined}
-				>
-					Activity
-				</Tab>
-				<Tab
-					className="text-foreground border-t border-x border-transparent w-36 ml-2 py-2 "
-					key="Comments"
-					value="Comments"
-					placeholder={undefined}
-					onPointerEnterCapture={undefined}
-					onPointerLeaveCapture={undefined}
-				>
-					Comments
-				</Tab>
-			</TabsHeader>
-			<div className="w-full h-px bg-muted dark:bg-accent" />
-			<TabsBody
-				placeholder={undefined}
-				onPointerEnterCapture={undefined}
-				onPointerLeaveCapture={undefined}
-			>
-				<TabPanel key="Activity" value="Activity" className="px-0 py-6">
-					<ActivityItemContainer />
-				</TabPanel>
-				<TabPanel key="Comment" value="Comments" className="px-0 py-6">
-					{/* <CommentForm /> TODO: IMPLEMENT COMMENTS AGAIN */}
-					<div />
-				</TabPanel>
-			</TabsBody>
+		<Tabs defaultValue="activity" className="w-full mt-8">
+			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
+				<TabsTrigger value="activity">Activity</TabsTrigger>
+				<TabsTrigger value="comments">Comments</TabsTrigger>
+			</TabsList>
+			<TabsContent value="activity">
+				<div className="flex flex-col bg-card rounded-md text-sm">
+					<CreatedByInformation />
+					<UpdatedByInformation />
+				</div>
+			</TabsContent>
+			<TabsContent value="comments">
+				{/* TODO: Implement CommentForm component */}
+				<div>Comments will be implemented here</div>
+			</TabsContent>
 		</Tabs>
 	);
 };

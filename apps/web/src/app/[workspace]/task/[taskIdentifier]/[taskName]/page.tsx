@@ -43,9 +43,7 @@ const TaskPage = () => {
 					}
 				}
 				if (!currentTask || currentTask.identifier !== taskIdentifier) {
-					if (currentTeam) {
-						await getAllTasks(currentTeam.id);
-					}
+					currentTeam && (await getAllTasks(currentTeam.id));
 				}
 				const foundTask = tasks.find(
 					(eachTask) => eachTask.identifier === taskIdentifier,
@@ -76,7 +74,7 @@ const TaskPage = () => {
 
 	return (
 		<div className="w-full h-screen flex bg-background overflow-hidden">
-			{isLoading ? (
+			{isLoading || !currentTask ? (
 				<LoadingTask />
 			) : (
 				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
@@ -94,13 +92,13 @@ const TaskPage = () => {
 
 								<ScrollArea className="h-[calc(100vh-5rem)] ">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
-										<TaskPageForm />
+										<TaskPageForm task={currentTask} />
 										<EventTabs />
 									</div>
 								</ScrollArea>
 							</div>
 							<div className="flex flex-col gap-4">
-								<TaskSidebarTopRow />
+								<TaskSidebarTopRow task={currentTask} />
 								<TaskDesignationsContainer />
 							</div>
 						</div>

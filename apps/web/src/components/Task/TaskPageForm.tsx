@@ -1,40 +1,48 @@
 import { useEffect, useState } from "react";
-import TaskPageDescription from "./TaskPageDescription";
 import MentionInput from "@/components/MentionsInput";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import type { Task } from "@repo/db";
 
-const TaskPageForm = () => {
-	const { toast } = useToast();
-
-	const { currentTask, updateTask } = useTaskStore((state) => state);
+const TaskPageForm = ({ task }: { task: Task }) => {
+	const { updateTask } = useTaskStore((state) => state);
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { toast } = useToast();
 
-	const title = currentTask?.title ?? "";
-	const taskId = currentTask?.id;
-
-	const [updatedTitle, setUpdatedTitle] = useState(title);
-	const [isFocused, setIsFocused] = useState(false);
+	const [updatedTitle, setUpdatedTitle] = useState(task.title ?? "");
+	const [updatedDescription, setUpdatedDescription] = useState(
+		task.description ?? null,
+	);
+	const [isTitleFocused, setIsTitleFocused] = useState(false);
+	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 
 	const { transformedInput: transformedTitleInput } = transformingMentionInputs(
 		updatedTitle ?? "",
 	);
+	const { transformedInput: transformedDescriptionInput } =
+		transformingMentionInputs(updatedDescription ?? "");
 
-	const handleChange: OnChangeHandlerFunc = (e) => {
+	const handleTitleChange: OnChangeHandlerFunc = (e) => {
 		setUpdatedTitle(e.target.value);
+	};
+	const handleDescriptionChange: OnChangeHandlerFunc = (e) => {
+		setUpdatedDescription(e.target.value);
 	};
 
 	const handleSubmit = async () => {
-		const changeMade: boolean = updatedTitle !== title;
-		if (changeMade && taskId !== undefined) {
-			if (currentTask) {
-				const response = await updateTask(taskId, {
-					...currentTask,
+		setIsTitleFocused(false);
+		setIsDescriptionFocused(false);
+		const changeMade: boolean =
+			updatedTitle !== task.title || updatedDescription !== task.description;
+		if (changeMade && task.id !== undefined) {
+			if (task) {
+				const response = await updateTask(task.id, {
 					title: transformedTitleInput,
+					description: transformedDescriptionInput,
 				});
 				toast(response);
 			}
@@ -42,13 +50,14 @@ const TaskPageForm = () => {
 	};
 
 	useEffect(() => {
-		if (currentTask) {
-			setUpdatedTitle(currentTask.title);
+		if (task) {
+			setUpdatedTitle(task.title);
+			setUpdatedDescription(task.description);
 		}
 		if (currentWorkspace) {
 			getAllUsers(currentWorkspace.id);
 		}
-	}, [currentTask]);
+	}, [task]);
 
 	return (
 		<form className="flex flex-col" onSubmit={handleSubmit}>
@@ -56,14 +65,24 @@ const TaskPageForm = () => {
 				data={users}
 				className="mt-2 text-foreground text-xl text-bold bg-background rounded-lg focus:outline-none"
 				value={updatedTitle ?? ""}
-				onChange={handleChange}
+				onChange={handleTitleChange}
 				onBlur={handleSubmit}
-				style={CustomMentionStyle(isFocused)}
-				onFocus={() => setIsFocused(true)}
+				style={CustomMentionStyle(isTitleFocused)}
+				onFocus={() => setIsTitleFocused(true)}
 				placeholder={"Title"}
 				name={"title"}
 			/>
-			<TaskPageDescription />
+			<MentionInput
+				data={users}
+				onChange={handleDescriptionChange}
+				className="resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent "
+				placeholder={"Add description..."}
+				value={updatedDescription ?? ""}
+				name={"editDescription"}
+				onBlur={handleSubmit}
+				style={CustomMentionStyle(isDescriptionFocused)}
+				onFocus={() => setIsDescriptionFocused(true)}
+			/>
 		</form>
 	);
 };
