@@ -1,4 +1,3 @@
-"use client";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import {
@@ -8,6 +7,12 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Integrations",
+	description: "Set up and manage integrations for your workspace.",
+};
 
 const IntegrationSettings: React.FC = () => {
 	return (

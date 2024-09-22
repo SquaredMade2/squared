@@ -1,3 +1,4 @@
+"use client";
 import { commandSchema } from "./actions";
 import { DialogTitle } from "../ui/dialog";
 import { useEffect, useState } from "react";

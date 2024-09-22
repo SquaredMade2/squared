@@ -1,4 +1,3 @@
-"use client";
 import "./globals.css";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
@@ -6,6 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
 import { SquaredStoreProvider } from "@/store";
 import SearchCommand from "@/components/SearchCommand";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Squared",
+	description:
+		"Squared is your go-to platform for managing tasks, projects, and teams seamlessly.",
+};
 
 export default function RootLayout({
 	children,
