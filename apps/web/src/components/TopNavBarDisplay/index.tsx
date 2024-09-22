@@ -20,10 +20,12 @@ const TopNavBarDisplay = () => {
 		<div className="flex flex-col gap-2 items-end relative h-10 ">
 			<Popover>
 				<PopoverTrigger asChild>
-					<Button variant={"outline"} className="gap-2">
+					<Button variant={"ghost"} className="gap-2">
 						<SlidersVertical className="size-4" />
-						Display
-						<ChevronDown className="size-4" />
+						<div className="hidden md:block">
+							Display
+							<ChevronDown className="size-4" />
+						</div>
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent>
