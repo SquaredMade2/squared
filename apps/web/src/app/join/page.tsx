@@ -16,7 +16,7 @@ const Join = () => {
 	const { getAllWorkspaces, workspaces, addWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const user = useAuthStore((state) => state.user);
+	const { user, setUser } = useAuthStore((state) => state);
 	const updateUser = useUserStore((state) => state.updateUser);
 	const { toast } = useToast();
 	const router = useRouter();
@@ -90,8 +90,10 @@ const Join = () => {
 			toast({ title: message, variant });
 			if (workspace) {
 				if (user.onBoarding) {
-					updateUser(user.id, { onBoarding: false });
+					const updatedUser = await updateUser(user.id, { onBoarding: false });
+					setUser(updatedUser.user);
 				}
+				router.refresh();
 				router.push(`/${workspace.url}`);
 			}
 		} catch (error) {

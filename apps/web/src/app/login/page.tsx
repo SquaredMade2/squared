@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useWorkspaceStore } from "@/store";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
 import {
 	Card,
 	CardContent,
@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { destroyCookie, setCookie } from "nookies";
 import type { User } from "next-auth";
 import type { AuthReturn } from "@/store/auth";
+import { Separator } from "@/components/ui/separator";
+import { GoogleIcon } from "@/components/Svg";
 
 export default function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
@@ -145,25 +147,29 @@ export default function LoginForm() {
 	}, [status, session]);
 
 	return (
-		<div className="w-full h-screen flex justify-center items-center">
-			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
-				<CardHeader>
+		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
+			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5">
+				<CardHeader className="space-y-1">
 					<CardTitle className="text-2xl font-bold text-center">
 						Sign in to your account
 					</CardTitle>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="space-y-4">
 					<form onSubmit={handleLogin} className="space-y-4">
 						<div className="space-y-2">
 							<Label htmlFor="email">Email address</Label>
-							<Input
-								id="email"
-								type="email"
-								placeholder="Enter your email"
-								value={data.email}
-								onChange={(e) => setData({ ...data, email: e.target.value })}
-								required
-							/>
+							<div className="relative">
+								<Input
+									id="email"
+									type="email"
+									placeholder="Enter your email"
+									value={data.email}
+									onChange={(e) => setData({ ...data, email: e.target.value })}
+									required
+									className="pl-10"
+								/>
+								<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+							</div>
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="password">Password</Label>
@@ -177,6 +183,7 @@ export default function LoginForm() {
 										setData({ ...data, password: e.target.value })
 									}
 									required
+									className="pr-10"
 								/>
 								<Button
 									type="button"
@@ -200,21 +207,31 @@ export default function LoginForm() {
 							Sign in
 						</Button>
 					</form>
-					<div className="mt-4">
-						<Button
-							onClick={handleGoogleLogin}
-							className="w-full"
-							variant="outline"
-							disabled={isLoading}
-						>
-							{isLoading ? (
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							) : null}
-							Sign in with Google
-						</Button>
+					<div className="relative">
+						<div className="absolute inset-0 flex items-center">
+							<Separator />
+						</div>
+						<div className="relative flex justify-center text-xs uppercase">
+							<span className="bg-card px-2 text-muted-foreground">
+								Or continue with
+							</span>
+						</div>
 					</div>
+					<Button
+						onClick={handleGoogleLogin}
+						className="w-full"
+						variant="outline"
+						disabled={isLoading}
+					>
+						{isLoading ? (
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						) : (
+							<GoogleIcon />
+						)}
+						Sign in with Google
+					</Button>
 				</CardContent>
-				<CardFooter className="flex justify-center">
+				<CardFooter className="flex flex-col items-center justify-center space-y-2">
 					<p className="text-sm text-muted-foreground">
 						Not a member?{" "}
 						<Button variant="link" className="p-0" onClick={handleRegisterPush}>
