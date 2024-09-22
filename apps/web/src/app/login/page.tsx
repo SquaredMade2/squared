@@ -152,7 +152,7 @@ export default function LoginForm() {
 
 	return (
 		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5">
+			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-2xl font-bold text-center">
 						Sign in to your account
