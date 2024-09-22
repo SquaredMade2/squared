@@ -69,7 +69,7 @@ export default function LabelFilterDropDown({
 					<CommandList>
 						<CommandEmpty>No labels found.</CommandEmpty>
 						<CommandGroup>
-							{filteredLabels.map((label) => (
+							{filteredLabels?.map((label) => (
 								<CommandItem
 									key={label.id}
 									onSelect={() => handleLabelChange(label)}

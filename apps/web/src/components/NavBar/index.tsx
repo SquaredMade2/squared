@@ -33,7 +33,7 @@ const Navbar = () => {
 			<div className="h-screen flex">
 				<IconLeftMenu />
 
-				<div className="flex h-full bg-popover w-64">
+				<div className="flex h-full bg-popover w-64 ml-14">
 					<div className="w-full flex flex-col">
 						<div className="w-full h-full flex flex-col cursor-default text-foreground gap-5 py-2">
 							<div className="flex flex-col gap-5 px-2">
