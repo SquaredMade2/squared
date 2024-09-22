@@ -29,7 +29,14 @@ import {
 	type NotificationTask,
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
-import { BellOff, Check, Circle, Ellipsis, MoveRight } from "lucide-react";
+import {
+	BellOff,
+	Check,
+	Circle,
+	Ellipsis,
+	MoveRight,
+	Trash2,
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import type { NotificationFilter } from "@/app/inbox/page";
 
@@ -46,7 +53,8 @@ export function InboxDataTable({
 	const [rowSelection, setRowSelection] = useState({});
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
-	const { updateManyNotifications } = useNotificationStore((state) => state);
+	const { updateManyNotifications, deleteManyNotifications } =
+		useNotificationStore((state) => state);
 
 	const table = useReactTable({
 		data,
@@ -125,6 +133,15 @@ export function InboxDataTable({
 			selectedRows.map((row) => row.original),
 			{ dismissed: false },
 		);
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
+	};
+	const handleDeleteMany = async () => {
+		const selectedRows = table.getFilteredSelectedRowModel().rows;
+		await deleteManyNotifications(selectedRows.map((row) => row.original));
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
@@ -234,17 +251,30 @@ export function InboxDataTable({
 													</Popover>
 												</>
 											) : (
-												<Button
-													onClick={handleMarkAsRestored}
-													variant="outline"
-													size="sm"
-													className="gap-2 bg-secondary"
-												>
-													<MoveRight className="size-4" />
-													<span className="hidden sm:inline">
-														Move to inbox
-													</span>
-												</Button>
+												<>
+													<Button
+														onClick={handleMarkAsRestored}
+														variant="outline"
+														size="sm"
+														className="gap-2 bg-secondary"
+													>
+														<MoveRight className="size-4" />
+														<span className="hidden sm:inline">
+															Move to inbox
+														</span>
+													</Button>
+													<Button
+														onClick={handleDeleteMany}
+														variant="outline"
+														size="sm"
+														className="gap-2 bg-secondary"
+													>
+														<Trash2 className="size-4" />
+														<span className="hidden sm:inline">
+															Clear notifications
+														</span>
+													</Button>
+												</>
 											)}
 										</div>
 									)}

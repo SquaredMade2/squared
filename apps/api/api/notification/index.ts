@@ -28,24 +28,34 @@ export function createRoute(): Route {
 				}
 
 				// Start a transaction to update all notifications
-				const updatedNotifications = await prisma.$transaction(
-					notifications.map((notification) =>
-						prisma.notification.update({
-							where: { id: notification.id },
-							data,
-							include: {
-								Task: true,
-								Workspace: true,
-							},
-						}),
-					),
-				);
+				if (data) {
+					const updatedNotifications = await prisma.$transaction(
+						notifications.map((notification) =>
+							prisma.notification.update({
+								where: { id: notification.id },
+								data,
+								include: {
+									Task: true,
+									Workspace: true,
+								},
+							}),
+						),
+					);
+					return {
+						data: updatedNotifications,
+						variant: "default",
+					};
+				}
+				await prisma.notification.deleteMany({
+					where: {
+						id: {
+							in: notifications.map((notification) => notification.id),
+						},
+					},
+				});
+				return { data: [], variant: "default" };
 
 				// Return the array of updated notifications
-				return {
-					data: updatedNotifications,
-					variant: "default",
-				};
 			} catch (error) {
 				console.error("Error updating notifications:", error);
 				res.status(500);

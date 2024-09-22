@@ -30,6 +30,7 @@ type NotificationActions = {
 		notifications: NotificationTask[],
 		data: Partial<Notification>,
 	) => Promise<NotificationTask[]>;
+	deleteManyNotifications: (notifications: NotificationTask[]) => Promise<void>;
 };
 
 export type NotificationStore = NotificationState & NotificationActions;

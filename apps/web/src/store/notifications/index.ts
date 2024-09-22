@@ -159,6 +159,20 @@ export const createNotificationStore = (
 						return [];
 					}
 				},
+				deleteManyNotifications: async (
+					notifications: NotificationTask[],
+				): Promise<void> => {
+					try {
+						await axios.put(apiString(""), { notifications });
+						set((state) => ({
+							notifications: state.notifications.filter(
+								(n) => !notifications.some((un) => un.id === n.id),
+							),
+						}));
+					} catch (error) {
+						console.error("Error in updateManyNotifications:", error);
+					}
+				},
 			}),
 			{
 				name: "notification-store",
