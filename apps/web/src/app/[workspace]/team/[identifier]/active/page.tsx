@@ -120,7 +120,10 @@ export default function Home() {
 						<ViewAllTasks
 							handleDragEnd={handleDragEnd}
 							tasks={filterTasks(tasks).filter(
-								(t) => t.status === "inProgress" || t.status === "todo",
+								(t) =>
+									t.status === "inProgress" ||
+									t.status === "todo" ||
+									t.status === "inReview",
 							)}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
