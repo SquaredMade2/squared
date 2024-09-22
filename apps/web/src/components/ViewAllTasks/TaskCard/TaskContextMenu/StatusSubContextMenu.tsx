@@ -5,7 +5,7 @@ import {
 	CircleDashed,
 	CircleFadingPlus,
 } from "lucide-react";
-import type { StatusSubContextMenuProps } from "./interfaces";
+import type { ContextMenuProps } from "./interfaces";
 import { inProgress } from "@/components/Svg";
 import {
 	ContextMenuItem,
@@ -17,7 +17,7 @@ import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import type { Status } from "@repo/db";
 
-const StatusSubContextMenu: FC<StatusSubContextMenuProps> = ({ task }) => {
+const StatusSubContextMenu: FC<ContextMenuProps> = ({ task }) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const handleSetStatus: (status: Status) => void = async (status) => {

@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { CircleAlert, Ellipsis } from "lucide-react";
-import type { PrioritySubContextMenuProps } from "./interfaces";
+import type { ContextMenuProps } from "./interfaces";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -12,7 +12,7 @@ import { high, low, medium } from "@/components/Svg";
 import type { Priority } from "@repo/db";
 import { useTaskStore } from "@/store";
 
-const PrioritySubContextMenu: FC<PrioritySubContextMenuProps> = ({ task }) => {
+const PrioritySubContextMenu: FC<ContextMenuProps> = ({ task }) => {
 	const { updateTask } = useTaskStore((state) => state);
 	const updateItem = async (priority: Priority) => {
 		if (task.id !== undefined) {

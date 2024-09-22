@@ -23,10 +23,13 @@
     "apps/web": {
       "entry": [
         "src/index.ts",
-        "src/**/*.{ts,tsx}"
+        "src/**/{page,route}.{ts,tsx}"
       ],
       "project": [
         "**/*.{ts,tsx}"
+      ],
+      "ignore": [
+        "src/**/components/ui/**"
       ]
     },
     "apps/www": {

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, type FC } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-import type { DateSubContextMenuProps } from "./interfaces";
+import type { ContextMenuProps } from "./interfaces";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
@@ -10,7 +10,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { useTaskStore } from "@/store";
 
-const DateSubContextMenu: FC<DateSubContextMenuProps> = ({ task }) => {
+const DateSubContextMenu: FC<ContextMenuProps> = ({ task }) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [date, setDate] = useState<Date>();
 	const { updateTask } = useTaskStore((state) => state);

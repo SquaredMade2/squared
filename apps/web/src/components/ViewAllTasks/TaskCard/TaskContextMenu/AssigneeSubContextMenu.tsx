@@ -7,11 +7,11 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import ProfileImage from "@/components/ProfileImage";
-import type { AssigneeSubContextMenuProps } from "./interfaces";
+import type { ContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
-const AssigneeSubContextMenu: FC<AssigneeSubContextMenuProps> = ({ task }) => {
+const AssigneeSubContextMenu: FC<ContextMenuProps> = ({ task }) => {
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);

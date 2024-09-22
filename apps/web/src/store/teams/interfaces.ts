@@ -11,7 +11,7 @@ export interface TeamResponse {
 	variant: "default" | "destructive";
 }
 
-export type TeamActions = {
+type TeamActions = {
 	addTeam: (team: Partial<Team>) => Promise<TeamResponse>;
 	getTeam: (teamId: string) => Promise<TeamResponse>;
 	setCurrentTeam: (team: Team) => void;

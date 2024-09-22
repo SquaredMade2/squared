@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FC } from "react";
 import { Tag } from "lucide-react";
-import type { LabelSubContextMenuProps } from "./interfaces";
+import type { ContextMenuProps } from "./interfaces";
 import {
 	ContextMenuCheckboxItem,
 	ContextMenuSub,
@@ -13,7 +13,7 @@ import { useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 import { LabelColor } from "../TaskCardLabels";
 
-const LabelSubContextMenu: FC<LabelSubContextMenuProps> = ({ task }) => {
+const LabelSubContextMenu: FC<ContextMenuProps> = ({ task }) => {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(

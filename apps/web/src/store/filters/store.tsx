@@ -4,11 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createFilterStore, type FilterStore } from ".";
 
-export type FilterStoreApi = ReturnType<typeof createFilterStore>;
+type FilterStoreApi = ReturnType<typeof createFilterStore>;
 
-export const FilterStoreContext = createContext<FilterStoreApi | undefined>(
-	undefined,
-);
+const FilterStoreContext = createContext<FilterStoreApi | undefined>(undefined);
 
 export const FilterStoreProvider = ({ children }: { children: ReactNode }) => {
 	const storeRef = useRef<FilterStoreApi>();

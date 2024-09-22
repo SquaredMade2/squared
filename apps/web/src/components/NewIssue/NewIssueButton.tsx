@@ -1,8 +1,5 @@
 import { SquarePen } from "lucide-react";
 import { Button } from "../ui/button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import ButtonIcon from "../ButtonIcon";
 import type { Status } from "@repo/db";
 import { useModalStore } from "@/store";
 
@@ -56,30 +53,6 @@ export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
 		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
 			<SquarePen className="size-5" />
 		</Button>
-	);
-};
-
-export const SideNavNewIssueButton = () => {
-	const titleArr: { status: Status } = { status: "todo" };
-	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
-		(state) => state,
-	);
-	const handleOpen = () => {
-		setShowNewIssue(true);
-		setNewIssueData({
-			...newIssueData,
-			status: titleArr.status,
-		});
-	};
-
-	return (
-		<ButtonIcon
-			icon={<FontAwesomeIcon icon={faPenToSquare} />}
-			handleClick={handleOpen}
-			hoverBg="bg-card"
-			tooltipLabel="New Issue"
-			labelPosition="right"
-		/>
 	);
 };
 

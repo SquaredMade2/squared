@@ -1,12 +1,22 @@
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
-import { EventType } from "@/interfaces/event.interfaces";
 import type { TaskEvent } from "@repo/db";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useActivityStore } from "@/store";
 import type { ActivityType } from "@/store/activities";
 import { Avatar } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
+
+enum EventType {
+	AssigneeUpdated = "assigneeUpdated",
+	LabelsUpdated = "labelsUpdated",
+	TitleUpdated = "titleUpdated",
+	DescriptionUpdated = "descriptionUpdated",
+	GitUpdated = "gitUpdated",
+	CommentUpdated = "commentUpdated",
+	StatusUpdated = "statusUpdated",
+	PriorityUpdated = "priorityUpdated",
+}
 
 const UpdatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
