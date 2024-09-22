@@ -120,7 +120,9 @@ export function InboxSidebar({
 
 	const getUnreadCount = (type: NotificationFilter) => {
 		if (type === "INBOX") return readNotifications.length;
-		return readNotifications.filter((n) => n.type === type).length;
+		return readNotifications
+			.filter((n) => n.type === type)
+			.filter((n) => !n.dismissed).length;
 	};
 
 	return (

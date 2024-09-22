@@ -133,9 +133,7 @@ export default function InboxPage() {
 								setFilterType={setFilterType}
 								filterType={filterType}
 								setWorkspace={setWorkspace}
-								readNotifications={notifications.filter(
-									(n) => !n.read || !n.dismissed,
-								)}
+								readNotifications={notifications.filter((n) => !n.read)}
 								workspaces={workspaces}
 								workspace={workspace}
 								filterRead={filterRead}
