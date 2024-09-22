@@ -4,11 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createTaskStore, type TaskStore } from ".";
 
-export type TaskStoreApi = ReturnType<typeof createTaskStore>;
+type TaskStoreApi = ReturnType<typeof createTaskStore>;
 
-export const TaskStoreContext = createContext<TaskStoreApi | undefined>(
-	undefined,
-);
+const TaskStoreContext = createContext<TaskStoreApi | undefined>(undefined);
 
 export const TaskStoreProvider = ({ children }: { children: ReactNode }) => {
 	const storeRef = useRef<TaskStoreApi>();

@@ -15,7 +15,7 @@ export interface NotificationResponse {
 	variant: "default" | "destructive";
 }
 
-export type NotificationActions = {
+type NotificationActions = {
 	addNotification: (
 		notification: Partial<Notification>,
 	) => Promise<NotificationResponse>;

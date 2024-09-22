@@ -11,7 +11,7 @@ export interface TaskResponse {
 	variant: "default" | "destructive";
 }
 
-export type TaskActions = {
+type TaskActions = {
 	addTask: (task: Partial<Task>) => Promise<TaskResponse>;
 	updateTask: (taskId: string, task: Partial<Task>) => Promise<TaskResponse>;
 	setCurrentTask: (task: Task) => void;
