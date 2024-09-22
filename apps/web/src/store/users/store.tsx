@@ -4,11 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createUserStore, type UserStore } from ".";
 
-export type UserStoreApi = ReturnType<typeof createUserStore>;
+type UserStoreApi = ReturnType<typeof createUserStore>;
 
-export const UserStoreContext = createContext<UserStoreApi | undefined>(
-	undefined,
-);
+const UserStoreContext = createContext<UserStoreApi | undefined>(undefined);
 
 export const UserStoreProvider = ({ children }: { children: ReactNode }) => {
 	const storeRef = useRef<UserStoreApi>();

@@ -10,7 +10,7 @@ export interface UserResponse {
 	variant: "default" | "destructive";
 }
 
-export type UserActions = {
+type UserActions = {
 	addUser: (user: Partial<User>) => Promise<UserResponse>;
 	updateUser: (userId: string, user: Partial<User>) => Promise<UserResponse>;
 	deleteUser: (userId: string) => Promise<void>;

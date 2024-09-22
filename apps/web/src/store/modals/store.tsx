@@ -4,11 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createModalStore, type ModalStore } from ".";
 
-export type ModalStoreApi = ReturnType<typeof createModalStore>;
+type ModalStoreApi = ReturnType<typeof createModalStore>;
 
-export const ModalStoreContext = createContext<ModalStoreApi | undefined>(
-	undefined,
-);
+const ModalStoreContext = createContext<ModalStoreApi | undefined>(undefined);
 
 export const ModalStoreProvider = ({ children }: { children: ReactNode }) => {
 	const storeRef = useRef<ModalStoreApi>();

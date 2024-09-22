@@ -2,23 +2,19 @@
 
 import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
-import { createWorkspaceStore, type WorkspaceStore } from "."; // Import your store creation and types
+import { createWorkspaceStore, type WorkspaceStore } from ".";
 
-// Define the type for Workspace Store API
-export type WorkspaceStoreApi = ReturnType<typeof createWorkspaceStore>;
+type WorkspaceStoreApi = ReturnType<typeof createWorkspaceStore>;
 
-// Create a context for the Workspace Store
-export const WorkspaceStoreContext = createContext<
-	WorkspaceStoreApi | undefined
->(undefined);
+const WorkspaceStoreContext = createContext<WorkspaceStoreApi | undefined>(
+	undefined,
+);
 
-// Create the Workspace Store Provider component
 export const WorkspaceStoreProvider = ({
 	children,
 }: { children: ReactNode }) => {
 	const storeRef = useRef<WorkspaceStoreApi>();
 
-	// Initialize the store in the ref
 	if (!storeRef.current) {
 		storeRef.current = createWorkspaceStore();
 	}
@@ -30,7 +26,6 @@ export const WorkspaceStoreProvider = ({
 	);
 };
 
-// Create a hook to access the Workspace Store
 export const useWorkspaceStore = <T,>(
 	selector: (store: WorkspaceStore) => T,
 ): T => {

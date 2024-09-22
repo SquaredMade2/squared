@@ -1,8 +1,8 @@
 "use client";
 
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
-import NewIssueModal from "../NewIssueModal";
-import NewIssueButton from "@/components/NewIssueButton";
+import NewIssueModal from "../NewIssue";
+import NewIssueButton from "@/components/NewIssue";
 import {
 	Accordion,
 	AccordionContent,
@@ -14,7 +14,7 @@ import IconLeftMenu from "../IconLeftMenu";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";
-import NavBarTeams from "../NavBarTeams";
+import NavBarTeams from "./NavBarTeams";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { ScrollArea } from "../ui/scroll-area";
