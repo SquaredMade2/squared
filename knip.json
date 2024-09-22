@@ -11,19 +11,43 @@
         "scripts/**/*.ts"
       ]
     },
-    "apps/*": {
+    "apps/api": {
       "entry": [
-        "index.ts",
         "docs/index.ts",
         "api/index.ts"
       ],
-      "project": "**/*.ts"
+      "project": [
+        "**/*.ts, **/*/tsx"
+      ]
+    },
+    "apps/web": {
+      "entry": [
+        "src/index.ts",
+        "src/**/{page,route}.{ts,tsx}"
+      ],
+      "project": [
+        "**/*.{ts,tsx}"
+      ],
+      "ignore": [
+        "src/**/components/ui/**"
+      ]
+    },
+    "apps/www": {
+      "entry": [
+        "src/index.ts",
+        "src/**/*.{ts,tsx}"
+      ],
+      "project": [
+        "**/*.{ts,tsx}"
+      ]
     },
     "packages/*": {
       "entry": [
         "{index,cli}.ts"
       ],
-      "project": "**/*.ts"
+      "project": [
+        "**/*.ts, **/*/tsx"
+      ]
     }
   },
   "ignore": [
@@ -31,6 +55,8 @@
     "**/dist/**"
   ],
   "ignoreDependencies": [
-    "turbo"
+    "turbo",
+    "turbo-ignore",
+    "husky"
   ]
 }
