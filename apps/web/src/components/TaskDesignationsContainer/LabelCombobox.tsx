@@ -24,13 +24,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
-
-const LabelColor = ({ color }: { color: string }) => (
-	<div
-		className="w-3 h-3 rounded-lg"
-		style={{ backgroundColor: color.startsWith("#") ? color : `#${color}` }}
-	/>
-);
+import { LabelColor } from "../TaskCardLabels";
 
 const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
@@ -99,7 +93,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 									className="flex justify-between items-center px-2 py-1.5"
 								>
 									<div className="flex items-center">
-										<LabelColor color={label.color} />
+										<LabelColor label={label} />
 										<span className="ml-2">{label.name}</span>
 									</div>
 									{taskLabels.some(

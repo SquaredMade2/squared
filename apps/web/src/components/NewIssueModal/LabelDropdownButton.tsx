@@ -17,17 +17,7 @@ import { Tag, Check } from "lucide-react";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 import LabelBadge from "../LabelBadges";
-
-const LabelColor = ({ label }: { label: Label }) => (
-	<div
-		className="w-3 h-3 rounded-lg"
-		style={{
-			backgroundColor: label.color.startsWith("#")
-				? label.color
-				: `#${label.color}`,
-		}}
-	/>
-);
+import { LabelColor } from "../TaskCardLabels";
 
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
