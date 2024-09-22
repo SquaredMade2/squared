@@ -6,12 +6,13 @@ import { comparePassword, hashPassword } from "./helpers";
 import { sendMail } from "@/utils/mail";
 
 type Body = {
-	provider: "credentials" | "oauth";
+	provider: "credentials" | "google" | "github";
 	type: "register" | "login" | "logout";
 	email: string;
 	password?: string;
 	name?: string;
 	username?: string;
+	oauthId?: string;
 };
 
 type Params = {
@@ -117,17 +118,43 @@ export function createRoute(): Route<Params> {
 						where: { email },
 					});
 
-					if (provider === "oauth") {
+					if (provider === "google") {
 						if (!user) {
-							// If the user doesn't exist, create them
 							user = await prisma.user.create({
 								data: {
 									email,
 									name: name ?? email.split("@")[0],
 									username,
+									googleId: body.oauthId,
 									verified: true,
 								},
 							});
+						} else if (user && user.googleId !== body.oauthId) {
+							return {
+								data: null,
+								message:
+									"This email is already registered with a different account.",
+								variant: "destructive",
+							};
+						}
+					} else if (provider === "github") {
+						if (!user) {
+							user = await prisma.user.create({
+								data: {
+									email,
+									name: name ?? email.split("@")[0],
+									username,
+									githubId: body.oauthId,
+									verified: true,
+								},
+							});
+						} else if (user && user.githubId !== body.oauthId) {
+							return {
+								data: null,
+								message:
+									"This email is already registered with a different account.",
+								variant: "destructive",
+							};
 						}
 					}
 

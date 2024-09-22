@@ -207,7 +207,8 @@ model User {
   avatarUrl            String?
   savedNotificationIds String[] @default([])
   subscribedTasks      String[] @default([])
-  oAuthId              String?
+  googleId             String?
+  githubId             String?
 
   Workspaces   UserWorkspace[]
   Notification Notification[]
