@@ -17,7 +17,10 @@
         "docs/index.ts",
         "api/index.ts"
       ],
-      "project": "**/*.ts"
+      "project": [
+        "**/*.ts",
+        "**/*.tsx"
+      ]
     },
     "packages/*": {
       "entry": [
