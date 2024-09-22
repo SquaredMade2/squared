@@ -1,12 +1,9 @@
 "use client";
 import "@/app/globals.css";
-import { SocketContext } from "@/app/SocketProvider";
 import { InboxItem } from "@/components/InboxItem";
-import { useContext, useEffect } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import IconLeftMenu from "../IconLeftMenu";
 import type { Notification } from "@repo/db";
-import { useAuthStore, useNotificationStore } from "@/store";
 
 type Props = {
 	showInboxList: boolean;
@@ -18,36 +15,6 @@ const InboxList: React.FC<Props> = ({
 	closeBackdrop,
 	notifications,
 }) => {
-	const socket = useContext(SocketContext);
-	const { user } = useAuthStore((state) => state);
-	const { getAllNotifications, addNotification, deleteNotification } =
-		useNotificationStore((state) => state);
-
-	useEffect(() => {
-		if (user) {
-			socket.emit("socketId", user.id);
-			socket.emit("getUser", user.id);
-			socket.on("send_notification", (data: unknown) => {
-				const notificationData =
-					typeof data === "string" ? JSON.parse(data) : data;
-				getAllNotifications(notificationData);
-			});
-			socket.on("new_notification", (data: unknown) => {
-				const notificationData =
-					typeof data === "string" ? JSON.parse(data) : data;
-				addNotification(notificationData);
-			});
-			socket.on("notification_removed", (data) => {
-				deleteNotification(data);
-			});
-			return () => {
-				socket.off("send_notification");
-				socket.off("new_notification");
-				socket.off("notification_removed");
-			};
-		}
-	}, [socket.id]);
-
 	return (
 		<div
 			className={`$w-auto h-full flex absolute z-10 bg-background xl:static transition-all duration-300 ease-in-out

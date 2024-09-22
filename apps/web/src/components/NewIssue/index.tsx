@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +21,6 @@ import { Textarea } from "../ui/textarea";
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import { SocketContext } from "@/app/SocketProvider";
 import {
 	useAuthStore,
 	useModalStore,
@@ -45,8 +43,6 @@ const NewIssueModal = () => {
 	const { tasks, addTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
-
-	const socket = useContext(SocketContext);
 
 	const handleDiscard = () => {
 		setNewIssueData({});
@@ -97,15 +93,12 @@ const NewIssueModal = () => {
 			tasksCreated: (currentWorkspace.tasksCreated ?? 0) + 1,
 		});
 		try {
-			const { transformedInput: transformedTitle, userIds: titleUserId } =
+			const { transformedInput: transformedTitle } =
 				transformingMentionInputs(title);
 
-			const {
-				transformedInput: transformedDescriptionInput,
-				userIds: descriptionUserId,
-			} = transformingMentionInputs(description);
+			const { transformedInput: transformedDescriptionInput } =
+				transformingMentionInputs(description);
 
-			const mentionedUserId = new Set([...descriptionUserId, ...titleUserId]);
 			const newTask: Task = {
 				authorId: user.id,
 				title: transformedTitle,
@@ -144,13 +137,6 @@ const NewIssueModal = () => {
 				variant: variant,
 			});
 			if (!taskCreatedResponse) return;
-
-			socket.emit(
-				"user_mentioned",
-				[...mentionedUserId],
-				taskCreatedResponse.id,
-				user.id,
-			);
 			setShowNewIssue(false);
 			setNewIssueData({});
 		} catch (err) {

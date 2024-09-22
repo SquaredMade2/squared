@@ -1,16 +1,10 @@
 "use client";
-import { useEffect, useRef, useContext } from "react";
+import { useEffect, useRef } from "react";
 import type { InboxItemProps } from "./InboxItem.interfaces";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelopeOpen, faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { SocketContext } from "@/app/SocketProvider";
-import {
-	useAuthStore,
-	useNotificationStore,
-	useTaskStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useNotificationStore, useTaskStore, useWorkspaceStore } from "@/store";
 
 export const InboxItem: React.FC<InboxItemProps> = ({
 	taskId,
@@ -28,19 +22,14 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 	const days = Math.floor(timeSinceCreation / millisecondsPerDay);
 
 	const { currentTask, setCurrentTask, tasks } = useTaskStore((state) => state);
-	const { getAllNotifications, updateNotification } = useNotificationStore(
-		(state) => state,
-	);
+	const { updateNotification } = useNotificationStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	if (!currentWorkspace) return null;
-	const { user } = useAuthStore((state) => state);
-	const socket = useContext(SocketContext);
 
 	const isActive = currentTask?.id === taskId;
 	const activeDivRef = useRef<HTMLDivElement | null>(null);
 
 	const handleMarkRead = (notificationId: string) => {
-		user && socket.emit("sending_notificationId", notificationId, user.id);
 		updateNotification(notificationId, { read: true });
 	};
 
@@ -58,14 +47,6 @@ export const InboxItem: React.FC<InboxItemProps> = ({
 			});
 		}
 	}, [route]);
-
-	useEffect(() => {
-		socket.on("receiving_updatedMarkedNotification", (data: unknown) => {
-			const updatedNotificationData =
-				typeof data === "string" ? JSON.parse(data) : data;
-			getAllNotifications(updatedNotificationData);
-		});
-	}, [socket.id]);
 
 	return (
 		<div

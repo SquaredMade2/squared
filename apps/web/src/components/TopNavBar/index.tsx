@@ -1,34 +1,9 @@
-import { useEffect, useContext } from "react";
 import type React from "react";
 import TopNavBarDisplay from "@/components/DisplaySettings";
 import FilterDropDown from "@/components/FilterDropdowns";
-import { SocketContext } from "@/app/SocketProvider";
 import ToggleNavBar from "../ToggleNavBar";
-import { useAuthStore } from "@/store";
 
 const TopNavBar: React.FC = () => {
-	const socket = useContext(SocketContext);
-	const user = useAuthStore((state) => state.user);
-
-	useEffect(() => {
-		socket.emit("socketId", user?.id);
-		socket.emit("getUser", user?.id);
-		socket.on("send_notification", () => {
-			// Handle incoming notifications
-		});
-		socket.on("new_notification", () => {
-			// Handle new notifications
-		});
-		socket.on("notification_removed", () => {
-			// Handle notification removal
-		});
-		return () => {
-			socket.off("send_notification");
-			socket.off("new_notification");
-			socket.off("notification_removed");
-		};
-	}, [socket.id]);
-
 	return (
 		<div className="flex flex-col flex-none justify-start items-start">
 			<div className="w-full flex items-center">
