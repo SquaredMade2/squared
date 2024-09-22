@@ -159,7 +159,7 @@ const NewIssueModal = () => {
 				title: "New Issue Created",
 				variant: variant,
 			});
-		} catch (err) {
+		} catch (_err) {
 			toast({
 				title: "Error creating issue",
 				variant: "destructive",
