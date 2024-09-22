@@ -172,8 +172,9 @@ export function InboxSidebar({
 								<WorkspaceFilterButton
 									workspace={w}
 									unreadCount={
-										readNotifications.filter((n) => n.workspaceId === w.id)
-											.length
+										readNotifications
+											.filter((n) => n.workspaceId === w.id)
+											.filter((n) => !n.dismissed).length
 									}
 									isSelected={workspace === w.id && filterType === "WORKSPACE"}
 									onClick={() => {
