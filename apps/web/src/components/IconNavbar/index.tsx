@@ -12,6 +12,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Home, Inbox, LogOut, Moon, Search, Settings, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const IconLeftMenu = () => {
 	const router = useRouter();
@@ -24,6 +25,7 @@ const IconLeftMenu = () => {
 	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
 	const logout = useAuthStore((state) => state.logout);
+	const [mounted, setMounted] = useState(false);
 
 	const handleLogout = async (): Promise<void> => {
 		try {
@@ -43,6 +45,14 @@ const IconLeftMenu = () => {
 	const toHome = () => {
 		homeRoute && !viewsRoute ? "" : router.back();
 	};
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) {
+		return null;
+	}
 
 	return (
 		<TooltipProvider delayDuration={0}>
