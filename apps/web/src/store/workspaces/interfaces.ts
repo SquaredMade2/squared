@@ -17,7 +17,7 @@ export interface WorkspaceResponse {
 	variant: "default" | "destructive";
 }
 
-export type WorkspaceActions = {
+type WorkspaceActions = {
 	addWorkspace: (
 		workspace: Partial<Workspace>,
 		userId: string,

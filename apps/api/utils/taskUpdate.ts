@@ -82,3 +82,16 @@ export async function createLog(author: User, task: Task) {
 		} as TaskEvent,
 	});
 }
+
+export async function subscribeUser(user: User, task: Task) {
+	if (!user.subscribedTasks.includes(task.id)) {
+		await prisma.user.update({
+			where: { id: user.id },
+			data: {
+				subscribedTasks: {
+					push: task.id,
+				},
+			},
+		});
+	}
+}

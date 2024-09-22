@@ -18,6 +18,10 @@
       "import": "./src/avatar/index.ts",
       "require": "./src/avatar/index.ts"
     },
+    "./checkbox": {
+      "import": "./src/checkbox/index.ts",
+      "require": "./src/checkbox/index.ts"
+    },
     "./collapsible": {
       "import": "./src/collapsible/index.ts",
       "require": "./src/collapsible/index.ts"

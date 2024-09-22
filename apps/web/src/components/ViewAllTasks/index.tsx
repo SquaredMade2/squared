@@ -1,9 +1,9 @@
 "use client";
 import { DragDropContext } from "@hello-pangea/dnd";
-import StatusColumn from "@/components/StatusColumn";
+import GroupColumn from "./GroupColumn";
 import RenameModal from "@/components/RenameModal";
 import { Status } from "@repo/db";
-import type { ViewAllTasksProps } from "./ViewAllTasks.interfaces";
+import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
 
 const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
@@ -41,7 +41,7 @@ const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 			if (tasksForStatus.length === 0) return null;
 			return (
 				<div key={status} className="px-1">
-					<StatusColumn
+					<GroupColumn
 						key={status}
 						currentView={currentView}
 						columnType={status}

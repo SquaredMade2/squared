@@ -4,9 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { type ActivityStore, createActivityStore } from ".";
 
-export type ActivityStoreApi = ReturnType<typeof createActivityStore>;
+type ActivityStoreApi = ReturnType<typeof createActivityStore>;
 
-export const ActivityStoreContext = createContext<ActivityStoreApi | undefined>(
+const ActivityStoreContext = createContext<ActivityStoreApi | undefined>(
 	undefined,
 );
 

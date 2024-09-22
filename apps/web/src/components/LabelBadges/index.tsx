@@ -57,7 +57,7 @@ export default function LabelBadge({ label }: { label: Label }) {
 	return (
 		<span
 			className={cn(
-				"inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-full",
+				"inline-flex items-center px-1.5 py-0 text-[10px] font-medium rounded-full",
 				"border dark:border-opacity-30",
 				"transition-colors duration-200",
 			)}

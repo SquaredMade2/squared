@@ -8,7 +8,7 @@ export type ActivityType = Prisma.ActivityGetPayload<{
 	include: { taskEvent: true; commit: true };
 }>;
 
-export type ActivityActions = {
+type ActivityActions = {
 	addTaskEvent: (
 		event: TaskEvent,
 		taskId: string,

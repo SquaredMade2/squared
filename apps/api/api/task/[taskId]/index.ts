@@ -1,7 +1,7 @@
 import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import { trackChange, createLog } from "@/utils/taskUpdate";
+import { trackChange, createLog, subscribeUser } from "@/utils/taskUpdate";
 
 type Params = {
 	taskId: string;
@@ -67,6 +67,7 @@ export function createRoute(): Route<Params> {
 				}
 
 				trackChange(author, body, task);
+				subscribeUser(author, task);
 
 				// Return the updated task with labels
 				return {
@@ -142,6 +143,7 @@ export function createRoute(): Route<Params> {
 				}
 
 				createLog(author, newTask);
+				subscribeUser(author, newTask);
 
 				// Return the new task
 				return {
