@@ -114,7 +114,7 @@ export default function MyIssues() {
 			{/* <TopNavBar /> */}
 
 			<ScrollArea className={view === "list" ? "max-h-[calc(100vh-55px)]" : ""}>
-				<ViewAllTasks handleDragEnd={handleDragEnd} tasks={tasks} page="all" />
+				<ViewAllTasks handleDragEnd={handleDragEnd} tasks={tasks} />
 				{view === "grid" && <ScrollBar orientation="horizontal" />}
 			</ScrollArea>
 		</div>

@@ -6,7 +6,7 @@ import { Status } from "@repo/db";
 import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
 
-const ViewAllTasks = ({ handleDragEnd, tasks, page }: ViewAllTasksProps) => {
+const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 	const currentView = useViewStore((state) => state.view);
 
 	const titleArr: { value: Status; id: number }[] = [
@@ -18,16 +18,7 @@ const ViewAllTasks = ({ handleDragEnd, tasks, page }: ViewAllTasksProps) => {
 	];
 
 	const getFilteredStatuses = () => {
-		const allStatuses = titleArr.map((t) => t.value);
-		if (page === "active") {
-			return allStatuses.filter(
-				(status) => status === Status.todo || status === Status.inProgress,
-			);
-		}
-		if (page === "backlog") {
-			return allStatuses.filter((status) => status === Status.backlog);
-		}
-		return allStatuses;
+		return titleArr.map((t) => t.value);
 	};
 
 	const getTasksForStatus = (status: Status) => {
