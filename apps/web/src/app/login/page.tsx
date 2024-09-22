@@ -42,19 +42,31 @@ export default function LoginForm() {
 		}
 	}, [status, session]);
 
-	const handleLogin = async (e: React.FormEvent) => {
+	const handleCredentialsLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			const response = await login({
-				provider: "credentials",
-				type: "login",
+			const result = await signIn("credentials", {
+				redirect: false,
 				email: data.email,
 				password: data.password,
 			});
 
-			await handleLoginResponse(response);
-		} catch {
+			if (result?.error) {
+				toast({ title: result.error, variant: "destructive" });
+			} else if (result?.ok) {
+				// If login is successful, fetch the updated session
+				const updatedSession = await fetch("/api/auth/session").then((res) =>
+					res.json(),
+				);
+				if (updatedSession?.user) {
+					await handleOAuthLogin(updatedSession.user);
+				} else {
+					throw new Error("Failed to get user information after login");
+				}
+			}
+		} catch (error) {
+			console.error("Login error:", error);
 			toast({ title: "Login failed", variant: "destructive" });
 		} finally {
 			setIsLoading(false);
@@ -74,7 +86,6 @@ export default function LoginForm() {
 
 	const handleOAuthLogin = async (user: User) => {
 		try {
-			// Use the session data to call your custom login function
 			const response = await login({
 				provider: "oauth",
 				type: "login",
@@ -139,13 +150,6 @@ export default function LoginForm() {
 		router.push(inviteToken ? `/register?token=${inviteToken}` : "/register");
 	};
 
-	useEffect(() => {
-		console.log("status", status, "session", session);
-		if (status === "authenticated" && session?.user) {
-			handleOAuthLogin(session.user);
-		}
-	}, [status, session]);
-
 	return (
 		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
 			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5">
@@ -155,7 +159,7 @@ export default function LoginForm() {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-4">
-					<form onSubmit={handleLogin} className="space-y-4">
+					<form onSubmit={handleCredentialsLogin} className="space-y-4">
 						<div className="space-y-2">
 							<Label htmlFor="email">Email address</Label>
 							<div className="relative">

@@ -47,22 +47,41 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					return response.data;
 				},
 				logout: async () => {
-					const response: { data: boolean } = await axios.post(
-						apiString("logout"),
-					);
-					set({ user: null });
-					destroyCookie(undefined, "auth-store");
-					signOut();
-					sessionStorage.removeItem("auth-store");
-					sessionStorage.removeItem("activity-store");
-					sessionStorage.removeItem("task-store");
-					sessionStorage.removeItem("notification-store");
-					sessionStorage.removeItem("team-store");
-					sessionStorage.removeItem("workspace-store");
-					sessionStorage.removeItem("user-store");
-					sessionStorage.removeItem("view-store");
-					sessionStorage.removeItem("filter-store");
-					return response.data;
+					try {
+						const response: { data: boolean } = await axios.post(
+							apiString("logout"),
+						);
+
+						set({ user: null });
+						destroyCookie(undefined, "auth-store");
+
+						// Clear all session storage items
+						const itemsToRemove = [
+							"auth-store",
+							"activity-store",
+							"task-store",
+							"notification-store",
+							"team-store",
+							"workspace-store",
+							"user-store",
+							"view-store",
+							"filter-store",
+						];
+						for (const item in itemsToRemove) {
+							sessionStorage.removeItem(item);
+						}
+
+						// Sign out using NextAuth and redirect to login page
+						await signOut({ redirect: false });
+
+						// Use Next.js router to redirect to login page
+						window.location.href = "/login";
+
+						return response.data;
+					} catch (error) {
+						console.error("Logout error:", error);
+						return false;
+					}
 				},
 				resetPassword: async (email: string) => {
 					const response: { data: boolean } = await axios.post(

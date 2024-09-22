@@ -1,5 +1,9 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import type { ApiReturnType } from "@/store/interfaces";
+import type { User } from "@repo/db";
+import axios from "axios";
 
 // Custom type guard to check if a variable is defined
 function isDefined<T>(value: T | undefined | null): value is T {
@@ -20,6 +24,32 @@ const handler = NextAuth({
 		GoogleProvider({
 			clientId: GOOGLE_CLIENT_ID,
 			clientSecret: GOOGLE_CLIENT_SECRET,
+		}),
+		CredentialsProvider({
+			name: "Credentials",
+			credentials: {
+				email: {
+					label: "Email",
+					type: "email",
+					placeholder: "Enter your email",
+				},
+				password: { label: "Password", type: "password" },
+			},
+			async authorize(credentials) {
+				const { data: response }: { data: ApiReturnType<User> } =
+					await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
+						provider: "credentials",
+						type: "login",
+						email: credentials?.email,
+						password: credentials?.password,
+					});
+				const { data: user } = response;
+
+				if (user) {
+					return user;
+				}
+				return null;
+			},
 		}),
 	],
 	callbacks: {
