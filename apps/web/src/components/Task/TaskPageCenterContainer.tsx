@@ -3,15 +3,12 @@ import TaskPageTitle from "./TaskPageTitle";
 import TaskBreadcrumbs from "./TaskBreadcrumbs";
 import ButtonIcon from "../ButtonIcon";
 import BackButton from "../BackButton";
-import type { TaskPageCenterContainerProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
 
-const TaskPageCenterContainer = ({
-	setShowSideNav,
-}: TaskPageCenterContainerProps) => {
+const TaskPageCenterContainer = () => {
 	const path = usePathname();
 	const inboxPath = path.includes("/inbox");
 	return (
