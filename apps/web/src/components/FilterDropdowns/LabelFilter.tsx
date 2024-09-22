@@ -25,7 +25,9 @@ export default function LabelFilterDropDown({
 }: FilterDropDownProps) {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleLabelChange = (label: Label) => {
@@ -47,6 +49,16 @@ export default function LabelFilterDropDown({
 			removeFilter("labels");
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("labels")
+		) {
+			setSelectedLabels([]);
+			console.log("selectedLabels", selectedLabels);
+		}
+	}, [currentFilterTypes]);
 
 	const filteredLabels =
 		currentWorkspace?.Labels.filter((label) =>

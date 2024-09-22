@@ -88,7 +88,9 @@ const EffortFilterDropDown = ({
 	setShowFilterDropDown,
 }: FilterDropDownProps) => {
 	const [selectedEfforts, setSelectedEfforts] = useState<string>("");
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 
 	useEffect(() => {
 		if (Number(selectedEfforts) > 0) {
@@ -101,6 +103,15 @@ const EffortFilterDropDown = ({
 			removeFilter("status");
 		}
 	}, [selectedEfforts, addFilter, removeFilter]);
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("effortEstimate")
+		) {
+			setSelectedEfforts("");
+		}
+	}, [currentFilterTypes]);
 
 	return (
 		<DropdownMenu

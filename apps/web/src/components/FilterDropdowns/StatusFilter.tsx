@@ -66,7 +66,9 @@ const StatusFilterDropDown = ({
 	setShowFilterDropDown,
 }: FilterDropDownProps) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 
 	const handleStatusChange = (status: Status, checked: boolean) => {
 		setSelectedStatuses((prev) =>
@@ -85,6 +87,15 @@ const StatusFilterDropDown = ({
 			removeFilter("status");
 		}
 	}, [selectedStatuses, addFilter, removeFilter]);
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("status")
+		) {
+			setSelectedStatuses([]);
+		}
+	}, [currentFilterTypes]);
 
 	return (
 		<DropdownMenu

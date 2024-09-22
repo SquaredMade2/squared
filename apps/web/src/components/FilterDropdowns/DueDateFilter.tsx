@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Popover,
 	PopoverTrigger,
@@ -20,7 +20,7 @@ const DueDateFilterDropDown = ({
 	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(
 		"before",
 	);
-	const { addFilter } = useFilterStore((state) => state);
+	const { addFilter, currentFilterTypes } = useFilterStore((state) => state);
 
 	const handleSelectDate = (date: Date | undefined) => {
 		setSelectedDate(date);
@@ -41,6 +41,15 @@ const DueDateFilterDropDown = ({
 			setShowFilterDropDown(false);
 		}
 	};
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("dueDate")
+		) {
+			setSelectedDate(undefined);
+		}
+	}, [currentFilterTypes]);
 
 	return (
 		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>

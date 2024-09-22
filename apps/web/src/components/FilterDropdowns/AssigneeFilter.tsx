@@ -26,7 +26,9 @@ export default function AssigneeFilterDropDown({
 }: FilterDropDownProps) {
 	const { users } = useUserStore((state) => state);
 	const [selectedAssignees, setSelectedAssignees] = useState<User[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleAssigneeChange = (label: User) => {
@@ -48,7 +50,16 @@ export default function AssigneeFilterDropDown({
 		} else {
 			removeFilter("assigneeId");
 		}
-	}, [selectedAssignees, addFilter, removeFilter]);
+	}, [selectedAssignees]);
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("assigneeId")
+		) {
+			setSelectedAssignees([]);
+		}
+	}, [currentFilterTypes]);
 
 	const filteredAssignees =
 		users.filter((u) =>
