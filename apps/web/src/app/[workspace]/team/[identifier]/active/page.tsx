@@ -11,9 +11,9 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status } from "@repo/db";
-import { ScrollArea } from "@repo/ui/scroll-area";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
+import { Status } from "@repo/db";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -36,6 +36,13 @@ export default function Home() {
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
+
+	const activeTasks = filterTasks(tasks).filter(
+		(t) =>
+			t.status === "inProgress" ||
+			t.status === "todo" ||
+			t.status === "inReview",
+	);
 
 	useEffect(() => {
 		const initiateStore = async () => {
@@ -84,6 +91,22 @@ export default function Home() {
 		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
+	];
+
+	const getFilteredStatuses = () => {
+		return titleArr.map((t) => t.value);
+	};
+
+	const getTasksForStatus = (status: Status) => {
+		return activeTasks.filter((task) => task.status === status);
+	};
+
 	useEffect(() => {
 		const loadFilters = async () => {};
 		loadFilters();
@@ -113,22 +136,19 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<div className="flex flex-col flex-grow mx-2">
-					<ScrollArea
-						className={`${view === "list" ? "max-h[calc(100vh-55px)]" : ""} px-2`}
-					>
-						<ViewAllTasks
-							handleDragEnd={handleDragEnd}
-							tasks={filterTasks(tasks).filter(
-								(t) =>
-									t.status === "inProgress" ||
-									t.status === "todo" ||
-									t.status === "inReview",
-							)}
-						/>
+				<ScrollArea
+					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
+				>
+					<div className="flex flex-col flex-grow mx-2">
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<ViewAllTasks
+								getFilteredStatuses={getFilteredStatuses}
+								getTasksForStatus={getTasksForStatus}
+							/>
+						</DragDropContext>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</ScrollArea>
-				</div>
+					</div>
+				</ScrollArea>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
