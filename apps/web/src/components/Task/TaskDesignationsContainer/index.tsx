@@ -4,7 +4,7 @@ import StatusDropdown from "./StatusDropdown";
 import DatePicker from "./DatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
 import LabelCombobox from "./LabelCombobox";
-import AssigneeCombobox from "./AssigneeCombobox.";
+import AssigneeCombobox from "./AssigneeCombobox";
 import HelpButton from "./HelpButton";
 import EffortModal from "@/components/EffortModal";
 import { useTaskStore } from "@/store";

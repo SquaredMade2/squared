@@ -10,7 +10,7 @@ import {
 import { high, medium, low } from "@/components/Svg";
 import { CircleAlert, Ellipsis } from "lucide-react";
 import { useFilterStore } from "@/store";
-import type { PriorityFilterDropDownProps } from "./interfaces";
+import type { FilterDropDownProps } from "./interfaces";
 import { Priority } from "@repo/db";
 
 const groupPriority = [
@@ -57,11 +57,13 @@ const groupPriority = [
 ];
 
 const PriorityFilterDropDown = ({
-	showPriorityFilterDropDown,
-	setShowPriorityFilterDropDown,
-}: PriorityFilterDropDownProps) => {
+	showFilterDropDown,
+	setShowFilterDropDown,
+}: FilterDropDownProps) => {
 	const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 
 	const handlePriorityChange = (priority: Priority, checked: boolean) => {
 		setSelectedPriorities((prev) =>
@@ -81,10 +83,19 @@ const PriorityFilterDropDown = ({
 		}
 	}, [selectedPriorities, addFilter, removeFilter]);
 
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("priority")
+		) {
+			setSelectedPriorities([]);
+		}
+	}, [currentFilterTypes]);
+
 	return (
 		<DropdownMenu
-			open={showPriorityFilterDropDown}
-			onOpenChange={setShowPriorityFilterDropDown}
+			open={showFilterDropDown}
+			onOpenChange={setShowFilterDropDown}
 		>
 			<DropdownMenuTrigger>
 				<div className="hidden" aria-hidden="true" />
@@ -99,6 +110,9 @@ const PriorityFilterDropDown = ({
 						onCheckedChange={(checked) =>
 							handlePriorityChange(item.value, checked)
 						}
+						onSelect={(e) => {
+							e.preventDefault();
+						}}
 					>
 						<div className="flex items-center space-x-2">
 							{item.svg}
