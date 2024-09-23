@@ -9,7 +9,7 @@ import {
 interface ToggleNavBarProps {
 	hover?: "bg-accent" | "bg-card";
 }
-const ToggleNavBar: React.FC<ToggleNavBarProps> = ({ hover }) => {
+const ToggleNavBar = ({ hover }: ToggleNavBarProps) => {
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 	const handleNavBar = (): void => {
 		setShowNavbar(!showNavbar);

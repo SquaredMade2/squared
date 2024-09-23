@@ -1,11 +1,10 @@
-import type { FC } from "react";
 import ButtonIcon from "../ButtonIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCodeBranch } from "@fortawesome/free-solid-svg-icons";
 
-const CopyGitBranchName: FC<{ copyGitBranchName: () => void }> = ({
+const CopyGitBranchName = ({
 	copyGitBranchName,
-}) => {
+}: { copyGitBranchName: () => void }) => {
 	const HotKeys = () => {
 		return (
 			<>

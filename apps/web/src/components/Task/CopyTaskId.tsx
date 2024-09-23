@@ -1,9 +1,8 @@
-import type { FC } from "react";
 import ButtonIcon from "../ButtonIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-const CopyTaskId: FC<{ copyTaskId: () => void }> = ({ copyTaskId }) => {
+const CopyTaskId = ({ copyTaskId }: { copyTaskId: () => void }) => {
 	const HotKeys = () => {
 		return (
 			<>

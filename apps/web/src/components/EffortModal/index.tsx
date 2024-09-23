@@ -1,4 +1,3 @@
-import type React from "react";
 import {
 	effortEstimateOptions,
 	complexityScale,
@@ -10,7 +9,7 @@ import type { EffortModalProps } from "./EffortModal.interfaces";
 import ProgressBar from "@/components/ProgressBar";
 import { X } from "lucide-react";
 
-const EffortModal: React.FC<EffortModalProps> = ({ isOpen, onClose }) => {
+const EffortModal = ({ isOpen, onClose }: EffortModalProps) => {
 	return (
 		<AnimatePresence>
 			{isOpen && (

@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
@@ -9,7 +8,7 @@ type Props = {
 	hoverbackground?: string;
 };
 
-const BackButton: FC<Props> = ({ callback, hoverbackground }) => {
+const BackButton = ({ callback, hoverbackground }: Props) => {
 	const router = useRouter();
 
 	const handleClick = () => {

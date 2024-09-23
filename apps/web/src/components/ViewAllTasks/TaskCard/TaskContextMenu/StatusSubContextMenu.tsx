@@ -1,4 +1,3 @@
-import type { FC } from "react";
 import {
 	Circle,
 	CircleCheckBig,
@@ -17,7 +16,7 @@ import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import type { Status } from "@repo/db";
 
-const StatusSubContextMenu: FC<ContextMenuProps> = ({ task }) => {
+const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 
 	const handleSetStatus: (status: Status) => void = async (status) => {

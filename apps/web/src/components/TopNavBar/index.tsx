@@ -1,9 +1,8 @@
-import type React from "react";
 import TopNavBarDisplay from "@/components/DisplaySettings";
 import FilterDropDown from "@/components/FilterDropdowns";
 import ToggleNavBar from "../ToggleNavBar";
 
-const TopNavBar: React.FC = () => {
+const TopNavBar = () => {
 	return (
 		<div className="flex flex-col flex-none justify-start items-start">
 			<div className="w-full flex items-center">
