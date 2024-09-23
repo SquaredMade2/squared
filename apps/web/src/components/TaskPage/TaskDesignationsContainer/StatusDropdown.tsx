@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@repo/db";
-import type { ButtonProps } from "@/components/TaskPage/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "./interfaces";
 
 const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();

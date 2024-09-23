@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { effortEstimateOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
-import { useTheme } from "next-themes";
 import { high, medium, low } from "@/components/Svg";
-import { setBackgroundColor } from "@/components/TaskPage/TaskDesignationsContainer";
-import ProgressBar from "@/components/ProgressBar";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +12,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ButtonProps } from "@/components/TaskPage/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "./interfaces";
+import { ChevronDown } from "lucide-react";
 
 const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
@@ -24,7 +22,6 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 	const sidebarEffortEstimate = currentTask?.effortEstimate ?? "";
 	const taskId = currentTask?.id ?? "";
-	const { theme } = useTheme();
 
 	const extractNumber = (str: string): number =>
 		Number.parseInt(str.substring(0, 2).trim(), 10);
@@ -57,32 +54,31 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 		<DropdownMenu open={open} onOpenChange={setOpen}>
 			<DropdownMenuTrigger asChild>
 				<Button
-					variant="ghost"
-					className={`grow flex flex-row items-center border-[0.8px] border-transparent hover:border-border rounded px-2 py-2 mr-2 text-foreground text-sm ${setBackgroundColor(theme)}`}
+					variant="outline"
+					className="flex items-center justify-between w-full"
 				>
-					<span className="w-4 h-4 mr-2 inline-block">
+					<div className="flex gap-2 items-center">
 						{sidebarEffortEstimate ? showIcon(sidebarEffortEstimate) : medium()}
-					</span>
-					<span className="text-sm font-semibold">
-						{sidebarEffortEstimate || "Effort"}
-					</span>
+
+						<span className="text-sm font-semibold">
+							{sidebarEffortEstimate || "Effort"}
+						</span>
+					</div>
+					<ChevronDown className="size-4 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[170px]">
+			<DropdownMenuContent className="w-52">
 				{effortEstimateOptions.map((effortEstimate) => {
 					const estimateNumber = extractNumber(effortEstimate);
 					return (
 						<DropdownMenuItem
 							key={estimateNumber}
 							onSelect={() => handleSelectEffortEstimate(estimateNumber)}
-							className="flex justify-between items-center px-2 py-1.5"
+							className="flex justify-between items-center"
 						>
 							<div className="flex items-center">
 								<span className="w-4 h-4 mr-2">{showIcon(estimateNumber)}</span>
 								<span>{estimateNumber}</span>
-							</div>
-							<div className="w-16">
-								<ProgressBar progress={estimateNumber} />
 							</div>
 						</DropdownMenuItem>
 					);

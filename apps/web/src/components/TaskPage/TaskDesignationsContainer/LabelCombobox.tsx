@@ -14,7 +14,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Plus, Check } from "lucide-react";
-import type { ButtonProps } from "@/components/TaskPage/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "./interfaces";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
 import LabelBadge from "../../LabelBadges";
