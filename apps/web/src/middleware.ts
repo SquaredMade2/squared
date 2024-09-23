@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
 	// Allow all requests to /_next/, /api/, and public files like favicon.ico, etc.
@@ -13,9 +14,9 @@ export function middleware(request: NextRequest) {
 		return NextResponse.next();
 	}
 
-	// Check if the user is logged in (replace with your actual login check logic)
-	const authStore = request.cookies.get("auth-store");
-	const userLoggedIn = Boolean(authStore);
+	// Check if the user is logged in using next-auth
+	const token = await getToken({ req: request });
+	const userLoggedIn = Boolean(token);
 
 	// Redirect logged-in users trying to access login or register
 	if (userLoggedIn && (pathname === "/login" || pathname === "/register")) {
@@ -24,14 +25,14 @@ export function middleware(request: NextRequest) {
 
 	// Redirect non-logged-in users to login for protected routes
 	if (!userLoggedIn && !isPublicRoute(pathname)) {
-		const token = request.nextUrl.searchParams.get("token");
-		const redirectTo = token ? `/login?token=${token}` : "/login";
+		const redirectTo = pathname ? `/login?redirect=${pathname}` : "/login";
 		return NextResponse.redirect(new URL(redirectTo, request.url));
 	}
 
 	return NextResponse.next();
 }
 
+// Check if the current route is public
 function isPublicRoute(pathname: string) {
 	const PUBLIC_ROUTES = ["/login", "/register"];
 	const workspaceJoinRegex = /^\/[^\/]+\/join\/[^\/]+$/;

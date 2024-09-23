@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
-import { destroyCookie, setCookie } from "nookies";
 
 function RegisterForm() {
 	const [data, setData] = useState({ name: "", email: "", password: "" });
@@ -105,11 +104,6 @@ function RegisterForm() {
 				if (response?.user) {
 					const user = response.user;
 					toast({ title: "Login Successful, Welcome!" });
-					destroyCookie(null, "auth-store");
-					setCookie(null, "auth-store", JSON.stringify(user), {
-						maxAge: 30 * 24 * 60 * 60,
-						path: "/",
-					});
 
 					if (inviteToken) {
 						const { workspace, message, variant } = await joinWorkspace(

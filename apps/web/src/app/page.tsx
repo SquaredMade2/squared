@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Loader2 } from "lucide-react";
-import { parseCookies, destroyCookie } from "nookies";
 
 const HomePage = () => {
 	const router = useRouter();
@@ -16,12 +15,8 @@ const HomePage = () => {
 	useEffect(() => {
 		const handleRedirection = async () => {
 			try {
-				const cookies = parseCookies();
-				const authCookie = cookies["auth-store"];
-
-				if (authCookie && !user) {
+				if (!user) {
 					// If there is a cookie but no user, log out and redirect
-					destroyCookie(undefined, "auth-store");
 					await logout();
 					router.push("/login");
 					return;

@@ -16,7 +16,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { destroyCookie, setCookie } from "nookies";
 import type { User } from "next-auth";
 import type { AuthReturn } from "@/store/auth";
 import { Separator } from "@/components/ui/separator";
@@ -106,11 +105,6 @@ export default function LoginForm() {
 	const handleLoginResponse = async (response: AuthReturn) => {
 		if (response?.user) {
 			toast({ title: "Login Successful, Welcome!" });
-			destroyCookie(null, "auth-store");
-			setCookie(null, "auth-store", JSON.stringify(response.user), {
-				maxAge: 30 * 24 * 60 * 60,
-				path: "/",
-			});
 
 			if (inviteToken) {
 				const { workspace, message, variant } = await joinWorkspace(

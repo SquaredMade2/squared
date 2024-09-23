@@ -2,7 +2,6 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
-import { destroyCookie } from "nookies";
 import type { User } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 import { signOut } from "next-auth/react";
@@ -53,7 +52,6 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						);
 
 						set({ user: null });
-						destroyCookie(undefined, "auth-store");
 
 						// Clear all session storage items
 						const itemsToRemove = [
