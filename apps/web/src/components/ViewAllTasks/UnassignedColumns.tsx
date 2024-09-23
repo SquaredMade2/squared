@@ -6,6 +6,8 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { Droppable } from "@hello-pangea/dnd";
+import { formatStatus } from "@/utils/formatting";
+import { showIcon } from "./TaskColumnTitle";
 
 const UnassignedColumns = ({
 	getEmptyColumns,
@@ -22,13 +24,18 @@ const UnassignedColumns = ({
 								{...provided.droppableProps}
 								className={`${snapshot.isDraggingOver && "h-full"} rounded pr-2 transition-all duration-500 ease-in-out py-2`}
 							>
-								{column}
-								{/* <TaskColumnTitle
-									isListView={false}
-									showTasks={true}
-									title={column}
-									numberOfTasks={0}
-								/> */}
+								<div className="pr-2 bg-card rounded-lg">
+									<div className="flex flex-row justify-between transition-all px-2 h-10 mb-2 font-medium text-sm">
+										<div className="flex items-center gap-4">
+											<div className="w-4 lg:mr-2 mr-1.5">
+												{showIcon(column)}
+											</div>
+											<span>{formatStatus(column)}</span>
+											<span className="ml-1 text-muted-foreground">0</span>
+										</div>
+									</div>
+								</div>
+
 								{provided.placeholder}
 							</AccordionContent>
 						)}

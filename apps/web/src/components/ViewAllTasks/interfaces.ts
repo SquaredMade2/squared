@@ -17,7 +17,7 @@ export type TaskColumnTitleProps = {
 	showTasks: boolean;
 	title: Status;
 	numberOfTasks: number;
-	toggleShowTasks?: () => void;
+	toggleShowTasks: () => void;
 };
 
 export interface HideStatusProps {
