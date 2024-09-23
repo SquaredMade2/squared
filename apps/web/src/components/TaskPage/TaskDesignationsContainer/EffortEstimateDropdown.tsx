@@ -67,7 +67,7 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 					<ChevronDown className="size-4 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-52">
+			<DropdownMenuContent>
 				{effortEstimateOptions.map((effortEstimate) => {
 					const estimateNumber = extractNumber(effortEstimate);
 					return (
