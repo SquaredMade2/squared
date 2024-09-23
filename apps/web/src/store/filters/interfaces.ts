@@ -23,6 +23,7 @@ export type SavedFilter = {
 
 export type FilterState = {
 	currentFilters: FilterCondition[];
+	currentFilterTypes: string[];
 };
 
 export interface FilterResponse {

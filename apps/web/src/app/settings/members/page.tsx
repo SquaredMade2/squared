@@ -50,7 +50,12 @@ export default function WorkspaceMembersPage() {
 			{workspace && (
 				<DataTable
 					columns={columns}
-					data={members}
+					data={members.map((m) => {
+						return {
+							...m,
+							role: workspace.admins.includes(m.id) ? "admin" : "member",
+						};
+					})}
 					workspace={currentWorkspace}
 				/>
 			)}

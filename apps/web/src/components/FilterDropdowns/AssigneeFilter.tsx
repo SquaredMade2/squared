@@ -14,24 +14,25 @@ import {
 	CommandEmpty,
 	CommandGroup,
 } from "@/components/ui/command";
-import { useFilterStore, useWorkspaceStore } from "@/store";
+import { useFilterStore, useUserStore } from "@/store";
 import type { FilterDropDownProps } from "./interfaces";
-import type { Label } from "@repo/db";
+import type { User } from "@repo/db";
 import { Check } from "lucide-react";
+import ProfileImage from "../ProfileImage";
 
-export default function LabelFilterDropDown({
+export default function AssigneeFilterDropDown({
 	showFilterDropDown,
 	setShowFilterDropDown,
 }: FilterDropDownProps) {
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
+	const { users } = useUserStore((state) => state);
+	const [selectedAssignees, setSelectedAssignees] = useState<User[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
 	);
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleLabelChange = (label: Label) => {
-		setSelectedLabels((prev) =>
+	const handleAssigneeChange = (label: User) => {
+		setSelectedAssignees((prev) =>
 			prev.some((l) => l.id === label.id)
 				? prev.filter((l) => l.id !== label.id)
 				: [...prev, label],
@@ -39,30 +40,30 @@ export default function LabelFilterDropDown({
 	};
 
 	useEffect(() => {
-		if (selectedLabels.length > 0) {
+		if (selectedAssignees.length > 0) {
+			console.log(selectedAssignees);
 			addFilter({
-				field: "labels",
-				value: selectedLabels.map((label) => label.id),
+				field: "assigneeId",
+				value: selectedAssignees.map((u) => u.id),
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("labels");
+			removeFilter("assigneeId");
 		}
-	}, [selectedLabels, addFilter, removeFilter]);
+	}, [selectedAssignees]);
 
 	useEffect(() => {
 		if (
 			currentFilterTypes.length === 0 ||
-			!currentFilterTypes.includes("labels")
+			!currentFilterTypes.includes("assigneeId")
 		) {
-			setSelectedLabels([]);
-			console.log("selectedLabels", selectedLabels);
+			setSelectedAssignees([]);
 		}
 	}, [currentFilterTypes]);
 
-	const filteredLabels =
-		currentWorkspace?.Labels.filter((label) =>
-			label.name.toLowerCase().includes(searchQuery.toLowerCase()),
+	const filteredAssignees =
+		users.filter((u) =>
+			u.name.toLowerCase().includes(searchQuery.toLowerCase()),
 		) || [];
 
 	return (
@@ -71,30 +72,30 @@ export default function LabelFilterDropDown({
 			<PopoverContent className="w-72 p-0" sideOffset={5}>
 				<Command>
 					<CommandInput
-						placeholder="Search labels..."
+						placeholder="Search users..."
 						value={searchQuery}
 						onValueChange={setSearchQuery}
 					/>
 					<CommandList>
-						<CommandEmpty>No labels found.</CommandEmpty>
+						<CommandEmpty>No users found.</CommandEmpty>
 						<CommandGroup>
-							{filteredLabels?.map((label) => (
+							{filteredAssignees.map((user) => (
 								<CommandItem
-									key={label.id}
-									onSelect={() => handleLabelChange(label)}
+									key={user.id}
+									onSelect={() => handleAssigneeChange(user)}
 									className="flex items-center space-x-2 cursor-pointer"
 								>
 									<div className="flex items-center flex-1 space-x-2">
-										{selectedLabels.some((l) => l.id === label.id) ? (
+										{selectedAssignees.some((l) => l.id === user.id) ? (
 											<Check className="w-4 h-4" />
 										) : (
 											<div className="w-4 h-4" />
 										)}
-										<div
-											className="w-3 h-3 rounded-full"
-											style={{ backgroundColor: label.color }}
+										<ProfileImage
+											profileName={user.name}
+											location="assigneeDropdown"
 										/>
-										<span>{label.name}</span>
+										<span className="w-2/3 truncate">{user.username}</span>
 									</div>
 								</CommandItem>
 							))}
