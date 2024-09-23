@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore, useModalStore, useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useModalStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
@@ -11,7 +16,6 @@ import {
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
-	SheetTrigger,
 } from "@/components/ui/sheet";
 import {
 	Home,
@@ -31,7 +35,9 @@ import { VisuallyHidden } from "@repo/ui/visually-hidden";
 
 const MobileMenuSheet = () => {
 	const [mounted, setMounted] = useState(false);
-	const [open, setOpen] = useState(false);
+	const { showMobileNavbar: open, setShowMobileNavbar: setOpen } = useViewStore(
+		(state) => state,
+	);
 	const router = useRouter();
 	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
@@ -92,12 +98,6 @@ const MobileMenuSheet = () => {
 
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
-			<SheetTrigger asChild>
-				<Button variant="ghost" size="icon" className="md:hidden">
-					<Menu className="h-5 w-5" />
-					<span className="sr-only">Toggle menu</span>
-				</Button>
-			</SheetTrigger>
 			<SheetContent
 				side="left"
 				className="w-[300px] sm:w-[400px] flex flex-col h-full bg-background"
@@ -181,6 +181,22 @@ const MobileMenuSheet = () => {
 				</div>
 			</SheetContent>
 		</Sheet>
+	);
+};
+
+export const MobileMenuSheetTrigger = () => {
+	const { setShowMobileNavbar: setOpen } = useViewStore((state) => state);
+
+	return (
+		<Button
+			variant="ghost"
+			size="icon"
+			className="md:hidden"
+			onClick={() => setOpen(true)}
+		>
+			<Menu className="h-5 w-5" />
+			<span className="sr-only">Toggle menu</span>
+		</Button>
 	);
 };
 
