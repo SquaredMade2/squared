@@ -14,6 +14,23 @@ import { cn } from "@/utils/cn";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 
+export const showIcon = (name: string): React.ReactNode => {
+	switch (name) {
+		case "Backlog":
+			return <CircleDashed className="size-4" />;
+		case "Todo":
+			return <Circle className="size-4" />;
+		case "In Progress":
+			return inProgress();
+		case "Done":
+			return <CircleCheckBig className="size-4 text-[#7394FF]" />;
+		case "Canceled":
+			return <CircleX className="size-4" />;
+		case "Duplicate":
+			return <Copy className="size-4" />;
+	}
+};
+
 const TaskColumnTitle = ({
 	isListView,
 	showTasks,
@@ -22,23 +39,6 @@ const TaskColumnTitle = ({
 	toggleShowTasks,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
-
-	const showIcon = (name: string): React.ReactNode => {
-		switch (name) {
-			case "Backlog":
-				return <CircleDashed className="size-4" />;
-			case "Todo":
-				return <Circle className="size-4" />;
-			case "In Progress":
-				return inProgress();
-			case "Done":
-				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			case "Canceled":
-				return <CircleX className="size-4" />;
-			case "Duplicate":
-				return <Copy className="size-4" />;
-		}
-	};
 
 	const handleClick = (): void => {
 		setShowNewIssue(true);
@@ -106,7 +106,6 @@ const TaskColumnTitle = ({
 							<CirclePlus className="size-5" />
 						</div>
 					</div>
-
 					<HideStatus toggleShowTasks={toggleShowTasks} showTasks={showTasks} />
 				</div>
 			</div>
