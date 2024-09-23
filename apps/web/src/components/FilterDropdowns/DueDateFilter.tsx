@@ -1,46 +1,58 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import {
 	Popover,
 	PopoverTrigger,
 	PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import type { DueDateFilterDropDownProps } from "./interfaces";
+import type { FilterDropDownProps } from "./interfaces";
 import { Button } from "@/components/ui/button";
 import { useFilterStore } from "@/store";
 import type { FilterCondition } from "@/store/filters";
 
 const DueDateFilterDropDown = ({
-	showDueDateFilterDropDown,
-	setShowDueDateFilterDropDown,
-}: DueDateFilterDropDownProps) => {
+	showFilterDropDown,
+	setShowFilterDropDown,
+}: FilterDropDownProps) => {
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 	const [selectedToggle, setSelectedToggle] = useState<"before" | "after">(
 		"before",
 	);
-	const { addFilter } = useFilterStore((state) => state);
+	const { addFilter, currentFilterTypes } = useFilterStore((state) => state);
 
-	const handleSelectDate = (date: Date) => {
-		if (selectedToggle && date) {
-			const filterCondition: FilterCondition = {
-				field: "dueDate",
-				value: date.toISOString(),
-				operator: selectedToggle === "before" ? "lessThan" : "greaterThan",
-			};
-			addFilter(filterCondition);
-			setShowDueDateFilterDropDown(false);
-		}
+	const handleSelectDate = (date: Date | undefined) => {
+		setSelectedDate(date);
 	};
 
 	const handleToggleClick = (type: "before" | "after") => {
-		setSelectedToggle(type === "before" ? "before" : "after");
+		setSelectedToggle(type);
 	};
 
+	const handleFilter = () => {
+		if (selectedToggle && selectedDate) {
+			const filterCondition: FilterCondition = {
+				field: "dueDate",
+				value: selectedDate.toISOString(),
+				operator: selectedToggle === "before" ? "lessThan" : "greaterThan",
+			};
+			addFilter(filterCondition);
+			setShowFilterDropDown(false);
+		}
+	};
+
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("dueDate")
+		) {
+			setSelectedDate(undefined);
+		}
+	}, [currentFilterTypes]);
+
 	return (
-		<Popover
-			open={showDueDateFilterDropDown}
-			onOpenChange={setShowDueDateFilterDropDown}
-		>
+		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
 			<PopoverTrigger>
 				<div className="hidden" aria-hidden="true" />
 			</PopoverTrigger>
@@ -64,20 +76,17 @@ const DueDateFilterDropDown = ({
 				<Calendar
 					mode="single"
 					selected={selectedDate}
-					onSelect={(date) => {
-						setSelectedDate(date);
-						handleSelectDate(date as Date);
-					}}
+					onSelect={handleSelectDate}
 					initialFocus
 				/>
 				<div className="mt-4 flex justify-end gap-2">
 					<Button
 						variant="outline"
-						onClick={() => setShowDueDateFilterDropDown(false)}
+						onClick={() => setShowFilterDropDown(false)}
 					>
 						Cancel
 					</Button>
-					<Button onClick={() => handleSelectDate(selectedDate as Date)}>
+					<Button onClick={handleFilter} disabled={!selectedDate}>
 						Filter
 					</Button>
 				</div>

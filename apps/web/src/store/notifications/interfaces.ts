@@ -1,7 +1,12 @@
-import type { Notification } from "@repo/db";
+import type { Notification, Task, Workspace } from "@repo/db";
 
 export type NotificationState = {
-	notifications: Notification[];
+	notifications: NotificationTask[];
+};
+
+export type NotificationTask = Notification & {
+	Task: Task;
+	Workspace: Workspace;
 };
 
 export interface NotificationResponse {
@@ -10,7 +15,7 @@ export interface NotificationResponse {
 	variant: "default" | "destructive";
 }
 
-export type NotificationActions = {
+type NotificationActions = {
 	addNotification: (
 		notification: Partial<Notification>,
 	) => Promise<NotificationResponse>;
@@ -21,6 +26,11 @@ export type NotificationActions = {
 	deleteNotification: (notificationId: string) => Promise<void>;
 	getAllNotifications: (userId: string) => Promise<Notification[]>;
 	clearNotifications: (userId: string) => Promise<Notification[]>;
+	updateManyNotifications: (
+		notifications: NotificationTask[],
+		data: Partial<Notification>,
+	) => Promise<NotificationTask[]>;
+	deleteManyNotifications: (notifications: NotificationTask[]) => Promise<void>;
 };
 
 export type NotificationStore = NotificationState & NotificationActions;

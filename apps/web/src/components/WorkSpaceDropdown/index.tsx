@@ -55,7 +55,7 @@ const WorkSpaceDropDown = () => {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant={"ghost"}
-					className="cursor-pointer w-full flex justify-between px-0  focus:outline-none focus:ring-0"
+					className="cursor-pointer w-full flex justify-between focus:outline-none focus:ring-0"
 				>
 					<div className="flex">
 						<WorkspaceInitials

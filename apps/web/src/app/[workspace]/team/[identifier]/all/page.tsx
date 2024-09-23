@@ -24,18 +24,13 @@ export default function Home() {
 	const { user } = useAuthStore((state) => state);
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-	const {
-		tasks: initialTasks,
-		updateTask,
-		getAllTasks,
-	} = useTaskStore((state) => state);
+	const { tasks, updateTask, getAllTasks } = useTaskStore((state) => state);
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
 	);
 	const getAllUsers = useUserStore((state) => state.getAllUsers);
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
-	const [tasks, setTasks] = useState(initialTasks);
 
 	const params = useParams();
 
@@ -46,10 +41,6 @@ export default function Home() {
 	useEffect(() => {
 		const initiateStore = async () => {
 			setLoading(true);
-
-			if (initialTasks) {
-				setTasks(initialTasks);
-			}
 
 			if (user && !currentWorkspace) {
 				const workspaces = await getAllWorkspaces(user.id);
@@ -66,8 +57,7 @@ export default function Home() {
 					const team = teams.find((t) => t.identifier === teamIdentifier);
 					team && setCurrentTeam(team);
 					if (team) {
-						const tasks = await getAllTasks(team.id);
-						setTasks(tasks);
+						await getAllTasks(team.id);
 					}
 				}
 			}
@@ -76,14 +66,7 @@ export default function Home() {
 		};
 
 		initiateStore();
-	}, [
-		currentWorkspace,
-		user,
-		workspaceUrl,
-		currentTeam,
-		teamIdentifier,
-		initialTasks,
-	]);
+	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -99,11 +82,7 @@ export default function Home() {
 			...draggedTask,
 			status: destination.droppableId as Status,
 		};
-		const updatedTasks = tasks.map((task) =>
-			task.id === draggableId ? updatedTask : task,
-		);
-		setTasks(updatedTasks); // Directly set updated tasks
-		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
+		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
 	useEffect(() => {
@@ -118,9 +97,6 @@ export default function Home() {
 			</div>
 		);
 	}
-
-	// const activeSelected = params.all === "active";		// will uncomment/delete in next pr - kaila
-	// const backlogSelected = params.all === "backlog";
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">

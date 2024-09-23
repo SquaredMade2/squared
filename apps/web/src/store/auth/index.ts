@@ -59,6 +59,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					sessionStorage.removeItem("workspace-store");
 					sessionStorage.removeItem("user-store");
 					sessionStorage.removeItem("view-store");
+					sessionStorage.removeItem("filter-store");
 					return response.data;
 				},
 				resetPassword: async (email: string) => {
@@ -69,6 +70,9 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						},
 					);
 					return response.data;
+				},
+				setUser: (user: User | null) => {
+					set({ user });
 				},
 			}),
 			{

@@ -4,9 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createNotificationStore, type NotificationStore } from ".";
 
-export type NotificationStoreApi = ReturnType<typeof createNotificationStore>;
+type NotificationStoreApi = ReturnType<typeof createNotificationStore>;
 
-export const NotificationStoreContext = createContext<
+const NotificationStoreContext = createContext<
 	NotificationStoreApi | undefined
 >(undefined);
 

@@ -4,9 +4,9 @@ import { createContext, useRef, useContext, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { type CommentStore, createCommentStore } from ".";
 
-export type CommentStoreApi = ReturnType<typeof createCommentStore>;
+type CommentStoreApi = ReturnType<typeof createCommentStore>;
 
-export const CommentStoreContext = createContext<CommentStoreApi | undefined>(
+const CommentStoreContext = createContext<CommentStoreApi | undefined>(
 	undefined,
 );
 

@@ -19,12 +19,13 @@ export type Login = {
 	username?: string;
 };
 
-export type AuthActions = {
+type AuthActions = {
 	login: (login: Login) => Promise<AuthReturn>;
 	register: (login: Login) => Promise<AuthReturn>;
 	verifyUser: (token: string) => Promise<AuthReturn>;
 	logout: () => Promise<boolean>;
 	resetPassword: (email: string) => Promise<boolean>;
+	setUser: (user: User | null) => void;
 };
 
 export type AuthStore = AuthState & AuthActions;
