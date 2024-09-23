@@ -14,7 +14,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { Status } from "@repo/db";
 import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
 
