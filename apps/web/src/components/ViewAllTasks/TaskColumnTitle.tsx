@@ -107,7 +107,12 @@ const TaskColumnTitle = ({
 						</div>
 					</div>
 
-					<HideStatus toggleShowTasks={toggleShowTasks} showTasks={showTasks} />
+					{toggleShowTasks && (
+						<HideStatus
+							toggleShowTasks={toggleShowTasks}
+							showTasks={showTasks}
+						/>
+					)}
 				</div>
 			</div>
 		</div>

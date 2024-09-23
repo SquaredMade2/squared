@@ -5,9 +5,13 @@ import RenameModal from "@/components/RenameModal";
 import { Status } from "@repo/db";
 import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
+import UnassignedColumns from "./UnassignedColumns";
+import { usePathname } from "next/navigation";
 
 const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 	const currentView = useViewStore((state) => state.view);
+	const currentRoute = usePathname();
+	const allRoute = currentRoute.includes("/all");
 
 	const titleArr: { value: Status; id: number }[] = [
 		{ value: Status.backlog, id: 1 },
@@ -45,12 +49,30 @@ const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 		});
 	};
 
+	const getEmptyColumns = (): Status[] => {
+		const filteredStatuses = getFilteredStatuses();
+
+		return filteredStatuses.filter((status) => {
+			if (status === Status.archived) return false;
+
+			const tasks = getTasksForStatus(status);
+			return tasks && tasks.length === 0;
+		});
+	};
+
 	return (
 		<>
 			<RenameModal />
 			<DragDropContext onDragEnd={handleDragEnd}>
-				<div className={currentView === "list" ? "block" : "flex"}>
+				<div className={currentView === "list" ? "block" : "flex min-w-full"}>
 					{filteredColumns()}
+					{allRoute &&
+						currentView === "grid" &&
+						getEmptyColumns().length >= 1 && (
+							<div className="ml-auto">
+								<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+							</div>
+						)}
 				</div>
 			</DragDropContext>
 		</>
