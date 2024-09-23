@@ -2,7 +2,7 @@
 
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Eye, EyeOff, Loader2, Mail, User } from "lucide-react";
@@ -261,5 +261,11 @@ function RegisterForm() {
 }
 
 export default function Register() {
-	return <RegisterForm />;
+	return (
+		<div className="flex items-center justify-center min-h-screen p-4 min-w-full">
+			<Suspense fallback={<div>Loading...</div>}>
+				<RegisterForm />
+			</Suspense>
+		</div>
+	);
 }

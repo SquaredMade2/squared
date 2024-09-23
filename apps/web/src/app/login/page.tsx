@@ -2,7 +2,7 @@
 
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
@@ -21,7 +21,7 @@ import type { AuthReturn } from "@/store/auth";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
 
-export default function LoginForm() {
+function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
@@ -238,6 +238,16 @@ export default function LoginForm() {
 					</p>
 				</CardFooter>
 			</Card>
+		</div>
+	);
+}
+
+export default function Login() {
+	return (
+		<div className="flex items-center justify-center min-h-screen p-4 min-w-full">
+			<Suspense fallback={<div>Loading...</div>}>
+				<LoginForm />
+			</Suspense>
 		</div>
 	);
 }
