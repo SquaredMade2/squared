@@ -18,7 +18,7 @@ enum EventType {
 	PriorityUpdated = "priorityUpdated",
 }
 
-const UpdatedByInformation = () => {
+export const UpdatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
 
 	const findLabelAdded = (
@@ -263,5 +263,3 @@ const UpdatedByInformation = () => {
 		</div>
 	);
 };
-
-export default UpdatedByInformation;
