@@ -94,7 +94,7 @@ const TaskPage = () => {
 										<EventTabs />
 									</div>
 								</ScrollArea>
-								<div className="flex flex-col gap-4">
+								<div className="md:flex hidden flex-col gap-4">
 									<TaskSidebarTopRow task={currentTask} />
 									<TaskDesignationsContainer />
 								</div>
