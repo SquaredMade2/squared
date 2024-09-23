@@ -7,13 +7,12 @@ import {
 	TaskPageForm,
 	TaskSidebarTopRow,
 } from "@/components/TaskPage";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useTeamStore } from "@/store";
-import { ArrowLeft } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 
 const TaskPage = () => {
 	const { tasks, currentTask, getAllTasks, setCurrentTask } = useTaskStore(
@@ -81,27 +80,24 @@ const TaskPage = () => {
 			) : (
 				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
 					<div className="w-full h-full p-2 md:p-5 xl:px-10 ">
-						<div className="flex w-full relative">
+						<div className="flex flex-col w-full relative">
 							<div className="w-full snap-start z-0 overflow-x-hidden">
-								<div className="flex items-center gap-2">
-									<Button variant={"ghost"} size="icon">
-										<ArrowLeft className="size-4" />
-									</Button>
-									<div className=" w-full max850:w-10/12 overflow-hidden">
-										<TaskBreadcrumbs />
-									</div>
+								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
+									<MobileMenuSheetTrigger />
+									<TaskBreadcrumbs task={currentTask} />
 								</div>
-
-								<ScrollArea className="h-[calc(100vh-5rem)] ">
+							</div>
+							<div className="flex w-full relative">
+								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm task={currentTask} />
 										<EventTabs />
 									</div>
 								</ScrollArea>
-							</div>
-							<div className="flex flex-col gap-4">
-								<TaskSidebarTopRow task={currentTask} />
-								<TaskDesignationsContainer />
+								<div className="flex flex-col gap-4">
+									<TaskSidebarTopRow task={currentTask} />
+									<TaskDesignationsContainer />
+								</div>
 							</div>
 						</div>
 					</div>
