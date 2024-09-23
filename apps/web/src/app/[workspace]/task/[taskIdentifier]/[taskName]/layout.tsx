@@ -8,7 +8,9 @@ export default function TeamLayout({
 }) {
 	return (
 		<div className="flex w-full overflow-hidden relative">
-			<Navbar />
+			<div className="hidden lg:block">
+				<Navbar />
+			</div>
 			<main className="flex flex-grow overflow-hidden">{children}</main>
 		</div>
 	);
