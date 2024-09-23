@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Loader2 } from "lucide-react";
+import type { User } from "@repo/db";
 
 const HomePage = () => {
 	const router = useRouter();
@@ -13,26 +14,21 @@ const HomePage = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const handleRedirection = async () => {
+		const handleRedirection = async (loggedUser: User) => {
 			try {
-				if (!user) {
-					// If there is a cookie but no user, log out and redirect
-					await logout();
-					router.push("/login");
-					return;
-				}
-
-				if (user) {
-					// If there is a user, redirect to appropriate workspace or join page
-					if (user.defaultWorkspaceId) {
-						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
+				if (loggedUser) {
+					// If there is a loggedUser, redirect to appropriate workspace or join page
+					if (loggedUser.defaultWorkspaceId) {
+						const { workspace } = await getWorkspace(
+							loggedUser.defaultWorkspaceId,
+						);
 						if (workspace?.url) {
 							router.push(`/${workspace.url}`);
 							return;
 						}
 					}
 
-					const workspaces = await getAllWorkspaces(user.id);
+					const workspaces = await getAllWorkspaces(loggedUser.id);
 					if (workspaces.length) {
 						router.push(`/${workspaces[0].url}`);
 						return;
@@ -41,7 +37,7 @@ const HomePage = () => {
 					return;
 				}
 
-				// If no user and no cookie, redirect to login
+				// If no loggedUser and no cookie, redirect to login
 				await logout();
 				router.push("/login");
 			} catch (error) {
@@ -52,10 +48,10 @@ const HomePage = () => {
 			}
 		};
 
-		if (loading) {
-			handleRedirection();
+		if (user) {
+			handleRedirection(user);
 		}
-	}, [user, router, getWorkspace, getAllWorkspaces, logout, loading]);
+	}, [user, router, loading]);
 
 	return (
 		<div className="h-screen w-full">
