@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { CircleDashed, Calendar, Clock, Tag, Filter, X } from "lucide-react";
+import {
+	CircleDashed,
+	Calendar,
+	Clock,
+	Tag,
+	Filter,
+	X,
+	User,
+} from "lucide-react";
 import { high } from "@/components/Svg";
 
 import PriorityFilterDropDown from "./PriorityFilter";
@@ -23,6 +31,7 @@ import { Button } from "../ui/button";
 import { useFilterStore } from "@/store";
 import LabelFilterDropDown from "./LabelFilter";
 import DueDateFilterDropDown from "./DueDateFilter";
+import AssigneeFilterDropDown from "./AssigneeFilter";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
@@ -56,6 +65,12 @@ const filterOptions: FilterOption[] = [
 		svg: <Clock className="cursor-pointer size-4" />,
 		group: "effortEstimate",
 	},
+	{
+		id: 6,
+		name: "Assignee",
+		svg: <User className="cursor-pointer size-4" />,
+		group: "Assignee",
+	},
 	// Future filter options to be implemented:
 	// {
 	//   id: 6,
@@ -78,6 +93,8 @@ const FilterDropDown: React.FunctionComponent = () => {
 		useState(false);
 	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
 		useState(false);
+	const [showAssigneeFilterDropDown, setShowAssigneeFilterDropDown] =
+		useState(false);
 	const { currentFilters, clearFilter } = useFilterStore((state) => state);
 
 	const handleSelect = (option: FilterOption) => {
@@ -98,6 +115,9 @@ const FilterDropDown: React.FunctionComponent = () => {
 				break;
 			case "Effort":
 				setShowEffortFilterDropDown(true);
+				break;
+			case "Assignee":
+				setShowAssigneeFilterDropDown(true);
 				break;
 			default:
 				break;
@@ -142,24 +162,28 @@ const FilterDropDown: React.FunctionComponent = () => {
 				</Button>
 			)}
 			<PriorityFilterDropDown
-				setShowPriorityFilterDropDown={setShowPriorityFilterDropDown}
-				showPriorityFilterDropDown={showPriorityFilterDropDown}
+				setShowFilterDropDown={setShowPriorityFilterDropDown}
+				showFilterDropDown={showPriorityFilterDropDown}
 			/>
 			<StatusFilterDropDown
-				setShowStatusFilterDropDown={setShowStatusFilterDropDown}
-				showStatusFilterDropDown={showStatusFilterDropDown}
+				setShowFilterDropDown={setShowStatusFilterDropDown}
+				showFilterDropDown={showStatusFilterDropDown}
 			/>
 			<LabelFilterDropDown
-				setShowLabelFilterDropDown={setShowLabelFilterDropDown}
-				showLabelFilterDropDown={showLabelFilterDropDown}
+				setShowFilterDropDown={setShowLabelFilterDropDown}
+				showFilterDropDown={showLabelFilterDropDown}
 			/>
 			<DueDateFilterDropDown
-				setShowDueDateFilterDropDown={setShowDueDateFilterDropDown}
-				showDueDateFilterDropDown={showDueDateFilterDropDown}
+				setShowFilterDropDown={setShowDueDateFilterDropDown}
+				showFilterDropDown={showDueDateFilterDropDown}
 			/>
 			<EffortFilterDropDown
-				setShowEffortFilterDropDown={setShowEffortFilterDropDown}
-				showEffortFilterDropDown={showEffortFilterDropDown}
+				setShowFilterDropDown={setShowEffortFilterDropDown}
+				showFilterDropDown={showEffortFilterDropDown}
+			/>
+			<AssigneeFilterDropDown
+				setShowFilterDropDown={setShowAssigneeFilterDropDown}
+				showFilterDropDown={showAssigneeFilterDropDown}
 			/>
 		</div>
 	);
