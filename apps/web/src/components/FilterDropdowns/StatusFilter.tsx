@@ -15,7 +15,7 @@ import {
 	CircleDashed,
 	CircleFadingPlus,
 } from "lucide-react";
-import type { StatusFilterDropDownProps } from "./interfaces";
+import type { FilterDropDownProps } from "./interfaces";
 import { Status } from "@repo/db";
 
 const groupStatus = [
@@ -62,11 +62,13 @@ const groupStatus = [
 ];
 
 const StatusFilterDropDown = ({
-	showStatusFilterDropDown,
-	setShowStatusFilterDropDown,
-}: StatusFilterDropDownProps) => {
+	showFilterDropDown,
+	setShowFilterDropDown,
+}: FilterDropDownProps) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 
 	const handleStatusChange = (status: Status, checked: boolean) => {
 		setSelectedStatuses((prev) =>
@@ -86,10 +88,19 @@ const StatusFilterDropDown = ({
 		}
 	}, [selectedStatuses, addFilter, removeFilter]);
 
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("status")
+		) {
+			setSelectedStatuses([]);
+		}
+	}, [currentFilterTypes]);
+
 	return (
 		<DropdownMenu
-			open={showStatusFilterDropDown}
-			onOpenChange={setShowStatusFilterDropDown}
+			open={showFilterDropDown}
+			onOpenChange={setShowFilterDropDown}
 		>
 			<DropdownMenuTrigger />
 			<DropdownMenuContent className="w-72 p-0" sideOffset={20}>
@@ -102,6 +113,9 @@ const StatusFilterDropDown = ({
 						onCheckedChange={(checked) =>
 							handleStatusChange(item.value, checked)
 						}
+						onSelect={(e) => {
+							e.preventDefault();
+						}}
 					>
 						<div className="flex items-center space-x-2">
 							{item.svg}
