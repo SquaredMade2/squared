@@ -96,7 +96,7 @@ export function TaskDesignationsContainer({
 }
 export function MobileTaskSettings({ task }: { task: Task }) {
 	return (
-		<div className="flex gap-2 md:hidden">
+		<div className="flex gap-2 md:hidden flex-wrap w-full">
 			<StatusDropdown currentTask={task} />
 			<PriorityDropdown currentTask={task} />
 			<AssigneeCombobox currentTask={task} />

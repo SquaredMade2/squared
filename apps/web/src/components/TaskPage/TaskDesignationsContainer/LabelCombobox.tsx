@@ -63,90 +63,102 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 
 		const labelIds = updatedLabels.map((label) => label.id);
 		await updateTask(taskId, { labels: labelIds });
+		setOpen(false);
 	};
 
-	const renderLabels = () => (
-		<>
-			<div className="md:flex flex-col hidden">
-				<div className="mb-2 space-x-1 space-y-1 hidden md:block">
+	const renderLabelButton = () => {
+		if (taskLabels.length === 0)
+			return (
+				<>
+					<Tag className="size-4" />
+					<span className="ml-2">Label</span>
+				</>
+			);
+		if (taskLabels.length === 1)
+			return (
+				<>
+					<LabelColor label={taskLabels[0]} />
+					<span className="ml-2">{taskLabels[0].name}</span>
+				</>
+			);
+		return (
+			<div className="flex items-center">
+				{taskLabels.map((label, index) => (
+					<div key={label.id} className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}>
+						<LabelColor label={label} />
+					</div>
+				))}
+				<span className="ml-4">{`${taskLabels.length} labels`}</span>
+			</div>
+		);
+	};
+
+	return (
+		<div className="md:w-full">
+			<div className="hidden md:block w-full">
+				<div className="mb-2 space-x-1 space-y-1">
 					<TooltipProvider>
 						{taskLabels.map((label: Label) => (
 							<Tooltip key={label.id}>
-								<TooltipTrigger>
-									<LabelBadge label={label} />
+								<TooltipTrigger asChild>
+									<span>
+										<LabelBadge label={label} />
+									</span>
 								</TooltipTrigger>
 								<TooltipContent>{label.description}</TooltipContent>
 							</Tooltip>
 						))}
 					</TooltipProvider>
 				</div>
-				<Button variant="ghost">
-					<Plus className="size-4 mr-2" />
-					<span className="ml-1.5">Add label</span>
-				</Button>
 			</div>
-			<Button
-				variant="outline"
-				className="md:hidden cursor-pointer h-8"
-				onClick={() => setOpen(true)}
-			>
-				{taskLabels.length === 0 ? (
-					<>
-						<Tag className="size-4" />
-						<span className="ml-2">Label</span>
-					</>
-				) : taskLabels.length === 1 ? (
-					<>
-						<LabelColor label={taskLabels[0]} />
-						<span className="ml-2">{taskLabels[0].name}</span>
-					</>
-				) : (
-					<div className="flex items-center">
-						{taskLabels.map((label, index) => (
-							<div
-								key={label.id}
-								className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}
-							>
-								<LabelColor label={label} />
+			<Popover open={open} onOpenChange={setOpen}>
+				<PopoverTrigger asChild>
+					<Button
+						variant="outline"
+						className="md:w-full justify-start w-fit h-8 md:h-10"
+					>
+						<>
+							<div className="hidden md:flex">
+								<Plus className="size-4 mr-2" />
+								<span className="ml-1.5">Add label</span>
 							</div>
-						))}
-						<span className="ml-4">{`${taskLabels.length} labels`}</span>
-					</div>
-				)}
-			</Button>
-		</>
-	);
-
-	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>{renderLabels()}</PopoverTrigger>
-			<PopoverContent className="w-[170px] p-0" side="left" align="start">
-				<Command>
-					<CommandInput placeholder="Search labels..." />
-					<CommandList>
-						<CommandEmpty>No label found.</CommandEmpty>
-						<CommandGroup>
-							{allLabels.map((label) => (
-								<CommandItem
-									key={label.id}
-									value={label.name}
-									onSelect={() => handleSelectLabels(label)}
-									className="flex justify-between items-center px-2 py-1.5"
-								>
-									<div className="flex items-center">
-										<LabelColor label={label} />
-										<span className="ml-2">{label.name}</span>
-									</div>
-									{taskLabels.some(
-										(taskLabel) => taskLabel.id === label.id,
-									) && <Check className="size-4" />}
-								</CommandItem>
-							))}
-						</CommandGroup>
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
+							<div className="md:hidden">{renderLabelButton()}</div>
+						</>
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent
+					className="w-[200px] p-0"
+					side="right"
+					align="start"
+					sideOffset={5}
+				>
+					<Command>
+						<CommandInput placeholder="Search labels..." />
+						<CommandList>
+							<CommandEmpty>No label found.</CommandEmpty>
+							<CommandGroup>
+								{allLabels.map((label) => (
+									<CommandItem
+										key={label.id}
+										value={label.name}
+										onSelect={() => handleSelectLabels(label)}
+										className="flex justify-between items-center px-2 py-1.5"
+									>
+										<div className="flex items-center">
+											<LabelColor label={label} />
+											<span className="ml-2">{label.name}</span>
+										</div>
+										{taskLabels.some(
+											(taskLabel) => taskLabel.id === label.id,
+										) && <Check className="size-4" />}
+									</CommandItem>
+								))}
+							</CommandGroup>
+						</CommandList>
+					</Command>
+				</PopoverContent>
+			</Popover>
+		</div>
 	);
 };
 
