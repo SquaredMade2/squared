@@ -6,7 +6,6 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { Droppable } from "@hello-pangea/dnd";
-import TaskColumnTitle from "./TaskColumnTitle";
 
 const UnassignedColumns = ({
 	getEmptyColumns,
@@ -23,12 +22,13 @@ const UnassignedColumns = ({
 								{...provided.droppableProps}
 								className={`${snapshot.isDraggingOver && "h-full"} rounded pr-2 transition-all duration-500 ease-in-out py-2`}
 							>
-								<TaskColumnTitle
+								{column}
+								{/* <TaskColumnTitle
 									isListView={false}
 									showTasks={true}
 									title={column}
 									numberOfTasks={0}
-								/>
+								/> */}
 								{provided.placeholder}
 							</AccordionContent>
 						)}

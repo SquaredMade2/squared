@@ -8,19 +8,18 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import {
 	useAuthStore,
-	useFilterStore,
 	useTaskStore,
 	useTeamStore,
 	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status } from "@repo/db";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
+import { Status } from "@repo/db";
+import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
 
 export default function Home() {
 	const { view } = useViewStore((state) => state);
-	const { filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
@@ -85,6 +84,33 @@ export default function Home() {
 		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
+	];
+
+	const getFilteredStatuses = () => {
+		return titleArr.map((t) => t.value);
+	};
+
+	const getTasksForStatus = (status: Status) => {
+		return tasks.filter((task) => task.status === status);
+	};
+
+	const getEmptyColumns = (): Status[] => {
+		const filteredStatuses = getFilteredStatuses();
+
+		return filteredStatuses.filter((status) => {
+			if (status === Status.archived) return false;
+
+			const tasks = getTasksForStatus(status);
+			return tasks && tasks.length === 0;
+		});
+	};
+
 	useEffect(() => {
 		const loadFilters = async () => {};
 		loadFilters();
@@ -114,17 +140,24 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<div className={"flex flex-col flex-grow mx-2"}>
+				<DragDropContext onDragEnd={handleDragEnd}>
 					<ScrollArea
 						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
 					>
-						<ViewAllTasks
-							handleDragEnd={handleDragEnd}
-							tasks={filterTasks(tasks).filter((t) => !t.deleted)}
-						/>
-						{view === "grid" && <ScrollBar orientation="horizontal" />}
+						<div className={"flex flex-grow ml-2"}>
+							<ViewAllTasks
+								getFilteredStatuses={getFilteredStatuses}
+								getTasksForStatus={getTasksForStatus}
+							/>
+							{view === "grid" && getEmptyColumns().length >= 1 && (
+								<div className="ml-auto">
+									<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+								</div>
+							)}
+							{view === "grid" && <ScrollBar orientation="horizontal" />}
+						</div>
 					</ScrollArea>
-				</div>
+				</DragDropContext>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
