@@ -1,8 +1,8 @@
 "use client";
 
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
-import NewIssueModal from "../NewIssue";
-import NewIssueButton from "@/components/NewIssue";
+
+import NewIssueModal, { NewIssueButton } from "@/components/NewIssue";
 import {
 	Accordion,
 	AccordionContent,

@@ -1,11 +1,7 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import TopNavBar from "@/components/TopNavBar";
+import { ScrollBar } from "@/components/ui/scroll-area";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Loader2 } from "lucide-react";
 import {
 	useAuthStore,
 	useFilterStore,
@@ -17,6 +13,10 @@ import {
 } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status } from "@repo/db";
+import { ScrollArea } from "@repo/ui/scroll-area";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
 	const { view } = useViewStore((state) => state);
@@ -28,16 +28,15 @@ export default function Home() {
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
 	);
-	const getAllUsers = useUserStore((state) => state.getAllUsers);
+	const { getAllUsers } = useUserStore((state) => state);
+
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
-
 	const params = useParams();
 
 	const workspaceUrl = params.workspace;
 	const teamIdentifier = params.identifier;
 
-	// Combining loading logic in a single useEffect
 	useEffect(() => {
 		const initiateStore = async () => {
 			setLoading(true);
@@ -114,13 +113,18 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<div className={"flex flex-col flex-grow mx-2"}>
+				<div className="flex flex-col flex-grow mx-2">
 					<ScrollArea
-						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
+						className={`${view === "list" ? "max-h[calc(100vh-55px)]" : ""} px-2`}
 					>
 						<ViewAllTasks
 							handleDragEnd={handleDragEnd}
-							tasks={filterTasks(tasks).filter((t) => !t.deleted)}
+							tasks={filterTasks(tasks).filter(
+								(t) =>
+									t.status === "inProgress" ||
+									t.status === "todo" ||
+									t.status === "inReview",
+							)}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</ScrollArea>

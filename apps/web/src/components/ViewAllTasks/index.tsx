@@ -19,14 +19,6 @@ const ViewAllTasks = ({ handleDragEnd, tasks }: ViewAllTasksProps) => {
 
 	const getFilteredStatuses = () => {
 		return titleArr.map((t) => t.value);
-		// if (activeSelected) {									// will uncomment/delete logic in next pr - kaila
-		// 	return allStatuses.filter(
-		// 		(status) => status === Status.todo || status === Status.inProgress,
-		// 	);
-		// }
-		// if (backlogSelected) {
-		// 	return allStatuses.filter((status) => status === Status.backlog);
-		// }
 	};
 
 	const getTasksForStatus = (status: Status) => {
