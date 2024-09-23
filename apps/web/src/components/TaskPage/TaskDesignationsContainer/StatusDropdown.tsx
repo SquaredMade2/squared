@@ -64,11 +64,11 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 			onValueChange={(value) => handleSelectStatus(value as Status)}
 			defaultValue={sidebarStatus}
 		>
-			<SelectTrigger className="grow justify-between hover:cursor-pointer bg-transparent">
+			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
 						{showIcon(sidebarStatus)}
-						<span className="ml-2">
+						<span className="mx-2 text-nowrap">
 							{sidebarStatus ? formatStatus(sidebarStatus) : sidebarStatus}
 						</span>
 					</div>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useTaskStore } from "@/store";
 import type { Task } from "@repo/db";
 import PriorityDropdown from "./PriorityDropdown";
 import StatusDropdown from "./StatusDropdown";
@@ -39,8 +38,9 @@ const DesignationItem = ({
 	</div>
 );
 
-export function TaskDesignationsContainer() {
-	const { currentTask } = useTaskStore((state) => state);
+export function TaskDesignationsContainer({
+	task: currentTask,
+}: { task: Task }) {
 	const [showEffortModal, setShowEffortModal] = useState(false);
 
 	const handleOpenModal = () => setShowEffortModal(true);
@@ -92,5 +92,15 @@ export function TaskDesignationsContainer() {
 			</div>
 			<EffortModal isOpen={showEffortModal} onClose={handleCloseModal} />
 		</>
+	);
+}
+export function MobileTaskSettings({ task }: { task: Task }) {
+	return (
+		<div className="flex gap-2 md:hidden">
+			<StatusDropdown currentTask={task} />
+			<PriorityDropdown currentTask={task} />
+			<AssigneeCombobox currentTask={task} />
+			<LabelCombobox currentTask={task} />
+		</div>
 	);
 }

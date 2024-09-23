@@ -13,7 +13,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Check } from "lucide-react";
+import { Plus, Check, Tag } from "lucide-react";
 import type { ButtonProps } from "./interfaces";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
@@ -66,24 +66,55 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	};
 
 	const renderLabels = () => (
-		<div className="flex flex-col">
-			<div className="mb-2 space-x-1 space-y-1">
-				<TooltipProvider>
-					{taskLabels.map((label: Label) => (
-						<Tooltip key={label.id}>
-							<TooltipTrigger>
-								<LabelBadge label={label} />
-							</TooltipTrigger>
-							<TooltipContent>{label.description}</TooltipContent>
-						</Tooltip>
-					))}
-				</TooltipProvider>
+		<>
+			<div className="md:flex flex-col hidden">
+				<div className="mb-2 space-x-1 space-y-1 hidden md:block">
+					<TooltipProvider>
+						{taskLabels.map((label: Label) => (
+							<Tooltip key={label.id}>
+								<TooltipTrigger>
+									<LabelBadge label={label} />
+								</TooltipTrigger>
+								<TooltipContent>{label.description}</TooltipContent>
+							</Tooltip>
+						))}
+					</TooltipProvider>
+				</div>
+				<Button variant="ghost">
+					<Plus className="size-4 mr-2" />
+					<span className="ml-1.5">Add label</span>
+				</Button>
 			</div>
-			<Button variant="ghost">
-				<Plus className="size-4 mr-2" />
-				<span className="ml-1.5">Add label</span>
+			<Button
+				variant="outline"
+				className="md:hidden cursor-pointer h-8"
+				onClick={() => setOpen(true)}
+			>
+				{taskLabels.length === 0 ? (
+					<>
+						<Tag className="size-4" />
+						<span className="ml-2">Label</span>
+					</>
+				) : taskLabels.length === 1 ? (
+					<>
+						<LabelColor label={taskLabels[0]} />
+						<span className="ml-2">{taskLabels[0].name}</span>
+					</>
+				) : (
+					<div className="flex items-center">
+						{taskLabels.map((label, index) => (
+							<div
+								key={label.id}
+								className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}
+							>
+								<LabelColor label={label} />
+							</div>
+						))}
+						<span className="ml-4">{`${taskLabels.length} labels`}</span>
+					</div>
+				)}
 			</Button>
-		</div>
+		</>
 	);
 
 	return (

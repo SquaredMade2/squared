@@ -6,6 +6,7 @@ import {
 	EventTabs,
 	TaskPageForm,
 	TaskSidebarTopRow,
+	MobileTaskSettings,
 } from "@/components/TaskPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
@@ -87,6 +88,7 @@ const TaskPage = () => {
 									<TaskBreadcrumbs task={currentTask} />
 								</div>
 							</div>
+							<MobileTaskSettings task={currentTask} />
 							<div className="flex w-full relative">
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
@@ -96,7 +98,7 @@ const TaskPage = () => {
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">
 									<TaskSidebarTopRow task={currentTask} />
-									<TaskDesignationsContainer />
+									<TaskDesignationsContainer task={currentTask} />
 								</div>
 							</div>
 						</div>
