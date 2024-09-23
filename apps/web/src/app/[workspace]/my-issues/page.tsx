@@ -10,7 +10,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { Status, Task } from "@repo/db";
+import { Status, type Task } from "@repo/db";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import BackButton from "@/components/BackButton";
 
