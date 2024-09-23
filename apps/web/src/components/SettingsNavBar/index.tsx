@@ -40,7 +40,7 @@ const SidebarContent = ({
 			<ScrollArea className="flex-grow">
 				<div className="p-6 space-y-6">
 					<div className="flex items-center space-x-2">
-						<Button variant={"ghost"} size="icon" onClick={() => router.back()}>
+						<Button variant="ghost" size="icon" onClick={() => router.back()}>
 							<ArrowLeft className="size-4" />
 						</Button>
 						<h1 className="text-2xl font-semibold">Settings</h1>

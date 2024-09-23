@@ -6,7 +6,7 @@ import type { TaskPageCenterContainerProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
 
@@ -15,11 +15,12 @@ const TaskPageCenterContainer = ({
 }: TaskPageCenterContainerProps) => {
 	const path = usePathname();
 	const inboxPath = path.includes("/inbox");
+	const router = useRouter();
 	return (
 		<div className="w-full snap-start z-0 overflow-x-hidden">
 			<div className="flex items-center gap-2">
 				{!inboxPath && (
-					<Button variant="ghost" size="icon">
+					<Button variant="ghost" size="icon" onClick={() => router.back()}>
 						<ArrowLeft className="size-4" />
 					</Button>
 				)}
