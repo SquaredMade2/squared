@@ -22,7 +22,7 @@ const TopNavBarDisplay = () => {
 				<PopoverTrigger asChild>
 					<Button variant={"ghost"} className="gap-2">
 						<SlidersVertical className="size-4" />
-						<div className="hidden md:block">
+						<div className="hidden md:flex items-center gap-2">
 							Display
 							<ChevronDown className="size-4" />
 						</div>
