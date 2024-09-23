@@ -1,6 +1,8 @@
+import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Status, Task } from "@repo/db";
 
 export interface ViewAllTasksProps {
+	handleDragEnd: OnDragEndResponder;
 	getFilteredStatuses: () => Status[];
 	getTasksForStatus: (status: Status) => Task[];
 }

@@ -4,8 +4,10 @@ import RenameModal from "@/components/RenameModal";
 import { Status } from "@repo/db";
 import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
+import { DragDropContext } from "@hello-pangea/dnd";
 
 const ViewAllTasks = ({
+	handleDragEnd,
 	getFilteredStatuses,
 	getTasksForStatus,
 }: ViewAllTasksProps) => {
@@ -34,9 +36,11 @@ const ViewAllTasks = ({
 	return (
 		<>
 			<RenameModal />
-			<div className={currentView === "list" ? "block min-w-full" : "flex"}>
-				{filteredColumns()}
-			</div>
+			<DragDropContext onDragEnd={handleDragEnd}>
+				<div className={currentView === "list" ? "block min-w-full" : "flex"}>
+					{filteredColumns()}
+				</div>
+			</DragDropContext>
 		</>
 	);
 };

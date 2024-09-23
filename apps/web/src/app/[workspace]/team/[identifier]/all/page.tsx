@@ -140,24 +140,23 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<DragDropContext onDragEnd={handleDragEnd}>
-					<ScrollArea
-						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
-					>
-						<div className={"flex flex-grow ml-2"}>
-							<ViewAllTasks
-								getFilteredStatuses={getFilteredStatuses}
-								getTasksForStatus={getTasksForStatus}
-							/>
-							{view === "grid" && getEmptyColumns().length >= 1 && (
-								<div className="ml-auto">
-									<UnassignedColumns getEmptyColumns={getEmptyColumns} />
-								</div>
-							)}
-							{view === "grid" && <ScrollBar orientation="horizontal" />}
-						</div>
-					</ScrollArea>
-				</DragDropContext>
+				<ScrollArea
+					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
+				>
+					<div className={"flex flex-grow ml-2"}>
+						<ViewAllTasks
+							handleDragEnd={handleDragEnd}
+							getFilteredStatuses={getFilteredStatuses}
+							getTasksForStatus={getTasksForStatus}
+						/>
+						{view === "grid" && getEmptyColumns().length >= 1 && (
+							<div className="ml-auto">
+								<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+							</div>
+						)}
+						{view === "grid" && <ScrollBar orientation="horizontal" />}
+					</div>
+				</ScrollArea>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
