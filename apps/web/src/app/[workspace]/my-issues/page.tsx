@@ -12,7 +12,8 @@ import {
 } from "@/store";
 import type { Status, Task } from "@repo/db";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import BackButton from "@/components/BackButton";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 export default function MyIssues() {
 	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
@@ -29,6 +30,7 @@ export default function MyIssues() {
 	const [tasks, setTasks] = useState<Task[]>(
 		initialTasks.filter((t) => t.assigneeId === user?.id),
 	);
+	const router = useRouter();
 	useEffect(() => {
 		const initiateStore = async () => {
 			if (initialTasks) {
@@ -79,7 +81,9 @@ export default function MyIssues() {
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden container">
 			<div className="flex justify-start space-x-4 my-4 items-center">
-				<BackButton hoverbackground="bg-card" />
+				<Button size="icon" variant="ghost" onClick={() => router.back()}>
+					<ArrowLeft className="size-4" />
+				</Button>
 				<p className="hidden xl:block">My Issues</p>
 				<Button
 					onClick={() => setActiveTab("assigned")}

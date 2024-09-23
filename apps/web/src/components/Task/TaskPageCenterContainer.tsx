@@ -2,12 +2,13 @@ import EventTabs from "./TaskPageActivityTimeline/EventTabs";
 import TaskPageTitle from "./TaskPageTitle";
 import TaskBreadcrumbs from "./TaskBreadcrumbs";
 import ButtonIcon from "../ButtonIcon";
-import BackButton from "../BackButton";
 import type { TaskPageCenterContainerProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
+import { Button } from "../ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const TaskPageCenterContainer = ({
 	setShowSideNav,
@@ -18,9 +19,9 @@ const TaskPageCenterContainer = ({
 		<div className="w-full snap-start z-0 overflow-x-hidden">
 			<div className="flex items-center gap-2">
 				{!inboxPath && (
-					<div>
-						<BackButton hoverbackground="bg-card" />
-					</div>
+					<Button variant="ghost" size="icon">
+						<ArrowLeft className="size-4" />
+					</Button>
 				)}
 				<div className=" w-full max850:w-10/12 overflow-hidden">
 					<TaskBreadcrumbs />
