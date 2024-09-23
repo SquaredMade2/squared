@@ -11,7 +11,7 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { Status, type Task } from "@repo/db";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import BackButton from "@/components/BackButton";
 
 export default function MyIssues() {
@@ -131,11 +131,12 @@ export default function MyIssues() {
 			{/* <TopNavBar /> */}
 
 			<ScrollArea className={view === "list" ? "max-h-[calc(100vh-55px)]" : ""}>
-				<ViewAllTasks
-					handleDragEnd={handleDragEnd}
-					getFilteredStatuses={getFilteredStatuses}
-					getTasksForStatus={getTasksForStatus}
-				/>
+				<DragDropContext onDragEnd={handleDragEnd}>
+					<ViewAllTasks
+						getFilteredStatuses={getFilteredStatuses}
+						getTasksForStatus={getTasksForStatus}
+					/>
+				</DragDropContext>
 				{view === "grid" && <ScrollBar orientation="horizontal" />}
 			</ScrollArea>
 		</div>

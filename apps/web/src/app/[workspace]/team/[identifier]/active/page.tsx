@@ -11,7 +11,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import { Status } from "@repo/db";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
@@ -140,11 +140,12 @@ export default function Home() {
 					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
 				>
 					<div className="flex flex-col flex-grow mx-2">
-						<ViewAllTasks
-							handleDragEnd={handleDragEnd}
-							getFilteredStatuses={getFilteredStatuses}
-							getTasksForStatus={getTasksForStatus}
-						/>
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<ViewAllTasks
+								getFilteredStatuses={getFilteredStatuses}
+								getTasksForStatus={getTasksForStatus}
+							/>
+						</DragDropContext>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</div>
 				</ScrollArea>

@@ -14,7 +14,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import { Status } from "@repo/db";
 import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
 
@@ -144,16 +144,17 @@ export default function Home() {
 					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
 				>
 					<div className={"flex flex-grow ml-2"}>
-						<ViewAllTasks
-							handleDragEnd={handleDragEnd}
-							getFilteredStatuses={getFilteredStatuses}
-							getTasksForStatus={getTasksForStatus}
-						/>
-						{view === "grid" && getEmptyColumns().length >= 1 && (
-							<div className="ml-auto">
-								<UnassignedColumns getEmptyColumns={getEmptyColumns} />
-							</div>
-						)}
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<ViewAllTasks
+								getFilteredStatuses={getFilteredStatuses}
+								getTasksForStatus={getTasksForStatus}
+							/>
+							{view === "grid" && getEmptyColumns().length >= 1 && (
+								<div className="ml-auto">
+									<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+								</div>
+							)}
+						</DragDropContext>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</div>
 				</ScrollArea>

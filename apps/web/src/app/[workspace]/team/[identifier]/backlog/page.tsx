@@ -15,7 +15,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import { Status } from "@repo/db";
 
 export default function Home() {
@@ -132,18 +132,19 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<div className={"flex flex-col flex-grow mx-2"}>
-					<ScrollArea
-						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
-					>
-						<ViewAllTasks
-							handleDragEnd={handleDragEnd}
-							getFilteredStatuses={getFilteredStatuses}
-							getTasksForStatus={getTasksForStatus}
-						/>
+				<ScrollArea
+					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
+				>
+					<div className={"flex flex-col flex-grow mx-2"}>
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<ViewAllTasks
+								getFilteredStatuses={getFilteredStatuses}
+								getTasksForStatus={getTasksForStatus}
+							/>
+						</DragDropContext>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</ScrollArea>
-				</div>
+					</div>
+				</ScrollArea>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
