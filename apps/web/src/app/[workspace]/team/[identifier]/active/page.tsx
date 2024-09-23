@@ -13,7 +13,7 @@ import {
 } from "@/store";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { Status } from "@repo/db";
-import { ScrollArea } from "@repo/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -136,18 +136,18 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<div className="flex flex-col flex-grow mx-2">
-					<ScrollArea
-						className={`${view === "list" ? "max-h[calc(100vh-55px)]" : ""} px-2`}
-					>
+				<ScrollArea
+					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
+				>
+					<div className="flex flex-col flex-grow mx-2">
 						<ViewAllTasks
 							handleDragEnd={handleDragEnd}
 							getFilteredStatuses={getFilteredStatuses}
 							getTasksForStatus={getTasksForStatus}
 						/>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</ScrollArea>
-				</div>
+					</div>
+				</ScrollArea>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
