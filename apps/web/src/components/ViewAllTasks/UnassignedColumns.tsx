@@ -12,7 +12,7 @@ const UnassignedColumns = ({
 	getEmptyColumns,
 }: { getEmptyColumns: () => Status[] }) => {
 	return (
-		<Accordion type="single" collapsible>
+		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
 				{getEmptyColumns().map((column: Status) => (
