@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { FC } from "react";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,
@@ -21,7 +20,7 @@ import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "@/components/ui/use-toast";
 import { useModalStore, useTaskStore } from "@/store";
 
-const TaskContextMenu: FC<ContextMenuProps> = ({ task }) => {
+const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { deleteTask } = useTaskStore((state) => state);
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
