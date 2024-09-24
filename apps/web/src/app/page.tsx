@@ -1,37 +1,43 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
 import { Loader2 } from "lucide-react";
-import type { User } from "@repo/db";
+import { useSession } from "next-auth/react";
+import type { User } from "next-auth";
 
 const HomePage = () => {
 	const router = useRouter();
-	const { user, logout } = useAuthStore((state) => state);
+	const { logout, setUser } = useAuthStore((state) => state);
+	const { getUser } = useUserStore((state) => state);
+	const { data, status } = useSession();
 	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
 		(state) => state,
 	);
-	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const handleRedirection = async (loggedUser: User) => {
+		const handleRedirection = async (authUser: User) => {
 			try {
-				if (loggedUser) {
-					// If there is a loggedUser, redirect to appropriate workspace or join page
-					if (loggedUser.defaultWorkspaceId) {
-						const { workspace } = await getWorkspace(
-							loggedUser.defaultWorkspaceId,
-						);
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
+				if (authUser) {
+					const { user: loggedUser } = await getUser(authUser.id);
+					if (loggedUser) {
+						setUser(loggedUser);
+						// If there is a loggedUser, redirect to appropriate workspace or join page
+						if (loggedUser.defaultWorkspaceId) {
+							const { workspace } = await getWorkspace(
+								loggedUser.defaultWorkspaceId,
+							);
+							if (workspace?.url) {
+								router.push(`/${workspace.url}`);
+								return;
+							}
+						}
+
+						const workspaces = await getAllWorkspaces(loggedUser.id);
+						if (workspaces.length) {
+							router.push(`/${workspaces[0].url}`);
 							return;
 						}
-					}
-
-					const workspaces = await getAllWorkspaces(loggedUser.id);
-					if (workspaces.length) {
-						router.push(`/${workspaces[0].url}`);
-						return;
 					}
 					router.push("/join");
 					return;
@@ -43,15 +49,12 @@ const HomePage = () => {
 			} catch (error) {
 				console.error("Redirection Error: ", error);
 				// Optionally set an error state here to show an error message
-			} finally {
-				setLoading(false); // Stop loading once redirection is handled
 			}
 		};
-
-		if (user) {
-			handleRedirection(user);
+		if (data?.user) {
+			handleRedirection(data.user);
 		}
-	}, [user, router, loading]);
+	}, [router, status]);
 
 	return (
 		<div className="h-screen w-full">
