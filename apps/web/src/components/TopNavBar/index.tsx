@@ -1,9 +1,8 @@
-import type React from "react";
 import TopNavBarDisplay from "@/components/DisplaySettings";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { MobileMenuSheetTrigger } from "../MobileNav";
 
-const TopNavBar: React.FC = () => {
+const TopNavBar = () => {
 	return (
 		<div className="flex flex-col flex-none justify-start items-start">
 			<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
