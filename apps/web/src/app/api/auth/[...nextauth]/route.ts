@@ -42,9 +42,36 @@ const handler = NextAuth({
 		}),
 	],
 	callbacks: {
+		async signIn({ user, account }) {
+			if (account?.provider === "google" && user) {
+				// Ping the backend with the user's OAuth details
+				const { data: response }: { data: ApiReturnType<User> } =
+					await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
+						provider: "google",
+						type: "login",
+						name: user.name ?? undefined,
+						email: user.email,
+						oauthId: user.id,
+					});
+				const { data: dbUser } = response;
+				if (dbUser) {
+					// Save the returned user data to the session
+					user.id = dbUser.id;
+					user.name = dbUser.name;
+					user.email = dbUser.email;
+					user.avatarUrl = dbUser.avatarUrl ?? null;
+					return true;
+				}
+				return false;
+			}
+			return true; // Default allow sign-in
+		},
 		async session({ session, token }) {
 			if (session.user && token.sub) {
 				session.user.id = token.sub;
+				session.user.name = token.name ?? "";
+				session.user.email = token.email ?? "";
+				session.user.avatarUrl = token.picture ?? "";
 			}
 			return session;
 		},

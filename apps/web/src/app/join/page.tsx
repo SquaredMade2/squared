@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { signOut, useSession } from "next-auth/react";
 
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
@@ -17,7 +18,7 @@ const Join = () => {
 		(state) => state,
 	);
 	const { user, setUser } = useAuthStore((state) => state);
-	const updateUser = useUserStore((state) => state.updateUser);
+	const { updateUser, getUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -31,12 +32,21 @@ const Join = () => {
 		"register",
 		"settings",
 	];
+	const { data, status } = useSession();
 
 	useEffect(() => {
-		if (user) {
-			getAllWorkspaces(user.id);
-		}
-	}, []);
+		const initStore = async () => {
+			if (user) {
+				getAllWorkspaces(user.id);
+			} else if (data?.user) {
+				const { user: newUser } = await getUser(data.user.id);
+				if (!newUser) await signOut();
+				setUser(newUser);
+				getAllWorkspaces(data.user.id);
+			}
+		};
+		initStore();
+	}, [status]);
 
 	useEffect(() => {
 		const formattedUrlInput = inputValue
