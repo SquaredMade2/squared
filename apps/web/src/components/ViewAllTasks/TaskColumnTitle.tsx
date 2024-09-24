@@ -36,7 +36,7 @@ const TaskColumnTitle = ({
 	showTasks,
 	title,
 	numberOfTasks,
-	toggleShowTasks,
+	setShowTasks,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 
@@ -106,7 +106,7 @@ const TaskColumnTitle = ({
 							<CirclePlus className="size-5" />
 						</div>
 					</div>
-					<HideStatus toggleShowTasks={toggleShowTasks} showTasks={showTasks} />
+					<HideStatus setShowTasks={setShowTasks} showTasks={showTasks} />
 				</div>
 			</div>
 		</div>
