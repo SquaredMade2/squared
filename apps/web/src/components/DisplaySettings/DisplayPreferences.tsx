@@ -1,9 +1,11 @@
 import { useId } from "@repo/ui/id";
 import { Switch } from "../ui/switch";
 import { useViewStore } from "@/store";
+import { Separator } from "../ui/separator";
 
 const DisplayPreferences = () => {
 	const {
+		view,
 		showPriority,
 		showLabels,
 		showDateTime,
@@ -34,12 +36,13 @@ const DisplayPreferences = () => {
 		{ label: "Priority", show: showPriority, handle: handlePriority },
 		{ label: "Labels", show: showLabels, handle: handleLabels },
 		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
-		{
-			label: "Show Empty Groups",
-			show: showHiddenToggle,
-			handle: handleHiddenToggle,
-		},
 	];
+
+	const hiddenToggleOptions = {
+		label: "Show Empty Groups",
+		show: showHiddenToggle,
+		handle: handleHiddenToggle,
+	};
 
 	return (
 		<div>
@@ -59,6 +62,21 @@ const DisplayPreferences = () => {
 						/>
 					</div>
 				))}
+				{view === "grid" && (
+					<>
+						<Separator className="my-2" />
+						<div className="flex items-center justify-between w-full">
+							<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+								{hiddenToggleOptions.label}
+							</p>
+							<Switch
+								className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+								checked={hiddenToggleOptions.show}
+								onClick={hiddenToggleOptions.handle}
+							/>
+						</div>
+					</>
+				)}
 			</ul>
 		</div>
 	);
