@@ -7,9 +7,11 @@ const DisplayPreferences = () => {
 		showPriority,
 		showLabels,
 		showDateTime,
+		showHiddenToggle,
 		setShowPriority,
 		setShowLabels,
 		setShowDateTime,
+		setShowHiddenToggle,
 	} = useViewStore((state) => state);
 
 	const handlePriority = (): void => {
@@ -24,10 +26,19 @@ const DisplayPreferences = () => {
 		setShowDateTime(!showDateTime);
 	};
 
+	const handleHiddenToggle = (): void => {
+		setShowHiddenToggle(!showHiddenToggle);
+	};
+
 	const displayOptions = [
 		{ label: "Priority", show: showPriority, handle: handlePriority },
 		{ label: "Labels", show: showLabels, handle: handleLabels },
 		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
+		{
+			label: "Show Empty Groups",
+			show: showHiddenToggle,
+			handle: handleHiddenToggle,
+		},
 	];
 
 	return (

@@ -4,6 +4,7 @@ export type ViewState = {
 	showLabels: boolean;
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
+	showHiddenToggle: boolean;
 	view: "list" | "grid";
 };
 
@@ -14,6 +15,7 @@ type ViewActions = {
 	setShowDateTime: (input: boolean) => void;
 	setShowPriority: (input: boolean) => void;
 	setShowLabels: (input: boolean) => void;
+	setShowHiddenToggle: (input: boolean) => void;
 };
 
 export type ViewStore = ViewState & ViewActions;
