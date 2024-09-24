@@ -1,7 +1,6 @@
 import { Calendar, UserSearch } from "lucide-react";
 
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,16 +53,8 @@ const TaskGrid = ({
 							</span>
 						</div>
 					)}
-					<div className="flex items-center space-x-4">
-						{showPriority && (
-							<Button
-								variant="ghost"
-								size="sm"
-								className={"p-0.5 border border-border mb-2 mt-1 w-6 h-5"}
-							>
-								{priorityIcon}
-							</Button>
-						)}
+					<div className="flex items-end space-x-4">
+						{showPriority && priorityIcon}
 						{showLabels && <TaskCardLabels labels={taskLabels} view="grid" />}
 					</div>
 				</CardContent>

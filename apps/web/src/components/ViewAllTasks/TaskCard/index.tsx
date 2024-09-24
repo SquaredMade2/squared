@@ -1,6 +1,12 @@
 "use client";
 import { Draggable } from "@hello-pangea/dnd";
-import { Ellipsis } from "lucide-react";
+import {
+	AlertTriangle,
+	ArrowDown,
+	ArrowRight,
+	ArrowUp,
+	CircleDot,
+} from "lucide-react";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import {
 	useTeamStore,
@@ -8,9 +14,6 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { high, medium, low } from "@/components/Svg";
 import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
@@ -26,20 +29,15 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const getPriorityIcon = () => {
 		switch (task.priority) {
 			case "low":
-				return low();
+				return <ArrowDown className="size-4 text-blue-500" />;
 			case "medium":
-				return medium();
+				return <ArrowRight className="size-4 text-yellow-500" />;
 			case "high":
-				return high();
+				return <ArrowUp className="size-4 text-orange-500" />;
 			case "urgent":
-				return (
-					<FontAwesomeIcon
-						className="text-muted-foreground"
-						icon={faExclamation}
-					/>
-				);
+				return <AlertTriangle className="size-4 text-destructive" />;
 			default:
-				return <Ellipsis className="size-4" />;
+				return <CircleDot className="size-4" />;
 		}
 	};
 
