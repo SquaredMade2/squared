@@ -19,7 +19,7 @@ import { Status } from "@repo/db";
 import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
 
 export default function Home() {
-	const { view, showHiddenTaskColumn } = useViewStore((state) => state);
+	const { view, viewOptions } = useViewStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
@@ -150,7 +150,7 @@ export default function Home() {
 								getTasksForStatus={getTasksForStatus}
 							/>
 							{view === "grid" &&
-								!showHiddenTaskColumn &&
+								!viewOptions.showHiddenTaskColumn &&
 								getEmptyColumns().length >= 1 && (
 									<div className="ml-auto">
 										<UnassignedColumns getEmptyColumns={getEmptyColumns} />

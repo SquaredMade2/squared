@@ -11,7 +11,7 @@ export const createViewStore = (
 		showLabels: true,
 		showNavbar: false,
 		showMobileNavbar: false,
-		showHiddenTaskColumn: false,
+		viewOptions: { showHiddenTaskColumn: false },
 		view: "list",
 	},
 ) => {
@@ -37,8 +37,8 @@ export const createViewStore = (
 				setShowLabels: (input) => {
 					set({ showLabels: input });
 				},
-				setShowHiddenTaskColumn: (input) => {
-					set({ showHiddenTaskColumn: input });
+				setViewOptions: (input) => {
+					set({ viewOptions: { showHiddenTaskColumn: input } });
 				},
 			}),
 			{

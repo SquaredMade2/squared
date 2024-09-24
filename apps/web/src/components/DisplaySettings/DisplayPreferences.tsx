@@ -5,14 +5,15 @@ import { Separator } from "../ui/separator";
 
 const DisplayPreferences = () => {
 	const {
+		view,
+		viewOptions,
 		showPriority,
 		showLabels,
 		showDateTime,
-		showHiddenTaskColumn,
 		setShowPriority,
 		setShowLabels,
 		setShowDateTime,
-		setShowHiddenTaskColumn,
+		setViewOptions,
 	} = useViewStore((state) => state);
 
 	const handlePriority = (): void => {
@@ -27,21 +28,22 @@ const DisplayPreferences = () => {
 		setShowDateTime(!showDateTime);
 	};
 
-	const handleHiddenToggle = (): void => {
-		setShowHiddenTaskColumn(!showHiddenTaskColumn);
-	};
-
 	const displayOptions = [
 		{ label: "Priority", show: showPriority, handle: handlePriority },
 		{ label: "Labels", show: showLabels, handle: handleLabels },
 		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
 	];
 
-	const hiddenStatusOptions = {
-		label: "Show Empty Groups",
-		show: showHiddenTaskColumn,
-		handle: handleHiddenToggle,
-	};
+	const gridOptions = [
+		{
+			label: "Show Empty Groups",
+			show: viewOptions.showHiddenTaskColumn,
+		},
+	];
+
+	const listOptions = [
+		{ label: "Show Empty Groups", show: viewOptions.showHiddenTaskColumn },
+	];
 
 	return (
 		<div>
@@ -61,19 +63,39 @@ const DisplayPreferences = () => {
 						/>
 					</div>
 				))}
-				<>
-					<Separator className="my-2" />
-					<div className="flex items-center justify-between w-full">
-						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-							{hiddenStatusOptions.label}
-						</p>
-						<Switch
-							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-							checked={hiddenStatusOptions.show}
-							onClick={hiddenStatusOptions.handle}
-						/>
-					</div>
-				</>
+				<Separator className="my-2" />
+				{view === "grid" &&
+					gridOptions.map((option) => (
+						<div
+							key={useId()}
+							className="flex items-center justify-between w-full"
+						>
+							<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+								{option.label}
+							</p>
+							<Switch
+								className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+								checked={option.show}
+								onCheckedChange={setViewOptions}
+							/>
+						</div>
+					))}
+				{view === "list" &&
+					listOptions.map((option) => (
+						<div
+							key={useId()}
+							className="flex items-center justify-between w-full"
+						>
+							<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+								{option.label}
+							</p>
+							<Switch
+								className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+								checked={option.show}
+								onCheckedChange={setViewOptions}
+							/>
+						</div>
+					))}
 			</ul>
 		</div>
 	);
