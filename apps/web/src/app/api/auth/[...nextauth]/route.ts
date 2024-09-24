@@ -52,6 +52,7 @@ const handler = NextAuth({
 						name: user.name ?? undefined,
 						email: user.email,
 						oauthId: user.id,
+						avatarUrl: user.image ?? null,
 					});
 				const { data: dbUser } = response;
 				if (dbUser) {

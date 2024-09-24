@@ -13,6 +13,7 @@ type Body = {
 	name?: string;
 	username?: string;
 	oauthId?: string;
+	avatarUrl?: string;
 };
 
 type Params = {
@@ -25,7 +26,8 @@ export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, _, body: Body): Promise<APIResponse<User>> => {
 			try {
-				const { email, password, provider, type, name, username } = body;
+				const { email, password, provider, type, name, username, avatarUrl } =
+					body;
 				let user: User | null = await prisma.user.findUnique({
 					where: { email },
 				});
@@ -47,6 +49,7 @@ export function createRoute(): Route<Params> {
 									username,
 									googleId: body.oauthId,
 									verified: true,
+									avatarUrl,
 								},
 							});
 						} else if (user && user.googleId !== body.oauthId) {
@@ -75,6 +78,7 @@ export function createRoute(): Route<Params> {
 									username,
 									githubId: body.oauthId,
 									verified: true,
+									avatarUrl,
 								},
 							});
 						} else if (user && user.githubId !== body.oauthId) {
