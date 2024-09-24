@@ -8,11 +8,11 @@ const DisplayPreferences = () => {
 		showPriority,
 		showLabels,
 		showDateTime,
-		showHiddenStatus,
+		showHiddenTaskColumn,
 		setShowPriority,
 		setShowLabels,
 		setShowDateTime,
-		setShowHiddenStatus,
+		setShowHiddenTaskColumn,
 	} = useViewStore((state) => state);
 
 	const handlePriority = (): void => {
@@ -28,7 +28,7 @@ const DisplayPreferences = () => {
 	};
 
 	const handleHiddenToggle = (): void => {
-		setShowHiddenStatus(!showHiddenStatus);
+		setShowHiddenTaskColumn(!showHiddenTaskColumn);
 	};
 
 	const displayOptions = [
@@ -39,7 +39,7 @@ const DisplayPreferences = () => {
 
 	const hiddenStatusOptions = {
 		label: "Show Empty Groups",
-		show: showHiddenStatus,
+		show: showHiddenTaskColumn,
 		handle: handleHiddenToggle,
 	};
 

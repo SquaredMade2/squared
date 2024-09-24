@@ -9,14 +9,14 @@ const ViewAllTasks = ({
 	getFilteredStatuses,
 	getTasksForStatus,
 }: ViewAllTasksProps) => {
-	const { view, showHiddenStatus } = useViewStore((state) => state);
+	const { view, showHiddenTaskColumn } = useViewStore((state) => state);
 
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
 			if (status === Status.archived) return null;
 			const tasksForStatus = getTasksForStatus(status);
-			if (!showHiddenStatus && tasksForStatus.length === 0) return null;
+			if (!showHiddenTaskColumn && tasksForStatus.length === 0) return null;
 			return (
 				<div key={status} className="px-1">
 					<GroupColumn
