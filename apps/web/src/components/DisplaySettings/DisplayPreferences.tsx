@@ -9,11 +9,11 @@ const DisplayPreferences = () => {
 		showPriority,
 		showLabels,
 		showDateTime,
-		showHiddenToggle,
+		showHiddenStatus,
 		setShowPriority,
 		setShowLabels,
 		setShowDateTime,
-		setShowHiddenToggle,
+		setShowHiddenStatus,
 	} = useViewStore((state) => state);
 
 	const handlePriority = (): void => {
@@ -29,7 +29,7 @@ const DisplayPreferences = () => {
 	};
 
 	const handleHiddenToggle = (): void => {
-		setShowHiddenToggle(!showHiddenToggle);
+		setShowHiddenStatus(!showHiddenStatus);
 	};
 
 	const displayOptions = [
@@ -38,9 +38,9 @@ const DisplayPreferences = () => {
 		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
 	];
 
-	const hiddenToggleOptions = {
+	const hiddenStatusOptions = {
 		label: "Show Empty Groups",
-		show: showHiddenToggle,
+		show: showHiddenStatus,
 		handle: handleHiddenToggle,
 	};
 
@@ -67,12 +67,12 @@ const DisplayPreferences = () => {
 						<Separator className="my-2" />
 						<div className="flex items-center justify-between w-full">
 							<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-								{hiddenToggleOptions.label}
+								{hiddenStatusOptions.label}
 							</p>
 							<Switch
 								className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-								checked={hiddenToggleOptions.show}
-								onClick={hiddenToggleOptions.handle}
+								checked={hiddenStatusOptions.show}
+								onClick={hiddenStatusOptions.handle}
 							/>
 						</div>
 					</>

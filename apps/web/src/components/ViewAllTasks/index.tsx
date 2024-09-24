@@ -9,19 +9,19 @@ const ViewAllTasks = ({
 	getFilteredStatuses,
 	getTasksForStatus,
 }: ViewAllTasksProps) => {
-	const currentView = useViewStore((state) => state.view);
+	const { view, showHiddenStatus } = useViewStore((state) => state);
 
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
 			if (status === Status.archived) return null;
 			const tasksForStatus = getTasksForStatus(status);
-			if (tasksForStatus.length === 0) return null;
+			if (!showHiddenStatus && tasksForStatus.length === 0) return null;
 			return (
 				<div key={status} className="px-1">
 					<GroupColumn
 						key={status}
-						currentView={currentView}
+						currentView={view}
 						columnType={status}
 						title={status}
 						tasks={tasksForStatus}
@@ -34,7 +34,7 @@ const ViewAllTasks = ({
 	return (
 		<>
 			<RenameModal />
-			<div className={currentView === "list" ? "block min-w-full" : "flex"}>
+			<div className={view === "list" ? "block min-w-full" : "flex"}>
 				{filteredColumns()}
 			</div>
 		</>
