@@ -10,8 +10,8 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Status, Task } from "@repo/db";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { Status, type Task } from "@repo/db";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
@@ -75,6 +75,23 @@ export default function MyIssues() {
 		setTasks(updatedTasks); // Directly set updated tasks
 		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
 	};
+
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
+	];
+
+	const getFilteredStatuses = () => {
+		return titleArr.map((t) => t.value);
+	};
+
+	const getTasksForStatus = (status: Status) => {
+		return tasks.filter((task) => task.status === status);
+	};
+
 	// TODO: Refactor TopNavBar to be viable in multiple pages
 	// <TopNavBar />;
 
@@ -118,7 +135,12 @@ export default function MyIssues() {
 			{/* <TopNavBar /> */}
 
 			<ScrollArea className={view === "list" ? "max-h-[calc(100vh-55px)]" : ""}>
-				<ViewAllTasks handleDragEnd={handleDragEnd} tasks={tasks} />
+				<DragDropContext onDragEnd={handleDragEnd}>
+					<ViewAllTasks
+						getFilteredStatuses={getFilteredStatuses}
+						getTasksForStatus={getTasksForStatus}
+					/>
+				</DragDropContext>
 				{view === "grid" && <ScrollBar orientation="horizontal" />}
 			</ScrollArea>
 		</div>
