@@ -30,7 +30,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="h-screen flex">
+			<div className="h-screen md:flex hidden">
 				<IconLeftMenu />
 
 				<div className="flex h-full bg-popover w-64">

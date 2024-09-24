@@ -1,43 +1,89 @@
+import {
+	Circle,
+	AlertTriangle,
+	AlertCircle,
+	MinusCircle,
+	Check,
+} from "lucide-react";
+import { formatPriority } from "@/utils/formatting";
+import { priorityOptions } from "@/constants/designations";
+import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { priorityOptions } from "@/constants/designations";
+	DropdownMenu,
+	DropdownMenuTrigger,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuRadioGroup,
+} from "../ui/dropdown-menu";
 import type { Priority } from "@repo/db";
 
 export const PriorityDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
+	const newIssuePriority = newIssueData.priority;
 
 	const handleSelectPriority = (priority: Priority) => {
 		setNewIssueData({ ...newIssueData, priority });
 	};
 
+	const showIcon = (priority: Priority) => {
+		switch (priority) {
+			case "noPriority":
+				return <MinusCircle className="h-4 w-4 text-gray-500" />;
+			case "urgent":
+				return <AlertTriangle className="h-4 w-4 text-red-500" />;
+			case "high":
+				return <AlertCircle className="h-4 w-4 text-orange-500" />;
+			case "medium":
+				return <AlertCircle className="h-4 w-4 text-yellow-500" />;
+			case "low":
+				return <AlertCircle className="h-4 w-4 text-green-500" />;
+			default:
+				return <Circle className="h-4 w-4 text-gray-500" />;
+		}
+	};
+
 	return (
-		<Select>
-			<SelectTrigger className="appearance-none grow flex items-center justify-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent text-sm font-semibold">
-				<SelectValue placeholder="Priority" />
-			</SelectTrigger>
-			<SelectContent side={"left"} align="start">
-				<SelectGroup>
-					<SelectLabel>Priority</SelectLabel>
-					{priorityOptions.map((name) => (
-						<SelectItem
-							key={name}
-							value={name}
-							onClick={() => handleSelectPriority(name)}
-							className=""
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant="outline" className="max-w-full w-full">
+					<span className="cursor-pointer">
+						{showIcon(newIssuePriority || "noPriority")}
+					</span>
+					<span className="ml-2 cursor-pointer">
+						{formatPriority(newIssuePriority || "noPriority")}
+					</span>
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent
+				sideOffset={4}
+				side={"left"}
+				align="start"
+				className="w-[150px]"
+			>
+				<DropdownMenuRadioGroup
+					value={newIssuePriority}
+					onValueChange={(priority) =>
+						handleSelectPriority(priority as Priority)
+					}
+				>
+					{priorityOptions.map((priority) => (
+						<DropdownMenuItem
+							key={priority}
+							onSelect={() => handleSelectPriority(priority as Priority)}
+							className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
 						>
-							<span>{name}</span>
-						</SelectItem>
+							<div className="flex items-center ">
+								{showIcon(priority)}
+								<span className="ml-2 cursor-pointer">
+									{formatPriority(priority)}
+								</span>
+							</div>
+							{newIssuePriority === priority && <Check className="h-4 w-4" />}
+						</DropdownMenuItem>
 					))}
-				</SelectGroup>
-			</SelectContent>
-		</Select>
+				</DropdownMenuRadioGroup>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };

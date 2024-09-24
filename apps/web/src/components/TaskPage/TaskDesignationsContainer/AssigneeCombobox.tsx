@@ -70,7 +70,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="justify-between"
+					className="justify-between md:w-full h-8 md:h-10"
 				>
 					{assigneeName ? (
 						<div className="flex items-center w-28">

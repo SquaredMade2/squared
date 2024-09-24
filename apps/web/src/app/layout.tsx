@@ -7,6 +7,7 @@ import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
 import { SquaredStoreProvider } from "@/store";
 import { SessionProvider } from "next-auth/react";
 import SearchCommand from "@/components/SearchCommand";
+import MobileMenuSheet from "@/components/MobileNav";
 
 export default function RootLayout({
 	children,
@@ -25,6 +26,7 @@ export default function RootLayout({
 							disableTransitionOnChange
 						>
 							<WorkspaceInviteModal />
+							<MobileMenuSheet />
 							<SearchCommand />
 							<div className="h-full flex flex-row overflow-hidden">
 								{children}

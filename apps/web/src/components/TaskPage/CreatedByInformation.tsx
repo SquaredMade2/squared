@@ -2,7 +2,7 @@ import ProfileImage from "@/components/ProfileImage";
 import { formatDate } from "date-fns/format";
 import { useActivityStore, useTaskStore } from "@/store";
 
-const CreatedByInformation = () => {
+export const CreatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
 
 	const authorName = eventLogs[0]?.taskEvent?.authorName ?? "";
@@ -27,5 +27,3 @@ const CreatedByInformation = () => {
 		</div>
 	);
 };
-
-export default CreatedByInformation;

@@ -14,7 +14,7 @@ import { high, medium, low } from "@/components/Svg";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@repo/db";
-import type { ButtonProps } from "@/components/Task/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "./interfaces";
 
 const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
@@ -61,7 +61,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 			onValueChange={(value) => handleSelectPriority(value as Priority)}
 			defaultValue={sidebarPriority}
 		>
-			<SelectTrigger className="grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent">
+			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select priority">
 					<div className="w-full flex items-center justify-between">
 						<div className="w-4 h-4 mr-2">{showIcon(sidebarPriority)}</div>

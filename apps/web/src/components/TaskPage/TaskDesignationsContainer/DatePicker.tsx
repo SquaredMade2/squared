@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/components/ui/use-toast";
-import type { ButtonProps } from "@/components/Task/TaskDesignationsContainer/interfaces";
+import type { ButtonProps } from "./interfaces";
 
 const DatePicker = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();

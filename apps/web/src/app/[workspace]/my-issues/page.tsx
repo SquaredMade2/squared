@@ -10,9 +10,10 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Status, Task } from "@repo/db";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import BackButton from "@/components/BackButton";
+import { Status, type Task } from "@repo/db";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 export default function MyIssues() {
 	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
@@ -29,6 +30,7 @@ export default function MyIssues() {
 	const [tasks, setTasks] = useState<Task[]>(
 		initialTasks.filter((t) => t.assigneeId === user?.id),
 	);
+	const router = useRouter();
 	useEffect(() => {
 		const initiateStore = async () => {
 			if (initialTasks) {
@@ -73,13 +75,32 @@ export default function MyIssues() {
 		setTasks(updatedTasks); // Directly set updated tasks
 		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
 	};
+
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
+	];
+
+	const getFilteredStatuses = () => {
+		return titleArr.map((t) => t.value);
+	};
+
+	const getTasksForStatus = (status: Status) => {
+		return tasks.filter((task) => task.status === status);
+	};
+
 	// TODO: Refactor TopNavBar to be viable in multiple pages
 	// <TopNavBar />;
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden container">
 			<div className="flex justify-start space-x-4 my-4 items-center">
-				<BackButton hoverbackground="bg-card" />
+				<Button size="icon" variant="ghost" onClick={() => router.back()}>
+					<ArrowLeft className="size-4" />
+				</Button>
 				<p className="hidden xl:block">My Issues</p>
 				<Button
 					onClick={() => setActiveTab("assigned")}
@@ -114,7 +135,12 @@ export default function MyIssues() {
 			{/* <TopNavBar /> */}
 
 			<ScrollArea className={view === "list" ? "max-h-[calc(100vh-55px)]" : ""}>
-				<ViewAllTasks handleDragEnd={handleDragEnd} tasks={tasks} />
+				<DragDropContext onDragEnd={handleDragEnd}>
+					<ViewAllTasks
+						getFilteredStatuses={getFilteredStatuses}
+						getTasksForStatus={getTasksForStatus}
+					/>
+				</DragDropContext>
 				{view === "grid" && <ScrollBar orientation="horizontal" />}
 			</ScrollArea>
 		</div>

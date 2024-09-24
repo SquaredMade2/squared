@@ -7,11 +7,15 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-	effortEstimateOptions,
-	complexityScale,
-} from "@/constants/designations";
-import ProgressBar from "@/components/ProgressBar";
+import { Check } from "lucide-react";
+
+const difficultyLevels = [
+	"1 - Really easy",
+	"2 - Easy",
+	"3 - Normal",
+	"4 - Hard",
+	"5 - Really hard",
+];
 
 export const EffortDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
@@ -19,9 +23,9 @@ export const EffortDropdownButton = () => {
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {
-			case estimate > 8:
-				return high();
 			case estimate > 3:
+				return high();
+			case estimate > 1:
 				return medium();
 			default:
 				return low();
@@ -49,29 +53,28 @@ export const EffortDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full ">
+				<Button variant="outline" className="max-w-full w-full">
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-64" side={"left"} align="start">
-				{effortEstimateOptions.map((effortEstimate, index) => {
-					const estimateNumber = extractNumber(effortEstimate);
+			<DropdownMenuContent className="w-[180px]" side="left" align="start">
+				{difficultyLevels.map((effortLevel) => {
+					const estimateNumber = extractNumber(effortLevel);
 
 					return (
 						<DropdownMenuItem
-							key={effortEstimate}
-							className="flex gap-2 items-center"
+							key={effortLevel}
+							className="flex gap-2 items-center cursor-pointer"
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
 							{showIcon(estimateNumber)}
 							<div className="flex flex-col">
-								<span>{effortEstimate}</span>
-								<span className="text-muted-foreground">
-									{complexityScale[index]}
-								</span>
+								<span className="cursor-pointer">{effortLevel}</span>
 							</div>
-							<div className="w-16 ml-auto">
-								<ProgressBar progress={estimateNumber} />
+							<div className="ml-auto">
+								{estimateNumber === effortEstimate && (
+									<Check className="h-4 w-4" />
+								)}
 							</div>
 						</DropdownMenuItem>
 					);

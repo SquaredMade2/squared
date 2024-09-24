@@ -10,6 +10,7 @@ export const createViewStore = (
 		showPriority: true,
 		showLabels: true,
 		showNavbar: false,
+		showMobileNavbar: false,
 		view: "list",
 	},
 ) => {
@@ -22,6 +23,9 @@ export const createViewStore = (
 				},
 				setShowNavbar: (input) => {
 					set({ showNavbar: input });
+				},
+				setShowMobileNavbar: (input) => {
+					set({ showMobileNavbar: input });
 				},
 				setShowDateTime: (input) => {
 					set({ showDateTime: input });

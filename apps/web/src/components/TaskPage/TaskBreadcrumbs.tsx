@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import Link from "next/link";
-import { useTaskStore, useWorkspaceStore } from "@/store";
+import { useWorkspaceStore } from "@/store";
+import type { Task } from "@repo/db";
 
-const TaskBreadcrumbs = () => {
-	const currentTask = useTaskStore((state) => state.currentTask);
+export const TaskBreadcrumbs = ({ task }: { task: Task }) => {
 	const allWorkspaces = useWorkspaceStore((state) => state.workspaces);
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 
@@ -41,12 +41,10 @@ const TaskBreadcrumbs = () => {
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem className="truncate max-w-full">
-						{currentTask?.title ?? ""}
+						{task.title ?? ""}
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
 		</>
 	);
 };
-
-export default TaskBreadcrumbs;
