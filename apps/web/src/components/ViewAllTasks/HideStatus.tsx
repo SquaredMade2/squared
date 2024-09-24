@@ -1,30 +1,27 @@
-import { useState } from "react";
-import HideTaskStatusDropdown from "./HideTaskSectionDropdown";
 import type { HideStatusProps } from "./interfaces";
 import { EllipsisVertical } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
-const HideStatus = ({ toggleShowTasks, showTasks }: HideStatusProps) => {
-	const [showHideDropdown, setShowHideDropdown] = useState(false);
-
-	const toggleHideDropdown = (): void => {
-		setShowHideDropdown((prevState) => !prevState);
-	};
-
+const HideStatus = ({ setShowTasks, showTasks }: HideStatusProps) => {
 	return (
-		<>
-			<div className="relative flex items-center">
-				<button type="button" onClick={toggleHideDropdown} title="Title">
-					<EllipsisVertical className="cursor-pointer size-5" />
-				</button>
-				{showHideDropdown && (
-					<HideTaskStatusDropdown
-						toggleHideDropdown={toggleHideDropdown}
-						toggleShowTasks={toggleShowTasks}
-						showTasks={showTasks}
-					/>
-				)}
-			</div>
-		</>
+		<DropdownMenu>
+			<DropdownMenuTrigger>
+				<EllipsisVertical className="cursor-pointer size-4" />
+			</DropdownMenuTrigger>
+			<DropdownMenuContent>
+				<DropdownMenuItem
+					onClick={() => setShowTasks(!showTasks)}
+					className="cursor-pointer"
+				>
+					{showTasks ? "Hide" : "Unhide"}
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
 
