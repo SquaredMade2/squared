@@ -5,7 +5,6 @@ import { Separator } from "../ui/separator";
 
 const DisplayPreferences = () => {
 	const {
-		view,
 		showPriority,
 		showLabels,
 		showDateTime,
