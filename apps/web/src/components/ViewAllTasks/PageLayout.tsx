@@ -54,7 +54,7 @@ export function TaskPageLayout({
 						view === "list" ? "max-h-[calc(100vh-55px)]" : ""
 					} px-2`}
 				>
-					<div className={"flex flex-col flex-grow mx-2"}>
+					<div className={"flex flex-grow mx-2"}>
 						<DragDropContext onDragEnd={handleDragEnd}>
 							{children}
 						</DragDropContext>
