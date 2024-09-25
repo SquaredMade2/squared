@@ -9,15 +9,19 @@ const ViewAllTasks = ({
 	getFilteredStatuses,
 	getTasksForStatus,
 }: ViewAllTasksProps) => {
-	const { view, viewOptions } = useViewStore((state) => state);
+	const { view, listViewOptions, gridViewOptions } = useViewStore(
+		(state) => state,
+	);
 
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
 			if (status === Status.archived) return null;
 			const tasksForStatus = getTasksForStatus(status);
-			if (!viewOptions.showHiddenTaskColumn && tasksForStatus.length === 0)
-				return null;
+			if (tasksForStatus.length === 0) {
+				if (view === "list" && !listViewOptions.showEmptyGroups) return null;
+				if (view === "grid" && !gridViewOptions.showEmptyGroups) return null;
+			}
 			return (
 				<div key={status} className="px-1">
 					<GroupColumn

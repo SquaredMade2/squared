@@ -6,14 +6,16 @@ import { Separator } from "../ui/separator";
 const DisplayPreferences = () => {
 	const {
 		view,
-		viewOptions,
 		showPriority,
 		showLabels,
 		showDateTime,
+		listViewOptions,
+		gridViewOptions,
 		setShowPriority,
 		setShowLabels,
 		setShowDateTime,
-		setViewOptions,
+		setListViewOptions,
+		setGridViewOptions,
 	} = useViewStore((state) => state);
 
 	const handlePriority = (): void => {
@@ -28,21 +30,17 @@ const DisplayPreferences = () => {
 		setShowDateTime(!showDateTime);
 	};
 
+	const getFormattedKeyString = (obj: { showEmptyGroups?: boolean }) => {
+		return Object.keys(obj)
+			.map((key) => key.replace(/([A-Z])/g, " $1"))
+			.join(", ")
+			.replace(/\b\w/g, (char) => char.toUpperCase());
+	};
+
 	const displayOptions = [
 		{ label: "Priority", show: showPriority, handle: handlePriority },
 		{ label: "Labels", show: showLabels, handle: handleLabels },
 		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
-	];
-
-	const gridOptions = [
-		{
-			label: "Show Empty Groups",
-			show: viewOptions.showHiddenTaskColumn,
-		},
-	];
-
-	const listOptions = [
-		{ label: "Show Empty Groups", show: viewOptions.showHiddenTaskColumn },
 	];
 
 	return (
@@ -64,38 +62,30 @@ const DisplayPreferences = () => {
 					</div>
 				))}
 				<Separator className="my-2" />
-				{view === "grid" &&
-					gridOptions.map((option) => (
-						<div
-							key={useId()}
-							className="flex items-center justify-between w-full"
-						>
-							<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-								{option.label}
-							</p>
-							<Switch
-								className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-								checked={option.show}
-								onCheckedChange={setViewOptions}
-							/>
-						</div>
-					))}
-				{view === "list" &&
-					listOptions.map((option) => (
-						<div
-							key={useId()}
-							className="flex items-center justify-between w-full"
-						>
-							<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-								{option.label}
-							</p>
-							<Switch
-								className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-								checked={option.show}
-								onCheckedChange={setViewOptions}
-							/>
-						</div>
-					))}
+				{view === "grid" && (
+					<div className="flex items-center justify-between w-full">
+						<p className="text-foreground text-xs py-1 mb-1 last:mb-0 capitalize">
+							{getFormattedKeyString(gridViewOptions)}
+						</p>
+						<Switch
+							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+							checked={gridViewOptions.showEmptyGroups}
+							onCheckedChange={setGridViewOptions}
+						/>
+					</div>
+				)}
+				{view === "list" && (
+					<div className="flex items-center justify-between w-full">
+						<p className="text-foreground text-xs py-1 mb-1 last:mb-0 capitalize">
+							{getFormattedKeyString(listViewOptions)}
+						</p>
+						<Switch
+							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+							checked={listViewOptions.showEmptyGroups}
+							onCheckedChange={setListViewOptions}
+						/>
+					</div>
+				)}
 			</ul>
 		</div>
 	);

@@ -11,7 +11,8 @@ export const createViewStore = (
 		showLabels: true,
 		showNavbar: false,
 		showMobileNavbar: false,
-		viewOptions: { showHiddenTaskColumn: false },
+		listViewOptions: { showEmptyGroups: false },
+		gridViewOptions: { showEmptyGroups: false },
 		view: "list",
 	},
 ) => {
@@ -37,8 +38,11 @@ export const createViewStore = (
 				setShowLabels: (input) => {
 					set({ showLabels: input });
 				},
-				setViewOptions: (input) => {
-					set({ viewOptions: { showHiddenTaskColumn: input } });
+				setListViewOptions: (input) => {
+					set({ listViewOptions: { showEmptyGroups: input } });
+				},
+				setGridViewOptions: (input) => {
+					set({ gridViewOptions: { showEmptyGroups: input } });
 				},
 			}),
 			{

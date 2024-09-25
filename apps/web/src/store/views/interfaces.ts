@@ -4,7 +4,8 @@ export type ViewState = {
 	showLabels: boolean;
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
-	viewOptions: { showHiddenTaskColumn: boolean };
+	listViewOptions: { showEmptyGroups: boolean };
+	gridViewOptions: { showEmptyGroups: boolean };
 	view: "list" | "grid";
 };
 
@@ -15,7 +16,8 @@ type ViewActions = {
 	setShowDateTime: (input: boolean) => void;
 	setShowPriority: (input: boolean) => void;
 	setShowLabels: (input: boolean) => void;
-	setViewOptions: (input: boolean) => void;
+	setListViewOptions: (input: boolean) => void;
+	setGridViewOptions: (input: boolean) => void;
 };
 
 export type ViewStore = ViewState & ViewActions;
