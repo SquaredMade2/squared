@@ -41,11 +41,7 @@ const DisplayPreferences = () => {
 						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
 							{option.label}
 						</p>
-						<Switch
-							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-							checked={option.show}
-							onClick={option.handle}
-						/>
+						<Switch checked={option.show} onClick={option.handle} />
 					</div>
 				))}
 			</ul>
