@@ -8,7 +8,6 @@ import {
 	X,
 	User,
 } from "lucide-react";
-import { high } from "@/components/Svg";
 
 import PriorityFilterDropDown from "./PriorityFilter";
 import StatusFilterDropDown from "./StatusFilter";
@@ -32,6 +31,7 @@ import { useFilterStore } from "@/store";
 import LabelFilterDropDown from "./LabelFilter";
 import DueDateFilterDropDown from "./DueDateFilter";
 import AssigneeFilterDropDown from "./AssigneeFilter";
+import { PriorityIcon } from "../Icons";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
@@ -44,7 +44,7 @@ const filterOptions: FilterOption[] = [
 	{
 		id: 2,
 		name: "Priority",
-		svg: high(),
+		svg: <PriorityIcon priority={"urgent"} />,
 		group: "Priority",
 	},
 	{
