@@ -39,10 +39,12 @@ export const createViewStore = (
 					set({ showLabels: input });
 				},
 				setListViewOptions: (input) => {
-					set({ listViewOptions: { showEmptyGroups: input } });
+				        const currentListView = get().listViewOptions
+					set({ listViewOptions: { ...currentListView, input } });
 				},
 				setGridViewOptions: (input) => {
-					set({ gridViewOptions: { showEmptyGroups: input } });
+			                const currentGridView = get().gridViewOptions
+					set({ gridViewOptions: { ...currentGridView, input } });
 				},
 			}),
 			{
