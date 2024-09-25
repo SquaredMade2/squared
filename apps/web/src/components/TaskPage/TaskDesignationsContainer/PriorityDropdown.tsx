@@ -9,35 +9,17 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { CircleAlert, Ellipsis } from "lucide-react";
-import { high, medium, low } from "@/components/Svg";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@repo/db";
 import type { ButtonProps } from "./interfaces";
+import { PriorityIcon } from "@/components/Icons";
 
 const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const sidebarPriority = currentTask ? currentTask?.priority : "";
 	const taskId = currentTask ? currentTask.id : "";
-
-	const showIcon = (name: string) => {
-		switch (name) {
-			case "noPriority":
-				return <Ellipsis className="size-4" />;
-			case "urgent":
-				return <CircleAlert className="size-4 fill-destructive" />;
-			case "high":
-				return high();
-			case "medium":
-				return medium();
-			case "low":
-				return low();
-			default:
-				return <Ellipsis className="size-4" />;
-		}
-	};
 
 	const handleSelectPriority = (newPriority: Priority) => {
 		if (newPriority === sidebarPriority || !taskId) return;
@@ -64,7 +46,9 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select priority">
 					<div className="w-full flex items-center justify-between">
-						<div className="w-4 h-4 mr-2">{showIcon(sidebarPriority)}</div>
+						<div className="w-4 h-4 mr-2">
+							{sidebarPriority && <PriorityIcon priority={sidebarPriority} />}
+						</div>
 						<span className="text-sm font-semibold text-card-foreground">
 							{sidebarPriority
 								? formatPriority(sidebarPriority)
@@ -78,7 +62,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 					<SelectItem key={priority} value={priority}>
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
-								{showIcon(priority)}
+								<PriorityIcon priority={priority} />
 								<span className="ml-2">{formatPriority(priority)}</span>
 							</div>
 						</div>

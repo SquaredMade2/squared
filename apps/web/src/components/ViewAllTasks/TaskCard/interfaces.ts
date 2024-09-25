@@ -5,12 +5,10 @@ export interface TaskGridProps {
 	task: Task;
 	user?: User;
 	currentTeam: Team | null;
-	priorityIcon: React.ReactNode;
 	taskLabels: Label[];
 }
 
 export interface TaskListProps {
-	priorityIcon: React.ReactNode;
 	teamIdentifier?: string;
 	statusIcon: React.ReactNode;
 	highlightText?: (text: string) => React.ReactNode;

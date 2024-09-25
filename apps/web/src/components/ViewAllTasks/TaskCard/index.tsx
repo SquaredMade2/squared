@@ -1,12 +1,5 @@
 "use client";
 import { Draggable } from "@hello-pangea/dnd";
-import {
-	AlertTriangle,
-	ArrowDown,
-	ArrowRight,
-	ArrowUp,
-	CircleDot,
-} from "lucide-react";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import {
 	useTeamStore,
@@ -25,21 +18,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { users } = useUserStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-
-	const getPriorityIcon = () => {
-		switch (task.priority) {
-			case "low":
-				return <ArrowDown className="size-4 text-blue-500" />;
-			case "medium":
-				return <ArrowRight className="size-4 text-yellow-500" />;
-			case "high":
-				return <ArrowUp className="size-4 text-orange-500" />;
-			case "urgent":
-				return <AlertTriangle className="size-4 text-destructive" />;
-			default:
-				return <CircleDot className="size-4" />;
-		}
-	};
 
 	const teamIdentifier =
 		location === "dashboard" ? currentTeam?.identifier : task.teamId;
@@ -65,7 +43,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 									task={task}
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
 									teamIdentifier={teamIdentifier}
-									priorityIcon={getPriorityIcon()}
 									currentTeam={currentTeam}
 									taskLabels={taskLabels}
 								/>
@@ -74,7 +51,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 									task={task}
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
 									location={location}
-									priorityIcon={getPriorityIcon()}
 									statusIcon={getStatusIcon(task.status)}
 									highlightText={highlightText}
 									teamIdentifier={teamIdentifier}

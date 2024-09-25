@@ -8,13 +8,13 @@ import Link from "next/link";
 import { useViewStore } from "@/store";
 import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
+import { PriorityIcon } from "@/components/Icons";
 
 const TaskGrid = ({
 	teamIdentifier,
 	task,
 	user,
 	currentTeam,
-	priorityIcon,
 	taskLabels,
 }: TaskGridProps) => {
 	const { showDateTime, showPriority, showLabels } = useViewStore(
@@ -54,7 +54,7 @@ const TaskGrid = ({
 						</div>
 					)}
 					<div className="flex items-end space-x-4">
-						{showPriority && priorityIcon}
+						{showPriority && <PriorityIcon priority={task.priority} />}
 						{showLabels && <TaskCardLabels labels={taskLabels} view="grid" />}
 					</div>
 				</CardContent>
