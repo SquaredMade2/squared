@@ -67,7 +67,7 @@ model Branch {
   id               String @id @default(uuid())
   name             String
   taskId           String @unique
-  githubRepoInfoId String
+  githubRepoInfoId Int
 
   commits Commit[]
 
@@ -243,7 +243,7 @@ model Workspace {
   companySize          Int?
   tasksCreated         Int      @default(0)
   universalTokenLinkId String?
-  githubRepoInfoId     String?
+  githubRepoInfoId     Int?
   avatarUrl            String?
   admins               String[]
 
@@ -289,7 +289,7 @@ model UniversalTokenLink {
 }
 
 model GithubRepoInfo {
-  id          String   @id @default(uuid())
+  id          Int      @id 
   repoName    String   @default("")
   owner       String   @default("")
   workspaceId String   @unique

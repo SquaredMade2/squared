@@ -1,5 +1,4 @@
 import { prisma } from "@/api";
-import { v4 as uuidv4 } from "uuid";
 const axios = require("axios");
 import type { Route } from "@/api/route";
 
@@ -10,10 +9,19 @@ if (!clientId || !clientSecret) {
 	throw new Error("Missing necessary environment variables");
 }
 
+type Installation = {
+	id: number;
+	account: {
+		login: string;
+	};
+	repository_selection?: string;
+	target_id: number;
+};
+
 export function createRoute(): Route {
 	return {
 		GET: async (res, _, query): Promise<void> => {
-			const { code, state: workspaceId } = query; // extract code and workspaceId from query params
+			const { code, state: workspaceId } = query;
 
 			const validWorkspaceId = Array.isArray(workspaceId)
 				? (workspaceId[0] as string)
@@ -26,7 +34,7 @@ export function createRoute(): Route {
 			}
 
 			try {
-				// exchange authorization code for GitHub access token
+				// Exchange authorization code for GitHub access token
 				const tokenResponse = await axios.post(
 					"https://github.com/login/oauth/access_token",
 					{
@@ -40,7 +48,17 @@ export function createRoute(): Route {
 				const accessToken = tokenResponse.data.access_token;
 				console.log("Access token received from GitHub:", accessToken);
 
-				// fetch GitHub App installation information
+				// Fetch the authenticated user's details
+				const userResponse = await axios.get("https://api.github.com/user", {
+					headers: {
+						Authorization: `token ${accessToken}`,
+						Accept: "application/vnd.github.v3+json",
+					},
+				});
+				const currentUserLogin = userResponse.data.login;
+				console.log(`Authenticated GitHub user: ${currentUserLogin}`);
+
+				// Fetch GitHub App installation information
 				const installationResponse = await axios.get(
 					"https://api.github.com/user/installations",
 					{
@@ -51,17 +69,45 @@ export function createRoute(): Route {
 					},
 				);
 
-				const repoName =
-					installationResponse.data.installations[0].repository_selection;
-				const repoOwner =
-					installationResponse.data.installations[0].account.login;
+				// Find the installation related to the authenticated user
+				const currentInstallation =
+					installationResponse.data.installations.find(
+						(installation: Installation) =>
+							installation.account.login === currentUserLogin,
+					);
 
-				// check if GithubRepoInfo entry exists for workspace; update if true, else create new entry
+				if (!currentInstallation) {
+					console.error(
+						"No installation found for the current authenticated GitHub user",
+					);
+					res.status(400).json({
+						message: "No installation found for the authenticated user",
+					});
+					return;
+				}
+
+				const repoOwner = currentInstallation.account.login;
+				const targetId = currentInstallation.target_id;
+				const repoName = currentInstallation.repository_selection || "N/A";
+
+				console.log(`Workspace ID: ${validWorkspaceId}`);
+				console.log(`Repository Owner: ${repoOwner}`);
+				console.log(`ID (GitHub Target ID): ${targetId}`);
+				console.log(`Repository Name: ${repoName}`);
+
+				// Check if GithubRepoInfo entry exists for the workspace and this targetId (now id)
 				const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
-					where: { workspaceId: validWorkspaceId },
+					where: {
+						id: targetId,
+						workspaceId: validWorkspaceId,
+					},
 				});
 
 				if (existingRepoInfo) {
+					console.log(
+						`Found existing entry for workspaceId ${validWorkspaceId} and id ${targetId}. Updating...`,
+					);
+					// Update existing entry
 					await prisma.githubRepoInfo.update({
 						where: { id: existingRepoInfo.id },
 						data: {
@@ -69,17 +115,21 @@ export function createRoute(): Route {
 							owner: repoOwner,
 						},
 					});
-					console.log("Updated existing GithubRepoInfo with new repo details.");
+					console.log(
+						`Updated existing GithubRepoInfo for owner: ${repoOwner}`,
+					);
 				} else {
+					console.log("No existing entry found. Creating new entry...");
+					// If no existing entry, create a new one
 					await prisma.githubRepoInfo.create({
 						data: {
-							id: uuidv4(),
+							id: targetId,
 							repoName,
 							owner: repoOwner,
 							workspaceId: validWorkspaceId,
 						},
 					});
-					console.log("Created new GithubRepoInfo entry.");
+					console.log(`Created new GithubRepoInfo for owner: ${repoOwner}`);
 				}
 
 				res.redirect(
