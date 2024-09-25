@@ -1,10 +1,17 @@
-import type { Priority } from "@repo/db";
+import type { Priority, Status } from "@repo/db";
 import {
 	AlertTriangle,
 	ArrowDown,
 	ArrowRight,
 	ArrowUp,
 	CircleDot,
+	Circle,
+	Archive,
+	CheckCircle2,
+	Eye,
+	HourglassIcon,
+	Inbox,
+	XCircle,
 } from "lucide-react";
 
 export const PriorityIcon = ({ priority }: { priority: Priority }) => {
@@ -23,4 +30,25 @@ export const PriorityIcon = ({ priority }: { priority: Priority }) => {
 		}
 	};
 	return <Icon />;
+};
+
+export const StatusIcon = ({ status }: { status: Status }) => {
+	switch (status) {
+		case "backlog":
+			return <Inbox className="size-4 text-gray-500" />;
+		case "todo":
+			return <Circle className="size-4 text-blue-500" />;
+		case "inProgress":
+			return <HourglassIcon className="size-4 text-yellow-500" />;
+		case "inReview":
+			return <Eye className="size-4 text-purple-500" />;
+		case "done":
+			return <CheckCircle2 className="size-4 text-green-500" />;
+		case "canceled":
+			return <XCircle className="size-4 text-red-500" />;
+		case "archived":
+			return <Archive className="size-4 text-gray-400" />;
+		default:
+			return null;
+	}
 };

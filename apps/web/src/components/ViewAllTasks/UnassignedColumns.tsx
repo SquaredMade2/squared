@@ -7,7 +7,7 @@ import {
 } from "../ui/accordion";
 import { Droppable } from "@hello-pangea/dnd";
 import { formatStatus } from "@/utils/formatting";
-import { showIcon } from "./TaskColumnTitle";
+import { StatusIcon } from "../Icons";
 
 const UnassignedColumns = ({
 	getEmptyColumns,
@@ -28,7 +28,7 @@ const UnassignedColumns = ({
 									<div className="flex flex-row justify-between transition-all px-2 h-10 mb-2 font-medium text-sm">
 										<div className="flex items-center gap-4">
 											<div className="w-4 lg:mr-2 mr-1.5">
-												{showIcon(column)}
+												<StatusIcon status={column} />
 											</div>
 											<span>{formatStatus(column)}</span>
 											<span className="ml-1 text-muted-foreground">0</span>

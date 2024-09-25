@@ -10,7 +10,6 @@ export interface TaskGridProps {
 
 export interface TaskListProps {
 	teamIdentifier?: string;
-	statusIcon: React.ReactNode;
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
 	task: Task;

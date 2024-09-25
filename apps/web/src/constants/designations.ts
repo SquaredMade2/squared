@@ -6,6 +6,7 @@ export const statusOptions: Status[] = [
 	"inProgress",
 	"inReview",
 	"done",
+	"canceled",
 ];
 
 export const priorityOptions: Priority[] = [
