@@ -5,7 +5,7 @@ import { Loader2, Clipboard } from "lucide-react";
 import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
-import { Button } from "../ui/button";
+import { NoTasksNewIssueButton } from "../NewIssue";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -61,7 +61,7 @@ export function TaskPageLayout({
 						You haven't created any tasks. Start by adding a new task to your
 						dashboard.
 					</p>
-					<Button variant="secondary">+ Add your first task</Button>
+					<NoTasksNewIssueButton />
 				</div>
 			) : currentWorkspace ? (
 				<ScrollArea
