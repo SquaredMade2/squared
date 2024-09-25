@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
+		"build": "pnpm run gen",
 		"check-types": "tsc --noEmit",
 		"dev": "nodemon api/index.ts",
 		"gen": "ts-node api/generate-index.ts",
@@ -12,7 +13,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
-		"start": "ts-node -r tsconfig-paths/register api/index.ts",
+		"start": "ts-node api/index.ts",
 		"test": "echo \"Error: no test specified\""
 	},
 	"keywords": [],

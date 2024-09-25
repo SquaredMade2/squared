@@ -6,8 +6,7 @@ RUN apk add --no-cache libc6-compat python3 make g++
 
 # Set working directory
 WORKDIR /app
-RUN npm install -g turbo
-RUN npm install -g pnpm
+RUN npm install -g turbo pnpm ts-node tsconfig-paths
 COPY . .
 RUN turbo prune api --docker
 
@@ -20,10 +19,11 @@ WORKDIR /app
 # Copy Prisma schema files separately to ensure they are available
 COPY packages/db/prisma ./packages/db/prisma
 COPY packages/test-db/prisma ./packages/test-db/prisma
+COPY --from=builder /app/apps/api /app/apps/api
 
 # First install dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
-RUN npm install -g pnpm
+RUN npm install -g turbo pnpm ts-node tsconfig-paths
 
 RUN pnpm install
 
@@ -62,11 +62,15 @@ RUN pnpm turbo build --filter=api...
 
 FROM base AS runner
 WORKDIR /app
+COPY --from=installer /app .
+WORKDIR /app/apps/api
+
+RUN npm install -g turbo pnpm ts-node tsconfig-paths
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
-COPY --from=installer /app .
 
-CMD ts-node -r tsconfig-paths/register apps/api/index.ts
+
+CMD ts-node api/index.ts
