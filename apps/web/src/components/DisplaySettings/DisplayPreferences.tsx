@@ -70,7 +70,9 @@ const DisplayPreferences = () => {
 						<Switch
 							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
 							checked={gridViewOptions.showEmptyGroups}
-							onCheckedChange={setGridViewOptions}
+							onCheckedChange={(checked) =>
+								setGridViewOptions({ showEmptyGroups: checked })
+							}
 						/>
 					</div>
 				)}
@@ -82,7 +84,9 @@ const DisplayPreferences = () => {
 						<Switch
 							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
 							checked={listViewOptions.showEmptyGroups}
-							onCheckedChange={setListViewOptions}
+							onCheckedChange={(checked) =>
+								setListViewOptions({ showEmptyGroups: checked })
+							}
 						/>
 					</div>
 				)}

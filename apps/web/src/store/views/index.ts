@@ -18,7 +18,7 @@ export const createViewStore = (
 ) => {
 	return createStore<ViewStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				setView: (view) => {
 					set({ view });
@@ -39,12 +39,12 @@ export const createViewStore = (
 					set({ showLabels: input });
 				},
 				setListViewOptions: (input) => {
-				        const currentListView = get().listViewOptions
-					set({ listViewOptions: { ...currentListView, input } });
+					const currentListView = get().listViewOptions;
+					set({ listViewOptions: { ...currentListView, ...input } });
 				},
 				setGridViewOptions: (input) => {
-			                const currentGridView = get().gridViewOptions
-					set({ gridViewOptions: { ...currentGridView, input } });
+					const currentGridView = get().gridViewOptions;
+					set({ gridViewOptions: { ...currentGridView, ...input } });
 				},
 			}),
 			{

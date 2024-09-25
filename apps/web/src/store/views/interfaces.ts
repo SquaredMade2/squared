@@ -1,11 +1,13 @@
+export type ViewOptions = { showEmptyGroups: boolean };
+
 export type ViewState = {
 	showDateTime: boolean;
 	showPriority: boolean;
 	showLabels: boolean;
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
-	listViewOptions: { showEmptyGroups: boolean };
-	gridViewOptions: { showEmptyGroups: boolean };
+	listViewOptions: ViewOptions;
+	gridViewOptions: ViewOptions;
 	view: "list" | "grid";
 };
 
