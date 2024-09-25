@@ -1,11 +1,4 @@
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleFadingPlus,
-} from "lucide-react";
 import type { ContextMenuProps } from "./interfaces";
-import { inProgress } from "@/components/Svg";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -15,6 +8,7 @@ import {
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import type { Status } from "@repo/db";
+import { StatusIcon } from "@/components/Icons";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
@@ -31,27 +25,11 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 		}
 	};
 
-	const handleRenderIcon = (status: Status) => {
-		switch (status) {
-			case "backlog":
-				return <CircleDashed className="size-4" />;
-			case "todo":
-				return <Circle className="size-4" />;
-			case "inProgress":
-				return inProgress();
-			case "inReview":
-				return <CircleFadingPlus className="size-4 text-green-400" />;
-			case "done":
-				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			default:
-				return <CircleDashed className="size-4" />;
-		}
-	};
 	return (
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<CircleDashed className="size-4" />
+					<StatusIcon status={task.status} />
 				</div>
 				Status
 			</ContextMenuSubTrigger>
@@ -63,7 +41,9 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 							key={status}
 							onClick={() => handleSetStatus(status)}
 						>
-							<div className="mr-2">{handleRenderIcon(status)}</div>
+							<div className="mr-2">
+								<StatusIcon status={status} />
+							</div>
 							{status}
 						</ContextMenuItem>
 					);

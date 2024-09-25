@@ -11,7 +11,6 @@ import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
 import type { TaskCardProps } from "./interfaces";
-import { getStatusIcon } from "@/utils/enumIcons";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
@@ -51,7 +50,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 									task={task}
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
 									location={location}
-									statusIcon={getStatusIcon(task.status)}
 									highlightText={highlightText}
 									teamIdentifier={teamIdentifier}
 									currentTeam={currentTeam}

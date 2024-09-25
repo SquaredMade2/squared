@@ -1,11 +1,4 @@
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	RotateCw,
-	Check,
-} from "lucide-react";
-import { inProgress } from "../Svg";
+import { Check } from "lucide-react";
 import { statusOptions } from "@/constants/designations";
 import { formatStatus } from "@/utils/formatting";
 import { Button } from "@/components/ui/button";
@@ -18,6 +11,7 @@ import {
 	DropdownMenuRadioGroup,
 } from "../ui/dropdown-menu";
 import type { Status } from "@repo/db";
+import { StatusIcon } from "../Icons";
 
 export const StatusDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
@@ -27,26 +21,13 @@ export const StatusDropdownButton = () => {
 		setNewIssueData({ ...newIssueData, status });
 	};
 
-	const showIcon = (name: string | undefined) => {
-		switch (name) {
-			case "backlog":
-				return <CircleDashed className="size-4" />;
-			case "todo":
-				return <Circle className="size-4" />;
-			case "inProgress":
-				return inProgress();
-			case "done":
-				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-			case "inReview":
-				return <RotateCw className="size-4" />;
-		}
-	};
-
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="max-w-full w-full">
-					<span className="cursor-pointer">{showIcon(newIssueStatus)}</span>
+					<span className="cursor-pointer">
+						<StatusIcon status={newIssueStatus || "todo"} />
+					</span>
 					<span className="ml-2 cursor-pointer">
 						{formatStatus(newIssueStatus ?? "backlog")}
 					</span>
@@ -64,7 +45,7 @@ export const StatusDropdownButton = () => {
 							className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
 						>
 							<div className="flex items-center">
-								{showIcon(status)}
+								<StatusIcon status={status} />
 								<span className="ml-2 cursor-pointer">
 									{formatStatus(status)}
 								</span>

@@ -7,11 +7,10 @@ import { formatDate } from "date-fns";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import Link from "next/link";
 import type { TaskListProps } from "./interfaces";
-import { PriorityIcon } from "@/components/Icons";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
 
 const TaskList = ({
 	teamIdentifier,
-	statusIcon,
 	highlightText,
 	location,
 	task,
@@ -47,7 +46,7 @@ const TaskList = ({
 								size="sm"
 								className="mx-1 p-0 flex-shrink-0"
 							>
-								{statusIcon}
+								<StatusIcon status={task.status} />
 							</Button>
 							<span className="truncate min-w-0">
 								{location === "search" && highlightText
