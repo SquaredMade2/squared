@@ -9,19 +9,26 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useWorkspaceStore } from "@/store/workspaces/store";
 
 const GithubSettings: React.FC = () => {
+	const workspaceId = useWorkspaceStore((state) => state.currentWorkspace?.id);
+
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		const token = params.get("token");
 		if (token) {
 			console.log("Token received:", token);
-			// Handle the token here, such as storing it in local storage or using it in your application
 		}
 	}, []);
 
 	const handleClick = (): void => {
-		window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user`;
+		if (!workspaceId) {
+			console.error("No workspace ID found");
+			return;
+		}
+
+		window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user&state=${workspaceId}`;
 	};
 
 	return (
