@@ -41,7 +41,6 @@ export default function AssigneeFilterDropDown({
 
 	useEffect(() => {
 		if (selectedAssignees.length > 0) {
-			console.log(selectedAssignees);
 			addFilter({
 				field: "assigneeId",
 				value: selectedAssignees.map((u) => u.id),

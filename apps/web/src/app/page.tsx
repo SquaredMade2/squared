@@ -1,66 +1,60 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
 import { Loader2 } from "lucide-react";
-import { parseCookies, destroyCookie } from "nookies";
+import { useSession } from "next-auth/react";
+import type { User } from "next-auth";
 
 const HomePage = () => {
 	const router = useRouter();
-	const { user, logout } = useAuthStore((state) => state);
+	const { logout, setUser } = useAuthStore((state) => state);
+	const { getUser } = useUserStore((state) => state);
+	const { data, status } = useSession();
 	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
 		(state) => state,
 	);
-	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const handleRedirection = async () => {
+		const handleRedirection = async (authUser: User) => {
 			try {
-				const cookies = parseCookies();
-				const authCookie = cookies["auth-store"];
+				if (authUser) {
+					const { user: loggedUser } = await getUser(authUser.id);
+					if (loggedUser) {
+						setUser(loggedUser);
+						// If there is a loggedUser, redirect to appropriate workspace or join page
+						if (loggedUser.defaultWorkspaceId) {
+							const { workspace } = await getWorkspace(
+								loggedUser.defaultWorkspaceId,
+							);
+							if (workspace?.url) {
+								router.push(`/${workspace.url}`);
+								return;
+							}
+						}
 
-				if (authCookie && !user) {
-					// If there is a cookie but no user, log out and redirect
-					destroyCookie(undefined, "auth-store");
-					await logout();
-					router.push("/login");
-					return;
-				}
-
-				if (user) {
-					// If there is a user, redirect to appropriate workspace or join page
-					if (user.defaultWorkspaceId) {
-						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
+						const workspaces = await getAllWorkspaces(loggedUser.id);
+						if (workspaces.length) {
+							router.push(`/${workspaces[0].url}`);
 							return;
 						}
-					}
-
-					const workspaces = await getAllWorkspaces(user.id);
-					if (workspaces.length) {
-						router.push(`/${workspaces[0].url}`);
-						return;
 					}
 					router.push("/join");
 					return;
 				}
 
-				// If no user and no cookie, redirect to login
+				// If no loggedUser and no cookie, redirect to login
 				await logout();
 				router.push("/login");
 			} catch (error) {
 				console.error("Redirection Error: ", error);
 				// Optionally set an error state here to show an error message
-			} finally {
-				setLoading(false); // Stop loading once redirection is handled
 			}
 		};
-
-		if (loading) {
-			handleRedirection();
+		if (data?.user) {
+			handleRedirection(data.user);
 		}
-	}, [user, router, getWorkspace, getAllWorkspaces, logout, loading]);
+	}, [router, status]);
 
 	return (
 		<div className="h-screen w-full">
