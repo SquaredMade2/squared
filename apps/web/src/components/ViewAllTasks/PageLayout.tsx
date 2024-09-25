@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Loader2 } from "lucide-react";
-import { useViewStore } from "@/store";
+import { Loader2, Clipboard } from "lucide-react";
+import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
+import { NoTasksNewIssueButton } from "../NewIssue";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -24,6 +25,8 @@ export function TaskPageLayout({
 	children,
 }: TaskPageLayoutProps) {
 	const { view } = useViewStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+	const { tasks } = useTaskStore((state) => state);
 
 	if (loading) {
 		return (
@@ -47,6 +50,18 @@ export function TaskPageLayout({
 							{`"${teamIdentifier}"`}
 						</p>
 					</div>
+				</div>
+			) : user && tasks.length === 0 ? (
+				<div className="w-full h-full flex flex-col items-center justify-center gap-4">
+					<div className="w-16 h-16 flex justify-center items-center bg-secondary rounded-full">
+						<Clipboard className="w-8 h-8 text-muted-foreground" />
+					</div>
+					<h1 className="text-2xl font-bold">No tasks yet</h1>
+					<p className="text-accent-foreground">
+						You haven't created any tasks. Start by adding a new task to your
+						dashboard.
+					</p>
+					<NoTasksNewIssueButton />
 				</div>
 			) : currentWorkspace ? (
 				<ScrollArea
