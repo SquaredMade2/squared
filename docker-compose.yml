@@ -1,19 +1,19 @@
 version: "3"
 
 services:
-  www:
-    container_name: www
-    build:
-      context: .
-      dockerfile: ./apps/www/Dockerfile
-    image: squared-www:latest
-    restart: always
-    ports:
-      - 4000:4000
-    networks:
-      - app_network
-    env_file:
-      - .env
+  # www:
+  #   container_name: www
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/www/Dockerfile
+  #   image: squared-www:latest
+  #   restart: always
+  #   ports:
+  #     - 4000:4000
+  #   networks:
+  #     - app_network
+  #   env_file:
+  #     - .env
 
   web:
     container_name: web

@@ -1,35 +1,34 @@
-# Base image
 FROM node:20-alpine AS base
 
-# Builder stage
 FROM base AS builder
-RUN apk add --no-cache libc6-compat
+RUN apk update
+RUN apk add --no-cache libc6-compat python3 make g++
+
+# Set working directory
 WORKDIR /app
-
-# Install pnpm and turbo globally
-RUN npm install -g pnpm turbo
-
+RUN npm install -g turbo
+RUN npm install -g pnpm
 COPY . .
 RUN turbo prune api --docker
 
-# Installer stage
+# Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
+RUN apk update
+RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
-# Re-install pnpm in this stage
+# Copy Prisma schema files separately to ensure they are available
+COPY packages/db/prisma ./packages/db/prisma
+COPY packages/test-db/prisma ./packages/test-db/prisma
+
+# First install dependencies (as they change less often)
+COPY --from=builder /app/out/json/ .
 RUN npm install -g pnpm
 
-# Install dependencies
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm install
 
-# Remove unnecessary packages
-RUN pnpm prune --prod
-
-# Build the project
+# Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
 
 # Accept build arguments and set them as environment variables
 ARG NODE_ENV
@@ -42,14 +41,8 @@ ARG GOOGLE_REDIRECT_URI
 ARG SESSION_SECRET
 ARG EMAIL_USERNAME
 ARG EMAIL_PASSWORD
-ARG POSTGRES_URL
 ARG POSTGRES_PRISMA_URL
-ARG POSTGRES_URL_NO_SSL
 ARG POSTGRES_URL_NON_POOLING
-ARG POSTGRES_USER
-ARG POSTGRES_HOST
-ARG POSTGRES_PASSWORD
-ARG POSTGRES_DATABASE
 
 # Set build arguments as environment variables
 ENV NODE_ENV=${NODE_ENV}
@@ -62,37 +55,18 @@ ENV GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
 ENV SESSION_SECRET=${SESSION_SECRET}
 ENV EMAIL_USERNAME=${EMAIL_USERNAME}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
-ENV POSTGRES_URL=${POSTGRES_URL}
 ENV POSTGRES_PRISMA_URL=${POSTGRES_PRISMA_URL}
-ENV POSTGRES_URL_NO_SSL=${POSTGRES_URL_NO_SSL}
 ENV POSTGRES_URL_NON_POOLING=${POSTGRES_URL_NON_POOLING}
-ENV POSTGRES_USER=${POSTGRES_USER}
-ENV POSTGRES_HOST=${POSTGRES_HOST}
-ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-ENV POSTGRES_DATABASE=${POSTGRES_DATABASE}
 
-# Build the project
 RUN pnpm turbo build --filter=api...
 
-# Runner stage
-FROM node:20-slim AS runner
+FROM base AS runner
 WORKDIR /app
 
-# Install pnpm again to ensure it's available for the final stage
-RUN npm install -g pnpm
-
 # Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 express
-USER express
+RUN addgroup --system --gid 1001 expressjs
+RUN adduser --system --uid 1001 expressjs
+USER expressjs
+COPY --from=installer /app .
 
-# Copy necessary files from the installer stage
-COPY --from=installer /app/apps/api/package.json .
-COPY --from=installer /app/apps/api/dist ./dist
-COPY --from=installer /app/apps/api/node_modules ./node_modules
-
-# Set the working directory for the Express server
-WORKDIR /app/dist
-
-# Start the Express server
-CMD ["node", "index.js"]
+CMD ts-node -r tsconfig-paths/register apps/api/index.ts
