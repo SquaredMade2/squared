@@ -1,5 +1,4 @@
-// biome-ignore lint/correctness/noUnusedImports: <explanation>
-import React, { type ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { axe } from "jest-axe";
 import { render, fireEvent, type RenderResult } from "@testing-library/react";
 import * as ToggleGroup from "./ToggleGroup";
