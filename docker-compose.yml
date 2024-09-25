@@ -43,20 +43,6 @@ services:
       - .env
     image: squared-api:latest
 
-  nginx:
-    container_name: nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    image: squared-nginx:latest
-    restart: always
-    ports:
-      - 80:80
-    networks:
-      - app_network
-    env_file:
-      - .env
-
 networks:
   app_network:
     external: true
