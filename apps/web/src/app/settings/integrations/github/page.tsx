@@ -13,14 +13,18 @@ import { useWorkspaceStore } from "@/store/workspaces/store";
 
 const GithubSettings: React.FC = () => {
 	const workspaceId = useWorkspaceStore((state) => state.currentWorkspace?.id);
+	const connectedRepos = useWorkspaceStore((state) => state.connectedRepos);
+	const getConnectedRepos = useWorkspaceStore(
+		(state) => state.getConnectedRepos,
+	);
 
 	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		const token = params.get("token");
-		if (token) {
-			console.log("Token received:", token);
+		if (workspaceId) {
+			getConnectedRepos(workspaceId);
 		}
-	}, []);
+	}, [workspaceId, getConnectedRepos]);
+
+	const isConnected = connectedRepos && connectedRepos.length > 0;
 
 	const handleClick = (): void => {
 		if (!workspaceId) {
@@ -48,23 +52,40 @@ const GithubSettings: React.FC = () => {
 							Github
 						</header>
 					</div>
-					<Card className="flex justify-center items-center p-2">
-						<CardHeader>
-							<CardTitle>Connect Personal Account</CardTitle>
-							<CardDescription>
-								Connect your personal account to use the integration feature
-							</CardDescription>
-						</CardHeader>
-						<div className="flex justify-center items-center p-6">
-							<Button
-								onClick={handleClick}
-								className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
-								variant="outline"
-							>
-								Connect
-							</Button>
-						</div>
-					</Card>
+
+					{isConnected ? (
+						<Card className="p-2">
+							<CardHeader>
+								<CardTitle>Connected to GitHub</CardTitle>
+								<CardDescription>Your connected repositories:</CardDescription>
+							</CardHeader>
+							<ul className="p-6">
+								{connectedRepos.length > 0 ? (
+									connectedRepos.map((repo) => <li key={repo}>{repo}</li>)
+								) : (
+									<p>No repositories connected.</p>
+								)}
+							</ul>
+						</Card>
+					) : (
+						<Card className="flex justify-between items-center p-2">
+							<CardHeader>
+								<CardTitle>Connect Personal Account</CardTitle>
+								<CardDescription>
+									Connect your personal account to use the integration feature
+								</CardDescription>
+							</CardHeader>
+							<div className="flex justify-center items-center p-6">
+								<Button
+									onClick={handleClick}
+									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
+									variant="outline"
+								>
+									Connect
+								</Button>
+							</div>
+						</Card>
+					)}
 				</div>
 			</div>
 		</div>

@@ -23,7 +23,7 @@ const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	companySize: null,
 	tasksCreated: 0,
 	universalTokenLinkId: null,
-	githubRepoInfoId: null,
+	githubRepoInfoId: 0,
 };
 
 export const createWorkspaceStore = (
@@ -31,6 +31,7 @@ export const createWorkspaceStore = (
 		workspaces: [],
 		currentWorkspace: null,
 		workspaceFilters: [],
+		connectedRepos: [],
 	},
 ) => {
 	return createStore<WorkspaceStore>()(
@@ -112,6 +113,24 @@ export const createWorkspaceStore = (
 						};
 					}
 				},
+				getConnectedRepos: async (workspaceId: string): Promise<string[]> => {
+					try {
+						const response = await axios.get(`${apiString(workspaceId)}/repos`);
+						const { data: connectedRepos, message, variant } = response.data;
+
+						if (connectedRepos && variant === "default") {
+							set({ connectedRepos });
+							return connectedRepos;
+						}
+
+						console.error(message || "Error in getConnectedRepos");
+						return [];
+					} catch (error) {
+						console.error("Error in getConnectedRepos:", error);
+						return [];
+					}
+				},
+
 				getWorkspaceFilters: async (
 					workspaceId: string,
 				): Promise<SavedFilter[]> => {

@@ -5,6 +5,7 @@ export type WorkspaceState = {
 	workspaces: Workspace[];
 	currentWorkspace: Workspace | null;
 	workspaceFilters: SavedFilter[];
+	connectedRepos: string[];
 };
 
 export type Workspace = WorkspaceType & {
@@ -36,6 +37,7 @@ type WorkspaceActions = {
 		workspaceId: string,
 		email: string | string[],
 	) => Promise<void>;
+	getConnectedRepos: (workspaceId: string) => Promise<string[]>;
 };
 
 export type WorkspaceStore = WorkspaceActions & WorkspaceState;
