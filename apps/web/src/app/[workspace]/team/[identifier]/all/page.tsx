@@ -8,34 +8,28 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import {
 	useAuthStore,
-	useFilterStore,
 	useTaskStore,
 	useTeamStore,
 	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status } from "@repo/db";
+import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
+import { Status } from "@repo/db";
+import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
 
 export default function Home() {
 	const { view } = useViewStore((state) => state);
-	const { filterTasks } = useFilterStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-	const {
-		tasks: initialTasks,
-		updateTask,
-		getAllTasks,
-	} = useTaskStore((state) => state);
+	const { tasks, updateTask, getAllTasks } = useTaskStore((state) => state);
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
 	);
 	const getAllUsers = useUserStore((state) => state.getAllUsers);
 	const [loading, setLoading] = useState(true);
 	const [authorized, setAuthorized] = useState(false);
-	const [tasks, setTasks] = useState(initialTasks);
 
 	const params = useParams();
 
@@ -46,10 +40,6 @@ export default function Home() {
 	useEffect(() => {
 		const initiateStore = async () => {
 			setLoading(true);
-
-			if (initialTasks) {
-				setTasks(initialTasks);
-			}
 
 			if (user && !currentWorkspace) {
 				const workspaces = await getAllWorkspaces(user.id);
@@ -66,8 +56,7 @@ export default function Home() {
 					const team = teams.find((t) => t.identifier === teamIdentifier);
 					team && setCurrentTeam(team);
 					if (team) {
-						const tasks = await getAllTasks(team.id);
-						setTasks(tasks);
+						await getAllTasks(team.id);
 					}
 				}
 			}
@@ -76,14 +65,7 @@ export default function Home() {
 		};
 
 		initiateStore();
-	}, [
-		currentWorkspace,
-		user,
-		workspaceUrl,
-		currentTeam,
-		teamIdentifier,
-		initialTasks,
-	]);
+	}, [currentWorkspace, user, workspaceUrl, currentTeam, teamIdentifier]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -99,11 +81,34 @@ export default function Home() {
 			...draggedTask,
 			status: destination.droppableId as Status,
 		};
-		const updatedTasks = tasks.map((task) =>
-			task.id === draggableId ? updatedTask : task,
-		);
-		setTasks(updatedTasks); // Directly set updated tasks
-		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
+		await updateTask(updatedTask.id, { status: updatedTask.status });
+	};
+
+	const titleArr: { value: Status; id: number }[] = [
+		{ value: Status.backlog, id: 1 },
+		{ value: Status.todo, id: 2 },
+		{ value: Status.inProgress, id: 3 },
+		{ value: Status.inReview, id: 4 },
+		{ value: Status.done, id: 5 },
+	];
+
+	const getFilteredStatuses = () => {
+		return titleArr.map((t) => t.value);
+	};
+
+	const getTasksForStatus = (status: Status) => {
+		return tasks.filter((task) => task.status === status);
+	};
+
+	const getEmptyColumns = (): Status[] => {
+		const filteredStatuses = getFilteredStatuses();
+
+		return filteredStatuses.filter((status) => {
+			if (status === Status.archived) return false;
+
+			const tasks = getTasksForStatus(status);
+			return tasks && tasks.length === 0;
+		});
 	};
 
 	useEffect(() => {
@@ -118,9 +123,6 @@ export default function Home() {
 			</div>
 		);
 	}
-
-	// const activeSelected = params.all === "active";		// will uncomment/delete in next pr - kaila
-	// const backlogSelected = params.all === "backlog";
 
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">
@@ -138,17 +140,24 @@ export default function Home() {
 					</div>
 				</div>
 			) : currentWorkspace ? (
-				<div className={"flex flex-col flex-grow mx-2"}>
-					<ScrollArea
-						className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
-					>
-						<ViewAllTasks
-							handleDragEnd={handleDragEnd}
-							tasks={filterTasks(tasks).filter((t) => !t.deleted)}
-						/>
+				<ScrollArea
+					className={`${view === "list" ? "max-h-[calc(100vh-55px)]" : ""} px-2`}
+				>
+					<div className={"flex flex-grow ml-2"}>
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<ViewAllTasks
+								getFilteredStatuses={getFilteredStatuses}
+								getTasksForStatus={getTasksForStatus}
+							/>
+							{view === "grid" && getEmptyColumns().length >= 1 && (
+								<div className="ml-auto">
+									<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+								</div>
+							)}
+						</DragDropContext>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</ScrollArea>
-				</div>
+					</div>
+				</ScrollArea>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">

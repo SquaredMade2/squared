@@ -73,8 +73,8 @@ const SVGVertical = ({ className }: { className?: string }) => {
 					animate={{ x1: 2, y1: 400, x2: 2, y2: 600 }}
 					transition={{
 						repeat: Number.POSITIVE_INFINITY,
-						duration: Math.random() * 2 + 1,
-						delay: Math.floor(Math.random() * 6) + 5,
+						duration: Math.random() * 2 + 5,
+						delay: Math.floor(Math.random() * 6) + 2,
 					}}
 					gradientUnits="userSpaceOnUse"
 				>
@@ -115,8 +115,8 @@ const SVG = ({ className }: { className?: string }) => {
 					animate={{ x1: 400, y1: 0, x2: 600, y2: 0 }}
 					transition={{
 						repeat: Infinity,
-						duration: Math.random() * 2 + 1,
-						delay: Math.floor(Math.random() * 6) + 5,
+						duration: Math.random() * 2 + 10,
+						delay: Math.floor(Math.random() * 6) + 2,
 					}}
 					gradientUnits="userSpaceOnUse"
 				>

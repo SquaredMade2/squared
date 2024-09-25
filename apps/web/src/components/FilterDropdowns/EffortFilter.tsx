@@ -7,7 +7,7 @@ import {
 	DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
 import { low, medium, high } from "@/components/Svg";
-import type { EffortFilterDropDownProps } from "./interfaces";
+import type { FilterDropDownProps } from "./interfaces";
 import { useFilterStore } from "@/store/filters";
 
 const groupEffort = [
@@ -84,11 +84,13 @@ const groupEffort = [
 ];
 
 const EffortFilterDropDown = ({
-	showEffortFilterDropDown,
-	setShowEffortFilterDropDown,
-}: EffortFilterDropDownProps) => {
+	showFilterDropDown,
+	setShowFilterDropDown,
+}: FilterDropDownProps) => {
 	const [selectedEfforts, setSelectedEfforts] = useState<string>("");
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 
 	useEffect(() => {
 		if (Number(selectedEfforts) > 0) {
@@ -102,10 +104,19 @@ const EffortFilterDropDown = ({
 		}
 	}, [selectedEfforts, addFilter, removeFilter]);
 
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("effortEstimate")
+		) {
+			setSelectedEfforts("");
+		}
+	}, [currentFilterTypes]);
+
 	return (
 		<DropdownMenu
-			open={showEffortFilterDropDown}
-			onOpenChange={setShowEffortFilterDropDown}
+			open={showFilterDropDown}
+			onOpenChange={setShowFilterDropDown}
 		>
 			<DropdownMenuTrigger>
 				<div className="hidden" aria-hidden="true" />

@@ -1,8 +1,8 @@
 "use client";
 
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
-import NewIssueModal from "../NewIssueModal";
-import NewIssueButton from "@/components/NewIssueButton";
+
+import NewIssueModal, { NewIssueButton } from "@/components/NewIssue";
 import {
 	Accordion,
 	AccordionContent,
@@ -10,11 +10,11 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { LayoutGrid } from "lucide-react";
-import IconLeftMenu from "../IconLeftMenu";
+import IconLeftMenu from "../IconNavbar";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";
-import NavBarTeams from "../NavBarTeams";
+import NavBarTeams from "./NavBarTeams";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { ScrollArea } from "../ui/scroll-area";
@@ -30,7 +30,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="h-screen flex">
+			<div className="h-screen md:flex hidden">
 				<IconLeftMenu />
 
 				<div className="flex h-full bg-popover w-64">

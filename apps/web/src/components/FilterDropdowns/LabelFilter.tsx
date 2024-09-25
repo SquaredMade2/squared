@@ -15,17 +15,19 @@ import {
 	CommandGroup,
 } from "@/components/ui/command";
 import { useFilterStore, useWorkspaceStore } from "@/store";
-import type { LabelFilterDropDownProps } from "./interfaces";
+import type { FilterDropDownProps } from "./interfaces";
 import type { Label } from "@repo/db";
 import { Check } from "lucide-react";
 
 export default function LabelFilterDropDown({
-	showLabelFilterDropDown,
-	setShowLabelFilterDropDown,
-}: LabelFilterDropDownProps) {
+	showFilterDropDown,
+	setShowFilterDropDown,
+}: FilterDropDownProps) {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleLabelChange = (label: Label) => {
@@ -48,16 +50,23 @@ export default function LabelFilterDropDown({
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
 
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("labels")
+		) {
+			setSelectedLabels([]);
+			console.log("selectedLabels", selectedLabels);
+		}
+	}, [currentFilterTypes]);
+
 	const filteredLabels =
 		currentWorkspace?.Labels.filter((label) =>
 			label.name.toLowerCase().includes(searchQuery.toLowerCase()),
 		) || [];
 
 	return (
-		<Popover
-			open={showLabelFilterDropDown}
-			onOpenChange={setShowLabelFilterDropDown}
-		>
+		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
 			<PopoverTrigger />
 			<PopoverContent className="w-72 p-0" sideOffset={5}>
 				<Command>
@@ -69,7 +78,7 @@ export default function LabelFilterDropDown({
 					<CommandList>
 						<CommandEmpty>No labels found.</CommandEmpty>
 						<CommandGroup>
-							{filteredLabels.map((label) => (
+							{filteredLabels?.map((label) => (
 								<CommandItem
 									key={label.id}
 									onSelect={() => handleLabelChange(label)}

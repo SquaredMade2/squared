@@ -6,6 +6,7 @@ import type {
 	NotificationState,
 	NotificationStore,
 	NotificationResponse,
+	NotificationTask,
 } from "./interfaces";
 import type { Notification } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
@@ -27,7 +28,7 @@ export const createNotificationStore = (
 				): Promise<NotificationResponse> => {
 					try {
 						const notificationId = uuidv4();
-						const response: { data: ApiReturnType<Notification> } =
+						const response: { data: ApiReturnType<NotificationTask> } =
 							await axios.post(apiString(notificationId), notification);
 						const { data: newNotification, message, variant } = response.data;
 
@@ -52,7 +53,7 @@ export const createNotificationStore = (
 					notification: Partial<Notification>,
 				): Promise<NotificationResponse> => {
 					try {
-						const response: { data: ApiReturnType<Notification> } =
+						const response: { data: ApiReturnType<NotificationTask> } =
 							await axios.put(apiString(notificationId), notification);
 						const updatedNotification = response.data.data;
 						if (!updatedNotification) {
@@ -99,10 +100,11 @@ export const createNotificationStore = (
 					userId: string,
 				): Promise<Notification[]> => {
 					try {
-						const { data: response }: { data: ApiReturnType<Notification[]> } =
-							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
-							);
+						const {
+							data: response,
+						}: { data: ApiReturnType<NotificationTask[]> } = await axios.get(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
+						);
 						const { data: notifications } = response;
 						if (!notifications) {
 							set({ notifications: [] });
@@ -125,7 +127,7 @@ export const createNotificationStore = (
 				},
 				clearNotifications: async (userId: string): Promise<Notification[]> => {
 					try {
-						const response = await axios.get<Notification[]>(
+						const response = await axios.get<NotificationTask[]>(
 							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/notification`,
 						);
 						set({ notifications: response.data });
@@ -133,6 +135,42 @@ export const createNotificationStore = (
 					} catch (error) {
 						console.error("Error in clearNotifications:", error);
 						return [];
+					}
+				},
+				updateManyNotifications: async (
+					notifications: NotificationTask[],
+					data: Partial<Notification>,
+				): Promise<NotificationTask[]> => {
+					try {
+						const response: { data: ApiReturnType<NotificationTask[]> } =
+							await axios.put(apiString(""), { notifications, data });
+						const { data: updatedNotifications } = response.data;
+						if (!updatedNotifications) {
+							return [];
+						}
+						set((state) => ({
+							notifications: state.notifications.map(
+								(n) => updatedNotifications.find((un) => un.id === n.id) || n,
+							),
+						}));
+						return updatedNotifications;
+					} catch (error) {
+						console.error("Error in updateManyNotifications:", error);
+						return [];
+					}
+				},
+				deleteManyNotifications: async (
+					notifications: NotificationTask[],
+				): Promise<void> => {
+					try {
+						await axios.put(apiString(""), { notifications });
+						set((state) => ({
+							notifications: state.notifications.filter(
+								(n) => !notifications.some((un) => un.id === n.id),
+							),
+						}));
+					} catch (error) {
+						console.error("Error in updateManyNotifications:", error);
 					}
 				},
 			}),

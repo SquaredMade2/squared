@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FC, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type Props = {
 	icon: ReactNode;
@@ -41,14 +41,14 @@ const getPositionClasses = (position: Props["labelPosition"]) => {
 	}
 };
 
-const ButtonIcon: FC<Props> = ({
+const ButtonIcon = ({
 	icon,
 	tooltipLabel = null,
 	labelPosition,
 	handleClick,
 	hoverBg,
 	children,
-}) => {
+}: Props) => {
 	const [isHovering, setIsHovering] = useState(false);
 	const iconHover = hoverBg ? `hover:${hoverBg}` : "";
 
