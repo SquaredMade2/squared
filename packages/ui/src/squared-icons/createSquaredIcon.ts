@@ -1,5 +1,6 @@
 export default function createSquaredIcon(name, svgContent) {
     const svgElement = svgContent.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
+    
     return `
     import * as React from 'react';
     import type {FC} from 'react';
