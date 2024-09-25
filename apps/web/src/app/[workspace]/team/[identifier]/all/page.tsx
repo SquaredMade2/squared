@@ -19,7 +19,7 @@ import { Status } from "@repo/db";
 import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
 
 export default function Home() {
-	const { view } = useViewStore((state) => state);
+	const { view, gridViewOptions } = useViewStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
@@ -149,11 +149,13 @@ export default function Home() {
 								getFilteredStatuses={getFilteredStatuses}
 								getTasksForStatus={getTasksForStatus}
 							/>
-							{view === "grid" && getEmptyColumns().length >= 1 && (
-								<div className="ml-auto">
-									<UnassignedColumns getEmptyColumns={getEmptyColumns} />
-								</div>
-							)}
+							{view === "grid" &&
+								!gridViewOptions.showEmptyGroups &&
+								getEmptyColumns().length >= 1 && (
+									<div className="ml-auto">
+										<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+									</div>
+								)}
 						</DragDropContext>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
 					</div>
