@@ -64,7 +64,7 @@ const DisplayPreferences = () => {
 				<Separator className="my-2" />
 				{view === "grid" && (
 					<div className="flex items-center justify-between w-full">
-						<p className="text-foreground text-xs py-1 mb-1 last:mb-0 capitalize">
+						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
 							{getFormattedKeyString(gridViewOptions)}
 						</p>
 						<Switch
@@ -78,7 +78,7 @@ const DisplayPreferences = () => {
 				)}
 				{view === "list" && (
 					<div className="flex items-center justify-between w-full">
-						<p className="text-foreground text-xs py-1 mb-1 last:mb-0 capitalize">
+						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
 							{getFormattedKeyString(listViewOptions)}
 						</p>
 						<Switch
