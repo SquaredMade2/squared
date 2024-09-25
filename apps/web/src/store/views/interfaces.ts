@@ -16,8 +16,8 @@ type ViewActions = {
 	setShowDateTime: (input: boolean) => void;
 	setShowPriority: (input: boolean) => void;
 	setShowLabels: (input: boolean) => void;
-	setListViewOptions: (input: boolean) => void;
-	setGridViewOptions: (input: boolean) => void;
+	setListViewOptions: (input: Partial<ViewOptions>) => void;
+	setGridViewOptions: (input: Partial<ViewOptions>) => void;
 };
 
 export type ViewStore = ViewState & ViewActions;
