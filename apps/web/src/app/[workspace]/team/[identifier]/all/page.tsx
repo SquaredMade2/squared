@@ -10,7 +10,7 @@ import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 
 export default function AllTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
-	const { view } = useViewStore((state) => state);
+	const { view, gridViewOptions } = useViewStore((state) => state);
 	const {
 		loading,
 		authorized,
@@ -44,11 +44,13 @@ export default function AllTasksPage() {
 				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
 			/>
-			{view === "grid" && getEmptyColumns().length >= 1 && (
-				<div className="ml-auto">
-					<UnassignedColumns getEmptyColumns={getEmptyColumns} />
-				</div>
-			)}
+			{view === "grid" &&
+				!gridViewOptions.showEmptyGroups &&
+				getEmptyColumns().length >= 1 && (
+					<div className="ml-auto">
+						<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+					</div>
+				)}
 		</TaskPageLayout>
 	);
 }

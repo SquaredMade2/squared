@@ -1,9 +1,13 @@
+export type ViewOptions = { showEmptyGroups: boolean };
+
 export type ViewState = {
 	showDateTime: boolean;
 	showPriority: boolean;
 	showLabels: boolean;
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
+	listViewOptions: ViewOptions;
+	gridViewOptions: ViewOptions;
 	view: "list" | "grid";
 };
 
@@ -14,6 +18,8 @@ type ViewActions = {
 	setShowDateTime: (input: boolean) => void;
 	setShowPriority: (input: boolean) => void;
 	setShowLabels: (input: boolean) => void;
+	setListViewOptions: (input: Partial<ViewOptions>) => void;
+	setGridViewOptions: (input: Partial<ViewOptions>) => void;
 };
 
 export type ViewStore = ViewState & ViewActions;
