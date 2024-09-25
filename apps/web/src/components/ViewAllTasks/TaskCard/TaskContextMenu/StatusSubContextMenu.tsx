@@ -9,6 +9,7 @@ import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import type { Status } from "@repo/db";
 import { StatusIcon } from "@/components/Icons";
+import { formatStatus } from "@/utils/formatting";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
@@ -44,7 +45,7 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 							<div className="mr-2">
 								<StatusIcon status={status} />
 							</div>
-							{status}
+							{formatStatus(status)}
 						</ContextMenuItem>
 					);
 				})}
