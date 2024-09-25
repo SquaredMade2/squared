@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 
-const IntegrationSettings: React.FC = () => {
+const IntegrationSettings = () => {
 	return (
 		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">
 			<div className="lg:hidden mdsm:visible bg-background">

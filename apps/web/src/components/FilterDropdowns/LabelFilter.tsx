@@ -56,7 +56,6 @@ export default function LabelFilterDropDown({
 			!currentFilterTypes.includes("labels")
 		) {
 			setSelectedLabels([]);
-			console.log("selectedLabels", selectedLabels);
 		}
 	}, [currentFilterTypes]);
 

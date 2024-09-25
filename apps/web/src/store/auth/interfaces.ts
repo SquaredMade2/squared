@@ -14,6 +14,7 @@ export type Login = {
 	provider: "credentials" | "oauth";
 	type: "register" | "login";
 	email: string;
+	oauthId?: string;
 	password?: string;
 	name?: string;
 	username?: string;
