@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { Task } from "@repo/db";
 import PriorityDropdown from "./PriorityDropdown";
 import StatusDropdown from "./StatusDropdown";
@@ -6,9 +5,7 @@ import DatePicker from "./DatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
 import LabelCombobox from "./LabelCombobox";
 import AssigneeCombobox from "./AssigneeCombobox";
-import EffortModal from "@/components/EffortModal";
-import { Button } from "@/components/ui/button";
-import { CircleHelp } from "lucide-react";
+import EffortModal from "./EffortModal";
 
 type ButtonProps = {
 	currentTask: Task | null;
@@ -41,11 +38,6 @@ const DesignationItem = ({
 export function TaskDesignationsContainer({
 	task: currentTask,
 }: { task: Task }) {
-	const [showEffortModal, setShowEffortModal] = useState(false);
-
-	const handleOpenModal = () => setShowEffortModal(true);
-	const handleCloseModal = () => setShowEffortModal(false);
-
 	return (
 		<>
 			<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
@@ -73,16 +65,7 @@ export function TaskDesignationsContainer({
 					label="Effort"
 					Component={EffortEstimateDropdown}
 					currentTask={currentTask}
-					ExtraComponent={
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={handleOpenModal}
-							className="rounded-full hover:bg-transparent"
-						>
-							<CircleHelp className="size-4 text-muted-foreground" />
-						</Button>
-					}
+					ExtraComponent={<EffortModal />}
 				/>
 				<DesignationItem
 					label="Assignee"
@@ -90,7 +73,6 @@ export function TaskDesignationsContainer({
 					currentTask={currentTask}
 				/>
 			</div>
-			<EffortModal isOpen={showEffortModal} onClose={handleCloseModal} />
 		</>
 	);
 }

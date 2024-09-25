@@ -17,10 +17,6 @@ const StatusColumn = ({
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
 
-	const toggleShowTasks = () => {
-		setShowTasks((prevState) => !prevState);
-	};
-
 	return (
 		<div className={isListView ? "mb-2 w-full" : "pb-2 flex-grow"}>
 			<TaskColumnTitle
@@ -28,7 +24,7 @@ const StatusColumn = ({
 				showTasks={showTasks}
 				numberOfTasks={numberOfTasks}
 				title={title}
-				toggleShowTasks={toggleShowTasks}
+				setShowTasks={setShowTasks}
 			/>
 			<Droppable droppableId={columnType}>
 				{(provided, snapshot) => (

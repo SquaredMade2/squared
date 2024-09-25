@@ -1,4 +1,4 @@
-import { useEffect, type FC } from "react";
+import { useEffect } from "react";
 import { UserSearch } from "lucide-react";
 import {
 	ContextMenuItem,
@@ -11,7 +11,7 @@ import type { ContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 
-const AssigneeSubContextMenu: FC<ContextMenuProps> = ({ task }) => {
+const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
