@@ -144,10 +144,6 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 		});
 	};
 
-	useEffect(() => {
-		console.log("open", isOpen);
-	}, [isOpen]);
-
 	return (
 		<Accordion
 			type="single"
