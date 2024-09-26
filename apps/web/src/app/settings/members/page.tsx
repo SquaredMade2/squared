@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import type { Workspace, User } from "@repo/db";
 import { useUserStore, useWorkspaceStore } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
@@ -25,7 +24,7 @@ export default function WorkspaceMembersPage() {
 			workspaceId !== workspace?.id &&
 			typeof workspaceId === "string"
 		) {
-			getWorkspace(workspaceId).then(({ workspace, variant }) => {
+			getWorkspace(workspaceId).then(({ workspace }) => {
 				if (workspace) {
 					setWorkspace(workspace);
 					setCurrentWorkspace(workspace);
@@ -51,7 +50,12 @@ export default function WorkspaceMembersPage() {
 			{workspace && (
 				<DataTable
 					columns={columns}
-					data={members}
+					data={members.map((m) => {
+						return {
+							...m,
+							role: workspace.admins.includes(m.id) ? "admin" : "member",
+						};
+					})}
 					workspace={currentWorkspace}
 				/>
 			)}

@@ -8,7 +8,7 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { workspaceId }, query): Promise<APIResponse<Team>> => {
+		GET: async (res, { workspaceId }): Promise<APIResponse<Team>> => {
 			try {
 				// Find teams by team ID
 				const teams: Team[] | null = await prisma.team.findMany({
@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!teams) {
-					res.status(404);
 					return {
 						data: teams,
 						message: "Teams not found",

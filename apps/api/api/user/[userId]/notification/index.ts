@@ -1,4 +1,4 @@
-import type { Notification, User } from "@repo/db";
+import type { Notification, Task, User } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -25,9 +24,13 @@ export function createRoute(): Route<Params> {
 				}
 
 				// Find notifications assigned to user
-				const notifications: Notification[] =
+				const notifications: (Notification & { Task: Task })[] =
 					await prisma.notification.findMany({
 						where: { userId },
+						include: {
+							Task: true,
+							Workspace: true,
+						},
 					});
 
 				// Return the found notifications

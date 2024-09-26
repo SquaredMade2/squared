@@ -12,7 +12,7 @@ import type { User } from "@repo/db";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<User & { role: string }>[] = [
 	{
 		accessorKey: "name",
 		cell: ({ row }) => {
@@ -40,12 +40,12 @@ export const columns: ColumnDef<User>[] = [
 	{
 		accessorKey: "role",
 		cell: ({ row }) => {
-			return "Admin";
+			return row.original.role;
 		},
 	},
 	{
 		accessorKey: "manage",
-		cell: ({ row }) => {
+		cell: () => {
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>

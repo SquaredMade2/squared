@@ -10,18 +10,24 @@ export const createViewStore = (
 		showPriority: true,
 		showLabels: true,
 		showNavbar: false,
+		showMobileNavbar: false,
+		listViewOptions: { showEmptyGroups: false },
+		gridViewOptions: { showEmptyGroups: false },
 		view: "list",
 	},
 ) => {
 	return createStore<ViewStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				setView: (view) => {
 					set({ view });
 				},
 				setShowNavbar: (input) => {
 					set({ showNavbar: input });
+				},
+				setShowMobileNavbar: (input) => {
+					set({ showMobileNavbar: input });
 				},
 				setShowDateTime: (input) => {
 					set({ showDateTime: input });
@@ -31,6 +37,14 @@ export const createViewStore = (
 				},
 				setShowLabels: (input) => {
 					set({ showLabels: input });
+				},
+				setListViewOptions: (input) => {
+					const currentListView = get().listViewOptions;
+					set({ listViewOptions: { ...currentListView, ...input } });
+				},
+				setGridViewOptions: (input) => {
+					const currentGridView = get().gridViewOptions;
+					set({ gridViewOptions: { ...currentGridView, ...input } });
 				},
 			}),
 			{

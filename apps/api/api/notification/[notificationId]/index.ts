@@ -19,7 +19,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!existingUser) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Cannot find user",
@@ -31,7 +30,11 @@ export function createRoute(): Route<Params> {
 					data: {
 						id: notificationId,
 						...body,
-					} as Notification,
+					},
+					include: {
+						Task: true,
+						Workspace: true,
+					},
 				});
 
 				if (!newNotification) {
@@ -68,7 +71,6 @@ export function createRoute(): Route<Params> {
 						where: { id: notificationId },
 					});
 				if (!notification) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Notification not found",
@@ -101,10 +103,13 @@ export function createRoute(): Route<Params> {
 				const notification = await prisma.notification.update({
 					where: { id: notificationId },
 					data: body,
+					include: {
+						Task: true,
+						Workspace: true,
+					},
 				});
 
 				if (!notification) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Notification not found",

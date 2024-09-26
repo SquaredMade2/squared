@@ -18,7 +18,7 @@ import {
 } from "@/store";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import type { Workspace } from "@repo/db";
+import type { Workspace } from "@/store/workspaces";
 const WorkSpaceDropDown = () => {
 	const {
 		currentWorkspace,
@@ -55,7 +55,7 @@ const WorkSpaceDropDown = () => {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant={"ghost"}
-					className="cursor-pointer w-full flex justify-between px-0  focus:outline-none focus:ring-0"
+					className="cursor-pointer w-full flex justify-between focus:outline-none focus:ring-0"
 				>
 					<div className="flex">
 						<WorkspaceInitials
@@ -70,7 +70,7 @@ const WorkSpaceDropDown = () => {
 					)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-60">
+			<DropdownMenuContent className="w-60 mx-2">
 				{workspaces.map((workspace, index) => (
 					<DropdownMenuItem
 						key={workspace.id}

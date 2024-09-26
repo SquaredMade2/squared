@@ -30,6 +30,7 @@ const config: Config = {
 					darkSecondary: "#191a24",
 					darkAccent: "#1E2538",
 					darkOverlay: "#181A22",
+					navBarHover:"#2c3752"
 				},
 			},
 			animation: {

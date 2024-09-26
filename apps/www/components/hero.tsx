@@ -31,8 +31,7 @@ export const Hero = () => {
 				}}
 				className="flex justify-center"
 			>
-				<Badge onClick={() => router.push("/blog/top-5-llm-of-all-time")}>
-					{/* todo change to register page */}
+				<Badge onClick={() => router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)}>
 					See what it&apos;s about
 				</Badge>
 			</motion.div>
@@ -90,7 +89,7 @@ export const Hero = () => {
 				}}
 				className="flex items-center gap-4 justify-center mt-6 relative z-10"
 			>
-				<Button>Get started</Button>
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>Get started</Button>
 				<Button
 					variant="simple"
 					as={Link}
@@ -102,7 +101,7 @@ export const Hero = () => {
 				</Button>
 			</motion.div>
 			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative">
-				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-black/50 dark:to-black scale-[1.1] pointer-events-none" />
+				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background-darkAccent dark:to-background-darkAccent scale-[1.1] pointer-events-none" />
 				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
 					{/* todo change image based on dark or light theme */}
 					{theme === "light" ? (

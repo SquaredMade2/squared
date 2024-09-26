@@ -2,9 +2,9 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
-import { destroyCookie } from "nookies";
 import type { User } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
+import { signOut } from "next-auth/react";
 export * from "./interfaces";
 export * from "./store";
 
@@ -46,20 +46,40 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					return response.data;
 				},
 				logout: async () => {
-					const response: { data: boolean } = await axios.post(
-						apiString("logout"),
-					);
-					set({ user: null });
-					destroyCookie(undefined, "auth-store");
-					sessionStorage.removeItem("auth-store");
-					sessionStorage.removeItem("activity-store");
-					sessionStorage.removeItem("task-store");
-					sessionStorage.removeItem("notification-store");
-					sessionStorage.removeItem("team-store");
-					sessionStorage.removeItem("workspace-store");
-					sessionStorage.removeItem("user-store");
-					sessionStorage.removeItem("view-store");
-					return response.data;
+					try {
+						const response: { data: boolean } = await axios.post(
+							apiString("logout"),
+						);
+
+						set({ user: null });
+
+						// Clear all session storage items
+						const itemsToRemove = [
+							"auth-store",
+							"activity-store",
+							"task-store",
+							"notification-store",
+							"team-store",
+							"workspace-store",
+							"user-store",
+							"view-store",
+							"filter-store",
+						];
+						for (const item in itemsToRemove) {
+							sessionStorage.removeItem(item);
+						}
+
+						// Sign out using NextAuth and redirect to login page
+						await signOut({ redirect: false });
+
+						// Use Next.js router to redirect to login page
+						window.location.href = "/login";
+
+						return response.data;
+					} catch (error) {
+						console.error("Logout error:", error);
+						return false;
+					}
 				},
 				resetPassword: async (email: string) => {
 					const response: { data: boolean } = await axios.post(
@@ -69,6 +89,9 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						},
 					);
 					return response.data;
+				},
+				setUser: (user: User | null) => {
+					set({ user });
 				},
 			}),
 			{

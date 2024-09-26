@@ -7,25 +7,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { filterInProgress } from "@/components/Svg";
 import { useFilterStore } from "@/store";
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleFadingPlus,
-	CircleX,
-} from "lucide-react";
-import type { StatusFilterDropDownProps } from "./interfaces";
-import { Button } from "../ui/button";
+import type { FilterDropDownProps } from "./interfaces";
 import { Status } from "@repo/db";
+import { StatusIcon } from "../Icons";
 
 const groupStatus = [
 	{
 		id: 0,
 		name: "Backlog",
 		border: false,
-		svg: <CircleDashed className="size-4" />,
+		svg: <StatusIcon status={Status.backlog} />,
 		group: "status",
 		value: Status.backlog,
 	},
@@ -33,7 +25,7 @@ const groupStatus = [
 		id: 1,
 		name: "Todo",
 		border: false,
-		svg: <Circle className="size-4" />,
+		svg: <StatusIcon status={Status.todo} />,
 		group: "status",
 		value: Status.todo,
 	},
@@ -41,7 +33,7 @@ const groupStatus = [
 		id: 2,
 		name: "In Progress",
 		border: false,
-		svg: filterInProgress(),
+		svg: <StatusIcon status={Status.inProgress} />,
 		group: "status",
 		value: Status.inProgress,
 	},
@@ -49,7 +41,7 @@ const groupStatus = [
 		id: 3,
 		name: "Done",
 		border: false,
-		svg: <CircleCheckBig className="size-4 text-[#7394FF]" />,
+		svg: <StatusIcon status={Status.done} />,
 		group: "status",
 		value: Status.done,
 	},
@@ -57,18 +49,28 @@ const groupStatus = [
 		id: 4,
 		name: "In Review",
 		border: false,
-		svg: <CircleFadingPlus className="size-4 text-green-400" />,
+		svg: <StatusIcon status={Status.inReview} />,
 		group: "status",
 		value: Status.inReview,
+	},
+	{
+		id: 5,
+		name: "Canceled",
+		border: false,
+		svg: <StatusIcon status={Status.canceled} />,
+		group: "status",
+		value: Status.canceled,
 	},
 ];
 
 const StatusFilterDropDown = ({
-	showStatusFilterDropDown,
-	setShowStatusFilterDropDown,
-}: StatusFilterDropDownProps) => {
+	showFilterDropDown,
+	setShowFilterDropDown,
+}: FilterDropDownProps) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
-	const { addFilter, removeFilter } = useFilterStore((state) => state);
+	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
+		(state) => state,
+	);
 
 	const handleStatusChange = (status: Status, checked: boolean) => {
 		setSelectedStatuses((prev) =>
@@ -88,10 +90,19 @@ const StatusFilterDropDown = ({
 		}
 	}, [selectedStatuses, addFilter, removeFilter]);
 
+	useEffect(() => {
+		if (
+			currentFilterTypes.length === 0 ||
+			!currentFilterTypes.includes("status")
+		) {
+			setSelectedStatuses([]);
+		}
+	}, [currentFilterTypes]);
+
 	return (
 		<DropdownMenu
-			open={showStatusFilterDropDown}
-			onOpenChange={setShowStatusFilterDropDown}
+			open={showFilterDropDown}
+			onOpenChange={setShowFilterDropDown}
 		>
 			<DropdownMenuTrigger />
 			<DropdownMenuContent className="w-72 p-0" sideOffset={20}>
@@ -104,6 +115,9 @@ const StatusFilterDropDown = ({
 						onCheckedChange={(checked) =>
 							handleStatusChange(item.value, checked)
 						}
+						onSelect={(e) => {
+							e.preventDefault();
+						}}
 					>
 						<div className="flex items-center space-x-2">
 							{item.svg}

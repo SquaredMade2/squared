@@ -20,6 +20,7 @@ const apiString = (path: string) =>
 export const createFilterStore = (
 	initState: FilterState = {
 		currentFilters: [],
+		currentFilterTypes: [],
 	},
 ) => {
 	return createStore<FilterStore>()(
@@ -30,7 +31,7 @@ export const createFilterStore = (
 					set({ currentFilters: filter });
 				},
 				clearFilter: () => {
-					set({ currentFilters: [] });
+					set({ currentFilters: [], currentFilterTypes: [] });
 				},
 				addFilter: (filter: FilterCondition) => {
 					const state = get();
@@ -58,7 +59,10 @@ export const createFilterStore = (
 						updatedConditions = [...currentFilters, filter];
 					}
 
-					set({ currentFilters: updatedConditions });
+					set({
+						currentFilters: updatedConditions,
+						currentFilterTypes: [...state.currentFilterTypes, filter.field],
+					});
 
 					return updatedConditions;
 				},
@@ -95,7 +99,6 @@ export const createFilterStore = (
 					try {
 						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
 							await axios.post(apiString("create"), filter);
-						const { data: filters } = response;
 
 						if (!filter) {
 							return {

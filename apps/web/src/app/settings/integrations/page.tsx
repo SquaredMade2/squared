@@ -7,17 +7,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useViewStore } from "@/store";
 import Link from "next/link";
 
-const IntegrationSettings: React.FC = () => {
-	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
-
-	const handleNavToggle = (): void => {
-		const navBarValue = !showNavbar;
-		setShowNavbar(navBarValue);
-	};
-
+const IntegrationSettings = () => {
 	return (
 		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">
 			<div className="lg:hidden mdsm:visible bg-background">

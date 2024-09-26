@@ -5,7 +5,9 @@ import type { ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
 import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
 import { SquaredStoreProvider } from "@/store";
+import { SessionProvider } from "next-auth/react";
 import SearchCommand from "@/components/SearchCommand";
+import MobileMenuSheet from "@/components/MobileNav";
 
 export default function RootLayout({
 	children,
@@ -15,21 +17,24 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className="text-sm min-h-[100vh]">
-				<SquaredStoreProvider>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						disableTransitionOnChange
-					>
-						<WorkspaceInviteModal />
-						<SearchCommand />
-						<div className="h-full flex flex-row overflow-hidden">
-							{children}
-						</div>
-					</ThemeProvider>
-					<Toaster />
-				</SquaredStoreProvider>
+				<SessionProvider>
+					<SquaredStoreProvider>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+							disableTransitionOnChange
+						>
+							<WorkspaceInviteModal />
+							<MobileMenuSheet />
+							<SearchCommand />
+							<div className="h-full flex flex-row overflow-hidden">
+								{children}
+							</div>
+						</ThemeProvider>
+						<Toaster />
+					</SquaredStoreProvider>
+				</SessionProvider>
 			</body>
 		</html>
 	);

@@ -9,7 +9,7 @@ export type ModalState = {
 	showWorkspaceInvite: boolean;
 };
 
-export type ModalActions = {
+type ModalActions = {
 	setShowNewIssue: (input: boolean) => void;
 	setShowRename: (input: boolean) => void;
 	setRenameData: (input: Task) => void;

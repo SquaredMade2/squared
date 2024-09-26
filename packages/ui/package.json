@@ -18,6 +18,10 @@
       "import": "./src/avatar/index.ts",
       "require": "./src/avatar/index.ts"
     },
+    "./checkbox": {
+      "import": "./src/checkbox/index.ts",
+      "require": "./src/checkbox/index.ts"
+    },
     "./collapsible": {
       "import": "./src/collapsible/index.ts",
       "require": "./src/collapsible/index.ts"
@@ -61,6 +65,10 @@
     "./focus-scope": {
       "import": "./src/focus-scope/index.ts",
       "require": "./src/focus-scope/index.ts"
+    },
+    "./hover-card": {
+      "import": "./src/hover-card/index.ts",
+      "require": "./src/hover-card/index.ts"
     },
     "./id": {
       "import": "./src/id/index.ts",
@@ -134,9 +142,21 @@
       "import": "./src/switch/index.ts",
       "require": "./src/switch/index.ts"
     },
+    "./tabs": {
+      "import": "./src/tabs/index.ts",
+      "require": "./src/tabs/index.ts"
+    },
     "./toast": {
       "import": "./src/toast/index.ts",
       "require": "./src/toast/index.ts"
+    },
+    "./toggle": {
+      "import": "./src/toggle/index.ts",
+      "require": "./src/toggle/index.ts"
+    },
+    "./toggle-group": {
+      "import": "./src/toggle-group/index.ts",
+      "require": "./src/toggle-group/index.ts"
     },
     "./tooltip": {
       "import": "./src/tooltip/index.ts",

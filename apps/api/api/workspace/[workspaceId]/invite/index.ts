@@ -1,6 +1,6 @@
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
-import type { Route, APIResponse } from "@/api/route";
+import type { Route } from "@/api/route";
 import { sendMail } from "@/utils/mail";
 
 type Params = {
@@ -42,7 +42,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!workspace) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Workspace not found.",
@@ -69,8 +68,6 @@ export function createRoute(): Route<Params> {
 						"invite",
 					);
 				}
-
-				res.status(200);
 				return {
 					data: null,
 					message: "Invitation sent successfully.",

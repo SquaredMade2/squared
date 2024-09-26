@@ -206,7 +206,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		},
 	});
 
-	await addNotification(user.id, task.id);
+	await addNotification(user.id, task.id, workspace.id);
 
 	return task;
 }
@@ -222,15 +222,27 @@ async function addComment(userId: string, taskId: string) {
 	});
 }
 
-async function addNotification(userId: string, taskId: string) {
+async function addNotification(
+	userId: string,
+	taskId: string,
+	workspaceId: string,
+) {
 	await prisma.notification.create({
 		data: {
 			userId,
-			taskIds: [taskId],
+			taskId,
+			workspaceId,
 			read: faker.datatype.boolean(),
+			saved: faker.datatype.boolean(),
 			description: faker.lorem.sentence(),
 			createdAt: faker.date.past(),
 			updatedAt: faker.date.recent(),
+			type: faker.helpers.arrayElement([
+				"ASSIGNED",
+				"PARTICIPATING",
+				"MENTIONED",
+				"CREATED",
+			]),
 		},
 	});
 }

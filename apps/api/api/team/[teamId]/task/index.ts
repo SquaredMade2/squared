@@ -1,4 +1,4 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
@@ -8,7 +8,7 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { teamId }, query): Promise<APIResponse<Task>> => {
+		GET: async (res, { teamId }): Promise<APIResponse<Task>> => {
 			try {
 				// Find tasks by team ID
 				const tasks = await prisma.task.findMany({
@@ -16,7 +16,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!tasks) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Tasks not found",

@@ -1,6 +1,5 @@
 import { writeFileSync } from "node:fs";
 import { globby } from "globby";
-import prettier from "prettier";
 
 async function generateSitemap() {
 	const pages = await globby([

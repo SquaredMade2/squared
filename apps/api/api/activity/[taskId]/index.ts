@@ -1,4 +1,4 @@
-import type { Prisma, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
@@ -7,10 +7,6 @@ import type { Activity } from "@repo/test-db";
 type Params = {
 	taskId: string;
 };
-
-type ActivityType = Prisma.ActivityGetPayload<{
-	include: { taskEvent: true; commit: true };
-}>;
 
 export function createRoute(): Route<Params> {
 	return {
@@ -22,7 +18,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -39,7 +34,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!taskEventLogWithActivities) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task event log not found",
@@ -69,7 +63,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -127,8 +120,6 @@ export function createRoute(): Route<Params> {
 						variant: "default",
 					};
 				}
-
-				res.status(401);
 				return {
 					data: null,
 					message: "Invalid Activity type",

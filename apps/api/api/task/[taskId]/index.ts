@@ -1,7 +1,7 @@
-import type { Label, Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import { trackChange, createLog } from "@/utils/taskUpdate";
+import { trackChange, createLog, subscribeUser } from "@/utils/taskUpdate";
 
 type Params = {
 	taskId: string;
@@ -17,7 +17,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -48,7 +47,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
@@ -61,7 +59,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!author) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
@@ -70,6 +67,7 @@ export function createRoute(): Route<Params> {
 				}
 
 				trackChange(author, body, task);
+				subscribeUser(author, task);
 
 				// Return the updated task with labels
 				return {
@@ -93,7 +91,6 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingTask) {
-					res.status(401);
 					return {
 						data: null,
 						message: "Task already exists",
@@ -116,18 +113,12 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!author) {
-					res.status(404);
 					return {
 						data: null,
 						message: "User not found",
 						variant: "destructive",
 					};
 				}
-
-				const formattedName = workspace.name
-					.replace(/\s+/g, "")
-					.substring(0, 3)
-					.toUpperCase();
 
 				const newIssueCount = workspace.tasksCreated + 1;
 
@@ -152,10 +143,12 @@ export function createRoute(): Route<Params> {
 				}
 
 				createLog(author, newTask);
+				subscribeUser(author, newTask);
 
 				// Return the new task
 				return {
 					data: newTask,
+					message: `Successfully Created New Task: ${newTask.title}`,
 					variant: "default",
 				};
 			} catch (error) {
@@ -174,7 +167,6 @@ export function createRoute(): Route<Params> {
 					where: { id: taskId },
 				});
 				if (!task) {
-					res.status(404);
 					return {
 						data: null,
 						message: "Task not found",
