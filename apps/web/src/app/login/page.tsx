@@ -1,10 +1,9 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useWorkspaceStore } from "@/store";
 import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
 import {
 	Card,
@@ -16,8 +15,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import type { User } from "next-auth";
-import type { AuthReturn } from "@/store/auth";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
 
@@ -28,42 +25,19 @@ function LoginForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
-	const { login } = useAuthStore((state) => state);
-	const { getWorkspace, getAllWorkspaces, joinWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
-	const inviteToken = searchParams.get("token");
-	const { data: session, status } = useSession();
 
-	useEffect(() => {
-		if (status === "authenticated" && session?.user) {
-			handleOAuthLogin(session.user);
-		}
-	}, [status, session]);
+	const inviteToken = searchParams.get("token");
 
 	const handleCredentialsLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			const result = await signIn("credentials", {
+			await signIn("credentials", {
 				redirect: false,
 				email: data.email,
 				password: data.password,
 			});
-
-			if (result?.error) {
-				toast({ title: result.error, variant: "destructive" });
-			} else if (result?.ok) {
-				// If login is successful, fetch the updated session
-				const updatedSession = await fetch("/api/auth/session").then((res) =>
-					res.json(),
-				);
-				if (updatedSession?.user) {
-					await handleOAuthLogin(updatedSession.user);
-				} else {
-					throw new Error("Failed to get user information after login");
-				}
-			}
+			router.push("/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({ title: "Login failed", variant: "destructive" });
@@ -76,67 +50,11 @@ function LoginForm() {
 		setIsLoading(true);
 		try {
 			await signIn("google", { callbackUrl: window.location.href });
+			router.push("/");
 		} catch (error) {
 			toast({ title: "Google login failed", variant: "destructive" });
 			console.error("Google login error:", error);
 			setIsLoading(false);
-		}
-	};
-
-	const handleOAuthLogin = async (user: User) => {
-		try {
-			const response = await login({
-				provider: "oauth",
-				type: "login",
-				name: user.name ?? undefined,
-				email: user.email,
-				oauthId: user.id,
-			});
-
-			await handleLoginResponse(response);
-		} catch (error) {
-			toast({ title: "OAuth login failed", variant: "destructive" });
-			console.error("OAuth login error:", error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleLoginResponse = async (response: AuthReturn) => {
-		if (response?.user) {
-			toast({ title: "Login Successful, Welcome!" });
-
-			if (inviteToken) {
-				const { workspace, message, variant } = await joinWorkspace(
-					inviteToken,
-					response.user,
-				);
-				if (workspace?.url) {
-					toast({ title: message, variant });
-					router.push(`/${workspace.url}`);
-				}
-			} else if (response.user.defaultWorkspaceId) {
-				const { workspace } = await getWorkspace(
-					response.user.defaultWorkspaceId,
-				);
-				if (workspace?.url) {
-					router.push(`/${workspace.url}`);
-				}
-			} else {
-				const workspaces = await getAllWorkspaces(response.user.id);
-				if (workspaces?.length) {
-					router.refresh();
-					router.push(`/${workspaces[0].url}`);
-				} else {
-					router.refresh();
-					router.push("/join");
-				}
-			}
-		} else {
-			toast({
-				title: response?.message || "Login failed",
-				variant: response?.variant || "destructive",
-			});
 		}
 	};
 
