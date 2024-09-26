@@ -44,9 +44,6 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@repo/test-db':
-        specifier: workspace:*
-        version: link:../../packages/test-db
       '@types/qs':
         specifier: ^6.9.15
         version: 6.9.16
@@ -96,6 +93,9 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
     devDependencies:
+      '@repo/test-db':
+        specifier: workspace:*
+        version: link:../../packages/test-db
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
