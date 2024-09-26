@@ -14,18 +14,35 @@ import { useTaskStore, useTeamStore } from "@/store";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
+import NewIssueCollapsible from "@/components/NewIssue/NewIssueCollapsible";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import type { Status } from "@repo/db";
+import { formatUrl } from "@/utils/formatting";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { cn } from "@/utils/cn";
 
 const TaskPage = () => {
-	const { tasks, currentTask, getAllTasks, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { tasks, currentTask, getAllTasks, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { currentTeam, teams, setCurrentTeam } = useTeamStore((state) => state);
 
 	const [isLoading, setIsLoading] = useState(true);
+	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
+
+	const subtasks = tasks.filter((t) => t.parentId === currentTask?.id);
 
 	const { toast } = useToast();
 	const { taskIdentifier } = useParams();
 	const { teamIdentifier } = useParams();
+
+	const handleSubtaskStatusChange = async (
+		subtaskId: string,
+		newStatus: string,
+	) => {
+		await updateTask(subtaskId, { status: newStatus as Status });
+	};
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -93,6 +110,64 @@ const TaskPage = () => {
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm task={currentTask} />
+										{subtasks.length > 0 && (
+											<div className="mt-6 bg-background rounded-lg p-4 shadow-sm">
+												<div
+													className="flex items-center cursor-pointer mb-2"
+													onClick={() =>
+														setIsSubtasksExpanded(!isSubtasksExpanded)
+													}
+												>
+													{isSubtasksExpanded ? (
+														<ChevronDown className="w-4 h-4 mr-2" />
+													) : (
+														<ChevronRight className="w-4 h-4 mr-2" />
+													)}
+													<h3 className="text-lg font-semibold">
+														Subtasks ({subtasks.length})
+													</h3>
+												</div>
+												{isSubtasksExpanded && (
+													<ul className="space-y-2">
+														{subtasks.map((subtask) => (
+															<li key={subtask.id}>
+																<Button
+																	variant="ghost"
+																	className="w-full justify-start items-center"
+																	type="button"
+																>
+																	<Checkbox
+																		checked={subtask.status === "done"}
+																		onCheckedChange={(checked) =>
+																			handleSubtaskStatusChange(
+																				subtask.id,
+																				checked ? "done" : "todo",
+																			)
+																		}
+																		className="mr-2"
+																	/>
+																	<Link
+																		href={`/${currentTeam?.name}/task/${subtask?.identifier}/${formatUrl(subtask.title)}`}
+																	>
+																		<span
+																			className={cn(
+																				subtask.status === "done"
+																					? "line-through text-muted-foreground"
+																					: "",
+																				"cursor-pointer",
+																			)}
+																		>
+																			{subtask.title}
+																		</span>
+																	</Link>
+																</Button>
+															</li>
+														))}
+													</ul>
+												)}
+											</div>
+										)}
+										<NewIssueCollapsible parentId={currentTask.id} />
 										<EventTabs />
 									</div>
 								</ScrollArea>
