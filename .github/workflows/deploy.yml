@@ -12,7 +12,6 @@ env:
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
-  TURBO_RUN_FILTER: ${{ github.event_name == 'pull_request' && '...[origin/main]' || '...[HEAD^]' }}
 
 jobs:
   deploy:
@@ -38,10 +37,16 @@ jobs:
       - name: Install turbo-ignore
         run: npm install -g turbo-ignore
 
+      - name: Get previous commit
+        id: prev-commit
+        run: |
+          git fetch --quiet
+          echo "PREV_COMMIT=$(git rev-parse HEAD^)" >> $GITHUB_ENV
+
       - name: Determine if API workspace has changed
         id: changeset
         run: |
-          content=`turbo-ignore api --filter=$TURBO_RUN_FILTER --dry-run=json`
+          content=$(turbo-ignore api --from=$PREV_COMMIT --dry-run=json)
           # Transform multi-line JSON to single-line for GitHub Actions output
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
@@ -50,6 +55,7 @@ jobs:
 
       - name: Check if API has changed
         id: changed-api
+        # Check if the 'api' workspace is present in the output from turbo-ignore
         if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
         run: |
           echo "API workspace has changes."
