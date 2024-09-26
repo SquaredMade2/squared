@@ -68,9 +68,10 @@ export function TaskPageLayout({
 			) : currentWorkspace ? (
 				<div className="flex-grow overflow-hidden">
 					<ScrollArea
-						// This is the height of the top bar
-						className={`h-[calc(100vh-145px)] ${
-							view === "list" ? "overflow-y-auto" : "overflow-x-auto"
+						className={`${
+							view === "list"
+								? "overflow-y-auto h-[calc(100vh-145px)]"
+								: "overflow-x-auto h-[calc(100vh-55px)]"
 						} px-2`}
 					>
 						<div
