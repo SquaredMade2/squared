@@ -1,92 +1,75 @@
-import { useId } from "@repo/ui/id";
 import { Switch } from "../ui/switch";
 import { useViewStore } from "@/store";
 import { Separator } from "../ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 const DisplayPreferences = () => {
 	const {
 		view,
-		showPriority,
-		showLabels,
-		showDateTime,
 		listViewOptions,
 		gridViewOptions,
-		setShowPriority,
-		setShowLabels,
-		setShowDateTime,
 		setListViewOptions,
 		setGridViewOptions,
 	} = useViewStore((state) => state);
 
-	const handlePriority = (): void => {
-		setShowPriority(!showPriority);
+	const currentOptions = view === "grid" ? gridViewOptions : listViewOptions;
+	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
+
+	const { showEmptyGroups, displayProperties } = currentOptions;
+
+	const formatCamelCaseString = (str: string): string => {
+		return str
+			.replace(/([A-Z])/g, " $1") // Insert space before each capital letter
+			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
 	};
 
-	const handleLabels = (): void => {
-		setShowLabels(!showLabels);
-	};
+	// might need later
+	// const getFormattedKeyString = (obj: Partial<ViewOptions> | DisplayProperty) => {
+	// 	return Object.keys(obj)
+	// 		.map((key) => key.replace(/([A-Z])/g, " $1"))
+	// 		.join(", ")
+	// 		.replace(/\b\w/g, (char) => char.toUpperCase());
+	// };
 
-	const handleDateTime = (): void => {
-		setShowDateTime(!showDateTime);
+	const handleValueChange = (value: string[]) => {
+		const updatedProperties = Object.keys(displayProperties).reduce(
+			(acc, key) => {
+				acc[key as keyof typeof displayProperties] = value.includes(key);
+				return acc;
+			},
+			{} as typeof displayProperties,
+		);
+		setOptions({ displayProperties: updatedProperties });
 	};
-
-	const getFormattedKeyString = (obj: { showEmptyGroups?: boolean }) => {
-		return Object.keys(obj)
-			.map((key) => key.replace(/([A-Z])/g, " $1"))
-			.join(", ")
-			.replace(/\b\w/g, (char) => char.toUpperCase());
-	};
-
-	const displayOptions = [
-		{ label: "Priority", show: showPriority, handle: handlePriority },
-		{ label: "Labels", show: showLabels, handle: handleLabels },
-		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
-	];
 
 	return (
 		<div>
-			<ul>
-				{displayOptions.map((option) => (
-					<div
-						className="flex items-center justify-between w-full"
-						key={useId()}
-					>
-						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-							{option.label}
-						</p>
-						<Switch checked={option.show} onClick={option.handle} />
-					</div>
+			<Separator className="my-2" />
+			<div className="mb-3">Display Properties</div>
+			<ToggleGroup
+				type="multiple"
+				className="flex flex-wrap gap-3"
+				onValueChange={handleValueChange}
+			>
+				{Object.keys(displayProperties).map((property) => (
+					<ToggleGroupItem key={property} value={property} className="border">
+						{formatCamelCaseString(property)}
+					</ToggleGroupItem>
 				))}
-				<Separator className="my-2" />
-				{view === "grid" && (
-					<div className="flex items-center justify-between w-full">
-						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-							{getFormattedKeyString(gridViewOptions)}
-						</p>
-						<Switch
-							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-							checked={gridViewOptions.showEmptyGroups}
-							onCheckedChange={(checked) =>
-								setGridViewOptions({ showEmptyGroups: checked })
-							}
-						/>
-					</div>
-				)}
-				{view === "list" && (
-					<div className="flex items-center justify-between w-full">
-						<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-							{getFormattedKeyString(listViewOptions)}
-						</p>
-						<Switch
-							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-							checked={listViewOptions.showEmptyGroups}
-							onCheckedChange={(checked) =>
-								setListViewOptions({ showEmptyGroups: checked })
-							}
-						/>
-					</div>
-				)}
-			</ul>
+			</ToggleGroup>
+			<Separator className="my-3" />
+			<div className="flex items-center justify-between w-full">
+				<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+					Show Empty Groups
+				</p>
+				<Switch
+					className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+					checked={showEmptyGroups}
+					onCheckedChange={(checked) =>
+						setOptions({ showEmptyGroups: checked })
+					}
+				/>
+			</div>
 		</div>
 	);
 };

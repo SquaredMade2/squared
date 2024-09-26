@@ -1,9 +1,20 @@
-export type ViewOptions = { showEmptyGroups: boolean };
+export type DisplayProperty = {
+	title: boolean;
+	identifier: boolean;
+	dueDate: boolean;
+	effortEstimate: boolean;
+	assigneeAvatar: boolean;
+	labels: boolean;
+	status: boolean;
+	priority: boolean;
+};
+
+export type ViewOptions = {
+	showEmptyGroups: boolean;
+	displayProperties: DisplayProperty;
+};
 
 export type ViewState = {
-	showDateTime: boolean;
-	showPriority: boolean;
-	showLabels: boolean;
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
 	listViewOptions: ViewOptions;
@@ -15,9 +26,6 @@ type ViewActions = {
 	setView: (view: "list" | "grid") => void;
 	setShowNavbar: (input: boolean) => void;
 	setShowMobileNavbar: (input: boolean) => void;
-	setShowDateTime: (input: boolean) => void;
-	setShowPriority: (input: boolean) => void;
-	setShowLabels: (input: boolean) => void;
 	setListViewOptions: (input: Partial<ViewOptions>) => void;
 	setGridViewOptions: (input: Partial<ViewOptions>) => void;
 };
