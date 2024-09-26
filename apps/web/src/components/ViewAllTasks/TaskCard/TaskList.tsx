@@ -7,11 +7,10 @@ import { formatDate } from "date-fns";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import Link from "next/link";
 import type { TaskListProps } from "./interfaces";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
 
 const TaskList = ({
-	priorityIcon,
 	teamIdentifier,
-	statusIcon,
 	highlightText,
 	location,
 	task,
@@ -38,17 +37,7 @@ const TaskList = ({
 				<div className="col-span-10 text-foreground">
 					<div className="flex justify-between w-full">
 						<div className="flex items-center gap-2 text-base min-w-0">
-							{showPriority && (
-								<Button
-									variant="ghost"
-									size="sm"
-									className={
-										"p-0.5 border border-border mb-2 mt-1 w-6 h-5 flex-shrink-0"
-									}
-								>
-									{priorityIcon}
-								</Button>
-							)}
+							{showPriority && <PriorityIcon priority={task.priority} />}
 							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0">
 								{teamIdentifier}
 							</span>
@@ -57,7 +46,7 @@ const TaskList = ({
 								size="sm"
 								className="mx-1 p-0 flex-shrink-0"
 							>
-								{statusIcon}
+								<StatusIcon status={task.status} />
 							</Button>
 							<span className="truncate min-w-0">
 								{location === "search" && highlightText

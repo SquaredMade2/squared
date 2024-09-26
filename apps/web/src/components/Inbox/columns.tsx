@@ -6,7 +6,6 @@ import {
 	useNotificationStore,
 	type NotificationTask,
 } from "@/store/notifications";
-import { getStatusIcon } from "@/utils/enumIcons";
 import { Button } from "../ui/button";
 import { Check, BellOff, Bookmark, BookmarkMinus, Trash2 } from "lucide-react";
 import {
@@ -20,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { TooltipContent } from "@repo/ui/tooltip";
+import { StatusIcon } from "../Icons";
 
 export const columns: ColumnDef<NotificationTask>[] = [
 	{
@@ -105,7 +105,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 					onClick={handleClick}
 				>
 					<div className="flex items-center h-full mt-2 sm:mt-0">
-						{getStatusIcon(row.original.Task.status)}
+						<StatusIcon status={row.original.Task.status} />
 					</div>
 					<div className="flex flex-col sm:flex-row justify-between w-full">
 						<div
