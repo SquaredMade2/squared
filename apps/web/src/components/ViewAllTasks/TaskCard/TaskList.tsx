@@ -17,9 +17,14 @@ const TaskList = ({
 	user,
 	currentTeam,
 }: TaskListProps) => {
-	const { showPriority, showLabels, showDateTime } = useViewStore(
-		(state) => state,
-	);
+	const { listViewOptions } = useViewStore((state) => state);
+
+	const {
+		priority: showPriority,
+		labels: showLabels,
+		dueDate: showDueDate,
+	} = listViewOptions.displayProperties;
+
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const taskLabels =
 		currentWorkspace?.Labels.filter((label) =>
@@ -56,7 +61,7 @@ const TaskList = ({
 						</div>
 						<div className="flex col-span-4 items-center lg:pr-5 justify-end gap-2">
 							{showLabels && <TaskCardLabels labels={taskLabels} view="list" />}
-							{showDateTime && (
+							{showDueDate && (
 								<div className="text-muted-foreground md:flex xs:hidden sm:hidden flex-shrink-0 whitespace-nowrap">
 									{task.dueDate
 										? formatDate(new Date(task.dueDate), "MMM dd")

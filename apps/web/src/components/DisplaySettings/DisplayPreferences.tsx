@@ -2,6 +2,7 @@ import { Switch } from "../ui/switch";
 import { useViewStore } from "@/store";
 import { Separator } from "../ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import type { DisplayProperty } from "@/store/views";
 
 const DisplayPreferences = () => {
 	const {
@@ -34,7 +35,7 @@ const DisplayPreferences = () => {
 	const handleValueChange = (value: string[]) => {
 		const updatedProperties = Object.keys(displayProperties).reduce(
 			(acc, key) => {
-				acc[key as keyof typeof displayProperties] = value.includes(key);
+				acc[key as keyof typeof displayProperties] = !value.includes(key);
 				return acc;
 			},
 			{} as typeof displayProperties,
@@ -51,11 +52,20 @@ const DisplayPreferences = () => {
 				className="flex flex-wrap gap-3"
 				onValueChange={handleValueChange}
 			>
-				{Object.keys(displayProperties).map((property) => (
-					<ToggleGroupItem key={property} value={property} className="border">
-						{formatCamelCaseString(property)}
-					</ToggleGroupItem>
-				))}
+				{Object.keys(displayProperties).map((property) => {
+					const typedKey = property as keyof DisplayProperty;
+					const value = displayProperties[typedKey];
+					return (
+						<ToggleGroupItem
+							key={property}
+							value={property}
+							data-state={value ? "off" : "on"}
+							className="border"
+						>
+							{formatCamelCaseString(property)}
+						</ToggleGroupItem>
+					);
+				})}
 			</ToggleGroup>
 			<Separator className="my-3" />
 			<div className="flex items-center justify-between w-full">

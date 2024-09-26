@@ -17,9 +17,14 @@ const TaskGrid = ({
 	currentTeam,
 	taskLabels,
 }: TaskGridProps) => {
-	const { showDateTime, showPriority, showLabels } = useViewStore(
-		(state) => state,
-	);
+	const { gridViewOptions } = useViewStore((state) => state);
+
+	const {
+		priority: showPriority,
+		dueDate: showDueDate,
+		labels: showLabels,
+	} = gridViewOptions.displayProperties;
+
 	return (
 		<Link
 			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
@@ -42,7 +47,7 @@ const TaskGrid = ({
 					<div className="text-sm pr-8 cursor-pointer w-full">
 						{truncateString(task.title, 70)}
 					</div>
-					{showDateTime && (
+					{showDueDate && (
 						<div className="flex items-center gap-2 text-sm">
 							<Calendar className="size-4" />
 							<span>
