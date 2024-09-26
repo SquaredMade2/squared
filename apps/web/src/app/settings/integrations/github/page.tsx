@@ -54,7 +54,7 @@ const GithubSettings: React.FC = () => {
 					</div>
 
 					{isConnected ? (
-						<Card className="p-2">
+						<Card className="p-6">
 							<CardHeader>
 								<CardTitle>Connected to GitHub</CardTitle>
 								<CardDescription>Your connected repositories:</CardDescription>
@@ -66,6 +66,11 @@ const GithubSettings: React.FC = () => {
 									<p>No repositories connected.</p>
 								)}
 							</ul>
+							<span className="p-6">
+								<Button onClick={handleClick}>
+									Edit selected repositories
+								</Button>
+							</span>
 						</Card>
 					) : (
 						<Card className="flex justify-between items-center p-2">
