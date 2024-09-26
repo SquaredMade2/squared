@@ -20,9 +20,12 @@ const TaskList = ({
 	const { listViewOptions } = useViewStore((state) => state);
 
 	const {
-		priority: showPriority,
-		labels: showLabels,
+		identifier: showIdentifier,
 		dueDate: showDueDate,
+		assigneeAvatar: showAssigneeAvatar,
+		labels: showLabels,
+		status: showStatus,
+		priority: showPriority,
 	} = listViewOptions.displayProperties;
 
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
@@ -37,22 +40,26 @@ const TaskList = ({
 			}
 			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
-			<div className="col-span-1" />
+			<div className="col-span-1 min-h-9" />
 			<div className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0">
 				<div className="col-span-10 text-foreground">
 					<div className="flex justify-between w-full">
 						<div className="flex items-center gap-2 text-base min-w-0">
 							{showPriority && <PriorityIcon priority={task.priority} />}
-							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0">
-								{teamIdentifier}
-							</span>
-							<Button
-								variant="ghost"
-								size="sm"
-								className="mx-1 p-0 flex-shrink-0"
-							>
-								<StatusIcon status={task.status} />
-							</Button>
+							{showIdentifier && (
+								<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0">
+									{teamIdentifier}
+								</span>
+							)}
+							{showStatus && (
+								<Button
+									variant="ghost"
+									size="sm"
+									className="mx-1 p-0 flex-shrink-0"
+								>
+									<StatusIcon status={task.status} />
+								</Button>
+							)}
 							<span className="truncate min-w-0">
 								{location === "search" && highlightText
 									? highlightText(task.title)
@@ -68,16 +75,17 @@ const TaskList = ({
 										: "No Date"}
 								</div>
 							)}
-							{task.assigneeName ? (
-								<Avatar className="size-6 flex-shrink-0">
-									<AvatarImage src={user?.avatarUrl ?? undefined} />
-									<AvatarFallback className="text-xxs">
-										{getInitials(task.assigneeName)}
-									</AvatarFallback>
-								</Avatar>
-							) : (
-								<UserSearch className="size-6 text-[#9597AD] flex-shrink-0" />
-							)}
+							{showAssigneeAvatar &&
+								(task.assigneeName ? (
+									<Avatar className="size-6 flex-shrink-0">
+										<AvatarImage src={user?.avatarUrl ?? undefined} />
+										<AvatarFallback className="text-xxs">
+											{getInitials(task.assigneeName)}
+										</AvatarFallback>
+									</Avatar>
+								) : (
+									<UserSearch className="size-6 text-[#9597AD] flex-shrink-0" />
+								))}
 						</div>
 					</div>
 				</div>
