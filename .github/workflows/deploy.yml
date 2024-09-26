@@ -1,12 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# GitHub recommends pinning actions to a commit SHA.
-# To get a newer version, you will need to update the SHA.
-# You can also reference a tag or branch, but the action may change without warning.
-
 name: Deploy to Amazon ECS
 
 on:
@@ -21,12 +12,17 @@ env:
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+  TURBO_RUN_FILTER: ${{ github.event_name == 'pull_request' && '...[origin/main]' || '...[HEAD^]' }}
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
+
+    outputs:
+      # Defining job outputs for conditional deployment:
+      changed-api: ${{ steps.changed-api.outputs.result }}
 
     steps:
       - name: Checkout
@@ -39,20 +35,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
-
       - name: Install turbo-ignore
         run: npm install -g turbo-ignore
 
-      - name: Check if API workspace has changed
-        id: turbo-ignore
+      - name: Determine if API workspace has changed
+        id: changeset
         run: |
-          turbo-ignore api || { echo "No changes detected in the api workspace"; exit 0; }
+          content=`turbo-ignore api --filter=$TURBO_RUN_FILTER --dry-run=json`
+          # Transform multi-line JSON to single-line for GitHub Actions output
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=result::$content"
+
+      - name: Check if API has changed
+        id: changed-api
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
+        run: |
+          echo "API workspace has changes."
+          echo "::set-output name=result::true"
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        if: ${{ steps.changed-api.outputs.result == 'true' }}
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
       - name: Build, tag, and push API image to Amazon ECR
         id: build-image
+        if: ${{ steps.changed-api.outputs.result == 'true' }}
         env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
             IMAGE_TAG: ${{ github.sha }}
@@ -70,6 +80,7 @@ jobs:
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
+        if: ${{ steps.changed-api.outputs.result == 'true' }}
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
           task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
@@ -77,6 +88,7 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
+        if: ${{ steps.changed-api.outputs.result == 'true' }}
         uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
