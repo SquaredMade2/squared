@@ -1,8 +1,6 @@
 export type DisplayProperty = {
-	title: boolean;
 	identifier: boolean;
 	dueDate: boolean;
-	effortEstimate: boolean;
 	assigneeAvatar: boolean;
 	labels: boolean;
 	status: boolean;

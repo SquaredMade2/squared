@@ -11,10 +11,8 @@ export const createViewStore = (
 		listViewOptions: {
 			showEmptyGroups: false,
 			displayProperties: {
-				title: true,
 				identifier: true,
 				dueDate: true,
-				effortEstimate: true,
 				assigneeAvatar: true,
 				labels: true,
 				status: true,
@@ -24,10 +22,8 @@ export const createViewStore = (
 		gridViewOptions: {
 			showEmptyGroups: false,
 			displayProperties: {
-				title: true,
 				identifier: true,
 				dueDate: true,
-				effortEstimate: true,
 				assigneeAvatar: true,
 				labels: true,
 				status: true,
