@@ -1,59 +1,32 @@
+// created/page.tsx
 "use client";
 
-import ViewAllTasks from "@/components/ViewAllTasks";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import ViewAllTasks from "@/components/ViewAllTasks";
 import {
 	useAuthStore,
 	useTaskStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { Status, type Task } from "@repo/db";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
-import { useRouter } from "next/navigation";
+import { Status, type Task } from "@repo/db";
 import { ArrowLeft } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function MyIssues() {
-	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
-		"assigned",
-	);
-	const {
-		tasks: initialTasks,
-		getAllTasks,
-		updateTask,
-	} = useTaskStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+export default function MyCreatedTasksPage() {
+	const router = useRouter();
+	const path = usePathname();
+	const isCreatedPath = path.includes("created");
 	const { view } = useViewStore((state) => state);
 	const { user } = useAuthStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { tasks: initialTasks, updateTask } = useTaskStore((state) => state);
 	const [tasks, setTasks] = useState<Task[]>(
-		initialTasks.filter((t) => t.assigneeId === user?.id),
+		initialTasks.filter((t) => t.authorId === user?.id),
 	);
-	const router = useRouter();
-	useEffect(() => {
-		const initiateStore = async () => {
-			if (initialTasks) {
-				setTasks(initialTasks.filter((t) => t.assigneeId === user?.id));
-			} else {
-				await getAllTasks(currentWorkspace?.id ?? "");
-			}
-		};
-		initiateStore();
-	}, [user, currentWorkspace]);
-
-	useEffect(() => {
-		switch (activeTab) {
-			case "assigned":
-				setTasks(initialTasks.filter((t) => t.assigneeId === user?.id));
-				break;
-			case "created":
-				setTasks(initialTasks.filter((t) => t.authorId === user?.id));
-				break;
-			default:
-				break;
-		}
-	}, [activeTab, initialTasks]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -72,8 +45,8 @@ export default function MyIssues() {
 		const updatedTasks = tasks.map((task) =>
 			task.id === draggableId ? updatedTask : task,
 		);
-		setTasks(updatedTasks); // Directly set updated tasks
-		await updateTask(updatedTask.id, { status: updatedTask.status }); // Backend update
+		setTasks(updatedTasks); // directly set updated tasks in local state
+		await updateTask(updatedTask.id, { status: updatedTask.status }); //backend update
 	};
 
 	const titleArr: { value: Status; id: number }[] = [
@@ -92,9 +65,6 @@ export default function MyIssues() {
 		return tasks.filter((task) => task.status === status);
 	};
 
-	// TODO: Refactor TopNavBar to be viable in multiple pages
-	// <TopNavBar />;
-
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden container">
 			<div className="flex justify-start space-x-4 my-4 items-center">
@@ -103,45 +73,32 @@ export default function MyIssues() {
 				</Button>
 				<p className="hidden xl:block">My Tasks</p>
 				<Button
-					onClick={() => setActiveTab("assigned")}
-					variant={activeTab === "assigned" ? "secondary" : "ghost"}
+					onClick={() =>
+						router.push(`${currentWorkspace?.url}/my-tasks/assigned`)
+					}
+					variant={!isCreatedPath ? "secondary" : "ghost"}
 					size="sm"
 				>
 					Assigned
 				</Button>
 				<Button
-					onClick={() => setActiveTab("created")}
-					variant={activeTab === "created" ? "secondary" : "ghost"}
+					onClick={() =>
+						router.push(`${currentWorkspace?.url}/my-tasks/created`)
+					}
+					variant={isCreatedPath ? "secondary" : "ghost"}
 					size="sm"
 				>
 					Created
 				</Button>
-				{/* TODO: Feature not implemented yet */}
-				{/* <Button
-					// onClick={() => setActiveTab("subscribed")}
-					variant="ghost"
-				>
-					Subscribed
-				</Button>
-				TODO: Feature not implemented yet
-				<Button
-					// onClick={() => setActiveTab("activity")}
-					variant="ghost"
-				>
-					Activity
-				</Button> */}
 			</div>
-
-			{/* <TopNavBar /> */}
-
 			<ScrollArea className={view === "list" ? "max-h-[calc(100vh-55px)]" : ""}>
 				<DragDropContext onDragEnd={handleDragEnd}>
 					<ViewAllTasks
 						getFilteredStatuses={getFilteredStatuses}
 						getTasksForStatus={getTasksForStatus}
 					/>
+					{view === "grid" && <ScrollBar orientation="horizontal" />}
 				</DragDropContext>
-				{view === "grid" && <ScrollBar orientation="horizontal" />}
 			</ScrollArea>
 		</div>
 	);
