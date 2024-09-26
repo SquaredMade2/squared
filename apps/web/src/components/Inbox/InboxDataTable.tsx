@@ -43,7 +43,10 @@ import type { NotificationFilter } from "@/app/inbox/page";
 export function InboxDataTable({
 	data,
 	filterType,
-}: { data: NotificationTask[]; filterType: NotificationFilter }) {
+}: {
+	data: NotificationTask[];
+	filterType: NotificationFilter;
+}) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -53,6 +56,7 @@ export function InboxDataTable({
 	const [rowSelection, setRowSelection] = useState({});
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
+	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
 	const { updateManyNotifications, deleteManyNotifications } =
 		useNotificationStore((state) => state);
 
@@ -88,6 +92,17 @@ export function InboxDataTable({
 			table.getColumn("read")?.setFilterValue(undefined);
 		}
 	}, [showUnreadOnly, table]);
+
+	const handleSelectAllInInbox = () => {
+		setSelectAllInInbox(true);
+		table.toggleAllRowsSelected(true);
+	};
+
+	const handleSelectAllOnPage = (checked: boolean) => {
+		setSelectAllInInbox(false);
+		table.toggleAllPageRowsSelected(checked);
+		!checked && table.toggleAllRowsSelected(checked);
+	};
 
 	const handleMarkAsUnread = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
@@ -185,10 +200,11 @@ export function InboxDataTable({
 						<TableRow className="hover:bg-popover h-14">
 							<TableHead className="w-12">
 								<Checkbox
-									checked={table.getIsAllPageRowsSelected()}
-									onCheckedChange={(value) =>
-										table.toggleAllPageRowsSelected(!!value)
+									checked={
+										table.getIsAllPageRowsSelected() ||
+										(table.getIsSomePageRowsSelected() && "indeterminate")
 									}
+									onCheckedChange={handleSelectAllOnPage}
 									aria-label="Select all"
 								/>
 							</TableHead>
@@ -249,6 +265,18 @@ export function InboxDataTable({
 															</div>
 														</PopoverContent>
 													</Popover>
+													{(table.getIsAllPageRowsSelected() ||
+														table.getIsSomePageRowsSelected()) &&
+														!selectAllInInbox && (
+															<Button
+																variant="link"
+																size="sm"
+																onClick={handleSelectAllInInbox}
+																className="text-xs"
+															>
+																Select all {data.length} items in inbox
+															</Button>
+														)}
 												</>
 											) : (
 												<>
