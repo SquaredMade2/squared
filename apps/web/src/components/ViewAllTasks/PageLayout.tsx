@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -64,18 +66,25 @@ export function TaskPageLayout({
 					<NoTasksNewIssueButton />
 				</div>
 			) : currentWorkspace ? (
-				<ScrollArea
-					className={`${
-						view === "list" ? "max-h-[calc(100vh-55px)]" : ""
-					} px-2`}
-				>
-					<div className={"flex flex-grow mx-2"}>
-						<DragDropContext onDragEnd={handleDragEnd}>
-							{children}
-						</DragDropContext>
+				<div className="flex-grow overflow-hidden">
+					<ScrollArea
+						// This is the height of the top bar
+						className={`h-[calc(100vh-145px)] ${
+							view === "list" ? "overflow-y-auto" : "overflow-x-auto"
+						} px-2`}
+					>
+						<div
+							className={`flex mx-2 ${
+								view === "grid" ? "flex-nowrap" : "flex-wrap"
+							}`}
+						>
+							<DragDropContext onDragEnd={handleDragEnd}>
+								{children}
+							</DragDropContext>
+						</div>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</div>
-				</ScrollArea>
+					</ScrollArea>
+				</div>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
