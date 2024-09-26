@@ -4,22 +4,17 @@
 import { useTaskPage } from "@/hooks/useTaskPage";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
-import { useFilterStore, useViewStore } from "@/store";
+import { useViewStore } from "@/store";
 import { Status } from "@repo/db";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useStore } from "@/hooks/useStore";
 
 export default function AllTasksPage() {
-	const { filterTasks } = useFilterStore((state) => state);
+	const { filterTasks, currentWorkspace, loading, authorized, currentTeam } =
+		useStore();
 	const { view, gridViewOptions } = useViewStore((state) => state);
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskPage(filterTasks);
+	const { handleDragEnd, getFilteredStatuses, getTasksForStatus } =
+		useTaskPage(filterTasks);
 
 	const getEmptyColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
@@ -31,13 +26,13 @@ export default function AllTasksPage() {
 			return tasks && tasks.length === 0;
 		});
 	};
-	if (!currentWorkspace) return null;
+	if (!currentWorkspace || !currentTeam) return null;
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
 			currentWorkspace={currentWorkspace}
-			teamIdentifier={teamIdentifier}
+			teamIdentifier={currentTeam.identifier}
 			handleDragEnd={handleDragEnd}
 		>
 			<ViewAllTasks
