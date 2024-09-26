@@ -44,9 +44,20 @@ const DisplayPreferences = () => {
 	};
 
 	return (
-		<div>
+		<>
 			<Separator className="my-2" />
-			<div className="mb-3">Display Properties</div>
+			<div>{view === "grid" ? "Grid" : "List"} options</div>
+			<div className="flex items-center justify-between w-full my-3">
+				<p className="text-foreground text-xs py-1">Show Empty Groups</p>
+				<Switch
+					className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
+					checked={showEmptyGroups}
+					onCheckedChange={(checked) =>
+						setOptions({ showEmptyGroups: checked })
+					}
+				/>
+			</div>
+
 			<ToggleGroup
 				type="multiple"
 				className="flex flex-wrap gap-3"
@@ -60,27 +71,16 @@ const DisplayPreferences = () => {
 							key={property}
 							value={property}
 							data-state={value ? "off" : "on"}
-							className="border"
+							variant="outline"
+							size="sm"
+							className="text-sm"
 						>
 							{formatCamelCaseString(property)}
 						</ToggleGroupItem>
 					);
 				})}
 			</ToggleGroup>
-			<Separator className="my-3" />
-			<div className="flex items-center justify-between w-full">
-				<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-					Show Empty Groups
-				</p>
-				<Switch
-					className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
-					checked={showEmptyGroups}
-					onCheckedChange={(checked) =>
-						setOptions({ showEmptyGroups: checked })
-					}
-				/>
-			</div>
-		</div>
+		</>
 	);
 };
 
