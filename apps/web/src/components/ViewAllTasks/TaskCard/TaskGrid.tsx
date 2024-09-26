@@ -20,9 +20,12 @@ const TaskGrid = ({
 	const { gridViewOptions } = useViewStore((state) => state);
 
 	const {
-		priority: showPriority,
+		identifier: showIdentifier,
 		dueDate: showDueDate,
+		assigneeAvatar: showAssigneeAvatar,
 		labels: showLabels,
+		// status: showStatus,	// no status currently in grid view - implement later on - Kaila
+		priority: showPriority,
 	} = gridViewOptions.displayProperties;
 
 	return (
@@ -32,17 +35,22 @@ const TaskGrid = ({
 			<Card className="w-80">
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
-						<p className="text-xs text-muted-foreground">{teamIdentifier}</p>
-						{task.assigneeName ? (
-							<Avatar className="size-6">
-								<AvatarImage src={user?.avatarUrl ?? undefined} />
-								<AvatarFallback className="text-xxs">
-									{getInitials(task.assigneeName)}
-								</AvatarFallback>
-							</Avatar>
+						{showIdentifier ? (
+							<p className="text-xs text-muted-foreground">{teamIdentifier}</p>
 						) : (
-							<UserSearch className="size-6 text-[#9597AD]" />
+							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
 						)}
+						{showAssigneeAvatar &&
+							(task.assigneeName ? (
+								<Avatar className="size-6">
+									<AvatarImage src={user?.avatarUrl ?? undefined} />
+									<AvatarFallback className="text-xxs">
+										{getInitials(task.assigneeName)}
+									</AvatarFallback>
+								</Avatar>
+							) : (
+								<UserSearch className="size-6 text-[#9597AD]" />
+							))}
 					</div>
 					<div className="text-sm pr-8 cursor-pointer w-full">
 						{truncateString(task.title, 70)}
