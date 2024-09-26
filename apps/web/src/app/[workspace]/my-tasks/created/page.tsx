@@ -4,10 +4,16 @@
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useTaskPage } from "@/hooks/useTaskPage";
-import { useFilterStore } from "@/store";
+import { useAuthStore, useTaskStore } from "@/store";
+import type { Task } from "@repo/db";
 
 export default function MyCreatedTasksPage() {
-	const { filterTasks } = useFilterStore((state) => state);
+	useTaskStore((state) => state);
+	const { user } = useAuthStore((state) => state);
+
+	const filterTasks = (tasks: Task[]) => {
+		return tasks.filter((t) => t.authorId === user?.id);
+	};
 	const {
 		loading,
 		authorized,
