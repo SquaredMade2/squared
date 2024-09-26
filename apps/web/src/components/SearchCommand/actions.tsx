@@ -148,16 +148,16 @@ export class commandSchema {
 				},
 				shortcut: ["G", "then", "I"],
 			},
-			"Go to my issues": {
+			"Go to my tasks": {
 				icon: <ArrowRight />,
-				text: "Go to my issues",
+				text: "Go to my tasks",
 				function: () => {},
 				shortcut: ["G", "then", "M"],
 				/* This is for the future functionality */
 			},
-			"Go to active issues": {
+			"Go to active tasks": {
 				icon: <ArrowRight />,
-				text: "Go to active issues",
+				text: "Go to active tasks",
 				function: () => {
 					if (this.currentWorkspace && this.currentTeam) {
 						this.router.push(
@@ -183,9 +183,9 @@ export class commandSchema {
 				},
 				shortcut: ["G", "then", "B"],
 			},
-			"Go to all issues": {
+			"Go to all tasks": {
 				icon: <ArrowRight />,
-				text: "Go to all issues",
+				text: "Go to all tasks",
 				function: () => {
 					if (this.currentWorkspace && this.currentTeam) {
 						this.router.push(
@@ -229,9 +229,9 @@ export class commandSchema {
 				},
 				shortcut: ["G", "then", "X"],
 			},
-			"Go to recently deleted issues": {
+			"Go to recently deleted tasks": {
 				icon: <Trash2 />,
-				text: "Go to recently deleted issues",
+				text: "Go to recently deleted tasks",
 				function: () => {
 					/* this is for the future functionality */
 				},
