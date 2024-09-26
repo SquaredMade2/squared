@@ -146,6 +146,14 @@
       "import": "./src/toast/index.ts",
       "require": "./src/toast/index.ts"
     },
+    "./toggle": {
+      "import": "./src/toggle/index.ts",
+      "require": "./src/toggle/index.ts"
+    },
+    "./toggle-group": {
+      "import": "./src/toggle-group/index.ts",
+      "require": "./src/toggle-group/index.ts"
+    },
     "./tooltip": {
       "import": "./src/tooltip/index.ts",
       "require": "./src/tooltip/index.ts"

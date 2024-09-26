@@ -55,3 +55,17 @@ export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
 		</Button>
 	);
 };
+
+export const NoTasksNewIssueButton = () => {
+	const { setShowNewIssue } = useModalStore((state) => state);
+
+	const handleOpen = () => {
+		setShowNewIssue(true);
+	};
+
+	return (
+		<Button onClick={() => handleOpen()} variant="secondary">
+			+ Add your first task
+		</Button>
+	);
+};
