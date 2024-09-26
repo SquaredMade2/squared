@@ -2,6 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreatedByInformation, UpdatedByInformation } from ".";
+import TextEditor from "../TextEditor";
 
 export const EventTabs = () => {
 	return (
@@ -18,6 +19,7 @@ export const EventTabs = () => {
 			</TabsContent>
 			<TabsContent value="comments">
 				{/* TODO: Implement CommentForm component */}
+				<TextEditor />
 				<div>Comments will be implemented here</div>
 			</TabsContent>
 		</Tabs>
