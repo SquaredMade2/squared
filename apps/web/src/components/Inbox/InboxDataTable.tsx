@@ -94,8 +94,13 @@ export function InboxDataTable({
 	}, [showUnreadOnly, table]);
 
 	const handleSelectAllInInbox = () => {
-		setSelectAllInInbox(true);
-		table.toggleAllRowsSelected(true);
+		if (selectAllInInbox) {
+			setSelectAllInInbox(false);
+			table.toggleAllRowsSelected(false);
+		} else {
+			setSelectAllInInbox(true);
+			table.toggleAllRowsSelected(true);
+		}
 	};
 
 	const handleSelectAllOnPage = (checked: boolean) => {
@@ -103,6 +108,8 @@ export function InboxDataTable({
 		table.toggleAllPageRowsSelected(checked);
 		!checked && table.toggleAllRowsSelected(checked);
 	};
+
+	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
 
 	const handleMarkAsUnread = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
@@ -142,6 +149,7 @@ export function InboxDataTable({
 		}
 		table.setRowSelection(updatedRowSelection);
 	};
+
 	const handleMarkAsRestored = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
 		await updateManyNotifications(
@@ -154,6 +162,7 @@ export function InboxDataTable({
 		}
 		table.setRowSelection(updatedRowSelection);
 	};
+
 	const handleDeleteMany = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
 		await deleteManyNotifications(selectedRows.map((row) => row.original));
@@ -223,17 +232,19 @@ export function InboxDataTable({
 														<Check className="size-4" />
 														<span className="hidden sm:inline">Dismiss</span>
 													</Button>
-													<Button
-														onClick={handleMarkAsUnread}
-														variant="outline"
-														size="sm"
-														className="gap-2 bg-secondary"
-													>
-														<BellOff className="size-4" />
-														<span className="hidden sm:inline">
-															Unsubscribe
-														</span>
-													</Button>
+													{!isAllSelected && (
+														<Button
+															onClick={handleMarkAsUnread}
+															variant="outline"
+															size="sm"
+															className="gap-2 bg-secondary"
+														>
+															<BellOff className="size-4" />
+															<span className="hidden sm:inline">
+																Unsubscribe
+															</span>
+														</Button>
+													)}
 													<Popover>
 														<PopoverTrigger asChild>
 															<Button
@@ -266,17 +277,18 @@ export function InboxDataTable({
 														</PopoverContent>
 													</Popover>
 													{(table.getIsAllPageRowsSelected() ||
-														table.getIsSomePageRowsSelected()) &&
-														!selectAllInInbox && (
-															<Button
-																variant="link"
-																size="sm"
-																onClick={handleSelectAllInInbox}
-																className="text-xs"
-															>
-																Select all {data.length} items in inbox
-															</Button>
-														)}
+														table.getIsSomePageRowsSelected()) && (
+														<Button
+															variant="link"
+															size="sm"
+															onClick={handleSelectAllInInbox}
+															className="text-xs"
+														>
+															{isAllSelected
+																? "Clear selection"
+																: `Select all ${data.length} items in inbox`}
+														</Button>
+													)}
 												</>
 											) : (
 												<>
