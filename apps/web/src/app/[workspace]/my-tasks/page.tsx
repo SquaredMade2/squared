@@ -101,7 +101,7 @@ export default function MyIssues() {
 				<Button size="icon" variant="ghost" onClick={() => router.back()}>
 					<ArrowLeft className="size-4" />
 				</Button>
-				<p className="hidden xl:block">My Issues</p>
+				<p className="hidden xl:block">My Tasks</p>
 				<Button
 					onClick={() => setActiveTab("assigned")}
 					variant={activeTab === "assigned" ? "secondary" : "ghost"}
