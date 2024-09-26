@@ -57,7 +57,7 @@ const IconLeftMenu = () => {
 		setMounted(true);
 		const fetchNotifications = async () => {
 			const notifications = user && (await getAllNotifications(user.id));
-			setNotifications(notifications?.length || 0);
+			setNotifications(notifications?.filter((n) => !n.read).length || 0);
 		};
 		fetchNotifications();
 	}, []);
