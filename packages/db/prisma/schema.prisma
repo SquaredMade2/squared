@@ -168,7 +168,10 @@ model Task {
   workspaceId    String
   updatedAt      DateTime  @default(now()) @updatedAt
   deleted        Boolean   @default(false)
+  parentId       String?
 
+  parent   Task?         @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
+  children Task[]        @relation("ParentChild")
   status   Status        @default(backlog)
   priority Priority      @default(noPriority)
   Comments Comment[]
