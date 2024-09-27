@@ -22,7 +22,7 @@ const TaskGrid = ({
 	const {
 		identifier: showIdentifier,
 		dueDate: showDueDate,
-		assigneeAvatar: showAssigneeAvatar,
+		avatar: showAvatar,
 		labels: showLabels,
 		// status: showStatus,	// no status currently in grid view - implement later on - Kaila
 		priority: showPriority,
@@ -40,7 +40,7 @@ const TaskGrid = ({
 						) : (
 							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
 						)}
-						{showAssigneeAvatar &&
+						{showAvatar &&
 							(task.assigneeName ? (
 								<Avatar className="size-6">
 									<AvatarImage src={user?.avatarUrl ?? undefined} />

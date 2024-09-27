@@ -22,7 +22,7 @@ const TaskList = ({
 	const {
 		identifier: showIdentifier,
 		dueDate: showDueDate,
-		assigneeAvatar: showAssigneeAvatar,
+		avatar: showAvatar,
 		labels: showLabels,
 		status: showStatus,
 		priority: showPriority,
@@ -75,7 +75,7 @@ const TaskList = ({
 										: "No Date"}
 								</div>
 							)}
-							{showAssigneeAvatar &&
+							{showAvatar &&
 								(task.assigneeName ? (
 									<Avatar className="size-6 flex-shrink-0">
 										<AvatarImage src={user?.avatarUrl ?? undefined} />

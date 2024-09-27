@@ -1,7 +1,7 @@
 export type DisplayProperty = {
 	identifier: boolean;
 	dueDate: boolean;
-	assigneeAvatar: boolean;
+	avatar: boolean;
 	labels: boolean;
 	status: boolean;
 	priority: boolean;

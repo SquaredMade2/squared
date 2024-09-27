@@ -13,7 +13,7 @@ export const createViewStore = (
 			displayProperties: {
 				identifier: true,
 				dueDate: true,
-				assigneeAvatar: true,
+				avatar: true,
 				labels: true,
 				status: true,
 				priority: true,
@@ -24,7 +24,7 @@ export const createViewStore = (
 			displayProperties: {
 				identifier: true,
 				dueDate: true,
-				assigneeAvatar: true,
+				avatar: true,
 				labels: true,
 				status: true,
 				priority: true,
