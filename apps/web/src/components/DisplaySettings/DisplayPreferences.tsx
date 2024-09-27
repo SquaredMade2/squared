@@ -58,10 +58,10 @@ const DisplayPreferences = () => {
 					}
 				/>
 			</div>
-
+			<p className="text-foreground text-xs py-1 mb-2">Display Properties</p>
 			<ToggleGroup
 				type="multiple"
-				className="flex flex-wrap gap-3"
+				className="flex flex-wrap justify-start gap-3"
 				onValueChange={handleValueChange}
 			>
 				{Object.keys(displayProperties).map((property) => {
