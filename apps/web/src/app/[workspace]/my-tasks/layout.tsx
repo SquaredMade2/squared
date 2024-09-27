@@ -1,18 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-	// useAuthStore,
-	//  useTaskStore,
-	useWorkspaceStore,
-} from "@/store";
-// import type { Task } from "@repo/db";
+import { useWorkspaceStore } from "@/store";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-	//  useEffect,
-	useState,
-} from "react";
+import { useState } from "react";
 
 export default function MyTasksLayout({
 	children,
@@ -21,37 +13,7 @@ export default function MyTasksLayout({
 	const [activeTab, setActiveTab] = useState<"created" | "assigned">(
 		"assigned",
 	);
-	// const { user } = useAuthStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	// const { tasks: initialTasks, getAllTasks } = useTaskStore((state) => state);
-	// const [tasks, setTasks] = useState<Task[]>(
-	// 	initialTasks.filter((t) => t.assigneeId === user?.id),
-	// );
-
-	// useEffect(() => {
-	// 	const initiateStore = async () => {
-	// 		if (initialTasks) {
-	// 			setTasks(initialTasks.filter((t) => t.assigneeId === user?.id));
-	// 		} else {
-	// 			await getAllTasks(currentWorkspace?.id ?? "");
-	// 		}
-	// 	};
-	// 	initiateStore();
-	// }, [user, currentWorkspace]);
-
-	// useEffect(() => {
-	// 	switch (activeTab) {
-	// 		case "assigned":
-	// 			setTasks(initialTasks.filter((t) => t.assigneeId === user?.id));
-	// 			break;
-	// 		case "created":
-	// 			setTasks(initialTasks.filter((t) => t.authorId === user?.id));
-	// 			break;
-	// 		default:
-	// 			break;
-	// 	}
-	// }, [activeTab, initialTasks]);
-
 	return (
 		<div className="flex w-full overflow-hidden relative">
 			<main className="flex w-full flex-col h-screen flex-grow overflow-hidden container">

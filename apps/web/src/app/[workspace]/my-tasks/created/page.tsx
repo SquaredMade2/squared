@@ -1,19 +1,14 @@
-// created/page.tsx
 "use client";
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useTaskPage } from "@/hooks/useTaskPage";
-import { useAuthStore, useTaskStore } from "@/store";
-import type { Task } from "@repo/db";
+import { useAuthStore, useFilterStore } from "@/store";
 
 export default function MyCreatedTasksPage() {
-	useTaskStore((state) => state);
 	const { user } = useAuthStore((state) => state);
+	const { filterTasks } = useFilterStore((state) => state);
 
-	const filterTasks = (tasks: Task[]) => {
-		return tasks.filter((t) => t.authorId === user?.id);
-	};
 	const {
 		loading,
 		authorized,
@@ -22,7 +17,9 @@ export default function MyCreatedTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage(filterTasks);
+	} = useTaskPage((tasks) =>
+		filterTasks(tasks.filter((t) => t.authorId === user?.id)),
+	);
 
 	if (!currentWorkspace) return null;
 
