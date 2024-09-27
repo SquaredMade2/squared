@@ -78,7 +78,6 @@ const DisplayPreferences = () => {
 							{getFormattedKeyString(listViewOptions)}
 						</p>
 						<Switch
-							className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
 							checked={listViewOptions.showEmptyGroups}
 							onCheckedChange={(checked) =>
 								setListViewOptions({ showEmptyGroups: checked })
