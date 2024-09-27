@@ -39,7 +39,7 @@ async function seedDB() {
 				const team = await addTeam(workspace, user);
 				const numUsers = faker.number.int({ min: 3, max: 6 });
 				const numTasks = faker.number.int({ min: 30, max: 50 });
-				const users = [];
+				const users = [user];
 				for(let i = 0; i < numUsers; i++){
 					const newUser = await addUser();
 					await addUserToWorkspace(newUser, workspace);
