@@ -3,6 +3,7 @@ import { useViewStore } from "@/store";
 import { Separator } from "../ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import type { DisplayProperty } from "@/store/views";
+import { Button } from "../ui/button";
 
 const DisplayPreferences = () => {
 	const {
