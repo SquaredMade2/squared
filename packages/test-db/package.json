@@ -13,7 +13,8 @@
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes",
     "postinstall": "pnpm run db:generate",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "studio:test": "prisma studio --schema prisma/testSchema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0"

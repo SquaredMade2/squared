@@ -14,8 +14,7 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node api/index.ts",
-		"test": "jest",
-		"test:e2e": "jest --detectOpenHandles --testPathPattern=api/e2e"
+		"test": "jest --detectOpenHandles"
 	},
 	"keywords": [],
 	"author": "",

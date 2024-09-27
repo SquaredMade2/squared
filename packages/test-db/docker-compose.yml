@@ -13,5 +13,19 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  postgres-test:
+    image: postgres:16
+    container_name: postgres-testing-db
+    environment:
+      POSTGRES_USER: squared
+      POSTGRES_PASSWORD: squared
+      POSTGRES_DB: squared-test
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data_2:/var/lib/postgresql/data
+      
+
 volumes:
   postgres_data:
+  postgres_data_2:

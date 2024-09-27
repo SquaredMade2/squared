@@ -123,7 +123,7 @@ const server = app.listen(port, () => {
   console.log(\`Server is running on http://localhost:\${port}\`);
 });
   
-// So e2e tests can use app and kill server after running
+// So tests can use app and kill server after running
 export { app, server }
 `);
 }
