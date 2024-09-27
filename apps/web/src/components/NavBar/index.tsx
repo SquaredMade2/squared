@@ -45,7 +45,7 @@ const Navbar = () => {
 									className="justify-start"
 									onClick={() => router.push(`/${workspace?.url}/my-issues`)}
 								>
-									My Issues
+									My Tasks
 								</Button>
 							</div>
 							<ScrollArea className="px-2">

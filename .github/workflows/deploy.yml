@@ -12,7 +12,7 @@ name: Deploy to Amazon ECS
 on:
   push:
     branches:
-      - develop
+      - main
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -23,10 +23,48 @@ env:
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
 
 jobs:
+  checks:
+    name: Check For Changes
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      # Defining a job output for used by the next jobs:
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
+      changed-app: ${{ steps.changed-app.outputs.result }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install turbo
+        run: "npm install -g turbo"
+
+      - name: Changeset
+        id: changeset
+        # 1. We need the 'output' of a turbo dry-run to get a json with all affected packages of these run.
+        # 2. The multi line json string is transformed to a single line string.
+        # 3. The single line json string is set to an 'output' (or result) of this step.
+        run: |
+          content=`turbo build --filter=api --dry-run=json`
+          # the following lines are required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=result::$content"
+
+      - name: Changed app?
+        id: changed-app
+        # 1. Using the 'output' of the 'changeset' step inside the `if` to check if the specific app has changed
+        # 2. When `true`, we store it in the 'output' of the current step.
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'app') }}
+        run: |
+          echo "::set-output name=result::true"
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: production
+    needs: [checks]
+    if: ${{ needs.checks.outputs.changed-app }}
 
     steps:
       - name: Checkout
