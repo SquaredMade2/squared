@@ -1,4 +1,9 @@
-import type { SavedFilter as SavedFilterType, Task } from "@repo/db";
+import type {
+	SavedFilter as SavedFilterType,
+	Task,
+	Team,
+	Workspace,
+} from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
@@ -20,16 +25,8 @@ type FilterCondition = {
 		| "arrayIncludesAny";
 };
 
-type TaskFilter = {
-	logic: "AND" | "OR";
-	conditions: FilterCondition[];
-};
-
-export type SavedFilter = {
-	id: string;
-	name: string;
-	workspaceId: string;
-	filter: TaskFilter;
+type SavedFilter = Omit<SavedFilterType, "filter"> & {
+	filter: FilterCondition[];
 };
 
 export function createRoute(): Route<Params> {
@@ -87,13 +84,26 @@ export function createRoute(): Route<Params> {
 				}
 
 				const { id, ...filterData } = body;
+				console.log("filterData", filterData);
+				let parent: Team | Workspace | null;
+				if (body.workspaceId) {
+					parent = await prisma.workspace.findUnique({
+						where: { id: body.workspaceId },
+					});
+				} else if (body.teamId) {
+					parent = await prisma.team.findUnique({
+						where: { id: body.teamId },
+					});
+				} else {
+					return {
+						data: null,
+						message: "Must provide workspace or team",
+						variant: "destructive",
+					};
+				}
 
-				const workspace = await prisma.workspace.findUnique({
-					where: { id: body.workspaceId },
-				});
-
-				if (!workspace) {
-					throw new Error("Workspace not found");
+				if (!parent) {
+					throw new Error("Parent not found");
 				}
 
 				const newFilter = await prisma.savedFilter.create({
@@ -116,6 +126,37 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error creating filter:", error);
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal server error",
+					variant: "destructive",
+				};
+			}
+		},
+		GET: async (res, { filterId }): Promise<APIResponse<SavedFilterType>> => {
+			try {
+				const filter = await prisma.savedFilter.findMany({
+					where: {
+						OR: [{ teamId: filterId }, { workspaceId: filterId }],
+					},
+				});
+
+				if (!filter) {
+					return {
+						data: null,
+						message: "Filter not found",
+						variant: "destructive",
+					};
+				}
+
+				// Return the filter
+				return {
+					data: filter,
+					variant: "default",
+				};
+			} catch (error) {
+				console.error("Error fetching filter:", error);
 				res.status(500);
 				return {
 					data: null,

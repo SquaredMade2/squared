@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
 
 type FilterValue = string | number | Date | boolean | null | string[];
 
@@ -14,16 +14,14 @@ export type FilterCondition = {
 		| "arrayIncludesAny"; // Add more operators as needed
 };
 
-export type SavedFilter = {
-	id: string;
-	name: string;
-	workspaceId: string;
+export type SavedFilter = Omit<SavedFilterType, "filter"> & {
 	filter: FilterCondition[];
 };
 
 export type FilterState = {
 	currentFilters: FilterCondition[];
 	currentFilterTypes: string[];
+	savedFilters: SavedFilter[];
 };
 
 export interface FilterResponse {
@@ -36,8 +34,9 @@ type FilterActions = {
 	setCurrentFilter: (filter: FilterCondition[]) => void;
 	addFilter: (filter: FilterCondition) => void;
 	clearFilter: () => void;
-	removeFilter: (field: keyof Task) => void;
-	saveFilter: (filter: SavedFilter) => Promise<FilterResponse>;
+	removeFilter: (field: string) => void;
+	saveFilter: (filter: Partial<SavedFilter>) => Promise<FilterResponse>;
+	getSavedFilters: (groupId: string) => Promise<SavedFilter[]>;
 	updateSavedFilter: (
 		filterId: string,
 		filter: Partial<SavedFilter>,
