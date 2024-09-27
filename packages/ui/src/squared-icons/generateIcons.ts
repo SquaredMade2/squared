@@ -20,4 +20,12 @@ for (const file of svgFiles) {
     fs.writeFileSync(path.join(outputDirectory, `${componentName}.tsx`), reactComponent)
     exportStatements.push(`export * from './${componentName}'; `)
 }
+exportStatements.push("export * from './Low';")
+exportStatements.push("export * from './Medium';")
+exportStatements.push("export * from './High';")
+exportStatements.push("export * from './GoogleIcon';")
+exportStatements.push("export * from './GithubIcon';")
+exportStatements.push("export * from './InProgress';")
+exportStatements.push("export * from './FilterInProgress';")
+exportStatements.push("export * from './SqLogo';")
 fs.writeFileSync(path.join(outputDirectory, "index.ts"), exportStatements.join("\n"))
