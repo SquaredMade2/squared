@@ -43,6 +43,7 @@ type FilterActions = {
 	) => Promise<FilterResponse>;
 	deleteSavedFilter: (filterId: string) => Promise<void>;
 	filterTasks: (tasks: Task[]) => Task[];
+	customFilter: (tasks: Task[], filter: FilterCondition[]) => Task[];
 };
 
 export type FilterStore = FilterState & FilterActions;

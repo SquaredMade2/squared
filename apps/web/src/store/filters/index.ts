@@ -94,6 +94,21 @@ export const createFilterStore = (
 						return matchesAll;
 					});
 				},
+				customFilter: (tasks, filters): Task[] => {
+					if (!filters || filters.length === 0) {
+						return tasks;
+					}
+
+					return tasks.filter((task) => {
+						const matchesAll = filters.every((condition) => {
+							const result = checkCondition(task, condition);
+
+							return result;
+						});
+
+						return matchesAll;
+					});
+				},
 				saveFilter: async (
 					filter: Partial<SavedFilter>,
 				): Promise<FilterResponse> => {
