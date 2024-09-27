@@ -70,12 +70,16 @@ const DisplayPreferences = () => {
 						<ToggleGroupItem
 							key={property}
 							value={property}
-							data-state={value ? "off" : "on"}
-							variant="outline"
-							size="sm"
-							className="text-sm"
+							data-state={value ? "on" : "off"}
+							asChild
 						>
-							{formatCamelCaseString(property)}
+							<Button
+								variant={value ? "secondary" : "ghost"}
+								size="sm"
+								className="text-xs py-0 px-2 h-6"
+							>
+								{formatCamelCaseString(property)}
+							</Button>
 						</ToggleGroupItem>
 					);
 				})}
