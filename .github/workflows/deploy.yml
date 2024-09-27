@@ -36,13 +36,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install turbo
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.10.0
+
       - name: Changeset
         id: changeset
         # 1. We need the 'output' of a turbo dry-run to get a json with all affected packages of these run.
         # 2. The multi line json string is transformed to a single line string.
         # 3. The single line json string is set to an 'output' (or result) of this step.
         run: |
-          content=`yarn build --filter=api --dry-run=json`
+          content=`pnpm build --filter=api --dry-run=json`
           # the following lines are required for multi line json
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
@@ -66,7 +71,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
