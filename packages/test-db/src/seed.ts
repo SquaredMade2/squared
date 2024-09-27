@@ -22,15 +22,13 @@ const hashPassword = (password: string): Promise<string> => {
 };
 
 async function seedDB() {
-	const numUsers = 15;
 	const workspaces = await Promise.all([
 		addWorkspace(),
 		addWorkspace(),
 		addWorkspace(),
 	]);
 
-	for (let i = 0; i < numUsers; i++) {
-		const user = await addUser();
+		const user = await addMainUser();
 
 		for (const workspace of workspaces) {
 			await addUserToWorkspace(user, workspace);
@@ -39,21 +37,49 @@ async function seedDB() {
 
 			for (let j = 0; j < numTeams; j++) {
 				const team = await addTeam(workspace, user);
-				const numTasks = faker.number.int({ min: 25, max: 40 });
+				const numUsers = faker.number.int({ min: 3, max: 6 });
+				const numTasks = faker.number.int({ min: 30, max: 50 });
+				const users = [];
+				for(let i = 0; i < numUsers; i++){
+					const newUser = await addUser();
+					await addUserToWorkspace(newUser, workspace);
+					users.push(newUser);
+				}
 
 				for (let l = 0; l < numTasks; l++) {
-					const task = await addTask(team, workspace, user);
+					const author = users[faker.number.int({ min: 0, max: users.length-1})];
+					const task = await addTask(team, workspace, author);
 					const numComments = faker.number.int({ min: 0, max: 3 });
 
 					for (let c = 0; c < numComments; c++) {
-						await addComment(user.id, task.id);
+						const author = users[faker.number.int({ min: 0, max: users.length-1})];
+						await addComment(author.id, task.id);
 					}
 				}
 			}
 		}
-	}
-
 	console.log("Database seeding completed");
+}
+
+async function addMainUser() {
+	const name = process.env.SEED_NAME || faker.person.fullName();
+	const email = process.env.SEED_EMAIL || faker.internet.email();;
+	const password = process.env.SEED_PASSWORD || faker.internet.password();
+	const username = name.replace(' ', '');
+
+	const hashedPassword = await hashPassword(password);
+
+	const user = await prisma.user.create({
+		data: {
+			name: name,
+			username,
+			email,
+			password: hashedPassword,
+			verified: true,
+			onBoarding: false,
+		},
+	});
+	return user;
 }
 
 async function addUser() {
@@ -201,6 +227,8 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			effortEstimate: taskEffortEstimate,
 			identifier: identifier,
 			teamId: team.id,
+			assigneeId: user.id,
+			assigneeName: user.name,
 			labels: randomLabelIds,
 			workspaceId: workspace.id,
 		},
