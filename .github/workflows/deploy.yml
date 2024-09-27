@@ -1,3 +1,12 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
 name: Deploy to Amazon ECS
 
 on:
@@ -14,19 +23,50 @@ env:
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
 
 jobs:
-  deploy:
-    name: Deploy
+  checks:
+    name: Check For Changes
     runs-on: ubuntu-latest
     environment: production
-
     outputs:
-      # Defining job outputs for conditional deployment:
-      changed-api: ${{ steps.changed-api.outputs.result }}
+      # Defining a job output for used by the next jobs:
+      # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idoutputs
+      changed-app: ${{ steps.changed-app.outputs.result }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Changeset
+        id: changeset
+        # 1. We need the 'output' of a turbo dry-run to get a json with all affected packages of these run.
+        # 2. The multi line json string is transformed to a single line string.
+        # 3. The single line json string is set to an 'output' (or result) of this step.
+        run: |
+          content=`yarn build --filter=api --dry-run=json`
+          # the following lines are required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=result::$content"
+
+      - name: Changed app?
+        id: changed-app
+        # 1. Using the 'output' of the 'changeset' step inside the `if` to check if the specific app has changed
+        # 2. When `true`, we store it in the 'output' of the current step.
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'app') }}
+        run: |
+          echo "::set-output name=result::true"
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [checks]
+    if: ${{ needs.checks.outputs.changed-app }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
@@ -34,41 +74,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install turbo-ignore
-        run: npm install -g turbo-ignore
-
-      - name: Get previous commit
-        id: prev-commit
-        run: |
-          git fetch --quiet
-          echo "PREV_COMMIT=$(git rev-parse HEAD^)" >> $GITHUB_ENV
-
-      - name: Determine if API workspace has changed
-        id: changeset
-        run: |
-          content=$(turbo-ignore api --fallback=$PREV_COMMIT --dry-run=json)
-          # Transform multi-line JSON to single-line for GitHub Actions output
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=result::$content"
-
-      - name: Check if API has changed
-        id: changed-api
-        # Check if the 'api' workspace is present in the output from turbo-ignore
-        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
-        run: |
-          echo "API workspace has changes."
-          echo "::set-output name=result::true"
-
       - name: Login to Amazon ECR
         id: login-ecr
-        if: ${{ steps.changed-api.outputs.result == 'true' }}
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
       - name: Build, tag, and push API image to Amazon ECR
         id: build-image
-        if: ${{ steps.changed-api.outputs.result == 'true' }}
         env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
             IMAGE_TAG: ${{ github.sha }}
@@ -86,7 +97,6 @@ jobs:
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
-        if: ${{ steps.changed-api.outputs.result == 'true' }}
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
           task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
@@ -94,7 +104,6 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
-        if: ${{ steps.changed-api.outputs.result == 'true' }}
         uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
