@@ -84,7 +84,6 @@ export function createRoute(): Route<Params> {
 				}
 
 				const { id, ...filterData } = body;
-				console.log("filterData", filterData);
 				let parent: Team | Workspace | null;
 				if (body.workspaceId) {
 					parent = await prisma.workspace.findUnique({
