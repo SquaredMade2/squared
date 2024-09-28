@@ -1,23 +1,15 @@
-import {} from "react";
-import { ChevronDown, SlidersVertical } from "lucide-react";
+import { ChevronDown, Rows3, SlidersVertical, Table } from "lucide-react";
 import DisplayPreferences from "./DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { useViewStore } from "@/store";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 const TopNavBarDisplay = () => {
 	const [view, setView] = useViewStore((state) => [state.view, state.setView]);
-
-	const handleListClick = (): void => {
-		setView("list");
-	};
-
-	const handleGridClick = (): void => {
-		setView("grid");
-	};
-
+	const handleValueChange = (val: string) => setView(val as "list" | "grid");
 	return (
-		<div className="flex flex-col gap-2 items-end relative h-10 ">
+		<div className="flex flex-col gap-2 items-end relative h-10">
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button variant={"ghost"} className="gap-2">
@@ -30,24 +22,28 @@ const TopNavBarDisplay = () => {
 				</PopoverTrigger>
 				<PopoverContent>
 					<div className="flex flex-col">
-						<div className=" w-full items-center justify-between flex mb-3">
-							<span className="text-foreground text-sm">Layout</span>
-							<div className="flex gap-2 items-center">
-								<Button
-									type="button"
-									onClick={handleListClick}
-									variant={view === "list" ? "outline" : "ghost"}
+						<div className="w-full items-center justify-between flex mb-3">
+							<ToggleGroup
+								type="single"
+								value={view}
+								onValueChange={handleValueChange}
+								className="w-full flex"
+							>
+								<ToggleGroupItem
+									value="list"
+									className="flex-1 cursor-pointer flex flex-col p-1 h-12 border-secondary border-[1px]"
 								>
+									<Rows3 />
 									List
-								</Button>
-								<Button
-									type="button"
-									onClick={handleGridClick}
-									variant={view === "grid" ? "outline" : "ghost"}
+								</ToggleGroupItem>
+								<ToggleGroupItem
+									value="grid"
+									className="flex-1 cursor-pointer flex flex-col p-1 h-12 border-secondary border-[1px]"
 								>
+									<Table />
 									Grid
-								</Button>
-							</div>
+								</ToggleGroupItem>
+							</ToggleGroup>
 						</div>
 						<DisplayPreferences />
 					</div>
