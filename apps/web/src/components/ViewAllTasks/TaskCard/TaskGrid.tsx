@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useViewStore } from "@/store";
 import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import { Button } from "@/components/ui/button";
 import LabelBadge from "@/components/LabelBadges";
 
 const TaskGrid = ({
@@ -41,14 +40,8 @@ const TaskGrid = ({
 							<UserSearch className="size-6 text-[#9597AD]" />
 						)}
 					</div>
-					<div className="text-sm pr-8 w-full flex items-center">
-						<Button
-							variant="ghost"
-							size="sm"
-							className="mx-1 p-0 flex-shrink-0"
-						>
-							<StatusIcon status={task.status} />
-						</Button>
+					<div className="text-sm pr-8 w-full flex items-center gap-2">
+						<StatusIcon status={task.status} />
 						{truncateString(task.title, 70)}
 					</div>
 					<div className="flex flex-wrap w-full items-center gap-1 -my-1">
