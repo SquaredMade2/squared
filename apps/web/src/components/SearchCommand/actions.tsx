@@ -1,5 +1,4 @@
 import { usePathname, useRouter } from "next/navigation";
-import type { SearchbarStructure } from "./SearchCommand.interface";
 import { useWorkspaceStore, useTeamStore } from "@/store";
 import {
 	Box,
@@ -18,18 +17,22 @@ import {
 	ArrowLeftRight,
 } from "lucide-react";
 import { useAuthStore } from "@/store";
+import type { Workspace } from "@/store/workspaces";
+import type { Team } from "@repo/db";
+import type { SearchbarStructure } from "./interfaces";
 
-export class commandSchema {
-	router = useRouter();
-	pathname = usePathname();
-	currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	currentTeam = useTeamStore((state) => state.currentTeam);
+export class CommandSchema {
+	router: ReturnType<typeof useRouter>;
+	pathname: string;
+	currentWorkspace: Workspace | null;
+	currentTeam: Team | null;
 	setShowNewIssue: (input: boolean) => void;
 	clearFilter: () => void;
 	showToast: (
 		title: string,
 		variant?: "destructive" | "default" | null,
 	) => void;
+
 	constructor(
 		setShowNewIssue: (input: boolean) => void,
 		clearFilter: () => void,
@@ -38,10 +41,19 @@ export class commandSchema {
 			variant?: "destructive" | "default" | null,
 		) => void,
 	) {
+		this.router = useRouter();
+		this.pathname = usePathname();
+		this.currentWorkspace = useWorkspaceStore(
+			(state) => state.currentWorkspace,
+		);
+		this.currentTeam = useTeamStore((state) => state.currentTeam);
 		this.setShowNewIssue = setShowNewIssue;
 		this.clearFilter = clearFilter;
 		this.showToast = showToast;
-		this.currentSchema = {
+	}
+
+	getSchema(): SearchbarStructure {
+		return {
 			Issue: {
 				createNewIssue: {
 					icon: <Plus className="mr-2 h-4 w-4" />,
@@ -384,12 +396,5 @@ export class commandSchema {
 				},
 			},
 		};
-	}
-	currentSchema: SearchbarStructure;
-	getSchema() {
-		return this.currentSchema;
-	}
-	setSchema(newSchema: SearchbarStructure) {
-		this.currentSchema = newSchema;
 	}
 }
