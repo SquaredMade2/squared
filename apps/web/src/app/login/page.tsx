@@ -32,11 +32,18 @@ function LoginForm() {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			await signIn("credentials", {
+			const response = await signIn("credentials", {
 				redirect: false,
 				email: data.email,
 				password: data.password,
 			});
+			if (response?.status === 401) {
+				toast({
+					title: response.error || "Error logging in",
+					variant: "destructive",
+				});
+			}
+			console.log("Login response:", response);
 			router.push("/");
 		} catch (error) {
 			console.error("Login error:", error);
