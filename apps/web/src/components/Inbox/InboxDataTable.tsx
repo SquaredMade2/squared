@@ -43,7 +43,10 @@ import type { NotificationFilter } from "@/app/inbox/page";
 export function InboxDataTable({
 	data,
 	filterType,
-}: { data: NotificationTask[]; filterType: NotificationFilter }) {
+}: {
+	data: NotificationTask[];
+	filterType: NotificationFilter;
+}) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -53,6 +56,7 @@ export function InboxDataTable({
 	const [rowSelection, setRowSelection] = useState({});
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
+	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
 	const { updateManyNotifications, deleteManyNotifications } =
 		useNotificationStore((state) => state);
 
@@ -88,6 +92,24 @@ export function InboxDataTable({
 			table.getColumn("read")?.setFilterValue(undefined);
 		}
 	}, [showUnreadOnly, table]);
+
+	const handleSelectAllInInbox = () => {
+		if (selectAllInInbox) {
+			setSelectAllInInbox(false);
+			table.toggleAllRowsSelected(false);
+		} else {
+			setSelectAllInInbox(true);
+			table.toggleAllRowsSelected(true);
+		}
+	};
+
+	const handleSelectAllOnPage = (checked: boolean) => {
+		setSelectAllInInbox(false);
+		table.toggleAllPageRowsSelected(checked);
+		!checked && table.toggleAllRowsSelected(checked);
+	};
+
+	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
 
 	const handleMarkAsUnread = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
@@ -127,6 +149,7 @@ export function InboxDataTable({
 		}
 		table.setRowSelection(updatedRowSelection);
 	};
+
 	const handleMarkAsRestored = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
 		await updateManyNotifications(
@@ -139,6 +162,7 @@ export function InboxDataTable({
 		}
 		table.setRowSelection(updatedRowSelection);
 	};
+
 	const handleDeleteMany = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
 		await deleteManyNotifications(selectedRows.map((row) => row.original));
@@ -185,10 +209,11 @@ export function InboxDataTable({
 						<TableRow className="hover:bg-popover h-14">
 							<TableHead className="w-12">
 								<Checkbox
-									checked={table.getIsAllPageRowsSelected()}
-									onCheckedChange={(value) =>
-										table.toggleAllPageRowsSelected(!!value)
+									checked={
+										table.getIsAllPageRowsSelected() ||
+										(table.getIsSomePageRowsSelected() && "indeterminate")
 									}
+									onCheckedChange={handleSelectAllOnPage}
 									aria-label="Select all"
 								/>
 							</TableHead>
@@ -207,17 +232,19 @@ export function InboxDataTable({
 														<Check className="size-4" />
 														<span className="hidden sm:inline">Dismiss</span>
 													</Button>
-													<Button
-														onClick={handleMarkAsUnread}
-														variant="outline"
-														size="sm"
-														className="gap-2 bg-secondary"
-													>
-														<BellOff className="size-4" />
-														<span className="hidden sm:inline">
-															Unsubscribe
-														</span>
-													</Button>
+													{!isAllSelected && (
+														<Button
+															onClick={handleMarkAsUnread}
+															variant="outline"
+															size="sm"
+															className="gap-2 bg-secondary"
+														>
+															<BellOff className="size-4" />
+															<span className="hidden sm:inline">
+																Unsubscribe
+															</span>
+														</Button>
+													)}
 													<Popover>
 														<PopoverTrigger asChild>
 															<Button
@@ -249,6 +276,19 @@ export function InboxDataTable({
 															</div>
 														</PopoverContent>
 													</Popover>
+													{(table.getIsAllPageRowsSelected() ||
+														table.getIsSomePageRowsSelected()) && (
+														<Button
+															variant="link"
+															size="sm"
+															onClick={handleSelectAllInInbox}
+															className="text-xs"
+														>
+															{isAllSelected
+																? "Clear selection"
+																: `Select all ${data.length} items in inbox`}
+														</Button>
+													)}
 												</>
 											) : (
 												<>
