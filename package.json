@@ -7,6 +7,7 @@
     "build": "turbo run build",
     "db:gen": "turbo run db:generate",
     "db:push": "turbo run db:push",
+    "db:push:dev": "turbo run --filter=@repo/test-db db:push",
     "docker:build": "docker-compose build",
     "docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
     "docker:db": "pnpm --filter=test-db run docker:db && pnpm run db:gen && pnpm run --filter=@repo/test-db db:push",
