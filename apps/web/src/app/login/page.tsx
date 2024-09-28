@@ -43,7 +43,8 @@ function LoginForm() {
 					variant: "destructive",
 				});
 			}
-			router.push("/");
+			router.refresh();
+			router.prefetch("/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({ title: "Login failed", variant: "destructive" });
@@ -56,7 +57,8 @@ function LoginForm() {
 		setIsLoading(true);
 		try {
 			await signIn("google", { callbackUrl: window.location.href });
-			router.push("/");
+			router.refresh();
+			router.prefetch("/");
 		} catch (error) {
 			toast({ title: "Google login failed", variant: "destructive" });
 			console.error("Google login error:", error);
