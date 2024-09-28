@@ -6,7 +6,6 @@ import { formatDate } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useViewStore } from "@/store";
-import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
@@ -52,9 +51,9 @@ const TaskGrid = ({
 						</Button>
 						{truncateString(task.title, 70)}
 					</div>
-					<div className="flex flex-wrap w-full items-center gap-1">
+					<div className="flex flex-wrap w-full items-center gap-1 -my-1">
 						{showDateTime && (
-							<div className="flex items-center gap-2 text-sm bg-background border border-border rounded-md w-fit p-1">
+							<div className="flex items-center gap-2 text-sm bg-background border border-border rounded-md w-fit p-1 mb-1">
 								<Calendar className="size-4" />
 								{task.dueDate
 									? formatDate(new Date(task.dueDate), "MMM dd")
@@ -63,13 +62,14 @@ const TaskGrid = ({
 						)}
 
 						{showPriority && (
-							<div className="bg-background border border-border rounded-md p-1">
+							<div className="bg-background border border-border rounded-md p-1 mb-1">
 								<PriorityIcon priority={task.priority} />
 							</div>
 						)}
+
 						{showLabels &&
 							taskLabels.map((label) => (
-								<div key={label.id} className="label-badge flex-shrink">
+								<div key={label.id} className="label-badge flex-shrink mb-1">
 									<LabelBadge label={label} />
 								</div>
 							))}
