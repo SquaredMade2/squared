@@ -1,16 +1,44 @@
-// all/page.tsx
 "use client";
 
+import { useParams } from "next/navigation";
+import { useFilterStore, useViewStore } from "@/store";
+import { useEffect, useState } from "react";
+import type { SavedFilter } from "@/store/filters";
+import { Status, type Task } from "@repo/db";
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
-import { useFilterStore, useViewStore } from "@/store";
-import { Status } from "@repo/db";
-import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 
-export default function AllTasksPage() {
-	const { filterTasks } = useFilterStore((state) => state);
+export default function FilterViewPage() {
+	const params = useParams();
+	const { savedFilters, customFilter } = useFilterStore((state) => state);
 	const { view, gridViewOptions } = useViewStore((state) => state);
+
+	const [filter, setFilter] = useState<SavedFilter | null>(null);
+
+	useEffect(() => {
+		const filterId =
+			typeof params.filterId === "string"
+				? params.filterId
+				: params.filterId[0];
+		const filterSlug = filterId.split("-")[1];
+		const foundFilter = savedFilters.find((f) =>
+			f.id.startsWith(filterSlug || ""),
+		);
+		if (foundFilter) {
+			setFilter(foundFilter);
+		}
+	}, [params.filterId, savedFilters]);
+
+	const filterTasksWithFilter = (tasks: Task[]) => {
+		if (!filter) {
+			return tasks;
+		}
+
+		return customFilter(tasks, filter.filter);
+	};
+
 	const {
 		loading,
 		authorized,
@@ -19,7 +47,11 @@ export default function AllTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage(filterTasks);
+	} = useTaskPage(filterTasksWithFilter);
+
+	if (!filter) {
+		return <div>Loading...</div>;
+	}
 
 	const getEmptyColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
@@ -32,6 +64,7 @@ export default function AllTasksPage() {
 		});
 	};
 	if (!currentWorkspace) return null;
+
 	return (
 		<TaskPageLayout
 			loading={loading}
@@ -39,7 +72,7 @@ export default function AllTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle="All Tasks"
+			pageTitle={filter.name}
 		>
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}

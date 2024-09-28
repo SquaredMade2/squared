@@ -10,7 +10,6 @@ import type { TaskListProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 
 const TaskList = ({
-	teamIdentifier,
 	highlightText,
 	location,
 	task,
@@ -38,8 +37,8 @@ const TaskList = ({
 					<div className="flex justify-between w-full">
 						<div className="flex items-center gap-2 text-base min-w-0">
 							{showPriority && <PriorityIcon priority={task.priority} />}
-							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0">
-								{teamIdentifier}
+							<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0 min-w-16">
+								{task.identifier}
 							</span>
 							<Button
 								variant="ghost"

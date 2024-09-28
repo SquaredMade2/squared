@@ -10,13 +10,7 @@ import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import LabelBadge from "@/components/LabelBadges";
 
-const TaskGrid = ({
-	teamIdentifier,
-	task,
-	user,
-	currentTeam,
-	taskLabels,
-}: TaskGridProps) => {
+const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
 	const { showDateTime, showPriority, showLabels } = useViewStore(
 		(state) => state,
 	);
@@ -27,8 +21,8 @@ const TaskGrid = ({
 		>
 			<Card className="w-80">
 				<CardContent className="p-4 space-y-4">
-					<div className="flex justify-between h-[20px] w-full">
-						<p className="text-xs text-muted-foreground">{teamIdentifier}</p>
+					<div className="flex justify-between h-[20px] w-full cursor-pointer">
+						<p className="text-xs text-muted-foreground">{task.identifier}</p>
 						{task.assigneeName ? (
 							<Avatar className="size-6">
 								<AvatarImage src={user?.avatarUrl ?? undefined} />
