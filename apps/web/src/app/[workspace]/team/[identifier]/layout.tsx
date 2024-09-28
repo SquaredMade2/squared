@@ -1,4 +1,5 @@
-import Navbar from "@/components/NavBar";
+"use client";
+import Navbar from "@/components/NavBars";
 
 export default function TeamLayout({
 	children,

@@ -56,11 +56,9 @@ const NewIssueModal = () => {
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
-			message: "Username must be at least 2 characters.",
+			message: "Title must be at least 2 characters.",
 		}),
-		description: z.string().min(2, {
-			message: "Username must be at least 2 characters.",
-		}),
+		description: z.string().optional(),
 	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -96,7 +94,7 @@ const NewIssueModal = () => {
 				transformingMentionInputs(title);
 
 			const { transformedInput: transformedDescriptionInput } =
-				transformingMentionInputs(description);
+				transformingMentionInputs(description ?? "");
 
 			const newTask: Task = {
 				authorId: user.id,

@@ -41,9 +41,7 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 		title: z.string().min(2, {
 			message: "Title must be at least 2 characters.",
 		}),
-		description: z.string().min(2, {
-			message: "Description must be at least 2 characters.",
-		}),
+		description: z.string().optional(),
 	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -80,7 +78,7 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				transformingMentionInputs(title);
 
 			const { transformedInput: transformedDescriptionInput } =
-				transformingMentionInputs(description);
+				transformingMentionInputs(description ?? "");
 
 			const newTask = {
 				authorId: user.id,

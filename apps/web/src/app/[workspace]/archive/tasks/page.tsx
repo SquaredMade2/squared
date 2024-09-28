@@ -1,13 +1,13 @@
-// active/page.tsx
 "use client";
 
-import { useTaskPage } from "@/hooks/useTaskPage";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import { useFilterStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useTaskPage } from "@/hooks/useTaskPage";
+import { useFilterStore } from "@/store";
 
-export default function ActiveTasksPage() {
+const Page = () => {
 	const { filterTasks } = useFilterStore((state) => state);
+
 	const {
 		loading,
 		authorized,
@@ -17,13 +17,9 @@ export default function ActiveTasksPage() {
 		getFilteredStatuses,
 		getTasksForStatus,
 	} = useTaskPage((tasks) =>
-		filterTasks(tasks).filter(
-			(t) =>
-				t.status === "inProgress" ||
-				t.status === "todo" ||
-				t.status === "inReview",
-		),
+		filterTasks(tasks.filter((t) => t.status === "archived")),
 	);
+
 	if (!currentWorkspace) return null;
 
 	return (
@@ -33,7 +29,6 @@ export default function ActiveTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle="Active Tasks"
 		>
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
@@ -41,4 +36,6 @@ export default function ActiveTasksPage() {
 			/>
 		</TaskPageLayout>
 	);
-}
+};
+
+export default Page;
