@@ -25,6 +25,5 @@ export interface TaskCardProps {
 }
 
 export interface TaskCardLabelsProps {
-	view: string;
 	labels: Label[];
 }
