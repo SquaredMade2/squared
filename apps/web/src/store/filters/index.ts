@@ -7,8 +7,9 @@ import type {
 	FilterCondition,
 } from "./interfaces";
 import { persist } from "zustand/middleware";
-import { checkCondition } from "./helpers";
-import type { SavedFilter as SavedFilterType } from "@repo/db";
+import { v4 as uuidv4 } from "uuid";
+import { checkCondition, parseFilter } from "./helpers";
+import type { SavedFilter as SavedFilterType, Task } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 import axios from "axios";
 export * from "./interfaces";
@@ -21,19 +22,20 @@ export const createFilterStore = (
 	initState: FilterState = {
 		currentFilters: [],
 		currentFilterTypes: [],
+		savedFilters: [],
 	},
 ) => {
 	return createStore<FilterStore>()(
 		persist(
 			(set, get) => ({
 				...initState,
-				setCurrentFilter: (filter) => {
+				setCurrentFilter: (filter): void => {
 					set({ currentFilters: filter });
 				},
-				clearFilter: () => {
+				clearFilter: (): void => {
 					set({ currentFilters: [], currentFilterTypes: [] });
 				},
-				addFilter: (filter: FilterCondition) => {
+				addFilter: (filter: FilterCondition): void => {
 					const state = get();
 					const currentFilters = state.currentFilters || [];
 
@@ -63,8 +65,6 @@ export const createFilterStore = (
 						currentFilters: updatedConditions,
 						currentFilterTypes: [...state.currentFilterTypes, filter.field],
 					});
-
-					return updatedConditions;
 				},
 				removeFilter: (field: string) => {
 					const state = get();
@@ -76,7 +76,7 @@ export const createFilterStore = (
 						currentFilters: updatedConditions,
 					});
 				},
-				filterTasks: (tasks) => {
+				filterTasks: (tasks): Task[] => {
 					const state = get();
 					const currentFilters = state.currentFilters;
 
@@ -94,35 +94,45 @@ export const createFilterStore = (
 						return matchesAll;
 					});
 				},
+				customFilter: (tasks, filters): Task[] => {
+					if (!filters || filters.length === 0) {
+						return tasks;
+					}
 
-				saveFilter: async (filter: SavedFilter): Promise<FilterResponse> => {
+					return tasks.filter((task) => {
+						const matchesAll = filters.every((condition) => {
+							const result = checkCondition(task, condition);
+
+							return result;
+						});
+
+						return matchesAll;
+					});
+				},
+				saveFilter: async (
+					filter: Partial<SavedFilter>,
+				): Promise<FilterResponse> => {
 					try {
+						const filterId = uuidv4();
+						console.log("filter", filter);
 						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
-							await axios.post(apiString("create"), filter);
+							await axios.post(apiString(filterId), filter);
 
-						if (!filter) {
+						const { data: newFilter } = response;
+						if (!newFilter) {
 							return {
 								filter: null,
 								message: "Failed to save filter",
 								variant: "destructive",
 							};
 						}
-						const parsedFilter = filter.filter;
+						const parsedFilter = parseFilter(newFilter);
+						const currentSavedFilters = get().savedFilters;
 
-						const newFilter: SavedFilter = {
-							id: filter.id,
-							name: filter.name,
-							workspaceId: filter.workspaceId,
-							filter: parsedFilter.map((condition) => ({
-								field: condition.field,
-								value: condition.value,
-								operator: condition.operator,
-							})),
-						};
-						set({ currentFilters: newFilter.filter });
+						set({ savedFilters: [...currentSavedFilters, parsedFilter] });
 
 						return {
-							filter: newFilter.filter,
+							filter: parsedFilter?.filter || null,
 							message: response.message,
 							variant: response.variant,
 						};
@@ -132,6 +142,26 @@ export const createFilterStore = (
 							message: error instanceof Error ? error.message : "Unknown error",
 							variant: "destructive",
 						};
+					}
+				},
+				getSavedFilters: async (groupId: string): Promise<SavedFilter[]> => {
+					try {
+						const {
+							data: response,
+						}: { data: ApiReturnType<SavedFilterType[]> } = await axios.get(
+							apiString(groupId),
+						);
+						const { data: filters } = response;
+						if (!filters) {
+							return [];
+						}
+						const parsedFilters = filters.map(parseFilter);
+						set({ savedFilters: parsedFilters });
+
+						return parsedFilters;
+					} catch {
+						console.error("Error fetching saved filters");
+						return [];
 					}
 				},
 				updateSavedFilter: async (
@@ -150,21 +180,16 @@ export const createFilterStore = (
 								variant: "destructive",
 							};
 						}
-						const parsedFilter = filters.filter as FilterCondition[];
-						const newFilter: SavedFilter = {
-							id: filters.id,
-							name: filters.name,
-							workspaceId: filters.workspaceId,
-							filter: parsedFilter.map((condition) => ({
-								field: condition.field,
-								value: condition.value,
-								operator: condition.operator,
-							})),
-						};
-						set({ currentFilters: newFilter.filter });
+						const parsedFilter = parseFilter(filters);
+						const currentSavedFilters = get().savedFilters;
+						set({
+							savedFilters: currentSavedFilters.map((f) =>
+								f.id === filterId ? parsedFilter : f,
+							),
+						});
 
 						return {
-							filter: newFilter.filter,
+							filter: parsedFilter.filter,
 							message: response.message,
 							variant: response.variant,
 						};
@@ -176,7 +201,7 @@ export const createFilterStore = (
 						};
 					}
 				},
-				deleteSavedFilter: async (filterId) => {
+				deleteSavedFilter: async (filterId): Promise<void> => {
 					const response = await axios.delete(apiString(filterId));
 					if (response.status === 200) {
 						set({ currentFilters: [] });

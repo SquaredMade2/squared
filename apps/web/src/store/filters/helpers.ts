@@ -1,5 +1,5 @@
-import type { Task } from "@repo/db";
-import type { FilterCondition } from "./interfaces";
+import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
+import type { FilterCondition, SavedFilter } from "./interfaces";
 
 export function checkCondition(
 	task: Task,
@@ -56,4 +56,20 @@ export function checkCondition(
 			console.warn(`Unknown operator: ${condition.operator}`);
 			return false;
 	}
+}
+
+export function parseFilter(newFilter: SavedFilterType): SavedFilter {
+	const parsedFilter: SavedFilter = {
+		...newFilter,
+		filter:
+			(newFilter.filter
+				?.map((condition) =>
+					typeof condition === "string"
+						? (JSON.parse(condition) as FilterCondition)
+						: condition,
+				)
+				.filter((condition) => condition !== null) as FilterCondition[]) || [],
+	};
+
+	return parsedFilter;
 }
