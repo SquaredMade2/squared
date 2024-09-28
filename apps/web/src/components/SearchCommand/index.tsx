@@ -53,7 +53,13 @@ export default function SearchCommand() {
 	}, [setShowCommand, showCommand]);
 
 	const renderCommandItem = (item: SearchbarItem, key: string) => (
-		<CommandItem key={key} onSelect={() => item.function()}>
+		<CommandItem
+			key={key}
+			onSelect={() => {
+				item.function();
+				setShowCommand(false);
+			}}
+		>
 			{item.icon}
 			<span>{item.text}</span>
 			{item.shortcut.length > 0 && (
