@@ -1,13 +1,25 @@
-import {} from "react";
 import { ChevronDown, SlidersVertical } from "lucide-react";
-import DisplayPreferences from "./DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { useViewStore } from "@/store";
+import { Switch } from "../ui/switch";
+import { Separator } from "../ui/separator";
 
 const TopNavBarDisplay = () => {
-	const [view, setView] = useViewStore((state) => [state.view, state.setView]);
-
+	const {
+		view,
+		setView,
+		showPriority,
+		showLabels,
+		showDateTime,
+		listViewOptions,
+		gridViewOptions,
+		setShowPriority,
+		setShowLabels,
+		setShowDateTime,
+		setListViewOptions,
+		setGridViewOptions,
+	} = useViewStore((state) => state);
 	const handleListClick = (): void => {
 		setView("list");
 	};
@@ -15,6 +27,31 @@ const TopNavBarDisplay = () => {
 	const handleGridClick = (): void => {
 		setView("grid");
 	};
+
+	const handlePriority = (): void => {
+		setShowPriority(!showPriority);
+	};
+
+	const handleLabels = (): void => {
+		setShowLabels(!showLabels);
+	};
+
+	const handleDateTime = (): void => {
+		setShowDateTime(!showDateTime);
+	};
+
+	const getFormattedKeyString = (obj: { showEmptyGroups?: boolean }) => {
+		return Object.keys(obj)
+			.map((key) => key.replace(/([A-Z])/g, " $1"))
+			.join(", ")
+			.replace(/\b\w/g, (char) => char.toUpperCase());
+	};
+
+	const displayOptions = [
+		{ label: "Priority", show: showPriority, handle: handlePriority },
+		{ label: "Labels", show: showLabels, handle: handleLabels },
+		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
+	];
 
 	return (
 		<div className="flex flex-col gap-2 items-end relative h-10 ">
@@ -49,7 +86,46 @@ const TopNavBarDisplay = () => {
 								</Button>
 							</div>
 						</div>
-						<DisplayPreferences />
+						<div>
+							{displayOptions.map((option) => (
+								<div
+									className="flex items-center justify-between w-full"
+									key={option.label}
+								>
+									<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+										{option.label}
+									</p>
+									<Switch checked={option.show} onClick={option.handle} />
+								</div>
+							))}
+							<Separator className="my-2" />
+							{view === "grid" && (
+								<div className="flex items-center justify-between w-full">
+									<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+										{getFormattedKeyString(gridViewOptions)}
+									</p>
+									<Switch
+										checked={gridViewOptions.showEmptyGroups}
+										onCheckedChange={(checked) =>
+											setGridViewOptions({ showEmptyGroups: checked })
+										}
+									/>
+								</div>
+							)}
+							{view === "list" && (
+								<div className="flex items-center justify-between w-full">
+									<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
+										{getFormattedKeyString(listViewOptions)}
+									</p>
+									<Switch
+										checked={listViewOptions.showEmptyGroups}
+										onCheckedChange={(checked) =>
+											setListViewOptions({ showEmptyGroups: checked })
+										}
+									/>
+								</div>
+							)}
+						</div>
 					</div>
 				</PopoverContent>
 			</Popover>
