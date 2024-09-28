@@ -94,13 +94,14 @@ const EffortFilterDropDown = ({
 
 	useEffect(() => {
 		if (Number(selectedEfforts) > 0) {
+			removeFilter("effortEstimate");
 			addFilter({
 				field: "effortEstimate",
 				value: Number(selectedEfforts),
 				operator: "equals",
 			});
 		} else {
-			removeFilter("status");
+			removeFilter("effortEstimate");
 		}
 	}, [selectedEfforts, addFilter, removeFilter]);
 
@@ -127,7 +128,13 @@ const EffortFilterDropDown = ({
 					onValueChange={setSelectedEfforts}
 				>
 					{groupEffort.map((item) => (
-						<DropdownMenuRadioItem key={item.id} value={item.name.toString()}>
+						<DropdownMenuRadioItem
+							key={item.id}
+							value={item.name.toString()}
+							onSelect={(e) => {
+								e.preventDefault();
+							}}
+						>
 							<div className="flex items-center space-x-2">
 								{item.svg}
 								<span>{item.name}</span>

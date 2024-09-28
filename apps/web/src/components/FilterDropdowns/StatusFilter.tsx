@@ -80,6 +80,7 @@ const StatusFilterDropDown = ({
 
 	useEffect(() => {
 		if (selectedStatuses.length > 0) {
+			removeFilter("status");
 			addFilter({
 				field: "status",
 				value: selectedStatuses,

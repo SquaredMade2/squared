@@ -72,15 +72,16 @@ const PriorityFilterDropDown = ({
 
 	useEffect(() => {
 		if (selectedPriorities.length > 0) {
+			removeFilter("priority");
 			addFilter({
 				field: "priority",
 				value: selectedPriorities,
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("status");
+			removeFilter("priority");
 		}
-	}, [selectedPriorities, addFilter, removeFilter]);
+	}, [selectedPriorities]);
 
 	useEffect(() => {
 		if (

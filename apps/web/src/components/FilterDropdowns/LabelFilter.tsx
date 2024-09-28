@@ -40,6 +40,7 @@ export default function LabelFilterDropDown({
 
 	useEffect(() => {
 		if (selectedLabels.length > 0) {
+			removeFilter("labels");
 			addFilter({
 				field: "labels",
 				value: selectedLabels.map((label) => label.id),
