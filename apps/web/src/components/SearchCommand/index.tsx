@@ -17,11 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useModalStore, useFilterStore } from "@/store";
 import { CommandSchema } from "./actions";
-import type {
-	SearchbarItem,
-	SearchbarSection,
-	SearchbarStructure,
-} from "./interfaces";
+import type { SearchbarItem, SearchbarStructure } from "./interfaces";
 import { useId } from "@repo/ui/id";
 
 export default function SearchCommand() {
@@ -77,13 +73,11 @@ export default function SearchCommand() {
 			if (typeof value === "string" && value === "separator") {
 				return <CommandSeparator key={key} />;
 			}
-			if ("text" in value) {
-				return renderCommandItem(value as SearchbarItem, key);
-			}
+
 			return (
-				<CommandGroup key={key} heading={key}>
-					{Object.entries(value as SearchbarSection).map(([subKey, subValue]) =>
-						renderCommandItem(subValue as SearchbarItem, `${key}-${subKey}`),
+				<CommandGroup key={key} heading={key.includes("Ungrouped") ? "" : key}>
+					{Object.entries(value).map(([subKey, subValue]) =>
+						renderCommandItem(subValue, `${key}-${subKey}`),
 					)}
 				</CommandGroup>
 			);

@@ -12,5 +12,5 @@ export interface SearchbarSection {
 }
 
 export interface SearchbarStructure {
-	[key: string]: SearchbarSection | SearchbarItem | "separator";
+	[key: string]: SearchbarSection | "separator";
 }
