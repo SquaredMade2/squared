@@ -225,7 +225,11 @@ export class commandSchema {
 				icon: <ArrowRight />,
 				text: "Go to archive",
 				function: () => {
-					/* This is for the future functionality */
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(`/${this.currentWorkspace.url}/archive/tasks`);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: ["G", "then", "X"],
 			},
@@ -233,7 +237,13 @@ export class commandSchema {
 				icon: <Trash2 />,
 				text: "Go to recently deleted tasks",
 				function: () => {
-					/* this is for the future functionality */
+					if (this.currentWorkspace && this.currentTeam) {
+						this.router.push(
+							`/${this.currentWorkspace.url}/archive/recently-deleted-tasks`,
+						);
+					} else {
+						console.error("Current workspace or team is null");
+					}
 				},
 				shortcut: [],
 			},
