@@ -25,14 +25,6 @@ const DisplayPreferences = () => {
 			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
 	};
 
-	// might need later
-	// const getFormattedKeyString = (obj: Partial<ViewOptions> | DisplayProperty) => {
-	// 	return Object.keys(obj)
-	// 		.map((key) => key.replace(/([A-Z])/g, " $1"))
-	// 		.join(", ")
-	// 		.replace(/\b\w/g, (char) => char.toUpperCase());
-	// };
-
 	const handleValueChange = (value: string[]) => {
 		const updatedProperties = Object.keys(displayProperties).reduce(
 			(acc, key) => {
@@ -51,7 +43,6 @@ const DisplayPreferences = () => {
 			<div className="flex items-center justify-between w-full my-3">
 				<p className="text-foreground text-xs py-1">Show Empty Groups</p>
 				<Switch
-					className="data-[state=unchecked]:bg-pink-500 focus:outline-none focus:ring-0"
 					checked={showEmptyGroups}
 					onCheckedChange={(checked) =>
 						setOptions({ showEmptyGroups: checked })
