@@ -43,7 +43,6 @@ function LoginForm() {
 					variant: "destructive",
 				});
 			}
-			console.log("Login response:", response);
 			router.push("/");
 		} catch (error) {
 			console.error("Login error:", error);
