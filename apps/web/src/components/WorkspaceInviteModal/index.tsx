@@ -14,7 +14,6 @@ import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { Loader2 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
 
 const Index = () => {
@@ -99,11 +98,7 @@ const Index = () => {
 				</div>
 				<DialogFooter>
 					<Button onClick={handleInvite} className="w-32">
-						{isLoading ? (
-							<Loader2 className="size-4 animate-spin" />
-						) : (
-							"Send invites"
-						)}
+						{isLoading ? <div className="loader" /> : "Send invites"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

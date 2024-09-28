@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
+import { Eye, EyeOff, Mail } from "lucide-react";
 import {
 	Card,
 	CardContent,
@@ -117,9 +117,7 @@ function LoginForm() {
 							</div>
 						</div>
 						<Button type="submit" className="w-full" disabled={isLoading}>
-							{isLoading ? (
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							) : null}
+							{isLoading ? <div className="loader" /> : null}
 							Sign in
 						</Button>
 					</form>
@@ -139,11 +137,7 @@ function LoginForm() {
 						variant="outline"
 						disabled={isLoading}
 					>
-						{isLoading ? (
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-						) : (
-							<GoogleIcon />
-						)}
+						{isLoading ? <div className="loader" /> : <GoogleIcon />}
 						Sign in with Google
 					</Button>
 				</CardContent>
