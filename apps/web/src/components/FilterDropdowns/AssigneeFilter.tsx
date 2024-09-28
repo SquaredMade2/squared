@@ -19,6 +19,7 @@ import type { FilterDropDownProps } from "./interfaces";
 import type { User } from "@repo/db";
 import { Check } from "lucide-react";
 import ProfileImage from "../ProfileImage";
+import { ScrollArea } from "../ui/scroll-area";
 
 export default function AssigneeFilterDropDown({
 	showFilterDropDown,
@@ -69,7 +70,7 @@ export default function AssigneeFilterDropDown({
 	return (
 		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
 			<PopoverTrigger />
-			<PopoverContent className="w-72 p-0" sideOffset={5}>
+			<PopoverContent className="w-60 mt-5">
 				<Command>
 					<CommandInput
 						placeholder="Search users..."
@@ -78,28 +79,32 @@ export default function AssigneeFilterDropDown({
 					/>
 					<CommandList>
 						<CommandEmpty>No users found.</CommandEmpty>
-						<CommandGroup>
-							{filteredAssignees.map((user) => (
-								<CommandItem
-									key={user.id}
-									onSelect={() => handleAssigneeChange(user)}
-									className="flex items-center space-x-2 cursor-pointer"
-								>
-									<div className="flex items-center flex-1 space-x-2">
-										{selectedAssignees.some((l) => l.id === user.id) ? (
-											<Check className="w-4 h-4" />
-										) : (
-											<div className="w-4 h-4" />
-										)}
-										<ProfileImage
-											profileName={user.name}
-											location="assigneeDropdown"
-										/>
-										<span className="w-2/3 truncate">{user.username}</span>
-									</div>
-								</CommandItem>
-							))}
-						</CommandGroup>
+						<ScrollArea
+							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
+						>
+							<CommandGroup>
+								{filteredAssignees.map((user) => (
+									<CommandItem
+										key={user.id}
+										onSelect={() => handleAssigneeChange(user)}
+										className="flex items-center space-x-2 cursor-pointer h-8"
+									>
+										<div className="flex items-center flex-1 space-x-2">
+											{selectedAssignees.some((l) => l.id === user.id) ? (
+												<Check className="w-4 h-4" />
+											) : (
+												<div className="w-4 h-4" />
+											)}
+											<ProfileImage
+												profileName={user.name}
+												location="assigneeDropdown"
+											/>
+											<span className="w-2/3 truncate">{user.username}</span>
+										</div>
+									</CommandItem>
+								))}
+							</CommandGroup>
+						</ScrollArea>
 					</CommandList>
 				</Command>
 			</PopoverContent>

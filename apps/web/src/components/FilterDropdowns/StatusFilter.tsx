@@ -106,7 +106,7 @@ const StatusFilterDropDown = ({
 			onOpenChange={setShowFilterDropDown}
 		>
 			<DropdownMenuTrigger />
-			<DropdownMenuContent className="w-72 p-0" sideOffset={20}>
+			<DropdownMenuContent className="w-60 mt-5">
 				<DropdownMenuLabel>Status</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				{groupStatus.map((item) => (
