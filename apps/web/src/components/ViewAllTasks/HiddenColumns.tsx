@@ -9,7 +9,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import { formatStatus } from "@/utils/formatting";
 import { StatusIcon } from "../Icons";
 
-const UnassignedColumns = ({
+const HiddenColumns = ({
 	getEmptyColumns,
 }: { getEmptyColumns: () => Status[] }) => {
 	return (
@@ -45,4 +45,4 @@ const UnassignedColumns = ({
 		</Accordion>
 	);
 };
-export default UnassignedColumns;
+export default HiddenColumns;

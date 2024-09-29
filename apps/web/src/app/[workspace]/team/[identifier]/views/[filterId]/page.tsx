@@ -8,7 +8,7 @@ import { Status, type Task } from "@repo/db";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
+import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -82,7 +82,7 @@ export default function FilterViewPage() {
 				!gridViewOptions.showEmptyGroups &&
 				getEmptyColumns().length >= 1 && (
 					<div className="ml-auto">
-						<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+						<HiddenColumns getEmptyColumns={getEmptyColumns} />
 					</div>
 				)}
 		</TaskPageLayout>

@@ -3,7 +3,7 @@
 
 import { useTaskPage } from "@/hooks/useTaskPage";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
+import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { useFilterStore, useViewStore } from "@/store";
 import { Status } from "@repo/db";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
@@ -49,7 +49,7 @@ export default function AllTasksPage() {
 				!gridViewOptions.showEmptyGroups &&
 				getEmptyColumns().length >= 1 && (
 					<div className="ml-auto">
-						<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+						<HiddenColumns getEmptyColumns={getEmptyColumns} />
 					</div>
 				)}
 		</TaskPageLayout>
