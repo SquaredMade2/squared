@@ -17,6 +17,6 @@
 			"@/*": ["*"]
 		}
 	},
-	"include": ["api/**/*.ts", "docs/**/*.ts"],
+	"include": ["api/**/*.ts", "docs/**/*.ts", "utils/**/*.ts", "jobs/**/*.ts"],
 	"exclude": ["node_modules", "dist"]
 }

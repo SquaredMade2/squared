@@ -22,10 +22,12 @@ import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 ${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@repo/db";`}
-import { setupSwagger } from "../swagger"; // Import Swagger setup
+import { setupSwagger } from "../swagger";
+import { startSprintTransitionJob } from '@/jobs/scheduler';
 import "dotenv/config";
 
 export const prisma = new PrismaClient();
+startSprintTransitionJob();
 
 `);
 
