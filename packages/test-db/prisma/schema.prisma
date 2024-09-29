@@ -45,10 +45,9 @@ enum SavedFilterType {
 }
 
 enum SprintStatus {
-  planned
-  active
-  completed
-  canceled
+  PLANNED
+  ACTIVE
+  COMPLETED
 }
 
 model Commit {
@@ -197,6 +196,9 @@ model Task {
   Workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Sprint       Sprint?        @relation(fields: [sprintId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Notification Notification[]
+
+  @@unique([teamId, identifier])
+  @@unique([workspaceId, identifier])
 }
 
 model Team {
@@ -219,7 +221,9 @@ model Team {
   teamViews SavedFilter[]
 
   Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Sprint    Sprint[]
+  Sprints   Sprint[]
+
+  @@unique([workspaceId, identifier])
 }
 
 model User {
@@ -347,17 +351,16 @@ model Project {
 }
 
 model Sprint {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
-  goal      String?
   startDate DateTime
   endDate   DateTime
+  status    SprintStatus
   teamId    String
+
+  Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Tasks Task[]
+
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  status SprintStatus @default(planned)
-  Task   Task[]
-
-  Team Team @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  updatedAt DateTime @updatedAt
 }

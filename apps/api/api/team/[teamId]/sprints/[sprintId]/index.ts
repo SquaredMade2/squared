@@ -9,37 +9,25 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (
-			res,
-			{ teamId, sprintId },
-			body,
-		): Promise<APIResponse<Sprint>> => {
+		POST: async (res, { teamId }, body): Promise<APIResponse<Sprint>> => {
 			try {
-				const existingSprint = await prisma.sprint.findUnique({
-					where: { id: sprintId },
-				});
-
-				if (existingSprint) {
-					return {
-						data: null,
-						message: "Sprint already exists",
-						variant: "destructive",
-					};
-				}
-
-				const { id, ...sprintData } = body;
-
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
 
 				if (!team) {
-					throw new Error("Workspace not found");
+					throw new Error("Team not found");
 				}
+
+				const { name, startDate, endDate, status } = body;
 
 				const newSprint = await prisma.sprint.create({
 					data: {
-						...sprintData,
+						name,
+						startDate,
+						endDate,
+						status,
+						teamId,
 					},
 				});
 
@@ -52,7 +40,6 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				// Return the new sprint
 				return {
 					data: newSprint,
 					message: `Successfully Created New Sprint: ${newSprint.name}`,
@@ -60,6 +47,45 @@ export function createRoute(): Route<Params> {
 				};
 			} catch (error) {
 				console.error("Error creating sprint:", error);
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal server error",
+					variant: "destructive",
+				};
+			}
+		},
+		PUT: async (
+			res,
+			{ teamId, sprintId },
+			body: Partial<Omit<Sprint, "id" | "teamId" | "createdAt" | "updatedAt">>,
+		): Promise<APIResponse<Sprint>> => {
+			try {
+				const sprint = await prisma.sprint.findUnique({
+					where: { id: sprintId },
+				});
+
+				if (!sprint || sprint.teamId !== teamId) {
+					res.status(404);
+					return {
+						data: null,
+						message: "Sprint not found or doesn't belong to the team",
+						variant: "destructive",
+					};
+				}
+
+				const updatedSprint = await prisma.sprint.update({
+					where: { id: sprintId },
+					data: body,
+				});
+
+				return {
+					data: updatedSprint,
+					message: `Successfully updated sprint: ${updatedSprint.name}`,
+					variant: "default",
+				};
+			} catch (error) {
+				console.error("Error updating sprint:", error);
 				res.status(500);
 				return {
 					data: null,
