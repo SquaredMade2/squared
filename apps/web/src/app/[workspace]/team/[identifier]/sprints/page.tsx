@@ -10,6 +10,25 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { format, differenceInDays } from "date-fns";
 import {
 	LineChart,
@@ -20,22 +39,46 @@ import {
 	Tooltip,
 } from "recharts";
 import { useTaskStore, useTeamStore } from "@/store";
-import type { Sprint } from "@repo/db";
+import type { Priority, Sprint, Task } from "@repo/db";
+import { useParams } from "next/navigation";
 
 export default function SprintDashboard() {
-	const { currentTeam, sprints, getSprints, currentSprint, setCurrentSprint } =
-		useTeamStore((state) => state);
-	const { tasks, getAllTasks } = useTaskStore((state) => state);
-	const [activeSprint, setActiveSprint] = useState<Sprint | undefined>(
-		undefined,
+	const {
+		currentTeam,
+		sprints,
+		getSprints,
+		currentSprint,
+		setCurrentSprint,
+		teams,
+		setCurrentTeam,
+	} = useTeamStore((state) => state);
+	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const [activeSprint, setActiveSprint] = useState<Sprint | null>(
+		currentSprint,
 	);
 	const [upcomingSprints, setUpcomingSprints] = useState<Sprint[]>([]);
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
+	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
+	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
+	const [targetSprint, setTargetSprint] = useState<string>("");
+	const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+	const { identifier } = useParams();
 
 	useEffect(() => {
+		const teamIdentifier = Array.isArray(identifier)
+			? identifier[0]
+			: identifier;
+		if (currentTeam?.identifier !== teamIdentifier) {
+			const newTeam = teams.find((team) => team.identifier === teamIdentifier);
+			if (!newTeam) return;
+			setCurrentTeam(newTeam);
+		}
 		if (currentTeam) {
-			getSprints(currentTeam.id);
-			getAllTasks(currentTeam.id);
+			const initializeSprints = async () => {
+				await getSprints(currentTeam.id);
+				await getAllTasks(currentTeam.id);
+			};
+			initializeSprints();
 		}
 	}, [currentTeam, getSprints, getAllTasks]);
 
@@ -47,7 +90,7 @@ export default function SprintDashboard() {
 				(sprint) => sprint.status === "COMPLETED",
 			);
 
-			setActiveSprint(active);
+			setActiveSprint(active || null);
 			setUpcomingSprints(upcoming);
 			setCompletedSprints(completed);
 
@@ -56,6 +99,11 @@ export default function SprintDashboard() {
 			}
 		}
 	}, [sprints, currentSprint, setCurrentSprint]);
+
+	useEffect(() => {
+		const unassigned = tasks.filter((task) => !task.sprintId);
+		setUnassignedTasks(unassigned);
+	}, [tasks]);
 
 	const calculateProgress = (sprint: Sprint) => {
 		if (!sprint) return 0;
@@ -114,6 +162,61 @@ export default function SprintDashboard() {
 	const getCapacity = () => {
 		if (!activeSprint) return 0;
 		return tasks.filter((task) => task.sprintId === activeSprint.id).length;
+	};
+
+	const handleTaskSelection = (taskId: Task) => {
+		setSelectedTasks((prev) =>
+			prev.includes(taskId)
+				? prev.filter((id) => id !== taskId)
+				: [...prev, taskId],
+		);
+	};
+
+	const handleBulkAssign = async () => {
+		if (!targetSprint) return;
+
+		for (const task of selectedTasks) {
+			await updateTask(task.id, { sprintId: targetSprint });
+		}
+
+		setSelectedTasks([]);
+		setIsAssignModalOpen(false);
+		currentTeam && (await getAllTasks(currentTeam.id));
+	};
+
+	const handleAutoAssign = async () => {
+		if (!activeSprint) return;
+		const mapPriority = (priority: Priority) => {
+			switch (priority) {
+				case "noPriority":
+					return 0;
+				case "low":
+					return 1;
+				case "medium":
+					return 2;
+				case "high":
+					return 3;
+				case "urgent":
+					return 4;
+				default:
+					return 0;
+			}
+		};
+		const tasksToAssign = unassignedTasks
+			.sort((a, b) => mapPriority(a.priority) - mapPriority(b.priority))
+			.slice(
+				0,
+				Math.max(
+					(currentTeam?.tasksPerSprint || 10) -
+						tasks.filter((t) => t.sprintId === activeSprint.id).length,
+					0,
+				),
+			);
+		for (const task of tasksToAssign) {
+			await updateTask(task.id, { sprintId: activeSprint.id });
+		}
+
+		currentTeam && (await getAllTasks(currentTeam.id));
 	};
 
 	return (
@@ -202,6 +305,71 @@ export default function SprintDashboard() {
 						</p>
 					</CardContent>
 				</Card>
+			</div>
+
+			<div className="flex justify-between items-center">
+				<h2 className="text-2xl font-semibold">Task Assignment</h2>
+				<div className="space-x-2">
+					<Dialog open={isAssignModalOpen} onOpenChange={setIsAssignModalOpen}>
+						<DialogTrigger asChild>
+							<Button>Assign Tasks</Button>
+						</DialogTrigger>
+						<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Assign Tasks to Sprint</DialogTitle>
+								<DialogDescription>
+									Select tasks and assign them to a sprint.
+								</DialogDescription>
+							</DialogHeader>
+							<div className="grid gap-4 py-4">
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="sprint" className="text-right">
+										Sprint
+									</Label>
+									<Select
+										onValueChange={setTargetSprint}
+										defaultValue={activeSprint?.id}
+									>
+										<SelectTrigger className="col-span-3">
+											<SelectValue placeholder="Select a sprint" />
+										</SelectTrigger>
+										<SelectContent>
+											{[activeSprint, ...upcomingSprints].map(
+												(sprint) =>
+													sprint && (
+														<SelectItem key={sprint.id} value={sprint.id}>
+															{sprint?.name}
+														</SelectItem>
+													),
+											)}
+										</SelectContent>
+									</Select>
+								</div>
+								<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+									{unassignedTasks.map((task) => (
+										<div key={task.id} className="flex items-center space-x-2">
+											<Checkbox
+												id={task.id}
+												checked={selectedTasks.includes(task)}
+												onCheckedChange={() => handleTaskSelection(task)}
+											/>
+											<label
+												htmlFor={task.id}
+												className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+											>
+												{task.title}
+											</label>
+										</div>
+									))}
+								</ScrollArea>
+							</div>
+							<Button onClick={handleBulkAssign}>Assign Selected Tasks</Button>
+						</DialogContent>
+					</Dialog>
+					<Button variant="outline" onClick={handleAutoAssign}>
+						Auto-Assign Tasks
+					</Button>
+				</div>
 			</div>
 
 			<Tabs defaultValue="upcoming" className="w-full">

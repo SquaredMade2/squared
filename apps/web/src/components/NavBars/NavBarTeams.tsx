@@ -1,4 +1,3 @@
-import type React from "react";
 import { useEffect } from "react";
 import { Activity, Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,9 +7,7 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import Link from "next/link";
 
-const NavBarTeams = ({
-	teamIdentifier,
-}: NavBarTeamProps): React.ReactElement => {
+const NavBarTeams = ({ teamIdentifier }: NavBarTeamProps) => {
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getAllTasks } = useTaskStore((state) => state);
@@ -35,9 +32,12 @@ const NavBarTeams = ({
 		const team = teams.find((team) => team.identifier === teamIdentifier);
 		if (team) {
 			setCurrentTeam(team);
+			console.log("team", team);
 			await getAllTasks(team.id);
 		}
 	};
+	const currentTeam = teams.find((team) => team.identifier === teamIdentifier);
+	if (!currentTeam) return null;
 
 	return (
 		<div className="w-full z-10">
@@ -69,35 +69,33 @@ const NavBarTeams = ({
 					</Button>
 				</div>
 			</div>
-			<Link href={`/${currentWorkspace?.url}/team/${teamIdentifier}/sprints`}>
-				<Button
-					variant={"ghost"}
-					onClick={() => handleActiveParams("all")}
-					className="w-full justify-start h-6"
-				>
-					<div className="mr-2 p-0.5 rounded">
-						<Activity
-							className={"size-4 text-muted-foreground hover:text-accent"}
-						/>
-					</div>
-					<p>Sprints</p>
-				</Button>
-			</Link>
-			<div className="ml-2">
-				<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
-					<Link
-						href={`/${currentWorkspace?.url}/team/${teamIdentifier}/sprints/upcoming`}
+			{currentTeam.sprintsEnabled && (
+				<>
+					<Button
+						variant={"ghost"}
+						onClick={() => handleActiveParams("sprints")}
+						className="w-full justify-start h-6"
 					>
-						<Button
-							variant={"ghost"}
-							onClick={() => handleActiveParams("active")}
-							className="w-full justify-start h-6 pl-3"
-						>
-							Upcoming
-						</Button>
-					</Link>
-				</div>
-			</div>
+						<div className="mr-2 p-0.5 rounded">
+							<Activity
+								className={"size-4 text-muted-foreground hover:text-accent"}
+							/>
+						</div>
+						<p>Sprints</p>
+					</Button>
+					<div className="ml-2">
+						<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
+							<Button
+								variant={"ghost"}
+								onClick={() => handleActiveParams("sprints/upcoming")}
+								className="w-full justify-start h-6 pl-3"
+							>
+								Upcoming
+							</Button>
+						</div>
+					</div>
+				</>
+			)}
 			<Link href={`/${currentWorkspace?.url}/team/${teamIdentifier}/views`}>
 				<Button
 					variant={"ghost"}

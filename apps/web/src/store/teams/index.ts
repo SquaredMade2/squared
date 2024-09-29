@@ -170,7 +170,7 @@ export const createTeamStore = (
 				getSprints: async (teamId: string): Promise<Sprint[]> => {
 					try {
 						const response: { data: ApiReturnType<Sprint[]> } = await axios.get(
-							apiString(`${teamId}/sprint`),
+							apiString(`${teamId}/sprints`),
 						);
 						const { data: sprints } = response.data;
 						if (!sprints) {

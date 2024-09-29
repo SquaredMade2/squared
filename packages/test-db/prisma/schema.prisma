@@ -214,6 +214,7 @@ model Team {
   addStartedIssues   Boolean  @default(true)
   addCompletedIssues Boolean  @default(true)
   sprintStartDate    DateTime @default(now())
+  tasksPerSprint     Int      @default(10)
 
   Tasks     Task[]
   Project   Project[]
