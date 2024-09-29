@@ -115,6 +115,7 @@ const NewIssueModal = () => {
 				updatedAt: new Date(),
 				deleted: false,
 				parentId: null,
+				sprintId: null,
 			};
 
 			const {
