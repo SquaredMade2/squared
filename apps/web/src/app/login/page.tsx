@@ -32,12 +32,19 @@ function LoginForm() {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			await signIn("credentials", {
+			const response = await signIn("credentials", {
 				redirect: false,
 				email: data.email,
 				password: data.password,
 			});
-			router.push("/");
+			if (response?.status === 401) {
+				toast({
+					title: response.error || "Error logging in",
+					variant: "destructive",
+				});
+			}
+			router.refresh();
+			router.prefetch("/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({ title: "Login failed", variant: "destructive" });
@@ -50,7 +57,8 @@ function LoginForm() {
 		setIsLoading(true);
 		try {
 			await signIn("google", { callbackUrl: window.location.href });
-			router.push("/");
+			router.refresh();
+			router.prefetch("/");
 		} catch (error) {
 			toast({ title: "Google login failed", variant: "destructive" });
 			console.error("Google login error:", error);
