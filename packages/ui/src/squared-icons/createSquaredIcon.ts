@@ -2,6 +2,7 @@ export default function createSquaredIcon(name, svgContent) {
     const svgElement = svgContent.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
     
     return `
+    // biome-ignore lint/correctness/noUnusedImports: React is needed to be included 
     import * as React from 'react';
     import type {FC} from 'react';
 
