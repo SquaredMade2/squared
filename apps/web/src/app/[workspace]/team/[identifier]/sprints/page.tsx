@@ -18,6 +18,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
+	DialogFooter,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -41,6 +42,8 @@ import {
 import { useTaskStore, useTeamStore } from "@/store";
 import type { Priority, Sprint, Task } from "@repo/db";
 import { useParams } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export default function SprintDashboard() {
 	const {
@@ -62,6 +65,8 @@ export default function SprintDashboard() {
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
 	const [targetSprint, setTargetSprint] = useState<string>("");
 	const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+	const [isAutoAssignConfirmOpen, setIsAutoAssignConfirmOpen] = useState(false);
+	const [tasksToAutoAssign, setTasksToAutoAssign] = useState<Task[]>([]);
 	const { identifier } = useParams();
 
 	useEffect(() => {
@@ -164,11 +169,11 @@ export default function SprintDashboard() {
 		return tasks.filter((task) => task.sprintId === activeSprint.id).length;
 	};
 
-	const handleTaskSelection = (taskId: Task) => {
+	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks((prev) =>
-			prev.includes(taskId)
-				? prev.filter((id) => id !== taskId)
-				: [...prev, taskId],
+			prev.includes(task)
+				? prev.filter((t) => t.id !== task.id)
+				: [...prev, task],
 		);
 	};
 
@@ -184,7 +189,7 @@ export default function SprintDashboard() {
 		currentTeam && (await getAllTasks(currentTeam.id));
 	};
 
-	const handleAutoAssign = async () => {
+	const prepareAutoAssign = () => {
 		if (!activeSprint) return;
 		const mapPriority = (priority: Priority) => {
 			switch (priority) {
@@ -203,7 +208,7 @@ export default function SprintDashboard() {
 			}
 		};
 		const tasksToAssign = unassignedTasks
-			.sort((a, b) => mapPriority(a.priority) - mapPriority(b.priority))
+			.sort((a, b) => mapPriority(b.priority) - mapPriority(a.priority))
 			.slice(
 				0,
 				Math.max(
@@ -212,10 +217,16 @@ export default function SprintDashboard() {
 					0,
 				),
 			);
-		for (const task of tasksToAssign) {
+		setTasksToAutoAssign(tasksToAssign);
+		setIsAutoAssignConfirmOpen(true);
+	};
+
+	const handleAutoAssign = async () => {
+		if (!activeSprint) return;
+		for (const task of tasksToAutoAssign) {
 			await updateTask(task.id, { sprintId: activeSprint.id });
 		}
-
+		setIsAutoAssignConfirmOpen(false);
 		currentTeam && (await getAllTasks(currentTeam.id));
 	};
 
@@ -314,7 +325,7 @@ export default function SprintDashboard() {
 						<DialogTrigger asChild>
 							<Button>Assign Tasks</Button>
 						</DialogTrigger>
-						<DialogContent className="sm:max-w-[425px]">
+						<DialogContent className="sm:max-w-[525px]">
 							<DialogHeader>
 								<DialogTitle>Assign Tasks to Sprint</DialogTitle>
 								<DialogDescription>
@@ -345,9 +356,12 @@ export default function SprintDashboard() {
 										</SelectContent>
 									</Select>
 								</div>
-								<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+								<ScrollArea className="h-[300px] w-full rounded-md border p-4">
 									{unassignedTasks.map((task) => (
-										<div key={task.id} className="flex items-center space-x-2">
+										<div
+											key={task.id}
+											className="flex items-center space-x-2 mb-2"
+										>
 											<Checkbox
 												id={task.id}
 												checked={selectedTasks.includes(task)}
@@ -363,14 +377,73 @@ export default function SprintDashboard() {
 									))}
 								</ScrollArea>
 							</div>
-							<Button onClick={handleBulkAssign}>Assign Selected Tasks</Button>
+							<DialogFooter>
+								<Button onClick={handleBulkAssign}>
+									Assign {selectedTasks.length} Selected Task
+									{selectedTasks.length !== 1 ? "s" : ""}
+								</Button>
+							</DialogFooter>
 						</DialogContent>
 					</Dialog>
-					<Button variant="outline" onClick={handleAutoAssign}>
+					<Button variant="outline" onClick={prepareAutoAssign}>
 						Auto-Assign Tasks
 					</Button>
 				</div>
 			</div>
+
+			<Dialog
+				open={isAutoAssignConfirmOpen}
+				onOpenChange={setIsAutoAssignConfirmOpen}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Confirm Auto-Assign Tasks</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to auto-assign the following tasks to the
+							current sprint?
+						</DialogDescription>
+					</DialogHeader>
+					<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+						{tasksToAutoAssign.map((task) => (
+							<div key={task.id} className="flex items-center space-x-2 mb-2">
+								<span className="text-sm">{task.title}</span>
+								<span
+									className={`ml-auto text-xs px-2 py-1 rounded-full ${
+										task.priority === "urgent"
+											? "bg-red-100 text-red-800"
+											: task.priority === "high"
+												? "bg-orange-100 text-orange-800"
+												: task.priority === "medium"
+													? "bg-yellow-100 text-yellow-800"
+													: task.priority === "low"
+														? "bg-green-100 text-green-800"
+														: "bg-gray-100 text-gray-800"
+									}`}
+								>
+									{task.priority}
+								</span>
+							</div>
+						))}
+					</ScrollArea>
+					<Alert>
+						<AlertCircle className="h-4 w-4" />
+						<AlertTitle>Auto-Assign</AlertTitle>
+						<AlertDescription>
+							This will assign {tasksToAutoAssign.length} task
+							{tasksToAutoAssign.length !== 1 ? "s" : ""} to the current sprint.
+						</AlertDescription>
+					</Alert>
+					<DialogFooter>
+						<Button
+							variant="outline"
+							onClick={() => setIsAutoAssignConfirmOpen(false)}
+						>
+							Cancel
+						</Button>
+						<Button onClick={handleAutoAssign}>Confirm Auto-Assign</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			<Tabs defaultValue="upcoming" className="w-full">
 				<TabsList>
