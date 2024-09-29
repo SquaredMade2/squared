@@ -54,7 +54,7 @@ const TaskList = ({
 							</span>
 						</div>
 						<div className="flex col-span-4 items-center lg:pr-5 justify-end gap-2">
-							{showLabels && <TaskCardLabels labels={taskLabels} view="list" />}
+							{showLabels && <TaskCardLabels labels={taskLabels} />}
 							{showDateTime && (
 								<div className="text-muted-foreground md:flex xs:hidden sm:hidden flex-shrink-0 whitespace-nowrap">
 									{task.dueDate
