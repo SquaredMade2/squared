@@ -10,13 +10,13 @@ import { formatStatus } from "@/utils/formatting";
 import { StatusIcon } from "../Icons";
 
 const HiddenColumns = ({
-	getEmptyColumns,
-}: { getEmptyColumns: () => Status[] }) => {
+	getHiddenColumns,
+}: { getHiddenColumns: () => Status[] }) => {
 	return (
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
-				{getEmptyColumns().map((column: Status) => (
+				{getHiddenColumns().map((column: Status) => (
 					<Droppable key={column} droppableId={column}>
 						{(provided, snapshot) => (
 							<AccordionContent

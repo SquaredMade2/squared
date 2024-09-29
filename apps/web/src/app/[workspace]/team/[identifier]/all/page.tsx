@@ -21,8 +21,9 @@ export default function AllTasksPage() {
 		getTasksForStatus,
 	} = useTaskPage(filterTasks);
 
-	const getEmptyColumns = (): Status[] => {
+	const getHiddenColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
+		console.log(filteredStatuses);
 
 		return filteredStatuses.filter((status) => {
 			if (status === Status.archived) return false;
@@ -47,9 +48,9 @@ export default function AllTasksPage() {
 			/>
 			{view === "grid" &&
 				!gridViewOptions.showEmptyGroups &&
-				getEmptyColumns().length >= 1 && (
+				getHiddenColumns().length >= 1 && (
 					<div className="ml-auto">
-						<HiddenColumns getEmptyColumns={getEmptyColumns} />
+						<HiddenColumns getHiddenColumns={getHiddenColumns} />
 					</div>
 				)}
 		</TaskPageLayout>
