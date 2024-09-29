@@ -51,8 +51,15 @@ const handler = NextAuth({
 	],
 	callbacks: {
 		async signIn({ user, account }) {
+			console.log("signIn callback triggered");
+			console.log("User:", user);
+			console.log("Account:", account);
+
 			if (account?.provider === "google" && user) {
-				// Ping the backend with the user's OAuth details
+				console.log(
+					"Google provider detected, sending OAuth details to backend",
+				);
+
 				const { data: response }: { data: ApiReturnType<User> } =
 					await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
 						provider: "google",
@@ -62,17 +69,27 @@ const handler = NextAuth({
 						oauthId: user.id,
 						avatarUrl: user.image ?? null,
 					});
+
+				console.log("Backend response:", response);
+
 				const { data: dbUser } = response;
 				if (dbUser) {
+					console.log("User found in database:", dbUser);
+
 					// Save the returned user data to the session
 					user.id = dbUser.id;
 					user.name = dbUser.name;
 					user.email = dbUser.email;
 					user.avatarUrl = dbUser.avatarUrl ?? null;
+
+					console.log("User data saved to session:", user);
 					return true;
 				}
+				console.log("User not found in database");
 				return false;
 			}
+
+			console.log("Default sign-in allowed");
 			return true; // Default allow sign-in
 		},
 		async session({ session, token }) {
