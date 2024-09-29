@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -26,67 +26,53 @@ import {
 	CalendarIcon,
 	ChevronDown,
 } from "lucide-react";
-import { addDays, format } from "date-fns";
+import { addDays, format, startOfWeek } from "date-fns";
 import { useTeamStore } from "@/store";
 import { cn } from "@/utils/cn";
+import type { Team } from "@repo/db";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function TeamSettingsSprints() {
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [sprintsEnabled, setSprintsEnabled] = useState(false);
-	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(true);
-	const [sprintDuration, setSprintDuration] = useState(2);
-	const [cooldownDuration, setCooldownDuration] = useState(1);
-	const [sprintStartDate, setSprintStartDate] = useState<Date | undefined>(
-		new Date(),
+	const { currentTeam, updateTeam, setCurrentTeam } = useTeamStore(
+		(state) => state,
 	);
-	const [upcomingSprints, setUpcomingSprints] = useState(3);
-	const [activeRequired, setActiveRequired] = useState(true);
-	const [addStartedIssues, setAddStartedIssues] = useState(true);
-	const [addCompletedIssues, setAddCompletedIssues] = useState(true);
-	const { currentTeam, updateTeam } = useTeamStore((state) => state);
+	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(true);
+	const { toast } = useToast();
 
-	useEffect(() => {
-		if (currentTeam) {
-			setSprintsEnabled(currentTeam.sprintsEnabled || false);
-			setSprintDuration(currentTeam.sprintDuration || 2);
-			setCooldownDuration(currentTeam.cooldownDuration || 1);
-			setSprintStartDate(
-				currentTeam.sprintStartDate
-					? new Date(currentTeam.sprintStartDate)
-					: new Date(),
-			);
-			setUpcomingSprints(currentTeam.upcomingSprints || 3);
-			setActiveRequired(currentTeam.activeRequired || true);
-			setAddStartedIssues(currentTeam.addStartedIssues || true);
-			setAddCompletedIssues(currentTeam.addCompletedIssues || true);
-			setIsLoading(false);
-		}
-	}, [currentTeam]);
-
-	if (!currentTeam) return null;
-	if (isLoading) return <div>Loading sprint settings...</div>;
-	if (error) return <div>Error: {error}</div>;
-
-	const handleSaveSettings = async () => {
+	const handleUpdateTeam = async (data: Partial<Team>) => {
 		try {
-			await updateTeam(currentTeam.id, {
-				sprintsEnabled,
-				sprintDuration,
-				cooldownDuration,
-				sprintStartDate,
-				upcomingSprints,
-				activeRequired,
-				addStartedIssues,
-				addCompletedIssues,
-			});
-		} catch {
-			setError("Failed to save sprint settings");
+			const response = currentTeam && (await updateTeam(currentTeam.id, data));
+			if (!response) return;
+			response.variant === "destructive"
+				? toast(response)
+				: response.team && setCurrentTeam(response.team);
+		} catch (error) {
+			error instanceof Error
+				? toast({
+						title: `Error updating team sprints: ${error.message}`,
+						variant: "destructive",
+					})
+				: toast({
+						title: "Error updating team sprints",
+						variant: "destructive",
+					});
 		}
 	};
 
+	if (!currentTeam) return null;
+	const {
+		sprintsEnabled,
+		sprintDuration,
+		cooldownDuration,
+		sprintStartDate,
+		upcomingSprints,
+		addStartedIssues,
+		addCompletedIssues,
+		activeRequired,
+	} = currentTeam;
+
 	return (
-		<div className="container mx-auto p-4 w-2/3 space-y-6">
+		<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
 			<h1 className="text-3xl font-bold mb-2">Sprints</h1>
 			<p className="text-muted-foreground mb-6">
 				Organize your team's work into time-boxed iterations
@@ -137,7 +123,7 @@ export default function TeamSettingsSprints() {
 							complete a set amount of work.
 						</p>
 					)}
-					{!isSprintInfoExpanded && (
+					{isSprintInfoExpanded && (
 						<Button
 							variant="link"
 							className="p-0 h-auto mt-4"
@@ -159,8 +145,22 @@ export default function TeamSettingsSprints() {
 					</p>
 				</div>
 				<Switch
-					checked={sprintsEnabled}
-					onCheckedChange={setSprintsEnabled}
+					checked={currentTeam.sprintsEnabled}
+					onCheckedChange={(checked) =>
+						handleUpdateTeam({
+							sprintsEnabled: checked,
+							sprintDuration: 2,
+							cooldownDuration: 1,
+							sprintStartDate: addDays(
+								startOfWeek(new Date(), { weekStartsOn: 1 }),
+								7,
+							),
+							upcomingSprints: 3,
+							activeRequired: true,
+							addStartedIssues: true,
+							addCompletedIssues: true,
+						})
+					}
 					aria-label="Enable sprints"
 				/>
 			</div>
@@ -175,7 +175,9 @@ export default function TeamSettingsSprints() {
 								</Label>
 								<Select
 									value={sprintDuration.toString()}
-									onValueChange={(value) => setSprintDuration(Number(value))}
+									onValueChange={(value) =>
+										handleUpdateTeam({ sprintDuration: Number(value) })
+									}
 								>
 									<SelectTrigger className="w-60 bg-secondary">
 										<SelectValue placeholder="Select duration" />
@@ -195,7 +197,9 @@ export default function TeamSettingsSprints() {
 								</Label>
 								<Select
 									value={cooldownDuration.toString()}
-									onValueChange={(value) => setCooldownDuration(Number(value))}
+									onValueChange={(value) =>
+										handleUpdateTeam({ cooldownDuration: Number(value) })
+									}
 								>
 									<SelectTrigger className="w-60 bg-secondary">
 										<SelectValue placeholder="Select cooldown" />
@@ -241,7 +245,9 @@ export default function TeamSettingsSprints() {
 										<Calendar
 											mode="single"
 											selected={sprintStartDate}
-											onSelect={setSprintStartDate}
+											onSelect={(value) =>
+												handleUpdateTeam({ sprintStartDate: value })
+											}
 											initialFocus
 										/>
 									</PopoverContent>
@@ -253,7 +259,9 @@ export default function TeamSettingsSprints() {
 								</Label>
 								<Select
 									value={upcomingSprints.toString()}
-									onValueChange={(value) => setUpcomingSprints(Number(value))}
+									onValueChange={(value) =>
+										handleUpdateTeam({ upcomingSprints: Number(value) })
+									}
 								>
 									<SelectTrigger className="w-60 bg-secondary">
 										<SelectValue placeholder="Select number" />
@@ -292,7 +300,9 @@ export default function TeamSettingsSprints() {
 									<Switch
 										id="addStartedIssues"
 										checked={addStartedIssues}
-										onCheckedChange={setAddStartedIssues}
+										onCheckedChange={(checked) =>
+											handleUpdateTeam({ addStartedIssues: checked })
+										}
 									/>
 								</div>
 							</div>
@@ -313,7 +323,9 @@ export default function TeamSettingsSprints() {
 									<Switch
 										id="addCompletedIssues"
 										checked={addCompletedIssues}
-										onCheckedChange={setAddCompletedIssues}
+										onCheckedChange={(checked) =>
+											handleUpdateTeam({ addCompletedIssues: checked })
+										}
 									/>
 								</div>
 							</div>
@@ -333,13 +345,11 @@ export default function TeamSettingsSprints() {
 						<Switch
 							id="activeRequired"
 							checked={activeRequired}
-							onCheckedChange={setActiveRequired}
+							onCheckedChange={(checked) =>
+								handleUpdateTeam({ activeRequired: checked })
+							}
 						/>
 					</div>
-
-					<Button onClick={handleSaveSettings} className="w-full mb-6">
-						Save Sprint Settings
-					</Button>
 				</>
 			)}
 		</div>
