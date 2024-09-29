@@ -1,12 +1,26 @@
-import {} from "react";
 import { ChevronDown, SlidersVertical } from "lucide-react";
-import DisplayPreferences from "./DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { useViewStore } from "@/store";
+import { Switch } from "../ui/switch";
+import { Separator } from "../ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import type { DisplayProperty } from "@/store/views/interfaces";
 
 const TopNavBarDisplay = () => {
-	const [view, setView] = useViewStore((state) => [state.view, state.setView]);
+	const {
+		view,
+		setView,
+		listViewOptions,
+		gridViewOptions,
+		setListViewOptions,
+		setGridViewOptions,
+	} = useViewStore((state) => state);
+
+	const currentOptions = view === "grid" ? gridViewOptions : listViewOptions;
+	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
+
+	const { showEmptyGroups, displayProperties } = currentOptions;
 
 	const handleListClick = (): void => {
 		setView("list");
@@ -14,6 +28,23 @@ const TopNavBarDisplay = () => {
 
 	const handleGridClick = (): void => {
 		setView("grid");
+	};
+
+	const formatCamelCaseString = (str: string): string => {
+		return str
+			.replace(/([A-Z])/g, " $1") // Insert space before each capital letter
+			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
+	};
+
+	const handleValueChange = (value: string[]) => {
+		const updatedProperties = Object.keys(displayProperties).reduce(
+			(acc, key) => {
+				acc[key as keyof typeof displayProperties] = !value.includes(key);
+				return acc;
+			},
+			{} as typeof displayProperties,
+		);
+		setOptions({ displayProperties: updatedProperties });
 	};
 
 	return (
@@ -49,7 +80,50 @@ const TopNavBarDisplay = () => {
 								</Button>
 							</div>
 						</div>
-						<DisplayPreferences />
+						<div>
+							<Separator className="my-2" />
+							<div>{view === "grid" ? "Grid" : "List"} options</div>
+							<div className="flex items-center justify-between w-full my-3">
+								<p className="text-foreground text-xs py-1">
+									Show Empty Groups
+								</p>
+								<Switch
+									checked={showEmptyGroups}
+									onCheckedChange={(checked) =>
+										setOptions({ showEmptyGroups: checked })
+									}
+								/>
+							</div>
+							<p className="text-foreground text-xs py-1 mb-2">
+								Display Properties
+							</p>
+							<ToggleGroup
+								type="multiple"
+								className="flex flex-wrap justify-start gap-3"
+								onValueChange={handleValueChange}
+							>
+								{Object.keys(displayProperties).map((property) => {
+									const typedKey = property as keyof DisplayProperty;
+									const value = displayProperties[typedKey];
+									return (
+										<ToggleGroupItem
+											key={property}
+											value={property}
+											data-state={value ? "on" : "off"}
+											asChild
+										>
+											<Button
+												variant={value ? "secondary" : "ghost"}
+												size="sm"
+												className="text-xs py-0 px-2 h-6"
+											>
+												{formatCamelCaseString(property)}
+											</Button>
+										</ToggleGroupItem>
+									);
+								})}
+							</ToggleGroup>
+						</div>
 					</div>
 				</PopoverContent>
 			</Popover>

@@ -10,13 +10,7 @@ import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon } from "@/components/Icons";
 
-const TaskGrid = ({
-	teamIdentifier,
-	task,
-	user,
-	currentTeam,
-	taskLabels,
-}: TaskGridProps) => {
+const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
 	const { gridViewOptions } = useViewStore((state) => state);
 
 	const {
@@ -36,7 +30,7 @@ const TaskGrid = ({
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
 						{showIdentifier ? (
-							<p className="text-xs text-muted-foreground">{teamIdentifier}</p>
+							<p className="text-xs text-muted-foreground">{task.identifier}</p>
 						) : (
 							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
 						)}
