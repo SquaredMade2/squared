@@ -25,19 +25,27 @@ const handler = NextAuth({
 				password: { label: "Password", type: "password" },
 			},
 			async authorize(credentials) {
-				const { data: response }: { data: ApiReturnType<User> } =
-					await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
-						provider: "credentials",
-						type: "login",
-						email: credentials?.email,
-						password: credentials?.password,
-					});
-				const { data: user } = response;
+				try {
+					const { data: response }: { data: ApiReturnType<User> } =
+						await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
+							provider: "credentials",
+							type: "login",
+							email: credentials?.email,
+							password: credentials?.password,
+						});
+					const { data: user, message } = response;
 
-				if (user) {
-					return user;
+					if (user) {
+						return user;
+					}
+					// If user is not found or password is incorrect
+					throw new Error(message || "Invalid login credentials");
+				} catch (error) {
+					// Customize the error message based on the response
+					throw new Error(
+						error instanceof Error ? error.message : "Login failed",
+					);
 				}
-				return null;
 			},
 		}),
 	],
