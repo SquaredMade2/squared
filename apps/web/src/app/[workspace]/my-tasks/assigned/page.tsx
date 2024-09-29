@@ -30,6 +30,7 @@ export default function MyAssignedTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
+			pageTitle="Assigned Tasks"
 		>
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
