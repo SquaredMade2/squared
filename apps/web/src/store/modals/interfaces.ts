@@ -8,6 +8,7 @@ export type ModalState = {
 	renameData: Task | null;
 	showWorkspaceInvite: boolean;
 	showSwitchWorkspace: boolean;
+	showTaskSelector: boolean;
 };
 
 type ModalActions = {
@@ -18,6 +19,7 @@ type ModalActions = {
 	setShowCommand: (input: boolean) => void;
 	setShowWorkspaceInvite: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;
+	setShowTaskSelector: (input: boolean) => void;
 };
 
 export type ModalStore = ModalState & ModalActions;
