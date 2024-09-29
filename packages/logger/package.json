@@ -11,20 +11,14 @@
     "build": "tsc",
     "clean": "rm -rf dist",
     "dev": "tsc -w",
-    "lint": "biome lint --error-on-warnings ./src",
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "@repo/jest-presets/node"
+    "lint": "biome lint --error-on-warnings ./src"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.1",
     "@repo/jest-presets": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/jest": "^29.5.12",
     "@types/node": "^22.5.1",
     "@types/winston": "^2.4.4",
-    "jest": "^29.7.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
