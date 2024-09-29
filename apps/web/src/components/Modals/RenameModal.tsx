@@ -15,7 +15,7 @@ import { useToast } from "../ui/use-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-const RenameModal = () => {
+export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
 	const { updateTask } = useTaskStore((state) => state);
 	const {
@@ -80,5 +80,3 @@ const RenameModal = () => {
 		</Dialog>
 	);
 };
-
-export default RenameModal;

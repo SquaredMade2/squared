@@ -2,7 +2,7 @@
 
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 
-import NewIssueModal, { NewIssueButton } from "@/components/NewIssue";
+import { NewIssueModal, NewIssueButton } from "@/components/Modals";
 import {
 	Accordion,
 	AccordionContent,

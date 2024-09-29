@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
-import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
+import { WorkspaceInviteModal } from "@/components/Modals";
 import { SquaredStoreProvider } from "@/store";
 import { SessionProvider } from "next-auth/react";
 import SearchCommand from "@/components/SearchCommand";

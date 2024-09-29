@@ -9,9 +9,9 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import type { Priority } from "@repo/db";
-import { PriorityIcon } from "../Icons";
+import { PriorityIcon } from "@/components/Icons";
 
 export const PriorityDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
