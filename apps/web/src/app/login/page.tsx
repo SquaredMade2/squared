@@ -56,7 +56,9 @@ function LoginForm() {
 	const handleGoogleLogin = async () => {
 		setIsLoading(true);
 		try {
-			await signIn("google", { callbackUrl: process.env.NEXT_PUBLIC_URL });
+			await signIn("google", {
+				callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/auth/callback/google`,
+			});
 			router.refresh();
 			router.prefetch("/");
 		} catch (error) {
