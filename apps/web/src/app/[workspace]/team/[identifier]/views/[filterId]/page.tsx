@@ -53,7 +53,7 @@ export default function FilterViewPage() {
 		return <div>Loading...</div>;
 	}
 
-	const getEmptyColumns = (): Status[] => {
+	const getHiddenColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
 
 		return filteredStatuses.filter((status) => {
@@ -80,9 +80,12 @@ export default function FilterViewPage() {
 			/>
 			{view === "grid" &&
 				!gridViewOptions.showEmptyGroups &&
-				getEmptyColumns().length >= 1 && (
+				getHiddenColumns().length >= 1 && (
 					<div className="ml-auto">
-						<HiddenColumns getEmptyColumns={getEmptyColumns} />
+						<HiddenColumns
+							getHiddenColumns={getHiddenColumns}
+							getTasksForStatus={getTasksForStatus}
+						/>
 					</div>
 				)}
 		</TaskPageLayout>
