@@ -9,7 +9,7 @@ export const createViewStore = (
 		showDateTime: true,
 		showPriority: true,
 		showLabels: true,
-		showNavbar: false,
+		showNavbar: true,
 		showMobileNavbar: false,
 		listViewOptions: { showEmptyGroups: false },
 		gridViewOptions: { showEmptyGroups: false },
