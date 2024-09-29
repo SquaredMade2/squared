@@ -88,7 +88,7 @@ const productionDomain = "https://app.squaredmade.com";
 const localDevDomain = "http://localhost:3000";
 
 // Health check route for root path
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.status(200).send("ok");
 });
 
