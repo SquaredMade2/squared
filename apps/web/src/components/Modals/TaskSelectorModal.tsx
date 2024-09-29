@@ -12,10 +12,11 @@ import {
 import { useTaskStore, useModalStore, useTeamStore } from "@/store";
 import { ScrollArea } from "../ui/scroll-area";
 import { StatusIcon } from "../Icons";
-import Link from "next/link";
 import { formatUrl } from "@/utils/formatting";
+import { useRouter } from "next/navigation";
 
 export function TaskSelector() {
+	const router = useRouter();
 	const { showTaskSelector: open, setShowTaskSelector: setOpen } =
 		useModalStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
@@ -32,23 +33,22 @@ export function TaskSelector() {
 								<CommandEmpty>No tasks found.</CommandEmpty>
 								<CommandGroup>
 									{tasks.map((task) => (
-										<Link
+										<CommandItem
 											key={task.id}
-											href={`/${currentTeam?.name}/task/${task.identifier}/${formatUrl(task.title)}`}
+											onSelect={() => {
+												setCurrentTask(task);
+												router.push(
+													`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`,
+												);
+												setOpen(false);
+											}}
+											className="grid grid-cols-[auto_1fr_11fr] gap-x-4 p-2"
 										>
-											<CommandItem
-												onSelect={() => {
-													setCurrentTask(task);
-													setOpen(false);
-												}}
-												className="grid grid-cols-[auto_1fr_11fr] gap-x-4 p-2"
-											>
-												<StatusIcon status={task.status} />
+											<StatusIcon status={task.status} />
 
-												<span>{task.identifier}</span>
-												<span className="">{task.title}</span>
-											</CommandItem>
-										</Link>
+											<span>{task.identifier}</span>
+											<span className="">{task.title}</span>
+										</CommandItem>
 									))}
 								</CommandGroup>
 							</ScrollArea>
