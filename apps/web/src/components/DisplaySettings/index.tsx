@@ -54,7 +54,7 @@ const TopNavBarDisplay = () => {
 			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
 	};
 
-	const handleValueChange = (value: string[]) => {
+	const handleToggleChange = (value: string[]) => {
 		const updatedProperties = Object.keys(displayProperties).reduce(
 			(acc, key) => {
 				acc[key as keyof typeof displayProperties] = !value.includes(key);
@@ -63,6 +63,12 @@ const TopNavBarDisplay = () => {
 			{} as typeof displayProperties,
 		);
 		setOptions({ displayProperties: updatedProperties });
+	};
+
+	const handleDropdownSelection = (value: CompletedTaskPeriod) => {
+		if (value === "None") {
+			setOptions({ showCompletedTasks: { show: false, period: value } });
+		} else setOptions({ showCompletedTasks: { show: true, period: value } });
 	};
 
 	return (
@@ -118,7 +124,7 @@ const TopNavBarDisplay = () => {
 							<ToggleGroup
 								type="multiple"
 								className="flex flex-wrap justify-start gap-3"
-								onValueChange={handleValueChange}
+								onValueChange={handleToggleChange}
 							>
 								{Object.keys(displayProperties).map((property) => {
 									const typedKey = property as keyof DisplayProperty;
@@ -163,14 +169,7 @@ const TopNavBarDisplay = () => {
 									<DropdownMenuItem
 										key={option}
 										className="text-xs"
-										onSelect={() =>
-											setOptions({
-												showCompletedTasks: {
-													...showCompletedTasks,
-													period: option,
-												},
-											})
-										}
+										onSelect={() => handleDropdownSelection(option)}
 									>
 										{option}
 									</DropdownMenuItem>

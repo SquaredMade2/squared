@@ -10,7 +10,7 @@ export const createViewStore = (
 		showMobileNavbar: false,
 		listViewOptions: {
 			showEmptyGroups: false,
-			showCompletedTasks: { show: false, period: "All" },
+			showCompletedTasks: { show: true, period: "All" },
 			displayProperties: {
 				identifier: true,
 				dueDate: true,
@@ -22,7 +22,7 @@ export const createViewStore = (
 		},
 		gridViewOptions: {
 			showEmptyGroups: false,
-			showCompletedTasks: { show: false, period: "All" },
+			showCompletedTasks: { show: true, period: "All" },
 			displayProperties: {
 				identifier: true,
 				dueDate: true,

@@ -12,16 +12,18 @@ const ViewAllTasks = ({
 	const { view, listViewOptions, gridViewOptions } = useViewStore(
 		(state) => state,
 	);
+	const viewOptions = view === "list" ? listViewOptions : gridViewOptions;
 
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 		return filteredStatuses.map((status) => {
 			if (status === Status.archived) return null;
+			if (status === Status.done && !viewOptions.showCompletedTasks.show)
+				return null;
 			const tasksForStatus = getTasksForStatus(status);
-			if (tasksForStatus.length === 0) {
-				if (view === "list" && !listViewOptions.showEmptyGroups) return null;
-				if (view === "grid" && !gridViewOptions.showEmptyGroups) return null;
-			}
+			if (tasksForStatus.length === 0 && !viewOptions.showEmptyGroups)
+				return null;
+
 			return (
 				<div key={status} className="px-1">
 					<GroupColumn
