@@ -372,6 +372,7 @@ export default function SprintDashboard() {
 				completedSprints={completedSprints}
 				activeSprint={activeSprint}
 				tasks={tasks}
+				calculateProgress={calculateProgress}
 			/>
 		</div>
 	);

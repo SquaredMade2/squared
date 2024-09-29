@@ -17,6 +17,7 @@ interface SprintTabsProps {
 	completedSprints: Sprint[];
 	activeSprint: Sprint | null;
 	tasks: Task[];
+	calculateProgress: (sprint: Sprint) => number;
 }
 
 export function SprintTabs({
@@ -24,17 +25,11 @@ export function SprintTabs({
 	completedSprints,
 	activeSprint,
 	tasks,
+	calculateProgress,
 }: SprintTabsProps) {
 	const [activeTab, setActiveTab] = useState<"upcoming" | "completed">(
 		"upcoming",
 	);
-
-	const calculateProgress = (sprint: Sprint) => {
-		const totalDays =
-			new Date(sprint.endDate).getTime() - new Date(sprint.startDate).getTime();
-		const elapsedDays = Date.now() - new Date(sprint.startDate).getTime();
-		return Math.min(Math.max((elapsedDays / totalDays) * 100, 0), 100);
-	};
 
 	const renderSprintCard = (sprint: Sprint, isActive = false) => {
 		const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
