@@ -11,9 +11,17 @@ import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import LabelBadge from "@/components/LabelBadges";
 
 const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
-	const { showDateTime, showPriority, showLabels } = useViewStore(
-		(state) => state,
-	);
+	const { gridViewOptions } = useViewStore((state) => state);
+
+	const {
+		identifier: showIdentifier,
+		dueDate: showDueDate,
+		avatar: showAvatar,
+		labels: showLabels,
+		// status: showStatus,	// no status currently in grid view - implement later on - Kaila
+		priority: showPriority,
+	} = gridViewOptions.displayProperties;
+
 	return (
 		<Link
 			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
@@ -22,24 +30,29 @@ const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
 			<Card className="w-80">
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
-						<p className="text-xs text-muted-foreground">{task.identifier}</p>
-						{task.assigneeName ? (
-							<Avatar className="size-6">
-								<AvatarImage src={user?.avatarUrl ?? undefined} />
-								<AvatarFallback className="text-xxs">
-									{getInitials(task.assigneeName)}
-								</AvatarFallback>
-							</Avatar>
+						{showIdentifier ? (
+							<p className="text-xs text-muted-foreground">{task.identifier}</p>
 						) : (
-							<UserSearch className="size-6 text-[#9597AD]" />
+							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
 						)}
+						{showAvatar &&
+							(task.assigneeName ? (
+								<Avatar className="size-6">
+									<AvatarImage src={user?.avatarUrl ?? undefined} />
+									<AvatarFallback className="text-xxs">
+										{getInitials(task.assigneeName)}
+									</AvatarFallback>
+								</Avatar>
+							) : (
+								<UserSearch className="size-6 text-[#9597AD]" />
+							))}
 					</div>
 					<div className="text-sm pr-8 w-full flex items-center gap-2">
 						<StatusIcon status={task.status} />
 						{truncateString(task.title, 70)}
 					</div>
 					<div className="flex flex-wrap w-full items-center gap-1 -my-1">
-						{showDateTime && (
+						{showDueDate && (
 							<div className="flex items-center gap-2 text-sm bg-background border border-border rounded-md w-fit p-1 mb-1">
 								<Calendar className="size-4" />
 								{task.dueDate

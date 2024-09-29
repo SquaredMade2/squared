@@ -4,22 +4,24 @@ import { Button } from "../ui/button";
 import { useViewStore } from "@/store";
 import { Switch } from "../ui/switch";
 import { Separator } from "../ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import type { DisplayProperty } from "@/store/views/interfaces";
 
 const TopNavBarDisplay = () => {
 	const {
 		view,
 		setView,
-		showPriority,
-		showLabels,
-		showDateTime,
 		listViewOptions,
 		gridViewOptions,
-		setShowPriority,
-		setShowLabels,
-		setShowDateTime,
 		setListViewOptions,
 		setGridViewOptions,
 	} = useViewStore((state) => state);
+
+	const currentOptions = view === "grid" ? gridViewOptions : listViewOptions;
+	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
+
+	const { showEmptyGroups, displayProperties } = currentOptions;
+
 	const handleListClick = (): void => {
 		setView("list");
 	};
@@ -28,30 +30,22 @@ const TopNavBarDisplay = () => {
 		setView("grid");
 	};
 
-	const handlePriority = (): void => {
-		setShowPriority(!showPriority);
+	const formatCamelCaseString = (str: string): string => {
+		return str
+			.replace(/([A-Z])/g, " $1") // Insert space before each capital letter
+			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
 	};
 
-	const handleLabels = (): void => {
-		setShowLabels(!showLabels);
+	const handleValueChange = (value: string[]) => {
+		const updatedProperties = Object.keys(displayProperties).reduce(
+			(acc, key) => {
+				acc[key as keyof typeof displayProperties] = !value.includes(key);
+				return acc;
+			},
+			{} as typeof displayProperties,
+		);
+		setOptions({ displayProperties: updatedProperties });
 	};
-
-	const handleDateTime = (): void => {
-		setShowDateTime(!showDateTime);
-	};
-
-	const getFormattedKeyString = (obj: { showEmptyGroups?: boolean }) => {
-		return Object.keys(obj)
-			.map((key) => key.replace(/([A-Z])/g, " $1"))
-			.join(", ")
-			.replace(/\b\w/g, (char) => char.toUpperCase());
-	};
-
-	const displayOptions = [
-		{ label: "Priority", show: showPriority, handle: handlePriority },
-		{ label: "Labels", show: showLabels, handle: handleLabels },
-		{ label: "Date and Time", show: showDateTime, handle: handleDateTime },
-	];
 
 	return (
 		<div className="flex flex-col gap-2 items-end relative h-10 ">
@@ -87,44 +81,48 @@ const TopNavBarDisplay = () => {
 							</div>
 						</div>
 						<div>
-							{displayOptions.map((option) => (
-								<div
-									className="flex items-center justify-between w-full"
-									key={option.label}
-								>
-									<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-										{option.label}
-									</p>
-									<Switch checked={option.show} onClick={option.handle} />
-								</div>
-							))}
 							<Separator className="my-2" />
-							{view === "grid" && (
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-										{getFormattedKeyString(gridViewOptions)}
-									</p>
-									<Switch
-										checked={gridViewOptions.showEmptyGroups}
-										onCheckedChange={(checked) =>
-											setGridViewOptions({ showEmptyGroups: checked })
-										}
-									/>
-								</div>
-							)}
-							{view === "list" && (
-								<div className="flex items-center justify-between w-full">
-									<p className="text-foreground text-xs py-1 mb-1 last:mb-0">
-										{getFormattedKeyString(listViewOptions)}
-									</p>
-									<Switch
-										checked={listViewOptions.showEmptyGroups}
-										onCheckedChange={(checked) =>
-											setListViewOptions({ showEmptyGroups: checked })
-										}
-									/>
-								</div>
-							)}
+							<div>{view === "grid" ? "Grid" : "List"} options</div>
+							<div className="flex items-center justify-between w-full my-3">
+								<p className="text-foreground text-xs py-1">
+									Show Empty Groups
+								</p>
+								<Switch
+									checked={showEmptyGroups}
+									onCheckedChange={(checked) =>
+										setOptions({ showEmptyGroups: checked })
+									}
+								/>
+							</div>
+							<p className="text-foreground text-xs py-1 mb-2">
+								Display Properties
+							</p>
+							<ToggleGroup
+								type="multiple"
+								className="flex flex-wrap justify-start gap-3"
+								onValueChange={handleValueChange}
+							>
+								{Object.keys(displayProperties).map((property) => {
+									const typedKey = property as keyof DisplayProperty;
+									const value = displayProperties[typedKey];
+									return (
+										<ToggleGroupItem
+											key={property}
+											value={property}
+											data-state={value ? "on" : "off"}
+											asChild
+										>
+											<Button
+												variant={value ? "secondary" : "ghost"}
+												size="sm"
+												className="text-xs py-0 px-2 h-6"
+											>
+												{formatCamelCaseString(property)}
+											</Button>
+										</ToggleGroupItem>
+									);
+								})}
+							</ToggleGroup>
 						</div>
 					</div>
 				</PopoverContent>

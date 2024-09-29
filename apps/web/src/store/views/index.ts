@@ -6,13 +6,30 @@ export * from "./store";
 
 export const createViewStore = (
 	initState: ViewState = {
-		showDateTime: true,
-		showPriority: true,
-		showLabels: true,
 		showNavbar: true,
 		showMobileNavbar: false,
-		listViewOptions: { showEmptyGroups: false },
-		gridViewOptions: { showEmptyGroups: false },
+		listViewOptions: {
+			showEmptyGroups: false,
+			displayProperties: {
+				identifier: true,
+				dueDate: true,
+				avatar: true,
+				labels: true,
+				status: true,
+				priority: true,
+			},
+		},
+		gridViewOptions: {
+			showEmptyGroups: false,
+			displayProperties: {
+				identifier: true,
+				dueDate: true,
+				avatar: true,
+				labels: true,
+				status: true,
+				priority: true,
+			},
+		},
 		view: "list",
 	},
 ) => {
@@ -28,15 +45,6 @@ export const createViewStore = (
 				},
 				setShowMobileNavbar: (input) => {
 					set({ showMobileNavbar: input });
-				},
-				setShowDateTime: (input) => {
-					set({ showDateTime: input });
-				},
-				setShowPriority: (input) => {
-					set({ showPriority: input });
-				},
-				setShowLabels: (input) => {
-					set({ showLabels: input });
 				},
 				setListViewOptions: (input) => {
 					const currentListView = get().listViewOptions;
