@@ -5,7 +5,7 @@ import "dotenv/config";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
-const vercelRegex = /^https:\/\/web-production-(\w+)-squaredmade\.vercel\.app$/;
+const vercelRegex = /^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/;
 
 // Ensure the file is empty before writing to it
 fs.writeFileSync(outputPath, "");
