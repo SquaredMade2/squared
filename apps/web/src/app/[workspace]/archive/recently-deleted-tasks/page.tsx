@@ -29,6 +29,7 @@ const Page = () => {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
+			pageTitle="Recently Deleted Tasks"
 		>
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
