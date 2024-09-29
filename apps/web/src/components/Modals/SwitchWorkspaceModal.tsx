@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, PlusCircle } from "lucide-react";
 import { cn } from "@/utils/cn";
 import {
@@ -19,16 +19,36 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { useModalStore, useWorkspaceStore } from "@/store";
+import {
+	useModalStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { useRouter } from "next/navigation";
 import WorkspaceInitials from "../WorkspaceImage";
 
 export function WorkspaceSwitcher() {
 	const { showSwitchWorkspace: open, setShowSwitchWorkspace: setOpen } =
 		useModalStore((state) => state);
-	const { workspaces, currentWorkspace } = useWorkspaceStore((state) => state);
+	const { workspaces, currentWorkspace, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
+	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
+	const { getAllTasks } = useTaskStore((state) => state);
 	const [selectedWorkspace, setSelectedWorkspace] = useState(currentWorkspace);
 	const router = useRouter();
+
+	useEffect(() => {
+		if (selectedWorkspace) {
+			const switchWorkspace = async () => {
+				const newTeams = await getAllTeams(selectedWorkspace.id);
+				setCurrentTeam(newTeams[0]);
+				await getAllTasks(newTeams[0].id);
+			};
+			setCurrentWorkspace(selectedWorkspace);
+			switchWorkspace();
+		}
+	}, [selectedWorkspace]);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
