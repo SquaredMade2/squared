@@ -87,6 +87,11 @@ const port = process.env.PORT || 5173;
 const productionDomain = "https://app.squaredmade.com";
 const localDevDomain = "http://localhost:3000";
 
+// Health check route for root path
+app.get("/", (req, res) => {
+  res.status(200).send("ok");
+});
+
 app.use(
 	cors({
 		origin: (origin, callback) => {
