@@ -87,6 +87,13 @@ const NavBarTeams = ({ teamIdentifier }: NavBarTeamProps) => {
 						<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
 							<Button
 								variant={"ghost"}
+								onClick={() => handleActiveParams("sprints/current")}
+								className="w-full justify-start h-6 pl-3"
+							>
+								Current Sprint
+							</Button>
+							<Button
+								variant={"ghost"}
 								onClick={() => handleActiveParams("sprints/upcoming")}
 								className="w-full justify-start h-6 pl-3"
 							>
