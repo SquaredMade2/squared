@@ -17,18 +17,8 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 	DialogFooter,
 } from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format, differenceInDays } from "date-fns";
 import {
@@ -44,6 +34,7 @@ import type { Priority, Sprint, Task } from "@repo/db";
 import { useParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { AssignTasksDialog } from "@/components/Sprints";
 
 export default function SprintDashboard() {
 	const {
@@ -64,7 +55,6 @@ export default function SprintDashboard() {
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
 	const [targetSprint, setTargetSprint] = useState<string>("");
-	const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 	const [isAutoAssignConfirmOpen, setIsAutoAssignConfirmOpen] = useState(false);
 	const [tasksToAutoAssign, setTasksToAutoAssign] = useState<Task[]>([]);
 	const [activeTab, setActiveTab] = useState<"upcoming" | "completed">(
@@ -226,14 +216,6 @@ export default function SprintDashboard() {
 		return tasks.filter((task) => task.sprintId === activeSprint.id).length;
 	};
 
-	const handleTaskSelection = (task: Task) => {
-		setSelectedTasks((prev) =>
-			prev.includes(task)
-				? prev.filter((t) => t.id !== task.id)
-				: [...prev, task],
-		);
-	};
-
 	const handleBulkAssign = async () => {
 		if (!targetSprint) return;
 
@@ -242,7 +224,6 @@ export default function SprintDashboard() {
 		}
 
 		setSelectedTasks([]);
-		setIsAssignModalOpen(false);
 		currentTeam && (await getAllTasks(currentTeam.id));
 	};
 
@@ -378,70 +359,15 @@ export default function SprintDashboard() {
 			<div className="flex justify-between items-center">
 				<h2 className="text-2xl font-semibold">Task Assignment</h2>
 				<div className="space-x-2">
-					<Dialog open={isAssignModalOpen} onOpenChange={setIsAssignModalOpen}>
-						<DialogTrigger asChild>
-							<Button>Assign Tasks</Button>
-						</DialogTrigger>
-						<DialogContent className="sm:max-w-[525px]">
-							<DialogHeader>
-								<DialogTitle>Assign Tasks to Sprint</DialogTitle>
-								<DialogDescription>
-									Select tasks and assign them to a sprint.
-								</DialogDescription>
-							</DialogHeader>
-							<div className="grid gap-4 py-4">
-								<div className="grid grid-cols-4 items-center gap-4">
-									<Label htmlFor="sprint" className="text-right">
-										Sprint
-									</Label>
-									<Select
-										onValueChange={setTargetSprint}
-										defaultValue={activeSprint?.id}
-									>
-										<SelectTrigger className="col-span-3">
-											<SelectValue placeholder="Select a sprint" />
-										</SelectTrigger>
-										<SelectContent>
-											{[activeSprint, ...upcomingSprints].map(
-												(sprint) =>
-													sprint && (
-														<SelectItem key={sprint.id} value={sprint.id}>
-															{sprint?.name}
-														</SelectItem>
-													),
-											)}
-										</SelectContent>
-									</Select>
-								</div>
-								<ScrollArea className="h-[300px] w-full rounded-md border p-4">
-									{unassignedTasks.map((task) => (
-										<div
-											key={task.id}
-											className="flex items-center space-x-2 mb-2"
-										>
-											<Checkbox
-												id={task.id}
-												checked={selectedTasks.includes(task)}
-												onCheckedChange={() => handleTaskSelection(task)}
-											/>
-											<label
-												htmlFor={task.id}
-												className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-											>
-												{task.title}
-											</label>
-										</div>
-									))}
-								</ScrollArea>
-							</div>
-							<DialogFooter>
-								<Button onClick={handleBulkAssign}>
-									Assign {selectedTasks.length} Selected Task
-									{selectedTasks.length !== 1 ? "s" : ""}
-								</Button>
-							</DialogFooter>
-						</DialogContent>
-					</Dialog>
+					<AssignTasksDialog
+						activeSprint={activeSprint}
+						handleBulkAssign={handleBulkAssign}
+						selectedTasks={selectedTasks}
+						setSelectedTasks={setSelectedTasks}
+						setTargetSprint={setTargetSprint}
+						unassignedTasks={unassignedTasks}
+						upcomingSprints={upcomingSprints}
+					/>
 					<Button variant="outline" onClick={prepareAutoAssign}>
 						Auto-Assign Tasks
 					</Button>
