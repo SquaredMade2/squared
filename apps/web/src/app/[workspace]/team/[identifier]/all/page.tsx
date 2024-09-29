@@ -23,12 +23,14 @@ export default function AllTasksPage() {
 
 	const getHiddenColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
-		console.log(filteredStatuses);
 
 		return filteredStatuses.filter((status) => {
 			if (status === Status.archived) return false;
-
 			const tasks = getTasksForStatus(status);
+			if (status === Status.done && !gridViewOptions.showCompletedTasks.show) {
+				return tasks;
+			}
+
 			return tasks && tasks.length === 0;
 		});
 	};
@@ -50,7 +52,10 @@ export default function AllTasksPage() {
 				!gridViewOptions.showEmptyGroups &&
 				getHiddenColumns().length >= 1 && (
 					<div className="ml-auto">
-						<HiddenColumns getHiddenColumns={getHiddenColumns} />
+						<HiddenColumns
+							getHiddenColumns={getHiddenColumns}
+							getTasksForStatus={getTasksForStatus}
+						/>
 					</div>
 				)}
 		</TaskPageLayout>

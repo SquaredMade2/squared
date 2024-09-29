@@ -1,4 +1,4 @@
-import type { Status } from "@repo/db";
+import type { Status, Task } from "@repo/db";
 import {
 	Accordion,
 	AccordionContent,
@@ -11,7 +11,11 @@ import { StatusIcon } from "../Icons";
 
 const HiddenColumns = ({
 	getHiddenColumns,
-}: { getHiddenColumns: () => Status[] }) => {
+	getTasksForStatus,
+}: {
+	getHiddenColumns: () => Status[];
+	getTasksForStatus: (status: Status) => Task[];
+}) => {
 	return (
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
@@ -31,7 +35,9 @@ const HiddenColumns = ({
 												<StatusIcon status={column} />
 											</div>
 											<span>{formatStatus(column)}</span>
-											<span className="ml-1 text-muted-foreground">0</span>
+											<span className="ml-1 text-muted-foreground">
+												{getTasksForStatus(column).length}
+											</span>
 										</div>
 									</div>
 								</div>
