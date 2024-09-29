@@ -152,7 +152,7 @@ const TopNavBarDisplay = () => {
 					<Separator className="my-4" />
 
 					<div className="flex items-center justify-between">
-						<span className="text-xs text-foreground">Completed issues</span>
+						<span className="text-xs text-foreground">Completed tasks</span>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
