@@ -33,15 +33,20 @@ import type { Team } from "@repo/db";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TeamSettingsSprints() {
-	const { currentTeam, updateTeam, setCurrentTeam } = useTeamStore(
-		(state) => state,
-	);
+	const { currentTeam, updateTeam, setCurrentTeam, initializeSprints } =
+		useTeamStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(true);
 	const { toast } = useToast();
 
 	const handleUpdateTeam = async (data: Partial<Team>) => {
 		try {
-			const response = currentTeam && (await updateTeam(currentTeam.id, data));
+			if (!currentTeam) throw new Error("No team found");
+			const response = await updateTeam(currentTeam.id, data);
+			response.team?.sprintsEnabled &&
+				(await initializeSprints(currentTeam.id, {
+					count: currentTeam.upcomingSprints,
+					startDate: currentTeam.sprintStartDate,
+				}));
 			if (!response) return;
 			response.variant === "destructive"
 				? toast(response)

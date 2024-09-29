@@ -6,6 +6,7 @@ import type {
 	TeamStore,
 	TeamResponse,
 	SprintResponse,
+	InitializeSprintsBody,
 } from "./interfaces";
 import type { Sprint, Team } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
@@ -145,31 +146,25 @@ export const createTeamStore = (
 						return [];
 					}
 				},
-				createSprint: async (
+				initializeSprints: async (
 					teamId: string,
-					sprint: Partial<Sprint>,
-				): Promise<SprintResponse> => {
+					sprint: InitializeSprintsBody,
+				): Promise<Sprint[]> => {
 					try {
-						const response: { data: ApiReturnType<Sprint> } = await axios.post(
-							apiString(`${teamId}/sprint/${sprint.id ?? uuidv4()}`),
-							sprint,
-						);
-						const { data: newSprint, message, variant } = response.data;
+						const response: { data: ApiReturnType<Sprint[]> } =
+							await axios.post(apiString(`${teamId}/sprints`), sprint);
+						const { data: newSprints } = response.data;
 
-						if (!newSprint) {
-							return { sprint: null, message, variant };
+						if (!newSprints) {
+							return [];
 						}
 
 						const { sprints } = get();
-						set({ sprints: [...sprints, newSprint] });
+						set({ sprints: [...sprints, ...newSprints] });
 
-						return { sprint: newSprint, message, variant };
-					} catch (error) {
-						return {
-							sprint: null,
-							message: error instanceof Error ? error.message : "Unknown error",
-							variant: "destructive",
-						};
+						return newSprints;
+					} catch {
+						return [];
 					}
 				},
 				getSprints: async (teamId: string): Promise<Sprint[]> => {

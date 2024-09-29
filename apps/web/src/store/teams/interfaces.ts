@@ -19,6 +19,11 @@ export interface SprintResponse {
 	variant: "default" | "destructive";
 }
 
+export type InitializeSprintsBody = {
+	count?: number;
+	startDate?: Date;
+};
+
 type TeamActions = {
 	addTeam: (team: Partial<Team>) => Promise<TeamResponse>;
 	getTeam: (teamId: string) => Promise<TeamResponse>;
@@ -26,10 +31,10 @@ type TeamActions = {
 	updateTeam: (teamId: string, team: Partial<Team>) => Promise<TeamResponse>;
 	deleteTeam: (teamId: string) => Promise<void>;
 	getAllTeams: (workspaceId: string) => Promise<Team[]>;
-	createSprint: (
+	initializeSprints: (
 		teamId: string,
-		sprint: Partial<Sprint>,
-	) => Promise<SprintResponse>;
+		body: InitializeSprintsBody,
+	) => Promise<Sprint[]>;
 	getSprints: (teamId: string) => Promise<Sprint[]>;
 	updateSprint: (
 		sprintId: string,
