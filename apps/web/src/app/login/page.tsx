@@ -56,7 +56,7 @@ function LoginForm() {
 	const handleGoogleLogin = async () => {
 		setIsLoading(true);
 		try {
-			await signIn("google", { callbackUrl: window.location.href });
+			await signIn("google", { callbackUrl: process.env.NEXTAUTH_URL });
 			router.refresh();
 			router.prefetch("/");
 		} catch (error) {
