@@ -153,9 +153,9 @@ export class CommandSchema {
 				},
 			},
 			Navigation: {
-				openIssue: {
+				openTask: {
 					icon: <Circle className="size-4 mr-2" />,
-					text: "Open issue...",
+					text: "Open task...",
 					function: () => {
 						this.setShowTaskSelector(true);
 					},
