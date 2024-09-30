@@ -45,8 +45,10 @@ const handler = NextAuth({
 						return user;
 					}
 					// If user is not found or password is incorrect
+					console.error("Invalid login credentials:", message);
 					throw new Error(message || "Invalid login credentials");
 				} catch (error) {
+					console.error("Login error:", error);
 					// Customize the error message based on the response
 					throw new Error(
 						error instanceof Error ? error.message : "Login failed",
