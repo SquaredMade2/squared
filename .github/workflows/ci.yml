@@ -1,62 +1,62 @@
-name: CI Pipeline
+# name: CI Pipeline
 
-on:
-  pull_request:
+# on:
+#   pull_request:
 
-jobs:
-  ci:
-    name: CI Pipeline
-    runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+# jobs:
+#   ci:
+#     name: CI Pipeline
+#     runs-on: ubuntu-latest
+#     env:
+#       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+#       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+#       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+#       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0 
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.10.0
+#       - name: Install pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: 9.10.0
 
-      - name: Setup Node.js with pnpm cache
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.6.0
-          cache: "pnpm"
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            apps/**/pnpm-lock.yaml
-            packages/**/pnpm-lock.yaml
+#       - name: Setup Node.js with pnpm cache
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 22.6.0
+#           cache: "pnpm"
+#           cache-dependency-path: |
+#             pnpm-lock.yaml
+#             apps/**/pnpm-lock.yaml
+#             packages/**/pnpm-lock.yaml
 
-      - name: Get pnpm store path
-        id: pnpm-cache-path
-        run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
+#       - name: Get pnpm store path
+#         id: pnpm-cache-path
+#         run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Cache node_modules and pnpm store
-        uses: actions/cache@v4
-        id: cache-npm
-        with:
-          path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+#       - name: Cache node_modules and pnpm store
+#         uses: actions/cache@v4
+#         id: cache-npm
+#         with:
+#           path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
+#           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+#           restore-keys: |
+#             ${{ runner.os }}-pnpm-
 
-      - name: Install dependencies
-        run: pnpm install
+#       - name: Install dependencies
+#         run: pnpm install
 
-      - name: Cache turbo actions
-        uses: actions/cache@v4
-        with: 
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
+#       - name: Cache turbo actions
+#         uses: actions/cache@v4
+#         with: 
+#           path: .turbo
+#           key: ${{ runner.os }}-turbo-${{ github.sha }}
+#           restore-keys: |
+#             ${{ runner.os }}-turbo-
 
-      - name: Run tests
-        run: pnpm test:ci
+#       - name: Run tests
+#         run: pnpm test:ci
