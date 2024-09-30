@@ -5,7 +5,7 @@ import "dotenv/config";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
-const vercelRegex = /^https:\/\/web-production-(\w+)-squaredmade\.vercel\.app$/;
+const vercelRegex = /^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/;
 
 // Ensure the file is empty before writing to it
 fs.writeFileSync(outputPath, "");
@@ -25,7 +25,18 @@ ${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
-export const prisma = new PrismaClient();
+${
+	process.env.NODE_ENV === "test"
+		? "export const prisma = new PrismaClient();"
+		: `export const prisma = new PrismaClient({
+	datasources: {
+		db: {
+			url: process.env.POSTGRES_PRISMA_URL,
+			directUrl: process.env.POSTGRES_URL_NON_POOLING,
+		},
+	},
+});`
+}
 
 `);
 
