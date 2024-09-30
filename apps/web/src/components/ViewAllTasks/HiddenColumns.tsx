@@ -1,4 +1,4 @@
-import type { Status } from "@repo/db";
+import type { Status, Task } from "@repo/db";
 import {
 	Accordion,
 	AccordionContent,
@@ -9,14 +9,18 @@ import { Droppable } from "@hello-pangea/dnd";
 import { formatStatus } from "@/utils/formatting";
 import { StatusIcon } from "../Icons";
 
-const UnassignedColumns = ({
-	getEmptyColumns,
-}: { getEmptyColumns: () => Status[] }) => {
+const HiddenColumns = ({
+	getHiddenColumns,
+	getTasksForStatus,
+}: {
+	getHiddenColumns: () => Status[];
+	getTasksForStatus: (status: Status) => Task[];
+}) => {
 	return (
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
-				{getEmptyColumns().map((column: Status) => (
+				{getHiddenColumns().map((column: Status) => (
 					<Droppable key={column} droppableId={column}>
 						{(provided, snapshot) => (
 							<AccordionContent
@@ -31,7 +35,9 @@ const UnassignedColumns = ({
 												<StatusIcon status={column} />
 											</div>
 											<span>{formatStatus(column)}</span>
-											<span className="ml-1 text-muted-foreground">0</span>
+											<span className="ml-1 text-muted-foreground">
+												{getTasksForStatus(column).length}
+											</span>
 										</div>
 									</div>
 								</div>
@@ -45,4 +51,4 @@ const UnassignedColumns = ({
 		</Accordion>
 	);
 };
-export default UnassignedColumns;
+export default HiddenColumns;

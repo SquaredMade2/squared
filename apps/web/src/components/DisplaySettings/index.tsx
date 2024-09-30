@@ -5,7 +5,16 @@ import { useViewStore } from "@/store";
 import { Switch } from "../ui/switch";
 import { Separator } from "../ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import type { DisplayProperty } from "@/store/views/interfaces";
+import type {
+	CompletedTaskPeriod,
+	DisplayProperty,
+} from "@/store/views/interfaces";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 const TopNavBarDisplay = () => {
 	const {
@@ -20,7 +29,16 @@ const TopNavBarDisplay = () => {
 	const currentOptions = view === "grid" ? gridViewOptions : listViewOptions;
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
-	const { showEmptyGroups, displayProperties } = currentOptions;
+	const { showEmptyGroups, showCompletedTasks, displayProperties } =
+		currentOptions;
+
+	const completedPeriodOptions: CompletedTaskPeriod[] = [
+		"All",
+		"Past day",
+		"Past week",
+		"Past month",
+		"None",
+	];
 
 	const handleListClick = (): void => {
 		setView("list");
@@ -36,7 +54,7 @@ const TopNavBarDisplay = () => {
 			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
 	};
 
-	const handleValueChange = (value: string[]) => {
+	const handleToggleChange = (value: string[]) => {
 		const updatedProperties = Object.keys(displayProperties).reduce(
 			(acc, key) => {
 				acc[key as keyof typeof displayProperties] = !value.includes(key);
@@ -45,6 +63,12 @@ const TopNavBarDisplay = () => {
 			{} as typeof displayProperties,
 		);
 		setOptions({ displayProperties: updatedProperties });
+	};
+
+	const handleDropdownSelection = (value: CompletedTaskPeriod) => {
+		if (value === "None") {
+			setOptions({ showCompletedTasks: { show: false, period: value } });
+		} else setOptions({ showCompletedTasks: { show: true, period: value } });
 	};
 
 	return (
@@ -100,7 +124,7 @@ const TopNavBarDisplay = () => {
 							<ToggleGroup
 								type="multiple"
 								className="flex flex-wrap justify-start gap-3"
-								onValueChange={handleValueChange}
+								onValueChange={handleToggleChange}
 							>
 								{Object.keys(displayProperties).map((property) => {
 									const typedKey = property as keyof DisplayProperty;
@@ -124,6 +148,34 @@ const TopNavBarDisplay = () => {
 								})}
 							</ToggleGroup>
 						</div>
+					</div>
+					<Separator className="my-4" />
+
+					<div className="flex items-center justify-between">
+						<span className="text-xs text-foreground">Completed tasks</span>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="outline"
+									size="sm"
+									className="w-[120px] justify-between"
+								>
+									<span className="text-xs">{showCompletedTasks.period}</span>
+									<ChevronDown className="size-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="w-[120px]">
+								{completedPeriodOptions.map((option) => (
+									<DropdownMenuItem
+										key={option}
+										className="text-xs"
+										onSelect={() => handleDropdownSelection(option)}
+									>
+										{option}
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 				</PopoverContent>
 			</Popover>
