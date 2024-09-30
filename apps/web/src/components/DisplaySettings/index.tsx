@@ -1,4 +1,9 @@
-import { ChevronDown, SlidersVertical } from "lucide-react";
+import {
+	ChevronDown,
+	SlidersVertical,
+	ArrowUpWideNarrow,
+	ArrowDownWideNarrow,
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { useViewStore } from "@/store";
@@ -8,6 +13,7 @@ import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import type {
 	CompletedTaskPeriod,
 	DisplayProperty,
+	TaskOrder,
 } from "@/store/views/interfaces";
 import {
 	DropdownMenu,
@@ -29,8 +35,19 @@ const TopNavBarDisplay = () => {
 	const currentOptions = view === "grid" ? gridViewOptions : listViewOptions;
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
-	const { showEmptyGroups, showCompletedTasks, displayProperties } =
+	const { showEmptyGroups, taskOrder, showCompletedTasks, displayProperties } =
 		currentOptions;
+
+	const orderByOptions: TaskOrder[] = [
+		"Title",
+		"Status",
+		"Priority",
+		"Assignee",
+		"Effort",
+		"Due Date",
+		"Updated",
+		"Created",
+	];
 
 	const completedPeriodOptions: CompletedTaskPeriod[] = [
 		"All",
@@ -104,6 +121,57 @@ const TopNavBarDisplay = () => {
 								</Button>
 							</div>
 						</div>
+						<Separator className="my-4" />
+
+						<div className="flex items-center justify-between">
+							<span className="text-xs text-foreground">Ordering</span>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant="outline"
+										size="sm"
+										className="w-[120px] justify-between"
+									>
+										<span className="text-xs">{taskOrder.orderBy}</span>
+										<ChevronDown className="size-4" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-[120px]">
+									{orderByOptions.map((option) => (
+										<DropdownMenuItem
+											key={option}
+											className="text-xs"
+											onSelect={() =>
+												setOptions({
+													taskOrder: { ...taskOrder, orderBy: option },
+												})
+											}
+										>
+											{option}
+										</DropdownMenuItem>
+									))}
+								</DropdownMenuContent>
+							</DropdownMenu>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() =>
+									setOptions({
+										taskOrder: {
+											...taskOrder,
+											orderAscending: !taskOrder.orderAscending,
+										},
+									})
+								}
+							>
+								{taskOrder.orderAscending ? (
+									<ArrowDownWideNarrow className="size-4" />
+								) : (
+									<ArrowUpWideNarrow className="size-4" />
+								)}
+							</Button>
+						</div>
+
 						<div>
 							<Separator className="my-2" />
 							<div>{view === "grid" ? "Grid" : "List"} options</div>
