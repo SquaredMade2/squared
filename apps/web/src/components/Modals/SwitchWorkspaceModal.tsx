@@ -44,6 +44,9 @@ export function WorkspaceSwitcher() {
 				const newTeams = await getAllTeams(selectedWorkspace.id);
 				setCurrentTeam(newTeams[0]);
 				await getAllTasks(newTeams[0].id);
+				router.push(
+					`/${selectedWorkspace.url}/team/${newTeams[0].identifier}/all`,
+				);
 			};
 			setCurrentWorkspace(selectedWorkspace);
 			switchWorkspace();
@@ -93,9 +96,7 @@ export function WorkspaceSwitcher() {
 									</CommandItem>
 								))}
 							</CommandGroup>
-						</CommandList>
-						<CommandSeparator />
-						<CommandList>
+							<CommandSeparator />
 							<CommandGroup>
 								<CommandItem
 									onSelect={() => {
