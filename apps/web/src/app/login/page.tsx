@@ -47,7 +47,10 @@ function LoginForm() {
 			router.prefetch("/");
 		} catch (error) {
 			console.error("Login error:", error);
-			toast({ title: "Login failed", variant: "destructive" });
+			toast({
+				title: error instanceof Error ? error.message : "Login failed",
+				variant: "destructive",
+			});
 		} finally {
 			setIsLoading(false);
 		}
