@@ -217,6 +217,7 @@ model User {
 
   DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Teams            UserTeam[]
+  GithubUser       GithubUser?
 }
 
 model Label {
@@ -288,6 +289,15 @@ model UniversalTokenLink {
   workspaceId String  @unique
 
   Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model GithubUser {
+  id        String   @id @default(uuid())
+  githubId  String   @unique
+  login     String   @unique
+  userId    String   @unique
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model GithubRepoInfo {

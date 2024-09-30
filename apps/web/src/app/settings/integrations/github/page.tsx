@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import {
@@ -9,30 +9,18 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceStore } from "@/store/workspaces/store";
 
 const GithubSettings: React.FC = () => {
-	const workspaceId = useWorkspaceStore((state) => state.currentWorkspace?.id);
-	const connectedRepos = useWorkspaceStore((state) => state.connectedRepos);
-	const getConnectedRepos = useWorkspaceStore(
-		(state) => state.getConnectedRepos,
-	);
-
-	useEffect(() => {
-		if (workspaceId) {
-			getConnectedRepos(workspaceId);
-		}
-	}, [workspaceId, getConnectedRepos]);
-
-	const isConnected = connectedRepos && connectedRepos.length > 0;
+	const { data: session } = useSession();
+	const authUser = session?.user;
 
 	const handleClick = (): void => {
-		if (!workspaceId) {
-			console.error("No workspace ID found");
+		if (!authUser?.id) {
+			console.error("No authenticated user ID found");
 			return;
 		}
 
-		window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user&state=${workspaceId}`;
+		window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user&state=${authUser.id}`;
 	};
 
 	return (
@@ -53,44 +41,44 @@ const GithubSettings: React.FC = () => {
 						</header>
 					</div>
 
-					{isConnected ? (
-						<Card className="p-6">
+					{/* {isConnected ? (
+							<Card className="p-6">
 							<CardHeader>
 								<CardTitle>Connected to GitHub</CardTitle>
 								<CardDescription>Your connected repositories:</CardDescription>
 							</CardHeader>
 							<ul className="p-6">
 								{connectedRepos.length > 0 ? (
-									connectedRepos.map((repo) => <li key={repo}>{repo}</li>)
+								connectedRepos.map((repo) => <li key={repo}>{repo}</li>)
 								) : (
-									<p>No repositories connected.</p>
+								<p>No repositories connected.</p>
 								)}
 							</ul>
 							<span className="p-6">
 								<Button onClick={handleClick}>
-									Edit selected repositories
+								Edit selected repositories
 								</Button>
 							</span>
-						</Card>
-					) : (
-						<Card className="flex justify-between items-center p-2">
-							<CardHeader>
-								<CardTitle>Connect Personal Account</CardTitle>
-								<CardDescription>
-									Connect your personal account to use the integration feature
-								</CardDescription>
-							</CardHeader>
-							<div className="flex justify-center items-center p-6">
-								<Button
-									onClick={handleClick}
-									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
-									variant="outline"
-								>
-									Connect
-								</Button>
-							</div>
-						</Card>
-					)}
+							</Card>
+						) : ( */}
+					<Card className="flex justify-between items-center p-2">
+						<CardHeader>
+							<CardTitle>Connect Personal Account</CardTitle>
+							<CardDescription>
+								Connect your personal account to use the integration feature
+							</CardDescription>
+						</CardHeader>
+						<div className="flex justify-center items-center p-6">
+							<Button
+								onClick={handleClick}
+								className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
+								variant="outline"
+							>
+								Connect
+							</Button>
+						</div>
+					</Card>
+					{/* )} */}
 				</div>
 			</div>
 		</div>

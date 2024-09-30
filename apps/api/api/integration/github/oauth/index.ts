@@ -9,27 +9,14 @@ if (!clientId || !clientSecret) {
 	throw new Error("Missing necessary environment variables");
 }
 
-type Installation = {
-	id: number;
-	account: {
-		login: string;
-	};
-	repository_selection?: string;
-	target_id: number;
-};
-
 export function createRoute(): Route {
 	return {
 		GET: async (res, _, query): Promise<void> => {
-			const { code, state: workspaceId } = query;
+			const { code, state: userId } = query; // Directly using `userId` from query
 
-			const validWorkspaceId = Array.isArray(workspaceId)
-				? (workspaceId[0] as string)
-				: (workspaceId as string);
-
-			if (!code || !validWorkspaceId) {
-				console.error("Missing code or workspaceId in query params");
-				res.status(400).json({ message: "Missing code or workspaceId" });
+			if (!code || !userId) {
+				console.error("Missing code or userId in query params");
+				res.status(400).json({ message: "Missing code or userId" });
 				return;
 			}
 
@@ -48,7 +35,7 @@ export function createRoute(): Route {
 				const accessToken = tokenResponse.data.access_token;
 				console.log("Access token received from GitHub:", accessToken);
 
-				// Fetch the authenticated user's details
+				// Fetch the authenticated GitHub user's details
 				const userResponse = await axios.get("https://api.github.com/user", {
 					headers: {
 						Authorization: `token ${accessToken}`,
@@ -56,82 +43,40 @@ export function createRoute(): Route {
 					},
 				});
 				const currentUserLogin = userResponse.data.login;
+				const githubId = userResponse.data.id; // GitHub user ID
 				console.log(`Authenticated GitHub user: ${currentUserLogin}`);
 
-				// Fetch GitHub App installation information
-				const installationResponse = await axios.get(
-					"https://api.github.com/user/installations",
-					{
-						headers: {
-							Authorization: `token ${accessToken}`,
-							Accept: "application/vnd.github.v3+json",
-						},
-					},
-				);
-
-				// Find the installation related to the authenticated user
-				const currentInstallation =
-					installationResponse.data.installations.find(
-						(installation: Installation) =>
-							installation.account.login === currentUserLogin,
-					);
-
-				if (!currentInstallation) {
-					console.error(
-						"No installation found for the current authenticated GitHub user",
-					);
-					res.status(400).json({
-						message: "No installation found for the authenticated user",
-					});
-					return;
-				}
-
-				const repoOwner = currentInstallation.account.login;
-				const targetId = currentInstallation.target_id;
-				const repoName = currentInstallation.repository_selection || "N/A";
-
-				console.log(`Workspace ID: ${validWorkspaceId}`);
-				console.log(`Repository Owner: ${repoOwner}`);
-				console.log(`ID (GitHub Target ID): ${targetId}`);
-				console.log(`Repository Name: ${repoName}`);
-
-				// Check if GithubRepoInfo entry exists for the workspace and this targetId (now id)
-				const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
-					where: {
-						id: targetId,
-						workspaceId: validWorkspaceId,
-					},
+				// Check if the user has a GithubUser entry
+				const existingGithubUser = await prisma.githubUser.findFirst({
+					where: { userId: userId as string },
 				});
 
-				if (existingRepoInfo) {
+				if (existingGithubUser) {
 					console.log(
-						`Found existing entry for workspaceId ${validWorkspaceId} and id ${targetId}. Updating...`,
+						"GitHub user already exists, updating GitHub info if necessary...",
 					);
-					// Update existing entry
-					await prisma.githubRepoInfo.update({
-						where: { id: existingRepoInfo.id },
+					await prisma.githubUser.update({
+						where: { id: existingGithubUser.id },
 						data: {
-							repoName,
-							owner: repoOwner,
+							githubId: githubId.toString(),
+							login: currentUserLogin, // Update GitHub login/username if needed
 						},
 					});
-					console.log(
-						`Updated existing GithubRepoInfo for owner: ${repoOwner}`,
-					);
+					console.log("GitHub user updated successfully.");
 				} else {
-					console.log("No existing entry found. Creating new entry...");
-					// If no existing entry, create a new one
-					await prisma.githubRepoInfo.create({
+					console.log("Creating a new GithubUser entry...");
+					// Create a new GithubUser if it doesn't exist
+					await prisma.githubUser.create({
 						data: {
-							id: targetId,
-							repoName,
-							owner: repoOwner,
-							workspaceId: validWorkspaceId,
+							userId: userId as string, // Directly use userId from query
+							githubId: githubId.toString(), // Store GitHub ID
+							login: currentUserLogin, // Store GitHub username (login)
 						},
 					});
-					console.log(`Created new GithubRepoInfo for owner: ${repoOwner}`);
+					console.log("GithubUser created successfully.");
 				}
 
+				// Redirect to GitHub's App installation page
 				res.redirect(
 					"https://github.com/apps/SquaredMadeApp/installations/new",
 				);
