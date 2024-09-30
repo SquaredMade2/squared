@@ -7,8 +7,16 @@ export type DisplayProperty = {
 	priority: boolean;
 };
 
+export type CompletedTaskPeriod =
+	| "All"
+	| "Past day"
+	| "Past week"
+	| "Past month"
+	| "None";
+
 export type ViewOptions = {
 	showEmptyGroups: boolean;
+	showCompletedTasks: { show: boolean; period: CompletedTaskPeriod };
 	displayProperties: DisplayProperty;
 };
 
