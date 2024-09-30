@@ -7,7 +7,7 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "../ui/command";
+} from "@/components/ui/command";
 import {
 	Popover,
 	PopoverContent,
@@ -16,7 +16,7 @@ import {
 import { Tag, Check } from "lucide-react";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@repo/db";
-import LabelBadge from "../LabelBadges";
+import LabelBadge from "@/components/LabelBadges";
 
 const LabelColor = ({ label }: { label: Label }) => {
 	const { color } = label;

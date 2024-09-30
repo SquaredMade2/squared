@@ -6,7 +6,7 @@ export * from "./store";
 
 export const createViewStore = (
 	initState: ViewState = {
-		showNavbar: false,
+		showNavbar: true,
 		showMobileNavbar: false,
 		listViewOptions: {
 			showEmptyGroups: false,

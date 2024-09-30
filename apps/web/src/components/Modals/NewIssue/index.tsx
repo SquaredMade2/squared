@@ -1,16 +1,29 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	DialogFooter,
+	DialogHeader,
+} from "@/components/ui/dialog";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
-import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { PlusCircle } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import {
+	Form,
+	FormItem,
+	FormControl,
+	FormField,
+	FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import {
@@ -20,15 +33,15 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
+import type { Task } from "@repo/db";
 import { DateDropdownButton } from "./DateDropdownButton";
-import { Accordion, AccordionContent, AccordionItem } from "../ui/accordion";
-import { AccordionTrigger } from "@repo/ui/accordion";
+export * from "./NewIssueButton";
+export * from "./NewIssueCollapsible";
 
-const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
-	const [isOpen, setIsOpen] = useState<string | undefined>("");
-	const [isSubmitting, setIsSubmitting] = useState(false);
+export const NewIssueModal = () => {
 	const { toast } = useToast();
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
+	const { showNewIssue, newIssueData, setNewIssueData, setShowNewIssue } =
+		useModalStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
@@ -36,6 +49,17 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { tasks, addTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
+
+	const handleDiscard = () => {
+		setNewIssueData({});
+
+		form.reset({
+			title: "",
+			description: "",
+		});
+
+		setShowNewIssue(false);
+	};
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
@@ -54,7 +78,6 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 
 	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
 		const { title, description } = values;
-		setIsSubmitting(true);
 
 		if (tasks.some((task) => task.title === title)) {
 			toast({
@@ -80,7 +103,7 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			const { transformedInput: transformedDescriptionInput } =
 				transformingMentionInputs(description ?? "");
 
-			const newTask = {
+			const newTask: Task = {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
@@ -91,11 +114,16 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
+				assigneeId: null,
+				assigneeName: "",
 				teamId: currentTeam.id,
+				id: "",
 				workspaceId: currentWorkspace.id,
 				updatedAt: new Date(),
-				parentId: parentId,
+				deleted: false,
+				parentId: null,
 			};
+
 			const {
 				task: taskCreatedResponse,
 				message,
@@ -114,7 +142,7 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				variant: variant,
 			});
 			if (!taskCreatedResponse) return;
-			setIsOpen("");
+			setShowNewIssue(false);
 			setNewIssueData({});
 			form.reset({
 				title: "",
@@ -129,57 +157,36 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				title: "Error creating issue",
 				variant: "destructive",
 			});
-		} finally {
-			setIsSubmitting(false);
 		}
 	};
 
-	const handleCancel = () => {
-		setIsOpen("");
-		form.reset({
-			title: "",
-			description: "",
-		});
-	};
-
 	return (
-		<Accordion
-			type="single"
-			collapsible
-			className="w-full"
-			value={isOpen}
-			onValueChange={setIsOpen}
-		>
-			<AccordionItem value="subissue-collapsible">
-				<AccordionTrigger asChild>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						className="my-4 flex items-center w-full"
-					>
-						<PlusCircle className="w-4 h-4 mr-2" />
-						Add Subtask
-					</Button>
-				</AccordionTrigger>
-				<AccordionContent className="px-1">
-					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit(handleCreateIssue)}
-							className="space-y-4"
-						>
-							<div className="flex flex-col space-y-4">
+		<Dialog open={showNewIssue} onOpenChange={setShowNewIssue}>
+			<DialogContent className="max-w-full bg-popover">
+				<DialogHeader>
+					<div className="flex items-center">
+						<div className="inline-flex items-center justify-center text-muted-foreground border border-border rounded-md shadow-md px-2 py-0.5 mr-2">
+							<LayoutGrid className="text-[#9577FF] w-4 h-4" />
+						</div>
+						<ChevronRight />
+						<DialogTitle className="text-sm">New Issue</DialogTitle>
+					</div>
+				</DialogHeader>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(handleCreateIssue)}>
+						<div className="flex space-x-4 ">
+							<div className="w-4/5 space-y-4 ">
 								<FormField
 									control={form.control}
 									name="title"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-lg">Title</FormLabel>
+											<FormLabel className="text-2xl">Title</FormLabel>
 											<FormControl>
 												<Input
 													{...field}
 													placeholder="Title"
-													className="text-base"
+													className="text-lg"
 												/>
 											</FormControl>
 										</FormItem>
@@ -190,12 +197,12 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 									name="description"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-lg">Description</FormLabel>
+											<FormLabel className="text-2xl">Description</FormLabel>
 											<FormControl>
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-base resize-none"
+													className="text-lg resize-none"
 													rows={4}
 												/>
 											</FormControl>
@@ -203,32 +210,35 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 									)}
 								/>
 							</div>
-							<div className="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+							<div>
+								<Separator orientation="vertical" />
+							</div>
+							<div className="w-1/5 space-y-4">
 								<StatusDropdownButton />
 								<LabelDropdownButton />
 								<PriorityDropdownButton />
 								<EffortDropdownButton />
 								<DateDropdownButton />
 							</div>
-							<div className="flex justify-end space-x-2 mt-4">
-								<Button
-									onClick={handleCancel}
-									className="hover:cursor-pointer bg-transparent"
-									variant="outline"
-									type="button"
-								>
-									Cancel
-								</Button>
-								<Button type="submit" className="hover:cursor-pointer">
-									{isSubmitting ? "Creating..." : "Create Issue"}{" "}
-								</Button>
-							</div>
-						</form>
-					</Form>
-				</AccordionContent>
-			</AccordionItem>
-		</Accordion>
+						</div>
+						<DialogFooter className="mt-6">
+							<Button
+								onClick={handleDiscard}
+								className="hover:cursor-pointer bg-transparent"
+								variant="destructive"
+								type="button"
+							>
+								Discard
+							</Button>
+							<Button type="submit" className="hover:cursor-pointer">
+								Create Issue
+							</Button>
+						</DialogFooter>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 };
 
-export default NewIssueCollapsible;
+export default NewIssueModal;

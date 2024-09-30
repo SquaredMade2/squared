@@ -7,6 +7,7 @@ export type ModalState = {
 	showRename: boolean;
 	renameData: Task | null;
 	showWorkspaceInvite: boolean;
+	showSwitchWorkspace: boolean;
 };
 
 type ModalActions = {
@@ -16,6 +17,7 @@ type ModalActions = {
 	setNewIssueData: (task: Partial<Task>) => void;
 	setShowCommand: (input: boolean) => void;
 	setShowWorkspaceInvite: (input: boolean) => void;
+	setShowSwitchWorkspace: (input: boolean) => void;
 };
 
 export type ModalStore = ModalState & ModalActions;

@@ -1,6 +1,6 @@
 "use client";
 import GroupColumn from "./GroupColumn";
-import RenameModal from "@/components/RenameModal";
+import { RenameModal } from "@/components/Modals";
 import { Status } from "@repo/db";
 import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
