@@ -27,6 +27,7 @@ export default function SearchCommand() {
 		showCommand,
 		setShowCommand,
 		setShowSwitchWorkspace,
+		setShowTaskSelector,
 	} = useModalStore((state) => state);
 	const { setShowNavbar } = useViewStore((state) => state);
 	const { clearFilter } = useFilterStore((state) => state);
@@ -42,6 +43,7 @@ export default function SearchCommand() {
 		setShowNewIssue,
 		setShowSwitchWorkspace,
 		setShowNavbar,
+		setShowTaskSelector,
 		clearFilter,
 		showToast,
 	});
