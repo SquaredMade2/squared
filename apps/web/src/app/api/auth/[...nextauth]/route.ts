@@ -15,8 +15,7 @@ const handler = NextAuth({
 			clientSecret: GOOGLE_CLIENT_SECRET,
 			authorization: {
 				params: {
-					redirect_uri:
-						"https://app-develop.squaredmade.com/api/auth/callback/google",
+					redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
 				},
 			},
 		}),

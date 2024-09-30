@@ -56,6 +56,10 @@ function LoginForm() {
 	const handleGoogleLogin = async () => {
 		setIsLoading(true);
 		try {
+			console.log(
+				"Signing in with Google and url: ",
+				`${process.env.NEXT_PUBLIC_URL}/api/auth/callback/google`,
+			);
 			await signIn("google", {
 				callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/auth/callback/google`,
 			});
