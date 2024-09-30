@@ -62,6 +62,7 @@ function LoginForm() {
 			);
 			await signIn("google", {
 				callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/auth/callback/google`,
+				redirect: false,
 			});
 			router.refresh();
 			router.prefetch("/");
