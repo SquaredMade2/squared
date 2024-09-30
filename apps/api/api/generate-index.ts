@@ -25,7 +25,18 @@ ${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
-export const prisma = new PrismaClient();
+${
+	process.env.NODE_ENV === "test"
+		? "export const prisma = new PrismaClient();"
+		: `export const prisma = new PrismaClient({
+	datasources: {
+		db: {
+			url: process.env.POSTGRES_PRISMA_URL,
+			directUrl: process.env.POSTGRES_URL_NON_POOLING,
+		},
+	},
+});`
+}
 
 `);
 
@@ -85,8 +96,9 @@ const app = express();
 const port = process.env.PORT || 5173;
 
 const productionDomain = "https://app.squaredmade.com";
+const productionServerDomain = "https://api.squaredmade.com"
 const localDevDomain = "http://localhost:3000";
-
+const localServerDomain = \`http://localhost:\${port}\`;
 // Health check route for root path
 app.get("/", (_, res) => {
   res.status(200).send("ok");
@@ -100,7 +112,9 @@ app.use(
 				!origin ||
 				${vercelRegex}.test(origin) ||
 				origin === productionDomain ||
-				origin === localDevDomain
+				orgin === productionServerDomain ||
+				origin === localDevDomain ||
+				origin === localServerDomain
 			) {
 				callback(null, true);
 			} else {
