@@ -1,9 +1,18 @@
 import fs from "node:fs";
+import path from "node:path";
 
-const dir = __dirname.split("/");
-const parentDir = dir.slice(0, dir.length - 1).join("/");
-const prismaDir = `${parentDir}/prisma`;
-const schemaOutputPath = `${prismaDir}/testing-schema.prisma`;
+function getPaths() {
+	const sep = path.sep;
+	const dir = __dirname.split(sep);
+
+	const parentDir = dir.slice(0, dir.length - 1).join(sep);
+	const prismaDir = `${parentDir}${sep}prisma`;
+	const schemaOutputPath = `${prismaDir}${sep}testing-schema.prisma`;
+
+	return { prismaDir, schemaOutputPath };
+}
+
+const { prismaDir, schemaOutputPath } = getPaths();
 
 // clear existing schema
 fs.writeFileSync(schemaOutputPath, "");
