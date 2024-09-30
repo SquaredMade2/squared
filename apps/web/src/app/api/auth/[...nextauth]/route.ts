@@ -41,6 +41,7 @@ const handler = NextAuth({
 					// If user is not found or password is incorrect
 					throw new Error(message || "Invalid login credentials");
 				} catch (error) {
+					console.log("error", error instanceof Error ? error.message : error);
 					// Customize the error message based on the response
 					throw new Error(
 						error instanceof Error ? error.message : "Login failed",
@@ -49,6 +50,9 @@ const handler = NextAuth({
 			},
 		}),
 	],
+	pages: {
+		signIn: "/login",
+	},
 	callbacks: {
 		async signIn({ user, account }) {
 			if (account?.provider === "google" && user) {
