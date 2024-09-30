@@ -14,7 +14,7 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node api/index.ts",
-		"test": "jest --detectOpenHandles"
+		"test": "pnpm --filter=test-db db:test:create:schema; cross-env PORT=5174 IS_TESTING=true jest --detectOpenHandles; pnpm --filter=test-db reset"
 	},
 	"keywords": [],
 	"author": "",

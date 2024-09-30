@@ -7,14 +7,17 @@
   },
   "scripts": {
     "build": "prisma generate",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate",
+    "db:generate": "prisma generate && pnpm run db:test:generate",
+    "db:push": "prisma db push --skip-generate && pnpm run db:test:push",
     "db:seed": "cross-env NODE_ENV=test ts-node src/seed.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes",
     "postinstall": "pnpm run db:generate",
     "studio": "prisma studio",
-    "studio:test": "prisma studio --schema prisma/testSchema.prisma"
+    "reset": "pnpm prisma migrate reset --force --schema prisma/testing-schema.prisma",
+    "db:test:generate": "prisma generate --schema prisma/testing-schema.prisma",
+    "db:test:push": "prisma db push --skip-generate --schema prisma/testing-schema.prisma",
+    "db:test:create:schema": "ts-node src/generate-testing-schema.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0"

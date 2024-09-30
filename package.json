@@ -31,7 +31,7 @@
     "studio:dev": "pnpm --filter=@repo/test-db studio",
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
-    "test:api": "turbo run test --filter=api",
+    "test:api": "turbo run test --force --filter=api",
     "test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build",
     "knip": "knip"
   },

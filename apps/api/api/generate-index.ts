@@ -21,11 +21,15 @@ import cors from "cors";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
-${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@repo/db";`}
+${process.env.NODE_ENV === "test" ? `import { PrismaClient, TestPrismaClient } from "@repo/test-db";` : `import { PrismaClient } from "@repo/db";`}
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
-export const prisma = new PrismaClient();
+function getPrismaClient(): PrismaClient {
+	if (process.env.IS_TESTING === "true") return new TestPrismaClient();
+	return new PrismaClient();
+}
+export const prisma = getPrismaClient();
 
 `);
 
