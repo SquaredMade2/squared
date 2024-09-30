@@ -14,7 +14,7 @@ import { useTaskStore, useTeamStore } from "@/store";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
-import NewIssueCollapsible from "@/components/NewIssue/NewIssueCollapsible";
+import { NewIssueCollapsible } from "@/components/Modals";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Status } from "@repo/db";

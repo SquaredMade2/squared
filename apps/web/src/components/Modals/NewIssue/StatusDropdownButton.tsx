@@ -9,9 +9,9 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import type { Status } from "@repo/db";
-import { StatusIcon } from "../Icons";
+import { StatusIcon } from "@/components/Icons";
 
 export const StatusDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);

@@ -3,7 +3,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { StatusColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
-import { GridColumnNewIssueButton } from "../NewIssue/NewIssueButton";
+import { GridColumnNewIssueButton } from "../Modals";
 import TaskCard from "./TaskCard";
 import type { Status } from "@repo/db";
 

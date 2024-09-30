@@ -7,7 +7,7 @@ import { Loader2, Clipboard } from "lucide-react";
 import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
-import { NoTasksNewIssueButton } from "../NewIssue";
+import { NoTasksNewIssueButton } from "../Modals";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -15,6 +15,7 @@ interface TaskPageLayoutProps {
 	currentWorkspace: Workspace;
 	teamIdentifier: string;
 	handleDragEnd: OnDragEndResponder;
+	pageTitle: string;
 	children: ReactNode;
 }
 
@@ -24,6 +25,7 @@ export function TaskPageLayout({
 	currentWorkspace,
 	teamIdentifier,
 	handleDragEnd,
+	pageTitle,
 	children,
 }: TaskPageLayoutProps) {
 	const { view } = useViewStore((state) => state);
@@ -41,7 +43,7 @@ export function TaskPageLayout({
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">
 			<div className="w-full px-2 sm:px-5">
-				<TopNavBar />
+				<TopNavBar pageTitle={pageTitle} />
 			</div>
 			{!authorized ? (
 				<div className="flex items-center flex-col w-screen h-full bg-background">

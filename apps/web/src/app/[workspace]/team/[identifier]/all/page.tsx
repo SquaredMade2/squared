@@ -39,6 +39,7 @@ export default function AllTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
+			pageTitle="All Tasks"
 		>
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
