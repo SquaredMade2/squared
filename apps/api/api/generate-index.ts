@@ -85,6 +85,7 @@ const app = express();
 const port = process.env.PORT || 5173;
 
 const productionDomain = "https://app.squaredmade.com";
+const productionServerDomain = "https://api.squaredmade.com"
 const localDevDomain = "http://localhost:3000";
 const localServerDomain = \`http://localhost:\${port}\`;
 // Health check route for root path
@@ -100,6 +101,7 @@ app.use(
 				!origin ||
 				${vercelRegex}.test(origin) ||
 				origin === productionDomain ||
+				orgin === productionServerDomain ||
 				origin === localDevDomain ||
 				origin === localServerDomain
 			) {
