@@ -2,7 +2,7 @@
 
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
 
-import NewIssueModal, { NewIssueButton } from "@/components/NewIssue";
+import { NewIssueModal, NewIssueButton } from "@/components/Modals";
 import {
 	Accordion,
 	AccordionContent,
@@ -11,7 +11,7 @@ import {
 } from "../ui/accordion";
 import { LayoutGrid } from "lucide-react";
 import IconLeftMenu from "../IconNavbar";
-import { useTeamStore, useWorkspaceStore } from "@/store";
+import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import { useEffect } from "react";
 import type { Team } from "@repo/db";
 import NavBarTeams from "./NavBarTeams";
@@ -20,9 +20,10 @@ import { useRouter } from "next/navigation";
 import { ScrollArea } from "../ui/scroll-area";
 
 const Navbar = () => {
-	const workspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const router = useRouter();
+	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const { teams, getAllTeams } = useTeamStore((state) => state);
+	const { showNavbar } = useViewStore((state) => state);
+	const router = useRouter();
 	useEffect(() => {
 		if (!workspace) return;
 		getAllTeams(workspace.id);
@@ -30,7 +31,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<div className="h-screen md:flex hidden">
+			<div className={`h-screen md:${showNavbar ? "flex" : "hidden"} hidden`}>
 				<IconLeftMenu />
 
 				<div className="flex h-full bg-popover w-64">

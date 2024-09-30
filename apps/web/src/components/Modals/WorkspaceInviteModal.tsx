@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
 
-const Index = () => {
+export const WorkspaceInviteModal = () => {
 	const {
 		currentWorkspace,
 		getWorkspace,
@@ -111,4 +111,4 @@ const Index = () => {
 	);
 };
 
-export default Index;
+export default WorkspaceInviteModal;
