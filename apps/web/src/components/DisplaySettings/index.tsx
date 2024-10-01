@@ -3,6 +3,8 @@ import {
 	SlidersVertical,
 	ArrowUpWideNarrow,
 	ArrowDownWideNarrow,
+	AlignJustify,
+	LayoutGrid,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
@@ -63,14 +65,6 @@ const TopNavBarDisplay = () => {
 		"None",
 	];
 
-	const handleListClick = (): void => {
-		setView("list");
-	};
-
-	const handleGridClick = (): void => {
-		setView("grid");
-	};
-
 	const tooltipContent = (): string => {
 		return ["Title", "Status", "Assignee"].includes(taskOrder.orderBy)
 			? taskOrder.orderAscending
@@ -110,6 +104,8 @@ const TopNavBarDisplay = () => {
 		} else setOptions({ showCompletedTasks: { show: true, period: value } });
 	};
 
+	const handleValueChange = (val: string) => setView(val as "list" | "grid");
+
 	return (
 		<TooltipProvider delayDuration={0}>
 			<div className="flex flex-col gap-2 items-end relative h-10 ">
@@ -126,23 +122,27 @@ const TopNavBarDisplay = () => {
 					<PopoverContent>
 						<div className="flex flex-col">
 							<div className=" w-full items-center justify-between flex mb-3">
-								<span className="text-foreground text-sm">Layout</span>
-								<div className="flex gap-2 items-center">
-									<Button
-										type="button"
-										onClick={handleListClick}
-										variant={view === "list" ? "outline" : "ghost"}
+								<ToggleGroup
+									type="single"
+									value={view}
+									onValueChange={handleValueChange}
+									className="w-full flex"
+								>
+									<ToggleGroupItem
+										value="list"
+										className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
 									>
+										<AlignJustify />
 										List
-									</Button>
-									<Button
-										type="button"
-										onClick={handleGridClick}
-										variant={view === "grid" ? "outline" : "ghost"}
+									</ToggleGroupItem>
+									<ToggleGroupItem
+										value="grid"
+										className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
 									>
+										<LayoutGrid />
 										Grid
-									</Button>
-								</div>
+									</ToggleGroupItem>
+								</ToggleGroup>
 							</div>
 							<Separator className="my-4" />
 
