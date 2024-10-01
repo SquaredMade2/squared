@@ -241,5 +241,3 @@ export const NewIssueModal = () => {
 		</Dialog>
 	);
 };
-
-export default NewIssueModal;

@@ -24,7 +24,7 @@ export type CompletedTaskPeriod =
 	| "Past month"
 	| "None";
 
-export type ViewOptions = {
+type ViewOptions = {
 	showEmptyGroups: boolean;
 	taskOrder: { orderBy: TaskOrder; orderAscending: boolean };
 	showCompletedTasks: { show: boolean; period: CompletedTaskPeriod };
