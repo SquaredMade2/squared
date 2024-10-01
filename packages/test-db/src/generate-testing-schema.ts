@@ -23,6 +23,7 @@ const writeLns = (path: string, ...lines: string[]) => {
 	}
 };
 
+// replace environment variables to point to the testing database
 const schema = String(fs.readFileSync(`${prismaDir}/schema.prisma`))
 	.replace(
 		'output   = "../generated/client"',

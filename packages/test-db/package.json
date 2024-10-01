@@ -15,6 +15,7 @@
     "postinstall": "pnpm run db:generate",
     "studio": "prisma studio",
     "reset": "pnpm prisma migrate reset --force --schema prisma/testing-schema.prisma",
+    "test:studio": "prisma studio --schema prisma/testing-schema.prisma",
     "db:test:generate": "prisma generate --schema prisma/testing-schema.prisma",
     "db:test:push": "prisma db push --skip-generate --schema prisma/testing-schema.prisma",
     "db:test:create:schema": "ts-node src/generate-testing-schema.ts"

@@ -1,5 +1,6 @@
 import request from "supertest";
 import { app, server, prisma } from ".";
+import { seedTestingDb, seededTestTaskId } from "@repo/test-db";
 
 /**
  * https://jestjs.io/docs/getting-started
@@ -50,47 +51,20 @@ describe("sample test with prisma", () => {
 	});
 });
 
-describe("sample api endpoint test", () => {});
-
-beforeAll(async () => {
-	const user = await prisma.user.create({
-		data: {
-			name: "testy mctestface",
-			username: "tester123",
-			email: "pro_tester@hotmail.com",
-			verified: true,
-			onBoarding: false,
-		},
-	});
-
-	const workspaceName = "test-workspace";
-	const workspaceCompanySize = 10;
-
-	const workspace = await prisma.workspace.create({
-		data: {
-			name: workspaceName,
-			companySize: workspaceCompanySize,
-			url: workspaceName,
-		},
-	});
-
-	const _team = await prisma.team.create({
-		data: {
-			name: "testing-team",
-			identifier: "ABC",
-			workspaceId: workspace.id,
-			Users: {
-				create: {
-					userId: user.id,
-				},
-			},
-		},
+describe("sample api endpoint test", () => {
+	it("should retrieve the seeded task", async () => {
+		const res = await request(app).get(`/api/task/${seededTestTaskId}`);
+		expect(res.body.data.id).toBe(seededTestTaskId);
 	});
 });
 
 /**
  * https://jestjs.io/docs/setup-teardown
  */
+beforeAll(() => {
+	return seedTestingDb(prisma);
+});
+
 afterAll(() => {
 	// must explicitly stop the express server from listening or the test script will hang
 	server.close();
