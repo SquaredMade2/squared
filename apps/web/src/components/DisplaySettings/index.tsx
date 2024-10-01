@@ -1,4 +1,9 @@
-import { ChevronDown, Rows3, SlidersVertical, Table } from "lucide-react";
+import {
+	AlignJustify,
+	ChevronDown,
+	LayoutGrid,
+	SlidersVertical,
+} from "lucide-react";
 import DisplayPreferences from "./DisplayPreferences";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
@@ -31,16 +36,16 @@ const TopNavBarDisplay = () => {
 							>
 								<ToggleGroupItem
 									value="list"
-									className="flex-1 cursor-pointer flex flex-col p-1 h-12 border-secondary border-[1px]"
+									className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
 								>
-									<Rows3 />
+									<AlignJustify />
 									List
 								</ToggleGroupItem>
 								<ToggleGroupItem
 									value="grid"
-									className="flex-1 cursor-pointer flex flex-col p-1 h-12 border-secondary border-[1px]"
+									className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
 								>
-									<Table />
+									<LayoutGrid />
 									Grid
 								</ToggleGroupItem>
 							</ToggleGroup>
