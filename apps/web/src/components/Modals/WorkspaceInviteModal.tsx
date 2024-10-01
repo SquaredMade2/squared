@@ -110,5 +110,3 @@ export const WorkspaceInviteModal = () => {
 		</Dialog>
 	);
 };
-
-export default WorkspaceInviteModal;

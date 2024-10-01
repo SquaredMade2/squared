@@ -24,9 +24,3 @@ export interface HideStatusProps {
 	setShowTasks: (input: boolean) => void;
 	showTasks: boolean;
 }
-
-export type HideTaskStatusDropdownProps = {
-	toggleHideDropdown: () => void;
-	showTasks: boolean;
-	toggleShowTasks: () => void;
-};
