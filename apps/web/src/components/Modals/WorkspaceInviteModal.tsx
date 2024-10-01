@@ -14,10 +14,10 @@ import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { Loader2 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
+import SquaredLoader from "../Loaders/SquaredLoader";
 
-const Index = () => {
+export const WorkspaceInviteModal = () => {
 	const {
 		currentWorkspace,
 		getWorkspace,
@@ -99,11 +99,7 @@ const Index = () => {
 				</div>
 				<DialogFooter>
 					<Button onClick={handleInvite} className="w-32">
-						{isLoading ? (
-							<Loader2 className="size-4 animate-spin" />
-						) : (
-							"Send invites"
-						)}
+						{isLoading ? <SquaredLoader /> : "Send invites"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
@@ -111,4 +107,4 @@ const Index = () => {
 	);
 };
 
-export default Index;
+export default WorkspaceInviteModal;

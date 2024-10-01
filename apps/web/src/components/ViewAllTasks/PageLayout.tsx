@@ -1,11 +1,14 @@
+"use client";
+
 import type { ReactNode } from "react";
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Loader2, Clipboard } from "lucide-react";
+import { Clipboard } from "lucide-react";
 import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
-import { NoTasksNewIssueButton } from "../NewIssue";
+import { NoTasksNewIssueButton } from "../Modals";
+import SquaredLoader from "../Loaders/SquaredLoader";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -13,6 +16,7 @@ interface TaskPageLayoutProps {
 	currentWorkspace: Workspace;
 	teamIdentifier: string;
 	handleDragEnd: OnDragEndResponder;
+	pageTitle: string;
 	children: ReactNode;
 }
 
@@ -22,6 +26,7 @@ export function TaskPageLayout({
 	currentWorkspace,
 	teamIdentifier,
 	handleDragEnd,
+	pageTitle,
 	children,
 }: TaskPageLayoutProps) {
 	const { view } = useViewStore((state) => state);
@@ -31,7 +36,7 @@ export function TaskPageLayout({
 	if (loading) {
 		return (
 			<div className="w-full h-full flex items-center justify-center">
-				<Loader2 className="animate-spin size-12" />
+				<SquaredLoader />
 			</div>
 		);
 	}
@@ -39,7 +44,7 @@ export function TaskPageLayout({
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">
 			<div className="w-full px-2 sm:px-5">
-				<TopNavBar />
+				<TopNavBar pageTitle={pageTitle} />
 			</div>
 			{!authorized ? (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
@@ -64,18 +69,26 @@ export function TaskPageLayout({
 					<NoTasksNewIssueButton />
 				</div>
 			) : currentWorkspace ? (
-				<ScrollArea
-					className={`${
-						view === "list" ? "max-h-[calc(100vh-55px)]" : ""
-					} px-2`}
-				>
-					<div className={"flex flex-grow mx-2"}>
-						<DragDropContext onDragEnd={handleDragEnd}>
-							{children}
-						</DragDropContext>
+				<div className="flex-grow overflow-hidden">
+					<ScrollArea
+						className={`${
+							view === "list"
+								? "overflow-y-auto h-[calc(100vh-145px)]"
+								: "overflow-x-auto h-[calc(100vh-55px)]"
+						} px-2`}
+					>
+						<div
+							className={`flex mx-2 ${
+								view === "grid" ? "flex-nowrap" : "flex-wrap"
+							}`}
+						>
+							<DragDropContext onDragEnd={handleDragEnd}>
+								{children}
+							</DragDropContext>
+						</div>
 						{view === "grid" && <ScrollBar orientation="horizontal" />}
-					</div>
-				</ScrollArea>
+					</ScrollArea>
+				</div>
 			) : (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
 					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
