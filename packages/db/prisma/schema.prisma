@@ -67,7 +67,7 @@ model Branch {
   id               String @id @default(uuid())
   name             String
   taskId           String @unique
-  githubRepoInfoId Int
+  githubRepoInfoId String
 
   commits Commit[]
 
@@ -301,14 +301,15 @@ model GithubUser {
 }
 
 model GithubRepoInfo {
-  id          Int      @id 
-  repoName    String   @default("")
-  owner       String   @default("")
-  workspaceId String   @unique
-  branches    Branch[]
+  id          String   @id @default(uuid())
+  repoName    String   @unique
+  owner       String
+  workspaceId String?  @unique  // Nullable and unique once assigned
+  branches    Branch[]  
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
+
 
 model Project {
   id          String  @id @default(uuid())

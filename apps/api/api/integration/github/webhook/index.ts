@@ -63,56 +63,72 @@ export function createRoute(): Route<Params> {
 				console.log("Handling repository selection event");
 
 				try {
-					const repositories = payload.repositories || [];
 					const repositoriesAdded = payload.repositories_added || [];
 					const repositoriesRemoved = payload.repositories_removed || [];
+					const githubUsername = payload.installation?.account?.login; // GitHub username of the user
 
-					// Log repositories
-					// console.log(`Repositories received: ${repositories.length}`);
-					// console.log(`Repositories added: ${repositoriesAdded.length}`);
-					// console.log(`Repositories removed: ${repositoriesRemoved.length}`);
+					if (!githubUsername) {
+						console.error("GitHub username is missing from the payload");
+						res.status(400).json({ message: "Missing GitHub username" });
+						return;
+					}
 
-					const defaultRepoOwner = payload.installation?.account?.login;
+					// Handle repositories that have been removed
+					for (const repo of repositoriesRemoved) {
+						const repoFullName = repo.full_name;
+						const repoOwner = githubUsername; // We use the account login as owner
 
-					const allRepositories = [
-						...repositories,
-						...repositoriesAdded,
-						...repositoriesRemoved,
-					];
-
-					for (const repo of allRepositories) {
-						const repoFullName = repo?.full_name;
-						const repoOwner = repo?.owner?.login || defaultRepoOwner;
-
-						// handle added or removed repositories from selecting
-						if (repoFullName && repoOwner) {
-							if (payload.action === "added") {
-								const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
-									where: { repoName: "selected", owner: repoOwner },
-								});
-
-								if (githubRepoInfo) {
-									await prisma.githubRepoInfo.update({
-										where: { id: githubRepoInfo.id },
-										data: { repoName: repoFullName },
-									});
-								}
-							} else if (payload.action === "removed") {
-								const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
-									where: { repoName: repoFullName, owner: repoOwner },
-								});
-
-								if (githubRepoInfo) {
-									await prisma.githubRepoInfo.delete({
-										where: { id: githubRepoInfo.id },
-									});
-								}
-							}
-						} else {
-							console.log(
-								`Invalid or missing repo data: ${JSON.stringify(repo)}`,
-							);
+						if (!repoFullName || !repoOwner) {
+							console.error("Missing repository data for removal");
+							continue; // Skip if essential data is missing
 						}
+
+						// Check if the repository exists in the database
+						const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
+							where: { repoName: repoFullName, owner: repoOwner },
+						});
+
+						if (existingRepoInfo) {
+							// If it exists, delete the repository entry
+							await prisma.githubRepoInfo.delete({
+								where: { id: existingRepoInfo.id },
+							});
+							console.log(`Repository ${repoFullName} removed successfully`);
+						}
+					}
+
+					// Process repositories that have been added
+					for (const repo of repositoriesAdded) {
+						const repoFullName = repo.full_name; // Correctly accessing full_name
+						const repoOwner = githubUsername; // We use the account login as owner
+
+						if (!repoFullName || !repoOwner) {
+							console.error("Missing repository data for addition");
+							continue; // Skip this repository if essential data is missing
+						}
+
+						// Check if the repository already exists in the database
+						const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
+							where: { repoName: repoFullName, owner: repoOwner },
+						});
+
+						if (existingRepoInfo) {
+							console.log(
+								`Repository ${repoFullName} already exists for owner ${repoOwner}`,
+							);
+							continue; // Skip creating a new entry if the repository already exists
+						}
+
+						// Create a new GithubRepoInfo entry
+						await prisma.githubRepoInfo.create({
+							data: {
+								repoName: repoFullName,
+								owner: repoOwner,
+								workspaceId: null, // Leave this null initially
+							},
+						});
+
+						console.log(`Repository ${repoFullName} created successfully`);
 					}
 
 					res
@@ -165,12 +181,14 @@ export function createRoute(): Route<Params> {
 						const authorName =
 							payload.pusher?.name || payload.sender?.login || "Unknown User";
 
+						// Retrieve the workspaceId from the task
+						const workspaceId = task.workspaceId;
+
 						// Check if GithubRepoInfo exists (assumed created during OAuth)
 						const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 							where: {
 								repoName: repoFullName,
 								owner: repoOwner,
-								workspaceId: task.workspaceId,
 							},
 						});
 
@@ -178,6 +196,17 @@ export function createRoute(): Route<Params> {
 							console.log("No GithubRepoInfo found");
 							res.status(404).json({ message: "GithubRepoInfo not found" });
 							return;
+						}
+
+						// Update the workspaceId in GithubRepoInfo if it's null
+						if (!githubRepoInfo.workspaceId) {
+							await prisma.githubRepoInfo.update({
+								where: { id: githubRepoInfo.id },
+								data: { workspaceId },
+							});
+							console.log(
+								`Workspace ID ${workspaceId} added to GithubRepoInfo for repository ${repoFullName}`,
+							);
 						}
 
 						// Upsert branch information linked to the task
