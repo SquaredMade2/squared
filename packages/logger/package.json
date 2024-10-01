@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "postinstall": "pnpm run build",
     "clean": "rm -rf dist",
     "dev": "tsc -w",
     "lint": "biome lint --error-on-warnings ./src"
