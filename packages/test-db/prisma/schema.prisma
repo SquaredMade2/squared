@@ -359,7 +359,7 @@ model Sprint {
   status      SprintStatus
   teamId      String
   wentWell    String?
-  wentWrong   String?
+  toImprove   String?
   actionItems String?
 
   Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
