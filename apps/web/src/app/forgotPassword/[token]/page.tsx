@@ -4,6 +4,8 @@ import { useState, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import jwt from "jsonwebtoken";
+import { prisma } from "@/api";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,10 +40,16 @@ const formSchema = z.object({
 	}),
 });
 
+type JwtPayload = {
+	user: string;
+};
+
 function ResetPasswordForm() {
 	const [hideNewPassword, setHideNewPassword] = useState(true);
 	const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-	const { resetPassword } = useAuthStore((state) => state);
+	const [isTokenExpired, setIsTokenExpired] = useState(false);
+	const [isSuccess, setIsSuccess] = useState(false);
+	const { resetPassword, resetPasswordEmail } = useAuthStore((state) => state);
 	const router = useRouter();
 	const params = useParams();
 	const token = params.token as string;
@@ -75,6 +83,60 @@ function ResetPasswordForm() {
 			});
 			console.error("Failed to reset password:", error);
 		}
+	}
+
+	async function handleSendReset() {
+		const decoded: JwtPayload = jwt.verify(token) as JwtPayload;
+		const user = await prisma.user.update({
+			where: { id: decoded.user },
+		});
+		try {
+			const response = await resetPasswordEmail(user.email);
+			toast({ title: response.message, variant: response.variant });
+			setIsSuccess(true);
+		} catch (error) {
+			if (error instanceof Error)
+				toast({ title: error.message, variant: "destructive" });
+		}
+	}
+
+	jwt.verify(
+		token,
+		(err: { name: string; message: string; expiredAt: number }) => {
+			if (err) {
+				setIsTokenExpired(true);
+			}
+		},
+	);
+
+	if (isTokenExpired) {
+		return (
+			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
+				<CardHeader>
+					<CardTitle>Password Reset Link Expired</CardTitle>
+					<CardContent>
+						{!isSuccess ? (
+							<Button variant="link" className="p-0" onClick={handleSendReset}>
+								Resend Reset Link
+							</Button>
+						) : (
+							<p>Reset link sent. Please check your email.</p>
+						)}
+					</CardContent>
+					<CardFooter>
+						<Button
+							variant="link"
+							className="p-0"
+							onClick={() => {
+								router.push("/login");
+							}}
+						>
+							Sign in
+						</Button>
+					</CardFooter>
+				</CardHeader>
+			</Card>
+		);
 	}
 
 	return (
