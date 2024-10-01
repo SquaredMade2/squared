@@ -100,25 +100,6 @@ const StatusColumn = ({
 		viewOptions.taskOrder.orderAscending,
 	);
 
-	const orderedAssignees = () => {
-		return tasks.sort((a, b) => {
-			let comparison = 0;
-			if (a.assigneeName === null && b.assigneeName === null) {
-				comparison = 0;
-			}
-			if (a.assigneeName === null) {
-				comparison = 1;
-			}
-			if (b.assigneeName === null) {
-				comparison = -1;
-			}
-			return viewOptions.taskOrder.orderAscending ? comparison : -comparison;
-		});
-	};
-	console.log(
-		orderedAssignees().map((t) => t.assigneeName),
-		viewOptions.taskOrder.orderAscending,
-	);
 	return (
 		<div className={isListView ? "mb-2 w-full" : "pb-2 flex-grow"}>
 			<TaskColumnTitle
