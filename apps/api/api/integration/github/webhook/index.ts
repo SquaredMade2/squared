@@ -65,7 +65,7 @@ export function createRoute(): Route<Params> {
 				try {
 					const repositoriesAdded = payload.repositories_added || [];
 					const repositoriesRemoved = payload.repositories_removed || [];
-					const githubUsername = payload.installation?.account?.login; // GitHub username of the user
+					const githubUsername = payload.installation?.account?.login;
 
 					if (!githubUsername) {
 						console.error("GitHub username is missing from the payload");
@@ -76,20 +76,19 @@ export function createRoute(): Route<Params> {
 					// Handle repositories that have been removed
 					for (const repo of repositoriesRemoved) {
 						const repoFullName = repo.full_name;
-						const repoOwner = githubUsername; // We use the account login as owner
+						const repoOwner = githubUsername;
 
 						if (!repoFullName || !repoOwner) {
 							console.error("Missing repository data for removal");
-							continue; // Skip if essential data is missing
+							continue;
 						}
 
-						// Check if the repository exists in the database
+						// Check if the repository exists in the database, remove if exists
 						const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
 							where: { repoName: repoFullName, owner: repoOwner },
 						});
 
 						if (existingRepoInfo) {
-							// If it exists, delete the repository entry
 							await prisma.githubRepoInfo.delete({
 								where: { id: existingRepoInfo.id },
 							});
@@ -99,15 +98,14 @@ export function createRoute(): Route<Params> {
 
 					// Process repositories that have been added
 					for (const repo of repositoriesAdded) {
-						const repoFullName = repo.full_name; // Correctly accessing full_name
-						const repoOwner = githubUsername; // We use the account login as owner
+						const repoFullName = repo.full_name;
+						const repoOwner = githubUsername;
 
 						if (!repoFullName || !repoOwner) {
 							console.error("Missing repository data for addition");
-							continue; // Skip this repository if essential data is missing
+							continue;
 						}
 
-						// Check if the repository already exists in the database
 						const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
 							where: { repoName: repoFullName, owner: repoOwner },
 						});
@@ -116,15 +114,14 @@ export function createRoute(): Route<Params> {
 							console.log(
 								`Repository ${repoFullName} already exists for owner ${repoOwner}`,
 							);
-							continue; // Skip creating a new entry if the repository already exists
+							continue;
 						}
 
-						// Create a new GithubRepoInfo entry
 						await prisma.githubRepoInfo.create({
 							data: {
 								repoName: repoFullName,
 								owner: repoOwner,
-								workspaceId: null, // Leave this null initially
+								workspaceId: null,
 							},
 						});
 
@@ -145,8 +142,6 @@ export function createRoute(): Route<Params> {
 			const branchName = payload.ref?.split("/").pop();
 			const repoFullName = payload.repository?.full_name || "";
 			const repoOwner = payload.repository?.owner?.login || "";
-
-			// Extract task identifier from branch name
 			const identifierPattern = /([A-Z]{2,}-\d+)/i;
 			const match = branchName?.match(identifierPattern);
 
@@ -154,7 +149,6 @@ export function createRoute(): Route<Params> {
 				const identifier = match[1].toUpperCase();
 
 				try {
-					// Find the task by the extracted identifier
 					const task = await prisma.task.findFirst({
 						where: { identifier: { equals: identifier, mode: "insensitive" } },
 					});
@@ -163,10 +157,8 @@ export function createRoute(): Route<Params> {
 						const authorName =
 							payload.pusher?.name || payload.sender?.login || "Unknown User";
 
-						// Retrieve the workspaceId from the task
 						const workspaceId = task.workspaceId;
 
-						// Fetch workspace and admin array
 						const workspace = await prisma.workspace.findFirst({
 							where: { id: workspaceId },
 							select: { admins: true },
@@ -184,7 +176,6 @@ export function createRoute(): Route<Params> {
 							return;
 						}
 
-						// Get the workspace owner
 						const workspaceOwnerId = workspace.admins[0];
 
 						const workspaceOwner = await prisma.user.findFirst({
@@ -200,7 +191,6 @@ export function createRoute(): Route<Params> {
 							return;
 						}
 
-						// Compare the GitHub username with the pusher's username
 						const pusherUsername =
 							payload.pusher?.name || payload.sender?.login;
 
@@ -333,7 +323,6 @@ export function createRoute(): Route<Params> {
 									},
 								});
 
-								// Upsert the commit related to the branch
 								await prisma.commit.upsert({
 									where: { id: commit.id },
 									update: {

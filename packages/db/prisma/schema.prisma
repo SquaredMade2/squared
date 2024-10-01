@@ -295,12 +295,11 @@ model GithubRepoInfo {
   id          String   @id @default(uuid())
   repoName    String   @unique
   owner       String
-  workspaceId String?  @unique  // Nullable and unique once assigned
+  workspaceId String?  @unique
   branches    Branch[]  
 
   Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }
-
 
 model Project {
   id          String  @id @default(uuid())
