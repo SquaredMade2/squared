@@ -6,14 +6,14 @@
 	"scripts": {
 		"build": "pnpm run gen",
 		"check-types": "tsc --noEmit",
-		"dev": "nodemon api/index.ts",
-		"gen": "ts-node api/generate-index.ts",
+		"dev": "nodemon src/api/index.ts",
+		"gen": "ts-node src/api/generate-index.ts",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
-		"start": "ts-node api/index.ts",
+		"start": "ts-node src/api/index.ts",
 		"test": "echo \"Error: no test specified\""
 	},
 	"keywords": [],

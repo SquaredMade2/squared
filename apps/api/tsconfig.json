@@ -13,10 +13,10 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/api/*": ["api/*"],
-			"@/*": ["*"]
+			"@/api/*": ["src/api/*"],
+			"@/*": ["src/*"]
 		}
 	},
-	"include": ["api/**/*.ts", "docs/**/*.ts", "utils/**/*.ts", "jobs/**/*.ts"],
+	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "dist"]
 }
