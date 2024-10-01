@@ -7,7 +7,7 @@ import { Clipboard } from "lucide-react";
 import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
-import { NoTasksNewIssueButton } from "../NewIssue";
+import { NoTasksNewIssueButton } from "../Modals";
 import SquaredLoader from "../Loaders/SquaredLoader";
 
 interface TaskPageLayoutProps {
