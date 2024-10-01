@@ -80,6 +80,16 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					);
 					return response.data;
 				},
+				checkTokenValid: async (token: string) => {
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(token),
+						{
+							token,
+							validate: true,
+						},
+					);
+					return response.data;
+				},
 				setUser: (user: User | null) => {
 					set({ user });
 				},

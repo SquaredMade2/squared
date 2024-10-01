@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import jwt from "jsonwebtoken";
-import { prisma } from "@/api";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,20 +38,45 @@ const formSchema = z.object({
 	}),
 });
 
-type JwtPayload = {
-	user: string;
-};
-
 function ResetPasswordForm() {
 	const [hideNewPassword, setHideNewPassword] = useState(true);
 	const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
 	const [isTokenExpired, setIsTokenExpired] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
-	const { resetPassword, resetPasswordEmail } = useAuthStore((state) => state);
+	const [userEmail, setUserEmail] = useState("");
+	const { resetPassword, resetPasswordEmail, checkTokenValid } = useAuthStore(
+		(state) => state,
+	);
 	const router = useRouter();
 	const params = useParams();
 	const token = params.token as string;
 	const { toast } = useToast();
+
+	useEffect(() => {
+		const checkingTokenValid = async (): Promise<void> => {
+			try {
+				const response = await checkTokenValid(token);
+				if (response.message === "Token is expired or invalid") {
+					setUserEmail(() => {
+						return response.data !== null ? response.data.email : "";
+					});
+					setIsTokenExpired(() => true);
+					toast({
+						title: response.message,
+						variant: response.variant,
+					});
+				}
+			} catch (error) {
+				console.error(error);
+				toast({
+					title: "Could not verify token",
+					variant: "destructive",
+				});
+				throw error;
+			}
+		};
+		checkingTokenValid();
+	}, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -86,12 +109,8 @@ function ResetPasswordForm() {
 	}
 
 	async function handleSendReset() {
-		const decoded: JwtPayload = jwt.verify(token) as JwtPayload;
-		const user = await prisma.user.update({
-			where: { id: decoded.user },
-		});
 		try {
-			const response = await resetPasswordEmail(user.email);
+			const response = await resetPasswordEmail(userEmail);
 			toast({ title: response.message, variant: response.variant });
 			setIsSuccess(true);
 		} catch (error) {
@@ -100,33 +119,24 @@ function ResetPasswordForm() {
 		}
 	}
 
-	jwt.verify(
-		token,
-		(err: { name: string; message: string; expiredAt: number }) => {
-			if (err) {
-				setIsTokenExpired(true);
-			}
-		},
-	);
-
 	if (isTokenExpired) {
 		return (
 			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
-				<CardHeader>
-					<CardTitle>Password Reset Link Expired</CardTitle>
+				<CardHeader className="text-center">
+					<CardTitle className="mb-8">Password Reset Link Expired</CardTitle>
 					<CardContent>
 						{!isSuccess ? (
-							<Button variant="link" className="p-0" onClick={handleSendReset}>
+							<Button className="w-full" onClick={handleSendReset}>
 								Resend Reset Link
 							</Button>
 						) : (
 							<p>Reset link sent. Please check your email.</p>
 						)}
 					</CardContent>
-					<CardFooter>
+					<CardFooter className="w-full text-center">
 						<Button
 							variant="link"
-							className="p-0"
+							className="w-full text-center"
 							onClick={() => {
 								router.push("/login");
 							}}
@@ -155,7 +165,6 @@ function ResetPasswordForm() {
 								<FormItem className="mb-4">
 									<FormLabel>New Password</FormLabel>
 									<FormControl>
-										{/* <Input placeholder="Password" {...field} /> */}
 										<div className="relative">
 											<Input
 												id="password"
@@ -190,7 +199,6 @@ function ResetPasswordForm() {
 								<FormItem>
 									<FormLabel>Confirm Password</FormLabel>
 									<FormControl>
-										{/* <Input placeholder="Confirm password" {...field} /> */}
 										<div className="relative">
 											<Input
 												id="password"
