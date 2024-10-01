@@ -26,6 +26,7 @@ import { setupSwagger } from "../swagger";
 import { startSprintTransitionJob } from '@/jobs/scheduler';
 import "dotenv/config";
 
+startSprintTransitionJob();
 ${
 	process.env.NODE_ENV === "test"
 		? "export const prisma = new PrismaClient();"
