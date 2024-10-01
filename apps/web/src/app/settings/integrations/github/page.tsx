@@ -1,5 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import {
@@ -9,10 +10,22 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store";
 
 const GithubSettings: React.FC = () => {
 	const { data: session } = useSession();
 	const authUser = session?.user;
+	const { connectedRepos, getUserRepositories } = useUserStore((state) => ({
+		connectedRepos: state.connectedRepos,
+		getUserRepositories: state.getUserRepositories,
+	}));
+
+	useEffect(() => {
+		if (authUser?.id) {
+			getUserRepositories(authUser.id);
+		}
+		console.log(connectedRepos);
+	}, [authUser, getUserRepositories]);
 
 	const handleClick = (): void => {
 		if (!authUser?.id) {
@@ -41,44 +54,43 @@ const GithubSettings: React.FC = () => {
 						</header>
 					</div>
 
-					{/* {isConnected ? (
-							<Card className="p-6">
+					{/* Display Connected Repositories */}
+					{connectedRepos.length > 0 ? (
+						<Card className="p-6">
 							<CardHeader>
 								<CardTitle>Connected to GitHub</CardTitle>
 								<CardDescription>Your connected repositories:</CardDescription>
 							</CardHeader>
 							<ul className="p-6">
-								{connectedRepos.length > 0 ? (
-								connectedRepos.map((repo) => <li key={repo}>{repo}</li>)
-								) : (
-								<p>No repositories connected.</p>
-								)}
+								{connectedRepos.map((repo) => (
+									<li key={repo}>{repo}</li>
+								))}
 							</ul>
 							<span className="p-6">
 								<Button onClick={handleClick}>
-								Edit selected repositories
+									Edit selected repositories
 								</Button>
 							</span>
-							</Card>
-						) : ( */}
-					<Card className="flex justify-between items-center p-2">
-						<CardHeader>
-							<CardTitle>Connect Personal Account</CardTitle>
-							<CardDescription>
-								Connect your personal account to use the integration feature
-							</CardDescription>
-						</CardHeader>
-						<div className="flex justify-center items-center p-6">
-							<Button
-								onClick={handleClick}
-								className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
-								variant="outline"
-							>
-								Connect
-							</Button>
-						</div>
-					</Card>
-					{/* )} */}
+						</Card>
+					) : (
+						<Card className="flex justify-between items-center p-2">
+							<CardHeader>
+								<CardTitle>Connect Personal Account</CardTitle>
+								<CardDescription>
+									Connect your personal account to use the integration feature
+								</CardDescription>
+							</CardHeader>
+							<div className="flex justify-center items-center p-6">
+								<Button
+									onClick={handleClick}
+									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
+									variant="outline"
+								>
+									Connect
+								</Button>
+							</div>
+						</Card>
+					)}
 				</div>
 			</div>
 		</div>

@@ -12,7 +12,7 @@ if (!clientId || !clientSecret) {
 export function createRoute(): Route {
 	return {
 		GET: async (res, _, query): Promise<void> => {
-			const { code, state: userId } = query; // Directly using `userId` from query
+			const { code, state: userId } = query;
 
 			if (!code || !userId) {
 				console.error("Missing code or userId in query params");
@@ -42,39 +42,22 @@ export function createRoute(): Route {
 						Accept: "application/vnd.github.v3+json",
 					},
 				});
+
 				const currentUserLogin = userResponse.data.login;
-				const githubId = userResponse.data.id; // GitHub user ID
 				console.log(`Authenticated GitHub user: ${currentUserLogin}`);
 
-				// Check if the user has a GithubUser entry
-				const existingGithubUser = await prisma.githubUser.findFirst({
-					where: { userId: userId as string },
+				// Update the User with the GitHub username
+				const updatedUser = await prisma.user.update({
+					where: { id: userId as string },
+					data: {
+						githubUsername: currentUserLogin, // Store the GitHub username directly
+					},
 				});
 
-				if (existingGithubUser) {
-					console.log(
-						"GitHub user already exists, updating GitHub info if necessary...",
-					);
-					await prisma.githubUser.update({
-						where: { id: existingGithubUser.id },
-						data: {
-							githubId: githubId.toString(),
-							login: currentUserLogin, // Update GitHub login/username if needed
-						},
-					});
-					console.log("GitHub user updated successfully.");
-				} else {
-					console.log("Creating a new GithubUser entry...");
-					// Create a new GithubUser if it doesn't exist
-					await prisma.githubUser.create({
-						data: {
-							userId: userId as string, // Directly use userId from query
-							githubId: githubId.toString(), // Store GitHub ID
-							login: currentUserLogin, // Store GitHub username (login)
-						},
-					});
-					console.log("GithubUser created successfully.");
-				}
+				console.log(
+					"User's GitHub username updated successfully:",
+					updatedUser.githubUsername,
+				);
 
 				// Redirect to GitHub's App installation page
 				res.redirect(

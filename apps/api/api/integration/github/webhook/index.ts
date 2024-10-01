@@ -146,24 +146,6 @@ export function createRoute(): Route<Params> {
 			const repoFullName = payload.repository?.full_name || "";
 			const repoOwner = payload.repository?.owner?.login || "";
 
-			if (eventType === "create" && payload.ref) {
-				console.log(
-					`Branch ${branchName} created in repository ${repoFullName}`,
-				);
-			} else if (eventType === "push" && payload.commits) {
-				const commitLinks = payload.commits
-					.map((commit) => `Commit ${commit.id.substring(0, 7)}: ${commit.url}`)
-					.join("\n");
-
-				console.log(
-					`Branch ${branchName} updated in repository ${repoFullName} with the following commits:\n${commitLinks}`,
-				);
-			} else {
-				console.log("No relevant event type");
-				res.status(200).json({ message: "No relevant event type" });
-				return;
-			}
-
 			// Extract task identifier from branch name
 			const identifierPattern = /([A-Z]{2,}-\d+)/i;
 			const match = branchName?.match(identifierPattern);
@@ -184,7 +166,54 @@ export function createRoute(): Route<Params> {
 						// Retrieve the workspaceId from the task
 						const workspaceId = task.workspaceId;
 
-						// Check if GithubRepoInfo exists (assumed created during OAuth)
+						// Fetch workspace and admin array
+						const workspace = await prisma.workspace.findFirst({
+							where: { id: workspaceId },
+							select: { admins: true },
+						});
+
+						if (
+							!workspace ||
+							!workspace.admins ||
+							workspace.admins.length === 0
+						) {
+							console.log("Workspace or admins not found");
+							res
+								.status(404)
+								.json({ message: "Workspace or admins not found" });
+							return;
+						}
+
+						// Get the workspace owner
+						const workspaceOwnerId = workspace.admins[0];
+
+						const workspaceOwner = await prisma.user.findFirst({
+							where: { id: workspaceOwnerId },
+							select: { githubUsername: true },
+						});
+
+						if (!workspaceOwner || !workspaceOwner.githubUsername) {
+							console.log("Workspace owner or GitHub username not found");
+							res.status(404).json({
+								message: "Workspace owner or GitHub username not found",
+							});
+							return;
+						}
+
+						// Compare the GitHub username with the pusher's username
+						const pusherUsername =
+							payload.pusher?.name || payload.sender?.login;
+
+						if (pusherUsername !== workspaceOwner.githubUsername) {
+							console.log("Pusher is not the workspace owner");
+							res.status(403).json({
+								message:
+									"You are not allowed to link this repository to the workspace",
+							});
+							return;
+						}
+
+						// Check if GithubRepoInfo exists for this repository
 						const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 							where: {
 								repoName: repoFullName,
@@ -193,8 +222,41 @@ export function createRoute(): Route<Params> {
 						});
 
 						if (!githubRepoInfo) {
-							console.log("No GithubRepoInfo found");
+							console.log("No GithubRepoInfo found for this repository");
 							res.status(404).json({ message: "GithubRepoInfo not found" });
+							return;
+						}
+
+						// Check if this repo is already linked to another workspace
+						if (
+							githubRepoInfo.workspaceId &&
+							githubRepoInfo.workspaceId !== workspaceId
+						) {
+							console.log(
+								`Repository ${repoFullName} is already linked to another workspace`,
+							);
+							res.status(403).json({
+								message: `Repository ${repoFullName} is already linked to another workspace`,
+							});
+							return;
+						}
+
+						// Check if this workspace is already linked to another repository
+						const existingRepoForWorkspace =
+							await prisma.githubRepoInfo.findFirst({
+								where: {
+									workspaceId: workspaceId,
+									repoName: { not: repoFullName },
+								},
+							});
+
+						if (existingRepoForWorkspace) {
+							console.log(
+								`Workspace ${workspaceId} is already linked to another repository`,
+							);
+							res.status(403).json({
+								message: `Workspace ${workspaceId} is already linked to another repository`,
+							});
 							return;
 						}
 
