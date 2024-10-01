@@ -352,12 +352,15 @@ model Project {
 }
 
 model Sprint {
-  id        String       @id @default(uuid())
-  name      String
-  startDate DateTime
-  endDate   DateTime
-  status    SprintStatus
-  teamId    String
+  id          String       @id @default(uuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  status      SprintStatus
+  teamId      String
+  wentWell    String?
+  wentWrong   String?
+  actionItems String?
 
   Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Tasks Task[]

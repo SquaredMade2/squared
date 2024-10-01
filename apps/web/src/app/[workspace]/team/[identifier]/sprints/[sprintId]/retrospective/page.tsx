@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { useTeamStore } from "@/store";
+import type { Sprint } from "@repo/db";
 
 const formSchema = z.object({
 	wentWell: z.string().min(1, "This field cannot be empty"),
@@ -35,8 +36,10 @@ const formSchema = z.object({
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
-	const { getSprints, sprints, currentSprint, currentTeam, setCurrentSprint } =
-		useTeamStore((state) => state);
+	const { getSprints, sprints, currentTeam, updateSprint } = useTeamStore(
+		(state) => state,
+	);
+	const [currentSprint, setCurrentSprint] = useState<Sprint | null>(null);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -49,21 +52,25 @@ export default function SprintRetrospectivePage() {
 
 	useEffect(() => {
 		const loadSprints = async () => {
-			currentTeam && (await getSprints(currentTeam.id));
-			const sprintId = (
-				Array.isArray(params.sprint) ? params.sprint[0] : params.sprint
-			).split("-")[0];
-			const sprint = sprints.find((s) => s.id.startsWith(sprintId));
-			sprint && setCurrentSprint(sprint);
+			if (currentTeam) {
+				await getSprints(currentTeam.id);
+				const sprint = sprints.find((s) => s.id === params.sprintId);
+				setCurrentSprint(sprint ?? null);
+			}
 		};
 		loadSprints();
-	}, [getSprints, params.sprint, sprints]);
+	}, [getSprints, params.sprintId, sprints, currentTeam]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			// Here you would typically send the data to your backend
-			console.log("Submitting retrospective:", values);
-			// For now, we'll just show a success toast
+			updateSprint(
+				Array.isArray(params.sprintId) ? params.sprintId[0] : params.sprintId,
+				{
+					wentWell: values.wentWell,
+					toImprove: values.toImprove,
+					actionItems: values.actionItems,
+				},
+			);
 			toast({
 				title: "Retrospective Submitted",
 				description:

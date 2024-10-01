@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
+import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
 	Card,
@@ -10,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
 import type { Sprint, Task } from "@repo/db";
 
 interface SprintTabsProps {
@@ -44,23 +47,34 @@ export function SprintTabs({
 		const plannedTasks = sprintTasks.length;
 
 		return (
-			<Card key={sprint.id} className="w-full mb-4">
-				<CardHeader>
-					<CardTitle>{sprint.name}</CardTitle>
+			<Card
+				key={sprint.id}
+				className={`w-full mb-4 ${isActive ? "border-primary shadow-md" : ""}`}
+			>
+				<CardHeader className={isActive ? "bg-primary/5" : ""}>
+					<CardTitle className={isActive ? "text-primary" : ""}>
+						{sprint.name}
+						{isActive && (
+							<span className="ml-2 text-sm font-normal text-primary-foreground bg-primary rounded-full px-2 py-1">
+								Active
+							</span>
+						)}
+					</CardTitle>
 					<CardDescription>
 						{format(new Date(sprint.startDate), "PP")} -{" "}
 						{format(new Date(sprint.endDate), "PP")}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{isActive && (
-						<div className="mb-4">
-							<Progress value={calculateProgress(sprint)} className="w-full" />
-							<p className="text-sm text-muted-foreground mt-2">
-								{Math.round(calculateProgress(sprint))}% Complete
-							</p>
-						</div>
-					)}
+					<div className="mb-4">
+						<Progress
+							value={calculateProgress(sprint)}
+							className={`w-full ${isActive ? "bg-primary/20" : ""}`}
+						/>
+						<p className="text-sm text-muted-foreground mt-2">
+							{Math.round(calculateProgress(sprint))}% Complete
+						</p>
+					</div>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						<div>
 							<h4 className="font-semibold mb-1">Completed Tasks</h4>
@@ -83,6 +97,13 @@ export function SprintTabs({
 							<p>{sprintTasks.length}</p>
 						</div>
 					</div>
+					<div className="mt-4 flex justify-end">
+						<Link href={`sprints/${sprint.id}`} passHref>
+							<Button variant={isActive ? "default" : "outline"} size="sm">
+								View Details <ChevronRight className="ml-2 h-4 w-4" />
+							</Button>
+						</Link>
+					</div>
 				</CardContent>
 			</Card>
 		);
@@ -99,8 +120,6 @@ export function SprintTabs({
 				<TabsTrigger value="completed">Completed Sprints</TabsTrigger>
 			</TabsList>
 			<div className="h-[600px] mt-4">
-				{" "}
-				{/* Increased height for more content */}
 				<ScrollArea className="h-full">
 					<TabsContent
 						value="upcoming"

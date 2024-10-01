@@ -58,7 +58,7 @@ export function createRoute(): Route<Params> {
 		PUT: async (
 			res,
 			{ teamId, sprintId },
-			body: Partial<Omit<Sprint, "id" | "teamId" | "createdAt" | "updatedAt">>,
+			body: Partial<Sprint>,
 		): Promise<APIResponse<Sprint>> => {
 			try {
 				const sprint = await prisma.sprint.findUnique({
