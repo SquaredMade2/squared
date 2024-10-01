@@ -157,28 +157,27 @@ function LoginForm() {
 						)}
 						Sign in with Google
 					</Button>
-				</form>
-			</CardContent>
-			<CardFooter className="flex flex-col justify-center gap-px">
-				<p className="text-sm text-muted-foreground">
-					<Button
-						variant="link"
-						className="p-0"
-						onClick={() => {
-							router.push("/forgotPassword");
-						}}
-					>
-						Forgot password?
-					</Button>
-				</p>
-				<p className="text-sm text-muted-foreground">
-					Not a member?{" "}
-					<Button variant="link" className="p-0" onClick={handleRegisterPush}>
-						Sign up for free
-					</Button>
-				</p>
-			</CardFooter>
-		</Card>
+				</CardContent>
+				<CardFooter className="flex flex-col justify-center gap-px">
+					<p className="text-sm text-muted-foreground">
+						<Button
+							variant="link"
+							className="p-0"
+							onClick={() => {
+								router.push("/forgotPassword");
+							}}
+						>
+							Forgot password?
+						</Button>
+					</p>
+					<p className="text-sm text-muted-foreground">
+						Not a member?{" "}
+						<Button variant="link" className="p-0" onClick={handleRegisterPush}>
+							Sign up for free
+						</Button>
+					</p>
+				</CardFooter>
+			</Card>
 		</div>
 	);
 }
