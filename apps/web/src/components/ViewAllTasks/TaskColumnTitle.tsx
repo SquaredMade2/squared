@@ -1,42 +1,17 @@
-import {
-	ChevronDown,
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CirclePlus,
-	CircleX,
-	Copy,
-} from "lucide-react";
-import { inProgress } from "../Svg";
+import { ChevronDown, CirclePlus } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import HideStatus from "./HideStatus";
 import { cn } from "@/utils/cn";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
-
-export const showIcon = (name: string): React.ReactNode => {
-	switch (name) {
-		case "Backlog":
-			return <CircleDashed className="size-4" />;
-		case "Todo":
-			return <Circle className="size-4" />;
-		case "In Progress":
-			return inProgress();
-		case "Done":
-			return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-		case "Canceled":
-			return <CircleX className="size-4" />;
-		case "Duplicate":
-			return <Copy className="size-4" />;
-	}
-};
+import { StatusIcon } from "../Icons";
 
 const TaskColumnTitle = ({
 	isListView,
 	showTasks,
 	title,
 	numberOfTasks,
-	toggleShowTasks,
+	setShowTasks,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 
@@ -74,24 +49,26 @@ const TaskColumnTitle = ({
 									: "flex items-center gap-4 text-foreground text-sm pr-8"
 							}
 						>
-							<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-							<span className="text-sm">{formatStatus(title)}</span>
-							<span className="ml-1 text-muted-foreground">
-								{numberOfTasks}
-							</span>
+							<StatusIcon status={title} />
+							<div className="flex gap-2 items-center">
+								<span className="text-sm">{formatStatus(title)}</span>
+								<span className="ml-1 text-muted-foreground">
+									{numberOfTasks}
+								</span>
+							</div>
 						</div>
 					)
 				) : (
 					<div
-						className={
-							isListView
-								? "flex items-center text-foreground text-sm"
-								: "flex items-center gap-4 text-foreground text-sm pr-8"
-						}
+						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
 					>
-						<div className="w-4 lg:mr-2 mr-1.5">{showIcon(title)}</div>
-						<span>{formatStatus(title)}</span>
-						<span className="ml-2 text-muted-foreground">{numberOfTasks}</span>
+						<StatusIcon status={title} />
+						<div className="flex gap-2 items-center">
+							<span>{formatStatus(title)}</span>
+							<span className="ml-2 text-muted-foreground">
+								{numberOfTasks}
+							</span>
+						</div>
 					</div>
 				)}
 				<div
@@ -106,7 +83,7 @@ const TaskColumnTitle = ({
 							<CirclePlus className="size-5" />
 						</div>
 					</div>
-					<HideStatus toggleShowTasks={toggleShowTasks} showTasks={showTasks} />
+					<HideStatus setShowTasks={setShowTasks} showTasks={showTasks} />
 				</div>
 			</div>
 		</div>

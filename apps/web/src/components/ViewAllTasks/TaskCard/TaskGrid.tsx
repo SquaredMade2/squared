@@ -1,70 +1,78 @@
 import { Calendar, UserSearch } from "lucide-react";
 
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useViewStore } from "@/store";
-import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
+import LabelBadge from "@/components/LabelBadges";
 
-const TaskGrid = ({
-	teamIdentifier,
-	task,
-	user,
-	currentTeam,
-	priorityIcon,
-	taskLabels,
-}: TaskGridProps) => {
-	const { showDateTime, showPriority, showLabels } = useViewStore(
-		(state) => state,
-	);
+const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
+	const { gridViewOptions } = useViewStore((state) => state);
+
+	const {
+		identifier: showIdentifier,
+		dueDate: showDueDate,
+		avatar: showAvatar,
+		labels: showLabels,
+		// status: showStatus,	// no status currently in grid view - implement later on - Kaila
+		priority: showPriority,
+	} = gridViewOptions.displayProperties;
+
 	return (
 		<Link
 			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			className="cursor-pointer"
 		>
 			<Card className="w-80">
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
-						<p className="text-xs text-muted-foreground">{teamIdentifier}</p>
-						{task.assigneeName ? (
-							<Avatar className="size-6">
-								<AvatarImage src={user?.avatarUrl ?? undefined} />
-								<AvatarFallback className="text-xxs">
-									{getInitials(task.assigneeName)}
-								</AvatarFallback>
-							</Avatar>
+						{showIdentifier ? (
+							<p className="text-xs text-muted-foreground">{task.identifier}</p>
 						) : (
-							<UserSearch className="size-6 text-[#9597AD]" />
+							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
 						)}
+						{showAvatar &&
+							(task.assigneeName ? (
+								<Avatar className="size-6">
+									<AvatarImage src={user?.avatarUrl ?? undefined} />
+									<AvatarFallback className="text-xxs">
+										{getInitials(task.assigneeName)}
+									</AvatarFallback>
+								</Avatar>
+							) : (
+								<UserSearch className="size-6 text-[#9597AD]" />
+							))}
 					</div>
-					<div className="text-sm pr-8 cursor-pointer w-full">
+					<div className="text-sm pr-8 w-full flex items-center gap-2">
+						<StatusIcon status={task.status} />
 						{truncateString(task.title, 70)}
 					</div>
-					{showDateTime && (
-						<div className="flex items-center gap-2 text-sm">
-							<Calendar className="size-4" />
-							<span>
-								Due Date:{" "}
+					<div className="flex flex-wrap w-full items-center gap-1 -my-1">
+						{showDueDate && (
+							<div className="flex items-center gap-2 text-sm bg-background border border-border rounded-md w-fit p-1 mb-1">
+								<Calendar className="size-4" />
 								{task.dueDate
-									? formatDate(new Date(task.dueDate), "M/d/yy, h:mm a")
+									? formatDate(new Date(task.dueDate), "MMM dd")
 									: "No Date Set"}
-							</span>
-						</div>
-					)}
-					<div className="flex items-center space-x-4">
-						{showPriority && (
-							<Button
-								variant="ghost"
-								size="sm"
-								className={"p-0.5 border border-border mb-2 mt-1 w-6 h-5"}
-							>
-								{priorityIcon}
-							</Button>
+							</div>
 						)}
-						{showLabels && <TaskCardLabels labels={taskLabels} view="grid" />}
+
+						{showPriority && (
+							<div className="bg-background border border-border rounded-md p-1 mb-1">
+								<PriorityIcon priority={task.priority} />
+							</div>
+						)}
+
+						{showLabels &&
+							taskLabels.map((label) => (
+								<div key={label.id} className="label-badge flex-shrink mb-1">
+									<LabelBadge label={label} />
+								</div>
+							))}
 					</div>
 				</CardContent>
 			</Card>

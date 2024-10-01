@@ -1,12 +1,5 @@
 "use client";
 
-import {
-	Circle,
-	CircleCheckBig,
-	CircleDashed,
-	CircleFadingPlus,
-} from "lucide-react";
-import { inProgress } from "@/components/Svg";
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,27 +13,13 @@ import {
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@repo/db";
 import type { ButtonProps } from "./interfaces";
+import { StatusIcon } from "@/components/Icons";
 
 const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const taskId = currentTask ? currentTask.id : "";
 	const sidebarStatus = currentTask ? currentTask.status : "";
-
-	const showIcon = (name: string | undefined) => {
-		switch (name) {
-			case "backlog":
-				return <CircleDashed className="size-4" />;
-			case "todo":
-				return <Circle className="size-4" />;
-			case "inProgress":
-				return inProgress();
-			case "inReview":
-				return <CircleFadingPlus className="size-4 text-[#7394FF]" />;
-			case "done":
-				return <CircleCheckBig className="size-4 text-[#7394FF]" />;
-		}
-	};
 
 	const handleSelectStatus = (newStatus: Status) => {
 		if (newStatus === sidebarStatus || !taskId) return;
@@ -67,7 +46,7 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
-						{showIcon(sidebarStatus)}
+						<StatusIcon status={sidebarStatus || "todo"} />
 						<span className="mx-2 text-nowrap">
 							{sidebarStatus ? formatStatus(sidebarStatus) : sidebarStatus}
 						</span>
@@ -79,7 +58,7 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 					<SelectItem key={status} value={status}>
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
-								{showIcon(status)}
+								<StatusIcon status={status} />
 								<span className="ml-2">{formatStatus(status)}</span>
 							</div>
 						</div>

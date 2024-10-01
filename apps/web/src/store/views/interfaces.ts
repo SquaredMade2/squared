@@ -1,9 +1,41 @@
+export type DisplayProperty = {
+	identifier: boolean;
+	dueDate: boolean;
+	avatar: boolean;
+	labels: boolean;
+	status: boolean;
+	priority: boolean;
+};
+
+export type TaskOrder =
+	| "Title"
+	| "Status"
+	| "Priority"
+	| "Assignee"
+	| "Effort"
+	| "Due Date"
+	| "Updated"
+	| "Created";
+
+export type CompletedTaskPeriod =
+	| "All"
+	| "Past day"
+	| "Past week"
+	| "Past month"
+	| "None";
+
+type ViewOptions = {
+	showEmptyGroups: boolean;
+	taskOrder: { orderBy: TaskOrder; orderAscending: boolean };
+	showCompletedTasks: { show: boolean; period: CompletedTaskPeriod };
+	displayProperties: DisplayProperty;
+};
+
 export type ViewState = {
-	showDateTime: boolean;
-	showPriority: boolean;
-	showLabels: boolean;
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
+	listViewOptions: ViewOptions;
+	gridViewOptions: ViewOptions;
 	view: "list" | "grid";
 };
 
@@ -11,9 +43,8 @@ type ViewActions = {
 	setView: (view: "list" | "grid") => void;
 	setShowNavbar: (input: boolean) => void;
 	setShowMobileNavbar: (input: boolean) => void;
-	setShowDateTime: (input: boolean) => void;
-	setShowPriority: (input: boolean) => void;
-	setShowLabels: (input: boolean) => void;
+	setListViewOptions: (input: Partial<ViewOptions>) => void;
+	setGridViewOptions: (input: Partial<ViewOptions>) => void;
 };
 
 export type ViewStore = ViewState & ViewActions;

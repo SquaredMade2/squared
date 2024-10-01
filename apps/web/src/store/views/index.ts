@@ -6,17 +6,40 @@ export * from "./store";
 
 export const createViewStore = (
 	initState: ViewState = {
-		showDateTime: true,
-		showPriority: true,
-		showLabels: true,
-		showNavbar: false,
+		showNavbar: true,
 		showMobileNavbar: false,
+		listViewOptions: {
+			showEmptyGroups: false,
+			taskOrder: { orderBy: "Priority", orderAscending: true },
+			showCompletedTasks: { show: true, period: "All" },
+			displayProperties: {
+				identifier: true,
+				dueDate: true,
+				avatar: true,
+				labels: true,
+				status: true,
+				priority: true,
+			},
+		},
+		gridViewOptions: {
+			showEmptyGroups: false,
+			taskOrder: { orderBy: "Priority", orderAscending: true },
+			showCompletedTasks: { show: true, period: "All" },
+			displayProperties: {
+				identifier: true,
+				dueDate: true,
+				avatar: true,
+				labels: true,
+				status: true,
+				priority: true,
+			},
+		},
 		view: "list",
 	},
 ) => {
 	return createStore<ViewStore>()(
 		persist(
-			(set) => ({
+			(set, get) => ({
 				...initState,
 				setView: (view) => {
 					set({ view });
@@ -27,14 +50,13 @@ export const createViewStore = (
 				setShowMobileNavbar: (input) => {
 					set({ showMobileNavbar: input });
 				},
-				setShowDateTime: (input) => {
-					set({ showDateTime: input });
+				setListViewOptions: (input) => {
+					const currentListView = get().listViewOptions;
+					set({ listViewOptions: { ...currentListView, ...input } });
 				},
-				setShowPriority: (input) => {
-					set({ showPriority: input });
-				},
-				setShowLabels: (input) => {
-					set({ showLabels: input });
+				setGridViewOptions: (input) => {
+					const currentGridView = get().gridViewOptions;
+					set({ gridViewOptions: { ...currentGridView, ...input } });
 				},
 			}),
 			{

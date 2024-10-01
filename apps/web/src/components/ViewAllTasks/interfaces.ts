@@ -17,16 +17,10 @@ export type TaskColumnTitleProps = {
 	showTasks: boolean;
 	title: Status;
 	numberOfTasks: number;
-	toggleShowTasks: () => void;
+	setShowTasks: (input: boolean) => void;
 };
 
 export interface HideStatusProps {
-	toggleShowTasks: () => void;
+	setShowTasks: (input: boolean) => void;
 	showTasks: boolean;
 }
-
-export type HideTaskStatusDropdownProps = {
-	toggleHideDropdown: () => void;
-	showTasks: boolean;
-	toggleShowTasks: () => void;
-};

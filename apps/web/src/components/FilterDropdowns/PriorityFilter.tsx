@@ -7,18 +7,17 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { high, medium, low } from "@/components/Svg";
-import { CircleAlert, Ellipsis } from "lucide-react";
 import { useFilterStore } from "@/store";
 import type { FilterDropDownProps } from "./interfaces";
 import { Priority } from "@repo/db";
+import { PriorityIcon } from "../Icons";
 
 const groupPriority = [
 	{
 		id: 0,
 		name: "No priority",
 		border: false,
-		svg: <Ellipsis className="size-4" />,
+		svg: <PriorityIcon priority={Priority.noPriority} />,
 		group: "priority",
 		value: Priority.noPriority,
 	},
@@ -26,7 +25,7 @@ const groupPriority = [
 		id: 1,
 		name: "Low",
 		border: false,
-		svg: low(),
+		svg: <PriorityIcon priority={Priority.low} />,
 		group: "priority",
 		value: Priority.low,
 	},
@@ -34,7 +33,7 @@ const groupPriority = [
 		id: 2,
 		name: "Medium",
 		border: false,
-		svg: medium(),
+		svg: <PriorityIcon priority={Priority.medium} />,
 		group: "priority",
 		value: Priority.medium,
 	},
@@ -42,7 +41,7 @@ const groupPriority = [
 		id: 3,
 		name: "High",
 		border: false,
-		svg: high(),
+		svg: <PriorityIcon priority={Priority.high} />,
 		group: "priority",
 		value: Priority.high,
 	},
@@ -50,7 +49,7 @@ const groupPriority = [
 		id: 4,
 		name: "Urgent",
 		border: false,
-		svg: <CircleAlert className="size-4 fill-destructive" />,
+		svg: <PriorityIcon priority={Priority.urgent} />,
 		group: "priority",
 		value: Priority.urgent,
 	},
@@ -73,15 +72,16 @@ const PriorityFilterDropDown = ({
 
 	useEffect(() => {
 		if (selectedPriorities.length > 0) {
+			removeFilter("priority");
 			addFilter({
 				field: "priority",
 				value: selectedPriorities,
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("status");
+			removeFilter("priority");
 		}
-	}, [selectedPriorities, addFilter, removeFilter]);
+	}, [selectedPriorities]);
 
 	useEffect(() => {
 		if (
@@ -100,7 +100,7 @@ const PriorityFilterDropDown = ({
 			<DropdownMenuTrigger>
 				<div className="hidden" aria-hidden="true" />
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-72 p-0 mt-6 mr-32">
+			<DropdownMenuContent className="w-60 p-0 mt-6">
 				<DropdownMenuLabel>Priority</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				{groupPriority.map((item) => (
