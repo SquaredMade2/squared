@@ -73,4 +73,4 @@ RUN adduser --system --uid 1001 expressjs
 USER expressjs
 
 
-CMD ts-node api/index.ts
+CMD ["ts-node", "api/index.ts"]

@@ -7,16 +7,22 @@ import {
 	DialogTitle,
 	DialogFooter,
 	DialogHeader,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
-import { Separator } from "../ui/separator";
-import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import {
+	Form,
+	FormItem,
+	FormControl,
+	FormField,
+	FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -30,8 +36,9 @@ import {
 import type { Task } from "@repo/db";
 import { DateDropdownButton } from "./DateDropdownButton";
 export * from "./NewIssueButton";
+export * from "./NewIssueCollapsible";
 
-const NewIssueModal = () => {
+export const NewIssueModal = () => {
 	const { toast } = useToast();
 	const { showNewIssue, newIssueData, setNewIssueData, setShowNewIssue } =
 		useModalStore((state) => state);
@@ -56,11 +63,9 @@ const NewIssueModal = () => {
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
-			message: "Username must be at least 2 characters.",
+			message: "Title must be at least 2 characters.",
 		}),
-		description: z.string().min(2, {
-			message: "Username must be at least 2 characters.",
-		}),
+		description: z.string().optional(),
 	});
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -96,7 +101,7 @@ const NewIssueModal = () => {
 				transformingMentionInputs(title);
 
 			const { transformedInput: transformedDescriptionInput } =
-				transformingMentionInputs(description);
+				transformingMentionInputs(description ?? "");
 
 			const newTask: Task = {
 				authorId: user.id,

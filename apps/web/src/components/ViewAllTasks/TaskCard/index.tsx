@@ -18,9 +18,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { users } = useUserStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 
-	const teamIdentifier =
-		location === "dashboard" ? currentTeam?.identifier : task.teamId;
-
 	const taskLabels =
 		currentWorkspace?.Labels.filter((label) =>
 			task.labels.includes(label.id),
@@ -41,7 +38,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 								<TaskGrid
 									task={task}
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
-									teamIdentifier={teamIdentifier}
 									currentTeam={currentTeam}
 									taskLabels={taskLabels}
 								/>
@@ -51,7 +47,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
 									location={location}
 									highlightText={highlightText}
-									teamIdentifier={teamIdentifier}
 									currentTeam={currentTeam}
 								/>
 							)}

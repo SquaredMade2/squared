@@ -16,6 +16,7 @@ interface TaskPageLayoutProps {
 	currentWorkspace: Workspace;
 	teamIdentifier: string;
 	handleDragEnd: OnDragEndResponder;
+	pageTitle: string;
 	children: ReactNode;
 }
 
@@ -25,6 +26,7 @@ export function TaskPageLayout({
 	currentWorkspace,
 	teamIdentifier,
 	handleDragEnd,
+	pageTitle,
 	children,
 }: TaskPageLayoutProps) {
 	const { view } = useViewStore((state) => state);
@@ -42,7 +44,7 @@ export function TaskPageLayout({
 	return (
 		<div className="w-full flex flex-col h-screen overflow-hidden">
 			<div className="w-full px-2 sm:px-5">
-				<TopNavBar />
+				<TopNavBar pageTitle={pageTitle} />
 			</div>
 			{!authorized ? (
 				<div className="flex items-center flex-col w-screen h-full bg-background">
