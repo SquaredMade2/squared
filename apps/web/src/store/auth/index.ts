@@ -88,6 +88,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 							validate: true,
 						},
 					);
+					set({ user: response.data.user });
 					return response.data;
 				},
 				setUser: (user: User | null) => {

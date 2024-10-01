@@ -58,7 +58,7 @@ function ResetPasswordForm() {
 				const response = await checkTokenValid(token);
 				if (response.message === "Token is expired or invalid") {
 					setUserEmail(() => {
-						return response.data !== null ? response.data.email : "";
+						return response.user !== null ? response.user.email : "";
 					});
 					setIsTokenExpired(() => true);
 					toast({
