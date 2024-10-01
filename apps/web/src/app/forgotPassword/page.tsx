@@ -35,7 +35,7 @@ const formSchema = z.object({
 
 function ForgotPasswordForm() {
 	const [isSuccess, setIsSuccess] = useState(false);
-	const { resetPassword } = useAuthStore((state) => state);
+	const { resetPasswordEmail } = useAuthStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -48,8 +48,7 @@ function ForgotPasswordForm() {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
-			const response = await resetPassword(values.email);
-			console.log(response);
+			const response = await resetPasswordEmail(values.email);
 			toast({ title: response.message, variant: response.variant });
 			setIsSuccess(true);
 		} catch (error) {

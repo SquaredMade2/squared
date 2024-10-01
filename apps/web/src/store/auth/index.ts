@@ -62,11 +62,20 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					sessionStorage.removeItem("filter-store");
 					return response.data;
 				},
-				resetPassword: async (email: string) => {
+				resetPasswordEmail: async (email: string) => {
 					const response: { data: AuthReturn } = await axios.post(
 						apiString("reset-password"),
 						{
 							email,
+						},
+					);
+					return response.data;
+				},
+				resetPassword: async (token: string, newPassword: string) => {
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(`reset-password/${token}`),
+						{
+							newPassword,
 						},
 					);
 					return response.data;

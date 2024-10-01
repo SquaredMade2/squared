@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { prisma } from "@/api";
 import type { User } from "@repo/db";
 import type { Route, APIResponse } from "@/api/route";
+import { hashPassword } from "../../helpers";
 
 type Params = {
 	token: string;
@@ -41,23 +42,28 @@ export function createRoute(): Route<Params> {
 						token,
 						JWT_SECRET,
 					) as JwtPayload;
+
+					const hashedPassword = await hashPassword(newPassword);
+
 					const user = await prisma.user.update({
 						where: { id: decoded.user },
-						data: { password: newPassword },
+						data: { password: hashedPassword },
 					});
+					res.status(200);
 					return {
 						data: user,
 						message: "Password successfully updated",
 						variant: "default",
 					};
 				}
+				res.status(400);
 				return {
 					data: null,
 					message: "Invalid token",
 					variant: "destructive",
 				};
 			} catch (error) {
-				console.error("Error with auth request:", error);
+				console.error("Error with password update:", error);
 				res.status(500);
 				return {
 					data: null,

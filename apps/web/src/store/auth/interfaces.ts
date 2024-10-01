@@ -24,7 +24,8 @@ type AuthActions = {
 	register: (login: Login) => Promise<AuthReturn>;
 	verifyUser: (token: string) => Promise<AuthReturn>;
 	logout: () => Promise<boolean>;
-	resetPassword: (email: string) => Promise<AuthReturn>;
+	resetPasswordEmail: (email: string) => Promise<AuthReturn>;
+	resetPassword: (token: string, newPassword: string) => Promise<AuthReturn>;
 	setUser: (user: User | null) => void;
 };
 

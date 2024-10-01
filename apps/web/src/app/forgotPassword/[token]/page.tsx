@@ -3,9 +3,9 @@
 import { useState, Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import * as z from "zod";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +41,7 @@ const formSchema = z.object({
 function ResetPasswordForm() {
 	const [hideNewPassword, setHideNewPassword] = useState(true);
 	const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+	const { resetPassword } = useAuthStore((state) => state);
 	const router = useRouter();
 	const params = useParams();
 	const token = params.token as string;
@@ -64,11 +65,8 @@ function ResetPasswordForm() {
 		}
 
 		try {
-			const { data: responseData } = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER}/api/auth/reset-password/${token}`,
-				{ newPassword: values.newPassword },
-			);
-			toast({ title: responseData.message });
+			const response = await resetPassword(token, values.newPassword);
+			toast({ title: response.message });
 			router.push("/login");
 		} catch (error) {
 			toast({
