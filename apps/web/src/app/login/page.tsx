@@ -147,7 +147,18 @@ function LoginForm() {
 					</Button>
 				</form>
 			</CardContent>
-			<CardFooter className="flex justify-center">
+			<CardFooter className="flex flex-col justify-center gap-px">
+				<p className="text-sm text-muted-foreground">
+					<Button
+						variant="link"
+						className="p-0"
+						onClick={() => {
+							router.push("/forgotPassword");
+						}}
+					>
+						Forgot password?
+					</Button>
+				</p>
 				<p className="text-sm text-muted-foreground">
 					Not a member?{" "}
 					<Button variant="link" className="p-0" onClick={handleRegisterPush}>

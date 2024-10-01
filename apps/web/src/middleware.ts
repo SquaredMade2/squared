@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
 }
 
 function isPublicRoute(pathname: string) {
-	const PUBLIC_ROUTES = ["/login", "/register"];
+	const PUBLIC_ROUTES = ["/login", "/register", "/forgotPassword"];
 	const workspaceJoinRegex = /^\/[^\/]+\/join\/[^\/]+$/;
 
 	return (

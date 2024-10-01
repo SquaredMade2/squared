@@ -4,23 +4,35 @@ import { prisma } from "@/api";
 import type { User } from "@repo/db";
 import type { Route, APIResponse } from "@/api/route";
 
-type Params = {
+type Body = {
 	email: string;
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export function createRoute(): Route<Params> {
+export function createRoute(): Route {
 	return {
-		POST: async (res, params: Params): Promise<APIResponse<User>> => {
-			const { email } = params;
+		POST: async (res, _, body: Body): Promise<APIResponse<User>> => {
+			const { email } = body;
 			try {
 				const user = await prisma.user.findUnique({
 					where: { email },
 				});
+
+				console.log(user);
+
+				if (!JWT_SECRET) {
+					res.status(500);
+					return {
+						data: null,
+						message: "JWT_SECRET is not defined.",
+						variant: "destructive",
+					};
+				}
+
 				if (user) {
 					const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {
-						expiresIn: "1d",
+						expiresIn: 60 * 15,
 					});
 					try {
 						// Send verification email for password reset
@@ -29,6 +41,8 @@ export function createRoute(): Route<Params> {
 							user.name,
 							emailToken,
 							"password",
+							"",
+							"",
 							"resetPassword",
 						);
 					} catch (error) {

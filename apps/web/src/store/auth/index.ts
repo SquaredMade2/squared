@@ -63,7 +63,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					return response.data;
 				},
 				resetPassword: async (email: string) => {
-					const response: { data: boolean } = await axios.post(
+					const response: { data: AuthReturn } = await axios.post(
 						apiString("reset-password"),
 						{
 							email,

@@ -42,7 +42,7 @@ export const sendMail = async (
 				url = `${NEXT_PUBLIC_CONFIRM_URL}/login?token=${emailToken}`;
 				break;
 			case "resetPassword":
-				url = `${NEXT_PUBLIC_CONFIRM_URL}/resetPassword=true&token=${emailToken}`;
+				url = `${NEXT_PUBLIC_CONFIRM_URL}/forgotPassword/${emailToken}`;
 				break;
 			default:
 				url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
