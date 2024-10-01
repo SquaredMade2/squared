@@ -50,7 +50,7 @@ export function createRoute(): Route {
 				const updatedUser = await prisma.user.update({
 					where: { id: userId as string },
 					data: {
-						githubUsername: currentUserLogin, // Store the GitHub username directly
+						githubUsername: currentUserLogin,
 					},
 				});
 
