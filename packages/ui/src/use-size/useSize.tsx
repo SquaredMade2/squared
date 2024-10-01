@@ -1,4 +1,3 @@
-/// <reference types="resize-observer-browser" />
 import * as React from "react";
 
 import { useLayoutEffect } from "../use-layout-effect";
