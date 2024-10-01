@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
-import { useWorkspaceStore, useTeamStore } from "@/store";
+import { useWorkspaceStore, useTeamStore, useViewStore } from "@/store";
 import {
 	Box,
 	Copy,
@@ -15,6 +15,7 @@ import {
 	ChevronRight,
 	ClipboardCopy,
 	ArrowLeftRight,
+	PanelLeft,
 } from "lucide-react";
 import { useAuthStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
@@ -27,27 +28,45 @@ export class CommandSchema {
 	currentWorkspace: Workspace | null;
 	currentTeam: Team | null;
 	setShowNewIssue: (input: boolean) => void;
+	setShowSwitchWorkspace: (input: boolean) => void;
+	setShowNavbar: (input: boolean) => void;
+	showNavbar: boolean;
+	setShowTaskSelector: (input: boolean) => void;
 	clearFilter: () => void;
 	showToast: (
 		title: string,
 		variant?: "destructive" | "default" | null,
 	) => void;
 
-	constructor(
-		setShowNewIssue: (input: boolean) => void,
-		clearFilter: () => void,
+	constructor({
+		setShowNewIssue,
+		setShowSwitchWorkspace,
+		setShowNavbar,
+		setShowTaskSelector,
+		clearFilter,
+		showToast,
+	}: {
+		setShowNewIssue: (input: boolean) => void;
+		setShowSwitchWorkspace: (input: boolean) => void;
+		setShowNavbar: (input: boolean) => void;
+		setShowTaskSelector: (input: boolean) => void;
+		clearFilter: () => void;
 		showToast: (
 			title: string,
 			variant?: "destructive" | "default" | null,
-		) => void,
-	) {
+		) => void;
+	}) {
 		this.router = useRouter();
 		this.pathname = usePathname();
 		this.currentWorkspace = useWorkspaceStore(
 			(state) => state.currentWorkspace,
 		);
+		this.showNavbar = useViewStore((state) => state.showNavbar);
 		this.currentTeam = useTeamStore((state) => state.currentTeam);
 		this.setShowNewIssue = setShowNewIssue;
+		this.setShowSwitchWorkspace = setShowSwitchWorkspace;
+		this.setShowNavbar = setShowNavbar;
+		this.setShowTaskSelector = setShowTaskSelector;
 		this.clearFilter = clearFilter;
 		this.showToast = showToast;
 	}
@@ -134,11 +153,11 @@ export class CommandSchema {
 				},
 			},
 			Navigation: {
-				openIssue: {
+				openTask: {
 					icon: <Circle className="size-4 mr-2" />,
-					text: "Open issue...",
+					text: "Open task...",
 					function: () => {
-						/* This is for the future functionality */
+						this.setShowTaskSelector(true);
 					},
 					shortcut: ["O", "then", "I"],
 				},
@@ -378,7 +397,7 @@ export class CommandSchema {
 					icon: <ArrowLeftRight className="mr-2 h-4 w-4" />,
 					text: "Switch workspace...",
 					function: () => {
-						/* this is for the future functionality */
+						this.setShowSwitchWorkspace(true);
 					},
 					shortcut: ["O", "then", "W"],
 				},
@@ -393,10 +412,12 @@ export class CommandSchema {
 			},
 			Miscellaneous: {
 				openNavSidebar: {
-					icon: <ArrowRight className="mr-2 h-4 w-4" />,
-					text: "Open navigation sidebar",
+					icon: <PanelLeft className="mr-2 h-4 w-4" />,
+					text: this.showNavbar
+						? "Collapse navigation sidebar"
+						: "Open navigation sidebar",
 					function: () => {
-						/* this is for the future functionality */
+						this.setShowNavbar(!this.showNavbar);
 					},
 					shortcut: ["Ctrl", "/"],
 				},

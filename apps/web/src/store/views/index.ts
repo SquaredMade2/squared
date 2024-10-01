@@ -6,10 +6,12 @@ export * from "./store";
 
 export const createViewStore = (
 	initState: ViewState = {
-		showNavbar: false,
+		showNavbar: true,
 		showMobileNavbar: false,
 		listViewOptions: {
 			showEmptyGroups: false,
+			taskOrder: { orderBy: "Priority", orderAscending: true },
+			showCompletedTasks: { show: true, period: "All" },
 			displayProperties: {
 				identifier: true,
 				dueDate: true,
@@ -21,6 +23,8 @@ export const createViewStore = (
 		},
 		gridViewOptions: {
 			showEmptyGroups: false,
+			taskOrder: { orderBy: "Priority", orderAscending: true },
+			showCompletedTasks: { show: true, period: "All" },
 			displayProperties: {
 				identifier: true,
 				dueDate: true,

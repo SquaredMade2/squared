@@ -1,5 +1,5 @@
 import { SquarePen } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import type { Status } from "@repo/db";
 import { useModalStore } from "@/store";
 

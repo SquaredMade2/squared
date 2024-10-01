@@ -15,16 +15,21 @@ import {
 } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useFilterStore } from "@/store";
+import { useModalStore, useFilterStore, useViewStore } from "@/store";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";
 import { useId } from "@repo/ui/id";
 
 export default function SearchCommand() {
 	const { toast } = useToast();
-	const { setShowNewIssue, showCommand, setShowCommand } = useModalStore(
-		(state) => state,
-	);
+	const {
+		setShowNewIssue,
+		showCommand,
+		setShowCommand,
+		setShowSwitchWorkspace,
+		setShowTaskSelector,
+	} = useModalStore((state) => state);
+	const { setShowNavbar } = useViewStore((state) => state);
 	const { clearFilter } = useFilterStore((state) => state);
 
 	const showToast = (
@@ -34,11 +39,14 @@ export default function SearchCommand() {
 		toast({ title, variant });
 	};
 
-	const commandItems = new CommandSchema(
+	const commandItems = new CommandSchema({
 		setShowNewIssue,
+		setShowSwitchWorkspace,
+		setShowNavbar,
+		setShowTaskSelector,
 		clearFilter,
 		showToast,
-	);
+	});
 
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {

@@ -3,7 +3,11 @@ import "./globals.css";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
-import WorkspaceInviteModal from "@/components/WorkspaceInviteModal";
+import {
+	WorkspaceInviteModal,
+	WorkspaceSwitcher,
+	TaskSelector,
+} from "@/components/Modals";
 import { SquaredStoreProvider } from "@/store";
 import { SessionProvider } from "next-auth/react";
 import SearchCommand from "@/components/SearchCommand";
@@ -28,6 +32,8 @@ export default function RootLayout({
 							<WorkspaceInviteModal />
 							<MobileMenuSheet />
 							<SearchCommand />
+							<WorkspaceSwitcher />
+							<TaskSelector />
 							<div className="h-full flex flex-row overflow-hidden">
 								{children}
 							</div>

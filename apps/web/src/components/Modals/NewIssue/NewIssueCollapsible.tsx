@@ -5,11 +5,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 import { EffortDropdownButton } from "./EffortDropdownButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
-import { Form, FormItem, FormControl, FormField, FormLabel } from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import {
+	Form,
+	FormItem,
+	FormControl,
+	FormField,
+	FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -21,10 +27,14 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { DateDropdownButton } from "./DateDropdownButton";
-import { Accordion, AccordionContent, AccordionItem } from "../ui/accordion";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+} from "@/components/ui/accordion";
 import { AccordionTrigger } from "@repo/ui/accordion";
 
-const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
+export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { toast } = useToast();
@@ -230,5 +240,3 @@ const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 		</Accordion>
 	);
 };
-
-export default NewIssueCollapsible;
