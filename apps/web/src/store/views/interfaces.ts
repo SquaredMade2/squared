@@ -7,6 +7,16 @@ export type DisplayProperty = {
 	priority: boolean;
 };
 
+export type TaskOrder =
+	| "Title"
+	| "Status"
+	| "Priority"
+	| "Assignee"
+	| "Effort"
+	| "Due Date"
+	| "Updated"
+	| "Created";
+
 export type CompletedTaskPeriod =
 	| "All"
 	| "Past day"
@@ -16,6 +26,7 @@ export type CompletedTaskPeriod =
 
 export type ViewOptions = {
 	showEmptyGroups: boolean;
+	taskOrder: { orderBy: TaskOrder; orderAscending: boolean };
 	showCompletedTasks: { show: boolean; period: CompletedTaskPeriod };
 	displayProperties: DisplayProperty;
 };
