@@ -15,6 +15,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
+import SquaredLoader from "../Loaders/SquaredLoader";
 
 const Index = () => {
 	const {
@@ -98,7 +99,7 @@ const Index = () => {
 				</div>
 				<DialogFooter>
 					<Button onClick={handleInvite} className="w-32">
-						{isLoading ? <div className="loader" /> : "Send invites"}
+						{isLoading ? <SquaredLoader /> : "Send invites"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

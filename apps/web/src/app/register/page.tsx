@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 function RegisterForm() {
 	const [data, setData] = useState({ name: "", email: "", password: "" });
@@ -217,7 +218,7 @@ function RegisterForm() {
 							</div>
 						</div>
 						<Button type="submit" className="w-full" disabled={isLoading}>
-							{isLoading ? <div className="loader" /> : null}
+							{isLoading ? <SquaredLoader /> : null}
 							Register
 						</Button>
 					</form>
@@ -237,7 +238,7 @@ function RegisterForm() {
 						variant="outline"
 						disabled={isLoading}
 					>
-						{isLoading ? <div className="loader" /> : <GoogleIcon />}
+						{isLoading ? <SquaredLoader /> : <GoogleIcon />}
 						Sign up with Google
 					</Button>
 				</CardContent>

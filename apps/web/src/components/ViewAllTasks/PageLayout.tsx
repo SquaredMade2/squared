@@ -8,6 +8,7 @@ import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
 import { NoTasksNewIssueButton } from "../NewIssue";
+import SquaredLoader from "../Loaders/SquaredLoader";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -33,7 +34,7 @@ export function TaskPageLayout({
 	if (loading) {
 		return (
 			<div className="w-full h-full flex items-center justify-center">
-				<div className="loader" />
+				<SquaredLoader />
 			</div>
 		);
 	}

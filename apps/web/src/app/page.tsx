@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
 import { useSession } from "next-auth/react";
 import type { User } from "next-auth";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 const HomePage = () => {
 	const router = useRouter();
@@ -60,7 +61,7 @@ const HomePage = () => {
 			<div className="flex h-full justify-center items-center">
 				<div className="flex flex-col gap-4 items-center">
 					<div className="font-bold text-3xl">Loading</div>
-					<div className="loader" />
+					<SquaredLoader />
 				</div>
 			</div>
 		</div>
