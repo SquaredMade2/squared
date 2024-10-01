@@ -21,14 +21,20 @@ import {
 	YAxis,
 	CartesianGrid,
 	Tooltip,
+	ResponsiveContainer,
+	PieChart,
+	Pie,
+	Cell,
 } from "recharts";
 import { AssignTasksDialog } from "@/components/Sprints";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import type { Sprint, Task } from "@repo/db";
 
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
 export default function SprintDashboardPage() {
-	const { team, sprintId } = useParams();
+	const { workspace, identifier, sprintId } = useParams();
 	const { getSprints, sprints, currentTeam } = useTeamStore((state) => state);
 	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
@@ -72,20 +78,33 @@ export default function SprintDashboardPage() {
 			new Date(sprint.startDate),
 		);
 		const totalTasks = sprintTasks.length;
-		const data = [];
-		for (let i = 0; i <= sprintDays; i++) {
+		return Array.from({ length: sprintDays + 1 }, (_, i) => {
 			const date = new Date(sprint.startDate);
 			date.setDate(date.getDate() + i);
 			const completedTasks = sprintTasks.filter(
 				(task) => task.status === "done" && new Date(task.updatedAt) <= date,
 			).length;
-			data.push({
+			return {
 				day: i,
 				tasks: totalTasks - completedTasks,
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
-			});
-		}
-		return data;
+			};
+		});
+	};
+
+	const getTaskStatusData = () => {
+		const statusCounts = sprintTasks.reduce(
+			(acc, task) => {
+				acc[task.status] = (acc[task.status] || 0) + 1;
+				return acc;
+			},
+			{} as Record<string, number>,
+		);
+
+		return Object.entries(statusCounts).map(([status, count]) => ({
+			name: status,
+			value: count,
+		}));
 	};
 
 	const handleBulkAssign = async () => {
@@ -104,7 +123,7 @@ export default function SprintDashboardPage() {
 	return (
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex items-center justify-between">
-				<Link href={`/${team}/sprints`} passHref>
+				<Link href={`/${workspace}/team/${identifier}/sprints`} passHref>
 					<Button variant="ghost" size="sm">
 						<ArrowLeft className="mr-2 h-4 w-4" /> Back to Sprints
 					</Button>
@@ -134,59 +153,97 @@ export default function SprintDashboardPage() {
 						<CardTitle>Burndown Chart</CardTitle>
 					</CardHeader>
 					<CardContent className="h-[300px]">
-						<LineChart data={getBurndownData()}>
-							<XAxis
-								dataKey="day"
-								stroke="#888888"
-								fontSize={12}
-								tickLine={false}
-								axisLine={false}
-							/>
-							<YAxis
-								stroke="#888888"
-								fontSize={12}
-								tickLine={false}
-								axisLine={false}
-								tickFormatter={(value) => `${value}`}
-							/>
-							<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-							<Tooltip />
-							<Line
-								type="monotone"
-								dataKey="tasks"
-								stroke="#8884d8"
-								strokeWidth={2}
-							/>
-							<Line
-								type="monotone"
-								dataKey="ideal"
-								stroke="#82ca9d"
-								strokeWidth={2}
-								strokeDasharray="5 5"
-							/>
-						</LineChart>
+						<ResponsiveContainer width="100%" height="100%">
+							<LineChart data={getBurndownData()}>
+								<CartesianGrid strokeDasharray="3 3" />
+								<XAxis dataKey="day" />
+								<YAxis />
+								<Tooltip />
+								<Line
+									type="monotone"
+									dataKey="tasks"
+									stroke="#8884d8"
+									name="Actual"
+								/>
+								<Line
+									type="monotone"
+									dataKey="ideal"
+									stroke="#82ca9d"
+									name="Ideal"
+									strokeDasharray="5 5"
+								/>
+							</LineChart>
+						</ResponsiveContainer>
 					</CardContent>
 				</Card>
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Sprint Statistics</CardTitle>
+						<CardTitle>Task Status Distribution</CardTitle>
 					</CardHeader>
-					<CardContent>
-						<div className="space-y-2">
-							<p>Total Tasks: {sprintTasks.length}</p>
-							<p>
-								Completed Tasks:{" "}
-								{sprintTasks.filter((task) => task.status === "done").length}
-							</p>
-							<p>
-								Remaining Tasks:{" "}
-								{sprintTasks.filter((task) => task.status !== "done").length}
-							</p>
-						</div>
+					<CardContent className="h-[300px]">
+						<ResponsiveContainer width="100%" height="100%">
+							<PieChart>
+								<Pie
+									data={getTaskStatusData()}
+									cx="50%"
+									cy="50%"
+									labelLine={false}
+									outerRadius={80}
+									fill="#8884d8"
+									dataKey="value"
+									label={({ name, percent }) =>
+										`${name} ${(percent * 100).toFixed(0)}%`
+									}
+								>
+									{getTaskStatusData().map((entry, index) => (
+										<Cell
+											key={`cell-${entry.value}`}
+											fill={COLORS[index % COLORS.length]}
+										/>
+									))}
+								</Pie>
+								<Tooltip />
+							</PieChart>
+						</ResponsiveContainer>
 					</CardContent>
 				</Card>
 			</div>
+
+			<Card>
+				<CardHeader>
+					<CardTitle>Sprint Statistics</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+						<div>
+							<h3 className="text-lg font-semibold">Total Tasks</h3>
+							<p className="text-3xl font-bold">{sprintTasks.length}</p>
+						</div>
+						<div>
+							<h3 className="text-lg font-semibold">Completed Tasks</h3>
+							<p className="text-3xl font-bold">
+								{sprintTasks.filter((task) => task.status === "done").length}
+							</p>
+						</div>
+						<div>
+							<h3 className="text-lg font-semibold">In Progress</h3>
+							<p className="text-3xl font-bold">
+								{
+									sprintTasks.filter((task) => task.status === "inProgress")
+										.length
+								}
+							</p>
+						</div>
+						<div>
+							<h3 className="text-lg font-semibold">To Do</h3>
+							<p className="text-3xl font-bold">
+								{sprintTasks.filter((task) => task.status === "todo").length}
+							</p>
+						</div>
+					</div>
+				</CardContent>
+			</Card>
 
 			<div className="flex justify-between items-center">
 				<h2 className="text-2xl font-semibold">Sprint Tasks</h2>

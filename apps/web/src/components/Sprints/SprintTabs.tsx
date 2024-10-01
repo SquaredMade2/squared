@@ -119,29 +119,28 @@ export function SprintTabs({
 				<TabsTrigger value="upcoming">Upcoming Sprints</TabsTrigger>
 				<TabsTrigger value="completed">Completed Sprints</TabsTrigger>
 			</TabsList>
-			<div className="h-[600px] mt-4">
-				<ScrollArea className="h-full">
-					<TabsContent
-						value="upcoming"
-						className={activeTab === "upcoming" ? "" : "hidden"}
-					>
-						{activeSprint && (
-							<>
-								<h3 className="text-lg font-semibold mb-2">Active Sprint</h3>
-								{renderSprintCard(activeSprint, true)}
-							</>
-						)}
-						<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
-						{upcomingSprints.map((sprint) => renderSprintCard(sprint))}
-					</TabsContent>
-					<TabsContent
-						value="completed"
-						className={activeTab === "completed" ? "" : "hidden"}
-					>
-						{completedSprints.map((sprint) => renderSprintCard(sprint))}
-					</TabsContent>
-				</ScrollArea>
-			</div>
+
+			<ScrollArea className="h-full">
+				<TabsContent
+					value="upcoming"
+					className={activeTab === "upcoming" ? "" : "hidden"}
+				>
+					{activeSprint && (
+						<>
+							<h3 className="text-lg font-semibold mb-2">Active Sprint</h3>
+							{renderSprintCard(activeSprint, true)}
+						</>
+					)}
+					<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
+					{upcomingSprints.map((sprint) => renderSprintCard(sprint))}
+				</TabsContent>
+				<TabsContent
+					value="completed"
+					className={activeTab === "completed" ? "" : "hidden"}
+				>
+					{completedSprints.map((sprint) => renderSprintCard(sprint))}
+				</TabsContent>
+			</ScrollArea>
 		</Tabs>
 	);
 }

@@ -25,8 +25,8 @@ import {
 	Line,
 	XAxis,
 	YAxis,
-	CartesianGrid,
 	Tooltip,
+	ResponsiveContainer,
 } from "recharts";
 import { useTaskStore, useTeamStore } from "@/store";
 import type { Priority, Sprint, Task } from "@repo/db";
@@ -111,30 +111,26 @@ export default function SprintDashboard() {
 
 	const getBurndownData = () => {
 		if (!activeSprint) return [];
+		const sprintTasks = tasks.filter(
+			(task) => task.sprintId === activeSprint.id,
+		);
 		const sprintDays = differenceInDays(
 			new Date(activeSprint.endDate),
 			new Date(activeSprint.startDate),
 		);
-		const totalTasks = tasks.filter(
-			(task) => task.sprintId === activeSprint.id,
-		).length;
-		const data = [];
-		for (let i = 0; i <= sprintDays; i++) {
+		const totalTasks = sprintTasks.length;
+		return Array.from({ length: sprintDays + 1 }, (_, i) => {
 			const date = new Date(activeSprint.startDate);
 			date.setDate(date.getDate() + i);
-			const completedTasks = tasks.filter(
-				(task) =>
-					task.sprintId === activeSprint.id &&
-					task.status === "done" &&
-					new Date(task.updatedAt) <= date,
+			const completedTasks = sprintTasks.filter(
+				(task) => task.status === "done" && new Date(task.updatedAt) <= date,
 			).length;
-			data.push({
+			return {
 				day: i,
 				tasks: totalTasks - completedTasks,
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
-			});
-		}
-		return data;
+			};
+		});
 	};
 
 	const getVelocity = () => {
@@ -237,38 +233,41 @@ export default function SprintDashboard() {
 					<CardHeader>
 						<CardTitle>Burndown Chart</CardTitle>
 					</CardHeader>
-					<CardContent className="h-[300px]">
-						<LineChart data={getBurndownData()}>
-							<XAxis
-								dataKey="day"
-								stroke="#888888"
-								fontSize={12}
-								tickLine={false}
-								axisLine={false}
-							/>
-							<YAxis
-								stroke="#888888"
-								fontSize={12}
-								tickLine={false}
-								axisLine={false}
-								tickFormatter={(value) => `${value}`}
-							/>
-							<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-							<Tooltip />
-							<Line
-								type="monotone"
-								dataKey="tasks"
-								stroke="#8884d8"
-								strokeWidth={2}
-							/>
-							<Line
-								type="monotone"
-								dataKey="ideal"
-								stroke="#82ca9d"
-								strokeWidth={2}
-								strokeDasharray="5 5"
-							/>
-						</LineChart>
+					<CardContent>
+						<ResponsiveContainer width="100%" height="100%">
+							<LineChart
+								data={getBurndownData()}
+								margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+							>
+								<XAxis dataKey="day" tick={false} axisLine={false} />
+								<YAxis hide={true} />
+								<Tooltip
+									contentStyle={{
+										background: "hsl(var(--card))",
+										border: "none",
+										borderRadius: "8px",
+									}}
+									labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+								/>
+								<Line
+									type="monotone"
+									dataKey="tasks"
+									stroke="hsl(var(--primary))"
+									strokeWidth={2}
+									dot={false}
+									name="Actual"
+								/>
+								<Line
+									type="monotone"
+									dataKey="ideal"
+									stroke="hsl(var(--muted))"
+									strokeWidth={2}
+									strokeDasharray="5 5"
+									dot={false}
+									name="Ideal"
+								/>
+							</LineChart>
+						</ResponsiveContainer>
 					</CardContent>
 				</Card>
 
