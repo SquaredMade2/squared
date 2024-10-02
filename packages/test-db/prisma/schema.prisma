@@ -311,8 +311,8 @@ model UniversalTokenLink {
 
 model GithubRepoInfo {
   id          String   @id @default(uuid())
-  repoName    String   @unique
-  owner       String
+  repoName    String   @unique @default("")
+  owner       String   @default("")
   workspaceId String?  @unique
   branches    Branch[]  
 
