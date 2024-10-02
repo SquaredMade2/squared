@@ -30,7 +30,7 @@
                 "Updates"
             ],
             "assignees": [
-                "SquaredMade2/squared-developers"
+                "team:squared-developers"
             ]
         },
         {
@@ -41,7 +41,7 @@
                 "apps/web"
             ],
             "assignees": [
-                "SquaredMade2/frontend-developers"
+                "team:frontend-developers"
             ],
             "labels": [
                 "Frontend Updates"
@@ -55,7 +55,7 @@
                 "apps/www"
             ],
             "assignees": [
-                "SquaredMade2/frontend-developers"
+                "team:frontend-developers"
             ],
             "labels": [
                 "Frontend Updates"
@@ -69,7 +69,7 @@
                 "apps/api"
             ],
             "assignees": [
-                "SquaredMade2/backend-developers"
+                "team:backend-developers"
             ],
             "labels": [
                 "Backend Updates"
@@ -83,7 +83,7 @@
                 "packages/**/*"
             ],
             "assignees": [
-                "SquaredMade2/squared-developers"
+                "team:squared-developers"
             ],
             "labels": [
                 "Package Updates"
@@ -99,7 +99,7 @@
                 "packages/**/*"
             ],
             "assignees": [
-                "SquaredMade2/fullstack-developers"
+                "team:fullstack-developers"
             ],
             "labels": [
                 "Fullstack Updates"

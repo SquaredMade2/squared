@@ -68,7 +68,6 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 			<PopoverTrigger asChild>
 				<Button
 					variant="outline"
-					role="combobox"
 					aria-expanded={open}
 					className="justify-between md:w-full h-8 md:h-10"
 				>

@@ -3,7 +3,7 @@
 
 import { useTaskPage } from "@/hooks/useTaskPage";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import UnassignedColumns from "@/components/ViewAllTasks/UnassignedColumns";
+import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { useFilterStore, useViewStore } from "@/store";
 import { Status } from "@repo/db";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
@@ -21,13 +21,16 @@ export default function AllTasksPage() {
 		getTasksForStatus,
 	} = useTaskPage(filterTasks);
 
-	const getEmptyColumns = (): Status[] => {
+	const getHiddenColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
 
 		return filteredStatuses.filter((status) => {
 			if (status === Status.archived) return false;
-
 			const tasks = getTasksForStatus(status);
+			if (status === Status.done && !gridViewOptions.showCompletedTasks.show) {
+				return tasks;
+			}
+
 			return tasks && tasks.length === 0;
 		});
 	};
@@ -47,9 +50,12 @@ export default function AllTasksPage() {
 			/>
 			{view === "grid" &&
 				!gridViewOptions.showEmptyGroups &&
-				getEmptyColumns().length >= 1 && (
+				getHiddenColumns().length >= 1 && (
 					<div className="ml-auto">
-						<UnassignedColumns getEmptyColumns={getEmptyColumns} />
+						<HiddenColumns
+							getHiddenColumns={getHiddenColumns}
+							getTasksForStatus={getTasksForStatus}
+						/>
 					</div>
 				)}
 		</TaskPageLayout>

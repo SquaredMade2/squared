@@ -31,6 +31,7 @@ export class CommandSchema {
 	setShowSwitchWorkspace: (input: boolean) => void;
 	setShowNavbar: (input: boolean) => void;
 	showNavbar: boolean;
+	setShowTaskSelector: (input: boolean) => void;
 	clearFilter: () => void;
 	showToast: (
 		title: string,
@@ -41,12 +42,14 @@ export class CommandSchema {
 		setShowNewIssue,
 		setShowSwitchWorkspace,
 		setShowNavbar,
+		setShowTaskSelector,
 		clearFilter,
 		showToast,
 	}: {
 		setShowNewIssue: (input: boolean) => void;
 		setShowSwitchWorkspace: (input: boolean) => void;
 		setShowNavbar: (input: boolean) => void;
+		setShowTaskSelector: (input: boolean) => void;
 		clearFilter: () => void;
 		showToast: (
 			title: string,
@@ -63,6 +66,7 @@ export class CommandSchema {
 		this.setShowNewIssue = setShowNewIssue;
 		this.setShowSwitchWorkspace = setShowSwitchWorkspace;
 		this.setShowNavbar = setShowNavbar;
+		this.setShowTaskSelector = setShowTaskSelector;
 		this.clearFilter = clearFilter;
 		this.showToast = showToast;
 	}
@@ -149,11 +153,11 @@ export class CommandSchema {
 				},
 			},
 			Navigation: {
-				openIssue: {
+				openTask: {
 					icon: <Circle className="size-4 mr-2" />,
-					text: "Open issue...",
+					text: "Open task...",
 					function: () => {
-						/* This is for the future functionality */
+						this.setShowTaskSelector(true);
 					},
 					shortcut: ["O", "then", "I"],
 				},

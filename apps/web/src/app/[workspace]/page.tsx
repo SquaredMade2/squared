@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
 import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
-import { Loader2 } from "lucide-react";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 export default function Home() {
 	const [loading, setLoading] = useState(true);
@@ -54,10 +54,8 @@ export default function Home() {
 				<div className="h-screen w-full">
 					<div className="flex h-full justify-center items-center">
 						<div className="flex flex-col gap-4 items-center">
-							<div className="font-bold text-3xl">
-								Loading Workspace, please wait...
-							</div>
-							<Loader2 size={64} className="animate-spin" />
+							<div className="font-bold text-3xl">Loading Workspace</div>
+							<SquaredLoader />
 						</div>
 					</div>
 				</div>
