@@ -30,13 +30,24 @@ export const sendMail = async (
 	confirmationRouteOption: string,
 	workspace?: string,
 	workspaceName?: string,
-	type: "verify" | "invite" = "verify",
+	type: "verify" | "invite" | "resetPassword" = "verify",
 ) => {
 	try {
-		const url =
-			type === "verify"
-				? `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`
-				: `${NEXT_PUBLIC_CONFIRM_URL}/login?token=${emailToken}`;
+		let url: string;
+		switch (type) {
+			case "verify":
+				url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
+				break;
+			case "invite":
+				url = `${NEXT_PUBLIC_CONFIRM_URL}/login?token=${emailToken}`;
+				break;
+			case "resetPassword":
+				url = `${NEXT_PUBLIC_CONFIRM_URL}/forgotPassword/${emailToken}`;
+				break;
+			default:
+				url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
+				break;
+		}
 		let subject = "Confirm Email!";
 		let htmlContent: string;
 
