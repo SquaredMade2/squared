@@ -54,20 +54,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						set({ user: null });
 
 						// Clear all session storage items
-						const itemsToRemove = [
-							"auth-store",
-							"activity-store",
-							"task-store",
-							"notification-store",
-							"team-store",
-							"workspace-store",
-							"user-store",
-							"view-store",
-							"filter-store",
-						];
-						for (const item in itemsToRemove) {
-							sessionStorage.removeItem(item);
-						}
+						sessionStorage.clear();
 
 						// Sign out using NextAuth and redirect to login page
 						await signOut({ redirect: false });
