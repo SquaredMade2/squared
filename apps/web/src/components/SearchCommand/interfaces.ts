@@ -7,7 +7,7 @@ export interface SearchbarItem {
 	shortcut: string[];
 }
 
-export interface SearchbarSection {
+interface SearchbarSection {
 	[key: string]: SearchbarItem;
 }
 
