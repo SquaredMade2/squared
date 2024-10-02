@@ -30,6 +30,8 @@ import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store";
 import { DateDropdownButton } from "./DateDropdownButton";
 import { useCreateTask } from "@/hooks/useCreateTask";
+export * from "./NewIssueButton";
+export * from "./NewIssueCollapsible";
 
 export const NewIssueModal = () => {
 	const { toast } = useToast();
