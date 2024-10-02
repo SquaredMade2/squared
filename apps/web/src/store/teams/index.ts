@@ -151,8 +151,26 @@ export const createTeamStore = (
 					sprint: InitializeSprintsBody,
 				): Promise<Sprint[]> => {
 					try {
+						// Get current sprints
+						const currentSprints = await get().getSprints(teamId);
+
+						// Filter pending sprints
+						const pendingSprints = currentSprints.filter(
+							(s) => s.status === "PLANNED",
+						);
+
+						// Calculate how many sprints we can create
+						const sprintsToCreate = Math.max(0, 3 - pendingSprints.length);
+
+						if (sprintsToCreate === 0) {
+							return [];
+						}
+
+						// Modify the request to create only the allowed number of sprints
+						const modifiedSprint = { ...sprint, count: sprintsToCreate };
+
 						const response: { data: ApiReturnType<Sprint[]> } =
-							await axios.post(apiString(`${teamId}/sprints`), sprint);
+							await axios.post(apiString(`${teamId}/sprints`), modifiedSprint);
 						const { data: newSprints } = response.data;
 
 						if (!newSprints) {

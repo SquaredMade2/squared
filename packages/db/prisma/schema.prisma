@@ -201,19 +201,17 @@ model Task {
 }
 
 model Team {
-  id                 String   @id @default(uuid())
-  name               String?
-  identifier         String
-  workspaceId        String
-  sprintsEnabled     Boolean  @default(false)
-  sprintDuration     Int      @default(2)
-  cooldownDuration   Int      @default(1)
-  upcomingSprints    Int      @default(3)
-  activeRequired     Boolean  @default(true)
-  addStartedIssues   Boolean  @default(true)
-  addCompletedIssues Boolean  @default(true)
-  sprintStartDate    DateTime @default(now())
-  tasksPerSprint     Int      @default(10)
+  id               String   @id @default(uuid())
+  name             String?
+  identifier       String
+  workspaceId      String
+  sprintsEnabled   Boolean  @default(false)
+  sprintDuration   Int      @default(2)
+  cooldownDuration Int      @default(1)
+  upcomingSprints  Int      @default(3)
+  activeRequired   Boolean  @default(true)
+  sprintStartDate  DateTime @default(now())
+  tasksPerSprint   Int      @default(10)
 
   Tasks     Task[]
   Project   Project[]

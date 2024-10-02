@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,6 +20,17 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
 	X,
 	Maximize2,
 	ChevronRight,
@@ -27,26 +38,47 @@ import {
 	ChevronDown,
 } from "lucide-react";
 import { addDays, format, startOfWeek } from "date-fns";
-import { useTeamStore } from "@/store";
+import { useTeamStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
-import type { Team } from "@repo/db";
+import type { Sprint, Team } from "@repo/db";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function TeamSettingsSprints() {
-	const { currentTeam, updateTeam, setCurrentTeam, initializeSprints } =
-		useTeamStore((state) => state);
+	const {
+		currentTeam,
+		updateTeam,
+		setCurrentTeam,
+		initializeSprints,
+		getSprints,
+	} = useTeamStore((state) => state);
+	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(true);
+	const [pendingSprints, setPendingSprints] = useState(0);
+	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 	const { toast } = useToast();
+
+	useEffect(() => {
+		if (currentTeam) {
+			getSprints(currentTeam.id).then((sprints) => {
+				const pending = sprints.filter((s) => s.status === "PLANNED").length;
+				setPendingSprints(pending);
+				const active = sprints.find((s) => s.status === "ACTIVE");
+				setActiveSprint(active || null);
+			});
+		}
+	}, [currentTeam, getSprints]);
 
 	const handleUpdateTeam = async (data: Partial<Team>) => {
 		try {
 			if (!currentTeam) throw new Error("No team found");
 			const response = await updateTeam(currentTeam.id, data);
-			response.team?.sprintsEnabled &&
-				(await initializeSprints(currentTeam.id, {
+			if (response.team?.sprintsEnabled) {
+				const newSprints = await initializeSprints(currentTeam.id, {
 					count: currentTeam.upcomingSprints,
 					startDate: currentTeam.sprintStartDate,
-				}));
+				});
+				setPendingSprints((prev) => prev + newSprints.length);
+			}
 			if (!response) return;
 			response.variant === "destructive"
 				? toast(response)
@@ -64,6 +96,36 @@ export default function TeamSettingsSprints() {
 		}
 	};
 
+	const handleAddTasksToSprint = async (type: "active" | "completed") => {
+		if (!currentTeam || !activeSprint) return;
+
+		try {
+			const response = await toggleSprintTasks(
+				currentTeam.id,
+				activeSprint.id,
+				"add",
+			);
+
+			if (response.data) {
+				toast({
+					title: `${type === "active" ? "Active" : "Completed"} tasks added to sprint`,
+					description:
+						"The tasks have been successfully added to the current sprint.",
+					variant: "default",
+				});
+			} else {
+				throw new Error(response.message);
+			}
+		} catch (error) {
+			toast({
+				title: `Error adding ${type} tasks to sprint`,
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+				variant: "destructive",
+			});
+		}
+	};
+
 	if (!currentTeam) return null;
 	const {
 		sprintsEnabled,
@@ -71,8 +133,6 @@ export default function TeamSettingsSprints() {
 		cooldownDuration,
 		sprintStartDate,
 		upcomingSprints,
-		addStartedIssues,
-		addCompletedIssues,
 		activeRequired,
 	} = currentTeam;
 
@@ -162,8 +222,6 @@ export default function TeamSettingsSprints() {
 							),
 							upcomingSprints: 3,
 							activeRequired: true,
-							addStartedIssues: true,
-							addCompletedIssues: true,
 						})
 					}
 					aria-label="Enable sprints"
@@ -260,7 +318,7 @@ export default function TeamSettingsSprints() {
 							</div>
 							<div className="flex justify-between items-center w-full">
 								<Label htmlFor="upcomingSprints">
-									Number of upcoming sprints to create
+									Number of upcoming sprints to create (max 3 pending)
 								</Label>
 								<Select
 									value={upcomingSprints.toString()}
@@ -272,7 +330,7 @@ export default function TeamSettingsSprints() {
 										<SelectValue placeholder="Select number" />
 									</SelectTrigger>
 									<SelectContent className="w-60">
-										{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+										{[1, 2, 3].map((num) => (
 											<SelectItem key={num} value={num.toString()}>
 												{num} {num === 1 ? "sprint" : "sprints"}
 											</SelectItem>
@@ -280,64 +338,95 @@ export default function TeamSettingsSprints() {
 									</SelectContent>
 								</Select>
 							</div>
+							<p className="text-sm text-muted-foreground">
+								Current pending sprints: {pendingSprints}
+							</p>
 						</CardContent>
 					</Card>
 					<p className="my-6 text-muted-foreground">
-						To make sure all of your work is captured by sprints, Squared can
-						automatically add issues that are started or completed to the
-						current sprint.
+						You can add unassigned tasks to the current active sprint using the
+						buttons below.
 					</p>
 					<Card>
 						<CardContent className="space-y-4 py-6">
 							<div className="space-y-4">
 								<div className="flex items-center justify-between">
 									<div className="flex flex-col items-start">
-										<Label htmlFor="addStartedIssues" className="mb-2">
-											Add started issues
+										<Label htmlFor="addActiveTasks" className="mb-2">
+											Add active tasks to current sprint
 										</Label>
 										<p className="text-sm text-muted-foreground w-11/12">
-											Automatically include issues that team members have begun
-											working on. This ensures your sprints accurately reflect
-											ongoing work and helps maintain an up-to-date view of your
-											team's progress.
+											Add all unassigned active tasks (To Do, In Progress, In
+											Review) to the current sprint.
 										</p>
 									</div>
-									<Switch
-										id="addStartedIssues"
-										checked={addStartedIssues}
-										onCheckedChange={(checked) =>
-											handleUpdateTeam({ addStartedIssues: checked })
-										}
-									/>
+									<AlertDialog>
+										<AlertDialogTrigger asChild>
+											<Button variant="outline">Add Active Tasks</Button>
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>
+													Add Active Tasks to Sprint
+												</AlertDialogTitle>
+												<AlertDialogDescription>
+													This will add all unassigned active tasks to the
+													current sprint. Are you sure you want to continue?
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													onClick={() => handleAddTasksToSprint("active")}
+												>
+													Continue
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
 								</div>
 							</div>
 							<div className="space-y-2">
 								<div className="flex items-center justify-between">
 									<div className="flex flex-col items-start">
-										<Label htmlFor="addCompletedIssues" className="mb-2">
-											Add completed issues
+										<Label htmlFor="addCompletedTasks" className="mb-2">
+											Add completed tasks to current sprint
 										</Label>
 										<p className="text-sm text-muted-foreground w-11/12">
-											Incorporate recently completed issues into your sprints.
-											This option provides a comprehensive overview of your
-											team's accomplishments, making it easier to track
-											productivity and celebrate successes during sprint
-											reviews.
+											Add all unassigned completed tasks (Done) to the current
+											sprint.
 										</p>
 									</div>
-									<Switch
-										id="addCompletedIssues"
-										checked={addCompletedIssues}
-										onCheckedChange={(checked) =>
-											handleUpdateTeam({ addCompletedIssues: checked })
-										}
-									/>
+									<AlertDialog>
+										<AlertDialogTrigger asChild>
+											<Button variant="outline">Add Completed Tasks</Button>
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>
+													Add Completed Tasks to Sprint
+												</AlertDialogTitle>
+												<AlertDialogDescription>
+													This will add all unassigned completed tasks to the
+													current sprint. Are you sure you want to continue?
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													onClick={() => handleAddTasksToSprint("completed")}
+												>
+													Continue
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
 								</div>
 							</div>
 						</CardContent>
 					</Card>
 
-					<div className="flex items-center justify-between">
+					<div className="flex items-center justify-between mt-6">
 						<div className="flex flex-col items-start">
 							<Label htmlFor="activeRequired" className="mb-2">
 								Active issues are required to belong to a sprint.
