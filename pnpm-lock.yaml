@@ -119,7 +119,7 @@ importers:
         version: 10.0.0
       nodemon:
         specifier: ^3.0.1
-        version: 3.1.4
+        version: 3.1.7
       typescript:
         specifier: ^5.5.4
         version: 5.6.2
@@ -6168,8 +6168,8 @@ packages:
     resolution: {integrity: sha512-AHf04ySLC6CIfuRtRiEYtGEXgRfa6INgWGluDhnxTZhHSKvrBu7lc1VVchQ0d8nPc4cFaZoPq8vkyNoZr0TpGQ==}
     engines: {node: '>=6.0.0'}
 
-  nodemon@3.1.4:
-    resolution: {integrity: sha512-wjPBbFhtpJwmIeY2yP7QF+UKzPfltVGtfce1g/bB15/8vCGZj8uxD62b/b9M9/WVgme0NZudpownKN+c0plXlQ==}
+  nodemon@3.1.7:
+    resolution: {integrity: sha512-hLj7fuMow6f0lbB0cD14Lz2xNjwsyruH251Pk4t/yIitCFJbmY1myuLlHm/q06aST4jg6EgAh74PIBBrRqpVAQ==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -8089,7 +8089,7 @@ snapshots:
       '@babel/traverse': 7.25.3
       '@babel/types': 7.25.2
       convert-source-map: 2.0.0
-      debug: 4.3.6(supports-color@5.5.0)
+      debug: 4.3.6
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -8957,7 +8957,7 @@ snapshots:
       '@babel/parser': 7.25.4
       '@babel/template': 7.25.0
       '@babel/types': 7.25.4
-      debug: 4.3.6(supports-color@5.5.0)
+      debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -8969,7 +8969,7 @@ snapshots:
       '@babel/parser': 7.25.4
       '@babel/template': 7.25.0
       '@babel/types': 7.25.4
-      debug: 4.3.7(supports-color@8.1.1)
+      debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -8981,7 +8981,7 @@ snapshots:
       '@babel/parser': 7.25.6
       '@babel/template': 7.25.0
       '@babel/types': 7.25.6
-      debug: 4.3.6(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -12582,9 +12582,13 @@ snapshots:
     optionalDependencies:
       supports-color: 8.1.1
 
-  debug@4.3.6(supports-color@5.5.0):
+  debug@4.3.6:
     dependencies:
       ms: 2.1.2
+
+  debug@4.3.7(supports-color@5.5.0):
+    dependencies:
+      ms: 2.1.3
     optionalDependencies:
       supports-color: 5.5.0
 
@@ -15186,10 +15190,10 @@ snapshots:
 
   nodemailer@6.9.15: {}
 
-  nodemon@3.1.4:
+  nodemon@3.1.7:
     dependencies:
       chokidar: 3.6.0
-      debug: 4.3.6(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@5.5.0)
       ignore-by-default: 1.0.1
       minimatch: 3.1.2
       pstree.remy: 1.1.8
