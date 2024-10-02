@@ -60,7 +60,10 @@ function RegisterForm() {
 				}
 
 				if (inviteToken) {
-					const { workspace } = await joinWorkspace(inviteToken, response.user);
+					const { workspace } = await joinWorkspace(
+						inviteToken,
+						response.user.id,
+					);
 					if (workspace?.url) {
 						router.push(`/${workspace.url}`);
 					}
@@ -109,7 +112,7 @@ function RegisterForm() {
 					if (inviteToken) {
 						const { workspace, message, variant } = await joinWorkspace(
 							inviteToken,
-							user,
+							user.id,
 						);
 						if (workspace?.url) {
 							toast({ title: message, variant });
