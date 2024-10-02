@@ -15,8 +15,8 @@
     "lint": "biome lint --error-on-warnings ./src"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.1",
     "@repo/typescript-config": "workspace:*",
+    "@biomejs/biome": "1.9.3",
     "@types/node": "^22.5.1",
     "@types/winston": "^2.4.4",
     "typescript": "^5.5.4"

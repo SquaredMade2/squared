@@ -81,13 +81,33 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						return false;
 					}
 				},
-				resetPassword: async (email: string) => {
-					const response: { data: boolean } = await axios.post(
+				resetPasswordEmail: async (email: string) => {
+					const response: { data: AuthReturn } = await axios.post(
 						apiString("reset-password"),
 						{
 							email,
 						},
 					);
+					return response.data;
+				},
+				resetPassword: async (token: string, newPassword: string) => {
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(`reset-password/${token}`),
+						{
+							newPassword,
+						},
+					);
+					return response.data;
+				},
+				checkTokenValid: async (token: string) => {
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(token),
+						{
+							token,
+							validate: true,
+						},
+					);
+					set({ user: response.data.user });
 					return response.data;
 				},
 				setUser: (user: User | null) => {
