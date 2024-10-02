@@ -23,7 +23,7 @@ export const getInitials = (name: string) => {
 	if (typeof name === "string") {
 		const words = name.split(/(?=[A-Z])|\s+/);
 		if (words.length === 1) {
-			return name.substr(0, 2).toUpperCase();
+			return name.substring(0, 2).toUpperCase();
 		}
 		const filteredWords = [words[0], words[1]];
 		const initials = filteredWords.map((word) => word.charAt(0));

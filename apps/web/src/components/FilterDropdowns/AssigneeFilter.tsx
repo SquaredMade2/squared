@@ -83,26 +83,28 @@ export default function AssigneeFilterDropDown({
 							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
 						>
 							<CommandGroup>
-								{filteredAssignees.map((user) => (
-									<CommandItem
-										key={user.id}
-										onSelect={() => handleAssigneeChange(user)}
-										className="flex items-center space-x-2 cursor-pointer h-8"
-									>
-										<div className="flex items-center flex-1 space-x-2">
-											{selectedAssignees.some((l) => l.id === user.id) ? (
-												<Check className="w-4 h-4" />
-											) : (
-												<div className="w-4 h-4" />
-											)}
-											<ProfileImage
-												profileName={user.name}
-												location="assigneeDropdown"
-											/>
-											<span className="w-2/3 truncate">{user.username}</span>
-										</div>
-									</CommandItem>
-								))}
+								{filteredAssignees
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.map((user) => (
+										<CommandItem
+											key={user.id}
+											onSelect={() => handleAssigneeChange(user)}
+											className="flex items-center space-x-2 cursor-pointer h-8"
+										>
+											<div className="flex items-center flex-1 space-x-2">
+												{selectedAssignees.some((l) => l.id === user.id) ? (
+													<Check className="w-4 h-4" />
+												) : (
+													<div className="w-4 h-4" />
+												)}
+												<ProfileImage
+													profileName={user.name}
+													location="assigneeDropdown"
+												/>
+												<span className="w-2/3 truncate">{user.name}</span>
+											</div>
+										</CommandItem>
+									))}
 							</CommandGroup>
 						</ScrollArea>
 					</CommandList>

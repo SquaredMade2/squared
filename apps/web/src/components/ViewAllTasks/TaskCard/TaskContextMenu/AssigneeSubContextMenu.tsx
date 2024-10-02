@@ -62,20 +62,22 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						Unassign
 					</ContextMenuItem>
 
-					{users.map((user) => {
-						return (
-							<ContextMenuItem
-								key={user.id}
-								onClick={() => handleSelectAssignee(user.id)}
-							>
-								<ProfileImage
-									profileName={user.username ?? ""}
-									location={"contextMenu"}
-								/>
-								{user.username}
-							</ContextMenuItem>
-						);
-					})}
+					{users
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map((user) => {
+							return (
+								<ContextMenuItem
+									key={user.id}
+									onClick={() => handleSelectAssignee(user.id)}
+								>
+									<ProfileImage
+										profileName={user.name ?? ""}
+										location={"contextMenu"}
+									/>
+									{user.name}
+								</ContextMenuItem>
+							);
+						})}
 					<ScrollBar orientation="vertical" />
 				</ScrollArea>
 			</ContextMenuSubContent>
