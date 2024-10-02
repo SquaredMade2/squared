@@ -30,6 +30,7 @@ export const StatusDropdownButton = () => {
 					</span>
 					<span className="ml-2 cursor-pointer">
 						{formatStatus(newIssueStatus ?? "backlog")}
+						<sup>*</sup>
 					</span>
 				</Button>
 			</DropdownMenuTrigger>

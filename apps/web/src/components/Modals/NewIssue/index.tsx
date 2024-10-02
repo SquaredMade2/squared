@@ -160,6 +160,8 @@ export const NewIssueModal = () => {
 		}
 	};
 
+	const titleValue = form.watch("title");
+
 	return (
 		<Dialog open={showNewIssue} onOpenChange={setShowNewIssue}>
 			<DialogContent className="max-w-full bg-popover">
@@ -181,7 +183,9 @@ export const NewIssueModal = () => {
 									name="title"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-2xl">Title</FormLabel>
+											<FormLabel className="text-2xl">
+												Title<sup>*</sup>
+											</FormLabel>
 											<FormControl>
 												<Input
 													{...field}
@@ -221,18 +225,29 @@ export const NewIssueModal = () => {
 								<DateDropdownButton />
 							</div>
 						</div>
-						<DialogFooter className="mt-6">
-							<Button
-								onClick={handleDiscard}
-								className="hover:cursor-pointer bg-transparent"
-								variant="destructive"
-								type="button"
-							>
-								Discard
-							</Button>
-							<Button type="submit" className="hover:cursor-pointer">
-								Create Issue
-							</Button>
+						<DialogFooter className="w-full items-center !justify-between mt-6">
+							<p>
+								<small>
+									<sup>*</sup> Required to create new issue
+								</small>
+							</p>
+							<div>
+								<Button
+									onClick={handleDiscard}
+									className="hover:cursor-pointer bg-transparent"
+									variant="destructive"
+									type="button"
+								>
+									Discard
+								</Button>
+								<Button
+									type="submit"
+									className="hover:cursor-pointer"
+									disabled={!status || !priority || !titleValue}
+								>
+									Create Issue
+								</Button>
+							</div>
 						</DialogFooter>
 					</form>
 				</Form>

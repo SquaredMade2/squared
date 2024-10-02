@@ -30,6 +30,7 @@ export const PriorityDropdownButton = () => {
 					</span>
 					<span className="ml-2 cursor-pointer">
 						{formatPriority(newIssuePriority || "noPriority")}
+						<sup>*</sup>
 					</span>
 				</Button>
 			</DropdownMenuTrigger>
