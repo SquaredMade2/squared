@@ -19,8 +19,6 @@ export function createRoute(): Route {
 					where: { email },
 				});
 
-				console.log(user);
-
 				if (!JWT_SECRET) {
 					res.status(500);
 					return {
