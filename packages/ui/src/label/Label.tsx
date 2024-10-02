@@ -16,6 +16,7 @@ interface LabelProps extends PrimitiveLabelProps {}
 const Label = React.forwardRef<LabelElement, LabelProps>(
 	(props, forwardedRef) => {
 		return (
+			// biome-ignore lint/a11y/noLabelWithoutControl: <explanation>
 			<Primitive.label
 				{...props}
 				ref={forwardedRef}

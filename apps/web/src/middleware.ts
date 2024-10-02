@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
 
 // Check if the current route is public (accessible without authentication)
 function isPublicRoute(pathname: string) {
-	const PUBLIC_ROUTES = ["/login", "/register"];
+	const PUBLIC_ROUTES = ["/login", "/register", "/forgotPassword"];
 	const workspaceJoinRegex = /^\/[^\/]+\/join\/[^\/]+$/;
 
 	return (
