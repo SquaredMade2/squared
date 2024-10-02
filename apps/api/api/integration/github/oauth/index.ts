@@ -6,7 +6,11 @@ const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
 if (!clientId || !clientSecret) {
-	throw new Error("Missing necessary environment variables");
+	throw new Error(
+		`Missing necessary environment variables: ${
+			!clientId ? "GITHUB_CLIENT_ID " : ""
+		}${!clientSecret ? "GITHUB_CLIENT_SECRET" : ""}`,
+	);
 }
 
 export function createRoute(): Route {
