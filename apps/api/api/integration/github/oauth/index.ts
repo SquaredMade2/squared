@@ -1,5 +1,5 @@
 import { prisma } from "@/api";
-const axios = require("axios");
+import axios from "axios";
 import type { Route } from "@/api/route";
 
 const clientId = process.env.GITHUB_CLIENT_ID;
@@ -33,7 +33,6 @@ export function createRoute(): Route {
 				);
 
 				const accessToken = tokenResponse.data.access_token;
-				console.log("Access token received from GitHub:", accessToken);
 
 				// Fetch the authenticated GitHub user's details
 				const userResponse = await axios.get("https://api.github.com/user", {
@@ -44,28 +43,30 @@ export function createRoute(): Route {
 				});
 
 				const currentUserLogin = userResponse.data.login;
-				console.log(`Authenticated GitHub user: ${currentUserLogin}`);
 
-				// Update the User with the GitHub username
-				const updatedUser = await prisma.user.update({
-					where: { id: userId as string },
+				if (typeof userId !== "string") {
+					res.status(400).json({ message: "Invalid userId" });
+					return;
+				}
+
+				await prisma.user.update({
+					where: { id: userId },
 					data: {
 						githubUsername: currentUserLogin,
 					},
 				});
-
-				console.log(
-					"User's GitHub username updated successfully:",
-					updatedUser.githubUsername,
-				);
 
 				// Redirect to GitHub's App installation page
 				res.redirect(
 					"https://github.com/apps/SquaredMadeApp/installations/new",
 				);
 			} catch (error) {
-				console.error("Error during OAuth processing:", error);
-				res.status(500).json({ message: "Error during OAuth" });
+				console.error(
+					`Error processing OAuth: ${error instanceof Error ? error.message : error}`,
+				);
+				res.status(500).json({
+					message: `Error during OAuth: ${error instanceof Error && `: ${error.message}`}`,
+				});
 			}
 		},
 	};

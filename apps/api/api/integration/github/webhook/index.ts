@@ -50,18 +50,10 @@ type Params = Record<string, never>;
 export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, _, body): Promise<void> => {
-			console.log("Received POST request for webhook");
 			const payload: GitHubWebhookPayload = body;
 			const eventType = res.req.headers["x-github-event"];
 
-			console.log(
-				"Webhook payload received:",
-				JSON.stringify(payload, null, 2),
-			);
-
 			if (eventType === "installation_repositories") {
-				console.log("Handling repository selection event");
-
 				try {
 					const repositoriesAdded = payload.repositories_added || [];
 					const repositoriesRemoved = payload.repositories_removed || [];
@@ -79,7 +71,11 @@ export function createRoute(): Route<Params> {
 						const repoOwner = githubUsername;
 
 						if (!repoFullName || !repoOwner) {
-							console.error("Missing repository data for removal");
+							console.error(
+								`Missing repository data for removal: ${
+									!repoFullName ? "Repository name " : ""
+								} ${!repoOwner ? "Repository owner" : ""}`,
+							);
 							continue;
 						}
 
@@ -92,7 +88,6 @@ export function createRoute(): Route<Params> {
 							await prisma.githubRepoInfo.delete({
 								where: { id: existingRepoInfo.id },
 							});
-							console.log(`Repository ${repoFullName} removed successfully`);
 						}
 					}
 
@@ -102,7 +97,11 @@ export function createRoute(): Route<Params> {
 						const repoOwner = githubUsername;
 
 						if (!repoFullName || !repoOwner) {
-							console.error("Missing repository data for addition");
+							console.error(
+								`Missing repository data for addition: ${
+									!repoFullName ? "Repository name " : ""
+								} ${!repoOwner ? "Repository owner" : ""}`,
+							);
 							continue;
 						}
 
@@ -111,7 +110,7 @@ export function createRoute(): Route<Params> {
 						});
 
 						if (existingRepoInfo) {
-							console.log(
+							console.error(
 								`Repository ${repoFullName} already exists for owner ${repoOwner}`,
 							);
 							continue;
@@ -132,9 +131,14 @@ export function createRoute(): Route<Params> {
 						.status(200)
 						.json({ message: "Repositories processed successfully" });
 				} catch (error) {
-					console.error("Error processing repository selection:", error);
-					res.status(500).json({ message: "Internal Server Error" });
+					console.error(
+						`Error processing repository selection: ${error instanceof Error ? error.message : error}`,
+					);
+					res.status(500).json({
+						message: `Internal Server Error: ${error instanceof Error && `: ${error.message}`}`,
+					});
 				}
+
 				return;
 			}
 
@@ -169,7 +173,7 @@ export function createRoute(): Route<Params> {
 							!workspace.admins ||
 							workspace.admins.length === 0
 						) {
-							console.log("Workspace or admins not found");
+							console.error("Workspace or admins not found");
 							res
 								.status(404)
 								.json({ message: "Workspace or admins not found" });
@@ -184,7 +188,11 @@ export function createRoute(): Route<Params> {
 						});
 
 						if (!workspaceOwner || !workspaceOwner.githubUsername) {
-							console.log("Workspace owner or GitHub username not found");
+							console.error(
+								`Workspace owner or GitHub username not found: ${
+									!workspaceOwner ? "workspaceOwner" : ""
+								} ${!workspaceOwner?.githubUsername ? "workspaceOwner.githubUsername" : ""}`,
+							);
 							res.status(404).json({
 								message: "Workspace owner or GitHub username not found",
 							});
@@ -195,7 +203,7 @@ export function createRoute(): Route<Params> {
 							payload.pusher?.name || payload.sender?.login;
 
 						if (pusherUsername !== workspaceOwner.githubUsername) {
-							console.log("Pusher is not the workspace owner");
+							console.error("Pusher is not the workspace owner");
 							res.status(403).json({
 								message:
 									"You are not allowed to link this repository to the workspace",
@@ -212,7 +220,7 @@ export function createRoute(): Route<Params> {
 						});
 
 						if (!githubRepoInfo) {
-							console.log("No GithubRepoInfo found for this repository");
+							console.error("No GithubRepoInfo found for this repository");
 							res.status(404).json({ message: "GithubRepoInfo not found" });
 							return;
 						}
@@ -241,9 +249,6 @@ export function createRoute(): Route<Params> {
 							});
 
 						if (existingRepoForWorkspace) {
-							console.log(
-								`Workspace ${workspaceId} is already linked to another repository`,
-							);
 							res.status(403).json({
 								message: `Workspace ${workspaceId} is already linked to another repository`,
 							});
@@ -346,7 +351,6 @@ export function createRoute(): Route<Params> {
 							}
 						}
 
-						console.log(`Branch and commits processed for task ${identifier}`);
 						res.status(200).json({ message: "Webhook processed successfully" });
 					} else {
 						console.log(`No task found for identifier ${identifier}`);
@@ -358,8 +362,9 @@ export function createRoute(): Route<Params> {
 					return;
 				}
 			} else {
-				console.log("No task identifier found in branch name");
-				res.status(200).json({ message: "No task identifier found" });
+				res
+					.status(204)
+					.json({ message: "No task identifier found in branch name" });
 			}
 		},
 	};

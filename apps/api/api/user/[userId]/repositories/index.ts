@@ -41,7 +41,7 @@ export function createRoute(): Route<Params> {
 				res.status(500);
 				return {
 					data: [],
-					message: "Internal server error",
+					message: `Could not fetch connected repositories: ${error}`,
 					variant: "destructive",
 				};
 			}

@@ -1,6 +1,6 @@
 "use client";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import {
@@ -10,30 +10,28 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useUserStore } from "@/store";
+import { useUserStore, useAuthStore } from "@/store";
 
 const GithubSettings: React.FC = () => {
-	const { data: session } = useSession();
-	const authUser = session?.user;
+	const authUser = useAuthStore((state) => state.user);
 	const { connectedRepos, getUserRepositories } = useUserStore((state) => ({
 		connectedRepos: state.connectedRepos,
 		getUserRepositories: state.getUserRepositories,
 	}));
+	const router = useRouter();
 
 	useEffect(() => {
 		if (authUser?.id) {
 			getUserRepositories(authUser.id);
 		}
-		console.log(connectedRepos);
 	}, [authUser, getUserRepositories]);
 
 	const handleClick = (): void => {
-		if (!authUser?.id) {
-			console.error("No authenticated user ID found");
-			return;
-		}
+		if (!authUser?.id) return;
 
-		window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user&state=${authUser.id}`;
+		router.push(
+			`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user&state=${authUser.id}`,
+		);
 	};
 
 	return (
@@ -83,7 +81,7 @@ const GithubSettings: React.FC = () => {
 							<div className="flex justify-center items-center p-6">
 								<Button
 									onClick={handleClick}
-									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
+									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-foreground"
 									variant="outline"
 								>
 									Connect
