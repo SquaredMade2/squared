@@ -55,7 +55,9 @@ export function createRoute(): Route<Params> {
 				});
 
 				const emailsToSend = Array.isArray(email) ? email : [email];
-
+				const existingUsers = await prisma.user.findMany({
+					where: { email: { in: emailsToSend } },
+				});
 				// Send email with the token
 				for (const email of emailsToSend) {
 					await sendMail(
@@ -65,7 +67,9 @@ export function createRoute(): Route<Params> {
 						`${workspace.url}/join`,
 						workspace.id,
 						workspace.name ?? "Squared Workspace",
-						"invite",
+						existingUsers.find((user) => user.email === email)
+							? "verify"
+							: "invite",
 					);
 				}
 				return {

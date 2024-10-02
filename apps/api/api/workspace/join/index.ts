@@ -1,11 +1,11 @@
-import type { User, Workspace } from "@repo/db";
+import type { Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
 import type { Route, APIResponse } from "@/api/route";
 
 type JoinBody = {
 	token: string;
-	user: User;
+	userId: string;
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -14,7 +14,7 @@ export function createRoute(): Route {
 	return {
 		POST: async (res, _, body: JoinBody): Promise<APIResponse<Workspace>> => {
 			try {
-				const { token, user } = body;
+				const { token, userId } = body;
 
 				if (!JWT_SECRET) {
 					res.status(500);
@@ -45,7 +45,7 @@ export function createRoute(): Route {
 
 				// Check if user is already in the workspace
 				const userAlreadyInWorkspace = workspace.Users.some(
-					(workspaceUser) => workspaceUser.userId === user.id,
+					(workspaceUser) => workspaceUser.userId === userId,
 				);
 
 				if (userAlreadyInWorkspace) {
@@ -59,7 +59,7 @@ export function createRoute(): Route {
 				// Add user to workspace
 				await prisma.userWorkspace.create({
 					data: {
-						user: { connect: { id: user.id } },
+						user: { connect: { id: userId } },
 						workspace: { connect: { id: decoded.workspaceId } },
 					},
 				});
@@ -67,12 +67,23 @@ export function createRoute(): Route {
 				// Fetch the updated workspace with user info
 				const updatedWorkspace = await prisma.workspace.findUnique({
 					where: { id: decoded.workspaceId },
-					include: { Users: true, teams: { include: { Tasks: true } } },
+					include: {
+						Users: {
+							include: {
+								user: true,
+							},
+						},
+						teams: { include: { Tasks: true } },
+					},
 				});
 
-				if (user.onBoarding) {
+				const user = updatedWorkspace?.Users.find(
+					(workspaceUser) => workspaceUser.userId === userId,
+				);
+
+				if (user?.user.onBoarding) {
 					await prisma.user.update({
-						where: { id: user.id },
+						where: { id: userId },
 						data: { onBoarding: false },
 					});
 				}
