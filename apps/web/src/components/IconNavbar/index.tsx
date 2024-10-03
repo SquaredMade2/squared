@@ -48,7 +48,7 @@ const IconLeftMenu = () => {
 	};
 
 	const toHome = () => {
-		router.push(`/${workspace?.url}/teams/${currentTeam?.identifier}/all`);
+		router.push(`/${workspace?.url}/team/${currentTeam?.identifier}/all`);
 	};
 
 	useEffect(() => {
