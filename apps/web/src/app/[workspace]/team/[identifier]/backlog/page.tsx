@@ -34,6 +34,7 @@ export default function BacklogTasksPage() {
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
+				allowedColumns={["backlog"]}
 			/>
 		</TaskPageLayout>
 	);

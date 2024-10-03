@@ -17,7 +17,7 @@ import {
 import { useFilterStore, useUserStore } from "@/store";
 import type { FilterDropDownProps } from "./interfaces";
 import type { User } from "@repo/db";
-import { Check } from "lucide-react";
+import { Check, UserSearch } from "lucide-react";
 import ProfileImage from "../ProfileImage";
 import { ScrollArea } from "../ui/scroll-area";
 
@@ -26,16 +26,18 @@ export default function AssigneeFilterDropDown({
 	setShowFilterDropDown,
 }: FilterDropDownProps) {
 	const { users } = useUserStore((state) => state);
-	const [selectedAssignees, setSelectedAssignees] = useState<User[]>([]);
+	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
+		[],
+	);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
 	);
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleAssigneeChange = (label: User) => {
+	const handleAssigneeChange = (label: User | null) => {
 		setSelectedAssignees((prev) =>
-			prev.some((l) => l.id === label.id)
-				? prev.filter((l) => l.id !== label.id)
+			prev.some((l) => l?.id === label?.id)
+				? prev.filter((l) => l?.id !== label?.id)
 				: [...prev, label],
 		);
 	};
@@ -45,7 +47,7 @@ export default function AssigneeFilterDropDown({
 			removeFilter("assigneeId");
 			addFilter({
 				field: "assigneeId",
-				value: selectedAssignees.map((u) => u.id),
+				value: selectedAssignees.map((u) => u?.id || null),
 				operator: "arrayIncludesAny",
 			});
 		} else {
@@ -83,26 +85,43 @@ export default function AssigneeFilterDropDown({
 							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
 						>
 							<CommandGroup>
-								{filteredAssignees.map((user) => (
-									<CommandItem
-										key={user.id}
-										onSelect={() => handleAssigneeChange(user)}
-										className="flex items-center space-x-2 cursor-pointer h-8"
-									>
-										<div className="flex items-center flex-1 space-x-2">
-											{selectedAssignees.some((l) => l.id === user.id) ? (
-												<Check className="w-4 h-4" />
-											) : (
-												<div className="w-4 h-4" />
-											)}
-											<ProfileImage
-												profileName={user.name}
-												location="assigneeDropdown"
-											/>
-											<span className="w-2/3 truncate">{user.username}</span>
-										</div>
-									</CommandItem>
-								))}
+								<CommandItem
+									key="unassigned"
+									onSelect={() => handleAssigneeChange(null)}
+									className="flex items-center space-x-2 cursor-pointer h-8"
+								>
+									<div className="flex items-center flex-1 space-x-2">
+										{selectedAssignees.some((l) => l === null) ? (
+											<Check className="w-4 h-4" />
+										) : (
+											<div className="w-4 h-4" />
+										)}
+										<UserSearch className="size-5 mx-1 mr-2" />
+										<span className="w-2/3 truncate">Unassigned</span>
+									</div>
+								</CommandItem>
+								{filteredAssignees
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.map((user) => (
+										<CommandItem
+											key={user.id}
+											onSelect={() => handleAssigneeChange(user)}
+											className="flex items-center space-x-2 cursor-pointer h-8"
+										>
+											<div className="flex items-center flex-1 space-x-2">
+												{selectedAssignees.some((l) => l?.id === user.id) ? (
+													<Check className="w-4 h-4" />
+												) : (
+													<div className="w-4 h-4" />
+												)}
+												<ProfileImage
+													profileName={user.name}
+													location="assigneeDropdown"
+												/>
+												<span className="w-2/3 truncate">{user.name}</span>
+											</div>
+										</CommandItem>
+									))}
 							</CommandGroup>
 						</ScrollArea>
 					</CommandList>
