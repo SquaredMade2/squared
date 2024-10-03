@@ -75,3 +75,38 @@ export const formatPriority = (priority: Priority) => {
 			return "No priority";
 	}
 };
+
+// export const handleFormatLink = (url: string) => {
+// // if is in url link format [nameOfLink]LinkUrl
+// // return obj separating values
+// // else return the original
+// const linkFormat = /^\[(.+?)\](https?:\/\/[^\s]+)$/;
+// const matchedFormat = url.match(linkFormat);
+// if (matchedFormat) {
+// 	return {
+// 		full: matchedFormat[0],
+// 		linkName: matchedFormat[1],
+// 		linkUrl: matchedFormat[2],
+// 		index: matchedFormat.index,
+// 	};
+// }
+// return null;
+// interface Match {
+// 	full: string;
+// 	linkName: string;
+// 	linkUrl: string;
+// 	index: number;
+// }
+// const linkFormat = /\[(.+?)\]\((https?:\/\/[^\s]+)\)/g;
+// const links: Match[] = [];
+// let match: RegExpExecArray | null;
+// while ((match = linkFormat.exec(url)) !== null) {
+// 	links.push({
+// 		full: match[0],
+// 		linkName: match[1],
+// 		linkUrl: match[2],
+// 		index: match.index,
+// 	});
+// }
+// return links;
+// };

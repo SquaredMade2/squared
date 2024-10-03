@@ -3,8 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreatedByInformation, UpdatedByInformation } from ".";
 import TextEditor from "../TextEditor";
+import { useCommentStore } from "@/store";
+import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
+	const comments = useCommentStore((state) => state.comments);
 	return (
 		<Tabs defaultValue="activity" className="w-full mt-8">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
@@ -18,9 +21,11 @@ export const EventTabs = () => {
 				</div>
 			</TabsContent>
 			<TabsContent value="comments">
-				{/* TODO: Implement CommentForm component */}
+				{comments.map((comment) => {
+					console.log(comment);
+					return <CommentCard key={comment.id} comment={comment} />;
+				})}
 				<TextEditor />
-				<div>Comments will be implemented here</div>
 			</TabsContent>
 		</Tabs>
 	);
