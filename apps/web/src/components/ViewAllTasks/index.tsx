@@ -1,4 +1,5 @@
 "use client";
+
 import GroupColumn from "./GroupColumn";
 import { RenameModal } from "@/components/Modals";
 import { Status, type Task } from "@repo/db";
@@ -9,6 +10,7 @@ import type { CompletedTaskPeriod } from "@/store/views";
 const ViewAllTasks = ({
 	getFilteredStatuses,
 	getTasksForStatus,
+	allowedColumns = Object.values(Status), // Default to all statuses if not specified
 }: ViewAllTasksProps) => {
 	const { view, listViewOptions, gridViewOptions } = useViewStore(
 		(state) => state,
@@ -46,34 +48,36 @@ const ViewAllTasks = ({
 	const filteredColumns = () => {
 		const filteredStatuses = getFilteredStatuses();
 
-		return filteredStatuses.map((status) => {
-			if (status === Status.archived) return null;
+		return filteredStatuses
+			.filter((status) => allowedColumns.includes(status))
+			.map((status) => {
+				if (status === Status.archived) return null;
 
-			let tasksForStatus = getTasksForStatus(status);
+				let tasksForStatus = getTasksForStatus(status);
 
-			if (status === Status.done) {
-				// If status is 'done', filter tasks based on updatedAt and period
-				const { period, show } = viewOptions.showCompletedTasks;
-				if (!show) return null; // Don't show completed tasks if the option is disabled
-				tasksForStatus = filterTasksByPeriod(tasksForStatus, period);
-			}
+				if (status === Status.done) {
+					// If status is 'done', filter tasks based on updatedAt and period
+					const { period, show } = viewOptions.showCompletedTasks;
+					if (!show) return null; // Don't show completed tasks if the option is disabled
+					tasksForStatus = filterTasksByPeriod(tasksForStatus, period);
+				}
 
-			if (tasksForStatus.length === 0 && !viewOptions.showEmptyGroups)
-				// Don't display columns with no tasks unless 'showEmptyGroups' is enabled
-				return null;
+				if (tasksForStatus.length === 0 && !viewOptions.showEmptyGroups)
+					// Don't display columns with no tasks unless 'showEmptyGroups' is enabled
+					return null;
 
-			return (
-				<div key={status} className="px-1">
-					<GroupColumn
-						key={status}
-						currentView={view}
-						columnType={status}
-						title={status}
-						tasks={tasksForStatus.filter((t) => t.parentId === null)}
-					/>
-				</div>
-			);
-		});
+				return (
+					<div key={status} className="px-1">
+						<GroupColumn
+							key={status}
+							currentView={view}
+							columnType={status}
+							title={status}
+							tasks={tasksForStatus.filter((t) => t.parentId === null)}
+						/>
+					</div>
+				);
+			});
 	};
 
 	return (
