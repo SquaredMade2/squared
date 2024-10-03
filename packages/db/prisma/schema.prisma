@@ -43,6 +43,12 @@ enum SavedFilterType {
   WORKSPACE
 }
 
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -174,6 +180,7 @@ model Task {
   updatedAt      DateTime  @default(now()) @updatedAt
   deleted        Boolean   @default(false)
   parentId       String?
+  sprintId       String?
 
   parent   Task?         @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
   children Task[]        @relation("ParentChild")
@@ -186,14 +193,25 @@ model Task {
   Author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Sprint       Sprint?        @relation(fields: [sprintId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Notification Notification[]
+
+  @@unique([teamId, identifier])
+  @@unique([workspaceId, identifier])
 }
 
 model Team {
-  id          String  @id @default(uuid())
-  name        String?
-  identifier  String
-  workspaceId String
+  id               String   @id @default(uuid())
+  name             String?
+  identifier       String
+  workspaceId      String
+  sprintsEnabled   Boolean  @default(false)
+  sprintDuration   Int      @default(2)
+  cooldownDuration Int      @default(1)
+  upcomingSprints  Int      @default(3)
+  activeRequired   Boolean  @default(true)
+  sprintStartDate  DateTime @default(now())
+  tasksPerSprint   Int      @default(10)
 
   Tasks     Task[]
   Project   Project[]
@@ -201,6 +219,9 @@ model Team {
   teamViews SavedFilter[]
 
   Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Sprints   Sprint[]
+
+  @@unique([workspaceId, identifier])
 }
 
 model User {
@@ -325,4 +346,22 @@ model Project {
 
   Team      Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Sprint {
+  id          String       @id @default(uuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  status      SprintStatus
+  teamId      String
+  wentWell    String[]
+  toImprove   String[]
+  actionItems String[]
+
+  Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Tasks Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

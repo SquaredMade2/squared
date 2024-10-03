@@ -42,7 +42,7 @@ export const useCreateTask = () => {
 			const { transformedInput: transformedDescriptionInput } =
 				transformingMentionInputs(input.description ?? "");
 
-			const newTask: Task = {
+			const newTask: Partial<Task> = {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
@@ -52,15 +52,8 @@ export const useCreateTask = () => {
 				labels: input.labels || [],
 				dueDate: input.dueDate ?? null,
 				effortEstimate: input.effortEstimate ?? null,
-				dateCreated: new Date(),
-				assigneeId: null,
-				assigneeName: "",
 				teamId: currentTeam.id,
-				id: "",
 				workspaceId: currentWorkspace.id,
-				updatedAt: new Date(),
-				deleted: false,
-				parentId: null,
 			};
 
 			const {
