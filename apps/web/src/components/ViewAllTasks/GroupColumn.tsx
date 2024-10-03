@@ -104,14 +104,14 @@ const StatusColumn = ({
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
-			<div key={task.id} className="mb-2 w-full">
+			<div key={task.id} className={`mb-2 ${isListView ? "w-full" : "w-72"}`}>
 				<TaskCard task={task} index={index} location={"dashboard"} />
 				{subtasks.length > 0 && (
 					<div
-						className={`mt-1 w-full ${
+						className={`mt-1 ${
 							isListView
-								? "rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
-								: "dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+								? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
+								: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
 						}`}
 					>
 						{subtasks.map((subtask, subIndex) => (
@@ -130,7 +130,9 @@ const StatusColumn = ({
 	};
 
 	return (
-		<div className={isListView ? "mb-2 w-full" : "pb-2 flex-grow"}>
+		<div
+			className={isListView ? "mb-2 w-full" : "pb-2 w-[300px] flex-shrink-0"}
+		>
 			<TaskColumnTitle
 				isListView={isListView}
 				showTasks={showTasks}
@@ -159,7 +161,7 @@ const StatusColumn = ({
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2"
+									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2 items-center"
 							}
 						>
 							{showTasks &&
