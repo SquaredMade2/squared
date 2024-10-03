@@ -69,7 +69,7 @@ const ViewAllTasks = ({
 						currentView={view}
 						columnType={status}
 						title={status}
-						tasks={tasksForStatus}
+						tasks={tasksForStatus.filter((t) => t.parentId === null)}
 					/>
 				</div>
 			);

@@ -11,6 +11,7 @@ import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
 import type { TaskCardProps } from "./interfaces";
+import type { Task } from "@repo/db";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
@@ -23,6 +24,29 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 			task.labels.includes(label.id),
 		) || [];
 
+	const renderTask = (taskToRender: Task, isSubtask = false) => (
+		<div className={`w-full ${isSubtask ? "mt-1" : ""}`}>
+			{view === "grid" && location !== "search" ? (
+				<TaskGrid
+					task={taskToRender}
+					user={users.find((u) => u.id === taskToRender.assigneeId)}
+					currentTeam={currentTeam}
+					taskLabels={taskLabels}
+					isSubtask={isSubtask}
+				/>
+			) : (
+				<TaskList
+					task={taskToRender}
+					user={users.find((u) => u.id === taskToRender.assigneeId)}
+					location={location}
+					highlightText={highlightText}
+					currentTeam={currentTeam}
+					isSubtask={isSubtask}
+				/>
+			)}
+		</div>
+	);
+
 	return (
 		<Draggable draggableId={task.id} index={index}>
 			{(provided) => (
@@ -34,22 +58,7 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 					<ContextMenu>
 						<ContextMenuTrigger>
 							<TaskContextMenu task={task} />
-							{view === "grid" && location !== "search" ? (
-								<TaskGrid
-									task={task}
-									user={users.filter((u) => u.id === task.assigneeId)[0]}
-									currentTeam={currentTeam}
-									taskLabels={taskLabels}
-								/>
-							) : (
-								<TaskList
-									task={task}
-									user={users.filter((u) => u.id === task.assigneeId)[0]}
-									location={location}
-									highlightText={highlightText}
-									currentTeam={currentTeam}
-								/>
-							)}
+							{renderTask(task)}
 						</ContextMenuTrigger>
 					</ContextMenu>
 				</div>

@@ -5,6 +5,7 @@ export interface TaskGridProps {
 	user?: User;
 	currentTeam: Team | null;
 	taskLabels: Label[];
+	isSubtask?: boolean;
 }
 
 export interface TaskListProps {
@@ -13,6 +14,7 @@ export interface TaskListProps {
 	task: Task;
 	user?: User;
 	currentTeam: Team | null;
+	isSubtask?: boolean;
 }
 
 export interface TaskCardProps {
@@ -20,6 +22,7 @@ export interface TaskCardProps {
 	index: number;
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
+	isSubtask?: boolean;
 }
 
 export interface TaskCardLabelsProps {
