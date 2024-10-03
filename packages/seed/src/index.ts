@@ -1,9 +1,16 @@
-import { PrismaClient, Status, Priority } from "../generated/client";
-import type { Team, User, Workspace } from "../generated/client";
+import { PrismaClient, Status, Priority } from "@repo/db";
+import type { Team, User, Workspace } from "@repo/db";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
+import "dotenv/config";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+	datasources: {
+		db: {
+			url: process.env.TEST_POSTGRES_PRISMA_URL,
+		},
+	},
+});
 
 const hashPassword = (password: string): Promise<string> => {
 	return new Promise((resolve, reject) => {

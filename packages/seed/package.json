@@ -1,22 +1,18 @@
 {
-  "name": "@repo/test-db",
+  "name": "@repo/seed",
   "version": "0.0.0",
   "private": true,
   "exports": {
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "prisma generate",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate",
-    "db:seed": "cross-env NODE_ENV=test ts-node src/seed.ts",
+    "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
-    "docker:db:down": "docker-compose -f docker-compose.yml down --volumes",
-    "postinstall": "pnpm run db:generate",
-    "studio": "prisma studio"
+    "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
   },
   "dependencies": {
-    "@prisma/client": "^5.18.0"
+    "@repo/db": "workspace:*",
+    "dotenv": "^16.4.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.0",
@@ -25,7 +21,6 @@
     "@types/node": "^22.4.1",
     "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.3",
-    "prisma": "^5.18.0",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.3"
   }

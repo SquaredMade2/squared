@@ -96,9 +96,6 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
     devDependencies:
-      '@repo/test-db':
-        specifier: workspace:*
-        version: link:../../packages/test-db
       '@types/bcryptjs':
         specifier: ^2.4.6
         version: 2.4.6
@@ -458,11 +455,14 @@ importers:
         specifier: ^5.5.4
         version: 5.6.2
 
-  packages/test-db:
+  packages/seed:
     dependencies:
-      '@prisma/client':
-        specifier: ^5.18.0
-        version: 5.20.0(prisma@5.20.0)
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../db
+      dotenv:
+        specifier: ^16.4.1
+        version: 16.4.5
     devDependencies:
       '@faker-js/faker':
         specifier: ^9.0.0
@@ -482,9 +482,6 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      prisma:
-        specifier: ^5.18.0
-        version: 5.20.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.7.4)(typescript@5.6.2)
