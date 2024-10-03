@@ -65,29 +65,31 @@ const Navbar = () => {
 								</Button>
 							</div>
 							<ScrollArea className="px-2">
-								<Accordion
-									type="single"
-									collapsible
-									defaultValue={currentTeam?.id}
-								>
-									{teams?.map((team: Team) => (
-										<AccordionItem key={team.id} value={team.id}>
-											<AccordionTrigger className="text-sm h-12">
-												<div className="flex gap-2">
-													<LayoutGrid className="text-[#9577FF] size-4" />
-													{team.name}
-												</div>
-											</AccordionTrigger>
-											<AccordionContent>
-												<NavBarTeams
-													teamIdentifier={team.identifier}
-													currentPage={currentPage}
-													active={currentTeam?.id === team.id}
-												/>
-											</AccordionContent>
-										</AccordionItem>
-									))}
-								</Accordion>
+{currentTeam && 
+		<Accordion
+			type="single"
+			collapsible
+			defaultValue={currentTeam.id}
+		>
+			{teams?.map((team: Team) => (
+				<AccordionItem key={team.id} value={team.id}>
+					<AccordionTrigger className="text-sm h-12">
+						<div className="flex gap-2">
+							<LayoutGrid className="text-[#9577FF] size-4" />
+								{team.name}
+						</div>
+					</AccordionTrigger>
+					<AccordionContent>
+						<NavBarTeams
+							teamIdentifier={team.identifier}
+							currentPage={currentPage}
+							active={currentTeam?.id === team.id}
+						/>
+					</AccordionContent>
+				</AccordionItem>
+			))}
+		</Accordion>
+}
 							</ScrollArea>
 							<div className="mt-auto mb-3 w-full text-center">
 								{/* Footer content if needed */}
