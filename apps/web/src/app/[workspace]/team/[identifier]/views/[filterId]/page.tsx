@@ -77,7 +77,6 @@ export default function FilterViewPage() {
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
-				allowedColumns={Object.values(Status)}
 			/>
 			{view === "grid" &&
 				!gridViewOptions.showEmptyGroups &&
