@@ -53,6 +53,9 @@ export default function TeamSettingsSprints() {
 	} = useTeamStore((state) => state);
 	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
+	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
+		currentTeam?.sprintStartDate || null,
+	);
 	const [pendingSprints, setPendingSprints] = useState(0);
 	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 	const { toast } = useToast();
@@ -131,7 +134,6 @@ export default function TeamSettingsSprints() {
 		sprintsEnabled,
 		sprintDuration,
 		cooldownDuration,
-		sprintStartDate,
 		upcomingSprints,
 		activeRequired,
 	} = currentTeam;
@@ -299,8 +301,7 @@ export default function TeamSettingsSprints() {
 												<>
 													{format(sprintStartDate, "EEEE")}{" "}
 													<span className="ml-2">
-														(next:{" "}
-														{format(addDays(sprintStartDate, 7), "MMM dd")})
+														(next: {format(sprintStartDate, "MMM dd")})
 													</span>
 												</>
 											) : (
@@ -312,10 +313,11 @@ export default function TeamSettingsSprints() {
 									<PopoverContent className="w-auto p-0">
 										<Calendar
 											mode="single"
-											selected={sprintStartDate}
-											onSelect={(value) =>
-												handleUpdateTeam({ sprintStartDate: value })
-											}
+											selected={sprintStartDate ?? undefined}
+											onSelect={(value) => {
+												setSprintStartDate(value ?? null);
+												handleUpdateTeam({ sprintStartDate: value });
+											}}
 											initialFocus
 										/>
 									</PopoverContent>
