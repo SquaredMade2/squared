@@ -29,8 +29,9 @@ export default function ViewsPage() {
 	}, [getSavedFilters]);
 
 	const handleFilterSelect = (filter: SavedFilter) => {
+		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
 		const filterId = filter.id.split("-")[0];
-		router.push(`views/${filterId}`);
+		router.push(`views/${filterName}-${filterId}`);
 	};
 
 	if (isLoading) {
