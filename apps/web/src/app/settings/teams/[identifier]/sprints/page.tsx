@@ -52,7 +52,7 @@ export default function TeamSettingsSprints() {
 		getSprints,
 	} = useTeamStore((state) => state);
 	const { toggleSprintTasks } = useTaskStore((state) => state);
-	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(true);
+	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [pendingSprints, setPendingSprints] = useState(0);
 	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 	const { toast } = useToast();
@@ -192,7 +192,12 @@ export default function TeamSettingsSprints() {
 						<Button
 							variant="link"
 							className="p-0 h-auto mt-4"
-							onClick={() => setIsSprintInfoExpanded(true)}
+							// TODO: ADD CORRESPONDING LINK ON WWW APPLICATION
+							onClick={() =>
+								toast({
+									title: "Just pretend you've been taken to the docs page 🤫",
+								})
+							}
 						>
 							Read more <ChevronRight className="h-4 w-4 ml-2" />
 						</Button>
