@@ -321,6 +321,7 @@ const ToastViewport = React.forwardRef<
 	return (
 		<DismissableLayer.Branch
 			ref={wrapperRef}
+			// biome-ignore lint/a11y/useSemanticElements: <explanation>
 			role="region"
 			aria-label={label.replace("{hotkey}", hotkeyLabel)}
 			// Ensure virtual cursor from landmarks menus triggers focus/blur for pause/resume
@@ -644,7 +645,7 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 				{announceTextContent && (
 					<ToastAnnounce
 						__scopeToast={__scopeToast}
-						// Toasts are always role=status to avoid stuttering issues with role=alert in SRs.
+						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="status"
 						aria-live={type === "foreground" ? "assertive" : "polite"}
 						aria-atomic

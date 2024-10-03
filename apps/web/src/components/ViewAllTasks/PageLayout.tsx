@@ -3,11 +3,12 @@
 import type { ReactNode } from "react";
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Loader2, Clipboard } from "lucide-react";
+import { Clipboard } from "lucide-react";
 import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@repo/db";
 import { NoTasksNewIssueButton } from "../Modals";
+import SquaredLoader from "../Loaders/SquaredLoader";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -35,7 +36,7 @@ export function TaskPageLayout({
 	if (loading) {
 		return (
 			<div className="w-full h-full flex items-center justify-center">
-				<Loader2 className="animate-spin size-12" />
+				<SquaredLoader />
 			</div>
 		);
 	}

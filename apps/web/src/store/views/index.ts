@@ -10,6 +10,7 @@ export const createViewStore = (
 		showMobileNavbar: false,
 		listViewOptions: {
 			showEmptyGroups: false,
+			taskOrder: { orderBy: "Priority", orderAscending: true },
 			showCompletedTasks: { show: true, period: "All" },
 			displayProperties: {
 				identifier: true,
@@ -22,6 +23,7 @@ export const createViewStore = (
 		},
 		gridViewOptions: {
 			showEmptyGroups: false,
+			taskOrder: { orderBy: "Priority", orderAscending: true },
 			showCompletedTasks: { show: true, period: "All" },
 			displayProperties: {
 				identifier: true,

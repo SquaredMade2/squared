@@ -1,4 +1,3 @@
-/// <reference types="resize-observer-browser" />
 import * as React from "react";
 
 import { useComposedRefs } from "../compose-refs";
