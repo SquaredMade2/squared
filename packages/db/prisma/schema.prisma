@@ -197,7 +197,6 @@ model Task {
   Notification Notification[]
 
   @@unique([teamId, identifier])
-  @@unique([workspaceId, identifier])
 }
 
 model Team {

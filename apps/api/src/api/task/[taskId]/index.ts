@@ -120,6 +120,37 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
+				// Get the team
+				const team = await prisma.team.findUnique({
+					where: { id: body.teamId },
+				});
+
+				if (!team) {
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive",
+					};
+				}
+
+				// Get all tasks for the team
+				const teamTasks = await prisma.task.findMany({
+					where: { teamId: body.teamId },
+					select: { identifier: true },
+				});
+
+				// Extract the task numbers and find the highest one
+				const taskNumbers = teamTasks.map((task) => {
+					const [_, number] = task.identifier.split("-");
+					return Number.parseInt(number, 10);
+				});
+
+				const highestTaskNumber = Math.max(0, ...taskNumbers);
+
+				// Generate the new task identifier
+				const newTaskNumber = highestTaskNumber + 1;
+				const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString().padStart(4, "0")}`;
+
 				const newIssueCount = workspace.tasksCreated + 1;
 
 				await prisma.workspace.update({
@@ -130,6 +161,7 @@ export function createRoute(): Route<Params> {
 				const newTask = await prisma.task.create({
 					data: {
 						...taskData,
+						identifier: newTaskIdentifier,
 					},
 				});
 
