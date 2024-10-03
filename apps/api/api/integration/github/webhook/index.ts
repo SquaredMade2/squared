@@ -137,7 +137,7 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 				},
 			});
 		} else {
-			console.log(
+			console.error(
 				`Repository ${repo.full_name} still linked to other workspaces or does not exist.`,
 			);
 		}
@@ -167,8 +167,6 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 				},
 			});
 		}
-
-		// Do not link the repository to a workspace yet. This will be done when a task is created
 	}
 }
 
@@ -190,7 +188,7 @@ async function handleBranchAndCommitEvents(
 	const identifier = match[1].toUpperCase();
 	const task = await prisma.task.findFirst({
 		where: { identifier: { equals: identifier, mode: "insensitive" } },
-		include: { Workspace: true }, // Fetch the associated workspace
+		include: { Workspace: true },
 	});
 
 	if (!task || !task.workspaceId) {
@@ -213,7 +211,7 @@ async function handleBranchAndCommitEvents(
 				repoId: githubRepoInfo.id,
 			},
 		},
-		update: {}, // No updates needed if it already exists
+		update: {},
 		create: {
 			workspaceId: task.workspaceId,
 			repoId: githubRepoInfo.id,
