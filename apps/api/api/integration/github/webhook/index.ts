@@ -1,5 +1,4 @@
 import type { Route } from "@/api/route";
-import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import { v4 as uuidv4 } from "uuid";
 
@@ -102,9 +101,46 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 			);
 			continue;
 		}
-		await prisma.githubRepoInfo.deleteMany({
-			where: { repoName: repo.full_name, owner: githubUsername },
+
+		// Delete the entry from WorkspaceRepositories where the repo is linked to this specific workspace
+		await prisma.workspaceRepositories.deleteMany({
+			where: {
+				GitHubRepoInfo: {
+					repoName: repo.full_name,
+					owner: githubUsername,
+				},
+			},
 		});
+
+		// Optionally, check if the repo still exists and delete it only if there are no remaining links
+		const remainingLinks = await prisma.workspaceRepositories.count({
+			where: {
+				GitHubRepoInfo: {
+					repoName: repo.full_name,
+					owner: githubUsername,
+				},
+			},
+		});
+
+		// Fetch the repository info to ensure it exists before attempting to delete
+		const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
+			where: {
+				repoName: repo.full_name,
+				owner: githubUsername,
+			},
+		});
+
+		if (remainingLinks === 0 && githubRepoInfo) {
+			await prisma.githubRepoInfo.delete({
+				where: {
+					id: githubRepoInfo.id,
+				},
+			});
+		} else {
+			console.log(
+				`Repository ${repo.full_name} still linked to other workspaces or does not exist.`,
+			);
+		}
 	}
 
 	// Handle repository addition
@@ -117,24 +153,22 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 			);
 			continue;
 		}
-		const existingRepoInfo = await prisma.githubRepoInfo.findFirst({
+
+		// Find or create the repository in githubRepoInfo
+		let githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 			where: { repoName: repo.full_name, owner: githubUsername },
 		});
 
-		if (existingRepoInfo) {
-			console.error(
-				`Repository ${repo.full_name} already exists for owner ${githubUsername}`,
-			);
-			continue;
+		if (!githubRepoInfo) {
+			githubRepoInfo = await prisma.githubRepoInfo.create({
+				data: {
+					repoName: repo.full_name,
+					owner: githubUsername,
+				},
+			});
 		}
 
-		await prisma.githubRepoInfo.create({
-			data: {
-				repoName: repo.full_name,
-				owner: githubUsername,
-				workspaceId: null,
-			},
-		});
+		// Do not link the repository to a workspace yet. This will be done when a task is created
 	}
 }
 
@@ -156,31 +190,35 @@ async function handleBranchAndCommitEvents(
 	const identifier = match[1].toUpperCase();
 	const task = await prisma.task.findFirst({
 		where: { identifier: { equals: identifier, mode: "insensitive" } },
+		include: { Workspace: true }, // Fetch the associated workspace
 	});
 
-	if (!task) {
-		throw new Error(`Task ${identifier} not found`);
+	if (!task || !task.workspaceId) {
+		throw new Error(`Task ${identifier} not found or has no workspace`);
 	}
 
-	// Check workspace ownership and return early if it fails
-	const isValidOwnership = await validateWorkspaceOwnership(
-		payload,
-		task,
-		repoFullName,
-		repoOwner,
-	);
-	if (!isValidOwnership) {
-		throw new Error(
-			"Invalid workspace ownership, pusher is not owner of workspace",
-		);
-	}
-
+	// Fetch the GithubRepoInfo for the repo
 	const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 		where: { repoName: repoFullName, owner: repoOwner },
 	});
 	if (!githubRepoInfo) {
 		throw new Error("No GithubRepoInfo found for this repository");
 	}
+
+	// Link the repository to the workspace if not already linked
+	await prisma.workspaceRepositories.upsert({
+		where: {
+			workspaceId_repoId: {
+				workspaceId: task.workspaceId,
+				repoId: githubRepoInfo.id,
+			},
+		},
+		update: {}, // No updates needed if it already exists
+		create: {
+			workspaceId: task.workspaceId,
+			repoId: githubRepoInfo.id,
+		},
+	});
 
 	// Upsert branch information linked to the task
 	const branch = await prisma.branch.upsert({
@@ -261,89 +299,4 @@ async function handleBranchAndCommitEvents(
 			});
 		}
 	}
-}
-
-// Validate workspace ownership and restrictions
-async function validateWorkspaceOwnership(
-	payload: GitHubWebhookPayload,
-	task: Task,
-	repoFullName: string,
-	repoOwner: string,
-): Promise<boolean> {
-	const workspaceId = task.workspaceId;
-
-	const workspace = await prisma.workspace.findFirst({
-		where: { id: workspaceId },
-		select: { admins: true },
-	});
-
-	if (!workspace || workspace.admins.length === 0) {
-		throw new Error("Workspace or admins not found");
-	}
-
-	const workspaceOwnerId = workspace.admins[0];
-	const workspaceOwner = await prisma.user.findFirst({
-		where: { id: workspaceOwnerId },
-		select: { githubUsername: true },
-	});
-
-	if (!workspaceOwner || !workspaceOwner.githubUsername) {
-		console.error(
-			`Workspace owner or GitHub username not found: ${
-				!workspaceOwner ? "workspaceOwner" : ""
-			} ${!workspaceOwner?.githubUsername ? "workspaceOwner.githubUsername" : ""}`,
-		);
-		return false;
-	}
-
-	const pusherUsername = payload.pusher?.name || payload.sender?.login;
-
-	if (pusherUsername !== workspaceOwner.githubUsername) {
-		console.error("Pusher is not the workspace owner");
-		return false;
-	}
-
-	// Check if GithubRepoInfo exists for this repository
-	const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
-		where: { repoName: repoFullName, owner: repoOwner },
-	});
-
-	if (!githubRepoInfo) {
-		console.error("No GithubRepoInfo found for this repository");
-		return false;
-	}
-
-	// Check if this repo is already linked to another workspace
-	if (
-		githubRepoInfo?.workspaceId &&
-		githubRepoInfo.workspaceId !== workspaceId
-	) {
-		throw new Error(
-			`Repository ${repoFullName} is already linked to another workspace`,
-		);
-	}
-	// Check if this workspace is already linked to another repository
-	const existingRepoForWorkspace = await prisma.githubRepoInfo.findFirst({
-		where: {
-			workspaceId: workspaceId,
-			repoName: { not: repoFullName },
-		},
-	});
-
-	if (existingRepoForWorkspace) {
-		console.error(
-			`Workspace ${workspaceId} is already linked to another repository`,
-		);
-		return false;
-	}
-
-	// Update the workspaceId in GithubRepoInfo if it's null
-	if (!githubRepoInfo.workspaceId) {
-		await prisma.githubRepoInfo.update({
-			where: { id: githubRepoInfo.id },
-			data: { workspaceId },
-		});
-	}
-
-	return true;
 }

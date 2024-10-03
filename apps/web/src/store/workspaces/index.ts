@@ -23,7 +23,6 @@ const WORKSPACE_TEMPLATE: Partial<Workspace> = {
 	companySize: null,
 	tasksCreated: 0,
 	universalTokenLinkId: null,
-	githubRepoInfoId: 0,
 };
 
 export const createWorkspaceStore = (

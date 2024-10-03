@@ -264,20 +264,19 @@ model Workspace {
   companySize          Int?
   tasksCreated         Int      @default(0)
   universalTokenLinkId String?
-  githubRepoInfoId     Int?
   avatarUrl            String?
   admins               String[]
 
-  workspaceViews     SavedFilter[]
-  Labels             Label[]
-  universalTokenLink UniversalTokenLink?
-  teams              Team[]
-  projects           Project[]
-  githubRepoInfo     GithubRepoInfo?
-  Users              UserWorkspace[]
-  User               User[]
-  Tasks              Task[]
-  notifications      Notification[]
+  workspaceViews        SavedFilter[]
+  Labels                Label[]
+  universalTokenLink    UniversalTokenLink?
+  teams                 Team[]
+  projects              Project[]
+  Users                 UserWorkspace[]
+  User                  User[]
+  Tasks                 Task[]
+  notifications         Notification[]
+  WorkspaceRepositories WorkspaceRepositories[] 
 }
 
 model UserWorkspace {
@@ -313,10 +312,20 @@ model GithubRepoInfo {
   id          String   @id @default(uuid())
   repoName    String   @unique @default("")
   owner       String   @default("")
-  workspaceId String?  @unique
-  branches    Branch[]  
 
-  Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  branches    Branch[]  
+  WorkspaceRepo WorkspaceRepositories[]
+}
+
+model WorkspaceRepositories {
+  id          String            @id @default(uuid())
+  workspaceId String
+  repoId      String
+
+  Workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  GitHubRepoInfo GithubRepoInfo @relation(fields: [repoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([workspaceId, repoId])
 }
 
 model Project {
