@@ -286,7 +286,7 @@ export default function SprintDashboardPage() {
 			</Tabs>
 
 			<Link href={`${sprintId}/retrospective`} passHref>
-				<Button className="w-full mt-8">Start Sprint Retrospective</Button>
+				<Button className="w-full my-8">Start Sprint Retrospective</Button>
 			</Link>
 		</div>
 	);
