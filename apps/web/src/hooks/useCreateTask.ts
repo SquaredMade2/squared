@@ -23,8 +23,9 @@ export const useCreateTask = () => {
 	const [error, setError] = useState<string | null>(null);
 	const { user } = useAuthStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const { addTask } = useTaskStore((state) => state);
 
 	const createTask = async (input: CreateTaskInput) => {
@@ -46,7 +47,6 @@ export const useCreateTask = () => {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
 				status: input.status ?? "backlog",
 				priority: input.priority ?? "noPriority",
 				labels: input.labels || [],
@@ -65,10 +65,6 @@ export const useCreateTask = () => {
 			if (!taskCreatedResponse) {
 				throw new Error("Failed to create task");
 			}
-
-			await updateWorkspace(currentWorkspace.id, {
-				tasksCreated: currentWorkspace.tasksCreated + 1,
-			});
 
 			setCurrentWorkspace({
 				...currentWorkspace,
