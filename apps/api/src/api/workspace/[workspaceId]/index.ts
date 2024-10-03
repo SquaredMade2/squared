@@ -150,7 +150,7 @@ export function createRoute(): Route<Params> {
 					data: {
 						workspaceId: newWorkspace.id,
 						name: newWorkspace.name,
-						identifier: newWorkspace.url.slice(0, 3),
+						identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
 						Users: {
 							create: {
 								userId: body.userId,
