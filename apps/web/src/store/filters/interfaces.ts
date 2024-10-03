@@ -1,6 +1,13 @@
 import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
 
-type FilterValue = string | number | Date | boolean | null | string[];
+type FilterValue =
+	| string
+	| number
+	| Date
+	| boolean
+	| null
+	| (string | null)[]
+	| string[];
 
 export type FilterCondition = {
 	field: keyof Task;

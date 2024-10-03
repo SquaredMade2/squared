@@ -1,10 +1,11 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
 	useAuthStore,
 	useModalStore,
 	useNotificationStore,
+	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
 import { Button } from "@/components/ui/button";
@@ -21,15 +22,12 @@ import { useEffect, useState } from "react";
 
 const IconLeftMenu = () => {
 	const router = useRouter();
-	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+	const { currentTeam } = useTeamStore((state) => state);
 	const { setShowCommand } = useModalStore((state) => state);
 	const { getAllNotifications } = useNotificationStore((state) => state);
 	const [notifications, setNotifications] = useState(0);
 	const { theme, setTheme } = useTheme();
-	const baseUrl = process.env.NEXT_PUBLIC_URL;
-	const homeRoute = currentRoute.includes(`${workspace?.url}`);
-	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
 	const { logout, user } = useAuthStore((state) => state);
 	const [mounted, setMounted] = useState(false);
@@ -46,11 +44,11 @@ const IconLeftMenu = () => {
 	};
 
 	const navigateTo = (childRoute: string): void => {
-		router.push(`${baseUrl}/${childRoute}`);
+		router.push(`/${childRoute}`);
 	};
 
 	const toHome = () => {
-		homeRoute && !viewsRoute ? "" : router.back();
+		router.push(`/${workspace?.url}/team/${currentTeam?.identifier}/all`);
 	};
 
 	useEffect(() => {
