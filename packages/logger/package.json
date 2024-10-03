@@ -2,14 +2,14 @@
   "name": "@repo/logger",
   "version": "0.0.0",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**"
-  ],
+  "main": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "postinstall": "pnpm run build",
     "clean": "rm -rf dist",
     "dev": "tsc -w",
     "lint": "biome lint --error-on-warnings ./src"
