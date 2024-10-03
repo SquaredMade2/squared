@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useWorkspaceStore } from "@/store";
-import { Eye, EyeOff, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
 import {
 	Card,
 	CardContent,
@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 function RegisterForm() {
 	const [data, setData] = useState({ name: "", email: "", password: "" });
@@ -221,7 +220,7 @@ function RegisterForm() {
 							</div>
 						</div>
 						<Button type="submit" className="w-full" disabled={isLoading}>
-							{isLoading ? <SquaredLoader /> : null}
+							{isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
 							Register
 						</Button>
 					</form>
@@ -241,7 +240,11 @@ function RegisterForm() {
 						variant="outline"
 						disabled={isLoading}
 					>
-						{isLoading ? <SquaredLoader /> : <GoogleIcon />}
+						{isLoading ? (
+							<Loader2 className="size-4 animate-spin" />
+						) : (
+							<GoogleIcon />
+						)}
 						Sign up with Google
 					</Button>
 				</CardContent>

@@ -35,23 +35,55 @@ export function checkCondition(
 				taskValue < condition.value
 			);
 		case "arrayIncludesAll":
-			return (
-				Array.isArray(taskValue) &&
-				Array.isArray(condition.value) &&
-				condition.value.every((val) => taskValue.includes(val))
+			if (!Array.isArray(taskValue) || !Array.isArray(condition.value)) {
+				return false;
+			}
+			return condition.value.every((val) =>
+				taskValue.some(
+					(item) =>
+						(item === null && val === null) ||
+						(item !== null &&
+							val !== null &&
+							item.toString() === val.toString()),
+				),
 			);
 		case "arrayIncludesAny":
 			if (Array.isArray(taskValue)) {
 				return (
 					Array.isArray(condition.value) &&
-					condition.value.some((val) => taskValue.includes(val))
+					condition.value.some((val) =>
+						taskValue.some(
+							(item) =>
+								(item === null && val === null) ||
+								(item !== null &&
+									val !== null &&
+									item.toString() === val.toString()),
+						),
+					)
+				);
+			}
+			if (condition.field === "assigneeId") {
+				return (
+					Array.isArray(condition.value) &&
+					condition.value.some(
+						(val) =>
+							(val === null && taskValue === null) ||
+							(val !== null &&
+								taskValue !== null &&
+								val.toString() === taskValue.toString()),
+					)
 				);
 			}
 			return (
 				Array.isArray(condition.value) &&
-				condition.value.includes(taskValue?.toLocaleString() ?? "")
+				condition.value.some(
+					(val) =>
+						(val === null && taskValue === null) ||
+						(val !== null &&
+							taskValue !== null &&
+							val.toString() === taskValue.toString()),
+				)
 			);
-
 		default:
 			console.warn(`Unknown operator: ${condition.operator}`);
 			return false;
