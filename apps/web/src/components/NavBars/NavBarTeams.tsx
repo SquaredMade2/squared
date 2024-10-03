@@ -9,6 +9,8 @@ import { useToast } from "../ui/use-toast";
 
 const NavBarTeams = ({
 	teamIdentifier,
+	currentPage,
+	active,
 }: NavBarTeamProps): React.ReactElement => {
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
@@ -41,20 +43,20 @@ const NavBarTeams = ({
 	return (
 		<div className="w-full z-10">
 			<Button
-				variant={"ghost"}
+				variant={currentPage === "all" && active ? "secondary" : "ghost"}
 				onClick={() => handleActiveParams("all")}
 				className="w-full justify-start h-6"
 			>
 				<div className="mr-2 p-0.5 rounded">
 					<Copy className={"size-4 text-muted-foreground hover:text-accent"} />
 				</div>
-				<p>Issues</p>
+				<p>Tasks</p>
 			</Button>
 			<div className="ml-2">
 				<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
 					{/* NOTE: Functionality broken till @napqueenkaila's PRs are merged */}
 					<Button
-						variant={"ghost"}
+						variant={currentPage === "active" && active ? "secondary" : "ghost"}
 						onClick={() => handleActiveParams("active")}
 						className="w-full justify-start h-6 pl-3"
 					>
@@ -62,7 +64,9 @@ const NavBarTeams = ({
 					</Button>
 					{/* NOTE: Functionality broken till @napqueenkaila's PRs are merged */}
 					<Button
-						variant={"ghost"}
+						variant={
+							currentPage === "backlog" && active ? "secondary" : "ghost"
+						}
 						onClick={() => handleActiveParams("backlog")}
 						className="w-full justify-start h-6 pl-3"
 					>
@@ -71,7 +75,7 @@ const NavBarTeams = ({
 				</div>
 			</div>
 			<Button
-				variant={"ghost"}
+				variant={currentPage === "views" && active ? "secondary" : "ghost"}
 				onClick={() => handleActiveParams("views")}
 				className="w-full justify-start h-6"
 			>
