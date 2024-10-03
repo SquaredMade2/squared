@@ -4,6 +4,7 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useAuthStore, useFilterStore } from "@/store";
+import { Status } from "@repo/db";
 
 export default function MyAssignedTasksPage() {
 	const { user } = useAuthStore((state) => state);
@@ -35,6 +36,7 @@ export default function MyAssignedTasksPage() {
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
+				allowedColumns={Object.values(Status)}
 			/>
 		</TaskPageLayout>
 	);

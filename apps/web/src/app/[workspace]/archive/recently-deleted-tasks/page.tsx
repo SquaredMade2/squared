@@ -4,6 +4,7 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useFilterStore } from "@/store";
+import { Status } from "@repo/db";
 
 const Page = () => {
 	const { filterTasks } = useFilterStore((state) => state);
@@ -34,6 +35,7 @@ const Page = () => {
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
+				allowedColumns={Object.values(Status)}
 			/>
 		</TaskPageLayout>
 	);
