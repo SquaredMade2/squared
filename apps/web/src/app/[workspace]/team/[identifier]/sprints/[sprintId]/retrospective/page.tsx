@@ -66,9 +66,9 @@ export default function SprintRetrospectivePage() {
 			updateSprint(
 				Array.isArray(params.sprintId) ? params.sprintId[0] : params.sprintId,
 				{
-					wentWell: values.wentWell,
-					toImprove: values.toImprove,
-					actionItems: values.actionItems,
+					wentWell: [values.wentWell],
+					toImprove: [values.toImprove],
+					actionItems: [values.actionItems],
 				},
 			);
 			toast({

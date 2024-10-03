@@ -355,9 +355,9 @@ model Sprint {
   endDate     DateTime
   status      SprintStatus
   teamId      String
-  wentWell    String?
-  toImprove   String?
-  actionItems String?
+  wentWell    String[]
+  toImprove   String[]
+  actionItems String[]
 
   Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Tasks Task[]
