@@ -14,7 +14,6 @@ export interface TaskListProps {
 	task: Task;
 	user?: User;
 	currentTeam: Team | null;
-	isSubtask?: boolean;
 }
 
 export interface TaskCardProps {

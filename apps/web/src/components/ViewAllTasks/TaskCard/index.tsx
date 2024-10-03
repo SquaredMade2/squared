@@ -41,7 +41,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 					location={location}
 					highlightText={highlightText}
 					currentTeam={currentTeam}
-					isSubtask={isSubtask}
 				/>
 			)}
 		</div>

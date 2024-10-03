@@ -101,22 +101,27 @@ const StatusColumn = ({
 		viewOptions.taskOrder.orderAscending,
 	);
 
-	const renderTaskWithSubtasks = (task: Task) => {
+	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
 			<div key={task.id} className="mb-2 w-full">
-				<TaskCard task={task} index={0} location={"dashboard"} />
+				<TaskCard task={task} index={index} location={"dashboard"} />
 				{subtasks.length > 0 && (
-					<div className="mt-1 bg-secondary rounded-lg p-2 w-full">
-						{subtasks.map((subtask, index) => (
-							<div key={subtask.id} className="mt-1 first:mt-0">
-								<TaskCard
-									task={subtask}
-									index={index}
-									location={"dashboard"}
-									isSubtask={true}
-								/>
-							</div>
+					<div
+						className={`mt-1 w-full ${
+							isListView
+								? "rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
+								: "dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+						}`}
+					>
+						{subtasks.map((subtask, subIndex) => (
+							<TaskCard
+								key={subtask.id}
+								task={subtask}
+								index={subIndex}
+								location={"dashboard"}
+								isSubtask={true}
+							/>
 						))}
 					</div>
 				)}
@@ -158,18 +163,9 @@ const StatusColumn = ({
 							}
 						>
 							{showTasks &&
-								(isListView
-									? orderedTasks.map((task, index) => (
-											<TaskCard
-												key={task.id}
-												task={task}
-												index={index}
-												location={"dashboard"}
-											/>
-										))
-									: orderedTasks
-											.filter((task) => !task.parentId)
-											.map(renderTaskWithSubtasks))}
+								orderedTasks
+									.filter((task) => !task.parentId)
+									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
 								<GridColumnNewIssueButton status={title as Status} />
 							)}

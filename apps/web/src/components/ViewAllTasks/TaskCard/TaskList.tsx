@@ -15,7 +15,6 @@ const TaskList = ({
 	task,
 	user,
 	currentTeam,
-	isSubtask = false,
 }: TaskListProps) => {
 	const { listViewOptions } = useViewStore((state) => state);
 
@@ -36,10 +35,7 @@ const TaskList = ({
 
 	return (
 		<Link
-			className={`
-        group/main grid grid-cols-24 items-center w-full py-2 bg-card border-t border-solid border-border hover:bg-accent
-        ${isSubtask ? "pl-4 bg-secondary/30" : ""}
-      `}
+			className="group/main grid grid-cols-24 items-center w-full py-2 bg-card border-t border-solid border-border hover:bg-accent"
 			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<div className="col-span-1 min-h-9" />
