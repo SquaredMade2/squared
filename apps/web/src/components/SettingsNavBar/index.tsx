@@ -158,7 +158,7 @@ const SettingsNavBar = ({
 	toggleNavbar,
 }: SettingsNavbarProps): React.ReactElement => {
 	const router = useRouter();
-	const { setTheme, theme } = useTheme();
+	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 

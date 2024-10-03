@@ -25,7 +25,8 @@ export default function RootLayout({
 					<SquaredStoreProvider>
 						<ThemeProvider
 							attribute="class"
-							defaultTheme="dark"
+							defaultTheme="system"
+							enableSystem
 							disableTransitionOnChange
 						>
 							<WorkspaceInviteModal />
