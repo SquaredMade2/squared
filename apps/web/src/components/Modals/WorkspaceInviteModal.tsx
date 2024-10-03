@@ -15,7 +15,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import SquaredLoader from "../Loaders/SquaredLoader";
+import { Loader2 } from "lucide-react";
 
 export const WorkspaceInviteModal = () => {
 	const {
@@ -98,8 +98,12 @@ export const WorkspaceInviteModal = () => {
 					/>{" "}
 				</div>
 				<DialogFooter>
-					<Button onClick={handleInvite} className="w-32">
-						{isLoading ? <SquaredLoader /> : "Send invites"}
+					<Button onClick={handleInvite} disabled={isLoading} className="w-32">
+						{isLoading ? (
+							<Loader2 className="size-4 animate-spin" />
+						) : (
+							"Send invites"
+						)}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
