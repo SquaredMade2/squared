@@ -1,6 +1,7 @@
 import type { PrismaClient } from ".";
+import { randomUUID } from "node:crypto";
 
-export const seededTestTaskId = "a33ecb95-9378-47db-9aee-89daeaa80fa9";
+export const seededTestTaskId = randomUUID();
 
 export async function seedTestingDb(prisma: PrismaClient) {
 	const user = await prisma.user.create({

@@ -7,21 +7,21 @@
   },
   "scripts": {
     "build": "prisma generate",
-    "db:generate": "prisma generate && pnpm run db:test:generate",
-    "db:push": "prisma db push --skip-generate && pnpm run db:test:push",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
     "db:seed": "cross-env NODE_ENV=test ts-node src/seed.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes",
-    "postinstall": "pnpm run db:generate",
+    "postinstall": "pnpm run db:generate && pnpm run db:test:generate",
     "studio": "prisma studio",
-    "reset": "pnpm prisma migrate reset --force --schema prisma/testing-schema.prisma",
-    "test:studio": "prisma studio --schema prisma/testing-schema.prisma",
-    "db:test:generate": "prisma generate --schema prisma/testing-schema.prisma",
-    "db:test:push": "prisma db push --skip-generate --schema prisma/testing-schema.prisma",
-    "db:test:create:schema": "ts-node src/generate-testing-schema.ts"
+    "test:studio": "dotenv -e .env.run.test -- prisma studio",
+    "db:test:generate": "dotenv -e .env.run.test -- pnpm run db:generate",
+    "db:test:push": "dotenv -e .env.run.test -- pnpm run db:push",
+    "db:test:reset": "dotenv -e .env.run.test -- prisma migrate reset --force"
   },
   "dependencies": {
-    "@prisma/client": "^5.18.0"
+    "@prisma/client": "^5.18.0",
+    "dotenv-cli": "^7.4.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.0",

@@ -65,7 +65,7 @@ beforeAll(() => {
 	return seedTestingDb(prisma);
 });
 
-afterAll(() => {
+afterAll(async () => {
 	// must explicitly stop the express server from listening or the test script will hang
 	server.close();
 });
