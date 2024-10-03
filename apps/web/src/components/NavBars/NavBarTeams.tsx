@@ -32,7 +32,6 @@ const NavBarTeams = ({ teamIdentifier }: NavBarTeamProps) => {
 		const team = teams.find((team) => team.identifier === teamIdentifier);
 		if (team) {
 			setCurrentTeam(team);
-			console.log("team", team);
 			await getAllTasks(team.id);
 		}
 	};

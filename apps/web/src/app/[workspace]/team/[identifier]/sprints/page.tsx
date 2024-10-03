@@ -53,7 +53,9 @@ export default function SprintDashboard() {
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
-	const [targetSprint, setTargetSprint] = useState<string>("");
+	const [targetSprint, setTargetSprint] = useState<string>(
+		activeSprint?.id ?? "",
+	);
 	const [isAutoAssignConfirmOpen, setIsAutoAssignConfirmOpen] = useState(false);
 	const [tasksToAutoAssign, setTasksToAutoAssign] = useState<Task[]>([]);
 	const { identifier } = useParams();
@@ -233,7 +235,7 @@ export default function SprintDashboard() {
 					<CardHeader>
 						<CardTitle>Burndown Chart</CardTitle>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="h-80">
 						<ResponsiveContainer width="100%" height="100%">
 							<LineChart
 								data={getBurndownData()}
