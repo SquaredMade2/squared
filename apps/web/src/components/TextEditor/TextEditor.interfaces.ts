@@ -18,10 +18,19 @@ export interface TextEditorToolBarProps {
 	isHeaderBlock: NodeEntry<Node>;
 }
 
+export type CustomElementAttributes = Omit<
+	JSX.IntrinsicElements["div"],
+	"children"
+> & {
+	ref?: React.RefObject<HTMLDivElement>;
+	"data-slate-node"?: string;
+};
+
 export type CustomElement = {
 	type: string;
 	children: CustomText[];
 	url?: string;
+	attributes?: CustomElementAttributes;
 };
 
 export type CustomText = {

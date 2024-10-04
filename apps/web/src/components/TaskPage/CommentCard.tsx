@@ -50,7 +50,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 							leaf: node as CustomText,
 							children: node.text,
 							attributes: { "data-slate-leaf": true },
-							text: node as Text, // Add the required `text` property
+							text: node as Text,
 						})}
 					</span>
 				);
@@ -65,7 +65,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 						children: renderSlateContent(elementNode.children),
 						attributes: {
 							"data-slate-node": "element",
-							...elementNode.attributes,
+							ref: elementNode.attributes?.ref || null,
 						},
 					})}
 				</div>
