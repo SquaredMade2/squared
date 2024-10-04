@@ -115,7 +115,7 @@ export const NewIssueModal = () => {
 												<Input
 													{...field}
 													placeholder="Title"
-													className="text-lg"
+													className="text-xl"
 												/>
 											</FormControl>
 										</FormItem>
@@ -131,7 +131,7 @@ export const NewIssueModal = () => {
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-lg resize-none"
+													className="text-base resize-none"
 													rows={4}
 												/>
 											</FormControl>
