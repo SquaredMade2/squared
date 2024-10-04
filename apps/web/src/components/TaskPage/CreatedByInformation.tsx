@@ -18,7 +18,7 @@ export const CreatedByInformation = () => {
 			return formattedDate;
 		}
 	};
-	console.log(authorName);
+
 	return (
 		<div className="flex items-center px-8">
 			<div className="mr-4 text-muted-foreground">{displayDate()}</div>
