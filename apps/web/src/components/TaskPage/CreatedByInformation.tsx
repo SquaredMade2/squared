@@ -1,6 +1,7 @@
-import ProfileImage from "@/components/ProfileImage";
 import { formatDate } from "date-fns/format";
 import { useActivityStore, useTaskStore } from "@/store";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 export const CreatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
@@ -17,11 +18,15 @@ export const CreatedByInformation = () => {
 			return formattedDate;
 		}
 	};
-
+	console.log(authorName);
 	return (
 		<div className="flex items-center px-8">
 			<div className="mr-4 text-muted-foreground">{displayDate()}</div>
-			<ProfileImage profileName={authorName} location={"activityItem"} />
+			<Avatar className="size-6 text-xxs">
+				{/* will need to access users to retrieve avatarUrl */}
+				{/* <AvatarImage src={}/> */}
+				<AvatarFallback>{getInitials(authorName)}</AvatarFallback>
+			</Avatar>
 			<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			<p className="text-sm text-muted-foreground">created the issue</p>
 		</div>

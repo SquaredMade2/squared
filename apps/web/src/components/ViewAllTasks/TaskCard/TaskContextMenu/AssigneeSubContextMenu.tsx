@@ -6,10 +6,11 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import ProfileImage from "@/components/ProfileImage";
 import type { ContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users, getAllUsers } = useUserStore((state) => state);
@@ -55,13 +56,10 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
 				<ScrollArea className="max-w-96">
-					<ContextMenuItem
-						className="w-40"
-						onClick={() => handleSelectAssignee(null)}
-					>
+					<ContextMenuItem onClick={() => handleSelectAssignee(null)}>
+						<UserSearch className="size-4 mx-1 mr-3" />
 						Unassign
 					</ContextMenuItem>
-
 					{users
 						.sort((a, b) => a.name.localeCompare(b.name))
 						.map((user) => {
@@ -70,10 +68,10 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 									key={user.id}
 									onClick={() => handleSelectAssignee(user.id)}
 								>
-									<ProfileImage
-										profileName={user.name ?? ""}
-										location={"contextMenu"}
-									/>
+									<Avatar className="size-6 text-xxs mr-2">
+										<AvatarImage src={user.avatarUrl ?? ""} />
+										<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+									</Avatar>
 									{user.name}
 								</ContextMenuItem>
 							);
