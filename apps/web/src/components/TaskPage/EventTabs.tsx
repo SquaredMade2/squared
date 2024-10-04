@@ -22,7 +22,6 @@ export const EventTabs = () => {
 			</TabsContent>
 			<TabsContent value="comments">
 				{comments.map((comment) => {
-					console.log(comment);
 					return <CommentCard key={comment.id} comment={comment} />;
 				})}
 				<TextEditor />
