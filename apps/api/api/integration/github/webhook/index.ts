@@ -218,17 +218,25 @@ async function handleBranchAndCommitEvents(
 		},
 	});
 
-	// Upsert branch information linked to the task
-	const branch = await prisma.branch.upsert({
-		where: { taskId: task.id },
-		update: { name: branchName || "", githubRepoInfoId: githubRepoInfo.id },
-		create: {
-			id: uuidv4(),
-			name: branchName || "",
+	const existingBranch = await prisma.branch.findFirst({
+		where: {
+			name: branchName,
 			taskId: task.id,
-			githubRepoInfoId: githubRepoInfo.id,
 		},
 	});
+
+	let branch = existingBranch;
+
+	if (!branch) {
+		branch = await prisma.branch.create({
+			data: {
+				id: uuidv4(),
+				name: branchName || "",
+				taskId: task.id,
+				githubRepoInfoId: githubRepoInfo.id,
+			},
+		});
+	}
 
 	// Upsert task event log for the task
 	const eventLog = await prisma.taskEventLog.upsert({

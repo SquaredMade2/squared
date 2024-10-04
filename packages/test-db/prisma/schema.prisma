@@ -72,7 +72,7 @@ model Commit {
 model Branch {
   id               String @id @default(uuid())
   name             String
-  taskId           String @unique
+  taskId           String
   githubRepoInfoId String
 
   commits Commit[]
@@ -182,7 +182,7 @@ model Task {
   priority Priority      @default(noPriority)
   Comments Comment[]
   Events   TaskEventLog?
-  Branch   Branch?
+  Branch   Branch[]
 
   Author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
