@@ -64,7 +64,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 			// await getTaskEvents(taskId);
 		}
 	};
-	console.log(assigneeAvatar);
+
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
