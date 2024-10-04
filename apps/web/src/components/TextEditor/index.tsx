@@ -297,11 +297,12 @@ const TextEditor = () => {
 					className="min-h-[160px] w-full py-4 px-3"
 				/>
 			</div>
-
-			<Button onClick={addCommentToTask} className="ml-auto m-5">
-				{" "}
-				Comment{" "}
-			</Button>
+			<div className="flex flex-row">
+				<Button onClick={addCommentToTask} className="ml-auto m-5">
+					{" "}
+					Comment{" "}
+				</Button>
+			</div>
 		</Slate>
 	);
 };

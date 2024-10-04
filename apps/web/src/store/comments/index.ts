@@ -22,6 +22,7 @@ export const createCommentStore = (
 					apiString(commentId),
 					comment,
 				);
+
 				const { data: newComment, message, variant } = response.data;
 
 				if (!newComment) {
