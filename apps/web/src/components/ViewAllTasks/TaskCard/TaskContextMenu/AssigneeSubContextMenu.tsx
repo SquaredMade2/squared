@@ -26,7 +26,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 		fetchUsers();
 	}, [currentWorkspace?.id, getAllUsers]);
-	console.log(task);
+
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
 			updateTask(taskId, { assigneeId: null, assigneeName: null });
