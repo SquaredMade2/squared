@@ -29,10 +29,12 @@ export default function BacklogTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
+			pageTitle="Backlog"
 		>
 			<ViewAllTasks
 				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
+				allowedColumns={["backlog"]}
 			/>
 		</TaskPageLayout>
 	);

@@ -7,6 +7,7 @@
     "build": "turbo run build",
     "db:gen": "turbo run db:generate",
     "db:push": "turbo run db:push",
+    "db:push:dev": "turbo run --filter=@repo/test-db db:push",
     "docker:build": "docker-compose build",
     "docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
     "docker:db": "pnpm --filter=test-db run docker:db && pnpm run db:gen && pnpm run --filter=@repo/test-db db:push",
@@ -36,7 +37,7 @@
     "knip": "knip"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.1",
+    "@biomejs/biome": "1.9.3",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.4.1",
     "@types/node": "^22.5.2",
@@ -64,5 +65,5 @@
       ]
     }
   },
-  "packageManager": "pnpm@9.10.0"
+  "packageManager": "pnpm@9.11.0"
 }

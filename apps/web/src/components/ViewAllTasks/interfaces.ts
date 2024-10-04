@@ -3,6 +3,7 @@ import type { Status, Task } from "@repo/db";
 export interface ViewAllTasksProps {
 	getFilteredStatuses: () => Status[];
 	getTasksForStatus: (status: Status) => Task[];
+	allowedColumns?: Status[];
 }
 
 export interface StatusColumnProps {
@@ -24,9 +25,3 @@ export interface HideStatusProps {
 	setShowTasks: (input: boolean) => void;
 	showTasks: boolean;
 }
-
-export type HideTaskStatusDropdownProps = {
-	toggleHideDropdown: () => void;
-	showTasks: boolean;
-	toggleShowTasks: () => void;
-};

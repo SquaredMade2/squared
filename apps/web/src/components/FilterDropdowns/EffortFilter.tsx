@@ -1,143 +1,96 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
-	DropdownMenuRadioItem,
-	DropdownMenuRadioGroup,
+	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { low, medium, high } from "@/components/Svg";
-import type { FilterDropDownProps } from "./interfaces";
 import { useFilterStore } from "@/store/filters";
+import { Check } from "lucide-react";
+
+interface FilterDropDownProps {
+	showFilterDropDown: boolean;
+	setShowFilterDropDown: (show: boolean) => void;
+}
 
 const groupEffort = [
-	{
-		id: 0,
-		name: 1,
-		border: false,
-		svg: low(),
-		group: "effortEstimate",
-	},
-	{
-		id: 1,
-		name: 2,
-		border: false,
-		svg: low(),
-		group: "effortEstimate",
-	},
-	{
-		id: 2,
-		name: 3,
-		border: false,
-		svg: low(),
-		group: "effortEstimate",
-	},
-	{
-		id: 3,
-		name: 4,
-		border: false,
-		svg: medium(),
-		group: "effortEstimate",
-	},
-	{
-		id: 4,
-		name: 5,
-		border: false,
-		svg: medium(),
-		group: "effortEstimate",
-	},
-	{
-		id: 5,
-		name: 6,
-		border: false,
-		svg: medium(),
-		group: "effortEstimate",
-	},
-	{
-		id: 6,
-		name: 7,
-		border: false,
-		svg: high(),
-		group: "effortEstimate",
-	},
-	{
-		id: 7,
-		name: 8,
-		border: false,
-		svg: high(),
-		group: "effortEstimate",
-	},
-	{
-		id: 8,
-		name: 9,
-		border: false,
-		svg: high(),
-		group: "effortEstimate",
-	},
-	{
-		id: 9,
-		name: 10,
-		border: false,
-		svg: high(),
-		group: "effortEstimate",
-	},
+	{ id: 0, name: 1, svg: low(), group: "effortEstimate" },
+	{ id: 1, name: 2, svg: low(), group: "effortEstimate" },
+	{ id: 2, name: 3, svg: low(), group: "effortEstimate" },
+	{ id: 3, name: 4, svg: medium(), group: "effortEstimate" },
+	{ id: 4, name: 5, svg: medium(), group: "effortEstimate" },
+	{ id: 5, name: 6, svg: medium(), group: "effortEstimate" },
+	{ id: 6, name: 7, svg: high(), group: "effortEstimate" },
+	{ id: 7, name: 8, svg: high(), group: "effortEstimate" },
+	{ id: 8, name: 9, svg: high(), group: "effortEstimate" },
+	{ id: 9, name: 10, svg: high(), group: "effortEstimate" },
 ];
 
-const EffortFilterDropDown = ({
+export default function EffortFilterDropDown({
 	showFilterDropDown,
 	setShowFilterDropDown,
-}: FilterDropDownProps) => {
-	const [selectedEfforts, setSelectedEfforts] = useState<string>("");
+}: FilterDropDownProps) {
+	const [selectedEffort, setSelectedEffort] = useState<number | null>(null);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
 	);
 
 	useEffect(() => {
-		if (Number(selectedEfforts) > 0) {
+		if (selectedEffort !== null) {
+			removeFilter("effortEstimate");
 			addFilter({
 				field: "effortEstimate",
-				value: Number(selectedEfforts),
+				value: selectedEffort,
 				operator: "equals",
 			});
 		} else {
-			removeFilter("status");
+			removeFilter("effortEstimate");
 		}
-	}, [selectedEfforts, addFilter, removeFilter]);
+	}, [selectedEffort, addFilter, removeFilter]);
 
 	useEffect(() => {
 		if (
 			currentFilterTypes.length === 0 ||
 			!currentFilterTypes.includes("effortEstimate")
 		) {
-			setSelectedEfforts("");
+			setSelectedEffort(null);
 		}
 	}, [currentFilterTypes]);
+
+	const handleEffortSelect = (effort: number) => {
+		setSelectedEffort((prevEffort) => (prevEffort === effort ? null : effort));
+	};
 
 	return (
 		<DropdownMenu
 			open={showFilterDropDown}
 			onOpenChange={setShowFilterDropDown}
 		>
-			<DropdownMenuTrigger>
-				<div className="hidden" aria-hidden="true" />
-			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-72 p-0 mt-5 mr-32">
-				<DropdownMenuRadioGroup
-					value={selectedEfforts}
-					onValueChange={setSelectedEfforts}
-				>
-					{groupEffort.map((item) => (
-						<DropdownMenuRadioItem key={item.id} value={item.name.toString()}>
-							<div className="flex items-center space-x-2">
-								{item.svg}
-								<span>{item.name}</span>
-							</div>
-						</DropdownMenuRadioItem>
-					))}
-				</DropdownMenuRadioGroup>
+			<DropdownMenuTrigger />
+			<DropdownMenuContent className="w-60 mt-5">
+				{groupEffort.map((item) => (
+					<DropdownMenuItem
+						key={item.id}
+						onSelect={(e) => {
+							e.preventDefault();
+							handleEffortSelect(item.name);
+						}}
+					>
+						<div className="flex items-center gap-2">
+							{selectedEffort === item.name ? (
+								<Check className="size-4" />
+							) : (
+								<div className="size-4" />
+							)}
+							{item.svg}
+							<span>{item.name}</span>
+						</div>
+					</DropdownMenuItem>
+				))}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
-};
-
-export default EffortFilterDropDown;
+}

@@ -54,20 +54,7 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						set({ user: null });
 
 						// Clear all session storage items
-						const itemsToRemove = [
-							"auth-store",
-							"activity-store",
-							"task-store",
-							"notification-store",
-							"team-store",
-							"workspace-store",
-							"user-store",
-							"view-store",
-							"filter-store",
-						];
-						for (const item in itemsToRemove) {
-							sessionStorage.removeItem(item);
-						}
+						sessionStorage.clear();
 
 						// Sign out using NextAuth and redirect to login page
 						await signOut({ redirect: false });
@@ -81,13 +68,33 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 						return false;
 					}
 				},
-				resetPassword: async (email: string) => {
-					const response: { data: boolean } = await axios.post(
+				resetPasswordEmail: async (email: string) => {
+					const response: { data: AuthReturn } = await axios.post(
 						apiString("reset-password"),
 						{
 							email,
 						},
 					);
+					return response.data;
+				},
+				resetPassword: async (token: string, newPassword: string) => {
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(`reset-password/${token}`),
+						{
+							newPassword,
+						},
+					);
+					return response.data;
+				},
+				checkTokenValid: async (token: string) => {
+					const response: { data: AuthReturn } = await axios.post(
+						apiString(token),
+						{
+							token,
+							validate: true,
+						},
+					);
+					set({ user: response.data.user });
 					return response.data;
 				},
 				setUser: (user: User | null) => {

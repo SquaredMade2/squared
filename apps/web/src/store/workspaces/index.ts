@@ -8,9 +8,9 @@ import type {
 	WorkspaceResponse,
 	Workspace,
 } from "./interfaces";
-import type { User, SavedFilter as SavedFilterType } from "@repo/db";
+import type { User } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
-import type { FilterCondition, SavedFilter } from "../filters";
+import type { SavedFilter } from "../filters";
 export * from "./interfaces";
 export * from "./store";
 
@@ -30,7 +30,6 @@ export const createWorkspaceStore = (
 	initState: WorkspaceState = {
 		workspaces: [],
 		currentWorkspace: null,
-		workspaceFilters: [],
 	},
 ) => {
 	return createStore<WorkspaceStore>()(
@@ -110,42 +109,6 @@ export const createWorkspaceStore = (
 							message: error instanceof Error ? error.message : "Unknown error",
 							variant: "destructive",
 						};
-					}
-				},
-				getWorkspaceFilters: async (
-					workspaceId: string,
-				): Promise<SavedFilter[]> => {
-					try {
-						const {
-							data: response,
-						}: { data: ApiReturnType<SavedFilterType[]> } = await axios.get(
-							`${apiString(workspaceId)}/filter`,
-						);
-						const { data: filters } = response;
-						if (!filters) {
-							return [];
-						}
-						const taskFilters: SavedFilter[] = filters.map((savedFilter) => {
-							const parsedFilter = savedFilter.filter as FilterCondition[];
-
-							return {
-								id: savedFilter.id,
-								name: savedFilter.name,
-								workspaceId: savedFilter.workspaceId,
-								filter: parsedFilter.map((condition) => ({
-									field: condition.field,
-									value: condition.value,
-									operator: condition.operator,
-								})),
-							};
-						});
-						set({
-							workspaceFilters: taskFilters,
-						});
-						return taskFilters;
-					} catch (error) {
-						console.error("Error in getWorkspaceFilters:", error);
-						return [];
 					}
 				},
 				updateWorkspace: async (

@@ -38,6 +38,11 @@ enum NotificationType {
   CREATED
 }
 
+enum SavedFilterType {
+  TEAM
+  WORKSPACE
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -168,7 +173,10 @@ model Task {
   workspaceId    String
   updatedAt      DateTime  @default(now()) @updatedAt
   deleted        Boolean   @default(false)
+  parentId       String?
 
+  parent   Task?         @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
+  children Task[]        @relation("ParentChild")
   status   Status        @default(backlog)
   priority Priority      @default(noPriority)
   Comments Comment[]
@@ -187,11 +195,12 @@ model Team {
   identifier  String
   workspaceId String
 
-  Tasks   Task[]
-  Project Project[]
-
-  Workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Tasks     Task[]
+  Project   Project[]
   Users     UserTeam[]
+  teamViews SavedFilter[]
+
+  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model User {
@@ -230,12 +239,20 @@ model Label {
 }
 
 model SavedFilter {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
-  filter      Json
-  workspaceId String
+  description String? @default("")
+  filter      Json[]
+  workspaceId String?
+  teamId      String?
+
+  type SavedFilterType
 
   Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Team      Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([workspaceId], name: "workspaceIdx")
+  @@index([teamId], name: "teamIdx")
 }
 
 model Workspace {
@@ -249,7 +266,7 @@ model Workspace {
   avatarUrl            String?
   admins               String[]
 
-  workspaceFilters   SavedFilter[]
+  workspaceViews     SavedFilter[]
   Labels             Label[]
   universalTokenLink UniversalTokenLink?
   teams              Team[]

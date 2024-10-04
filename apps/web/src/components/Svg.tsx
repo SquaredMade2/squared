@@ -49,58 +49,6 @@ export const low = () => {
 	);
 };
 
-export function inProgress() {
-	return (
-		<svg
-			width="16"
-			height="16"
-			viewBox="0 0 16 16"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<title>Icon</title>
-			<g clipPath="url(#clip0_1473_20025)">
-				<circle cx="8" cy="8" r="7" stroke="#7394FF" strokeWidth="1.5" />
-				<path
-					d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1V15Z"
-					fill="#7394FF"
-				/>
-			</g>
-			<defs>
-				<clipPath id="clip0_1473_20025">
-					<rect width="16" height="16" fill="white" />
-				</clipPath>
-			</defs>
-		</svg>
-	);
-}
-
-export function filterInProgress() {
-	return (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="14"
-			height="14"
-			fill="none"
-			aria-label="In Progress"
-			className="color-override"
-			viewBox="0 0 14 14"
-		>
-			<title>Icon</title>
-			<rect
-				width="12"
-				height="12"
-				x="1"
-				y="1"
-				stroke="#F2C94C"
-				strokeWidth="2"
-				rx="6"
-			/>
-			<path fill="#F2C94C" d="M7 7V3.5a3.5 3.5 0 010 7z" />
-		</svg>
-	);
-}
-
 export const SqLogo = () => (
 	<svg
 		width="20"

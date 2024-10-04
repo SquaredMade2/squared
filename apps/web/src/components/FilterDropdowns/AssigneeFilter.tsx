@@ -17,33 +17,37 @@ import {
 import { useFilterStore, useUserStore } from "@/store";
 import type { FilterDropDownProps } from "./interfaces";
 import type { User } from "@repo/db";
-import { Check } from "lucide-react";
+import { Check, UserSearch } from "lucide-react";
 import ProfileImage from "../ProfileImage";
+import { ScrollArea } from "../ui/scroll-area";
 
 export default function AssigneeFilterDropDown({
 	showFilterDropDown,
 	setShowFilterDropDown,
 }: FilterDropDownProps) {
 	const { users } = useUserStore((state) => state);
-	const [selectedAssignees, setSelectedAssignees] = useState<User[]>([]);
+	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
+		[],
+	);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
 	);
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleAssigneeChange = (label: User) => {
+	const handleAssigneeChange = (label: User | null) => {
 		setSelectedAssignees((prev) =>
-			prev.some((l) => l.id === label.id)
-				? prev.filter((l) => l.id !== label.id)
+			prev.some((l) => l?.id === label?.id)
+				? prev.filter((l) => l?.id !== label?.id)
 				: [...prev, label],
 		);
 	};
 
 	useEffect(() => {
 		if (selectedAssignees.length > 0) {
+			removeFilter("assigneeId");
 			addFilter({
 				field: "assigneeId",
-				value: selectedAssignees.map((u) => u.id),
+				value: selectedAssignees.map((u) => u?.id || null),
 				operator: "arrayIncludesAny",
 			});
 		} else {
@@ -68,7 +72,7 @@ export default function AssigneeFilterDropDown({
 	return (
 		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
 			<PopoverTrigger />
-			<PopoverContent className="w-72 p-0" sideOffset={5}>
+			<PopoverContent className="w-60 mt-5">
 				<Command>
 					<CommandInput
 						placeholder="Search users..."
@@ -77,28 +81,49 @@ export default function AssigneeFilterDropDown({
 					/>
 					<CommandList>
 						<CommandEmpty>No users found.</CommandEmpty>
-						<CommandGroup>
-							{filteredAssignees.map((user) => (
+						<ScrollArea
+							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
+						>
+							<CommandGroup>
 								<CommandItem
-									key={user.id}
-									onSelect={() => handleAssigneeChange(user)}
-									className="flex items-center space-x-2 cursor-pointer"
+									key="unassigned"
+									onSelect={() => handleAssigneeChange(null)}
+									className="flex items-center space-x-2 cursor-pointer h-8"
 								>
 									<div className="flex items-center flex-1 space-x-2">
-										{selectedAssignees.some((l) => l.id === user.id) ? (
+										{selectedAssignees.some((l) => l === null) ? (
 											<Check className="w-4 h-4" />
 										) : (
 											<div className="w-4 h-4" />
 										)}
-										<ProfileImage
-											profileName={user.name}
-											location="assigneeDropdown"
-										/>
-										<span className="w-2/3 truncate">{user.username}</span>
+										<UserSearch className="size-5 mx-1 mr-2" />
+										<span className="w-2/3 truncate">Unassigned</span>
 									</div>
 								</CommandItem>
-							))}
-						</CommandGroup>
+								{filteredAssignees
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.map((user) => (
+										<CommandItem
+											key={user.id}
+											onSelect={() => handleAssigneeChange(user)}
+											className="flex items-center space-x-2 cursor-pointer h-8"
+										>
+											<div className="flex items-center flex-1 space-x-2">
+												{selectedAssignees.some((l) => l?.id === user.id) ? (
+													<Check className="w-4 h-4" />
+												) : (
+													<div className="w-4 h-4" />
+												)}
+												<ProfileImage
+													profileName={user.name}
+													location="assigneeDropdown"
+												/>
+												<span className="w-2/3 truncate">{user.name}</span>
+											</div>
+										</CommandItem>
+									))}
+							</CommandGroup>
+						</ScrollArea>
 					</CommandList>
 				</Command>
 			</PopoverContent>

@@ -1,7 +1,13 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore, useModalStore, useWorkspaceStore } from "@/store";
+import { useRouter } from "next/navigation";
+import {
+	useAuthStore,
+	useModalStore,
+	useNotificationStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,15 +22,14 @@ import { useEffect, useState } from "react";
 
 const IconLeftMenu = () => {
 	const router = useRouter();
-	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+	const { currentTeam } = useTeamStore((state) => state);
 	const { setShowCommand } = useModalStore((state) => state);
+	const { getAllNotifications } = useNotificationStore((state) => state);
+	const [notifications, setNotifications] = useState(0);
 	const { theme, setTheme } = useTheme();
-	const baseUrl = process.env.NEXT_PUBLIC_URL;
-	const homeRoute = currentRoute.includes(`${workspace?.url}`);
-	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
-	const logout = useAuthStore((state) => state.logout);
+	const { logout, user } = useAuthStore((state) => state);
 	const [mounted, setMounted] = useState(false);
 
 	const handleLogout = async (): Promise<void> => {
@@ -39,15 +44,20 @@ const IconLeftMenu = () => {
 	};
 
 	const navigateTo = (childRoute: string): void => {
-		router.push(`${baseUrl}/${childRoute}`);
+		router.push(`/${childRoute}`);
 	};
 
 	const toHome = () => {
-		homeRoute && !viewsRoute ? "" : router.back();
+		router.push(`/${workspace?.url}/team/${currentTeam?.identifier}/all`);
 	};
 
 	useEffect(() => {
 		setMounted(true);
+		const fetchNotifications = async () => {
+			const notifications = user && (await getAllNotifications(user.id));
+			setNotifications(notifications?.filter((n) => !n.read).length || 0);
+		};
+		fetchNotifications();
 	}, []);
 
 	if (!mounted) {
@@ -105,9 +115,13 @@ const IconLeftMenu = () => {
 								variant="ghost"
 								size="icon"
 								onClick={() => navigateTo("inbox")}
+								className="relative"
 							>
 								<Inbox className="size-4" />
 								<span className="sr-only">Inbox</span>
+								{notifications > 0 && (
+									<div className="absolute bottom-2.5 right-2.5 size-2 bg-primary rounded-full" />
+								)}
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent side="right" className="mb-8">

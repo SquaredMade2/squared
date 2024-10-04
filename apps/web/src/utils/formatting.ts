@@ -19,16 +19,17 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 		: workspaceName;
 };
 
-export const getInitials = (name: string) => {
-	if (typeof name === "string") {
-		const words = name.split(/(?=[A-Z])|\s+/);
-		if (words.length === 1) {
-			return name.substr(0, 2).toUpperCase();
-		}
-		const filteredWords = [words[0], words[1]];
-		const initials = filteredWords.map((word) => word.charAt(0));
-		return initials.join("").toUpperCase();
-	}
+export const getInitials = (name: string): string => {
+	if (!name || typeof name !== "string") return "";
+
+	const words = name.trim().split(/\s+/);
+
+	const initials = words
+		.map((word) => word.charAt(0).toUpperCase())
+		.filter(Boolean)
+		.slice(0, 2);
+
+	return initials.join("");
 };
 
 export const formatUrl = (title: string) => {
