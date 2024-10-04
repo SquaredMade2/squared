@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { UserSearch } from "lucide-react";
+import { Check, UserSearch } from "lucide-react";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -26,7 +26,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 		fetchUsers();
 	}, [currentWorkspace?.id, getAllUsers]);
-
+	console.log(task);
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
 			updateTask(taskId, { assigneeId: null, assigneeName: null });
@@ -56,10 +56,11 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 			<ContextMenuSubContent>
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
-						className="w-40"
+						className="w-40 flex justify-between"
 						onClick={() => handleSelectAssignee(null)}
 					>
 						Unassign
+						{!task.assigneeId && <Check className="w-4 h-4" />}
 					</ContextMenuItem>
 
 					{users
@@ -69,12 +70,16 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 								<ContextMenuItem
 									key={user.id}
 									onClick={() => handleSelectAssignee(user.id)}
+									className="flex justify-between"
 								>
-									<ProfileImage
-										profileName={user.name ?? ""}
-										location={"contextMenu"}
-									/>
-									{user.name}
+									<div className="flex">
+										<ProfileImage
+											profileName={user.name ?? ""}
+											location={"contextMenu"}
+										/>
+										{user.name}
+									</div>
+									{task.assigneeId === user.id && <Check className="w-4 h-4" />}
 								</ContextMenuItem>
 							);
 						})}
