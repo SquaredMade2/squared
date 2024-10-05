@@ -31,7 +31,7 @@ import { useToast } from "@/components/ui/use-toast";
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-	const { task, isLoading, error } = useTaskPageData();
+	const { task, isLoading, error, workspace } = useTaskPageData();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
 
@@ -64,7 +64,7 @@ const TaskPage = () => {
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
 									<MobileMenuSheetTrigger />
-									<TaskBreadcrumbs task={task} />
+									<TaskBreadcrumbs task={task} workspace={workspace} />
 								</div>
 							</div>
 							<MobileTaskSettings task={task} />

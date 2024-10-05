@@ -8,11 +8,12 @@ import {
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import Link from "next/link";
 import { useWorkspaceStore } from "@/store";
-import type { Task } from "@repo/db";
-import { useTaskPageData } from "@/hooks/useTaskPageData";
+import type { Task, Workspace } from "@repo/db";
 
-export const TaskBreadcrumbs = ({ task }: { task: Task }) => {
-	const workspace = useTaskPageData().workspace;
+export const TaskBreadcrumbs = ({
+	task,
+	workspace,
+}: { task: Task; workspace: Workspace | null }) => {
 	const { workspaces } = useWorkspaceStore((state) => state);
 
 	const index: number = workspace
