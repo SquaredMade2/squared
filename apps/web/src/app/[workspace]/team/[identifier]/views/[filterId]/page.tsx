@@ -9,6 +9,7 @@ import { useTaskPage } from "@/hooks/useTaskPage";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -74,20 +75,26 @@ export default function FilterViewPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
+			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+				<ViewAllTasks
+					getFilteredStatuses={getFilteredStatuses}
+					getTasksForStatus={getTasksForStatus}
+				/>
+				{view === "grid" &&
+					!gridViewOptions.showEmptyGroups &&
+					getHiddenColumns().length >= 1 && (
+						<div className="ml-auto">
+							<HiddenColumns
+								getHiddenColumns={getHiddenColumns}
+								getTasksForStatus={getTasksForStatus}
+							/>
+						</div>
+					)}
+			</div>
+			<ViewsDetailSidebar
+				filter={filter}
+				filterTasksWithFilter={filterTasksWithFilter}
 			/>
-			{view === "grid" &&
-				!gridViewOptions.showEmptyGroups &&
-				getHiddenColumns().length >= 1 && (
-					<div className="ml-auto">
-						<HiddenColumns
-							getHiddenColumns={getHiddenColumns}
-							getTasksForStatus={getTasksForStatus}
-						/>
-					</div>
-				)}
 		</TaskPageLayout>
 	);
 }
