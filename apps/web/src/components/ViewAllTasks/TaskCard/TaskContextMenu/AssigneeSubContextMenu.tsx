@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { UserSearch } from "lucide-react";
+import { Check, UserSearch } from "lucide-react";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -56,26 +56,33 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 			<ContextMenuSubContent>
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
-						className="w-40"
+						className="w-40 flex justify-between"
 						onClick={() => handleSelectAssignee(null)}
 					>
 						Unassign
+						{!task.assigneeId && <Check className="w-4 h-4" />}
 					</ContextMenuItem>
 
-					{users.map((user) => {
-						return (
-							<ContextMenuItem
-								key={user.id}
-								onClick={() => handleSelectAssignee(user.id)}
-							>
-								<ProfileImage
-									profileName={user.username ?? ""}
-									location={"contextMenu"}
-								/>
-								{user.username}
-							</ContextMenuItem>
-						);
-					})}
+					{users
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map((user) => {
+							return (
+								<ContextMenuItem
+									key={user.id}
+									onClick={() => handleSelectAssignee(user.id)}
+									className="flex justify-between"
+								>
+									<div className="flex">
+										<ProfileImage
+											profileName={user.name ?? ""}
+											location={"contextMenu"}
+										/>
+										{user.name}
+									</div>
+									{task.assigneeId === user.id && <Check className="w-4 h-4" />}
+								</ContextMenuItem>
+							);
+						})}
 					<ScrollBar orientation="vertical" />
 				</ScrollArea>
 			</ContextMenuSubContent>

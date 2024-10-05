@@ -16,11 +16,10 @@ export default function VerifyUserToken(): void {
 			try {
 				const data = await verifyUser(singleToken);
 				if (!data) throw new Error("Could not find user to verify");
-				const { message, variant, user } = data;
+				const { message, variant } = data;
 				toast({ title: message, variant });
-				if (variant === "default" && user) {
-					router.push("/join");
-				}
+				router.refresh();
+				router.replace("/");
 			} catch (error) {
 				console.error(error);
 				toast({

@@ -141,6 +141,35 @@ export const createTaskStore = (
 						return [];
 					}
 				},
+				toggleSprintTasks: async (
+					teamId: string,
+					sprintId: string,
+					type: "add" | "remove",
+				): Promise<ApiReturnType<Task[]>> => {
+					try {
+						const response: { data: ApiReturnType<Task[]> } = await axios.put(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/team/${teamId}/sprints/${sprintId}/tasks`,
+							{ type },
+						);
+						const { tasks: currentTasks } = get();
+						if (response.data.data) {
+							const updatedTasks = currentTasks.map((task) => {
+								if (response.data.data?.includes(task)) {
+									return { ...task, sprintId };
+								}
+								return task;
+							});
+							set({ tasks: updatedTasks });
+						}
+						return response.data;
+					} catch (error) {
+						return {
+							data: [],
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
 			}),
 			{
 				name: "task-store",

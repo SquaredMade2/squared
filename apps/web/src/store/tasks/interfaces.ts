@@ -1,4 +1,5 @@
 import type { Task } from "@repo/db";
+import type { ApiReturnType } from "../interfaces";
 
 export type TaskState = {
 	tasks: Task[];
@@ -19,6 +20,11 @@ type TaskActions = {
 	setTaskList: (tasks: Task[]) => void;
 	getTask: (taskId: string) => Promise<TaskResponse>;
 	getAllTasks: (teamId: string) => Promise<Task[]>;
+	toggleSprintTasks: (
+		teamId: string,
+		sprintId: string,
+		type: "add" | "remove",
+	) => Promise<ApiReturnType<Task[]>>;
 };
 
 export type TaskStore = TaskState & TaskActions;

@@ -1,7 +1,7 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import type { Router } from "express";
-import docs from "./docs";
+import docs from "./src/docs";
 
 const options = {
 	definition: {
