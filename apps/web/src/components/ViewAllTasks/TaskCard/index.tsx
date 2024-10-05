@@ -1,12 +1,7 @@
 "use client";
 import { Draggable } from "@hello-pangea/dnd";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import {
-	useTeamStore,
-	useUserStore,
-	useViewStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
@@ -16,7 +11,6 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { users } = useUserStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
 
 	const taskLabels =
 		currentWorkspace?.Labels.filter((label) =>
@@ -38,8 +32,8 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 								<TaskGrid
 									task={task}
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
-									currentTeam={currentTeam}
 									taskLabels={taskLabels}
+									currentWorkspaceUrl={currentWorkspace?.url}
 								/>
 							) : (
 								<TaskList
@@ -47,7 +41,8 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 									user={users.filter((u) => u.id === task.assigneeId)[0]}
 									location={location}
 									highlightText={highlightText}
-									currentTeam={currentTeam}
+									currentWorkspaceUrl={currentWorkspace?.url}
+									taskLabels={taskLabels}
 								/>
 							)}
 						</ContextMenuTrigger>

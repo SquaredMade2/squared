@@ -10,7 +10,12 @@ import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import LabelBadge from "@/components/LabelBadges";
 
-const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
+const TaskGrid = ({
+	task,
+	user,
+	taskLabels,
+	currentWorkspaceUrl,
+}: TaskGridProps) => {
 	const { gridViewOptions } = useViewStore((state) => state);
 
 	const {
@@ -24,7 +29,7 @@ const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
 
 	return (
 		<Link
-			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 			className="cursor-pointer"
 		>
 			<Card className="w-80">

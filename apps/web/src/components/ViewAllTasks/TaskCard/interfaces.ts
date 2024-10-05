@@ -1,10 +1,10 @@
-import type { Task, Team, Label, User } from "@repo/db";
+import type { Task, Label, User } from "@repo/db";
 
 export interface TaskGridProps {
 	task: Task;
 	user?: User;
-	currentTeam: Team | null;
 	taskLabels: Label[];
+	currentWorkspaceUrl?: string;
 }
 
 export interface TaskListProps {
@@ -12,7 +12,8 @@ export interface TaskListProps {
 	location: string;
 	task: Task;
 	user?: User;
-	currentTeam: Team | null;
+	taskLabels: Label[];
+	currentWorkspaceUrl?: string;
 }
 
 export interface TaskCardProps {

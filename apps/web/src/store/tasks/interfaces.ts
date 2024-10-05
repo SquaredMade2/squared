@@ -19,6 +19,10 @@ type TaskActions = {
 	deleteTask: (taskId: string) => Promise<void>;
 	setTaskList: (tasks: Task[]) => void;
 	getTask: (taskId: string) => Promise<TaskResponse>;
+	getTaskByIdentifier: (
+		workspaceId: string,
+		taskIdentifier: string,
+	) => Promise<TaskResponse>;
 	getAllTasks: (teamId: string) => Promise<Task[]>;
 	toggleSprintTasks: (
 		teamId: string,
