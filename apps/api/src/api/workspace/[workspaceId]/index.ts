@@ -11,7 +11,6 @@ export function createRoute(): Route<Params> {
 		GET: async (res, { workspaceId }): Promise<APIResponse<Workspace>> => {
 			try {
 				// Find workspace by workspace ID
-				console.log("workspaceId", workspaceId);
 				const workspace = await prisma.workspace.findFirst({
 					where: {
 						OR: [{ id: workspaceId }, { url: workspaceId }],
@@ -20,7 +19,6 @@ export function createRoute(): Route<Params> {
 						Labels: true,
 					},
 				});
-				console.log("workspace", workspace);
 
 				if (!workspace) {
 					return {
