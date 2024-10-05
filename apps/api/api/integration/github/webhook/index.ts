@@ -102,7 +102,6 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 			continue;
 		}
 
-		// Delete the entry from WorkspaceRepositories where the repo is linked to this specific workspace
 		await prisma.workspaceRepositories.deleteMany({
 			where: {
 				GitHubRepoInfo: {
@@ -112,7 +111,7 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 			},
 		});
 
-		// Optionally, check if the repo still exists and delete it only if there are no remaining links
+		// check if the repo still exists and delete it only if there are no remaining links
 		const remainingLinks = await prisma.workspaceRepositories.count({
 			where: {
 				GitHubRepoInfo: {
@@ -122,7 +121,7 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 			},
 		});
 
-		// Fetch the repository info to ensure it exists before attempting to delete
+		// fetch the repository info to ensure it exists before attempting to delete
 		const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 			where: {
 				repoName: repo.full_name,
@@ -154,7 +153,6 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 			continue;
 		}
 
-		// Find or create the repository in githubRepoInfo
 		let githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 			where: { repoName: repo.full_name, owner: githubUsername },
 		});
@@ -195,7 +193,6 @@ async function handleBranchAndCommitEvents(
 		throw new Error(`Task ${identifier} not found or has no workspace`);
 	}
 
-	// Fetch the GithubRepoInfo for the repo
 	const githubRepoInfo = await prisma.githubRepoInfo.findFirst({
 		where: { repoName: repoFullName, owner: repoOwner },
 	});
@@ -238,7 +235,6 @@ async function handleBranchAndCommitEvents(
 		});
 	}
 
-	// Upsert task event log for the task
 	const eventLog = await prisma.taskEventLog.upsert({
 		where: { taskId: task.id },
 		update: {},
@@ -251,7 +247,6 @@ async function handleBranchAndCommitEvents(
 		},
 	});
 
-	// Create a new activity related to the event log
 	const newActivity = await prisma.activity.create({
 		data: {
 			id: uuidv4(),
@@ -260,7 +255,6 @@ async function handleBranchAndCommitEvents(
 		},
 	});
 
-	// Create task event for the branch creation or push
 	await prisma.taskEvent.create({
 		data: {
 			type: "gitUpdated",
