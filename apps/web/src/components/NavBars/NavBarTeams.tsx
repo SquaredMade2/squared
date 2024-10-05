@@ -7,7 +7,11 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import Link from "next/link";
 
-const NavBarTeams = ({ teamIdentifier }: NavBarTeamProps) => {
+const NavBarTeams = ({
+	teamIdentifier,
+	currentPage,
+	active,
+}: NavBarTeamProps) => {
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getAllTasks } = useTaskStore((state) => state);
@@ -41,26 +45,28 @@ const NavBarTeams = ({ teamIdentifier }: NavBarTeamProps) => {
 	return (
 		<div className="w-full z-10">
 			<Button
-				variant={"ghost"}
+				variant={currentPage === "all" && active ? "secondary" : "ghost"}
 				onClick={() => handleActiveParams("all")}
 				className="w-full justify-start h-6"
 			>
 				<div className="mr-2 p-0.5 rounded">
 					<Copy className={"size-4 text-muted-foreground hover:text-accent"} />
 				</div>
-				<p>Issues</p>
+				<p>Tasks</p>
 			</Button>
 			<div className="ml-2">
 				<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
 					<Button
-						variant={"ghost"}
+						variant={currentPage === "active" && active ? "secondary" : "ghost"}
 						onClick={() => handleActiveParams("active")}
 						className="w-full justify-start h-6 pl-3"
 					>
 						Active
 					</Button>
 					<Button
-						variant={"ghost"}
+						variant={
+							currentPage === "backlog" && active ? "secondary" : "ghost"
+						}
 						onClick={() => handleActiveParams("backlog")}
 						className="w-full justify-start h-6 pl-3"
 					>
@@ -104,7 +110,7 @@ const NavBarTeams = ({ teamIdentifier }: NavBarTeamProps) => {
 			)}
 			<Link href={`/${currentWorkspace?.url}/team/${teamIdentifier}/views`}>
 				<Button
-					variant={"ghost"}
+					variant={currentPage === "views" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("views")}
 					className="w-full justify-start h-6"
 				>
