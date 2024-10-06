@@ -4,13 +4,9 @@ import type { RenderLeafProps } from "slate-react";
 const Leaf = (props: RenderLeafProps) => {
 	const renderLeafType = () => {
 		if (props.leaf.link) {
-			// const text = props.text.text || props.children?.toString() || "";
-			// const formattedLink = handleFormatLink(text);
-			// if (typeof formattedLink === "string") {
-			// 	return <span {...props.attributes}>{props.children}</span>;
-			// }
 			return (
 				<span {...props.attributes}>
+					{/* TODO: implement links */}
 					{/* {beforeLink}
 					<a
 						href={formattedLink.linkUrl}

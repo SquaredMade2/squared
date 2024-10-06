@@ -12,10 +12,10 @@ import type {
 	CustomElement,
 	CustomText,
 	// TextEditorProps,
-} from "./TextEditor.interfaces";
+} from "./interfaces";
+import { cn } from "@/utils/cn";
 import CodeElement from "./TextEditorElements/ElementBlocks/CodeElement";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
-import { cn } from "@/utils/cn";
 import TextEditorToolBar from "./TextEditorToolBar";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import { Button } from "../ui/button";
@@ -207,6 +207,7 @@ const TextEditor = () => {
 			case "Enter": {
 				const { selection } = editor;
 				if (selection) {
+					// TODO: implement links with below
 					// const content = Editor.string(editor, selection);
 					// console.log(selection);
 					// const link = handleFormatLink(content);
@@ -297,14 +298,14 @@ const TextEditor = () => {
 					className="min-h-[160px] w-full py-4 px-3"
 				/>
 			</div>
-			<div className="flex flex-row">
-				<Button onClick={addCommentToTask} className="ml-auto m-5">
-					{" "}
-					Comment{" "}
-				</Button>
-			</div>
+			<Button onClick={addCommentToTask} className="ml-auto m-5">
+				{" "}
+				Comment{" "}
+			</Button>
 		</Slate>
 	);
 };
 
 export default TextEditor;
+
+export { CodeElement, Leaf, TextEditorToolBar, HeaderElement };

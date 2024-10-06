@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import type { Node, NodeEntry } from "slate";
 
 export interface TextEditorToolBarProps {
@@ -41,9 +40,3 @@ export type CustomText = {
 };
 
 export type CustomDescendant = CustomElement | CustomText;
-
-export type RenderProps = {
-	element: CustomElement;
-	attributes: string;
-	children: ReactNode;
-};

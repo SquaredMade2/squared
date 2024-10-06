@@ -1,5 +1,5 @@
 import { Bold, Heading, Italic } from "lucide-react";
-import type { TextEditorToolBarProps } from "./TextEditor.interfaces";
+import type { TextEditorToolBarProps } from "./interfaces";
 import { Button } from "../ui/button";
 
 const TextEditorToolBar = ({
@@ -11,6 +11,7 @@ const TextEditorToolBar = ({
 	isCodeBlock,
 	createHeaderBlock,
 	isHeaderBlock,
+	// Todos:
 	// Quote
 	// Link
 	// Numbered list
@@ -28,7 +29,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`w-8 h-8 ${isBoldActive ? "" : "text-gray-600"}`}
+				className={`size-8 ${isBoldActive ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createBoldLeaf();
@@ -41,7 +42,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`w-8 h-8 ${isItalicActive ? "" : "text-gray-600"}`}
+				className={`size-8 ${isItalicActive ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createItalicLeaf();
@@ -54,7 +55,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`w-8 h-8 ml-2 ${isCodeBlock ? "" : "text-gray-600"}`}
+				className={`size-8 ml-2 ${isCodeBlock ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createCodeBlock();
@@ -66,13 +67,13 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`w-8 h-8 ${isHeaderBlock ? "" : "text-gray-600"}`}
+				className={`size-8 ${isHeaderBlock ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createHeaderBlock();
 				}}
 			>
-				<Heading className="w-4 h-4" />
+				<Heading className="size-4" />
 				<span className="sr-only">Header</span>
 			</Button>
 		</div>

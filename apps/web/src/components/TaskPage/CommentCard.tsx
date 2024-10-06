@@ -3,10 +3,7 @@ import { Text, type Descendant } from "slate";
 import type { RenderElementProps, RenderLeafProps } from "slate-react";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
-import type {
-	CustomElement,
-	CustomText,
-} from "../TextEditor/TextEditor.interfaces";
+import type { CustomElement, CustomText } from "../TextEditor/interfaces";
 import { useUserStore } from "@/store";
 import ProfileImage from "../ProfileImage";
 import CodeElement from "../TextEditor/TextEditorElements/ElementBlocks/CodeElement";
@@ -37,7 +34,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		}
 	}, []);
 
-	// Function to render the Slate content outside the editor
 	const renderSlateContent = (nodes: Descendant[]): JSX.Element[] => {
 		return nodes.map((node) => {
 			if (Text.isText(node)) {
@@ -75,10 +71,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	useEffect(() => {
 		const handleGetUser = async () => {
 			try {
-				const author = await getUser(comment.authorId);
-				if (author.user) {
-					setAuthorName(author.user.name);
-				}
+				const { user } = await getUser(comment.authorId);
+				setAuthorName(user);
 			} catch (err) {
 				console.error(err);
 			}
@@ -86,7 +80,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		handleGetUser();
 	}, [comment]);
 	return (
-		<div key={comment.id} className="flex flex-col px-8 m-5">
+		<div className="flex flex-col px-8 m-5">
 			<div className="flex flex-row items-center my-5">
 				<div className="mr-4 text-muted-foreground">
 					{formatDate(comment.date, "dd MMM yyyy h:mm a")}
