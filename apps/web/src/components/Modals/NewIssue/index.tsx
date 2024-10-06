@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,16 +27,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import {
-	useAuthStore,
-	useModalStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
-import type { Task } from "@repo/db";
+import { useModalStore } from "@/store";
 import { DateDropdownButton } from "./DateDropdownButton";
+import { useCreateTask } from "@/hooks/useCreateTask";
 export * from "./NewIssueButton";
 export * from "./NewIssueCollapsible";
 
@@ -42,24 +37,9 @@ export const NewIssueModal = () => {
 	const { toast } = useToast();
 	const { showNewIssue, newIssueData, setNewIssueData, setShowNewIssue } =
 		useModalStore((state) => state);
-	const { user } = useAuthStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
-	const { tasks, addTask } = useTaskStore((state) => state);
+	const { createTask, isLoading, error } = useCreateTask();
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
-
-	const handleDiscard = () => {
-		setNewIssueData({});
-
-		form.reset({
-			title: "",
-			description: "",
-		});
-
-		setShowNewIssue(false);
-	};
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
@@ -76,85 +56,34 @@ export const NewIssueModal = () => {
 		},
 	});
 
+	const handleDiscard = () => {
+		setNewIssueData({});
+		form.reset();
+		setShowNewIssue(false);
+	};
+
 	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
-		const { title, description } = values;
-
-		if (tasks.some((task) => task.title === title)) {
-			toast({
-				title: `${title} already exists`,
-				variant: "destructive",
-			});
-			return;
-		}
-		if (!currentWorkspace || !currentTeam || !user) {
-			toast({
-				title: "Error authenticating user",
-				variant: "destructive",
-			});
-			return;
-		}
-		await updateWorkspace(currentWorkspace?.id, {
-			tasksCreated: (currentWorkspace.tasksCreated ?? 0) + 1,
-		});
 		try {
-			const { transformedInput: transformedTitle } =
-				transformingMentionInputs(title);
-
-			const { transformedInput: transformedDescriptionInput } =
-				transformingMentionInputs(description ?? "");
-
-			const newTask: Task = {
-				authorId: user.id,
-				title: transformedTitle,
-				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
-				status: status ?? "backlog",
-				priority: priority ?? "noPriority",
-				labels: labels || [],
-				dueDate: dueDate ?? null,
-				effortEstimate: effortEstimate ?? null,
-				dateCreated: new Date(),
-				assigneeId: null,
-				assigneeName: "",
-				teamId: currentTeam.id,
-				id: "",
-				workspaceId: currentWorkspace.id,
-				updatedAt: new Date(),
-				deleted: false,
-				parentId: null,
-			};
-
-			const {
-				task: taskCreatedResponse,
-				message,
-				variant,
-			} = await addTask(newTask);
-			await updateWorkspace(currentWorkspace.id, {
-				tasksCreated: currentWorkspace.tasksCreated + 1,
-			});
-			setCurrentWorkspace({
-				...currentWorkspace,
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			const { message, variant } = await createTask({
+				...values,
+				status,
+				priority,
+				labels,
+				dueDate,
+				effortEstimate,
 			});
 
 			toast({
 				title: message,
 				variant: variant,
 			});
-			if (!taskCreatedResponse) return;
+
 			setShowNewIssue(false);
 			setNewIssueData({});
-			form.reset({
-				title: "",
-				description: "",
-			});
+			form.reset();
+		} catch {
 			toast({
-				title: "New Issue Created",
-				variant: variant,
-			});
-		} catch (_err) {
-			toast({
-				title: "Error creating issue",
+				title: error || "Error creating issue",
 				variant: "destructive",
 			});
 		}
@@ -186,8 +115,8 @@ export const NewIssueModal = () => {
 												<Input
 													{...field}
 													placeholder="Title"
-													className="text-md"
-												/>
+                          className="text-md"
+                          />
 											</FormControl>
 										</FormItem>
 									)}
@@ -202,8 +131,8 @@ export const NewIssueModal = () => {
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-md resize-none"
-													rows={4}
+                          className="text-md resize-none"
+                          rows={4}
 												/>
 											</FormControl>
 										</FormItem>
@@ -230,8 +159,12 @@ export const NewIssueModal = () => {
 							>
 								Discard
 							</Button>
-							<Button type="submit" className="hover:cursor-pointer">
-								Create Issue
+							<Button
+								type="submit"
+								className="hover:cursor-pointer"
+								disabled={isLoading}
+							>
+								{isLoading ? "Creating..." : "Create Issue"}
 							</Button>
 						</DialogFooter>
 					</form>

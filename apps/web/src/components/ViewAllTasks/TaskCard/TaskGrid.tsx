@@ -1,5 +1,4 @@
 import { Calendar, UserSearch } from "lucide-react";
-
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "date-fns";
@@ -10,7 +9,13 @@ import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import LabelBadge from "@/components/LabelBadges";
 
-const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
+const TaskGrid = ({
+	task,
+	user,
+	taskLabels,
+	currentWorkspaceUrl,
+	isSubtask = false,
+}: TaskGridProps) => {
 	const { gridViewOptions } = useViewStore((state) => state);
 
 	const {
@@ -18,22 +23,21 @@ const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
 		dueDate: showDueDate,
 		avatar: showAvatar,
 		labels: showLabels,
-		// status: showStatus,	// no status currently in grid view - implement later on - Kaila
 		priority: showPriority,
 	} = gridViewOptions.displayProperties;
 
 	return (
 		<Link
-			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 			className="cursor-pointer"
 		>
-			<Card className="w-80">
+			<Card className={`w-full ${isSubtask ? "bg-secondary/30" : ""}`}>
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
 						{showIdentifier ? (
 							<p className="text-xs text-muted-foreground">{task.identifier}</p>
 						) : (
-							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
+							<div />
 						)}
 						{showAvatar &&
 							(task.assigneeName ? (

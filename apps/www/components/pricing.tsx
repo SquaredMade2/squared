@@ -15,7 +15,7 @@ export function Pricing() {
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800  w-fit mx-auto mb-12 rounded-md overflow-hidden">
+      <div className="flex items-center justify-center bg-neutral-100 dark:bg-background-darkAccent  w-fit mx-auto mb-12 rounded-md overflow-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.value}
@@ -43,7 +43,7 @@ export function Pricing() {
             className={cn(
               tier.featured
                 ? "relative bg-[radial-gradient(164.75%_100%_at_50%_0%,#334155_0%,#0F172A_48.73%)]  shadow-2xl"
-                : " bg-white dark:bg-black",
+                : " bg-white dark:bg-background-darkAccent",
               "rounded-lg px-6 py-8 sm:mx-8 lg:mx-0  h-full flex flex-col justify-between"
             )}
           >

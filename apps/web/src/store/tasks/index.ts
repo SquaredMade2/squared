@@ -123,6 +123,23 @@ export const createTaskStore = (
 						};
 					}
 				},
+				getTaskByIdentifier: async (
+					workspaceId,
+					taskIdentifier,
+				): Promise<TaskResponse> => {
+					try {
+						const response: { data: ApiReturnType<Task> } = await axios.get(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/task/${taskIdentifier}`,
+						);
+						return { ...response.data, task: response.data.data };
+					} catch (error) {
+						return {
+							task: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
 				getAllTasks: async (teamId: string): Promise<Task[]> => {
 					try {
 						const { data: response }: { data: ApiReturnType<Task[]> } =
@@ -139,6 +156,35 @@ export const createTaskStore = (
 					} catch (error) {
 						console.error("Error in getAllTasks:", error);
 						return [];
+					}
+				},
+				toggleSprintTasks: async (
+					teamId: string,
+					sprintId: string,
+					type: "add" | "remove",
+				): Promise<ApiReturnType<Task[]>> => {
+					try {
+						const response: { data: ApiReturnType<Task[]> } = await axios.put(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/team/${teamId}/sprints/${sprintId}/tasks`,
+							{ type },
+						);
+						const { tasks: currentTasks } = get();
+						if (response.data.data) {
+							const updatedTasks = currentTasks.map((task) => {
+								if (response.data.data?.includes(task)) {
+									return { ...task, sprintId };
+								}
+								return task;
+							});
+							set({ tasks: updatedTasks });
+						}
+						return response.data;
+					} catch (error) {
+						return {
+							data: [],
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
 					}
 				},
 			}),

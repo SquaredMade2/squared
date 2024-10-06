@@ -106,6 +106,10 @@
       "import": "./src/primitive/index.ts",
       "require": "./src/primitive/index.ts"
     },
+    "./progress": {
+      "import": "./src/progress/index.ts",
+      "require": "./src/progress/index.ts"
+    },
     "./react-primitive": {
       "import": "./src/react-primitive/index.ts",
       "require": "./src/react-primitive/index.ts"

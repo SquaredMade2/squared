@@ -4,7 +4,7 @@ export const CustomMentionStyle = (isFocused: boolean) => ({
 		border: isFocused ? "1px solid #6c79ff" : "",
 		padding: "10px 16px",
 		borderRadius: "8px",
-		maxWidth: "1065px",
+		width: "100%",
 		position: "relative",
 	},
 	"&multiLine": {

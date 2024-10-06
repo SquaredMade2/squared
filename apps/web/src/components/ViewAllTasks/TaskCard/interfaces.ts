@@ -1,10 +1,11 @@
-import type { Task, Team, Label, User } from "@repo/db";
+import type { Task, Label, User } from "@repo/db";
 
 export interface TaskGridProps {
 	task: Task;
 	user?: User;
-	currentTeam: Team | null;
 	taskLabels: Label[];
+	currentWorkspaceUrl?: string;
+	isSubtask?: boolean;
 }
 
 export interface TaskListProps {
@@ -12,7 +13,8 @@ export interface TaskListProps {
 	location: string;
 	task: Task;
 	user?: User;
-	currentTeam: Team | null;
+	taskLabels: Label[];
+	currentWorkspaceUrl?: string;
 }
 
 export interface TaskCardProps {
@@ -20,6 +22,7 @@ export interface TaskCardProps {
 	index: number;
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
+	isSubtask?: boolean;
 }
 
 export interface TaskCardLabelsProps {

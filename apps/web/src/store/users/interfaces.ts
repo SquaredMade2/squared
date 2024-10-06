@@ -9,6 +9,7 @@ export type UserAvatar = {
 export type UserState = {
 	users: User[];
 	userAvatars: UserAvatar[];
+	connectedRepos: string[];
 };
 
 export interface UserResponse {
@@ -24,6 +25,7 @@ type UserActions = {
 	getUser: (userId: string) => Promise<UserResponse>;
 	getAllUsers: (workspaceId: string) => Promise<User[]>;
 	getUserAvatars: (userId: string) => Promise<UserAvatar[]>;
+	getUserRepositories: (userId: string) => Promise<string[]>;
 };
 
 export type UserStore = UserState & UserActions;

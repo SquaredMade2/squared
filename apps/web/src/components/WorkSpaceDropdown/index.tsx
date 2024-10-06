@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import ProfileImage from "../ProfileImage";
-import { handleWorkspaceNameOverflow } from "@/utils/formatting";
+import { getInitials, handleWorkspaceNameOverflow } from "@/utils/formatting";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -19,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import type { Workspace } from "@/store/workspaces";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 const WorkSpaceDropDown = () => {
 	const {
 		currentWorkspace,
@@ -66,7 +66,10 @@ const WorkSpaceDropDown = () => {
 						{handleWorkspaceNameOverflow(currentWorkspace?.name ?? "")}
 					</div>
 					{user && (
-						<ProfileImage profileName={user.name} location="dropdownMenu" />
+						<Avatar className="size-6 text-xxs">
+							<AvatarImage src={user.avatarUrl ?? ""} />
+							<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+						</Avatar>
 					)}
 				</Button>
 			</DropdownMenuTrigger>
