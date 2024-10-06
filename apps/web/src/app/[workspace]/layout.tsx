@@ -22,6 +22,8 @@ export default function TeamLayout({
 			setLastVisitedPage("active");
 		} else if (pathname.endsWith("/backlog")) {
 			setLastVisitedPage("backlog");
+		} else if (pathname.endsWith("/sprints/current")) {
+			setLastVisitedPage("sprints/current");
 		}
 	}, [pathname]);
 
