@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
-
 import { NewIssueModal, NewIssueButton } from "@/components/Modals";
 import {
 	Accordion,
@@ -12,22 +13,34 @@ import {
 import { LayoutGrid } from "lucide-react";
 import IconLeftMenu from "../IconNavbar";
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import { useEffect } from "react";
 import type { Team } from "@repo/db";
 import NavBarTeams from "./NavBarTeams";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
 import { ScrollArea } from "../ui/scroll-area";
 
 const Navbar = () => {
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
-	const { teams, getAllTeams } = useTeamStore((state) => state);
+	const { teams, getAllTeams, currentTeam } = useTeamStore((state) => state);
 	const { showNavbar } = useViewStore((state) => state);
 	const router = useRouter();
+	const pathname = usePathname();
+
 	useEffect(() => {
 		if (!workspace) return;
 		getAllTeams(workspace.id);
-	}, []);
+	}, [workspace, getAllTeams]);
+
+	if (!workspace) return null;
+
+	const getCurrentPage = (path: string) => {
+		if (path.endsWith("/all")) return "all";
+		if (path.endsWith("/active")) return "active";
+		if (path.endsWith("/backlog")) return "backlog";
+		if (path.includes("/views")) return "views";
+		return "";
+	};
+
+	const currentPage = getCurrentPage(pathname);
 
 	return (
 		<>
@@ -52,9 +65,13 @@ const Navbar = () => {
 								</Button>
 							</div>
 							<ScrollArea className="px-2">
-								<Accordion type="single" collapsible>
-									{teams?.map((team: Team) => {
-										return (
+								{currentTeam && (
+									<Accordion
+										type="single"
+										collapsible
+										defaultValue={currentTeam.id}
+									>
+										{teams?.map((team: Team) => (
 											<AccordionItem key={team.id} value={team.id}>
 												<AccordionTrigger className="text-sm h-12">
 													<div className="flex gap-2">
@@ -63,17 +80,19 @@ const Navbar = () => {
 													</div>
 												</AccordionTrigger>
 												<AccordionContent>
-													<NavBarTeams teamIdentifier={team.identifier} />
+													<NavBarTeams
+														teamIdentifier={team.identifier}
+														currentPage={currentPage}
+														active={currentTeam?.id === team.id}
+													/>
 												</AccordionContent>
 											</AccordionItem>
-										);
-									})}
-								</Accordion>
+										))}
+									</Accordion>
+								)}
 							</ScrollArea>
 							<div className="mt-auto mb-3 w-full text-center">
-								{/* <p className="text-muted-foreground text-xs ">
-									&copy; {currentYear} Squared. All rights reserved
-								</p> */}
+								{/* Footer content if needed */}
 							</div>
 						</div>
 					</div>

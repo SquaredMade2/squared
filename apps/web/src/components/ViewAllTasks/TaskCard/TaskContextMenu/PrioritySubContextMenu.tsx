@@ -9,6 +9,7 @@ import { priorityOptions } from "@/constants/designations";
 import type { Priority } from "@repo/db";
 import { useTaskStore } from "@/store";
 import { PriorityIcon } from "@/components/Icons";
+import { formatPriority } from "@/utils/formatting";
 
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
@@ -38,7 +39,7 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 							<div className="mr-2">
 								<PriorityIcon priority={priority} />
 							</div>
-							{priority}
+							{formatPriority(priority)}
 						</ContextMenuItem>
 					);
 				})}

@@ -17,7 +17,7 @@ const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/user/${path}`;
 
 export const createUserStore = (
-	initState: UserState = { users: [], userAvatars: [] },
+	initState: UserState = { users: [], userAvatars: [], connectedRepos: [] },
 ) => {
 	return createStore<UserStore>()(
 		persist(
@@ -161,6 +161,27 @@ export const createUserStore = (
 						return avatar;
 					} catch (error) {
 						console.error("Error in getUserAvatar:", error);
+						return [];
+					}
+				},
+				// Fetch connected repositories for the user
+				getUserRepositories: async (userId: string): Promise<string[]> => {
+					try {
+						const response: { data: ApiReturnType<string[]> } = await axios.get(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/repositories`,
+						);
+
+						const { data: repositories } = response.data;
+						if (!repositories) {
+							set({ connectedRepos: [] });
+							return [];
+						}
+
+						set({ connectedRepos: repositories });
+						return repositories;
+					} catch (error) {
+						console.error("Error fetching connected repositories:", error);
+						set({ connectedRepos: [] });
 						return [];
 					}
 				},
