@@ -18,6 +18,12 @@ enum Status {
   archived
 }
 
+enum Effort {
+  LINEAR
+  FIBONACCI
+  EXPONENTIAL
+}
+
 enum Priority {
   noPriority
   urgent
@@ -194,7 +200,7 @@ model Team {
   name        String?
   identifier  String
   workspaceId String
-
+  effort      Effort @default(LINEAR)
   Tasks     Task[]
   Project   Project[]
   Users     UserTeam[]

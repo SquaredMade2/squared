@@ -93,6 +93,8 @@ async function addUser() {
 	const password = process.env.SEED_PASSWORD || faker.internet.password();
 	const hashedPassword = await hashPassword(password);
 
+	console.log(email);
+
 	const user = await prisma.user.create({
 		data: {
 			name: fullName,
