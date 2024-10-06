@@ -26,10 +26,5 @@ export const WorkspaceSchema = {
 			description:
 				"ID of the universal token link associated with the workspace",
 		},
-		githubRepoInfoId: {
-			type: "string",
-			description:
-				"ID of the GitHub repository info associated with the workspace",
-		},
 	},
 };
