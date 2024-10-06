@@ -42,7 +42,7 @@ const MobileMenuSheet = () => {
 	const currentRoute = usePathname();
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const { setShowCommand } = useModalStore((state) => state);
-	const { theme, setTheme } = useTheme();
+	const { resolvedTheme: theme, setTheme } = useTheme();
 	const baseUrl = process.env.NEXT_PUBLIC_URL;
 	const viewsRoute = currentRoute.includes("/views");
 	const { toast } = useToast();
