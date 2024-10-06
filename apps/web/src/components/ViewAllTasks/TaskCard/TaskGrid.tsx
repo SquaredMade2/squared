@@ -12,8 +12,8 @@ import LabelBadge from "@/components/LabelBadges";
 const TaskGrid = ({
 	task,
 	user,
-	currentTeam,
 	taskLabels,
+	currentWorkspaceUrl,
 	isSubtask = false,
 }: TaskGridProps) => {
 	const { gridViewOptions } = useViewStore((state) => state);
@@ -28,7 +28,7 @@ const TaskGrid = ({
 
 	return (
 		<Link
-			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 			className="cursor-pointer"
 		>
 			<Card className={`w-full ${isSubtask ? "bg-secondary/30" : ""}`}>
