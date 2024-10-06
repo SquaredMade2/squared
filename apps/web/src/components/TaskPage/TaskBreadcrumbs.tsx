@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import type { Task, Workspace } from "@repo/db";
 import Link from "next/link";
+import type { Task, Workspace } from "@repo/db";
 
 export const TaskBreadcrumbs = ({
 	task,
