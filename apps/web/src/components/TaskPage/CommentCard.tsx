@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Descendant } from "slate";
-import { Text } from "slate";
+import { Text, type Descendant } from "slate";
 import type { RenderElementProps, RenderLeafProps } from "slate-react";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
