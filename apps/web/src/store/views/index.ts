@@ -68,33 +68,13 @@ export const createViewStore = (
 				storage: {
 					getItem: (name) => {
 						const storedValue = sessionStorage.getItem(name);
-						const lastVisitedPage = localStorage.getItem("lastVisitedPage");
-
-						if (storedValue) {
-							const parsedValue = JSON.parse(storedValue);
-							return { ...parsedValue, lastVisitedPage };
-						}
-
-						return { lastVisitedPage };
+						return storedValue ? JSON.parse(storedValue) : null;
 					},
 					setItem: (name, value) => {
-						if (typeof value === "string") {
-							const parsedValue = JSON.parse(value);
-
-							const { lastVisitedPage, ...rest } = parsedValue;
-
-							if (lastVisitedPage) {
-								localStorage.setItem(
-									"lastVisitedPage",
-									JSON.stringify(lastVisitedPage),
-								);
-							}
-							sessionStorage.setItem(name, JSON.stringify(rest));
-						}
+						sessionStorage.setItem(name, JSON.stringify(value));
 					},
 					removeItem: (name) => {
 						sessionStorage.removeItem(name);
-						localStorage.removeItem("lastVisitedPage");
 					},
 				},
 			},
