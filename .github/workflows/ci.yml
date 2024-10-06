@@ -65,15 +65,15 @@ jobs:
       - name: Run tests
         run: pnpm test:ci
   
-  assign-author:
-    name: Assign Author
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0 
+  # assign-author:
+  #   name: Assign Author
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         fetch-depth: 0 
 
-      - name: Assign Author
-        uses: toshimaru/auto-author-assign@v2.1.1
+  #     - name: Assign Author
+  #       uses: toshimaru/auto-author-assign@v2.1.1
