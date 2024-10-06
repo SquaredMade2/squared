@@ -59,6 +59,9 @@ export const createViewStore = (
 					const currentGridView = get().gridViewOptions;
 					set({ gridViewOptions: { ...currentGridView, ...input } });
 				},
+				setLastVisitedPage: (input) => {
+					set({ lastVisitedPage: input });
+				},
 			}),
 			{
 				name: "view-store",
