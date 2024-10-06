@@ -55,7 +55,6 @@
     "**/dist/**"
   ],
   "ignoreDependencies": [
-    "turbo",
     "turbo-ignore",
     "husky"
   ]

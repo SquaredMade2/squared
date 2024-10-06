@@ -32,15 +32,25 @@ function LoginForm() {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			await signIn("credentials", {
+			const response = await signIn("credentials", {
 				redirect: false,
 				email: data.email,
 				password: data.password,
 			});
-			router.push("/");
+			if (response?.status === 401) {
+				toast({
+					title: response.error || "Error logging in",
+					variant: "destructive",
+				});
+			}
+			router.refresh();
+			router.prefetch("/");
 		} catch (error) {
 			console.error("Login error:", error);
-			toast({ title: "Login failed", variant: "destructive" });
+			toast({
+				title: error instanceof Error ? error.message : "Login failed",
+				variant: "destructive",
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -50,7 +60,8 @@ function LoginForm() {
 		setIsLoading(true);
 		try {
 			await signIn("google", { callbackUrl: window.location.href });
-			router.push("/");
+			router.refresh();
+			router.prefetch("/");
 		} catch (error) {
 			toast({ title: "Google login failed", variant: "destructive" });
 			console.error("Google login error:", error);
@@ -147,7 +158,18 @@ function LoginForm() {
 						Sign in with Google
 					</Button>
 				</CardContent>
-				<CardFooter className="flex flex-col items-center justify-center space-y-2">
+				<CardFooter className="flex flex-col justify-center gap-px">
+					<p className="text-sm text-muted-foreground">
+						<Button
+							variant="link"
+							className="p-0"
+							onClick={() => {
+								router.push("/forgotPassword");
+							}}
+						>
+							Forgot password?
+						</Button>
+					</p>
 					<p className="text-sm text-muted-foreground">
 						Not a member?{" "}
 						<Button variant="link" className="p-0" onClick={handleRegisterPush}>

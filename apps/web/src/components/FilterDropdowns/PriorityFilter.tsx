@@ -72,15 +72,16 @@ const PriorityFilterDropDown = ({
 
 	useEffect(() => {
 		if (selectedPriorities.length > 0) {
+			removeFilter("priority");
 			addFilter({
 				field: "priority",
 				value: selectedPriorities,
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("status");
+			removeFilter("priority");
 		}
-	}, [selectedPriorities, addFilter, removeFilter]);
+	}, [selectedPriorities]);
 
 	useEffect(() => {
 		if (
@@ -99,7 +100,7 @@ const PriorityFilterDropDown = ({
 			<DropdownMenuTrigger>
 				<div className="hidden" aria-hidden="true" />
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-72 p-0 mt-6 mr-32">
+			<DropdownMenuContent className="w-60 p-0 mt-6">
 				<DropdownMenuLabel>Priority</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				{groupPriority.map((item) => (

@@ -5,7 +5,7 @@ import "dotenv/config";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
-const vercelRegex = /^https:\/\/web-production-(\w+)-squaredmade\.vercel\.app$/;
+const vercelRegex = /^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/;
 
 // Ensure the file is empty before writing to it
 fs.writeFileSync(outputPath, "");
@@ -25,15 +25,17 @@ ${process.env.NODE_ENV === "test" ? `import { PrismaClient } from "@repo/test-db
 import { setupSwagger } from "../swagger"; // Import Swagger setup
 import "dotenv/config";
 
-function getPrisma() {
-	if (process.env.RUN_TESTS === "true")
-		return new PrismaClient({
-			datasourceUrl: process.env.POSTGRES_PRISMA_URL,
-		});
-	return new PrismaClient();
+${
+	process.env.NODE_ENV === "test"
+		? "export const prisma = new PrismaClient();"
+		: `export const prisma = new PrismaClient({
+	datasources: {
+		db: {
+			url: process.env.POSTGRES_PRISMA_URL,
+		},
+	},
+});`
 }
-
-export const prisma = getPrisma();
 
 `);
 
@@ -93,7 +95,14 @@ const app = express();
 const port = process.env.PORT || 5173;
 
 const productionDomain = "https://app.squaredmade.com";
+const productionServerDomain = "https://api.squaredmade.com"
+const developmentDomain = "https://app-develop.squardmade.com"
 const localDevDomain = "http://localhost:3000";
+const localServerDomain = \`http://localhost:\${port}\`;
+// Health check route for root path
+app.get("/", (_, res) => {
+  res.status(200).send("ok");
+});
 
 app.use(
 	cors({
@@ -103,7 +112,10 @@ app.use(
 				!origin ||
 				${vercelRegex}.test(origin) ||
 				origin === productionDomain ||
-				origin === localDevDomain
+				origin === productionServerDomain ||
+				origin === developmentDomain ||
+				origin === localDevDomain ||
+				origin === localServerDomain 
 			) {
 				callback(null, true);
 			} else {
