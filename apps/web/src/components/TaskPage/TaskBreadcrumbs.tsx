@@ -7,15 +7,18 @@ import {
 } from "@/components/ui/breadcrumb";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useWorkspaceStore } from "@/store";
-import type { Task } from "@repo/db";
+import type { Task, Workspace } from "@repo/db";
 import { useRouter } from "next/navigation";
 
-export const TaskBreadcrumbs = ({ task }: { task: Task }) => {
+export const TaskBreadcrumbs = ({
+	task,
+	workspace,
+}: { task: Task; workspace: Workspace | null }) => {
 	const router = useRouter();
-	const allWorkspaces = useWorkspaceStore((state) => state.workspaces);
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const index: number = currentWorkspace
-		? allWorkspaces.findIndex((item) => item.id === currentWorkspace.id)
+	const { workspaces } = useWorkspaceStore((state) => state);
+
+	const index: number = workspace
+		? workspaces.findIndex((item) => item.id === workspace.id)
 		: -1;
 
 	return (
@@ -23,19 +26,19 @@ export const TaskBreadcrumbs = ({ task }: { task: Task }) => {
 			<Breadcrumb>
 				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
 					<BreadcrumbItem>
-						{currentWorkspace && (
+						{workspace && (
 							<div
-								className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
+								className="flex items-center text-muted-foreground hover:text-foreground"
 								onClick={() => router.back()}
 							>
 								<div className="mt-0.5 rounded">
 									<WorkspaceInitials
-										workspaceName={currentWorkspace.name}
+										workspaceName={workspace.name}
 										backgroundColor={index}
 										location="workspaceMenu"
 									/>
 								</div>
-								<p>{currentWorkspace.url}</p>
+								<p>{workspace.url}</p>
 							</div>
 						)}
 					</BreadcrumbItem>

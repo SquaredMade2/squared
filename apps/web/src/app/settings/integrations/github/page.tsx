@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import {
@@ -9,19 +10,28 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useUserStore, useAuthStore } from "@/store";
 
-const GithubSettings = () => {
+const GithubSettings: React.FC = () => {
+	const authUser = useAuthStore((state) => state.user);
+	const { connectedRepos, getUserRepositories } = useUserStore((state) => ({
+		connectedRepos: state.connectedRepos,
+		getUserRepositories: state.getUserRepositories,
+	}));
+	const router = useRouter();
+
 	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		const token = params.get("token");
-		if (token) {
-			console.log("Token received:", token);
-			// Handle the token here, such as storing it in local storage or using it in your application
+		if (authUser?.id) {
+			getUserRepositories(authUser.id);
 		}
-	}, []);
+	}, [authUser, getUserRepositories]);
 
 	const handleClick = (): void => {
-		window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user`;
+		if (!authUser?.id) return;
+
+		router.push(
+			`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}&scope=repo,user&state=${authUser.id}`,
+		);
 	};
 
 	return (
@@ -41,23 +51,44 @@ const GithubSettings = () => {
 							Github
 						</header>
 					</div>
-					<Card className="flex justify-center items-center p-2">
-						<CardHeader>
-							<CardTitle>Connect Personal Account</CardTitle>
-							<CardDescription>
-								Connect your personal account to use the integration feature
-							</CardDescription>
-						</CardHeader>
-						<div className="flex justify-center items-center p-6">
-							<Button
-								onClick={handleClick}
-								className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-white"
-								variant="outline"
-							>
-								Connect
-							</Button>
-						</div>
-					</Card>
+
+					{/* Display Connected Repositories */}
+					{connectedRepos.length > 0 ? (
+						<Card className="p-6">
+							<CardHeader>
+								<CardTitle>Connected to GitHub</CardTitle>
+								<CardDescription>Your connected repositories:</CardDescription>
+							</CardHeader>
+							<ul className="p-6">
+								{connectedRepos.map((repo) => (
+									<li key={repo}>{repo}</li>
+								))}
+							</ul>
+							<span className="p-6">
+								<Button onClick={handleClick}>
+									Edit selected repositories
+								</Button>
+							</span>
+						</Card>
+					) : (
+						<Card className="flex justify-between items-center p-2">
+							<CardHeader>
+								<CardTitle>Connect Personal Account</CardTitle>
+								<CardDescription>
+									Connect your personal account to use the integration feature
+								</CardDescription>
+							</CardHeader>
+							<div className="flex justify-center items-center p-6">
+								<Button
+									onClick={handleClick}
+									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-foreground"
+									variant="outline"
+								>
+									Connect
+								</Button>
+							</div>
+						</Card>
+					)}
 				</div>
 			</div>
 		</div>
