@@ -67,14 +67,14 @@ export const createViewStore = (
 				name: "view-store",
 				storage: {
 					getItem: (name) => {
-						const storedValue = sessionStorage.getItem(name);
+						const storedValue = localStorage.getItem(name);
 						return storedValue ? JSON.parse(storedValue) : null;
 					},
 					setItem: (name, value) => {
-						sessionStorage.setItem(name, JSON.stringify(value));
+						localStorage.setItem(name, JSON.stringify(value));
 					},
 					removeItem: (name) => {
-						sessionStorage.removeItem(name);
+						localStorage.removeItem(name);
 					},
 				},
 			},
