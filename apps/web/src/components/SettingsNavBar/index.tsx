@@ -19,6 +19,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "../ui/accordion";
 
 const SidebarContent = ({
 	navigateTo,
@@ -28,7 +34,7 @@ const SidebarContent = ({
 	teams,
 }: {
 	navigateTo: (targetRoute: string) => void;
-	handleTeamClick: (team: Team) => void;
+	handleTeamClick: (team: Team, path?: string) => void;
 	setTheme: (theme: string) => void;
 	theme: string;
 	teams: Team[];
@@ -102,19 +108,31 @@ const SidebarContent = ({
 								<Users className="mr-2 h-4 w-4" />
 								Teams
 							</h2>
-							<ul className="space-y-1 ml-6">
+							<Accordion type="single" collapsible>
 								{teams?.map((team) => (
-									<li key={team.id}>
-										<Button
-											variant="ghost"
-											className="w-full justify-start"
-											onClick={() => handleTeamClick(team)}
-										>
+									<AccordionItem key={team.id} value={team.id}>
+										<AccordionTrigger className="h-10">
 											{team.name}
-										</Button>
-									</li>
+										</AccordionTrigger>
+										<AccordionContent>
+											<Button
+												variant="ghost"
+												className="w-full justify-start"
+												onClick={() => handleTeamClick(team)}
+											>
+												Overview
+											</Button>
+											<Button
+												variant="ghost"
+												className="w-full justify-start"
+												onClick={() => handleTeamClick(team, "sprints")}
+											>
+												Sprints
+											</Button>
+										</AccordionContent>
+									</AccordionItem>
 								))}
-							</ul>
+							</Accordion>
 							<Button
 								variant="ghost"
 								className="w-full justify-start mt-2"
@@ -158,7 +176,7 @@ const SettingsNavBar = ({
 	toggleNavbar,
 }: SettingsNavbarProps): React.ReactElement => {
 	const router = useRouter();
-	const { setTheme, theme } = useTheme();
+	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 
@@ -168,12 +186,12 @@ const SettingsNavBar = ({
 		setShowNavbar(false);
 	};
 
-	const handleTeamClick = (team: Team) => {
+	const handleTeamClick = (team: Team, path?: string) => {
 		if (setLoading) {
 			setLoading(true);
 		}
 		setCurrentTeam(team);
-		navigateTo(`teams/${team.identifier}`);
+		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
 
 	return (

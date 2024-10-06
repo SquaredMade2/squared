@@ -27,7 +27,7 @@ const IconLeftMenu = () => {
 	const { setShowCommand } = useModalStore((state) => state);
 	const { getAllNotifications } = useNotificationStore((state) => state);
 	const [notifications, setNotifications] = useState(0);
-	const { theme, setTheme } = useTheme();
+	const { resolvedTheme: theme, setTheme } = useTheme();
 	const { toast } = useToast();
 	const { logout, user } = useAuthStore((state) => state);
 	const [mounted, setMounted] = useState(false);

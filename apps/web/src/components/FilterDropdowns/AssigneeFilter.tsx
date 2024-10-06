@@ -18,8 +18,9 @@ import { useFilterStore, useUserStore } from "@/store";
 import type { FilterDropDownProps } from "./interfaces";
 import type { User } from "@repo/db";
 import { Check, UserSearch } from "lucide-react";
-import ProfileImage from "../ProfileImage";
 import { ScrollArea } from "../ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 export default function AssigneeFilterDropDown({
 	showFilterDropDown,
@@ -96,8 +97,8 @@ export default function AssigneeFilterDropDown({
 										) : (
 											<div className="w-4 h-4" />
 										)}
-										<UserSearch className="size-5 mx-1 mr-2" />
-										<span className="w-2/3 truncate">Unassigned</span>
+										<UserSearch className="size-6 mx-1 mr-2" />
+										<span className="w-2/3">Unassigned</span>
 									</div>
 								</CommandItem>
 								{filteredAssignees
@@ -114,10 +115,12 @@ export default function AssigneeFilterDropDown({
 												) : (
 													<div className="w-4 h-4" />
 												)}
-												<ProfileImage
-													profileName={user.name}
-													location="assigneeDropdown"
-												/>
+												<Avatar className="size-6 text-xxs">
+													<AvatarImage src={user?.avatarUrl ?? ""} />
+													<AvatarFallback>
+														{getInitials(user.name)}
+													</AvatarFallback>
+												</Avatar>
 												<span className="w-2/3 truncate">{user.name}</span>
 											</div>
 										</CommandItem>

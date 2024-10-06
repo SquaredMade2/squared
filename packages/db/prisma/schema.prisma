@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 enum Status {
@@ -49,6 +48,12 @@ enum SavedFilterType {
   WORKSPACE
 }
 
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -77,7 +82,7 @@ model Commit {
 model Branch {
   id               String @id @default(uuid())
   name             String
-  taskId           String @unique
+  taskId           String
   githubRepoInfoId String
 
   commits Commit[]
@@ -180,6 +185,7 @@ model Task {
   updatedAt      DateTime  @default(now()) @updatedAt
   deleted        Boolean   @default(false)
   parentId       String?
+  sprintId       String?
 
   parent   Task?         @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
   children Task[]        @relation("ParentChild")
@@ -187,19 +193,30 @@ model Task {
   priority Priority      @default(noPriority)
   Comments Comment[]
   Events   TaskEventLog?
-  Branch   Branch?
+  Branch   Branch[]
 
   Author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Sprint       Sprint?        @relation(fields: [sprintId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Notification Notification[]
+
+  @@unique([workspaceId, identifier])
+  @@unique([teamId, identifier])
 }
 
 model Team {
-  id          String  @id @default(uuid())
-  name        String?
-  identifier  String
-  workspaceId String
+  id               String   @id @default(uuid())
+  name             String?
+  identifier       String
+  workspaceId      String
+  sprintsEnabled   Boolean  @default(false)
+  sprintDuration   Int      @default(2)
+  cooldownDuration Int      @default(1)
+  upcomingSprints  Int      @default(3)
+  activeRequired   Boolean  @default(true)
+  sprintStartDate  DateTime @default(now())
+  tasksPerSprint   Int      @default(10)
   effort      Effort @default(LINEAR)
   Tasks     Task[]
   Project   Project[]
@@ -207,6 +224,9 @@ model Team {
   teamViews SavedFilter[]
 
   Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Sprints   Sprint[]
+
+  @@unique([workspaceId, identifier])
 }
 
 model User {
@@ -223,6 +243,7 @@ model User {
   savedNotificationIds String[] @default([])
   subscribedTasks      String[] @default([])
   googleId             String?
+  githubUsername       String?
   githubId             String?
 
   Workspaces   UserWorkspace[]
@@ -268,20 +289,19 @@ model Workspace {
   companySize          Int?
   tasksCreated         Int      @default(0)
   universalTokenLinkId String?
-  githubRepoInfoId     String?
   avatarUrl            String?
   admins               String[]
 
-  workspaceViews     SavedFilter[]
-  Labels             Label[]
-  universalTokenLink UniversalTokenLink?
-  teams              Team[]
-  projects           Project[]
-  githubRepoInfo     GithubRepoInfo?
-  Users              UserWorkspace[]
-  User               User[]
-  Tasks              Task[]
-  notifications      Notification[]
+  workspaceViews        SavedFilter[]
+  Labels                Label[]
+  universalTokenLink    UniversalTokenLink?
+  teams                 Team[]
+  projects              Project[]
+  Users                 UserWorkspace[]
+  User                  User[]
+  Tasks                 Task[]
+  notifications         Notification[]
+  WorkspaceRepositories WorkspaceRepositories[] 
 }
 
 model UserWorkspace {
@@ -315,12 +335,22 @@ model UniversalTokenLink {
 
 model GithubRepoInfo {
   id          String   @id @default(uuid())
-  repoName    String   @default("")
+  repoName    String   @unique @default("")
   owner       String   @default("")
-  workspaceId String   @unique
-  branches    Branch[]
 
-  Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  branches    Branch[]  
+  WorkspaceRepo WorkspaceRepositories[]
+}
+
+model WorkspaceRepositories {
+  id          String            @id @default(uuid())
+  workspaceId String
+  repoId      String
+
+  Workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  GitHubRepoInfo GithubRepoInfo @relation(fields: [repoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([workspaceId, repoId])
 }
 
 model Project {
@@ -331,4 +361,22 @@ model Project {
 
   Team      Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Sprint {
+  id          String       @id @default(uuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  status      SprintStatus
+  teamId      String
+  wentWell    String[]
+  toImprove   String[]
+  actionItems String[]
+
+  Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  Tasks Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
