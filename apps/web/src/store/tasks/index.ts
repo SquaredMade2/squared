@@ -123,6 +123,23 @@ export const createTaskStore = (
 						};
 					}
 				},
+				getTaskByIdentifier: async (
+					workspaceId,
+					taskIdentifier,
+				): Promise<TaskResponse> => {
+					try {
+						const response: { data: ApiReturnType<Task> } = await axios.get(
+							`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/task/${taskIdentifier}`,
+						);
+						return { ...response.data, task: response.data.data };
+					} catch (error) {
+						return {
+							task: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
 				getAllTasks: async (teamId: string): Promise<Task[]> => {
 					try {
 						const { data: response }: { data: ApiReturnType<Task[]> } =

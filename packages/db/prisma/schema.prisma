@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 enum Status {
@@ -196,6 +195,7 @@ model Task {
   Sprint       Sprint?        @relation(fields: [sprintId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Notification Notification[]
 
+  @@unique([workspaceId, identifier])
   @@unique([teamId, identifier])
 }
 
