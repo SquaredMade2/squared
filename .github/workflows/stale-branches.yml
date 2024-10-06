@@ -12,22 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get stale branches
-        run: |
-          STALE_BRANCHES=$(git branch -r --format='%(refname:short)' --sort=-committerdate | \
-            while read branch; do
-              if [ "$(git log -1 --since='1 week ago' -s --format='%H' "$branch")" = "" ]; then
-                echo "$branch"
-              fi
-            done)
-
-      - name: Post to Discord if any stale branches are found
-        if: success()
-        run: |
-          if [ -n "$STALE_BRANCHES" ]; then
-            curl -H "Content-Type: application/json" -X POST \
-            -d "{\"content\": \"The following branches are stale (no commits in the last week):\n$STALE_BRANCHES\"}" \
-            "${{ secrets.DISCORD_WEBHOOK_URL }}"
-          else
-            echo "No stale branches found."
-          fi
+      - name: Stale Branches
+        uses: crs-k/stale-branches@v5.0.0
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          days-before-stale: 30
+          days-before-delete: 60
+          tag-committer: true
+          stale-branch-label: 'stale'
+          compare-branches: 'info'
