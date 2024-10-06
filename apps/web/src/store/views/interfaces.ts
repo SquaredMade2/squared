@@ -31,7 +31,7 @@ type ViewOptions = {
 	displayProperties: DisplayProperty;
 };
 
-export type ViewPath = `/views${string}` | "/views";
+export type ViewPath = `/views${string}`;
 
 type LastVisitedPathOptions =
 	| "all"

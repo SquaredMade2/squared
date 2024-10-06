@@ -27,16 +27,21 @@ export default function TeamLayout({
 	};
 
 	useEffect(() => {
-		if (pathname.endsWith("/all")) {
-			setLastVisitedPage("all");
-		} else if (pathname.endsWith("/active")) {
-			setLastVisitedPage("active");
-		} else if (pathname.endsWith("/backlog")) {
-			setLastVisitedPage("backlog");
-		} else if (pathname.endsWith("/sprints/current")) {
-			setLastVisitedPage("sprints/current");
-		} else if (isValidViewPath(pathname)) {
-			setLastVisitedPage(getViewPath(pathname));
+		switch (true) {
+			case pathname.endsWith("/all"):
+				setLastVisitedPage("all");
+				break;
+			case pathname.endsWith("/active"):
+				setLastVisitedPage("active");
+				break;
+			case pathname.endsWith("/backlog"):
+				setLastVisitedPage("backlog");
+				break;
+			case pathname.endsWith("/sprints/current"):
+				setLastVisitedPage("sprints/current");
+				break;
+			default:
+				isValidViewPath(pathname) && setLastVisitedPage(getViewPath(pathname));
 		}
 	}, [pathname]);
 
