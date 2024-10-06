@@ -17,11 +17,11 @@ export default function TeamLayout({
 
 	useEffect(() => {
 		if (pathname.endsWith("/all")) {
-			setLastVisitedPage("All");
+			setLastVisitedPage("all");
 		} else if (pathname.endsWith("/active")) {
-			setLastVisitedPage("Active");
+			setLastVisitedPage("active");
 		} else if (pathname.endsWith("/backlog")) {
-			setLastVisitedPage("Backlog");
+			setLastVisitedPage("backlog");
 		}
 	}, [pathname]);
 

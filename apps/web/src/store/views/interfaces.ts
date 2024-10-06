@@ -36,7 +36,7 @@ export type ViewState = {
 	showMobileNavbar: boolean;
 	listViewOptions: ViewOptions;
 	gridViewOptions: ViewOptions;
-	lastVisitedPage: "All" | "Active" | "Backlog";
+	lastVisitedPage: "all" | "active" | "backlog";
 	view: "list" | "grid";
 };
 
@@ -46,7 +46,7 @@ type ViewActions = {
 	setShowMobileNavbar: (input: boolean) => void;
 	setListViewOptions: (input: Partial<ViewOptions>) => void;
 	setGridViewOptions: (input: Partial<ViewOptions>) => void;
-	setLastVisitedPage: (input: "All" | "Active" | "Backlog") => void;
+	setLastVisitedPage: (input: "all" | "active" | "backlog") => void;
 };
 
 export type ViewStore = ViewState & ViewActions;
