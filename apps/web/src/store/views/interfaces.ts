@@ -36,6 +36,7 @@ export type ViewState = {
 	showMobileNavbar: boolean;
 	listViewOptions: ViewOptions;
 	gridViewOptions: ViewOptions;
+	lastVisitedPage: "All" | "Active" | "Backlog";
 	view: "list" | "grid";
 };
 

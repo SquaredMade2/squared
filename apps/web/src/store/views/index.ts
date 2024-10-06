@@ -34,6 +34,7 @@ export const createViewStore = (
 				priority: true,
 			},
 		},
+		lastVisitedPage: "All",
 		view: "list",
 	},
 ) => {

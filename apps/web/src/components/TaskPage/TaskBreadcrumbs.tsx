@@ -6,17 +6,17 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import { useWorkspaceStore } from "@/store";
+import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import type { Task, Workspace } from "@repo/db";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const TaskBreadcrumbs = ({
 	task,
 	workspace,
 }: { task: Task; workspace: Workspace | null }) => {
-	const router = useRouter();
 	const { workspaces } = useWorkspaceStore((state) => state);
-
+	const { currentTeam } = useTeamStore((state) => state);
+	const { lastVisitedPage } = useViewStore((state) => state);
 	const index: number = workspace
 		? workspaces.findIndex((item) => item.id === workspace.id)
 		: -1;
@@ -27,9 +27,9 @@ export const TaskBreadcrumbs = ({
 				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
 					<BreadcrumbItem>
 						{workspace && (
-							<div
+							<Link
 								className="flex items-center text-muted-foreground hover:text-foreground"
-								onClick={() => router.back()}
+								href={`/${workspace.url}/team/${currentTeam?.identifier}/${lastVisitedPage}`}
 							>
 								<div className="mt-0.5 rounded">
 									<WorkspaceInitials
@@ -39,7 +39,7 @@ export const TaskBreadcrumbs = ({
 									/>
 								</div>
 								<p>{workspace.url}</p>
-							</div>
+							</Link>
 						)}
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
