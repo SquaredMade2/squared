@@ -9,7 +9,7 @@
     "db:push": "pnpm --filter=@repo/db db:push",
     "docker:build": "docker-compose build",
     "docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
-    "docker:db": "pnpm --filter=@repo/seed run docker:db && pnpm run db:gen",
+    "docker:db": "pnpm --filter=@repo/seed run docker:db && pnpm run db:gen && pnpm db:push",
     "docker:db:down": "pnpm --filter=@repo/seed run docker:db:down",
     "docker:db:seed": "pnpm --filter=@repo/seed run db:seed",
     "docker:up": "docker-compose up",
