@@ -77,3 +77,19 @@ jobs:
             "content": "[**[#'"$pr_number"'] '"$pr_title"'**]('"$pr_url"')\n*'"$pr_stale_hours"' hours stale · '"$pr_age_days"' days old* · Waiting on '"$mentions"' (by *'"$pr_author"'*)"
           }' ${{ secrets.DISCORD_WEBHOOK_URL }}
         done
+
+  check-stale-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Stale Branches
+        uses: crs-k/stale-branches@v5.0.0
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          days-before-stale: 30
+          days-before-delete: 60
+          tag-committer: true
+          stale-branch-label: 'stale'
+          compare-branches: 'info'
