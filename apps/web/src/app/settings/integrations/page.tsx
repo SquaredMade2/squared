@@ -27,7 +27,7 @@ const IntegrationSettings = () => {
 					</div>
 					<Link href={"/settings/integrations/github"}>
 						<Card className="hover:bg-secondary">
-							<CardHeader className="flex flex-row items-center justify-center">
+							<CardHeader className="flex flex-row items-center">
 								<div className="flex justify-center items-center w-16 h-16 p-2 bg-white rounded-lg ml-4">
 									<div className="w-[50px]">
 										<GithubIcon />
