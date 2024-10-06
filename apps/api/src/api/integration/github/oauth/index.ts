@@ -2,14 +2,14 @@ import { prisma } from "@/api";
 import axios from "axios";
 import type { Route } from "@/api/route";
 
-const clientId = process.env.GH_CLIENT_ID;
-const clientSecret = process.env.GH_CLIENT_SECRET;
+const clientId = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
 if (!clientId || !clientSecret) {
 	throw new Error(
 		`Missing necessary environment variables: ${
-			!clientId ? "GH_CLIENT_ID " : ""
-		}${!clientSecret ? "GH_CLIENT_SECRET" : ""}`,
+			!clientId ? "GITHUB_CLIENT_ID " : ""
+		}${!clientSecret ? "GITHUB_CLIENT_SECRET" : ""}`,
 	);
 }
 
