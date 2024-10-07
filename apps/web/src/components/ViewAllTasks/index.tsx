@@ -10,7 +10,8 @@ import type { CompletedTaskPeriod } from "@/store/views";
 const ViewAllTasks = ({
 	getFilteredStatuses,
 	getTasksForStatus,
-	allowedColumns = Object.values(Status), // Default to all statuses if not specified
+	allowedColumns = Object.values(Status),
+	sprintId,
 }: ViewAllTasksProps) => {
 	const { view, listViewOptions, gridViewOptions } = useViewStore(
 		(state) => state,
@@ -74,6 +75,7 @@ const ViewAllTasks = ({
 							columnType={status}
 							title={status}
 							tasks={tasksForStatus.filter((t) => t.parentId === null)}
+							sprintId={sprintId}
 						/>
 					</div>
 				);

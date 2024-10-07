@@ -18,6 +18,7 @@ const StatusColumn = ({
 	title,
 	tasks,
 	currentView: view,
+	sprintId,
 }: StatusColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
@@ -139,6 +140,7 @@ const StatusColumn = ({
 				numberOfTasks={numberOfTasks}
 				title={title}
 				setShowTasks={setShowTasks}
+				sprintId={sprintId}
 			/>
 			<Droppable droppableId={columnType}>
 				{(provided, snapshot) => (
