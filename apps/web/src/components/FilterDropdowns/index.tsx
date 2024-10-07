@@ -21,9 +21,6 @@ import { PriorityIcon } from "../Icons";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	// DropdownMenuSub,
-	// DropdownMenuSubContent,
-	// DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
