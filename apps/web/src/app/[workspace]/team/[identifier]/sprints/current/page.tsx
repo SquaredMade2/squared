@@ -3,11 +3,14 @@
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useTaskPage } from "@/hooks/useTaskPage";
-import { useFilterStore, useTeamStore } from "@/store";
+import { useFilterStore, useTeamStore, useViewStore } from "@/store";
+import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import { Status } from "@repo/db";
 
 export default function MyAssignedTasksPage() {
 	const { currentSprint } = useTeamStore((state) => state);
 	const { filterTasks } = useFilterStore((state) => state);
+	const { view, gridViewOptions } = useViewStore((state) => state);
 
 	const {
 		loading,
@@ -21,6 +24,24 @@ export default function MyAssignedTasksPage() {
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
+	const allowedColumns: Status[] = [
+		Status.todo,
+		Status.inProgress,
+		Status.inReview,
+		Status.done,
+	];
+
+	const getHiddenColumns = (): Status[] => {
+		const filteredStatuses = getFilteredStatuses();
+
+		return filteredStatuses.filter((status) => {
+			if (!allowedColumns.includes(status)) return false;
+
+			const tasks = getTasksForStatus(status);
+			return tasks && tasks.length === 0;
+		});
+	};
+
 	if (!currentWorkspace) return null;
 
 	return (
@@ -30,12 +51,25 @@ export default function MyAssignedTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle="Assigned Tasks"
+			pageTitle={`Current Sprint - ${currentSprint?.name}`}
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+				<ViewAllTasks
+					getFilteredStatuses={getFilteredStatuses}
+					getTasksForStatus={getTasksForStatus}
+					allowedColumns={allowedColumns}
+				/>
+				{view === "grid" &&
+					!gridViewOptions.showEmptyGroups &&
+					getHiddenColumns().length >= 1 && (
+						<div className="ml-auto">
+							<HiddenColumns
+								getHiddenColumns={getHiddenColumns}
+								getTasksForStatus={getTasksForStatus}
+							/>
+						</div>
+					)}
+			</div>
 		</TaskPageLayout>
 	);
 }
