@@ -27,21 +27,20 @@ export default function TeamLayout({
 	};
 
 	useEffect(() => {
-		switch (true) {
-			case pathname.endsWith("/all"):
-				setLastVisitedPage("all");
-				break;
-			case pathname.endsWith("/active"):
-				setLastVisitedPage("active");
-				break;
-			case pathname.endsWith("/backlog"):
-				setLastVisitedPage("backlog");
-				break;
-			case pathname.endsWith("/sprints/current"):
-				setLastVisitedPage("sprints/current");
-				break;
-			default:
-				isValidViewPath(pathname) && setLastVisitedPage(getViewPath(pathname));
+		const pathMap = {
+			"/all": "all",
+			"/active": "active",
+			"/backlog": "backlog",
+			"/sprints/current": "sprints/current",
+		} as const;
+		const matchedPath = Object.keys(pathMap).find((key) =>
+			pathname.endsWith(key),
+		) as keyof typeof pathMap | undefined;
+
+		if (matchedPath) {
+			setLastVisitedPage(pathMap[matchedPath]);
+		} else if (isValidViewPath(pathname)) {
+			setLastVisitedPage(getViewPath(pathname));
 		}
 	}, [pathname]);
 
