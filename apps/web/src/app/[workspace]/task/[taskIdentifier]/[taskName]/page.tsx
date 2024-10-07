@@ -145,7 +145,10 @@ const TaskPage = () => {
 									</div>
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">
-									<TaskSidebarTopRow task={task} />
+									<TaskSidebarTopRow
+										task={task}
+										workspaceUrl={workspace?.url}
+									/>
 									<TaskDesignationsContainer task={task} />
 								</div>
 							</div>
