@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-} from "@/components/ui/popover";
-import {
 	Command,
 	CommandInput,
 	CommandList,
@@ -15,15 +10,19 @@ import {
 	CommandGroup,
 } from "@/components/ui/command";
 import { useFilterStore, useWorkspaceStore } from "@/store";
-import type { FilterDropDownProps } from "./interfaces";
 import type { Label } from "@repo/db";
 import { Check } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
+import type { FilterOption } from "./interfaces";
+import {
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+} from "../ui/dropdown-menu";
 
 export default function LabelFilterDropDown({
-	showFilterDropDown,
-	setShowFilterDropDown,
-}: FilterDropDownProps) {
+	filterOption,
+}: { filterOption: FilterOption }) {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
@@ -67,46 +66,53 @@ export default function LabelFilterDropDown({
 		) || [];
 
 	return (
-		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
-			<PopoverTrigger />
-			<PopoverContent className="w-60 mt-5">
-				<Command>
-					<CommandInput
-						placeholder="Search labels..."
-						value={searchQuery}
-						onValueChange={setSearchQuery}
-					/>
-					<CommandList>
-						<CommandEmpty>No labels found.</CommandEmpty>
-						<ScrollArea
-							className={`w-full h-${filteredLabels.length > 12 ? "96" : "fit"} pr-${filteredLabels.length > 12 ? "6" : "0"}`}
-						>
-							<CommandGroup>
-								{filteredLabels?.map((label) => (
-									<CommandItem
-										key={label.id}
-										onSelect={() => handleLabelChange(label)}
-										className="flex items-center space-x-2 cursor-pointer h-8"
-									>
-										<div className="flex items-center flex-1 space-x-2">
-											{selectedLabels.some((l) => l.id === label.id) ? (
-												<Check className="w-4 h-4" />
-											) : (
-												<div className="w-4 h-4" />
-											)}
-											<div
-												className="w-3 h-3 rounded-full"
-												style={{ backgroundColor: label.color }}
-											/>
-											<span>{label.name}</span>
-										</div>
-									</CommandItem>
-								))}
-							</CommandGroup>
-						</ScrollArea>
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
+		<>
+			<DropdownMenuSub>
+				<DropdownMenuSubTrigger>
+					<div className="flex items-center space-x-2">
+						{filterOption.svg}
+						<span>{filterOption.name}</span>
+					</div>
+				</DropdownMenuSubTrigger>
+				<DropdownMenuSubContent className="w-70">
+					<Command>
+						<CommandInput
+							placeholder="Search labels..."
+							value={searchQuery}
+							onValueChange={setSearchQuery}
+						/>
+						<CommandList>
+							<CommandEmpty>No labels found.</CommandEmpty>
+							<ScrollArea
+								className={`w-full h-${filteredLabels.length > 12 ? "96" : "fit"} pr-${filteredLabels.length > 12 ? "6" : "0"}`}
+							>
+								<CommandGroup>
+									{filteredLabels?.map((label) => (
+										<CommandItem
+											key={label.id}
+											onSelect={() => handleLabelChange(label)}
+											className="flex items-center space-x-2 cursor-pointer h-8"
+										>
+											<div className="flex items-center flex-1 space-x-2">
+												{selectedLabels.some((l) => l.id === label.id) ? (
+													<Check className="w-4 h-4" />
+												) : (
+													<div className="w-4 h-4" />
+												)}
+												<div
+													className="w-3 h-3 rounded-full"
+													style={{ backgroundColor: label.color }}
+												/>
+												<span>{label.name}</span>
+											</div>
+										</CommandItem>
+									))}
+								</CommandGroup>
+							</ScrollArea>
+						</CommandList>
+					</Command>
+				</DropdownMenuSubContent>
+			</DropdownMenuSub>
+		</>
 	);
 }

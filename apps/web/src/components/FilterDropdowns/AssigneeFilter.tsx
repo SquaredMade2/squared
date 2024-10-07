@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-} from "@/components/ui/popover";
-import {
 	Command,
 	CommandInput,
 	CommandList,
@@ -15,17 +10,22 @@ import {
 	CommandGroup,
 } from "@/components/ui/command";
 import { useFilterStore, useUserStore } from "@/store";
-import type { FilterDropDownProps } from "./interfaces";
+
 import type { User } from "@repo/db";
 import { Check, UserSearch } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getInitials } from "@/utils/formatting";
+import type { FilterOption } from "./interfaces";
+import {
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+} from "../ui/dropdown-menu";
 
 export default function AssigneeFilterDropDown({
-	showFilterDropDown,
-	setShowFilterDropDown,
-}: FilterDropDownProps) {
+	filterOption,
+}: { filterOption: FilterOption }) {
 	const { users } = useUserStore((state) => state);
 	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
 		[],
@@ -71,65 +71,78 @@ export default function AssigneeFilterDropDown({
 		) || [];
 
 	return (
-		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
-			<PopoverTrigger />
-			<PopoverContent className="w-60 mt-5">
-				<Command>
-					<CommandInput
-						placeholder="Search users..."
-						value={searchQuery}
-						onValueChange={setSearchQuery}
-					/>
-					<CommandList>
-						<CommandEmpty>No users found.</CommandEmpty>
-						<ScrollArea
-							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
-						>
-							<CommandGroup>
-								<CommandItem
-									key="unassigned"
-									onSelect={() => handleAssigneeChange(null)}
-									className="flex items-center space-x-2 cursor-pointer h-8"
-								>
-									<div className="flex items-center flex-1 space-x-2">
-										{selectedAssignees.some((l) => l === null) ? (
-											<Check className="w-4 h-4" />
-										) : (
-											<div className="w-4 h-4" />
-										)}
-										<UserSearch className="size-6 mx-1 mr-2" />
-										<span className="w-2/3">Unassigned</span>
-									</div>
-								</CommandItem>
-								{filteredAssignees
-									.sort((a, b) => a.name.localeCompare(b.name))
-									.map((user) => (
-										<CommandItem
-											key={user.id}
-											onSelect={() => handleAssigneeChange(user)}
-											className="flex items-center space-x-2 cursor-pointer h-8"
-										>
-											<div className="flex items-center flex-1 space-x-2">
-												{selectedAssignees.some((l) => l?.id === user.id) ? (
-													<Check className="w-4 h-4" />
-												) : (
-													<div className="w-4 h-4" />
-												)}
-												<Avatar className="size-6 text-xxs">
-													<AvatarImage src={user?.avatarUrl ?? ""} />
-													<AvatarFallback>
-														{getInitials(user.name)}
-													</AvatarFallback>
-												</Avatar>
-												<span className="w-2/3 truncate">{user.name}</span>
-											</div>
-										</CommandItem>
-									))}
-							</CommandGroup>
-						</ScrollArea>
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
+		<>
+			<DropdownMenuSub>
+				<DropdownMenuSubTrigger>
+					<div className="flex items-center space-x-2">
+						{filterOption.svg}
+						<span>{filterOption.name}</span>
+					</div>
+				</DropdownMenuSubTrigger>
+				<DropdownMenuSubContent className="w-70">
+					<Command>
+						<CommandInput
+							placeholder="Search users..."
+							value={searchQuery}
+							onValueChange={setSearchQuery}
+						/>
+						<CommandList>
+							<CommandEmpty>No users found.</CommandEmpty>
+							<ScrollArea
+								className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
+							>
+								<CommandGroup>
+									<CommandItem
+										key="unassigned"
+										onSelect={() => handleAssigneeChange(null)}
+										className="flex items-center space-x-2 cursor-pointer h-8"
+									>
+										<div className="flex items-center flex-1 space-x-2">
+											{selectedAssignees.some((l) => l === null) ? (
+												<Check className="w-4 h-4" />
+											) : (
+												<div className="w-4 h-4" />
+											)}
+											<UserSearch className="size-5 mx-1 mr-2" />
+											<span className="w-2/3 truncate">Unassigned</span>
+										</div>
+									</CommandItem>
+									{filteredAssignees
+										.sort((a, b) => a.name.localeCompare(b.name))
+										.map((user) => (
+											<CommandItem
+												key={user.id}
+												onSelect={() => handleAssigneeChange(user)}
+												className="flex items-center space-x-2 cursor-pointer h-8"
+											>
+												<div className="flex items-center flex-1 space-x-2">
+													{selectedAssignees.some((l) => l?.id === user.id) ? (
+														<Check className="w-4 h-4" />
+													) : (
+														<div className="w-4 h-4" />
+													)}
+													<Avatar className="size-6 text-xxs">
+														<AvatarImage src={user?.avatarUrl ?? ""} />
+														<AvatarFallback>
+															{getInitials(user.name)}
+														</AvatarFallback>
+													</Avatar>
+													<span className="w-2/3 truncate">{user.name}</span>
+												</div>
+											</CommandItem>
+										))}
+								</CommandGroup>
+							</ScrollArea>
+						</CommandList>
+					</Command>
+				</DropdownMenuSubContent>
+			</DropdownMenuSub>
+		</>
+		// <Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
+		// 	<PopoverTrigger />
+		// 	<PopoverContent className="w-60 mt-5">
+
+		// 	</PopoverContent>
+		// </Popover>
 	);
 }
