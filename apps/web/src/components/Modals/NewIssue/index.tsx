@@ -110,13 +110,13 @@ export const NewIssueModal = () => {
 									name="title"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-2xl">Title</FormLabel>
+											<FormLabel className="text-xl">Title</FormLabel>
 											<FormControl>
 												<Input
 													{...field}
 													placeholder="Title"
-													className="text-xl"
-												/>
+                          className="text-md"
+                          />
 											</FormControl>
 										</FormItem>
 									)}
@@ -126,13 +126,13 @@ export const NewIssueModal = () => {
 									name="description"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-2xl">Description</FormLabel>
+											<FormLabel className="text-xl">Description</FormLabel>
 											<FormControl>
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-base resize-none"
-													rows={4}
+                          className="text-md resize-none"
+                          rows={4}
 												/>
 											</FormControl>
 										</FormItem>
