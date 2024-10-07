@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  postgres:
+  db:
     image: postgres:17
     container_name: postgres-test-db
     environment:
@@ -9,9 +7,13 @@ services:
       POSTGRES_PASSWORD: squared
       POSTGRES_DB: squared-test
     ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - "5433:5433"
 
-volumes:
-  postgres_data:
+  test:
+    build:
+      context: ../../.
+      dockerfile: ./apps/api/Dockerfile
+    restart: always
+    ports:
+      - 5173:5173
+    env_file: ./.env
