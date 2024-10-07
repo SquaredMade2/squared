@@ -32,6 +32,9 @@ function RegisterForm() {
 	);
 	const inviteToken = searchParams.get("token");
 
+	// Checks for 1 uppercase letter, 1 digit, i special character anywhere in the string
+	const passwordRegex = "(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()])";
+
 	const handleRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
@@ -195,6 +198,9 @@ function RegisterForm() {
 									type={hidePassword ? "password" : "text"}
 									placeholder="Create a password"
 									value={data.password}
+									minLength={8}
+									maxLength={30}
+									pattern={passwordRegex}
 									onChange={(e) =>
 										setData({ ...data, password: e.target.value })
 									}
