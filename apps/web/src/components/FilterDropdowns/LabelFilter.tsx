@@ -66,53 +66,51 @@ export default function LabelFilterDropDown({
 		) || [];
 
 	return (
-		<>
-			<DropdownMenuSub>
-				<DropdownMenuSubTrigger>
-					<div className="flex items-center space-x-2">
-						{filterOption.svg}
-						<span>{filterOption.name}</span>
-					</div>
-				</DropdownMenuSubTrigger>
-				<DropdownMenuSubContent className="w-70">
-					<Command>
-						<CommandInput
-							placeholder="Search labels..."
-							value={searchQuery}
-							onValueChange={setSearchQuery}
-						/>
-						<CommandList>
-							<CommandEmpty>No labels found.</CommandEmpty>
-							<ScrollArea
-								className={`w-full h-${filteredLabels.length > 12 ? "96" : "fit"} pr-${filteredLabels.length > 12 ? "6" : "0"}`}
-							>
-								<CommandGroup>
-									{filteredLabels?.map((label) => (
-										<CommandItem
-											key={label.id}
-											onSelect={() => handleLabelChange(label)}
-											className="flex items-center space-x-2 cursor-pointer h-8"
-										>
-											<div className="flex items-center flex-1 space-x-2">
-												{selectedLabels.some((l) => l.id === label.id) ? (
-													<Check className="w-4 h-4" />
-												) : (
-													<div className="w-4 h-4" />
-												)}
-												<div
-													className="w-3 h-3 rounded-full"
-													style={{ backgroundColor: label.color }}
-												/>
-												<span>{label.name}</span>
-											</div>
-										</CommandItem>
-									))}
-								</CommandGroup>
-							</ScrollArea>
-						</CommandList>
-					</Command>
-				</DropdownMenuSubContent>
-			</DropdownMenuSub>
-		</>
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-70">
+				<Command>
+					<CommandInput
+						placeholder="Search labels..."
+						value={searchQuery}
+						onValueChange={setSearchQuery}
+					/>
+					<CommandList>
+						<CommandEmpty>No labels found.</CommandEmpty>
+						<ScrollArea
+							className={`w-full h-${filteredLabels.length > 12 ? "96" : "fit"} pr-${filteredLabels.length > 12 ? "6" : "0"}`}
+						>
+							<CommandGroup>
+								{filteredLabels?.map((label) => (
+									<CommandItem
+										key={label.id}
+										onSelect={() => handleLabelChange(label)}
+										className="flex items-center space-x-2 cursor-pointer h-8"
+									>
+										<div className="flex items-center flex-1 space-x-2">
+											{selectedLabels.some((l) => l.id === label.id) ? (
+												<Check className="w-4 h-4" />
+											) : (
+												<div className="w-4 h-4" />
+											)}
+											<div
+												className="w-3 h-3 rounded-full"
+												style={{ backgroundColor: label.color }}
+											/>
+											<span>{label.name}</span>
+										</div>
+									</CommandItem>
+								))}
+							</CommandGroup>
+						</ScrollArea>
+					</CommandList>
+				</Command>
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 }

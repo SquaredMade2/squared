@@ -60,36 +60,34 @@ export default function EffortFilterDropDown({
 	};
 
 	return (
-		<>
-			<DropdownMenuSub>
-				<DropdownMenuSubTrigger>
-					<div className="flex items-center space-x-2">
-						{filterOption.svg}
-						<span>{filterOption.name}</span>
-					</div>
-				</DropdownMenuSubTrigger>
-				<DropdownMenuSubContent className="w-70">
-					{effortOptions.map((item) => (
-						<DropdownMenuItem
-							key={item.id}
-							onSelect={(e) => {
-								e.preventDefault();
-								handleEffortSelect(item.name);
-							}}
-						>
-							<div className="flex items-center gap-2">
-								{selectedEffort === item.name ? (
-									<Check className="size-4" />
-								) : (
-									<div className="size-4" />
-								)}
-								{item.svg}
-								<span>{item.name}</span>
-							</div>
-						</DropdownMenuItem>
-					))}
-				</DropdownMenuSubContent>
-			</DropdownMenuSub>
-		</>
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-70">
+				{effortOptions.map((item) => (
+					<DropdownMenuItem
+						key={item.id}
+						onSelect={(e) => {
+							e.preventDefault();
+							handleEffortSelect(item.name);
+						}}
+					>
+						<div className="flex items-center gap-2">
+							{selectedEffort === item.name ? (
+								<Check className="size-4" />
+							) : (
+								<div className="size-4" />
+							)}
+							{item.svg}
+							<span>{item.name}</span>
+						</div>
+					</DropdownMenuItem>
+				))}
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 }

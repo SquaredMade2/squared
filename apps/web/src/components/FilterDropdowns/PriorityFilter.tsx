@@ -90,35 +90,33 @@ const PriorityFilterDropDown = ({
 	}, [currentFilterTypes]);
 
 	return (
-		<>
-			<DropdownMenuSub>
-				<DropdownMenuSubTrigger>
-					<div className="flex items-center space-x-2">
-						{filterOption.svg}
-						<span>{filterOption.name}</span>
-					</div>
-				</DropdownMenuSubTrigger>
-				<DropdownMenuSubContent className="w-70">
-					{groupPriority.map((item) => (
-						<DropdownMenuCheckboxItem
-							key={item.id}
-							checked={selectedPriorities.includes(item.value)}
-							onCheckedChange={(checked) =>
-								handlePriorityChange(item.value, checked)
-							}
-							onSelect={(e) => {
-								e.preventDefault();
-							}}
-						>
-							<div className="flex items-center space-x-2">
-								{item.svg}
-								<span>{item.name}</span>
-							</div>
-						</DropdownMenuCheckboxItem>
-					))}
-				</DropdownMenuSubContent>
-			</DropdownMenuSub>
-		</>
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-70">
+				{groupPriority.map((item) => (
+					<DropdownMenuCheckboxItem
+						key={item.id}
+						checked={selectedPriorities.includes(item.value)}
+						onCheckedChange={(checked) =>
+							handlePriorityChange(item.value, checked)
+						}
+						onSelect={(e) => {
+							e.preventDefault();
+						}}
+					>
+						<div className="flex items-center space-x-2">
+							{item.svg}
+							<span>{item.name}</span>
+						</div>
+					</DropdownMenuCheckboxItem>
+				))}
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 };
 
