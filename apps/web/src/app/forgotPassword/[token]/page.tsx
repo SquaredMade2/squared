@@ -26,6 +26,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { passwordRegex } from "@/utils/formatting";
 
 const formSchema = z.object({
 	newPassword: z.string({
@@ -170,6 +171,9 @@ function ResetPasswordForm() {
 												id="password"
 												type={hideNewPassword ? "password" : "text"}
 												placeholder="Enter your password"
+												minLength={8}
+												maxLength={30}
+												pattern={passwordRegex}
 												required
 												{...field}
 											/>
@@ -203,7 +207,7 @@ function ResetPasswordForm() {
 											<Input
 												id="password"
 												type={hideConfirmPassword ? "password" : "text"}
-												placeholder="Enter your password"
+												placeholder="Confirm your password"
 												required
 												{...field}
 											/>

@@ -3,9 +3,9 @@
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useWorkspaceStore } from "@/store";
-import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
 import {
 	Card,
 	CardContent,
@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
+import { passwordRegex } from "@/utils/formatting";
 
 function RegisterForm() {
 	const [data, setData] = useState({ name: "", email: "", password: "" });
@@ -31,9 +32,6 @@ function RegisterForm() {
 		(state) => state,
 	);
 	const inviteToken = searchParams.get("token");
-
-	// Checks for 1 uppercase letter, 1 digit, i special character anywhere in the string
-	const passwordRegex = "(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()])";
 
 	const handleRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
