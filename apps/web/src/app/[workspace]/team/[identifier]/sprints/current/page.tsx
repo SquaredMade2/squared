@@ -24,11 +24,18 @@ export default function MyAssignedTasksPage() {
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
+	const allowedColumns: Status[] = [
+		Status.todo,
+		Status.inProgress,
+		Status.inReview,
+		Status.done,
+	];
+
 	const getHiddenColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
 
 		return filteredStatuses.filter((status) => {
-			if (status === Status.archived) return false;
+			if (!allowedColumns.includes(status)) return false;
 
 			const tasks = getTasksForStatus(status);
 			return tasks && tasks.length === 0;
@@ -50,12 +57,7 @@ export default function MyAssignedTasksPage() {
 				<ViewAllTasks
 					getFilteredStatuses={getFilteredStatuses}
 					getTasksForStatus={getTasksForStatus}
-					allowedColumns={[
-						Status.todo,
-						Status.inProgress,
-						Status.inReview,
-						Status.done,
-					]}
+					allowedColumns={allowedColumns}
 				/>
 				{view === "grid" &&
 					!gridViewOptions.showEmptyGroups &&
