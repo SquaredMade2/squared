@@ -2,11 +2,12 @@
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useSprints } from "@/hooks/useSprints";
 import { useTaskPage } from "@/hooks/useTaskPage";
-import { useFilterStore, useTeamStore } from "@/store";
+import { useFilterStore } from "@/store";
 
 export default function MyAssignedTasksPage() {
-	const { currentSprint } = useTeamStore((state) => state);
+	const { currentSprint, loading: sprintLoading } = useSprints();
 	const { filterTasks } = useFilterStore((state) => state);
 
 	const {
@@ -25,7 +26,7 @@ export default function MyAssignedTasksPage() {
 
 	return (
 		<TaskPageLayout
-			loading={loading}
+			loading={loading || sprintLoading}
 			authorized={authorized}
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
