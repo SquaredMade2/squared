@@ -60,14 +60,9 @@ WORKDIR /app/apps/api
 
 RUN npm install -g turbo pnpm ts-node tsconfig-paths
 
-# WORKDIR /app
-# RUN pnpm db:push
-# WORKDIR /app/apps/api
-
 # Don't run production as root
 RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
 
-# CMD ["ts-node", "src/api/index.ts"]
-CMD ["pnpm", "jest", "--ci"]
+CMD ["ts-node", "src/api/index.ts"]
