@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import type { Route, APIResponse } from "@/api/route";
 import { comparePassword, hashPassword, returnToken } from "./helpers";
 import { sendMail } from "@/utils/mail";
+import { joinWorkspace } from "@/utils/joinWorkspace";
 
 type Body = {
 	provider: "credentials" | "google" | "github";
@@ -13,6 +14,7 @@ type Body = {
 	name?: string;
 	username?: string;
 	oauthId?: string;
+	token?: string;
 	avatarUrl?: string;
 };
 
@@ -26,8 +28,16 @@ export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, _, body: Body): Promise<APIResponse<User>> => {
 			try {
-				const { email, password, provider, type, name, username, avatarUrl } =
-					body;
+				const {
+					email,
+					password,
+					provider,
+					type,
+					name,
+					username,
+					avatarUrl,
+					token: joinWorkspaceToken,
+				} = body;
 				let user: User | null = await prisma.user.findUnique({
 					where: { email },
 				});
@@ -52,6 +62,7 @@ export function createRoute(): Route<Params> {
 									avatarUrl,
 								},
 							});
+							joinWorkspaceToken && joinWorkspace(joinWorkspaceToken, user.id);
 						} else if (user && user.googleId !== body.oauthId) {
 							return {
 								data: null,
@@ -81,6 +92,7 @@ export function createRoute(): Route<Params> {
 									avatarUrl,
 								},
 							});
+							joinWorkspaceToken && joinWorkspace(joinWorkspaceToken, user.id);
 						} else if (user && user.githubId !== body.oauthId) {
 							return {
 								data: null,
@@ -150,6 +162,19 @@ export function createRoute(): Route<Params> {
 									password: hashedPassword,
 								},
 							});
+							if (joinWorkspaceToken && user) {
+								const { status, data, ...response } = await joinWorkspace(
+									joinWorkspaceToken,
+									user.id,
+								);
+								if (status === 200) {
+									const newUser = await prisma.user.findUnique({
+										where: { id: user.id },
+									});
+									return { ...response, data: newUser };
+								}
+								return { ...response, data: user };
+							}
 
 							// Send a verification email
 							const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {

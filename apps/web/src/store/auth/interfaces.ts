@@ -18,6 +18,7 @@ export type Login = {
 	password?: string;
 	name?: string;
 	username?: string;
+	token?: string | null;
 };
 
 type AuthActions = {

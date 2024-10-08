@@ -44,32 +44,18 @@ function RegisterForm() {
 				password: data.password,
 				type: "register",
 				provider: "credentials",
+				token: inviteToken,
 			});
 
-			if (response.user) {
-				// If registration is successful, sign in the user using NextAuth
-				const result = await signIn("credentials", {
+			toast({
+				title: response.message,
+				variant: response.variant,
+			});
+			if (response.user && inviteToken) {
+				await signIn("credentials", {
 					redirect: false,
 					email: data.email,
 					password: data.password,
-				});
-
-				if (result?.error) {
-					throw new Error(result.error);
-				}
-
-				if (inviteToken) {
-					const { workspace } = await joinWorkspace(inviteToken, response.user);
-					if (workspace?.url) {
-						router.push(`/${workspace.url}`);
-					}
-				} else {
-					router.push("/");
-				}
-
-				toast({
-					title: response.message,
-					variant: response.variant,
 				});
 			} else {
 				throw new Error(response.message || "Registration failed");
@@ -108,7 +94,7 @@ function RegisterForm() {
 					if (inviteToken) {
 						const { workspace, message, variant } = await joinWorkspace(
 							inviteToken,
-							user,
+							user.id,
 						);
 						if (workspace?.url) {
 							toast({ title: message, variant });
