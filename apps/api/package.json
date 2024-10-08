@@ -16,7 +16,8 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "(pnpm --filter=@repo/test-db db:test:push && dotenv -e .env.run.test jest && pnpm --filter=@repo/test-db db:test:reset) || pnpm --filter=@repo/test-db db:test:reset"
+		"test": "docker exec --workdir /app api-test-1 pnpm db:push && docker exec --workdir /app/apps/api api-test-1 pnpm jest",
+		"test:db:reset": "docker exec --workdir /app/packages/db api-test-1 npx prisma migrate reset --force"
 	},
 	"keywords": [],
 	"author": "",

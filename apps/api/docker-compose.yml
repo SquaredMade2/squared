@@ -1,3 +1,6 @@
+version: '3.8'
+
+
 services:
   db:
     image: postgres:17
@@ -6,8 +9,9 @@ services:
       POSTGRES_USER: squared
       POSTGRES_PASSWORD: squared
       POSTGRES_DB: squared-test
+      POSTGRES_PRISMA_URL:
     ports:
-      - "5433:5433"
+      - "5433:5432"
 
   test:
     build:
@@ -17,3 +21,7 @@ services:
     ports:
       - 5173:5173
     env_file: ./.env
+    environment:
+      POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-test-db:5432/squared-test?schema=public
+      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-test-db:5432/squared-test?schema=public
+  
