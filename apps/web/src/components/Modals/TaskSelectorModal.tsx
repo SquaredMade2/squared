@@ -10,7 +10,6 @@ import {
 	CommandList,
 } from "../ui/command";
 import { useTaskStore, useModalStore, useWorkspaceStore } from "@/store";
-import { useTaskStore, useModalStore, useWorkspaceStore } from "@/store";
 import { ScrollArea } from "../ui/scroll-area";
 import { StatusIcon } from "../Icons";
 import { formatUrl } from "@/utils/formatting";
@@ -22,7 +21,6 @@ export function TaskSelector() {
 	const { showTaskSelector: open, setShowTaskSelector: setOpen } =
 		useModalStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	return (
