@@ -25,7 +25,10 @@ export const joinWorkspace = async (
 
 	const workspace = await prisma.workspace.findUnique({
 		where: { id: decoded.workspaceId },
-		include: { Users: true, teams: { include: { Tasks: true } } },
+		include: {
+			Labels: true,
+			Users: true,
+		},
 	});
 
 	const user = await prisma.user.findUnique({
@@ -75,8 +78,7 @@ export const joinWorkspace = async (
 	const updatedWorkspace = await prisma.workspace.findUnique({
 		where: { id: decoded.workspaceId },
 		include: {
-			Users: { include: { user: true } },
-			teams: { include: { Tasks: true } },
+			Labels: true,
 		},
 	});
 
