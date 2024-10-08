@@ -149,7 +149,7 @@ export function createRoute(): Route<Params> {
 
 				// Generate the new task identifier
 				const newTaskNumber = highestTaskNumber + 1;
-				const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString().padStart(4, "0")}`;
+				const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
 
 				const newIssueCount = workspace.tasksCreated + 1;
 

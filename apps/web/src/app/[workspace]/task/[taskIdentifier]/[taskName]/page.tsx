@@ -9,7 +9,7 @@ import {
 	MobileTaskSettings,
 } from "@/components/TaskPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTaskStore, useTeamStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { useEffect, useState } from "react";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
@@ -30,7 +30,6 @@ import { useToast } from "@/components/ui/use-toast";
 
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
 	const { task, isLoading, error, workspace } = useTaskPageData();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
@@ -119,7 +118,7 @@ const TaskPage = () => {
 																		className="mr-2"
 																	/>
 																	<Link
-																		href={`/${currentTeam?.name}/task/${
+																		href={`/${workspace?.url}/task/${
 																			subtask?.identifier
 																		}/${formatUrl(subtask.title)}`}
 																	>
@@ -146,7 +145,10 @@ const TaskPage = () => {
 									</div>
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">
-									<TaskSidebarTopRow task={task} />
+									<TaskSidebarTopRow
+										task={task}
+										workspaceUrl={workspace?.url}
+									/>
 									<TaskDesignationsContainer task={task} />
 								</div>
 							</div>

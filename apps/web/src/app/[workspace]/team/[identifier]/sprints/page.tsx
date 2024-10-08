@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Dialog,
 	DialogContent,
@@ -18,6 +19,16 @@ import {
 	DialogTitle,
 	DialogFooter,
 } from "@/components/ui/dialog";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format, differenceInDays } from "date-fns";
 import {
@@ -34,6 +45,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
 import { useSprints } from "@/hooks/useSprints";
+import { PriorityIcon } from "@/components/Icons";
 
 export default function SprintDashboard() {
 	const {
@@ -52,6 +64,9 @@ export default function SprintDashboard() {
 	);
 	const [isAutoAssignConfirmOpen, setIsAutoAssignConfirmOpen] = useState(false);
 	const [tasksToAutoAssign, setTasksToAutoAssign] = useState<Task[]>([]);
+	const [isCustomizeAutoAssignOpen, setIsCustomizeAutoAssignOpen] =
+		useState(false);
+	const [customTaskCount, setCustomTaskCount] = useState("");
 
 	useEffect(() => {
 		if (sprints.length > 0) {
@@ -135,6 +150,17 @@ export default function SprintDashboard() {
 
 	const prepareAutoAssign = () => {
 		if (!currentSprint) return;
+		const defaultTaskCount = Math.max(
+			(currentTeam?.tasksPerSprint || 10) -
+				tasks.filter((t) => t.sprintId === currentSprint.id).length,
+			0,
+		);
+		setCustomTaskCount(defaultTaskCount.toString());
+		setIsCustomizeAutoAssignOpen(true);
+	};
+
+	const handleCustomizeAutoAssign = () => {
+		if (!currentSprint) return;
 		const mapPriority = (priority: Priority) => {
 			switch (priority) {
 				case "noPriority":
@@ -151,17 +177,12 @@ export default function SprintDashboard() {
 					return 0;
 			}
 		};
+		const taskCount = Number.parseInt(customTaskCount, 10) || 0;
 		const tasksToAssign = unassignedTasks
 			.sort((a, b) => mapPriority(b.priority) - mapPriority(a.priority))
-			.slice(
-				0,
-				Math.max(
-					(currentTeam?.tasksPerSprint || 10) -
-						tasks.filter((t) => t.sprintId === currentSprint.id).length,
-					0,
-				),
-			);
+			.slice(0, taskCount);
 		setTasksToAutoAssign(tasksToAssign);
+		setIsCustomizeAutoAssignOpen(false);
 		setIsAutoAssignConfirmOpen(true);
 	};
 
@@ -283,6 +304,35 @@ export default function SprintDashboard() {
 				</div>
 			</div>
 
+			<AlertDialog
+				open={isCustomizeAutoAssignOpen}
+				onOpenChange={setIsCustomizeAutoAssignOpen}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Customize Auto-Assignment</AlertDialogTitle>
+						<AlertDialogDescription>
+							Enter the number of tasks you want to auto-assign to the current
+							sprint.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<div className="py-4">
+						<Input
+							type="number"
+							value={customTaskCount}
+							onChange={(e) => setCustomTaskCount(e.target.value)}
+							placeholder="Number of tasks to assign"
+						/>
+					</div>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction onClick={handleCustomizeAutoAssign}>
+							Proceed
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
 			<Dialog
 				open={isAutoAssignConfirmOpen}
 				onOpenChange={setIsAutoAssignConfirmOpen}
@@ -298,22 +348,8 @@ export default function SprintDashboard() {
 					<ScrollArea className="h-[200px] w-full rounded-md border p-4">
 						{tasksToAutoAssign.map((task) => (
 							<div key={task.id} className="flex items-center space-x-2 mb-2">
+								<PriorityIcon priority={task.priority} />
 								<span className="text-sm">{task.title}</span>
-								<span
-									className={`ml-auto text-xs px-2 py-1 rounded-full ${
-										task.priority === "urgent"
-											? "bg-red-100 text-red-800"
-											: task.priority === "high"
-												? "bg-orange-100 text-orange-800"
-												: task.priority === "medium"
-													? "bg-yellow-100 text-yellow-800"
-													: task.priority === "low"
-														? "bg-green-100 text-green-800"
-														: "bg-gray-100 text-gray-800"
-									}`}
-								>
-									{task.priority}
-								</span>
 							</div>
 						))}
 					</ScrollArea>
