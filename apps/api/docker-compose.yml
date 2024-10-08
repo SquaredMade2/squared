@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: squared-test
       POSTGRES_PRISMA_URL:
     ports:
-      - "5433:5432"
+      - "5434:5432"
 
   test:
     build:
@@ -19,7 +19,7 @@ services:
       dockerfile: ./apps/api/Dockerfile
     restart: always
     ports:
-      - 5173:5173
+      - 5174:5173
     env_file: ./.env
     environment:
       POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-testing-db:5432/squared-test?schema=public
