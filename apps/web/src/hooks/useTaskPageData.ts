@@ -17,7 +17,9 @@ export function useTaskPageData() {
 	const [error, setError] = useState<string | null>(null);
 
 	const { getTaskByIdentifier } = useTaskStore((state) => state);
-	const { getWorkspace } = useWorkspaceStore((state) => state);
+	const { getWorkspace, setCurrentWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const { getAllUsers } = useUserStore((state) => state);
 	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 
@@ -34,6 +36,7 @@ export function useTaskPageData() {
 					throw new Error(message || "Workspace not found");
 				}
 				setWorkspace(workspace);
+				setCurrentWorkspace(workspace);
 				await getAllUsers(workspace.id);
 				const teams = await getAllTeams(workspace.id);
 
