@@ -4,7 +4,7 @@ version: '3.8'
 services:
   db:
     image: postgres:17
-    container_name: postgres-test-db
+    container_name: postgres-testing-db
     environment:
       POSTGRES_USER: squared
       POSTGRES_PASSWORD: squared
@@ -22,6 +22,6 @@ services:
       - 5173:5173
     env_file: ./.env
     environment:
-      POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-test-db:5432/squared-test?schema=public
-      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-test-db:5432/squared-test?schema=public
+      POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-testing-db:5432/squared-test?schema=public
+      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-testing-db:5432/squared-test?schema=public
   
