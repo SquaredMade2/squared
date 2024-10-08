@@ -14,9 +14,7 @@ export default function TokenVerificationPage({
 	const { setUser } = useAuthStore((state) => state);
 	const { getUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
-	const { joinWorkspace, setCurrentWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { joinWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const [isVerifying, setIsVerifying] = useState(true);
 
@@ -32,7 +30,6 @@ export default function TokenVerificationPage({
 					if (workspace) {
 						const { user } = await getUser(session.user.id);
 						setUser(user);
-						setCurrentWorkspace(workspace);
 						router.push(`/${workspace.url}`);
 					} else {
 						router.push("/");
