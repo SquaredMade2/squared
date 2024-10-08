@@ -2,7 +2,6 @@ import request from "supertest";
 import { PrismaClient } from "@repo/db";
 import { randomUUID } from "node:crypto";
 
-
 const seededTestTaskId = randomUUID();
 const host = "http://localhost:5173";
 const prisma = new PrismaClient();
