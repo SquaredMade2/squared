@@ -1,10 +1,10 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useAuthStore } from "@/store";
 import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
 import {
 	Card,
@@ -26,10 +26,7 @@ function RegisterForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
-	const { register, login } = useAuthStore((state) => state);
-	const { joinWorkspace, getWorkspace, getAllWorkspaces } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { register } = useAuthStore((state) => state);
 	const inviteToken = searchParams.get("token");
 
 	const handleRegister = async (e: React.FormEvent) => {
@@ -77,52 +74,6 @@ function RegisterForm() {
 			await signIn("google", {
 				callbackUrl: window.location.href,
 			});
-			const { data: session, status } = useSession();
-			if (status === "authenticated" && session?.user) {
-				const response = await login({
-					provider: "oauth",
-					type: "login",
-					name: session.user.name ?? undefined,
-					email: session.user.email,
-					oauthId: session.user.id,
-					token: inviteToken,
-				});
-
-				if (response?.user) {
-					const user = response.user;
-					toast({ title: "Login Successful, Welcome!" });
-
-					if (inviteToken) {
-						const { workspace, message, variant } = await joinWorkspace(
-							inviteToken,
-							user.id,
-						);
-						if (workspace?.url) {
-							toast({ title: message, variant });
-							router.push(`/${workspace.url}`);
-						}
-					} else if (user.defaultWorkspaceId) {
-						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
-						}
-					} else {
-						const workspaces = await getAllWorkspaces(user.id);
-						if (workspaces?.length) {
-							router.refresh();
-							router.push(`/${workspaces[0].url}`);
-						} else {
-							router.refresh();
-							router.push("/join");
-						}
-					}
-				}
-			} else {
-				toast({
-					title: "Login failed",
-					variant: "destructive",
-				});
-			}
 		} catch (error) {
 			toast({ title: "Google registration failed", variant: "destructive" });
 			console.error("Google registration error:", error);
