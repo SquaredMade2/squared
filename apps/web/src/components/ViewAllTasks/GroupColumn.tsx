@@ -104,7 +104,10 @@ const StatusColumn = ({
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
-			<div key={task.id} className={`mb-2 ${isListView ? "w-full" : "w-72"}`}>
+			<div
+				key={task.id}
+				className={`mb-2 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			>
 				<TaskCard task={task} index={index} location={"dashboard"} />
 				{subtasks.length > 0 && (
 					<div
