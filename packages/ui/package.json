@@ -200,7 +200,9 @@
     "format:write": "biome format --write .",
     "format:check": "biome format .",
     "test": "jest --ci",
-    "storybook": "cross-env BROWSER=none storybook dev -p 9009"
+    "storybook": "cross-env BROWSER=none storybook dev -p 9009",
+    "icons:gen": "pnpm --prefix ./src/squared-icons run generate:icons",
+    "build:icons": "pnpm --prefix ./src/squared-icons run build:icons"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.1",
@@ -210,6 +212,8 @@
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "date-fns": "^4.0.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^11.0.0",
     "lucide-react": "^0.447.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

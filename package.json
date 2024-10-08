@@ -30,6 +30,8 @@
     "studio": "turbo run studio",
     "studio:prod": "pnpm --filter=@repo/db studio",
     "studio:dev": "pnpm --filter=@repo/test-db studio",
+    "icons:gen": "pnpm --filter=@repo/ui run icons:gen",
+    "build:icons": "pnpm --filter=@repo/ui run build:icons",
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
