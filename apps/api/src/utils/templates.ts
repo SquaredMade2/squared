@@ -1,4 +1,7 @@
-export const passwordResetTemplate = (verificationUrl: string) => {
+const NEXT_PUBLIC_CONFIRM_URL = process.env.NEXT_PUBLIC_CONFIRM_URL;
+
+export const passwordResetTemplate = (path: string) => {
+	const verificationUrl = `${NEXT_PUBLIC_CONFIRM_URL}/${path}`;
 	return `
     <!DOCTYPE html>
     <html lang="en">
@@ -38,12 +41,18 @@ export const passwordResetTemplate = (verificationUrl: string) => {
   `;
 };
 
-export const joinWorkspaceTemplate = (
-	username: string,
-	verificationUrl: string,
-	workspaceName?: string,
-) => {
-	const uppercaseUsername = username[0].toUpperCase() + username.slice(1);
+export const joinWorkspaceTemplate = ({
+	username,
+	path,
+	workspaceName,
+}: {
+	username?: string;
+	path: string;
+	workspaceName?: string;
+}) => {
+	const uppercaseUsername =
+		username && username[0].toUpperCase() + username.slice(1);
+	const verificationUrl = `${NEXT_PUBLIC_CONFIRM_URL}/${path}`;
 
 	return `
     <!DOCTYPE html>
@@ -68,7 +77,7 @@ export const joinWorkspaceTemplate = (
           <span style="color: #ffffff; font-size: 24px; font-weight: bold; vertical-align: middle; margin-left: 10px;">SQUARED</span>
         </div>
         <div class="content">
-          <h1 style="color: #174EFF; font-size: 28px; margin-bottom: 20px;">Welcome Aboard, ${uppercaseUsername}!</h1>
+          <h1 style="color: #174EFF; font-size: 28px; margin-bottom: 20px;">Welcome Aboard${uppercaseUsername ? `, ${uppercaseUsername}` : ""}!</h1>
           <p>You've been exclusively invited to join ${workspaceName}! This is a unique opportunity to collaborate, share ideas, and grow with a community of like-minded individuals.</p>
           <p style="text-align: center; margin-top: 30px;">
             <a href="${verificationUrl}" class="button">Join ${workspaceName}</a>
@@ -85,7 +94,9 @@ export const joinWorkspaceTemplate = (
   `;
 };
 
-export const emailTemplate = (_: string, verificationUrl: string) => {
+export const verifyEmailTemplate = (path: string) => {
+	const verificationUrl = `${NEXT_PUBLIC_CONFIRM_URL}/${path}`;
+
 	return `
     <!DOCTYPE html>
     <html lang="en">

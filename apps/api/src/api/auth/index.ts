@@ -5,6 +5,7 @@ import type { Route, APIResponse } from "@/api/route";
 import { comparePassword, hashPassword, returnToken } from "./helpers";
 import { sendMail } from "@/utils/mail";
 import { joinWorkspace } from "@/utils/joinWorkspace";
+import { verifyEmailTemplate } from "@/utils/templates";
 
 type Body = {
 	provider: "credentials" | "google" | "github";
@@ -206,7 +207,11 @@ export function createRoute(): Route<Params> {
 								expiresIn: "1d",
 							});
 							try {
-								await sendMail(email, username, emailToken, "confirmation");
+								await sendMail({
+									email,
+									subject: "Welcome to Squared!",
+									html: verifyEmailTemplate(`confirmation/${emailToken}`),
+								});
 							} catch (error) {
 								console.error("Error sending email:", error);
 								await prisma.user.delete({ where: { id: user.id } });
@@ -256,7 +261,11 @@ export function createRoute(): Route<Params> {
 								});
 
 								// Send verification email if they're not verified
-								await sendMail(email, user.name, emailToken, "confirmation");
+								await sendMail({
+									email,
+									subject: "Verify Your Email",
+									html: verifyEmailTemplate(`confirmation/${emailToken}`),
+								});
 								return {
 									data: null,
 									message:
