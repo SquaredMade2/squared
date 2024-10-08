@@ -31,11 +31,21 @@ type ViewOptions = {
 	displayProperties: DisplayProperty;
 };
 
+export type ViewPath = `/views${string}`;
+
+type LastVisitedPathOptions =
+	| "all"
+	| "active"
+	| "backlog"
+	| "sprints/current"
+	| ViewPath;
+
 export type ViewState = {
 	showNavbar: boolean;
 	showMobileNavbar: boolean;
 	listViewOptions: ViewOptions;
 	gridViewOptions: ViewOptions;
+	lastVisitedPage: LastVisitedPathOptions;
 	view: "list" | "grid";
 };
 
@@ -45,6 +55,7 @@ type ViewActions = {
 	setShowMobileNavbar: (input: boolean) => void;
 	setListViewOptions: (input: Partial<ViewOptions>) => void;
 	setGridViewOptions: (input: Partial<ViewOptions>) => void;
+	setLastVisitedPage: (input: LastVisitedPathOptions) => void;
 };
 
 export type ViewStore = ViewState & ViewActions;
