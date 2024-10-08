@@ -85,6 +85,7 @@ function RegisterForm() {
 					name: session.user.name ?? undefined,
 					email: session.user.email,
 					oauthId: session.user.id,
+					token: inviteToken,
 				});
 
 				if (response?.user) {

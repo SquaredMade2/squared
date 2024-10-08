@@ -62,7 +62,7 @@ export default function LabelFilterDropDown({
 	}, [currentFilterTypes]);
 
 	const filteredLabels =
-		currentWorkspace?.Labels.filter((label) =>
+		currentWorkspace?.Labels?.filter((label) =>
 			label.name.toLowerCase().includes(searchQuery.toLowerCase()),
 		) || [];
 

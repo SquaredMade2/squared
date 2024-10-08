@@ -62,7 +62,6 @@ export function createRoute(): Route<Params> {
 									avatarUrl,
 								},
 							});
-							joinWorkspaceToken && joinWorkspace(joinWorkspaceToken, user.id);
 						} else if (user && user.googleId !== body.oauthId) {
 							return {
 								data: null,
@@ -73,6 +72,19 @@ export function createRoute(): Route<Params> {
 						}
 						const { token } = await returnToken(user, JWT_SECRET);
 						res.cookie("token", token);
+						if (joinWorkspaceToken && user) {
+							const { status, data, ...response } = await joinWorkspace(
+								joinWorkspaceToken,
+								user.id,
+							);
+							if (status === 200) {
+								const newUser = await prisma.user.findUnique({
+									where: { id: user.id },
+								});
+								return { ...response, data: newUser };
+							}
+							return { ...response, data: user };
+						}
 
 						return {
 							data: user,
@@ -92,7 +104,6 @@ export function createRoute(): Route<Params> {
 									avatarUrl,
 								},
 							});
-							joinWorkspaceToken && joinWorkspace(joinWorkspaceToken, user.id);
 						} else if (user && user.githubId !== body.oauthId) {
 							return {
 								data: null,
@@ -101,8 +112,22 @@ export function createRoute(): Route<Params> {
 								variant: "destructive",
 							};
 						}
+
 						const { token } = await returnToken(user, JWT_SECRET);
 						res.cookie("token", token);
+						if (joinWorkspaceToken && user) {
+							const { status, data, ...response } = await joinWorkspace(
+								joinWorkspaceToken,
+								user.id,
+							);
+							if (status === 200) {
+								const newUser = await prisma.user.findUnique({
+									where: { id: user.id },
+								});
+								return { ...response, data: newUser };
+							}
+							return { ...response, data: user };
+						}
 
 						return {
 							data: user,
@@ -200,7 +225,7 @@ export function createRoute(): Route<Params> {
 						}
 						if (type === "login") {
 							// Check if the user exists
-							const user: User | null = await prisma.user.findUnique({
+							let user: User | null = await prisma.user.findUnique({
 								where: { email },
 							});
 
@@ -210,6 +235,19 @@ export function createRoute(): Route<Params> {
 									message: "No user found, please register.",
 									variant: "destructive",
 								};
+							}
+
+							if (joinWorkspaceToken && user) {
+								const { status } = await joinWorkspace(
+									joinWorkspaceToken,
+									user.id,
+								);
+								if (status === 200) {
+									const newUser = await prisma.user.findUnique({
+										where: { id: user.id },
+									});
+									if (newUser) user = newUser;
+								}
 							}
 
 							if (!user.verified) {
