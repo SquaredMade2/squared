@@ -34,6 +34,7 @@ export const createViewStore = (
 				priority: true,
 			},
 		},
+		lastVisitedPage: "all",
 		view: "list",
 	},
 ) => {
@@ -58,19 +59,22 @@ export const createViewStore = (
 					const currentGridView = get().gridViewOptions;
 					set({ gridViewOptions: { ...currentGridView, ...input } });
 				},
+				setLastVisitedPage: (input) => {
+					set({ lastVisitedPage: input });
+				},
 			}),
 			{
 				name: "view-store",
 				storage: {
 					getItem: (name) => {
-						const storedValue = sessionStorage.getItem(name);
+						const storedValue = localStorage.getItem(name);
 						return storedValue ? JSON.parse(storedValue) : null;
 					},
 					setItem: (name, value) => {
-						sessionStorage.setItem(name, JSON.stringify(value));
+						localStorage.setItem(name, JSON.stringify(value));
 					},
 					removeItem: (name) => {
-						sessionStorage.removeItem(name);
+						localStorage.removeItem(name);
 					},
 				},
 			},
