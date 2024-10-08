@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useTaskStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import type { Task, Workspace } from "@repo/db";
 import { parseParams } from "@/utils/parseParams";
 
@@ -13,6 +13,7 @@ export function useTaskPageData() {
 
 	const { getTaskByIdentifier } = useTaskStore((state) => state);
 	const { getWorkspace } = useWorkspaceStore((state) => state);
+	const { getAllUsers } = useUserStore((state) => state);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -27,6 +28,7 @@ export function useTaskPageData() {
 					throw new Error(message || "Workspace not found");
 				}
 				setWorkspace(workspace);
+				await getAllUsers(workspace.id);
 
 				// Fetch task data
 				const { task, message: taskMessage } = await getTaskByIdentifier(
