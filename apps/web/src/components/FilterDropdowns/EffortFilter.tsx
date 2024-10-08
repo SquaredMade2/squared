@@ -2,21 +2,17 @@
 
 import { useState, useEffect } from "react";
 import {
-	DropdownMenu,
-	DropdownMenuTrigger,
-	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { low, medium, high } from "@/components/Svg";
 import { useFilterStore } from "@/store/filters";
 import { Check } from "lucide-react";
+import type { FilterOption } from "./interfaces";
 
-interface FilterDropDownProps {
-	showFilterDropDown: boolean;
-	setShowFilterDropDown: (show: boolean) => void;
-}
-
-const groupEffort = [
+const effortOptions = [
 	{ id: 0, name: 1, svg: low(), group: "effortEstimate" },
 	{ id: 1, name: 2, svg: low(), group: "effortEstimate" },
 	{ id: 2, name: 3, svg: low(), group: "effortEstimate" },
@@ -30,9 +26,8 @@ const groupEffort = [
 ];
 
 export default function EffortFilterDropDown({
-	showFilterDropDown,
-	setShowFilterDropDown,
-}: FilterDropDownProps) {
+	filterOption,
+}: { filterOption: FilterOption }) {
 	const [selectedEffort, setSelectedEffort] = useState<number | null>(null);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
@@ -65,13 +60,15 @@ export default function EffortFilterDropDown({
 	};
 
 	return (
-		<DropdownMenu
-			open={showFilterDropDown}
-			onOpenChange={setShowFilterDropDown}
-		>
-			<DropdownMenuTrigger />
-			<DropdownMenuContent className="w-60 mt-5">
-				{groupEffort.map((item) => (
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-[17.5rem]">
+				{effortOptions.map((item) => (
 					<DropdownMenuItem
 						key={item.id}
 						onSelect={(e) => {
@@ -90,7 +87,7 @@ export default function EffortFilterDropDown({
 						</div>
 					</DropdownMenuItem>
 				))}
-			</DropdownMenuContent>
-		</DropdownMenu>
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 }

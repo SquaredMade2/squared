@@ -18,12 +18,13 @@ import DateSubContextMenu from "./DateSubContextMenu";
 // import RenameSubContextMenu from "./RenameSubContextMenu";
 import { replaceSpacesWithDashes } from "@/utils/formatting";
 import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useTaskStore } from "@/store";
+import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { deleteTask } = useTaskStore((state) => state);
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
@@ -89,7 +90,10 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 			</ContextMenuItem>
 
 			<ContextMenuItem>
-				<Link href={`/tasks/${task.id}`} target="_blank">
+				<Link
+					href={`${currentWorkspace?.url}/tasks/${task.id}`}
+					target="_blank"
+				>
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>

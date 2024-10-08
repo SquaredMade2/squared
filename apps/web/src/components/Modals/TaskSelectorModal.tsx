@@ -9,7 +9,7 @@ import {
 	CommandItem,
 	CommandList,
 } from "../ui/command";
-import { useTaskStore, useModalStore, useTeamStore } from "@/store";
+import { useTaskStore, useModalStore, useWorkspaceStore } from "@/store";
 import { ScrollArea } from "../ui/scroll-area";
 import { StatusIcon } from "../Icons";
 import { formatUrl } from "@/utils/formatting";
@@ -20,7 +20,7 @@ export function TaskSelector() {
 	const { showTaskSelector: open, setShowTaskSelector: setOpen } =
 		useModalStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -38,7 +38,7 @@ export function TaskSelector() {
 											onSelect={() => {
 												setCurrentTask(task);
 												router.push(
-													`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`,
+													`/${currentWorkspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
 												);
 												setOpen(false);
 											}}
