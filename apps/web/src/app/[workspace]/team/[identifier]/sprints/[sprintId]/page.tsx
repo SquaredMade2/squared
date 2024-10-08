@@ -34,8 +34,9 @@ import {
 } from "@/components/Sprints";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import type { Sprint, Task } from "@repo/db";
+import type { Sprint, Status, Task } from "@repo/db";
 import { useSprints } from "@/hooks/useSprints";
+import { formatStatus } from "@/utils/formatting";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -107,7 +108,7 @@ export default function SprintDashboardPage() {
 		);
 
 		return Object.entries(statusCounts).map(([status, count]) => ({
-			name: status,
+			name: formatStatus(status as Status),
 			value: count,
 		}));
 	};
@@ -255,8 +256,11 @@ export default function SprintDashboardPage() {
 							<h3 className="text-lg font-semibold">In Progress</h3>
 							<p className="text-3xl font-bold">
 								{
-									sprintTasks.filter((task) => task.status === "inProgress")
-										.length
+									sprintTasks.filter(
+										(task) =>
+											task.status === "inProgress" ||
+											task.status === "inReview",
+									).length
 								}
 							</p>
 						</div>
@@ -300,7 +304,10 @@ export default function SprintDashboardPage() {
 				</TabsContent>
 				<TabsContent value="inProgress">
 					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "inProgress")}
+						tasks={sprintTasks.filter(
+							(task) =>
+								task.status === "inProgress" || task.status === "inReview",
+						)}
 					/>
 				</TabsContent>
 				<TabsContent value="done">
@@ -324,7 +331,9 @@ function TaskList({ tasks }: { tasks: Task[] }) {
 				<Card key={task.id}>
 					<CardHeader>
 						<CardTitle>{task.title}</CardTitle>
-						<CardDescription>Status: {task.status}</CardDescription>
+						<CardDescription>
+							Status: {formatStatus(task.status)}
+						</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<p>{task.description}</p>
