@@ -1,24 +1,41 @@
 export const passwordResetTemplate = (verificationUrl: string) => {
 	return `
-    <div style='background:#0C0C0C; margin: 0 auto; padding: 20px 50px;'>
-    <div style='padding: 15px 30px; width: 800px; margin: 0 auto;'>
-    <div style='display: flex; align-items: center; '>
-    <div style='display: flex; align-items: center;  margin: 0 auto;'>
-      <img src="cid:sqLogo" alt='squared-logo' style='width: 32px; height: 32px; margin-right: 10px;' /> 
-      <span style='font-size: 20px; font-weight: bold;color: #D8D8D8;'>SQUARED</span>
-      </div>
-      </div>
-        <p style='color: #D8D8D8; font-size: 48px; text-align:center; font-weight: bold;line-height: 46px; '>Password Reset</p>
-        <p style='color: #D8D8D8; text-align:center;'>If you've lost your password and would like to reset it, please click on the link below</p>
-        <div style='display: flex; justify-content: center; align-items: center;'>
-          <a style="min-width:150px;background:#174EFF;border-radius:8px;padding:15px 21px;text-align:center;align-self: center;font-weight: bold; margin:40px auto;font-size:18px;font-weight:700;color:#D8D8D8;display:inline-block;text-decoration:none;line-height:120%;" href='${verificationUrl}'>Reset Your Password</a>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&display=swap');
+        body { font-family: 'Chivo', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background-color: #174EFF; padding: 20px; text-align: center; }
+        .content { padding: 30px; color: #333333; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .footer { background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="cid:sqLogo" alt="SQUARED" style="width: 32px; height: 32px; vertical-align: middle;" />
+          <span style="color: #ffffff; font-size: 24px; font-weight: bold; vertical-align: middle; margin-left: 10px;">SQUARED</span>
         </div>
-        <div style='text-align: center;'>
-          <p style='color: #D8D8D8; font-size: 12px;'>This link expires in 15 minutes, If you did not request to reset your password, you can ignore this email. </p>
-          </div>
-           </div>
+        <div class="content">
+          <h1 style="color: #174EFF; font-size: 28px; margin-bottom: 20px;">Password Reset</h1>
+          <p>You've requested to reset your password. Click the button below to set a new password:</p>
+          <p style="text-align: center; margin-top: 30px;">
+            <a href="${verificationUrl}" class="button">Reset Your Password</a>
+          </p>
+          <p style="margin-top: 30px; font-size: 14px;">This link will expire in 15 minutes. If you didn't request a password reset, please ignore this email.</p>
+        </div>
+        <div class="footer">
+          <p>&copy; 2024 SQUARED. All rights reserved.</p>
+        </div>
       </div>
-    `;
+    </body>
+    </html>
+  `;
 };
 
 export const joinWorkspaceTemplate = (
@@ -29,48 +46,82 @@ export const joinWorkspaceTemplate = (
 	const uppercaseUsername = username[0].toUpperCase() + username.slice(1);
 
 	return `
-<div style='background:#0C0C0C; margin: 0 auto; padding: 20px 50px;'>
-<div style='padding: 15px 30px; width: 800px; margin: 0 auto;'>
-<div style='display: flex; align-items: center; '>
-<div style='display: flex; align-items: center;  margin: 0 auto;'>
-  <img src="cid:sqLogo" alt='squared-logo' style='width: 32px; height: 32px; margin-right: 10px;' /> 
-  <span style='font-size: 20px; font-weight: bold;color: #D8D8D8;'>SQUARED</span>
-  </div>
-  </div>
-    <p style='color: #D8D8D8; font-size: 48px; text-align:center; font-weight: bold;line-height: 46px; '>Welcome Aboard, ${uppercaseUsername}!</p>
-    <p style='color: #D8D8D8; text-align:center;'>You've been exclusively invited to join ${workspaceName}! This is a unique opportunity to collaborate, share ideas, and grow with a community of like-minded individuals. Click below to confirm your participation and start exploring your new workspace.</p>
-    <div style='display: flex; justify-content: center; align-items: center;'>
-      <a style="min-width:150px;background:#174EFF;border-radius:8px;padding:15px 21px;text-align:center;align-self: center;font-weight: bold; margin:40px auto;font-size:18px;font-weight:700;color:#D8D8D8;display:inline-block;text-decoration:none;line-height:120%;" href='${verificationUrl}'>Join ${workspaceName}</a>
-    </div>
-    <div style='text-align: center;'>
-    <img src='cid:sqBg' alt='squared-background' />
-      <p style='color: #D8D8D8; font-size: 12px;'>By joining ${workspaceName}, you're stepping into a world of innovation and collaboration. Don't miss out on this chance to connect and create with your peers. <a  style='text-decoration: none;' href='https://squaredmade.com'>Learn More</a>.</p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&display=swap');
+        body { font-family: 'Chivo', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background-color: #174EFF; padding: 20px; text-align: center; }
+        .content { padding: 30px; color: #333333; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .footer { background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="cid:sqLogo" alt="SQUARED" style="width: 32px; height: 32px; vertical-align: middle;" />
+          <span style="color: #ffffff; font-size: 24px; font-weight: bold; vertical-align: middle; margin-left: 10px;">SQUARED</span>
+        </div>
+        <div class="content">
+          <h1 style="color: #174EFF; font-size: 28px; margin-bottom: 20px;">Welcome Aboard, ${uppercaseUsername}!</h1>
+          <p>You've been exclusively invited to join ${workspaceName}! This is a unique opportunity to collaborate, share ideas, and grow with a community of like-minded individuals.</p>
+          <p style="text-align: center; margin-top: 30px;">
+            <a href="${verificationUrl}" class="button">Join ${workspaceName}</a>
+          </p>
+          <p style="margin-top: 30px; font-size: 14px;">By joining ${workspaceName}, you're stepping into a world of innovation and collaboration. Don't miss out on this chance to connect and create with your peers.</p>
+        </div>
+        <div class="footer">
+          <img src="cid:sqBg" alt="SQUARED Background" style="max-width: 100%; height: auto; margin-bottom: 20px;" />
+          <p>&copy; 2024 SQUARED. All rights reserved. | <a href="https://squaredmade.com" style="color: #174EFF; text-decoration: none;">Learn More</a></p>
+        </div>
       </div>
-       </div>
-  </div>
+    </body>
+    </html>
   `;
 };
 
 export const emailTemplate = (_: string, verificationUrl: string) => {
 	return `
-<div style='background:#0C0C0C; margin: 0 auto; padding: 20px 50px;'>
-<div style='padding: 15px 30px; width: 800px; margin: 0 auto;'>
-<div style='display: flex; align-items: center; '>
-<div style='display: flex; align-items: center;  margin: 0 auto;'>
-  <img src="cid:sqLogo" alt='squared-logo' style='width: 32px; height: 32px; margin-right: 10px;' /> 
-  <span style='font-size: 20px; font-weight: bold;color: #D8D8D8;'>SQUARED</span>
-  </div>
-  </div>
-    <p style='color: #D8D8D8; font-size: 48px; text-align:center; font-weight: bold;line-height: 46px; '>Elevate Your Product Development with Squared! Confirm Your Email Address</p>
-    <p style='color: #D8D8D8; text-align:center;'>Thank you for signing up for Squared! To complete the registration process and unlock all the features, please confirm your email address by clicking the button below.</p>
-    <div style='display: flex; justify-content: center; align-items: center;'>
-      <a style="min-width:150px;background:#174EFF;border-radius:8px;padding:15px 21px;text-align:center;align-self: center;font-weight: bold; margin:40px auto;font-size:18px;font-weight:700;color:#D8D8D8;display:inline-block;text-decoration:none;line-height:120%;" href='${verificationUrl}'>Confirm Email</a>
-    </div>
-    <div style='text-align: center;'>
-    <img src='cid:sqBg' alt='squared-background' />
-      <p style='color: #D8D8D8; font-size: 12px;'>Please do not reply to this email. If you have any questions or need assistance, please contact us via our <a  style='text-decoration: none;' href='https://www.squaredmade.com/contact/'>support page</a>.</p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&display=swap');
+        body { font-family: 'Chivo', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background-color: #174EFF; padding: 20px; text-align: center; }
+        .content { padding: 30px; color: #333333; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .footer { background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="cid:sqLogo" alt="SQUARED" style="width: 32px; height: 32px; vertical-align: middle;" />
+          <span style="color: #ffffff; font-size: 24px; font-weight: bold; vertical-align: middle; margin-left: 10px;">SQUARED</span>
+        </div>
+        <div class="content">
+          <h1 style="color: #174EFF; font-size: 28px; margin-bottom: 20px;">Elevate Your Product Development with Squared!</h1>
+          <p>Thank you for signing up for Squared! To complete the registration process and unlock all the features, please confirm your email address by clicking the button below.</p>
+          <p style="text-align: center; margin-top: 30px;">
+            <a href="${verificationUrl}" class="button">Confirm Email</a>
+          </p>
+          <p style="margin-top: 30px; font-size: 14px;">If you have any questions or need assistance, please contact us via our <a href="https://www.squaredmade.com/contact/" style="color: #174EFF; text-decoration: none;">support page</a>.</p>
+        </div>
+        <div class="footer">
+          <img src="cid:sqBg" alt="SQUARED Background" style="max-width: 100%; height: auto; margin-bottom: 20px;" />
+          <p>&copy; 2024 SQUARED. All rights reserved.</p>
+        </div>
       </div>
-       </div>
-  </div>
+    </body>
+    </html>
   `;
 };
