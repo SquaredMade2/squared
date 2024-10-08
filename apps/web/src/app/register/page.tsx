@@ -43,19 +43,18 @@ function RegisterForm() {
 				provider: "credentials",
 				token: inviteToken,
 			});
+			console.log("Registration response:", response);
 
 			toast({
 				title: response.message,
 				variant: response.variant,
 			});
-			if (response.user && inviteToken) {
+			if (response.user?.verified && inviteToken) {
 				await signIn("credentials", {
 					redirect: false,
 					email: data.email,
 					password: data.password,
 				});
-			} else {
-				throw new Error(response.message || "Registration failed");
 			}
 		} catch (error) {
 			console.error("Registration error:", error);
