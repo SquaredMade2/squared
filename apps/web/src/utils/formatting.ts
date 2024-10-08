@@ -77,6 +77,8 @@ export const formatPriority = (priority: Priority) => {
 	}
 };
 
-// Beginning checks that no whitespace or certain characters are in the string and that non-English/Unicode characters. Next checks for 1 uppercase letter, 1 digit, i special character anywhere in the string
+// Beginning checks that no whitespace or certain characters are in the string and that there are no non-English/Unicode characters. Next checks for 1 uppercase letter, 1 digit, i special character anywhere in the string
 export const passwordRegex =
-	"(?!.*[\\s'\\\"<>{}|/?~`_-+=,.])(?!.*[^\\x00-\\x7F])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()])";
+	"(?!.*[\\s`~_+:;'\",?.<>[]\\{\\}\\\\=\\|\\-])(?!.*[^\\x20-\\x7F])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*\\(\\)])";
+
+//
