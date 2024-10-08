@@ -46,8 +46,8 @@ export function TaskSelector() {
 								className="grid grid-cols-[auto_1fr_11fr] gap-x-4 p-2"
 							>
 								<StatusIcon status={task.status} />
-								<span>{task.identifier}</span>
-								<span className="">{task.title}</span>
+								<span className="text-nowrap">{task.identifier}</span>
+								<span>{task.title}</span>
 							</CommandItem>
 						))}
 					</CommandGroup>
