@@ -67,7 +67,7 @@ export default function EffortFilterDropDown({
 					<span>{filterOption.name}</span>
 				</div>
 			</DropdownMenuSubTrigger>
-			<DropdownMenuSubContent className="w-70">
+			<DropdownMenuSubContent className="w-[17.5rem]">
 				{effortOptions.map((item) => (
 					<DropdownMenuItem
 						key={item.id}

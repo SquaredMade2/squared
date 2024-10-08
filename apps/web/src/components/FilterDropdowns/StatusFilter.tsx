@@ -105,7 +105,7 @@ const StatusFilterDropDown = ({
 					<span>{filterOption.name}</span>
 				</div>
 			</DropdownMenuSubTrigger>
-			<DropdownMenuSubContent className="w-70">
+			<DropdownMenuSubContent className="w-[17.5rem]">
 				{groupStatus.map((item) => (
 					<DropdownMenuCheckboxItem
 						key={item.id}

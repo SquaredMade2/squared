@@ -73,7 +73,7 @@ export default function LabelFilterDropDown({
 					<span>{filterOption.name}</span>
 				</div>
 			</DropdownMenuSubTrigger>
-			<DropdownMenuSubContent className="w-70">
+			<DropdownMenuSubContent className="w-[17.5rem]">
 				<Command>
 					<CommandInput
 						placeholder="Search labels..."
