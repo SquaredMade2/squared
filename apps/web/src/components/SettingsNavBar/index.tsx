@@ -11,7 +11,6 @@ import {
 	Moon,
 	ArrowLeft,
 } from "lucide-react";
-import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 import { useTeamStore, useViewStore } from "@/store";
 import type { Team } from "@repo/db";
@@ -171,10 +170,7 @@ const SidebarContent = ({
 	);
 };
 
-const SettingsNavBar = ({
-	setLoading,
-	toggleNavbar,
-}: SettingsNavbarProps): React.ReactElement => {
+const SettingsNavBar = (): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
@@ -182,14 +178,10 @@ const SettingsNavBar = ({
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
-		toggleNavbar?.();
 		setShowNavbar(false);
 	};
 
 	const handleTeamClick = (team: Team, path?: string) => {
-		if (setLoading) {
-			setLoading(true);
-		}
 		setCurrentTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
