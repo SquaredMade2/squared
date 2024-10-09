@@ -52,8 +52,6 @@ const TextEditor = () => {
 
 	const addCommentToTask = () => {
 		if (currentUser && currentTask) {
-			console.log(editorContent);
-
 			const newComment = {
 				comment: JSON.stringify(editorContent),
 				authorId: currentUser?.id,
