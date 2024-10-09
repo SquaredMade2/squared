@@ -22,8 +22,13 @@ describe("sample test with jest", () => {
  */
 describe("sample test with jest using supertest to make a request", () => {
 	it("should return a 404 error when requesting an unimplemented endpoint", async () => {
-		const res = await request(host).get("/some/unimplemented/endpoint");
-		expect(res.statusCode).toBe(404);
+		try {
+			const res = await request(host).get("/some/unimplemented/endpoint");
+			expect(res.statusCode).toBe(404);
+		} catch (e) {
+			console.dir(e, { depth: null });
+			throw new Error("test failed");
+		}
 	});
 });
 
@@ -57,8 +62,13 @@ describe("sample test with prisma", () => {
 
 describe("sample api endpoint test", () => {
 	it("should retrieve the seeded task", async () => {
-		const res = await request(host).get(`/api/task/${seededTestTaskId}`);
-		expect(res.body.data.id).toBe(seededTestTaskId);
+		try {
+			const res = await request(host).get(`/api/task/${seededTestTaskId}`);
+			expect(res.body.data.id).toBe(seededTestTaskId);
+		} catch (e) {
+			console.dir(e, { depth: null });
+			throw new Error("test failed");
+		}
 	});
 });
 
@@ -118,9 +128,9 @@ beforeAll(async () => {
 		});
 	}
 
-	console.log("prisma client exists: ", !!prisma);
 	try {
 		await seedTestingDb(prisma);
+		console.log("seeding successful");
 	} catch (e) {
 		console.dir(e);
 	}
