@@ -21,7 +21,7 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "pnpm docker:api && pnpm test:db:push && docker exec --workdir /app/apps/api api-test-1 pnpm jest --ci && pnpm test:db:reset",
+		"test": "pnpm docker:api && pnpm test:db:push && docker exec --workdir /app/apps/api api-test-1 pnpm jest --logHeapUsage --runInBand && pnpm test:db:reset",
 		"test:db:push": "docker exec --workdir /app api-test-1 pnpm db:push",
 		"test:db:reset": "docker exec --workdir /app/packages/db api-test-1 npx prisma migrate reset --force"
 	},
