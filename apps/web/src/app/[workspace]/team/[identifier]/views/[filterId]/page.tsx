@@ -14,7 +14,7 @@ import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 export default function FilterViewPage() {
 	const params = useParams();
 	const { savedFilters, customFilter } = useFilterStore((state) => state);
-	const { view, gridViewOptions } = useViewStore((state) => state);
+	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const [filter, setFilter] = useState<SavedFilter | null>(null);
 
@@ -81,7 +81,7 @@ export default function FilterViewPage() {
 					getTasksForStatus={getTasksForStatus}
 				/>
 				{view === "grid" &&
-					!gridViewOptions.showEmptyGroups &&
+					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (
 						<div className="ml-auto">
 							<HiddenColumns

@@ -1,4 +1,5 @@
 import { Status, Priority } from "@repo/db";
+import * as z from "zod";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -111,3 +112,24 @@ export const formatPriority = (priority: Priority) => {
 // }
 // return links;
 // };
+export const passwordSchema = z
+	.string()
+	.min(8, "Password must be at least 8 characters")
+	.max(30, "Password must not exceed 30 characters")
+	.refine((value) => !/\s/.test(value), "Password must not contain spaces")
+	.refine(
+		(value) => /[a-z]/.test(value),
+		"Password must contain at least on lowercase letter",
+	)
+	.refine(
+		(value) => /[A-Z]/.test(value),
+		"Password must contain at least one capital letter",
+	)
+	.refine(
+		(value) => /[0-9]/.test(value),
+		"Password must contain at least one number",
+	)
+	.refine(
+		(value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value),
+		"Password must contain at least one special character",
+	);

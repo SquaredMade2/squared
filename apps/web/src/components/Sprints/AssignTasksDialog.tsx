@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -19,8 +21,11 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Priority, Sprint, Status, Task } from "@repo/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
+import { Search } from "lucide-react";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;
@@ -42,6 +47,10 @@ export function AssignTasksDialog({
 	setTargetSprint,
 }: AssignTasksDialogProps) {
 	const [isOpen, setIsOpen] = useState(false);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+	const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
+	const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
 
 	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks(
@@ -67,6 +76,7 @@ export function AssignTasksDialog({
 				return 0;
 		}
 	};
+
 	const mapStatus = (status: Status) => {
 		switch (status) {
 			case "backlog":
@@ -82,22 +92,29 @@ export function AssignTasksDialog({
 		}
 	};
 
-	const sortedTasks = unassignedTasks.sort((a, b) => {
-		const priorityDiff = mapPriority(b.priority) - mapPriority(a.priority);
-		if (priorityDiff !== 0) return priorityDiff;
-		const statusDiff = mapStatus(b.status) - mapStatus(a.status);
-		if (statusDiff !== 0) return statusDiff;
-		return a.dueDate && b.dueDate
-			? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-			: 0;
-	});
+	const filteredTasks = useMemo(() => {
+		return unassignedTasks
+			.filter((t) => !["done", "canceled", "archived"].includes(t.status))
+			.filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()))
+			.filter((t) => filterPriority === "all" || t.priority === filterPriority)
+			.filter((t) => filterStatus === "all" || t.status === filterStatus)
+			.sort((a, b) => {
+				const priorityDiff = mapPriority(b.priority) - mapPriority(a.priority);
+				if (priorityDiff !== 0) return priorityDiff;
+				const statusDiff = mapStatus(b.status) - mapStatus(a.status);
+				if (statusDiff !== 0) return statusDiff;
+				return a.dueDate && b.dueDate
+					? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+					: 0;
+			});
+	}, [unassignedTasks, searchQuery, filterPriority, filterStatus]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
 				<Button>Assign Tasks</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[600px]">
+			<DialogContent className="sm:max-w-[700px]">
 				<DialogHeader>
 					<DialogTitle>Assign Tasks to Sprint</DialogTitle>
 					<DialogDescription>
@@ -105,7 +122,7 @@ export function AssignTasksDialog({
 					</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
+					<div className="flex items-center gap-4 justify-end">
 						<Label htmlFor="sprint" className="text-right">
 							Sprint
 						</Label>
@@ -113,10 +130,10 @@ export function AssignTasksDialog({
 							onValueChange={setTargetSprint}
 							defaultValue={activeSprint?.id}
 						>
-							<SelectTrigger className="col-span-3">
+							<SelectTrigger className="w-72">
 								<SelectValue placeholder="Select a sprint" />
 							</SelectTrigger>
-							<SelectContent>
+							<SelectContent className="w-72">
 								{[activeSprint, ...upcomingSprints].map(
 									(sprint) =>
 										sprint && (
@@ -128,40 +145,126 @@ export function AssignTasksDialog({
 							</SelectContent>
 						</Select>
 					</div>
-					<ScrollArea className="h-[400px] w-full rounded-md border">
-						{sortedTasks.map((task) => (
-							<div
-								key={task.id}
-								className="group flex items-center w-full py-2 px-4 border-b border-border hover:bg-accent"
-							>
-								<Checkbox
-									id={task.id}
-									checked={selectedTasks.includes(task)}
-									onCheckedChange={() => handleTaskSelection(task)}
-									className="mr-2"
-								/>
-								<div className="flex-grow min-w-0">
-									<div className="flex items-center gap-2">
-										<PriorityIcon priority={task.priority} />
-										<StatusIcon status={task.status} />
-										<span className="truncate text-sm font-medium">
-											{task.title}
-										</span>
+					<div className="flex items-center space-x-2">
+						<Search className="size-4 text-muted-foreground" />
+						<Input
+							placeholder="Search tasks..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="flex-grow"
+						/>
+						<Select
+							value={filterPriority}
+							onValueChange={(value) => setFilterPriority(value as Priority)}
+						>
+							<SelectTrigger className="w-[250px]">
+								<SelectValue placeholder="Priority" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="all">All Priorities</SelectItem>
+								<SelectItem value="noPriority">No Priority</SelectItem>
+								<SelectItem value="low">Low</SelectItem>
+								<SelectItem value="medium">Medium</SelectItem>
+								<SelectItem value="high">High</SelectItem>
+								<SelectItem value="urgent">Urgent</SelectItem>
+							</SelectContent>
+						</Select>
+						<Select
+							value={filterStatus}
+							onValueChange={(value) => setFilterStatus(value as Status)}
+						>
+							<SelectTrigger className="w-[250px]">
+								<SelectValue placeholder="Status" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="all">All Statuses</SelectItem>
+								<SelectItem value="backlog">Backlog</SelectItem>
+								<SelectItem value="inProgress">In Progress</SelectItem>
+								<SelectItem value="inReview">In Review</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+					<Tabs
+						value={viewMode}
+						onValueChange={(value) => setViewMode(value as "list" | "grid")}
+					>
+						<TabsList className="grid w-full grid-cols-2">
+							<TabsTrigger value="list">List View</TabsTrigger>
+							<TabsTrigger value="grid">Grid View</TabsTrigger>
+						</TabsList>
+						<TabsContent value="list">
+							<ScrollArea className="h-[400px] w-full rounded-md border">
+								{filteredTasks.map((task) => (
+									<div
+										key={task.id}
+										className="group flex items-center w-full py-2 px-4 border-b border-border hover:bg-accent"
+									>
+										<Checkbox
+											id={task.id}
+											checked={selectedTasks.includes(task)}
+											onCheckedChange={() => handleTaskSelection(task)}
+											className="mr-2"
+										/>
+										<div className="flex-grow min-w-0">
+											<div className="flex items-center gap-2">
+												<PriorityIcon priority={task.priority} />
+												<StatusIcon status={task.status} />
+												<span className="truncate text-sm font-medium">
+													{task.title}
+												</span>
+											</div>
+										</div>
+										<div className="flex items-center gap-2 ml-2">
+											{task.dueDate && (
+												<span className="text-xs text-muted-foreground whitespace-nowrap">
+													{new Date(task.dueDate).toLocaleDateString("en-US", {
+														month: "short",
+														day: "numeric",
+													})}
+												</span>
+											)}
+										</div>
 									</div>
+								))}
+							</ScrollArea>
+						</TabsContent>
+						<TabsContent value="grid">
+							<ScrollArea className="h-[400px] w-full rounded-md border">
+								<div className="grid grid-cols-2 gap-4 p-4">
+									{filteredTasks.map((task) => (
+										<div
+											key={task.id}
+											className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
+										>
+											<div className="flex items-center justify-between mb-2">
+												<Checkbox
+													id={task.id}
+													checked={selectedTasks.includes(task)}
+													onCheckedChange={() => handleTaskSelection(task)}
+												/>
+												<div className="flex items-center gap-2">
+													<PriorityIcon priority={task.priority} />
+													<StatusIcon status={task.status} />
+												</div>
+											</div>
+											<span className="text-sm font-medium mb-2">
+												{task.title}
+											</span>
+											{task.dueDate && (
+												<span className="text-xs text-muted-foreground">
+													Due:{" "}
+													{new Date(task.dueDate).toLocaleDateString("en-US", {
+														month: "short",
+														day: "numeric",
+													})}
+												</span>
+											)}
+										</div>
+									))}
 								</div>
-								<div className="flex items-center gap-2 ml-2">
-									{task.dueDate && (
-										<span className="text-xs text-muted-foreground whitespace-nowrap">
-											{new Date(task.dueDate).toLocaleDateString("en-US", {
-												month: "short",
-												day: "numeric",
-											})}
-										</span>
-									)}
-								</div>
-							</div>
-						))}
-					</ScrollArea>
+							</ScrollArea>
+						</TabsContent>
+					</Tabs>
 				</div>
 				<DialogFooter>
 					<Button onClick={handleBulkAssign}>
