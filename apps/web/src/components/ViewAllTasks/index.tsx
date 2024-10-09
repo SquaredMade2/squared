@@ -1,5 +1,4 @@
 "use client";
-
 import GroupColumn from "./GroupColumn";
 import { RenameModal } from "@/components/Modals";
 import { Status, type Task } from "@repo/db";
@@ -45,7 +44,10 @@ const ViewAllTasks = ({
 		}
 	};
 
-	const filteredColumns = () => {
+	// Compute columns before the return statement
+	const columns = filteredColumns();
+
+	function filteredColumns() {
 		const filteredStatuses = getFilteredStatuses();
 
 		return filteredStatuses
@@ -78,13 +80,13 @@ const ViewAllTasks = ({
 					</div>
 				);
 			});
-	};
+	}
 
 	return (
 		<>
 			<RenameModal />
 			<div className={view === "list" ? "block min-w-full" : "flex"}>
-				{filteredColumns()}
+				{columns}
 			</div>
 		</>
 	);
