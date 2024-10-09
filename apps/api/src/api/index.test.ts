@@ -118,5 +118,10 @@ beforeAll(async () => {
 		});
 	}
 
-	await seedTestingDb(prisma);
+	console.log("prisma client exists: ", !!prisma);
+	try {
+		await seedTestingDb(prisma);
+	} catch (e) {
+		console.dir(e);
+	}
 });
