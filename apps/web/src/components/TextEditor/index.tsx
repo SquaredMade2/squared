@@ -52,6 +52,8 @@ const TextEditor = () => {
 
 	const addCommentToTask = () => {
 		if (currentUser && currentTask) {
+			console.log(editorContent);
+
 			const newComment = {
 				comment: JSON.stringify(editorContent),
 				authorId: currentUser?.id,
@@ -299,8 +301,7 @@ const TextEditor = () => {
 				/>
 			</div>
 			<Button onClick={addCommentToTask} className="ml-auto m-5">
-				{" "}
-				Comment{" "}
+				Comment
 			</Button>
 		</Slate>
 	);
@@ -309,3 +310,4 @@ const TextEditor = () => {
 export default TextEditor;
 
 export { CodeElement, Leaf, TextEditorToolBar, HeaderElement };
+export * from "./interfaces";
