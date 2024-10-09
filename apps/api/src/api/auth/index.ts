@@ -188,20 +188,14 @@ export function createRoute(): Route<Params> {
 								},
 							});
 							if (joinWorkspaceToken && user) {
-								console.log(
-									"Joining workspace with token:",
-									joinWorkspaceToken,
-								);
 								const { status, data, ...response } = await joinWorkspace(
 									joinWorkspaceToken,
 									user.id,
 								);
-								console.log("Join workspace response:", response);
 								if (status === 200) {
 									const newUser = await prisma.user.findUnique({
 										where: { id: user.id },
 									});
-									console.log("New user:", newUser);
 									return { ...response, data: newUser };
 								}
 								return { ...response, data: user };
