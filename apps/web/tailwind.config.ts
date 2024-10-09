@@ -100,7 +100,10 @@ const config = {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+    require("tailwindcss-animate"),
+    require("@squared/fonts/tailwind-plugin")
+  ],
 } satisfies Config;
 
 export default config;
