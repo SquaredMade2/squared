@@ -190,9 +190,9 @@ const TopNavBarDisplay = () => {
 											}
 										>
 											{taskOrder.orderAscending ? (
-												<ArrowDownWideNarrow className="size-4" />
-											) : (
 												<ArrowUpWideNarrow className="size-4" />
+											) : (
+												<ArrowDownWideNarrow className="size-4" />
 											)}
 										</Button>
 									</TooltipTrigger>

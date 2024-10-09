@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-	DropdownMenu,
-	DropdownMenuTrigger,
-	DropdownMenuContent,
 	DropdownMenuCheckboxItem,
-	DropdownMenuSeparator,
-	DropdownMenuLabel,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
-import type { FilterDropDownProps } from "./interfaces";
 import { Status } from "@repo/db";
 import { StatusIcon } from "../Icons";
+import type { FilterOption } from "./interfaces";
 
 const groupStatus = [
 	{
@@ -64,9 +62,8 @@ const groupStatus = [
 ];
 
 const StatusFilterDropDown = ({
-	showFilterDropDown,
-	setShowFilterDropDown,
-}: FilterDropDownProps) => {
+	filterOption,
+}: { filterOption: FilterOption }) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
@@ -101,14 +98,14 @@ const StatusFilterDropDown = ({
 	}, [currentFilterTypes]);
 
 	return (
-		<DropdownMenu
-			open={showFilterDropDown}
-			onOpenChange={setShowFilterDropDown}
-		>
-			<DropdownMenuTrigger />
-			<DropdownMenuContent className="w-60 mt-5">
-				<DropdownMenuLabel>Status</DropdownMenuLabel>
-				<DropdownMenuSeparator />
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-[17.5rem]">
 				{groupStatus.map((item) => (
 					<DropdownMenuCheckboxItem
 						key={item.id}
@@ -126,8 +123,8 @@ const StatusFilterDropDown = ({
 						</div>
 					</DropdownMenuCheckboxItem>
 				))}
-			</DropdownMenuContent>
-		</DropdownMenu>
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 };
 

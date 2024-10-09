@@ -42,7 +42,7 @@ jobs:
         }
 
         # Fetch all open PRs and store them in an array
-        prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author)
+        prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author,updatedAt)
         echo "Raw PR data: $prs"
 
         # Process each PR individually using jq
@@ -52,12 +52,13 @@ jobs:
           pr_author=$(echo "$pr" | jq -r '.author.login')
           pr_url=$(echo "$pr" | jq -r '.url')
           pr_created_at=$(echo "$pr" | jq -r '.createdAt')
+          pr_updated_at=$(echo "$pr" | jq -r '.updatedAt')
           reviewers=$(echo "$pr" | jq -r '.reviewRequests[].login')
 
           # Calculate PR age and stale time
           current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           pr_age_days=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 86400 ))
-          pr_stale_hours=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_created_at" +%s) ) / 3600 ))
+          pr_stale_hours=$(( ( $(date -d "$current_time" +%s) - $(date -d "$pr_updated_at" +%s) ) / 3600 ))
 
           # Prepare mentions
           mentions=""

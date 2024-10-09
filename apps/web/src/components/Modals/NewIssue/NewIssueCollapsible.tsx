@@ -189,7 +189,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 												<Input
 													{...field}
 													placeholder="Title"
-													className="text-base"
+													className="text-md"
 												/>
 											</FormControl>
 										</FormItem>
@@ -205,7 +205,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-base resize-none"
+													className="text-md resize-none"
 													rows={4}
 												/>
 											</FormControl>

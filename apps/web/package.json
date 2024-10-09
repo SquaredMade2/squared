@@ -44,6 +44,7 @@
 		"react-mentions": "^4.4.10",
 		"slate": "^0.103.0",
 		"slate-react": "^0.110.1",
+		"recharts": "^2.12.7",
 		"tailwind-merge": "^2.5.2",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.5.4",
