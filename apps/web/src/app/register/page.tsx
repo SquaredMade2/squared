@@ -270,6 +270,7 @@ function RegisterForm() {
 													)}
 												</Button>
 											</div>
+											<FormMessage />
 										</FormItem>
 									)}
 								/>
