@@ -1,17 +1,27 @@
 "use client";
 import "./globals.css";
+import type { Metadata } from "next";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
-import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider } from "next-auth/react";
+import { SquaredStoreProvider } from "@/store";
 import {
 	WorkspaceInviteModal,
 	WorkspaceSwitcher,
 	TaskSelector,
 } from "@/components/Modals";
-import { SquaredStoreProvider } from "@/store";
-import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/toaster";
 import SearchCommand from "@/components/SearchCommand";
 import MobileMenuSheet from "@/components/MobileNav";
+
+// export const metadata: Metadata = {
+// 	title: {
+// 		default: "Squared",
+// 		template: "%s | Squared",
+// 	},
+// 	description: "description",
+
+// };
 
 export default function RootLayout({
 	children,
