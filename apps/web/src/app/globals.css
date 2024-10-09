@@ -1,11 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Inter:wght@200;400;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
 	body {
-		font-family: "Chivo", sans-serif;
+		font-family: "Noirden Sans", sans-serif;
 	}
 
 	:root {

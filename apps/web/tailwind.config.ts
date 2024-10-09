@@ -63,7 +63,7 @@ const config = {
 				redGlow: "0 0 10px 0 hsla(356, 79%, 46%, 1)",
 			},
 			fontFamily: {
-				chivo: ["Chivo"],
+				sans: ['var(--font-noirden-sans)'],
 			},
 			gridTemplateColumns: {
 				16: "repeat(16, minmax(0, 1fr))",

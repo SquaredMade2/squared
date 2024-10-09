@@ -77,10 +77,10 @@ function RegisterForm() {
 				// If registration is successful, sign in the user using NextAuth
 				try {
 					const result = await signIn("credentials", {
-					redirect: false,
-					email: values.email,
-					password: values.password,
-				});
+						redirect: false,
+						email: values.email,
+						password: values.password,
+					});
 
 					if (result?.error) {
 						throw new Error(result.error);
