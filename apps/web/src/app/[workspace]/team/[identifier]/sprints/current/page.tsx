@@ -11,7 +11,7 @@ import { Status } from "@repo/db";
 export default function MyAssignedTasksPage() {
 	const { currentSprint, loading: sprintLoading } = useSprints();
 	const { filterTasks } = useFilterStore((state) => state);
-	const { view, gridViewOptions } = useViewStore((state) => state);
+	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const {
 		loading,
@@ -61,7 +61,7 @@ export default function MyAssignedTasksPage() {
 					allowedColumns={allowedColumns}
 				/>
 				{view === "grid" &&
-					!gridViewOptions.showEmptyGroups &&
+					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (
 						<div className="ml-auto">
 							<HiddenColumns
