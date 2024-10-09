@@ -23,7 +23,7 @@ export default function FilterViewPage() {
 			typeof params.filterId === "string"
 				? params.filterId
 				: params.filterId[0];
-		const filterSlug = filterId.split("-")[1];
+		const filterSlug = filterId.split("-")[filterId.length - 1];
 		const foundFilter = savedFilters.find((f) =>
 			f.id.startsWith(filterSlug || ""),
 		);
