@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc && npm run build:css",
     "build:css": "mkdir -p dist && cp src/styles.css dist/styles.css && cp -R src/fonts dist/fonts",
-    "prepublishOnly": "npm run build"
+    "postinstall": "npm run build"
   },
   "keywords": [
     "font",
