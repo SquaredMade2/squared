@@ -23,6 +23,7 @@ export const createFilterStore = (
 		currentFilters: [],
 		currentFilterTypes: [],
 		savedFilters: [],
+		showSaveForm: false,
 	},
 ) => {
 	return createStore<FilterStore>()(
@@ -31,6 +32,9 @@ export const createFilterStore = (
 				...initState,
 				setCurrentFilter: (filter): void => {
 					set({ currentFilters: filter });
+				},
+				setShowSaveForm: (input): void => {
+					set({ showSaveForm: input });
 				},
 				clearFilter: (): void => {
 					set({ currentFilters: [], currentFilterTypes: [] });

@@ -29,6 +29,7 @@ export type FilterState = {
 	currentFilters: FilterCondition[];
 	currentFilterTypes: string[];
 	savedFilters: SavedFilter[];
+	showSaveForm: boolean;
 };
 
 export interface FilterResponse {
@@ -39,6 +40,7 @@ export interface FilterResponse {
 
 type FilterActions = {
 	setCurrentFilter: (filter: FilterCondition[]) => void;
+	setShowSaveForm: (input: boolean) => void;
 	addFilter: (filter: FilterCondition) => void;
 	clearFilter: () => void;
 	removeFilter: (field: string) => void;
