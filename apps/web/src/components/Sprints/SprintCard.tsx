@@ -6,10 +6,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../ui/card";
-import { Link, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 interface SprintCardProps {
 	sprint: Sprint;
