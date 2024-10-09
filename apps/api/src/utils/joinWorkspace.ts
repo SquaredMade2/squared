@@ -23,13 +23,28 @@ export const joinWorkspace = async (
 		workspaceId: string;
 	};
 
+	const existingUserWorkspace = await prisma.userWorkspace.findFirst({
+		where: {
+			userId,
+			workspaceId: decoded.workspaceId,
+		},
+	});
+
 	const workspace = await prisma.workspace.findUnique({
 		where: { id: decoded.workspaceId },
 		include: {
 			Labels: true,
-			Users: true,
 		},
 	});
+
+	if (existingUserWorkspace) {
+		return {
+			data: workspace,
+			message: "You're already a member of this workspace!",
+			variant: "default",
+			status: 200,
+		};
+	}
 
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
@@ -49,20 +64,6 @@ export const joinWorkspace = async (
 			message: "User not found.",
 			variant: "destructive",
 			status: 404,
-		};
-	}
-
-	// Check if user is already in the workspace
-	const userAlreadyInWorkspace = workspace.Users.some(
-		(workspaceUser) => workspaceUser.userId === userId,
-	);
-
-	if (userAlreadyInWorkspace) {
-		return {
-			data: workspace,
-			message: "You're already a member of this workspace!",
-			variant: "default",
-			status: 200,
 		};
 	}
 

@@ -83,7 +83,9 @@ export function createRoute(): Route<Params> {
 						subject: "Workspace Invitation",
 						html: joinWorkspaceTemplate({
 							username: existingUsers.find((u) => u.email === email)?.name,
-							path: newUser ? `register?=${token}` : `login?=${token}`,
+							path: newUser
+								? `register?token=${token}`
+								: `login?token=${token}`,
 							workspaceName: workspace.name,
 						}),
 					});

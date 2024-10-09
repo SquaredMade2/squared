@@ -78,9 +78,11 @@ function RegisterForm() {
 			if (user?.verified && inviteToken) {
 				await signIn("credentials", {
 					redirect: false,
-					email: user.email,
-					password: user.password,
+					email: values.email,
+					password: values.password,
 				});
+				router.refresh();
+				router.prefetch("/");
 			}
 		} catch (error) {
 			console.error("Registration error:", error);
