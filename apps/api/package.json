@@ -24,7 +24,7 @@
 		"test": "pnpm docker:api && pnpm test:db:wait && pnpm test:db:push && docker exec --workdir /app/apps/api api-test-1 pnpm jest --ci",
 		"test:db:push": "docker exec --workdir /app api-test-1 pnpm db:push",
 		"test:db:reset": "docker exec --workdir /app/packages/db api-test-1 npx prisma migrate reset --force",
-		"test:db:wait": "docker cp ./wait.sh postgres-api-test-db:/ && docker exec --workdir / postgres-api-test-db ./wait.sh"
+		"test:db:wait": "docker cp ./wait.sh postgres-api-test-db:/ && docker exec postgres-api-test-db chmod +x /./wait.sh && docker exec -i postgres-api-test-db /bin/sh /./wait.sh"
 	},
 	"keywords": [],
 	"author": "",
