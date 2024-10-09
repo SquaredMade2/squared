@@ -174,11 +174,12 @@ const SettingsNavBar = (): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
-	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
+	const { showMobileNavbar, setShowMobileNavbar } = useViewStore(
+		(state) => state,
+	);
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
-		setShowNavbar(false);
 	};
 
 	const handleTeamClick = (team: Team, path?: string) => {
@@ -200,7 +201,7 @@ const SettingsNavBar = (): React.ReactElement => {
 			</div>
 
 			{/* Mobile Sheet */}
-			<Sheet open={showNavbar} onOpenChange={setShowNavbar}>
+			<Sheet open={showMobileNavbar} onOpenChange={setShowMobileNavbar}>
 				<SheetContent side="left" className="p-0 w-64 bg-card">
 					<SidebarContent
 						navigateTo={navigateTo}
