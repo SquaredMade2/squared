@@ -20,7 +20,6 @@ services:
     restart: always
     ports:
       - 5174:5173
-    env_file: ./.env
     environment:
       POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
       TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
