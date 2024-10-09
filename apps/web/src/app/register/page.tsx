@@ -75,29 +75,41 @@ function RegisterForm() {
 
 			if (response.user) {
 				// If registration is successful, sign in the user using NextAuth
-				const result = await signIn("credentials", {
+				try {
+					const result = await signIn("credentials", {
 					redirect: false,
 					email: values.email,
 					password: values.password,
 				});
 
-				if (result?.error) {
-					throw new Error(result.error);
-				}
-
-				if (inviteToken) {
-					const { workspace } = await joinWorkspace(inviteToken, response.user);
-					if (workspace?.url) {
-						router.push(`/${workspace.url}`);
+					if (result?.error) {
+						throw new Error(result.error);
 					}
-				} else {
-					router.push("/");
-				}
 
-				toast({
-					title: response.message,
-					variant: response.variant,
-				});
+					if (inviteToken) {
+						const { workspace } = await joinWorkspace(
+							inviteToken,
+							response.user,
+						);
+						if (workspace?.url) {
+							router.push(`/${workspace.url}`);
+						}
+
+						toast({
+							title: response.message,
+							variant: response.variant,
+						});
+					} else {
+						router.push("/");
+					}
+				} catch (error) {
+					console.error(error);
+					toast({
+						title:
+							error instanceof Error ? error.message : "Something went wrong",
+						variant: "destructive",
+					});
+				}
 			} else {
 				throw new Error(response.message || "Registration failed");
 			}
