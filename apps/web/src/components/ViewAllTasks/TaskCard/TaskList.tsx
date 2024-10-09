@@ -17,7 +17,7 @@ const TaskList = ({
 	currentWorkspaceUrl,
 	taskLabels,
 }: TaskListProps) => {
-	const { listViewOptions } = useViewStore((state) => state);
+	const { getListOptions } = useViewStore((state) => state);
 
 	const {
 		identifier: showIdentifier,
@@ -26,7 +26,7 @@ const TaskList = ({
 		labels: showLabels,
 		status: showStatus,
 		priority: showPriority,
-	} = listViewOptions.displayProperties;
+	} = getListOptions().displayProperties;
 
 	return (
 		<Link

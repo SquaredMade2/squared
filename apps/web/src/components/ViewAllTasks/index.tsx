@@ -11,10 +11,9 @@ const ViewAllTasks = ({
 	getTasksForStatus,
 	allowedColumns = Object.values(Status), // Default to all statuses if not specified
 }: ViewAllTasksProps) => {
-	const { view, listViewOptions, gridViewOptions } = useViewStore(
+	const { view, displayOptions, getGridOptions, getListOptions } = useViewStore(
 		(state) => state,
 	);
-	const viewOptions = view === "list" ? listViewOptions : gridViewOptions;
 
 	const filterTasksByPeriod = (tasks: Task[], period: CompletedTaskPeriod) => {
 		const now = new Date();
@@ -59,12 +58,16 @@ const ViewAllTasks = ({
 
 				if (status === Status.done) {
 					// If status is 'done', filter tasks based on updatedAt and period
-					const { period, show } = viewOptions.showCompletedTasks;
+					const { period, show } = displayOptions.showCompletedTasks;
 					if (!show) return null; // Don't show completed tasks if the option is disabled
 					tasksForStatus = filterTasksByPeriod(tasksForStatus, period);
 				}
 
-				if (tasksForStatus.length === 0 && !viewOptions.showEmptyGroups)
+				if (
+					tasksForStatus.length === 0 &&
+					!(view === "grid" ? getGridOptions() : getListOptions())
+						.showEmptyGroups
+				)
 					// Don't display columns with no tasks unless 'showEmptyGroups' is enabled
 					return null;
 

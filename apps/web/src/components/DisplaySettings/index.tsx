@@ -12,11 +12,6 @@ import { useViewStore } from "@/store";
 import { Switch } from "../ui/switch";
 import { Separator } from "../ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import type {
-	CompletedTaskPeriod,
-	DisplayProperty,
-	TaskOrder,
-} from "@/store/views/interfaces";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -29,41 +24,34 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
+import {
+	CompletedTaskPeriodOptions,
+	TaskOrderOptions,
+	type CompletedTaskPeriod,
+	type DisplayProperty,
+	type TaskOrder,
+	type View,
+	type DisplayOptions,
+} from "@/store/views";
 
 const TopNavBarDisplay = () => {
 	const {
 		view,
 		setView,
-		listViewOptions,
-		gridViewOptions,
+		displayOptions,
 		setListViewOptions,
 		setGridViewOptions,
 	} = useViewStore((state) => state);
 
-	const currentOptions = view === "grid" ? gridViewOptions : listViewOptions;
+	const currentOptions = displayOptions.viewOptions[`${view}Options`];
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
-	const { showEmptyGroups, taskOrder, showCompletedTasks, displayProperties } =
-		currentOptions;
+	const { showEmptyGroups, displayProperties } = currentOptions;
+	const { taskOrder, showCompletedTasks } = displayOptions;
 
-	const orderByOptions: TaskOrder[] = [
-		"Title",
-		"Status",
-		"Priority",
-		"Assignee",
-		"Effort",
-		"Due Date",
-		"Updated",
-		"Created",
-	];
-
-	const completedPeriodOptions: CompletedTaskPeriod[] = [
-		"All",
-		"Past day",
-		"Past week",
-		"Past month",
-		"None",
-	];
+	const orderByOptions: TaskOrder[] = TaskOrderOptions;
+	const completedPeriodOptions: CompletedTaskPeriod[] =
+		CompletedTaskPeriodOptions;
 
 	const tooltipContent = (): string => {
 		return ["Title", "Status", "Assignee"].includes(taskOrder.orderBy)
@@ -83,35 +71,42 @@ const TopNavBarDisplay = () => {
 
 	const formatCamelCaseString = (str: string): string => {
 		return str
-			.replace(/([A-Z])/g, " $1") // Insert space before each capital letter
-			.replace(/^./, (char) => char.toUpperCase()); // Capitalize the first letter of the string
+			.replace(/([A-Z])/g, " $1")
+			.replace(/^./, (char) => char.toUpperCase());
 	};
 
 	const handleToggleChange = (value: string[]) => {
 		const updatedProperties = Object.keys(displayProperties).reduce(
 			(acc, key) => {
-				acc[key as keyof typeof displayProperties] = !value.includes(key);
+				acc[key as keyof DisplayProperty] = !value.includes(key);
 				return acc;
 			},
-			{} as typeof displayProperties,
+			{} as DisplayProperty,
 		);
-		setOptions({ displayProperties: updatedProperties });
+		setOptions({
+			viewOptions: {
+				[`${view}Options`]: {
+					...currentOptions,
+					displayProperties: updatedProperties,
+				},
+			},
+		} as Partial<DisplayOptions>);
 	};
 
 	const handleDropdownSelection = (value: CompletedTaskPeriod) => {
-		if (value === "None") {
-			setOptions({ showCompletedTasks: { show: false, period: value } });
-		} else setOptions({ showCompletedTasks: { show: true, period: value } });
+		setOptions({
+			showCompletedTasks: { show: value !== "None", period: value },
+		});
 	};
 
-	const handleValueChange = (val: string) => setView(val as "list" | "grid");
+	const handleValueChange = (val: string) => setView(val as View);
 
 	return (
 		<TooltipProvider delayDuration={0}>
 			<div className="flex flex-col gap-2 items-end relative h-10 ">
 				<Popover>
 					<PopoverTrigger asChild>
-						<Button variant={"ghost"} className="gap-2">
+						<Button variant="ghost" className="gap-2">
 							<SlidersVertical className="size-4" />
 							<div className="hidden md:flex items-center gap-2">
 								Display
@@ -121,7 +116,7 @@ const TopNavBarDisplay = () => {
 					</PopoverTrigger>
 					<PopoverContent>
 						<div className="flex flex-col">
-							<div className=" w-full items-center justify-between flex mb-3">
+							<div className="w-full items-center justify-between flex mb-3">
 								<ToggleGroup
 									type="single"
 									value={view}
@@ -199,9 +194,48 @@ const TopNavBarDisplay = () => {
 									<TooltipContent>{tooltipContent()}</TooltipContent>
 								</Tooltip>
 							</div>
+							<Separator className="my-4" />
 
+							<div className="flex items-center justify-between">
+								<span className="text-xs text-foreground">Completed tasks</span>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant="outline"
+											size="sm"
+											className="w-[120px] justify-between"
+										>
+											<span className="text-xs">
+												{showCompletedTasks.period}
+											</span>
+											<ChevronDown className="size-4" />
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent className="w-[120px]">
+										{completedPeriodOptions.map((option) => (
+											<DropdownMenuItem
+												key={option}
+												className="text-xs"
+												onSelect={() => handleDropdownSelection(option)}
+											>
+												{option}
+											</DropdownMenuItem>
+										))}
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
+							<div className="flex items-center justify-between w-full my-3">
+								<p className="text-foreground text-xs py-1">Show SubTasks</p>
+								<Switch
+									checked={displayOptions.showSubTasks}
+									onCheckedChange={(checked) =>
+										setOptions({ showSubTasks: checked })
+									}
+								/>
+							</div>
+
+							<Separator className="my-4" />
 							<div>
-								<Separator className="my-2" />
 								<div>{view === "grid" ? "Grid" : "List"} options</div>
 								<div className="flex items-center justify-between w-full my-3">
 									<p className="text-foreground text-xs py-1">
@@ -210,7 +244,14 @@ const TopNavBarDisplay = () => {
 									<Switch
 										checked={showEmptyGroups}
 										onCheckedChange={(checked) =>
-											setOptions({ showEmptyGroups: checked })
+											setOptions({
+												viewOptions: {
+													[`${view}Options`]: {
+														...currentOptions,
+														showEmptyGroups: checked,
+													},
+												},
+											} as Partial<DisplayOptions>)
 										}
 									/>
 								</div>
@@ -244,34 +285,6 @@ const TopNavBarDisplay = () => {
 									})}
 								</ToggleGroup>
 							</div>
-						</div>
-						<Separator className="my-4" />
-
-						<div className="flex items-center justify-between">
-							<span className="text-xs text-foreground">Completed tasks</span>
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="outline"
-										size="sm"
-										className="w-[120px] justify-between"
-									>
-										<span className="text-xs">{showCompletedTasks.period}</span>
-										<ChevronDown className="size-4" />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="w-[120px]">
-									{completedPeriodOptions.map((option) => (
-										<DropdownMenuItem
-											key={option}
-											className="text-xs"
-											onSelect={() => handleDropdownSelection(option)}
-										>
-											{option}
-										</DropdownMenuItem>
-									))}
-								</DropdownMenuContent>
-							</DropdownMenu>
 						</div>
 					</PopoverContent>
 				</Popover>
