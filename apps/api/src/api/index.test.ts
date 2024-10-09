@@ -1,8 +1,8 @@
 import request from "supertest";
 import { PrismaClient } from "@repo/db";
-import { randomUUID } from "node:crypto";
+import { v4 as uuidv4 } from "uuid";
 
-const seededTestTaskId = randomUUID();
+const seededTestTaskId = uuidv4();
 const host = "http://localhost:5173";
 const prisma = new PrismaClient();
 
@@ -65,7 +65,7 @@ describe("sample api endpoint test", () => {
 /**
  * https://jestjs.io/docs/setup-teardown
  */
-beforeAll(() => {
+beforeAll(async () => {
 	async function seedTestingDb(prisma: PrismaClient) {
 		const user = await prisma.user.create({
 			data: {
@@ -118,5 +118,5 @@ beforeAll(() => {
 		});
 	}
 
-	return seedTestingDb(prisma);
+	await seedTestingDb(prisma);
 });
