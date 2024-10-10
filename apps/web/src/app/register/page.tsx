@@ -3,9 +3,20 @@
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useWorkspaceStore } from "@/store";
-import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import {
 	Card,
 	CardContent,
@@ -13,14 +24,22 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { GoogleIcon } from "@/components/Svg";
+import { passwordSchema } from "@/utils/formatting";
+
+const formSchema = z.object({
+	name: z
+		.string()
+		.min(2, "Name must be at least 2 characters")
+		.max(50, "Name must not exceed 50 characters"),
+	email: z.string().email("Invalid email address"),
+	password: passwordSchema,
+});
 
 function RegisterForm() {
-	const [data, setData] = useState({ name: "", email: "", password: "" });
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
@@ -32,28 +51,35 @@ function RegisterForm() {
 	);
 	const inviteToken = searchParams.get("token");
 
-	const handleRegister = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: "",
+			email: "",
+			password: "",
+		},
+	});
+
+	const handleRegister = async (values: z.infer<typeof formSchema>) => {
 		setIsLoading(true);
 		try {
 			// First, register the user using your custom register function
 			const response = await register({
-				name: data.name,
-				username: data.name.split(" ").join(".").toLowerCase(),
-				email: data.email,
-				password: data.password,
+				name: values.name,
+				username: values.name.split(" ").join(".").toLowerCase(),
+				email: values.email,
+				password: values.password,
 				type: "register",
 				provider: "credentials",
 			});
 
 			if (response.user) {
 				// If registration is successful, sign in the user using NextAuth
-
 				try {
 					const result = await signIn("credentials", {
 						redirect: false,
-						email: data.email,
-						password: data.password,
+						email: values.email,
+						password: values.password,
 					});
 
 					if (result?.error) {
@@ -169,71 +195,104 @@ function RegisterForm() {
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={handleRegister} className="space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="name">Name</Label>
-							<div className="relative">
-								<Input
-									id="name"
-									type="text"
-									placeholder="Enter your name"
-									value={data.name}
-									onChange={(e) => setData({ ...data, name: e.target.value })}
-									required
-									className="pl-10"
-								/>
-								<User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-							</div>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="email">Email address</Label>
-							<div className="relative">
-								<Input
-									id="email"
-									type="email"
-									placeholder="Enter your email"
-									value={data.email}
-									onChange={(e) => setData({ ...data, email: e.target.value })}
-									required
-									className="pl-10"
-								/>
-								<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-							</div>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="password">Password</Label>
-							<div className="relative">
-								<Input
-									id="password"
-									type={hidePassword ? "password" : "text"}
-									placeholder="Create a password"
-									value={data.password}
-									onChange={(e) =>
-										setData({ ...data, password: e.target.value })
-									}
-									required
-									className="pr-10"
-								/>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									className="absolute right-0 top-0 h-full"
-									onClick={() => setHidePassword(!hidePassword)}
-								>
-									{hidePassword ? (
-										<EyeOff className="h-4 w-4" />
-									) : (
-										<Eye className="h-4 w-4" />
+					<Form {...form}>
+						<form
+							onSubmit={form.handleSubmit(handleRegister)}
+							className="space-y-4"
+						>
+							<div className="space-y-2">
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Name</FormLabel>
+											<div className="relative">
+												<FormControl>
+													<Input
+														id="name"
+														type="text"
+														placeholder="Enter your name"
+														required
+														className="pl-10"
+														{...field}
+													/>
+												</FormControl>
+												<User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+											</div>
+											<FormMessage />
+										</FormItem>
 									)}
-								</Button>
+								/>
 							</div>
-						</div>
-						<Button type="submit" className="w-full" disabled={isLoading}>
-							{isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
-							Register
-						</Button>
-					</form>
+							<div className="space-y-2">
+								<FormField
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email address</FormLabel>
+											<div className="relative">
+												<FormControl>
+													<Input
+														id="email"
+														type="email"
+														placeholder="Enter your email"
+														required
+														className="pl-10"
+														{...field}
+													/>
+												</FormControl>
+												<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+							<div className="space-y-2">
+								<FormField
+									control={form.control}
+									name="password"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel htmlFor="password">Password</FormLabel>
+											<div className="relative">
+												<FormControl>
+													<Input
+														id="password"
+														type={hidePassword ? "password" : "text"}
+														placeholder="Create a password"
+														required
+														className="pr-10"
+														{...field}
+													/>
+												</FormControl>
+												<Button
+													type="button"
+													variant="ghost"
+													size="icon"
+													className="absolute right-0 top-0 h-full"
+													onClick={() => setHidePassword(!hidePassword)}
+												>
+													{hidePassword ? (
+														<EyeOff className="h-4 w-4" />
+													) : (
+														<Eye className="h-4 w-4" />
+													)}
+												</Button>
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+							<Button type="submit" className="w-full" disabled={isLoading}>
+								{isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
+								Register
+							</Button>
+						</form>
+					</Form>
 					<div className="relative mt-4">
 						<div className="absolute inset-0 flex items-center">
 							<Separator />
