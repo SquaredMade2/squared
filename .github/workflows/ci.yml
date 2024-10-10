@@ -66,6 +66,9 @@ jobs:
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
+          # Print encoded content
+          echo "Encoded content:"
+          echo "$content"
           echo "::set-output name=result::$content"
 
       - name: Check API changes
@@ -181,7 +184,7 @@ jobs:
 
       - name: Run WWW tests
         run: pnpm test:ci --filter=www
-        
+
       - name: Build WWW
         run: pnpm build --filter=www
 
