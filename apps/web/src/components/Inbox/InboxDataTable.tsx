@@ -29,6 +29,7 @@ import {
 	type NotificationTask,
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
+import { useAuthStore, useUserStore } from "@/store";
 import {
 	BellOff,
 	Check,
@@ -59,7 +60,8 @@ export function InboxDataTable({
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
 	const { updateManyNotifications, deleteManyNotifications } =
 		useNotificationStore((state) => state);
-
+	const { updateUser, getUser } = useUserStore((state) => state);
+	const { user, setUser } = useAuthStore((state) => state);
 	const table = useReactTable({
 		data,
 		columns,
@@ -173,6 +175,28 @@ export function InboxDataTable({
 		table.setRowSelection(updatedRowSelection);
 	};
 
+	const handleMoveAllToSaved = async () => {
+		// WORK WITH FILTER TYPE TO MOV
+		const currentUser = user && (await getUser(user.id)).user;
+		if (!currentUser) {
+			return;
+		}
+		const selectedRows = table.getFilteredSelectedRowModel().rows;
+		const selectedNotificationIds = selectedRows.map((row) => row.original.id);
+		const newSavedNotificationIds = [
+			...new Set([
+				...currentUser.savedNotificationIds,
+				...selectedNotificationIds,
+			]),
+		];
+		const response = await updateUser(user.id, {
+			savedNotificationIds: newSavedNotificationIds,
+		});
+		if (response) {
+			setUser(response.user);
+		}
+	};
+
 	return (
 		<div className="w-full md:container">
 			<div className="items-center justify-start gap-4 py-4 hidden md:flex">
@@ -232,6 +256,18 @@ export function InboxDataTable({
 														<Check className="size-4" />
 														<span className="hidden sm:inline">Dismiss</span>
 													</Button>
+													{table.getFilteredSelectedRowModel().rows.length >
+														1 &&
+														filterType === "INBOX" && (
+															<Button
+																variant="outline"
+																className="gap-2 bg-secondary"
+																size="sm"
+																onClick={handleMoveAllToSaved}
+															>
+																<span>Move all to Saved</span>
+															</Button>
+														)}
 													{!isAllSelected && (
 														<Button
 															onClick={handleMarkAsUnread}
