@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
@@ -43,13 +42,11 @@ jobs:
         with:
           node-version: 22.6.0
           cache: 'pnpm'
-          
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
       - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
@@ -57,7 +54,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
         run: pnpm install
 
@@ -67,27 +63,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
-
-      - name: Restore cached dependencies
-        uses: actions/cache@v4
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
         with:
-          path: |
-            ~/.pnpm-store
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
       - name: Lint
         run: pnpm lint
-
       - name: Type Check
         run: pnpm check-types
 
@@ -98,27 +95,28 @@ jobs:
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
-
-      - name: Restore cached dependencies
-        uses: actions/cache@v4
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
         with:
-          path: |
-            ~/.pnpm-store
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
       - name: Run API tests
         run: pnpm test:ci --filter=api
-
       - name: Build API
         run: pnpm build --filter=api
 
@@ -129,27 +127,28 @@ jobs:
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
-
-      - name: Restore cached dependencies
-        uses: actions/cache@v4
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
         with:
-          path: |
-            ~/.pnpm-store
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
       - name: Run Web tests
         run: pnpm test:ci --filter=web
-
       - name: Build Web
         run: pnpm build --filter=web
 
@@ -160,27 +159,28 @@ jobs:
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
-
-      - name: Restore cached dependencies
-        uses: actions/cache@v4
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
         with:
-          path: |
-            ~/.pnpm-store
-            **/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
       - name: Run WWW tests
         run: pnpm test:ci --filter=www
-
       - name: Build WWW
         run: pnpm build --filter=www
 
