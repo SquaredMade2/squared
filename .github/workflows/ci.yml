@@ -59,7 +59,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Install packages
-        run: pnpm --filter="./packages/**"" build
+        run: pnpm --filter="./packages/**" build
 
       - name: Run tests
         run: pnpm test:ci
