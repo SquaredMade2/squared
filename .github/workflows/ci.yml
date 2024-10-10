@@ -2,22 +2,25 @@ name: CI Pipeline
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
 jobs:
-  ci:
-    name: CI Pipeline
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -29,34 +32,147 @@ jobs:
         with:
           node-version: 22.6.0
           cache: "pnpm"
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            apps/**/pnpm-lock.yaml
-            packages/**/pnpm-lock.yaml
-
-      - name: Get pnpm store path
-        id: pnpm-cache-path
-        run: echo "pnpm_cache_path=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache node_modules and pnpm store
-        uses: actions/cache@v4
-        id: cache-npm
-        with:
-          path: ${{ steps.pnpm-cache-path.outputs.pnpm_cache_path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Cache turbo actions
+      - name: Cache pnpm store
         uses: actions/cache@v4
-        with: 
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-turbo-
+            ${{ runner.os }}-pnpm-
 
-      - name: Run tests
-        run: pnpm test:ci
+  detect-changes:
+    name: Detect Changes
+    needs: setup
+    runs-on: ubuntu-latest
+    outputs:
+      api-changed: ${{ steps.check-api.outputs.changed }}
+      web-changed: ${{ steps.check-web.outputs.changed }}
+      www-changed: ${{ steps.check-www.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Check API changes
+        id: check-api
+        run: |
+          pnpm turbo build --filter=api --dry-run=json > changes.json
+          echo "changed=$(jq '.packages | contains(["api"])' changes.json)" >> $GITHUB_OUTPUT
+      - name: Check Web changes
+        id: check-web
+        run: |
+          pnpm turbo build --filter=web --dry-run=json > changes.json
+          echo "changed=$(jq '.packages | contains(["web"])' changes.json)" >> $GITHUB_OUTPUT
+      - name: Check WWW changes
+        id: check-www
+        run: |
+          pnpm turbo build --filter=www --dry-run=json > changes.json
+          echo "changed=$(jq '.packages | contains(["www"])' changes.json)" >> $GITHUB_OUTPUT
+
+  lint-and-type-check:
+    name: Lint and Type Check
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Lint
+        run: pnpm lint
+      - name: Type Check
+        run: pnpm check-types
+
+  test-api:
+    name: Test API
+    needs: [setup, detect-changes]
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Run API tests
+        run: pnpm test --filter=api
+
+  test-web:
+    name: Test Web
+    needs: [setup, detect-changes]
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Run Web tests
+        run: pnpm test --filter=web
+
+  test-www:
+    name: Test WWW
+    needs: [setup, detect-changes]
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Run WWW tests
+        run: pnpm test --filter=www
+
+  build:
+    name: Build
+    needs: [lint-and-type-check, test-api, test-web, test-www, detect-changes]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - run: pnpm install
+      - name: Build API
+        if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
+        run: pnpm build --filter=api
+      - name: Build Web
+        if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
+        run: pnpm build --filter=web
+      - name: Build WWW
+        if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
+        run: pnpm build --filter=www
