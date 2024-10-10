@@ -53,32 +53,38 @@ jobs:
       web-changed: ${{ steps.check-web.outputs.changed }}
       www-changed: ${{ steps.check-www.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.11.0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.6.0
-          cache: 'pnpm'
-      - run: pnpm install
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install turbo
+        run: "npm install -g turbo"
+
+      - name: Changeset
+        id: changeset
+        run: |
+          content=`turbo build --dry-run=json`
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=result::$content"
+
       - name: Check API changes
         id: check-api
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
         run: |
-          pnpm turbo build --filter=api --dry-run=json > changes.json
-          echo "changed=$(jq '.packages | contains(["api"])' changes.json)" >> $GITHUB_OUTPUT
-      - name: Check Web changes
+          echo "::set-output name=result::true"
+
+      - name: Check API changes
         id: check-web
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
         run: |
-          pnpm turbo build --filter=web --dry-run=json > changes.json
-          echo "changed=$(jq '.packages | contains(["web"])' changes.json)" >> $GITHUB_OUTPUT
-      - name: Check WWW changes
+          echo "::set-output name=result::true"
+
+      - name: Check API changes
         id: check-www
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
         run: |
-          pnpm turbo build --filter=www --dry-run=json > changes.json
-          echo "changed=$(jq '.packages | contains(["www"])' changes.json)" >> $GITHUB_OUTPUT
+          echo "::set-output name=result::true"
 
   lint-and-type-check:
     name: Lint and Type Check
