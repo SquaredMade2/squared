@@ -81,7 +81,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		const handleGetUser = async () => {
 			try {
 				const { user } = await getUser(comment.authorId);
-				if (hasUserAvatar(user)) {
+				if (hasUserAvatar(user) && user !== null) {
 					setAuthorName(user.name ?? "");
 					setAvatarUrl(user.avatarUrl ?? "");
 				} else {
