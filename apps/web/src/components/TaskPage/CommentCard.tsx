@@ -82,8 +82,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 			try {
 				const { user } = await getUser(comment.authorId);
 				if (hasUserAvatar(user)) {
-					setAuthorName(user.name);
-					setAvatarUrl(user.avatarUrl);
+					setAuthorName(user.name ?? "");
+					setAvatarUrl(user.avatarUrl ?? "");
 				} else {
 					toast({
 						title: "Error getting author",
