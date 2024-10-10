@@ -114,11 +114,12 @@ export const createCommentStore = (
 		},
 		getAllComments: async (taskId: string): Promise<Comment[]> => {
 			try {
-				const response = await axios.get<Comment[]>(
+				const response = await axios.get(
 					`${process.env.NEXT_PUBLIC_SERVER}/api/task/${taskId}/comment`,
 				);
-				set({ comments: response.data });
-				return response.data;
+				const commentData: Comment[] = response.data.data;
+				set({ comments: commentData });
+				return commentData;
 			} catch (error) {
 				console.error("Error in getAllComments:", error);
 				return [];

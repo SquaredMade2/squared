@@ -20,6 +20,8 @@ import TextEditorToolBar from "./TextEditorToolBar";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import { Button } from "../ui/button";
 import { useAuthStore, useCommentStore, useTaskStore } from "@/store";
+import { toast } from "../ui/use-toast";
+import { useTaskPageData } from "@/hooks/useTaskPageData";
 // import { handleFormatLink } from "@/utils/formatting";
 
 declare module "slate" {
@@ -41,8 +43,9 @@ const TextEditor = () => {
 	// State
 
 	const addComment = useCommentStore((state) => state.addComment);
+	const getComments = useCommentStore((state) => state.getAllComments);
 	const currentUser = useAuthStore((state) => state.user);
-	const currentTask = useTaskStore((state) => state.currentTask);
+	const { task } = useTaskPageData();
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -51,15 +54,33 @@ const TextEditor = () => {
 	// Functions
 
 	const addCommentToTask = () => {
-		if (currentUser && currentTask) {
-			const newComment = {
-				comment: JSON.stringify(editorContent),
-				authorId: currentUser?.id,
-				date: new Date(),
-				taskId: currentTask?.id,
-			};
-			addComment(newComment);
-		}
+		const addNewComment = async () => {
+			try {
+				if (currentUser && task) {
+					const newComment = {
+						comment: JSON.stringify(editorContent),
+						authorId: currentUser?.id,
+						date: new Date(),
+						taskId: task.id,
+					};
+					addComment(newComment);
+					getComments(task.id);
+				} else {
+					toast({
+						title: "Error getting comments",
+						description: "Could not find user data and current task",
+						variant: "destructive",
+					});
+				}
+			} catch (err) {
+				toast({
+					title: "Error getting comments",
+					description: String(err),
+					variant: "destructive",
+				});
+			}
+		};
+		addNewComment();
 	};
 
 	// Helper Functions

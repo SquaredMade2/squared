@@ -5,9 +5,31 @@ import { CreatedByInformation, UpdatedByInformation } from ".";
 import TextEditor from "../TextEditor";
 import { useCommentStore } from "@/store";
 import CommentCard from "./CommentCard";
+import { useEffect } from "react";
+import { toast } from "../ui/use-toast";
+import { useTaskPageData } from "@/hooks/useTaskPageData";
 
 export const EventTabs = () => {
 	const comments = useCommentStore((state) => state.comments);
+	const getComments = useCommentStore((state) => state.getAllComments);
+	const { task } = useTaskPageData();
+
+	useEffect(() => {
+		const fetchTaskComments = async () => {
+			try {
+				if (task) {
+					await getComments(task.id);
+				}
+			} catch (err) {
+				toast({
+					title: "Error getting comments",
+					description: String(err),
+					variant: "destructive",
+				});
+			}
+		};
+		fetchTaskComments();
+	}, [task]);
 	return (
 		<Tabs defaultValue="activity" className="w-full mt-8">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">

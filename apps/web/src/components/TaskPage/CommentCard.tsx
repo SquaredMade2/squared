@@ -9,11 +9,13 @@ import CodeElement from "../TextEditor/TextEditorElements/ElementBlocks/CodeElem
 import HeaderElement from "../TextEditor/TextEditorElements/ElementBlocks/HeaderElement";
 import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
 import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
-import { AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { toast } from "../ui/use-toast";
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
-	const commentData: CustomElement[] = JSON.parse(comment.comment);
+	const [avatarUrl, setAvatarUrl] = useState("");
+	const commentData: Descendant[] = JSON.parse(comment.comment);
 	const getUser = useUserStore((state) => state.getUser);
 
 	// Functions
@@ -72,11 +74,14 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		const handleGetUser = async () => {
 			try {
 				const { user } = await getUser(comment.authorId);
-				if (typeof user === "string") {
-					setAuthorName(user);
-				}
+				setAuthorName(user.name);
+				setAvatarUrl(user.avatarUrl);
 			} catch (err) {
-				console.error(err);
+				toast({
+					title: "Error getting author",
+					description: String(err),
+					variant: "destructive",
+				});
 			}
 		};
 		handleGetUser();
@@ -87,7 +92,11 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<div className="mr-4 text-muted-foreground">
 					{formatDate(comment.date, "dd MMM yyyy h:mm a")}
 				</div>
-				<AvatarImage src={authorName ?? ""} />
+				<Avatar className="size-6">
+					<AvatarImage src={avatarUrl} className="size-6" />
+					<AvatarFallback className="size-6">{""}</AvatarFallback>
+				</Avatar>
+
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
