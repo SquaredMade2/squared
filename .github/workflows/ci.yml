@@ -2,9 +2,6 @@ name: CI Pipeline
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -13,82 +10,28 @@ env:
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
 jobs:
-  setup:
-    name: Setup
+  detect-changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
+    outputs:
+      api-changed: ${{ steps.check-changes.outputs.api }}
+      web-changed: ${{ steps.check-changes.outputs.web }}
+      www-changed: ${{ steps.check-changes.outputs.www }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.11.0
-
-      - name: Setup Node.js with pnpm cache
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.6.0
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-  detect-changes:
-    name: Detect Changes
-    needs: setup
-    runs-on: ubuntu-latest
-    outputs:
-      api-changed: ${{ steps.check-api.outputs.changed }}
-      web-changed: ${{ steps.check-web.outputs.changed }}
-      www-changed: ${{ steps.check-www.outputs.changed }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install turbo
-        run: "npm install -g turbo"
-
-      - name: Changeset
-        id: changeset
+      - name: Check for changes
+        id: check-changes
         run: |
-          content=`turbo build --filter=api --filter=web --filter=www --dry-run=json`
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=result::$content"
-
-      - name: Check API changes
-        id: check-api
-        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
-        run: |
-          echo "::set-output name=result::true"
-
-      - name: Check Web changes
-        id: check-web
-        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'web') }}
-        run: |
-          echo "::set-output name=result::true"
-
-      - name: Check WWW changes
-        id: check-www
-        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'www') }}
-        run: |
-          echo "::set-output name=result::true"
+          git fetch origin develop
+          echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
   lint-and-type-check:
     name: Lint and Type Check
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -96,7 +39,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
-          
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
@@ -112,7 +55,7 @@ jobs:
 
   test-api:
     name: Test API
-    needs: [setup, detect-changes]
+    needs: detect-changes
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
     steps:
@@ -128,7 +71,7 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install
-      
+
       - name: Run API tests
         run: pnpm test:ci --filter=api
 
@@ -137,7 +80,7 @@ jobs:
 
   test-web:
     name: Test Web
-    needs: [setup, detect-changes]
+    needs: detect-changes
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
     steps:
@@ -146,7 +89,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
-          
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
@@ -162,7 +105,7 @@ jobs:
 
   test-www:
     name: Test WWW
-    needs: [setup, detect-changes]
+    needs: detect-changes
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
     steps:
