@@ -11,6 +11,7 @@ import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
 import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "../ui/use-toast";
+import { UserAvatar } from "@/store/users";
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
@@ -70,12 +71,26 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		});
 	};
 
+	const hasUserAvatar = (user: UserAvatar | unknown) => {
+		return (
+			user && typeof user === "object" && "avatarUrl" in user && "name" in user
+		);
+	};
+
 	useEffect(() => {
 		const handleGetUser = async () => {
 			try {
 				const { user } = await getUser(comment.authorId);
-				setAuthorName(user.name);
-				setAvatarUrl(user.avatarUrl);
+				if (hasUserAvatar(user)) {
+					setAuthorName(user.name);
+					setAvatarUrl(user.avatarUrl);
+				} else {
+					toast({
+						title: "Error getting author",
+						description: "User data not returned",
+						variant: "destructive",
+					});
+				}
 			} catch (err) {
 				toast({
 					title: "Error getting author",
