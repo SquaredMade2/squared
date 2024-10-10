@@ -92,16 +92,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
+          
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
+
       - run: pnpm install
+
       - name: Lint
         run: pnpm lint
+
       - name: Type Check
         run: pnpm check-types
 
@@ -112,16 +117,21 @@ jobs:
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
+
       - run: pnpm install
+      
       - name: Run API tests
         run: pnpm test:ci --filter=api
+
       - name: Build API
         run: pnpm build --filter=api
 
@@ -132,16 +142,21 @@ jobs:
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
+          
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
+
       - run: pnpm install
+
       - name: Run Web tests
         run: pnpm test:ci --filter=web
+
       - name: Build Web
         run: pnpm build --filter=web
 
@@ -152,16 +167,21 @@ jobs:
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9.11.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22.6.0
           cache: 'pnpm'
+
       - run: pnpm install
+
       - name: Run WWW tests
         run: pnpm test:ci --filter=www
+        
       - name: Build WWW
         run: pnpm build --filter=www
 
