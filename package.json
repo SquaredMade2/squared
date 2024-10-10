@@ -30,7 +30,7 @@
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",
-    "test:ci": "pnpm check-types && pnpm lint && pnpm test && pnpm build",
+    "test:ci": "turbo check-types && pnpm lint && turbo test && turbo build",
     "knip": "knip"
   },
   "devDependencies": {
