@@ -1,16 +1,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Info, MoreHorizontal, Star } from "lucide-react";
+import { Info, Trash } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -31,6 +25,7 @@ import {
 import type { Task } from "@repo/db";
 import LabelBadge from "../LabelBadges";
 import { getInitials } from "@/utils/formatting";
+import { Button } from "../ui/button";
 
 const ViewsDetailSidebar = ({
 	filter,
@@ -45,9 +40,7 @@ const ViewsDetailSidebar = ({
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { tasks } = useTaskStore((state) => state);
-	const { deleteSavedFilter, setShowSaveForm } = useFilterStore(
-		(state) => state,
-	);
+	const { deleteSavedFilter } = useFilterStore((state) => state);
 	const filteredTasks = filterTasksWithFilter(tasks);
 	const allLabels = currentWorkspace?.Labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -93,22 +86,9 @@ const ViewsDetailSidebar = ({
 						<Info className="h-4 w-4" />
 						{filter.name}
 					</CardTitle>
-					<div className="flex items-center gap-1">
-						<Star className="h-4 w-4" />
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<MoreHorizontal className="h-4 w-4" />
-							</DropdownMenuTrigger>
-							<DropdownMenuContent>
-								<DropdownMenuItem onSelect={() => setShowSaveForm(true)}>
-									Edit
-								</DropdownMenuItem>
-								<DropdownMenuItem onSelect={() => setShowDeleteDialog(true)}>
-									Delete
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
+					<Button variant="ghost" onClick={() => setShowDeleteDialog(true)}>
+						<Trash className="h-4 w-4" />
+					</Button>
 				</CardHeader>
 				<CardContent>
 					<p className="text-xs text-muted-foreground mb-4">
