@@ -62,13 +62,10 @@ jobs:
       - name: Changeset
         id: changeset
         run: |
-          content=`turbo build --dry-run=json`
+          content=`turbo build --filter=api --filter=web --filter=www --dry-run=json`
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
-          # Print encoded content
-          echo "Encoded content:"
-          echo "$content"
           echo "::set-output name=result::$content"
 
       - name: Check API changes
@@ -77,15 +74,15 @@ jobs:
         run: |
           echo "::set-output name=result::true"
 
-      - name: Check API changes
+      - name: Check Web changes
         id: check-web
-        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'web') }}
         run: |
           echo "::set-output name=result::true"
 
-      - name: Check API changes
+      - name: Check WWW changes
         id: check-www
-        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
+        if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'www') }}
         run: |
           echo "::set-output name=result::true"
 
