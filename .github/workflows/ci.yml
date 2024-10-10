@@ -25,13 +25,13 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-          git fetch origin develop
-          echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          git fetch origin main
+          echo "api=$(git diff --name-only origin/main HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "web=$(git diff --name-only origin/main HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "www=$(git diff --name-only origin/main HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
-  lint-and-type-check:
-    name: Lint and Type Check
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,42 @@ jobs:
           node-version: 22.6.0
           cache: 'pnpm'
 
-      - run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+  lint-and-type-check:
+    name: Lint and Type Check
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Lint
         run: pnpm lint
@@ -55,7 +90,7 @@ jobs:
 
   test-api:
     name: Test API
-    needs: detect-changes
+    needs: [detect-changes, setup]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
     steps:
@@ -70,7 +105,13 @@ jobs:
           node-version: 22.6.0
           cache: 'pnpm'
 
-      - run: pnpm install
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Run API tests
         run: pnpm test:ci --filter=api
@@ -80,7 +121,7 @@ jobs:
 
   test-web:
     name: Test Web
-    needs: detect-changes
+    needs: [detect-changes, setup]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
     steps:
@@ -95,7 +136,13 @@ jobs:
           node-version: 22.6.0
           cache: 'pnpm'
 
-      - run: pnpm install
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Run Web tests
         run: pnpm test:ci --filter=web
@@ -105,7 +152,7 @@ jobs:
 
   test-www:
     name: Test WWW
-    needs: detect-changes
+    needs: [detect-changes, setup]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
     steps:
@@ -120,11 +167,17 @@ jobs:
           node-version: 22.6.0
           cache: 'pnpm'
 
-      - run: pnpm install
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Run WWW tests
         run: pnpm test:ci --filter=www
-
+        
       - name: Build WWW
         run: pnpm build --filter=www
 
