@@ -13,7 +13,9 @@ import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 
 export default function FilterViewPage() {
 	const params = useParams();
-	const { savedFilters, customFilter } = useFilterStore((state) => state);
+	const { savedFilters, customFilter, filterTasks } = useFilterStore(
+		(state) => state,
+	);
 	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const [filter, setFilter] = useState<SavedFilter | null>(null);
@@ -37,7 +39,7 @@ export default function FilterViewPage() {
 			return tasks;
 		}
 
-		return customFilter(tasks, filter.filter);
+		return filterTasks(customFilter(tasks, filter.filter));
 	};
 
 	const {
