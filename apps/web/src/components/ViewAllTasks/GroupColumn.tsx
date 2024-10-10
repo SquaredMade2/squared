@@ -104,7 +104,7 @@ const StatusColumn = ({
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
-			<div key={task.id} className={`mb-2 ${isListView ? "w-full" : "w-72"}`}>
+			<div key={task.id} className={`mb-1 ${isListView ? "w-full" : "w-72"}`}>
 				<TaskCard task={task} index={index} location={"dashboard"} />
 				{subtasks.length > 0 && (
 					<div
@@ -151,8 +151,9 @@ const StatusColumn = ({
 								snapshot.isDraggingOver && view === "grid"
 									? ""
 									: `${
-											view === "grid" &&
-											"h-[77vh] rounded pr-2 transition-all duration-500 ease-in-out"
+											view === "grid"
+												? "h-[calc(100vh-117px)] flex-grow overflow-y-auto rounded pr-2 transition-all duration-500 ease-in-out"
+												: "overflow-y-auto"
 										}`
 							} 
             `}
@@ -161,7 +162,7 @@ const StatusColumn = ({
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2 items-center"
+									: "flex flex-col z-30 w-full min-h-[135px] pb-20 gap-2 items-center"
 							}
 						>
 							{showTasks &&
