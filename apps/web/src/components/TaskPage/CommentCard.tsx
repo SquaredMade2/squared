@@ -5,11 +5,11 @@ import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
 import type { CustomElement, CustomText } from "../TextEditor/interfaces";
 import { useUserStore } from "@/store";
-import ProfileImage from "../ProfileImage";
 import CodeElement from "../TextEditor/TextEditorElements/ElementBlocks/CodeElement";
 import HeaderElement from "../TextEditor/TextEditorElements/ElementBlocks/HeaderElement";
 import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
 import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
+import { AvatarImage } from "../ui/avatar";
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
@@ -85,7 +85,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<div className="mr-4 text-muted-foreground">
 					{formatDate(comment.date, "dd MMM yyyy h:mm a")}
 				</div>
-				<ProfileImage profileName={authorName} location={"activityItem"} />
+				<AvatarImage src={authorName ?? ""} />
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
