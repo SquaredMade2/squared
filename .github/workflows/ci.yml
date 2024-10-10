@@ -115,7 +115,9 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - name: Run API tests
-        run: pnpm test --filter=api
+        run: pnpm test:ci --filter=api
+      - name: Build API
+        run: pnpm build --filter=api
 
   test-web:
     name: Test Web
@@ -133,7 +135,9 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - name: Run Web tests
-        run: pnpm test --filter=web
+        run: pnpm test:ci --filter=web
+      - name: Build Web
+        run: pnpm build --filter=web
 
   test-www:
     name: Test WWW
@@ -151,28 +155,24 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install
       - name: Run WWW tests
-        run: pnpm test --filter=www
-
-  build:
-    name: Build
-    needs: [lint-and-type-check, test-api, test-web, test-www, detect-changes]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.11.0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.6.0
-          cache: 'pnpm'
-      - run: pnpm install
-      - name: Build API
-        if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
-        run: pnpm build --filter=api
-      - name: Build Web
-        if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
-        run: pnpm build --filter=web
+        run: pnpm test:ci --filter=www
       - name: Build WWW
-        if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
         run: pnpm build --filter=www
+
+  ci-status:
+    name: CI Pipeline
+    needs: [lint-and-type-check, test-api, test-web, test-www]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check CI status
+        run: |
+          if [[ "${{ needs.lint-and-type-check.result }}" == "failure" ]]; then
+            echo "Lint and type check failed"
+            exit 1
+          fi
+          if [[ "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" ]]; then
+            echo "One or more tests failed"
+            exit 1
+          fi
+          echo "All checks passed or were skipped"
