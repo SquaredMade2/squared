@@ -10,8 +10,7 @@
   ],
   "scripts": {
     "build": "tsc && npm run build:css",
-    "build:css": "mkdir -p dist && cp src/styles.css dist/styles.css && cp -R src/fonts dist/fonts",
-    "postinstall": "npm run build"
+    "build:css": "mkdir -p dist && cp src/styles.css dist/styles.css && cp -R src/fonts dist/fonts"
   },
   "keywords": [
     "font",

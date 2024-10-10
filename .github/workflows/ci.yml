@@ -58,5 +58,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
+      - name: Install packages
+        run: pnpm --filter="./packages/**"" build
+
       - name: Run tests
         run: pnpm test:ci
