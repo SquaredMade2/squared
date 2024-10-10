@@ -72,7 +72,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		const handleGetUser = async () => {
 			try {
 				const { user } = await getUser(comment.authorId);
-				setAuthorName(user);
+				if (typeof user === "string") {
+					setAuthorName(user);
+				}
 			} catch (err) {
 				console.error(err);
 			}
