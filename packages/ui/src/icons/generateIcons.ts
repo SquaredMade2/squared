@@ -5,7 +5,7 @@ const fs = require("fs-extra")
 const path = require("node:path");
 
 const inputDirectory = "./svgs";
-const outputDirectory = "./icons";
+const outputDirectory = "./components";
 
 const svgFiles = globSync("*.svg", {cwd: inputDirectory})
 

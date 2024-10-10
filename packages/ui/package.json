@@ -70,6 +70,10 @@
       "import": "./src/hover-card/index.ts",
       "require": "./src/hover-card/index.ts"
     },
+    "./icons": {
+      "import": "./src/squared-icons/index.ts",
+      "require": "./src/squared-icons/index.ts"
+    },
     "./id": {
       "import": "./src/id/index.ts",
       "require": "./src/id/index.ts"
@@ -134,10 +138,7 @@
       "import": "./src/slot/index.ts",
       "require": "./src/slot/index.ts"
     },
-    "./squared-icons": {
-      "import": "./src/squared-icons/index.ts",
-      "require": "./src/squared-icons/index.ts"
-    },
+
     "./switch": {
       "import": "./src/switch/index.ts",
       "require": "./src/switch/index.ts"
@@ -201,8 +202,8 @@
     "format:check": "biome format .",
     "test": "jest --ci",
     "storybook": "cross-env BROWSER=none storybook dev -p 9009",
-    "icons:gen": "pnpm --prefix ./src/squared-icons run generate:icons",
-    "build:icons": "pnpm --prefix ./src/squared-icons run build:icons"
+    "icons:gen": "pnpm --prefix ./src/icons run generate:icons",
+    "build:icons": "pnpm --prefix ./src/icons run build:icons"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.1",

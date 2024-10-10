@@ -1,5 +1,5 @@
 {
-  "name": "squared-icons",
+  "name": "icons",
   "version": "1.0.0",
   "scripts": {
     "generate:icons": "tsc generateIcons.ts",
