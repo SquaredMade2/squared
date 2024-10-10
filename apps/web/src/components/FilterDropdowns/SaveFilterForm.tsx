@@ -26,8 +26,9 @@ import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { format } from "date-fns";
-import type { FilterCondition } from "@/store/filters";
+import type { SavedFilter, FilterCondition } from "@/store/filters";
 import type { Priority, Status } from "@repo/db";
+import { useParams, usePathname } from "next/navigation";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),
@@ -35,7 +36,8 @@ const formSchema = z.object({
 });
 
 export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
-	const { currentFilters, saveFilter } = useFilterStore((state) => state);
+	const { currentFilters, saveFilter, savedFilters, updateSavedFilter } =
+		useFilterStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
@@ -44,6 +46,41 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 	const [formattedFilters, setFormattedFilters] = useState<
 		{ name: string; value: string }[]
 	>([]);
+	const [currentFilter, setCurrentFilter] = useState<SavedFilter | null>(null);
+	const params = useParams();
+	const pathname = usePathname();
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			title: "",
+			description: "",
+		},
+	});
+	const { control, handleSubmit, reset } = form;
+
+	useEffect(() => {
+		if (pathname.includes("/views")) {
+			const filterId =
+				typeof params.filterId === "string"
+					? params.filterId
+					: params.filterId[0];
+			const filterSlug = filterId?.split("-").pop() || "";
+			const foundFilter = savedFilters.find((f) =>
+				f.id.startsWith(filterSlug || ""),
+			);
+			if (foundFilter) setCurrentFilter(foundFilter);
+		}
+	}, [params.filterId, savedFilters]);
+
+	useEffect(() => {
+		if (currentFilter) {
+			reset({
+				title: currentFilter.name,
+				description: currentFilter.description ?? "",
+			});
+		}
+	}, [currentFilter, reset]);
 
 	useEffect(() => {
 		const formatFilters = async () => {
@@ -53,14 +90,6 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 		formatFilters();
 	}, [currentFilters]);
 
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			title: "",
-			description: "",
-		},
-	});
-
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
 		if (!currentTeam) {
@@ -69,16 +98,27 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 				description: "No team found",
 				variant: "destructive",
 			});
+			setIsSaving(false);
 			return;
 		}
 		try {
-			if (currentTeam) {
+			if (currentFilter) {
+				const response = await updateSavedFilter(currentFilter.id, {
+					name: values.title,
+					description: values.description ?? null,
+				});
+				toast({
+					title: response.message,
+					variant: response.variant,
+				});
+			} else if (currentTeam) {
 				await saveFilter({
 					name: values.title,
 					description: values.description ?? null,
 					filter: currentFilters,
 					type: "TEAM",
 					teamId: currentTeam.id,
+					workspaceId: currentWorkspace?.id,
 				});
 				toast({
 					title: "Filter Saved Successfully",
@@ -159,9 +199,9 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mb-8">
+			<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-8">
 				<FormField
-					control={form.control}
+					control={control}
 					name="title"
 					render={({ field }) => (
 						<FormItem>
@@ -174,7 +214,7 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 					)}
 				/>
 				<FormField
-					control={form.control}
+					control={control}
 					name="description"
 					render={({ field }) => (
 						<FormItem>

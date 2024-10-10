@@ -45,7 +45,9 @@ const ViewsDetailSidebar = ({
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { tasks } = useTaskStore((state) => state);
-	const { deleteSavedFilter } = useFilterStore((state) => state);
+	const { deleteSavedFilter, setShowSaveForm } = useFilterStore(
+		(state) => state,
+	);
 	const filteredTasks = filterTasksWithFilter(tasks);
 	const allLabels = currentWorkspace?.Labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -98,7 +100,9 @@ const ViewsDetailSidebar = ({
 								<MoreHorizontal className="h-4 w-4" />
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
-								<DropdownMenuItem>Edit</DropdownMenuItem>
+								<DropdownMenuItem onSelect={() => setShowSaveForm(true)}>
+									Edit
+								</DropdownMenuItem>
 								<DropdownMenuItem onSelect={() => setShowDeleteDialog(true)}>
 									Delete
 								</DropdownMenuItem>

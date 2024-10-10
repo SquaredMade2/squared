@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import TopNavBarDisplay from "@/components/DisplaySettings";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { SaveFilterForm } from "@/components/FilterDropdowns/SaveFilterForm";
@@ -10,8 +9,8 @@ import { useFilterStore } from "@/store";
 import { usePathname } from "next/navigation";
 
 const TopNavBar = ({ pageTitle }: { pageTitle: string }) => {
-	const [showSaveForm, setShowSaveForm] = useState(false);
-	const { currentFilters, clearFilter } = useFilterStore((state) => state);
+	const { currentFilters, clearFilter, showSaveForm, setShowSaveForm } =
+		useFilterStore((state) => state);
 	const pathname = usePathname();
 
 	return (
@@ -28,7 +27,7 @@ const TopNavBar = ({ pageTitle }: { pageTitle: string }) => {
 					<TopNavBarDisplay />
 					{currentFilters.length > 0 &&
 						!showSaveForm &&
-						!pathname.includes("views") && (
+						!pathname.endsWith("views") && (
 							<div className="gap-2 flex">
 								<Button variant="outline" onClick={clearFilter} size="sm">
 									Cancel
