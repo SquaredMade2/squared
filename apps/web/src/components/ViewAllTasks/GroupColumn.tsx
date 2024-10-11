@@ -22,10 +22,8 @@ const StatusColumn = ({
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
-	const { listViewOptions, gridViewOptions } = useViewStore((state) => state);
+	const { displayOptions } = useViewStore((state) => state);
 	const { tasks: allTasks } = useTaskStore((state) => state);
-
-	const viewOptions = view === "list" ? listViewOptions : gridViewOptions;
 
 	const priorityOrder = [
 		Priority.noPriority,
@@ -97,16 +95,19 @@ const StatusColumn = ({
 
 	const orderedTasks = orderTasks(
 		tasks,
-		viewOptions.taskOrder.orderBy,
-		viewOptions.taskOrder.orderAscending,
+		displayOptions.taskOrder.orderBy,
+		displayOptions.taskOrder.orderAscending,
 	);
 
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
-			<div key={task.id} className={`mb-2 ${isListView ? "w-full" : "w-72"}`}>
+			<div
+				key={task.id}
+				className={`mb-2 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			>
 				<TaskCard task={task} index={index} location={"dashboard"} />
-				{subtasks.length > 0 && (
+				{subtasks.length > 0 && displayOptions.showSubTasks && (
 					<div
 						className={`mt-1 ${
 							isListView

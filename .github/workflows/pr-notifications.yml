@@ -42,7 +42,7 @@ jobs:
         }
 
         # Fetch all open PRs and store them in an array
-        prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author)
+        prs=$(gh pr list --state open --json number,title,headRefName,url,createdAt,reviewRequests,author,updatedAt)
         echo "Raw PR data: $prs"
 
         # Process each PR individually using jq

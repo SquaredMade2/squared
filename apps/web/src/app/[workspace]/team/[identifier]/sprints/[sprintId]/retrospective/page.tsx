@@ -27,6 +27,12 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { useTeamStore } from "@/store";
 import type { Sprint } from "@repo/db";
+import { useSprints } from "@/hooks/useSprints";
+import {
+	SprintError,
+	SprintLoading,
+	SprintNotFound,
+} from "@/components/Sprints";
 
 const formSchema = z.object({
 	wentWell: z.string().min(1, "This field cannot be empty"),
@@ -36,9 +42,8 @@ const formSchema = z.object({
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
-	const { getSprints, sprints, currentTeam, updateSprint } = useTeamStore(
-		(state) => state,
-	);
+	const { sprints, team, loading, error, workspace } = useSprints();
+	const { updateSprint } = useTeamStore((state) => state);
 	const [currentSprint, setCurrentSprint] = useState<Sprint | null>(null);
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -49,17 +54,13 @@ export default function SprintRetrospectivePage() {
 			actionItems: "",
 		},
 	});
-
 	useEffect(() => {
-		const loadSprints = async () => {
-			if (currentTeam) {
-				await getSprints(currentTeam.id);
-				const sprint = sprints.find((s) => s.id === params.sprintId);
-				setCurrentSprint(sprint ?? null);
-			}
-		};
-		loadSprints();
-	}, [getSprints, params.sprintId, sprints, currentTeam]);
+		const sprintId = Array.isArray(params.sprintId)
+			? params.sprintId[0]
+			: params.sprintId;
+		const foundSprint = sprints.find((sprint) => sprint.id === sprintId);
+		setCurrentSprint(foundSprint || null);
+	});
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
@@ -87,8 +88,25 @@ export default function SprintRetrospectivePage() {
 		}
 	};
 
+	if (loading) {
+		return <SprintLoading />;
+	}
+	if (error) {
+		return (
+			<SprintError
+				error={error}
+				workspaceUrl={workspace?.url}
+				teamIdentifier={team?.identifier}
+			/>
+		);
+	}
 	if (!currentSprint) {
-		return <div>Loading...</div>;
+		return (
+			<SprintNotFound
+				workspaceUrl={workspace?.url}
+				teamIdentifier={team?.identifier}
+			/>
+		);
 	}
 
 	return (
