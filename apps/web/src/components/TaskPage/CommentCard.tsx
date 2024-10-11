@@ -11,7 +11,7 @@ import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
 import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "../ui/use-toast";
-import { UserAvatar } from "@/store/users";
+import type { UserAvatar } from "@/store/users";
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");

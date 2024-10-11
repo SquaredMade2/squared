@@ -19,7 +19,7 @@ import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
 import TextEditorToolBar from "./TextEditorToolBar";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import { Button } from "../ui/button";
-import { useAuthStore, useCommentStore, useTaskStore } from "@/store";
+import { useAuthStore, useCommentStore } from "@/store";
 import { toast } from "../ui/use-toast";
 import { useTaskPageData } from "@/hooks/useTaskPageData";
 // import { handleFormatLink } from "@/utils/formatting";
