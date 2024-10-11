@@ -13,14 +13,14 @@ services:
     ports:
       - "5434:5432"
 
-  test:
-    build:
-      context: ../../.
-      dockerfile: ./apps/api/Dockerfile
-    restart: always
-    ports:
-      - 5174:5173
-    environment:
-      POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
-      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
+  # test:
+  #   build:
+  #     context: ../../.
+  #     dockerfile: ./apps/api/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 5174:5173
+  #   environment:
+  #     POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
+  #     TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
   
