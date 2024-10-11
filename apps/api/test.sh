@@ -10,4 +10,4 @@ until pg_isready -h localhost -p 5433; do
     sleep 1
 done
 
-pnpm start & sleep 5 && pnpm jest --ci --runInBand;
+pnpm jest --ci --runInBand --forceExit;

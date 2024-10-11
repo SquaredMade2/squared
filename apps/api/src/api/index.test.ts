@@ -1,9 +1,9 @@
 import request from "supertest";
 import { PrismaClient } from "@repo/db";
 import { v4 as uuidv4 } from "uuid";
+import { app, server } from ".";
 
 const seededTestTaskId = uuidv4();
-const host = "http://localhost:5173";
 const prisma = new PrismaClient();
 
 /**
@@ -23,7 +23,7 @@ describe("sample test with jest", () => {
 describe("sample test with jest using supertest to make a request", () => {
 	it("should return a 404 error when requesting an unimplemented endpoint", async () => {
 		try {
-			const res = await request(host).get("/some/unimplemented/endpoint");
+			const res = await request(app).get("/some/unimplemented/endpoint");
 			expect(res.statusCode).toBe(404);
 		} catch (e) {
 			console.dir(e, { depth: null });
@@ -63,7 +63,7 @@ describe("sample test with prisma", () => {
 describe("sample api endpoint test", () => {
 	it("should retrieve the seeded task", async () => {
 		try {
-			const res = await request(host).get(`/api/task/${seededTestTaskId}`);
+			const res = await request(app).get(`/api/task/${seededTestTaskId}`);
 			expect(res.body.data.id).toBe(seededTestTaskId);
 		} catch (e) {
 			console.dir(e, { depth: null });
@@ -134,4 +134,8 @@ beforeAll(async () => {
 	} catch (e) {
 		console.dir(e);
 	}
+});
+
+afterAll(() => {
+	return server.close();
 });
