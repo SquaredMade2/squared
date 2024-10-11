@@ -21,10 +21,10 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "dotenv -v POSTGRES_PRISMA_URL=\"postgresql://squared:squared@localhost:5433/squared-test?schema=public\" -v TEST_POSTGRES_PRISMA_URL=\"postgresql://squared:squared@localhost:5433/squared-test?schema=public\" -o -- pnpm --filter=@repo/seed docker:db && pnpm test:db:wait && dotenv -v POSTGRES_PRISMA_URL=\"postgresql://squared:squared@localhost:5433/squared-test?schema=public\" -v TEST_POSTGRES_PRISMA_URL=\"postgresql://squared:squared@localhost:5433/squared-test?schema=public\" -- pnpm --filter=@repo/db db:push && dotenv -v POSTGRES_PRISMA_URL=\"postgresql://squared:squared@localhost:5433/squared-test?schema=public\" -v TEST_POSTGRES_PRISMA_URL=\"postgresql://squared:squared@localhost:5433/squared-test?schema=public\" -- pnpm jest --ci --runInBand --forceExit && pnpm --filter=@repo/seed docker:db:down",
+		"test": "pnpm docker:api && pnpm test:db:wait && pnpm test:db:push && docker exec --workdir /app/apps/api api-test-1 pnpm jest --ci --runInBand --forceExit",
 		"test:db:push": "docker exec --workdir /app api-test-1 pnpm db:push",
 		"test:db:reset": "docker exec --workdir /app/packages/db api-test-1 npx prisma migrate reset --force",
-		"test:db:wait": "docker cp ./wait.sh postgres-test-db:/ && docker exec postgres-test-db chmod +x /wait.sh && docker exec -i postgres-test-db /bin/sh /./wait.sh"
+		"test:db:wait": "docker cp ./wait.sh postgres-api-test-db:/ && docker exec postgres-api-test-db chmod +x /wait.sh && docker exec -i postgres-api-test-db /bin/sh /./wait.sh"
 	},
 	"keywords": [],
 	"author": "",
