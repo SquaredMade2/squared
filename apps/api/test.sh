@@ -1,6 +1,6 @@
 #!/bin/sh
 
-POSTGRES_PRISMA_URL="postgresql://squared:squared@localhost:5433/squared-test?schema=public"
+POSTGRES_PRISMA_URL=postgresql://squared:squared@localhost:5433/squared-test?schema=public
 TEST_POSTGRES_PRISMA_URL="postgresql://squared:squared@localhost:5433/squared-test?schema=public"
 
 pnpm --filter=@repo/seed docker:db
