@@ -1,10 +1,9 @@
 import request from "supertest";
-import { PrismaClient } from "@repo/db";
+import type { PrismaClient } from "@repo/db";
 import { v4 as uuidv4 } from "uuid";
-import { app, server } from ".";
+import { app, server, prisma } from ".";
 
 const seededTestTaskId = uuidv4();
-const prisma = new PrismaClient();
 
 /**
  * https://jestjs.io/docs/getting-started
@@ -136,6 +135,7 @@ beforeAll(async () => {
 	}
 });
 
-afterAll(() => {
+afterAll(async () => {
+	await prisma.$disconnect();
 	return server.close();
 });
