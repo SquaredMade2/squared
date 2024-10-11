@@ -71,7 +71,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		});
 	};
 
-	const hasUserAvatar = (user: UserAvatar | unknown) => {
+	const hasUserAvatarData = (user: UserAvatar | unknown) => {
 		return (
 			user && typeof user === "object" && "avatarUrl" in user && "name" in user
 		);
@@ -82,9 +82,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 			try {
 				const { user } = await getUser(comment.authorId);
 				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
-				if (hasUserAvatar(user) && user !== null) {
-					setAuthorName(user.name ?? "");
-					setAvatarUrl(user.avatarUrl ?? "");
+				if (hasUserAvatarData(user) && user !== null) {
+					setAuthorName(user.name);
+					setAvatarUrl(user.avatarUrl);
 				} else {
 					toast({
 						title: "Error getting author",
