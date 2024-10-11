@@ -1,4 +1,5 @@
 import "./globals.css";
+import "@squared/fonts/src/styles.css";
 import type { Metadata } from "next";
 import ClientLayoutWrapper from "./clientLayout-wrapper";
 
