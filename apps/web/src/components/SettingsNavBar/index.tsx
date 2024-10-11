@@ -11,7 +11,6 @@ import {
 	Moon,
 	ArrowLeft,
 } from "lucide-react";
-import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 import { useTeamStore, useViewStore } from "@/store";
 import type { Team } from "@repo/db";
@@ -171,25 +170,19 @@ const SidebarContent = ({
 	);
 };
 
-const SettingsNavBar = ({
-	setLoading,
-	toggleNavbar,
-}: SettingsNavbarProps): React.ReactElement => {
+const SettingsNavBar = (): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
-	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
+	const { showMobileNavbar, setShowMobileNavbar } = useViewStore(
+		(state) => state,
+	);
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
-		toggleNavbar?.();
-		setShowNavbar(false);
 	};
 
 	const handleTeamClick = (team: Team, path?: string) => {
-		if (setLoading) {
-			setLoading(true);
-		}
 		setCurrentTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
@@ -208,7 +201,7 @@ const SettingsNavBar = ({
 			</div>
 
 			{/* Mobile Sheet */}
-			<Sheet open={showNavbar} onOpenChange={setShowNavbar}>
+			<Sheet open={showMobileNavbar} onOpenChange={setShowMobileNavbar}>
 				<SheetContent side="left" className="p-0 w-64 bg-card">
 					<SidebarContent
 						navigateTo={navigateTo}
