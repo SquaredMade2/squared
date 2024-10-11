@@ -81,6 +81,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		const handleGetUser = async () => {
 			try {
 				const { user } = await getUser(comment.authorId);
+				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
 				if (hasUserAvatar(user) && user !== null) {
 					setAuthorName(user.name ?? "");
 					setAvatarUrl(user.avatarUrl ?? "");
