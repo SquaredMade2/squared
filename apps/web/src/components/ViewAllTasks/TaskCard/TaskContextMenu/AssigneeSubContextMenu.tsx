@@ -1,15 +1,16 @@
 import { useEffect } from "react";
-import { UserSearch } from "lucide-react";
+import { Check, UserSearch } from "lucide-react";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import ProfileImage from "@/components/ProfileImage";
 import type { ContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users, getAllUsers } = useUserStore((state) => state);
@@ -56,12 +57,15 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 			<ContextMenuSubContent>
 				<ScrollArea className="max-w-96">
 					<ContextMenuItem
-						className="w-40"
+						className="flex justify-between"
 						onClick={() => handleSelectAssignee(null)}
 					>
-						Unassign
+						<div className="flex">
+							<UserSearch className="size-4 mx-1 mr-3" />
+							Unassigned
+						</div>
+						{!task.assigneeId && <Check className="w-4 h-4" />}
 					</ContextMenuItem>
-
 					{users
 						.sort((a, b) => a.name.localeCompare(b.name))
 						.map((user) => {
@@ -69,12 +73,18 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 								<ContextMenuItem
 									key={user.id}
 									onClick={() => handleSelectAssignee(user.id)}
+									className="flex justify-between"
 								>
-									<ProfileImage
-										profileName={user.name ?? ""}
-										location={"contextMenu"}
-									/>
-									{user.name}
+									<div className="flex">
+										<Avatar className="size-6 text-xxs mr-2 flex">
+											<AvatarImage src={user.avatarUrl ?? ""} />
+											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+										</Avatar>
+										{user.name}
+									</div>
+									{task.assigneeId === user.id && (
+										<Check className="w-4 h-4 ml-2" />
+									)}
 								</ContextMenuItem>
 							);
 						})}

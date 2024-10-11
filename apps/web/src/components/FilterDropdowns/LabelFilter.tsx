@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-} from "@/components/ui/popover";
-import {
 	Command,
 	CommandInput,
 	CommandList,
@@ -15,15 +10,19 @@ import {
 	CommandGroup,
 } from "@/components/ui/command";
 import { useFilterStore, useWorkspaceStore } from "@/store";
-import type { FilterDropDownProps } from "./interfaces";
 import type { Label } from "@repo/db";
 import { Check } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
+import type { FilterOption } from "./interfaces";
+import {
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+} from "../ui/dropdown-menu";
 
 export default function LabelFilterDropDown({
-	showFilterDropDown,
-	setShowFilterDropDown,
-}: FilterDropDownProps) {
+	filterOption,
+}: { filterOption: FilterOption }) {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
@@ -67,9 +66,14 @@ export default function LabelFilterDropDown({
 		) || [];
 
 	return (
-		<Popover open={showFilterDropDown} onOpenChange={setShowFilterDropDown}>
-			<PopoverTrigger />
-			<PopoverContent className="w-60 mt-5">
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-[17.5rem]">
 				<Command>
 					<CommandInput
 						placeholder="Search labels..."
@@ -106,7 +110,7 @@ export default function LabelFilterDropDown({
 						</ScrollArea>
 					</CommandList>
 				</Command>
-			</PopoverContent>
-		</Popover>
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 }

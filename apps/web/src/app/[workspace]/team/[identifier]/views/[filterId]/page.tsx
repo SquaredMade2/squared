@@ -9,11 +9,14 @@ import { useTaskPage } from "@/hooks/useTaskPage";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 
 export default function FilterViewPage() {
 	const params = useParams();
-	const { savedFilters, customFilter } = useFilterStore((state) => state);
-	const { view, gridViewOptions } = useViewStore((state) => state);
+	const { savedFilters, customFilter, filterTasks } = useFilterStore(
+		(state) => state,
+	);
+	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const [filter, setFilter] = useState<SavedFilter | null>(null);
 
@@ -22,7 +25,7 @@ export default function FilterViewPage() {
 			typeof params.filterId === "string"
 				? params.filterId
 				: params.filterId[0];
-		const filterSlug = filterId.split("-")[1];
+		const filterSlug = filterId.split("-").pop();
 		const foundFilter = savedFilters.find((f) =>
 			f.id.startsWith(filterSlug || ""),
 		);
@@ -36,7 +39,7 @@ export default function FilterViewPage() {
 			return tasks;
 		}
 
-		return customFilter(tasks, filter.filter);
+		return filterTasks(customFilter(tasks, filter.filter));
 	};
 
 	const {
@@ -74,20 +77,26 @@ export default function FilterViewPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
+			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+				<ViewAllTasks
+					getFilteredStatuses={getFilteredStatuses}
+					getTasksForStatus={getTasksForStatus}
+				/>
+				{view === "grid" &&
+					!getGridOptions().showEmptyGroups &&
+					getHiddenColumns().length >= 1 && (
+						<div className="ml-auto">
+							<HiddenColumns
+								getHiddenColumns={getHiddenColumns}
+								getTasksForStatus={getTasksForStatus}
+							/>
+						</div>
+					)}
+			</div>
+			<ViewsDetailSidebar
+				filter={filter}
+				filterTasksWithFilter={filterTasksWithFilter}
 			/>
-			{view === "grid" &&
-				!gridViewOptions.showEmptyGroups &&
-				getHiddenColumns().length >= 1 && (
-					<div className="ml-auto">
-						<HiddenColumns
-							getHiddenColumns={getHiddenColumns}
-							getTasksForStatus={getTasksForStatus}
-						/>
-					</div>
-				)}
 		</TaskPageLayout>
 	);
 }

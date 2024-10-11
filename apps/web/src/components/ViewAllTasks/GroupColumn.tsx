@@ -6,7 +6,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { GridColumnNewIssueButton } from "../Modals";
 import TaskCard from "./TaskCard";
 import { Priority, Status, type Task } from "@repo/db";
-import { useViewStore } from "@/store";
+import { useViewStore, useTaskStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -22,9 +22,8 @@ const StatusColumn = ({
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
-	const { listViewOptions, gridViewOptions } = useViewStore((state) => state);
-
-	const viewOptions = view === "list" ? listViewOptions : gridViewOptions;
+	const { displayOptions } = useViewStore((state) => state);
+	const { tasks: allTasks } = useTaskStore((state) => state);
 
 	const priorityOrder = [
 		Priority.noPriority,
@@ -96,12 +95,45 @@ const StatusColumn = ({
 
 	const orderedTasks = orderTasks(
 		tasks,
-		viewOptions.taskOrder.orderBy,
-		viewOptions.taskOrder.orderAscending,
+		displayOptions.taskOrder.orderBy,
+		displayOptions.taskOrder.orderAscending,
 	);
 
+	const renderTaskWithSubtasks = (task: Task, index: number) => {
+		const subtasks = allTasks.filter((t) => t.parentId === task.id);
+		return (
+			<div
+				key={task.id}
+				className={`mb-2 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			>
+				<TaskCard task={task} index={index} location={"dashboard"} />
+				{subtasks.length > 0 && displayOptions.showSubTasks && (
+					<div
+						className={`mt-1 ${
+							isListView
+								? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
+								: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+						}`}
+					>
+						{subtasks.map((subtask, subIndex) => (
+							<TaskCard
+								key={subtask.id}
+								task={subtask}
+								index={subIndex}
+								location={"dashboard"}
+								isSubtask={true}
+							/>
+						))}
+					</div>
+				)}
+			</div>
+		);
+	};
+
 	return (
-		<div className={isListView ? "mb-2 w-full" : "pb-2 flex-grow"}>
+		<div
+			className={isListView ? "mb-2 w-full" : "pb-2 w-[300px] flex-shrink-0"}
+		>
 			<TaskColumnTitle
 				isListView={isListView}
 				showTasks={showTasks}
@@ -115,29 +147,28 @@ const StatusColumn = ({
 						ref={provided.innerRef}
 						{...provided.droppableProps}
 						className={`
-						${snapshot.isDraggingOver ? "h-full" : ""}${
-							snapshot.isDraggingOver && view === "grid"
-								? ""
-								: `${view === "grid" && "h-[77vh] rounded pr-2 transition-all duration-500 ease-in-out"}`
-						} 
-						`}
+              ${snapshot.isDraggingOver ? "h-full" : ""}
+              ${
+								snapshot.isDraggingOver && view === "grid"
+									? ""
+									: `${
+											view === "grid" &&
+											"h-[77vh] rounded pr-2 transition-all duration-500 ease-in-out"
+										}`
+							} 
+            `}
 					>
 						<div
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2"
+									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2 items-center"
 							}
 						>
 							{showTasks &&
-								orderedTasks.map((task, index) => (
-									<TaskCard
-										key={task.id}
-										task={task}
-										index={index}
-										location={"dashboard"}
-									/>
-								))}
+								orderedTasks
+									.filter((task) => !task.parentId)
+									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
 								<GridColumnNewIssueButton status={title as Status} />
 							)}

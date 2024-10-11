@@ -1,5 +1,4 @@
 import { Calendar, UserSearch } from "lucide-react";
-
 import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "date-fns";
@@ -10,30 +9,35 @@ import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import LabelBadge from "@/components/LabelBadges";
 
-const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
-	const { gridViewOptions } = useViewStore((state) => state);
+const TaskGrid = ({
+	task,
+	user,
+	taskLabels,
+	currentWorkspaceUrl,
+	isSubtask = false,
+}: TaskGridProps) => {
+	const { getGridOptions } = useViewStore((state) => state);
 
 	const {
 		identifier: showIdentifier,
 		dueDate: showDueDate,
 		avatar: showAvatar,
 		labels: showLabels,
-		// status: showStatus,	// no status currently in grid view - implement later on - Kaila
 		priority: showPriority,
-	} = gridViewOptions.displayProperties;
+	} = getGridOptions().displayProperties;
 
 	return (
 		<Link
-			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 			className="cursor-pointer"
 		>
-			<Card className="w-80">
+			<Card className={`w-full ${isSubtask ? "bg-secondary/30" : ""}`}>
 				<CardContent className="p-4 space-y-4">
 					<div className="flex justify-between h-[20px] w-full cursor-pointer">
 						{showIdentifier ? (
 							<p className="text-xs text-muted-foreground">{task.identifier}</p>
 						) : (
-							<div /> // keeps the space so assigneeAvatar doesn't move when identifier is toggled in Display settings
+							<div />
 						)}
 						{showAvatar &&
 							(task.assigneeName ? (
@@ -52,7 +56,7 @@ const TaskGrid = ({ task, user, currentTeam, taskLabels }: TaskGridProps) => {
 						{truncateString(task.title, 70)}
 					</div>
 					<div className="flex flex-wrap w-full items-center gap-1 -my-1">
-						{showDueDate && (
+						{showDueDate && task.dueDate && (
 							<div className="flex items-center gap-2 text-sm bg-background border border-border rounded-md w-fit p-1 mb-1">
 								<Calendar className="size-4" />
 								{task.dueDate

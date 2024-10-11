@@ -17,10 +17,11 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import ProfileImage from "@/components/ProfileImage";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import type { ButtonProps } from "./interfaces";
 import { ScrollArea } from "../../ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getInitials } from "@/utils/formatting";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
@@ -34,6 +35,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const taskId = currentTask ? currentTask.id : "";
 	const assigneeName = currentTask ? currentTask.assigneeName : "";
 	const assigneeId = currentTask ? currentTask.assigneeId : "";
+	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -73,10 +75,10 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 				>
 					{assigneeName ? (
 						<div className="flex items-center w-28">
-							<ProfileImage
-								profileName={assigneeName || ""}
-								location="assigneeDropdown"
-							/>
+							<Avatar className="size-6 text-xxs">
+								<AvatarImage src={assigneeAvatar ?? ""} />
+								<AvatarFallback>{getInitials(assigneeName)}</AvatarFallback>
+							</Avatar>
 							<span className="ml-2 w-1/2 truncate text-xs">
 								{assigneeName}
 							</span>
@@ -98,8 +100,8 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 							<CommandEmpty>No user found.</CommandEmpty>
 							<CommandGroup>
 								<CommandItem onSelect={() => handleSelectAssignee(null)}>
-									<UserSearch className="size-4 mr-2" />
-									<span>Unassign</span>
+									<UserSearch className="size-4 mx-1" />
+									<span className="w-2/3 truncate ml-2">Unassign</span>
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
@@ -113,11 +115,11 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 										onSelect={() => handleSelectAssignee(user.id)}
 										className="w-full"
 									>
-										<ProfileImage
-											profileName={user.name}
-											location="assigneeDropdown"
-										/>
-										<span className="w-2/3 truncate">{user.username}</span>
+										<Avatar className="size-6 text-xxs">
+											<AvatarImage src={user.avatarUrl ?? ""} />
+											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+										</Avatar>
+										<span className="w-2/3 truncate ml-2">{user.username}</span>
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",

@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import {
-	DropdownMenu,
-	DropdownMenuTrigger,
-	DropdownMenuContent,
 	DropdownMenuCheckboxItem,
-	DropdownMenuSeparator,
-	DropdownMenuLabel,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
-import type { FilterDropDownProps } from "./interfaces";
 import { Priority } from "@repo/db";
 import { PriorityIcon } from "../Icons";
+import type { FilterOption } from "./interfaces";
 
 const groupPriority = [
 	{
@@ -56,9 +54,8 @@ const groupPriority = [
 ];
 
 const PriorityFilterDropDown = ({
-	showFilterDropDown,
-	setShowFilterDropDown,
-}: FilterDropDownProps) => {
+	filterOption,
+}: { filterOption: FilterOption }) => {
 	const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
@@ -93,16 +90,14 @@ const PriorityFilterDropDown = ({
 	}, [currentFilterTypes]);
 
 	return (
-		<DropdownMenu
-			open={showFilterDropDown}
-			onOpenChange={setShowFilterDropDown}
-		>
-			<DropdownMenuTrigger>
-				<div className="hidden" aria-hidden="true" />
-			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-60 p-0 mt-6">
-				<DropdownMenuLabel>Priority</DropdownMenuLabel>
-				<DropdownMenuSeparator />
+		<DropdownMenuSub>
+			<DropdownMenuSubTrigger>
+				<div className="flex items-center space-x-2">
+					{filterOption.svg}
+					<span>{filterOption.name}</span>
+				</div>
+			</DropdownMenuSubTrigger>
+			<DropdownMenuSubContent className="w-[17.5rem]">
 				{groupPriority.map((item) => (
 					<DropdownMenuCheckboxItem
 						key={item.id}
@@ -120,8 +115,8 @@ const PriorityFilterDropDown = ({
 						</div>
 					</DropdownMenuCheckboxItem>
 				))}
-			</DropdownMenuContent>
-		</DropdownMenu>
+			</DropdownMenuSubContent>
+		</DropdownMenuSub>
 	);
 };
 

@@ -1,7 +1,7 @@
 import { UserSearch } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useViewStore, useWorkspaceStore } from "@/store";
+import { useViewStore } from "@/store";
 import TaskCardLabels from "./TaskCardLabels";
 import { formatDate } from "date-fns";
 import { formatUrl, getInitials } from "@/utils/formatting";
@@ -14,9 +14,10 @@ const TaskList = ({
 	location,
 	task,
 	user,
-	currentTeam,
+	currentWorkspaceUrl,
+	taskLabels,
 }: TaskListProps) => {
-	const { listViewOptions } = useViewStore((state) => state);
+	const { getListOptions } = useViewStore((state) => state);
 
 	const {
 		identifier: showIdentifier,
@@ -25,19 +26,14 @@ const TaskList = ({
 		labels: showLabels,
 		status: showStatus,
 		priority: showPriority,
-	} = listViewOptions.displayProperties;
+	} = getListOptions().displayProperties;
 
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const taskLabels =
-		currentWorkspace?.Labels.filter((label) =>
-			task.labels.includes(label.id),
-		) || [];
 	return (
 		<Link
 			className={
 				"group/main grid grid-cols-24 items-center w-full py-2 bg-card border-t border-solid border-border hover:bg-accent"
 			}
-			href={`/${currentTeam?.name}/task/${task?.identifier}/${formatUrl(task.title)}`}
+			href={`/${currentWorkspaceUrl}/task/${task?.identifier}/${formatUrl(task.title)}`}
 		>
 			<div className="col-span-1 min-h-9" />
 			<div className="grid grid-cols-10 col-span-23 pl-2 pr-6 lg:pl-0">

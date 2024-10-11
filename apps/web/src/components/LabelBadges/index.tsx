@@ -38,7 +38,7 @@ function getLuminance(hex: string): number {
 }
 
 export default function LabelBadge({ label }: { label: Label }) {
-	const { theme } = useTheme();
+	const { resolvedTheme: theme } = useTheme();
 	const isDarkMode = theme === "dark";
 	const cardColor = isDarkMode ? "#1c1917" : "#ffffff";
 

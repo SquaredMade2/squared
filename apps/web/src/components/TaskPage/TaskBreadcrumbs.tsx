@@ -6,16 +6,19 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import WorkspaceInitials from "@/components/WorkspaceImage";
+import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import Link from "next/link";
-import { useWorkspaceStore } from "@/store";
-import type { Task } from "@repo/db";
+import type { Task, Workspace } from "@repo/db";
 
-export const TaskBreadcrumbs = ({ task }: { task: Task }) => {
-	const allWorkspaces = useWorkspaceStore((state) => state.workspaces);
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-
-	const index: number = currentWorkspace
-		? allWorkspaces.findIndex((item) => item.id === currentWorkspace.id)
+export const TaskBreadcrumbs = ({
+	task,
+	workspace,
+}: { task: Task; workspace: Workspace | null }) => {
+	const { workspaces } = useWorkspaceStore((state) => state);
+	const { currentTeam } = useTeamStore((state) => state);
+	const { lastVisitedPage } = useViewStore((state) => state);
+	const index: number = workspace
+		? workspaces.findIndex((item) => item.id === workspace.id)
 		: -1;
 
 	return (
@@ -23,19 +26,19 @@ export const TaskBreadcrumbs = ({ task }: { task: Task }) => {
 			<Breadcrumb>
 				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
 					<BreadcrumbItem>
-						{currentWorkspace && (
+						{workspace && (
 							<Link
 								className="flex items-center text-muted-foreground hover:text-foreground"
-								href={`/${currentWorkspace.url}`}
+								href={`/${workspace.url}/team/${currentTeam?.identifier}/${lastVisitedPage}`}
 							>
 								<div className="mt-0.5 rounded">
 									<WorkspaceInitials
-										workspaceName={currentWorkspace.name}
+										workspaceName={workspace.name}
 										backgroundColor={index}
 										location="workspaceMenu"
 									/>
 								</div>
-								<p>{currentWorkspace.url}</p>
+								<p>{workspace.url}</p>
 							</Link>
 						)}
 					</BreadcrumbItem>
