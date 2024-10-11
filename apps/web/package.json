@@ -28,6 +28,7 @@
 		"@hookform/resolvers": "^3.9.0",
 		"@repo/ui": "workspace:*",
 		"@sentry/nextjs": "^8.27.0",
+		"@squared/fonts": "workspace:*",
 		"@tanstack/react-table": "^8.20.5",
 		"axios": "^1.7.5",
 		"class-variance-authority": "^0.7.0",
