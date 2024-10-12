@@ -279,6 +279,7 @@ export const createTeamStore = (
 				},
 				updateRetrospectiveItemType: async (
 					sprintId,
+					itemId,
 					type,
 				): Promise<RetrospectiveItemResponse> => {
 					try {
@@ -289,6 +290,7 @@ export const createTeamStore = (
 									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
 								),
 								{
+									itemId,
 									type,
 								},
 							);

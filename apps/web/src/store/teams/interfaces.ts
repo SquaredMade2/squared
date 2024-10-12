@@ -60,6 +60,7 @@ type TeamActions = {
 	) => Promise<RetrospectiveItemResponse>;
 	updateRetrospectiveItemType: (
 		sprintId: string,
+		itemId: string,
 		type: "wentWell" | "toImprove" | "actionItems",
 	) => Promise<RetrospectiveItemResponse>;
 	getRetrospectiveItems: (sprintId: string) => Promise<RetrospectiveData>;

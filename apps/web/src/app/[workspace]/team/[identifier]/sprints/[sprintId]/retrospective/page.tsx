@@ -189,6 +189,7 @@ export default function SprintRetrospectivePage() {
 
 			try {
 				const response = await updateRetrospectiveItemType(
+					sprintId,
 					itemId,
 					destinationType,
 				);
