@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import type { Route, APIResponse } from "@/api/route";
 import { comparePassword, hashPassword, returnToken } from "./helpers";
 import { sendMail } from "@/utils/mail";
+import { joinWorkspace } from "@/utils/joinWorkspace";
+import { verifyEmailTemplate } from "@/utils/templates";
 
 type Body = {
 	provider: "credentials" | "google" | "github";
@@ -13,6 +15,7 @@ type Body = {
 	name?: string;
 	username?: string;
 	oauthId?: string;
+	token?: string;
 	avatarUrl?: string;
 };
 
@@ -26,8 +29,16 @@ export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, _, body: Body): Promise<APIResponse<User>> => {
 			try {
-				const { email, password, provider, type, name, username, avatarUrl } =
-					body;
+				const {
+					email,
+					password,
+					provider,
+					type,
+					name,
+					username,
+					avatarUrl,
+					token: joinWorkspaceToken,
+				} = body;
 				let user: User | null = await prisma.user.findUnique({
 					where: { email },
 				});
@@ -62,6 +73,19 @@ export function createRoute(): Route<Params> {
 						}
 						const { token } = await returnToken(user, JWT_SECRET);
 						res.cookie("token", token);
+						if (joinWorkspaceToken && user) {
+							const { status, data, ...response } = await joinWorkspace(
+								joinWorkspaceToken,
+								user.id,
+							);
+							if (status === 200) {
+								const newUser = await prisma.user.findUnique({
+									where: { id: user.id },
+								});
+								return { ...response, data: newUser };
+							}
+							return { ...response, data: user };
+						}
 
 						return {
 							data: user,
@@ -89,8 +113,22 @@ export function createRoute(): Route<Params> {
 								variant: "destructive",
 							};
 						}
+
 						const { token } = await returnToken(user, JWT_SECRET);
 						res.cookie("token", token);
+						if (joinWorkspaceToken && user) {
+							const { status, data, ...response } = await joinWorkspace(
+								joinWorkspaceToken,
+								user.id,
+							);
+							if (status === 200) {
+								const newUser = await prisma.user.findUnique({
+									where: { id: user.id },
+								});
+								return { ...response, data: newUser };
+							}
+							return { ...response, data: user };
+						}
 
 						return {
 							data: user,
@@ -141,7 +179,6 @@ export function createRoute(): Route<Params> {
 							// Creating the user
 							const hashedPassword = await hashPassword(password);
 
-							// TODO: FIX EMAIL VERIFICATION
 							const user = await prisma.user.create({
 								data: {
 									name,
@@ -150,13 +187,30 @@ export function createRoute(): Route<Params> {
 									password: hashedPassword,
 								},
 							});
+							if (joinWorkspaceToken && user) {
+								const { status, data, ...response } = await joinWorkspace(
+									joinWorkspaceToken,
+									user.id,
+								);
+								if (status === 200) {
+									const newUser = await prisma.user.findUnique({
+										where: { id: user.id },
+									});
+									return { ...response, data: newUser };
+								}
+								return { ...response, data: user };
+							}
 
 							// Send a verification email
 							const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {
 								expiresIn: "1d",
 							});
 							try {
-								await sendMail(email, username, emailToken, "verify");
+								await sendMail({
+									email,
+									subject: "Welcome to Squared!",
+									html: verifyEmailTemplate(`verify/${emailToken}`),
+								});
 							} catch (error) {
 								console.error("Error sending email:", error);
 								await prisma.user.delete({ where: { id: user.id } });
@@ -175,7 +229,7 @@ export function createRoute(): Route<Params> {
 						}
 						if (type === "login") {
 							// Check if the user exists
-							const user: User | null = await prisma.user.findUnique({
+							let user: User | null = await prisma.user.findUnique({
 								where: { email },
 							});
 
@@ -187,13 +241,30 @@ export function createRoute(): Route<Params> {
 								};
 							}
 
+							if (joinWorkspaceToken && user) {
+								const { status } = await joinWorkspace(
+									joinWorkspaceToken,
+									user.id,
+								);
+								if (status === 200) {
+									const newUser = await prisma.user.findUnique({
+										where: { id: user.id },
+									});
+									if (newUser) user = newUser;
+								}
+							}
+
 							if (!user.verified) {
 								const emailToken = jwt.sign({ user: user.id }, JWT_SECRET, {
 									expiresIn: "1d",
 								});
 
 								// Send verification email if they're not verified
-								await sendMail(email, user.name, emailToken, "verify");
+								await sendMail({
+									email,
+									subject: "Verify Your Email",
+									html: verifyEmailTemplate(`verify/${emailToken}`),
+								});
 								return {
 									data: null,
 									message:
