@@ -234,6 +234,7 @@ model User {
   onBoarding           Boolean  @default(true)
   defaultWorkspaceId   String?
   avatarUrl            String?
+  lastTaskViewed       String?
   savedNotificationIds String[] @default([])
   subscribedTasks      String[] @default([])
   googleId             String?
