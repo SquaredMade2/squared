@@ -114,86 +114,93 @@ export function AssignTasksDialog({
 			<DialogTrigger asChild>
 				<Button>Assign Tasks</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[700px]">
+			<DialogContent className="w-full max-w-[90vw] h-[90vh] flex flex-col">
 				<DialogHeader>
 					<DialogTitle>Assign Tasks to Sprint</DialogTitle>
 					<DialogDescription>
 						Select tasks and assign them to a sprint.
 					</DialogDescription>
 				</DialogHeader>
-				<div className="grid gap-4 py-4">
-					<div className="flex items-center gap-4 justify-end">
-						<Label htmlFor="sprint" className="text-right">
-							Sprint
-						</Label>
-						<Select
-							onValueChange={setTargetSprint}
-							defaultValue={activeSprint?.id}
-						>
-							<SelectTrigger className="w-72">
-								<SelectValue placeholder="Select a sprint" />
-							</SelectTrigger>
-							<SelectContent className="w-72">
-								{[activeSprint, ...upcomingSprints].map(
-									(sprint) =>
-										sprint && (
-											<SelectItem key={sprint.id} value={sprint.id}>
-												{sprint?.name}
-											</SelectItem>
-										),
-								)}
-							</SelectContent>
-						</Select>
+				<div className="flex flex-col gap-4 py-4 flex-grow overflow-hidden">
+					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+						<div className="flex items-center gap-2 w-full sm:w-auto">
+							<Label htmlFor="sprint" className="whitespace-nowrap">
+								Sprint
+							</Label>
+							<Select
+								onValueChange={setTargetSprint}
+								defaultValue={activeSprint?.id}
+							>
+								<SelectTrigger className="w-full sm:w-72">
+									<SelectValue placeholder="Select a sprint" />
+								</SelectTrigger>
+								<SelectContent className="w-full sm:w-72">
+									{[activeSprint, ...upcomingSprints].map(
+										(sprint) =>
+											sprint && (
+												<SelectItem key={sprint.id} value={sprint.id}>
+													{sprint?.name}
+												</SelectItem>
+											),
+									)}
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
-					<div className="flex items-center space-x-2">
-						<Search className="size-4 text-muted-foreground" />
-						<Input
-							placeholder="Search tasks..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="flex-grow"
-						/>
-						<Select
-							value={filterPriority}
-							onValueChange={(value) => setFilterPriority(value as Priority)}
-						>
-							<SelectTrigger className="w-[250px]">
-								<SelectValue placeholder="Priority" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Priorities</SelectItem>
-								<SelectItem value="noPriority">No Priority</SelectItem>
-								<SelectItem value="low">Low</SelectItem>
-								<SelectItem value="medium">Medium</SelectItem>
-								<SelectItem value="high">High</SelectItem>
-								<SelectItem value="urgent">Urgent</SelectItem>
-							</SelectContent>
-						</Select>
-						<Select
-							value={filterStatus}
-							onValueChange={(value) => setFilterStatus(value as Status)}
-						>
-							<SelectTrigger className="w-[250px]">
-								<SelectValue placeholder="Status" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="all">All Statuses</SelectItem>
-								<SelectItem value="backlog">Backlog</SelectItem>
-								<SelectItem value="inProgress">In Progress</SelectItem>
-								<SelectItem value="inReview">In Review</SelectItem>
-							</SelectContent>
-						</Select>
+					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+						<div className="flex items-center space-x-2 w-full sm:w-auto">
+							<Search className="size-4 text-muted-foreground" />
+							<Input
+								placeholder="Search tasks..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								className="flex-grow"
+							/>
+						</div>
+						<div className="flex items-center gap-2 w-full sm:w-auto">
+							<Select
+								value={filterPriority}
+								onValueChange={(value) => setFilterPriority(value as Priority)}
+							>
+								<SelectTrigger className="w-full sm:w-[150px]">
+									<SelectValue placeholder="Priority" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Priorities</SelectItem>
+									<SelectItem value="noPriority">No Priority</SelectItem>
+									<SelectItem value="low">Low</SelectItem>
+									<SelectItem value="medium">Medium</SelectItem>
+									<SelectItem value="high">High</SelectItem>
+									<SelectItem value="urgent">Urgent</SelectItem>
+								</SelectContent>
+							</Select>
+							<Select
+								value={filterStatus}
+								onValueChange={(value) => setFilterStatus(value as Status)}
+							>
+								<SelectTrigger className="w-full sm:w-[150px]">
+									<SelectValue placeholder="Status" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Statuses</SelectItem>
+									<SelectItem value="backlog">Backlog</SelectItem>
+									<SelectItem value="inProgress">In Progress</SelectItem>
+									<SelectItem value="inReview">In Review</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
 					<Tabs
 						value={viewMode}
 						onValueChange={(value) => setViewMode(value as "list" | "grid")}
+						className="flex-grow flex flex-col"
 					>
 						<TabsList className="grid w-full grid-cols-2">
 							<TabsTrigger value="list">List View</TabsTrigger>
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
-						<TabsContent value="list">
-							<ScrollArea className="h-[400px] w-full rounded-md border">
+						<TabsContent value="list" className="flex-grow overflow-hidden">
+							<ScrollArea className="h-full w-full rounded-md border">
 								{filteredTasks.map((task) => (
 									<div
 										key={task.id}
@@ -228,9 +235,9 @@ export function AssignTasksDialog({
 								))}
 							</ScrollArea>
 						</TabsContent>
-						<TabsContent value="grid">
-							<ScrollArea className="h-[400px] w-full rounded-md border">
-								<div className="grid grid-cols-2 gap-4 p-4">
+						<TabsContent value="grid" className="flex-grow overflow-hidden">
+							<ScrollArea className="h-full w-full rounded-md border">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
 									{filteredTasks.map((task) => (
 										<div
 											key={task.id}
@@ -247,7 +254,7 @@ export function AssignTasksDialog({
 													<StatusIcon status={task.status} />
 												</div>
 											</div>
-											<span className="text-sm font-medium mb-2">
+											<span className="text-sm font-medium mb-2 line-clamp-2">
 												{task.title}
 											</span>
 											{task.dueDate && (
