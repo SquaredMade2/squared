@@ -172,7 +172,10 @@ const StatusColumn = ({
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
-								<GridColumnNewIssueButton status={title as Status} />
+								<GridColumnNewIssueButton
+									status={title as Status}
+									sprintId={sprintId}
+								/>
 							)}
 						</div>
 						{provided.placeholder}

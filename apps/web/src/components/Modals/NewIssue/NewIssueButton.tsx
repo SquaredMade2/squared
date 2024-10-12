@@ -37,7 +37,10 @@ export const NewIssueButton = () => {
 	);
 };
 
-export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
+export const GridColumnNewIssueButton = ({
+	status,
+	sprintId,
+}: { status: Status; sprintId?: string }) => {
 	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
 		(state) => state,
 	);
@@ -47,6 +50,7 @@ export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
 		setNewIssueData({
 			...newIssueData,
 			status,
+			sprintId,
 		});
 	};
 	return (
