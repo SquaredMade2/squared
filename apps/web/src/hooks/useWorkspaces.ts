@@ -21,7 +21,7 @@ export function useWorkspaces() {
 			if (user && !currentWorkspace) {
 				const allWorkspaces = await getAllWorkspaces(user.id);
 				setWorkspaces(allWorkspaces);
-				const workspace = workspaces?.find((ws) => ws.url === workspaceUrl);
+				const workspace = allWorkspaces?.find((ws) => ws.url === workspaceUrl);
 				workspace && setCurrentWorkspace(workspace);
 			}
 
