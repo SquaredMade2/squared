@@ -18,6 +18,8 @@ export function generateIndex() {
 // @ts-nocheck
 import express from "express";
 import cors from "cors";
+import http from "node:http";
+import { Server } from "socket.io";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
@@ -88,6 +90,8 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 	// Adding the server setup to the generated index file
 	writeLn(`
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 const port = process.env.PORT || 5173;
 
 const productionDomain = "https://app.squaredmade.com";
@@ -95,6 +99,7 @@ const productionServerDomain = "https://api.squaredmade.com"
 const developmentDomain = "https://app-develop.squaredmade.com"
 const localDevDomain = "http://localhost:3000";
 const localServerDomain = \`http://localhost:\${port}\`;
+
 // Health check route for root path
 app.get("/", (_, res) => {
   res.status(200).send("ok");
@@ -134,8 +139,30 @@ createApiRouter(router, { prisma });
 // Use the router
 app.use(router);
 
+// Socket.IO setup
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('joinRoom', (sprintId) => {
+    socket.join(sprintId);
+    console.log(\`User joined room: \${sprintId}\`);
+  });
+
+  socket.on('addItem', (data) => {
+    io.to(data.sprintId).emit('itemAdded', data);
+  });
+
+  socket.on('moveItem', (data) => {
+    io.to(data.sprintId).emit('itemMoved', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(\`Server is running on http://localhost:\${port}\`);
 });
 `);

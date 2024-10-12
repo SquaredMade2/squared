@@ -1,21 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+	DragDropContext,
+	Droppable,
+	Draggable,
+	type DropResult,
+} from "@hello-pangea/dnd";
+import { io, type Socket } from "socket.io-client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
 	Card,
 	CardHeader,
@@ -23,177 +18,244 @@ import {
 	CardDescription,
 	CardContent,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
+import type { RetrospectiveItem } from "@repo/db";
 import { useTeamStore } from "@/store";
-import type { Sprint } from "@repo/db";
-import { useSprints } from "@/hooks/useSprints";
-import {
-	SprintError,
-	SprintLoading,
-	SprintNotFound,
-} from "@/components/Sprints";
+import { parseParams } from "@/utils/parseParams";
 
-const formSchema = z.object({
-	wentWell: z.string().min(1, "This field cannot be empty"),
-	toImprove: z.string().min(1, "This field cannot be empty"),
-	actionItems: z.string().min(1, "This field cannot be empty"),
-});
+type ColumnType = "wentWell" | "toImprove" | "actionItems";
 
-export default function SprintRetrospectivePage() {
-	const params = useParams();
-	const { sprints, team, loading, error, workspace } = useSprints();
-	const { updateSprint } = useTeamStore((state) => state);
-	const [currentSprint, setCurrentSprint] = useState<Sprint | null>(null);
+interface ColumnProps {
+	title: string;
+	type: ColumnType;
+	items: RetrospectiveItem[];
+	onAddItem: (type: ColumnType, content: string) => void;
+}
 
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
-		defaultValues: {
-			wentWell: "",
-			toImprove: "",
-			actionItems: "",
-		},
-	});
-	useEffect(() => {
-		const sprintId = Array.isArray(params.sprintId)
-			? params.sprintId[0]
-			: params.sprintId;
-		const foundSprint = sprints.find((sprint) => sprint.id === sprintId);
-		setCurrentSprint(foundSprint || null);
-	});
+interface ItemMovedEvent {
+	itemId: string;
+	sourceType: ColumnType;
+	destinationType: ColumnType;
+	sourceIndex: number;
+	destinationIndex: number;
+}
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		try {
-			updateSprint(
-				Array.isArray(params.sprintId) ? params.sprintId[0] : params.sprintId,
-				{
-					wentWell: [values.wentWell],
-					toImprove: [values.toImprove],
-					actionItems: [values.actionItems],
-				},
-			);
-			toast({
-				title: "Retrospective Submitted",
-				description:
-					"Your sprint retrospective has been recorded successfully.",
-			});
-		} catch (error) {
-			console.error("Error submitting retrospective:", error);
-			toast({
-				title: "Submission Error",
-				description:
-					"There was a problem submitting your retrospective. Please try again.",
-				variant: "destructive",
-			});
+const Column: React.FC<ColumnProps> = ({ title, type, items, onAddItem }) => {
+	const [newItemContent, setNewItemContent] = useState("");
+
+	const handleAddItem = () => {
+		if (newItemContent.trim()) {
+			onAddItem(type, newItemContent.trim());
+			setNewItemContent("");
 		}
 	};
 
-	if (loading) {
-		return <SprintLoading />;
-	}
-	if (error) {
-		return (
-			<SprintError
-				error={error}
-				workspaceUrl={workspace?.url}
-				teamIdentifier={team?.identifier}
-			/>
+	return (
+		<div className="bg-secondary p-4 rounded-lg">
+			<h3 className="text-lg font-semibold mb-4">{title}</h3>
+			<Droppable droppableId={type}>
+				{(provided) => (
+					<div {...provided.droppableProps} ref={provided.innerRef}>
+						{items.map((item, index) => (
+							<Draggable key={item.id} draggableId={item.id} index={index}>
+								{(provided) => (
+									<div
+										ref={provided.innerRef}
+										{...provided.draggableProps}
+										{...provided.dragHandleProps}
+									>
+										<Card className="mb-2">
+											<CardContent className="p-2">{item.content}</CardContent>
+										</Card>
+									</div>
+								)}
+							</Draggable>
+						))}
+						{provided.placeholder}
+					</div>
+				)}
+			</Droppable>
+			<div className="mt-4">
+				<Input
+					value={newItemContent}
+					onChange={(e) => setNewItemContent(e.target.value)}
+					placeholder="Add new item"
+					className="mb-2"
+				/>
+				<Button onClick={handleAddItem}>Add</Button>
+			</div>
+		</div>
+	);
+};
+
+export default function SprintRetrospectivePage() {
+	const params = useParams();
+	const {
+		addRetrospectiveItem,
+		updateRetrospectiveItemType,
+		getRetrospectiveItems,
+	} = useTeamStore((state) => state);
+	const sprintId = parseParams(params.sprintId);
+	const [data, setData] = useState<Record<ColumnType, RetrospectiveItem[]>>({
+		wentWell: [],
+		toImprove: [],
+		actionItems: [],
+	});
+	const [socket, setSocket] = useState<Socket | null>(null);
+
+	useEffect(() => {
+		const newSocket = io(process.env.NEXT_PUBLIC_URL || "");
+		setSocket(newSocket);
+
+		newSocket.emit("joinRoom", sprintId);
+
+		newSocket.on("itemAdded", (newItem: RetrospectiveItem) => {
+			setData((prevData) => ({
+				...prevData,
+				[newItem.type]: [...prevData[newItem.type as ColumnType], newItem],
+			}));
+		});
+
+		newSocket.on(
+			"itemMoved",
+			({
+				sourceType,
+				destinationType,
+				sourceIndex,
+				destinationIndex,
+			}: ItemMovedEvent) => {
+				setData((prevData) => {
+					const newData = { ...prevData };
+					const [movedItem] = newData[sourceType].splice(sourceIndex, 1);
+					newData[destinationType].splice(destinationIndex, 0, {
+						...movedItem,
+						type: destinationType,
+					});
+					return newData;
+				});
+			},
 		);
-	}
-	if (!currentSprint) {
-		return (
-			<SprintNotFound
-				workspaceUrl={workspace?.url}
-				teamIdentifier={team?.identifier}
-			/>
-		);
-	}
+
+		return () => {
+			newSocket.disconnect();
+		};
+	}, [sprintId]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await getRetrospectiveItems(sprintId);
+				setData(response);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+				toast({
+					title: "Failed to load retrospective data",
+					variant: "destructive",
+				});
+			}
+		};
+
+		fetchData();
+	}, [sprintId]);
+
+	const handleAddItem = useCallback(
+		async (type: ColumnType, content: string) => {
+			try {
+				const response = await addRetrospectiveItem(sprintId, type, content);
+				const { item: newItem, message: title, variant } = response;
+				socket?.emit("addItem", { sprintId, ...newItem });
+				toast({ title, variant });
+			} catch (error) {
+				console.error("Error adding item:", error);
+				toast({ title: "Failed to add item", variant: "destructive" });
+			}
+		},
+		[sprintId, socket],
+	);
+
+	const onDragEnd = useCallback(
+		async (result: DropResult) => {
+			if (!result.destination) return;
+
+			const sourceType = result.source.droppableId as ColumnType;
+			const destinationType = result.destination.droppableId as ColumnType;
+			const sourceIndex = result.source.index;
+			const destinationIndex = result.destination.index;
+
+			if (sourceType === destinationType && sourceIndex === destinationIndex)
+				return;
+
+			const itemId = result.draggableId;
+
+			try {
+				const response = await updateRetrospectiveItemType(
+					sprintId,
+					destinationType,
+				);
+				if (!response.item) throw new Error("Failed to move item");
+
+				socket?.emit("moveItem", {
+					sprintId,
+					itemId,
+					sourceType,
+					destinationType,
+					sourceIndex,
+					destinationIndex,
+				});
+
+				setData((prevData) => {
+					const newData = { ...prevData };
+					const [movedItem] = newData[sourceType].splice(sourceIndex, 1);
+					newData[destinationType].splice(destinationIndex, 0, {
+						...movedItem,
+						type: destinationType,
+					});
+					return newData;
+				});
+
+				toast({ title: "Item moved successfully", variant: "default" });
+			} catch (error) {
+				console.error("Error moving item:", error);
+				toast({ title: "Failed to move item", variant: "destructive" });
+			}
+		},
+		[sprintId, socket],
+	);
 
 	return (
-		<div className="container mx-auto py-10">
-			<Card className="w-full max-w-3xl mx-auto">
-				<CardHeader>
-					<CardTitle>Sprint Retrospective</CardTitle>
-					<CardDescription>
-						Reflect on the sprint: {currentSprint.name} (
-						{new Date(currentSprint.startDate).toLocaleDateString()} -{" "}
-						{new Date(currentSprint.endDate).toLocaleDateString()})
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-							<FormField
-								control={form.control}
-								name="wentWell"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>What went well?</FormLabel>
-										<FormControl>
-											<Textarea
-												placeholder="List the successes and positive outcomes from this sprint"
-												className="min-h-[100px]"
-												{...field}
-											/>
-										</FormControl>
-										<FormDescription>
-											Highlight achievements, successful practices, and positive
-											team dynamics.
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
+		<DragDropContext onDragEnd={onDragEnd}>
+			<div className="container mx-auto py-10">
+				<Card className="w-full">
+					<CardHeader>
+						<CardTitle>Sprint Retrospective</CardTitle>
+						<CardDescription>
+							Drag and drop items between columns to organize your retrospective
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+							<Column
+								title="What Went Well"
+								type="wentWell"
+								items={data.wentWell}
+								onAddItem={handleAddItem}
 							/>
-							<Separator />
-							<FormField
-								control={form.control}
-								name="toImprove"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>What could be improved?</FormLabel>
-										<FormControl>
-											<Textarea
-												placeholder="Identify areas for improvement and challenges faced"
-												className="min-h-[100px]"
-												{...field}
-											/>
-										</FormControl>
-										<FormDescription>
-											Discuss obstacles, inefficiencies, and areas where the
-											team struggled.
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
+							<Column
+								title="To Improve"
+								type="toImprove"
+								items={data.toImprove}
+								onAddItem={handleAddItem}
 							/>
-							<Separator />
-							<FormField
-								control={form.control}
-								name="actionItems"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Action Items</FormLabel>
-										<FormControl>
-											<Textarea
-												placeholder="List specific actions to address improvements"
-												className="min-h-[100px]"
-												{...field}
-											/>
-										</FormControl>
-										<FormDescription>
-											Define concrete steps to implement in the next sprint.
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
+							<Column
+								title="Action Items"
+								type="actionItems"
+								items={data.actionItems}
+								onAddItem={handleAddItem}
 							/>
-							<Button type="submit" className="w-full">
-								Submit Retrospective
-							</Button>
-						</form>
-					</Form>
-				</CardContent>
-			</Card>
-		</div>
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+		</DragDropContext>
 	);
 }
