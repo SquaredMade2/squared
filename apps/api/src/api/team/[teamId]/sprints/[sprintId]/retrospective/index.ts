@@ -24,7 +24,6 @@ export function createRoute(): Route<Params> {
 						actionItems: true,
 					},
 				});
-				console.log("triggered with sprint: ", sprint);
 
 				if (!sprint) {
 					res.status(404);
@@ -97,6 +96,22 @@ export function createRoute(): Route<Params> {
 		): Promise<APIResponse<RetrospectiveItem>> => {
 			try {
 				const { itemId, type } = body;
+				if (!itemId) {
+					res.status(400);
+					return {
+						data: null,
+						message: "Item ID is required",
+						variant: "destructive",
+					};
+				}
+				if (!["wentWell", "toImprove", "actionItems"].includes(type)) {
+					res.status(400);
+					return {
+						data: null,
+						message: "Invalid item type",
+						variant: "destructive",
+					};
+				}
 				const updatedItem = await prisma.retrospectiveItem.update({
 					where: { id: itemId },
 					data: {

@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { persist } from "zustand/middleware";
 import type {
 	TeamState,
@@ -267,6 +267,13 @@ export const createTeamStore = (
 						};
 					} catch (error) {
 						console.error("Error in addRetrospectiveItem:", error);
+						if (isAxiosError(error)) {
+							return {
+								item: null,
+								message: error.response?.data.message || "An error occurred",
+								variant: "destructive",
+							};
+						}
 						throw error;
 					}
 				},
@@ -291,7 +298,14 @@ export const createTeamStore = (
 							variant: data.variant,
 						};
 					} catch (error) {
-						console.error("Error in addRetrospectiveItem:", error);
+						console.error("Error in updateRetrospectiveItem:", error);
+						if (isAxiosError(error)) {
+							return {
+								item: null,
+								message: error.response?.data.message || "An error occurred",
+								variant: "destructive",
+							};
+						}
 						throw error;
 					}
 				},

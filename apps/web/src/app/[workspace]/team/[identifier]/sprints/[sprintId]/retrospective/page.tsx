@@ -189,10 +189,11 @@ export default function SprintRetrospectivePage() {
 
 			try {
 				const response = await updateRetrospectiveItemType(
-					sprintId,
+					itemId,
 					destinationType,
 				);
-				if (!response.item) throw new Error("Failed to move item");
+				toast({ title: response.message, variant: response.variant });
+				if (!response.item) return;
 
 				socket?.emit("moveItem", {
 					sprintId,
