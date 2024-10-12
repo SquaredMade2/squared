@@ -71,8 +71,8 @@
       "require": "./src/hover-card/index.ts"
     },
     "./icons": {
-      "import": "./src/squared-icons/index.ts",
-      "require": "./src/squared-icons/index.ts"
+      "import": "./src/icons/index.ts",
+      "require": "./src/icons/index.ts"
     },
     "./id": {
       "import": "./src/id/index.ts",
@@ -206,7 +206,6 @@
     "format:check": "biome format .",
     "test": "jest --ci",
     "storybook": "cross-env BROWSER=none storybook dev -p 9009",
-    "icons:gen": "pnpm --prefix ./src/icons run generate:icons",
     "build:icons": "pnpm --prefix ./src/icons run build:icons"
   },
   "dependencies": {
