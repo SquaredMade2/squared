@@ -25,7 +25,6 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Priority, Sprint, Status, Task } from "@repo/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
-import { Search } from "lucide-react";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;
@@ -151,15 +150,13 @@ export function AssignTasksDialog({
 						</div>
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-						<div className="flex items-center sm:space-x-2 w-full">
-							<Search className="size-4 text-muted-foreground shrink-0 hidden md:block" />
-							<Input
-								placeholder="Search tasks..."
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								className="flex-grow"
-							/>
-						</div>
+						<Input
+							placeholder="Search tasks..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="flex-grow"
+						/>
+
 						<div className="flex items-center gap-2 w-full sm:w-auto">
 							<Select
 								value={filterPriority}
