@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
 	Card,
 	CardContent,
@@ -38,6 +38,7 @@ import {
 	YAxis,
 	Tooltip,
 	ResponsiveContainer,
+	ReferenceLine,
 } from "recharts";
 import { useTaskStore } from "@/store";
 import type { Priority, Sprint, Task } from "@repo/db";
@@ -48,12 +49,7 @@ import { useSprints } from "@/hooks/useSprints";
 import { PriorityIcon } from "@/components/Icons";
 
 export default function SprintDashboard() {
-	const {
-		sprints,
-		currentSprint,
-		setCurrentSprint,
-		team: currentTeam,
-	} = useSprints();
+	const { sprints, currentSprint, team: currentTeam } = useSprints();
 	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
 	const [upcomingSprints, setUpcomingSprints] = useState<Sprint[]>([]);
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
@@ -67,6 +63,14 @@ export default function SprintDashboard() {
 	const [isCustomizeAutoAssignOpen, setIsCustomizeAutoAssignOpen] =
 		useState(false);
 	const [customTaskCount, setCustomTaskCount] = useState("");
+	const [currentDay, setCurrentDay] = useState(0);
+	const [burndownData, setBurndownData] = useState<
+		{
+			day: number;
+			tasks: number;
+			ideal: number;
+		}[]
+	>([]);
 
 	useEffect(() => {
 		if (sprints.length > 0) {
@@ -78,24 +82,29 @@ export default function SprintDashboard() {
 			setUpcomingSprints(upcoming);
 			setCompletedSprints(completed);
 		}
-	}, [sprints, currentSprint, setCurrentSprint]);
+	}, [sprints]);
 
 	useEffect(() => {
 		const unassigned = tasks.filter((task) => !task.sprintId);
 		setUnassignedTasks(unassigned);
 	}, [tasks]);
 
-	const calculateProgress = (sprint: Sprint) => {
-		const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
-		const completedTasks = sprintTasks.filter((task) => task.status === "done");
+	const calculateProgress = useCallback(
+		(sprint: Sprint) => {
+			const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
+			const completedTasks = sprintTasks.filter(
+				(task) => task.status === "done",
+			);
 
-		if (sprintTasks.length === 0) return 0; // Avoid division by zero
+			if (sprintTasks.length === 0) return 0; // Avoid division by zero
 
-		const progress = (completedTasks.length / sprintTasks.length) * 100;
-		return Math.min(Math.max(progress, 0), 100); // Ensure progress is between 0 and 100
-	};
+			const progress = (completedTasks.length / sprintTasks.length) * 100;
+			return Math.min(Math.max(progress, 0), 100); // Ensure progress is between 0 and 100
+		},
+		[tasks],
+	);
 
-	const getBurndownData = () => {
+	const getBurndownData = useCallback(() => {
 		if (!currentSprint) return [];
 		const sprintTasks = tasks.filter(
 			(task) => task.sprintId === currentSprint.id,
@@ -105,21 +114,51 @@ export default function SprintDashboard() {
 			new Date(currentSprint.startDate),
 		);
 		const totalTasks = sprintTasks.length;
-		return Array.from({ length: sprintDays + 1 }, (_, i) => {
+		const today = new Date();
+		const currentSprintDay = differenceInDays(
+			today,
+			new Date(currentSprint.startDate),
+		);
+
+		let completedTasksCount = 0;
+		const data = Array.from({ length: sprintDays + 1 }, (_, i) => {
 			const date = new Date(currentSprint.startDate);
 			date.setDate(date.getDate() + i);
-			const completedTasks = sprintTasks.filter(
-				(task) => task.status === "done" && new Date(task.updatedAt) <= date,
-			).length;
+
+			if (i <= currentSprintDay) {
+				completedTasksCount = sprintTasks.filter(
+					(task) =>
+						(task.status === "done" || task.status === "canceled") &&
+						new Date(task.updatedAt) <= date,
+				).length;
+			} else {
+				// Project future based on current rate
+				const remainingDays = sprintDays - currentSprintDay;
+				const remainingTasks = totalTasks - completedTasksCount;
+				const dailyRate = remainingTasks / remainingDays;
+				completedTasksCount += dailyRate;
+			}
+
 			return {
 				day: i,
-				tasks: totalTasks - completedTasks,
+				tasks: Math.max(0, totalTasks - completedTasksCount),
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
 			};
 		});
-	};
 
-	const getVelocity = () => {
+		return data;
+	}, [currentSprint, tasks]);
+
+	useEffect(() => {
+		setCurrentDay(
+			currentSprint
+				? differenceInDays(new Date(), new Date(currentSprint.startDate))
+				: 0,
+		);
+		setBurndownData(getBurndownData());
+	}, [currentSprint, getBurndownData]);
+
+	const getVelocity = useCallback(() => {
 		if (completedSprints.length === 0) return 0;
 		const totalCompletedTasks = completedSprints.reduce((sum, sprint) => {
 			return (
@@ -130,12 +169,12 @@ export default function SprintDashboard() {
 			);
 		}, 0);
 		return totalCompletedTasks / completedSprints.length;
-	};
+	}, [completedSprints, tasks]);
 
-	const getCapacity = () => {
+	const getCapacity = useCallback(() => {
 		if (!currentSprint) return 0;
 		return tasks.filter((task) => task.sprintId === currentSprint.id).length;
-	};
+	}, [currentSprint, tasks]);
 
 	const handleBulkAssign = async () => {
 		if (!targetSprint) return;
@@ -231,8 +270,8 @@ export default function SprintDashboard() {
 					<CardContent className="h-80">
 						<ResponsiveContainer width="100%" height="100%">
 							<LineChart
-								data={getBurndownData()}
-								margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+								data={burndownData}
+								margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
 							>
 								<XAxis dataKey="day" tick={false} axisLine={false} />
 								<YAxis hide={true} />
@@ -243,6 +282,7 @@ export default function SprintDashboard() {
 										borderRadius: "8px",
 									}}
 									labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+									formatter={(value) => Math.floor(Number(value))}
 								/>
 								<Line
 									type="monotone"
@@ -260,6 +300,16 @@ export default function SprintDashboard() {
 									strokeDasharray="5 5"
 									dot={false}
 									name="Ideal"
+								/>
+								<ReferenceLine
+									x={currentDay}
+									stroke="hsl(var(--destructive))"
+									strokeWidth={1}
+									label={{
+										value: "Today",
+										position: "top",
+										fill: "hsl(var(--destructive))",
+									}}
 								/>
 							</LineChart>
 						</ResponsiveContainer>

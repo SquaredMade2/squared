@@ -24,7 +24,9 @@ export const SprintCard = ({
 	isActive = false,
 }: SprintCardProps) => {
 	const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
-	const completedTasks = sprintTasks.filter((task) => task.status === "done");
+	const completedTasks = sprintTasks.filter(
+		(task) => task.status === "done" || task.status === "canceled",
+	);
 	const carriedOverTasks = isActive
 		? tasks.filter(
 				(task) =>
