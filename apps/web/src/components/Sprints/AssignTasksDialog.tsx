@@ -123,8 +123,11 @@ export function AssignTasksDialog({
 				</DialogHeader>
 				<div className="flex flex-col gap-4 py-4 flex-grow overflow-hidden">
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-						<div className="flex items-center gap-2 w-full sm:w-auto">
-							<Label htmlFor="sprint" className="whitespace-nowrap">
+						<div className="flex items-center gap-2 w-full">
+							<Label
+								htmlFor="sprint"
+								className="whitespace-nowrap ml-auto hidden sm:block"
+							>
 								Sprint
 							</Label>
 							<Select
@@ -148,8 +151,8 @@ export function AssignTasksDialog({
 						</div>
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-						<div className="flex items-center space-x-2 w-full sm:w-auto">
-							<Search className="size-4 text-muted-foreground" />
+						<div className="flex items-center sm:space-x-2 w-full">
+							<Search className="size-4 text-muted-foreground shrink-0 hidden md:block" />
 							<Input
 								placeholder="Search tasks..."
 								value={searchQuery}
