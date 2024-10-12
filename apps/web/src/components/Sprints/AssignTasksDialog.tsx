@@ -33,7 +33,7 @@ interface AssignTasksDialogProps {
 	selectedTasks: Task[];
 	setSelectedTasks: (tasks: Task[]) => void;
 	handleBulkAssign: () => void;
-	setTargetSprint: (sprintId: string) => void;
+	setTargetSprint?: (sprintId: string) => void;
 }
 
 export function AssignTasksDialog({

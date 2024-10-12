@@ -281,7 +281,6 @@ export default function SprintDashboardPage() {
 					handleBulkAssign={handleBulkAssign}
 					selectedTasks={selectedTasks}
 					setSelectedTasks={setSelectedTasks}
-					setTargetSprint={() => {}} // Not needed for single sprint view
 					unassignedTasks={unassignedTasks}
 					upcomingSprints={[]}
 				/>
