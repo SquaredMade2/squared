@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { format, differenceInDays } from "date-fns";
 import { useTaskStore } from "@/store";
@@ -19,12 +19,12 @@ import {
 	Line,
 	XAxis,
 	YAxis,
-	CartesianGrid,
 	Tooltip,
 	ResponsiveContainer,
 	PieChart,
 	Pie,
 	Cell,
+	ReferenceLine,
 } from "recharts";
 import {
 	AssignTasksDialog,
@@ -48,6 +48,14 @@ export default function SprintDashboardPage() {
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
+	const [currentDay, setCurrentDay] = useState(0);
+	const [burndownData, setBurndownData] = useState<
+		{
+			day: number;
+			tasks: number;
+			ideal: number;
+		}[]
+	>([]);
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -77,26 +85,53 @@ export default function SprintDashboardPage() {
 			: 0;
 	};
 
-	const getBurndownData = () => {
+	const getBurndownData = useCallback(() => {
 		if (!sprint) return [];
+		const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
 		const sprintDays = differenceInDays(
 			new Date(sprint.endDate),
 			new Date(sprint.startDate),
 		);
 		const totalTasks = sprintTasks.length;
-		return Array.from({ length: sprintDays + 1 }, (_, i) => {
+		const today = new Date();
+		const currentSprintDay = differenceInDays(
+			today,
+			new Date(sprint.startDate),
+		);
+
+		let completedTasksCount = 0;
+		const data = Array.from({ length: sprintDays + 1 }, (_, i) => {
 			const date = new Date(sprint.startDate);
 			date.setDate(date.getDate() + i);
-			const completedTasks = sprintTasks.filter(
-				(task) => task.status === "done" && new Date(task.updatedAt) <= date,
-			).length;
+
+			if (i <= currentSprintDay) {
+				completedTasksCount = sprintTasks.filter(
+					(task) => task.status === "done" && new Date(task.updatedAt) <= date,
+				).length;
+			} else {
+				// Project future based on current rate
+				const remainingDays = sprintDays - currentSprintDay;
+				const remainingTasks = totalTasks - completedTasksCount;
+				const dailyRate = remainingTasks / remainingDays;
+				completedTasksCount += dailyRate;
+			}
+
 			return {
 				day: i,
-				tasks: totalTasks - completedTasks,
+				tasks: Math.max(0, totalTasks - completedTasksCount),
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
 			};
 		});
-	};
+
+		return data;
+	}, [sprint, tasks]);
+
+	useEffect(() => {
+		setCurrentDay(
+			sprint ? differenceInDays(new Date(), new Date(sprint.startDate)) : 0,
+		);
+		setBurndownData(getBurndownData());
+	}, [sprint, getBurndownData]);
 
 	const getTaskStatusData = () => {
 		const statusCounts = sprintTasks.reduce(
@@ -180,23 +215,46 @@ export default function SprintDashboardPage() {
 					</CardHeader>
 					<CardContent className="h-[300px]">
 						<ResponsiveContainer width="100%" height="100%">
-							<LineChart data={getBurndownData()}>
-								<CartesianGrid strokeDasharray="3 3" />
-								<XAxis dataKey="day" />
-								<YAxis />
-								<Tooltip />
+							<LineChart
+								data={burndownData}
+								margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
+							>
+								<XAxis dataKey="day" tick={false} axisLine={false} />
+								<YAxis hide={true} />
+								<Tooltip
+									contentStyle={{
+										background: "hsl(var(--card))",
+										border: "none",
+										borderRadius: "8px",
+									}}
+									labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+								/>
 								<Line
 									type="monotone"
 									dataKey="tasks"
-									stroke="#8884d8"
+									stroke="hsl(var(--primary))"
+									strokeWidth={2}
+									dot={false}
 									name="Actual"
 								/>
 								<Line
 									type="monotone"
 									dataKey="ideal"
-									stroke="#82ca9d"
-									name="Ideal"
+									stroke="hsl(var(--muted))"
+									strokeWidth={2}
 									strokeDasharray="5 5"
+									dot={false}
+									name="Ideal"
+								/>
+								<ReferenceLine
+									x={currentDay}
+									stroke="hsl(var(--destructive))"
+									strokeWidth={1}
+									label={{
+										value: "Today",
+										position: "top",
+										fill: "hsl(var(--destructive))",
+									}}
 								/>
 							</LineChart>
 						</ResponsiveContainer>
