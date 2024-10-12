@@ -18,6 +18,7 @@ const StatusColumn = ({
 	title,
 	tasks,
 	currentView: view,
+	sprintId,
 }: StatusColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
@@ -140,6 +141,7 @@ const StatusColumn = ({
 				numberOfTasks={numberOfTasks}
 				title={title}
 				setShowTasks={setShowTasks}
+				sprintId={sprintId}
 			/>
 			<Droppable droppableId={columnType}>
 				{(provided, snapshot) => (
@@ -170,7 +172,10 @@ const StatusColumn = ({
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
-								<GridColumnNewIssueButton status={title as Status} />
+								<GridColumnNewIssueButton
+									status={title as Status}
+									sprintId={sprintId}
+								/>
 							)}
 						</div>
 						{provided.placeholder}

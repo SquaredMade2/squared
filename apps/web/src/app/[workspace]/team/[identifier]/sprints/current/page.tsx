@@ -43,7 +43,7 @@ export default function MyAssignedTasksPage() {
 		});
 	};
 
-	if (!currentWorkspace) return null;
+	if (!currentWorkspace || !currentSprint) return null;
 
 	return (
 		<TaskPageLayout
@@ -52,13 +52,14 @@ export default function MyAssignedTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle={`Current Sprint - ${currentSprint?.name}`}
+			pageTitle={`Current Sprint - ${currentSprint.name}`}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
 					getFilteredStatuses={getFilteredStatuses}
 					getTasksForStatus={getTasksForStatus}
 					allowedColumns={allowedColumns}
+					sprintId={currentSprint.id}
 				/>
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
