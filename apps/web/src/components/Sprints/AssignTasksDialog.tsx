@@ -114,16 +114,16 @@ export function AssignTasksDialog({
 			<DialogTrigger asChild>
 				<Button>Assign Tasks</Button>
 			</DialogTrigger>
-			<DialogContent className="w-full max-w-[90vw] h-[90vh] flex flex-col">
-				<DialogHeader>
+			<DialogContent className="h-[90vh] flex flex-col p-0">
+				<DialogHeader className="p-6 pb-2">
 					<DialogTitle>Assign Tasks to Sprint</DialogTitle>
 					<DialogDescription>
 						Select tasks and assign them to a sprint.
 					</DialogDescription>
 				</DialogHeader>
-				<div className="flex flex-col gap-4 py-4 flex-grow overflow-hidden">
+				<div className="flex flex-col gap-4 px-6 flex-grow overflow-hidden">
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-						<div className="flex items-center gap-2 w-full">
+						<div className="flex items-center gap-2 w-full mt-2">
 							<Label
 								htmlFor="sprint"
 								className="whitespace-nowrap ml-auto hidden sm:block"
@@ -134,7 +134,7 @@ export function AssignTasksDialog({
 								onValueChange={setTargetSprint}
 								defaultValue={activeSprint?.id}
 							>
-								<SelectTrigger className="w-full sm:w-72">
+								<SelectTrigger className="w-full sm:w-72" id="sprint">
 									<SelectValue placeholder="Select a sprint" />
 								</SelectTrigger>
 								<SelectContent className="w-full sm:w-72">
@@ -196,49 +196,58 @@ export function AssignTasksDialog({
 					<Tabs
 						value={viewMode}
 						onValueChange={(value) => setViewMode(value as "list" | "grid")}
-						className="flex-grow flex flex-col"
+						className="flex-grow flex flex-col overflow-hidden"
 					>
 						<TabsList className="grid w-full grid-cols-2">
 							<TabsTrigger value="list">List View</TabsTrigger>
 							<TabsTrigger value="grid">Grid View</TabsTrigger>
 						</TabsList>
-						<TabsContent value="list" className="flex-grow overflow-hidden">
+						<TabsContent
+							value="list"
+							className="flex-grow overflow-hidden mt-0"
+						>
 							<ScrollArea className="h-full w-full rounded-md border">
-								{filteredTasks.map((task) => (
-									<div
-										key={task.id}
-										className="group flex items-center w-full py-2 px-4 border-b border-border hover:bg-accent"
-									>
-										<Checkbox
-											id={task.id}
-											checked={selectedTasks.includes(task)}
-											onCheckedChange={() => handleTaskSelection(task)}
-											className="mr-2"
-										/>
-										<div className="flex-grow min-w-0">
-											<div className="flex items-center gap-2">
+								<div className="p-4">
+									{filteredTasks.map((task) => (
+										<div
+											key={task.id}
+											className="group flex items-center w-full py-2 px-4 border-b border-border hover:bg-accent"
+										>
+											<Checkbox
+												id={task.id}
+												checked={selectedTasks.includes(task)}
+												onCheckedChange={() => handleTaskSelection(task)}
+												className="mr-2 flex-shrink-0"
+											/>
+											<div className="flex-grow min-w-0 flex items-center gap-2">
 												<PriorityIcon priority={task.priority} />
 												<StatusIcon status={task.status} />
-												<span className="truncate text-sm font-medium">
+												<span className="text-sm font-medium overflow-hidden text-ellipsis">
 													{task.title}
 												</span>
 											</div>
+											<div className="flex items-center gap-2 ml-2 flex-shrink-0">
+												{task.dueDate && (
+													<span className="text-xs text-muted-foreground whitespace-nowrap">
+														{new Date(task.dueDate).toLocaleDateString(
+															"en-US",
+															{
+																month: "short",
+																day: "numeric",
+															},
+														)}
+													</span>
+												)}
+											</div>
 										</div>
-										<div className="flex items-center gap-2 ml-2">
-											{task.dueDate && (
-												<span className="text-xs text-muted-foreground whitespace-nowrap">
-													{new Date(task.dueDate).toLocaleDateString("en-US", {
-														month: "short",
-														day: "numeric",
-													})}
-												</span>
-											)}
-										</div>
-									</div>
-								))}
+									))}
+								</div>
 							</ScrollArea>
 						</TabsContent>
-						<TabsContent value="grid" className="flex-grow overflow-hidden">
+						<TabsContent
+							value="grid"
+							className="flex-grow overflow-hidden mt-0"
+						>
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
 									{filteredTasks.map((task) => (
@@ -276,7 +285,7 @@ export function AssignTasksDialog({
 						</TabsContent>
 					</Tabs>
 				</div>
-				<DialogFooter>
+				<DialogFooter className="p-6 pt-2">
 					<Button onClick={handleBulkAssign}>
 						Assign {selectedTasks.length} Selected Task
 						{selectedTasks.length !== 1 ? "s" : ""}
