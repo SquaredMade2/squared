@@ -156,7 +156,7 @@ export function createRoute(): Route<Params> {
 								expiresIn: "1d",
 							});
 							try {
-								await sendMail(email, username, emailToken, "confirmation");
+								await sendMail(email, username, emailToken, "verify");
 							} catch (error) {
 								console.error("Error sending email:", error);
 								await prisma.user.delete({ where: { id: user.id } });
@@ -193,7 +193,7 @@ export function createRoute(): Route<Params> {
 								});
 
 								// Send verification email if they're not verified
-								await sendMail(email, user.name, emailToken, "confirmation");
+								await sendMail(email, user.name, emailToken, "verify");
 								return {
 									data: null,
 									message:
