@@ -211,22 +211,22 @@ export function AssignTasksDialog({
 									{filteredTasks.map((task) => (
 										<div
 											key={task.id}
-											className="group flex items-center w-full py-2 px-4 border-b border-border hover:bg-accent"
+											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border hover:bg-accent"
 										>
-											<Checkbox
-												id={task.id}
-												checked={selectedTasks.includes(task)}
-												onCheckedChange={() => handleTaskSelection(task)}
-												className="mr-2 flex-shrink-0"
-											/>
-											<div className="flex-grow min-w-0 flex items-center gap-2">
+											<div className="shrink min-w-0 flex items-center gap-2">
+												<Checkbox
+													id={task.id}
+													checked={selectedTasks.includes(task)}
+													onCheckedChange={() => handleTaskSelection(task)}
+													className="mr-2 flex-shrink-0"
+												/>
 												<PriorityIcon priority={task.priority} />
 												<StatusIcon status={task.status} />
-												<span className="text-sm font-medium overflow-hidden text-ellipsis">
+												<span className="text-sm font-medium truncate max-w-64 sm:max-w-48 md:max-w-lg">
 													{task.title}
 												</span>
 											</div>
-											<div className="flex items-center gap-2 ml-2 flex-shrink-0">
+											<div className="flex-shrink-0 ml-2">
 												{task.dueDate && (
 													<span className="text-xs text-muted-foreground whitespace-nowrap">
 														{new Date(task.dueDate).toLocaleDateString(
