@@ -1,7 +1,6 @@
-// backlog/page.tsx
 "use client";
 
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { useFilterStore } from "@/store";
@@ -17,7 +16,7 @@ export default function BacklogTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage((tasks) =>
+	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks).filter((t) => t.status === "backlog"),
 	);
 	if (!currentWorkspace) return null;

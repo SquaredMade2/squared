@@ -3,7 +3,7 @@
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useSprints } from "@/hooks/useSprints";
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { Status } from "@repo/db";
@@ -21,7 +21,7 @@ export default function MyAssignedTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage((tasks) =>
+	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
