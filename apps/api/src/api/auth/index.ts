@@ -209,7 +209,7 @@ export function createRoute(): Route<Params> {
 								await sendMail({
 									email,
 									subject: "Welcome to Squared!",
-									html: verifyEmailTemplate(`confirmation/${emailToken}`),
+									html: verifyEmailTemplate(`verify/${emailToken}`),
 								});
 							} catch (error) {
 								console.error("Error sending email:", error);
@@ -263,7 +263,7 @@ export function createRoute(): Route<Params> {
 								await sendMail({
 									email,
 									subject: "Verify Your Email",
-									html: verifyEmailTemplate(`confirmation/${emailToken}`),
+									html: verifyEmailTemplate(`verify/${emailToken}`),
 								});
 								return {
 									data: null,

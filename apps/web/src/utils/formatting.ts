@@ -85,7 +85,7 @@ export const passwordSchema = z
 	.refine((value) => !/\s/.test(value), "Password must not contain spaces")
 	.refine(
 		(value) => /[a-z]/.test(value),
-		"Password must contain at least on lowercase letter",
+		"Password must contain at least one lowercase letter",
 	)
 	.refine(
 		(value) => /[A-Z]/.test(value),
