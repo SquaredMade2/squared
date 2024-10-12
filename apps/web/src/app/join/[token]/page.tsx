@@ -22,11 +22,10 @@ export default function TokenVerificationPage({
 		const verifyToken = async () => {
 			if (status === "authenticated" && session?.user) {
 				try {
-					const { workspace, message, variant } = await joinWorkspace(
+					const { workspace } = await joinWorkspace(
 						params.token,
 						session.user.id,
 					);
-					toast({ title: message, variant });
 					if (workspace) {
 						const { user } = await getUser(session.user.id);
 						setUser(user);
