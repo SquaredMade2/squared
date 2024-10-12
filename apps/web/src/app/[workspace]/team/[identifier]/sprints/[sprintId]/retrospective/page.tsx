@@ -127,10 +127,10 @@ export default function SprintRetrospectivePage() {
 				setData((prevData) => {
 					const newData = { ...prevData };
 					const [movedItem] = newData[sourceType].splice(sourceIndex, 1);
-					newData[destinationType].splice(destinationIndex, 0, {
-						...movedItem,
-						type: destinationType,
-					});
+					if (movedItem) {
+						movedItem.type = destinationType;
+						newData[destinationType].splice(destinationIndex, 0, movedItem);
+					}
 					return newData;
 				});
 			},
@@ -156,21 +156,27 @@ export default function SprintRetrospectivePage() {
 		};
 
 		fetchData();
-	}, [sprintId]);
+	}, [sprintId, getRetrospectiveItems]);
 
 	const handleAddItem = useCallback(
 		async (type: ColumnType, content: string) => {
 			try {
 				const response = await addRetrospectiveItem(sprintId, type, content);
 				const { item: newItem, message: title, variant } = response;
-				socket?.emit("addItem", { sprintId, ...newItem });
+				if (newItem) {
+					socket?.emit("addItem", { sprintId, ...newItem });
+					setData((prevData) => ({
+						...prevData,
+						[type]: [...prevData[type], newItem],
+					}));
+				}
 				toast({ title, variant });
 			} catch (error) {
 				console.error("Error adding item:", error);
 				toast({ title: "Failed to add item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket],
+		[sprintId, socket, addRetrospectiveItem],
 	);
 
 	const onDragEnd = useCallback(
@@ -193,8 +199,20 @@ export default function SprintRetrospectivePage() {
 					itemId,
 					destinationType,
 				);
-				toast({ title: response.message, variant: response.variant });
-				if (!response.item) return;
+				if (!response.item) {
+					toast({ title: response.message, variant: response.variant });
+					return;
+				}
+
+				setData((prevData) => {
+					const newData = { ...prevData };
+					const [movedItem] = newData[sourceType].splice(sourceIndex, 1);
+					if (movedItem) {
+						movedItem.type = destinationType;
+						newData[destinationType].splice(destinationIndex, 0, movedItem);
+					}
+					return newData;
+				});
 
 				socket?.emit("moveItem", {
 					sprintId,
@@ -205,23 +223,13 @@ export default function SprintRetrospectivePage() {
 					destinationIndex,
 				});
 
-				setData((prevData) => {
-					const newData = { ...prevData };
-					const [movedItem] = newData[sourceType].splice(sourceIndex, 1);
-					newData[destinationType].splice(destinationIndex, 0, {
-						...movedItem,
-						type: destinationType,
-					});
-					return newData;
-				});
-
 				toast({ title: "Item moved successfully", variant: "default" });
 			} catch (error) {
 				console.error("Error moving item:", error);
 				toast({ title: "Failed to move item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket],
+		[sprintId, socket, updateRetrospectiveItemType],
 	);
 
 	return (
