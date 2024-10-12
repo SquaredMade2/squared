@@ -10,14 +10,13 @@ import {
 } from "@/store";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { useToast } from "@/components/ui/use-toast";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Home, Inbox, LogOut, Moon, Search, Settings, Sun } from "lucide-react";
+import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const IconLeftMenu = () => {
@@ -28,20 +27,8 @@ const IconLeftMenu = () => {
 	const { getAllNotifications } = useNotificationStore((state) => state);
 	const [notifications, setNotifications] = useState(0);
 	const { resolvedTheme: theme, setTheme } = useTheme();
-	const { toast } = useToast();
-	const { logout, user } = useAuthStore((state) => state);
+	const { user } = useAuthStore((state) => state);
 	const [mounted, setMounted] = useState(false);
-
-	const handleLogout = async (): Promise<void> => {
-		try {
-			await logout();
-			router.replace("/login");
-			toast({ title: "Logged out successfully." });
-		} catch (error) {
-			console.error("Logout failed", error);
-			toast({ title: "Failed to log out", variant: "destructive" });
-		}
-	};
 
 	const navigateTo = (childRoute: string): void => {
 		router.push(`/${childRoute}`);
@@ -150,16 +137,6 @@ const IconLeftMenu = () => {
 						</TooltipContent>
 					</Tooltip>
 				</div>
-
-				<Tooltip>
-					<TooltipTrigger asChild>
-						<Button variant="ghost" size="icon" onClick={handleLogout}>
-							<LogOut className="size-4" />
-							<span className="sr-only">Logout</span>
-						</Button>
-					</TooltipTrigger>
-					<TooltipContent side="right">Logout</TooltipContent>
-				</Tooltip>
 			</div>
 		</TooltipProvider>
 	);

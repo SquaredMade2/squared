@@ -16,7 +16,7 @@ const TaskGrid = ({
 	currentWorkspaceUrl,
 	isSubtask = false,
 }: TaskGridProps) => {
-	const { gridViewOptions } = useViewStore((state) => state);
+	const { getGridOptions } = useViewStore((state) => state);
 
 	const {
 		identifier: showIdentifier,
@@ -24,7 +24,7 @@ const TaskGrid = ({
 		avatar: showAvatar,
 		labels: showLabels,
 		priority: showPriority,
-	} = gridViewOptions.displayProperties;
+	} = getGridOptions().displayProperties;
 
 	return (
 		<Link

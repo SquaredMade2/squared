@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
 	CircleDashed,
 	Calendar,
@@ -9,29 +8,21 @@ import {
 	User,
 } from "lucide-react";
 
-import PriorityFilterDropDown from "./PriorityFilter";
-import StatusFilterDropDown from "./StatusFilter";
-import EffortFilterDropDown from "./EffortFilter";
-
-import {
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-} from "@/components/ui/popover";
-import {
-	Command,
-	CommandInput,
-	CommandList,
-	CommandItem,
-	CommandEmpty,
-} from "@/components/ui/command";
 import type { FilterOption } from "./interfaces";
 import { Button } from "../ui/button";
 import { useFilterStore } from "@/store";
+import PriorityFilterDropDown from "./PriorityFilter";
+import StatusFilterDropDown from "./StatusFilter";
+import EffortFilterDropDown from "./EffortFilter";
 import LabelFilterDropDown from "./LabelFilter";
 import DueDateFilterDropDown from "./DueDateFilter";
 import AssigneeFilterDropDown from "./AssigneeFilter";
 import { PriorityIcon } from "../Icons";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [
@@ -40,36 +31,54 @@ const filterOptions: FilterOption[] = [
 		name: "Status",
 		svg: <CircleDashed className="size-4" />,
 		group: "Status",
+		menuContent: (filterOption) => (
+			<StatusFilterDropDown filterOption={filterOption} />
+		),
 	},
 	{
 		id: 2,
 		name: "Priority",
 		svg: <PriorityIcon priority={"urgent"} />,
 		group: "Priority",
+		menuContent: (filterOption) => (
+			<PriorityFilterDropDown filterOption={filterOption} />
+		),
 	},
 	{
 		id: 3,
 		name: "Labels",
 		svg: <Tag className="cursor-pointer size-4" />,
 		group: "Labels",
+		menuContent: (filterOption) => (
+			<LabelFilterDropDown filterOption={filterOption} />
+		),
 	},
 	{
 		id: 4,
 		name: "Due Date",
 		svg: <Calendar className="cursor-pointer size-4" />,
 		group: "Due Date",
+		menuContent: (filterOption) => (
+			<DueDateFilterDropDown filterOption={filterOption} />
+		),
 	},
 	{
 		id: 5,
 		name: "Effort",
 		svg: <Clock className="cursor-pointer size-4" />,
 		group: "effortEstimate",
+		menuContent: (filterOption) => (
+			<EffortFilterDropDown filterOption={filterOption} />
+		),
 	},
 	{
 		id: 6,
 		name: "Assignee",
 		svg: <User className="cursor-pointer size-4" />,
 		group: "Assignee",
+		menuContent: (filterOption) => (
+			<AssigneeFilterDropDown filterOption={filterOption} />
+		),
 	},
 	// Future filter options to be implemented:
 	// {
@@ -82,109 +91,30 @@ const filterOptions: FilterOption[] = [
 ];
 
 const FilterDropDown: React.FunctionComponent = () => {
-	const [open, setOpen] = useState(false);
-
-	const [showDueDateFilterDropDown, setShowDueDateFilterDropDown] =
-		useState(false);
-	const [showEffortFilterDropDown, setShowEffortFilterDropDown] =
-		useState(false);
-	const [showLabelFilterDropDown, setShowLabelFilterDropDown] = useState(false);
-	const [showPriorityFilterDropDown, setShowPriorityFilterDropDown] =
-		useState(false);
-	const [showStatusFilterDropDown, setShowStatusFilterDropDown] =
-		useState(false);
-	const [showAssigneeFilterDropDown, setShowAssigneeFilterDropDown] =
-		useState(false);
 	const { currentFilters, clearFilter } = useFilterStore((state) => state);
-
-	const handleSelect = (option: FilterOption) => {
-		setOpen(false);
-
-		switch (option.name) {
-			case "Status":
-				setShowStatusFilterDropDown(true);
-				break;
-			case "Priority":
-				setShowPriorityFilterDropDown(true);
-				break;
-			case "Labels":
-				setShowLabelFilterDropDown(true);
-				break;
-			case "Due Date":
-				setShowDueDateFilterDropDown(true);
-				break;
-			case "Effort":
-				setShowEffortFilterDropDown(true);
-				break;
-			case "Assignee":
-				setShowAssigneeFilterDropDown(true);
-				break;
-			default:
-				break;
-		}
-	};
 
 	return (
 		<div className="flex items-center">
-			<Popover open={open} onOpenChange={setOpen}>
-				<PopoverTrigger asChild>
-					<Button onClick={() => setOpen(true)} variant={"ghost"}>
+			<DropdownMenu>
+				<DropdownMenuTrigger>
+					<Button variant="ghost">
 						<div className="flex gap-2 items-center">
 							<Filter className="size-5" />
 							Filter
 						</div>
 					</Button>
-				</PopoverTrigger>
-				<PopoverContent className="w-72 p-0 ml-32">
-					<Command>
-						<CommandInput placeholder="Search filters..." />
-						<CommandList>
-							<CommandEmpty>No results found.</CommandEmpty>
-							{filterOptions.map((item) => (
-								<CommandItem
-									key={item.name}
-									value={item.name}
-									onSelect={() => handleSelect(item)}
-								>
-									<div className="flex items-center space-x-2">
-										{item.svg}
-										<span>{item.name}</span>
-									</div>
-								</CommandItem>
-							))}
-						</CommandList>
-					</Command>
-				</PopoverContent>
-			</Popover>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent className="w-60 ml-32">
+					{filterOptions.map((item) => (
+						<div key={item.name}>{item.menuContent(item)}</div>
+					))}
+				</DropdownMenuContent>
+			</DropdownMenu>
 			{currentFilters?.length > 0 && (
-				<Button variant={"outline"} onClick={clearFilter} className="gap-2">
+				<Button variant="outline" onClick={clearFilter} className="gap-2">
 					Clear Filters <X className="size-4" />
 				</Button>
 			)}
-			<PriorityFilterDropDown
-				setShowFilterDropDown={setShowPriorityFilterDropDown}
-				showFilterDropDown={showPriorityFilterDropDown}
-			/>
-			<StatusFilterDropDown
-				setShowFilterDropDown={setShowStatusFilterDropDown}
-				showFilterDropDown={showStatusFilterDropDown}
-			/>
-			<LabelFilterDropDown
-				setShowFilterDropDown={setShowLabelFilterDropDown}
-				showFilterDropDown={showLabelFilterDropDown}
-			/>
-			<DueDateFilterDropDown
-				setShowFilterDropDown={setShowDueDateFilterDropDown}
-				showFilterDropDown={showDueDateFilterDropDown}
-			/>
-			<EffortFilterDropDown
-				setShowFilterDropDown={setShowEffortFilterDropDown}
-				showFilterDropDown={showEffortFilterDropDown}
-			/>
-			<AssigneeFilterDropDown
-				setShowFilterDropDown={setShowAssigneeFilterDropDown}
-				showFilterDropDown={showAssigneeFilterDropDown}
-			/>
 		</div>
 	);
 };

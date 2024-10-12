@@ -2,15 +2,16 @@
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useSprints } from "@/hooks/useSprints";
 import { useTaskPage } from "@/hooks/useTaskPage";
-import { useFilterStore, useTeamStore, useViewStore } from "@/store";
+import { useFilterStore, useViewStore } from "@/store";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { Status } from "@repo/db";
 
 export default function MyAssignedTasksPage() {
-	const { currentSprint } = useTeamStore((state) => state);
+	const { currentSprint, loading: sprintLoading } = useSprints();
 	const { filterTasks } = useFilterStore((state) => state);
-	const { view, gridViewOptions } = useViewStore((state) => state);
+	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const {
 		loading,
@@ -46,7 +47,7 @@ export default function MyAssignedTasksPage() {
 
 	return (
 		<TaskPageLayout
-			loading={loading}
+			loading={loading || sprintLoading}
 			authorized={authorized}
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
@@ -60,7 +61,7 @@ export default function MyAssignedTasksPage() {
 					allowedColumns={allowedColumns}
 				/>
 				{view === "grid" &&
-					!gridViewOptions.showEmptyGroups &&
+					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (
 						<div className="ml-auto">
 							<HiddenColumns
