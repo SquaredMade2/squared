@@ -44,7 +44,13 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [currentWorkspace, taskIdentifier, getTaskByIdentifier]);
+	}, [
+		currentWorkspace,
+		taskIdentifier,
+		getTaskByIdentifier,
+		workspaceLoading,
+		getAllUsers,
+	]);
 
 	return { currentWorkspace, task, isLoading, error };
 }

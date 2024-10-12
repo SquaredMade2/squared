@@ -11,7 +11,7 @@ export function useTeams() {
 		(state) => state,
 	);
 	const { loading: workspaceLoading, currentWorkspace, user } = useWorkspaces();
-	const { users } = useUsers();
+	const { users, loading: userLoading } = useUsers();
 	const [loading, setLoading] = useState(true);
 	const [teams, setTeams] = useState<Team[]>([]);
 	const [authorized, setAuthorized] = useState(false);
@@ -39,7 +39,7 @@ export function useTeams() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, currentTeam, workspaceLoading]);
+	}, [currentWorkspace, currentTeam, workspaceLoading, userLoading]);
 
 	return {
 		loading,
