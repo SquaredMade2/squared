@@ -127,7 +127,9 @@ export default function SprintDashboard() {
 
 			if (i <= currentSprintDay) {
 				completedTasksCount = sprintTasks.filter(
-					(task) => task.status === "done" && new Date(task.updatedAt) <= date,
+					(task) =>
+						(task.status === "done" || task.status === "canceled") &&
+						new Date(task.updatedAt) <= date,
 				).length;
 			} else {
 				// Project future based on current rate

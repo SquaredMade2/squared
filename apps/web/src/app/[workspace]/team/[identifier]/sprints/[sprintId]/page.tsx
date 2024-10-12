@@ -79,7 +79,9 @@ export default function SprintDashboardPage() {
 
 	const calculateProgress = () => {
 		if (!sprint) return 0;
-		const completedTasks = sprintTasks.filter((task) => task.status === "done");
+		const completedTasks = sprintTasks.filter(
+			(task) => task.status === "done" || task.status === "canceled",
+		);
 		return sprintTasks.length > 0
 			? (completedTasks.length / sprintTasks.length) * 100
 			: 0;
@@ -106,7 +108,9 @@ export default function SprintDashboardPage() {
 
 			if (i <= currentSprintDay) {
 				completedTasksCount = sprintTasks.filter(
-					(task) => task.status === "done" && new Date(task.updatedAt) <= date,
+					(task) =>
+						(task.status === "done" || task.status === "canceled") &&
+						new Date(task.updatedAt) <= date,
 				).length;
 			} else {
 				// Project future based on current rate
@@ -308,7 +312,12 @@ export default function SprintDashboardPage() {
 						<div>
 							<h3 className="text-lg font-semibold">Completed Tasks</h3>
 							<p className="text-3xl font-bold">
-								{sprintTasks.filter((task) => task.status === "done").length}
+								{
+									sprintTasks.filter(
+										(task) =>
+											task.status === "done" || task.status === "canceled",
+									).length
+								}
 							</p>
 						</div>
 						<div>
@@ -371,7 +380,9 @@ export default function SprintDashboardPage() {
 				</TabsContent>
 				<TabsContent value="done">
 					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "done")}
+						tasks={sprintTasks.filter(
+							(task) => task.status === "done" || task.status === "canceled",
+						)}
 					/>
 				</TabsContent>
 			</Tabs>
