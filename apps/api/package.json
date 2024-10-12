@@ -16,7 +16,7 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "pnpm sudo ./scripts/test.sh"
+		"test": "pnpm ./scripts/test.sh"
 	},
 	"keywords": [],
 	"author": "",
