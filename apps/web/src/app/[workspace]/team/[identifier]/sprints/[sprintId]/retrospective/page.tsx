@@ -32,14 +32,6 @@ interface ColumnProps {
 	onAddItem: (type: ColumnType, content: string) => void;
 }
 
-interface ItemMovedEvent {
-	itemId: string;
-	sourceType: ColumnType;
-	destinationType: ColumnType;
-	sourceIndex: number;
-	destinationIndex: number;
-}
-
 const Column: React.FC<ColumnProps> = ({ title, type, items, onAddItem }) => {
 	const [newItemContent, setNewItemContent] = useState("");
 
@@ -103,60 +95,63 @@ export default function SprintRetrospectivePage() {
 	});
 	const [socket, setSocket] = useState<Socket | null>(null);
 
+	const fetchData = useCallback(async () => {
+		try {
+			const response = await getRetrospectiveItems(sprintId);
+			setData(response);
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			toast({
+				title: "Failed to load retrospective data",
+				variant: "destructive",
+			});
+		}
+	}, [sprintId, getRetrospectiveItems]);
+
 	useEffect(() => {
-		const newSocket = io(process.env.NEXT_PUBLIC_URL || "");
-		setSocket(newSocket);
+		const socketUrl = process.env.NEXT_PUBLIC_SERVER || "http://localhost:5173";
 
-		newSocket.emit("joinRoom", sprintId);
-
-		newSocket.on("itemAdded", (newItem: RetrospectiveItem) => {
-			setData((prevData) => ({
-				...prevData,
-				[newItem.type]: [...prevData[newItem.type as ColumnType], newItem],
-			}));
+		const newSocket = io(socketUrl, {
+			transports: ["websocket"],
+			reconnectionAttempts: 5,
+			reconnectionDelay: 1000,
+			timeout: 10000,
 		});
 
-		newSocket.on(
-			"itemMoved",
-			({
-				sourceType,
-				destinationType,
-				sourceIndex,
-				destinationIndex,
-			}: ItemMovedEvent) => {
-				setData((prevData) => {
-					const newData = { ...prevData };
-					const [movedItem] = newData[sourceType].splice(sourceIndex, 1);
-					if (movedItem) {
-						movedItem.type = destinationType;
-						newData[destinationType].splice(destinationIndex, 0, movedItem);
-					}
-					return newData;
-				});
-			},
-		);
+		newSocket.on("connect", () => {
+			newSocket.emit("joinRoom", sprintId);
+		});
+
+		newSocket.on("connect_error", (error) => {
+			console.error("Socket.IO connection error:", error);
+			toast({
+				title: "Connection error",
+				description:
+					"Unable to connect to the server. Please try refreshing the page.",
+				variant: "destructive",
+			});
+		});
+
+		newSocket.on("disconnect", (reason) => {
+			console.log("Disconnected from Socket.IO server:", reason);
+		});
+
+		newSocket.on("itemAdded", () => {
+			fetchData();
+		});
+
+		newSocket.on("itemMoved", () => {
+			fetchData();
+		});
+
+		setSocket(newSocket);
+
+		fetchData();
 
 		return () => {
 			newSocket.disconnect();
 		};
-	}, [sprintId]);
-
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await getRetrospectiveItems(sprintId);
-				setData(response);
-			} catch (error) {
-				console.error("Error fetching data:", error);
-				toast({
-					title: "Failed to load retrospective data",
-					variant: "destructive",
-				});
-			}
-		};
-
-		fetchData();
-	}, [sprintId, getRetrospectiveItems]);
+	}, [sprintId, fetchData]);
 
 	const handleAddItem = useCallback(
 		async (type: ColumnType, content: string) => {

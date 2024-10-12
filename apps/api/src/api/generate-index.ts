@@ -145,7 +145,7 @@ io.on('connection', (socket) => {
 
   socket.on('joinRoom', (sprintId) => {
     socket.join(sprintId);
-    console.log(\`User joined room: \${sprintId}\`);
+	console.log('User joined room:', sprintId);
   });
 
   socket.on('addItem', (data) => {
