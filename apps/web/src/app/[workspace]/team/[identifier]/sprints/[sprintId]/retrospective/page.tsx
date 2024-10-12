@@ -2,83 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import {
-	DragDropContext,
-	Droppable,
-	Draggable,
-	type DropResult,
-} from "@hello-pangea/dnd";
+import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import { io, type Socket } from "socket.io-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-	CardContent,
-} from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import type { RetrospectiveItem } from "@repo/db";
 import { useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
+import { RetroColumn } from "@/components/Sprints";
+import TopNavBar from "@/components/TopNavBar";
 
 type ColumnType = "wentWell" | "toImprove" | "actionItems";
-
-interface ColumnProps {
-	title: string;
-	type: ColumnType;
-	items: RetrospectiveItem[];
-	onAddItem: (type: ColumnType, content: string) => void;
-}
-
-const Column: React.FC<ColumnProps> = ({ title, type, items, onAddItem }) => {
-	const [newItemContent, setNewItemContent] = useState("");
-
-	const handleAddItem = () => {
-		if (newItemContent.trim()) {
-			onAddItem(type, newItemContent.trim());
-			setNewItemContent("");
-		}
-	};
-
-	return (
-		<div className="bg-secondary p-4 rounded-lg">
-			<h3 className="text-lg font-semibold mb-4">{title}</h3>
-			<Droppable droppableId={type}>
-				{(provided) => (
-					<div {...provided.droppableProps} ref={provided.innerRef}>
-						{items.map((item, index) => (
-							<Draggable key={item.id} draggableId={item.id} index={index}>
-								{(provided) => (
-									<div
-										ref={provided.innerRef}
-										{...provided.draggableProps}
-										{...provided.dragHandleProps}
-									>
-										<Card className="mb-2">
-											<CardContent className="p-2">{item.content}</CardContent>
-										</Card>
-									</div>
-								)}
-							</Draggable>
-						))}
-						{provided.placeholder}
-					</div>
-				)}
-			</Droppable>
-			<div className="mt-4">
-				<Input
-					value={newItemContent}
-					onChange={(e) => setNewItemContent(e.target.value)}
-					placeholder="Add new item"
-					className="mb-2"
-				/>
-				<Button onClick={handleAddItem}>Add</Button>
-			</div>
-		</div>
-	);
-};
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
@@ -230,36 +163,31 @@ export default function SprintRetrospectivePage() {
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<div className="container mx-auto py-10">
-				<Card className="w-full">
-					<CardHeader>
-						<CardTitle>Sprint Retrospective</CardTitle>
-						<CardDescription>
-							Drag and drop items between columns to organize your retrospective
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-							<Column
-								title="What Went Well"
-								type="wentWell"
-								items={data.wentWell}
-								onAddItem={handleAddItem}
-							/>
-							<Column
-								title="To Improve"
-								type="toImprove"
-								items={data.toImprove}
-								onAddItem={handleAddItem}
-							/>
-							<Column
-								title="Action Items"
-								type="actionItems"
-								items={data.actionItems}
-								onAddItem={handleAddItem}
-							/>
-						</div>
-					</CardContent>
-				</Card>
+				<div className="w-full flex flex-col h-screen overflow-hidden">
+					<div className="w-full px-2 sm:px-5">
+						<TopNavBar pageTitle="Sprint Retrospective" />
+					</div>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<RetroColumn
+							title="What Went Well"
+							type="wentWell"
+							items={data.wentWell}
+							onAddItem={handleAddItem}
+						/>
+						<RetroColumn
+							title="To Improve"
+							type="toImprove"
+							items={data.toImprove}
+							onAddItem={handleAddItem}
+						/>
+						<RetroColumn
+							title="Action Items"
+							type="actionItems"
+							items={data.actionItems}
+							onAddItem={handleAddItem}
+						/>
+					</div>
+				</div>
 			</div>
 		</DragDropContext>
 	);
