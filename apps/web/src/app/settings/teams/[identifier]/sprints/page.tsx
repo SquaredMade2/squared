@@ -42,15 +42,13 @@ import { useTeamStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import type { Sprint, Team } from "@repo/db";
 import { useToast } from "@/components/ui/use-toast";
+import { useTeams } from "@/hooks/useTeams";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 export default function TeamSettingsSprints() {
-	const {
-		currentTeam,
-		updateTeam,
-		setCurrentTeam,
-		initializeSprints,
-		getSprints,
-	} = useTeamStore((state) => state);
+	const { updateTeam, setCurrentTeam, initializeSprints, getSprints } =
+		useTeamStore((state) => state);
+	const { currentTeam, loading: teamLoading } = useTeams();
 	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
@@ -129,6 +127,18 @@ export default function TeamSettingsSprints() {
 		}
 	};
 
+	if (teamLoading)
+		return (
+			<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
+				<h1 className="text-3xl font-bold mb-2">Sprints</h1>
+				<p className="text-muted-foreground mb-6">
+					Organize your team's work into time-boxed iterations
+				</p>
+				<div className="flex justify-center items-center w-full h-64">
+					<SquaredLoader />
+				</div>
+			</div>
+		);
 	if (!currentTeam) return null;
 	const {
 		sprintsEnabled,

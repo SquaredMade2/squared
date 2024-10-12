@@ -12,12 +12,13 @@ const TaskColumnTitle = ({
 	title,
 	numberOfTasks,
 	setShowTasks,
+	sprintId,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 
 	const handleClick = (): void => {
 		setShowNewIssue(true);
-		setNewIssueData({ status: title });
+		setNewIssueData({ status: title, sprintId: sprintId ?? null });
 	};
 
 	return (
