@@ -8,7 +8,6 @@ import type {
 	WorkspaceResponse,
 	Workspace,
 } from "./interfaces";
-import type { User } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 import type { SavedFilter } from "../filters";
 export * from "./interfaces";
@@ -187,14 +186,18 @@ export const createWorkspaceStore = (
 						);
 					}
 				},
-				joinWorkspace: async (token: string, user: User) => {
+				joinWorkspace: async (token: string, userId: string) => {
 					try {
-						const response = await axios.post(`${apiString("join")}`, {
+						const {
+							data: response,
+						}: {
+							data: ApiReturnType<Workspace>;
+						} = await axios.post(`${apiString("join")}`, {
 							token,
-							user,
+							userId,
 						});
 
-						const { workspace, message, variant } = response.data;
+						const { data: workspace, message, variant } = response;
 						if (workspace) {
 							set((state) => ({
 								workspaces: [...state.workspaces, workspace],
