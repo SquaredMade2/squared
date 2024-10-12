@@ -57,7 +57,7 @@ export default function ViewsPage() {
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold">Saved Views</h1>
 				<Button
-					onClick={() => console.log("Create new view clicked")}
+					onClick={() => console.log("Create new view clickedd")}
 					variant="outline"
 				>
 					<PlusCircle className="mr-2 h-4 w-4" /> Create New View

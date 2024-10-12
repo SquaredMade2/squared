@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from "react";
 import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
-import { useTeamStore } from "@/store";
 import { useToast } from "../ui/use-toast";
 import type { Task } from "@repo/db";
 import {
@@ -12,14 +11,16 @@ import {
 import { Button } from "../ui/button";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 
-export const TaskSidebarTopRow = ({ task }: { task: Task }) => {
+export const TaskSidebarTopRow = ({
+	task,
+	workspaceUrl,
+}: { task: Task; workspaceUrl?: string }) => {
 	const { toast } = useToast();
 
 	const identifier = task.identifier;
 	const title = task.title;
 
-	const currentTeam = useTeamStore((state) => state.currentTeam);
-	const TaskUrl = `${(process.env.NEXT_PUBLIC_URL ?? "") + (currentTeam?.name ?? "")}/task/${identifier}/${formatUrl(title)}`;
+	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${workspaceUrl}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `
 			${replaceSpacesWithDashes(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,

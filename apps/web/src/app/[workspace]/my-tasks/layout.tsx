@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import MyTasksNavbar from "@/components/MyTasksNavbar";
+
+export const metadata: Metadata = {
+	title: "My Tasks",
+};
 
 export default function MyTasksLayout({
 	children,

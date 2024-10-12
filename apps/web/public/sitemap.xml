@@ -21,7 +21,7 @@
   </url>
 
   <url>
-    <loc>https://develop.squaredmade.com/app/confirmation/[token]/page/</loc>
+    <loc>https://develop.squaredmade.com/app/verify/[token]/page/</loc>
   </url>
 
   <url>

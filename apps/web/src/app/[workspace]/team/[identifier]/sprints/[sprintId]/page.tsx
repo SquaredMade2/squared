@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { format, differenceInDays } from "date-fns";
-import { useTeamStore, useTaskStore } from "@/store";
+import { useTaskStore } from "@/store";
 import {
 	Card,
 	CardContent,
@@ -26,16 +26,23 @@ import {
 	Pie,
 	Cell,
 } from "recharts";
-import { AssignTasksDialog } from "@/components/Sprints";
+import {
+	AssignTasksDialog,
+	SprintError,
+	SprintLoading,
+	SprintNotFound,
+} from "@/components/Sprints";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import type { Sprint, Task } from "@repo/db";
+import type { Sprint, Status, Task } from "@repo/db";
+import { useSprints } from "@/hooks/useSprints";
+import { formatStatus } from "@/utils/formatting";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function SprintDashboardPage() {
-	const { workspace, identifier, sprintId } = useParams();
-	const { getSprints, sprints, currentTeam } = useTeamStore((state) => state);
+	const { sprintId } = useParams();
+	const { sprints, team, workspace, loading, error } = useSprints();
 	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
@@ -44,13 +51,12 @@ export default function SprintDashboardPage() {
 
 	useEffect(() => {
 		const loadData = async () => {
-			if (currentTeam) {
-				await getSprints(currentTeam.id);
-				await getAllTasks(currentTeam.id);
+			if (team) {
+				await getAllTasks(team.id);
 			}
 		};
 		loadData();
-	}, [currentTeam, getSprints, getAllTasks]);
+	}, [team]);
 
 	useEffect(() => {
 		const currentSprint = sprints.find((s) => s.id === sprintId);
@@ -102,7 +108,7 @@ export default function SprintDashboardPage() {
 		);
 
 		return Object.entries(statusCounts).map(([status, count]) => ({
-			name: status,
+			name: formatStatus(status as Status),
 			value: count,
 		}));
 	};
@@ -113,17 +119,37 @@ export default function SprintDashboardPage() {
 			await updateTask(task.id, { sprintId: sprint.id });
 		}
 		setSelectedTasks([]);
-		currentTeam && (await getAllTasks(currentTeam.id));
+		team && (await getAllTasks(team.id));
 	};
 
+	if (loading) {
+		return <SprintLoading />;
+	}
+	if (error) {
+		return (
+			<SprintError
+				error={error}
+				workspaceUrl={workspace?.url}
+				teamIdentifier={team?.identifier}
+			/>
+		);
+	}
 	if (!sprint) {
-		return <div>Loading...</div>;
+		return (
+			<SprintNotFound
+				workspaceUrl={workspace?.url}
+				teamIdentifier={team?.identifier}
+			/>
+		);
 	}
 
 	return (
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex items-center justify-between">
-				<Link href={`/${workspace}/team/${identifier}/sprints`} passHref>
+				<Link
+					href={`/${workspace?.url}/team/${team?.identifier}/sprints`}
+					passHref
+				>
 					<Button variant="ghost" size="sm">
 						<ArrowLeft className="mr-2 h-4 w-4" /> Back to Sprints
 					</Button>
@@ -230,8 +256,11 @@ export default function SprintDashboardPage() {
 							<h3 className="text-lg font-semibold">In Progress</h3>
 							<p className="text-3xl font-bold">
 								{
-									sprintTasks.filter((task) => task.status === "inProgress")
-										.length
+									sprintTasks.filter(
+										(task) =>
+											task.status === "inProgress" ||
+											task.status === "inReview",
+									).length
 								}
 							</p>
 						</div>
@@ -275,7 +304,10 @@ export default function SprintDashboardPage() {
 				</TabsContent>
 				<TabsContent value="inProgress">
 					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "inProgress")}
+						tasks={sprintTasks.filter(
+							(task) =>
+								task.status === "inProgress" || task.status === "inReview",
+						)}
 					/>
 				</TabsContent>
 				<TabsContent value="done">
@@ -299,7 +331,9 @@ function TaskList({ tasks }: { tasks: Task[] }) {
 				<Card key={task.id}>
 					<CardHeader>
 						<CardTitle>{task.title}</CardTitle>
-						<CardDescription>Status: {task.status}</CardDescription>
+						<CardDescription>
+							Status: {formatStatus(task.status)}
+						</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<p>{task.description}</p>
