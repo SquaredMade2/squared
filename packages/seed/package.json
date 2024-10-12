@@ -7,8 +7,8 @@
   },
   "scripts": {
     "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
-    "docker:db": "docker compose -f docker-compose.yml up -d",
-    "docker:db:down": "docker compose -f docker-compose.yml down --volumes"
+    "docker:db": "docker-compose -f docker-compose.yml up -d",
+    "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
   },
   "dependencies": {
     "@repo/db": "workspace:*",
