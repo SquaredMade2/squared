@@ -141,7 +141,10 @@ export default function SprintDashboard() {
 		if (!targetSprint) return;
 
 		for (const task of selectedTasks) {
-			await updateTask(task.id, { sprintId: targetSprint });
+			await updateTask(task.id, {
+				sprintId: targetSprint,
+				status: task.status === "backlog" ? "todo" : task.status,
+			});
 		}
 
 		setSelectedTasks([]);
