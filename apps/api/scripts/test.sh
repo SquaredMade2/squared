@@ -1,5 +1,4 @@
 #!/bin/sh
-# "test": "pnpm docker:api && pnpm test:db:wait && pnpm test:db:push && docker stats --no-stream && pnpm docker:api:check && docker exec -i --workdir /app/apps/api api-test-1 pnpm jest --ci --maxWorkers=2 --forceExit || (docker logs api-test-1 && docker stats api-test-1 --no-stream) && pnpm docker:api:down",
 
 # install docker
 pnpm docker:api

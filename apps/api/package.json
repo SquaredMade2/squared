@@ -16,11 +16,7 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "pnpm ./scripts/test.sh",
-		"test:db:push": "docker exec --workdir /app api-test-1 pnpm db:push",
-		"test:db:reset": "docker exec --workdir /app/packages/db api-test-1 npx prisma migrate reset --force",
-		"test:db:wait": "docker cp ./wait-db.sh postgres-api-test-db:/ && docker exec postgres-api-test-db chmod +x /wait-db.sh && docker exec -i postgres-api-test-db /bin/sh /./wait-db.sh",
-		"docker:api:check": "docker cp ./wait-express.sh api-test-1:/ && docker exec -i --workdir / api-test-1 /bin/sh ./wait-express.sh"
+		"test": "pnpm sudo ./scripts/test.sh"
 	},
 	"keywords": [],
 	"author": "",
