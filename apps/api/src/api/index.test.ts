@@ -3,7 +3,7 @@ import { PrismaClient } from "@repo/db";
 import { v4 as uuidv4 } from "uuid";
 
 const seededTestTaskId = uuidv4();
-const host = "http://localhost:5173";
+const host = "http://localhost:5174";
 const prisma = new PrismaClient();
 
 /**
