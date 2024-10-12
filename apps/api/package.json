@@ -16,7 +16,7 @@
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "pnpm docker:api && pnpm test:db:wait && pnpm test:db:push && docker stats --no-stream && pnpm docker:api:check && pnpm jest --ci --maxWorkers=2 --forceExit || sudo dmesg | grep -i 'killed process' && pnpm docker:api:down",
+		"test": "pnpm docker:api && pnpm test:db:wait && pnpm test:db:push && docker stats --no-stream && pnpm docker:api:check && pnpm jest --ci --maxWorkers=2 --forceExit || (docker logs api-test-1 && docker stats api-test-1 --no-stream && sudo dmesg | grep 'killed') && pnpm docker:api:down",
 		"test:db:push": "docker exec --workdir /app api-test-1 pnpm db:push",
 		"test:db:reset": "docker exec --workdir /app/packages/db api-test-1 npx prisma migrate reset --force",
 		"test:db:wait": "docker cp ./wait-db.sh postgres-api-test-db:/ && docker exec postgres-api-test-db chmod +x /wait-db.sh && docker exec -i postgres-api-test-db /bin/sh /./wait-db.sh",
