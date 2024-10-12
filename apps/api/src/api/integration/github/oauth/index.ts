@@ -5,7 +5,7 @@ import type { Route } from "@/api/route";
 const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
-if (!clientId || !clientSecret) {
+if (process.env.NODE_ENV !== "test" && (!clientId || !clientSecret)) {
 	throw new Error(
 		`Missing necessary environment variables: ${
 			!clientId ? "GITHUB_CLIENT_ID " : ""
