@@ -277,6 +277,7 @@ export default function SprintDashboard() {
 										borderRadius: "8px",
 									}}
 									labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+									formatter={(value) => Math.floor(Number(value))}
 								/>
 								<Line
 									type="monotone"
