@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import ArchiveNavbar from "@/components/NavBars/ArchiveNavbar";
+
+export const metadata: Metadata = {
+	title: "Archive",
+};
 
 export default function MyTasksLayout({
 	children,
