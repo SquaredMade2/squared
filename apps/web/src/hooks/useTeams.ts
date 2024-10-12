@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useTeamStore, useUserStore } from "@/store";
+import { useTeamStore } from "@/store";
 import { useWorkspaces } from "./useWorkspaces";
 import type { Team } from "@repo/db";
 import { parseParams } from "@/utils/parseParams";
+import { useUsers } from "./useUsers";
 
 export function useTeams() {
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
 	);
 	const { loading: workspaceLoading, currentWorkspace, user } = useWorkspaces();
-	const getAllUsers = useUserStore((state) => state.getAllUsers);
+	const { users } = useUsers();
 	const [loading, setLoading] = useState(true);
 	const [teams, setTeams] = useState<Team[]>([]);
 	const [authorized, setAuthorized] = useState(false);
@@ -24,8 +25,7 @@ export function useTeams() {
 			setLoading(true);
 
 			if (user && currentWorkspace) {
-				const allUsers = await getAllUsers(currentWorkspace.id);
-				const userHasAccess = allUsers.some((u) => u.id === user.id);
+				const userHasAccess = users.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const allTeams = await getAllTeams(currentWorkspace.id);

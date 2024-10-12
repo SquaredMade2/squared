@@ -1,20 +1,21 @@
 "use client";
-import { useUserStore, useWorkspaceStore } from "@/store";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useUsers } from "@/hooks/useUsers";
 
 export default function WorkspaceMembersPage() {
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { users } = useUserStore((state) => state);
+	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { users, loading: userLoading } = useUsers();
 
-	if (!currentWorkspace) {
+	if (workspaceLoading || userLoading) {
 		return (
 			<MembersSettingsWrapper>
 				<div className="w-full flex justify-center p-20">
-					<Loader2 className="animate-spin" />
+					<SquaredLoader />
 				</div>
 			</MembersSettingsWrapper>
 		);
