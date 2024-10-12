@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -50,6 +50,17 @@ export function AssignTasksDialog({
 	const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 	const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
 	const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
+	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
+		activeSprint?.id,
+	);
+
+	useEffect(() => {
+		if (activeSprint) {
+			setSelectedSprintId(activeSprint.id);
+		} else if (upcomingSprints.length > 0) {
+			setSelectedSprintId(upcomingSprints[0].id);
+		}
+	}, [activeSprint, upcomingSprints]);
 
 	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks(
@@ -131,7 +142,7 @@ export function AssignTasksDialog({
 							</Label>
 							<Select
 								onValueChange={setTargetSprint}
-								defaultValue={activeSprint?.id}
+								defaultValue={selectedSprintId}
 							>
 								<SelectTrigger className="w-full sm:w-72" id="sprint">
 									<SelectValue placeholder="Select a sprint" />
