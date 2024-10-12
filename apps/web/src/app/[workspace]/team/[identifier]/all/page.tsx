@@ -1,7 +1,7 @@
 // all/page.tsx
 "use client";
 
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { useFilterStore, useViewStore } from "@/store";
@@ -21,7 +21,7 @@ export default function AllTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage(filterTasks);
+	} = useTaskDashboard(filterTasks);
 
 	const getHiddenColumns = (): Status[] => {
 		const filteredStatuses = getFilteredStatuses();
