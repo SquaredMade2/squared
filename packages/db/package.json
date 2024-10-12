@@ -12,7 +12,7 @@
     "db:push": "prisma db push --skip-generate",
     "dev": "echo 'Add dev script here'",
     "lint": "echo 'Add lint script here'",
-    "postinstall": "pnpm run db:generate && pnpm run db:deploy",
+    "postinstall": "pnpm run db:generate",
     "studio": "prisma studio",
     "test": "echo 'Add test script here'"
   },
