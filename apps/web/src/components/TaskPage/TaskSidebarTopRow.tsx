@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
 import type { Task } from "@repo/db";
 import {
@@ -22,7 +22,7 @@ export const TaskSidebarTopRow = ({
 
 	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${workspaceUrl}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `
-			${replaceSpacesWithDashes(
+			${sanitizeBranchName(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
 			)}`;
 

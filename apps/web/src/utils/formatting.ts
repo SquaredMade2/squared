@@ -10,8 +10,18 @@ export const truncateString = (string: string, maxLength: number): string => {
 	return string;
 };
 
-export const replaceSpacesWithDashes = (str: string): string => {
-	return str?.replace(/\s+/g, "-");
+export const sanitizeBranchName = (str: string): string => {
+    const excludedWords = ['the', 'of', 'and', 'to', 'in', 'on', 'with', 'for', 'a', 'an', 'that', 'eg', 'like'];
+
+    let sanitized = str
+		.replace(/[\s/]+/g, '-') 
+        .replace(/[^a-z0-9\-]/g, '')  
+        .split('-') 
+        .filter(word => !excludedWords.includes(word)) 
+        .slice(0, 8)
+        .join('-');
+
+    return sanitized;
 };
 
 export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
