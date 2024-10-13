@@ -28,7 +28,6 @@ import { formatFilterName } from "@/utils/formatting";
 import type { SavedFilter } from "@/store/filters";
 import { useParams, usePathname } from "next/navigation";
 import { parseParams } from "@/utils/parseParams";
-import { mergeFilters } from "@/utils/mergeFilters";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),
@@ -45,6 +44,7 @@ export function SaveFilterForm({
 		savedFilters,
 		updateSavedFilter,
 		clearFilter,
+		mergeFilters,
 	} = useFilterStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
