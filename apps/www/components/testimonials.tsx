@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Heading } from "./heading";
 import { Subheading } from "./subheading";
 import { cn } from "@/lib/utils";
@@ -209,7 +208,6 @@ function Testimonial({
 		];
 	}, []);
 
-	const boxStyle = {};
 	return (
 		<figure
 			className={cn(

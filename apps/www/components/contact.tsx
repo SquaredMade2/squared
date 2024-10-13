@@ -13,16 +13,8 @@ import {
 } from "@/components/ui/form";
 
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import {
-	IconBrandGithub,
-	IconBrandLinkedin,
-	IconBrandX,
-} from "@tabler/icons-react";
-import Password from "./password";
+import { IconBrandLinkedin } from "@tabler/icons-react";
 import { Button } from "./button";
-import { Logo } from "./Logo";
 
 const formSchema = z.object({
 	name: z
@@ -65,7 +57,7 @@ export function ContactForm() {
 		// todo submit to actual inbox?
 		try {
 			console.log("submitted form", values);
-		} catch (e) {}
+		} catch {}
 	}
 
 	const socials = [
