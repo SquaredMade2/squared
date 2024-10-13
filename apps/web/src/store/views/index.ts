@@ -15,6 +15,7 @@ export const createViewStore = (
 		showMobileNavbar: false,
 		displayOptions: {
 			taskOrder: { orderBy: "Priority", orderAscending: false },
+			taskGroup: "Status",
 			showCompletedTasks: { show: true, period: "All" },
 			showSubTasks: false,
 			viewOptions: {
