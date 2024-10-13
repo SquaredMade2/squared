@@ -38,21 +38,21 @@ export const NewIssueButton = () => {
 };
 
 export const GridColumnNewIssueButton = ({
-	status,
+	group,
 	sprintId,
-}: { status: Status; sprintId?: string }) => {
-	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
-		(state) => state,
-	);
+}: { group: string; sprintId?: string }) => {
+	// const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
+	// 	(state) => state,
+	// );
 
-	const handleOpen = () => {
-		setShowNewIssue(true);
-		setNewIssueData({
-			...newIssueData,
-			status,
-			sprintId,
-		});
-	};
+	// const handleOpen = () => {
+	// 	setShowNewIssue(true);
+	// 	setNewIssueData({
+	// 		...newIssueData,
+	// 		status,
+	// 		sprintId,
+	// 	});
+	// };
 	return (
 		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
 			<SquarePen className="size-5" />

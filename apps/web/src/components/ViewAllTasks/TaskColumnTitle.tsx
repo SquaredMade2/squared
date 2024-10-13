@@ -2,9 +2,12 @@ import { ChevronDown, CirclePlus } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import HideStatus from "./HideStatus";
 import { cn } from "@/utils/cn";
-import { useModalStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { StatusIcon } from "../Icons";
+// import { useModalStore } from "@/store";
+import { formatPriority, formatStatus } from "@/utils/formatting";
+import { useViewStore } from "@/store";
+import type { Priority, Status } from "@repo/db";
+import { useUsers } from "@/hooks/useUsers";
+// import { StatusIcon } from "../Icons";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -12,13 +15,35 @@ const TaskColumnTitle = ({
 	title,
 	numberOfTasks,
 	setShowTasks,
-	sprintId,
+	// sprintId,
 }: TaskColumnTitleProps) => {
-	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
+	// const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
+	const { users } = useUsers();
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupTasksBy } = displayOptions;
 
-	const handleClick = (): void => {
-		setShowNewIssue(true);
-		setNewIssueData({ status: title, sprintId: sprintId ?? null });
+	// const handleClick = (): void => {
+	// 	setShowNewIssue(true);
+	// 	setNewIssueData({ status: title, sprintId: sprintId ?? null });
+	// };
+
+	const formatTitle = () => {
+		switch (groupTasksBy) {
+			case "Status":
+				return formatStatus(title as Status);
+			case "Assignee": {
+				const user = users.find((user) => user.id === title);
+				return user ? user.name : null;
+			}
+			case "Priority":
+				return formatPriority(title as Priority);
+			// case "Label":
+			// 	return
+			// case "Parent Issue":
+			// 	return
+			// case "No grouping":
+			// 	return
+		}
 	};
 
 	return (
@@ -50,9 +75,9 @@ const TaskColumnTitle = ({
 									: "flex items-center gap-4 text-foreground text-sm pr-8"
 							}
 						>
-							<StatusIcon status={title} />
+							{/* <StatusIcon status={title} /> */}
 							<div className="flex gap-2 items-center">
-								<span className="text-sm">{formatStatus(title)}</span>
+								<span className="text-sm">{formatTitle()}</span>
 								<span className="ml-1 text-muted-foreground">
 									{numberOfTasks}
 								</span>
@@ -63,9 +88,9 @@ const TaskColumnTitle = ({
 					<div
 						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
 					>
-						<StatusIcon status={title} />
+						{/* <StatusIcon status={title} /> */}
 						<div className="flex gap-2 items-center">
-							<span>{formatStatus(title)}</span>
+							<span>{formatTitle()}</span>
 							<span className="ml-2 text-muted-foreground">
 								{numberOfTasks}
 							</span>
@@ -79,7 +104,10 @@ const TaskColumnTitle = ({
 							: "flex flex-row gap-2 items-center text-foreground"
 					}
 				>
-					<div className="cursor-pointer" onClick={handleClick}>
+					<div
+						className="cursor-pointer"
+						// onClick={handleClick}
+					>
 						<div className="group cursor-pointer">
 							<CirclePlus className="size-5" />
 						</div>

@@ -14,6 +14,8 @@ export default function BacklogTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
+		getGroupColumnTitles,
+		getTasksForGroup,
 		getTasksForStatus,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks).filter((t) => t.status === "backlog"),
@@ -31,6 +33,8 @@ export default function BacklogTasksPage() {
 		>
 			<ViewAllTasks
 				getTasksForStatus={getTasksForStatus}
+				getGroupColumnTitles={getGroupColumnTitles}
+				getTasksForGroup={getTasksForGroup}
 				allowedColumns={["backlog"]}
 			/>
 		</TaskPageLayout>

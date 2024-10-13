@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { StatusColumnProps } from "./interfaces";
+import type { GroupColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { GridColumnNewIssueButton } from "../Modals";
 import TaskCard from "./TaskCard";
@@ -13,13 +13,14 @@ import {
 	compareNullableStrings,
 } from "@/utils/compareSorting";
 
-const StatusColumn = ({
-	columnType,
-	title,
+const GroupColumn = ({
+	// columnType,
+	// title,
+	group,
 	tasks,
 	currentView: view,
 	sprintId,
-}: StatusColumnProps) => {
+}: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
@@ -136,14 +137,14 @@ const StatusColumn = ({
 			className={isListView ? "mb-2 w-full" : "pb-2 w-[300px] flex-shrink-0"}
 		>
 			<TaskColumnTitle
-				isListView={isListView}
+				title={group}
 				showTasks={showTasks}
-				numberOfTasks={numberOfTasks}
-				title={title}
 				setShowTasks={setShowTasks}
+				numberOfTasks={numberOfTasks}
+				isListView={isListView}
 				sprintId={sprintId}
 			/>
-			<Droppable droppableId={columnType}>
+			<Droppable droppableId={group}>
 				{(provided, snapshot) => (
 					<ScrollArea
 						ref={provided.innerRef}
@@ -173,10 +174,7 @@ const StatusColumn = ({
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
-								<GridColumnNewIssueButton
-									status={title as Status}
-									sprintId={sprintId}
-								/>
+								<GridColumnNewIssueButton group={group} sprintId={sprintId} />
 							)}
 						</div>
 						{provided.placeholder}
@@ -187,4 +185,4 @@ const StatusColumn = ({
 	);
 };
 
-export default StatusColumn;
+export default GroupColumn;

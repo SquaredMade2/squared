@@ -20,6 +20,8 @@ export default function AllTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
+		getGroupColumnTitles,
+		getTasksForGroup,
 		getTasksForStatus,
 	} = useTaskDashboard(filterTasks);
 
@@ -46,7 +48,11 @@ export default function AllTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="All Tasks"
 		>
-			<ViewAllTasks getTasksForStatus={getTasksForStatus} />
+			<ViewAllTasks
+				getTasksForStatus={getTasksForStatus}
+				getGroupColumnTitles={getGroupColumnTitles}
+				getTasksForGroup={getTasksForGroup}
+			/>
 			{view === "grid" &&
 				!getGridOptions().showEmptyGroups &&
 				getHiddenColumns().length >= 1 && (

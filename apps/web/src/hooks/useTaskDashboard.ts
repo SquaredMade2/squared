@@ -6,15 +6,18 @@ import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 import { parseParams } from "@/utils/parseParams";
+import { type TaskGroup, useViewStore } from "@/store/views";
 
 export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
 	const { tasks, updateTask, getAllTasks } = useTaskStore((state) => state);
+	const { displayOptions } = useViewStore((state) => state);
 	const [loading, setLoading] = useState(true);
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
+	const { groupTasksBy } = displayOptions;
 
 	useEffect(() => {
 		const initiateStore = async () => {
@@ -50,11 +53,60 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		return filterTasks(tasks).filter((task) => task.status === status);
 	};
 
+	const getTasksForGroup = (group: string) => {
+		switch (groupTasksBy) {
+			case "Status":
+				return filterTasks(tasks).filter((task) => task.status === group);
+			case "Assignee":
+				return filterTasks(tasks).filter((task) => task.assigneeId === group);
+			case "Priority":
+				return filterTasks(tasks).filter((task) => task.priority === group);
+			// case "Label":
+			// 	return filterTasks(tasks).filter((task) => task.labels === group);
+			case "Parent Issue":
+				return filterTasks(tasks).filter((task) => task.parentId === group);
+			case "No grouping":
+				return tasks;
+			default:
+				return tasks;
+		}
+	};
+
+	const getGroupColumnTitles = (group: TaskGroup) => {
+		let groupTitles: string[];
+		switch (group) {
+			case "Status":
+				groupTitles = tasks.map((task) => task.status);
+				break;
+			case "Assignee":
+				groupTitles = tasks.map((task) => task.assigneeId || "Unassigned");
+				break;
+			case "Priority":
+				groupTitles = tasks.map((task) => task.priority);
+				break;
+			case "Label":
+				groupTitles = tasks.flatMap((task) =>
+					task.labels.length > 0 ? task.labels : ["No labels"],
+				);
+				break;
+			case "Parent Issue":
+				groupTitles = tasks.map((task) => task.parentId || "No parent");
+				break;
+			case "No grouping":
+				return [];
+			default:
+				return [];
+		}
+		return Array.from(new Set(groupTitles));
+	};
+
 	return {
 		loading,
 		authorized,
 		currentWorkspace,
 		teamIdentifier,
+		getGroupColumnTitles,
+		getTasksForGroup,
 		handleDragEnd,
 		getTasksForStatus,
 	};

@@ -50,7 +50,7 @@ const TopNavBarDisplay = () => {
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
-	const { taskOrder, taskGroup, showCompletedTasks } = displayOptions;
+	const { taskOrder, groupTasksBy, showCompletedTasks } = displayOptions;
 
 	const orderByOptions: TaskOrder[] = TaskOrderOptions;
 	const groupByOptions: TaskGroup[] = TaskGroupOptions;
@@ -153,7 +153,7 @@ const TopNavBarDisplay = () => {
 											size="sm"
 											className="flex-grow justify-between"
 										>
-											<span className="text-xs">{taskGroup}</span>
+											<span className="text-xs">{groupTasksBy}</span>
 											<Layers className="size-4" />
 										</Button>
 									</DropdownMenuTrigger>
@@ -164,7 +164,7 @@ const TopNavBarDisplay = () => {
 												className="text-xs"
 												onSelect={() =>
 													setOptions({
-														taskGroup: option,
+														groupTasksBy: option,
 													})
 												}
 											>

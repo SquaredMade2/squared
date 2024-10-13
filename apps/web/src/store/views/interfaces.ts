@@ -53,7 +53,7 @@ export interface DisplayOptions {
 		orderBy: TaskOrder;
 		orderAscending: boolean;
 	};
-	taskGroup: TaskGroup;
+	groupTasksBy: TaskGroup;
 	showCompletedTasks: {
 		show: boolean;
 		period: CompletedTaskPeriod;

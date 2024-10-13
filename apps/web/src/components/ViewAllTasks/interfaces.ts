@@ -1,14 +1,18 @@
+import type { TaskGroup } from "@/store/views";
 import type { Status, Task } from "@repo/db";
 
 export interface ViewAllTasksProps {
 	getTasksForStatus: (status: Status) => Task[];
+	getGroupColumnTitles: (group: TaskGroup) => string[];
+	getTasksForGroup: (group: string) => Task[];
 	allowedColumns?: Status[];
 	sprintId?: string;
 }
 
-export interface StatusColumnProps {
-	columnType: Status;
-	title: Status;
+export interface GroupColumnProps {
+	// columnType: Status;
+	// title: Status;
+	group: string;
 	tasks: Task[];
 	currentView: "list" | "grid";
 	sprintId?: string;
@@ -17,7 +21,7 @@ export interface StatusColumnProps {
 export type TaskColumnTitleProps = {
 	isListView: boolean;
 	showTasks: boolean;
-	title: Status;
+	title: string;
 	numberOfTasks: number;
 	setShowTasks: (input: boolean) => void;
 	sprintId?: string;
