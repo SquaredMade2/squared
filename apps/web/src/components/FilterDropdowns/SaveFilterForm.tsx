@@ -80,15 +80,11 @@ export function SaveFilterForm({
 	}, [params.filterId, savedFilters]);
 
 	useEffect(() => {
-		if (currentSavedFilter && type === "new") {
+		if (currentSavedFilter) {
 			reset({
-				title: "",
-				description: "",
-			});
-		} else if (currentSavedFilter) {
-			reset({
-				title: currentSavedFilter.name,
-				description: currentSavedFilter.description ?? "",
+				title: type === "new" ? "" : currentSavedFilter.name,
+				description:
+					type === "new" ? "" : (currentSavedFilter.description ?? ""),
 			});
 		}
 	}, [currentSavedFilter, type, reset]);
