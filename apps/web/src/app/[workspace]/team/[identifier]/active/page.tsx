@@ -1,7 +1,7 @@
 // active/page.tsx
 "use client";
 
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { useFilterStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
@@ -17,7 +17,7 @@ export default function ActiveTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage((tasks) =>
+	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks).filter(
 			(t) =>
 				t.status === "inProgress" ||

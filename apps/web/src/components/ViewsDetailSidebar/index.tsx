@@ -27,13 +27,15 @@ import LabelBadge from "../LabelBadges";
 import { getInitials } from "@/utils/formatting";
 import { Button } from "../ui/button";
 
+interface ViewsDetailSidebarProps {
+	filter: SavedFilter;
+	filterTasksWithFilter: (task: Task[]) => Task[];
+}
+
 const ViewsDetailSidebar = ({
 	filter,
 	filterTasksWithFilter,
-}: {
-	filter: SavedFilter;
-	filterTasksWithFilter: (task: Task[]) => Task[];
-}) => {
+}: ViewsDetailSidebarProps) => {
 	const router = useRouter();
 	const { user } = useAuthStore((state) => state);
 	const { users } = useUserStore((state) => state);

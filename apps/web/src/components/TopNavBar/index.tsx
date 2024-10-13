@@ -9,7 +9,7 @@ import { useFilterStore } from "@/store";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const TopNavBar = ({ pageTitle }: { pageTitle: string }) => {
+const TopNavBar = ({ pageTitle }: { pageTitle?: string }) => {
 	const { currentFilters, clearFilter, showSaveForm, setShowSaveForm } =
 		useFilterStore((state) => state);
 	const pathname = usePathname();
@@ -24,7 +24,7 @@ const TopNavBar = ({ pageTitle }: { pageTitle: string }) => {
 		<div className="flex flex-col flex-none justify-start items-start">
 			<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
 				<MobileMenuSheetTrigger />
-				<h1 className="text-xl font-bold">{pageTitle}</h1>
+				<h1 className="text-xl font-bold">{pageTitle ?? "Tasks Page"}</h1>
 			</div>
 			<div className="flex w-full justify-between">
 				<div className="flex gap-3 mb-4">

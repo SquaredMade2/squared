@@ -24,7 +24,7 @@ const Join = () => {
 
 	// List of restricted routes (initial set)
 	const restrictedRoutes = [
-		"confirmation",
+		"verify",
 		"inbox",
 		"join",
 		"login",
