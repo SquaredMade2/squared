@@ -11,17 +11,76 @@ export const truncateString = (string: string, maxLength: number): string => {
 };
 
 export const sanitizeBranchName = (str: string): string => {
-    const excludedWords = ['the', 'of', 'and', 'to', 'in', 'on', 'with', 'for', 'a', 'an', 'that', 'eg', 'like'];
+	const excludedWords = [
+		"the",
+		"of",
+		"and",
+		"to",
+		"in",
+		"on",
+		"with",
+		"for",
+		"a",
+		"an",
+		"that",
+		"eg",
+		"like",
+		"about",
+		"after",
+		"before",
+		"by",
+		"from",
+		"through",
+		"until",
+		"during",
+		"without",
+		"if",
+		"but",
+		"or",
+		"so",
+		"is",
+		"are",
+		"was",
+		"were",
+		"be",
+		"been",
+		"do",
+		"does",
+		"did",
+		"have",
+		"has",
+		"had",
+		"can",
+		"could",
+		"will",
+		"would",
+		"shall",
+		"should",
+		"this",
+		"these",
+		"those",
+		"each",
+		"any",
+		"some",
+		"many",
+		"much",
+		"more",
+		"most",
+		"all",
+		"none",
+		"such",
+		"every",
+	];
 
-    let sanitized = str
-		.replace(/[\s/]+/g, '-') 
-        .replace(/[^a-z0-9\-]/g, '')  
-        .split('-') 
-        .filter(word => !excludedWords.includes(word)) 
-        .slice(0, 8)
-        .join('-');
+	const sanitized = str
+		.replace(/[\s/]+/g, "-")
+		.replace(/[^a-z0-9\-]/g, "")
+		.split("-")
+		.filter((word) => !excludedWords.includes(word))
+		.slice(0, 8)
+		.join("-");
 
-    return sanitized;
+	return sanitized;
 };
 
 export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
