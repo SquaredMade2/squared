@@ -24,7 +24,11 @@ import {
 } from "@/components/ui/form";
 import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
-import { formatPriority, formatStatus } from "@/utils/formatting";
+import {
+	formatFilterName,
+	formatPriority,
+	formatStatus,
+} from "@/utils/formatting";
 import { format } from "date-fns";
 import type { SavedFilter, FilterCondition } from "@/store/filters";
 import type { Priority, Status } from "@repo/db";
@@ -97,8 +101,18 @@ export function SaveFilterForm({
 
 	useEffect(() => {
 		const formatFilters = async () => {
-			const formatted = await Promise.all(currentFilters.map(formatFilterName));
-			setFormattedFilters(formatted);
+			if (currentWorkspace) {
+				const formatted = await Promise.all(
+					currentFilters.map(
+						formatFilterName(
+							filter,
+							currentWorkspace.Labels,
+							getAllUsers(currentWorkspace.id),
+						),
+					),
+				);
+				setFormattedFilters(formatted);
+			}
 		};
 		formatFilters();
 	}, [currentFilters]);
@@ -176,56 +190,6 @@ export function SaveFilterForm({
 		clearFilter();
 		//route to newly created view
 		onCancel();
-	};
-
-	const formatFilterName = async (
-		filter: FilterCondition,
-	): Promise<{ name: string; value: string }> => {
-		if (!filter.value || !currentWorkspace)
-			return { name: filter.field, value: "" };
-		switch (filter.field) {
-			case "assigneeId": {
-				const allUsers = await getAllUsers(currentWorkspace?.id);
-				const users = allUsers.filter(
-					(u) => Array.isArray(filter.value) && filter.value.includes(u.id),
-				);
-				return {
-					name: users?.length && users.length > 1 ? "Users" : "User",
-					value: users?.map((u) => u.name).join(", ") ?? "",
-				};
-			}
-			case "status":
-				return { name: "Status", value: formatStatus(filter.value as Status) };
-			case "priority":
-				return {
-					name: "Priority",
-					value: formatPriority(filter.value as Priority),
-				};
-			case "dueDate":
-				return {
-					name: "Due Date",
-					value:
-						filter.value instanceof Date
-							? `${filter.operator} ${format(filter.value, "MMM d, yyyy")}`
-							: filter.value.toLocaleString(),
-				};
-			case "effortEstimate":
-				return {
-					name: "Effort Estimate",
-					value: filter.value.toLocaleString(),
-				};
-			case "labels": {
-				const labels = currentWorkspace?.Labels.filter(
-					(l) => Array.isArray(filter.value) && filter.value.includes(l.id),
-				);
-				return {
-					name: labels?.length && labels.length > 1 ? "Labels" : "Label",
-					value: labels?.map((l) => l.name).join(", ") ?? "",
-				};
-			}
-			default:
-				return { name: filter.field, value: filter.value.toLocaleString() };
-		}
 	};
 
 	return (
