@@ -3,6 +3,8 @@ import SettingsLayoutWrapper from "./settingsLayout-wrapper";
 
 export const metadata: Metadata = {
 	title: "Settings",
+	description:
+		"Adjust your preferences and manage your account settings on Squared. Customize notifications, update your profile, and configure your workspace to suit your project needs.",
 };
 
 export default function TeamLayout({
