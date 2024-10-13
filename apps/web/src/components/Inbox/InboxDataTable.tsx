@@ -281,37 +281,22 @@ export function InboxDataTable({
 															</span>
 														</Button>
 													)}
-													<Popover>
-														<PopoverTrigger asChild>
-															<Button
-																variant="outline"
-																className="bg-secondary"
-																size="sm"
-															>
-																<Ellipsis className="size-4" />
-															</Button>
-														</PopoverTrigger>
-														<PopoverContent className="w-[200px] p-0">
-															<div className="flex flex-col">
-																<Button
-																	variant="ghost"
-																	onClick={handleMarkAsRead}
-																	className="justify-start gap-3"
-																>
-																	<Circle className="size-4" />
-																	Mark as Read
-																</Button>
-																<Button
-																	variant="ghost"
-																	onClick={handleMarkAsUnread}
-																	className="justify-start gap-3"
-																>
-																	<Circle className="size-4 fill-foreground" />
-																	Mark as Unread
-																</Button>
-															</div>
-														</PopoverContent>
-													</Popover>
+													<Button
+														variant="outline"
+														className="bg-secondary"
+														size="sm"
+														onClick={
+															showUnreadOnly
+																? handleMarkAsRead
+																: handleMarkAsUnread
+														}
+													>
+														<span>
+															{showUnreadOnly
+																? "Mark as Read"
+																: "Mark as Unread"}
+														</span>
+													</Button>
 													{(table.getIsAllPageRowsSelected() ||
 														table.getIsSomePageRowsSelected()) && (
 														<Button
