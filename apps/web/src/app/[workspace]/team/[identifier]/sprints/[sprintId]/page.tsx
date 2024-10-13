@@ -155,7 +155,10 @@ export default function SprintDashboardPage() {
 	const handleBulkAssign = async () => {
 		if (!sprint) return;
 		for (const task of selectedTasks) {
-			await updateTask(task.id, { sprintId: sprint.id });
+			await updateTask(task.id, {
+				sprintId: sprint.id,
+				status: task.status === "backlog" ? "todo" : task.status,
+			});
 		}
 		setSelectedTasks([]);
 		team && (await getAllTasks(team.id));
@@ -349,7 +352,6 @@ export default function SprintDashboardPage() {
 					handleBulkAssign={handleBulkAssign}
 					selectedTasks={selectedTasks}
 					setSelectedTasks={setSelectedTasks}
-					setTargetSprint={() => {}} // Not needed for single sprint view
 					unassignedTasks={unassignedTasks}
 					upcomingSprints={[]}
 				/>
