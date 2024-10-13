@@ -40,7 +40,7 @@ const formSchema = z.object({
 		.min(1, "Please enter your message"),
 });
 
-export type LoginUser = z.infer<typeof formSchema>;
+type LoginUser = z.infer<typeof formSchema>;
 
 export function ContactForm() {
 	const form = useForm<LoginUser>({

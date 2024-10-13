@@ -13,11 +13,11 @@
     },
     "apps/api": {
       "entry": [
-        "docs/index.ts",
-        "api/index.ts"
+        "src/api/index.ts",
+        "src/**/index.ts"
       ],
       "project": [
-        "**/*.ts, **/*/tsx"
+        "**/*.ts"
       ]
     },
     "apps/web": {
@@ -41,12 +41,20 @@
         "**/*.{ts,tsx}"
       ]
     },
+    "packages/ui": {
+      "entry": [
+        "src/**/index.ts"
+      ],
+      "project": [
+        "**/*.ts, **/*.tsx"
+      ]
+    },
     "packages/*": {
       "entry": [
         "{index,cli}.ts"
       ],
       "project": [
-        "**/*.ts, **/*/tsx"
+        "**/*.ts, **/*.tsx"
       ]
     }
   },
