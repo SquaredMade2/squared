@@ -14,8 +14,6 @@ import {
 } from "@/utils/compareSorting";
 
 const GroupColumn = ({
-	// columnType,
-	// title,
 	group,
 	tasks,
 	currentView: view,

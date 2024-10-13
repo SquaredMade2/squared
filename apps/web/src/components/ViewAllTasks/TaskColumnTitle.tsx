@@ -2,7 +2,7 @@ import { ChevronDown, CirclePlus } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import HideStatus from "./HideStatus";
 import { cn } from "@/utils/cn";
-// import { useModalStore } from "@/store";
+import { useModalStore } from "@/store";
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { useViewStore } from "@/store";
 import type { Priority, Status } from "@repo/db";
@@ -15,17 +15,36 @@ const TaskColumnTitle = ({
 	title,
 	numberOfTasks,
 	setShowTasks,
-	// sprintId,
+	sprintId,
 }: TaskColumnTitleProps) => {
-	// const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
+	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { users } = useUsers();
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 
-	// const handleClick = (): void => {
-	// 	setShowNewIssue(true);
-	// 	setNewIssueData({ status: title, sprintId: sprintId ?? null });
-	// };
+	const key = (() => {
+		switch (groupTasksBy) {
+			case "Status":
+				return "status";
+			case "Assignee":
+				return "assigneeId";
+			case "Priority":
+				return "priority";
+			case "Label":
+				return "labels";
+			case "Parent Issue":
+				return "parentId";
+			case "No grouping":
+				return "status";
+			default:
+				return "status";
+		}
+	})();
+
+	const handleClick = (): void => {
+		setShowNewIssue(true);
+		setNewIssueData({ sprintId: sprintId ?? null, [key]: title });
+	};
 
 	const formatTitle = () => {
 		switch (groupTasksBy) {
@@ -104,10 +123,7 @@ const TaskColumnTitle = ({
 							: "flex flex-row gap-2 items-center text-foreground"
 					}
 				>
-					<div
-						className="cursor-pointer"
-						// onClick={handleClick}
-					>
+					<div className="cursor-pointer" onClick={handleClick}>
 						<div className="group cursor-pointer">
 							<CirclePlus className="size-5" />
 						</div>

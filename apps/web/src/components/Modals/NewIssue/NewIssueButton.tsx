@@ -1,7 +1,7 @@
 import { SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Status } from "@repo/db";
-import { useModalStore } from "@/store";
+import { useModalStore, useViewStore } from "@/store";
 
 export const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
@@ -41,18 +41,39 @@ export const GridColumnNewIssueButton = ({
 	group,
 	sprintId,
 }: { group: string; sprintId?: string }) => {
-	// const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
-	// 	(state) => state,
-	// );
+	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
+		(state) => state,
+	);
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupTasksBy } = displayOptions;
 
-	// const handleOpen = () => {
-	// 	setShowNewIssue(true);
-	// 	setNewIssueData({
-	// 		...newIssueData,
-	// 		status,
-	// 		sprintId,
-	// 	});
-	// };
+	const key = (() => {
+		switch (groupTasksBy) {
+			case "Status":
+				return "status";
+			case "Assignee":
+				return "assigneeId";
+			case "Priority":
+				return "priority";
+			case "Label":
+				return "labels";
+			case "Parent Issue":
+				return "parentId";
+			case "No grouping":
+				return "status";
+			default:
+				return "status";
+		}
+	})();
+
+	const handleOpen = () => {
+		setShowNewIssue(true);
+		setNewIssueData({
+			...newIssueData,
+			sprintId,
+			[key]: group,
+		});
+	};
 	return (
 		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
 			<SquarePen className="size-5" />

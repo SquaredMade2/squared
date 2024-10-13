@@ -10,8 +10,6 @@ export interface ViewAllTasksProps {
 }
 
 export interface GroupColumnProps {
-	// columnType: Status;
-	// title: Status;
 	group: string;
 	tasks: Task[];
 	currentView: "list" | "grid";

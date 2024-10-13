@@ -70,7 +70,7 @@ const ViewAllTasks = ({
 			}
 			// console.log(tasksForGroup, group);
 			return (
-				<div key={group}>
+				<div key={group} className="px-1">
 					<GroupColumn
 						group={group}
 						tasks={tasksForGroup}
