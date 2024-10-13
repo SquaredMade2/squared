@@ -43,7 +43,8 @@
     },
     "packages/ui": {
       "entry": [
-        "src/**/index.ts"
+        "src/**/*.tsx",
+        "src/**/*.stories.tsx"
       ],
       "project": [
         "**/*.ts, **/*.tsx"
