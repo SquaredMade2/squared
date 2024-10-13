@@ -115,12 +115,15 @@ export const createFilterStore = (
 				},
 				mergeFilters: (
 					newFilters: FilterCondition[],
-					savedFilters: FilterCondition[],
+					savedFilterId: string,
 				) => {
+					const currentSavedFilter = get().savedFilters.find(
+						(f) => f.id === savedFilterId,
+					);
 					const filterMap = new Map<string, FilterCondition>();
 					//Add existing filter conditions to the map
-					if (savedFilters) {
-						for (const condition of savedFilters) {
+					if (currentSavedFilter) {
+						for (const condition of currentSavedFilter.filter) {
 							filterMap.set(condition.field as string, condition);
 						}
 					}

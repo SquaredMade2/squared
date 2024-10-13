@@ -55,7 +55,7 @@ type FilterActions = {
 	customFilter: (tasks: Task[], filter: FilterCondition[]) => Task[];
 	mergeFilters: (
 		newFilters: FilterCondition[],
-		savedFilters: FilterCondition[],
+		savedFilterId: string,
 	) => FilterCondition[];
 };
 

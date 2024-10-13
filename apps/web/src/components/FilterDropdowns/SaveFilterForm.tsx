@@ -120,10 +120,7 @@ export function SaveFilterForm({
 		}
 		try {
 			if (currentSavedFilter) {
-				const newFilters = mergeFilters(
-					currentFilters,
-					currentSavedFilter.filter,
-				);
+				const newFilters = mergeFilters(currentFilters, currentSavedFilter.id);
 				// edit existing view
 				if (type === "edit") {
 					const response = await updateSavedFilter(currentSavedFilter.id, {
