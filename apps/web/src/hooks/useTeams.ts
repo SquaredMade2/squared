@@ -30,7 +30,7 @@ export function useTeams() {
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
 					const allTeams = await getAllTeams(currentWorkspace.id);
 					setTeams(allTeams);
-					const team = teams.find((t) => t.identifier === teamIdentifier);
+					const team = allTeams.find((t) => t.identifier === teamIdentifier);
 					team && setCurrentTeam(team);
 				}
 			}
@@ -39,7 +39,7 @@ export function useTeams() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, currentTeam, workspaceLoading, userLoading]);
+	}, [currentWorkspace, teamIdentifier, workspaceLoading, userLoading]);
 
 	return {
 		loading,

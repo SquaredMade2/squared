@@ -5,6 +5,7 @@ import { Status, type Task } from "@repo/db";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
+import { parseParams } from "@/utils/parseParams";
 
 export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
@@ -13,9 +14,7 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 	const [loading, setLoading] = useState(true);
 
 	const params = useParams();
-	const teamIdentifier = Array.isArray(params.identifier)
-		? params.identifier[0]
-		: params.identifier;
+	const teamIdentifier = parseParams(params.identifier);
 
 	useEffect(() => {
 		const initiateStore = async () => {
@@ -28,7 +27,7 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		};
 
 		initiateStore();
-	}, [teamLoading, currentTeam]);
+	}, [teamLoading, currentTeam, workspaceLoading]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
