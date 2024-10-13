@@ -2,7 +2,7 @@
   "name": "icons",
   "version": "1.0.0",
   "scripts": {
-    "build:icons": "tsc --skipLibCheck generateIcons.ts && node generateIcons.js"
+    "build": "tsc --skipLibCheck generateIcons.ts && node generateIcons.js"
   },
   "dependencies": {
     "typescript": "^5.6.2"

@@ -5,6 +5,7 @@
   "scripts": {
     "api:gen": "pnpm run --filter=api gen",
     "build": "turbo run build",
+    "build:icons": "pnpm --filter=@repo/ui run build",
     "db:gen": "turbo run db:generate",
     "db:push": "pnpm --filter=@repo/db db:push",
     "docker:build": "docker-compose build",
@@ -29,7 +30,6 @@
     "studio": "turbo run studio",
     "studio:prod": "pnpm --filter=@repo/db studio",
     "studio:dev": "pnpm --filter=@repo/test-db studio",
-    "build:icons": "pnpm --filter=@repo/ui run build:icons",
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",
     "test:api": "turbo run test --filter=api",

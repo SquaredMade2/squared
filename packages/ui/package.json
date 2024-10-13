@@ -197,6 +197,7 @@
     }
   },
   "scripts": {
+    "build": "pnpm --prefix ./src/icons run build",
     "build:stories": "storybook build",
     "check-types": "tsc --skipLibCheck --noEmit",
     "dev": "pnpm storybook",
@@ -205,8 +206,7 @@
     "format:write": "biome format --write .",
     "format:check": "biome format .",
     "test": "jest --ci",
-    "storybook": "cross-env BROWSER=none storybook dev -p 9009",
-    "build:icons": "pnpm --prefix ./src/icons run build:icons"
+    "storybook": "cross-env BROWSER=none storybook dev -p 9009"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.1",
