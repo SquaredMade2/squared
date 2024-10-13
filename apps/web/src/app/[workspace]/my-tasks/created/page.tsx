@@ -2,7 +2,7 @@
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useAuthStore, useFilterStore } from "@/store";
 
 export default function MyCreatedTasksPage() {
@@ -17,7 +17,7 @@ export default function MyCreatedTasksPage() {
 		handleDragEnd,
 		getFilteredStatuses,
 		getTasksForStatus,
-	} = useTaskPage((tasks) =>
+	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.authorId === user?.id)),
 	);
 

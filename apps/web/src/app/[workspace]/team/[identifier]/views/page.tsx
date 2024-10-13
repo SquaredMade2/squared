@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useFilterStore, useTeamStore } from "@/store";
+import { useFilterStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -13,20 +13,22 @@ import {
 } from "@/components/ui/card";
 import { PlusCircle } from "lucide-react";
 import type { SavedFilter } from "@/store/filters";
+import { useTeams } from "@/hooks/useTeams";
 
 export default function ViewsPage() {
 	const router = useRouter();
 	const { savedFilters, getSavedFilters } = useFilterStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
+	const { currentTeam, loading: teamLoading } = useTeams();
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchSavedFilters = async () => {
+			if (teamLoading) return;
 			currentTeam && (await getSavedFilters(currentTeam.id));
 			setIsLoading(false);
 		};
 		fetchSavedFilters();
-	}, [getSavedFilters]);
+	}, [getSavedFilters, currentTeam, teamLoading]);
 
 	const handleFilterSelect = (filter: SavedFilter) => {
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
@@ -34,7 +36,7 @@ export default function ViewsPage() {
 		router.push(`views/${filterName}-${filterId}`);
 	};
 
-	if (isLoading) {
+	if (isLoading || teamLoading) {
 		return (
 			<div className="flex justify-center items-center h-screen">
 				Loading...
