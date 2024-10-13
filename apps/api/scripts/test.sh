@@ -12,8 +12,7 @@ docker exec -i postgres-api-test-db /bin/sh /./wait-db.sh
 docker exec --workdir /app api-test-1 pnpm db:push
 
 # wait for the express server to start running
-docker cp ./scripts/wait-express.sh api-test-1:/
-docker exec -i --workdir / api-test-1 /bin/sh ./wait-express.sh
+docker exec -i --workdir /app/apps/api/scripts api-test-1 /bin/sh ./wait-express.sh
 
 # run tests and log docker status if error happens
 docker exec -i --workdir /app/apps/api api-test-1 pnpm jest --ci --maxWorkers=2 --forceExit || (docker logs api-test-1 && exit 1)
