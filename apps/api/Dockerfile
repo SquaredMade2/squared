@@ -65,5 +65,4 @@ RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
 
-
 CMD ["ts-node", "src/api/index.ts"]

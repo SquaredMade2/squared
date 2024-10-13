@@ -9,6 +9,7 @@
     "build": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push --skip-generate",
+    "db:reset": "prisma migrate reset --force",
     "dev": "echo 'Add dev script here'",
     "lint": "echo 'Add lint script here'",
     "postinstall": "pnpm run db:generate",

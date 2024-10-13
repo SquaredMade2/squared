@@ -2,19 +2,21 @@
 	"name": "api",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.ts",
+	"main": "src/index.ts",
 	"scripts": {
 		"build": "pnpm run gen",
 		"check-types": "tsc --noEmit",
 		"dev": "nodemon src/api/index.ts",
 		"gen": "ts-node src/api/generate-index.ts",
+		"docker:api": "docker compose -f docker-compose.yml up -d",
+		"docker:api:down": "docker compose -f docker-compose.yml down --timeout 10",
 		"format:check": "biome format .",
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
 		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
-		"test": "(pnpm --filter=@repo/test-db db:test:push && dotenv -e .env.run.test jest && pnpm --filter=@repo/test-db db:test:reset) || pnpm --filter=@repo/test-db db:test:reset"
+		"test": "pnpm ./scripts/test.sh"
 	},
 	"keywords": [],
 	"author": "",
@@ -42,6 +44,8 @@
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
+		"@swc/core": "^1.7.26",
+		"@swc/jest": "^0.2.36",
 		"@types/bcryptjs": "^2.4.6",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
