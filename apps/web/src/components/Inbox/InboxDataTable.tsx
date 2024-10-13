@@ -30,15 +30,7 @@ import {
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
 import { useAuthStore, useUserStore } from "@/store";
-import {
-	BellOff,
-	Check,
-	Circle,
-	Ellipsis,
-	MoveRight,
-	Trash2,
-} from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { BellOff, Check, MoveRight, Trash2 } from "lucide-react";
 import type { NotificationFilter } from "@/app/inbox/page";
 
 export function InboxDataTable({
