@@ -29,15 +29,25 @@ import { format } from "date-fns";
 import type { SavedFilter, FilterCondition } from "@/store/filters";
 import type { Priority, Status } from "@repo/db";
 import { useParams, usePathname } from "next/navigation";
+import { parseParams } from "@/utils/parseParams";
+import { mergeFilters } from "@/utils/mergeFilters";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),
 	description: z.string().optional(),
 });
 
-export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
-	const { currentFilters, saveFilter, savedFilters, updateSavedFilter } =
-		useFilterStore((state) => state);
+export function SaveFilterForm({
+	onCancel,
+	type,
+}: { onCancel: () => void; type: string }) {
+	const {
+		currentFilters,
+		saveFilter,
+		savedFilters,
+		updateSavedFilter,
+		clearFilter,
+	} = useFilterStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
@@ -46,7 +56,8 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 	const [formattedFilters, setFormattedFilters] = useState<
 		{ name: string; value: string }[]
 	>([]);
-	const [currentFilter, setCurrentFilter] = useState<SavedFilter | null>(null);
+	const [currentSavedFilter, setCurrentSavedFilter] =
+		useState<SavedFilter | null>(null);
 	const params = useParams();
 	const pathname = usePathname();
 
@@ -61,26 +72,28 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 
 	useEffect(() => {
 		if (pathname.includes("/views")) {
-			const filterId =
-				typeof params.filterId === "string"
-					? params.filterId
-					: params.filterId[0];
+			const filterId = parseParams(params.filterId);
 			const filterSlug = filterId?.split("-").pop() || "";
 			const foundFilter = savedFilters.find((f) =>
 				f.id.startsWith(filterSlug || ""),
 			);
-			if (foundFilter) setCurrentFilter(foundFilter);
+			if (foundFilter) setCurrentSavedFilter(foundFilter);
 		}
 	}, [params.filterId, savedFilters]);
 
 	useEffect(() => {
-		if (currentFilter) {
+		if (currentSavedFilter) {
 			reset({
-				title: currentFilter.name,
-				description: currentFilter.description ?? "",
+				title: currentSavedFilter.name,
+				description: currentSavedFilter.description ?? "",
+			});
+		} else if (type === "new") {
+			reset({
+				title: "",
+				description: "",
 			});
 		}
-	}, [currentFilter, reset]);
+	}, [currentSavedFilter, type, reset]);
 
 	useEffect(() => {
 		const formatFilters = async () => {
@@ -102,15 +115,31 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 			return;
 		}
 		try {
-			if (currentFilter) {
-				const response = await updateSavedFilter(currentFilter.id, {
-					name: values.title,
-					description: values.description ?? null,
-				});
-				toast({
-					title: response.message,
-					variant: response.variant,
-				});
+			if (currentSavedFilter) {
+				const newFilters = mergeFilters(
+					currentFilters,
+					currentSavedFilter.filter,
+				);
+				// edit existing view
+				if (type === "edit") {
+					const response = await updateSavedFilter(currentSavedFilter.id, {
+						name: values.title,
+						description: values.description ?? null,
+						filter: newFilters,
+					});
+					toast({
+						title: response.message,
+						variant: response.variant,
+					});
+					// create new view from existing view
+				} else if (type === "new") {
+					await saveFilter({
+						name: values.title,
+						description: values.description ?? null,
+						filter: newFilters,
+					});
+				}
+				//create new view
 			} else if (currentTeam) {
 				await saveFilter({
 					name: values.title,
@@ -144,6 +173,8 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 		}
 
 		setIsSaving(false);
+		clearFilter();
+		//route to newly created view
 		onCancel();
 	};
 
@@ -241,7 +272,7 @@ export function SaveFilterForm({ onCancel }: { onCancel: () => void }) {
 						Cancel
 					</Button>
 					<Button type="submit" disabled={isSaving}>
-						{isSaving ? "Saving..." : "Save Filter"}
+						{type === "new" ? "Save New Filter" : "Save"}
 					</Button>
 				</div>
 			</form>

@@ -1,6 +1,6 @@
 import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
 
-type FilterValue =
+export type FilterValue =
 	| string
 	| number
 	| Date

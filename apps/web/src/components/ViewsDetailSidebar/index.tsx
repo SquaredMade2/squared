@@ -172,7 +172,7 @@ const ViewsDetailSidebar = ({
 			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						Are you sure you want to delete the view "{`${filter.name}`}"?
+						Are you sure you want to delete {`${filter.name}`}?
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>

@@ -118,7 +118,6 @@ export const createFilterStore = (
 				): Promise<FilterResponse> => {
 					try {
 						const filterId = uuidv4();
-						console.log("filter", filter);
 						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
 							await axios.post(apiString(filterId), filter);
 
