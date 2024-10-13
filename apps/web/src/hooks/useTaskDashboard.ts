@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTaskStore } from "@/store";
-import { Status, type Task } from "@repo/db";
+import type { Status, Task } from "@repo/db";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
@@ -46,18 +46,6 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
-	const titleArr: { value: Status; id: number }[] = [
-		{ value: Status.backlog, id: 1 },
-		{ value: Status.todo, id: 2 },
-		{ value: Status.inProgress, id: 3 },
-		{ value: Status.inReview, id: 4 },
-		{ value: Status.done, id: 5 },
-	];
-
-	const getFilteredStatuses = () => {
-		return titleArr.map((t) => t.value);
-	};
-
 	const getTasksForStatus = (status: Status) => {
 		return filterTasks(tasks).filter((task) => task.status === status);
 	};
@@ -68,7 +56,6 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
 		getTasksForStatus,
 	};
 }

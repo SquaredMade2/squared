@@ -5,9 +5,9 @@ import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
 import type { CompletedTaskPeriod } from "@/store/views";
+import { statusOptions } from "@/constants/designations";
 
 const ViewAllTasks = ({
-	getFilteredStatuses,
 	getTasksForStatus,
 	allowedColumns = Object.values(Status),
 	sprintId,
@@ -48,7 +48,7 @@ const ViewAllTasks = ({
 	const columns = filteredColumns();
 
 	function filteredColumns() {
-		const filteredStatuses = getFilteredStatuses();
+		const filteredStatuses = statusOptions;
 
 		return filteredStatuses
 			.filter((status) => allowedColumns.includes(status))

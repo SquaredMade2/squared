@@ -7,6 +7,7 @@ import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { Status } from "@repo/db";
+import { statusOptions } from "@/constants/designations";
 
 export default function MyAssignedTasksPage() {
 	const { currentSprint, loading: sprintLoading } = useSprints();
@@ -19,7 +20,6 @@ export default function MyAssignedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
 		getTasksForStatus,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
@@ -33,7 +33,7 @@ export default function MyAssignedTasksPage() {
 	];
 
 	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = getFilteredStatuses();
+		const filteredStatuses = statusOptions;
 
 		return filteredStatuses.filter((status) => {
 			if (!allowedColumns.includes(status)) return false;
@@ -56,7 +56,6 @@ export default function MyAssignedTasksPage() {
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
-					getFilteredStatuses={getFilteredStatuses}
 					getTasksForStatus={getTasksForStatus}
 					allowedColumns={allowedColumns}
 					sprintId={currentSprint.id}

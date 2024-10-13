@@ -7,6 +7,7 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { useFilterStore, useViewStore } from "@/store";
 import { Status } from "@repo/db";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { statusOptions } from "@/constants/designations";
 
 export default function AllTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
@@ -19,12 +20,11 @@ export default function AllTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
 		getTasksForStatus,
 	} = useTaskDashboard(filterTasks);
 
 	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = getFilteredStatuses();
+		const filteredStatuses = statusOptions;
 
 		return filteredStatuses.filter((status) => {
 			if (status === Status.archived) return false;
@@ -46,10 +46,7 @@ export default function AllTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="All Tasks"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<ViewAllTasks getTasksForStatus={getTasksForStatus} />
 			{view === "grid" &&
 				!getGridOptions().showEmptyGroups &&
 				getHiddenColumns().length >= 1 && (

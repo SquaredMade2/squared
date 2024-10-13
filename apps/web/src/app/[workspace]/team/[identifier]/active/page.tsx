@@ -15,7 +15,6 @@ export default function ActiveTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
 		getTasksForStatus,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks).filter(
@@ -38,7 +37,6 @@ export default function ActiveTasksPage() {
 			pageTitle="Active Tasks"
 		>
 			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
 				getTasksForStatus={getTasksForStatus}
 				allowedColumns={allowedColumns}
 			/>

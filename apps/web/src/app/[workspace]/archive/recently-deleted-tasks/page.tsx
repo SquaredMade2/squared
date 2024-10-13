@@ -14,7 +14,6 @@ const Page = () => {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
 		getTasksForStatus,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.deleted === true)),
@@ -31,10 +30,7 @@ const Page = () => {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Recently Deleted Tasks"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<ViewAllTasks getTasksForStatus={getTasksForStatus} />
 		</TaskPageLayout>
 	);
 };

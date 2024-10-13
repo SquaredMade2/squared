@@ -12,6 +12,7 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { parseParams } from "@/utils/parseParams";
 import { useTeams } from "@/hooks/useTeams";
+import { statusOptions } from "@/constants/designations";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -58,7 +59,6 @@ export default function FilterViewPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
 		getTasksForStatus,
 	} = useTaskDashboard(filterTasksWithFilter);
 
@@ -67,7 +67,7 @@ export default function FilterViewPage() {
 	}
 
 	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = getFilteredStatuses();
+		const filteredStatuses = statusOptions;
 
 		return filteredStatuses.filter((status) => {
 			if (status === Status.archived) return false;
@@ -89,10 +89,7 @@ export default function FilterViewPage() {
 			pageTitle={filter.name}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
-				<ViewAllTasks
-					getFilteredStatuses={getFilteredStatuses}
-					getTasksForStatus={getTasksForStatus}
-				/>
+				<ViewAllTasks getTasksForStatus={getTasksForStatus} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (

@@ -1,7 +1,6 @@
 import type { Status, Task } from "@repo/db";
 
 export interface ViewAllTasksProps {
-	getFilteredStatuses: () => Status[];
 	getTasksForStatus: (status: Status) => Task[];
 	allowedColumns?: Status[];
 	sprintId?: string;
