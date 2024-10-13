@@ -24,14 +24,8 @@ import {
 } from "@/components/ui/form";
 import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
-import {
-	formatFilterName,
-	formatPriority,
-	formatStatus,
-} from "@/utils/formatting";
-import { format } from "date-fns";
-import type { SavedFilter, FilterCondition } from "@/store/filters";
-import type { Priority, Status } from "@repo/db";
+import { formatFilterName } from "@/utils/formatting";
+import type { SavedFilter } from "@/store/filters";
 import { useParams, usePathname } from "next/navigation";
 import { parseParams } from "@/utils/parseParams";
 import { mergeFilters } from "@/utils/mergeFilters";
@@ -103,7 +97,7 @@ export function SaveFilterForm({
 		const formatFilters = async () => {
 			if (currentWorkspace) {
 				const formatted = await Promise.all(
-					currentFilters.map(
+					currentFilters.map((filter) =>
 						formatFilterName(
 							filter,
 							currentWorkspace.Labels,

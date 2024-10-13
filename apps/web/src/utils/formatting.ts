@@ -1,6 +1,5 @@
 import type { FilterCondition } from "@/store/filters";
 import { Status, Priority, type User, type Label } from "@repo/db";
-import type { Workspace } from "@/store/workspaces";
 import * as z from "zod";
 import { format } from "date-fns";
 
