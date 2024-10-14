@@ -75,7 +75,12 @@ export const GridColumnNewIssueButton = ({
 		});
 	};
 	return (
-		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
+		<Button
+			onClick={() => handleOpen()}
+			variant={"outline"}
+			className="w-full"
+			aria-label="Create new task"
+		>
 			<SquarePen className="size-5" />
 		</Button>
 	);

@@ -154,7 +154,12 @@ const MobileMenuSheet = () => {
 									</p>
 								</div>
 							</div>
-							<Button variant="ghost" size="icon" onClick={handleLogout}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Log out"
+								onClick={handleLogout}
+							>
 								<LogOut className="h-5 w-5" />
 							</Button>
 						</div>
@@ -163,6 +168,7 @@ const MobileMenuSheet = () => {
 							<Button
 								variant="outline"
 								size="icon"
+								aria-label="Set Light Theme"
 								onClick={() => setTheme("light")}
 								className={theme === "light" ? "bg-card" : ""}
 							>
@@ -171,6 +177,7 @@ const MobileMenuSheet = () => {
 							<Button
 								variant="outline"
 								size="icon"
+								aria-label="Set Dark Theme"
 								onClick={() => setTheme("dark")}
 								className={theme === "dark" ? "bg-accent" : ""}
 							>
@@ -192,6 +199,7 @@ export const MobileMenuSheetTrigger = () => {
 			variant="ghost"
 			size="icon"
 			className="md:hidden"
+			aria-label="Open menu"
 			onClick={() => setOpen(true)}
 		>
 			<Menu className="h-5 w-5" />

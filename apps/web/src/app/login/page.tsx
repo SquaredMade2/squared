@@ -123,6 +123,7 @@ function LoginForm() {
 									type="button"
 									variant="ghost"
 									size="icon"
+									aria-label="Toggle password visibility"
 									className="absolute right-0 top-0 h-full"
 									onClick={() => setHidePassword(!hidePassword)}
 								>
