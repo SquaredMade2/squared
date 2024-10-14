@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTaskStore } from "@/store";
-import type { Status, Task } from "@repo/db";
+import { Status, type Task } from "@repo/db";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
@@ -58,13 +58,26 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 			case "Status":
 				return filterTasks(tasks).filter((task) => task.status === group);
 			case "Assignee":
-				return filterTasks(tasks).filter((task) => task.assigneeId === group);
+				return filterTasks(tasks).filter(
+					(task) =>
+						task.assigneeId === group ||
+						(task.assigneeId === null && "Unassigned"),
+				);
 			case "Priority":
 				return filterTasks(tasks).filter((task) => task.priority === group);
 			// case "Label":
 			// 	return filterTasks(tasks).filter((task) => task.labels === group);
-			case "Parent Issue":
-				return filterTasks(tasks).filter((task) => task.parentId === group);
+			case "Parent Issue": {
+				const hasParentTask = filterTasks(tasks).filter(
+					(task) => task.parentId === group,
+				);
+				if (group !== "No parent") {
+					return hasParentTask;
+				}
+				return filterTasks(tasks).filter(
+					(task) => task.parentId === null && "No parent",
+				);
+			}
 			case "No grouping":
 				return tasks;
 			default:
@@ -76,7 +89,13 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		let groupTitles: string[];
 		switch (group) {
 			case "Status":
-				groupTitles = tasks.map((task) => task.status);
+				groupTitles = [
+					Status.backlog,
+					Status.todo,
+					Status.inProgress,
+					Status.inReview,
+					Status.done,
+				];
 				break;
 			case "Assignee":
 				groupTitles = tasks.map((task) => task.assigneeId || "Unassigned");

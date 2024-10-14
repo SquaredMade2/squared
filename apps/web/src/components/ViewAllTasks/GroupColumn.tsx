@@ -168,9 +168,9 @@ const GroupColumn = ({
 							}
 						>
 							{showTasks &&
-								orderedTasks
-									.filter((task) => !task.parentId)
-									.map((task, index) => renderTaskWithSubtasks(task, index))}
+								orderedTasks.map((task, index) =>
+									renderTaskWithSubtasks(task, index),
+								)}
 							{!isListView && (
 								<GridColumnNewIssueButton group={group} sprintId={sprintId} />
 							)}

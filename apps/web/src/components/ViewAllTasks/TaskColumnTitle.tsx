@@ -1,7 +1,7 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import { useModalStore } from "@/store";
+import { useModalStore, useTaskStore } from "@/store";
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { useViewStore } from "@/store";
 import type { Priority, Status } from "@repo/db";
@@ -25,6 +25,7 @@ const TaskColumnTitle = ({
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { users } = useUsers();
+	const { tasks } = useTaskStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 
@@ -58,14 +59,16 @@ const TaskColumnTitle = ({
 				return formatStatus(title as Status);
 			case "Assignee": {
 				const user = users.find((user) => user.id === title);
-				return user ? user.name : null;
+				return user ? user.name : "Unassigned";
 			}
 			case "Priority":
 				return formatPriority(title as Priority);
 			// case "Label":
 			// 	return
-			// case "Parent Issue":
-			// 	return
+			case "Parent Issue": {
+				const parentTask = tasks.find((t) => t.id === title);
+				return parentTask ? parentTask.title : "No parent";
+			}
 			// case "No grouping":
 			// 	return
 		}
