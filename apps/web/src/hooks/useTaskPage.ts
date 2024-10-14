@@ -1,19 +1,18 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTaskStore, useUserStore } from "@/store";
-import type { Task } from "@repo/db";
 import { parseParams } from "@/utils/parseParams";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
-	const [task, setTask] = useState<Task | null>(null);
+	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-
-	const { taskIdentifier } = useParams();
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
-	const { getTaskByIdentifier } = useTaskStore((state) => state);
+	const { getTaskByIdentifier, tasks } = useTaskStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
+
+	const task = tasks.find((t) => t.identifier === taskIdentifier) || null;
 
 	useEffect(() => {
 		async function fetchData() {
@@ -23,18 +22,13 @@ export function useTaskPage() {
 				if (!currentWorkspace) {
 					throw new Error("Workspace not found");
 				}
-				setIsLoading(true);
 				await getAllUsers(currentWorkspace.id);
 
 				// Fetch task data
-				const { task, message: taskMessage } = await getTaskByIdentifier(
+				await getTaskByIdentifier(
 					currentWorkspace.id,
 					parseParams(taskIdentifier),
 				);
-				if (!task) {
-					throw new Error(taskMessage || "Task not found");
-				}
-				setTask(task);
 
 				setIsLoading(false);
 			} catch (err) {
