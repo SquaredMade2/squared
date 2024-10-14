@@ -2,11 +2,9 @@
   "name": "@repo/seed",
   "version": "0.0.0",
   "private": true,
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "scripts": {
-    "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
+    "db:seed": "cross-env NODE_ENV=test ts-node src/seed-db.ts",
+    "test:db:seed": "cross-env NODE_ENV=test ts-node src/seed-test-db.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
   },
