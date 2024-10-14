@@ -15,13 +15,15 @@ import type { Task } from "@repo/db";
 import LabelBadge from "../LabelBadges";
 import { getInitials } from "@/utils/formatting";
 
+interface ViewsDetailSidebarProps {
+	filter: SavedFilter;
+	filterTasksWithFilter: (task: Task[]) => Task[];
+}
+
 const ViewsDetailSidebar = ({
 	filter,
 	filterTasksWithFilter,
-}: {
-	filter: SavedFilter;
-	filterTasksWithFilter: (task: Task[]) => Task[];
-}) => {
+}: ViewsDetailSidebarProps) => {
 	const { user } = useAuthStore((state) => state);
 	const { users } = useUserStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);

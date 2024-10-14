@@ -12,12 +12,7 @@ import {
 	CardDescription,
 	CardContent,
 } from "@/components/ui/card";
-import {
-	useAuthStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useTeamStore } from "@/store";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -31,6 +26,9 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useTeams } from "@/hooks/useTeams";
 
 const formSchema = z.object({
 	teamName: z.string().min(1, {
@@ -52,11 +50,9 @@ const formSchema = z.object({
 export default function CreateTeam() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { user } = useAuthStore((state) => state);
-	const { users } = useUserStore((state) => state);
-	const { getAllTeams, teams, addTeam } = useTeamStore((state) => state);
-	const access = users.find((u) => u.id === user?.id);
+	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { teams, loading: teamLoading, authorized } = useTeams();
+	const { addTeam } = useTeamStore((state) => state);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -65,16 +61,6 @@ export default function CreateTeam() {
 			teamIdentifier: "",
 		},
 	});
-
-	if (!teams) {
-		currentWorkspace && getAllTeams(currentWorkspace.id);
-	}
-
-	const userHasAccess =
-		typeof access === "object" &&
-		access &&
-		"id" in access &&
-		access.id === user?.id;
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		if (!currentWorkspace) {
@@ -110,12 +96,23 @@ export default function CreateTeam() {
 	};
 
 	useEffect(() => {
-		if (!userHasAccess && currentWorkspace) {
+		if (!authorized && currentWorkspace) {
 			router.push(`/${currentWorkspace.url}`);
 		} else if (!currentWorkspace) {
 			router.push("/");
 		}
 	}, []);
+
+	if (workspaceLoading || teamLoading)
+		return (
+			<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
+				<h1 className="text-3xl font-bold mb-2">New Team Settings</h1>
+				<p className="text-muted-foreground mb-6">Create a new team</p>
+				<div className="flex justify-center items-center w-full h-64">
+					<SquaredLoader />
+				</div>
+			</div>
+		);
 
 	return (
 		<div className="flex bg-background text-foreground mdsm:flex-col w-[80vw]">

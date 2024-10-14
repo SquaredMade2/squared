@@ -29,7 +29,12 @@ export default function ArchiveNavbar() {
 
 	return (
 		<div className="flex justify-start space-x-4 my-4 items-center">
-			<Button size="icon" variant="ghost" onClick={() => router.back()}>
+			<Button
+				size="icon"
+				variant="ghost"
+				aria-label="Go back"
+				onClick={() => router.back()}
+			>
 				<ArrowLeft className="size-4" />
 			</Button>
 			<p className="hidden xl:block">My Tasks</p>

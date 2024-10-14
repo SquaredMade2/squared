@@ -33,7 +33,13 @@ export const useCreateTask = () => {
 		setError(null);
 
 		try {
-			if (!currentWorkspace || !currentTeam || !user) {
+			if (!currentWorkspace) {
+				throw new Error("Error authenticating workspace");
+			}
+			if (!currentTeam) {
+				throw new Error("Error authenticating team");
+			}
+			if (!user) {
 				throw new Error("Error authenticating user");
 			}
 

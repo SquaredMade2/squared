@@ -206,6 +206,11 @@ export const columns: ColumnDef<NotificationTask>[] = [
 											}
 											variant="secondary"
 											size="icon"
+											aria-label={
+												row.original.dismissed
+													? "Delete notification"
+													: "Dismiss notification"
+											}
 											className="size-8 border border-border bg-accent hover:bg-popover"
 										>
 											{row.original.dismissed ? (
@@ -227,6 +232,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 											onClick={toggleSubscribe}
 											variant="secondary"
 											size="icon"
+											aria-label="Unsubscribe"
 											className="size-8 border border-border bg-accent hover:bg-popover"
 										>
 											<BellOff className="size-4" />
@@ -240,6 +246,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 											onClick={handleSave}
 											variant="secondary"
 											size="icon"
+											aria-label="Toggle Bookmark"
 											className="size-8 border border-border bg-accent hover:bg-popover"
 										>
 											{saved ? (

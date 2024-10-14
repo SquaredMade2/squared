@@ -18,15 +18,15 @@ export const PriorityIcon = ({ priority }: { priority: Priority }) => {
 	const Icon = () => {
 		switch (priority) {
 			case "low":
-				return <ArrowDown className="size-4 text-blue-500" />;
+				return <ArrowDown className="size-4 text-blue-500 shrink-0" />;
 			case "medium":
-				return <ArrowRight className="size-4 text-yellow-500" />;
+				return <ArrowRight className="size-4 text-yellow-500 shrink-0" />;
 			case "high":
-				return <ArrowUp className="size-4 text-orange-500" />;
+				return <ArrowUp className="size-4 text-orange-500 shrink-0" />;
 			case "urgent":
-				return <AlertTriangle className="size-4 text-destructive" />;
+				return <AlertTriangle className="size-4 text-destructive shrink-0" />;
 			default:
-				return <CircleDot className="size-4" />;
+				return <CircleDot className="size-4 shrink-0" />;
 		}
 	};
 	return <Icon />;

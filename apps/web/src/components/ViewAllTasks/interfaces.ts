@@ -4,6 +4,7 @@ export interface ViewAllTasksProps {
 	getFilteredStatuses: () => Status[];
 	getTasksForStatus: (status: Status) => Task[];
 	allowedColumns?: Status[];
+	sprintId?: string;
 }
 
 export interface StatusColumnProps {
@@ -11,6 +12,7 @@ export interface StatusColumnProps {
 	title: Status;
 	tasks: Task[];
 	currentView: "list" | "grid";
+	sprintId?: string;
 }
 
 export type TaskColumnTitleProps = {
@@ -19,6 +21,7 @@ export type TaskColumnTitleProps = {
 	title: Status;
 	numberOfTasks: number;
 	setShowTasks: (input: boolean) => void;
+	sprintId?: string;
 };
 
 export interface HideStatusProps {
