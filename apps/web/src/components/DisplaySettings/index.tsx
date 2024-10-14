@@ -126,6 +126,7 @@ const TopNavBarDisplay = () => {
 									<ToggleGroupItem
 										value="list"
 										className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
+										disabled={view === "list"}
 									>
 										<AlignJustify />
 										List
@@ -133,6 +134,7 @@ const TopNavBarDisplay = () => {
 									<ToggleGroupItem
 										value="grid"
 										className="flex-1 cursor-pointer flex flex-col p-1 h-14 border-secondary border-[1px] gap-1"
+										disabled={view === "grid"}
 									>
 										<LayoutGrid />
 										Grid
