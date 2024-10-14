@@ -1,5 +1,7 @@
-import { Status, Priority } from "@repo/db";
+import type { FilterCondition } from "@/store/filters";
+import { Status, Priority, type User, type Label } from "@repo/db";
 import * as z from "zod";
+import { format } from "date-fns";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -99,3 +101,74 @@ export const passwordSchema = z
 		(value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value),
 		"Password must contain at least one special character",
 	);
+
+export const formatFilterName = async (
+	filter: FilterCondition,
+	labels: Label[],
+	users: Promise<User[]>,
+): Promise<{ name: string; value: string }> => {
+	if (!filter.value) return { name: filter.field, value: "" };
+	switch (filter.field) {
+		case "assigneeId": {
+			const allUsers = await users;
+			const filteredUsers = allUsers.filter(
+				(u) => Array.isArray(filter.value) && filter.value.includes(u.id),
+			);
+			return {
+				name:
+					filteredUsers?.length && filteredUsers.length > 1 ? "Users" : "User",
+				value: filteredUsers?.map((u) => u.name).join(", ") ?? "",
+			};
+		}
+		case "status":
+			if (Array.isArray(filter.value)) {
+				const formattedStatuses = filter.value
+					.map((status) => formatStatus(status as Status))
+					.join(", ");
+				return { name: "Status", value: formattedStatuses };
+			}
+			return {
+				name: "Status",
+				value: formatStatus(filter.value as Status),
+			};
+
+		case "priority":
+			if (Array.isArray(filter.value)) {
+				const formattedPriorities = filter.value
+					.map((priority) => formatPriority(priority as Priority))
+					.join(", ");
+				return { name: "Priority", value: formattedPriorities };
+			}
+			return {
+				name: "Priority",
+				value: formatPriority(filter.value as Priority),
+			};
+		case "dueDate":
+			return {
+				name: "Due Date",
+				value:
+					filter.value instanceof Date
+						? `${filter.operator} ${format(filter.value, "MMM d, yyyy")}`
+						: filter.value.toLocaleString(),
+			};
+		case "effortEstimate":
+			return {
+				name: "Effort Estimate",
+				value: filter.value.toLocaleString(),
+			};
+		case "labels": {
+			const filteredLabels = labels.filter(
+				(l) => Array.isArray(filter.value) && filter.value.includes(l.id),
+			);
+			return {
+				name:
+					filteredLabels?.length && filteredLabels.length > 1
+						? "Labels"
+						: "Label",
+				value: filteredLabels?.map((l) => l.name).join(", ") ?? "",
+			};
+		}
+		default:
+			return { name: filter.field, value: filter.value.toLocaleString() };
+	}
+};
