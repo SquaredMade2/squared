@@ -1,6 +1,5 @@
 import type React from "react";
 import { useState, useEffect } from "react";
-import { SVGProps } from "react";
 
 type Props = {
 	// Icon: React.FC<React.SVGProps<SVGSVGElement>>;

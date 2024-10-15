@@ -103,7 +103,8 @@ const TopNavBarDisplay = () => {
 		});
 	};
 
-	const handleValueChange = (val: string) => setView(val as View);
+	const handleValueChange = (val: string) =>
+		!val ? setView(view) : setView(val as View);
 
 	return (
 		<TooltipProvider delayDuration={0}>
