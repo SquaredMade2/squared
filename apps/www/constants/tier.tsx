@@ -1,4 +1,4 @@
-export type Tier = {
+type Tier = {
 	name: string;
 	id: string;
 	href: string;

@@ -17,8 +17,7 @@ export function useWorkspaces() {
 	useEffect(() => {
 		const initiateStore = async () => {
 			setLoading(true);
-
-			if (user && !currentWorkspace) {
+			if (user) {
 				const allWorkspaces = await getAllWorkspaces(user.id);
 				setWorkspaces(allWorkspaces);
 				const workspace = allWorkspaces?.find((ws) => ws.url === workspaceUrl);
@@ -29,7 +28,7 @@ export function useWorkspaces() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, user, workspaceUrl]);
+	}, [user, workspaceUrl]);
 
 	return {
 		user,
