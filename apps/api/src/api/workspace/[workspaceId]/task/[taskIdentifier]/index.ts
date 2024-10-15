@@ -5,6 +5,7 @@ import type { Route, APIResponse } from "@/api/route";
 type Params = {
 	workspaceId: string;
 	taskIdentifier: string;
+	userId?: string;
 };
 
 export function createRoute(): Route<Params> {
@@ -41,6 +42,19 @@ export function createRoute(): Route<Params> {
 					variant: "destructive",
 				};
 			}
+		},
+		PUT: async (
+			res,
+			{ taskIdentifier, userId },
+		): Promise<APIResponse<boolean>> => {
+			try {
+				const updatedView = await prisma.user.update({
+					where: { id: userId },
+					data: {
+						lastTaskViewed: taskIdentifier,
+					},
+				});
+			} catch (error) {}
 		},
 	};
 }

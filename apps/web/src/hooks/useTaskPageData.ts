@@ -8,6 +8,7 @@ import {
 } from "@/store";
 import type { Task, Workspace } from "@repo/db";
 import { parseParams } from "@/utils/parseParams";
+import { useSession } from "next-auth/react";
 
 export function useTaskPageData() {
 	const { workspace: workspaceUrl, taskIdentifier } = useParams();
@@ -15,6 +16,7 @@ export function useTaskPageData() {
 	const [task, setTask] = useState<Task | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const { data } = useSession();
 
 	const { getTaskByIdentifier } = useTaskStore((state) => state);
 	const { getWorkspace, setCurrentWorkspace } = useWorkspaceStore(
@@ -44,6 +46,7 @@ export function useTaskPageData() {
 				const { task, message: taskMessage } = await getTaskByIdentifier(
 					workspace.id,
 					parseParams(taskIdentifier),
+					data?.user.id,
 				);
 				if (!task) {
 					throw new Error(taskMessage || "Task not found");

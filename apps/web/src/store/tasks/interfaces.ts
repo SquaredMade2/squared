@@ -22,6 +22,8 @@ type TaskActions = {
 	getTaskByIdentifier: (
 		workspaceId: string,
 		taskIdentifier: string,
+		userId?: string,
+		setPreviousTask?: boolean,
 	) => Promise<TaskResponse>;
 	getAllTasks: (teamId: string) => Promise<Task[]>;
 	toggleSprintTasks: (

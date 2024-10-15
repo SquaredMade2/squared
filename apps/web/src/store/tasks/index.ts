@@ -126,11 +126,25 @@ export const createTaskStore = (
 				getTaskByIdentifier: async (
 					workspaceId,
 					taskIdentifier,
+					userId,
+					setPreviousTask = false,
 				): Promise<TaskResponse> => {
 					try {
 						const response: { data: ApiReturnType<Task> } = await axios.get(
 							`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/task/${taskIdentifier}`,
 						);
+
+						if (setPreviousTask && response.data) {
+							try {
+								await axios.put(
+									`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/task/${taskIdentifier}`,
+									{ userId },
+								);
+							} catch (error) {
+								console.error(error);
+							}
+						}
+
 						return { ...response.data, task: response.data.data };
 					} catch (error) {
 						return {
