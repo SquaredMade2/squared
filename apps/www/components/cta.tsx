@@ -1,7 +1,5 @@
 "use client";
-import React from "react";
 import Balancer from "react-wrap-balancer";
-import Link from "next/link";
 import { Button } from "./button";
 export const CTA = () => {
 	return (

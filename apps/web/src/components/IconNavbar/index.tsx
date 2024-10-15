@@ -57,7 +57,12 @@ const IconLeftMenu = () => {
 				<div className="flex flex-col items-center space-y-4">
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={toHome}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Go home"
+								onClick={toHome}
+							>
 								<Home className="size-4" />
 								<span className="sr-only">Home</span>
 							</Button>
@@ -71,6 +76,7 @@ const IconLeftMenu = () => {
 							<Button
 								variant="ghost"
 								size="icon"
+								aria-label="Search"
 								onClick={() => setShowCommand(true)}
 							>
 								<Search className="size-4" />
@@ -86,6 +92,7 @@ const IconLeftMenu = () => {
 							<Button
 								variant="ghost"
 								size="icon"
+								aria-label="Go to settings"
 								onClick={() => navigateTo("settings/workspace")}
 							>
 								<Settings className="size-4" />
@@ -101,6 +108,7 @@ const IconLeftMenu = () => {
 							<Button
 								variant="ghost"
 								size="icon"
+								aria-label="Go to inbox"
 								onClick={() => navigateTo("inbox")}
 								className="relative"
 							>
@@ -120,6 +128,7 @@ const IconLeftMenu = () => {
 							<Button
 								variant="ghost"
 								size="icon"
+								aria-label="Toggle theme"
 								onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
 							>
 								{theme === "dark" ? (

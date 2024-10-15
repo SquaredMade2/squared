@@ -1,8 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { IconDots, IconPlus } from "@tabler/icons-react";
+import { useState } from "react";
+import { IconDots } from "@tabler/icons-react";
 import { Switch } from "../switch";
 import { NewIssueDropDown } from "@/components/new-issue-dropdown";
 //todo fix imports
