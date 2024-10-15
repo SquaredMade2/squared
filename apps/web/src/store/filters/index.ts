@@ -23,6 +23,7 @@ export const createFilterStore = (
 		currentFilters: [],
 		currentFilterTypes: [],
 		savedFilters: [],
+		showSaveForm: false,
 	},
 ) => {
 	return createStore<FilterStore>()(
@@ -31,6 +32,9 @@ export const createFilterStore = (
 				...initState,
 				setCurrentFilter: (filter): void => {
 					set({ currentFilters: filter });
+				},
+				setShowSaveForm: (input): void => {
+					set({ showSaveForm: input });
 				},
 				clearFilter: (): void => {
 					set({ currentFilters: [], currentFilterTypes: [] });
@@ -109,12 +113,32 @@ export const createFilterStore = (
 						return matchesAll;
 					});
 				},
+				mergeFilters: (
+					newFilters: FilterCondition[],
+					savedFilterId: string,
+				) => {
+					const currentSavedFilter = get().savedFilters.find(
+						(f) => f.id === savedFilterId,
+					);
+					const filterMap = new Map<string, FilterCondition>();
+					//Add existing filter conditions to the map
+					if (currentSavedFilter) {
+						for (const condition of currentSavedFilter.filter) {
+							filterMap.set(condition.field as string, condition);
+						}
+					}
+					//Merge new filter conditions, replacing any existing fields
+					for (const condition of newFilters) {
+						filterMap.set(condition.field as string, condition);
+					}
+					//Convert the map back into an array of FilterCondition
+					return Array.from(filterMap.values());
+				},
 				saveFilter: async (
 					filter: Partial<SavedFilter>,
 				): Promise<FilterResponse> => {
 					try {
 						const filterId = uuidv4();
-						console.log("filter", filter);
 						const { data: response }: { data: ApiReturnType<SavedFilterType> } =
 							await axios.post(apiString(filterId), filter);
 
@@ -212,14 +236,14 @@ export const createFilterStore = (
 				name: "filter-store",
 				storage: {
 					getItem: (name) => {
-						const storedValue = sessionStorage.getItem(name);
+						const storedValue = localStorage.getItem(name);
 						return storedValue ? JSON.parse(storedValue) : null;
 					},
 					setItem: (name, value) => {
-						sessionStorage.setItem(name, JSON.stringify(value));
+						localStorage.setItem(name, JSON.stringify(value));
 					},
 					removeItem: (name) => {
-						sessionStorage.removeItem(name);
+						localStorage.removeItem(name);
 					},
 				},
 			},

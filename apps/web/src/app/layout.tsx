@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 		default: "Squared",
 		template: "%s | Squared",
 	},
+	description:
+		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",
 };
 
 export default function RootLayout({
