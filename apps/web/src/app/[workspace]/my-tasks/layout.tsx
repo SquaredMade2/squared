@@ -3,6 +3,8 @@ import MyTasksNavbar from "@/components/MyTasksNavbar";
 
 export const metadata: Metadata = {
 	title: "My Tasks",
+	description:
+		"View and manage your personal task list. Track progress, set priorities, and stay organized with Squared's task management features.",
 };
 
 export default function MyTasksLayout({
