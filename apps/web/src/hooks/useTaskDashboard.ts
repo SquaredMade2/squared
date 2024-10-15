@@ -65,8 +65,8 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 				);
 			case "Priority":
 				return filterTasks(tasks).filter((task) => task.priority === group);
-			// case "Label":
-			// 	return filterTasks(tasks).filter((task) => task.labels === group);
+			case "Label":
+				return filterTasks(tasks).filter((task) => task.labels.includes(group));
 			case "Parent Issue": {
 				const hasParentTask = filterTasks(tasks).filter(
 					(task) => task.parentId === group,
@@ -112,7 +112,7 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 				groupTitles = tasks.map((task) => task.parentId || "No parent");
 				break;
 			case "No grouping":
-				return [];
+				return ["No grouping"];
 			default:
 				return [];
 		}

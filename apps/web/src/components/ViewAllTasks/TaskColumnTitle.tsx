@@ -14,6 +14,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -25,6 +26,7 @@ const TaskColumnTitle = ({
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { users } = useUsers();
+	const { currentWorkspace } = useWorkspaces();
 	const { tasks } = useTaskStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
@@ -63,14 +65,18 @@ const TaskColumnTitle = ({
 			}
 			case "Priority":
 				return formatPriority(title as Priority);
-			// case "Label":
-			// 	return
+			case "Label": {
+				const labelName = currentWorkspace?.Labels.find(
+					(label) => label.id === title,
+				);
+				return labelName ? labelName.name : "No label";
+			}
 			case "Parent Issue": {
 				const parentTask = tasks.find((t) => t.id === title);
 				return parentTask ? parentTask.title : "No parent";
 			}
-			// case "No grouping":
-			// 	return
+			case "No grouping":
+				return title;
 		}
 	};
 
@@ -96,7 +102,7 @@ const TaskColumnTitle = ({
 						>
 							{/* <StatusIcon status={title} /> */}
 							<div className="flex gap-2 items-center">
-								<span className="text-sm">{formatTitle()}</span>
+								<span className="text-sm truncate">{formatTitle()}</span>
 								<span className="ml-1 text-muted-foreground">
 									{numberOfTasks}
 								</span>

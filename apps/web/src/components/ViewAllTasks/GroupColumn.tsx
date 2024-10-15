@@ -99,6 +99,10 @@ const GroupColumn = ({
 		displayOptions.taskOrder.orderAscending,
 	);
 
+	// handle when grouping by No grouping display on grid (no columns just grid??)
+
+	// refactor this - need to be able to render subtask by itself in some cases
+	// ex. grouping is priority, parent task has urgent priority, subtask has medium priority - display separately in their respective groupcolumns
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
@@ -168,9 +172,9 @@ const GroupColumn = ({
 							}
 						>
 							{showTasks &&
-								orderedTasks.map((task, index) =>
-									renderTaskWithSubtasks(task, index),
-								)}
+								orderedTasks
+									.filter((task) => !task.parentId)
+									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
 								<GridColumnNewIssueButton group={group} sprintId={sprintId} />
 							)}
