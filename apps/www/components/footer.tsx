@@ -1,5 +1,4 @@
 import Link from "next/link";
-import React from "react";
 import { Logo } from "./Logo";
 
 export const Footer = () => {
@@ -17,7 +16,7 @@ export const Footer = () => {
 			href: "/contact",
 		},
 	];
-	const legal: any[] = [
+	const legal: { name: string; href: string }[] = [
 		// {
 		// 	name: "Privacy Policy",
 		// 	href: "#",

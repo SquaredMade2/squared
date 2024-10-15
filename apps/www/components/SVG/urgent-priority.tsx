@@ -1,6 +1,4 @@
-import React from "react";
-
-function UrgentPriority({ fill }: { fill: string }) {
+function UrgentPriority() {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
