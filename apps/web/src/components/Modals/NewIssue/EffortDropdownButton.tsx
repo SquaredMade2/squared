@@ -16,7 +16,7 @@ const difficultyLevels = [
 	"4 - Hard",
 	"5 - Really hard",
 ];
-
+// todo change effort estimate here
 export const EffortDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const effortEstimate = newIssueData.effortEstimate;
@@ -25,7 +25,7 @@ export const EffortDropdownButton = () => {
 		switch (true) {
 			case estimate > 3:
 				return high();
-			case estimate > 1:
+			case estimate > 2:
 				return medium();
 			default:
 				return low();

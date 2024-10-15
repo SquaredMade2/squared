@@ -238,7 +238,7 @@ export default function TeamsSetting() {
 							>
 								<DropdownMenuTrigger>
 									<menu
-										className="border flex items-center justify-center rounded-md w-40 h-10 hover:cursor-pointer"
+										className="border flex items-center text-left px-3 rounded-md w-40 h-10 hover:cursor-pointer"
 										aria-label="Effort style dropdown menu"
 										aria-hidden="true"
 									>
