@@ -11,6 +11,7 @@ const ViewAllTasks = ({
 	// getTasksForStatus,
 	getGroupColumnTitles,
 	getTasksForGroup,
+	formatColumnTitle,
 	// allowedColumns = Object.values(Status),
 	sprintId,
 }: ViewAllTasksProps) => {
@@ -76,6 +77,7 @@ const ViewAllTasks = ({
 						tasks={tasksForGroup}
 						currentView={view}
 						sprintId={sprintId}
+						formatColumnTitle={formatColumnTitle}
 					/>
 				</div>
 			);

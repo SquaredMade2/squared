@@ -1,11 +1,9 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import { useModalStore, useTaskStore } from "@/store";
-import { formatPriority, formatStatus } from "@/utils/formatting";
+import { useModalStore } from "@/store";
 import { useViewStore } from "@/store";
 import type { Priority, Status } from "@repo/db";
-import { useUsers } from "@/hooks/useUsers";
 // import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import {
@@ -14,7 +12,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { PriorityIcon, StatusIcon } from "../Icons";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -23,11 +21,9 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	setShowTasks,
 	sprintId,
+	formatColumnTitle,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
-	const { users } = useUsers();
-	const { currentWorkspace } = useWorkspaces();
-	const { tasks } = useTaskStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 
@@ -55,31 +51,6 @@ const TaskColumnTitle = ({
 		setNewIssueData({ sprintId: sprintId ?? null, [key]: title });
 	};
 
-	const formatTitle = () => {
-		switch (groupTasksBy) {
-			case "Status":
-				return formatStatus(title as Status);
-			case "Assignee": {
-				const user = users.find((user) => user.id === title);
-				return user ? user.name : "Unassigned";
-			}
-			case "Priority":
-				return formatPriority(title as Priority);
-			case "Label": {
-				const labelName = currentWorkspace?.Labels.find(
-					(label) => label.id === title,
-				);
-				return labelName ? labelName.name : "No label";
-			}
-			case "Parent Issue": {
-				const parentTask = tasks.find((t) => t.id === title);
-				return parentTask ? parentTask.title : "No parent";
-			}
-			case "No grouping":
-				return title;
-		}
-	};
-
 	return (
 		<div className={isListView ? "" : "pr-2 min-w-64"}>
 			<div
@@ -101,8 +72,16 @@ const TaskColumnTitle = ({
 							}
 						>
 							{/* <StatusIcon status={title} /> */}
+							{groupTasksBy === "Status" && (
+								<StatusIcon status={title as Status} />
+							)}
+							{groupTasksBy === "Priority" && (
+								<PriorityIcon priority={title as Priority} />
+							)}
 							<div className="flex gap-2 items-center">
-								<span className="text-sm truncate">{formatTitle()}</span>
+								<span className="text-sm truncate">
+									{formatColumnTitle(title)}
+								</span>
 								<span className="ml-1 text-muted-foreground">
 									{numberOfTasks}
 								</span>
@@ -114,8 +93,14 @@ const TaskColumnTitle = ({
 						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
 					>
 						{/* <StatusIcon status={title} /> */}
+						{groupTasksBy === "Status" && (
+							<StatusIcon status={title as Status} />
+						)}
+						{groupTasksBy === "Priority" && (
+							<PriorityIcon priority={title as Priority} />
+						)}
 						<div className="flex gap-2 items-center">
-							<span>{formatTitle()}</span>
+							<span>{formatColumnTitle(title)}</span>
 							<span className="ml-2 text-muted-foreground">
 								{numberOfTasks}
 							</span>
