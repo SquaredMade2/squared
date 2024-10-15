@@ -38,7 +38,7 @@ const formSchema = z.object({
 		.min(1, "Please enter password"),
 });
 
-export type LoginUser = z.infer<typeof formSchema>;
+type LoginUser = z.infer<typeof formSchema>;
 
 export function SignupForm() {
 	const form = useForm<LoginUser>({
