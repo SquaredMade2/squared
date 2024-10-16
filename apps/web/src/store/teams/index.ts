@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { persist } from "zustand/middleware";
 import type {
 	TeamState,
@@ -7,8 +7,10 @@ import type {
 	TeamResponse,
 	SprintResponse,
 	InitializeSprintsBody,
+	RetrospectiveItemResponse,
+	RetrospectiveData,
 } from "./interfaces";
-import type { Sprint, Task, Team } from "@repo/db";
+import type { RetrospectiveItem, Sprint, Task, Team } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";
@@ -327,6 +329,100 @@ export const createTeamStore = (
 							sprint: null,
 							message: error instanceof Error ? error.message : "Unknown error",
 							variant: "destructive",
+						};
+					}
+				},
+				addRetrospectiveItem: async (
+					sprintId,
+					type,
+					content,
+				): Promise<RetrospectiveItemResponse> => {
+					try {
+						const { currentTeam } = get();
+						const { data }: { data: ApiReturnType<RetrospectiveItem> } =
+							await axios.post(
+								apiString(
+									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
+								),
+								{
+									type,
+									content,
+								},
+							);
+						return {
+							item: data.data,
+							message: data.message,
+							variant: data.variant,
+						};
+					} catch (error) {
+						console.error("Error in addRetrospectiveItem:", error);
+						if (isAxiosError(error)) {
+							return {
+								item: null,
+								message: error.response?.data.message || "An error occurred",
+								variant: "destructive",
+							};
+						}
+						throw error;
+					}
+				},
+				updateRetrospectiveItemType: async (
+					sprintId,
+					itemId,
+					type,
+				): Promise<RetrospectiveItemResponse> => {
+					try {
+						const { currentTeam } = get();
+						const { data }: { data: ApiReturnType<RetrospectiveItem> } =
+							await axios.put(
+								apiString(
+									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
+								),
+								{
+									itemId,
+									type,
+								},
+							);
+						return {
+							item: data.data,
+							message: data.message,
+							variant: data.variant,
+						};
+					} catch (error) {
+						console.error("Error in updateRetrospectiveItem:", error);
+						if (isAxiosError(error)) {
+							return {
+								item: null,
+								message: error.response?.data.message || "An error occurred",
+								variant: "destructive",
+							};
+						}
+						throw error;
+					}
+				},
+				getRetrospectiveItems: async (sprintId): Promise<RetrospectiveData> => {
+					try {
+						const { currentTeam } = get();
+						const { data }: { data: ApiReturnType<RetrospectiveData> } =
+							await axios.get(
+								apiString(
+									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
+								),
+							);
+						if (!data.data) {
+							return {
+								wentWell: [],
+								toImprove: [],
+								actionItems: [],
+							};
+						}
+						return data.data;
+					} catch (error) {
+						console.error("Error in getRetrospectiveItems:", error);
+						return {
+							wentWell: [],
+							toImprove: [],
+							actionItems: [],
 						};
 					}
 				},

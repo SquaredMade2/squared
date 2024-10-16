@@ -1,4 +1,4 @@
-import type { Sprint, Task, Team } from "@repo/db";
+import type { RetrospectiveItem, Sprint, Task, Team } from "@repo/db";
 
 export type TeamState = {
 	teams: Team[];
@@ -19,9 +19,21 @@ export interface SprintResponse {
 	variant: "default" | "destructive";
 }
 
+export interface RetrospectiveItemResponse {
+	item: RetrospectiveItem | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
+
 export type InitializeSprintsBody = {
 	count?: number;
 	startDate?: Date;
+};
+
+export type RetrospectiveData = {
+	wentWell: RetrospectiveItem[];
+	toImprove: RetrospectiveItem[];
+	actionItems: RetrospectiveItem[];
 };
 
 type TeamActions = {
@@ -49,6 +61,17 @@ type TeamActions = {
 	) => Promise<SprintResponse>;
 	getSprintTasks: (teamId: string, sprintId: string) => Promise<Task[]>;
 	endSprint: (teamId: string, sprintId: string) => Promise<SprintResponse>;
+	addRetrospectiveItem: (
+		sprintId: string,
+		type: "wentWell" | "toImprove" | "actionItems",
+		content: string,
+	) => Promise<RetrospectiveItemResponse>;
+	updateRetrospectiveItemType: (
+		sprintId: string,
+		itemId: string,
+		type: "wentWell" | "toImprove" | "actionItems",
+	) => Promise<RetrospectiveItemResponse>;
+	getRetrospectiveItems: (sprintId: string) => Promise<RetrospectiveData>;
 };
 
 export type TeamStore = TeamState & TeamActions;
