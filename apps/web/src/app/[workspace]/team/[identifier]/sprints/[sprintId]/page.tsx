@@ -39,6 +39,7 @@ import { useSprints } from "@/hooks/useSprints";
 import { formatStatus } from "@/utils/formatting";
 
 const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
+const statusOrder = ["Done", "In Review", "In Progress", "To Do", "Canceled"];
 
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
@@ -293,12 +294,15 @@ export default function SprintDashboardPage() {
 										`${name} ${(percent * 100).toFixed(0)}%`
 									}
 								>
-									{getTaskStatusData().map((entry, index) => (
-										<Cell
-											key={`cell-${entry.value}`}
-											fill={COLORS[index % COLORS.length]}
-										/>
-									))}
+									{getTaskStatusData().map((entry) => {
+										const colorIndex = statusOrder.indexOf(entry.name);
+										return (
+											<Cell
+												key={`cell-${entry.value}`}
+												fill={COLORS[colorIndex]}
+											/>
+										);
+									})}
 								</Pie>
 								<Tooltip />
 							</PieChart>
