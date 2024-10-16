@@ -12,6 +12,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,14 @@ import {
 } from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
 import { useAuthStore, useUserStore } from "@/store";
-import { BellOff, Check, MoveRight, Trash2 } from "lucide-react";
+import {
+	BellOff,
+	Check,
+	MoveRight,
+	Trash2,
+	Ellipsis,
+	Circle,
+} from "lucide-react";
 import type { NotificationFilter } from "@/app/inbox/page";
 
 export function InboxDataTable({
@@ -54,6 +62,7 @@ export function InboxDataTable({
 		useNotificationStore((state) => state);
 	const { updateUser, getUser } = useUserStore((state) => state);
 	const { user, setUser } = useAuthStore((state) => state);
+	const { notifications } = useNotificationStore((state) => state);
 	const table = useReactTable({
 		data,
 		columns,
@@ -78,6 +87,13 @@ export function InboxDataTable({
 			hoveredRowId,
 		},
 	});
+
+	const selectedRows = table.getFilteredSelectedRowModel().rows;
+	const selectedNotificationIds = selectedRows.map((row) => row.original.id);
+	const mySelectedNotification = notifications.find((msg) =>
+		selectedNotificationIds.includes(msg.id),
+	);
+	const selectedNotificationReadStatus = mySelectedNotification?.read;
 
 	useEffect(() => {
 		if (showUnreadOnly) {
@@ -260,6 +276,57 @@ export function InboxDataTable({
 																<span>Move all to Saved</span>
 															</Button>
 														)}
+													{table.getFilteredSelectedRowModel().rows.length >
+													1 ? (
+														<Popover>
+															<PopoverTrigger asChild>
+																<Button
+																	variant="outline"
+																	className="bg-secondary"
+																	size="sm"
+																>
+																	<Ellipsis className="size-4" />
+																</Button>
+															</PopoverTrigger>
+															<PopoverContent className="w-[200px] p-0">
+																<div className="flex flex-col">
+																	<Button
+																		variant="ghost"
+																		onClick={handleMarkAsRead}
+																		className="justify-start gap-3"
+																	>
+																		<Circle className="size-4" />
+																		Mark as Read
+																	</Button>
+																	<Button
+																		variant="ghost"
+																		onClick={handleMarkAsUnread}
+																		className="justify-start gap-3"
+																	>
+																		<Circle className="size-4 fill-foreground" />
+																		Mark as Unread
+																	</Button>
+																</div>
+															</PopoverContent>
+														</Popover>
+													) : (
+														<Button
+															variant="outline"
+															className="bg-secondary"
+															size="sm"
+															onClick={
+																selectedNotificationReadStatus
+																	? handleMarkAsRead
+																	: handleMarkAsUnread
+															}
+														>
+															<span>
+																{selectedNotificationReadStatus
+																	? "Mark as Read"
+																	: "Mark as Unread"}
+															</span>
+														</Button>
+													)}
 													{!isAllSelected && (
 														<Button
 															onClick={handleMarkAsUnread}
@@ -273,22 +340,6 @@ export function InboxDataTable({
 															</span>
 														</Button>
 													)}
-													<Button
-														variant="outline"
-														className="bg-secondary"
-														size="sm"
-														onClick={
-															showUnreadOnly
-																? handleMarkAsRead
-																: handleMarkAsUnread
-														}
-													>
-														<span>
-															{showUnreadOnly
-																? "Mark as Read"
-																: "Mark as Unread"}
-														</span>
-													</Button>
 													{(table.getIsAllPageRowsSelected() ||
 														table.getIsSomePageRowsSelected()) && (
 														<Button
@@ -343,9 +394,9 @@ export function InboxDataTable({
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
 									className={`
-                    ${!row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}
-                    transition-colors
-                  `}
+										${!row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}
+										transition-colors
+									`}
 									onMouseEnter={() => setHoveredRowId(row.id)}
 									onMouseLeave={() => setHoveredRowId(null)}
 								>
