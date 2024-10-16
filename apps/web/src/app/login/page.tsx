@@ -22,6 +22,7 @@ function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
@@ -60,7 +61,7 @@ function LoginForm() {
 	};
 
 	const handleGoogleLogin = async () => {
-		setIsLoading(true);
+		setIsGoogleLoading(true);
 		try {
 			await signIn("google", {
 				callbackUrl: inviteToken
@@ -72,7 +73,7 @@ function LoginForm() {
 		} catch (error) {
 			toast({ title: "Google login failed", variant: "destructive" });
 			console.error("Google login error:", error);
-			setIsLoading(false);
+			setIsGoogleLoading(false);
 		}
 	};
 
@@ -156,9 +157,9 @@ function LoginForm() {
 						onClick={handleGoogleLogin}
 						className="w-full"
 						variant="outline"
-						disabled={isLoading}
+						disabled={isGoogleLoading}
 					>
-						{isLoading ? (
+						{isGoogleLoading ? (
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 						) : (
 							<GoogleIcon />
