@@ -3,6 +3,7 @@ import { sendMail } from "@/utils/mail";
 import { prisma } from "@/api";
 import type { User } from "@repo/db";
 import type { Route, APIResponse } from "@/api/route";
+import { passwordResetTemplate } from "@/utils/templates";
 
 type Body = {
 	email: string;
@@ -34,15 +35,11 @@ export function createRoute(): Route {
 					});
 					try {
 						// Send verification email for password reset
-						await sendMail(
+						await sendMail({
 							email,
-							user.name,
-							emailToken,
-							"password",
-							"",
-							"",
-							"resetPassword",
-						);
+							html: passwordResetTemplate(`forgotPassword/${emailToken}`),
+							subject: "Reset your password",
+						});
 					} catch (error) {
 						console.error("Error sending email:", error);
 						res.status(500);

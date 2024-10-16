@@ -11,7 +11,7 @@
 			"cypress",
 			"*.stories.tsx"
 		],
-		"include": ["src", "api"]
+		"include": ["src", "api", "www"]
 	},
 	"organizeImports": {
 		"enabled": true

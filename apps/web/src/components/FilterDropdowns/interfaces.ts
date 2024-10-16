@@ -5,7 +5,3 @@ export type FilterOption = {
 	group: string;
 	menuContent: (filterOption: FilterOption) => JSX.Element;
 };
-
-export type FilterDropdownProps = {
-	filterOption: FilterOption;
-};

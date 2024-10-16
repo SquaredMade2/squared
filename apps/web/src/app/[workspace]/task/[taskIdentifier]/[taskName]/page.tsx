@@ -25,12 +25,12 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useTaskPageData } from "@/hooks/useTaskPageData";
+import { useTaskPage } from "@/hooks/useTaskPage";
 import { useToast } from "@/components/ui/use-toast";
 
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);
-	const { task, isLoading, error, workspace } = useTaskPageData();
+	const { task, isLoading, error, currentWorkspace } = useTaskPage();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
 
@@ -63,7 +63,7 @@ const TaskPage = () => {
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
 									<MobileMenuSheetTrigger />
-									<TaskBreadcrumbs task={task} workspace={workspace} />
+									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
 								</div>
 							</div>
 							<MobileTaskSettings task={task} />
@@ -118,7 +118,7 @@ const TaskPage = () => {
 																		className="mr-2"
 																	/>
 																	<Link
-																		href={`/${workspace?.url}/task/${
+																		href={`/${currentWorkspace?.url}/task/${
 																			subtask?.identifier
 																		}/${formatUrl(subtask.title)}`}
 																	>
@@ -147,7 +147,7 @@ const TaskPage = () => {
 								<div className="md:flex hidden flex-col gap-4">
 									<TaskSidebarTopRow
 										task={task}
-										workspaceUrl={workspace?.url}
+										workspaceUrl={currentWorkspace?.url}
 									/>
 									<TaskDesignationsContainer task={task} />
 								</div>

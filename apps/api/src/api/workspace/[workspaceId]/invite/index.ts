@@ -2,6 +2,7 @@ import { prisma } from "@/api";
 import jwt from "jsonwebtoken";
 import type { Route } from "@/api/route";
 import { sendMail } from "@/utils/mail";
+import { joinWorkspaceTemplate } from "@/utils/templates";
 
 type Params = {
 	workspaceId: string;
@@ -39,7 +40,16 @@ export function createRoute(): Route<Params> {
 				// Check if the workspace exists
 				const workspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
+					include: {
+						Users: {
+							include: {
+								user: true,
+							},
+						},
+					},
 				});
+
+				const workspaceEmails = workspace?.Users.map((u) => u.user.email) ?? [];
 
 				if (!workspace) {
 					return {
@@ -55,18 +65,30 @@ export function createRoute(): Route<Params> {
 				});
 
 				const emailsToSend = Array.isArray(email) ? email : [email];
+				const existingUsers = await prisma.user.findMany({
+					where: {
+						email: {
+							in: emailsToSend,
+						},
+					},
+				});
 
 				// Send email with the token
-				for (const email of emailsToSend) {
-					await sendMail(
+				for (const email of emailsToSend.filter(
+					(email) => !workspaceEmails.includes(email),
+				)) {
+					const newUser = !existingUsers.some((u) => u.email === email);
+					await sendMail({
 						email,
-						"Workspace Invitation",
-						token,
-						`${workspace.url}/join`,
-						workspace.id,
-						workspace.name ?? "Squared Workspace",
-						"invite",
-					);
+						subject: "Workspace Invitation",
+						html: joinWorkspaceTemplate({
+							username: existingUsers.find((u) => u.email === email)?.name,
+							path: newUser
+								? `register?token=${token}`
+								: `login?token=${token}`,
+							workspaceName: workspace.name,
+						}),
+					});
 				}
 				return {
 					data: null,

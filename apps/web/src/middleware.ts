@@ -20,12 +20,16 @@ export async function middleware(request: NextRequest) {
 
 	// Redirect logged-in users trying to access login or register to the homepage
 	if (userLoggedIn && isAuthRoute(pathname)) {
-		return NextResponse.redirect(new URL("/", request.url));
+		const token = request.nextUrl.searchParams.get("token");
+		const redirectTo = token ? `/join/${token}` : "/";
+		return NextResponse.redirect(new URL(redirectTo, request.url));
 	}
 
 	// Redirect non-logged-in users to login for protected routes
 	if (!userLoggedIn && !isPublicRoute(pathname)) {
-		return NextResponse.redirect(new URL("/login", request.url));
+		const token = request.nextUrl.searchParams.get("token");
+		const redirectTo = token ? `/login?token=${token}` : "/login";
+		return NextResponse.redirect(new URL(redirectTo, request.url));
 	}
 
 	// Allow the request to proceed
@@ -34,12 +38,7 @@ export async function middleware(request: NextRequest) {
 
 // Check if the current route is public (accessible without authentication)
 function isPublicRoute(pathname: string) {
-	const PUBLIC_ROUTES = [
-		"/login",
-		"/register",
-		"/confirmation",
-		"/forgotPassword",
-	];
+	const PUBLIC_ROUTES = ["/login", "/register", "/verify", "/forgotPassword"];
 	const workspaceJoinRegex = /^\/[^\/]+\/join\/[^\/]+$/;
 
 	return (
@@ -50,6 +49,6 @@ function isPublicRoute(pathname: string) {
 
 // Check if the current route is an authentication route (login or register)
 function isAuthRoute(pathname: string) {
-	const AUTH_ROUTES = ["/login", "/register", "/confirmation"];
+	const AUTH_ROUTES = ["/login", "/register", "/verify"];
 	return AUTH_ROUTES.includes(pathname);
 }

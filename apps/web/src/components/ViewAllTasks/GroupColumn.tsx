@@ -18,6 +18,7 @@ const StatusColumn = ({
 	title,
 	tasks,
 	currentView: view,
+	sprintId,
 }: StatusColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
@@ -140,6 +141,7 @@ const StatusColumn = ({
 				numberOfTasks={numberOfTasks}
 				title={title}
 				setShowTasks={setShowTasks}
+				sprintId={sprintId}
 			/>
 			<Droppable droppableId={columnType}>
 				{(provided, snapshot) => (
@@ -152,8 +154,9 @@ const StatusColumn = ({
 								snapshot.isDraggingOver && view === "grid"
 									? ""
 									: `${
-											view === "grid" &&
-											"h-[77vh] rounded pr-2 transition-all duration-500 ease-in-out"
+											view === "grid"
+												? "h-[calc(100vh-117px)] flex-grow overflow-y-auto rounded pr-2 transition-all duration-500 ease-in-out"
+												: "overflow-y-auto"
 										}`
 							} 
             `}
@@ -162,7 +165,7 @@ const StatusColumn = ({
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2 items-center"
+									: "flex flex-col z-30 w-full min-h-[135px] pb-20 gap-2 items-center"
 							}
 						>
 							{showTasks &&
@@ -170,7 +173,10 @@ const StatusColumn = ({
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
 							{!isListView && (
-								<GridColumnNewIssueButton status={title as Status} />
+								<GridColumnNewIssueButton
+									status={title as Status}
+									sprintId={sprintId}
+								/>
 							)}
 						</div>
 						{provided.placeholder}

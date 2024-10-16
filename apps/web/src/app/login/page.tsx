@@ -36,6 +36,9 @@ function LoginForm() {
 				redirect: false,
 				email: data.email,
 				password: data.password,
+				callbackUrl: inviteToken
+					? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
+					: process.env.NEXT_PUBLIC_URL,
 			});
 			if (response?.status === 401) {
 				toast({
@@ -44,7 +47,7 @@ function LoginForm() {
 				});
 			}
 			router.refresh();
-			router.prefetch("/");
+			router.prefetch(inviteToken ? `/join/${inviteToken}` : "/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({
@@ -59,7 +62,11 @@ function LoginForm() {
 	const handleGoogleLogin = async () => {
 		setIsLoading(true);
 		try {
-			await signIn("google", { callbackUrl: window.location.href });
+			await signIn("google", {
+				callbackUrl: inviteToken
+					? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
+					: process.env.NEXT_PUBLIC_URL,
+			});
 			router.refresh();
 			router.prefetch("/");
 		} catch (error) {
@@ -116,6 +123,7 @@ function LoginForm() {
 									type="button"
 									variant="ghost"
 									size="icon"
+									aria-label="Toggle password visibility"
 									className="absolute right-0 top-0 h-full"
 									onClick={() => setHidePassword(!hidePassword)}
 								>

@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useAuthStore } from "@/store";
 import {
 	Form,
 	FormControl,
@@ -45,10 +45,7 @@ function RegisterForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
-	const { register, login } = useAuthStore((state) => state);
-	const { joinWorkspace, getWorkspace, getAllWorkspaces } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { register } = useAuthStore((state) => state);
 	const inviteToken = searchParams.get("token");
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -64,54 +61,28 @@ function RegisterForm() {
 		setIsLoading(true);
 		try {
 			// First, register the user using your custom register function
-			const response = await register({
+			const { user, message, variant } = await register({
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
 				email: values.email,
 				password: values.password,
 				type: "register",
 				provider: "credentials",
+				token: inviteToken,
 			});
 
-			if (response.user) {
-				// If registration is successful, sign in the user using NextAuth
-				try {
-					const result = await signIn("credentials", {
-						redirect: false,
-						email: values.email,
-						password: values.password,
-					});
-
-					if (result?.error) {
-						throw new Error(result.error);
-					}
-
-					if (inviteToken) {
-						const { workspace } = await joinWorkspace(
-							inviteToken,
-							response.user,
-						);
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
-						}
-
-						toast({
-							title: response.message,
-							variant: response.variant,
-						});
-					} else {
-						router.push("/");
-					}
-				} catch (error) {
-					console.error(error);
-					toast({
-						title:
-							error instanceof Error ? error.message : "Something went wrong",
-						variant: "destructive",
-					});
-				}
-			} else {
-				throw new Error(response.message || "Registration failed");
+			toast({
+				title: message,
+				variant: variant,
+			});
+			if (user?.verified && inviteToken) {
+				await signIn("credentials", {
+					redirect: false,
+					email: values.email,
+					password: values.password,
+				});
+				router.refresh();
+				router.prefetch("/");
 			}
 		} catch (error) {
 			console.error("Registration error:", error);
@@ -130,51 +101,6 @@ function RegisterForm() {
 			await signIn("google", {
 				callbackUrl: window.location.href,
 			});
-			const { data: session, status } = useSession();
-			if (status === "authenticated" && session?.user) {
-				const response = await login({
-					provider: "oauth",
-					type: "login",
-					name: session.user.name ?? undefined,
-					email: session.user.email,
-					oauthId: session.user.id,
-				});
-
-				if (response?.user) {
-					const user = response.user;
-					toast({ title: "Login Successful, Welcome!" });
-
-					if (inviteToken) {
-						const { workspace, message, variant } = await joinWorkspace(
-							inviteToken,
-							user,
-						);
-						if (workspace?.url) {
-							toast({ title: message, variant });
-							router.push(`/${workspace.url}`);
-						}
-					} else if (user.defaultWorkspaceId) {
-						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
-						}
-					} else {
-						const workspaces = await getAllWorkspaces(user.id);
-						if (workspaces?.length) {
-							router.refresh();
-							router.push(`/${workspaces[0].url}`);
-						} else {
-							router.refresh();
-							router.push("/join");
-						}
-					}
-				}
-			} else {
-				toast({
-					title: "Login failed",
-					variant: "destructive",
-				});
-			}
 		} catch (error) {
 			toast({ title: "Google registration failed", variant: "destructive" });
 			console.error("Google registration error:", error);
@@ -272,6 +198,7 @@ function RegisterForm() {
 													type="button"
 													variant="ghost"
 													size="icon"
+													aria-label="Toggle password visibility"
 													className="absolute right-0 top-0 h-full"
 													onClick={() => setHidePassword(!hidePassword)}
 												>

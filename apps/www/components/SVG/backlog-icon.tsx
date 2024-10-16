@@ -1,5 +1,3 @@
-import React from "react";
-
 function BacklogIcon() {
 	return (
 		<svg

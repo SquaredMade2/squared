@@ -1,8 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
-import React, { useId } from "react";
+import { useId } from "react";
 
 export const Background = () => {
 	return (
@@ -59,6 +58,7 @@ const SVGVertical = ({ className }: { className?: string }) => {
 			xmlns="http://www.w3.org/2000/svg"
 			className={cn("text-neutral-100 dark:text-neutral-800", className)}
 		>
+			<title>Vertical Line</title>
 			<path d="M0.5 0.5V479" stroke="currentColor" strokeWidth={2} />
 			<motion.path
 				d="M0.5 0.5V479"
@@ -101,6 +101,7 @@ const SVG = ({ className }: { className?: string }) => {
 			xmlns="http://www.w3.org/2000/svg"
 			className={cn("text-neutral-100 dark:text-neutral-800", className)}
 		>
+			<title>SVG</title>
 			<path d="M0.5 0.5H479" stroke="currentColor" />
 			<motion.path
 				d="M0.5 0.5H479"
@@ -114,7 +115,7 @@ const SVG = ({ className }: { className?: string }) => {
 					initial={{ x1: -200, y1: 0, x2: -100, y2: 0 }}
 					animate={{ x1: 400, y1: 0, x2: 600, y2: 0 }}
 					transition={{
-						repeat: Infinity,
+						repeat: Number.POSITIVE_INFINITY,
 						duration: Math.random() * 2 + 10,
 						delay: Math.floor(Math.random() * 6) + 2,
 					}}
@@ -128,8 +129,3 @@ const SVG = ({ className }: { className?: string }) => {
 		</motion.svg>
 	);
 };
-
-// Use the below rect to debug linear gradient
-{
-	/* <motion.rect width={width} height={width} fill={`url(#gradient-${id})`} /> */
-}

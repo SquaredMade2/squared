@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
 import type { Task } from "@repo/db";
 import {
@@ -22,7 +22,7 @@ export const TaskSidebarTopRow = ({
 
 	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${workspaceUrl}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `
-			${replaceSpacesWithDashes(
+			${sanitizeBranchName(
 				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
 			)}`;
 
@@ -84,7 +84,12 @@ export const TaskSidebarTopRow = ({
 				<TooltipProvider delayDuration={0}>
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={copyUrl}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Task URL"
+								onClick={copyUrl}
+							>
 								<Link className="size-4" />
 							</Button>
 						</TooltipTrigger>
@@ -99,7 +104,12 @@ export const TaskSidebarTopRow = ({
 					</Tooltip>
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={copyTaskId}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Task ID"
+								onClick={copyTaskId}
+							>
 								<Copy className="size-4" />
 							</Button>
 						</TooltipTrigger>
@@ -113,7 +123,12 @@ export const TaskSidebarTopRow = ({
 					</Tooltip>
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={copyGitBranchName}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Git Branch Name"
+								onClick={copyGitBranchName}
+							>
 								<GitPullRequestArrow className="size-4" />
 							</Button>
 						</TooltipTrigger>

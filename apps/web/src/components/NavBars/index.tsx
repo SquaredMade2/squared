@@ -137,7 +137,12 @@ const Navbar = () => {
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<Button variant="ghost" size="icon" onClick={handleLogout}>
+									<Button
+										variant="ghost"
+										size="icon"
+										aria-label="Logout"
+										onClick={handleLogout}
+									>
 										<LogOut className="size-5" />
 										<span className="sr-only">Logout</span>
 									</Button>
