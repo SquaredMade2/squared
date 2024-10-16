@@ -22,7 +22,6 @@ export default function MyAssignedTasksPage() {
 		getGroupColumnTitles,
 		getTasksForGroup,
 		getHiddenColumns,
-		formatColumnTitle,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
@@ -59,7 +58,6 @@ export default function MyAssignedTasksPage() {
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}
 								getTasksForGroup={getTasksForGroup}
-								formatColumnTitle={formatColumnTitle}
 							/>
 						</div>
 					)}

@@ -61,7 +61,6 @@ export default function FilterViewPage() {
 		getGroupColumnTitles,
 		getTasksForGroup,
 		getHiddenColumns,
-		formatColumnTitle,
 	} = useTaskDashboard(filterTasksWithFilter);
 
 	if (!loading || teamLoading || isLoading) {
@@ -92,7 +91,6 @@ export default function FilterViewPage() {
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}
 								getTasksForGroup={getTasksForGroup}
-								formatColumnTitle={formatColumnTitle}
 							/>
 						</div>
 					)}

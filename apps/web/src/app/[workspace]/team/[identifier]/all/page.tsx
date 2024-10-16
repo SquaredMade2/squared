@@ -18,7 +18,6 @@ export default function AllTasksPage() {
 		handleDragEnd,
 		getGroupColumnTitles,
 		getTasksForGroup,
-		formatColumnTitle,
 		getHiddenColumns,
 	} = useTaskDashboard(filterTasks);
 
@@ -43,7 +42,6 @@ export default function AllTasksPage() {
 						<HiddenColumns
 							getHiddenColumns={getHiddenColumns}
 							getTasksForGroup={getTasksForGroup}
-							formatColumnTitle={formatColumnTitle}
 						/>
 					</div>
 				)}

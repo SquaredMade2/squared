@@ -7,13 +7,10 @@ import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 import { parseParams } from "@/utils/parseParams";
 import { type TaskGroup, useViewStore } from "@/store/views";
-import { useUsers } from "./useUsers";
-import { formatPriority, formatStatus } from "@/utils/formatting";
 
 export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
-	const { users } = useUsers();
 	const { tasks, updateTask, getAllTasks } = useTaskStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const [loading, setLoading] = useState(true);
@@ -122,31 +119,6 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		}
 	};
 
-	const formatColumnTitle = (title: string) => {
-		switch (groupTasksBy) {
-			case "Status":
-				return formatStatus(title as Status);
-			case "Assignee": {
-				const user = users.find((user) => user.id === title);
-				return user ? user.name : "Unassigned";
-			}
-			case "Priority":
-				return formatPriority(title as Priority);
-			case "Label": {
-				const labelName = currentWorkspace?.Labels.find(
-					(label) => label.id === title,
-				);
-				return labelName ? labelName.name : "No label";
-			}
-			case "Parent Issue": {
-				const parentTask = tasks.find((t) => t.id === title);
-				return parentTask ? parentTask.title : "No parent";
-			}
-			case "No grouping":
-				return title;
-		}
-	};
-
 	const getHiddenColumns = (): string[] => {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
 		return groupColumnTitles.filter((group) => {
@@ -168,7 +140,6 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		teamIdentifier,
 		getGroupColumnTitles,
 		getTasksForGroup,
-		formatColumnTitle,
 		getHiddenColumns,
 		handleDragEnd,
 	};

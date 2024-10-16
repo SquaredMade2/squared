@@ -1,10 +1,14 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import { useFilterStore, useModalStore } from "@/store";
+import {
+	useModalStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { useViewStore } from "@/store";
 import type { Priority, Status } from "@repo/db";
-// import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,
@@ -13,7 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { PriorityIcon, StatusIcon } from "../Icons";
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { formatPriority, formatStatus } from "@/utils/formatting";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -26,8 +30,34 @@ const TaskColumnTitle = ({
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
-	const { filterTasks } = useFilterStore((state) => state);
-	const { formatColumnTitle } = useTaskDashboard(filterTasks);
+	const { users } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { tasks } = useTaskStore((state) => state);
+
+	const formatColumnTitle = (title: string) => {
+		switch (groupTasksBy) {
+			case "Status":
+				return formatStatus(title as Status);
+			case "Assignee": {
+				const user = users.find((user) => user.id === title);
+				return user ? user.name : "Unassigned";
+			}
+			case "Priority":
+				return formatPriority(title as Priority);
+			case "Label": {
+				const labelName = currentWorkspace?.Labels.find(
+					(label) => label.id === title,
+				);
+				return labelName ? labelName.name : "No label";
+			}
+			case "Parent Issue": {
+				const parentTask = tasks.find((t) => t.id === title);
+				return parentTask ? parentTask.title : "No parent";
+			}
+			case "No grouping":
+				return title;
+		}
+	};
 
 	const key = (() => {
 		switch (groupTasksBy) {
