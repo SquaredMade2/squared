@@ -136,7 +136,11 @@ function LoginForm() {
 								</Button>
 							</div>
 						</div>
-						<Button type="submit" className="w-full" disabled={isLoading}>
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isLoading || isGoogleLoading}
+						>
 							{isLoading ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							) : null}
@@ -157,7 +161,7 @@ function LoginForm() {
 						onClick={handleGoogleLogin}
 						className="w-full"
 						variant="outline"
-						disabled={isGoogleLoading}
+						disabled={isGoogleLoading || isLoading}
 					>
 						{isGoogleLoading ? (
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />

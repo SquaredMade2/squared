@@ -215,7 +215,11 @@ function RegisterForm() {
 									)}
 								/>
 							</div>
-							<Button type="submit" className="w-full" disabled={isLoading}>
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={isLoading || isGoogleLoading}
+							>
 								{isLoading ? (
 									<Loader2 className="mr-2 size-4 animate-spin" />
 								) : null}
@@ -237,7 +241,7 @@ function RegisterForm() {
 						onClick={handleGoogleRegister}
 						className="w-full mt-4"
 						variant="outline"
-						disabled={isGoogleLoading}
+						disabled={isGoogleLoading || isLoading}
 					>
 						{isGoogleLoading ? (
 							<Loader2 className="mr-2 size-4 animate-spin" />
