@@ -1,5 +1,5 @@
 import { high, medium, low } from "@/components/Svg";
-import { useModalStore } from "@/store";
+import { useModalStore, useTeamStore } from "@/store";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,18 +8,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { effortEstimateOptions } from "@/constants/designations";
 
-const difficultyLevels = [
-	"1 - Really easy",
-	"2 - Easy",
-	"3 - Normal",
-	"4 - Hard",
-	"5 - Really hard",
-];
 // todo change effort estimate here
 export const EffortDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const effortEstimate = newIssueData.effortEstimate;
+	const { currentTeam } = useTeamStore((state) => state);
+
+	const difficultyLevels = effortEstimateOptions(currentTeam?.effort as string);
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {
@@ -57,19 +54,19 @@ export const EffortDropdownButton = () => {
 					{buttonContent(effortEstimate)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-[180px]" side="left" align="start">
+			<DropdownMenuContent className="w-[240px]" side="left" align="start">
 				{difficultyLevels.map((effortLevel) => {
-					const estimateNumber = extractNumber(effortLevel);
+					const estimateNumber = extractNumber(effortLevel.text);
 
 					return (
 						<DropdownMenuItem
-							key={effortLevel}
+							key={effortLevel.value}
 							className="flex gap-2 items-center cursor-pointer"
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
 							{showIcon(estimateNumber)}
 							<div className="flex flex-col">
-								<span className="cursor-pointer">{effortLevel}</span>
+								<span className="cursor-pointer">{effortLevel.text}</span>
 							</div>
 							<div className="ml-auto">
 								{estimateNumber === effortEstimate && (
