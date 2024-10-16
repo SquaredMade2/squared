@@ -116,6 +116,7 @@ export const NewIssueModal = () => {
 													{...field}
 													placeholder="Title"
 													className="text-md"
+													tabIndex={0}
 												/>
 											</FormControl>
 										</FormItem>
@@ -133,6 +134,7 @@ export const NewIssueModal = () => {
 													placeholder="Add Description"
 													className="text-md resize-none"
 													rows={4}
+													tabIndex={0}
 												/>
 											</FormControl>
 										</FormItem>
