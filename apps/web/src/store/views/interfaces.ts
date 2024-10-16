@@ -55,7 +55,7 @@ export interface DisplayOptions {
 
 export type ViewPath = `/views${string}`;
 
-export const LastVisitedPathOptions = [
+const LastVisitedPathOptions = [
 	"all",
 	"active",
 	"backlog",
@@ -76,7 +76,7 @@ export interface ViewState {
 	view: View;
 }
 
-export interface ViewActions {
+interface ViewActions {
 	setView: (view: View) => void;
 	getListOptions: () => ViewOptions.List;
 	getGridOptions: () => ViewOptions.Grid;

@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { Control, Path } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 
-export interface CommonReactHookFormProps<T extends FieldValues> {
+interface CommonReactHookFormProps<T extends FieldValues> {
 	name: Path<T>;
 	control: Control<T, unknown>;
 }

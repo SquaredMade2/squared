@@ -19,9 +19,7 @@
     "@prisma/client": "^5.18.0"
   },
   "devDependencies": {
-    "@repo/logger": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "prisma": "^5.18.0",
-    "ts-node": "^10.9.2"
+    "prisma": "^5.18.0"
   }
 }
