@@ -43,7 +43,7 @@ const formSchema = z.object({
 export default function SprintRetrospectivePage() {
 	const params = useParams();
 	const { sprints, team, loading, error, workspace } = useSprints();
-	const { updateSprint } = useTeamStore((state) => state);
+	const { updateSprint, currentTeam } = useTeamStore((state) => state);
 	const [currentSprint, setCurrentSprint] = useState<Sprint | null>(null);
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -64,14 +64,16 @@ export default function SprintRetrospectivePage() {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			updateSprint(
-				Array.isArray(params.sprintId) ? params.sprintId[0] : params.sprintId,
-				{
-					wentWell: [values.wentWell],
-					toImprove: [values.toImprove],
-					actionItems: [values.actionItems],
-				},
-			);
+			currentTeam &&
+				updateSprint(
+					currentTeam.id,
+					Array.isArray(params.sprintId) ? params.sprintId[0] : params.sprintId,
+					{
+						wentWell: [values.wentWell],
+						toImprove: [values.toImprove],
+						actionItems: [values.actionItems],
+					},
+				);
 			toast({
 				title: "Retrospective Submitted",
 				description:

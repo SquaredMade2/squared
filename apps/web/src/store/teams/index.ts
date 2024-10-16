@@ -8,7 +8,7 @@ import type {
 	SprintResponse,
 	InitializeSprintsBody,
 } from "./interfaces";
-import type { Sprint, Team } from "@repo/db";
+import type { Sprint, Task, Team } from "@repo/db";
 import type { ApiReturnType } from "../interfaces";
 import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";
@@ -16,8 +16,6 @@ export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/team/${path}`;
-const sprintApiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVER}/api/sprint/${path}`;
 
 export const createTeamStore = (
 	initState: TeamState = {
@@ -203,20 +201,21 @@ export const createTeamStore = (
 					}
 				},
 				updateSprint: async (
+					teamId: string,
 					sprintId: string,
 					sprint: Partial<Sprint>,
 				): Promise<SprintResponse> => {
 					try {
-						const response: { data: ApiReturnType<Sprint> } = await axios.put(
-							sprintApiString(sprintId),
+						const { data }: { data: ApiReturnType<Sprint> } = await axios.put(
+							`${apiString(teamId)}/sprints/${sprintId}`,
 							sprint,
 						);
-						const updatedSprint = response.data.data;
+						const { data: updatedSprint, message, variant } = data;
 						if (!updatedSprint) {
 							return {
 								sprint: null,
-								message: response.data.message,
-								variant: response.data.variant,
+								message,
+								variant,
 							};
 						}
 						set((state) => ({
@@ -227,8 +226,8 @@ export const createTeamStore = (
 
 						return {
 							sprint: updatedSprint,
-							message: response.data.message,
-							variant: response.data.variant,
+							message,
+							variant,
 						};
 					} catch (error) {
 						return {
@@ -240,6 +239,96 @@ export const createTeamStore = (
 				},
 				setCurrentSprint: (sprint: Sprint): void => {
 					set({ currentSprint: sprint });
+				},
+				nextSprint: async (
+					teamId: string,
+					movedTasks: string[],
+					sprintData?: Partial<Sprint>,
+				): Promise<SprintResponse> => {
+					try {
+						const { data }: { data: ApiReturnType<Sprint> } = await axios.put(
+							`${apiString(teamId)}/sprints/next`,
+							{ movedTasks, sprintData },
+						);
+						const { data: newSprint, message, variant } = data;
+
+						if (!newSprint) {
+							return {
+								sprint: null,
+								message,
+								variant,
+							};
+						}
+						const existingSprint = get().sprints.findIndex(
+							(s) => s.id === newSprint.id,
+						);
+
+						set((state) => {
+							if (existingSprint > -1) {
+								state.sprints[existingSprint] = newSprint;
+								return { sprints: state.sprints };
+							}
+							return { sprints: [...state.sprints, newSprint] };
+						});
+
+						return {
+							sprint: newSprint,
+							message,
+							variant,
+						};
+					} catch (error) {
+						return {
+							sprint: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
+				getSprintTasks: async (
+					teamId: string,
+					sprintId: string,
+				): Promise<Task[]> => {
+					return axios
+						.get(apiString(`${teamId}/sprints/${sprintId}/tasks`))
+						.then(
+							(response: { data: ApiReturnType<Task[]> }) =>
+								response.data.data ?? [],
+						);
+				},
+				endSprint: async (
+					teamId: string,
+					sprintId: string,
+				): Promise<SprintResponse> => {
+					try {
+						const { data }: { data: ApiReturnType<Sprint> } = await axios.put(
+							`${apiString(teamId)}/sprints/${sprintId}/tasks`,
+						);
+						const { data: updatedSprint, message, variant } = data;
+						if (!updatedSprint) {
+							return {
+								sprint: null,
+								message,
+								variant,
+							};
+						}
+						set((state) => ({
+							sprints: state.sprints.map((s) =>
+								s.id === sprintId ? updatedSprint : s,
+							),
+						}));
+
+						return {
+							sprint: updatedSprint,
+							message,
+							variant,
+						};
+					} catch (error) {
+						return {
+							sprint: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
 				},
 			}),
 			{

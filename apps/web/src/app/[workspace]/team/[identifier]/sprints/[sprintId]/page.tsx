@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { format, differenceInDays } from "date-fns";
 import { useTaskStore } from "@/store";
 import {
@@ -37,6 +37,16 @@ import { ArrowLeft } from "lucide-react";
 import type { Sprint, Status, Task } from "@repo/db";
 import { useSprints } from "@/hooks/useSprints";
 import { formatStatus } from "@/utils/formatting";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -56,6 +66,23 @@ export default function SprintDashboardPage() {
 			ideal: number;
 		}[]
 	>([]);
+	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
+	const router = useRouter();
+
+	const handleEndSprint = () => {
+		if (
+			sprint &&
+			(!sprint.wentWell.length ||
+				!sprint.toImprove.length ||
+				!sprint.actionItems.length)
+		) {
+			setShowEndSprintDialog(true);
+		} else {
+			router.push(
+				`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
+			);
+		}
+	};
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -347,14 +374,19 @@ export default function SprintDashboardPage() {
 
 			<div className="flex justify-between items-center">
 				<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
-				<AssignTasksDialog
-					activeSprint={sprint}
-					handleBulkAssign={handleBulkAssign}
-					selectedTasks={selectedTasks}
-					setSelectedTasks={setSelectedTasks}
-					unassignedTasks={unassignedTasks}
-					upcomingSprints={[]}
-				/>
+				<div className="space-x-4">
+					<AssignTasksDialog
+						activeSprint={sprint}
+						handleBulkAssign={handleBulkAssign}
+						selectedTasks={selectedTasks}
+						setSelectedTasks={setSelectedTasks}
+						unassignedTasks={unassignedTasks}
+						upcomingSprints={[]}
+					/>
+					<Button onClick={handleEndSprint} variant="destructive">
+						End Sprint
+					</Button>
+				</div>
 			</div>
 
 			<Tabs defaultValue="all" className="w-full">
@@ -392,6 +424,43 @@ export default function SprintDashboardPage() {
 			<Link href={`${sprintId}/retrospective`} passHref>
 				<Button className="w-full my-8">Start Sprint Retrospective</Button>
 			</Link>
+			<AlertDialog
+				open={showEndSprintDialog}
+				onOpenChange={setShowEndSprintDialog}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							End Sprint Without Retrospective?
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							You haven't completed the retrospective for this sprint. Do you
+							want to do the retrospective before ending the sprint?
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={() =>
+								router.push(
+									`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`,
+								)
+							}
+						>
+							Do Retrospective
+						</AlertDialogAction>
+						<AlertDialogAction
+							onClick={() =>
+								router.push(
+									`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
+								)
+							}
+						>
+							End Sprint
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

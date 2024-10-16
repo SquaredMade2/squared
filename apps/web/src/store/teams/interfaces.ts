@@ -1,4 +1,4 @@
-import type { Sprint, Team } from "@repo/db";
+import type { Sprint, Task, Team } from "@repo/db";
 
 export type TeamState = {
 	teams: Team[];
@@ -37,10 +37,18 @@ type TeamActions = {
 	) => Promise<Sprint[]>;
 	getSprints: (teamId: string) => Promise<Sprint[]>;
 	updateSprint: (
+		teamId: string,
 		sprintId: string,
 		sprint: Partial<Sprint>,
 	) => Promise<SprintResponse>;
 	setCurrentSprint: (sprint: Sprint) => void;
+	nextSprint: (
+		teamId: string,
+		movedTasks: string[],
+		sprintData?: Partial<Sprint>,
+	) => Promise<SprintResponse>;
+	getSprintTasks: (teamId: string, sprintId: string) => Promise<Task[]>;
+	endSprint: (teamId: string, sprintId: string) => Promise<SprintResponse>;
 };
 
 export type TeamStore = TeamState & TeamActions;

@@ -1,5 +1,6 @@
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import type { Task } from "@repo/db";
 
 type Params = {
 	teamId: string;
@@ -12,6 +13,51 @@ type UpdateSprintTasksBody = {
 
 export function createRoute(): Route<Params> {
 	return {
+		GET: async (res, { teamId, sprintId }): Promise<APIResponse<Task[]>> => {
+			try {
+				const team = await prisma.team.findUnique({
+					where: { id: teamId },
+				});
+
+				if (!team) {
+					res.status(404);
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive",
+					};
+				}
+
+				if (!team.sprintsEnabled) {
+					res.status(400);
+					return {
+						data: null,
+						message: "Sprints are not enabled for this team",
+						variant: "destructive",
+					};
+				}
+
+				const tasks = await prisma.task.findMany({
+					where: {
+						teamId,
+						sprintId,
+					},
+				});
+				return {
+					data: tasks,
+					message: `Successfully fetched ${tasks.length} tasks`,
+					variant: "default",
+				};
+			} catch (error) {
+				console.error("Error fetching sprints:", error);
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal server error",
+					variant: "destructive",
+				};
+			}
+		},
 		PUT: async (
 			res,
 			{ teamId, sprintId },
