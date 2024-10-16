@@ -42,6 +42,7 @@ const formSchema = z.object({
 function RegisterForm() {
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
@@ -96,7 +97,7 @@ function RegisterForm() {
 	};
 
 	const handleGoogleRegister = async () => {
-		setIsLoading(true);
+		setIsGoogleLoading(true);
 		try {
 			await signIn("google", {
 				callbackUrl: window.location.href,
@@ -104,7 +105,7 @@ function RegisterForm() {
 		} catch (error) {
 			toast({ title: "Google registration failed", variant: "destructive" });
 			console.error("Google registration error:", error);
-			setIsLoading(false);
+			setIsGoogleLoading(false);
 		}
 	};
 
@@ -214,8 +215,14 @@ function RegisterForm() {
 									)}
 								/>
 							</div>
-							<Button type="submit" className="w-full" disabled={isLoading}>
-								{isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={isLoading || isGoogleLoading}
+							>
+								{isLoading ? (
+									<Loader2 className="mr-2 size-4 animate-spin" />
+								) : null}
 								Register
 							</Button>
 						</form>
@@ -234,10 +241,10 @@ function RegisterForm() {
 						onClick={handleGoogleRegister}
 						className="w-full mt-4"
 						variant="outline"
-						disabled={isLoading}
+						disabled={isGoogleLoading || isLoading}
 					>
-						{isLoading ? (
-							<Loader2 className="size-4 animate-spin" />
+						{isGoogleLoading ? (
+							<Loader2 className="mr-2 size-4 animate-spin" />
 						) : (
 							<GoogleIcon />
 						)}

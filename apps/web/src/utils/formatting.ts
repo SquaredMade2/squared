@@ -12,8 +12,32 @@ export const truncateString = (string: string, maxLength: number): string => {
 	return string;
 };
 
-export const replaceSpacesWithDashes = (str: string): string => {
-	return str?.replace(/\s+/g, "-");
+export const sanitizeBranchName = (str: string): string => {
+	const excludedWords = new Set([
+	        "the",
+	        "of",
+	        "and",
+	        "to",
+	        "in",
+	        "on",
+	        "with",
+	        "for",
+	        "a",
+	        "an",
+	        "that",
+	        "eg",
+	        "like",
+        ]);
+
+        const sanitized = str
+	        .toLowerCase()
+	        .replace(/[^a-z0-9\s\/]/g, "")
+	        .split(/[\s\/]+/)
+	        .filter(word => word && !excludedWords.has(word))
+	        .slice(0, 8)
+	        .join("-");
+
+	return sanitized;
 };
 
 export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
