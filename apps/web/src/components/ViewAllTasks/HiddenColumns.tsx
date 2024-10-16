@@ -20,7 +20,7 @@ const HiddenColumns = ({
 }) => {
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
-	console.log(getHiddenColumns());
+
 	return (
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">

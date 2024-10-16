@@ -52,6 +52,48 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
+	const getGroupColumnTitles = (group: TaskGroup) => {
+		let groupTitles: string[];
+		switch (group) {
+			case "Status":
+				groupTitles = [
+					Status.backlog,
+					Status.todo,
+					Status.inProgress,
+					Status.inReview,
+					Status.done,
+				];
+				break;
+			case "Assignee": {
+				const assigneeIds = tasks.map((t) => t.assigneeId || "Unassigned");
+				groupTitles = [...assigneeIds];
+				break;
+			}
+			case "Priority":
+				groupTitles = [
+					Priority.noPriority,
+					Priority.low,
+					Priority.medium,
+					Priority.high,
+					Priority.urgent,
+				];
+				break;
+			case "Label": {
+				const workspaceLabels = currentWorkspace?.Labels.map((l) => l.id) || [];
+				groupTitles = [...workspaceLabels, "No labels"];
+				break;
+			}
+			case "Parent Issue":
+				groupTitles = tasks.map((task) => task.parentId || "No parent");
+				break;
+			case "No grouping":
+				return ["No grouping"];
+			default:
+				return [];
+		}
+		return Array.from(new Set(groupTitles));
+	};
+
 	const getTasksForGroup = (group: string) => {
 		switch (groupTasksBy) {
 			case "Status":
@@ -78,49 +120,6 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 			default:
 				return tasks;
 		}
-	};
-
-	const getGroupColumnTitles = (group: TaskGroup) => {
-		let groupTitles: string[];
-		switch (group) {
-			case "Status":
-				groupTitles = [
-					Status.backlog,
-					Status.todo,
-					Status.inProgress,
-					Status.inReview,
-					Status.done,
-				];
-				break;
-			case "Assignee": {
-				const assigneeIds = users.map((u) => u.id);
-				groupTitles = [...assigneeIds, "Unassigned"];
-				// console.log(groupTitles);
-				break;
-			}
-			case "Priority":
-				groupTitles = [
-					Priority.noPriority,
-					Priority.low,
-					Priority.medium,
-					Priority.high,
-					Priority.urgent,
-				];
-				break;
-			case "Label": {
-				const workspaceLabels = currentWorkspace?.Labels.map((l) => l.id) || [];
-				groupTitles = [...workspaceLabels, "No labels"];
-				break;
-			}
-			case "Parent Issue":
-				groupTitles = tasks.map((task) => task.parentId || "No parent");
-				break;
-			case "No grouping":
-				return ["No grouping"];
-			default:
-				return [];
-		}
-		return Array.from(new Set(groupTitles));
 	};
 
 	const formatColumnTitle = (title: string) => {

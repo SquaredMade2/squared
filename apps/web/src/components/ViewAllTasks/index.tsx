@@ -5,7 +5,6 @@ import { Status, type Task } from "@repo/db";
 import type { ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
 import type { CompletedTaskPeriod } from "@/store/views";
-// import { statusOptions } from "@/constants/designations";
 
 const ViewAllTasks = ({
 	getGroupColumnTitles,
@@ -51,41 +50,38 @@ const ViewAllTasks = ({
 
 	function getGroupedColumns() {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
-		return (
-			groupColumnTitles
-				// .filter((column) => allowedColumns.includes(column as Status))
-				.map((group) => {
-					let tasksForGroup = getTasksForGroup(group);
-					if (groupTasksBy === "Status") {
-						if (group === Status.archived) return null;
-						if (group === Status.done) {
-							const { period, show } = displayOptions.showCompletedTasks;
-							if (!show) return null;
-							tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
-						}
+		return groupColumnTitles
+			.filter((column) => allowedColumns.includes(column as Status))
+			.map((group) => {
+				let tasksForGroup = getTasksForGroup(group);
+
+				if (groupTasksBy === "Status") {
+					if (group === Status.archived) return null;
+					if (group === Status.done) {
+						const { period, show } = displayOptions.showCompletedTasks;
+						if (!show) return null;
+						tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
 					}
-					if (
-						tasksForGroup.length === 0 &&
-						!(view === "grid" ? getGridOptions() : getListOptions())
-							.showEmptyGroups
-					)
-						return null;
-					// console.log(tasksForGroup, group);
-					return (
-						<div key={group} className="px-1">
-							<GroupColumn
-								group={group}
-								tasks={tasksForGroup}
-								currentView={view}
-								sprintId={sprintId}
-							/>
-						</div>
-					);
-				})
-		);
+				}
+				if (
+					tasksForGroup.length === 0 &&
+					!(view === "grid" ? getGridOptions() : getListOptions())
+						.showEmptyGroups
+				)
+					return null;
+				return (
+					<div key={group} className="px-1">
+						<GroupColumn
+							group={group}
+							tasks={tasksForGroup}
+							currentView={view}
+							sprintId={sprintId}
+						/>
+					</div>
+				);
+			});
 	}
-	// console.log(getGroupedColumns(), groupTasksBy);
-	// console.log(getTasksForGroup("Assignee"))
+
 	return (
 		<>
 			<RenameModal />
