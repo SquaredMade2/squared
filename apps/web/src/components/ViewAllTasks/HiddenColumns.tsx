@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Priority, Status, Task } from "@repo/db";
 import {
 	Accordion,
 	AccordionContent,
@@ -6,7 +6,8 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { Droppable } from "@hello-pangea/dnd";
-// import { StatusIcon } from "../Icons";
+import { useViewStore } from "@/store";
+import { PriorityIcon, StatusIcon } from "../Icons";
 
 const HiddenColumns = ({
 	getHiddenColumns,
@@ -17,6 +18,9 @@ const HiddenColumns = ({
 	getTasksForGroup: (group: string) => Task[];
 	formatColumnTitle: (title: string) => string | undefined;
 }) => {
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupTasksBy } = displayOptions;
+	console.log(getHiddenColumns());
 	return (
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
@@ -33,7 +37,13 @@ const HiddenColumns = ({
 									<div className="flex flex-row justify-between transition-all px-2 h-10 mb-2 font-medium text-sm">
 										<div className="flex items-center gap-4">
 											<div className="w-4 lg:mr-2 mr-1.5">
-												{/* <StatusIcon status={column} /> */}
+												{groupTasksBy === "Status" ? (
+													<StatusIcon status={column as Status} />
+												) : groupTasksBy === "Priority" ? (
+													<PriorityIcon priority={column as Priority} />
+												) : (
+													""
+												)}
 											</div>
 											<span>{formatColumnTitle(column)}</span>
 											<span className="ml-1 text-muted-foreground">

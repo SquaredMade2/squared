@@ -33,7 +33,6 @@ export default function AllTasksPage() {
 			pageTitle="All Tasks"
 		>
 			<ViewAllTasks
-				formatColumnTitle={formatColumnTitle}
 				getGroupColumnTitles={getGroupColumnTitles}
 				getTasksForGroup={getTasksForGroup}
 			/>

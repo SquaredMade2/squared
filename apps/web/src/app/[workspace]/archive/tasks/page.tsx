@@ -14,7 +14,8 @@ const Page = () => {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getTasksForStatus,
+		getGroupColumnTitles,
+		getTasksForGroup,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.status === "archived")),
 	);
@@ -30,7 +31,10 @@ const Page = () => {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Archived Tasks"
 		>
-			<ViewAllTasks getTasksForStatus={getTasksForStatus} />
+			<ViewAllTasks
+				getGroupColumnTitles={getGroupColumnTitles}
+				getTasksForGroup={getTasksForGroup}
+			/>
 		</TaskPageLayout>
 	);
 };

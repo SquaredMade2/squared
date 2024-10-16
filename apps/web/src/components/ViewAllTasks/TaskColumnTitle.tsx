@@ -1,7 +1,7 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import { useModalStore } from "@/store";
+import { useFilterStore, useModalStore } from "@/store";
 import { useViewStore } from "@/store";
 import type { Priority, Status } from "@repo/db";
 // import { StatusIcon } from "../Icons";
@@ -13,6 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { PriorityIcon, StatusIcon } from "../Icons";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -21,11 +22,12 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	setShowTasks,
 	sprintId,
-	formatColumnTitle,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
+	const { filterTasks } = useFilterStore((state) => state);
+	const { formatColumnTitle } = useTaskDashboard(filterTasks);
 
 	const key = (() => {
 		switch (groupTasksBy) {

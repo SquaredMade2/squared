@@ -18,7 +18,6 @@ const GroupColumn = ({
 	tasks,
 	currentView: view,
 	sprintId,
-	formatColumnTitle,
 }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
@@ -146,7 +145,6 @@ const GroupColumn = ({
 				numberOfTasks={numberOfTasks}
 				isListView={isListView}
 				sprintId={sprintId}
-				formatColumnTitle={formatColumnTitle}
 			/>
 			<Droppable droppableId={group}>
 				{(provided, snapshot) => (

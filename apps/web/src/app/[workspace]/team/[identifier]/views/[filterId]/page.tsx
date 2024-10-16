@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useFilterStore, useViewStore } from "@/store";
 import { useEffect, useState } from "react";
 import type { SavedFilter } from "@/store/filters";
-import { Status, type Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";
@@ -12,7 +12,6 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { parseParams } from "@/utils/parseParams";
 import { useTeams } from "@/hooks/useTeams";
-import { statusOptions } from "@/constants/designations";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -59,23 +58,16 @@ export default function FilterViewPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getTasksForStatus,
+		getGroupColumnTitles,
+		getTasksForGroup,
+		getHiddenColumns,
+		formatColumnTitle,
 	} = useTaskDashboard(filterTasksWithFilter);
 
 	if (!loading || teamLoading || isLoading) {
 		return <div>Loading...</div>;
 	}
 
-	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = statusOptions;
-
-		return filteredStatuses.filter((status) => {
-			if (status === Status.archived) return false;
-
-			const tasks = getTasksForStatus(status);
-			return tasks && tasks.length === 0;
-		});
-	};
 	if (!currentWorkspace) return null;
 	if (!filter) return null;
 
@@ -89,14 +81,18 @@ export default function FilterViewPage() {
 			pageTitle={filter.name}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
-				<ViewAllTasks getTasksForStatus={getTasksForStatus} />
+				<ViewAllTasks
+					getGroupColumnTitles={getGroupColumnTitles}
+					getTasksForGroup={getTasksForGroup}
+				/>
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (
 						<div className="ml-auto">
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}
-								getTasksForStatus={getTasksForStatus}
+								getTasksForGroup={getTasksForGroup}
+								formatColumnTitle={formatColumnTitle}
 							/>
 						</div>
 					)}

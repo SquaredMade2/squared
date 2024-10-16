@@ -52,20 +52,12 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		await updateTask(updatedTask.id, { status: updatedTask.status });
 	};
 
-	const getTasksForStatus = (status: Status) => {
-		return filterTasks(tasks).filter((task) => task.status === status);
-	};
-
 	const getTasksForGroup = (group: string) => {
 		switch (groupTasksBy) {
 			case "Status":
 				return filterTasks(tasks).filter((task) => task.status === group);
 			case "Assignee":
-				return filterTasks(tasks).filter(
-					(task) =>
-						task.assigneeId === group ||
-						(task.assigneeId === null && "Unassigned"),
-				);
+				return filterTasks(tasks).filter((task) => task.assigneeId === group);
 			case "Priority":
 				return filterTasks(tasks).filter((task) => task.priority === group);
 			case "Label":
@@ -102,7 +94,8 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 				break;
 			case "Assignee": {
 				const assigneeIds = users.map((u) => u.id);
-				groupTitles = [...assigneeIds, "No Assignee"];
+				groupTitles = [...assigneeIds, "Unassigned"];
+				// console.log(groupTitles);
 				break;
 			}
 			case "Priority":
@@ -174,7 +167,6 @@ export function useTaskDashboard(filterTasks: (tasks: Task[]) => Task[]) {
 		authorized,
 		currentWorkspace,
 		teamIdentifier,
-		getTasksForStatus,
 		getGroupColumnTitles,
 		getTasksForGroup,
 		formatColumnTitle,

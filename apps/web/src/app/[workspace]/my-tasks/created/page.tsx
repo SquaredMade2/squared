@@ -15,7 +15,8 @@ export default function MyCreatedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getTasksForStatus,
+		getGroupColumnTitles,
+		getTasksForGroup,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.authorId === user?.id)),
 	);
@@ -31,7 +32,10 @@ export default function MyCreatedTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Created Tasks"
 		>
-			<ViewAllTasks getTasksForStatus={getTasksForStatus} />
+			<ViewAllTasks
+				getGroupColumnTitles={getGroupColumnTitles}
+				getTasksForGroup={getTasksForGroup}
+			/>
 		</TaskPageLayout>
 	);
 }

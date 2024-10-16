@@ -15,7 +15,8 @@ export default function ActiveTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getTasksForStatus,
+		getTasksForGroup,
+		getGroupColumnTitles,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks).filter(
 			(t) =>
@@ -37,7 +38,8 @@ export default function ActiveTasksPage() {
 			pageTitle="Active Tasks"
 		>
 			<ViewAllTasks
-				getTasksForStatus={getTasksForStatus}
+				getGroupColumnTitles={getGroupColumnTitles}
+				getTasksForGroup={getTasksForGroup}
 				allowedColumns={allowedColumns}
 			/>
 		</TaskPageLayout>

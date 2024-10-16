@@ -7,7 +7,6 @@ import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { Status } from "@repo/db";
-import { statusOptions } from "@/constants/designations";
 
 export default function MyAssignedTasksPage() {
 	const { currentSprint, loading: sprintLoading } = useSprints();
@@ -20,7 +19,10 @@ export default function MyAssignedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getTasksForStatus,
+		getGroupColumnTitles,
+		getTasksForGroup,
+		getHiddenColumns,
+		formatColumnTitle,
 	} = useTaskDashboard((tasks) =>
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
@@ -31,17 +33,6 @@ export default function MyAssignedTasksPage() {
 		Status.inReview,
 		Status.done,
 	];
-
-	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = statusOptions;
-
-		return filteredStatuses.filter((status) => {
-			if (!allowedColumns.includes(status)) return false;
-
-			const tasks = getTasksForStatus(status);
-			return tasks && tasks.length === 0;
-		});
-	};
 
 	if (!currentWorkspace || !currentSprint) return null;
 
@@ -56,7 +47,8 @@ export default function MyAssignedTasksPage() {
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
-					getTasksForStatus={getTasksForStatus}
+					getGroupColumnTitles={getGroupColumnTitles}
+					getTasksForGroup={getTasksForGroup}
 					allowedColumns={allowedColumns}
 					sprintId={currentSprint.id}
 				/>
@@ -66,7 +58,8 @@ export default function MyAssignedTasksPage() {
 						<div className="ml-auto">
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}
-								getTasksForStatus={getTasksForStatus}
+								getTasksForGroup={getTasksForGroup}
+								formatColumnTitle={formatColumnTitle}
 							/>
 						</div>
 					)}
