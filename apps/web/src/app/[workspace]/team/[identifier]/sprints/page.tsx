@@ -55,9 +55,7 @@ export default function SprintDashboard() {
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
-	const [targetSprint, setTargetSprint] = useState<string>(
-		currentSprint?.id ?? "",
-	);
+	const [targetSprint, setTargetSprint] = useState<string | undefined>("");
 	const [isAutoAssignConfirmOpen, setIsAutoAssignConfirmOpen] = useState(false);
 	const [tasksToAutoAssign, setTasksToAutoAssign] = useState<Task[]>([]);
 	const [isCustomizeAutoAssignOpen, setIsCustomizeAutoAssignOpen] =
@@ -71,6 +69,10 @@ export default function SprintDashboard() {
 			ideal: number;
 		}[]
 	>([]);
+
+	useEffect(() => {
+		setTargetSprint(currentSprint?.id);
+	}, [currentSprint]);
 
 	useEffect(() => {
 		if (sprints.length > 0) {
