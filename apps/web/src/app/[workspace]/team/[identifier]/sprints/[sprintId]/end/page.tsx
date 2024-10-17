@@ -227,7 +227,7 @@ export default function EndSprintPage() {
 				isOpen={showTaskSelectionModal}
 				onClose={() => setShowTaskSelectionModal(false)}
 				tasks={tasks.filter((t) =>
-					["backlog", "todo", "inReview"].includes(t.status),
+					["backlog", "todo", "inReview", "inProgress"].includes(t.status),
 				)}
 				onConfirm={handleNextSprintConfirm}
 				initialSprintName={newSprintName}

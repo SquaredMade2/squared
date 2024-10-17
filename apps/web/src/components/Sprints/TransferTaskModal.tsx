@@ -50,7 +50,7 @@ export const TransferTaskModal = ({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Select Tasks for Next Sprint</DialogTitle>
 					<DialogDescription>
@@ -59,14 +59,14 @@ export const TransferTaskModal = ({
 				</DialogHeader>
 				<div className="grid gap-4 py-4">
 					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="sprint-name" className="text-right">
+						<Label htmlFor="sprint-name" className="text-right md:col-span-2">
 							Sprint Name
 						</Label>
 						<Input
 							id="sprint-name"
 							value={sprintName}
 							onChange={(e) => setSprintName(e.target.value)}
-							className="col-span-3"
+							className="col-span-3 md:col-span-2"
 						/>
 					</div>
 					<div className="max-h-[300px]">
