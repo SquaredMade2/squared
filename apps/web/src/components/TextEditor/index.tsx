@@ -7,12 +7,7 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { Slate, Editable, withReact, DefaultElement } from "slate-react";
-import type {
-	CustomDescendant,
-	CustomElement,
-	CustomText,
-	// TextEditorProps,
-} from "./interfaces";
+import type { CustomDescendant, CustomElement, CustomText } from "./interfaces";
 import { cn } from "@/utils/cn";
 import CodeElement from "./TextEditorElements/ElementBlocks/CodeElement";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
