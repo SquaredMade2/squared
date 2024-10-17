@@ -11,7 +11,7 @@ import type {
 	MDXComponent,
 	MDXProviderProps,
 } from "../TextEditor";
-import { convertMDXStringToJSX } from "@/utils/formatting";
+import { convertMDXStringToJSX, getInitials } from "@/utils/formatting";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";
@@ -146,9 +146,11 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<div className="mr-4 text-muted-foreground">
 					{formatDate(comment.date, "dd MMM yyyy h:mm a")}
 				</div>
-				<Avatar className="size-6">
+				<Avatar className="size-6 text-xxs">
 					<AvatarImage src={avatarUrl} className="size-6" />
-					<AvatarFallback className="size-6">{""}</AvatarFallback>
+					<AvatarFallback className="size-6">
+						{getInitials(authorName)}
+					</AvatarFallback>
 				</Avatar>
 
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
