@@ -47,6 +47,7 @@ export default function EndSprintPage() {
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
+	const [newSprint, setNewSprint] = useState(false);
 	const [tasks, setTasks] = useState<Task[]>([]);
 
 	useEffect(() => {
@@ -72,11 +73,7 @@ export default function EndSprintPage() {
 		}
 	}, [sprints, sprintId]);
 
-	const handleEndSprint = () => {
-		setShowEndSprintDialog(true);
-	};
-
-	const handleEndSprintConfirm = async (startNewSprint: boolean) => {
+	const handleEndSprintConfirm = async () => {
 		if (!sprint || !team) return;
 
 		try {
@@ -86,7 +83,7 @@ export default function EndSprintPage() {
 				throw new Error(response.message);
 			}
 
-			if (startNewSprint) {
+			if (newSprint) {
 				setShowTaskSelectionModal(true);
 			} else {
 				toast({
@@ -134,6 +131,11 @@ export default function EndSprintPage() {
 				variant: "destructive",
 			});
 		}
+	};
+
+	const handleButtonClick = (nextSprint: boolean) => {
+		setNewSprint(nextSprint);
+		setShowEndSprintDialog(true);
 	};
 
 	if (loading) {
@@ -192,9 +194,19 @@ export default function EndSprintPage() {
 								}
 							</p>
 						</div>
-						<Button onClick={handleEndSprint} className="w-full">
-							End Sprint
-						</Button>
+						<div className="w-full gap-2 grid grid-cols-3">
+							<Button variant="outline">Cancel</Button>
+							<Button
+								onClick={() => handleButtonClick(false)}
+								variant="outline"
+								className="border-destructive"
+							>
+								End Sprint
+							</Button>
+							<Button onClick={() => handleButtonClick(true)}>
+								Start Next Sprint
+							</Button>
+						</div>
 					</div>
 				</CardContent>
 			</Card>
@@ -207,17 +219,13 @@ export default function EndSprintPage() {
 					<AlertDialogHeader>
 						<AlertDialogTitle>End Sprint</AlertDialogTitle>
 						<AlertDialogDescription>
-							Do you want to start a new sprint immediately after ending this
-							one?
+							Are you sure you want to end this sprint?
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={() => handleEndSprintConfirm(false)}>
-							End Sprint Only
-						</AlertDialogAction>
-						<AlertDialogAction onClick={() => handleEndSprintConfirm(true)}>
-							End Sprint and Start New
+						<AlertDialogAction onClick={handleEndSprintConfirm}>
+							End Sprint
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
