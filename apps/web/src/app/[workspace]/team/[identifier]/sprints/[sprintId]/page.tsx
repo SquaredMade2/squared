@@ -38,16 +38,6 @@ import { ArrowLeft } from "lucide-react";
 import type { Sprint, Status, Task } from "@repo/db";
 import { useSprints } from "@/hooks/useSprints";
 import { formatStatus } from "@/utils/formatting";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -67,17 +57,12 @@ export default function SprintDashboardPage() {
 			ideal: number;
 		}[]
 	>([]);
-	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const router = useRouter();
 
 	const handleEndSprint = () => {
-		if (sprint) {
-			setShowEndSprintDialog(true);
-		} else {
-			router.push(
-				`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
-			);
-		}
+		router.push(
+			`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
+		);
 	};
 
 	useEffect(() => {
@@ -215,6 +200,7 @@ export default function SprintDashboardPage() {
 					<Link
 						href={`/${workspace?.url}/team/${team?.identifier}/sprints`}
 						passHref
+						className="md:hidden"
 					>
 						<Button variant="ghost" size="sm">
 							<ArrowLeft className="mr-2 h-4 w-4" /> Back to Sprints
@@ -417,47 +403,6 @@ export default function SprintDashboardPage() {
 						/>
 					</TabsContent>
 				</Tabs>
-
-				<Link href={`${sprintId}/retrospective`} passHref>
-					<Button className="w-full my-8">Start Sprint Retrospective</Button>
-				</Link>
-				<AlertDialog
-					open={showEndSprintDialog}
-					onOpenChange={setShowEndSprintDialog}
-				>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>
-								End Sprint Without Retrospective?
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								You haven't completed the retrospective for this sprint. Do you
-								want to do the retrospective before ending the sprint?
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction
-								onClick={() =>
-									router.push(
-										`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`,
-									)
-								}
-							>
-								Do Retrospective
-							</AlertDialogAction>
-							<AlertDialogAction
-								onClick={() =>
-									router.push(
-										`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
-									)
-								}
-							>
-								End Sprint
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
 			</div>
 		</ScrollArea>
 	);
