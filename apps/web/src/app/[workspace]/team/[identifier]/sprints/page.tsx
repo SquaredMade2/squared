@@ -72,7 +72,7 @@ export default function SprintDashboard() {
 
 	useEffect(() => {
 		setTargetSprint(currentSprint?.id);
-	});
+	}, [currentSprint]);
 
 	useEffect(() => {
 		if (sprints.length > 0) {
