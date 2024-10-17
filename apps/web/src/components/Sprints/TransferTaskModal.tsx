@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import type { Task } from "@repo/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface TransferTaskModalProps {
 	isOpen: boolean;
@@ -69,7 +70,7 @@ export const TransferTaskModal = ({
 							className="col-span-3 md:col-span-2"
 						/>
 					</div>
-					<div className="max-h-[300px]">
+					<ScrollArea className="max-h-[300px]">
 						{tasks.map((task) => (
 							<div
 								key={task.id}
@@ -100,7 +101,7 @@ export const TransferTaskModal = ({
 								</div>
 							</div>
 						))}
-					</div>
+					</ScrollArea>
 				</div>
 				<DialogFooter>
 					<Button type="submit" onClick={handleConfirm}>
