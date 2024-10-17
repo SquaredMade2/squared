@@ -39,7 +39,8 @@ import type { Sprint, Status, Task } from "@repo/db";
 import { useSprints } from "@/hooks/useSprints";
 import { formatStatus } from "@/utils/formatting";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
+const statusOrder = ["Done", "In Review", "In Progress", "To Do", "Canceled"];
 
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
@@ -146,6 +147,7 @@ export default function SprintDashboardPage() {
 	}, [sprint, getBurndownData]);
 
 	const getTaskStatusData = () => {
+		const statusOrder = ["done", "inReview", "inProgress", "todo", "canceled"];
 		const statusCounts = sprintTasks.reduce(
 			(acc, task) => {
 				acc[task.status] = (acc[task.status] || 0) + 1;
@@ -154,7 +156,11 @@ export default function SprintDashboardPage() {
 			{} as Record<string, number>,
 		);
 
-		return Object.entries(statusCounts).map(([status, count]) => ({
+		const sortedEntries = Object.entries(statusCounts).sort(([a], [b]) => {
+			return statusOrder.indexOf(a) - statusOrder.indexOf(b);
+		});
+
+		return sortedEntries.map(([status, count]) => ({
 			name: formatStatus(status as Status),
 			value: count,
 		}));
@@ -298,12 +304,15 @@ export default function SprintDashboardPage() {
 											`${name} ${(percent * 100).toFixed(0)}%`
 										}
 									>
-										{getTaskStatusData().map((entry, index) => (
+										{getTaskStatusData().map((entry) => {
+										const colorIndex = statusOrder.indexOf(entry.name);
+										return (
 											<Cell
 												key={`cell-${entry.value}`}
-												fill={COLORS[index % COLORS.length]}
+												fill={COLORS[colorIndex]}
 											/>
-										))}
+										);
+									})}
 									</Pie>
 									<Tooltip />
 								</PieChart>
