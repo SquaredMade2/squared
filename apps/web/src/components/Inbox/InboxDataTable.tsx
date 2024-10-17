@@ -100,7 +100,6 @@ export function InboxDataTable({
 	const allUnread = mySelectedNotification.every(
 		(notification) => notification.read === false,
 	);
-	const mixedStatuses = !allRead && !allUnread;
 
 	useEffect(() => {
 		if (showUnreadOnly) {
@@ -296,27 +295,20 @@ export function InboxDataTable({
 																<span>Move all to Saved</span>
 															</Button>
 														)}
-													{allRead && (
+													{allRead || allUnread ? (
 														<Button
-															onClick={handleMarkAsRead}
+															onClick={
+																allUnread
+																	? handleMarkAsRead
+																	: handleMarkAsUnread
+															}
 															className="bg-secondary"
 															size="sm"
 															variant="outline"
 														>
-															<span>Mark as Read</span>
+															{allUnread ? "Mark as Read" : "Mark as Unread"}
 														</Button>
-													)}
-													{allUnread && (
-														<Button
-															onClick={handleMarkAsUnread}
-															className="bg-secondary"
-															size="sm"
-															variant="outline"
-														>
-															<span>Mark as Unread</span>
-														</Button>
-													)}
-													{mixedStatuses && (
+													) : (
 														<Popover>
 															<PopoverTrigger asChild>
 																<Button
