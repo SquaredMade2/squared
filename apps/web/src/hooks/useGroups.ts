@@ -137,5 +137,19 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		return groupedColumns;
 	};
 
-	return { getGroupedColumns };
+	const getHiddenColumns = (): string[] => {
+		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
+		return groupColumnTitles.filter((group) => {
+			const tasks = getTasksForGroup(group);
+			if (displayOptions.groupTasksBy === "Status") {
+				if (group === Status.archived) return false;
+				if (group === Status.done && !displayOptions.showCompletedTasks.show) {
+					return tasks;
+				}
+			}
+			return tasks && tasks.length === 0;
+		});
+	};
+
+	return { getGroupedColumns, getHiddenColumns, getTasksForGroup };
 }

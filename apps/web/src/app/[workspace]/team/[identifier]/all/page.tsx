@@ -17,11 +17,10 @@ export default function AllTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getTasksForGroup,
-		getHiddenColumns,
-	} = useTaskDashboard(filterTasks);
+	} = useTaskDashboard();
 
-	const { getGroupedColumns } = useGroups(filterTasks);
+	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } =
+		useGroups(filterTasks);
 
 	if (!currentWorkspace) return null;
 	return (

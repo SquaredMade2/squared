@@ -12,6 +12,7 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { parseParams } from "@/utils/parseParams";
 import { useTeams } from "@/hooks/useTeams";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -58,10 +59,11 @@ export default function FilterViewPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getGroupColumnTitles,
-		getTasksForGroup,
-		getHiddenColumns,
-	} = useTaskDashboard(filterTasksWithFilter);
+	} = useTaskDashboard();
+
+	const { getGroupedColumns, getTasksForGroup, getHiddenColumns } = useGroups(
+		filterTasksWithFilter,
+	);
 
 	if (!loading || teamLoading || isLoading) {
 		return <div>Loading...</div>;
@@ -80,10 +82,7 @@ export default function FilterViewPage() {
 			pageTitle={filter.name}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
-				<ViewAllTasks
-					getGroupColumnTitles={getGroupColumnTitles}
-					getTasksForGroup={getTasksForGroup}
-				/>
+				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (

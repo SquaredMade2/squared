@@ -6,6 +6,7 @@ import { useSprints } from "@/hooks/useSprints";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function MyAssignedTasksPage() {
 	const { currentSprint, loading: sprintLoading } = useSprints();
@@ -18,11 +19,11 @@ export default function MyAssignedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getGroupColumnTitles,
-		getTasksForGroup,
-		getHiddenColumns,
-	} = useTaskDashboard((tasks) =>
-		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
+	} = useTaskDashboard();
+
+	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
+		(tasks) =>
+			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
 	if (!currentWorkspace || !currentSprint) return null;
@@ -38,8 +39,7 @@ export default function MyAssignedTasksPage() {
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
-					getGroupColumnTitles={getGroupColumnTitles}
-					getTasksForGroup={getTasksForGroup}
+					getGroupedColumns={getGroupedColumns}
 					sprintId={currentSprint.id}
 				/>
 				{view === "grid" &&
