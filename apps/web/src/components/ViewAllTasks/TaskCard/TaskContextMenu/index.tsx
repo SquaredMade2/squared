@@ -50,6 +50,8 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		navigator.clipboard.writeText(gitBranchName.trim());
 	};
 
+	const newTabLink = `/${currentWorkspace?.url}/task/${identifier}/${task.title}`;
+
 	return (
 		<ContextMenuContent>
 			<StatusSubContextMenu task={task} />
@@ -90,10 +92,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 			</ContextMenuItem>
 
 			<ContextMenuItem>
-				<Link
-					href={`${currentWorkspace?.url}/tasks/${task.id}`}
-					target="_blank"
-				>
+				<Link href={newTabLink} target="_blank">
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>
