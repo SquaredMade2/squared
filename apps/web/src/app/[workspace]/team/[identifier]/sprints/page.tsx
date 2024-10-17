@@ -55,9 +55,7 @@ export default function SprintDashboard() {
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
-	const [targetSprint, setTargetSprint] = useState<string>(
-		currentSprint?.id ?? "",
-	);
+	const [targetSprint, setTargetSprint] = useState<string | undefined>("");
 	const [isAutoAssignConfirmOpen, setIsAutoAssignConfirmOpen] = useState(false);
 	const [tasksToAutoAssign, setTasksToAutoAssign] = useState<Task[]>([]);
 	const [isCustomizeAutoAssignOpen, setIsCustomizeAutoAssignOpen] =
@@ -71,6 +69,10 @@ export default function SprintDashboard() {
 			ideal: number;
 		}[]
 	>([]);
+
+	useEffect(() => {
+		setTargetSprint(currentSprint?.id);
+	}, [currentSprint]);
 
 	useEffect(() => {
 		if (sprints.length > 0) {
@@ -238,201 +240,196 @@ export default function SprintDashboard() {
 	};
 
 	return (
-		<div className="container mx-auto p-4 space-y-6">
-			<h1 className="text-3xl font-bold">Sprint Dashboard</h1>
-
-			{currentSprint && (
-				<Card>
-					<CardHeader>
-						<CardTitle>{currentSprint.name}</CardTitle>
-						<CardDescription>
-							{format(new Date(currentSprint.startDate), "PP")} -{" "}
-							{format(new Date(currentSprint.endDate), "PP")}
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<Progress
-							value={calculateProgress(currentSprint)}
-							className="w-full"
-						/>
-						<p className="mt-2 text-sm text-muted-foreground">
-							{Math.round(calculateProgress(currentSprint))}% Complete
-						</p>
-					</CardContent>
-				</Card>
-			)}
-
-			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-				<Card>
-					<CardHeader>
-						<CardTitle>Burndown Chart</CardTitle>
-					</CardHeader>
-					<CardContent className="h-80">
-						<ResponsiveContainer width="100%" height="100%">
-							<LineChart
-								data={burndownData}
-								margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
-							>
-								<XAxis dataKey="day" tick={false} axisLine={false} />
-								<YAxis hide={true} />
-								<Tooltip
-									contentStyle={{
-										background: "hsl(var(--card))",
-										border: "none",
-										borderRadius: "8px",
-									}}
-									labelStyle={{ color: "hsl(var(--muted-foreground))" }}
-									formatter={(value) => Math.floor(Number(value))}
-								/>
-								<Line
-									type="monotone"
-									dataKey="tasks"
-									stroke="hsl(var(--primary))"
-									strokeWidth={2}
-									dot={false}
-									name="Actual"
-								/>
-								<Line
-									type="monotone"
-									dataKey="ideal"
-									stroke="hsl(var(--muted))"
-									strokeWidth={2}
-									strokeDasharray="5 5"
-									dot={false}
-									name="Ideal"
-								/>
-								<ReferenceLine
-									x={currentDay}
-									stroke="hsl(var(--destructive))"
-									strokeWidth={1}
-									label={{
-										value: "Today",
-										position: "top",
-										fill: "hsl(var(--destructive))",
-									}}
-								/>
-							</LineChart>
-						</ResponsiveContainer>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader>
-						<CardTitle>Velocity</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<p className="text-4xl font-bold">{getVelocity().toFixed(1)}</p>
-						<p className="text-sm text-muted-foreground">Tasks per sprint</p>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader>
-						<CardTitle>Capacity</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<p className="text-4xl font-bold">{getCapacity()}</p>
-						<p className="text-sm text-muted-foreground">
-							Tasks in current sprint
-						</p>
-					</CardContent>
-				</Card>
-			</div>
-
-			<div className="flex justify-between items-center">
-				<h2 className="text-2xl font-semibold">Task Assignment</h2>
-				<div className="space-x-2">
-					<AssignTasksDialog
-						activeSprint={currentSprint}
-						handleBulkAssign={handleBulkAssign}
-						selectedTasks={selectedTasks}
-						setSelectedTasks={setSelectedTasks}
-						setTargetSprint={setTargetSprint}
-						unassignedTasks={unassignedTasks}
-						upcomingSprints={upcomingSprints}
-					/>
-					<Button variant="outline" onClick={prepareAutoAssign}>
-						Auto-Assign Tasks
-					</Button>
+		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh]">
+			<div className="space-y-6">
+				<h1 className="text-3xl font-bold">Sprint Dashboard</h1>
+				{currentSprint && (
+					<Card>
+						<CardHeader>
+							<CardTitle>{currentSprint.name}</CardTitle>
+							<CardDescription>
+								{format(new Date(currentSprint.startDate), "PP")} -{" "}
+								{format(new Date(currentSprint.endDate), "PP")}
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<Progress
+								value={calculateProgress(currentSprint)}
+								className="w-full"
+							/>
+							<p className="mt-2 text-sm text-muted-foreground">
+								{Math.round(calculateProgress(currentSprint))}% Complete
+							</p>
+						</CardContent>
+					</Card>
+				)}
+				<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+					<Card>
+						<CardHeader>
+							<CardTitle>Burndown Chart</CardTitle>
+						</CardHeader>
+						<CardContent className="h-80">
+							<ResponsiveContainer width="100%" height="100%">
+								<LineChart
+									data={burndownData}
+									margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
+								>
+									<XAxis dataKey="day" tick={false} axisLine={false} />
+									<YAxis hide={true} />
+									<Tooltip
+										contentStyle={{
+											background: "hsl(var(--card))",
+											border: "none",
+											borderRadius: "8px",
+										}}
+										labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+										formatter={(value) => Math.floor(Number(value))}
+									/>
+									<Line
+										type="monotone"
+										dataKey="tasks"
+										stroke="hsl(var(--primary))"
+										strokeWidth={2}
+										dot={false}
+										name="Actual"
+									/>
+									<Line
+										type="monotone"
+										dataKey="ideal"
+										stroke="hsl(var(--muted))"
+										strokeWidth={2}
+										strokeDasharray="5 5"
+										dot={false}
+										name="Ideal"
+									/>
+									<ReferenceLine
+										x={currentDay}
+										stroke="hsl(var(--destructive))"
+										strokeWidth={1}
+										label={{
+											value: "Today",
+											position: "top",
+											fill: "hsl(var(--destructive))",
+										}}
+									/>
+								</LineChart>
+							</ResponsiveContainer>
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Velocity</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p className="text-4xl font-bold">{getVelocity().toFixed(1)}</p>
+							<p className="text-sm text-muted-foreground">Tasks per sprint</p>
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<CardTitle>Capacity</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p className="text-4xl font-bold">{getCapacity()}</p>
+							<p className="text-sm text-muted-foreground">
+								Tasks in current sprint
+							</p>
+						</CardContent>
+					</Card>
 				</div>
-			</div>
-
-			<AlertDialog
-				open={isCustomizeAutoAssignOpen}
-				onOpenChange={setIsCustomizeAutoAssignOpen}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Customize Auto-Assignment</AlertDialogTitle>
-						<AlertDialogDescription>
-							Enter the number of tasks you want to auto-assign to the current
-							sprint.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<div className="py-4">
-						<Input
-							type="number"
-							value={customTaskCount}
-							onChange={(e) => setCustomTaskCount(e.target.value)}
-							placeholder="Number of tasks to assign"
+				<div className="flex justify-between items-center">
+					<h2 className="text-2xl font-semibold">Task Assignment</h2>
+					<div className="space-x-2">
+						<AssignTasksDialog
+							activeSprint={currentSprint}
+							handleBulkAssign={handleBulkAssign}
+							selectedTasks={selectedTasks}
+							setSelectedTasks={setSelectedTasks}
+							setTargetSprint={setTargetSprint}
+							unassignedTasks={unassignedTasks}
+							upcomingSprints={upcomingSprints}
 						/>
-					</div>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={handleCustomizeAutoAssign}>
-							Proceed
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-
-			<Dialog
-				open={isAutoAssignConfirmOpen}
-				onOpenChange={setIsAutoAssignConfirmOpen}
-			>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Confirm Auto-Assign Tasks</DialogTitle>
-						<DialogDescription>
-							Are you sure you want to auto-assign the following tasks to the
-							current sprint?
-						</DialogDescription>
-					</DialogHeader>
-					<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-						{tasksToAutoAssign.map((task) => (
-							<div key={task.id} className="flex items-center space-x-2 mb-2">
-								<PriorityIcon priority={task.priority} />
-								<span className="text-sm">{task.title}</span>
-							</div>
-						))}
-					</ScrollArea>
-					<Alert>
-						<AlertCircle className="h-4 w-4" />
-						<AlertTitle>Auto-Assign</AlertTitle>
-						<AlertDescription>
-							This will assign {tasksToAutoAssign.length} task
-							{tasksToAutoAssign.length !== 1 ? "s" : ""} to the current sprint.
-						</AlertDescription>
-					</Alert>
-					<DialogFooter>
-						<Button
-							variant="outline"
-							onClick={() => setIsAutoAssignConfirmOpen(false)}
-						>
-							Cancel
+						<Button variant="outline" onClick={prepareAutoAssign}>
+							Auto-Assign Tasks
 						</Button>
-						<Button onClick={handleAutoAssign}>Confirm Auto-Assign</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-
-			<SprintTabs
-				upcomingSprints={upcomingSprints}
-				completedSprints={completedSprints}
-				activeSprint={currentSprint}
-				tasks={tasks}
-				calculateProgress={calculateProgress}
-			/>
-		</div>
+					</div>
+				</div>
+				<AlertDialog
+					open={isCustomizeAutoAssignOpen}
+					onOpenChange={setIsCustomizeAutoAssignOpen}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>Customize Auto-Assignment</AlertDialogTitle>
+							<AlertDialogDescription>
+								Enter the number of tasks you want to auto-assign to the current
+								sprint.
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<div className="py-4">
+							<Input
+								type="number"
+								value={customTaskCount}
+								onChange={(e) => setCustomTaskCount(e.target.value)}
+								placeholder="Number of tasks to assign"
+							/>
+						</div>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction onClick={handleCustomizeAutoAssign}>
+								Proceed
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+				<Dialog
+					open={isAutoAssignConfirmOpen}
+					onOpenChange={setIsAutoAssignConfirmOpen}
+				>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Confirm Auto-Assign Tasks</DialogTitle>
+							<DialogDescription>
+								Are you sure you want to auto-assign the following tasks to the
+								current sprint?
+							</DialogDescription>
+						</DialogHeader>
+						<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+							{tasksToAutoAssign.map((task) => (
+								<div key={task.id} className="flex items-center space-x-2 mb-2">
+									<PriorityIcon priority={task.priority} />
+									<span className="text-sm">{task.title}</span>
+								</div>
+							))}
+						</ScrollArea>
+						<Alert>
+							<AlertCircle className="h-4 w-4" />
+							<AlertTitle>Auto-Assign</AlertTitle>
+							<AlertDescription>
+								This will assign {tasksToAutoAssign.length} task
+								{tasksToAutoAssign.length !== 1 ? "s" : ""} to the current
+								sprint.
+							</AlertDescription>
+						</Alert>
+						<DialogFooter>
+							<Button
+								variant="outline"
+								onClick={() => setIsAutoAssignConfirmOpen(false)}
+							>
+								Cancel
+							</Button>
+							<Button onClick={handleAutoAssign}>Confirm Auto-Assign</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+				<SprintTabs
+					upcomingSprints={upcomingSprints}
+					completedSprints={completedSprints}
+					activeSprint={currentSprint}
+					tasks={tasks}
+					calculateProgress={calculateProgress}
+				/>
+			</div>
+		</ScrollArea>
 	);
 }

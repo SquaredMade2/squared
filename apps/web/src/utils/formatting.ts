@@ -1,5 +1,7 @@
-import { Status, Priority } from "@repo/db";
+import type { FilterCondition } from "@/store/filters";
+import { Status, Priority, type User, type Label } from "@repo/db";
 import * as z from "zod";
+import { format } from "date-fns";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -10,8 +12,32 @@ export const truncateString = (string: string, maxLength: number): string => {
 	return string;
 };
 
-export const replaceSpacesWithDashes = (str: string): string => {
-	return str?.replace(/\s+/g, "-");
+export const sanitizeBranchName = (str: string): string => {
+	const excludedWords = new Set([
+	        "the",
+	        "of",
+	        "and",
+	        "to",
+	        "in",
+	        "on",
+	        "with",
+	        "for",
+	        "a",
+	        "an",
+	        "that",
+	        "eg",
+	        "like",
+        ]);
+
+        const sanitized = str
+	        .toLowerCase()
+	        .replace(/[^a-z0-9\s\/]/g, "")
+	        .split(/[\s\/]+/)
+	        .filter(word => word && !excludedWords.has(word))
+	        .slice(0, 8)
+	        .join("-");
+
+	return sanitized;
 };
 
 export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
@@ -99,3 +125,74 @@ export const passwordSchema = z
 		(value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value),
 		"Password must contain at least one special character",
 	);
+
+export const formatFilterName = async (
+	filter: FilterCondition,
+	labels: Label[],
+	users: Promise<User[]>,
+): Promise<{ name: string; value: string }> => {
+	if (!filter.value) return { name: filter.field, value: "" };
+	switch (filter.field) {
+		case "assigneeId": {
+			const allUsers = await users;
+			const filteredUsers = allUsers.filter(
+				(u) => Array.isArray(filter.value) && filter.value.includes(u.id),
+			);
+			return {
+				name:
+					filteredUsers?.length && filteredUsers.length > 1 ? "Users" : "User",
+				value: filteredUsers?.map((u) => u.name).join(", ") ?? "",
+			};
+		}
+		case "status":
+			if (Array.isArray(filter.value)) {
+				const formattedStatuses = filter.value
+					.map((status) => formatStatus(status as Status))
+					.join(", ");
+				return { name: "Status", value: formattedStatuses };
+			}
+			return {
+				name: "Status",
+				value: formatStatus(filter.value as Status),
+			};
+
+		case "priority":
+			if (Array.isArray(filter.value)) {
+				const formattedPriorities = filter.value
+					.map((priority) => formatPriority(priority as Priority))
+					.join(", ");
+				return { name: "Priority", value: formattedPriorities };
+			}
+			return {
+				name: "Priority",
+				value: formatPriority(filter.value as Priority),
+			};
+		case "dueDate":
+			return {
+				name: "Due Date",
+				value:
+					filter.value instanceof Date
+						? `${filter.operator} ${format(filter.value, "MMM d, yyyy")}`
+						: filter.value.toLocaleString(),
+			};
+		case "effortEstimate":
+			return {
+				name: "Effort Estimate",
+				value: filter.value.toLocaleString(),
+			};
+		case "labels": {
+			const filteredLabels = labels.filter(
+				(l) => Array.isArray(filter.value) && filter.value.includes(l.id),
+			);
+			return {
+				name:
+					filteredLabels?.length && filteredLabels.length > 1
+						? "Labels"
+						: "Label",
+				value: filteredLabels?.map((l) => l.name).join(", ") ?? "",
+			};
+		}
+		default:
+			return { name: filter.field, value: filter.value.toLocaleString() };
+	}
+};
