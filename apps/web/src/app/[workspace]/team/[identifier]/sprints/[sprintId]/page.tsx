@@ -371,14 +371,19 @@ export default function SprintDashboardPage() {
 
 				<div className="flex justify-between items-center">
 					<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
-					<AssignTasksDialog
-						activeSprint={sprint}
-						handleBulkAssign={handleBulkAssign}
-						selectedTasks={selectedTasks}
-						setSelectedTasks={setSelectedTasks}
-						unassignedTasks={unassignedTasks}
-						upcomingSprints={[]}
-					/>
+					<div className="space-x-4">
+						<AssignTasksDialog
+							activeSprint={sprint}
+							handleBulkAssign={handleBulkAssign}
+							selectedTasks={selectedTasks}
+							setSelectedTasks={setSelectedTasks}
+							unassignedTasks={unassignedTasks}
+							upcomingSprints={[]}
+						/>
+						<Button onClick={handleEndSprint} variant="destructive">
+							End Sprint
+						</Button>
+					</div>
 				</div>
 
 				<Tabs defaultValue="all" className="w-full">
@@ -416,140 +421,44 @@ export default function SprintDashboardPage() {
 				<Link href={`${sprintId}/retrospective`} passHref>
 					<Button className="w-full my-8">Start Sprint Retrospective</Button>
 				</Link>
-			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Sprint Statistics</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-						<div>
-							<h3 className="text-lg font-semibold">Total Tasks</h3>
-							<p className="text-3xl font-bold">{sprintTasks.length}</p>
-						</div>
-						<div>
-							<h3 className="text-lg font-semibold">Completed Tasks</h3>
-							<p className="text-3xl font-bold">
-								{
-									sprintTasks.filter(
-										(task) =>
-											task.status === "done" || task.status === "canceled",
-									).length
+				<AlertDialog
+					open={showEndSprintDialog}
+					onOpenChange={setShowEndSprintDialog}
+				>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								End Sprint Without Retrospective?
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								You haven't completed the retrospective for this sprint. Do you
+								want to do the retrospective before ending the sprint?
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+							<AlertDialogAction
+								onClick={() =>
+									router.push(
+										`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`,
+									)
 								}
-							</p>
-						</div>
-						<div>
-							<h3 className="text-lg font-semibold">In Progress</h3>
-							<p className="text-3xl font-bold">
-								{
-									sprintTasks.filter(
-										(task) =>
-											task.status === "inProgress" ||
-											task.status === "inReview",
-									).length
+							>
+								Do Retrospective
+							</AlertDialogAction>
+							<AlertDialogAction
+								onClick={() =>
+									router.push(
+										`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
+									)
 								}
-							</p>
-						</div>
-						<div>
-							<h3 className="text-lg font-semibold">To Do</h3>
-							<p className="text-3xl font-bold">
-								{sprintTasks.filter((task) => task.status === "todo").length}
-							</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-
-			<div className="flex justify-between items-center">
-				<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
-				<div className="space-x-4">
-					<AssignTasksDialog
-						activeSprint={sprint}
-						handleBulkAssign={handleBulkAssign}
-						selectedTasks={selectedTasks}
-						setSelectedTasks={setSelectedTasks}
-						unassignedTasks={unassignedTasks}
-						upcomingSprints={[]}
-					/>
-					<Button onClick={handleEndSprint} variant="destructive">
-						End Sprint
-					</Button>
-				</div>
+							>
+								End Sprint
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
 			</div>
-
-			<Tabs defaultValue="all" className="w-full">
-				<TabsList>
-					<TabsTrigger value="all">All Tasks</TabsTrigger>
-					<TabsTrigger value="todo">To Do</TabsTrigger>
-					<TabsTrigger value="inProgress">In Progress</TabsTrigger>
-					<TabsTrigger value="done">Done</TabsTrigger>
-				</TabsList>
-				<TabsContent value="all">
-					<TaskList tasks={sprintTasks} />
-				</TabsContent>
-				<TabsContent value="todo">
-					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "todo")}
-					/>
-				</TabsContent>
-				<TabsContent value="inProgress">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) =>
-								task.status === "inProgress" || task.status === "inReview",
-						)}
-					/>
-				</TabsContent>
-				<TabsContent value="done">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) => task.status === "done" || task.status === "canceled",
-						)}
-					/>
-				</TabsContent>
-			</Tabs>
-
-			<Link href={`${sprintId}/retrospective`} passHref>
-				<Button className="w-full my-8">Start Sprint Retrospective</Button>
-			</Link>
-			<AlertDialog
-				open={showEndSprintDialog}
-				onOpenChange={setShowEndSprintDialog}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
-							End Sprint Without Retrospective?
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							You haven't completed the retrospective for this sprint. Do you
-							want to do the retrospective before ending the sprint?
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={() =>
-								router.push(
-									`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/retrospective`,
-								)
-							}
-						>
-							Do Retrospective
-						</AlertDialogAction>
-						<AlertDialogAction
-							onClick={() =>
-								router.push(
-									`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
-								)
-							}
-						>
-							End Sprint
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
 		</ScrollArea>
 	);
 }

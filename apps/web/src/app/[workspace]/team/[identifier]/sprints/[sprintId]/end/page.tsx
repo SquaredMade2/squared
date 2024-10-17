@@ -118,8 +118,9 @@ export default function EndSprintPage() {
 		} catch (error) {
 			console.error("Error starting next sprint:", error);
 			toast({
-				title: "Error",
-				description: "Failed to start the next sprint. Please try again.",
+				title: "Failed to start the next sprint.",
+				description:
+					error instanceof Error ? error.message : "Please try again.",
 				variant: "destructive",
 			});
 		}

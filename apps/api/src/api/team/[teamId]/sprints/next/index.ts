@@ -14,7 +14,7 @@ type InitializeSprintsBody = {
 
 export function createRoute(): Route<Params> {
 	return {
-		POST: async (
+		PUT: async (
 			res,
 			{ teamId },
 			body: InitializeSprintsBody,
