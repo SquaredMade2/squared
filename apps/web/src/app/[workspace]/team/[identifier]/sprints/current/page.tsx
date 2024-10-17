@@ -26,13 +26,6 @@ export default function MyAssignedTasksPage() {
 		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
-	const allowedColumns: Status[] = [
-		Status.todo,
-		Status.inProgress,
-		Status.inReview,
-		Status.done,
-	];
-
 	if (!currentWorkspace || !currentSprint) return null;
 
 	return (
@@ -48,7 +41,6 @@ export default function MyAssignedTasksPage() {
 				<ViewAllTasks
 					getGroupColumnTitles={getGroupColumnTitles}
 					getTasksForGroup={getTasksForGroup}
-					allowedColumns={allowedColumns}
 					sprintId={currentSprint.id}
 				/>
 				{view === "grid" &&

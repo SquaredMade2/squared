@@ -9,7 +9,6 @@ import type { CompletedTaskPeriod } from "@/store/views";
 const ViewAllTasks = ({
 	getGroupColumnTitles,
 	getTasksForGroup,
-	allowedColumns = Object.values(Status),
 	sprintId,
 }: ViewAllTasksProps) => {
 	const { view, displayOptions, getGridOptions, getListOptions } = useViewStore(
@@ -50,36 +49,33 @@ const ViewAllTasks = ({
 
 	function getGroupedColumns() {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
-		return groupColumnTitles
-			.filter((column) => allowedColumns.includes(column as Status))
-			.map((group) => {
-				let tasksForGroup = getTasksForGroup(group);
+		return groupColumnTitles.map((group) => {
+			let tasksForGroup = getTasksForGroup(group);
 
-				if (groupTasksBy === "Status") {
-					if (group === Status.archived) return null;
-					if (group === Status.done) {
-						const { period, show } = displayOptions.showCompletedTasks;
-						if (!show) return null;
-						tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
-					}
+			if (groupTasksBy === "Status") {
+				if (group === Status.archived) return null;
+				if (group === Status.done) {
+					const { period, show } = displayOptions.showCompletedTasks;
+					if (!show) return null;
+					tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
 				}
-				if (
-					tasksForGroup.length === 0 &&
-					!(view === "grid" ? getGridOptions() : getListOptions())
-						.showEmptyGroups
-				)
-					return null;
-				return (
-					<div key={group} className="px-1">
-						<GroupColumn
-							group={group}
-							tasks={tasksForGroup}
-							currentView={view}
-							sprintId={sprintId}
-						/>
-					</div>
-				);
-			});
+			}
+			if (
+				tasksForGroup.length === 0 &&
+				!(view === "grid" ? getGridOptions() : getListOptions()).showEmptyGroups
+			)
+				return null;
+			return (
+				<div key={group} className="px-1">
+					<GroupColumn
+						group={group}
+						tasks={tasksForGroup}
+						currentView={view}
+						sprintId={sprintId}
+					/>
+				</div>
+			);
+		});
 	}
 
 	return (
