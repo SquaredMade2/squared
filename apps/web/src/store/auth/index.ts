@@ -31,6 +31,8 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					const { data: response }: { data: ApiReturnType<User> } =
 						await axios.post(apiString(""), login);
 					const { data: user, message, variant } = response;
+
+					set({ user });
 					return {
 						user,
 						message,

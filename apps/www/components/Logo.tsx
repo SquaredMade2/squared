@@ -1,8 +1,5 @@
 import { Link } from "next-view-transitions";
 import SquaredLogoDark from "./SVG/squared-logo-dark";
-import SquaredLogoLight from "./SVG/squared-logo-light";
-import React from "react";
-import { useTheme } from "next-themes";
 
 export const Logo = () => {
 	return (

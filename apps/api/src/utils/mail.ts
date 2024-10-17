@@ -1,13 +1,7 @@
-import {
-	emailTemplate,
-	joinWorkspaceTemplate,
-	passwordResetTemplate,
-} from "./templates";
 import { createTransport } from "nodemailer";
 
 const EMAIL_USERNAME = process.env.EMAIL_USERNAME;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
-const NEXT_PUBLIC_CONFIRM_URL = process.env.NEXT_PUBLIC_CONFIRM_URL;
 
 const transporter = createTransport({
 	host: "smtp.office365.com",
@@ -23,53 +17,21 @@ const transporter = createTransport({
 	},
 });
 
-export const sendMail = async (
-	email: string,
-	username: string,
-	emailToken: string | undefined,
-	confirmationRouteOption: string,
-	workspace?: string,
-	workspaceName?: string,
-	type: "verify" | "invite" | "resetPassword" = "verify",
-) => {
+export const sendMail = async ({
+	email,
+	subject,
+	html,
+}: {
+	email: string;
+	subject: string;
+	html: string;
+}) => {
 	try {
-		let url: string;
-		switch (type) {
-			case "verify":
-				url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
-				break;
-			case "invite":
-				url = `${NEXT_PUBLIC_CONFIRM_URL}/login?token=${emailToken}`;
-				break;
-			case "resetPassword":
-				url = `${NEXT_PUBLIC_CONFIRM_URL}/forgotPassword/${emailToken}`;
-				break;
-			default:
-				url = `${NEXT_PUBLIC_CONFIRM_URL}/${confirmationRouteOption}/${emailToken}`;
-				break;
-		}
-		let subject = "Confirm Email!";
-		let htmlContent: string;
-
-		if (confirmationRouteOption === "password") {
-			// Settings for password reset email
-			subject = "Password Reset Request";
-			htmlContent = passwordResetTemplate(url);
-		} else {
-			// Settings for registration confirm email / workspace email
-			htmlContent = workspace
-				? joinWorkspaceTemplate(username, url, workspaceName)
-				: emailTemplate(username, url);
-			if (workspace) {
-				subject = `Join ${workspaceName}!`;
-			}
-		}
-
 		const sendResult = await transporter.sendMail({
 			from: `"Squared" ${EMAIL_USERNAME}`,
 			to: email,
 			subject,
-			html: htmlContent,
+			html,
 			attachments: [
 				{
 					filename: "sqLogo.png",

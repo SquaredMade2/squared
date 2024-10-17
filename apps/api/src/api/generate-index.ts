@@ -23,10 +23,8 @@ import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 import { PrismaClient } from "@repo/db";
 import { setupSwagger } from "../../swagger";
-import { startSprintTransitionJob } from '@/jobs/scheduler';
 import "dotenv/config";
 
-startSprintTransitionJob();
 export const prisma = new PrismaClient({
 	datasources: {
 		db: {

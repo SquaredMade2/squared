@@ -23,6 +23,7 @@ const EffortModal = () => {
 					variant="ghost"
 					size="icon"
 					className="rounded-full hover:bg-transparent"
+					aria-label="help"
 				>
 					<CircleHelp className="size-4 text-muted-foreground" />
 				</Button>

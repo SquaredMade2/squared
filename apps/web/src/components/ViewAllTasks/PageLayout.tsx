@@ -16,7 +16,7 @@ interface TaskPageLayoutProps {
 	currentWorkspace: Workspace;
 	teamIdentifier: string;
 	handleDragEnd: OnDragEndResponder;
-	pageTitle: string;
+	pageTitle?: string;
 	children: ReactNode;
 }
 

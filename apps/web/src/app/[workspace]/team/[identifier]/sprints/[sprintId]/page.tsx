@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { format, differenceInDays } from "date-fns";
 import { useTaskStore } from "@/store";
@@ -14,17 +14,18 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	LineChart,
 	Line,
 	XAxis,
 	YAxis,
-	CartesianGrid,
 	Tooltip,
 	ResponsiveContainer,
 	PieChart,
 	Pie,
 	Cell,
+	ReferenceLine,
 } from "recharts";
 import {
 	AssignTasksDialog,
@@ -48,6 +49,14 @@ export default function SprintDashboardPage() {
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
+	const [currentDay, setCurrentDay] = useState(0);
+	const [burndownData, setBurndownData] = useState<
+		{
+			day: number;
+			tasks: number;
+			ideal: number;
+		}[]
+	>([]);
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -71,32 +80,63 @@ export default function SprintDashboardPage() {
 
 	const calculateProgress = () => {
 		if (!sprint) return 0;
-		const completedTasks = sprintTasks.filter((task) => task.status === "done");
+		const completedTasks = sprintTasks.filter(
+			(task) => task.status === "done" || task.status === "canceled",
+		);
 		return sprintTasks.length > 0
 			? (completedTasks.length / sprintTasks.length) * 100
 			: 0;
 	};
 
-	const getBurndownData = () => {
+	const getBurndownData = useCallback(() => {
 		if (!sprint) return [];
+		const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
 		const sprintDays = differenceInDays(
 			new Date(sprint.endDate),
 			new Date(sprint.startDate),
 		);
 		const totalTasks = sprintTasks.length;
-		return Array.from({ length: sprintDays + 1 }, (_, i) => {
+		const today = new Date();
+		const currentSprintDay = differenceInDays(
+			today,
+			new Date(sprint.startDate),
+		);
+
+		let completedTasksCount = 0;
+		const data = Array.from({ length: sprintDays + 1 }, (_, i) => {
 			const date = new Date(sprint.startDate);
 			date.setDate(date.getDate() + i);
-			const completedTasks = sprintTasks.filter(
-				(task) => task.status === "done" && new Date(task.updatedAt) <= date,
-			).length;
+
+			if (i <= currentSprintDay) {
+				completedTasksCount = sprintTasks.filter(
+					(task) =>
+						(task.status === "done" || task.status === "canceled") &&
+						new Date(task.updatedAt) <= date,
+				).length;
+			} else {
+				// Project future based on current rate
+				const remainingDays = sprintDays - currentSprintDay;
+				const remainingTasks = totalTasks - completedTasksCount;
+				const dailyRate = remainingTasks / remainingDays;
+				completedTasksCount += dailyRate;
+			}
+
 			return {
 				day: i,
-				tasks: totalTasks - completedTasks,
+				tasks: Math.max(0, totalTasks - completedTasksCount),
 				ideal: totalTasks - (totalTasks / sprintDays) * i,
 			};
 		});
-	};
+
+		return data;
+	}, [sprint, tasks]);
+
+	useEffect(() => {
+		setCurrentDay(
+			sprint ? differenceInDays(new Date(), new Date(sprint.startDate)) : 0,
+		);
+		setBurndownData(getBurndownData());
+	}, [sprint, getBurndownData]);
 
 	const getTaskStatusData = () => {
 		const statusCounts = sprintTasks.reduce(
@@ -116,7 +156,10 @@ export default function SprintDashboardPage() {
 	const handleBulkAssign = async () => {
 		if (!sprint) return;
 		for (const task of selectedTasks) {
-			await updateTask(task.id, { sprintId: sprint.id });
+			await updateTask(task.id, {
+				sprintId: sprint.id,
+				status: task.status === "backlog" ? "todo" : task.status,
+			});
 		}
 		setSelectedTasks([]);
 		team && (await getAllTasks(team.id));
@@ -144,183 +187,215 @@ export default function SprintDashboardPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-4 space-y-6">
-			<div className="flex items-center justify-between">
-				<Link
-					href={`/${workspace?.url}/team/${team?.identifier}/sprints`}
-					passHref
-				>
-					<Button variant="ghost" size="sm">
-						<ArrowLeft className="mr-2 h-4 w-4" /> Back to Sprints
-					</Button>
-				</Link>
-				<h1 className="text-3xl font-bold">{sprint.name}</h1>
-			</div>
+		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh]">
+			<div className="space-y-6">
+				<div className="flex items-center justify-between">
+					<Link
+						href={`/${workspace?.url}/team/${team?.identifier}/sprints`}
+						passHref
+					>
+						<Button variant="ghost" size="sm">
+							<ArrowLeft className="mr-2 h-4 w-4" /> Back to Sprints
+						</Button>
+					</Link>
+					<h1 className="text-3xl font-bold">{sprint.name}</h1>
+				</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Sprint Progress</CardTitle>
-					<CardDescription>
-						{format(new Date(sprint.startDate), "PP")} -{" "}
-						{format(new Date(sprint.endDate), "PP")}
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<Progress value={calculateProgress()} className="w-full" />
-					<p className="mt-2 text-sm text-muted-foreground">
-						{Math.round(calculateProgress())}% Complete
-					</p>
-				</CardContent>
-			</Card>
-
-			<div className="grid gap-6 md:grid-cols-2">
 				<Card>
 					<CardHeader>
-						<CardTitle>Burndown Chart</CardTitle>
+						<CardTitle>Sprint Progress</CardTitle>
+						<CardDescription>
+							{format(new Date(sprint.startDate), "PP")} -{" "}
+							{format(new Date(sprint.endDate), "PP")}
+						</CardDescription>
 					</CardHeader>
-					<CardContent className="h-[300px]">
-						<ResponsiveContainer width="100%" height="100%">
-							<LineChart data={getBurndownData()}>
-								<CartesianGrid strokeDasharray="3 3" />
-								<XAxis dataKey="day" />
-								<YAxis />
-								<Tooltip />
-								<Line
-									type="monotone"
-									dataKey="tasks"
-									stroke="#8884d8"
-									name="Actual"
-								/>
-								<Line
-									type="monotone"
-									dataKey="ideal"
-									stroke="#82ca9d"
-									name="Ideal"
-									strokeDasharray="5 5"
-								/>
-							</LineChart>
-						</ResponsiveContainer>
+					<CardContent>
+						<Progress value={calculateProgress()} className="w-full" />
+						<p className="mt-2 text-sm text-muted-foreground">
+							{Math.round(calculateProgress())}% Complete
+						</p>
 					</CardContent>
 				</Card>
 
-				<Card>
-					<CardHeader>
-						<CardTitle>Task Status Distribution</CardTitle>
-					</CardHeader>
-					<CardContent className="h-[300px]">
-						<ResponsiveContainer width="100%" height="100%">
-							<PieChart>
-								<Pie
-									data={getTaskStatusData()}
-									cx="50%"
-									cy="50%"
-									labelLine={false}
-									outerRadius={80}
-									fill="#8884d8"
-									dataKey="value"
-									label={({ name, percent }) =>
-										`${name} ${(percent * 100).toFixed(0)}%`
-									}
+				<div className="grid gap-6 md:grid-cols-2">
+					<Card>
+						<CardHeader>
+							<CardTitle>Burndown Chart</CardTitle>
+						</CardHeader>
+						<CardContent className="h-[300px]">
+							<ResponsiveContainer width="100%" height="100%">
+								<LineChart
+									data={burndownData}
+									margin={{ top: 15, right: 20, left: 20, bottom: 5 }}
 								>
-									{getTaskStatusData().map((entry, index) => (
-										<Cell
-											key={`cell-${entry.value}`}
-											fill={COLORS[index % COLORS.length]}
-										/>
-									))}
-								</Pie>
-								<Tooltip />
-							</PieChart>
-						</ResponsiveContainer>
+									<XAxis dataKey="day" tick={false} axisLine={false} />
+									<YAxis hide={true} />
+									<Tooltip
+										contentStyle={{
+											background: "hsl(var(--card))",
+											border: "none",
+											borderRadius: "8px",
+										}}
+										labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+										formatter={(value) => Math.floor(Number(value))}
+									/>
+									<Line
+										type="monotone"
+										dataKey="tasks"
+										stroke="hsl(var(--primary))"
+										strokeWidth={2}
+										dot={false}
+										name="Actual"
+									/>
+									<Line
+										type="monotone"
+										dataKey="ideal"
+										stroke="hsl(var(--muted))"
+										strokeWidth={2}
+										strokeDasharray="5 5"
+										dot={false}
+										name="Ideal"
+									/>
+									<ReferenceLine
+										x={currentDay}
+										stroke="hsl(var(--destructive))"
+										strokeWidth={1}
+										label={{
+											value: "Today",
+											position: "top",
+											fill: "hsl(var(--destructive))",
+										}}
+									/>
+								</LineChart>
+							</ResponsiveContainer>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardHeader>
+							<CardTitle>Task Status Distribution</CardTitle>
+						</CardHeader>
+						<CardContent className="h-[300px]">
+							<ResponsiveContainer width="100%" height="100%">
+								<PieChart>
+									<Pie
+										data={getTaskStatusData()}
+										cx="50%"
+										cy="50%"
+										labelLine={false}
+										outerRadius={80}
+										fill="#8884d8"
+										dataKey="value"
+										label={({ name, percent }) =>
+											`${name} ${(percent * 100).toFixed(0)}%`
+										}
+									>
+										{getTaskStatusData().map((entry, index) => (
+											<Cell
+												key={`cell-${entry.value}`}
+												fill={COLORS[index % COLORS.length]}
+											/>
+										))}
+									</Pie>
+									<Tooltip />
+								</PieChart>
+							</ResponsiveContainer>
+						</CardContent>
+					</Card>
+				</div>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>Sprint Statistics</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+							<div>
+								<h3 className="text-lg font-semibold">Total Tasks</h3>
+								<p className="text-3xl font-bold">{sprintTasks.length}</p>
+							</div>
+							<div>
+								<h3 className="text-lg font-semibold">Completed Tasks</h3>
+								<p className="text-3xl font-bold">
+									{
+										sprintTasks.filter(
+											(task) =>
+												task.status === "done" || task.status === "canceled",
+										).length
+									}
+								</p>
+							</div>
+							<div>
+								<h3 className="text-lg font-semibold">In Progress</h3>
+								<p className="text-3xl font-bold">
+									{
+										sprintTasks.filter(
+											(task) =>
+												task.status === "inProgress" ||
+												task.status === "inReview",
+										).length
+									}
+								</p>
+							</div>
+							<div>
+								<h3 className="text-lg font-semibold">To Do</h3>
+								<p className="text-3xl font-bold">
+									{sprintTasks.filter((task) => task.status === "todo").length}
+								</p>
+							</div>
+						</div>
 					</CardContent>
 				</Card>
+
+				<div className="flex justify-between items-center">
+					<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
+					<AssignTasksDialog
+						activeSprint={sprint}
+						handleBulkAssign={handleBulkAssign}
+						selectedTasks={selectedTasks}
+						setSelectedTasks={setSelectedTasks}
+						unassignedTasks={unassignedTasks}
+						upcomingSprints={[]}
+					/>
+				</div>
+
+				<Tabs defaultValue="all" className="w-full">
+					<TabsList>
+						<TabsTrigger value="all">All Tasks</TabsTrigger>
+						<TabsTrigger value="todo">To Do</TabsTrigger>
+						<TabsTrigger value="inProgress">In Progress</TabsTrigger>
+						<TabsTrigger value="done">Done</TabsTrigger>
+					</TabsList>
+					<TabsContent value="all">
+						<TaskList tasks={sprintTasks} />
+					</TabsContent>
+					<TabsContent value="todo">
+						<TaskList
+							tasks={sprintTasks.filter((task) => task.status === "todo")}
+						/>
+					</TabsContent>
+					<TabsContent value="inProgress">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) =>
+									task.status === "inProgress" || task.status === "inReview",
+							)}
+						/>
+					</TabsContent>
+					<TabsContent value="done">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) => task.status === "done" || task.status === "canceled",
+							)}
+						/>
+					</TabsContent>
+				</Tabs>
+
+				<Link href={`${sprintId}/retrospective`} passHref>
+					<Button className="w-full my-8">Start Sprint Retrospective</Button>
+				</Link>
 			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Sprint Statistics</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-						<div>
-							<h3 className="text-lg font-semibold">Total Tasks</h3>
-							<p className="text-3xl font-bold">{sprintTasks.length}</p>
-						</div>
-						<div>
-							<h3 className="text-lg font-semibold">Completed Tasks</h3>
-							<p className="text-3xl font-bold">
-								{sprintTasks.filter((task) => task.status === "done").length}
-							</p>
-						</div>
-						<div>
-							<h3 className="text-lg font-semibold">In Progress</h3>
-							<p className="text-3xl font-bold">
-								{
-									sprintTasks.filter(
-										(task) =>
-											task.status === "inProgress" ||
-											task.status === "inReview",
-									).length
-								}
-							</p>
-						</div>
-						<div>
-							<h3 className="text-lg font-semibold">To Do</h3>
-							<p className="text-3xl font-bold">
-								{sprintTasks.filter((task) => task.status === "todo").length}
-							</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-
-			<div className="flex justify-between items-center">
-				<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
-				<AssignTasksDialog
-					activeSprint={sprint}
-					handleBulkAssign={handleBulkAssign}
-					selectedTasks={selectedTasks}
-					setSelectedTasks={setSelectedTasks}
-					setTargetSprint={() => {}} // Not needed for single sprint view
-					unassignedTasks={unassignedTasks}
-					upcomingSprints={[]}
-				/>
-			</div>
-
-			<Tabs defaultValue="all" className="w-full">
-				<TabsList>
-					<TabsTrigger value="all">All Tasks</TabsTrigger>
-					<TabsTrigger value="todo">To Do</TabsTrigger>
-					<TabsTrigger value="inProgress">In Progress</TabsTrigger>
-					<TabsTrigger value="done">Done</TabsTrigger>
-				</TabsList>
-				<TabsContent value="all">
-					<TaskList tasks={sprintTasks} />
-				</TabsContent>
-				<TabsContent value="todo">
-					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "todo")}
-					/>
-				</TabsContent>
-				<TabsContent value="inProgress">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) =>
-								task.status === "inProgress" || task.status === "inReview",
-						)}
-					/>
-				</TabsContent>
-				<TabsContent value="done">
-					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "done")}
-					/>
-				</TabsContent>
-			</Tabs>
-
-			<Link href={`${sprintId}/retrospective`} passHref>
-				<Button className="w-full my-8">Start Sprint Retrospective</Button>
-			</Link>
-		</div>
+		</ScrollArea>
 	);
 }
 
