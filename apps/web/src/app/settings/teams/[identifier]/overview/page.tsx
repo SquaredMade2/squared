@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import type { Effort, Team } from "@repo/db";
+import type { Effort } from "@repo/db";
 import { Button } from "@/components/ui/button";
 import { useTeamStore } from "@/store";
 import { Input } from "@/components/ui/input";
@@ -41,7 +41,6 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
-import { isFriday } from "date-fns";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
