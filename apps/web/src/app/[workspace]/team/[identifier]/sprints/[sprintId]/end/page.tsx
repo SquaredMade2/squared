@@ -30,20 +30,24 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Sprint } from "@repo/db";
+import type { Task, Sprint } from "@repo/db";
 import { TransferTaskModal } from "@/components/Sprints/TransferTaskModal";
+import { parseParams } from "@/utils/parseParams";
 
 export default function EndSprintPage() {
 	const router = useRouter();
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error, sprintTasks } =
 		useSprints();
-	const { tasks, getAllTasks } = useTaskStore((state) => state);
-	const { nextSprint, endSprint } = useTeamStore((state) => state);
+	const { getAllTasks } = useTaskStore((state) => state);
+	const { nextSprint, endSprint, getSprintTasks } = useTeamStore(
+		(state) => state,
+	);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
+	const [tasks, setTasks] = useState<Task[]>([]);
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -57,10 +61,16 @@ export default function EndSprintPage() {
 	useEffect(() => {
 		const currentSprint = sprints.find((s) => s.id === sprintId);
 		setSprint(currentSprint || null);
-		if (currentSprint) {
+		if (currentSprint && team) {
+			const loadSprintTasks = async () => {
+				const tasks = await getSprintTasks(team?.id, parseParams(sprintId));
+				console.log("tasks", tasks);
+				setTasks(tasks);
+			};
+			loadSprintTasks();
 			setNewSprintName(`Sprint ${sprints.length + 1}`);
 		}
-	}, [sprints, tasks, sprintId]);
+	}, [sprints, sprintId]);
 
 	const handleEndSprint = () => {
 		setShowEndSprintDialog(true);
@@ -125,10 +135,6 @@ export default function EndSprintPage() {
 			});
 		}
 	};
-
-	const movableTasks = sprintTasks.filter((task) =>
-		["backlog", "todo", "inProgress", "inReview"].includes(task.status),
-	);
 
 	if (loading) {
 		return <SprintLoading />;
@@ -220,7 +226,9 @@ export default function EndSprintPage() {
 			<TransferTaskModal
 				isOpen={showTaskSelectionModal}
 				onClose={() => setShowTaskSelectionModal(false)}
-				tasks={movableTasks}
+				tasks={tasks.filter((t) =>
+					["backlog", "todo", "inReview"].includes(t.status),
+				)}
 				onConfirm={handleNextSprintConfirm}
 				initialSprintName={newSprintName}
 			/>

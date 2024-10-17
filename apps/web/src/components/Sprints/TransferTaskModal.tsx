@@ -12,6 +12,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import type { Task } from "@repo/db";
+import { PriorityIcon, StatusIcon } from "../Icons";
 
 interface TransferTaskModalProps {
 	isOpen: boolean;
@@ -28,19 +29,22 @@ export const TransferTaskModal = ({
 	onConfirm,
 	initialSprintName,
 }: TransferTaskModalProps) => {
-	const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
 	const [sprintName, setSprintName] = useState(initialSprintName);
 
-	const handleTaskToggle = (taskId: string) => {
-		setSelectedTasks((prev) =>
-			prev.includes(taskId)
-				? prev.filter((id) => id !== taskId)
-				: [...prev, taskId],
+	const handleTaskSelection = (task: Task) => {
+		setSelectedTasks(
+			selectedTasks.includes(task)
+				? selectedTasks.filter((t) => t.id !== task.id)
+				: [...selectedTasks, task],
 		);
 	};
 
 	const handleConfirm = () => {
-		onConfirm(selectedTasks, sprintName);
+		onConfirm(
+			selectedTasks.map((t) => t.id),
+			sprintName,
+		);
 		onClose();
 	};
 
@@ -65,15 +69,35 @@ export const TransferTaskModal = ({
 							className="col-span-3"
 						/>
 					</div>
-					<div className="max-h-[300px] overflow-y-auto">
+					<div className="max-h-[300px]">
 						{tasks.map((task) => (
-							<div key={task.id} className="flex items-center space-x-2">
-								<Checkbox
-									id={task.id}
-									checked={selectedTasks.includes(task.id)}
-									onCheckedChange={() => handleTaskToggle(task.id)}
-								/>
-								<Label htmlFor={task.id}>{task.title}</Label>
+							<div
+								key={task.id}
+								className="group flex items-center justify-between w-full py-2 px-4 border-b border-border hover:bg-accent"
+							>
+								<div className="shrink min-w-0 flex items-center gap-2">
+									<Checkbox
+										id={task.id}
+										checked={selectedTasks.includes(task)}
+										onCheckedChange={() => handleTaskSelection(task)}
+										className="mr-2 flex-shrink-0"
+									/>
+									<PriorityIcon priority={task.priority} />
+									<StatusIcon status={task.status} />
+									<span className="text-sm font-medium truncate max-w-64 sm:max-w-48 md:max-w-lg">
+										{task.title}
+									</span>
+								</div>
+								<div className="flex-shrink-0 ml-2">
+									{task.dueDate && (
+										<span className="text-xs text-muted-foreground whitespace-nowrap">
+											{new Date(task.dueDate).toLocaleDateString("en-US", {
+												month: "short",
+												day: "numeric",
+											})}
+										</span>
+									)}
+								</div>
 							</div>
 						))}
 					</div>
