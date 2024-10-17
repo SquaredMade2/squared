@@ -12,6 +12,7 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { parseParams } from "@/utils/parseParams";
 import { useTeams } from "@/hooks/useTeams";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -62,8 +63,12 @@ export default function FilterViewPage() {
 		getTasksForStatus,
 	} = useTaskDashboard(filterTasksWithFilter);
 
-	if (!loading || teamLoading || isLoading) {
-		return <div>Loading...</div>;
+	if (loading || teamLoading || isLoading) {
+		return (
+			<div className="w-full flex justify-center items-center">
+				<SquaredLoader />
+			</div>
+		);
 	}
 
 	const getHiddenColumns = (): Status[] => {
