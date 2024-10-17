@@ -18,6 +18,7 @@ const StatusColumn = ({
 	title,
 	tasks,
 	currentView: view,
+	sprintId,
 }: StatusColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
@@ -104,7 +105,7 @@ const StatusColumn = ({
 		return (
 			<div
 				key={task.id}
-				className={`mb-2 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+				className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 			>
 				<TaskCard task={task} index={index} location={"dashboard"} />
 				{subtasks.length > 0 && displayOptions.showSubTasks && (
@@ -132,7 +133,9 @@ const StatusColumn = ({
 
 	return (
 		<div
-			className={isListView ? "mb-2 w-full" : "pb-2 w-[300px] flex-shrink-0"}
+			className={
+				isListView ? "mb-2 w-full" : "pb-2 pr-2 w-[300px] flex-shrink-0"
+			}
 		>
 			<TaskColumnTitle
 				isListView={isListView}
@@ -140,6 +143,7 @@ const StatusColumn = ({
 				numberOfTasks={numberOfTasks}
 				title={title}
 				setShowTasks={setShowTasks}
+				sprintId={sprintId}
 			/>
 			<Droppable droppableId={columnType}>
 				{(provided, snapshot) => (
@@ -152,8 +156,9 @@ const StatusColumn = ({
 								snapshot.isDraggingOver && view === "grid"
 									? ""
 									: `${
-											view === "grid" &&
-											"h-[77vh] rounded pr-2 transition-all duration-500 ease-in-out"
+											view === "grid"
+												? "max-h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
+												: "overflow-y-auto"
 										}`
 							} 
             `}
@@ -162,21 +167,24 @@ const StatusColumn = ({
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2 items-center"
+									: "flex flex-col z-30 w-full gap-2 items-center"
 							}
 						>
 							{showTasks &&
 								orderedTasks
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
-							{!isListView && (
-								<GridColumnNewIssueButton status={title as Status} />
-							)}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
 				)}
 			</Droppable>
+			{!isListView && (
+				<GridColumnNewIssueButton
+					status={title as Status}
+					sprintId={sprintId}
+				/>
+			)}
 		</div>
 	);
 };

@@ -49,7 +49,7 @@ module.exports = withSentryConfig(
     // Additional configuration for accepting external images from GitHub
 
     images: {
-      domains: ["github.com", "lh3.googleusercontent.com"],
+      domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com"],
     },
   }
 );
