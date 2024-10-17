@@ -130,9 +130,12 @@ export function createRoute(): Route<Params> {
 								sprintId: null,
 							},
 						});
-						const currentSprint = await prisma.sprint.findFirst({
+						const currentSprint = await prisma.sprint.update({
 							where: {
 								id: sprintId,
+							},
+							data: {
+								status: "COMPLETED",
 							},
 						});
 

@@ -49,6 +49,8 @@ export default function EndSprintPage() {
 	const [newSprintName, setNewSprintName] = useState("");
 	const [newSprint, setNewSprint] = useState(false);
 	const [tasks, setTasks] = useState<Task[]>([]);
+	const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+	const [sprintName, setSprintName] = useState("");
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -77,57 +79,24 @@ export default function EndSprintPage() {
 		if (!sprint || !team) return;
 
 		try {
-			const response = await endSprint(team.id, sprint.id);
-
-			if (response.variant === "destructive") {
-				throw new Error(response.message);
-			}
-
 			if (newSprint) {
 				setShowTaskSelectionModal(true);
-			} else {
-				toast({
-					title: "Sprint ended successfully",
-					description: "No new sprint was started.",
+				const response = await nextSprint(team.id, selectedTasks, {
+					name: sprintName,
 				});
+
+				toast(response);
+				router.push(`/${workspace?.url}/team/${team?.identifier}/sprints`);
+			} else {
+				const response = await endSprint(team.id, sprint.id);
+				toast(response);
 				router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
 			}
 		} catch (error) {
 			console.error("Error ending sprint:", error);
 			toast({
-				title: "Error",
-				description: "Failed to end the sprint. Please try again.",
-				variant: "destructive",
-			});
-		}
-	};
-
-	const handleNextSprintConfirm = async (
-		selectedTasks: string[],
-		sprintName: string,
-	) => {
-		if (!team) return;
-
-		try {
-			const response = await nextSprint(team.id, selectedTasks, {
-				name: sprintName,
-			});
-
-			if (response.variant === "destructive") {
-				throw new Error(response.message);
-			}
-
-			toast({
-				title: "New sprint started successfully",
-				description: `${selectedTasks.length} tasks moved to the new sprint.`,
-			});
-			router.push(`/${workspace?.url}/team/${team?.identifier}/sprints`);
-		} catch (error) {
-			console.error("Error starting next sprint:", error);
-			toast({
-				title: "Failed to start the next sprint.",
-				description:
-					error instanceof Error ? error.message : "Please try again.",
+				title: "Failed to end the sprint.",
+				description: error instanceof Error ? error.message : "Unknown error",
 				variant: "destructive",
 			});
 		}
@@ -237,7 +206,8 @@ export default function EndSprintPage() {
 				tasks={tasks.filter((t) =>
 					["backlog", "todo", "inReview", "inProgress"].includes(t.status),
 				)}
-				onConfirm={handleNextSprintConfirm}
+				setSelectedTasks={setSelectedTasks}
+				setSprintName={setSprintName}
 				initialSprintName={newSprintName}
 			/>
 		</div>

@@ -19,7 +19,8 @@ interface TransferTaskModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	tasks: Task[];
-	onConfirm: (selectedTasks: string[], sprintName: string) => void;
+	setSelectedTasks: (tasks: string[]) => void;
+	setSprintName: (sprintName: string) => void;
 	initialSprintName: string;
 }
 
@@ -27,7 +28,8 @@ export const TransferTaskModal = ({
 	isOpen,
 	onClose,
 	tasks,
-	onConfirm,
+	setSelectedTasks: confirmTasks,
+	setSprintName: confirmSprintName,
 	initialSprintName,
 }: TransferTaskModalProps) => {
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
@@ -42,10 +44,8 @@ export const TransferTaskModal = ({
 	};
 
 	const handleConfirm = () => {
-		onConfirm(
-			selectedTasks.map((t) => t.id),
-			sprintName,
-		);
+		confirmTasks(selectedTasks.map((t) => t.id));
+		confirmSprintName(sprintName);
 		onClose();
 	};
 
