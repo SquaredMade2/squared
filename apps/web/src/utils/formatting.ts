@@ -81,6 +81,7 @@ export const formatPriority = (priority: Priority) => {
 	}
 };
 
+// TODO: Implement formatting link
 // export const handleFormatLink = (url: string) => {
 // // if is in url link format [nameOfLink]LinkUrl
 // // return obj separating values
@@ -142,7 +143,7 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 		// each formatted line/row
 		const formattedLine = [];
 
-		// if there is a formatted piece of text
+		// if there is a formatted piece of text (this is for each subline of each row)
 		if ("children" in line) {
 			// for every leaf, or subtext that has format, format them as MDX
 			const allLeafs = line.children.map((leaf) => {
@@ -156,7 +157,7 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
 			});
 
-			// Handle current block (each row can only have one block)
+			// Handle current block/row (each row can only have one block)
 			const returnHeaderBlock = line.type === "header" ? "##" : "";
 			const returnCodeBlock = line.type === "code" ? "```" : "";
 			const leftSurrounderBlock = `${returnHeaderBlock}${returnCodeBlock}`;
@@ -186,10 +187,8 @@ export const convertMDXStringToJSX = async (
 			outputFormat: "function-body",
 		});
 
-		// Ensure compiledMDX.value is a string
 		let mdxCode = compiledMDX.value;
 
-		// Check if it's a Uint8Array and decode it
 		if (mdxCode instanceof Uint8Array) {
 			const decoder = new TextDecoder("utf-8");
 			mdxCode = decoder.decode(mdxCode);
