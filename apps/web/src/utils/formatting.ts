@@ -1,3 +1,4 @@
+import { CustomDescendant } from "@/components/TextEditor";
 import { Status, Priority } from "@repo/db";
 import * as z from "zod";
 
@@ -133,3 +134,44 @@ export const passwordSchema = z
 		(value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(value),
 		"Password must contain at least one special character",
 	);
+
+export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
+	const arrOfFormattedLines = slateArr.map((line) => {
+		// each formatted line/row
+		const formattedLine = [];
+
+		// if there is a formatted piece of text
+		if ("children" in line) {
+			// for every leaf, or subtext that has format, format them as MDX
+			const allLeafs = line.children.map((leaf) => {
+				// helper vars
+				const returnBoldMarks = leaf.bold ? "**" : "";
+				const returnItalicMarks = leaf.italic ? "*" : "";
+				// add new marks here, needs both left and right bc future might need them
+				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}`;
+				const rightSurrounderMark = `${returnItalicMarks}${returnBoldMarks}`;
+
+				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
+			});
+
+			// Handle current block (each row can only have one block)
+			const returnHeaderBlock = line.type === "header" ? "##" : "";
+			const returnCodeBlock = line.type === "code" ? "```" : "";
+			const leftSurrounderBlock = `${returnHeaderBlock}${returnCodeBlock}`;
+			const rightSurrounderBlock = `${returnCodeBlock}`;
+			formattedLine.push(
+				`${leftSurrounderBlock}${allLeafs.join("")}${rightSurrounderBlock}`,
+			);
+		} else {
+			formattedLine.push(line.text);
+		}
+
+		return formattedLine.join("");
+	});
+
+	return arrOfFormattedLines.join("\n");
+};
+
+// TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
+// export const handleFormatCommentToSlate = (commentStr) => {
+// };

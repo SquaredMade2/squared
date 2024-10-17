@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
+import type React from "react";
 import { Text, type Descendant } from "slate";
 import type { RenderElementProps, RenderLeafProps } from "slate-react";
+import { MDXProvider } from "@mdx-js/react";
+import { compile } from "@mdx-js/mdx";
+import * as runtime from "react/jsx-runtime";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
 import type { CustomElement, CustomText } from "../TextEditor/interfaces";
@@ -16,11 +20,13 @@ import type { UserAvatar } from "@/store/users";
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
 	const [avatarUrl, setAvatarUrl] = useState("");
-	const commentData: Descendant[] = JSON.parse(comment.comment);
+	const [commentData, setCommentData] = useState(<p>Loading...</p>);
+	// const commentData: Descendant[] = JSON.parse(comment.comment);
 	const getUser = useUserStore((state) => state.getUser);
 
 	// Functions
 
+	// !!! Keeping the below here for future use !!! No specific todo here, but will use.
 	const renderLeaf = useCallback((props: RenderLeafProps) => {
 		return <Leaf {...props} />;
 	}, []);
@@ -102,6 +108,49 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		};
 		handleGetUser();
 	}, [comment]);
+
+	// MDX
+
+	const components = {
+		Button: ({ children }: { children: React.JSX.Element }) => (
+			<p>{children}</p>
+		),
+	};
+
+	const convertMDXStringToJSX = async (mdxString: string) => {
+		try {
+			console.log(mdxString);
+			const mdxWithBr = mdxString.replace(/\n/g, "<br />");
+
+			const compiledMDX = await compile(mdxWithBr, {
+				outputFormat: "function-body",
+			});
+
+			// Ensure compiledMDX.value is a string
+			let mdxCode = compiledMDX.value;
+
+			// Check if it's a Uint8Array and decode it
+			if (mdxCode instanceof Uint8Array) {
+				const decoder = new TextDecoder("utf-8");
+				mdxCode = decoder.decode(mdxCode);
+			}
+
+			const commentContent = new Function("React", "components", mdxCode)(
+				runtime,
+				components,
+			);
+
+			setCommentData(commentContent?.default || commentContent);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	useEffect(() => {
+		convertMDXStringToJSX(comment.comment);
+		console.log(comment.comment);
+	}, [comment]);
+
 	return (
 		<div className="flex flex-col px-8 m-5">
 			<div className="flex flex-row items-center my-5">
@@ -116,7 +165,10 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
-				{renderSlateContent(commentData)}
+				{/* {renderSlateContent(commentData)} */}
+				<MDXProvider components={components}>
+					<div>{commentData}</div>
+				</MDXProvider>
 			</p>
 		</div>
 	);

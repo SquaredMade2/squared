@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import { useAuthStore, useCommentStore } from "@/store";
 import { toast } from "../ui/use-toast";
 import { useTaskPageData } from "@/hooks/useTaskPageData";
+import { handleFormatSlateToComment } from "@/utils/formatting";
 // import { handleFormatLink } from "@/utils/formatting";
 
 declare module "slate" {
@@ -58,7 +59,7 @@ const TextEditor = () => {
 			try {
 				if (currentUser && task) {
 					const newComment = {
-						comment: JSON.stringify(editorContent),
+						comment: handleFormatSlateToComment(editorContent),
 						authorId: currentUser?.id,
 						date: new Date(),
 						taskId: task.id,
