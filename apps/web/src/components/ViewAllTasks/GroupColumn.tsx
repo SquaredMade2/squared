@@ -108,7 +108,7 @@ const GroupColumn = ({
 		return (
 			<div
 				key={task.id}
-				className={`mb-2 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+				className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 			>
 				<TaskCard task={task} index={index} location={"dashboard"} />
 				{subtasks.length > 0 && displayOptions.showSubTasks && (
@@ -136,7 +136,9 @@ const GroupColumn = ({
 
 	return (
 		<div
-			className={isListView ? "mb-2 w-full" : "pb-2 w-[300px] flex-shrink-0"}
+			className={
+				isListView ? "mb-2 w-full" : "pb-2 pr-2 w-[300px] flex-shrink-0"
+			}
 		>
 			<TaskColumnTitle
 				title={group}
@@ -158,7 +160,7 @@ const GroupColumn = ({
 									? ""
 									: `${
 											view === "grid"
-												? "h-[calc(100vh-117px)] flex-grow overflow-y-auto rounded pr-2 transition-all duration-500 ease-in-out"
+												? "max-h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
 												: "overflow-y-auto"
 										}`
 							} 
@@ -168,21 +170,21 @@ const GroupColumn = ({
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-20 gap-2 items-center"
+									: "flex flex-col z-30 w-full gap-2 items-center"
 							}
 						>
 							{showTasks &&
 								orderedTasks
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
-							{!isListView && (
-								<GridColumnNewIssueButton group={group} sprintId={sprintId} />
-							)}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
 				)}
 			</Droppable>
+			{!isListView && (
+				<GridColumnNewIssueButton group={group} sprintId={sprintId} />
+			)}
 		</div>
 	);
 };

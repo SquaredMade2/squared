@@ -84,7 +84,7 @@ const TaskColumnTitle = ({
 	};
 
 	return (
-		<div className={isListView ? "" : "pr-2 min-w-64"}>
+		<div className={isListView ? "" : "min-w-64"}>
 			<div
 				className={cn(
 					"flex w-full bg-secondary items-center justify-between font-medium transition-all",
