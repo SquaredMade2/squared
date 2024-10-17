@@ -6,6 +6,7 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { useFilterStore, useViewStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function AllTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
@@ -16,10 +17,11 @@ export default function AllTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getGroupColumnTitles,
 		getTasksForGroup,
 		getHiddenColumns,
 	} = useTaskDashboard(filterTasks);
+
+	const { getGroupedColumns } = useGroups(filterTasks);
 
 	if (!currentWorkspace) return null;
 	return (
@@ -31,10 +33,7 @@ export default function AllTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="All Tasks"
 		>
-			<ViewAllTasks
-				getGroupColumnTitles={getGroupColumnTitles}
-				getTasksForGroup={getTasksForGroup}
-			/>
+			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 			{view === "grid" &&
 				!getGridOptions().showEmptyGroups &&
 				getHiddenColumns().length >= 1 && (

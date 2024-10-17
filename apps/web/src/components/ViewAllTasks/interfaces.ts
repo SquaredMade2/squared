@@ -1,9 +1,11 @@
-import type { TaskGroup } from "@/store/views";
 import type { Status, Task } from "@repo/db";
 
+export type GroupedColumn = {
+	group: string;
+	tasks: Task[];
+};
 export interface ViewAllTasksProps {
-	getGroupColumnTitles: (group: TaskGroup) => string[];
-	getTasksForGroup: (group: string) => Task[];
+	getGroupedColumns: () => GroupedColumn[];
 	allowedColumns?: Status[];
 	sprintId?: string;
 }
