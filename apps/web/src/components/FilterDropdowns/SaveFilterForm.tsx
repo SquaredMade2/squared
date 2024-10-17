@@ -50,7 +50,7 @@ export function SaveFilterForm({
 	const { currentTeam } = useTeamStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const authUser = useAuthStore((state) => state.user);
+	const user = useAuthStore((state) => state.user);
 	const { toast } = useToast();
 	const [isSaving, setIsSaving] = useState(false);
 	const [formattedFilters, setFormattedFilters] = useState<
@@ -151,7 +151,7 @@ export function SaveFilterForm({
 					type: "TEAM",
 					teamId: currentTeam.id,
 					workspaceId: currentWorkspace?.id,
-					authorId: authUser?.id,
+					authorId: user?.id,
 				});
 				toast({
 					title: "Filter Saved Successfully",
