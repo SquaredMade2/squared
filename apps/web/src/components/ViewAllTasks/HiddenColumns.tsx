@@ -57,7 +57,7 @@ const HiddenColumns = ({
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
-				{getHiddenColumns().map((column: string) => (
+				{getHiddenColumns().map((column) => (
 					<Droppable key={column} droppableId={column}>
 						{(provided, snapshot) => (
 							<AccordionContent
