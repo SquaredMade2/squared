@@ -297,14 +297,14 @@ export default function SprintDashboardPage() {
 										}
 									>
 										{getTaskStatusData().map((entry) => {
-										const colorIndex = statusOrder.indexOf(entry.name);
-										return (
-											<Cell
-												key={`cell-${entry.value}`}
-												fill={COLORS[colorIndex]}
-											/>
-										);
-									})}
+											const colorIndex = statusOrder.indexOf(entry.name);
+											return (
+												<Cell
+													key={`cell-${entry.value}`}
+													fill={COLORS[colorIndex]}
+												/>
+											);
+										})}
 									</Pie>
 									<Tooltip />
 								</PieChart>
