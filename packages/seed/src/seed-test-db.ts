@@ -1,35 +1,86 @@
-// This script seeds the database with:
-// -> 2 workspaces
-// --> 2 teams per workspace
-// ---> 4 tasks per team
-
-import { faker } from "@faker-js/faker";
+import { prisma, hashPassword } from "./helpers";
 import {
-	addWorkspace,
-	addTeam,
-	addTask,
-	addUser,
-	addUserToWorkspace,
-	prisma,
-} from "./helpers";
-import type { Workspace } from "@repo/db";
-
-const NUM_WORKSPACES = 2;
-const NUM_TEAMS = 2;
-const NUM_TASKS = 4;
-
-const promiseArray = <T>(n: number, fn: () => Promise<T>) =>
-	Array.from(Array(n), fn);
+	seedUsers,
+	seedWorkspaces,
+	seedTeams,
+	seedTasks,
+	usersPerWorkspace,
+	usersPerTeam,
+} from "./seed-test-data";
+import "dotenv/config";
 
 async function seedDB() {
-	const workspaces = await Promise.all(
-		promiseArray<Workspace>(NUM_WORKSPACES, addWorkspace),
+	const seedUsersWithPasswords = await Promise.all(
+		seedUsers.map(async (u) => ({
+			...u,
+			password: await hashPassword(process.env.SEED_PASSWORD ?? ""),
+		})),
 	);
+
+	await prisma.user.createMany({
+		data: seedUsersWithPasswords,
+	});
+
+	await prisma.workspace.createMany({
+		data: seedWorkspaces,
+	});
+
+	// add users to workspaces
+	seedWorkspaces.map(async (wspace, idx) => {
+		await prisma.workspace.update({
+			where: {
+				id: wspace.id,
+			},
+			data: {
+				Users: {
+					create: seedUsers
+						.slice(idx * usersPerWorkspace, (idx + 1) * usersPerWorkspace)
+						.map((u) => ({ userId: u.id as string })),
+				},
+			},
+		});
+	});
+
+	await prisma.team.createMany({
+		data: seedTeams.map((t) => ({
+			id: t.id as string,
+			workspaceId: t.workspaceId as string,
+			name: t.name as string,
+			identifier: t.identifier as string,
+		})),
+	});
+
+	// add users to teams
+	seedTeams.map(async (t, idx) => {
+		await prisma.team.update({
+			where: {
+				id: t.id,
+			},
+			data: {
+				Users: {
+					create: seedUsers
+						.slice(idx * usersPerTeam, (idx + 1) * usersPerTeam)
+						.map((u) => ({ userId: u.id as string })),
+				},
+			},
+		});
+	});
+
+	await prisma.task.createMany({
+		data: seedTasks.map((t) => ({
+			id: t.id as string,
+			authorId: t.authorId as string,
+			identifier: t.identifier as string,
+			workspaceId: t.workspaceId as string,
+			teamId: t.teamId as string,
+			title: t.title as string,
+		})),
+	});
 }
 
 seedDB()
 	.then(() => {
-		console.log("Seed completed");
+		console.log("Testing seed completed");
 		return prisma.$disconnect();
 	})
 	.catch((e) => {

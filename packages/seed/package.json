@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "db:seed": "cross-env NODE_ENV=test ts-node src/seed-db.ts",
+    "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
     "test:db:seed": "cross-env NODE_ENV=test ts-node src/seed-test-db.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
