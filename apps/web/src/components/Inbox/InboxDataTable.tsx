@@ -90,10 +90,17 @@ export function InboxDataTable({
 
 	const selectedRows = table.getFilteredSelectedRowModel().rows;
 	const selectedNotificationIds = selectedRows.map((row) => row.original.id);
-	const mySelectedNotification = notifications.find((msg) =>
+	const mySelectedNotification = notifications.filter((msg) =>
 		selectedNotificationIds.includes(msg.id),
 	);
-	const selectedNotificationReadStatus = mySelectedNotification?.read;
+
+	const allRead = mySelectedNotification.every(
+		(notification) => notification.read === true,
+	);
+	const allUnread = mySelectedNotification.every(
+		(notification) => notification.read === false,
+	);
+	const mixedStatuses = !allRead && !allUnread;
 
 	useEffect(() => {
 		if (showUnreadOnly) {
@@ -264,6 +271,19 @@ export function InboxDataTable({
 														<Check className="size-4" />
 														<span className="hidden sm:inline">Dismiss</span>
 													</Button>
+													{!isAllSelected && (
+														<Button
+															onClick={handleMarkAsUnread}
+															variant="outline"
+															size="sm"
+															className="gap-2 bg-secondary"
+														>
+															<BellOff className="size-4" />
+															<span className="hidden sm:inline">
+																Unsubscribe
+															</span>
+														</Button>
+													)}
 													{table.getFilteredSelectedRowModel().rows.length >
 														1 &&
 														filterType === "INBOX" && (
@@ -276,8 +296,27 @@ export function InboxDataTable({
 																<span>Move all to Saved</span>
 															</Button>
 														)}
-													{table.getFilteredSelectedRowModel().rows.length >
-													1 ? (
+													{allRead && (
+														<Button
+															onClick={handleMarkAsRead}
+															className="bg-secondary"
+															size="sm"
+															variant="outline"
+														>
+															<span>Mark as Read</span>
+														</Button>
+													)}
+													{allUnread && (
+														<Button
+															onClick={handleMarkAsUnread}
+															className="bg-secondary"
+															size="sm"
+															variant="outline"
+														>
+															<span>Mark as Unread</span>
+														</Button>
+													)}
+													{mixedStatuses && (
 														<Popover>
 															<PopoverTrigger asChild>
 																<Button
@@ -309,36 +348,6 @@ export function InboxDataTable({
 																</div>
 															</PopoverContent>
 														</Popover>
-													) : (
-														<Button
-															variant="outline"
-															className="bg-secondary"
-															size="sm"
-															onClick={
-																selectedNotificationReadStatus
-																	? handleMarkAsRead
-																	: handleMarkAsUnread
-															}
-														>
-															<span>
-																{selectedNotificationReadStatus
-																	? "Mark as Read"
-																	: "Mark as Unread"}
-															</span>
-														</Button>
-													)}
-													{!isAllSelected && (
-														<Button
-															onClick={handleMarkAsUnread}
-															variant="outline"
-															size="sm"
-															className="gap-2 bg-secondary"
-														>
-															<BellOff className="size-4" />
-															<span className="hidden sm:inline">
-																Unsubscribe
-															</span>
-														</Button>
 													)}
 													{(table.getIsAllPageRowsSelected() ||
 														table.getIsSomePageRowsSelected()) && (
