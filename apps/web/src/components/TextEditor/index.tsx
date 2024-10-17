@@ -23,7 +23,6 @@ import { useAuthStore, useCommentStore } from "@/store";
 import { toast } from "../ui/use-toast";
 import { useTaskPageData } from "@/hooks/useTaskPageData";
 import { handleFormatSlateToComment } from "@/utils/formatting";
-// import { handleFormatLink } from "@/utils/formatting";
 
 declare module "slate" {
 	interface CustomTypes {
@@ -183,12 +182,13 @@ const TextEditor = () => {
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
 		//     ctrl <something>, you dont want to add the character <something> in while doing a shortcut
 		// !!!
-
+		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
+		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
 		switch (e.key) {
 			// Element Blocks
 
 			case "`": {
-				if (e.ctrlKey) {
+				if (e[universalHotKey]) {
 					e.preventDefault();
 					createCodeBlock();
 				}
@@ -196,7 +196,7 @@ const TextEditor = () => {
 			}
 
 			case "h": {
-				if (e.ctrlKey) {
+				if (e[universalHotKey]) {
 					e.preventDefault();
 					createHeaderBlock();
 				}
@@ -206,14 +206,14 @@ const TextEditor = () => {
 			// Leafs
 
 			case "b": {
-				if (e.ctrlKey) {
+				if (e[universalHotKey]) {
 					e.preventDefault();
 					createBoldLeaf();
 				}
 				break;
 			}
 			case "i": {
-				if (e.ctrlKey) {
+				if (e[universalHotKey]) {
 					e.preventDefault();
 					createItalicLeaf();
 				}

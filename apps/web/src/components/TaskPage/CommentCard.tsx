@@ -1,81 +1,89 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type React from "react";
-import { Text, type Descendant } from "slate";
-import type { RenderElementProps, RenderLeafProps } from "slate-react";
-import { MDXProvider } from "@mdx-js/react";
-import { compile } from "@mdx-js/mdx";
-import * as runtime from "react/jsx-runtime";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
-import type { CustomElement, CustomText } from "../TextEditor/interfaces";
 import { useUserStore } from "@/store";
-import CodeElement from "../TextEditor/TextEditorElements/ElementBlocks/CodeElement";
-import HeaderElement from "../TextEditor/TextEditorElements/ElementBlocks/HeaderElement";
-import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
-import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "../ui/use-toast";
 import type { UserAvatar } from "@/store/users";
+import type {
+	CommentCardContentProps,
+	MDXComponent,
+	MDXProviderProps,
+} from "../TextEditor";
+import { convertMDXStringToJSX } from "@/utils/formatting";
+// !!! This is all part of the code below !!! line 37
+// import { Text, type Descendant } from "slate";
+// import type { RenderElementProps, RenderLeafProps } from "slate-react";
+// import type { CustomElement, CustomText } from "../TextEditor/interfaces";
+// import CodeElement from "../TextEditor/TextEditorElements/ElementBlocks/CodeElement";
+// import HeaderElement from "../TextEditor/TextEditorElements/ElementBlocks/HeaderElement";
+// import Leaf from "../TextEditor/TextEditorElements/LeafBlocks/Leaf";
+// import DefaultElement from "../TextEditor/TextEditorElements/ElementBlocks/DefaultElement";
 
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
 	const [avatarUrl, setAvatarUrl] = useState("");
 	const [commentData, setCommentData] = useState(<p>Loading...</p>);
+	const [MDXProvider, setMDXProvider] =
+		useState<React.ComponentType<MDXProviderProps> | null>(null);
+	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
 	const getUser = useUserStore((state) => state.getUser);
 
 	// Functions
 
-	// !!! Keeping the below here for future use !!! No specific todo here, but will use.
-	const renderLeaf = useCallback((props: RenderLeafProps) => {
-		return <Leaf {...props} />;
-	}, []);
+	// !!! Keeping the below here for future use !!! No specific todo here, but will use for testing in the future
 
-	// For each CustomElement type, render a different element node depending on what the type of block it is
-	const renderElement = useCallback((props: RenderElementProps) => {
-		switch (props.element.type) {
-			case "code":
-				return <CodeElement {...props} />;
-			case "header":
-				return <HeaderElement {...props} />;
-			default:
-				return <DefaultElement {...props} />;
-		}
-	}, []);
+	// const renderLeaf = useCallback((props: RenderLeafProps) => {
+	// 	return <Leaf {...props} />;
+	// }, []);
 
-	const renderSlateContent = (nodes: Descendant[]): JSX.Element[] => {
-		return nodes.map((node) => {
-			if (Text.isText(node)) {
-				// Render text (leaf)
-				return (
-					// Dont really have a unique attributes
-					<span key={node.text} className="min-h-6">
-						{renderLeaf({
-							leaf: node as CustomText,
-							children: node.text,
-							attributes: { "data-slate-leaf": true },
-							text: node as Text,
-						})}
-					</span>
-				);
-			}
-			// Render block elements
-			const elementNode = node as CustomElement;
-			return (
-				// Dont really have a unique attributes
-				<div key={node.type} className="min-h-6">
-					{renderElement({
-						element: elementNode,
-						children: renderSlateContent(elementNode.children),
-						attributes: {
-							"data-slate-node": "element",
-							ref: elementNode.attributes?.ref || null,
-						},
-					})}
-				</div>
-			);
-		});
-	};
+	// // For each CustomElement type, render a different element node depending on what the type of block it is
+	// const renderElement = useCallback((props: RenderElementProps) => {
+	// 	switch (props.element.type) {
+	// 		case "code":
+	// 			return <CodeElement {...props} />;
+	// 		case "header":
+	// 			return <HeaderElement {...props} />;
+	// 		default:
+	// 			return <DefaultElement {...props} />;
+	// 	}
+	// }, []);
+
+	// const renderSlateContent = (nodes: Descendant[]): JSX.Element[] => {
+	// 	return nodes.map((node) => {
+	// 		if (Text.isText(node)) {
+	// 			// Render text (leaf)
+	// 			return (
+	// 				// Dont really have a unique attributes
+	// 				<span key={node.text} className="min-h-6">
+	// 					{renderLeaf({
+	// 						leaf: node as CustomText,
+	// 						children: node.text,
+	// 						attributes: { "data-slate-leaf": true },
+	// 						text: node as Text,
+	// 					})}
+	// 				</span>
+	// 			);
+	// 		}
+	// 		// Render block elements
+	// 		const elementNode = node as CustomElement;
+	// 		return (
+	// 			// Dont really have a unique attributes
+	// 			<div key={node.type} className="min-h-6">
+	// 				{renderElement({
+	// 					element: elementNode,
+	// 					children: renderSlateContent(elementNode.children),
+	// 					attributes: {
+	// 						"data-slate-node": "element",
+	// 						ref: elementNode.attributes?.ref || null,
+	// 					},
+	// 				})}
+	// 			</div>
+	// 		);
+	// 	});
+	// };
 
 	const hasUserAvatarData = (user: UserAvatar | unknown) => {
 		return (
@@ -109,47 +117,28 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		handleGetUser();
 	}, [comment]);
 
+	const CommentCardContent = ({
+		children,
+	}: CommentCardContentProps): React.ReactElement => <div>{children}</div>;
+
+	const component: MDXComponent = {
+		CommentCardContent,
+	};
+
 	// MDX
 
-	const components = {
-		Button: ({ children }: { children: React.JSX.Element }) => (
-			<p>{children}</p>
-		),
-	};
-
-	const convertMDXStringToJSX = async (mdxString: string) => {
-		try {
-			console.log(mdxString);
-			const mdxWithBr = mdxString.replace(/\n/g, "<br />");
-
-			const compiledMDX = await compile(mdxWithBr, {
-				outputFormat: "function-body",
-			});
-
-			// Ensure compiledMDX.value is a string
-			let mdxCode = compiledMDX.value;
-
-			// Check if it's a Uint8Array and decode it
-			if (mdxCode instanceof Uint8Array) {
-				const decoder = new TextDecoder("utf-8");
-				mdxCode = decoder.decode(mdxCode);
-			}
-
-			const commentContent = new Function("React", "components", mdxCode)(
-				runtime,
-				components,
-			);
-
-			setCommentData(commentContent?.default || commentContent);
-		} catch (err) {
-			console.error(err);
-		}
-	};
-
 	useEffect(() => {
-		convertMDXStringToJSX(comment.comment);
-		console.log(comment.comment);
+		convertMDXStringToJSX(comment.comment, component).then((response) =>
+			setCommentData(response),
+		);
 	}, [comment]);
+
+	// need dynamic import bc @mdx-js/react doesnt support CommonJS module
+	useEffect(() => {
+		import("@mdx-js/react").then((module) => {
+			setMDXProvider(() => module.MDXProvider);
+		});
+	}, []);
 
 	return (
 		<div className="flex flex-col px-8 m-5">
@@ -165,10 +154,11 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
-				{/* {renderSlateContent(commentData)} */}
-				<MDXProvider components={components}>
-					<div>{commentData}</div>
-				</MDXProvider>
+				{MDXProvider && (
+					<MDXProvider components={component}>
+						<div>{commentData}</div>
+					</MDXProvider>
+				)}
 			</p>
 		</div>
 	);

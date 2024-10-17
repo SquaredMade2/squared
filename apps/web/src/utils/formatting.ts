@@ -1,4 +1,6 @@
-import { CustomDescendant } from "@/components/TextEditor";
+import type { CustomDescendant } from "@/components/TextEditor";
+import * as runtime from "react/jsx-runtime";
+import type { MDXComponent } from "@/components/TextEditor/interfaces";
 import { Status, Priority } from "@repo/db";
 import * as z from "zod";
 
@@ -170,6 +172,38 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 	});
 
 	return arrOfFormattedLines.join("\n");
+};
+
+export const convertMDXStringToJSX = async (
+	mdxString: string,
+	components: MDXComponent,
+) => {
+	try {
+		const { compile } = await import("@mdx-js/mdx");
+		const mdxWithBr = mdxString.replace(/\n/g, "<br />");
+
+		const compiledMDX = await compile(mdxWithBr, {
+			outputFormat: "function-body",
+		});
+
+		// Ensure compiledMDX.value is a string
+		let mdxCode = compiledMDX.value;
+
+		// Check if it's a Uint8Array and decode it
+		if (mdxCode instanceof Uint8Array) {
+			const decoder = new TextDecoder("utf-8");
+			mdxCode = decoder.decode(mdxCode);
+		}
+
+		const commentContent = new Function("React", "components", mdxCode)(
+			runtime,
+			components,
+		);
+
+		return commentContent?.default || commentContent;
+	} catch (err) {
+		console.error(err);
+	}
 };
 
 // TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
