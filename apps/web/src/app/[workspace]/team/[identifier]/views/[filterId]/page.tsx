@@ -12,6 +12,7 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { parseParams } from "@/utils/parseParams";
 import { useTeams } from "@/hooks/useTeams";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useGroups } from "@/hooks/useGroups";
 
 export default function FilterViewPage() {
@@ -65,8 +66,12 @@ export default function FilterViewPage() {
 		filterTasksWithFilter,
 	);
 
-	if (!loading || teamLoading || isLoading) {
-		return <div>Loading...</div>;
+	if (loading || teamLoading || isLoading) {
+		return (
+			<div className="w-full flex justify-center items-center">
+				<SquaredLoader />
+			</div>
+		);
 	}
 
 	if (!currentWorkspace) return null;
