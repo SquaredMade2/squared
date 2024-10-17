@@ -43,7 +43,7 @@ const formSchema = z.object({
 function RegisterForm() {
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isRegistered, setIsRegistered] = useState(false);
+	const [isShowRegisteredModal, setIsShowRegisteredModal] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
@@ -73,7 +73,7 @@ function RegisterForm() {
 				token: inviteToken,
 			});
 
-			if (variant !== "destructive") setIsRegistered(true);
+			if (variant !== "destructive") setIsShowRegisteredModal(true);
 
 			if (user?.verified && inviteToken) {
 				await signIn("credentials", {
@@ -114,10 +114,14 @@ function RegisterForm() {
 
 	return (
 		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-			{isRegistered && <RegistrationModal setIsRegistered={setIsRegistered} />}
+			{isShowRegisteredModal && (
+				<RegistrationModal
+					setIsShowRegisteredModal={setIsShowRegisteredModal}
+				/>
+			)}
 			<Card
 				className={`w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 ${
-					isRegistered ? "blur-lg" : ""
+					isShowRegisteredModal ? "blur-lg" : ""
 				}`}
 			>
 				<CardHeader>
