@@ -98,6 +98,14 @@ export function createRoute(): Route<Params> {
 						sprintId: newSprintData.id,
 					},
 				});
+				await prisma.task.updateMany({
+					where: {
+						sprintId: currentSprint?.id,
+					},
+					data: {
+						sprintId: null,
+					},
+				});
 
 				return {
 					data: newSprintData,
