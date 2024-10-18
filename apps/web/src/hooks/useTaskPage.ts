@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore, useTeamStore, useUserStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useWorkspaces } from "./useWorkspaces";
 
@@ -9,10 +9,12 @@ export function useTaskPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { teams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getTaskByIdentifier, tasks } = useTaskStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
-
-	const task = tasks.find((t) => t.identifier === taskIdentifier) || null;
+	const [task, setTask] = useState(
+		tasks.find((t) => t.identifier === taskIdentifier) || null,
+	);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -24,11 +26,21 @@ export function useTaskPage() {
 				}
 				await getAllUsers(currentWorkspace.id);
 
+				// Fetch team data
+				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
+				const team = teams.find((t) => t.identifier === teamIdentifier);
+				if (team) {
+					setCurrentTeam(team);
+				}
+
 				// Fetch task data
-				await getTaskByIdentifier(
+				const pageTask = await getTaskByIdentifier(
 					currentWorkspace.id,
 					parseParams(taskIdentifier),
 				);
+				if (pageTask) {
+					setTask(pageTask.task);
+				}
 
 				setIsLoading(false);
 			} catch (err) {
@@ -44,6 +56,7 @@ export function useTaskPage() {
 		getTaskByIdentifier,
 		workspaceLoading,
 		getAllUsers,
+		teams,
 	]);
 
 	return { currentWorkspace, task, isLoading, error };

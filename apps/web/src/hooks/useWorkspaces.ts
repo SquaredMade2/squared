@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useWorkspaceStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
 import { parseParams } from "@/utils/parseParams";
+import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {
-	const { user } = useAuthStore((state) => state);
+	const { user } = useAuthUser();
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
 	const [loading, setLoading] = useState(true);

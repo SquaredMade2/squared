@@ -1,39 +1,34 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
-import { useSession } from "next-auth/react";
-import type { User } from "next-auth";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useAuthUser } from "@/hooks/useAuthUser";
+import type { User } from "@repo/db";
 
 const HomePage = () => {
 	const router = useRouter();
-	const { logout, setUser } = useAuthStore((state) => state);
-	const { getUser } = useUserStore((state) => state);
-	const { data, status } = useSession();
+	const { logout } = useAuthStore((state) => state);
+	const { user } = useAuthUser();
 	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
 		(state) => state,
 	);
 
 	useEffect(() => {
-		const handleRedirection = async (authUser: User) => {
+		const handleRedirection = async (authUser: User | null) => {
 			try {
 				if (authUser) {
-					const { user: loggedUser } = await getUser(authUser.id);
-					if (loggedUser) {
-						setUser(loggedUser);
+					if (user) {
 						// If there is a loggedUser, redirect to appropriate workspace or join page
-						if (loggedUser.defaultWorkspaceId) {
-							const { workspace } = await getWorkspace(
-								loggedUser.defaultWorkspaceId,
-							);
+						if (user.defaultWorkspaceId) {
+							const { workspace } = await getWorkspace(user.defaultWorkspaceId);
 							if (workspace?.url) {
 								router.push(`/${workspace.url}`);
 								return;
 							}
 						}
 
-						const workspaces = await getAllWorkspaces(loggedUser.id);
+						const workspaces = await getAllWorkspaces(user.id);
 						if (workspaces.length) {
 							router.push(`/${workspaces[0].url}`);
 							return;
@@ -51,10 +46,8 @@ const HomePage = () => {
 				// Optionally set an error state here to show an error message
 			}
 		};
-		if (data?.user) {
-			handleRedirection(data.user);
-		}
-	}, [router, status]);
+		handleRedirection(user);
+	}, [router]);
 
 	return (
 		<div className="h-screen w-full">
