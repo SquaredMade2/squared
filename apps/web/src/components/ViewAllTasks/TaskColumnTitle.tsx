@@ -17,7 +17,9 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { PriorityIcon, StatusIcon } from "../Icons";
-import { formatPriority, formatStatus } from "@/utils/formatting";
+import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { LabelColor } from "./TaskCard/TaskCardLabels";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -33,22 +35,20 @@ const TaskColumnTitle = ({
 	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { tasks } = useTaskStore((state) => state);
+	const assignee = users.find((u) => u.id === title);
+	const label = currentWorkspace?.Labels.find((l) => l.id === title);
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
 			case "Status":
 				return formatStatus(title as Status);
 			case "Assignee": {
-				const user = users.find((user) => user.id === title);
-				return user ? user.name : "Unassigned";
+				return assignee ? assignee.name : "Unassigned";
 			}
 			case "Priority":
 				return formatPriority(title as Priority);
 			case "Label": {
-				const labelName = currentWorkspace?.Labels.find(
-					(label) => label.id === title,
-				);
-				return labelName ? labelName.name : "No label";
+				return label ? label.name : "No label";
 			}
 			case "Parent Issue": {
 				const parentTask = tasks.find((t) => t.id === title);
@@ -103,15 +103,22 @@ const TaskColumnTitle = ({
 									: "flex items-center gap-4 text-foreground text-sm pr-8"
 							}
 						>
-							{/* <StatusIcon status={title} /> */}
-							{groupTasksBy === "Status" && (
+							{groupTasksBy === "Status" ? (
 								<StatusIcon status={title as Status} />
-							)}
-							{groupTasksBy === "Priority" && (
+							) : groupTasksBy === "Priority" ? (
 								<PriorityIcon priority={title as Priority} />
+							) : groupTasksBy === "Assignee" && assignee ? (
+								<Avatar className="size-4 text-xxs">
+									<AvatarImage src={assignee.avatarUrl ?? ""} />
+									<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+								</Avatar>
+							) : groupTasksBy === "Label" && label ? (
+								<LabelColor label={label} />
+							) : (
+								<div />
 							)}
 							<div className="flex gap-2 items-center">
-								<span className="text-sm truncate">
+								<span className="text-sm max-w-36 truncate">
 									{formatColumnTitle(title)}
 								</span>
 								<span className="ml-1 text-muted-foreground">
@@ -124,12 +131,19 @@ const TaskColumnTitle = ({
 					<div
 						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
 					>
-						{/* <StatusIcon status={title} /> */}
-						{groupTasksBy === "Status" && (
+						{groupTasksBy === "Status" ? (
 							<StatusIcon status={title as Status} />
-						)}
-						{groupTasksBy === "Priority" && (
+						) : groupTasksBy === "Priority" ? (
 							<PriorityIcon priority={title as Priority} />
+						) : groupTasksBy === "Assignee" && assignee ? (
+							<Avatar className="size-4 text-xxs">
+								<AvatarImage src={assignee.avatarUrl ?? ""} />
+								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+							</Avatar>
+						) : groupTasksBy === "Label" && label ? (
+							<LabelColor label={label} />
+						) : (
+							<div />
 						)}
 						<div className="flex gap-2 items-center">
 							<span>{formatColumnTitle(title)}</span>
