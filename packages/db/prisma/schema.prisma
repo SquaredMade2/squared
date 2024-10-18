@@ -244,6 +244,7 @@ model User {
   Notification Notification[]
   Comment      Comment[]
   Task         Task[]
+  savedFilters SavedFilter[]
 
   DefaultWorkspace Workspace? @relation(fields: [defaultWorkspaceId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   Teams            UserTeam[]
@@ -266,11 +267,13 @@ model SavedFilter {
   filter      Json[]
   workspaceId String?
   teamId      String?
+  authorId    String
 
   type SavedFilterType
 
   Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Team      Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([workspaceId], name: "workspaceIdx")
   @@index([teamId], name: "teamIdx")
