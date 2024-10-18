@@ -160,7 +160,7 @@ const GroupColumn = ({
 									? ""
 									: `${
 											view === "grid"
-												? "max-h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
+												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
 												: "overflow-y-auto"
 										}`
 							} 
