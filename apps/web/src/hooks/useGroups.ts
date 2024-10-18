@@ -53,23 +53,24 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	};
 
 	const getTasksForGroup = (group: string) => {
+		const taskFilter = filterTasks(tasks);
 		switch (groupTasksBy) {
 			case "Status":
-				return filterTasks(tasks).filter((task) => task.status === group);
+				return taskFilter.filter((task) => task.status === group);
 			case "Assignee":
-				return filterTasks(tasks).filter((task) => task.assigneeId === group);
+				return taskFilter.filter((task) => task.assigneeId === group);
 			case "Priority":
-				return filterTasks(tasks).filter((task) => task.priority === group);
+				return taskFilter.filter((task) => task.priority === group);
 			case "Label":
-				return filterTasks(tasks).filter((task) => task.labels.includes(group));
+				return taskFilter.filter((task) => task.labels.includes(group));
 			case "Parent Issue": {
-				const hasParentTask = filterTasks(tasks).filter(
+				const hasParentTask = taskFilter.filter(
 					(task) => task.parentId === group,
 				);
 				if (group !== "No parent") {
 					return hasParentTask;
 				}
-				return filterTasks(tasks).filter(
+				return taskFilter.filter(
 					(task) => task.parentId === null && "No parent",
 				);
 			}
@@ -132,7 +133,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 				return { group, tasks: tasksForGroup };
 			})
-			.filter((item) => item !== null); // Filter out null values
+			.filter(Boolean); // Filter out null values
 
 		return groupedColumns;
 	};
