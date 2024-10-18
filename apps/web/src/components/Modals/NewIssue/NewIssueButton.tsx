@@ -57,10 +57,8 @@ export const GridColumnNewIssueButton = ({
 				return "priority";
 			case "Label":
 				return "labels";
-			case "Parent Issue":
-				return "parentId";
-			case "No grouping":
-				return "status";
+			// case "Parent Issue":
+			// 	return "parentId";
 			default:
 				return "status";
 		}

@@ -1,12 +1,7 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import {
-	useModalStore,
-	useTaskStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useModalStore, useUserStore, useWorkspaceStore } from "@/store";
 import { useViewStore } from "@/store";
 import type { Priority, Status } from "@repo/db";
 import { Button } from "../ui/button";
@@ -34,7 +29,6 @@ const TaskColumnTitle = ({
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { tasks } = useTaskStore((state) => state);
 	const assignee = users.find((u) => u.id === title);
 	const label = currentWorkspace?.Labels.find((l) => l.id === title);
 
@@ -50,12 +44,10 @@ const TaskColumnTitle = ({
 			case "Label": {
 				return label ? label.name : "No label";
 			}
-			case "Parent Issue": {
-				const parentTask = tasks.find((t) => t.id === title);
-				return parentTask ? parentTask.title : "No parent";
-			}
-			case "No grouping":
-				return title;
+			// case "Parent Issue": {
+			// 	const parentTask = tasks.find((t) => t.id === title);
+			// 	return parentTask ? parentTask.title : "No parent";
+			// }
 		}
 	};
 
@@ -69,10 +61,8 @@ const TaskColumnTitle = ({
 				return "priority";
 			case "Label":
 				return "labels";
-			case "Parent Issue":
-				return "parentId";
-			case "No grouping":
-				return "status";
+			// case "Parent Issue":
+			// 	return "parentId";
 			default:
 				return "status";
 		}
