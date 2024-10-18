@@ -22,8 +22,7 @@ export const TaskGroupOptions = [
 	"Assignee",
 	"Priority",
 	"Label",
-	"Parent Issue",
-	"No grouping",
+	// "Parent Task",
 ];
 
 export type TaskGroup = (typeof TaskGroupOptions)[number];

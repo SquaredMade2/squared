@@ -10,6 +10,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	);
 	const { groupTasksBy } = displayOptions;
 
+	//all logic related to grouping by parent task is commented out until subtask rendering is fixed
 	const getGroupColumnTitles = (group: TaskGroup) => {
 		let groupTitles: string[];
 		switch (group) {
@@ -41,11 +42,9 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}
-			case "Parent Issue":
-				groupTitles = tasks.map((task) => task.parentId || "No parent");
-				break;
-			case "No grouping":
-				return ["No grouping"];
+			// case "Parent Issue":
+			// 	groupTitles = tasks.map((task) => task.parentId || "No parent");
+			// 	break;
 			default:
 				return [];
 		}
@@ -63,19 +62,17 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				return taskFilter.filter((task) => task.priority === group);
 			case "Label":
 				return taskFilter.filter((task) => task.labels.includes(group));
-			case "Parent Issue": {
-				const hasParentTask = taskFilter.filter(
-					(task) => task.parentId === group,
-				);
-				if (group !== "No parent") {
-					return hasParentTask;
-				}
-				return taskFilter.filter(
-					(task) => task.parentId === null && "No parent",
-				);
-			}
-			case "No grouping":
-				return tasks;
+			// case "Parent Issue": {
+			// 	const hasParentTask = taskFilter.filter(
+			// 		(task) => task.parentId === group,
+			// 	);
+			// 	if (group !== "No parent") {
+			// 		return hasParentTask;
+			// 	}
+			// 	return taskFilter.filter(
+			// 		(task) => task.parentId === null && "No parent",
+			// 	);
+			// }
 			default:
 				return tasks;
 		}
@@ -133,7 +130,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 				return { group, tasks: tasksForGroup };
 			})
-			.filter(Boolean); // Filter out null values
+			.filter((item) => item !== null); // Filter out null values
 
 		return groupedColumns;
 	};
