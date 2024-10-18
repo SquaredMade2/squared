@@ -2,6 +2,7 @@ import { SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Status } from "@repo/db";
 import { useModalStore, useTeamStore, useViewStore } from "@/store";
+import { usePathname } from "next/navigation";
 
 export const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
@@ -43,6 +44,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 	);
 	const { displayOptions } = useViewStore((state) => state);
 	const { currentSprint } = useTeamStore((state) => state);
+	const path = usePathname();
 	const { groupTasksBy } = displayOptions;
 
 	const key = (() => {
@@ -66,7 +68,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 		setShowNewIssue(true);
 		setNewIssueData({
 			...newIssueData,
-			sprintId: currentSprint?.id ?? null,
+			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
 			[key]: group,
 		});
 	};
