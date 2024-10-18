@@ -55,17 +55,13 @@ export default function EndSprintPage() {
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
 	const { getAllTasks } = useTaskStore((state) => state);
-	const { nextSprint, endSprint, getSprintTasks } = useTeamStore(
-		(state) => state,
-	);
+	const { endSprint, getSprintTasks } = useTeamStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
 	const [newSprint, setNewSprint] = useState(false);
 	const [tasks, setTasks] = useState<Task[]>([]);
-	const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-	const [sprintName, setSprintName] = useState("");
 	const [currentDay, setCurrentDay] = useState(0);
 	const [burndownData, setBurndownData] = useState<
 		{ day: number; tasks: number; ideal: number }[]
@@ -147,11 +143,6 @@ export default function EndSprintPage() {
 		try {
 			if (newSprint) {
 				setShowTaskSelectionModal(true);
-				const response = await nextSprint(team.id, selectedTasks, {
-					name: sprintName,
-				});
-				toast(response);
-				router.push(`/${workspace?.url}/team/${team?.identifier}/sprints`);
 			} else {
 				const response = await endSprint(team.id, sprint.id);
 				toast(response);
@@ -409,9 +400,9 @@ export default function EndSprintPage() {
 				tasks={tasks.filter((t) =>
 					["backlog", "todo", "inReview", "inProgress"].includes(t.status),
 				)}
-				setSelectedTasks={setSelectedTasks}
-				setSprintName={setSprintName}
+				team={team}
 				initialSprintName={newSprintName}
+				redirectUrl={`/${workspace?.url}/team/${team?.identifier}/sprints`}
 			/>
 		</div>
 	);

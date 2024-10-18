@@ -11,29 +11,35 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { Task } from "@repo/db";
+import type { Task, Team } from "@repo/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { ScrollArea } from "../ui/scroll-area";
+import { useTeamStore } from "@/store";
+import { useRouter } from "next/navigation";
+import { useToast } from "../ui/use-toast";
 
 interface TransferTaskModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	tasks: Task[];
-	setSelectedTasks: (tasks: string[]) => void;
-	setSprintName: (sprintName: string) => void;
 	initialSprintName: string;
+	team: Team | null;
+	redirectUrl?: string;
 }
 
 export const TransferTaskModal = ({
 	isOpen,
 	onClose,
 	tasks,
-	setSelectedTasks: confirmTasks,
-	setSprintName: confirmSprintName,
+	team,
 	initialSprintName,
+	redirectUrl = "/",
 }: TransferTaskModalProps) => {
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
 	const [sprintName, setSprintName] = useState(initialSprintName);
+	const { startNextSprint } = useTeamStore((state) => state);
+	const router = useRouter();
+	const { toast } = useToast();
 
 	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks(
@@ -43,9 +49,17 @@ export const TransferTaskModal = ({
 		);
 	};
 
-	const handleConfirm = () => {
-		confirmTasks(selectedTasks.map((t) => t.id));
-		confirmSprintName(sprintName);
+	const handleConfirm = async () => {
+		if (!team) return;
+		const response = await startNextSprint(
+			team.id,
+			selectedTasks.map((t) => t.id),
+			{
+				name: sprintName,
+			},
+		);
+		toast(response);
+		router.push(redirectUrl);
 		onClose();
 	};
 

@@ -54,7 +54,7 @@ type TeamActions = {
 		sprint: Partial<Sprint>,
 	) => Promise<SprintResponse>;
 	setCurrentSprint: (sprint: Sprint) => void;
-	nextSprint: (
+	startNextSprint: (
 		teamId: string,
 		movedTasks: string[],
 		sprintData?: Partial<Sprint>,

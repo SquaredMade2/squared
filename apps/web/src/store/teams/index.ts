@@ -242,7 +242,7 @@ export const createTeamStore = (
 				setCurrentSprint: (sprint: Sprint): void => {
 					set({ currentSprint: sprint });
 				},
-				nextSprint: async (
+				startNextSprint: async (
 					teamId: string,
 					movedTasks: string[],
 					sprintData?: Partial<Sprint>,
@@ -302,9 +302,10 @@ export const createTeamStore = (
 					sprintId: string,
 				): Promise<SprintResponse> => {
 					try {
-						const { data }: { data: ApiReturnType<Sprint> } = await axios.put(
-							`${apiString(teamId)}/sprints/${sprintId}/tasks`,
-						);
+						const { data }: { data: ApiReturnType<Sprint> } =
+							await axios.delete(
+								`${apiString(teamId)}/sprints/${sprintId}/tasks`,
+							);
 						const { data: updatedSprint, message, variant } = data;
 						if (!updatedSprint) {
 							return {
