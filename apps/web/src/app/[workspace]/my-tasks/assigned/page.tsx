@@ -2,6 +2,7 @@
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useAuthStore, useFilterStore } from "@/store";
 
@@ -15,9 +16,9 @@ export default function MyAssignedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskDashboard((tasks) =>
+	} = useTaskDashboard();
+
+	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks.filter((t) => t.assigneeId === user?.id)),
 	);
 
@@ -32,10 +33,7 @@ export default function MyAssignedTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Assigned Tasks"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 		</TaskPageLayout>
 	);
 }

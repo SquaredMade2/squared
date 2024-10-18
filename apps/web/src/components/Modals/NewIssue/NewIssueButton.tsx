@@ -1,7 +1,7 @@
 import { SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Status } from "@repo/db";
-import { useModalStore } from "@/store";
+import { useModalStore, useViewStore } from "@/store";
 
 export const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
@@ -38,19 +38,38 @@ export const NewIssueButton = () => {
 };
 
 export const GridColumnNewIssueButton = ({
-	status,
+	group,
 	sprintId,
-}: { status: Status; sprintId?: string }) => {
+}: { group: string; sprintId?: string }) => {
 	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
 		(state) => state,
 	);
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupTasksBy } = displayOptions;
+
+	const key = (() => {
+		switch (groupTasksBy) {
+			case "Status":
+				return "status";
+			case "Assignee":
+				return "assigneeId";
+			case "Priority":
+				return "priority";
+			case "Label":
+				return "labels";
+			// case "Parent Issue":
+			// 	return "parentId";
+			default:
+				return "status";
+		}
+	})();
 
 	const handleOpen = () => {
 		setShowNewIssue(true);
 		setNewIssueData({
 			...newIssueData,
-			status,
 			sprintId,
+			[key]: group,
 		});
 	};
 	return (

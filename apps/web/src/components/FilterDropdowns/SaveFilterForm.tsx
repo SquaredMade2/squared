@@ -12,6 +12,7 @@ import {
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
+	useAuthStore,
 } from "@/store";
 import {
 	Form,
@@ -49,6 +50,7 @@ export function SaveFilterForm({
 	const { currentTeam } = useTeamStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const user = useAuthStore((state) => state.user);
 	const { toast } = useToast();
 	const [isSaving, setIsSaving] = useState(false);
 	const [formattedFilters, setFormattedFilters] = useState<
@@ -149,6 +151,7 @@ export function SaveFilterForm({
 					type: "TEAM",
 					teamId: currentTeam.id,
 					workspaceId: currentWorkspace?.id,
+					authorId: user?.id,
 				});
 				toast({
 					title: "Filter Saved Successfully",
