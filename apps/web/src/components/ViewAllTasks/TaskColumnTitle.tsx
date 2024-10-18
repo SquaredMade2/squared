@@ -1,9 +1,9 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import { useModalStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import { StatusIcon } from "../Icons";
+import { useModalStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useViewStore } from "@/store";
+import type { Priority, Status } from "@repo/db";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,
@@ -11,6 +11,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { PriorityIcon, StatusIcon } from "../Icons";
+import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { LabelColor } from "./TaskCard/TaskCardLabels";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -21,10 +25,52 @@ const TaskColumnTitle = ({
 	sprintId,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupTasksBy } = displayOptions;
+	const { users } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const assignee = users.find((u) => u.id === title);
+	const label = currentWorkspace?.Labels.find((l) => l.id === title);
+
+	const formatColumnTitle = (title: string) => {
+		switch (groupTasksBy) {
+			case "Status":
+				return formatStatus(title as Status);
+			case "Assignee": {
+				return assignee ? assignee.name : "Unassigned";
+			}
+			case "Priority":
+				return formatPriority(title as Priority);
+			case "Label": {
+				return label ? label.name : "No label";
+			}
+			// case "Parent Issue": {
+			// 	const parentTask = tasks.find((t) => t.id === title);
+			// 	return parentTask ? parentTask.title : "No parent";
+			// }
+		}
+	};
+
+	const key = (() => {
+		switch (groupTasksBy) {
+			case "Status":
+				return "status";
+			case "Assignee":
+				return "assigneeId";
+			case "Priority":
+				return "priority";
+			case "Label":
+				return "labels";
+			// case "Parent Issue":
+			// 	return "parentId";
+			default:
+				return "status";
+		}
+	})();
 
 	const handleClick = (): void => {
 		setShowNewIssue(true);
-		setNewIssueData({ status: title, sprintId: sprintId ?? null });
+		setNewIssueData({ sprintId: sprintId ?? null, [key]: title });
 	};
 
 	return (
@@ -47,9 +93,24 @@ const TaskColumnTitle = ({
 									: "flex items-center gap-4 text-foreground text-sm pr-8"
 							}
 						>
-							<StatusIcon status={title} />
+							{groupTasksBy === "Status" ? (
+								<StatusIcon status={title as Status} />
+							) : groupTasksBy === "Priority" ? (
+								<PriorityIcon priority={title as Priority} />
+							) : groupTasksBy === "Assignee" && assignee ? (
+								<Avatar className="size-4 text-xxs">
+									<AvatarImage src={assignee.avatarUrl ?? ""} />
+									<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+								</Avatar>
+							) : groupTasksBy === "Label" && label ? (
+								<LabelColor label={label} />
+							) : (
+								<div />
+							)}
 							<div className="flex gap-2 items-center">
-								<span className="text-sm">{formatStatus(title)}</span>
+								<span className="text-sm max-w-36 truncate">
+									{formatColumnTitle(title)}
+								</span>
 								<span className="ml-1 text-muted-foreground">
 									{numberOfTasks}
 								</span>
@@ -60,9 +121,22 @@ const TaskColumnTitle = ({
 					<div
 						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
 					>
-						<StatusIcon status={title} />
+						{groupTasksBy === "Status" ? (
+							<StatusIcon status={title as Status} />
+						) : groupTasksBy === "Priority" ? (
+							<PriorityIcon priority={title as Priority} />
+						) : groupTasksBy === "Assignee" && assignee ? (
+							<Avatar className="size-4 text-xxs">
+								<AvatarImage src={assignee.avatarUrl ?? ""} />
+								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+							</Avatar>
+						) : groupTasksBy === "Label" && label ? (
+							<LabelColor label={label} />
+						) : (
+							<div />
+						)}
 						<div className="flex gap-2 items-center">
-							<span>{formatStatus(title)}</span>
+							<span>{formatColumnTitle(title)}</span>
 							<span className="ml-2 text-muted-foreground">
 								{numberOfTasks}
 							</span>

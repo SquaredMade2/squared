@@ -17,6 +17,16 @@ export const TaskOrderOptions = [
 ];
 export type TaskOrder = (typeof TaskOrderOptions)[number];
 
+export const TaskGroupOptions = [
+	"Status",
+	"Assignee",
+	"Priority",
+	"Label",
+	// "Parent Task",
+];
+
+export type TaskGroup = (typeof TaskGroupOptions)[number];
+
 export const CompletedTaskPeriodOptions = [
 	"All",
 	"Past day",
@@ -42,6 +52,7 @@ export interface DisplayOptions {
 		orderBy: TaskOrder;
 		orderAscending: boolean;
 	};
+	groupTasksBy: TaskGroup;
 	showCompletedTasks: {
 		show: boolean;
 		period: CompletedTaskPeriod;
