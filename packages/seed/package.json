@@ -2,8 +2,12 @@
   "name": "@repo/seed",
   "version": "0.0.0",
   "private": true,
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
-    "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
+    "db:seed": "cross-env NODE_ENV=test ts-node src/seed-db.ts",
     "test:db:seed": "cross-env NODE_ENV=test ts-node src/seed-test-db.ts",
     "docker:db": "docker-compose -f docker-compose.yml up -d",
     "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
@@ -20,6 +24,8 @@
     "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.2",
-    "tslib": "^2.6.3"
+    "tslib": "^2.6.3",
+		"typescript": "^5.5.4",
+    "tsconfig-paths": "^4.2.0"
   }
 }

@@ -9,7 +9,7 @@ import {
 } from "./seed-test-data";
 import "dotenv/config";
 
-async function seedDB() {
+export async function seedTestDB() {
 	const seedUsersWithPasswords = await Promise.all(
 		seedUsers.map(async (u) => ({
 			...u,
@@ -77,13 +77,3 @@ async function seedDB() {
 		})),
 	});
 }
-
-seedDB()
-	.then(() => {
-		console.log("Testing seed completed");
-		return prisma.$disconnect();
-	})
-	.catch((e) => {
-		console.error(e);
-		return prisma.$disconnect();
-	});

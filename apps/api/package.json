@@ -44,6 +44,7 @@
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
+		"@repo/seed": "workspace:*",
 		"@swc/core": "^1.7.26",
 		"@swc/jest": "^0.2.36",
 		"@types/bcryptjs": "^2.4.6",

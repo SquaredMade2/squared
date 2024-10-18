@@ -11,8 +11,8 @@ docker exec postgres-api-test-db /bin/sh /./wait-db.sh
 # push the schema
 docker exec --workdir /app api-test-1 pnpm db:push
 
-# seed
-docker exec --workdir /app/packages/db api-test-1 db:test:seed
+# seed the testing data
+docker exec --workdir /app/packages/seed api-test-1 pnpm test:db:seed
 
 # wait for the express server to start running
 docker exec --workdir /app/apps/api/scripts api-test-1 /bin/sh ./wait-express.sh
