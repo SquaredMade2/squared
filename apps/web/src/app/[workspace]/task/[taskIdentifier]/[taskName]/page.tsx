@@ -26,12 +26,14 @@ import {
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { useActivityStore } from "@/store/activities";
 import { useToast } from "@/components/ui/use-toast";
 
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);
 	const { task, isLoading, error, currentWorkspace } = useTaskPage();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
+	const getTaskEvents = useActivityStore((state) => state.getTaskEvents);
 	const { toast } = useToast();
 
 	const subtasks = tasks.filter((t) => t.parentId === task?.id);
@@ -51,6 +53,12 @@ const TaskPage = () => {
 			});
 		}
 	}, [error]);
+
+	useEffect(() => {
+		if (task) {
+			getTaskEvents(task.id);
+		}
+	}, [task]);
 
 	return (
 		<div className="w-full h-screen flex bg-background overflow-hidden">
