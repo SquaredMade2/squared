@@ -14,7 +14,6 @@ export interface GroupColumnProps {
 	group: string;
 	tasks: Task[];
 	currentView: "list" | "grid";
-	sprintId?: string;
 }
 
 export type TaskColumnTitleProps = {
@@ -23,7 +22,6 @@ export type TaskColumnTitleProps = {
 	title: string;
 	numberOfTasks: number;
 	setShowTasks: (input: boolean) => void;
-	sprintId?: string;
 };
 
 export interface HideStatusProps {
