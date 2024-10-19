@@ -2,9 +2,9 @@ name: "Send meeting notifications"
 
 on:
   schedule:
-    - cron: "45 18 * * 0" # Runs every Sunday at 4:45 AM GMT+10
-    - cron: "45 18 * * 4" # Runs every Thursday at 4:45 AM GMT+10
-  workflow_dispatch: # Allows manual trigger
+    - cron: "45 17 * * 0"
+    - cron: "45 17 * * 4"
+  workflow_dispatch:
 
 jobs:
   send-notifications:
