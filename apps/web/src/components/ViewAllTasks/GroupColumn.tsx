@@ -13,12 +13,7 @@ import {
 	compareNullableStrings,
 } from "@/utils/compareSorting";
 
-const GroupColumn = ({
-	group,
-	tasks,
-	currentView: view,
-	sprintId,
-}: GroupColumnProps) => {
+const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
@@ -146,7 +141,6 @@ const GroupColumn = ({
 				setShowTasks={setShowTasks}
 				numberOfTasks={numberOfTasks}
 				isListView={isListView}
-				sprintId={sprintId}
 			/>
 			<Droppable droppableId={group}>
 				{(provided, snapshot) => (
@@ -160,7 +154,7 @@ const GroupColumn = ({
 									? ""
 									: `${
 											view === "grid"
-												? "max-h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
+												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
 												: "overflow-y-auto"
 										}`
 							} 
@@ -182,9 +176,7 @@ const GroupColumn = ({
 					</ScrollArea>
 				)}
 			</Droppable>
-			{!isListView && (
-				<GridColumnNewIssueButton group={group} sprintId={sprintId} />
-			)}
+			{!isListView && <GridColumnNewIssueButton group={group} />}
 		</div>
 	);
 };

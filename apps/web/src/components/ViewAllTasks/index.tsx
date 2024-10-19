@@ -4,7 +4,7 @@ import { RenameModal } from "@/components/Modals";
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
 
-const ViewAllTasks = ({ getGroupedColumns, sprintId }: ViewAllTasksProps) => {
+const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	const { view } = useViewStore((state) => state);
 
 	// Compute columns before the return statement
@@ -20,7 +20,6 @@ const ViewAllTasks = ({ getGroupedColumns, sprintId }: ViewAllTasksProps) => {
 						group={column.group}
 						tasks={column.tasks}
 						currentView={view}
-						sprintId={sprintId}
 					/>
 				))}
 			</div>
