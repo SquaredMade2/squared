@@ -41,10 +41,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		alertDeletedTask();
 	};
 
-	const gitBranchName = `
-	${sanitizeBranchName(
-		`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
-	)}`;
+	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
 	const copyBranchName = () => {
 		navigator.clipboard.writeText(gitBranchName.trim());
