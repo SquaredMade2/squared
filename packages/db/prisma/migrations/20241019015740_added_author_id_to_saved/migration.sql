@@ -1,9 +1,7 @@
--- Clear the SavedFilter table
-DELETE FROM "SavedFilter";
-
--- AlterTable: Add the new column
-ALTER TABLE "SavedFilter" 
-ADD COLUMN "authorId" TEXT NOT NULL;
+-- Clear invalid SavedFilter rows where authorId doesn't exist in User
+DELETE FROM "SavedFilter"
+WHERE "authorId" IS NOT NULL
+AND "authorId" NOT IN (SELECT "id" FROM "User");
 
 -- AddForeignKey: Create the foreign key constraint
 ALTER TABLE "SavedFilter" 
