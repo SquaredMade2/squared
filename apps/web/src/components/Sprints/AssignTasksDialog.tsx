@@ -294,7 +294,13 @@ export function AssignTasksDialog({
 					</Tabs>
 				</div>
 				<DialogFooter className="p-6 pt-2">
-					<Button onClick={handleBulkAssign}>
+					<Button
+						onClick={() => {
+							handleBulkAssign();
+							setIsOpen(false);
+						}}
+						disabled={selectedTasks.length < 1}
+					>
 						Assign {selectedTasks.length} Selected Task
 						{selectedTasks.length !== 1 ? "s" : ""}
 					</Button>

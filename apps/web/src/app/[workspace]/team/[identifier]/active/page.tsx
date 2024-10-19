@@ -5,7 +5,7 @@ import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { useFilterStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
-import { Status } from "@repo/db";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function ActiveTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
@@ -15,9 +15,9 @@ export default function ActiveTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskDashboard((tasks) =>
+	} = useTaskDashboard();
+
+	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks).filter(
 			(t) =>
 				t.status === "inProgress" ||
@@ -25,8 +25,8 @@ export default function ActiveTasksPage() {
 				t.status === "inReview",
 		),
 	);
+
 	if (!currentWorkspace) return null;
-	const allowedColumns = [Status.todo, Status.inProgress, Status.inReview];
 
 	return (
 		<TaskPageLayout
@@ -37,11 +37,7 @@ export default function ActiveTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Active Tasks"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-				allowedColumns={allowedColumns}
-			/>
+			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 		</TaskPageLayout>
 	);
 }

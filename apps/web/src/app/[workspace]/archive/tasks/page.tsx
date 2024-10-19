@@ -2,6 +2,7 @@
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore } from "@/store";
 
@@ -14,9 +15,9 @@ const Page = () => {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskDashboard((tasks) =>
+	} = useTaskDashboard();
+
+	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks.filter((t) => t.status === "archived")),
 	);
 
@@ -31,10 +32,7 @@ const Page = () => {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Archived Tasks"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 		</TaskPageLayout>
 	);
 };
