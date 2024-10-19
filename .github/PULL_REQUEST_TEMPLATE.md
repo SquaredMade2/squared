@@ -11,8 +11,8 @@ Fixes # (ticket)
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Refactoring (non-breaking change which refactors old code)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires a documentation update
+- [ ] Design (Affects styling or design components)
+- [ ] Documentation (Improvements or additions to documentation)
 
 ## How Has This Been Tested?
 
