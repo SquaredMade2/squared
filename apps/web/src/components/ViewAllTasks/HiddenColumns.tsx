@@ -1,4 +1,4 @@
-import type { Status, Task } from "@repo/db";
+import type { Priority, Status, Task } from "@repo/db";
 import {
 	Accordion,
 	AccordionContent,
@@ -6,21 +6,58 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { Droppable } from "@hello-pangea/dnd";
-import { formatStatus } from "@/utils/formatting";
-import { StatusIcon } from "../Icons";
+import {
+	useTaskStore,
+	useUserStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
+import { PriorityIcon, StatusIcon } from "../Icons";
+import { formatPriority, formatStatus } from "@/utils/formatting";
 
 const HiddenColumns = ({
 	getHiddenColumns,
-	getTasksForStatus,
+	getTasksForGroup,
 }: {
-	getHiddenColumns: () => Status[];
-	getTasksForStatus: (status: Status) => Task[];
+	getHiddenColumns: () => string[];
+	getTasksForGroup: (group: string) => Task[];
 }) => {
+	const { displayOptions } = useViewStore((state) => state);
+	const { groupTasksBy } = displayOptions;
+	const { users } = useUserStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { tasks } = useTaskStore((state) => state);
+
+	const formatColumnTitle = (title: string) => {
+		switch (groupTasksBy) {
+			case "Status":
+				return formatStatus(title as Status);
+			case "Assignee": {
+				const user = users.find((user) => user.id === title);
+				return user ? user.name : "Unassigned";
+			}
+			case "Priority":
+				return formatPriority(title as Priority);
+			case "Label": {
+				const labelName = currentWorkspace?.Labels.find(
+					(label) => label.id === title,
+				);
+				return labelName ? labelName.name : "No label";
+			}
+			case "Parent Issue": {
+				const parentTask = tasks.find((t) => t.id === title);
+				return parentTask ? parentTask.title : "No parent";
+			}
+			case "No grouping":
+				return title;
+		}
+	};
+
 	return (
 		<Accordion type="single" collapsible className="min-w-[300px]">
 			<AccordionItem value="hidden">
 				<AccordionTrigger>Hidden Columns</AccordionTrigger>
-				{getHiddenColumns().map((column: Status) => (
+				{getHiddenColumns().map((column) => (
 					<Droppable key={column} droppableId={column}>
 						{(provided, snapshot) => (
 							<AccordionContent
@@ -32,11 +69,17 @@ const HiddenColumns = ({
 									<div className="flex flex-row justify-between transition-all px-2 h-10 mb-2 font-medium text-sm">
 										<div className="flex items-center gap-4">
 											<div className="w-4 lg:mr-2 mr-1.5">
-												<StatusIcon status={column} />
+												{groupTasksBy === "Status" ? (
+													<StatusIcon status={column as Status} />
+												) : groupTasksBy === "Priority" ? (
+													<PriorityIcon priority={column as Priority} />
+												) : (
+													""
+												)}
 											</div>
-											<span>{formatStatus(column)}</span>
+											<span>{formatColumnTitle(column)}</span>
 											<span className="ml-1 text-muted-foreground">
-												{getTasksForStatus(column).length}
+												{getTasksForGroup(column).length}
 											</span>
 										</div>
 									</div>

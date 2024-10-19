@@ -1,4 +1,4 @@
-import type { RetrospectiveItem, Sprint, Task, Team } from "@repo/db";
+import type { Sprint, Team, RetrospectiveItem, Task } from "@repo/db";
 
 export type TeamState = {
 	teams: Team[];
@@ -18,7 +18,6 @@ export interface SprintResponse {
 	message?: string;
 	variant: "default" | "destructive";
 }
-
 export interface RetrospectiveItemResponse {
 	item: RetrospectiveItem | null;
 	message?: string;
@@ -49,7 +48,6 @@ type TeamActions = {
 	) => Promise<Sprint[]>;
 	getSprints: (teamId: string) => Promise<Sprint[]>;
 	updateSprint: (
-		teamId: string,
 		sprintId: string,
 		sprint: Partial<Sprint>,
 	) => Promise<SprintResponse>;
