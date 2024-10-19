@@ -48,6 +48,7 @@ type TeamActions = {
 	) => Promise<Sprint[]>;
 	getSprints: (teamId: string) => Promise<Sprint[]>;
 	updateSprint: (
+		teamId: string,
 		sprintId: string,
 		sprint: Partial<Sprint>,
 	) => Promise<SprintResponse>;
