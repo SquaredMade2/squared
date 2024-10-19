@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { effortEstimateOptions } from "@/constants/designations";
 
-// todo change effort estimate here
 export const EffortDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const effortEstimate = newIssueData.effortEstimate;
@@ -20,7 +19,7 @@ export const EffortDropdownButton = () => {
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {
-			case estimate > 3:
+			case estimate > 4:
 				return high();
 			case estimate > 2:
 				return medium();
@@ -64,7 +63,7 @@ export const EffortDropdownButton = () => {
 							className="flex gap-2 items-center cursor-pointer"
 							onClick={() => handleSelectEffort(estimateNumber)}
 						>
-							{showIcon(estimateNumber)}
+							<div>{showIcon(estimateNumber)}</div>
 							<div className="flex flex-col">
 								<span className="cursor-pointer">{effortLevel.text}</span>
 							</div>

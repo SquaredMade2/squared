@@ -58,7 +58,7 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {
-			case estimate > 3:
+			case estimate > 4:
 				return high();
 			case estimate > 2:
 				return medium();
