@@ -1,7 +1,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Team, Workspace } from "@repo/db";
+import type { Sprint, Task, Team, Workspace } from "@repo/db";
 import { parseParams } from "@/utils/parseParams";
 
 export function useSprints() {
@@ -12,9 +12,12 @@ export function useSprints() {
 	const [currentSprint, setCurrentSprint] = useState<Sprint | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
 	const { getWorkspace } = useWorkspaceStore((state) => state);
-	const { getAllTeams, getSprints } = useTeamStore((state) => state);
+	const { getAllTeams, getSprints, getSprintTasks } = useTeamStore(
+		(state) => state,
+	);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -52,6 +55,8 @@ export function useSprints() {
 				if (!foundSprint) {
 					throw new Error("No active sprint found");
 				}
+				const tasks = await getSprintTasks(foundTeam.id, foundSprint.id);
+				setSprintTasks(tasks);
 				setCurrentSprint(foundSprint);
 
 				setLoading(false);
@@ -69,6 +74,7 @@ export function useSprints() {
 		team,
 		sprints,
 		currentSprint,
+		sprintTasks,
 		setCurrentSprint,
 		loading,
 		error,
