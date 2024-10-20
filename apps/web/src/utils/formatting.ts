@@ -1,6 +1,4 @@
 import type { CustomDescendant } from "@/components/TextEditor";
-import * as runtime from "react/jsx-runtime";
-import type { MDXComponent } from "@/components/TextEditor/interfaces";
 import type { FilterCondition } from "@/store/filters";
 import { Status, Priority, type User, type Label } from "@repo/db";
 import * as z from "zod";

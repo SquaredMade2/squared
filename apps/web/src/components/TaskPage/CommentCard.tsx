@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type React from "react";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import type { MDXRemoteSerializeResult } from "../TextEditor/interfaces";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
 import { useUserStore } from "@/store";
@@ -23,6 +23,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [commentData, setCommentData] = useState<
 		MDXRemoteSerializeResult | React.ReactElement
 	>(<p>Loading...</p>);
+	const [remote, setRemote] = useState<React.ReactNode | null>(null);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
 	const getUser = useUserStore((state) => state.getUser);
@@ -116,14 +117,45 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	// MDX
 
 	const JSXCommentData = async () => {
-		const { serialize } = await import("next-mdx-remote/serialize");
-		const mdxSource = await serialize(comment.comment);
-		setCommentData(mdxSource);
+		try {
+			const { serialize } = await import("next-mdx-remote/serialize");
+			const mdxSource = await serialize(comment.comment);
+			setCommentData(mdxSource);
+		} catch (err) {
+			toast({
+				title: "Error converting to MDX",
+				description: String(err),
+				variant: "destructive",
+			});
+		}
+	};
+
+	const setRemoteMDX = async () => {
+		try {
+			const { MDXRemote } = await import("next-mdx-remote");
+			if ("compiledSource" in commentData) {
+				setRemote(<MDXRemote {...commentData} />);
+			}
+		} catch (err) {
+			toast({
+				title: "Error importing MDXRemote",
+				description: String(err),
+				variant: "destructive",
+			});
+		}
+	};
+
+	const handleDisplayMDX = () => {
+		if ("compiledSource" in commentData && remote) {
+			return remote;
+		}
+		return "Loading...";
 	};
 
 	useEffect(() => {
 		JSXCommentData();
-	}, []);
+		setRemoteMDX();
+	}, [commentData]);
 
 	return (
 		<div className="flex flex-col px-8 m-5">
@@ -141,7 +173,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
-				{"compiledSource" in commentData && <MDXRemote {...commentData} />}
+				{handleDisplayMDX()}
 			</p>
 		</div>
 	);

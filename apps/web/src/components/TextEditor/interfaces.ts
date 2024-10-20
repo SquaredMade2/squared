@@ -17,6 +17,16 @@ export interface TextEditorToolBarProps {
 	isHeaderBlock: NodeEntry<Node>;
 }
 
+// Export it here instead of import from nextmdx bc doesnt support commonjs module
+export type MDXRemoteSerializeResult<
+	TScope = Record<string, unknown>,
+	TFrontmatter = Record<string, unknown>,
+> = {
+	compiledSource: string;
+	scope: TScope;
+	frontmatter: TFrontmatter;
+};
+
 export type CustomElementAttributes = Omit<
 	JSX.IntrinsicElements["div"],
 	"children"
