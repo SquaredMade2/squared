@@ -75,6 +75,10 @@ const TextEditor = () => {
 							children: [{ text: "" }],
 						},
 					];
+					Transforms.select(editor, {
+						anchor: { path: [0, 0], offset: 0 },
+						focus: { path: [0, 0], offset: 0 },
+					});
 				} else {
 					toast({
 						title: "Error getting comments",
