@@ -1,8 +1,4 @@
 import type { Priority, Status } from "@repo/db";
-// import { useTeamStore } from "@/store";
-
-// const { currentTeam } = useTeamStore((state) => state);
-// const effortType = currentTeam?.effort;
 
 export const statusOptions: Status[] = [
 	"backlog",
@@ -20,14 +16,6 @@ export const priorityOptions: Priority[] = [
 	"medium",
 	"low",
 ];
-
-// export const effortEstimateOptions = [
-// 	"1 - Very quick delivery",
-// 	"2 - Quick delivery & minimal complexity",
-// 	"3 - Moderate delivery & complexity",
-// 	"4 - Longer delivery & higher complexity",
-// 	"5 - Longest delivery & highest complexity",
-// ];
 
 export const effortEstimateOptions = (effortType: string | undefined) => {
 	switch (effortType) {

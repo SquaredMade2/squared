@@ -33,10 +33,10 @@ const EffortModal = () => {
 					<DialogTitle>Effort Estimate Options</DialogTitle>
 				</DialogHeader>
 
-				{effortEstimateOptions(currentTeam?.effort as string).map(
+				{effortEstimateOptions(currentTeam?.effort).map(
 					(effortEstimate, index) => {
 						const estimateNumber = Number.parseInt(
-							effortEstimate.text.substring(0, 2).trim(),
+							effortEstimate.text.substring(0, 2),
 							10,
 						);
 						const effortEstimateKey = index;
