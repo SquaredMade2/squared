@@ -7,12 +7,7 @@ import { useUserStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "../ui/use-toast";
 import type { UserAvatar } from "@/store/users";
-import type {
-	CommentCardContentProps,
-	MDXComponent,
-	MDXProviderProps,
-} from "../TextEditor";
-import { convertMDXStringToJSX, getInitials } from "@/utils/formatting";
+import { getInitials } from "@/utils/formatting";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";
@@ -28,8 +23,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [commentData, setCommentData] = useState<
 		MDXRemoteSerializeResult | React.ReactElement
 	>(<p>Loading...</p>);
-	const [MDXProvider, setMDXProvider] =
-		useState<React.ComponentType<MDXProviderProps> | null>(null);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
 	const getUser = useUserStore((state) => state.getUser);
@@ -120,40 +113,17 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		handleGetUser();
 	}, [comment]);
 
-	const CommentCardContent = ({
-		children,
-	}: CommentCardContentProps): React.ReactElement => <div>{children}</div>;
-
-	const component: MDXComponent = {
-		CommentCardContent,
-	};
-
-	console.log(comment.comment);
-
 	// MDX
 
-	const getStaticProps = async () => {
+	const JSXCommentData = async () => {
 		const { serialize } = await import("next-mdx-remote/serialize");
 		const mdxSource = await serialize(comment.comment);
 		setCommentData(mdxSource);
 	};
 
 	useEffect(() => {
-		getStaticProps();
+		JSXCommentData();
 	}, []);
-
-	// useEffect(() => {
-	// 	convertMDXStringToJSX(comment.comment, component).then((response) =>
-	// 		setCommentData(response),
-	// 	);
-	// }, [comment]);
-
-	// need dynamic import bc @mdx-js/react doesnt support CommonJS module
-	// useEffect(() => {
-	// 	import("@mdx-js/react").then((module) => {
-	// 		setMDXProvider(() => module.MDXProvider);
-	// 	});
-	// }, []);
 
 	return (
 		<div className="flex flex-col px-8 m-5">

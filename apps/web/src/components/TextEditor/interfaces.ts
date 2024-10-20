@@ -39,17 +39,4 @@ export type CustomText = {
 	link?: boolean;
 };
 
-export interface MDXProviderProps {
-	children: React.ReactNode;
-	components?: Record<string, React.ElementType>;
-}
-
-export type MDXComponent = {
-	CommentCardContent: (props: CommentCardContentProps) => React.ReactElement;
-};
-
-export interface CommentCardContentProps {
-	children: React.ReactNode;
-}
-
 export type CustomDescendant = CustomElement | CustomText;
