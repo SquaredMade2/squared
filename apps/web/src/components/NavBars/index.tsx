@@ -65,6 +65,9 @@ const Navbar = () => {
 		if (path.endsWith("/active")) return "active";
 		if (path.endsWith("/backlog")) return "backlog";
 		if (path.includes("/views")) return "views";
+		if (path.endsWith("/current")) return "current";
+		if (path.includes("/sprints")) return "sprints";
+		if (path.includes("/upcoming")) return "upcoming";
 		return "";
 	};
 
