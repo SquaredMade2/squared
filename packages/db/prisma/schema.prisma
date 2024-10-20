@@ -217,7 +217,8 @@ model Team {
   activeRequired   Boolean  @default(true)
   sprintStartDate  DateTime @default(now())
   tasksPerSprint   Int      @default(10)
-  effort      Effort @default(LINEAR)
+
+  effort    Effort        @default(LINEAR)
   Tasks     Task[]
   Project   Project[]
   Users     UserTeam[]

@@ -18,5 +18,8 @@
   },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   }
 }
