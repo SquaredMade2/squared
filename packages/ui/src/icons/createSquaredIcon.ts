@@ -1,5 +1,5 @@
-export default function createSquaredIcon(name, svgContent) {
-	const svgElement = svgContent.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
+export default function createSquaredIcon(name: string, svgContent: { match: (arg0: RegExp) => any[]; }) {
+	const svgElement = svgContent?.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
 
 	return `
     // biome-ignore lint/correctness/noUnusedImports: React is needed to be included 

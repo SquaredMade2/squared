@@ -71,8 +71,8 @@
       "require": "./src/hover-card/index.ts"
     },
     "./icons": {
-      "import": "./src/icons/index.ts",
-      "require": "./src/icons/index.ts"
+      "import": "./src/icons/components/index.ts",
+      "require": "./src/icons/components/index.ts"
     },
     "./id": {
       "import": "./src/id/index.ts",

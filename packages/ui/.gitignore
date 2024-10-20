@@ -1,6 +1,2 @@
 storybook-static
 src/icons/components
-src/icons/generateIcons.js
-src/icons/handleComponentName.js
-src/icons/createSquaredIcon.js
-src/icons/index.ts

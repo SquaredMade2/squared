@@ -1,4 +1,4 @@
-export default function handleComponentName(str) {
+export default function handleComponentName(str: string) {
 	return `${str}`
 		.toLowerCase()
 		.replace(new RegExp(/[-_]+/, "g"), " ")

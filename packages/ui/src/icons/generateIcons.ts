@@ -30,4 +30,3 @@ fs.writeFileSync(
 	path.join(outputDirectory, "index.ts"),
 	exportStatements.join("\n"),
 );
-fs.writeFileSync("index.ts", `export * from '${outputDirectory}/index'`)
