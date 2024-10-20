@@ -201,35 +201,35 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 	return arrOfFormattedLines.join("\n");
 };
 
-export const convertMDXStringToJSX = async (
-	mdxString: string,
-	components: MDXComponent,
-) => {
-	try {
-		const { compile } = await import("@mdx-js/mdx");
-		const mdxWithBr = mdxString.replace(/\n/g, "<br />");
+// export const convertMDXStringToJSX = async (
+// 	mdxString: string,
+// 	components: MDXComponent,
+// ) => {
+// 	try {
+// 		const { compile } = await import("@mdx-js/mdx");
+// 		const mdxWithBr = mdxString.replace(/\n/g, "<br />");
 
-		const compiledMDX = await compile(mdxWithBr, {
-			outputFormat: "function-body",
-		});
+// 		const compiledMDX = await compile(mdxWithBr, {
+// 			outputFormat: "function-body",
+// 		});
 
-		let mdxCode = compiledMDX.value;
+// 		let mdxCode = compiledMDX.value;
 
-		if (mdxCode instanceof Uint8Array) {
-			const decoder = new TextDecoder("utf-8");
-			mdxCode = decoder.decode(mdxCode);
-		}
+// 		if (mdxCode instanceof Uint8Array) {
+// 			const decoder = new TextDecoder("utf-8");
+// 			mdxCode = decoder.decode(mdxCode);
+// 		}
 
-		const commentContent = new Function("React", "components", mdxCode)(
-			runtime,
-			components,
-		);
+// 		const commentContent = new Function("React", "components", mdxCode)(
+// 			runtime,
+// 			components,
+// 		);
 
-		return commentContent?.default || commentContent;
-	} catch (err) {
-		console.error(err);
-	}
-};
+// 		return commentContent?.default || commentContent;
+// 	} catch (err) {
+// 		console.error(err);
+// 	}
+// };
 
 // TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
 // export const handleFormatCommentToSlate = (commentStr) => {

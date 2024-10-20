@@ -7,12 +7,12 @@ import { useCommentStore } from "@/store";
 import CommentCard from "./CommentCard";
 import { useEffect } from "react";
 import { toast } from "../ui/use-toast";
-import { useTaskPageData } from "@/hooks/useTaskPageData";
+import { useTaskPage } from "@/hooks/useTaskPage";
 
 export const EventTabs = () => {
 	const comments = useCommentStore((state) => state.comments);
 	const getComments = useCommentStore((state) => state.getAllComments);
-	const { task } = useTaskPageData();
+	const { task } = useTaskPage();
 
 	useEffect(() => {
 		const fetchTaskComments = async () => {

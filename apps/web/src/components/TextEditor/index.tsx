@@ -1,5 +1,5 @@
 import { type KeyboardEvent, useCallback, useState } from "react";
-import type { BaseEditor } from "slate";
+import type { BaseEditor, Descendant } from "slate";
 import { Element, createEditor, Editor, Transforms } from "slate";
 import type {
 	ReactEditor,
@@ -16,7 +16,7 @@ import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import { Button } from "../ui/button";
 import { useAuthStore, useCommentStore } from "@/store";
 import { toast } from "../ui/use-toast";
-import { useTaskPageData } from "@/hooks/useTaskPageData";
+import { useTaskPage } from "@/hooks/useTaskPage";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 
 declare module "slate" {
@@ -40,7 +40,7 @@ const TextEditor = () => {
 	const addComment = useCommentStore((state) => state.addComment);
 	const getComments = useCommentStore((state) => state.getAllComments);
 	const currentUser = useAuthStore((state) => state.user);
-	const { task } = useTaskPageData();
+	const { task } = useTaskPage();
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -52,6 +52,14 @@ const TextEditor = () => {
 		const addNewComment = async () => {
 			try {
 				if (currentUser && task) {
+					if (checkIfSlateEmpty(editor)) {
+						toast({
+							title: "Empty Comment",
+							description: "Comment cannot be empty.",
+							variant: "destructive",
+						});
+						return;
+					}
 					const newComment = {
 						comment: handleFormatSlateToComment(editorContent),
 						authorId: currentUser?.id,
@@ -60,6 +68,13 @@ const TextEditor = () => {
 					};
 					addComment(newComment);
 					getComments(task.id);
+					setEditorContent([]);
+					editor.children = [
+						{
+							type: "paragraph",
+							children: [{ text: "" }],
+						},
+					];
 				} else {
 					toast({
 						title: "Error getting comments",
@@ -79,6 +94,23 @@ const TextEditor = () => {
 	};
 
 	// Helper Functions
+
+	const checkIfSlateEmpty = (editor: BaseEditor & ReactEditor) => {
+		const editorContent = editor.children.reduce(
+			(accRow: string, nextRow: Descendant) => {
+				if ("children" in nextRow) {
+					const flattenedRow = nextRow.children.reduce(
+						(accLeaf: string, nextLeaf: CustomText) => accLeaf + nextLeaf.text,
+						"",
+					);
+					return accRow + flattenedRow;
+				}
+				return accRow + nextRow.text;
+			},
+			"",
+		);
+		return editorContent.length === 0;
+	};
 
 	const isBoldActive = () => {
 		const allMarks = Editor.marks(editor);
@@ -315,7 +347,10 @@ const TextEditor = () => {
 					className="min-h-[160px] w-full py-4 px-3"
 				/>
 			</div>
-			<Button onClick={addCommentToTask} className="ml-auto m-5">
+			<Button
+				onClick={addCommentToTask}
+				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) ? "bg-muted hover:bg-muted text-muted-foreground" : ""}`}
+			>
 				Comment
 			</Button>
 		</Slate>

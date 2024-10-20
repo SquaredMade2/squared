@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type React from "react";
+import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
 import { useUserStore } from "@/store";
@@ -24,7 +25,9 @@ import { convertMDXStringToJSX, getInitials } from "@/utils/formatting";
 const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [authorName, setAuthorName] = useState("");
 	const [avatarUrl, setAvatarUrl] = useState("");
-	const [commentData, setCommentData] = useState(<p>Loading...</p>);
+	const [commentData, setCommentData] = useState<
+		MDXRemoteSerializeResult | React.ReactElement
+	>(<p>Loading...</p>);
 	const [MDXProvider, setMDXProvider] =
 		useState<React.ComponentType<MDXProviderProps> | null>(null);
 	// Keep here as per rest of the code below line 37
@@ -125,20 +128,32 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		CommentCardContent,
 	};
 
+	console.log(comment.comment);
+
 	// MDX
 
+	const getStaticProps = async () => {
+		const { serialize } = await import("next-mdx-remote/serialize");
+		const mdxSource = await serialize(comment.comment);
+		setCommentData(mdxSource);
+	};
+
 	useEffect(() => {
-		convertMDXStringToJSX(comment.comment, component).then((response) =>
-			setCommentData(response),
-		);
-	}, [comment]);
+		getStaticProps();
+	}, []);
+
+	// useEffect(() => {
+	// 	convertMDXStringToJSX(comment.comment, component).then((response) =>
+	// 		setCommentData(response),
+	// 	);
+	// }, [comment]);
 
 	// need dynamic import bc @mdx-js/react doesnt support CommonJS module
-	useEffect(() => {
-		import("@mdx-js/react").then((module) => {
-			setMDXProvider(() => module.MDXProvider);
-		});
-	}, []);
+	// useEffect(() => {
+	// 	import("@mdx-js/react").then((module) => {
+	// 		setMDXProvider(() => module.MDXProvider);
+	// 	});
+	// }, []);
 
 	return (
 		<div className="flex flex-col px-8 m-5">
@@ -156,11 +171,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
-				{MDXProvider && (
-					<MDXProvider components={component}>
-						<div>{commentData}</div>
-					</MDXProvider>
-				)}
+				{"compiledSource" in commentData && <MDXRemote {...commentData} />}
 			</p>
 		</div>
 	);
