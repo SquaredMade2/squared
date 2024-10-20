@@ -41,6 +41,7 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -236,7 +237,6 @@ export default function TeamsSetting() {
 								</FormItem>
 							)}
 						/>
-						{/* Todo Create new dropdown component here */}
 						<div className="flex flex-col">
 							<FormLabel className="mb-2">Effort Type</FormLabel>
 							<DropdownMenu
@@ -245,12 +245,14 @@ export default function TeamsSetting() {
 							>
 								<DropdownMenuTrigger>
 									<menu
-										className="border flex items-center text-left px-3 rounded-md w-40 h-10 hover:cursor-pointer"
+										className="border flex items-center text-left px-3 rounded-md w-40 h-10 justify-between hover:cursor-pointer"
 										aria-label="Effort style dropdown menu"
 										aria-hidden="true"
 									>
-										{/* todo add chevron */}
-										{selectedEffort?.dropdownTitle as string}
+										{selectedEffort?.dropdownTitle}
+										<ChevronDown
+											className={`${showEffortDropdown ? "rotate-180" : "rotate-0"}`}
+										/>
 									</menu>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent className="w-52 p-0 mr-48 mt-3 z-10 rounded-md">
@@ -259,14 +261,15 @@ export default function TeamsSetting() {
 										onValueChange={handleEffortSelection}
 										className="bg-secondary hover:cursor-pointer z-50 rounded-md"
 									>
-										{/* todo add borders between options */}
-										{effortType.map((item) => (
+										{effortType.map((item, index) => (
 											<DropdownMenuRadioItem
 												key={item.id}
 												value={item.dropdownTitle}
 												className="hover:cursor-pointer"
 											>
-												<div className="flex items-center space-x-2 p-3 z-10">
+												<div
+													className={`${index === 1 ? "border-t-2 border-b-2" : ""} flex items-center space-x-2 p-3 z-10`}
+												>
 													<span className="hover:cursor-pointer">
 														{item.listOption}
 													</span>
