@@ -16,7 +16,7 @@ import LabelSubContextMenu from "./LabelSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 // Will need in future
 // import RenameSubContextMenu from "./RenameSubContextMenu";
-import { sanitizeBranchName } from "@/utils/formatting";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "@/components/ui/use-toast";
 import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 
@@ -88,7 +88,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 			<ContextMenuItem>
 				<Link
-					href={`${currentWorkspace?.url}/tasks/${task.id}`}
+					href={`/${currentWorkspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
 					target="_blank"
 				>
 					Open in New Tab
