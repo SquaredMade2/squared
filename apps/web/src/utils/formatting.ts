@@ -14,28 +14,28 @@ export const truncateString = (string: string, maxLength: number): string => {
 
 export const sanitizeBranchName = (str: string): string => {
 	const excludedWords = new Set([
-	        "the",
-	        "of",
-	        "and",
-	        "to",
-	        "in",
-	        "on",
-	        "with",
-	        "for",
-	        "a",
-	        "an",
-	        "that",
-	        "eg",
-	        "like",
-        ]);
+		"the",
+		"of",
+		"and",
+		"to",
+		"in",
+		"on",
+		"with",
+		"for",
+		"a",
+		"an",
+		"that",
+		"eg",
+		"like",
+	]);
 
-        const sanitized = str
-	        .toLowerCase()
-	        .replace(/[^a-z0-9\s\/]/g, "")
-	        .split(/[\s\/]+/)
-	        .filter(word => word && !excludedWords.has(word))
-	        .slice(0, 8)
-	        .join("-");
+	const sanitized = str
+		.toLowerCase()
+		.replace(/[^a-z0-9\s\/]/g, "")
+		.split(/[\s\/]+/)
+		.filter((word) => word && !excludedWords.has(word))
+		.slice(0, 8)
+		.join("-");
 
 	return sanitized;
 };

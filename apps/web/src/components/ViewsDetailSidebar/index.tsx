@@ -15,7 +15,6 @@ import {
 } from "../ui/alert-dialog";
 import type { SavedFilter } from "@/store/filters";
 import {
-	useAuthStore,
 	useFilterStore,
 	useTaskStore,
 	useTeamStore,
@@ -37,7 +36,6 @@ const ViewsDetailSidebar = ({
 	filterTasksWithFilter,
 }: ViewsDetailSidebarProps) => {
 	const router = useRouter();
-	const { user } = useAuthStore((state) => state);
 	const { users } = useUserStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
@@ -46,6 +44,8 @@ const ViewsDetailSidebar = ({
 	const filteredTasks = filterTasksWithFilter(tasks);
 	const allLabels = currentWorkspace?.Labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+	const author = users.find((u) => u.id === filter.authorId);
 
 	const getAssigneeCount = () => {
 		const assigneeCount: Record<string, number> = {};
@@ -107,12 +107,12 @@ const ViewsDetailSidebar = ({
 							<span className="text-xs">Owner</span>
 							<div className="flex items-center gap-2">
 								<Avatar className="size-6 flex-shrink-0">
-									<AvatarImage src={user?.avatarUrl ?? ""} />
+									<AvatarImage src={author?.avatarUrl ?? ""} />
 									<AvatarFallback className="text-xxs">
-										{user && getInitials(user.name)}
+										{author && getInitials(author.name)}
 									</AvatarFallback>
 								</Avatar>
-								<span className="text-xs">{user?.username}</span>
+								<span className="text-xs">{author?.username}</span>
 							</div>
 						</div>
 					</div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { format, differenceInDays } from "date-fns";
 import { useTaskStore } from "@/store";
 import {
@@ -58,6 +58,13 @@ export default function SprintDashboardPage() {
 			ideal: number;
 		}[]
 	>([]);
+	const router = useRouter();
+
+	const handleEndSprint = () => {
+		router.push(
+			`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
+		);
+	};
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -199,6 +206,7 @@ export default function SprintDashboardPage() {
 					<Link
 						href={`/${workspace?.url}/team/${team?.identifier}/sprints`}
 						passHref
+						className="md:hidden"
 					>
 						<Button variant="ghost" size="sm">
 							<ArrowLeft className="mr-2 h-4 w-4" /> Back to Sprints
@@ -297,14 +305,14 @@ export default function SprintDashboardPage() {
 										}
 									>
 										{getTaskStatusData().map((entry) => {
-										const colorIndex = statusOrder.indexOf(entry.name);
-										return (
-											<Cell
-												key={`cell-${entry.value}`}
-												fill={COLORS[colorIndex]}
-											/>
-										);
-									})}
+											const colorIndex = statusOrder.indexOf(entry.name);
+											return (
+												<Cell
+													key={`cell-${entry.value}`}
+													fill={COLORS[colorIndex]}
+												/>
+											);
+										})}
 									</Pie>
 									<Tooltip />
 								</PieChart>
@@ -358,14 +366,19 @@ export default function SprintDashboardPage() {
 
 				<div className="flex justify-between items-center">
 					<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
-					<AssignTasksDialog
-						activeSprint={sprint}
-						handleBulkAssign={handleBulkAssign}
-						selectedTasks={selectedTasks}
-						setSelectedTasks={setSelectedTasks}
-						unassignedTasks={unassignedTasks}
-						upcomingSprints={[]}
-					/>
+					<div className="space-x-4">
+						<AssignTasksDialog
+							activeSprint={sprint}
+							handleBulkAssign={handleBulkAssign}
+							selectedTasks={selectedTasks}
+							setSelectedTasks={setSelectedTasks}
+							unassignedTasks={unassignedTasks}
+							upcomingSprints={[]}
+						/>
+						<Button onClick={handleEndSprint} variant="destructive">
+							End Sprint
+						</Button>
+					</div>
 				</div>
 
 				<Tabs defaultValue="all" className="w-full">
@@ -399,10 +412,6 @@ export default function SprintDashboardPage() {
 						/>
 					</TabsContent>
 				</Tabs>
-
-				<Link href={`${sprintId}/retrospective`} passHref>
-					<Button className="w-full my-8">Start Sprint Retrospective</Button>
-				</Link>
 			</div>
 		</ScrollArea>
 	);

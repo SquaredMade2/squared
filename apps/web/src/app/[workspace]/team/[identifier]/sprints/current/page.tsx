@@ -6,7 +6,7 @@ import { useSprints } from "@/hooks/useSprints";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
-import { Status } from "@repo/db";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function MyAssignedTasksPage() {
 	const { currentSprint, loading: sprintLoading } = useSprints();
@@ -19,29 +19,12 @@ export default function MyAssignedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskDashboard((tasks) =>
-		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
+	} = useTaskDashboard();
+
+	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
+		(tasks) =>
+			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
-
-	const allowedColumns: Status[] = [
-		Status.todo,
-		Status.inProgress,
-		Status.inReview,
-		Status.done,
-	];
-
-	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = getFilteredStatuses();
-
-		return filteredStatuses.filter((status) => {
-			if (!allowedColumns.includes(status)) return false;
-
-			const tasks = getTasksForStatus(status);
-			return tasks && tasks.length === 0;
-		});
-	};
 
 	if (!currentWorkspace || !currentSprint) return null;
 
@@ -56,9 +39,7 @@ export default function MyAssignedTasksPage() {
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
-					getFilteredStatuses={getFilteredStatuses}
-					getTasksForStatus={getTasksForStatus}
-					allowedColumns={allowedColumns}
+					getGroupedColumns={getGroupedColumns}
 					sprintId={currentSprint.id}
 				/>
 				{view === "grid" &&
@@ -67,7 +48,7 @@ export default function MyAssignedTasksPage() {
 						<div className="ml-auto">
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}
-								getTasksForStatus={getTasksForStatus}
+								getTasksForGroup={getTasksForGroup}
 							/>
 						</div>
 					)}
