@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/components/ui/use-toast";
+import RegistrationModal from "@/components/Modals/RegistrationModal";
 import { useAuthStore } from "@/store";
 import {
 	Form,
@@ -42,6 +43,7 @@ const formSchema = z.object({
 function RegisterForm() {
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isShowRegisteredModal, setIsShowRegisteredModal] = useState(false);
 	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -62,7 +64,7 @@ function RegisterForm() {
 		setIsLoading(true);
 		try {
 			// First, register the user using your custom register function
-			const { user, message, variant } = await register({
+			const { user, variant } = await register({
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
 				email: values.email,
@@ -72,10 +74,8 @@ function RegisterForm() {
 				token: inviteToken,
 			});
 
-			toast({
-				title: message,
-				variant: variant,
-			});
+			if (variant !== "destructive") setIsShowRegisteredModal(true);
+
 			if (user?.verified && inviteToken) {
 				await signIn("credentials", {
 					redirect: false,
@@ -115,7 +115,16 @@ function RegisterForm() {
 
 	return (
 		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
+			{isShowRegisteredModal && (
+				<RegistrationModal
+					setIsShowRegisteredModal={setIsShowRegisteredModal}
+				/>
+			)}
+			<Card
+				className={`w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 ${
+					isShowRegisteredModal ? "blur-lg" : ""
+				}`}
+			>
 				<CardHeader>
 					<CardTitle className="text-2xl font-bold text-center">
 						Create an account

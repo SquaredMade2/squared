@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { StatusColumnProps } from "./interfaces";
+import type { GroupColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { GridColumnNewIssueButton } from "../Modals";
 import TaskCard from "./TaskCard";
@@ -13,13 +13,7 @@ import {
 	compareNullableStrings,
 } from "@/utils/compareSorting";
 
-const StatusColumn = ({
-	columnType,
-	title,
-	tasks,
-	currentView: view,
-	sprintId,
-}: StatusColumnProps) => {
+const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
@@ -100,6 +94,10 @@ const StatusColumn = ({
 		displayOptions.taskOrder.orderAscending,
 	);
 
+	// handle when grouping by No grouping display on grid (no columns just grid??)
+
+	// refactor this - need to be able to render subtask by itself in some cases
+	// ex. grouping is priority, parent task has urgent priority, subtask has medium priority - display separately in their respective groupcolumns
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
@@ -138,14 +136,13 @@ const StatusColumn = ({
 			}
 		>
 			<TaskColumnTitle
-				isListView={isListView}
+				title={group}
 				showTasks={showTasks}
-				numberOfTasks={numberOfTasks}
-				title={title}
 				setShowTasks={setShowTasks}
-				sprintId={sprintId}
+				numberOfTasks={numberOfTasks}
+				isListView={isListView}
 			/>
-			<Droppable droppableId={columnType}>
+			<Droppable droppableId={group}>
 				{(provided, snapshot) => (
 					<ScrollArea
 						ref={provided.innerRef}
@@ -157,7 +154,7 @@ const StatusColumn = ({
 									? ""
 									: `${
 											view === "grid"
-												? "max-h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
+												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
 												: "overflow-y-auto"
 										}`
 							} 
@@ -179,14 +176,9 @@ const StatusColumn = ({
 					</ScrollArea>
 				)}
 			</Droppable>
-			{!isListView && (
-				<GridColumnNewIssueButton
-					status={title as Status}
-					sprintId={sprintId}
-				/>
-			)}
+			{!isListView && <GridColumnNewIssueButton group={group} />}
 		</div>
 	);
 };
 
-export default StatusColumn;
+export default GroupColumn;

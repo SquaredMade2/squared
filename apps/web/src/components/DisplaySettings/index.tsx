@@ -5,6 +5,7 @@ import {
 	ArrowDownWideNarrow,
 	AlignJustify,
 	LayoutGrid,
+	Layers,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
@@ -32,6 +33,8 @@ import {
 	type TaskOrder,
 	type View,
 	type DisplayOptions,
+	type TaskGroup,
+	TaskGroupOptions,
 } from "@/store/views";
 
 const TopNavBarDisplay = () => {
@@ -47,9 +50,10 @@ const TopNavBarDisplay = () => {
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
-	const { taskOrder, showCompletedTasks } = displayOptions;
+	const { taskOrder, groupTasksBy, showCompletedTasks } = displayOptions;
 
 	const orderByOptions: TaskOrder[] = TaskOrderOptions;
+	const groupByOptions: TaskGroup[] = TaskGroupOptions;
 	const completedPeriodOptions: CompletedTaskPeriod[] =
 		CompletedTaskPeriodOptions;
 
@@ -141,7 +145,36 @@ const TopNavBarDisplay = () => {
 								</ToggleGroup>
 							</div>
 							<Separator className="my-4" />
-
+							<div className="flex items-center justify-between mb-3">
+								<span className="text-xs text-foreground mr-4">Grouping</span>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant="outline"
+											size="sm"
+											className="flex-grow justify-between"
+										>
+											<span className="text-xs">{groupTasksBy}</span>
+											<Layers className="size-4" />
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent>
+										{groupByOptions.map((option) => (
+											<DropdownMenuItem
+												key={option}
+												className="text-xs"
+												onSelect={() =>
+													setOptions({
+														groupTasksBy: option,
+													})
+												}
+											>
+												{option}
+											</DropdownMenuItem>
+										))}
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
 							<div className="flex items-center justify-between">
 								<span className="text-xs text-foreground">Ordering</span>
 								<DropdownMenu>

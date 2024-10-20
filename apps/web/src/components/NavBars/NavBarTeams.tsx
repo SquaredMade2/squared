@@ -77,7 +77,9 @@ const NavBarTeams = ({
 			{currentTeam.sprintsEnabled && (
 				<>
 					<Button
-						variant={"ghost"}
+						variant={
+							currentPage === "sprints" && active ? "secondary" : "ghost"
+						}
 						onClick={() => handleActiveParams("sprints")}
 						className="w-full justify-start h-6"
 					>
@@ -91,14 +93,18 @@ const NavBarTeams = ({
 					<div className="ml-2">
 						<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
 							<Button
-								variant={"ghost"}
+								variant={
+									currentPage === "current" && active ? "secondary" : "ghost"
+								}
 								onClick={() => handleActiveParams("sprints/current")}
 								className="w-full justify-start h-6 pl-3"
 							>
 								Current Sprint
 							</Button>
 							<Button
-								variant={"ghost"}
+								variant={
+									currentPage === "upcoming" && active ? "secondary" : "ghost"
+								}
 								onClick={() => handleActiveParams("sprints/upcoming")}
 								className="w-full justify-start h-6 pl-3"
 							>

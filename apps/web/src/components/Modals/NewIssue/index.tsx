@@ -64,14 +64,17 @@ export const NewIssueModal = () => {
 
 	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
 		try {
-			const { message, variant } = await createTask({
+			const createTaskParams = {
+				...newIssueData,
 				...values,
 				status,
 				priority,
 				labels,
 				dueDate,
 				effortEstimate,
-			});
+				description: values.description || undefined,
+			};
+			const { message, variant } = await createTask(createTaskParams);
 
 			toast({
 				title: message,

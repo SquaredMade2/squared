@@ -108,6 +108,7 @@ export default function SprintDashboard() {
 
 	const getBurndownData = useCallback(() => {
 		if (!currentSprint) return [];
+
 		const sprintTasks = tasks.filter(
 			(task) => task.sprintId === currentSprint.id,
 		);
@@ -122,23 +123,31 @@ export default function SprintDashboard() {
 			new Date(currentSprint.startDate),
 		);
 
-		let completedTasksCount = 0;
+		// Calculate the number of completed tasks so far
+		const completedTasksSoFar = sprintTasks.filter(
+			(task) =>
+				(task.status === "done" || task.status === "canceled") &&
+				new Date(task.updatedAt) <= today,
+		).length;
+
+		// Calculate the average completion rate per day so far
+		const averageCompletionRate = completedTasksSoFar / (currentSprintDay + 1);
+
+		let completedTasksCount = completedTasksSoFar;
+
 		const data = Array.from({ length: sprintDays + 1 }, (_, i) => {
 			const date = new Date(currentSprint.startDate);
 			date.setDate(date.getDate() + i);
 
-			if (i <= currentSprintDay) {
+			if (i > currentSprintDay) {
+				// Project future completion based on the actual rate
+				completedTasksCount += averageCompletionRate;
+			} else {
 				completedTasksCount = sprintTasks.filter(
 					(task) =>
 						(task.status === "done" || task.status === "canceled") &&
 						new Date(task.updatedAt) <= date,
 				).length;
-			} else {
-				// Project future based on current rate
-				const remainingDays = sprintDays - currentSprintDay;
-				const remainingTasks = totalTasks - completedTasksCount;
-				const dailyRate = remainingTasks / remainingDays;
-				completedTasksCount += dailyRate;
 			}
 
 			return {

@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useFilterStore, useViewStore } from "@/store";
 import { useEffect, useState } from "react";
 import type { SavedFilter } from "@/store/filters";
-import { Status, type Task } from "@repo/db";
+import type { Task } from "@repo/db";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";
@@ -12,6 +12,8 @@ import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { parseParams } from "@/utils/parseParams";
 import { useTeams } from "@/hooks/useTeams";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function FilterViewPage() {
 	const params = useParams();
@@ -58,24 +60,20 @@ export default function FilterViewPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskDashboard(filterTasksWithFilter);
+	} = useTaskDashboard();
 
-	if (!loading || teamLoading || isLoading) {
-		return <div>Loading...</div>;
+	const { getGroupedColumns, getTasksForGroup, getHiddenColumns } = useGroups(
+		filterTasksWithFilter,
+	);
+
+	if (loading || teamLoading || isLoading) {
+		return (
+			<div className="w-full flex justify-center items-center">
+				<SquaredLoader />
+			</div>
+		);
 	}
 
-	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = getFilteredStatuses();
-
-		return filteredStatuses.filter((status) => {
-			if (status === Status.archived) return false;
-
-			const tasks = getTasksForStatus(status);
-			return tasks && tasks.length === 0;
-		});
-	};
 	if (!currentWorkspace) return null;
 	if (!filter) return null;
 
@@ -89,17 +87,14 @@ export default function FilterViewPage() {
 			pageTitle={filter.name}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
-				<ViewAllTasks
-					getFilteredStatuses={getFilteredStatuses}
-					getTasksForStatus={getTasksForStatus}
-				/>
+				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
 					getHiddenColumns().length >= 1 && (
 						<div className="ml-auto">
 							<HiddenColumns
 								getHiddenColumns={getHiddenColumns}
-								getTasksForStatus={getTasksForStatus}
+								getTasksForGroup={getTasksForGroup}
 							/>
 						</div>
 					)}
