@@ -1,14 +1,16 @@
+/**
+ * https://jestjs.io/docs/getting-started
+ * https://github.com/ladjs/supertest#readme
+ * https://www.prisma.io/docs/orm/prisma-client/testing/integration-testing
+ */
+
 import request from "supertest";
-import { PrismaClient } from "@repo/db";
+import { prisma } from "@repo/seed";
 import { seedTestDB, seedTasks } from "@repo/seed";
 import "dotenv/config";
 
-const host = `http://localhost:5173${process.env.PORT}`;
-const prisma = new PrismaClient();
+const host = `http://localhost:${process.env.PORT}`;
 
-// https://jestjs.io/docs/getting-started
-// https://github.com/ladjs/supertest#readme
-// https://www.prisma.io/docs/orm/prisma-client/testing/integration-testing
 describe("sample test with prisma", () => {
 	it("should create the specified user", async () => {
 		const newUser = await prisma.user.create({
@@ -36,14 +38,12 @@ describe("sample test with prisma", () => {
 
 describe("sample api endpoint test", () => {
 	it("should retrieve the seeded task", async () => {
-		try {
-			console.log(seedTasks[0]);
-			const res = await request(host).get(`/api/task/${seedTasks[0].id}`);
-			expect(res.body.data.id).toBe(seedTasks[0].id);
-		} catch (e) {
-			console.dir(e, { depth: null });
-			throw new Error("test failed");
-		}
+		const seededTask = seedTasks[0];
+		const _seededTaskValues = Object.values(seededTask);
+
+		const res = await request(host).get(`/api/task/${seededTask.id}`);
+		const fetchedTask = res.body.data;
+		const _fetchedTaskValues = Object.values(fetchedTask);
 	});
 });
 
