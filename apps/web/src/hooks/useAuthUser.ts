@@ -1,45 +1,53 @@
 import { useEffect, useState } from "react";
 import { useAuthStore, useUserStore } from "@/store";
 import { useSession } from "next-auth/react";
-import type { User } from "next-auth";
 import { useToast } from "@/components/ui/use-toast";
 
 export function useAuthUser() {
 	const { logout, setUser, user } = useAuthStore((state) => state);
 	const { getUser } = useUserStore((state) => state);
-	const { data, status } = useSession();
+	const { data: session, status } = useSession();
 	const { toast } = useToast();
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		setLoading(true);
-		const handleGetUser = async (authUser: User) => {
+		const handleGetUser = async () => {
+			setLoading(true);
+			setError(null);
+
 			try {
-				if (authUser) {
-					const { user: loggedUser } = await getUser(authUser.id);
+				if (status === "authenticated" && session?.user) {
+					const { user: loggedUser } = await getUser(session.user.id);
 					if (loggedUser) {
 						setUser(loggedUser);
+					} else {
+						// User not found in the database
+						await logout();
+						setError("User not found. Please sign up.");
 					}
 				} else if (status === "unauthenticated") {
 					await logout();
 				}
-				setLoading(false);
 			} catch (error) {
-				console.error("Redirection Error: ", error);
+				console.error("Auth Error: ", error);
+				setError(error instanceof Error ? error.message : "An error occurred");
 				toast({
 					title: "An error occurred",
 					description:
 						error instanceof Error ? error.message : "An error occurred",
 				});
+			} finally {
+				setLoading(false);
 			}
 		};
-		if (data?.user) {
-			handleGetUser(data.user);
-		}
-	}, [status]);
+
+		handleGetUser();
+	}, [status, session]);
 
 	return {
 		user,
 		loading,
+		error,
 	};
 }
