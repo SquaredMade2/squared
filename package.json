@@ -7,7 +7,7 @@
     "build": "turbo run build",
     "build:icons": "pnpm --filter=@repo/ui run build",
     "db:backup": "cd ./packages/db && dotenv -e .env -- sh -c 'echo $POSTGRES_PRISMA_URL && pg_dump --file=../../database/$(date +%d-%m-%Y).bak --dbname=$(echo $POSTGRES_PRISMA_URL | sed \"s/[?&]pgbouncer=true//\")'",
-    "db:gen": "turbo run db:generate",
+    "db:gen": "turbo run db:gen",
     "db:deploy": "pnpm --filter=@repo/db db:deploy",
     "db:push": "pnpm --filter=@repo/db db:push",
     "docker:build": "docker compose build",
