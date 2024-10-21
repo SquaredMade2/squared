@@ -8,13 +8,13 @@ const navItems = [
 		title: "Pricing",
 		link: "/pricing",
 	},
-	// {
-	//   title: "Blog",
-	//   link: "/blog",
-	// },
 	{
 		title: "Contact",
 		link: "/contact",
+	},
+	{
+		title: "Docs",
+		link: "/docs",
 	},
 ];
 
@@ -41,14 +41,4 @@ export function NavBar() {
 			</div>
 		</motion.nav>
 	);
-}
-
-// biome-ignore lint/complexity/noUselessLoneBlockStatements: Came with Tempalte
-{
-	/* <div className="hidden md:block ">
-        <DesktopNavbar />
-      </div>
-      <div className="flex h-full w-full items-center md:hidden ">
-        <MobileNavbar navItems={navItems} />
-      </div> */
 }
