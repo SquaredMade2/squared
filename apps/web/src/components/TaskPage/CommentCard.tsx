@@ -154,6 +154,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 	useEffect(() => {
 		JSXCommentData();
+	}, []);
+
+	useEffect(() => {
 		setRemoteMDX();
 	}, [commentData]);
 
