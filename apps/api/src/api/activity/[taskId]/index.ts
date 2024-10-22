@@ -2,7 +2,7 @@ import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
-import type { Activity } from "@repo/db";
+import type { Activity, TaskEvent } from "@repo/db";
 
 type Params = {
 	taskId: string;
@@ -10,7 +10,10 @@ type Params = {
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { taskId }): Promise<APIResponse<Activity>> => {
+		GET: async (
+			res,
+			{ taskId },
+		): Promise<APIResponse<Activity | TaskEvent>> => {
 			try {
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
@@ -30,6 +33,7 @@ export function createRoute(): Route<Params> {
 					where: { taskId },
 					include: {
 						activities: true,
+						TaskEvent: true,
 					},
 				});
 
@@ -43,7 +47,7 @@ export function createRoute(): Route<Params> {
 
 				// Return the found activities
 				return {
-					data: taskEventLogWithActivities.activities,
+					data: taskEventLogWithActivities.TaskEvent,
 					variant: "default",
 				};
 			} catch (error) {
