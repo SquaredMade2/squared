@@ -194,7 +194,7 @@
   "scripts": {
     "build:stories": "storybook build",
     "check-types": "tsc --skipLibCheck --noEmit",
-    "dev": "pnpm storybook",
+    "sb": "pnpm storybook",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format:write": "biome format --write .",
