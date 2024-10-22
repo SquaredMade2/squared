@@ -307,6 +307,9 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@squared/fonts':
+        specifier: workspace:*
+        version: link:../../packages/fonts
       '@tabler/icons-react':
         specifier: ^3.5.0
         version: 3.19.0(react@18.3.1)
@@ -374,6 +377,9 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@types/node':
         specifier: ^20
         version: 20.16.11
