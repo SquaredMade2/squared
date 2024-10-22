@@ -41,6 +41,7 @@ export function createRoute(): Route<Params> {
 		},
 		PUT: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
+				// check if effort estimate is valid
 				if (body.effortEstimate) {
 					const effort = Number(body.effortEstimate);
 					if (
@@ -149,7 +150,7 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				// todo check if this works for exponential and fibonacci
+				// check if effort estimate is valid
 				if (body.effortEstimate) {
 					const effort = Number(body.effortEstimate);
 					if (
