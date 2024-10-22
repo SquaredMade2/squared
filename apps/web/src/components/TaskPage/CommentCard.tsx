@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { type HTMLAttributes, useEffect, useState } from "react";
 import type React from "react";
 import type { MDXRemoteSerializeResult } from "../TextEditor/interfaces";
 import { formatDate } from "date-fns/format";
@@ -131,20 +131,10 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	};
 
 	const customStyledComponents = {
-		h2: (props: { children: React.ReactNode[] } | { children: string }) => {
-			if (typeof props.children === "string") {
-				return <h2 className="text-2xl"> {props.children} </h2>;
-			}
+		h2: (props: HTMLAttributes<HTMLHeadingElement>) => {
 			return <h2 className="text-2xl" {...props} />;
 		},
-		code: (props: { children: React.ReactNode[] } | { children: string }) => {
-			if (typeof props.children === "string") {
-				return (
-					<code className="text-red-200 bg-gray-800 p-1 rounded-md">
-						{props.children}
-					</code>
-				);
-			}
+		code: (props: HTMLAttributes<HTMLHeadingElement>) => {
 			return (
 				<code className="text-red-200 bg-gray-800 p-1 rounded-md" {...props} />
 			);
