@@ -18,7 +18,7 @@ docker exec --workdir /app/packages/seed api-test-1 pnpm test:db:seed
 docker exec --workdir /app/apps/api/scripts api-test-1 /bin/sh ./wait-express.sh
 
 # run tests and log docker status if error occurs 
-docker exec --workdir /app/apps/api api-test-1 pnpm jest --ci --maxWorkers=2 --forceExit || (docker logs api-test-1 && exit 1)
+docker exec --workdir /app/apps/api api-test-1 pnpm jest --ci --runInBand --forceExit || (docker logs api-test-1 && exit 1)
 
 # destroy docker containers
 pnpm docker:api:down
