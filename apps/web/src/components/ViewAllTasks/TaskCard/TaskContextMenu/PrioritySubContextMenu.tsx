@@ -25,7 +25,7 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<PriorityIcon priority="high" />
+					<PriorityIcon priority={task.priority} />
 				</div>
 				Priority
 			</ContextMenuSubTrigger>
