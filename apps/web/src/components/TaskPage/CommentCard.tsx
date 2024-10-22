@@ -133,13 +133,17 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	const customStyledComponents = {
 		h2: (props: { children: React.ReactNode[] } | { children: string }) => {
 			if (typeof props.children === "string") {
-				return;
+				return <h2 className="text-2xl"> {props.children} </h2>;
 			}
 			return <h2 className="text-2xl" {...props} />;
 		},
 		code: (props: { children: React.ReactNode[] } | { children: string }) => {
 			if (typeof props.children === "string") {
-				return;
+				return (
+					<code className="text-red-200 bg-gray-800 p-1 rounded-md">
+						{props.children}
+					</code>
+				);
 			}
 			return (
 				<code className="text-red-200 bg-gray-800 p-1 rounded-md" {...props} />
