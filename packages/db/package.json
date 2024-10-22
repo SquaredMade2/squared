@@ -10,11 +10,8 @@
     "db:gen": "prisma generate",
     "db:deploy": "prisma migrate deploy",
     "db:push": "prisma db push --skip-generate",
-    "dev": "echo 'Add dev script here'",
-    "lint": "echo 'Add lint script here'",
     "postinstall": "pnpm run db:gen",
-    "studio": "prisma studio",
-    "test": "echo 'Add test script here'"
+    "studio": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0"
