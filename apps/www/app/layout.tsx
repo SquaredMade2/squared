@@ -23,11 +23,7 @@ export default function RootLayout({
 	return (
 		<ViewTransitions>
 			<html lang="en">
-				<body
-					className={
-						"bg-white dark:bg-background-darkAccent antialiased h-full w-full"
-					}
-				>
+				<body className={"antialiased h-full w-full"}>
 					<ThemeProvider
 						attribute="class"
 						enableSystem
