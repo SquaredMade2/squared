@@ -4,28 +4,18 @@ export interface TextEditorToolBarProps {
 	// Leafs
 	createBoldLeaf: () => void;
 	createItalicLeaf: () => void;
+	createCodeLeaf: (language: string) => void;
 
 	isBoldActive: boolean;
 	isItalicActive: boolean;
 
-	// Blocks
+	isCodeActive: boolean;
 
-	createCodeBlock: () => void;
-	isCodeBlock: NodeEntry<Node>;
+	// Blocks
 
 	createHeaderBlock: () => void;
 	isHeaderBlock: NodeEntry<Node>;
 }
-
-// Export it here instead of import from nextmdx bc doesnt support commonjs module
-export type MDXRemoteSerializeResult<
-	TScope = Record<string, unknown>,
-	TFrontmatter = Record<string, unknown>,
-> = {
-	compiledSource: string;
-	scope: TScope;
-	frontmatter: TFrontmatter;
-};
 
 export type CustomElementAttributes = Omit<
 	JSX.IntrinsicElements["div"],
@@ -47,6 +37,8 @@ export type CustomText = {
 	bold?: boolean;
 	italic?: boolean;
 	link?: boolean;
+	// String for future, code block should be able to define what language, will implement in future
+	code?: string;
 };
 
 export type CustomDescendant = CustomElement | CustomText;

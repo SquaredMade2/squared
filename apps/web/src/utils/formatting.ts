@@ -174,18 +174,19 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 				// helper vars
 				const returnBoldMarks = leaf.bold ? "**" : "";
 				const returnItalicMarks = leaf.italic ? "*" : "";
+				const returnCodeMarks = leaf.code && leaf.code.length > 0 ? "```" : "";
 				// add new marks here, needs both left and right bc future might need them
-				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}`;
-				const rightSurrounderMark = `${returnItalicMarks}${returnBoldMarks}`;
+				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
+				const rightSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
 
 				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
 			});
 
 			// Handle current block/row (each row can only have one block)
 			const returnHeaderBlock = line.type === "header" ? "## " : "";
-			const returnCodeBlock = line.type === "code" ? "```" : "";
-			const leftSurrounderBlock = `${returnHeaderBlock}${returnCodeBlock}`;
-			const rightSurrounderBlock = `${returnCodeBlock}`;
+			const leftSurrounderBlock = `${returnHeaderBlock}`;
+			// will need below for future formatting
+			const rightSurrounderBlock = `${""}`;
 			formattedLine.push(
 				`${leftSurrounderBlock}${allLeafs.join("")}${rightSurrounderBlock}`,
 			);

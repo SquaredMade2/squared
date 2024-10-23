@@ -5,10 +5,10 @@ import { Button } from "../ui/button";
 const TextEditorToolBar = ({
 	createBoldLeaf,
 	createItalicLeaf,
+	createCodeLeaf,
 	isBoldActive,
 	isItalicActive,
-	createCodeBlock,
-	isCodeBlock,
+	isCodeActive,
 	createHeaderBlock,
 	isHeaderBlock,
 	// Todos:
@@ -55,13 +55,13 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ml-2 ${isCodeBlock ? "" : "text-muted-foreground"}`}
+				className={`size-8 ml-2 ${isCodeActive ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
-					createCodeBlock();
+					createCodeLeaf("default");
 				}}
 			>
-				<span>&lt;/&gt;</span>
+				<span>{"</>"}</span>
 			</Button>
 
 			<Button

@@ -9,7 +9,7 @@ import type {
 import { Slate, Editable, withReact, DefaultElement } from "slate-react";
 import type { CustomDescendant, CustomElement, CustomText } from "./interfaces";
 import { cn } from "@/utils/cn";
-import CodeElement from "./TextEditorElements/ElementBlocks/CodeElement";
+import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
 import TextEditorToolBar from "./TextEditorToolBar";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
@@ -45,6 +45,7 @@ const TextEditor = () => {
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
+	console.log(editorContent);
 
 	// Functions
 
@@ -132,6 +133,18 @@ const TextEditor = () => {
 		return false;
 	};
 
+	const isCodeActive = () => {
+		const allMarks = Editor.marks(editor);
+		// if code string is empty, that means its not a code leaf
+		if (!allMarks?.code) {
+			return false;
+		}
+		if (allMarks.code.length > 0) {
+			return true;
+		}
+		return false;
+	};
+
 	// const isLinkActive = () => {
 	// 	const allMarks = Editor.marks(editor);
 	// 	if (allMarks?.link) {
@@ -139,14 +152,6 @@ const TextEditor = () => {
 	// 	}
 	// 	return false;
 	// };
-
-	const isCodeBlock = () => {
-		// return if the block exists in the highlighted area
-		const [match] = Editor.nodes(editor, {
-			match: (n) => Element.isElement(n) && n.type === "code",
-		});
-		return match;
-	};
 
 	const isHeaderBlock = () => {
 		// return if the block exists in the highlighted area
@@ -157,21 +162,6 @@ const TextEditor = () => {
 	};
 
 	// Create Element Blocks (Entire Row)
-
-	const createCodeBlock = () => {
-		// check for if the text is currently a code block
-		const [match] = Editor.nodes(editor, {
-			match: (n) => Element.isElement(n) && n.type === "code",
-		});
-
-		// Change the node, if isnt code block, make it one, vice versa
-		Transforms.setNodes(
-			editor,
-			{ type: match ? "paragraph" : "code" },
-			{ match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
-		);
-	};
-
 	const createHeaderBlock = () => {
 		const [match] = Editor.nodes(editor, {
 			match: (n) => Element.isElement(n) && n.type === "header",
@@ -201,6 +191,15 @@ const TextEditor = () => {
 		}
 	};
 
+	const createCodeLeaf = (language: string) => {
+		if (isCodeActive()) {
+			Editor.removeMark(editor, "code");
+			Editor.addMark(editor, "code", "");
+		} else {
+			Editor.addMark(editor, "code", language);
+		}
+	};
+
 	// const createLinkLeaf = () => {
 	// 	if (isLinkActive()) {
 	// 		Editor.addMark(editor, "link", false);
@@ -221,7 +220,7 @@ const TextEditor = () => {
 			case "`": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createCodeBlock();
+					createCodeLeaf("default");
 				}
 				break;
 			}
@@ -312,8 +311,6 @@ const TextEditor = () => {
 	// For each CustomElement type, render a different element node depending on what the type of block it is
 	const renderElement = useCallback((props: RenderElementProps) => {
 		switch (props.element.type) {
-			case "code":
-				return <CodeElement {...props} />;
 			case "header":
 				return <HeaderElement {...props} />;
 			default:
@@ -339,8 +336,8 @@ const TextEditor = () => {
 					isBoldActive={isBoldActive()}
 					isItalicActive={isItalicActive()}
 					// Blocks
-					createCodeBlock={createCodeBlock}
-					isCodeBlock={isCodeBlock()}
+					createCodeLeaf={createCodeLeaf}
+					isCodeActive={isCodeActive()}
 					createHeaderBlock={createHeaderBlock}
 					isHeaderBlock={isHeaderBlock()}
 				/>
@@ -363,5 +360,5 @@ const TextEditor = () => {
 
 export default TextEditor;
 
-export { CodeElement, Leaf, TextEditorToolBar, HeaderElement };
+export { Leaf, TextEditorToolBar, HeaderElement, CodeLeaf };
 export * from "./interfaces";

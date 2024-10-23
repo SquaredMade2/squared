@@ -1,6 +1,7 @@
 import { type HTMLAttributes, useEffect, useState } from "react";
 import type React from "react";
-import type { MDXRemoteSerializeResult } from "../TextEditor/interfaces";
+import { serialize } from "next-mdx-remote/serialize";
+import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { formatDate } from "date-fns/format";
 import type { Comment } from "@repo/db";
 import { useUserStore } from "@/store";
@@ -23,7 +24,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	const [commentData, setCommentData] = useState<
 		MDXRemoteSerializeResult | React.ReactElement
 	>(<p>Loading...</p>);
-	const [remote, setRemote] = useState<React.ReactNode | null>(null);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
 	const getUser = useUserStore((state) => state.getUser);
@@ -111,24 +111,23 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				});
 			}
 		};
+		const JSXCommentData = async () => {
+			try {
+				const mdxSource = await serialize(comment.comment);
+				setCommentData(mdxSource);
+			} catch (err) {
+				toast({
+					title: "Error converting to MDX",
+					description: String(err),
+					variant: "destructive",
+				});
+			}
+		};
+		JSXCommentData();
 		handleGetUser();
 	}, [comment]);
 
 	// MDX
-
-	const JSXCommentData = async () => {
-		try {
-			const { serialize } = await import("next-mdx-remote/serialize");
-			const mdxSource = await serialize(comment.comment);
-			setCommentData(mdxSource);
-		} catch (err) {
-			toast({
-				title: "Error converting to MDX",
-				description: String(err),
-				variant: "destructive",
-			});
-		}
-	};
 
 	const customStyledComponents = {
 		h2: (props: HTMLAttributes<HTMLHeadingElement>) => {
@@ -140,38 +139,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 			);
 		},
 	};
-
-	const setRemoteMDX = async () => {
-		try {
-			const { MDXRemote } = await import("next-mdx-remote");
-			if ("compiledSource" in commentData) {
-				setRemote(
-					<MDXRemote {...commentData} components={customStyledComponents} />,
-				);
-			}
-		} catch (err) {
-			toast({
-				title: "Error importing MDXRemote",
-				description: String(err),
-				variant: "destructive",
-			});
-		}
-	};
-
-	const handleDisplayMDX = () => {
-		if ("compiledSource" in commentData && remote) {
-			return remote;
-		}
-		return "Loading...";
-	};
-
-	useEffect(() => {
-		JSXCommentData();
-	}, []);
-
-	useEffect(() => {
-		setRemoteMDX();
-	}, [commentData]);
 
 	return (
 		<div className="flex flex-col px-8 m-5">
@@ -189,7 +156,9 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
 			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
-				{handleDisplayMDX()}
+				{"compiledSource" in commentData && (
+					<MDXRemote {...commentData} components={customStyledComponents} />
+				)}
 			</p>
 		</div>
 	);
