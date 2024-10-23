@@ -1,7 +1,4 @@
 import type { Config } from "tailwindcss";
-const {
-	default: flattenColorPalette,
-} = require("tailwindcss/lib/util/flattenColorPalette");
 
 const config: Config = {
 	content: [
@@ -19,13 +16,43 @@ const config: Config = {
 					"conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
 			},
 			colors: {
-				primary: "#020022",
-				muted: "var(--neutral-600)",
-				"muted-dark": "var(--neutral-300)",
+				border: "hsl(var(--border))",
+				input: "hsl(var(--input))",
+				ring: "hsl(var(--ring))",
+				foreground: "hsl(var(--foreground))",
+				primary: {
+					DEFAULT: "hsl(var(--primary))",
+					foreground: "hsl(var(--primary-foreground))",
+				},
+				secondary: {
+					DEFAULT: "hsl(var(--secondary))",
+					foreground: "hsl(var(--secondary-foreground))",
+				},
+				destructive: {
+					DEFAULT: "hsl(var(--destructive))",
+					foreground: "hsl(var(--destructive-foreground))",
+				},
+				muted: {
+					DEFAULT: "hsl(var(--muted))",
+					foreground: "hsl(var(--muted-foreground))",
+				},
+				accent: {
+					DEFAULT: "hsl(var(--accent))",
+					foreground: "hsl(var(--accent-foreground))",
+				},
+				popover: {
+					DEFAULT: "hsl(var(--popover))",
+					foreground: "hsl(var(--popover-foreground))",
+				},
+				card: {
+					DEFAULT: "hsl(var(--card))",
+					foreground: "hsl(var(--card-foreground))",
+				},
 				hover: {
 					dark: "#1E2538",
 				},
 				background: {
+					DEFAULT: "hsl(var(--background))",
 					dark: "#141414",
 					darkSecondary: "#191a24",
 					darkAccent: "#1E2538",
@@ -71,21 +98,7 @@ const config: Config = {
 			},
 		},
 	},
-	plugins: [addVariablesForColors, require("@tailwindcss/typography")],
+	plugins: [require("@tailwindcss/typography")],
 };
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function addVariablesForColors({ addBase, theme }: any) {
-	// biome-ignore lint/style/useConst: <explanation>
-	let allColors = flattenColorPalette(theme("colors"));
-	// biome-ignore lint/style/useConst: <explanation>
-	let newVars = Object.fromEntries(
-		Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
-	);
-
-	addBase({
-		":root": newVars,
-	});
-}
 
 export default config;

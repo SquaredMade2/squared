@@ -6,7 +6,7 @@ import { useId } from "react";
 export const Background = () => {
 	return (
 		<div className="absolute inset-0 h-full w-full pointer-events-none z-0">
-			<div className="absolute inset-0 h-full w-full bg-white dark:bg-background-darkAccent pointer-events-none [mask-image:radial-gradient(ellipse_at_center,transparent,white)]" />
+			<div className="absolute inset-0 h-full w-full bg-background pointer-events-none [mask-image:radial-gradient(ellipse_at_center,transparent,white)]" />
 			{Array.from({ length: 6 }).map((_, index) => (
 				// biome-ignore lint/suspicious/noArrayIndexKey: <Came with template>
 				// biome-ignore lint/style/useTemplate: <Came with template>

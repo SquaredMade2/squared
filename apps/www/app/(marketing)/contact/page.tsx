@@ -13,16 +13,16 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
 	return (
-		<div className="relative overflow-hidden py-20 md:py-0 px-4 md:px-20 bg-gray-50 dark:bg-background-darkAccent">
+		<div className="relative overflow-hidden py-20 md:py-0 px-4 md:px-20 bg-background">
 			<div className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
 				<Background />
 				<ContactForm />
-				<div className="relative w-full z-20 hidden md:flex border-l border-neutral-100 dark:border-neutral-900 overflow-hidden bg-gray-50 dark:bg-background-darkSecondary items-center justify-center">
+				<div className="relative w-full z-20 hidden md:flex border-l border-neutral-100 dark:border-neutral-900 overflow-hidden items-center justify-center">
 					<div className="max-w-sm mx-auto">
 						<FeaturedTestimonials />
 						<p
 							className={cn(
-								"font-semibold text-xl text-center dark:text-muted-dark text-muted",
+								"font-semibold text-xl text-center text-muted-foreground",
 							)}
 						>
 							Squared is used by thousands of users
