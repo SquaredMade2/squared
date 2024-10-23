@@ -1,4 +1,7 @@
-export default function createSquaredIcon(name: string, svgContent: { match: (arg0: RegExp) => any[]; }) {
+export default function createSquaredIcon(
+	name: string,
+	svgContent: { match: (arg0: RegExp) => any[] },
+) {
 	const svgElement = svgContent?.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
 
 	return `
