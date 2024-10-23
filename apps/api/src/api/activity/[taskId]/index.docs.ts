@@ -1,4 +1,4 @@
-const activityDocs = {
+export default {
 	"/api/activity/{taskId}": {
 		get: {
 			tags: ["Activity"],
@@ -106,11 +106,3 @@ const activityDocs = {
 		},
 	},
 };
-
-export default activityDocs;
-export {
-	ActivitySchema,
-	TaskEventSchema,
-	CommitSchema,
-	TaskEventLogSchema,
-} from "./schema";
