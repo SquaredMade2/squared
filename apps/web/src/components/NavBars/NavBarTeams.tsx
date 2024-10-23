@@ -45,7 +45,7 @@ const NavBarTeams = ({
 	if (!currentTeam) return null;
 
 	return (
-		<div className="w-full z-10 space-y-1">
+		<div className="w-full z-10 space-y-1 my-1 px-1">
 			<Button
 				variant={currentPage === "all" && active ? "secondary" : "ghost"}
 				onClick={() => handleActiveParams("all")}
