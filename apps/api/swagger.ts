@@ -6,8 +6,8 @@ import path from "node:path";
 import schemas from "./schemas";
 
 // Function to recursively scan for index.docs.ts files
-function scanForDocs(dir: string): Record<string, any> {
-	let docs: Record<string, any> = {};
+function scanForDocs(dir: string): Record<string, string> {
+	let docs: Record<string, string> = {};
 	const files = fs.readdirSync(dir);
 
 	for (const file of files) {
@@ -18,11 +18,8 @@ function scanForDocs(dir: string): Record<string, any> {
 			const subDocs = scanForDocs(filePath);
 			docs = { ...docs, ...subDocs };
 		} else if (file === "index.docs.ts") {
-			const route = dir
-				.replace(/^.*\/src\/api/, "")
-				.replace(/\[(\w+)\]/g, "{$1}");
 			const routeDocs = require(filePath).default;
-			docs[route] = routeDocs;
+			docs = { ...docs, ...routeDocs };
 		}
 	}
 
@@ -40,7 +37,7 @@ const generateSwaggerOptions = () => {
 	const docs = aggregateDocs();
 
 	return {
-		definition: {
+		swaggerDefinition: {
 			openapi: "3.0.0",
 			info: {
 				title: "API Documentation",
@@ -62,3 +59,13 @@ const swaggerSpec = swaggerJSDoc(generateSwaggerOptions());
 export const setupSwagger = (router: Router) => {
 	router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
+
+// Preload documentation
+const preloadDocs = () => {
+	console.log("Preloading API documentation...");
+	aggregateDocs();
+	console.log("API documentation preloaded.");
+};
+
+// Call preloadDocs immediately
+preloadDocs();
