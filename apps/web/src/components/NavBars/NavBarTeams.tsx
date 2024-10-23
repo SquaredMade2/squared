@@ -20,7 +20,8 @@ const NavBarTeams = ({
 	useEffect(() => {
 		if (!currentWorkspace) return;
 		getAllTeams(currentWorkspace.id);
-	}, []);
+	}, [currentWorkspace, getAllTeams]);
+
 	const router = useRouter();
 
 	const handleActiveParams = (param: string): void => {
@@ -39,40 +40,35 @@ const NavBarTeams = ({
 			await getAllTasks(team.id);
 		}
 	};
+
 	const currentTeam = teams.find((team) => team.identifier === teamIdentifier);
 	if (!currentTeam) return null;
 
 	return (
-		<div className="w-full z-10">
+		<div className="w-full z-10 space-y-1">
 			<Button
 				variant={currentPage === "all" && active ? "secondary" : "ghost"}
 				onClick={() => handleActiveParams("all")}
 				className="w-full justify-start h-6"
 			>
-				<div className="mr-2 p-0.5 rounded">
-					<Copy className={"size-4 text-muted-foreground hover:text-accent"} />
-				</div>
+				<Copy className="mr-2 size-4 text-muted-foreground" />
 				<p>Tasks</p>
 			</Button>
-			<div className="ml-2">
-				<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
-					<Button
-						variant={currentPage === "active" && active ? "secondary" : "ghost"}
-						onClick={() => handleActiveParams("active")}
-						className="w-full justify-start h-6 pl-3"
-					>
-						Active
-					</Button>
-					<Button
-						variant={
-							currentPage === "backlog" && active ? "secondary" : "ghost"
-						}
-						onClick={() => handleActiveParams("backlog")}
-						className="w-full justify-start h-6 pl-3"
-					>
-						Backlog
-					</Button>
-				</div>
+			<div className="border-l border-border pl-2 ml-4 my-0.5">
+				<Button
+					variant={currentPage === "active" && active ? "secondary" : "ghost"}
+					onClick={() => handleActiveParams("active")}
+					className="w-full justify-start h-6 pl-3 pr-0"
+				>
+					Active
+				</Button>
+				<Button
+					variant={currentPage === "backlog" && active ? "secondary" : "ghost"}
+					onClick={() => handleActiveParams("backlog")}
+					className="w-full justify-start h-6 pl-3 pr-0"
+				>
+					Backlog
+				</Button>
 			</div>
 			{currentTeam.sprintsEnabled && (
 				<>
@@ -83,48 +79,41 @@ const NavBarTeams = ({
 						onClick={() => handleActiveParams("sprints")}
 						className="w-full justify-start h-6"
 					>
-						<div className="mr-2 p-0.5 rounded">
-							<Activity
-								className={"size-4 text-muted-foreground hover:text-accent"}
-							/>
-						</div>
+						<Activity className="mr-2 size-4 text-muted-foreground" />
 						<p>Sprints</p>
 					</Button>
-					<div className="ml-2">
-						<div className="w-full border-l border-border pl-2 ml-4 my-0.5">
-							<Button
-								variant={
-									currentPage === "current" && active ? "secondary" : "ghost"
-								}
-								onClick={() => handleActiveParams("sprints/current")}
-								className="w-full justify-start h-6 pl-3"
-							>
-								Current Sprint
-							</Button>
-							<Button
-								variant={
-									currentPage === "upcoming" && active ? "secondary" : "ghost"
-								}
-								onClick={() => handleActiveParams("sprints/upcoming")}
-								className="w-full justify-start h-6 pl-3"
-							>
-								Upcoming
-							</Button>
-						</div>
+					<div className="border-l border-border pl-2 ml-4 my-0.5">
+						<Button
+							variant={
+								currentPage === "current" && active ? "secondary" : "ghost"
+							}
+							onClick={() => handleActiveParams("sprints/current")}
+							className="w-full justify-start h-6 pl-3 pr-0"
+						>
+							Current Sprint
+						</Button>
+						<Button
+							variant={
+								currentPage === "upcoming" && active ? "secondary" : "ghost"
+							}
+							onClick={() => handleActiveParams("sprints/upcoming")}
+							className="w-full justify-start h-6 pl-3 pr-0"
+						>
+							Upcoming
+						</Button>
 					</div>
 				</>
 			)}
-			<Link href={`/${currentWorkspace?.url}/team/${teamIdentifier}/views`}>
+			<Link
+				href={`/${currentWorkspace?.url}/team/${teamIdentifier}/views`}
+				className="block"
+			>
 				<Button
 					variant={currentPage === "views" && active ? "secondary" : "ghost"}
 					onClick={() => handleActiveParams("views")}
 					className="w-full justify-start h-6"
 				>
-					<div className="mr-2 p-0.5 rounded">
-						<Layers3
-							className={"size-4 hover:text-foreground text-muted-foreground"}
-						/>
-					</div>
+					<Layers3 className="mr-2 size-4 text-muted-foreground" />
 					<p>Views</p>
 				</Button>
 			</Link>
