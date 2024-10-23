@@ -1,7 +1,12 @@
+import "dotenv/config";
+
 const NUM_USERS = 8;
 const NUM_WORKSPACES = 2;
 const NUM_TEAMS = 4;
 const NUM_TASKS = 8;
+
+const SEED_NAME = process.env.SEED_NAME;
+const SEED_EMAIL = process.env.SEED_EMAIL;
 
 export const usersPerWorkspace = NUM_USERS / NUM_WORKSPACES;
 export const usersPerTeam = NUM_USERS / NUM_TEAMS;
@@ -9,9 +14,9 @@ export const usersPerTeam = NUM_USERS / NUM_TEAMS;
 export const users = [
 	{
 		id: "141d7ad2-46e8-40f1-b66a-e3477000a1c7",
-		name: "Joana Morissette",
-		username: "Joana.Morissette",
-		email: "Joana_Morissette44@hotmail.com",
+		name: SEED_NAME || "Joana Morissette",
+		username: SEED_NAME?.replace(" ", "") || "Joana.Morissette",
+		email: SEED_EMAIL || "Joana_Morissette44@hotmail.com",
 	},
 	{
 		id: "176114be-7f4e-4c5b-8855-fd760eafe6ba",

@@ -41,12 +41,7 @@ async function seedTestDB() {
 	});
 
 	await prisma.team.createMany({
-		data: teams.map((t) => ({
-			id: t.id as string,
-			workspaceId: t.workspaceId as string,
-			name: t.name as string,
-			identifier: t.identifier as string,
-		})),
+		data: teams,
 	});
 
 	const userTeamRelations = teams.flatMap((t, idx) =>
@@ -62,14 +57,7 @@ async function seedTestDB() {
 	});
 
 	await prisma.task.createMany({
-		data: tasks.map((t) => ({
-			id: t.id as string,
-			authorId: t.authorId as string,
-			identifier: t.identifier as string,
-			workspaceId: t.workspaceId as string,
-			teamId: t.teamId as string,
-			title: t.title as string,
-		})),
+		data: tasks,
 	});
 }
 
