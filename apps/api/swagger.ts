@@ -1,21 +1,23 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import type { Router } from "express";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import path from "node:path";
 import schemas from "./schemas";
 
+const API_DIR = path.join(__dirname, "src", "api");
+
 // Function to recursively scan for index.docs.ts files
-function scanForDocs(dir: string): Record<string, string> {
+async function scanForDocs(dir: string): Promise<Record<string, string>> {
 	let docs: Record<string, string> = {};
-	const files = fs.readdirSync(dir);
+	const files = await fs.readdir(dir);
 
 	for (const file of files) {
 		const filePath = path.join(dir, file);
-		const stat = fs.statSync(filePath);
+		const stat = await fs.stat(filePath);
 
 		if (stat.isDirectory()) {
-			const subDocs = scanForDocs(filePath);
+			const subDocs = await scanForDocs(filePath);
 			docs = { ...docs, ...subDocs };
 		} else if (file === "index.docs.ts") {
 			const routeDocs = require(filePath).default;
@@ -27,14 +29,16 @@ function scanForDocs(dir: string): Record<string, string> {
 }
 
 // Aggregate documentation from all index.docs.ts files
-const aggregateDocs = () => {
-	const apiDir = path.join(__dirname, "src", "api");
-	return scanForDocs(apiDir);
-};
+async function aggregateDocs(): Promise<Record<string, string>> {
+	console.log("Aggregating API documentation...");
+	const docs = await scanForDocs(API_DIR);
+	console.log("API documentation aggregated.");
+	return docs;
+}
 
 // Generate Swagger options
-const generateSwaggerOptions = () => {
-	const docs = aggregateDocs();
+async function generateSwaggerOptions() {
+	const docs = await aggregateDocs();
 
 	return {
 		swaggerDefinition: {
@@ -50,22 +54,16 @@ const generateSwaggerOptions = () => {
 		},
 		apis: [],
 	};
-};
-
-// Generate Swagger specification
-const swaggerSpec = swaggerJSDoc(generateSwaggerOptions());
+}
 
 // Setup Swagger
-export const setupSwagger = (router: Router) => {
+export const setupSwagger = async (router: Router) => {
+	const swaggerSpec = await swaggerJSDoc(await generateSwaggerOptions());
+
 	router.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-};
 
-// Preload documentation
-const preloadDocs = () => {
-	console.log("Preloading API documentation...");
-	aggregateDocs();
-	console.log("API documentation preloaded.");
+	router.get("/api-docs.json", (_, res) => {
+		res.setHeader("Content-Type", "application/json");
+		res.send(swaggerSpec);
+	});
 };
-
-// Call preloadDocs immediately
-preloadDocs();
