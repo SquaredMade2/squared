@@ -1,7 +1,8 @@
 import { Status, Priority } from "@repo/db";
 import type { Team, User, Workspace } from "@repo/db";
 import { faker } from "@faker-js/faker";
-import { prisma, hashPassword } from "./helpers";
+import { hashPassword } from "./hash-password";
+import { prisma } from ".";
 import "dotenv/config";
 
 async function addMainUser() {

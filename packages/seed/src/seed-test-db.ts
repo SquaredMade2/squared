@@ -1,48 +1,47 @@
-import { prisma, hashPassword } from "./helpers";
+import { prisma } from ".";
+import { hashPassword } from "./hash-password";
 import {
-	seedUsers,
-	seedWorkspaces,
-	seedTeams,
-	seedTasks,
+	users,
+	workspaces,
+	teams,
+	tasks,
 	usersPerWorkspace,
 	usersPerTeam,
 } from "./seed-test-data";
 import "dotenv/config";
 
 async function seedTestDB() {
-	const seedUsersWithPasswords = await Promise.all(
-		seedUsers.map(async (u) => ({
+	const usersWithPasswords = await Promise.all(
+		users.map(async (u) => ({
 			...u,
 			password: await hashPassword(process.env.SEED_PASSWORD ?? ""),
 		})),
 	);
 
 	await prisma.user.createMany({
-		data: seedUsersWithPasswords,
+		data: usersWithPasswords,
 	});
 
 	await prisma.workspace.createMany({
-		data: seedWorkspaces,
+		data: workspaces,
 	});
 
-	// add users to workspaces
-	seedWorkspaces.map(async (wspace, idx) => {
-		await prisma.workspace.update({
-			where: {
-				id: wspace.id,
-			},
-			data: {
-				Users: {
-					create: seedUsers
-						.slice(idx * usersPerWorkspace, (idx + 1) * usersPerWorkspace)
-						.map((u) => ({ userId: u.id as string })),
-				},
-			},
-		});
+	const userWorkspaceRelations = workspaces.flatMap((wspace, idx) =>
+		users
+			.slice(idx * usersPerWorkspace, (idx + 1) * usersPerWorkspace)
+			.map((u) => ({
+				userId: u.id,
+				workspaceId: wspace.id,
+			})),
+	);
+
+	// create user-workspace relationships in bulk
+	await prisma.userWorkspace.createMany({
+		data: userWorkspaceRelations,
 	});
 
 	await prisma.team.createMany({
-		data: seedTeams.map((t) => ({
+		data: teams.map((t) => ({
 			id: t.id as string,
 			workspaceId: t.workspaceId as string,
 			name: t.name as string,
@@ -50,24 +49,20 @@ async function seedTestDB() {
 		})),
 	});
 
-	// add users to teams
-	seedTeams.map(async (t, idx) => {
-		await prisma.team.update({
-			where: {
-				id: t.id,
-			},
-			data: {
-				Users: {
-					create: seedUsers
-						.slice(idx * usersPerTeam, (idx + 1) * usersPerTeam)
-						.map((u) => ({ userId: u.id as string })),
-				},
-			},
-		});
+	const userTeamRelations = teams.flatMap((t, idx) =>
+		users.slice(idx * usersPerTeam, (idx + 1) * usersPerTeam).map((u) => ({
+			userId: u.id,
+			teamId: t.id,
+		})),
+	);
+
+	// create user-team relationships in bulk
+	await prisma.userTeam.createMany({
+		data: userTeamRelations,
 	});
 
 	await prisma.task.createMany({
-		data: seedTasks.map((t) => ({
+		data: tasks.map((t) => ({
 			id: t.id as string,
 			authorId: t.authorId as string,
 			identifier: t.identifier as string,
@@ -80,7 +75,7 @@ async function seedTestDB() {
 
 seedTestDB()
 	.then(() => {
-		console.log("Seed completed");
+		console.log("Seeding for tests completed");
 		return prisma.$disconnect();
 	})
 	.catch((e) => {
