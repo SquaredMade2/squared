@@ -1,13 +1,13 @@
 import request from "supertest";
 import testHost from "@/utils/testHost";
-import { seedUsers } from "@repo/seed";
+import { users } from "@repo/seed";
 
 describe("/auth", () => {
 	it("should not allow registering users that already exist", async () => {
 		const res = await request(testHost)
 			.post("/auth")
 			.send({
-				...seedUsers[0],
+				...users[0],
 				password: "testing123",
 				provider: "credentials",
 				type: "register",

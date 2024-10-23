@@ -1,11 +1,11 @@
 import request from "supertest";
 import testHost from "@/utils/testHost";
-import { seedTasks, prisma } from "@repo/seed";
+import { tasks, prisma } from "@repo/seed";
 import { v4 as uuidv4 } from "uuid";
 
 describe("/task/[taskId]", () => {
 	it("should GET a seeded task", async () => {
-		const seededTask = seedTasks[0];
+		const seededTask = tasks[0];
 		const res = await request(testHost).get(`/task/${seededTask.id}`);
 		expect(res.body.data).toMatchObject(seededTask);
 	});
@@ -18,7 +18,7 @@ describe("/task/[taskId]", () => {
 	});
 
 	it("should DELETE a task", async () => {
-		const seededTask = seedTasks[1];
+		const seededTask = tasks[1];
 		await request(testHost).delete(`/task/${seededTask.id}`);
 
 		const deletedTask = await prisma.user.findUnique({
