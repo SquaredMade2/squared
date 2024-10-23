@@ -2,6 +2,8 @@ name: CI Pipeline
 
 on:
   pull_request:
+    branches:
+      - "init-backend-api-testing"
 
 jobs:
   ci:
