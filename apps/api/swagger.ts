@@ -4,8 +4,13 @@ import type { Router } from "express";
 import fs from "node:fs/promises";
 import path from "node:path";
 import schemas from "./schemas";
+import createCustomLogger from "@squared/logger";
 
 const API_DIR = path.join(__dirname, "src", "api");
+const logger = createCustomLogger({
+	service: "swagger-service",
+	prefix: "SWAGGER",
+});
 
 // Function to recursively scan for index.docs.ts files
 async function scanForDocs(dir: string): Promise<Record<string, string>> {
@@ -30,9 +35,9 @@ async function scanForDocs(dir: string): Promise<Record<string, string>> {
 
 // Aggregate documentation from all index.docs.ts files
 async function aggregateDocs(): Promise<Record<string, string>> {
-	console.log("Aggregating API documentation...");
+	logger.info("Aggregating API documentation...");
 	const docs = await scanForDocs(API_DIR);
-	console.log("API documentation aggregated.");
+	logger.info("API documentation aggregated.");
 	return docs;
 }
 
