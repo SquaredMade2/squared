@@ -7,7 +7,7 @@ import { IconSunLow } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 
 export function ModeToggle() {
-	const { theme, setTheme } = useTheme();
+	const { resolvedTheme, setTheme } = useTheme();
 
 	const [isClient, setIsClient] = React.useState(false);
 
@@ -20,13 +20,13 @@ export function ModeToggle() {
 			// biome-ignore lint/a11y/useButtonType: Came with template
 			<button
 				onClick={() => {
-					theme === "dark" ? setTheme("light") : setTheme("dark");
+					resolvedTheme === "dark" ? setTheme("light") : setTheme("dark");
 				}}
 				className="w-10 h-10 flex hover:bg-gray-50 dark:hover:bg-background-navBarHover rounded-lg items-center justify-center outline-none focus:ring-0 focus:outline-none active:ring-0 active:outline-none overflow-hidden"
 			>
-				{theme === "light" && (
+				{resolvedTheme === "light" && (
 					<motion.div
-						key={theme}
+						key={resolvedTheme}
 						initial={{
 							x: 40,
 							opacity: 0,
@@ -44,9 +44,9 @@ export function ModeToggle() {
 					</motion.div>
 				)}
 
-				{theme === "dark" && (
+				{resolvedTheme === "dark" && (
 					<motion.div
-						key={theme}
+						key={resolvedTheme}
 						initial={{
 							x: 40,
 							opacity: 0,
