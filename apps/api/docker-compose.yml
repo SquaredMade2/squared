@@ -11,6 +11,7 @@ services:
       POSTGRES_DB: squared-test
       POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5432/squared-test?schema=public
       TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5432/squared-test?schema=public
+      SEED_PASSWORD: testing123
     ports:
       - "5433:5432"
 
@@ -27,4 +28,5 @@ services:
       GITHUB_CLIENT_ID: test
       GITHUB_CLIENT_SECRET: test 
       JWT_SECRET: test 
+      PORT: 5173
   

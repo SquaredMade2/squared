@@ -11,6 +11,9 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		}
 	},
 	"include": ["src/index.ts"],
 	"exclude": ["node_modules", "generated"]
