@@ -2,18 +2,12 @@ const schemas = {
 	Task: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the task",
-			},
+			id: { type: "string", description: "Unique identifier for the task" },
 			authorId: {
 				type: "string",
 				description: "ID of the author who created the task",
 			},
-			title: {
-				type: "string",
-				description: "Title of the task",
-			},
+			title: { type: "string", description: "Title of the task" },
 			description: {
 				type: "string",
 				description: "Detailed description of the task",
@@ -24,8 +18,8 @@ const schemas = {
 					"backlog",
 					"todo",
 					"inProgress",
-					"done",
 					"inReview",
+					"done",
 					"canceled",
 					"archived",
 				],
@@ -42,10 +36,7 @@ const schemas = {
 			},
 			labels: {
 				type: "array",
-				items: {
-					type: "string",
-					enum: ["Bug", "Feature", "Improvement", "Red", "Test"],
-				},
+				items: { type: "string" },
 				description: "Labels associated with the task",
 			},
 			dueDate: {
@@ -83,19 +74,25 @@ const schemas = {
 				type: "boolean",
 				description: "Flag indicating whether the task has been deleted",
 			},
+			workspaceId: {
+				type: "string",
+				description: "ID of the workspace associated with the task",
+			},
+			parentId: {
+				type: "string",
+				description: "ID of the parent task, if any",
+			},
+			sprintId: {
+				type: "string",
+				description: "ID of the sprint associated with the task",
+			},
 		},
 	},
 	Team: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the team",
-			},
-			name: {
-				type: "string",
-				description: "Name of the team",
-			},
+			id: { type: "string", description: "Unique identifier for the team" },
+			name: { type: "string", description: "Name of the team" },
 			identifier: {
 				type: "string",
 				description: "Unique identifier within the workspace",
@@ -104,15 +101,41 @@ const schemas = {
 				type: "string",
 				description: "ID of the workspace associated with the team",
 			},
+			sprintsEnabled: {
+				type: "boolean",
+				description: "Flag indicating if sprints are enabled for the team",
+			},
+			sprintDuration: {
+				type: "integer",
+				description: "Duration of sprints in weeks",
+			},
+			cooldownDuration: {
+				type: "integer",
+				description: "Duration of cooldown period in weeks",
+			},
+			upcomingSprints: {
+				type: "integer",
+				description: "Number of upcoming sprints",
+			},
+			activeRequired: {
+				type: "boolean",
+				description: "Flag indicating if an active sprint is required",
+			},
+			sprintStartDate: {
+				type: "string",
+				format: "date-time",
+				description: "Start date of the current sprint",
+			},
+			tasksPerSprint: {
+				type: "integer",
+				description: "Number of tasks per sprint",
+			},
 		},
 	},
 	Activity: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the activity",
-			},
+			id: { type: "string", description: "Unique identifier for the activity" },
 			createdAt: {
 				type: "string",
 				format: "date-time",
@@ -142,11 +165,8 @@ const schemas = {
 	Commit: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the commit",
-			},
-			tree_id: {
+			id: { type: "string", description: "Unique identifier for the commit" },
+			treeId: {
 				type: "string",
 				description: "Tree ID associated with the commit",
 			},
@@ -154,13 +174,9 @@ const schemas = {
 				type: "boolean",
 				description: "Indicates if the commit is distinct",
 			},
-			message: {
-				type: "string",
-				description: "Commit message",
-			},
+			message: { type: "string", description: "Commit message" },
 			timestamp: {
 				type: "string",
-				format: "date-time",
 				description: "Timestamp when the commit was made",
 			},
 			url: {
@@ -179,46 +195,32 @@ const schemas = {
 				type: "string",
 				description: "Username of the author who made the commit",
 			},
-			committerName: {
-				type: "string",
-				description: "Name of the committer",
-			},
-			committerEmail: {
-				type: "string",
-				description: "Email of the committer",
-			},
+			committerName: { type: "string", description: "Name of the committer" },
+			committerEmail: { type: "string", description: "Email of the committer" },
 			committerUsername: {
 				type: "string",
 				description: "Username of the committer",
 			},
 			added: {
 				type: "array",
-				items: {
-					type: "string",
-				},
+				items: { type: "string" },
 				description: "List of files added in the commit",
 			},
 			removed: {
 				type: "array",
-				items: {
-					type: "string",
-				},
+				items: { type: "string" },
 				description: "List of files removed in the commit",
 			},
 			modified: {
 				type: "array",
-				items: {
-					type: "string",
-				},
+				items: { type: "string" },
 				description: "List of files modified in the commit",
 			},
-			repoName: {
+			repoName: { type: "string", description: "Name of the repository" },
+			owner: { type: "string", description: "Owner of the repository" },
+			activityId: {
 				type: "string",
-				description: "Name of the repository",
-			},
-			owner: {
-				type: "string",
-				description: "Owner of the repository",
+				description: "ID of the associated activity",
 			},
 		},
 	},
@@ -229,10 +231,7 @@ const schemas = {
 				type: "string",
 				description: "Unique identifier for the task event",
 			},
-			type: {
-				type: "string",
-				description: "Type of the task event",
-			},
+			type: { type: "string", description: "Type of the task event" },
 			authorId: {
 				type: "string",
 				description: "ID of the author who made the task event",
@@ -241,10 +240,18 @@ const schemas = {
 				type: "string",
 				description: "Name of the author who made the task event",
 			},
+			activityId: {
+				type: "string",
+				description: "ID of the associated activity",
+			},
 			createdAt: {
 				type: "string",
 				format: "date-time",
 				description: "Timestamp when the task event was created",
+			},
+			taskId: {
+				type: "string",
+				description: "ID of the task associated with the event",
 			},
 			originalValue: {
 				type: "string",
@@ -270,20 +277,15 @@ const schemas = {
 				type: "string",
 				description: "Name of the updated assignee after the task event",
 			},
+			gitUpdated: { type: "string", description: "Git update information" },
 			originalLabels: {
 				type: "array",
-				items: {
-					type: "string",
-					enum: ["Bug", "Feature", "Improvement", "Red", "Test"],
-				},
+				items: { type: "string" },
 				description: "Original labels before the task event",
 			},
 			updatedLabels: {
 				type: "array",
-				items: {
-					type: "string",
-					enum: ["Bug", "Feature", "Improvement", "Red", "Test"],
-				},
+				items: { type: "string" },
 				description: "Updated labels after the task event",
 			},
 		},
@@ -314,13 +316,10 @@ const schemas = {
 			},
 			activities: {
 				type: "array",
-				items: {
-					$ref: "#/components/schemas/Activity",
-				},
+				items: { $ref: "#/components/schemas/Activity" },
 				description: "List of activities associated with this task event log",
 			},
 		},
-		required: ["id", "authorId", "authorName", "createdAt", "taskId"],
 	},
 	Workspace: {
 		type: "object",
@@ -329,57 +328,73 @@ const schemas = {
 				type: "string",
 				description: "Unique identifier for the workspace",
 			},
-			name: {
-				type: "string",
-				description: "Name of the workspace",
-			},
-			url: {
-				type: "string",
-				description: "URL of the workspace",
-			},
+			name: { type: "string", description: "Name of the workspace" },
+			url: { type: "string", description: "URL of the workspace" },
 			companySize: {
-				type: "number",
+				type: "integer",
 				description: "Size of the company associated with the workspace",
 			},
 			tasksCreated: {
-				type: "number",
-				description: "Number of issues created in the workspace",
+				type: "integer",
+				description: "Number of tasks created in the workspace",
 			},
 			universalTokenLinkId: {
 				type: "string",
 				description:
 					"ID of the universal token link associated with the workspace",
 			},
+			avatarUrl: { type: "string", description: "URL of the workspace avatar" },
+			admins: {
+				type: "array",
+				items: { type: "string" },
+				description: "List of admin user IDs",
+			},
 		},
 	},
 	User: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the user",
+			id: { type: "string", description: "Unique identifier for the user" },
+			name: { type: "string", description: "Name of the user" },
+			username: { type: "string", description: "Username of the user" },
+			email: { type: "string", description: "Email of the user" },
+			verified: {
+				type: "boolean",
+				description: "Indicates if the user's email is verified",
 			},
-			name: {
+			lastLogin: {
 				type: "string",
-				description: "Name of the user",
+				format: "date-time",
+				description: "Timestamp of the user's last login",
 			},
-			identifier: {
+			onBoarding: {
+				type: "boolean",
+				description: "Indicates if the user is in the onboarding process",
+			},
+			defaultWorkspaceId: {
 				type: "string",
-				description: "Unique identifier within the workspace",
+				description: "ID of the user's default workspace",
 			},
-			workspaceId: {
-				type: "string",
-				description: "ID of the workspace associated with the user",
+			avatarUrl: { type: "string", description: "URL of the user's avatar" },
+			savedNotificationIds: {
+				type: "array",
+				items: { type: "string" },
+				description: "List of saved notification IDs",
 			},
+			subscribedTasks: {
+				type: "array",
+				items: { type: "string" },
+				description: "List of subscribed task IDs",
+			},
+			googleId: { type: "string", description: "Google ID for OAuth" },
+			githubUsername: { type: "string", description: "GitHub username" },
+			githubId: { type: "string", description: "GitHub ID for OAuth" },
 		},
 	},
 	Comment: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the comment",
-			},
+			id: { type: "string", description: "Unique identifier for the comment" },
 			comment: {
 				type: "string",
 				description: "The text content of the comment",
@@ -410,14 +425,17 @@ const schemas = {
 				type: "string",
 				description: "ID of the user associated with the notification",
 			},
-			taskIds: {
-				type: "array",
-				items: { type: "string" },
-				description: "Array of task IDs associated with the notification",
+			taskId: {
+				type: "string",
+				description: "ID of the task associated with the notification",
 			},
 			read: {
 				type: "boolean",
 				description: "Indicates whether the notification has been read",
+			},
+			saved: {
+				type: "boolean",
+				description: "Indicates whether the notification has been saved",
 			},
 			description: {
 				type: "string",
@@ -433,30 +451,51 @@ const schemas = {
 				format: "date-time",
 				description: "Date when the notification was last updated",
 			},
+			workspaceId: {
+				type: "string",
+				description: "ID of the workspace associated with the notification",
+			},
+			dismissed: {
+				type: "boolean",
+				description: "Indicates whether the notification has been dismissed",
+			},
+			type: {
+				type: "string",
+				enum: ["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"],
+				description: "Type of the notification",
+			},
 		},
 	},
-	PageFilterModel: {
+	SavedFilter: {
 		type: "object",
 		properties: {
 			id: {
 				type: "string",
-				description: "Unique identifier for the page filter model",
+				description: "Unique identifier for the saved filter",
 			},
-			filterTitle: {
+			name: { type: "string", description: "Name of the filter" },
+			description: { type: "string", description: "Description of the filter" },
+			filter: {
+				type: "array",
+				items: { type: "object" },
+				description: "Filter options",
+			},
+			workspaceId: {
 				type: "string",
-				description: "Title of the filter",
-			},
-			filterOption: {
-				type: "object",
-				description: "Options used in the filter",
-			},
-			filterDescription: {
-				type: "string",
-				description: "Description of the filter",
+				description: "ID of the workspace associated with the filter",
 			},
 			teamId: {
 				type: "string",
 				description: "ID of the team associated with the filter",
+			},
+			authorId: {
+				type: "string",
+				description: "ID of the author who created the filter",
+			},
+			type: {
+				type: "string",
+				enum: ["TEAM", "WORKSPACE"],
+				description: "Type of the saved filter",
 			},
 		},
 	},
@@ -475,6 +514,10 @@ const schemas = {
 				type: "boolean",
 				description: "Indicates whether the token link is enabled",
 			},
+			workspaceId: {
+				type: "string",
+				description: "ID of the workspace associated with the token link",
+			},
 		},
 	},
 	GithubRepoInfo: {
@@ -488,23 +531,14 @@ const schemas = {
 				type: "string",
 				description: "Name of the GitHub repository",
 			},
-			owner: {
-				type: "string",
-				description: "Owner of the GitHub repository",
-			},
+			owner: { type: "string", description: "Owner of the GitHub repository" },
 		},
 	},
 	Project: {
 		type: "object",
 		properties: {
-			id: {
-				type: "string",
-				description: "Unique identifier for the project",
-			},
-			name: {
-				type: "string",
-				description: "Name of the project",
-			},
+			id: { type: "string", description: "Unique identifier for the project" },
+			name: { type: "string", description: "Name of the project" },
 			teamId: {
 				type: "string",
 				description: "ID of the team associated with the project",
@@ -512,6 +546,66 @@ const schemas = {
 			workspaceId: {
 				type: "string",
 				description: "ID of the workspace associated with the project",
+			},
+		},
+	},
+	Sprint: {
+		type: "object",
+		properties: {
+			id: { type: "string", description: "Unique identifier for the sprint" },
+			name: { type: "string", description: "Name of the sprint" },
+			startDate: {
+				type: "string",
+				format: "date-time",
+				description: "Start date of the sprint",
+			},
+			endDate: {
+				type: "string",
+				format: "date-time",
+				description: "End date of the sprint",
+			},
+			status: {
+				type: "string",
+				enum: ["PLANNED", "ACTIVE", "COMPLETED"],
+				description: "Status of the sprint",
+			},
+			teamId: {
+				type: "string",
+				description: "ID of the team associated with the sprint",
+			},
+			createdAt: {
+				type: "string",
+				format: "date-time",
+				description: "Date when the sprint was created",
+			},
+			updatedAt: {
+				type: "string",
+				format: "date-time",
+				description: "Date when the sprint was last updated",
+			},
+		},
+	},
+	RetrospectiveItem: {
+		type: "object",
+		properties: {
+			id: {
+				type: "string",
+				description: "Unique identifier for the retrospective item",
+			},
+			content: {
+				type: "string",
+				description: "Content of the retrospective item",
+			},
+			type: { type: "string", description: "Type of the retrospective item" },
+			createdAt: {
+				type: "string",
+				format: "date-time",
+				description: "Date when the item was created",
+			},
+			updatedAt: {
+				type: "string",
+				format: "date-time",
+				description: "Date when the item was last updated",
 			},
 		},
 	},
