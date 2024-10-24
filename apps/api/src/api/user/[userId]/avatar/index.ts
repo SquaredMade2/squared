@@ -1,5 +1,6 @@
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	userId: string;
@@ -10,12 +11,14 @@ type UserAvatar = {
 	name: string;
 	avatarUrl: string | null;
 };
+const logger = createCustomLogger("user");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { userId }): Promise<APIResponse<UserAvatar[]>> => {
 			try {
 				// Step 1: Get the workspaces the user belongs to
+				logger.info("Fetching workspaces for user: %s", userId);
 				const userWorkspaces = await prisma.userWorkspace.findMany({
 					where: { userId },
 					select: {
@@ -59,7 +62,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (err) {
-				console.error("Error fetching users in the same workspaces:", err);
+				logger.error("Error fetching users in the same workspaces: %0", err);
 				res.status(500);
 				return {
 					data: null,

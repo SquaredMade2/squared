@@ -1,6 +1,7 @@
 import type { Route } from "@/api/route";
 import { prisma } from "@/api";
 import { v4 as uuidv4 } from "uuid";
+import createCustomLogger from "@squared/logger";
 
 type GitHubWebhookPayload = {
 	action?: string;
@@ -47,9 +48,12 @@ type GitHubWebhookPayload = {
 
 type Params = Record<string, never>;
 
+const logger = createCustomLogger("integrations");
+
 export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, _, body): Promise<void> => {
+			logger.info("Received GitHub webhook");
 			const payload: GitHubWebhookPayload = body;
 			const eventType = res.req.headers["x-github-event"];
 
@@ -70,9 +74,7 @@ export function createRoute(): Route<Params> {
 
 				res.status(204).json({ message: "No relevant event type" });
 			} catch (error) {
-				console.error(
-					`Error handling webhook: ${error instanceof Error ? error.message : error}`,
-				);
+				logger.error("Error handling webhook: %0", error);
 				res.status(500).json({
 					message: `Error during webhook: ${error instanceof Error && `: ${error.message}`}`,
 				});
@@ -94,10 +96,10 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 	// Handle repository removal
 	for (const repo of repositoriesRemoved) {
 		if (!repo.full_name || !githubUsername) {
-			console.error(
-				`Missing repository data for removal: ${
-					!repo.full_name ? "Repository name " : ""
-				} ${!githubUsername ? "Repository owner" : ""}`,
+			logger.error(
+				"Missing repository data for removal: %s %s",
+				repo.full_name ?? "Repository name",
+				githubUsername ?? "Repository owner",
 			);
 			continue;
 		}
@@ -136,8 +138,9 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 				},
 			});
 		} else {
-			console.error(
-				`Repository ${repo.full_name} still linked to other workspaces or does not exist.`,
+			logger.error(
+				"Repository %s still linked to other workspaces or does not exist.",
+				repo.full_name,
 			);
 		}
 	}
@@ -145,10 +148,10 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 	// Handle repository addition
 	for (const repo of repositoriesAdded) {
 		if (!repo.full_name || !githubUsername) {
-			console.error(
-				`Missing repository data for addition: ${
-					!repo.full_name ? "Repository name " : ""
-				} ${!githubUsername ? "Repository owner" : ""}`,
+			logger.error(
+				"Missing repository data for removal: %s %s",
+				repo.full_name ?? "Repository name",
+				githubUsername ?? "Repository owner",
 			);
 			continue;
 		}

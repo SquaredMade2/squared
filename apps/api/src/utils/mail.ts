@@ -1,3 +1,4 @@
+import type { Logger } from "@squared/logger";
 import { createTransport } from "nodemailer";
 
 const EMAIL_USERNAME = process.env.EMAIL_USERNAME;
@@ -21,10 +22,12 @@ export const sendMail = async ({
 	email,
 	subject,
 	html,
+	logger,
 }: {
 	email: string;
 	subject: string;
 	html: string;
+	logger: Logger;
 }) => {
 	try {
 		const sendResult = await transporter.sendMail({
@@ -47,7 +50,7 @@ export const sendMail = async ({
 		});
 		return sendResult;
 	} catch (error) {
-		console.error("Error sending email:", error);
+		logger.error("Error sending email: %0", error);
 		throw error;
 	}
 };

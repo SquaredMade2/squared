@@ -1,10 +1,13 @@
 import type { Workspace } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	workspaceId: string;
 };
+
+const logger = createCustomLogger("workspace");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -34,7 +37,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding workspace:", error);
+				logger.error("Error finding workspace: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -70,7 +73,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating workspace:", error);
+				logger.error("Error updating workspace: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -92,7 +95,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (existingWorkspace) {
-					console.error("Workspace already exists");
+					logger.error("Workspace already exists");
 					return {
 						data: null,
 						message: "Workspace already exists",
@@ -137,7 +140,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!newWorkspace) {
-					console.error("Workspace not created");
+					logger.error("Workspace not created");
 					res.status(500);
 					return {
 						data: null,
@@ -166,7 +169,7 @@ export function createRoute(): Route<Params> {
 					message: "Workspace created successfully",
 				};
 			} catch (error) {
-				console.error("Error creating workspace:", error);
+				logger.error("Error creating workspace: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -195,7 +198,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error deleting workspace:", error);
+				logger.error("Error deleting workspace: %0", error);
 				res.status(500);
 				return {
 					data: null,
