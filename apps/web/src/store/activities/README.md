@@ -34,11 +34,11 @@ type ActivityType = {
 The `addTaskEvent` method adds a new task event to the store and sends it to the backend via an API call.
 
 ```typescript
-addTaskEvent(
+addTaskEvent: (
   event: TaskEvent, // Task event object to be added
   taskId: string,   // ID of the task associated with the event
   authorId: string  // ID of the user creating the event
-): Promise<TaskEvent | null>
+) => Promise<TaskEvent | null>
 ```
 
 ### `addCommitEvent`
@@ -46,11 +46,11 @@ addTaskEvent(
 The `addCommitEvent` method adds a new commit event to the store and sends it to the backend via an API call.
 
 ```typescript
-addCommitEvent(
+addCommitEvent: (
   event: Commit,    // Commit event object to be added
   taskId: string,   // ID of the task related to the commit
   authorId: string  // ID of the user creating the commit
-): Promise<Commit | null>;
+) => Promise<Commit | null>;
 ```
 
 ### `getTaskEvents`
@@ -58,9 +58,9 @@ addCommitEvent(
 The getTaskEvents method fetches all task-related events for a specific task and updates the store's state.
 
 ```typescript
-getTaskEvents(
+getTaskEvents: (
   taskId: string // ID of the task whose events are being fetched
-  ): Promise<ActivityType[]>;
+  ) => Promise<ActivityType[]>;
 ```
 
 ## Session Persistence
