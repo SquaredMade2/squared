@@ -11,16 +11,8 @@ const logLevels = {
 	silly: 6,
 };
 
-// Create a type for the options we'll accept
-type LoggerOptions = {
-	service?: string;
-	prefix?: string;
-};
-
 // Create the logger factory function
-function createCustomLogger(options: LoggerOptions = {}): Logger {
-	const { service = "default-service", prefix = "" } = options;
-
+function createCustomLogger(prefix: string): Logger {
 	const logger = createLogger({
 		levels: logLevels,
 		level: process.env.LOG_LEVEL || "info",
@@ -28,15 +20,11 @@ function createCustomLogger(options: LoggerOptions = {}): Logger {
 			format.timestamp(),
 			format.errors({ stack: true }),
 			format.splat(),
-			format.json(),
-			format.printf(({ timestamp, level, message, ...meta }) => {
-				const prefixString = prefix ? `[${prefix}] ` : "";
-				return `${timestamp} ${level.toUpperCase()}: ${prefixString}${message} ${
-					Object.keys(meta).length ? JSON.stringify(meta) : ""
-				}`;
+			format.simple(),
+			format.printf(({ level, message, prefix, timestamp }) => {
+				return `${timestamp} [${prefix}] ${level}: ${message}`;
 			}),
 		),
-		defaultMeta: { service },
 		transports: [
 			new transports.File({ filename: "error.log", level: "error" }),
 			new transports.File({ filename: "combined.log" }),

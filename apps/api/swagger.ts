@@ -7,10 +7,7 @@ import schemas from "./schemas";
 import createCustomLogger from "@squared/logger";
 
 const API_DIR = path.join(__dirname, "src", "api");
-const logger = createCustomLogger({
-	service: "swagger-service",
-	prefix: "SWAGGER",
-});
+const logger = createCustomLogger("swagger");
 
 // Function to recursively scan for index.docs.ts files
 async function scanForDocs(dir: string): Promise<Record<string, string>> {

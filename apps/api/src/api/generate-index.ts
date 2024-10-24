@@ -37,10 +37,7 @@ export const prisma = new PrismaClient({
 	},
 });
 
-const logger = createCustomLogger({
-	service: "api-service",
-	prefix: "API",
-});
+const logger = createCustomLogger("api");
 
 `);
 
@@ -152,7 +149,7 @@ io.on('connection', (socket) => {
 
   socket.on('joinRoom', (sprintId) => {
     socket.join(sprintId);
-	logger.info('User joined room:', sprintId);
+	logger.info('User joined room: %s', sprintId);
   });
 
   socket.on('addItem', (data) => {
@@ -175,16 +172,13 @@ server.listen(port, () => {
 `);
 }
 
-const logger = createCustomLogger({
-	service: "generate-index",
-	prefix: "GEN-INDEX",
-});
+const logger = createCustomLogger("gen-index");
 
 function getRoutes(dir: string): string[] {
 	const files = fs.readdirSync(dir);
 	const routes: string[] = [];
 
-	logger.info("Checking directory:", dir);
+	logger.info("Checking directory: %s", dir);
 
 	files.sort().reverse();
 
@@ -194,7 +188,7 @@ function getRoutes(dir: string): string[] {
 		if (stat.isDirectory()) {
 			routes.push(...getRoutes(path));
 		} else if (path.endsWith("/index.ts")) {
-			logger.info("Found route:", path);
+			logger.info("Found route: %s", path);
 			routes.push(path.replace("/index.ts", ""));
 		}
 	}
@@ -204,4 +198,4 @@ function getRoutes(dir: string): string[] {
 // Call the function to generate the index
 generateIndex();
 
-logger.info("Index file generated at:", outputPath);
+logger.info("Index file generated at: %s", outputPath);

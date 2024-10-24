@@ -16,7 +16,6 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "clean": "rm -rf dist",
     "lint": "biome lint --error-on-warnings ./src",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

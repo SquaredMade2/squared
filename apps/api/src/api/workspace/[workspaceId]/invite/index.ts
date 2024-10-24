@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import type { Route } from "@/api/route";
 import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	workspaceId: string;
@@ -13,6 +14,7 @@ type InviteBody = {
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const logger = createCustomLogger("workspace");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -36,6 +38,7 @@ export function createRoute(): Route<Params> {
 						variant: "destructive",
 					};
 				}
+				logger.info("Inviting user to workspace: %0", { email, workspaceId });
 
 				// Check if the workspace exists
 				const workspace = await prisma.workspace.findUnique({
@@ -79,6 +82,7 @@ export function createRoute(): Route<Params> {
 				)) {
 					const newUser = !existingUsers.some((u) => u.email === email);
 					await sendMail({
+						logger,
 						email,
 						subject: "Workspace Invitation",
 						html: joinWorkspaceTemplate({
@@ -96,7 +100,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error inviting user to workspace:", error);
+				logger.error("Error inviting user to workspace: %0", error);
 				res.status(500);
 				return {
 					data: null,
