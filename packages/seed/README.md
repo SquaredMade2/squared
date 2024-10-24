@@ -11,14 +11,6 @@ A database seeding package built to populate a PostgreSQL database with random t
 - Supports seeding multiple related entities such as tasks, comments, teams, and users.
 - Docker commands to spin up and tear down a PostgreSQL database for local development.
 
-## Installation
-
-The package is private and intended for use within the monorepo. To install it in your workspace, run:
-
-```bash
-pnpm install
-```
-
 ## Usage
 
 ### 1. Seeding the Database
@@ -42,13 +34,13 @@ This command sets `NODE_ENV` to `test` and runs the seed file using `ts-node`. I
 
 The package includes Docker scripts to quickly set up a PostgreSQL database for local development.
 
-#### Start the PostgreSQL Database:
+#### Start the PostgreSQL Database
 
 ```bash
 pnpm run docker:db
 ```
 
-#### Tear Down the PostgreSQL Database:
+#### Tear Down the PostgreSQL Database
 
 ```bash
 pnpm run docker:db:down
