@@ -1,7 +1,7 @@
 import type { Task } from "@repo/db";
 import PriorityDropdown from "./PriorityDropdown";
 import StatusDropdown from "./StatusDropdown";
-import DatePicker from "./DatePicker";
+import DatePicker from "./DesignationsDatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
 import LabelCombobox from "./LabelCombobox";
 import AssigneeCombobox from "./AssigneeCombobox";
