@@ -62,18 +62,80 @@ userLogger.info("User logged in", { userId: 123 });
 - `service`: A string to identify the service or module using the logger (default: "default-service")
 - `prefix`: A string to prefix all log messages (default: "")
 
-### Log Levels
+## Log Levels
 
-The logger supports the following log levels (in order of priority):
+Each log level represents the **severity** or **type of event** being logged. The logger will only output messages at the current log level and those with a higher severity (lower numerical value). For example, if the log level is set to `info`, it will include `info`, `warn`, and `error` messages, but not `debug` or `verbose` messages.
 
-1. error
-2. warn
-3. info
-4. http
-5. verbose
-6. debug
+1. **`error` (Level 0)**:
 
-You can set the log level using the `LOG_LEVEL` environment variable. If not set, it defaults to "info".
+   - **Purpose**: Logs critical failures or errors that prevent a system or application from functioning properly.
+   - **Use Cases**: When a request fails, an uncaught exception occurs, or a critical issue impacts the system's ability to operate.
+   - **Example**:
+
+     ```typescript
+     logger.error("Database connection failed", { errorCode: 500 });
+     ```
+
+2. **`warn` (Level 1)**:
+
+   - **Purpose**: Logs potential issues that could become problems in the future but don't stop the system from functioning.
+   - **Use Cases**: When something unexpected happens, or when the application is functioning but at risk.
+   - **Example**:
+
+     ```typescript
+     logger.warn("Memory usage is nearing the limit", {
+       memoryUsage: "90%",
+     });
+     ```
+
+3. **`info` (Level 2)**:
+
+   - **Purpose**: Logs general information about the application's operation, such as state changes or major events.
+   - **Use Cases**: Informational messages about application events, such as successful requests, system startups, or configurations.
+   - **Example**:
+
+     ```typescript
+     logger.info("User logged in", { userId: 123 });
+     ```
+
+4. **`http` (Level 3)**:
+
+   - **Purpose**: Logs HTTP requests and responses, often used to track API traffic or web server interactions.
+   - **Use Cases**: Logging incoming requests, response times, or status codes for monitoring web server activity.
+   - **Example**:
+
+     ```typescript
+     logger.http("GET /api/users - 200 OK", { duration: "200ms" });
+     ```
+
+5. **`verbose` (Level 4)**:
+
+   - **Purpose**: Logs detailed messages for tracing the flow through the application, providing insight into application behavior.
+   - **Use Cases**: Useful during development or debugging when you need more detailed information about the app's inner workings.
+   - **Example**:
+
+     ```typescript
+     logger.verbose("Processing user login", { userId: 123 });
+     ```
+
+6. **`debug` (Level 5)**:
+
+   - **Purpose**: Logs information helpful for debugging, such as detailed state changes, variable values, or function calls.
+   - **Use Cases**: Typically used for debugging the codebase to help pinpoint issues during development or while diagnosing production problems.
+   - **Example**:
+
+     ```typescript
+     logger.debug("Variable x has value", { x: 42 });
+     ```
+
+### How to Use Log Levels
+
+You can set the log level by configuring the `LOG_LEVEL` environment variable. If it is not set, it defaults to `info`, which means `info`, `warn`, and `error` messages will be logged, but not `debug` or `verbose`.
+
+- **Production**: Commonly set to `warn` or `error` to reduce noise and focus on issues.
+- **Development**: Often set to `debug` or `verbose` for detailed logging of application behavior.
+
+By adjusting the log level, you can control how much information is logged and prevent excessive or irrelevant logging in certain environments (e.g., production vs. development).
 
 ## File Logging
 
