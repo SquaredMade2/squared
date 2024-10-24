@@ -17,7 +17,7 @@ function createCustomLogger(prefix: string): Logger {
 		levels: logLevels,
 		level: process.env.LOG_LEVEL || "info",
 		format: format.combine(
-			format.timestamp(),
+			format.timestamp({ format: "MMM DD HH:mm:ss" }),
 			format.errors({ stack: true }),
 			format.splat(),
 			format.simple(),
