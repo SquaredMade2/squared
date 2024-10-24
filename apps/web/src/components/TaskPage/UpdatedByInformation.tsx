@@ -16,8 +16,6 @@ enum EventType {
 export const UpdatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
 
-	console.log(eventLogs);
-
 	const findLabelAdded = (
 		originalLabels: string[],
 		updatedLabels: string[],
