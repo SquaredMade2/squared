@@ -17,6 +17,8 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 		Status.inReview,
 	];
 
+	const currentSprintStatusGroups: Status[] = [...activeStatusGroups, Status.done];
+
 	let groupedColumns = getGroupedColumns();
 
 	if (groupTasksBy === "Status") {
@@ -27,6 +29,10 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 		} else if (pathname.includes("/backlog")) {
 			groupedColumns = groupedColumns.filter(
 				(column) => column.group === Status.backlog,
+			);
+		} else if (pathname.includes("/sprints/current")) {
+			groupedColumns = groupedColumns.filter((column) =>
+				currentSprintStatusGroups.includes(column.group as Status),
 			);
 		}
 	}
