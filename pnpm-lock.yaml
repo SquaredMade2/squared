@@ -457,6 +457,9 @@ importers:
       '@repo/db':
         specifier: workspace:*
         version: link:../db
+      '@squared/logger':
+        specifier: workspace:*
+        version: link:../logger
       dotenv:
         specifier: ^16.4.1
         version: 16.4.5

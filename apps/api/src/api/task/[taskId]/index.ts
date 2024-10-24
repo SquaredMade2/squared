@@ -220,7 +220,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error deleting task: %0", error);
+				logger.error("Error deleting task: %0", error);
 				res.status(500);
 				return {
 					data: null,

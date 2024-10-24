@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@repo/db": "workspace:*",
+    "@squared/logger": "workspace:*",
     "dotenv": "^16.4.1"
   },
   "devDependencies": {
