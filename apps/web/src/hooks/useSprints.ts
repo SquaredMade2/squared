@@ -9,15 +9,18 @@ export function useSprints() {
 	const [workspace, setWorkspace] = useState<Workspace | null>(null);
 	const [team, setTeam] = useState<Team | null>(null);
 	const [sprints, setSprints] = useState<Sprint[]>([]);
-	const [currentSprint, setCurrentSprint] = useState<Sprint | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
 	const { getWorkspace } = useWorkspaceStore((state) => state);
-	const { getAllTeams, getSprints, getSprintTasks } = useTeamStore(
-		(state) => state,
-	);
+	const {
+		getAllTeams,
+		getSprints,
+		getSprintTasks,
+		setCurrentSprint,
+		currentSprint,
+	} = useTeamStore((state) => state);
 
 	useEffect(() => {
 		async function fetchData() {
