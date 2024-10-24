@@ -1,12 +1,8 @@
-import type { Commit, TaskEvent, Prisma } from "@repo/db";
+import type { Commit, TaskEvent } from "@repo/db";
 
 export type ActivityState = {
-	events: ActivityType[];
+	events: TaskEvent[];
 };
-
-export type ActivityType = Prisma.ActivityGetPayload<{
-	include: { taskEvent: true; commit: true };
-}>;
 
 type ActivityActions = {
 	addTaskEvent: (
@@ -18,8 +14,8 @@ type ActivityActions = {
 		event: Commit,
 		taskId: string,
 		authorId: string,
-	) => Promise<Commit | null>;
-	getTaskEvents: (taskId: string) => Promise<ActivityType[]>;
+	) => Promise<TaskEvent | null>;
+	getTaskEvents: (taskId: string) => Promise<TaskEvent[]>;
 };
 
 export type ActivityStore = ActivityState & ActivityActions;

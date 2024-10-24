@@ -45,7 +45,7 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				// Return the found activities
+				// Return the TaskEventLogs from Activities
 				return {
 					data: taskEventLogWithActivities.TaskEvent,
 					variant: "default",

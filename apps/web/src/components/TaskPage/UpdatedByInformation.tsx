@@ -1,25 +1,22 @@
-import { parseISO } from "date-fns/parseISO";
-import { formatDate } from "date-fns/format";
 import type { TaskEvent } from "@repo/db";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useActivityStore } from "@/store";
-import type { ActivityType } from "@/store/activities";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getInitials } from "@/utils/formatting";
 
 enum EventType {
-	AssigneeUpdated = "assigneeUpdated",
-	LabelsUpdated = "labelsUpdated",
+	TaskCreated = "create",
+	AssigneeUpdated = "assigneeName",
+	StatusUpdated = "status",
+	DescriptionUpdated = "description",
 	TitleUpdated = "titleUpdated",
-	DescriptionUpdated = "descriptionUpdated",
-	GitUpdated = "gitUpdated",
-	CommentUpdated = "commentUpdated",
-	StatusUpdated = "statusUpdated",
-	PriorityUpdated = "priorityUpdated",
+	PriorityUpdated = "priority",
+	LabelsUpdated = "label",
 }
 
 export const UpdatedByInformation = () => {
 	const eventLogs = useActivityStore((state) => state.events);
+
+	console.log(eventLogs);
 
 	const findLabelAdded = (
 		originalLabels: string[],
@@ -76,11 +73,6 @@ export const UpdatedByInformation = () => {
 
 	const displayDescriptionUpdate = (log: TaskEvent) => {
 		const noDescription = log.originalValue?.length === 0;
-		const descriptionUpdated =
-			log.originalValue &&
-			log.originalValue?.length > 0 &&
-			log.updatedValue &&
-			log.updatedValue?.length > 0;
 		if (noDescription) {
 			return (
 				<p>
@@ -89,50 +81,44 @@ export const UpdatedByInformation = () => {
 				</p>
 			);
 		}
-		if (descriptionUpdated) {
-			return (
-				<p>
-					updated description from{" "}
-					<span className="text-foreground">{log.originalValue}</span> to{" "}
-					<span className="text-foreground">{log.updatedValue}</span>
-				</p>
-			);
+		if (!log.updatedValue) {
+			return <p>removed description </p>;
 		}
 		return (
 			<p>
-				removed description{" "}
-				<span className="text-foreground">{log.originalValue}</span>
+				updated description to{" "}
+				<span className="text-foreground">{log.updatedValue}</span>
 			</p>
 		);
 	};
 
-	const displayGitUpdate = (log: TaskEvent) => {
-		const gitUpdateText = log.gitUpdated || "";
-		const urlPattern = /(https?:\/\/[^\s]+)/g;
+	// const displayGitUpdate = (log: TaskEvent) => {
+	// 	const gitUpdateText = log.gitUpdated || "";
+	// 	const urlPattern = /(https?:\/\/[^\s]+)/g;
 
-		// Split the gitUpdateText into an array of strings and URLs
-		const parts = gitUpdateText.split(urlPattern);
+	// 	// Split the gitUpdateText into an array of strings and URLs
+	// 	const parts = gitUpdateText.split(urlPattern);
 
-		return (
-			<p>
-				{parts.map((part) =>
-					urlPattern.test(part) ? (
-						<a
-							key={`-${part}-`}
-							href={part}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-blue-500 underline hover:text-blue-700 font-semibold"
-						>
-							{part}
-						</a>
-					) : (
-						part
-					),
-				)}
-			</p>
-		);
-	};
+	// 	return (
+	// 		<p>
+	// 			{parts.map((part) =>
+	// 				urlPattern.test(part) ? (
+	// 					<a
+	// 						key={`-${part}-`}
+	// 						href={part}
+	// 						target="_blank"
+	// 						rel="noopener noreferrer"
+	// 						className="text-blue-500 underline hover:text-blue-700 font-semibold"
+	// 					>
+	// 						{part}
+	// 					</a>
+	// 				) : (
+	// 					part
+	// 				),
+	// 			)}
+	// 		</p>
+	// 	);
+	// };
 
 	const getAssigneeActions = (
 		originalAssignee: string,
@@ -172,41 +158,46 @@ export const UpdatedByInformation = () => {
 		}
 		return (
 			<p>
-				changed assignee from{" "}
-				<span className="text-foreground">{originalAssigneeId}</span> to{" "}
-				<span className="text-foreground">{updatedAssigneeId}</span>
+				changed assignee to{" "}
+				<span className="text-foreground">{log.updatedValue}</span>
 			</p>
 		);
 	};
 
 	const displayUpdate = (log: TaskEvent) => {
 		switch (log.type) {
+			case EventType.TaskCreated:
+				return (
+					<p>
+						created task{" "}
+						<span className="text-foreground">{log.updatedValue}</span>
+					</p>
+				);
 			case EventType.TitleUpdated:
 				return (
 					<p>
-						updated title from{" "}
-						<span className="text-foreground">{log.originalValue}</span> to{" "}
+						updated title to{" "}
 						<span className="text-foreground">{log.updatedValue}</span>
 					</p>
 				);
 
 			case EventType.DescriptionUpdated:
 				return displayDescriptionUpdate(log);
-			case EventType.GitUpdated:
-				return displayGitUpdate(log);
+
+			// ADDRESS IN ANOTHER PR: git logs updated to TaskEvent Schema
+			// case EventType.GitUpdated:
+			// 	return displayGitUpdate(log);
 			case EventType.StatusUpdated:
 				return (
 					<p>
-						updated status from{" "}
-						<span className="text-foreground">{log.originalValue}</span> to{" "}
+						updated status to{" "}
 						<span className="text-foreground">{log.updatedValue}</span>
 					</p>
 				);
 			case EventType.PriorityUpdated:
 				return (
 					<p>
-						updated priority from{" "}
-						<span className="text-foreground">{log.originalValue}</span> to{" "}
+						updated priority to{" "}
 						<span className="text-foreground">{log.updatedValue}</span>
 					</p>
 				);
@@ -219,18 +210,20 @@ export const UpdatedByInformation = () => {
 		}
 	};
 
-	const displayDate = (date: string) => {
+	const displayDate = (date: string | Date) => {
 		if (date) {
-			const parsedDate = parseISO(date);
-			const formattedDate = formatDate(parsedDate, "dd MMM yyyy");
-			return formattedDate;
+			const parsedDate = typeof date === "string" ? new Date(date) : date;
+			return parsedDate.toLocaleDateString();
 		}
 	};
 
 	const displayAuthorProfile = (authorName: string) => {
 		return (
 			<>
-				<Avatar title={getInitials(authorName)} />
+				<Avatar className="size-6 text-xxs">
+					<AvatarImage src={authorName} />
+					<AvatarFallback>{getInitials(authorName)}</AvatarFallback>
+				</Avatar>
 			</>
 		);
 	};
@@ -238,25 +231,18 @@ export const UpdatedByInformation = () => {
 	return (
 		<div className="w-full">
 			<ul className="list-none px-8">
-				{eventLogs?.map((log: ActivityType) => {
+				{eventLogs?.map((log: TaskEvent) => {
 					return (
-						<Table key={log.id}>
-							<TableBody>
-								{eventLogs?.map((log: ActivityType) => (
-									<TableRow key={log.createdAt.toLocaleDateString()}>
-										<TableCell>
-											{displayDate(log.createdAt.toLocaleDateString())}
-										</TableCell>
-										<TableCell>
-											{displayAuthorProfile(log.taskEvent?.authorName ?? "")}
-										</TableCell>
-										{log.taskEvent && (
-											<TableCell>{displayUpdate(log.taskEvent)}</TableCell>
-										)}
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+						<div key={log.id} className="flex items-center px-8">
+							<div className="mr-4 text-muted-foreground">
+								{displayDate(log.createdAt)}
+							</div>
+							<div>{displayAuthorProfile(log.authorName ?? "")}</div>
+							<p className="text-foreground ml-2 mr-4">{log.authorName}</p>
+							<p className="text-sm text-muted-foreground">
+								{log.type && displayUpdate(log)}
+							</p>
+						</div>
 					);
 				})}
 			</ul>
