@@ -40,7 +40,7 @@ import {
 import { addDays, format, startOfWeek } from "date-fns";
 import { useTeamStore, useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
-import type { Sprint, Team } from "@repo/db";
+import type { Sprint, Team } from "@squared/db";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";

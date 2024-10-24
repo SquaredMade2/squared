@@ -11,7 +11,7 @@
     "docker:db:down": "docker compose -f docker-compose.yml down --volumes"
   },
   "dependencies": {
-    "@repo/db": "workspace:*",
+    "@squared/db": "workspace:*",
     "dotenv": "^16.4.1"
   },
   "devDependencies": {

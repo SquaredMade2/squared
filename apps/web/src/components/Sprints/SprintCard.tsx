@@ -1,4 +1,4 @@
-import type { Sprint, Task } from "@repo/db";
+import type { Sprint, Task } from "@squared/db";
 import {
 	Card,
 	CardContent,

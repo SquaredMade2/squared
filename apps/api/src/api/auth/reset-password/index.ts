@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { sendMail } from "@/utils/mail";
 import { prisma } from "@/api";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { Route, APIResponse } from "@/api/route";
 import { passwordResetTemplate } from "@/utils/templates";
 

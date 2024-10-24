@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/context-menu";
 import { useTaskStore } from "@/store";
 import { useWorkspaceStore } from "@/store";
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 import { LabelColor } from "../TaskCardLabels";
 
 const LabelSubContextMenu = ({ task }: ContextMenuProps) => {

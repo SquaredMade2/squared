@@ -10,7 +10,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import { StatusIcon } from "@/components/Icons";
 
 export const StatusDropdownButton = () => {

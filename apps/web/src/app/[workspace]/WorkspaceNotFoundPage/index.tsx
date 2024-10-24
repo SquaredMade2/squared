@@ -5,7 +5,7 @@ import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { FileSearch } from "lucide-react";
 import { useAuthStore, useWorkspaceStore } from "@/store";
-import type { Workspace } from "@repo/db";
+import type { Workspace } from "@squared/db";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();

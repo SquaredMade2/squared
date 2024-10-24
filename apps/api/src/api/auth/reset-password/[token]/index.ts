@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { prisma } from "@/api";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { Route, APIResponse } from "@/api/route";
 import { hashPassword } from "../../helpers";
 

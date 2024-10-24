@@ -1,5 +1,5 @@
 import type { FilterCondition } from "@/store/filters";
-import { Status, Priority, type User, type Label } from "@repo/db";
+import { Status, Priority, type User, type Label } from "@squared/db";
 import * as z from "zod";
 import { format } from "date-fns";
 

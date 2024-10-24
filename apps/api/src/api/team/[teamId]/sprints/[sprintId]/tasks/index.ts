@@ -1,6 +1,6 @@
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import type { Sprint, Status, Task } from "@repo/db";
+import type { Sprint, Status, Task } from "@squared/db";
 
 type Params = {
 	teamId: string;

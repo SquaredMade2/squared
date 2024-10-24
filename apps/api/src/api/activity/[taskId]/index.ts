@@ -1,8 +1,8 @@
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
-import type { Activity } from "@repo/db";
+import type { Activity } from "@squared/db";
 
 type Params = {
 	taskId: string;

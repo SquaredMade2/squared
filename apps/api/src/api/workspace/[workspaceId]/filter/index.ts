@@ -1,4 +1,4 @@
-import type { SavedFilter } from "@repo/db";
+import type { SavedFilter } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 
