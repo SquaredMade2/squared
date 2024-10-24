@@ -1,16 +1,20 @@
 import type { Sprint } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	teamId: string;
 	sprintId: string;
 };
 
+const logger = createCustomLogger("workspace");
+
 export function createRoute(): Route<Params> {
 	return {
 		POST: async (res, { teamId }, body): Promise<APIResponse<Sprint>> => {
 			try {
+				logger.info("Creating sprint: %0", { teamId, body });
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
@@ -46,7 +50,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error creating sprint:", error);
+				logger.error("Error creating sprint: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -61,6 +65,7 @@ export function createRoute(): Route<Params> {
 			body: Partial<Sprint>,
 		): Promise<APIResponse<Sprint>> => {
 			try {
+				logger.info("Updating sprint: %0", { teamId, sprintId, body });
 				const sprint = await prisma.sprint.findUnique({
 					where: { id: sprintId },
 				});
@@ -85,7 +90,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating sprint:", error);
+				logger.error("Error updating sprint: %0", error);
 				res.status(500);
 				return {
 					data: null,

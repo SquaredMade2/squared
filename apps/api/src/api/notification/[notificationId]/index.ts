@@ -1,10 +1,13 @@
 import type { Notification } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	notificationId: string;
 };
+
+const logger = createCustomLogger("notification");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -14,6 +17,7 @@ export function createRoute(): Route<Params> {
 			body,
 		): Promise<APIResponse<Notification>> => {
 			try {
+				logger.info("Creating notification: %0", { notificationId, body });
 				const existingUser = await prisma.user.findUnique({
 					where: { id: body.userId },
 				});
@@ -52,7 +56,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error creating notification:", error);
+				logger.error("Error creating notification: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -66,6 +70,7 @@ export function createRoute(): Route<Params> {
 			{ notificationId },
 		): Promise<APIResponse<Notification>> => {
 			try {
+				logger.info("Deleting notification: %s", notificationId);
 				const notification: Notification | null =
 					await prisma.notification.delete({
 						where: { id: notificationId },
@@ -85,7 +90,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error deleting notification:", error);
+				logger.error("Error deleting notification: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -100,6 +105,7 @@ export function createRoute(): Route<Params> {
 			body,
 		): Promise<APIResponse<Notification>> => {
 			try {
+				logger.info("Updating notification: %0", { notificationId, body });
 				const notification = await prisma.notification.update({
 					where: { id: notificationId },
 					data: body,
@@ -123,7 +129,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating notification:", error);
+				logger.error("Error updating notification: %0", error);
 				res.status(500);
 				return {
 					data: null,
