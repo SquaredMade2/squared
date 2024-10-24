@@ -8,7 +8,6 @@ const logLevels = {
 	http: 3,
 	verbose: 4,
 	debug: 5,
-	silly: 6,
 };
 
 // Create the logger factory function

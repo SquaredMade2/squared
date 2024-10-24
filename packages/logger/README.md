@@ -4,7 +4,7 @@ A flexible and customizable logging utility built on top of Winston for Node.js 
 
 ## Features
 
-- Supports all Winston log levels (error, warn, info, http, verbose, debug, silly)
+- Supports all Winston log levels (error, warn, info, http, verbose, debug)
 - Allows for custom prefixes and service names
 - File logging for errors and combined logs
 - Console output in non-production environments
