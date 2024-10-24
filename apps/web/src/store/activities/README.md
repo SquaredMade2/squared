@@ -88,7 +88,6 @@ const addTaskEvent = useActivityStore((store) => store.addTaskEvent);
 
 const taskEvent = { /* Task event data */ };
 await addTaskEvent(taskEvent, "task-id", "author-id");
-
 ```
 
 ### Adding a Commit Event
@@ -100,7 +99,6 @@ const addCommitEvent = useActivityStore((store) => store.addCommitEvent);
 
 const commitEvent = { /* Commit event data */ };
 await addCommitEvent(commitEvent, "task-id", "author-id");
-
 ```
 
 ### Fetching Task Events
@@ -111,6 +109,4 @@ To fetch task events for a specific task, use the `getTaskEvents` method:
 const getTaskEvents = useActivityStore((store) => store.getTaskEvents);
 
 const events = await getTaskEvents("task-id");
-console.log(events);
-
 ```
