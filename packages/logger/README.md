@@ -9,6 +9,7 @@ A flexible and customizable logging utility built on top of Winston for Node.js 
 - File logging for errors and combined logs
 - Console output in non-production environments
 - Customizable log formats
+- String interpolation support using Node.js `util.format`
 
 ## Usage
 
@@ -23,6 +24,21 @@ const logger = createCustomLogger();
 // Use the logger
 logger.info("This is an info message");
 logger.error("An error occurred", { errorCode: 500 });
+```
+
+### String Interpolation
+
+To support string interpolation in log messages, use Node.js's built-in `util.format`. You can include placeholders (`%s`, `%d`, etc.) in your log messages and pass additional arguments, just like with `console.log`:
+
+```typescript
+import util from "util";
+import createCustomLogger from "@squared/logger";
+
+const logger = createCustomLogger();
+
+const userId = 123;
+logger.info(util.format("User %d logged in", userId));
+// Output: 2023-05-01T12:34:56.789Z INFO: User 123 logged in
 ```
 
 ### Custom Configuration
