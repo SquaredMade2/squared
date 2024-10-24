@@ -16,7 +16,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "clean": "rm -rf dist",
     "lint": "biome lint --error-on-warnings ./src",
-    "postinstall": "pnpm run build",
+    "postinstall": "tsup src/index.ts --format cjs,esm --dts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
