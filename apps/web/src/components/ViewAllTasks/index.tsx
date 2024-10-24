@@ -17,12 +17,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 		Status.inReview,
 	];
 
-	const currentSprintStatusGroups: Status[] = [
-		Status.todo,
-		Status.inProgress,
-		Status.inReview,
-		Status.done,
-	];
+	const currentSprintStatusGroups: Status[] = [...activeStatusGroups, Status.done];
 
 	let groupedColumns = getGroupedColumns();
 
