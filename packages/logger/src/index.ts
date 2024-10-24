@@ -15,7 +15,7 @@ const logLevels = {
 function createCustomLogger(prefix: string): Logger {
 	const logger = createLogger({
 		levels: logLevels,
-		level: process.env.LOG_LEVEL || "info",
+		level: process.env.NODE_ENV === "production" ? "info" : "debug",
 		format: format.combine(
 			format.timestamp({ format: "MMM DD HH:mm:ss" }),
 			format.errors({ stack: true }),

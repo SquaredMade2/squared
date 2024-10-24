@@ -19,7 +19,7 @@ A flexible and customizable logging utility built on top of Winston for Node.js 
 import createCustomLogger from "@squared/logger";
 
 // Create a logger with default options
-const logger = createCustomLogger();
+const logger = createCustomLogger("example");
 
 // Use the logger
 logger.info("This is an info message");
@@ -40,27 +40,6 @@ const userId = 123;
 logger.info(util.format("User %d logged in", userId));
 // Output: 2023-05-01T12:34:56.789Z INFO: User 123 logged in
 ```
-
-### Custom Configuration
-
-You can customize the logger by providing options:
-
-```typescript
-import createCustomLogger from "@squared/logger";
-
-const userLogger = createCustomLogger({
-  service: "user-service",
-  prefix: "USER",
-});
-
-userLogger.info("User logged in", { userId: 123 });
-// Output: 2023-05-01T12:34:56.789Z INFO: [USER] User logged in {"userId":123,"service":"user-service"}
-```
-
-### Available Options
-
-- `service`: A string to identify the service or module using the logger (default: "default-service")
-- `prefix`: A string to prefix all log messages (default: "")
 
 ## Log Levels
 
