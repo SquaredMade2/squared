@@ -97,12 +97,11 @@ export const createCommentStore = (
 					variant: "default",
 				};
 			}
-
 			try {
-				const response: { data: ApiReturnType<Comment> } = await axios.get(
-					apiString(commentId),
-				);
-				return { ...response.data, comment: response.data.data };
+				const { data: response }: { data: ApiReturnType<Comment> } =
+					await axios.get(apiString(commentId));
+				const { data: comment, ...rest } = response;
+				return { ...rest, comment };
 			} catch (error) {
 				return {
 					comment: null,
