@@ -183,7 +183,7 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 			});
 
 			// Handle current block/row (each row can only have one block)
-			const returnHeaderBlock = line.type === "header" ? "## " : "";
+			const returnHeaderBlock = line.type === "header" ? "### " : "";
 			const leftSurrounderBlock = `${returnHeaderBlock}`;
 			// will need below for future formatting
 			const rightSurrounderBlock = `${""}`;

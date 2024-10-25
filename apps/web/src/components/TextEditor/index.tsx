@@ -309,29 +309,31 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			initialValue={initialValue}
 			onChange={(newValue) => setEditorContent(newValue)}
 		>
-			<div
-				className={cn(
-					"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-				)}
-			>
-				<TextEditorToolBar
-					// Leafs
-					createBoldLeaf={createBoldLeaf}
-					createItalicLeaf={createItalicLeaf}
-					isBoldActive={isBoldActive()}
-					isItalicActive={isItalicActive()}
-					// Blocks
-					createCodeLeaf={createCodeLeaf}
-					isCodeActive={isCodeActive()}
-					createHeaderBlock={createHeaderBlock}
-					isHeaderBlock={isHeaderBlock()}
-				/>
-				<Editable
-					onKeyDown={handleSetEditorContent}
-					renderLeaf={renderLeaf}
-					renderElement={renderElement}
-					className="min-h-[160px] w-full py-4 px-3"
-				/>
+			<div className="markdown-content">
+				<div
+					className={cn(
+						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+					)}
+				>
+					<TextEditorToolBar
+						// Leafs
+						createBoldLeaf={createBoldLeaf}
+						createItalicLeaf={createItalicLeaf}
+						isBoldActive={isBoldActive()}
+						isItalicActive={isItalicActive()}
+						// Blocks
+						createCodeLeaf={createCodeLeaf}
+						isCodeActive={isCodeActive()}
+						createHeaderBlock={createHeaderBlock}
+						isHeaderBlock={isHeaderBlock()}
+					/>
+					<Editable
+						onKeyDown={handleSetEditorContent}
+						renderLeaf={renderLeaf}
+						renderElement={renderElement}
+						className="min-h-[160px] w-full py-4 px-3"
+					/>
+				</div>
 			</div>
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
