@@ -1,0 +1,21 @@
+// biome-ignore lint/correctness/noUnusedImports: We are definitely using it
+import type { jest } from "@jest/globals";
+
+declare global {
+	// biome-ignore lint/suspicious/noRedeclare: We are extending the global namespace
+	namespace jest {
+		interface Matchers<R> {
+			// biome-ignore lint/suspicious/noExplicitAny: Expected could be anything
+			toEqualWithDatePrecision(expected: any, precision?: number): R;
+		}
+	}
+
+	interface Window {
+		sessionStorage: {
+			getItem: jest.MockedFunction<(key: string) => string | null>;
+			setItem: jest.MockedFunction<(key: string, value: string) => void>;
+			removeItem: jest.MockedFunction<(key: string) => void>;
+			clear: jest.MockedFunction<() => void>;
+		};
+	}
+}

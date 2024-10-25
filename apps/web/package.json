@@ -53,6 +53,7 @@
 		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
+		"@jest/globals": "^29.7.0",
 		"@repo/db": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@testing-library/jest-dom": "^6.5.0",
