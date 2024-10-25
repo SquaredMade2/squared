@@ -46,7 +46,7 @@ export const EventTabs = () => {
 				{comments.map((comment) => {
 					return <CommentCard key={comment.id} comment={comment} />;
 				})}
-				<TextEditor />
+				{task && <TextEditor task={task} />}
 			</TabsContent>
 		</Tabs>
 	);

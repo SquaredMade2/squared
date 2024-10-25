@@ -1,4 +1,9 @@
 import type { Node, NodeEntry } from "slate";
+import { Task } from "@repo/db";
+
+export interface TextEditorProps {
+	task: Task;
+}
 
 export interface TextEditorToolBarProps {
 	// Leafs

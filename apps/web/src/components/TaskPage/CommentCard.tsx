@@ -1,4 +1,5 @@
-import { type HTMLAttributes, useEffect, useState } from "react";
+import "../TextEditor/comments.css";
+import { useEffect, useState } from "react";
 import type React from "react";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -106,19 +107,23 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 			} catch (err) {
 				toast({
 					title: "Error getting author",
-					description: String(err),
+					description: err instanceof Error ? err.message : "",
 					variant: "destructive",
 				});
 			}
 		};
 		const JSXCommentData = async () => {
 			try {
-				const mdxSource = await serialize(comment.comment);
+				const formattedComment = comment.comment.replace(
+					/\n{2,}/g,
+					"<br/><br/>",
+				);
+				const mdxSource = await serialize(formattedComment);
 				setCommentData(mdxSource);
 			} catch (err) {
 				toast({
 					title: "Error converting to MDX",
-					description: String(err),
+					description: err instanceof Error ? err.message : "",
 					variant: "destructive",
 				});
 			}
@@ -128,17 +133,6 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	}, [comment]);
 
 	// MDX
-
-	const customStyledComponents = {
-		h2: (props: HTMLAttributes<HTMLHeadingElement>) => {
-			return <h2 className="text-2xl" {...props} />;
-		},
-		code: (props: HTMLAttributes<HTMLHeadingElement>) => {
-			return (
-				<code className="text-red-200 bg-gray-800 p-1 rounded-md" {...props} />
-			);
-		},
-	};
 
 	return (
 		<div className="flex flex-col px-8 m-5">
@@ -155,10 +149,8 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
-			<p className="flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
-				{"compiledSource" in commentData && (
-					<MDXRemote {...commentData} components={customStyledComponents} />
-				)}
+			<p className="markdown-content flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
+				{"compiledSource" in commentData && <MDXRemote {...commentData} />}
 			</p>
 		</div>
 	);

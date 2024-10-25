@@ -7,17 +7,21 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { Slate, Editable, withReact, DefaultElement } from "slate-react";
-import type { CustomDescendant, CustomElement, CustomText } from "./interfaces";
-import { cn } from "@/utils/cn";
+import { useAuthStore, useCommentStore } from "@/store";
+import type {
+	CustomDescendant,
+	CustomElement,
+	CustomText,
+	TextEditorProps,
+} from "./interfaces";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
 import TextEditorToolBar from "./TextEditorToolBar";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
-import { Button } from "../ui/button";
-import { useAuthStore, useCommentStore } from "@/store";
-import { toast } from "../ui/use-toast";
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
+import { Button } from "../ui/button";
+import { toast } from "../ui/use-toast";
 
 declare module "slate" {
 	interface CustomTypes {
@@ -34,68 +38,58 @@ const initialValue: CustomDescendant[] = [
 	},
 ];
 
-const TextEditor = () => {
+const TextEditor = ({ task }: TextEditorProps) => {
 	// State
 
 	const addComment = useCommentStore((state) => state.addComment);
 	const getComments = useCommentStore((state) => state.getAllComments);
 	const currentUser = useAuthStore((state) => state.user);
-	const { task } = useTaskPage();
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
-	console.log(editorContent);
 
 	// Functions
 
-	const addCommentToTask = () => {
-		const addNewComment = async () => {
-			try {
-				if (currentUser && task) {
-					if (checkIfSlateEmpty(editor)) {
-						toast({
-							title: "Empty Comment",
-							description: "Comment cannot be empty.",
-							variant: "destructive",
-						});
-						return;
-					}
-					const newComment = {
-						comment: handleFormatSlateToComment(editorContent),
-						authorId: currentUser?.id,
-						date: new Date(),
-						taskId: task.id,
-					};
-					addComment(newComment);
-					getComments(task.id);
-					setEditorContent([]);
-					editor.children = [
-						{
-							type: "paragraph",
-							children: [{ text: "" }],
-						},
-					];
-					Transforms.select(editor, {
-						anchor: { path: [0, 0], offset: 0 },
-						focus: { path: [0, 0], offset: 0 },
-					});
-				} else {
-					toast({
-						title: "Error getting comments",
-						description: "Could not find user data and current task",
-						variant: "destructive",
-					});
+	const addCommentToTask = async () => {
+		try {
+			if (currentUser && task) {
+				if (checkIfSlateEmpty(editor)) {
+					return;
 				}
-			} catch (err) {
+				const newComment = {
+					comment: handleFormatSlateToComment(editorContent),
+					authorId: currentUser?.id,
+					date: new Date(),
+					taskId: task.id,
+				};
+				addComment(newComment);
+				getComments(task.id);
+				setEditorContent([]);
+				editor.children = [
+					{
+						type: "paragraph",
+						children: [{ text: "" }],
+					},
+				];
+				Transforms.select(editor, {
+					anchor: { path: [0, 0], offset: 0 },
+					focus: { path: [0, 0], offset: 0 },
+				});
+			} else {
 				toast({
 					title: "Error getting comments",
-					description: String(err),
+					description: "Could not find user data and current task",
 					variant: "destructive",
 				});
 			}
-		};
-		addNewComment();
+		} catch (err) {
+			toast({
+				title: "Error getting comments",
+				description: err instanceof Error ? err.message : "",
+				variant: "destructive",
+			});
+		}
 	};
 
 	// Helper Functions
@@ -349,7 +343,7 @@ const TextEditor = () => {
 				/>
 			</div>
 			<Button
-				onClick={addCommentToTask}
+				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
 				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) ? "bg-muted hover:bg-muted text-muted-foreground" : ""}`}
 			>
 				Comment
