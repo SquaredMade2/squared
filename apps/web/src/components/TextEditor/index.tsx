@@ -59,7 +59,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				}
 				const newComment = {
 					comment: handleFormatSlateToComment(editorContent),
-					authorId: currentUser?.id,
+					authorId: currentUser.id,
 					date: new Date(),
 					taskId: task.id,
 				};
@@ -84,11 +84,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				});
 			}
 		} catch (err) {
-			toast({
-				title: "Error getting comments",
-				description: err instanceof Error ? err.message : "",
-				variant: "destructive",
-			});
+			throw new Error(`Could not find user data and current task: ${err}`);
 		}
 	};
 
@@ -129,8 +125,10 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const isCodeActive = () => {
 		const allMarks = Editor.marks(editor);
-		// if code string is empty, that means its not a code leaf
-		return Boolean(allMarks?.code && allMarks.code.length > 0);
+		if (allMarks?.code) {
+			return true;
+		}
+		return false;
 	};
 
 	// const isLinkActive = () => {
@@ -179,12 +177,11 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		}
 	};
 
-	const createCodeLeaf = (language: string) => {
+	const createCodeLeaf = () => {
 		if (isCodeActive()) {
-			Editor.removeMark(editor, "code");
-			Editor.addMark(editor, "code", "");
+			Editor.addMark(editor, "code", false);
 		} else {
-			Editor.addMark(editor, "code", language);
+			Editor.addMark(editor, "code", true);
 		}
 	};
 
@@ -208,7 +205,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			case "`": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createCodeLeaf("default");
+					createCodeLeaf();
 				}
 				break;
 			}

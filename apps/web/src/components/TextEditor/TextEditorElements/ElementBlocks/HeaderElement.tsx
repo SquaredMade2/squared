@@ -1,7 +1,7 @@
 import type { RenderElementProps } from "slate-react";
 
 const HeaderElement = (props: RenderElementProps) => {
-	return <header className="text-2xl">{props.children}</header>;
+	return <h3>{props.children}</h3>;
 };
 
 export default HeaderElement;

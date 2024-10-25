@@ -9,7 +9,7 @@ export interface TextEditorToolBarProps {
 	// Leafs
 	createBoldLeaf: () => void;
 	createItalicLeaf: () => void;
-	createCodeLeaf: (language: string) => void;
+	createCodeLeaf: () => void;
 
 	isBoldActive: boolean;
 	isItalicActive: boolean;
@@ -42,8 +42,7 @@ export type CustomText = {
 	bold?: boolean;
 	italic?: boolean;
 	link?: boolean;
-	// String for future, code block should be able to define what language, will implement in future
-	code?: string;
+	code?: boolean;
 };
 
 export type CustomDescendant = CustomElement | CustomText;

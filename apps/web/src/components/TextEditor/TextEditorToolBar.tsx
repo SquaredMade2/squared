@@ -58,7 +58,7 @@ const TextEditorToolBar = ({
 				className={`size-8 ml-2 ${isCodeActive ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
-					createCodeLeaf("default");
+					createCodeLeaf();
 				}}
 			>
 				<span>{"</>"}</span>

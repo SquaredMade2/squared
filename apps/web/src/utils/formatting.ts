@@ -174,10 +174,10 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 				// helper vars
 				const returnBoldMarks = leaf.bold ? "**" : "";
 				const returnItalicMarks = leaf.italic ? "*" : "";
-				const returnCodeMarks = leaf.code && leaf.code.length > 0 ? "```" : "";
+				const returnCodeMarks = leaf.code ? "```" : "";
 				// add new marks here, needs both left and right bc future might need them
 				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
-				const rightSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
+				const rightSurrounderMark = leftSurrounderMark;
 
 				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
 			});
