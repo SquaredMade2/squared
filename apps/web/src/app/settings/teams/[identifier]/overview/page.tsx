@@ -268,7 +268,7 @@ export default function TeamsSetting() {
 												className="hover:cursor-pointer"
 											>
 												<div
-													className={`${index === 1 ? "border-t-2 border-b-2" : ""} flex items-center space-x-2 p-3 z-10`}
+													className={`${index === 1 ? "border-y-2" : ""} flex items-center space-x-2 p-3 z-10`}
 												>
 													<span className="hover:cursor-pointer">
 														{item.listOption}
