@@ -1,15 +1,19 @@
 import type { User } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	workspaceId: string;
 };
 
+const logger = createCustomLogger("workspace");
+
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<User>> => {
 			try {
+				logger.info("Finding users for workspace: %s", workspaceId);
 				const workspace = await prisma.workspace.findUnique({
 					where: { id: workspaceId },
 					include: {
@@ -46,7 +50,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (err) {
-				console.error("Error finding users:", err);
+				logger.error("Error finding users: %0", err);
 				res.status(500);
 				return {
 					data: null,

@@ -1,11 +1,14 @@
 import type { Task } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	workspaceId: string;
 	taskIdentifier: string;
 };
+
+const logger = createCustomLogger("workspace");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -33,7 +36,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding task:", error);
+				logger.error("Error finding task: %0", error);
 				res.status(500);
 				return {
 					data: null,
