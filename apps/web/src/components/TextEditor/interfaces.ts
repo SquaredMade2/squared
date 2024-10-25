@@ -1,5 +1,5 @@
 import type { Node, NodeEntry } from "slate";
-import { Task } from "@repo/db";
+import type { Task } from "@repo/db";
 
 export interface TextEditorProps {
 	task: Task;

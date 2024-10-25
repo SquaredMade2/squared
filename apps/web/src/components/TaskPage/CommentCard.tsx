@@ -1,4 +1,3 @@
-import "../TextEditor/comments.css";
 import { useEffect, useState } from "react";
 import type React from "react";
 import { serialize } from "next-mdx-remote/serialize";

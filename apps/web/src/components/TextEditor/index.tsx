@@ -344,7 +344,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			</div>
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
-				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) ? "bg-muted hover:bg-muted text-muted-foreground" : ""}`}
+				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) && "bg-muted hover:bg-muted text-muted-foreground"}`}
 			>
 				Comment
 			</Button>
