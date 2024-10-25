@@ -2,6 +2,7 @@ import type { User } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import jwt from "jsonwebtoken";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	token: string;
@@ -20,6 +21,8 @@ interface TokenExpiredError extends Error {
 }
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const logger = createCustomLogger("auth");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -94,7 +97,7 @@ export function createRoute(): Route<Params> {
 					variant: "destructive",
 				};
 			} catch (error) {
-				console.error("Error with auth request:", error);
+				logger.error("Error with auth request: %0", error);
 				res.status(500);
 				return {
 					data: null,

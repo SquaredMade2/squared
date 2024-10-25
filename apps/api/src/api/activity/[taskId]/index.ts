@@ -3,15 +3,19 @@ import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
 import type { Activity } from "@repo/db";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	taskId: string;
 };
 
+const logger = createCustomLogger("activity");
+
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { taskId }): Promise<APIResponse<Activity>> => {
 			try {
+				logger.info("Finding task with ID: %s", taskId);
 				// Find the task by its ID
 				const task: Task | null = await prisma.task.findUnique({
 					where: { id: taskId },
@@ -47,7 +51,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding task:", error);
+				logger.error("Error finding task: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -58,6 +62,7 @@ export function createRoute(): Route<Params> {
 		},
 		POST: async (res, { taskId }, body): Promise<APIResponse<Activity>> => {
 			try {
+				logger.info("Creating activity for task with ID: %s", taskId);
 				const task = await prisma.task.findUnique({
 					where: { id: taskId },
 				});
@@ -126,7 +131,7 @@ export function createRoute(): Route<Params> {
 					variant: "destructive",
 				};
 			} catch (error) {
-				console.error("Error creating task:", error);
+				logger.error("Error creating task: %0", error);
 				res.status(500);
 				return {
 					data: null,

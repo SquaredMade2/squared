@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { Priority, Sprint, Status, Task } from "@repo/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
+import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;
@@ -298,6 +299,9 @@ export function AssignTasksDialog({
 						onClick={() => {
 							handleBulkAssign();
 							setIsOpen(false);
+							toast({
+								title: `You successfully added ${selectedTasks.length} ${selectedTasks.length < 2 ? "task" : "tasks"} to ${activeSprint?.name}.`,
+							});
 						}}
 						disabled={selectedTasks.length < 1}
 					>

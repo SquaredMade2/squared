@@ -1,16 +1,20 @@
 import type { Comment } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	commentId: string;
 };
+
+const logger = createCustomLogger("comment");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { commentId }): Promise<APIResponse<Comment>> => {
 			try {
 				// Find the comment by its ID
+				logger.info("Finding comment by ID: %s", commentId);
 				const comment: Comment | null = await prisma.comment.findUnique({
 					where: { id: commentId },
 				});
@@ -28,7 +32,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding comment:", error);
+				logger.error("Error finding comment: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -39,6 +43,7 @@ export function createRoute(): Route<Params> {
 		},
 		PUT: async (res, { commentId }, body): Promise<APIResponse<Comment>> => {
 			try {
+				logger.info("Updating comment: %0", { commentId, body });
 				const comment: Comment | null = await prisma.comment.update({
 					where: { id: commentId },
 					data: body,
@@ -57,7 +62,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating comment:", error);
+				logger.error("Error updating comment: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -68,6 +73,7 @@ export function createRoute(): Route<Params> {
 		},
 		POST: async (res, { commentId }, body): Promise<APIResponse<Comment>> => {
 			try {
+				logger.info("Creating comment: %0", { commentId, body });
 				const existingComment = await prisma.comment.findUnique({
 					where: { id: commentId },
 				});
@@ -102,7 +108,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error creating comment:", error);
+				logger.error("Error creating comment: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -113,6 +119,7 @@ export function createRoute(): Route<Params> {
 		},
 		DELETE: async (res, { commentId }): Promise<APIResponse<Comment>> => {
 			try {
+				logger.info("Deleting comment: %s", commentId);
 				const comment: Comment | null = await prisma.comment.delete({
 					where: { id: commentId },
 				});
@@ -131,7 +138,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error deleting comment:", error);
+				logger.error("Error deleting comment: %0", error);
 				res.status(500);
 				return {
 					data: null,

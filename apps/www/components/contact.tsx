@@ -87,13 +87,13 @@ export function ContactForm() {
 
 	return (
 		<Form {...form}>
-			<div className="flex relative z-20 items-center w-full justify-center px-4 py-4 lg:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+			<div className="flex relative z-20 items-center w-full justify-center px-4 py-4 lg:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-card">
 				<div className="mx-auto w-full max-w-md">
 					<div>
 						<h1 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
 							Contact Us
 						</h1>
-						<p className="mt-4 text-muted dark:text-muted-dark  text-sm max-w-sm">
+						<p className="mt-4 text-muted-foreground text-sm max-w-sm">
 							Please reach out to us and we will get back to you at the speed of
 							light.
 						</p>
@@ -122,7 +122,7 @@ export function ContactForm() {
 														id="name"
 														type="name"
 														placeholder="John Doe"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+														className="block w-full px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
 														{...field}
 													/>
 												</div>
