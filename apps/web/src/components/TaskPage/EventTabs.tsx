@@ -23,7 +23,7 @@ export const EventTabs = () => {
 			} catch (err) {
 				toast({
 					title: "Error getting comments",
-					description: String(err),
+					description: err instanceof Error ? err.message : "",
 					variant: "destructive",
 				});
 			}
