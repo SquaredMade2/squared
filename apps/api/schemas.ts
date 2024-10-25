@@ -466,6 +466,34 @@ const schemas = {
 			},
 		},
 	},
+	FilterCondition: {
+		type: "object",
+		properties: {
+			field: {
+				type: "string",
+				enum: ["status", "priority", "labels", "dueDate", "effort", "assignee"],
+			},
+			value: {
+				anyOf: [
+					{ type: "string", nullable: true },
+					{ type: "array", items: { type: "string" } },
+					{ type: "number" },
+					{ type: "boolean" },
+				],
+			},
+			operator: {
+				type: "string",
+				enum: [
+					"equals",
+					"contains",
+					"greaterThan",
+					"lessThan",
+					"arrayIncludesAll",
+					"arrayIncludesAny",
+				],
+			},
+		},
+	},
 	SavedFilter: {
 		type: "object",
 		properties: {
@@ -477,8 +505,8 @@ const schemas = {
 			description: { type: "string", description: "Description of the filter" },
 			filter: {
 				type: "array",
-				items: { type: "object" },
-				description: "Filter options",
+				items: { $ref: "#/components/schemas/FilterCondition" },
+				description: "Filter conditions",
 			},
 			workspaceId: {
 				type: "string",
