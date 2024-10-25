@@ -130,13 +130,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const isCodeActive = () => {
 		const allMarks = Editor.marks(editor);
 		// if code string is empty, that means its not a code leaf
-		if (!allMarks?.code) {
-			return false;
-		}
-		if (allMarks.code.length > 0) {
-			return true;
-		}
-		return false;
+		return Boolean(allMarks?.code && allMarks.code.length > 0);
 	};
 
 	// const isLinkActive = () => {
