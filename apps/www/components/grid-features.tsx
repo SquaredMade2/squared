@@ -99,7 +99,7 @@ const Feature = ({
 					{title}
 				</span>
 			</div>
-			<p className="text-sm text-muted dark:text-muted-dark max-w-xs mx-auto relative z-10 px-10">
+			<p className="text-sm text-muted-foreground max-w-xs mx-auto relative z-10 px-10">
 				{description}
 			</p>
 		</div>

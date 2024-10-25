@@ -1,16 +1,20 @@
 import type { Label } from "@repo/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	workspaceId: string;
 };
+
+const logger = createCustomLogger("workspace");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<Label>> => {
 			try {
 				// Find labels by label ID
+				logger.info("Finding labels by workspace ID: %s", workspaceId);
 				const labels: Label[] | null = await prisma.label.findMany({
 					where: { workspaceId },
 				});
@@ -29,7 +33,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding labels:", error);
+				logger.error("Error finding labels: %0", error);
 				res.status(500);
 				return {
 					data: null,

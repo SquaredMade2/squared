@@ -3,6 +3,7 @@ import { prisma } from "@/api";
 import type { User } from "@repo/db";
 import type { Route, APIResponse } from "@/api/route";
 import { hashPassword } from "../../helpers";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	token: string;
@@ -18,6 +19,8 @@ type JwtPayload = {
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const logger = createCustomLogger("auth");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -63,7 +66,7 @@ export function createRoute(): Route<Params> {
 					variant: "destructive",
 				};
 			} catch (error) {
-				console.error("Error with password update:", error);
+				logger.error("Error with password update: %0", error);
 				res.status(500);
 				return {
 					data: null,

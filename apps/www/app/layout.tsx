@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { GeistSans } from "geist/font/sans";
-import { cn } from "@/lib/utils";
-import { ViewTransitions } from "next-view-transitions";
+import "@squared/fonts/src/styles.css";
 import { ThemeProvider } from "@/context/theme-provider";
+import { ViewTransitions } from "next-view-transitions";
 
 export const metadata: Metadata = {
 	title: "Squared",
@@ -24,12 +23,7 @@ export default function RootLayout({
 	return (
 		<ViewTransitions>
 			<html lang="en">
-				<body
-					className={cn(
-						GeistSans.className,
-						"bg-white dark:bg-background-darkAccent antialiased h-full w-full",
-					)}
-				>
+				<body className={"antialiased h-full w-full"}>
 					<ThemeProvider
 						attribute="class"
 						enableSystem
