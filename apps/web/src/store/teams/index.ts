@@ -128,11 +128,11 @@ export const createTeamStore = (
 						console.error("Error in deleteTeam:", error);
 					}
 				},
-				getAllTeams: async (workspaceId: string): Promise<Team[]> => {
+				getAllTeams: async (userId: string): Promise<Team[]> => {
 					try {
 						const { data: response }: { data: ApiReturnType<Team[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/team`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/team`,
 							);
 						const { data: teams } = response;
 						if (!teams) {
