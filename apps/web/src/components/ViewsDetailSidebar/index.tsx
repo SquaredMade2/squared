@@ -21,7 +21,7 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import LabelBadge from "../LabelBadges";
 import { getInitials } from "@/utils/formatting";
 import { Button } from "../ui/button";

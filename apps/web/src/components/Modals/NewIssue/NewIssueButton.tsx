@@ -1,6 +1,6 @@
 import { SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import { useModalStore, useTeamStore, useViewStore } from "@/store";
 import { usePathname } from "next/navigation";
 

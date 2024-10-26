@@ -18,7 +18,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import NavBarTeams from "./NavBarTeams";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";

@@ -16,7 +16,7 @@ import {
 import { Plus, Check, Tag } from "lucide-react";
 import type { ButtonProps } from "./interfaces";
 import { useTaskStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 import LabelBadge from "../../LabelBadges";
 import {
 	Tooltip,

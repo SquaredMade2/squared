@@ -5,7 +5,7 @@ import type { GroupColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { GridColumnNewIssueButton } from "../Modals";
 import TaskCard from "./TaskCard";
-import { Priority, Status, type Task } from "@repo/db";
+import { Priority, Status, type Task } from "@squared/db";
 import { useViewStore, useTaskStore } from "@/store";
 import {
 	compareNullableDates,

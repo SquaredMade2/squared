@@ -1,7 +1,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Task, Team, Workspace } from "@repo/db";
+import type { Sprint, Task, Team, Workspace } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 
 export function useSprints() {

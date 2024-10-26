@@ -12,7 +12,7 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import IconLeftMenu from "@/components/IconNavbar";
-import type { NotificationType } from "@repo/db";
+import type { NotificationType } from "@squared/db";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 
 export type NotificationFilter =

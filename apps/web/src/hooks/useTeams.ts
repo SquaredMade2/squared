@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTeamStore } from "@/store";
 import { useWorkspaces } from "./useWorkspaces";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 import { useUsers } from "./useUsers";
 

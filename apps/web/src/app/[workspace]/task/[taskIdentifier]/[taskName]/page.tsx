@@ -15,7 +15,7 @@ import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import { formatUrl } from "@/utils/formatting";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronRight } from "lucide-react";
