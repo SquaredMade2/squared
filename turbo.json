@@ -27,9 +27,9 @@
     "clean": {
       "cache": false
     },
-    "db:generate": {
+    "db:gen": {
       "dependsOn": [
-        "^db:generate"
+        "^db:gen"
       ],
       "cache": false
     },
