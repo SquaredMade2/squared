@@ -8,6 +8,7 @@ import type {
 	Notification,
 	Comment,
 	SavedFilter,
+	Sprint,
 } from "@repo/db";
 
 export const STANDARD_USER: User = {
@@ -80,6 +81,17 @@ export const STANDARD_TASK_2: Task = {
 	parentId: null,
 	sprintId: null,
 	priority: "low",
+};
+
+export const STANDARD_SPRINT: Sprint = {
+	id: "007168DD-DD4A-4013-9D5C-A3E6AE6868E5",
+	name: "Sprint 1",
+	startDate: new Date("2023-01-01"),
+	endDate: new Date("2023-01-14"),
+	status: "ACTIVE",
+	teamId: "team-1",
+	createdAt: new Date("2022-12-31"),
+	updatedAt: new Date("2022-12-31"),
 };
 
 export const STANDARD_SAVED_FILTER: SavedFilter = {
