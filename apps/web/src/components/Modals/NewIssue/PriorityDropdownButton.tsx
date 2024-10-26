@@ -10,7 +10,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
-import type { Priority } from "@repo/db";
+import type { Priority } from "@squared/db";
 import { PriorityIcon } from "@/components/Icons";
 
 export const PriorityDropdownButton = () => {

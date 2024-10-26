@@ -3,7 +3,7 @@ import type {
 	Task,
 	Team,
 	Workspace,
-} from "@repo/db";
+} from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";

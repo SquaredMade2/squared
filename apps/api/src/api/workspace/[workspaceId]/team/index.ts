@@ -1,4 +1,4 @@
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";

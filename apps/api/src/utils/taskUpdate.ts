@@ -1,4 +1,10 @@
-import type { Task, TaskEvent, TaskEventLog, Activity, User } from "@repo/db";
+import type {
+	Task,
+	TaskEvent,
+	TaskEventLog,
+	Activity,
+	User,
+} from "@squared/db";
 import { prisma } from "../api";
 
 export async function trackChange(author: User, changes: Task, task: Task) {

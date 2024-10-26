@@ -1,4 +1,4 @@
-import type { TaskEvent } from "@repo/db";
+import type { TaskEvent } from "@squared/db";
 import { useActivityStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getInitials } from "@/utils/formatting";

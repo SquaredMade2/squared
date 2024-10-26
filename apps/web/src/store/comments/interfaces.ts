@@ -1,4 +1,4 @@
-import type { Comment } from "@repo/db";
+import type { Comment } from "@squared/db";
 
 export type CommentState = {
 	comments: Comment[];

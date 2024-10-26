@@ -1,4 +1,4 @@
-import type { Commit, TaskEvent } from "@repo/db";
+import type { Commit, TaskEvent } from "@squared/db";
 
 export type ActivityState = {
 	events: TaskEvent[];

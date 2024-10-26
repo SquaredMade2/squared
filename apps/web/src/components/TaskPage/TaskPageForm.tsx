@@ -5,7 +5,7 @@ import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import { Input } from "../ui/input";
 import { StatusIcon } from "../Icons";
 import Link from "next/link";

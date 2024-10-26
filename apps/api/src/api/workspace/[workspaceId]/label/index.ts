@@ -1,4 +1,4 @@
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";
