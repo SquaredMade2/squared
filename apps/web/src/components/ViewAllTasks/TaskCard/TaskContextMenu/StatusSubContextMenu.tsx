@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/context-menu";
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import { StatusIcon } from "@/components/Icons";
 import { formatStatus } from "@/utils/formatting";
 
