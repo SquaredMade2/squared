@@ -4,7 +4,7 @@ import { RenameModal } from "@/components/Modals";
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
 import { usePathname } from "next/navigation";
-import { Status } from "@repo/db";
+import { Status } from "@squared/db";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	const { view, displayOptions } = useViewStore((state) => state);
