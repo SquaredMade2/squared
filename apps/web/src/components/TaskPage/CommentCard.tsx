@@ -3,7 +3,7 @@ import type React from "react";
 import { serialize } from "next-mdx-remote/serialize";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { formatDate } from "date-fns/format";
-import type { Comment } from "@repo/db";
+import type { Comment } from "@squared/db";
 import { useUserStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { toast } from "../ui/use-toast";
