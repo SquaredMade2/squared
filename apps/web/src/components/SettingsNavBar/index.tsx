@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useTeamStore, useViewStore } from "@/store";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";

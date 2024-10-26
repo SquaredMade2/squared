@@ -1,4 +1,4 @@
-import type { Label, Workspace as WorkspaceType } from "@repo/db";
+import type { Label, Workspace as WorkspaceType } from "@squared/db";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];

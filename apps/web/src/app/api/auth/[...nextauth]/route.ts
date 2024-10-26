@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { ApiReturnType } from "@/store/interfaces";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import axios from "axios";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? "";

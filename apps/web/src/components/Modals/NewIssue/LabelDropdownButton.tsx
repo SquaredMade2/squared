@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Tag, Check } from "lucide-react";
 import { useModalStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 import LabelBadge from "@/components/LabelBadges";
 
 const LabelColor = ({ label }: { label: Label }) => {

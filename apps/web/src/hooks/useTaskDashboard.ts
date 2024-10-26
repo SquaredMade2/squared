@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTaskStore } from "@/store";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";

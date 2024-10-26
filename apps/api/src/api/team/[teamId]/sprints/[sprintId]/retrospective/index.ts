@@ -1,6 +1,7 @@
-import type { RetrospectiveItem } from "@repo/db";
+import type { RetrospectiveItem } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	sprintId: string;
@@ -12,10 +13,13 @@ type RetrospectiveData = {
 	actionItems: RetrospectiveItem[];
 };
 
+const logger = createCustomLogger("sprints");
+
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { sprintId }): Promise<APIResponse<RetrospectiveData>> => {
 			try {
+				logger.info("Fetching retrospective data for sprin: %s", sprintId);
 				const sprint = await prisma.sprint.findUnique({
 					where: { id: sprintId },
 					include: {
@@ -44,7 +48,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error fetching retrospective data:", error);
+				logger.error("Error fetching retrospective data: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -59,6 +63,7 @@ export function createRoute(): Route<Params> {
 			body: { type: keyof RetrospectiveData; content: string },
 		): Promise<APIResponse<RetrospectiveItem>> => {
 			try {
+				logger.info("Adding retrospective item for sprint: %s", sprintId);
 				const { type, content } = body;
 				const newItem = await prisma.retrospectiveItem.create({
 					data: {
@@ -80,7 +85,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error adding retrospective item:", error);
+				logger.error("Error adding retrospective item: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -95,6 +100,7 @@ export function createRoute(): Route<Params> {
 			body: { itemId: string; type: keyof RetrospectiveData },
 		): Promise<APIResponse<RetrospectiveItem>> => {
 			try {
+				logger.info("Updating retrospective item for sprint: %s", sprintId);
 				const { itemId, type } = body;
 				if (!itemId) {
 					res.status(400);
@@ -128,7 +134,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating retrospective item:", error);
+				logger.error("Error updating retrospective item:", error);
 				res.status(500);
 				return {
 					data: null,

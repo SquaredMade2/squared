@@ -2,7 +2,7 @@ import { Droppable, Draggable } from "@hello-pangea/dnd";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import type { RetrospectiveItem } from "@repo/db";
+import type { RetrospectiveItem } from "@squared/db";
 import AddRetroItemModal from "./AddRetroItemModal";
 
 type ColumnType = "wentWell" | "toImprove" | "actionItems";

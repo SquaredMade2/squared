@@ -8,7 +8,7 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { useViewStore } from "@/store";
-import type { Priority, Status } from "@repo/db";
+import type { Priority, Status } from "@squared/db";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,

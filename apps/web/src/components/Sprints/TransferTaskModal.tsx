@@ -11,7 +11,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { Task, Team } from "@repo/db";
+import type { Task, Team } from "@squared/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { ScrollArea } from "../ui/scroll-area";
 import { useTeamStore } from "@/store";

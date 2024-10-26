@@ -1,6 +1,7 @@
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import type { Sprint, Status, Task } from "@repo/db";
+import type { Sprint, Status, Task } from "@squared/db";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	teamId: string;
@@ -11,10 +12,13 @@ type UpdateSprintTasksBody = {
 	type: "add" | "remove";
 };
 
+const logger = createCustomLogger("sprints");
+
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { teamId, sprintId }): Promise<APIResponse<Task[]>> => {
 			try {
+				logger.info("Fetching tasks for sprint: %s", sprintId);
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
@@ -49,7 +53,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error fetching sprints:", error);
+				logger.error("Error fetching sprints: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -64,6 +68,7 @@ export function createRoute(): Route<Params> {
 			body: UpdateSprintTasksBody,
 		): Promise<APIResponse<boolean>> => {
 			try {
+				logger.info("Updating tasks for sprint: %s", sprintId);
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
@@ -147,7 +152,7 @@ export function createRoute(): Route<Params> {
 					}
 				}
 			} catch (error) {
-				console.error("Error fetching sprints:", error);
+				logger.error("Error fetching sprints: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -158,6 +163,7 @@ export function createRoute(): Route<Params> {
 		},
 		DELETE: async (res, { teamId, sprintId }): Promise<APIResponse<Sprint>> => {
 			try {
+				logger.info("Ending sprint: %s", sprintId);
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
@@ -213,7 +219,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating sprint:", error);
+				logger.error("Error updating sprint: %0", error);
 				res.status(500);
 				throw new Error("Internal server error");
 			}

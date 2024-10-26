@@ -46,7 +46,7 @@ import {
 	ReferenceLine,
 } from "recharts";
 import Link from "next/link";
-import type { Task, Sprint } from "@repo/db";
+import type { Task, Sprint } from "@squared/db";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 

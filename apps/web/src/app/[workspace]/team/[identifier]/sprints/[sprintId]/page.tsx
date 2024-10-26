@@ -35,7 +35,7 @@ import {
 } from "@/components/Sprints";
 import Link from "next/link";
 import { ArrowLeft, Edit } from "lucide-react";
-import type { Sprint, Status, Task } from "@repo/db";
+import type { Sprint, Status, Task } from "@squared/db";
 import { useSprints } from "@/hooks/useSprints";
 import { formatStatus } from "@/utils/formatting";
 import {

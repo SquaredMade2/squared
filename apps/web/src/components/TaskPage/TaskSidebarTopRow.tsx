@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import {
 	Tooltip,
 	TooltipContent,

@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import PriorityDropdown from "./PriorityDropdown";
 import StatusDropdown from "./StatusDropdown";
 import DatePicker from "./DesignationsDatePicker";
