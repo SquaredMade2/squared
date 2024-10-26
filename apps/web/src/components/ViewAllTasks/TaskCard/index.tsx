@@ -6,7 +6,7 @@ import TaskContextMenu from "./TaskContextMenu";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
 import type { TaskCardProps } from "./interfaces";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);

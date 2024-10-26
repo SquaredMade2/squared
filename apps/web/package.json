@@ -54,7 +54,7 @@
 	},
 	"devDependencies": {
 		"@jest/globals": "^29.7.0",
-		"@repo/db": "workspace:*",
+		"@squared/db": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^16.0.0",

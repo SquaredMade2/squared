@@ -12,7 +12,7 @@ import type {
 	Team,
 	RetrospectiveItem,
 	Label,
-} from "@repo/db";
+} from "@squared/db";
 
 export const STANDARD_USER: User = {
 	id: "70C7FB67-6ECB-40E1-9AD6-2378700BDB7A",

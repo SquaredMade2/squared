@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "@/components/ui/use-toast";
-import type { RetrospectiveItem } from "@repo/db";
+import type { RetrospectiveItem } from "@squared/db";
 import { useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { RetroColumn } from "@/components/Sprints";

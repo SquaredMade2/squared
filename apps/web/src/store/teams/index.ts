@@ -10,7 +10,7 @@ import type {
 	RetrospectiveItemResponse,
 	RetrospectiveData,
 } from "./interfaces";
-import type { RetrospectiveItem, Sprint, Task, Team } from "@repo/db";
+import type { RetrospectiveItem, Sprint, Task, Team } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";

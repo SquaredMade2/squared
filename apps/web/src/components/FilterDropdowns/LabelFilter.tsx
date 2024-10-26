@@ -10,7 +10,7 @@ import {
 	CommandGroup,
 } from "@/components/ui/command";
 import { useFilterStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 import { Check } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import type { FilterOption } from "./interfaces";

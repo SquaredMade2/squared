@@ -1,6 +1,6 @@
 import { createTeamStore } from ".";
 import axios from "axios";
-import type { Sprint, Team } from "@repo/db";
+import type { Sprint, Team } from "@squared/db";
 import {
 	STANDARD_RETROSPECTIVE_ITEM,
 	STANDARD_SPRINT,

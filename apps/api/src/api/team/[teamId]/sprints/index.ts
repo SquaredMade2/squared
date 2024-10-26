@@ -1,4 +1,4 @@
-import type { Sprint } from "@repo/db";
+import type { Sprint } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { addDays, addWeeks } from "date-fns";

@@ -1,6 +1,6 @@
 import { createCommentStore } from ".";
 import axios from "axios";
-import type { Comment } from "@repo/db";
+import type { Comment } from "@squared/db";
 import { STANDARD_COMMENT, STANDARD_COMMENT_2 } from "@/test/mocks";
 
 // Mock axios

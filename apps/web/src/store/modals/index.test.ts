@@ -1,6 +1,6 @@
 import { STANDARD_TASK } from "@/test/mocks";
 import { createModalStore } from ".";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 
 describe("ModalStore", () => {
 	let store: ReturnType<typeof createModalStore>;

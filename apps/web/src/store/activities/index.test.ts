@@ -1,6 +1,6 @@
 import { createActivityStore } from ".";
 import axios from "axios";
-import type { Prisma } from "@repo/db";
+import type { Prisma } from "@squared/db";
 import { STANDARD_COMMIT, STANDARD_TASK_EVENT } from "@/test/mocks";
 
 // Mock axios

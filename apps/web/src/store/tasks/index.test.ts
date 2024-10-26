@@ -1,6 +1,6 @@
 import { createTaskStore } from ".";
 import axios from "axios";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import { STANDARD_SPRINT, STANDARD_TASK } from "@/test/mocks";
 
 // Mock axios

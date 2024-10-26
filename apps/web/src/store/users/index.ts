@@ -8,7 +8,7 @@ import type {
 	UserResponse,
 	UserAvatar,
 } from "./interfaces";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";

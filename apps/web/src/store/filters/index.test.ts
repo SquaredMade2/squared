@@ -1,6 +1,6 @@
 import { createFilterStore } from ".";
 import axios from "axios";
-import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
+import type { Task, SavedFilter as SavedFilterType } from "@squared/db";
 import type { FilterCondition, SavedFilter } from "./interfaces";
 import {
 	STANDARD_SAVED_FILTER,

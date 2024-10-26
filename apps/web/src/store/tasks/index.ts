@@ -3,7 +3,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
 import type { TaskState, TaskStore, TaskResponse } from "./interfaces";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";

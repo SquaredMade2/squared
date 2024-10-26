@@ -1,6 +1,6 @@
 import { createNotificationStore } from ".";
 import axios from "axios";
-import type { Notification } from "@repo/db";
+import type { Notification } from "@squared/db";
 import type { NotificationTask } from "./interfaces";
 import {
 	STANDARD_NOTIFICATION,

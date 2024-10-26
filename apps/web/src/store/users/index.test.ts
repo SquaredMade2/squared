@@ -1,6 +1,6 @@
 import { createUserStore, type UserAvatar } from ".";
 import axios from "axios";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import { STANDARD_USER, STANDARD_WORKSPACE } from "@/test/mocks";
 
 // Mock axios
