@@ -2,19 +2,27 @@
 
 ## Overview
 
-The Task Filtering System allows you to filter tasks based on various conditions, including simple and complex logic, such as `AND`/`OR` combinations, array checks, and more. This README provides detailed documentation on how to use the filtering system, including examples of simple, medium, and advanced use cases.
+The Task Filtering System allows you to filter tasks based on various conditions, including simple and complex logic, such as `AND`/`OR` combinations, array checks, and more. This README provides detailed documentation on how to use the filtering system.
 
 ## Table of Contents
 
 1. [FilterCondition Type](#filtercondition-type)
-2. [TaskFilter Type](#taskfilter-type)
+2. [FilterResponse](#filterresponse)
 3. [checkCondition Function](#checkcondition-function)
-4. [filterTasks Function](#filtertasks-function)
-5. [Usage Examples](#usage-examples)
-    - [Easy Example](#easy-example)
-    - [Medium Example](#medium-example)
-    - [Advanced Example](#advanced-example)
-    - [Label Matching Example](#label-matching-example)
+4. [parseFilter Function](#parsefilter-function)
+5. [Filter Store API](#filter-store-api)
+    - [setCurrentFilter](#setcurrentfilter)
+    - [setShowSaveForm](#setshowsaveform)
+    - [addFilter](#addfilter)
+    - [clearFilter](#clearfilter)
+    - [removeFilter](#removefilter)
+    - [saveFilter](#savefilter)
+    - [getSavedFilters](#getsavedfilters)
+    - [updateSavedFilter](#updatesavedfilter)
+    - [deleteSavedFilter](#deletesavedfilter)
+    - [filterTasks](#filtertasks)
+    - [customFilter](#customfilter)
+    - [mergeFilters](#mergefilters)
 
 ## FilterCondition Type
 
@@ -37,15 +45,16 @@ type FilterCondition = {
 - **`arrayIncludesAll`**: Checks if an array field includes all specified values.
 - **`arrayIncludesAny`**: Checks if an array field includes any of the specified values.
 
-## TaskFilter Type
+## FilterResponse
 
-The `TaskFilter` type represents a complete filter, including the logic (`AND`/`OR`) and an array of conditions.
+The `FilterResponse` is used to describe the structure of data returned from the API.
 
 ```typescript
-type TaskFilter = {
-  logic: 'AND' | 'OR'; // The logical operator to combine conditions
-  conditions: FilterCondition[]; // An array of conditions to apply
-};
+interface FilterResponse = {
+  comment: FilterCondition[] | null; // Can either be an array of FilterCondition objects or null
+  message?: string;        // May contain a message
+  variant: "default" | "destructive"; // Type of toast to display
+}
 ```
 
 ## checkCondition Function
@@ -83,138 +92,125 @@ function checkCondition(task: Task, condition: FilterCondition): boolean {
 }
 ```
 
-## filterTasks Function
+## parseFilter Function
 
-The `filterTasks` function applies a `TaskFilter` to an array of tasks and returns the tasks that match the filter.
+The `parseFilter` function takes a SavedFilterType object as input and returns a SavedFilter object with parsed filter conditions. This function ensures that filter conditions are consistently structured for further use in filtering logic.
 
 ```typescript
-function filterTasks(tasks: Task[], filter: TaskFilter): Task[] {
-  return tasks.filter((task) => {
-    return filter.logic === 'AND'
-      ? filter.conditions.every((condition) => checkCondition(task, condition))
-      : filter.conditions.some((condition) => checkCondition(task, condition));
-  });
-}
+parseFilter(newFilter: SavedFilterType): SavedFilter {
+  const parsedFilter: SavedFilter = {
+    ...newFilter,
+    filter:
+      (newFilter.filter
+        ?.map((condition) =>
+          typeof condition === "string"
+            ? (JSON.parse(condition) as FilterCondition)
+            : condition,
+        )
+        .filter((condition) => condition !== null) as FilterCondition[]) || [],
+  };
 ```
 
-## Usage Examples
+## Filter Store API
 
-### Easy Example
+### `setCurrentFilter`
 
-**Scenario**: Filter tasks with `HIGH` priority.
+Updates the `currentFilters` state with a new array of filter conditions. It sets the active filter criteria that will be applied to tasks.
 
 ```typescript
-const easyFilter: TaskFilter = {
-  logic: 'AND',
-  conditions: [
-    {
-      field: 'priority',
-      value: Priority.HIGH,
-      operator: 'equals',
-    },
-  ],
-};
-
-const easyFilteredTasks = filterTasks(tasks, easyFilter);
-console.log(easyFilteredTasks);
+setCurrentFilter: (filter: FilterCondition[]) => void;
 ```
 
-### Medium Example
+### `setShowSaveForm`
 
-**Scenario**: Filter tasks assigned to `John Doe` that are due before `September 5th, 2024`.
+Sets the `showSaveForm` state, which controls the visibility of a form for saving filters. The `input` parameter is a boolean that shows or hides the form.
 
 ```typescript
-const mediumFilter: TaskFilter = {
-  logic: 'AND',
-  conditions: [
-    {
-      field: 'assigneeName',
-      value: 'John Doe',
-      operator: 'equals',
-    },
-    {
-      field: 'dueDate',
-      value: new Date('2024-09-05'),
-      operator: 'lessThan',
-    },
-  ],
-};
-
-const mediumFilteredTasks = filterTasks(tasks, mediumFilter);
-console.log(mediumFilteredTasks);
+setShowSaveForm: (input: boolean) => void;
 ```
 
-### Advanced Example
+### `addFilter`
 
-**Scenario**: Filter tasks with `HIGH` priority assigned to either `John Doe` or `Jane Doe`, OR tasks due before `September 5th, 2024`, belonging to "Team One", AND that include both `"Bug"` and `"Feature"` labels.
+Adds a new filter condition to `currentFilters` or updates an existing condition if one for the specified field already exists. Ensures that each field has only one condition, updating the condition if necessary.
 
 ```typescript
-const advancedFilter: TaskFilter = {
-  logic: 'AND',
-  conditions: [
-    {
-      field: 'priority',
-      value: Priority.HIGH,
-      operator: 'equals',
-    },
-    {
-      logic: 'OR',
-      conditions: [
-        {
-          field: 'assigneeName',
-          value: 'John Doe',
-          operator: 'equals',
-        },
-        {
-          field: 'assigneeName',
-          value: 'Jane Doe',
-          operator: 'equals',
-        },
-        {
-          logic: 'AND',
-          conditions: [
-            {
-              field: 'dueDate',
-              value: new Date('2024-09-05'),
-              operator: 'lessThan',
-            },
-            {
-              field: 'Team',
-              value: 'Team One',
-              operator: 'equals',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      field: 'labels',
-      value: ['Bug', 'Feature'],
-      operator: 'arrayIncludesAll',
-    },
-  ],
-};
-
-const advancedFilteredTasks = filterTasks(tasks, advancedFilter);
-console.log(advancedFilteredTasks);
+addFilter: (filter: FilterCondition) => void;
 ```
 
-### Label Matching Example
+### `clearFilter`
 
-**Scenario**: Filter tasks with labels that include any of `"Bug"`, `"Refactor"`, or `"Improvement"`.
+Clears the current filters and filter types, effectively resetting the applied filters to their default (empty) state.
 
 ```typescript
-const labelFilter: TaskFilter = {
-  logic: 'AND',
-  conditions: [
-    {
-      field: 'labels',
-      value: ['Bug', 'Refactor', 'Improvement'],
-      operator: 'arrayIncludesAny',
-    },
-  ],
-};
+clearFilter: () => void;
+```
 
-const labelFilteredTasks = filterTasks(tasks, labelFilter);
-console.log(labelFilteredTasks);
+### `removeFilter`
+
+Removes a filter condition based on the specified `field` from the current filters, ensuring only relevant filter conditions remain active.
+
+```typescript
+removeFilter: (field: string) => void;
+```
+
+### `saveFilter`
+
+Asynchronously saves a new filter to the database, assigning it a unique identifier. Adds the saved filter to the list of `savedFilters`, returning a response that includes a success or failure message.
+
+```typescript
+saveFilter: (filter: Partial<SavedFilter>) => Promise<FilterResponse>;
+```
+
+### `getSavedFilters`
+
+Fetches saved filters for a specific group based on `groupId`. Updates `savedFilters` state with parsed filters, returning them in an array.
+
+```typescript
+getSavedFilters: (groupId: string) => Promise<SavedFilter[]>;
+```
+
+### `updateSavedFilter`
+
+Updates an existing saved filter (identified by `filterId`) in the database. Replaces the outdated filter with the updated version in `savedFilters` and returns a response with a message about the update's success or failure.
+
+```typescript
+updateSavedFilter: (
+    filterId: string,
+    filter: Partial<SavedFilter>,
+  ) => Promise<FilterResponse>;
+```
+
+### `deleteSavedFilter`
+
+Deletes a saved filter by `filterId` from the database. If successful, it clears the `currentFilters` to remove any reliance on the deleted filter.
+
+```typescript
+deleteSavedFilter: (filterId: string) => Promise<void>;
+```
+
+### `filterTasks`
+
+Filters the provided `tasks` array based on the active `currentFilters`. It returns only those tasks that meet all filter conditions.
+
+```typescript
+filterTasks: (tasks: Task[]) => Task[];
+```
+
+### `customFilter`
+
+Applies a custom array of `filters` to the provided `tasks` array. Returns tasks that match all specified conditions in `filters`.
+
+```typescript
+customFilter: (tasks: Task[], filter: FilterCondition[]) => Task[];
+```
+
+### `mergeFilters`
+
+Merges the `newFilters` array with existing filters from a saved filter (identified by `savedFilterId`). Ensures that any overlapping fields are updated with the new filter condition and returns the merged result as a unique array of filter conditions.
+
+```typescript
+mergeFilters: (
+    newFilters: FilterCondition[],
+    savedFilterId: string,
+  ) => FilterCondition[];
 ```
