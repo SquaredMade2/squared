@@ -1,0 +1,14 @@
+{
+  "name": "@squared/context",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "rm -rf ./dist && tsc && node ./dist/test.js",
+    "postinstall": "pnpm run build",
+    "build": "rm -rf ./dist && tsc"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.8.1"
+  }
+}
