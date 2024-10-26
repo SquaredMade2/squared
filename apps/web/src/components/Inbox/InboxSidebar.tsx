@@ -2,7 +2,7 @@ import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { NotificationTask } from "@/store/notifications";
-import type { Workspace } from "@repo/db";
+import type { Workspace } from "@squared/db";
 import { Label } from "@repo/ui/label";
 import {
 	BadgePlus,

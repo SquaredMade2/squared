@@ -1,4 +1,4 @@
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 
 export type AuthState = {
 	user: User | null;

@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import type { CommentState, CommentStore, CommentResponse } from "./interfaces";
-import type { Comment } from "@repo/db";
+import type { Comment } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";

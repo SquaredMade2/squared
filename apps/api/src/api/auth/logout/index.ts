@@ -1,4 +1,4 @@
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";
 

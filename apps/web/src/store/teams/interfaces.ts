@@ -1,4 +1,4 @@
-import type { Sprint, Team, RetrospectiveItem, Task } from "@repo/db";
+import type { Sprint, Team, RetrospectiveItem, Task } from "@squared/db";
 
 export type TeamState = {
 	teams: Team[];

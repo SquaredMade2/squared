@@ -1,4 +1,4 @@
-import type { Status, Task } from "@repo/db";
+import type { Status, Task } from "@squared/db";
 
 export type GroupedColumn = {
 	group: string;

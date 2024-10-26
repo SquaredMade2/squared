@@ -11,7 +11,7 @@ import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users, getAllUsers } = useUserStore((state) => state);
