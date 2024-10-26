@@ -6,7 +6,7 @@ import {
 	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
-import { Priority } from "@repo/db";
+import { Priority } from "@squared/db";
 import { PriorityIcon } from "../Icons";
 import type { FilterOption } from "./interfaces";
 

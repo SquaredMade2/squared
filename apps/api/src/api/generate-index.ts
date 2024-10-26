@@ -24,7 +24,7 @@ import { Server } from "socket.io";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
-import { PrismaClient } from "@repo/db";
+import { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";

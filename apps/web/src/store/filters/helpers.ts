@@ -1,4 +1,4 @@
-import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
+import type { Task, SavedFilter as SavedFilterType } from "@squared/db";
 import type { FilterCondition, SavedFilter } from "./interfaces";
 
 export function checkCondition(

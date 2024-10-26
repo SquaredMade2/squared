@@ -1,4 +1,4 @@
-import type { RetrospectiveItem } from "@repo/db";
+import type { RetrospectiveItem } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";

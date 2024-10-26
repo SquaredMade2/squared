@@ -1,4 +1,4 @@
-import type { Notification, Task, User } from "@repo/db";
+import type { Notification, Task, User } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";

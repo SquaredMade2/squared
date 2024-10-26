@@ -1,8 +1,7 @@
-import type { Task } from "@repo/db";
+import type { Task, Activity } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { v4 as uuidv4 } from "uuid";
-import type { Activity } from "@repo/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
