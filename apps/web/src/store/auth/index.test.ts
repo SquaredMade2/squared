@@ -1,7 +1,7 @@
 import { createAuthStore } from ".";
 import axios from "axios";
 import { signOut } from "next-auth/react";
-import type { User } from "@repo/db";
+import { STANDARD_USER } from "@/test/mocks";
 
 // Mock axios and next-auth
 jest.mock("axios");
@@ -44,16 +44,9 @@ describe("AuthStore", () => {
 
 	describe("login", () => {
 		it("should update the user state on successful login", async () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Test User",
-				email: "test@example.com",
-				username: "testuser",
-			} as User;
-
 			const mockResponse = {
 				data: {
-					data: mockUser,
+					data: STANDARD_USER,
 					message: "Login successful",
 					variant: "default",
 				},
@@ -69,28 +62,21 @@ describe("AuthStore", () => {
 			});
 
 			expect(result).toEqual({
-				user: mockUser,
+				user: STANDARD_USER,
 				message: "Login successful",
 				variant: "default",
 			});
 
 			const state = store.getState();
-			expect(state.user).toEqual(mockUser);
+			expect(state.user).toEqual(STANDARD_USER);
 		});
 	});
 
 	describe("register", () => {
 		it("should update the user state on successful registration", async () => {
-			const mockUser: User = {
-				id: "1",
-				name: "New User",
-				email: "newuser@example.com",
-				username: "newuser",
-			} as User;
-
 			const mockResponse = {
 				data: {
-					data: mockUser,
+					data: STANDARD_USER,
 					message: "Registration successful",
 					variant: "default",
 				},
@@ -108,28 +94,21 @@ describe("AuthStore", () => {
 			});
 
 			expect(result).toEqual({
-				user: mockUser,
+				user: STANDARD_USER,
 				message: "Registration successful",
 				variant: "default",
 			});
 
 			const state = store.getState();
-			expect(state.user).toEqual(mockUser);
+			expect(state.user).toEqual(STANDARD_USER);
 		});
 	});
 
 	describe("verifyUser", () => {
 		it("should update the user state on successful verification", async () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Verified User",
-				email: "verified@example.com",
-				username: "verifieduser",
-			} as User;
-
 			const mockResponse = {
 				data: {
-					user: mockUser,
+					user: STANDARD_USER,
 					message: "User verified",
 					variant: "default",
 				},
@@ -140,26 +119,19 @@ describe("AuthStore", () => {
 			const result = await store.getState().verifyUser("valid-token");
 
 			expect(result).toEqual({
-				user: mockUser,
+				user: STANDARD_USER,
 				message: "User verified",
 				variant: "default",
 			});
 
 			const state = store.getState();
-			expect(state.user).toEqual(mockUser);
+			expect(state.user).toEqual(STANDARD_USER);
 		});
 	});
 
 	describe("logout", () => {
 		it("should clear the user state and session storage on logout", async () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Test User",
-				email: "test@example.com",
-				username: "testuser",
-			} as User;
-
-			store.setState({ user: mockUser });
+			store.setState({ user: STANDARD_USER });
 
 			mockedAxios.post.mockResolvedValue({ data: true });
 			mockedSignOut.mockResolvedValue(undefined);
@@ -224,16 +196,9 @@ describe("AuthStore", () => {
 
 	describe("checkTokenValid", () => {
 		it("should update the user state if token is valid", async () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Valid User",
-				email: "valid@example.com",
-				username: "validuser",
-			} as User;
-
 			const mockResponse = {
 				data: {
-					user: mockUser,
+					user: STANDARD_USER,
 					message: "Token is valid",
 					variant: "default",
 				},
@@ -244,29 +209,22 @@ describe("AuthStore", () => {
 			const result = await store.getState().checkTokenValid("valid-token");
 
 			expect(result).toEqual({
-				user: mockUser,
+				user: STANDARD_USER,
 				message: "Token is valid",
 				variant: "default",
 			});
 
 			const state = store.getState();
-			expect(state.user).toEqual(mockUser);
+			expect(state.user).toEqual(STANDARD_USER);
 		});
 	});
 
 	describe("setUser", () => {
 		it("should update the user state", () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Set User",
-				email: "set@example.com",
-				username: "setuser",
-			} as User;
-
-			store.getState().setUser(mockUser);
+			store.getState().setUser(STANDARD_USER);
 
 			const state = store.getState();
-			expect(state.user).toEqual(mockUser);
+			expect(state.user).toEqual(STANDARD_USER);
 		});
 
 		it("should set the user state to null", () => {
@@ -279,29 +237,19 @@ describe("AuthStore", () => {
 
 	describe("persist middleware", () => {
 		it("should persist the state to sessionStorage", () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Persisted User",
-				email: "persisted@example.com",
-				username: "persisteduser",
-			} as User;
-
-			store.setState({ user: mockUser });
+			store.setState({ user: STANDARD_USER });
 
 			expect(mockSessionStorage.setItem).toHaveBeenCalledWith(
 				"auth-store",
-				expect.stringContaining(JSON.stringify({ user: mockUser })),
+				expect.stringContaining(JSON.stringify({ user: STANDARD_USER })),
 			);
 		});
 
 		it("should hydrate the state from sessionStorage", () => {
-			const mockUser: User = {
-				id: "1",
-				name: "Hydrated User",
-				email: "hydrated@example.com",
-				username: "hydrateduser",
-			} as User;
-
+			const mockUser = {
+				...STANDARD_USER,
+				lastLogin: new Date().toISOString(),
+			};
 			mockSessionStorage.getItem.mockReturnValue(
 				JSON.stringify({ state: { user: mockUser } }),
 			);
@@ -309,7 +257,16 @@ describe("AuthStore", () => {
 			const newStore = createAuthStore();
 			const state = newStore.getState();
 
-			expect(state.user).toEqual(mockUser);
+			expect(state.user).toMatchObject({
+				...STANDARD_USER,
+				lastLogin: expect.any(String),
+			});
+			if (!state.user) {
+				throw new Error("User should not be null");
+			}
+			expect(new Date(state.user.lastLogin)).toEqualWithDatePrecision(
+				new Date(mockUser.lastLogin),
+			);
 		});
 	});
 });

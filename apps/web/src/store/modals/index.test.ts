@@ -1,3 +1,4 @@
+import { STANDARD_TASK } from "@/test/mocks";
 import { createModalStore } from ".";
 import type { Task } from "@repo/db";
 
@@ -52,30 +53,8 @@ describe("ModalStore", () => {
 
 	describe("setRenameData", () => {
 		it("should update renameData state", () => {
-			const mockTask: Task = {
-				id: "1",
-				title: "Test Task",
-				status: "todo",
-				authorId: "user1",
-				identifier: "TSK-001",
-				description: null,
-				dueDate: null,
-				effortEstimate: null,
-				teamId: "team1",
-				dateCreated: new Date(),
-				assigneeId: null,
-				assigneeName: null,
-				labels: [],
-				workspaceId: "workspace1",
-				updatedAt: new Date(),
-				deleted: false,
-				parentId: null,
-				sprintId: null,
-				priority: "medium",
-			};
-
-			store.getState().setRenameData(mockTask);
-			expect(store.getState().renameData).toEqual(mockTask);
+			store.getState().setRenameData(STANDARD_TASK);
+			expect(store.getState().renameData).toEqual(STANDARD_TASK);
 		});
 	});
 

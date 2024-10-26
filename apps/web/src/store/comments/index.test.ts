@@ -1,6 +1,7 @@
 import { createCommentStore } from ".";
 import axios from "axios";
 import type { Comment } from "@repo/db";
+import { STANDARD_COMMENT, STANDARD_COMMENT_2 } from "@/test/mocks";
 
 // Mock axios
 jest.mock("axios");
@@ -55,7 +56,7 @@ describe("CommentStore", () => {
 			const result = await store.getState().addComment(mockComment);
 
 			expect(mockedAxios.post).toHaveBeenCalledWith(
-				expect.stringContaining("/api/comment/mocked-uuid"),
+				expect.stringContaining("/api/comment"),
 				mockComment,
 			);
 
@@ -94,15 +95,7 @@ describe("CommentStore", () => {
 
 	describe("updateComment", () => {
 		it("should update a comment and update the state", async () => {
-			const mockComment: Comment = {
-				id: "comment-1",
-				comment: "Original comment",
-				taskId: "task-1",
-				authorId: "user-1",
-				date: new Date(),
-			};
-
-			store.setState({ comments: [mockComment] });
+			store.setState({ comments: [STANDARD_COMMENT] });
 
 			const updatedComment: Partial<Comment> = {
 				comment: "Updated comment",
@@ -110,7 +103,7 @@ describe("CommentStore", () => {
 
 			const mockResponse = {
 				data: {
-					data: { ...mockComment, ...updatedComment },
+					data: { ...STANDARD_COMMENT, ...updatedComment },
 					message: "Comment updated successfully",
 					variant: "default",
 				},
@@ -120,10 +113,10 @@ describe("CommentStore", () => {
 
 			const result = await store
 				.getState()
-				.updateComment("comment-1", updatedComment);
+				.updateComment(STANDARD_COMMENT.id, updatedComment);
 
 			expect(mockedAxios.put).toHaveBeenCalledWith(
-				expect.stringContaining("/api/comment/comment-1"),
+				expect.stringContaining(`/api/comment/${STANDARD_COMMENT.id}`),
 				updatedComment,
 			);
 
@@ -155,22 +148,14 @@ describe("CommentStore", () => {
 
 	describe("deleteComment", () => {
 		it("should delete a comment and update the state", async () => {
-			const mockComment: Comment = {
-				id: "comment-1",
-				comment: "Test comment",
-				taskId: "task-1",
-				authorId: "user-1",
-				date: new Date(),
-			};
-
-			store.setState({ comments: [mockComment] });
+			store.setState({ comments: [STANDARD_COMMENT] });
 
 			mockedAxios.delete.mockResolvedValue({});
 
-			await store.getState().deleteComment("comment-1");
+			await store.getState().deleteComment(STANDARD_COMMENT.id);
 
 			expect(mockedAxios.delete).toHaveBeenCalledWith(
-				expect.stringContaining("/api/comment/comment-1"),
+				expect.stringContaining(`/api/comment/${STANDARD_COMMENT.id}`),
 			);
 
 			const state = store.getState();
@@ -178,15 +163,7 @@ describe("CommentStore", () => {
 		});
 
 		it("should handle errors when deleting a comment", async () => {
-			const mockComment: Comment = {
-				id: "comment-1",
-				comment: "Test comment",
-				taskId: "task-1",
-				authorId: "user-1",
-				date: new Date(),
-			};
-
-			store.setState({ comments: [mockComment] });
+			store.setState({ comments: [STANDARD_COMMENT] });
 
 			mockedAxios.delete.mockRejectedValue(new Error("Network error"));
 
@@ -199,20 +176,12 @@ describe("CommentStore", () => {
 
 	describe("getComment", () => {
 		it("should return an existing comment from the state", async () => {
-			const mockComment: Comment = {
-				id: "comment-1",
-				comment: "Test comment",
-				taskId: "task-1",
-				authorId: "user-1",
-				date: new Date(),
-			};
+			store.setState({ comments: [STANDARD_COMMENT] });
 
-			store.setState({ comments: [mockComment] });
-
-			const result = await store.getState().getComment("comment-1");
+			const result = await store.getState().getComment(STANDARD_COMMENT.id);
 
 			expect(result).toEqual({
-				comment: mockComment,
+				comment: STANDARD_COMMENT,
 				message: "Comment found",
 				variant: "default",
 			});
@@ -221,17 +190,9 @@ describe("CommentStore", () => {
 		});
 
 		it("should fetch a comment from the API if not in state", async () => {
-			const mockComment: Comment = {
-				id: "comment-1",
-				comment: "Test comment",
-				taskId: "task-1",
-				authorId: "user-1",
-				date: new Date(),
-			};
-
 			const mockResponse = {
 				data: {
-					data: mockComment,
+					data: STANDARD_COMMENT,
 					message: "Comment fetched successfully",
 					variant: "default",
 				},
@@ -246,7 +207,7 @@ describe("CommentStore", () => {
 			);
 
 			expect(result).toEqual({
-				comment: mockComment,
+				comment: STANDARD_COMMENT,
 				message: "Comment fetched successfully",
 				variant: "default",
 			});
@@ -267,22 +228,7 @@ describe("CommentStore", () => {
 
 	describe("getAllComments", () => {
 		it("should fetch all comments for a task and update the state", async () => {
-			const mockComments: Comment[] = [
-				{
-					id: "comment-1",
-					comment: "Test comment 1",
-					taskId: "task-1",
-					authorId: "user-1",
-					date: new Date(),
-				},
-				{
-					id: "comment-2",
-					comment: "Test comment 2",
-					taskId: "task-1",
-					authorId: "user-2",
-					date: new Date(),
-				},
-			];
+			const mockComments: Comment[] = [STANDARD_COMMENT, STANDARD_COMMENT_2];
 
 			mockedAxios.get.mockResolvedValue({ data: mockComments });
 

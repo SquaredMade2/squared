@@ -2,6 +2,12 @@ import { createFilterStore } from ".";
 import axios from "axios";
 import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
 import type { FilterCondition, SavedFilter } from "./interfaces";
+import {
+	STANDARD_SAVED_FILTER,
+	STANDARD_SAVED_FILTER_2,
+	STANDARD_TASK,
+	STANDARD_TASK_2,
+} from "@/test/mocks";
 
 // Mock axios
 jest.mock("axios");
@@ -14,82 +20,11 @@ jest.mock("uuid", () => ({
 
 describe("FilterStore", () => {
 	let store: ReturnType<typeof createFilterStore>;
-	const mockTasks: Task[] = [
-		{
-			id: "1",
-			status: "inProgress",
-			authorId: "",
-			title: "",
-			description: null,
-			identifier: "",
-			dueDate: null,
-			effortEstimate: null,
-			teamId: "",
-			dateCreated: new Date(),
-			assigneeId: null,
-			assigneeName: null,
-			labels: [],
-			workspaceId: "",
-			updatedAt: new Date(),
-			deleted: false,
-			parentId: null,
-			sprintId: null,
-			priority: "noPriority",
-		},
-		{
-			id: "2",
-			status: "done",
-			authorId: "",
-			title: "",
-			description: null,
-			identifier: "",
-			dueDate: null,
-			effortEstimate: null,
-			teamId: "",
-			dateCreated: new Date(),
-			assigneeId: null,
-			assigneeName: null,
-			labels: [],
-			workspaceId: "",
-			updatedAt: new Date(),
-			deleted: false,
-			parentId: null,
-			sprintId: null,
-			priority: "noPriority",
-		},
-	];
-	const mockSavedFilter: SavedFilter = {
-		id: "saved-1",
-		name: "Saved Filter",
-		filter: [{ field: "status", value: "In Progress", operator: "equals" }],
-		authorId: "author-1",
-		description: null,
-		teamId: "team-1",
-		workspaceId: "workspace-1",
-		type: "WORKSPACE",
-	};
+	const mockTasks: Task[] = [STANDARD_TASK, STANDARD_TASK_2];
 	const mockSavedFilters: SavedFilter[] = [
-		{
-			id: "saved-1",
-			name: "Filter 1",
-			filter: [{ field: "status", value: "In Progress", operator: "equals" }],
-			authorId: "author-1",
-			description: null,
-			teamId: "team-1",
-			workspaceId: "workspace-1",
-			type: "WORKSPACE",
-		},
-		{
-			id: "saved-2",
-			name: "Filter 2",
-			filter: [{ field: "priority", value: "High", operator: "equals" }],
-			authorId: "author-1",
-			description: null,
-			teamId: "team-1",
-			workspaceId: "workspace-1",
-			type: "WORKSPACE",
-		},
-	];
+		STANDARD_SAVED_FILTER,
+		STANDARD_SAVED_FILTER_2,
+	] as SavedFilter[];
 	beforeEach(() => {
 		store = createFilterStore();
 		jest.clearAllMocks();
@@ -186,18 +121,18 @@ describe("FilterStore", () => {
 			});
 			const filteredTasks = store.getState().filterTasks(mockTasks);
 			expect(filteredTasks).toHaveLength(1);
-			expect(filteredTasks[0].id).toBe("1");
+			expect(filteredTasks[0].id).toBe(STANDARD_TASK_2.id);
 		});
 	});
 
 	describe("customFilter", () => {
 		it("should filter tasks based on provided filters", () => {
 			const filters: FilterCondition[] = [
-				{ field: "status", value: "done", operator: "equals" },
+				{ field: "status", value: "inProgress", operator: "equals" },
 			];
 			const filteredTasks = store.getState().customFilter(mockTasks, filters);
 			expect(filteredTasks).toHaveLength(1);
-			expect(filteredTasks[0].id).toBe("2");
+			expect(filteredTasks[0].id).toBe(STANDARD_TASK_2.id);
 		});
 	});
 
@@ -236,7 +171,9 @@ describe("FilterStore", () => {
 
 	describe("saveFilter", () => {
 		it("should save a new filter", async () => {
-			store.setState({ savedFilters: [mockSavedFilter] });
+			store.setState({
+				savedFilters: [STANDARD_SAVED_FILTER] as SavedFilter[],
+			});
 			const newFilter: Partial<SavedFilter> = {
 				name: "New Filter",
 				filter: [{ field: "status", value: "inProgress", operator: "equals" }],
@@ -282,7 +219,9 @@ describe("FilterStore", () => {
 
 	describe("updateSavedFilter", () => {
 		it("should update an existing saved filter", async () => {
-			store.setState({ savedFilters: [mockSavedFilter] });
+			store.setState({
+				savedFilters: [STANDARD_SAVED_FILTER] as SavedFilter[],
+			});
 
 			const updatedFilter: Partial<SavedFilter> = {
 				name: "Updated Filter",
@@ -291,7 +230,10 @@ describe("FilterStore", () => {
 
 			const mockResponse = {
 				data: {
-					data: { ...mockSavedFilter, ...updatedFilter } as SavedFilterType,
+					data: {
+						...STANDARD_SAVED_FILTER,
+						...updatedFilter,
+					} as SavedFilterType,
 					message: "Filter updated successfully",
 					variant: "default",
 				},
@@ -300,10 +242,10 @@ describe("FilterStore", () => {
 
 			const result = await store
 				.getState()
-				.updateSavedFilter("saved-1", updatedFilter);
+				.updateSavedFilter(STANDARD_SAVED_FILTER.id, updatedFilter);
 
 			expect(mockedAxios.put).toHaveBeenCalledWith(
-				expect.stringContaining("/api/filter/saved-1"),
+				expect.stringContaining(`/api/filter/${STANDARD_SAVED_FILTER.id}`),
 				updatedFilter,
 			);
 			expect(result).toEqual({
@@ -317,7 +259,9 @@ describe("FilterStore", () => {
 
 	describe("deleteSavedFilter", () => {
 		it("should delete a saved filter", async () => {
-			store.setState({ savedFilters: [mockSavedFilter] });
+			store.setState({
+				savedFilters: [STANDARD_SAVED_FILTER] as SavedFilter[],
+			});
 
 			mockedAxios.delete.mockResolvedValue({ status: 200 });
 

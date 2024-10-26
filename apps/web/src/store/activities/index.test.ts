@@ -1,6 +1,7 @@
 import { createActivityStore } from ".";
 import axios from "axios";
-import type { Commit, Prisma, TaskEvent } from "@repo/db";
+import type { Prisma } from "@repo/db";
+import { STANDARD_COMMIT, STANDARD_TASK_EVENT } from "@/test/mocks";
 
 // Mock axios
 jest.mock("axios");
@@ -28,32 +29,13 @@ describe("ActivityStore", () => {
 
 	describe("addTaskEvent", () => {
 		it("should add a task event and update the state", async () => {
-			const mockTaskEvent: TaskEvent = {
-				id: "1",
-				type: "CREATED",
-				authorId: "author1",
-				authorName: "Author Name",
-				activityId: "activity1",
-				createdAt: new Date(),
-				taskId: "task1",
-				originalValue: null,
-				updatedValue: null,
-				originalAssigneeId: null,
-				originalAssigneeName: null,
-				updatedAssigneeId: null,
-				updatedAssigneeName: null,
-				gitUpdated: null,
-				originalLabels: [],
-				updatedLabels: [],
-			};
-
 			const mockResponse: { data: ActivityType } = {
 				data: {
 					id: "activity1",
 					createdAt: new Date(),
 					type: "TASK_EVENT",
 					eventLogId: "eventLog1",
-					taskEvent: mockTaskEvent,
+					taskEvent: STANDARD_TASK_EVENT,
 					commit: null,
 				},
 			};
@@ -62,14 +44,14 @@ describe("ActivityStore", () => {
 
 			const result = await store
 				.getState()
-				.addTaskEvent(mockTaskEvent, "task1", "author1");
+				.addTaskEvent(STANDARD_TASK_EVENT, "task1", "author1");
 
 			expect(mockedAxios.post).toHaveBeenCalledWith(
 				expect.stringContaining("/api/activity/task1"),
-				{ ...mockTaskEvent, type: "TASK_EVENT", authorId: "author1" },
+				{ ...STANDARD_TASK_EVENT, type: "TASK_EVENT", authorId: "author1" },
 			);
 
-			expect(result).toEqual(mockTaskEvent);
+			expect(result).toEqual(STANDARD_TASK_EVENT);
 
 			const state = store.getState();
 			expect(state.events).toHaveLength(1);
@@ -79,27 +61,6 @@ describe("ActivityStore", () => {
 
 	describe("addCommitEvent", () => {
 		it("should add a commit event and update the state", async () => {
-			const mockCommit: Commit = {
-				id: "1",
-				treeId: "tree1",
-				distinct: true,
-				message: "Initial commit",
-				timestamp: "2023-06-01T12:00:00Z",
-				url: "https://github.com/repo/commit/1",
-				authorName: "Author Name",
-				authorEmail: "author@example.com",
-				authorUsername: "authoruser",
-				committerName: "Committer Name",
-				committerEmail: "committer@example.com",
-				committerUsername: "committeruser",
-				added: ["file1.txt"],
-				removed: [],
-				modified: [],
-				repoName: "repo",
-				owner: "owner",
-				activityId: "activity1",
-			};
-
 			const mockResponse: { data: ActivityType } = {
 				data: {
 					id: "activity1",
@@ -107,7 +68,7 @@ describe("ActivityStore", () => {
 					type: "COMMIT",
 					eventLogId: "eventLog1",
 					taskEvent: null,
-					commit: mockCommit,
+					commit: STANDARD_COMMIT,
 				},
 			};
 
@@ -115,14 +76,14 @@ describe("ActivityStore", () => {
 
 			const result = await store
 				.getState()
-				.addCommitEvent(mockCommit, "task1", "author1");
+				.addCommitEvent(STANDARD_COMMIT, "task1", "author1");
 
 			expect(mockedAxios.post).toHaveBeenCalledWith(
 				expect.stringContaining("/api/activity/task1"),
-				{ event: mockCommit, type: "COMMIT", authorId: "author1" },
+				{ event: STANDARD_COMMIT, type: "COMMIT", authorId: "author1" },
 			);
 
-			expect(result).toEqual(mockCommit);
+			expect(result).toEqual(STANDARD_COMMIT);
 
 			const state = store.getState();
 			expect(state.events).toHaveLength(1);
