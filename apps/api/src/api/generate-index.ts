@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import "dotenv/config";
+import createCustomLogger from "@squared/logger";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
@@ -24,6 +25,7 @@ import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 import { PrismaClient } from "@squared/db";
+import createCustomLogger from "@squared/logger";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";
 
@@ -34,6 +36,8 @@ export const prisma = new PrismaClient({
 		},
 	},
 });
+
+const logger = createCustomLogger("api");
 
 `);
 
@@ -141,11 +145,11 @@ app.use(router);
 
 // Socket.IO setup
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  logger.info('A user connected');
 
   socket.on('joinRoom', (sprintId) => {
     socket.join(sprintId);
-	console.log('User joined room:', sprintId);
+	logger.info('User joined room: %s', sprintId);
   });
 
   socket.on('addItem', (data) => {
@@ -157,22 +161,24 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    logger.info('User disconnected');
   });
 });
 
 // Start the server
 server.listen(port, () => {
-  console.log(\`Server is running on http://localhost:\${port}\`);
+  logger.info(\`Server is running on http://localhost:\${port}\`);
 });
 `);
 }
+
+const logger = createCustomLogger("gen-index");
 
 function getRoutes(dir: string): string[] {
 	const files = fs.readdirSync(dir);
 	const routes: string[] = [];
 
-	console.log("Checking directory:", dir);
+	logger.info("Checking directory: %s", dir);
 
 	files.sort().reverse();
 
@@ -182,7 +188,7 @@ function getRoutes(dir: string): string[] {
 		if (stat.isDirectory()) {
 			routes.push(...getRoutes(path));
 		} else if (path.endsWith("/index.ts")) {
-			console.log("Found route:", path);
+			logger.info("Found route: %s", path);
 			routes.push(path.replace("/index.ts", ""));
 		}
 	}
@@ -192,4 +198,4 @@ function getRoutes(dir: string): string[] {
 // Call the function to generate the index
 generateIndex();
 
-console.log("Index file generated at:", outputPath);
+logger.info("Index file generated at: %s", outputPath);

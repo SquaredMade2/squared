@@ -1,16 +1,20 @@
 import type { Comment } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	taskId: string;
 };
+
+const logger = createCustomLogger("task");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { taskId }): Promise<APIResponse<Comment>> => {
 			try {
 				// Find comments by team ID
+				logger.info("Finding comments by task ID: %s", taskId);
 				const comments: Comment[] | null = await prisma.comment.findMany({
 					where: { taskId },
 				});
@@ -29,7 +33,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding comments:", error);
+				logger.error("Error finding comments: %0", error);
 				res.status(500);
 				return {
 					data: null,

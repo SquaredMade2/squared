@@ -3,6 +3,7 @@ import type { Team, User, Workspace } from "@squared/db";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
+import createCustomLogger from "@squared/logger";
 
 const prisma = new PrismaClient({
 	datasources: {
@@ -11,6 +12,8 @@ const prisma = new PrismaClient({
 		},
 	},
 });
+
+const logger = createCustomLogger("seed");
 
 const hashPassword = (password: string): Promise<string> => {
 	return new Promise((resolve, reject) => {
@@ -67,7 +70,7 @@ async function seedDB() {
 			}
 		}
 	}
-	console.log("Database seeding completed");
+	logger.info("Database seeding completed");
 }
 
 async function addMainUser() {
@@ -286,10 +289,10 @@ async function addNotification(
 
 seedDB()
 	.then(() => {
-		console.log("Seed completed");
+		logger.info("Seed completed");
 		return prisma.$disconnect();
 	})
 	.catch((e) => {
-		console.error(e);
+		logger.error("Error seeding database: %0", e);
 		return prisma.$disconnect();
 	});
