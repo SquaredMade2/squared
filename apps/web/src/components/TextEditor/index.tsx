@@ -109,26 +109,17 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const isBoldActive = () => {
 		const allMarks = Editor.marks(editor);
-		if (allMarks?.bold) {
-			return true;
-		}
-		return false;
+		return Boolean(allMarks?.bold);
 	};
 
 	const isItalicActive = () => {
 		const allMarks = Editor.marks(editor);
-		if (allMarks?.italic) {
-			return true;
-		}
-		return false;
+		return Boolean(allMarks?.italic);
 	};
 
 	const isCodeActive = () => {
 		const allMarks = Editor.marks(editor);
-		if (allMarks?.code) {
-			return true;
-		}
-		return false;
+		return Boolean(allMarks?.code);
 	};
 
 	// const isLinkActive = () => {
@@ -162,27 +153,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	// Create Leafs (Portion of Row)
 
 	const createBoldLeaf = () => {
-		if (isBoldActive()) {
-			Editor.addMark(editor, "bold", false);
-		} else {
-			Editor.addMark(editor, "bold", true);
-		}
+		Editor.addMark(editor, "bold", Boolean(!isBoldActive()));
 	};
 
 	const createItalicLeaf = () => {
-		if (isItalicActive()) {
-			Editor.addMark(editor, "italic", false);
-		} else {
-			Editor.addMark(editor, "italic", true);
-		}
+		Editor.addMark(editor, "italic", Boolean(!isItalicActive()));
 	};
 
 	const createCodeLeaf = () => {
-		if (isCodeActive()) {
-			Editor.addMark(editor, "code", false);
-		} else {
-			Editor.addMark(editor, "code", true);
-		}
+		Editor.addMark(editor, "code", Boolean(!isCodeActive()));
 	};
 
 	// const createLinkLeaf = () => {
