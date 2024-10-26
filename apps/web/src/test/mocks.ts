@@ -9,6 +9,8 @@ import type {
 	Comment,
 	SavedFilter,
 	Sprint,
+	Team,
+	RetrospectiveItem,
 } from "@repo/db";
 
 export const STANDARD_USER: User = {
@@ -38,6 +40,34 @@ export const STANDARD_WORKSPACE: Workspace = {
 	tasksCreated: 1,
 	universalTokenLinkId: null,
 	admins: [],
+};
+
+export const STANDARD_TEAM: Team = {
+	id: "2AB8018F-2B1F-4E9D-9118-BF2AC5B3EA63",
+	name: "Standard Team",
+	identifier: "TSK",
+	workspaceId: STANDARD_WORKSPACE.id,
+	sprintsEnabled: true,
+	sprintDuration: 2,
+	cooldownDuration: 1,
+	upcomingSprints: 3,
+	activeRequired: true,
+	sprintStartDate: new Date("2023-01-01"),
+	tasksPerSprint: 10,
+};
+
+export const STANDARD_TEAM_2: Team = {
+	id: "39A93AC1-C149-4867-8A1E-9DBBC5C1F4FD",
+	name: "Standard Team 2",
+	identifier: "TSQ",
+	workspaceId: STANDARD_WORKSPACE.id,
+	sprintsEnabled: false,
+	sprintDuration: 1,
+	cooldownDuration: 0,
+	upcomingSprints: 2,
+	activeRequired: false,
+	sprintStartDate: new Date("2023-02-01"),
+	tasksPerSprint: 8,
 };
 
 export const STANDARD_TASK: Task = {
@@ -92,6 +122,35 @@ export const STANDARD_SPRINT: Sprint = {
 	teamId: "team-1",
 	createdAt: new Date("2022-12-31"),
 	updatedAt: new Date("2022-12-31"),
+};
+
+export const STANDARD_RETROSPECTIVE_ITEM: RetrospectiveItem = {
+	id: "retro-item-1",
+	content: "Improved team communication",
+	type: "wentWell",
+	wentWellSprintId: "sprint-1",
+	toImproveSprintId: null,
+	actionItemsSprintId: null,
+	createdAt: new Date("2023-01-15T10:00:00Z"),
+	updatedAt: new Date("2023-01-15T10:00:00Z"),
+};
+
+export const STANDARD_TO_IMPROVE_ITEM: RetrospectiveItem = {
+	...STANDARD_RETROSPECTIVE_ITEM,
+	id: "retro-item-2",
+	content: "Need to improve code review process",
+	type: "toImprove",
+	wentWellSprintId: null,
+	toImproveSprintId: "sprint-1",
+};
+
+export const STANDARD_ACTION_ITEM: RetrospectiveItem = {
+	...STANDARD_RETROSPECTIVE_ITEM,
+	id: "retro-item-3",
+	content: "Set up weekly code review sessions",
+	type: "actionItems",
+	wentWellSprintId: null,
+	actionItemsSprintId: "sprint-1",
 };
 
 export const STANDARD_SAVED_FILTER: SavedFilter = {
