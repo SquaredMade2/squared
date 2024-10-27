@@ -26,6 +26,8 @@ import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 import { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
+import { createErrorHandler, createRequestHandler } from "@squared/http-rpc";
+import { rpcHandlers } from "@/services";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";
 
@@ -108,6 +110,12 @@ const localServerDomain = \`http://localhost:\${port}\`;
 app.get("/", (_, res) => {
   res.status(200).send("ok");
 });
+
+const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
+app.use("/rpc", rpcRequestHandler);
+
+// Use the RPC error handler
+app.use(createErrorHandler({ log: logger }));
 
 app.use(
 	cors({

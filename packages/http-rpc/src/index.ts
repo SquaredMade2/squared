@@ -1,6 +1,7 @@
 import type { RequestHandler, ErrorRequestHandler } from "express";
 import * as context from "@squared/context";
 import { randomBytes } from "node:crypto";
+import type { z } from "zod";
 
 import {
 	type ServiceSet,
@@ -9,6 +10,8 @@ import {
 	requestContexts,
 	ValidationError,
 	ResponseValidationError,
+	type Service,
+	type Method,
 } from "./rpc-types";
 import type { Logger } from "@squared/logger";
 
@@ -189,4 +192,52 @@ export function createErrorHandler(
 function first(s: string | string[] | undefined) {
 	if (!s) return undefined;
 	return Array.isArray(s) ? s[0] : s;
+}
+
+type SchemaFor<T> = z.ZodType<T, z.ZodTypeDef, T>;
+
+export function createSchema<T>() {
+	return <S extends SchemaFor<T>>(schema: S) => schema;
+}
+
+export function createRpcHandler<
+	T extends Record<
+		string,
+		{
+			// biome-ignore lint/suspicious/noExplicitAny: ZodType requires these any types for flexibility
+			input: z.ZodType<any, z.ZodTypeDef, any>;
+			// biome-ignore lint/suspicious/noExplicitAny: ZodType requires these any types for flexibility
+			output: z.ZodType<any, z.ZodTypeDef, any>;
+		}
+	>,
+>(
+	schema: T,
+	implementation: {
+		[K in keyof T]: (
+			input: z.infer<T[K]["input"]>,
+		) => Promise<z.infer<T[K]["output"]>>;
+	},
+): ServiceSet<Service> {
+	const expose: MethodDetails[] = Object.entries(schema).map(
+		([methodName, { input, output }]) => ({
+			methodName,
+			requestSchema: input,
+			responseSchema: output,
+		}),
+	);
+
+	// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
+	const methods: Record<string, Method<any, any>> = {};
+	for (const [key, func] of Object.entries(implementation)) {
+		// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
+		methods[key] = func as Method<any, any>;
+	}
+
+	return {
+		meta: {
+			service: "rpc",
+			expose,
+		},
+		implementation: methods,
+	};
 }
