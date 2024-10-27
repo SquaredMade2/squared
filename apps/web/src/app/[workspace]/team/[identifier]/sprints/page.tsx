@@ -41,7 +41,7 @@ import {
 	ReferenceLine,
 } from "recharts";
 import { useTaskStore } from "@/store";
-import type { Priority, Sprint, Task } from "@repo/db";
+import type { Priority, Sprint, Task } from "@squared/db";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";

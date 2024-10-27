@@ -18,7 +18,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import NavBarTeams from "./NavBarTeams";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -43,9 +43,9 @@ const Navbar = () => {
 	const { toast } = useToast();
 
 	useEffect(() => {
-		if (!workspace) return;
-		getAllTeams(workspace.id);
-	}, [workspace, getAllTeams]);
+		if (!user) return;
+		getAllTeams(user.id);
+	}, [user, getAllTeams]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {

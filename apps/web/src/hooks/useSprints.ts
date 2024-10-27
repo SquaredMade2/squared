@@ -1,7 +1,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Task, Team, Workspace } from "@repo/db";
+import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
+import type { Sprint, Task, Team, Workspace } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 
 export function useSprints() {
@@ -14,6 +14,7 @@ export function useSprints() {
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
 	const { getWorkspace } = useWorkspaceStore((state) => state);
+	const { user } = useAuthStore((state) => state);
 	const {
 		getAllTeams,
 		getSprints,
@@ -36,8 +37,12 @@ export function useSprints() {
 				}
 				setWorkspace(workspace);
 
+				if (!user) {
+					throw new Error("User not found");
+				}
+
 				// Fetch team data
-				const teams = await getAllTeams(workspace.id);
+				const teams = await getAllTeams(user.id);
 				const foundTeam = teams.find(
 					(team) => team.identifier === teamIdentifier,
 				);

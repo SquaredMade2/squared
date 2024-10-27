@@ -1,4 +1,4 @@
-import type { Priority, Status } from "@repo/db";
+import type { Priority, Status } from "@squared/db";
 import {
 	AlertTriangle,
 	ArrowDown,

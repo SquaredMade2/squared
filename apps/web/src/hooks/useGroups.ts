@@ -1,6 +1,6 @@
 import { useTaskStore, useViewStore, useWorkspaceStore } from "@/store";
 import type { CompletedTaskPeriod, TaskGroup } from "@/store/views";
-import { Priority, Status, type Task } from "@repo/db";
+import { Priority, Status, type Task } from "@squared/db";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { tasks } = useTaskStore((state) => state);

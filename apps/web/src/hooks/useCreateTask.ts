@@ -6,7 +6,7 @@ import {
 	useTaskStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 
 export const useCreateTask = () => {
 	const [isLoading, setIsLoading] = useState(false);

@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import type { SearchbarStructure } from "./interfaces";
 
 export class CommandSchema {

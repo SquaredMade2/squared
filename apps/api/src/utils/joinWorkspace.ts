@@ -1,5 +1,5 @@
 import type { APIResponse } from "@/api/route";
-import type { Workspace } from "@repo/db";
+import type { Workspace } from "@squared/db";
 import jwt from "jsonwebtoken";
 import { prisma } from "../api";
 

@@ -1,4 +1,4 @@
-import type { Priority, Status, Task } from "@repo/db";
+import type { Priority, Status, Task } from "@squared/db";
 import {
 	Accordion,
 	AccordionContent,

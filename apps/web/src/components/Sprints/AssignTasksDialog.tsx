@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import type { Priority, Sprint, Status, Task } from "@repo/db";
+import type { Priority, Sprint, Status, Task } from "@squared/db";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { toast } from "../ui/use-toast";
 
