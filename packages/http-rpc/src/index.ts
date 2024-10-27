@@ -2,7 +2,7 @@ import "tslib";
 import type { RequestHandler, ErrorRequestHandler } from "express";
 import * as context from "@squared/context";
 import { randomBytes } from "node:crypto";
-import type { z } from "zod";
+import { z } from "zod";
 
 import {
 	type ServiceSet,
@@ -223,8 +223,8 @@ export function createRpcHandler<
 	const expose: MethodDetails[] = Object.entries(schema).map(
 		([methodName, { input, output }]) => ({
 			methodName,
-			requestSchema: input,
-			responseSchema: output,
+			requestSchema: serializeZodSchema(input),
+			responseSchema: serializeZodSchema(output),
 		}),
 	);
 
@@ -242,4 +242,70 @@ export function createRpcHandler<
 		},
 		implementation: methods,
 	};
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
+function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
+	if (schema instanceof z.ZodObject) {
+		const shape = schema.shape as Record<
+			string,
+			// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
+			z.ZodType<any, z.ZodTypeDef, any>
+		>;
+		return {
+			type: "object",
+			properties: Object.fromEntries(
+				Object.entries(shape).map(([key, value]) => [
+					key,
+					serializeZodSchema(value),
+				]),
+			),
+		};
+	}
+	if (schema instanceof z.ZodArray) {
+		return {
+			type: "array",
+			items: serializeZodSchema(schema.element),
+		};
+	}
+	if (schema instanceof z.ZodString) {
+		return { type: "string" };
+	}
+	if (schema instanceof z.ZodNumber) {
+		return { type: "number" };
+	}
+	if (schema instanceof z.ZodBoolean) {
+		return { type: "boolean" };
+	}
+	if (schema instanceof z.ZodEnum) {
+		return {
+			type: "enum",
+			values: schema.options,
+		};
+	}
+	if (schema instanceof z.ZodUnion) {
+		return {
+			type: "union",
+			options: schema.options.map(serializeZodSchema),
+		};
+	}
+	if (schema instanceof z.ZodLiteral) {
+		return {
+			type: "literal",
+			value: schema.value,
+		};
+	}
+	if (schema instanceof z.ZodNullable) {
+		return {
+			type: "nullable",
+			inner: serializeZodSchema(schema.unwrap()),
+		};
+	}
+	if (schema instanceof z.ZodOptional) {
+		return {
+			type: "optional",
+			inner: serializeZodSchema(schema.unwrap()),
+		};
+	}
+	return { type: "unknown" };
 }

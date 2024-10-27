@@ -38,14 +38,13 @@ type Service struct {
 }
 
 type ZodSchema struct {
-	Def struct {
-		TypeName    string                 `json:"typeName"`
-		Type        *ZodSchema             `json:"type,omitempty"`
-		Shape       map[string]*ZodSchema  `json:"shape,omitempty"`
-		Options     []ZodSchema            `json:"options,omitempty"`
-		UnknownKeys string                 `json:"unknownKeys,omitempty"`
-		Catchall    map[string]interface{} `json:"catchall,omitempty"`
-	} `json:"_def"`
+	Type       string                 `json:"type"`
+	Properties map[string]ZodSchema   `json:"properties,omitempty"`
+	Items      *ZodSchema             `json:"items,omitempty"`
+	Values     []interface{}          `json:"values,omitempty"`
+	Options    []ZodSchema            `json:"options,omitempty"`
+	Value      interface{}            `json:"value,omitempty"`
+	Inner      *ZodSchema             `json:"inner,omitempty"`
 }
 
 func installService(cmd *cobra.Command, args []string) {
@@ -250,50 +249,59 @@ export class {{.Name}}Service extends RPCContextClient {
 }
 
 func zodToTypeScript(schema ZodSchema) string {
-	switch schema.Def.TypeName {
-	case "ZodObject":
-		properties := []string{}
-		for key, value := range schema.Def.Shape {
-			if value != nil {
-				subType := zodToTypeScript(*value)
-				properties = append(properties, fmt.Sprintf("%s: %s", key, subType))
-			}
+	switch schema.Type {
+	case "object":
+		props := []string{}
+		for key, value := range schema.Properties {
+			subType := zodToTypeScript(value)
+			props = append(props, fmt.Sprintf("%s: %s", key, subType))
 		}
-		if len(properties) == 0 {
+		if len(props) == 0 {
 			return "Record<string, unknown>"
 		}
-		return fmt.Sprintf("{ %s }", strings.Join(properties, "; "))
-	case "ZodArray":
-		if schema.Def.Type != nil {
-			elementType := zodToTypeScript(*schema.Def.Type)
+		return fmt.Sprintf("{ %s }", strings.Join(props, "; "))
+	case "array":
+		if schema.Items != nil {
+			elementType := zodToTypeScript(*schema.Items)
 			return fmt.Sprintf("%s[]", elementType)
 		}
 		return "unknown[]"
-	case "ZodString":
+	case "string":
 		return "string"
-	case "ZodNumber":
+	case "number":
 		return "number"
-	case "ZodBoolean":
+	case "boolean":
 		return "boolean"
-	case "ZodUnion":
-		unionTypes := []string{}
-		for _, option := range schema.Def.Options {
-			unionType := zodToTypeScript(option)
-			unionTypes = append(unionTypes, unionType)
+	case "enum":
+		if len(schema.Values) > 0 {
+			enumValues := make([]string, len(schema.Values))
+			for i, v := range schema.Values {
+				enumValues[i] = fmt.Sprintf("\"%v\"", v)
+			}
+			return strings.Join(enumValues, " | ")
+		}
+		return "unknown"
+	case "union":
+		unionTypes := make([]string, len(schema.Options))
+		for i, option := range schema.Options {
+			unionTypes[i] = zodToTypeScript(option)
 		}
 		return strings.Join(unionTypes, " | ")
-	case "ZodLiteral":
-		return fmt.Sprintf("%v", schema.Def.Catchall)
-	case "ZodEnum":
-		enumOptions := []string{}
-		for _, option := range schema.Def.Options {
-			enumOptions = append(enumOptions, fmt.Sprintf("'%s'", option.Def.TypeName))
+	case "literal":
+		if schema.Value != nil {
+			return fmt.Sprintf("\"%v\"", schema.Value)
 		}
-		return strings.Join(enumOptions, " | ")
-	case "ZodVoid":
-		return "void"
-	case "ZodNever":
-		return "never"
+		return "unknown"
+	case "nullable":
+		if schema.Inner != nil {
+			return fmt.Sprintf("%s | null", zodToTypeScript(*schema.Inner))
+		}
+		return "null | unknown"
+	case "optional":
+		if schema.Inner != nil {
+			return fmt.Sprintf("%s | undefined", zodToTypeScript(*schema.Inner))
+		}
+		return "unknown | undefined"
 	default:
 		return "unknown"
 	}
