@@ -1,3 +1,4 @@
+import "tslib";
 import type { RequestHandler, ErrorRequestHandler } from "express";
 import * as context from "@squared/context";
 import { randomBytes } from "node:crypto";
