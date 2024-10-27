@@ -55,6 +55,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const { updateNotification } = useNotificationStore((state) => state);
 			const { getAllTasks } = useTaskStore((state) => state);
 			const { userAvatars } = useUserStore((state) => state);
+			const { user } = useAuthStore((state) => state);
 			const {
 				identifier: taskIdentifier,
 				title: taskName,
@@ -82,8 +83,8 @@ export const columns: ColumnDef<NotificationTask>[] = [
 					);
 				} else {
 					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
-					if (newWorkspace) {
-						const teams = await getAllTeams(newWorkspace.id);
+					if (newWorkspace && user) {
+						const teams = await getAllTeams(user.id);
 						const team = teams.find((t) => t.id === teamId);
 						if (team?.id === currentTeam?.id) {
 							router.push(

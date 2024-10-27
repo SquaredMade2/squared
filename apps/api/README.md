@@ -1,33 +1,96 @@
-# Express.js on Vercel
+# API Server
 
-Simple Express.js + Vercel example that uses Vercel Postgres to add and display users in a table.
+This is the API server for our application, providing a robust backend for managing workspaces, tasks, teams, and user interactions.
 
-## How to Use
+## Project Structure
 
-BE sure to create a Vercel Postgres database and add you environment variables to your `.env` file. You can find an example of the `.env` file in the `.env.example` file.
+The project is organized as follows:
 
-You can choose from one of the following two methods to use this repository:
+- `src/`: Contains the source code
+  - `api/`: API routes and handlers
+  - `utils/`: Utility functions and helpers
+- `dist/`: Compiled JavaScript output
+- `node_modules/`: Third-party dependencies
 
-### One-Click Deploy
+## Key Features
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+- User authentication and authorization
+- Workspace management
+- Task tracking and updates
+- Team collaboration
+- Notifications system
+- Integration with external services (e.g., GitHub)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/examples/tree/main/solutions/express&project-name=express&repository-name=express)
+## Getting Started
 
-### Clone and Deploy
+### Prerequisites
 
-```bash
-git clone https://github.com/vercel/examples/tree/main/solutions/express
+- Node.js (version X.X.X)
+- pnpm (version X.X.X)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+
+   git clone [https://github.com/your-repo/api-server.git](https://github.com/your-repo/api-server.git)
+   cd api-server
+
+   ```
+
+2. Install dependencies:
+
+   ```bash
+
+   pnpm install
+
+   ```
+
+3. Set up environment variables:
+   Copy the `.env.example` file to `.env` and fill in the required values.
+
+4. Build the project:
+
+   ```bash
+   pnpm build
+   ```
+
+5. Start the server:
+
+   ```shell
+
+   pnpm start
+
+   ```
+
+## API Documentation
+
+API documentation is available at `/docs` when the server is running.
+
+## Development
+
+To run the server in development mode with hot reloading:
+
+```shell
+
+pnpm dev
+
 ```
 
-Install the Vercel CLI:
+## Testing
+
+Run the test suite with:
 
 ```bash
-npm i -g vercel
+pnpm test
 ```
 
-Then run the app at the root of the repository:
+## Deployment
 
-```bash
-vercel dev
+The project includes a `Dockerfile` for containerized deployment. To build and run the Docker image:
+
+```shell
+docker build -t api-server .
+docker run -p 3000:3000 api-server
 ```

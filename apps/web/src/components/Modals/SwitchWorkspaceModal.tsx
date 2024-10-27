@@ -20,6 +20,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import {
+	useAuthStore,
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
@@ -35,13 +36,14 @@ export function WorkspaceSwitcher() {
 		useWorkspaceStore((state) => state);
 	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getAllTasks } = useTaskStore((state) => state);
+	const { user } = useAuthStore((state) => state);
 	const [selectedWorkspace, setSelectedWorkspace] = useState(currentWorkspace);
 	const router = useRouter();
 
 	useEffect(() => {
 		if (selectedWorkspace) {
 			const switchWorkspace = async () => {
-				const newTeams = await getAllTeams(selectedWorkspace.id);
+				const newTeams = user ? await getAllTeams(user.id) : [];
 				setCurrentTeam(newTeams[0]);
 				await getAllTasks(newTeams[0].id);
 				router.push(
