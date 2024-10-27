@@ -17,8 +17,9 @@ const (
 )
 
 type Service struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	Name       string                 `json:"name"`
+	URL        string                 `json:"url"`
+	Interfaces []map[string]interface{} `json:"interfaces,omitempty"`
 }
 
 func installService(cmd *cobra.Command, args []string) {
@@ -39,11 +40,22 @@ func installService(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	var service Service
-	err = json.Unmarshal(body, &service)
+	var serviceInfo map[string]interface{}
+	err = json.Unmarshal(body, &serviceInfo)
 	if err != nil {
 		fmt.Printf("Error parsing service information: %v\n", err)
 		return
+	}
+
+	serviceName, ok := serviceInfo["serviceName"].(string)
+	if !ok {
+		fmt.Println("Error: Service name not found in the response")
+		return
+	}
+
+	service := Service{
+		Name: serviceName,
+		URL:  serviceURL,
 	}
 
 	// Save service information
@@ -53,6 +65,16 @@ func installService(cmd *cobra.Command, args []string) {
 		return
 	}
 
+	// Check if service already exists
+	for i, s := range services {
+		if s.Name == service.Name {
+			services[i] = service // Update existing service
+			fmt.Printf("Service '%s' updated successfully\n", service.Name)
+			return
+		}
+	}
+
+	// Add new service
 	services = append(services, service)
 	err = saveServices(services)
 	if err != nil {
@@ -78,7 +100,15 @@ func listServices(cmd *cobra.Command, args []string) {
 	}
 
 	for _, service := range services {
-		fmt.Printf("- %s (%s)\n", service.Name, service.URL)
+		fmt.Printf("- %s\n", service.Name)
+		fmt.Printf("  URL: %s\n", service.URL)
+		if len(service.Interfaces) > 0 {
+			fmt.Println("  Interfaces:")
+			for _, iface := range service.Interfaces {
+				fmt.Printf("    - %s\n", iface["methodName"])
+			}
+		}
+		fmt.Println()
 	}
 }
 
