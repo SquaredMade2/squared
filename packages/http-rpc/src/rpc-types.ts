@@ -1,4 +1,5 @@
 import type { Context } from "@squared/context";
+import type { Logger } from "@squared/logger";
 import { z } from "zod";
 
 export const requestContexts = new WeakMap<object, Context>();
@@ -76,10 +77,6 @@ export type Methods<S extends Service> = {
 export type ContextMethods<S extends ContextService> = {
 	[K in keyof S]: MethodDetails<Parameters<S[K]>[1], Awaited<ReturnType<S[K]>>>;
 };
-
-interface Logger {
-	error: (str: string) => void;
-}
 
 export function contextServiceWithSchema<S extends ContextService>(
 	service: S,

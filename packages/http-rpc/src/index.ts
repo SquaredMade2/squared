@@ -10,6 +10,7 @@ import {
 	ValidationError,
 	ResponseValidationError,
 } from "./rpc-types";
+import type { Logger } from "@squared/logger";
 
 export * from "./rpc-types";
 
@@ -151,13 +152,13 @@ export function createRequestHandler(
 }
 
 export function createErrorHandler(
-	args: { log?: (msg: string) => void } = {},
+	args: { log?: Logger } = {},
 ): ErrorRequestHandler {
-	const { log = console.error } = args;
+	const { log } = args;
 	return (err, _, res, next) => {
 		if (err instanceof RpcError) {
 			const source = `${err.serviceName}/${err.methodName}`;
-			log(`Error executing ${source}: ${err.inner.stack}`);
+			log?.error(`Error executing ${source}: ${err.inner.stack}`);
 			if (
 				err.inner instanceof ValidationError ||
 				err.inner instanceof ResponseValidationError
@@ -178,7 +179,7 @@ export function createErrorHandler(
 				});
 			}
 		} else {
-			log(`Internal error: ${err.stack || err.message}`);
+			log?.error(`Internal error: ${err.stack || err.message}`);
 			res.status(500).json({ message: "Internal Server Error" });
 		}
 		next();
