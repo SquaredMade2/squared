@@ -1,79 +1,91 @@
 # Squared CLI
 
+Squared CLI is a command-line interface tool for managing RPC services in the Squared ecosystem.
+
+## Features
+
+- Install and update RPC services
+- List installed services
+- Generate TypeScript client code for RPC services
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- Go (version 1.16 or later)
+- Node.js (version 14 or later)
+- pnpm (version 6 or later)
+
 ## Installation
 
-### Option 1: Using `go install`
-
-If you have Go installed, you can install the Squared CLI directly using:
+Build the project:
 
 ```bash
-go install github.com/yourusername/squared-cli@latest
+pnpm build
 ```
 
-Make sure your Go bin directory is in your PATH.
+Run the installation script:
 
-### Option 2: Using the installation script
+```bash
+./install.sh
+```
 
-1. Clone the repository:
+This script will build the Go binary and install it in a directory that's in your PATH.
 
-   ```shell
-   git clone https://github.com/yourusername/squared-cli.git
-   cd squared-cli
-   ```
+Verify the installation:
 
-2. Run the installation script:
-
-   ```shell
-   ./install.sh
-   ```
-
-This will build the CLI and move it to a global bin directory.
-
-### Option 3: Manual installation
-
-1. Clone the repository:
-
-   ```shell
-   git clone https://github.com/yourusername/squared-cli.git
-   cd squared-cli
-   ```
-
-2. Build the CLI:
-
-   ```shell
-   make build
-   ```
-
-3. Move the binary to a directory in your PATH:
-
-   ```shell
-   sudo mv bin/squared /usr/local/bin/
-   ```
+```bash
+squared --version
+```
 
 ## Usage
 
-After installation, you can use the `squared` command globally:
+### Installing an RPC Service
 
-```shell
+To install or update an RPC service:
+
+```bash
+squared rpc install <service-url>
+```
+
+Example:
+
+```bash
 squared rpc install http://localhost:5173/rpc/sprint
+```
+
+This command will fetch the service information, save it locally, and generate a TypeScript client file in the `gen/rpc` directory.
+
+### Listing Installed Services
+
+To list all installed services:
+
+```bash
 squared rpc list
 ```
 
 ## Development
 
-For local development:
+### Project Structure
 
-1. Clone the repository
-2. Make your changes
-3. Build and test locally:
+- `main.go`: Entry point of the CLI application
+- `rpc_handlers.go`: Contains the logic for RPC service management
+- `install.sh`: Installation script
 
-   ```shell
-   make build
-   ./bin/squared rpc list
-   ```
+### Building
 
-4. To install your local version globally:
+To build the project:
 
-   ```shell
-   make install
-   ```
+```bash
+pnpm build
+```
+
+This command will compile the Go code and generate the `squared` binary.
+
+### Testing
+
+To run tests:
+
+```bash
+go test ./...
+```
