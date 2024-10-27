@@ -144,8 +144,7 @@ export default function TeamsSetting() {
 				});
 				if (update) {
 					await getTeam(values.identifier);
-					const url = `/${currentWorkspace?.url}/settings/teams/${values.identifier}`;
-					router.push(url);
+					router.refresh();
 					toast({ title: "Team updated successfully" });
 				}
 			} catch {
