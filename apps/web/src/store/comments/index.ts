@@ -1,5 +1,6 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 import type { CommentState, CommentStore, CommentResponse } from "./interfaces";
 import type { Comment } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
@@ -16,12 +17,12 @@ export const createCommentStore = (
 		...initState,
 		addComment: async (comment: Partial<Comment>): Promise<CommentResponse> => {
 			try {
+				const response: { data: ApiReturnType<Comment> } = await axios.post(
+					apiString(uuidv4()),
+					comment,
+				);
+
 				const { data: newComment, message, variant } = response.data;
-
-				const { data: response }: { data: ApiReturnType<Comment> } =
-					await axios.post(apiString(""), comment);
-				const { data: newComment, message, variant } = response;
-
 				if (!newComment) {
 					return { comment: null, message, variant };
 				}
