@@ -54,7 +54,7 @@ export default {
 			],
 			requestBody: {
 				description: "The data for the new filter",
-				required: "true",
+				required: true,
 				content: {
 					"application/json": {
 						schema: {
@@ -99,7 +99,7 @@ export default {
 			],
 			requestBody: {
 				description: "The updated filter data",
-				required: "true",
+				required: true,
 				content: {
 					"application/json": {
 						schema: {
