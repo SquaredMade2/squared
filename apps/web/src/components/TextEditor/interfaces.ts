@@ -1,3 +1,4 @@
+import type React from "react";
 import type { Node, NodeEntry } from "slate";
 import type { Task } from "@squared/db";
 
@@ -22,6 +23,10 @@ export interface TextEditorToolBarProps {
 	isHeaderBlock: NodeEntry<Node>;
 }
 
+export interface LinkDropdownProps {
+	children: React.ReactNode;
+}
+
 export type CustomElementAttributes = Omit<
 	JSX.IntrinsicElements["div"],
 	"children"
@@ -41,8 +46,8 @@ export type CustomText = {
 	text: string;
 	bold?: boolean;
 	italic?: boolean;
-	link?: boolean;
 	code?: boolean;
+	link?: string;
 };
 
 export type CustomDescendant = CustomElement | CustomText;

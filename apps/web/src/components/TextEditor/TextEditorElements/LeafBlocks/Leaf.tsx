@@ -7,18 +7,14 @@ const Leaf = (props: RenderLeafProps) => {
 		if (props.leaf.link) {
 			return (
 				<span {...props.attributes}>
-					{/* TODO: implement links */}
-					{/* {beforeLink}
 					<a
-						href={formattedLink.linkUrl}
+						href={props.leaf.link}
 						target="_blank"
 						rel="noopener noreferrer"
-						aria-label={`Link to ${formattedLink.linkName}`}
+						aria-label={`Link to ${props.leaf.link}`}
 					>
-						{formattedLink.linkName}
+						{props.children}
 					</a>
-					{afterLink} */}
-					{props.children}
 				</span>
 			);
 		}

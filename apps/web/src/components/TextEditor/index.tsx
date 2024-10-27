@@ -122,13 +122,13 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		return Boolean(allMarks?.code);
 	};
 
-	// const isLinkActive = () => {
-	// 	const allMarks = Editor.marks(editor);
-	// 	if (allMarks?.link) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// };
+	const isLinkActive = () => {
+		const allMarks = Editor.marks(editor);
+		if (allMarks?.link) {
+			return true;
+		}
+		return false;
+	};
 
 	const isHeaderBlock = () => {
 		// return if the block exists in the highlighted area
@@ -150,6 +150,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			{ match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
 		);
 	};
+
 	// Create Leafs (Portion of Row)
 
 	const createBoldLeaf = () => {
@@ -164,13 +165,20 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		Editor.addMark(editor, "code", Boolean(!isCodeActive()));
 	};
 
-	// const createLinkLeaf = () => {
-	// 	if (isLinkActive()) {
-	// 		Editor.addMark(editor, "link", false);
-	// 	} else {
-	// 		Editor.addMark(editor, "link", true);
-	// 	}
-	// };
+	const createLinkLeaf = (url: string) => {
+		if (isLinkActive()) {
+			Editor.removeMark(editor, "link");
+		} else {
+			Editor.addMark(editor, "link", url);
+		}
+	};
+
+	const insertLink = () => {
+		const url = prompt("Link URL");
+		if (url) {
+			createLinkLeaf(url);
+		}
+	};
 
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
@@ -213,13 +221,13 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				}
 				break;
 			}
-			// case "o": {
-			// 	if (e.ctrlKey) {
-			// 		e.preventDefault();
-			// 		createLinkLeaf();
-			// 	}
-			// 	break;
-			// }
+			case "o": {
+				if (e.ctrlKey) {
+					e.preventDefault();
+					insertLink();
+				}
+				break;
+			}
 			case "Enter": {
 				const { selection } = editor;
 				if (selection) {
