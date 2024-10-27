@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
-import type { Effort } from "@repo/db";
+import type { Effort } from "@squared/db";
 import { Button } from "@/components/ui/button";
 import { useTeamStore } from "@/store";
 import { Input } from "@/components/ui/input";
