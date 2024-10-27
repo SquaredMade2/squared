@@ -1,7 +1,8 @@
-import type { Sprint } from "@repo/db";
+import type { Sprint } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { addWeeks } from "date-fns";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	teamId: string;
@@ -12,6 +13,8 @@ type InitializeSprintsBody = {
 	sprintData?: Partial<Sprint>;
 };
 
+const logger = createCustomLogger("team");
+
 export function createRoute(): Route<Params> {
 	return {
 		PUT: async (
@@ -20,6 +23,7 @@ export function createRoute(): Route<Params> {
 			body: InitializeSprintsBody,
 		): Promise<APIResponse<Sprint>> => {
 			try {
+				logger.info("Initializing sprints for team: %s", teamId);
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
@@ -116,7 +120,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error initializing sprints:", error);
+				logger.error("Error initializing sprints: %0", error);
 				res.status(500);
 				return {
 					data: null,

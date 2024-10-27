@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useFilterStore, useViewStore } from "@/store";
 import { useEffect, useState } from "react";
 import type { SavedFilter } from "@/store/filters";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewAllTasks from "@/components/ViewAllTasks";

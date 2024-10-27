@@ -1,6 +1,7 @@
 import { prisma } from "@/api";
 import axios from "axios";
 import type { Route } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
@@ -13,13 +14,16 @@ if (!clientId || !clientSecret) {
 	);
 }
 
+const logger = createCustomLogger("integrations");
+
 export function createRoute(): Route {
 	return {
 		GET: async (res, _, query): Promise<void> => {
+			logger.info("Received OAuth callback request");
 			const { code, state: userId } = query;
 
 			if (!code || !userId) {
-				console.error("Missing code or userId in query params");
+				logger.error("Missing code or userId in query params");
 				res.status(400).json({ message: "Missing code or userId" });
 				return;
 			}
@@ -65,9 +69,7 @@ export function createRoute(): Route {
 					"https://github.com/apps/SquaredMadeApp/installations/new",
 				);
 			} catch (error) {
-				console.error(
-					`Error processing OAuth: ${error instanceof Error ? error.message : error}`,
-				);
+				logger.error("Error processing OAuth: %0", error);
 				res.status(500).json({
 					message: `Error during OAuth: ${error instanceof Error && `: ${error.message}`}`,
 				});

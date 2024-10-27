@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTeamStore } from "@/store";
 import { useWorkspaces } from "./useWorkspaces";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 import { useUsers } from "./useUsers";
 
@@ -28,7 +28,7 @@ export function useTeams() {
 				const userHasAccess = users.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
-					const allTeams = await getAllTeams(currentWorkspace.id);
+					const allTeams = await getAllTeams(user.id);
 					setTeams(allTeams);
 					const team = allTeams.find((t) => t.identifier === teamIdentifier);
 					team && setCurrentTeam(team);

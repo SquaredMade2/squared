@@ -9,7 +9,7 @@ import type {
 import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { checkCondition, parseFilter } from "./helpers";
-import type { SavedFilter as SavedFilterType, Task } from "@repo/db";
+import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import axios from "axios";
 export * from "./interfaces";

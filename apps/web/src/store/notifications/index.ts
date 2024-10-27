@@ -8,7 +8,7 @@ import type {
 	NotificationResponse,
 	NotificationTask,
 } from "./interfaces";
-import type { Notification } from "@repo/db";
+import type { Notification } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";

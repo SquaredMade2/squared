@@ -11,7 +11,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import type { ButtonProps } from "./interfaces";
 import { StatusIcon } from "@/components/Icons";
 

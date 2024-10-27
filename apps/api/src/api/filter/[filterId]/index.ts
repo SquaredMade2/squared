@@ -3,9 +3,10 @@ import type {
 	Task,
 	Team,
 	Workspace,
-} from "@repo/db";
+} from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	filterId: string;
@@ -29,6 +30,8 @@ type SavedFilter = Omit<SavedFilterType, "filter"> & {
 	filter: FilterCondition[];
 };
 
+const logger = createCustomLogger("filter");
+
 export function createRoute(): Route<Params> {
 	return {
 		PUT: async (
@@ -37,6 +40,7 @@ export function createRoute(): Route<Params> {
 			body: SavedFilter,
 		): Promise<APIResponse<SavedFilterType>> => {
 			try {
+				logger.info("Updating filter: %0", { filterId, body });
 				const filter = await prisma.savedFilter.update({
 					where: { id: filterId },
 					data: body,
@@ -56,7 +60,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating task:", error);
+				logger.error("Error updating task: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -71,6 +75,7 @@ export function createRoute(): Route<Params> {
 			body,
 		): Promise<APIResponse<SavedFilterType>> => {
 			try {
+				logger.info("Creating filter: %0", { filterId, body });
 				const existingFilter = await prisma.task.findUnique({
 					where: { id: filterId },
 				});
@@ -124,7 +129,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error creating filter:", error);
+				logger.error("Error creating filter: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -135,6 +140,7 @@ export function createRoute(): Route<Params> {
 		},
 		GET: async (res, { filterId }): Promise<APIResponse<SavedFilterType>> => {
 			try {
+				logger.info("Fetching filter: %s", filterId);
 				const filter = await prisma.savedFilter.findMany({
 					where: {
 						OR: [{ teamId: filterId }, { workspaceId: filterId }],
@@ -155,7 +161,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error fetching filter:", error);
+				logger.error("Error fetching filter: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -169,6 +175,7 @@ export function createRoute(): Route<Params> {
 			{ filterId },
 		): Promise<APIResponse<SavedFilterType>> => {
 			try {
+				logger.info("Deleting filter: %s", filterId);
 				const filter: SavedFilterType | null = await prisma.savedFilter.delete({
 					where: { id: filterId },
 				});
@@ -187,7 +194,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error deleting task:", error);
+				logger.error("Error deleting task: %0", error);
 				res.status(500);
 				return {
 					data: null,

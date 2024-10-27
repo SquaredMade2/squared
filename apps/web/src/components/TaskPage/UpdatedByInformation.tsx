@@ -1,6 +1,6 @@
 import { parseISO } from "date-fns/parseISO";
 import { formatDate } from "date-fns/format";
-import type { TaskEvent } from "@repo/db";
+import type { TaskEvent } from "@squared/db";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useActivityStore } from "@/store";
 import type { ActivityType } from "@/store/activities";

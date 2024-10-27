@@ -34,10 +34,11 @@ const WorkSpaceDropDown = () => {
 
 	useEffect(() => {
 		user && getAllWorkspaces(user.id);
-	}, []);
+	}, [user]);
+	if (!user) return null;
 	const handleWorkspaceClick = async (workspace: Workspace) => {
 		setCurrentWorkspace(workspace);
-		const teams = await getAllTeams(workspace.id);
+		const teams = await getAllTeams(user.id);
 		await getAllTasks(teams[0].id);
 		await getAllUsers(workspace.id);
 		router.push(`/${workspace.url}`);
