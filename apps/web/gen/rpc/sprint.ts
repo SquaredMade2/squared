@@ -5,53 +5,39 @@ import { RPCContextClient } from "@squared/http-rpc-client";
 import { Context } from "@squared/context";
 
 
-export type getSprintsRequest = {
-  
-};
+export type getSprintsRequest = Record<string, unknown>;
 
-export type getSprintsResponse = any;
+export type getSprintsResponse = Record<string, unknown>[];
 
 
-export type startNextSprintRequest = {
-  
-};
+export type startNextSprintRequest = Record<string, unknown>;
 
-export type startNextSprintResponse = any;
+export type startNextSprintResponse = Record<string, unknown> | Record<string, unknown>;
 
 
-export type getSprintTasksRequest = {
-  
-};
+export type getSprintTasksRequest = Record<string, unknown>;
 
-export type getSprintTasksResponse = any;
+export type getSprintTasksResponse = Record<string, unknown>[];
 
 
-export type endSprintRequest = {
-  
-};
+export type endSprintRequest = Record<string, unknown>;
 
-export type endSprintResponse = any;
+export type endSprintResponse = Record<string, unknown>;
 
 
-export type addRetrospectiveItemRequest = {
-  
-};
+export type addRetrospectiveItemRequest = Record<string, unknown>;
 
-export type addRetrospectiveItemResponse = any;
+export type addRetrospectiveItemResponse = void;
 
 
-export type updateRetrospectiveItemRequest = {
-  
-};
+export type updateRetrospectiveItemRequest = Record<string, unknown>;
 
-export type updateRetrospectiveItemResponse = any;
+export type updateRetrospectiveItemResponse = void;
 
 
-export type getRetrospectiveItemsRequest = {
-  
-};
+export type getRetrospectiveItemsRequest = Record<string, unknown>;
 
-export type getRetrospectiveItemsResponse = any;
+export type getRetrospectiveItemsResponse = Record<string, unknown>;
 
 
 

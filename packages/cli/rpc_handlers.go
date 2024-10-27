@@ -19,88 +19,101 @@ const (
 )
 
 type MethodInfo struct {
-    MethodName   string   `json:"methodName"`
-    ParamNames   []string `json:"paramNames"`
-    ResponseType string   `json:"responseType"`
+	MethodName    string    `json:"methodName"`
+	ParamNames    []string  `json:"paramNames"`
+	MethodTimeout int       `json:"methodTimeout"`
+	Help          string    `json:"help"`
+	RequestSchema ZodSchema `json:"requestSchema"`
+	ResponseSchema ZodSchema `json:"responseSchema"`
+	InputType     string    // Generated TypeScript type
+	OutputType    string    // Generated TypeScript type
 }
 
 type Service struct {
-    Name       string       `json:"name"`
-    URL        string       `json:"url"`
-    Interfaces []MethodInfo `json:"interfaces"`
+	Name       string       `json:"serviceName"`
+	MultiArg   bool         `json:"multiArg"`
+	Help       string       `json:"help"`
+	URL        string
+	Interfaces []MethodInfo `json:"interfaces"`
+}
+
+type ZodSchema struct {
+	Def struct {
+		TypeName    string                 `json:"typeName"`
+		Type        *ZodSchema             `json:"type,omitempty"`
+		Shape       map[string]*ZodSchema  `json:"shape,omitempty"`
+		Options     []ZodSchema            `json:"options,omitempty"`
+		UnknownKeys string                 `json:"unknownKeys,omitempty"`
+		Catchall    map[string]interface{} `json:"catchall,omitempty"`
+	} `json:"_def"`
 }
 
 func installService(cmd *cobra.Command, args []string) {
-    serviceURL := args[0]
-    fmt.Printf("Installing service from URL: %s\n", serviceURL)
+	serviceURL := args[0]
+	fmt.Printf("Installing service from URL: %s\n", serviceURL)
 
-    // Fetch service information
-    resp, err := http.Get(serviceURL)
-    if err != nil {
-        fmt.Printf("Error fetching service information: %v\n", err)
-        return
-    }
-    defer resp.Body.Close()
+	// Fetch service information
+	resp, err := http.Get(serviceURL)
+	if err != nil {
+		fmt.Printf("Error fetching service information: %v\n", err)
+		return
+	}
+	defer resp.Body.Close()
 
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Printf("Error reading service information: %v\n", err)
-        return
-    }
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Error reading service information: %v\n", err)
+		return
+	}
 
-    var serviceInfo struct {
-        ServiceName string       `json:"serviceName"`
-        Interfaces  []MethodInfo `json:"interfaces"`
-    }
-    err = json.Unmarshal(body, &serviceInfo)
-    if err != nil {
-        fmt.Printf("Error parsing service information: %v\n", err)
-        return
-    }
+	fmt.Printf("Debug: Raw response: %s\n", string(body))
 
-    if serviceInfo.ServiceName == "" {
-        fmt.Println("Error: Service name not found in the response")
-        return
-    }
+	var service Service
+	err = json.Unmarshal(body, &service)
+	if err != nil {
+		fmt.Printf("Error parsing service information: %v\n", err)
+		return
+	}
 
-    service := Service{
-        Name:       serviceInfo.ServiceName,
-        URL:        serviceURL,
-        Interfaces: serviceInfo.Interfaces,
-    }
+	if service.Name == "" {
+		fmt.Println("Error: Service name not found in the response")
+		return
+	}
 
-    // Save service information
-    services, err := loadServices()
-    if err != nil {
-        fmt.Printf("Error loading existing services: %v\n", err)
-        return
-    }
+	service.URL = serviceURL
 
-    // Check if service already exists
-    for i, s := range services {
-        if s.Name == service.Name {
-            services[i] = service // Update existing service
-            fmt.Printf("Service '%s' updated successfully\n", service.Name)
-            err = saveServices(services)
-            if err != nil {
-                fmt.Printf("Error saving service information: %v\n", err)
-                return
-            }
-            generateTypeScriptFile(service)
-            return
-        }
-    }
+	// Save service information
+	services, err := loadServices()
+	if err != nil {
+		fmt.Printf("Error loading existing services: %v\n", err)
+		return
+	}
 
-    // Add new service
-    services = append(services, service)
-    err = saveServices(services)
-    if err != nil {
-        fmt.Printf("Error saving service information: %v\n", err)
-        return
-    }
+	// Check if service already exists
+	for i, s := range services {
+		if s.Name == service.Name {
+			services[i] = service // Update existing service
+			fmt.Printf("Service '%s' updated successfully\n", service.Name)
+			err = saveServices(services)
+			if err != nil {
+				fmt.Printf("Error saving service information: %v\n", err)
+				return
+			}
+			generateTypeScriptFile(service)
+			return
+		}
+	}
 
-    fmt.Printf("Service '%s' installed successfully\n", service.Name)
-    generateTypeScriptFile(service)
+	// Add new service
+	services = append(services, service)
+	err = saveServices(services)
+	if err != nil {
+		fmt.Printf("Error saving service information: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Service '%s' installed successfully\n", service.Name)
+	generateTypeScriptFile(service)
 }
 
 func listServices(cmd *cobra.Command, args []string) {
@@ -131,7 +144,7 @@ func listServices(cmd *cobra.Command, args []string) {
 }
 
 func loadServices() ([]Service, error) {
-	configPath := filepath.Join(os.Getenv("HOME"), configDir, configFile)
+	configPath := filepath.Join(os.Getenv("HOME"), ".squared", "services.json")
 	data, err := ioutil.ReadFile(configPath)
 	if os.IsNotExist(err) {
 		return []Service{}, nil
@@ -149,7 +162,7 @@ func loadServices() ([]Service, error) {
 }
 
 func saveServices(services []Service) error {
-	configPath := filepath.Join(os.Getenv("HOME"), configDir, configFile)
+	configPath := filepath.Join(os.Getenv("HOME"), ".squared", "services.json")
 	data, err := json.MarshalIndent(services, "", "  ")
 	if err != nil {
 		return err
@@ -164,34 +177,31 @@ func saveServices(services []Service) error {
 }
 
 func generateTypeScriptFile(service Service) {
-    cwd, err := os.Getwd()
-    if err != nil {
-        fmt.Printf("Error getting current working directory: %v\n", err)
-        return
-    }
+	cwd, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Error getting current working directory: %v\n", err)
+		return
+	}
 
-    genDir := filepath.Join(cwd, "gen", "rpc")
-    err = os.MkdirAll(genDir, 0755)
-    if err != nil {
-        fmt.Printf("Error creating directory: %v\n", err)
-        return
-    }
+	genDir := filepath.Join(cwd, "gen", "rpc")
+	err = os.MkdirAll(genDir, 0755)
+	if err != nil {
+		fmt.Printf("Error creating directory: %v\n", err)
+		return
+	}
 
-    fileName := filepath.Join(genDir, fmt.Sprintf("%s.ts", strings.ToLower(service.Name)))
+	fileName := filepath.Join(genDir, fmt.Sprintf("%s.ts", strings.ToLower(service.Name)))
 
-    tmpl := template.Must(template.New("typescript").Parse(`
+	tmpl := template.Must(template.New("typescript").Parse(`
 // Code generated by squared-cli, DO NOT EDIT.
 /* eslint-disable */
 import { RPCContextClient } from "@squared/http-rpc-client";
 import { Context } from "@squared/context";
 
 {{range .Interfaces}}
-export type {{.MethodName}}Request = {
-  {{range .ParamNames}}{{.}}: any;
-  {{end}}
-};
+export type {{.MethodName}}Request = {{.InputType}};
 
-export type {{.MethodName}}Response = {{if .ResponseType}}{{.ResponseType}}{{else}}any{{end}};
+export type {{.MethodName}}Response = {{.OutputType}};
 
 {{end}}
 
@@ -213,18 +223,70 @@ export class {{.Name}}Service extends RPCContextClient {
 }
 `))
 
-    file, err := os.Create(fileName)
-    if err != nil {
-        fmt.Printf("Error creating file: %v\n", err)
-        return
-    }
-    defer file.Close()
+	file, err := os.Create(fileName)
+	if err != nil {
+		fmt.Printf("Error creating file: %v\n", err)
+		return
+	}
+	defer file.Close()
 
-    err = tmpl.Execute(file, service)
-    if err != nil {
-        fmt.Printf("Error generating TypeScript file: %v\n", err)
-        return
-    }
+	for i, iface := range service.Interfaces {
+		fmt.Printf("Debug: Processing method %s\n", iface.MethodName)
+		
+		service.Interfaces[i].InputType = zodToTypeScript(iface.RequestSchema)
+		service.Interfaces[i].OutputType = zodToTypeScript(iface.ResponseSchema)
 
-    fmt.Printf("Generated TypeScript file: %s\n", fileName)
+		fmt.Printf("Debug: Generated input type: %s\n", service.Interfaces[i].InputType)
+		fmt.Printf("Debug: Generated output type: %s\n", service.Interfaces[i].OutputType)
+	}
+
+	err = tmpl.Execute(file, service)
+	if err != nil {
+		fmt.Printf("Error generating TypeScript file: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Generated TypeScript file: %s\n", fileName)
+}
+
+func zodToTypeScript(schema ZodSchema) string {
+	switch schema.Def.TypeName {
+	case "ZodObject":
+		properties := []string{}
+		for key, value := range schema.Def.Shape {
+			if value != nil {
+				subType := zodToTypeScript(*value)
+				properties = append(properties, fmt.Sprintf("%s: %s", key, subType))
+			}
+		}
+		if len(properties) == 0 {
+			return "Record<string, unknown>"
+		}
+		return fmt.Sprintf("{ %s }", strings.Join(properties, "; "))
+	case "ZodArray":
+		if schema.Def.Type != nil {
+			elementType := zodToTypeScript(*schema.Def.Type)
+			return fmt.Sprintf("%s[]", elementType)
+		}
+		return "unknown[]"
+	case "ZodString":
+		return "string"
+	case "ZodNumber":
+		return "number"
+	case "ZodBoolean":
+		return "boolean"
+	case "ZodUnion":
+		unionTypes := []string{}
+		for _, option := range schema.Def.Options {
+			unionType := zodToTypeScript(option)
+			unionTypes = append(unionTypes, unionType)
+		}
+		return strings.Join(unionTypes, " | ")
+	case "ZodVoid":
+		return "void"
+	case "ZodNever":
+		return "never"
+	default:
+		return "unknown"
+	}
 }
