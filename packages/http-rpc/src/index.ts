@@ -307,5 +307,11 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 			inner: serializeZodSchema(schema.unwrap()),
 		};
 	}
+	if (schema instanceof z.ZodDate) {
+		return { type: "date" };
+	}
+	if (schema instanceof z.ZodVoid) {
+		return { type: "void" };
+	}
 	return { type: "unknown" };
 }
