@@ -20,7 +20,19 @@ export default {
 				content: {
 					"application/json": {
 						schema: {
-							$ref: "#/components/schemas/Sprint",
+							type: "object",
+							properties: {
+								movedTasks: {
+									type: "array",
+									items: { type: "string" },
+									description:
+										"Array of task IDs to move to the new or current active sprint",
+								},
+								sprintData: {
+									$ref: "#/components/schemas/Sprint",
+									description: "Data with which to create or update a sprint",
+								},
+							},
 						},
 					},
 				},
@@ -31,7 +43,22 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								$ref: "#/components/schemas/Sprint",
+								type: "object",
+								properties: {
+									data: {
+										$ref: "#/components/schemas/Sprint",
+									},
+									message: {
+										type: "string",
+										description: "Success message",
+										example: "Successfully created sprint: Sprint 1",
+									},
+									variant: {
+										type: "string",
+										description: "Response message type",
+										example: "default",
+									},
+								},
 							},
 						},
 					},
