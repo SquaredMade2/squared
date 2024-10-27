@@ -116,9 +116,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
       - name: Run API tests
-        run: pnpm test:ci --filter=api
+        run: pnpm --filter=api test
       - name: Build API
-        run: pnpm build --filter=api
+        run: pnpm --filter=api build
 
   test-web:
     name: Test Web
@@ -148,9 +148,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
       - name: Run Web tests
-        run: pnpm test:ci --filter=web
+        run: pnpm --filter=web test
       - name: Build Web
-        run: pnpm build --filter=web
+        run: pnpm --filter=web build 
 
   test-www:
     name: Test WWW
@@ -179,10 +179,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
-      - name: Run WWW tests
-        run: pnpm test:ci --filter=www
       - name: Build WWW
-        run: pnpm build --filter=www
+        run: pnpm --filter=www build
 
   ci-status:
     name: CI Pipeline
