@@ -1,0 +1,17 @@
+{
+  "name": "@squared/http-rpc-client",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "postinstall": "pnpm run build"
+  },
+  "dependencies": {
+    "@squared/context": "workspace:*",
+    "axios": "^1.7.5"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  }
+}
