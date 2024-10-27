@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/spf13/cobra"
@@ -17,81 +18,89 @@ const (
 	configFile = "services.json"
 )
 
+type MethodInfo struct {
+    MethodName   string   `json:"methodName"`
+    ParamNames   []string `json:"paramNames"`
+    ResponseType string   `json:"responseType"`
+}
+
 type Service struct {
-	Name       string        `json:"name"`
-	URL        string        `json:"url"`
-	Interfaces []interface{} `json:"interfaces"`
+    Name       string       `json:"name"`
+    URL        string       `json:"url"`
+    Interfaces []MethodInfo `json:"interfaces"`
 }
 
 func installService(cmd *cobra.Command, args []string) {
-	serviceURL := args[0]
-	fmt.Printf("Installing service from URL: %s\n", serviceURL)
+    serviceURL := args[0]
+    fmt.Printf("Installing service from URL: %s\n", serviceURL)
 
-	// Fetch service information
-	resp, err := http.Get(serviceURL)
-	if err != nil {
-		fmt.Printf("Error fetching service information: %v\n", err)
-		return
-	}
-	defer resp.Body.Close()
+    // Fetch service information
+    resp, err := http.Get(serviceURL)
+    if err != nil {
+        fmt.Printf("Error fetching service information: %v\n", err)
+        return
+    }
+    defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("Error reading service information: %v\n", err)
-		return
-	}
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        fmt.Printf("Error reading service information: %v\n", err)
+        return
+    }
 
-	var serviceInfo map[string]interface{}
-	err = json.Unmarshal(body, &serviceInfo)
-	if err != nil {
-		fmt.Printf("Error parsing service information: %v\n", err)
-		return
-	}
+    var serviceInfo struct {
+        ServiceName string       `json:"serviceName"`
+        Interfaces  []MethodInfo `json:"interfaces"`
+    }
+    err = json.Unmarshal(body, &serviceInfo)
+    if err != nil {
+        fmt.Printf("Error parsing service information: %v\n", err)
+        return
+    }
 
-	serviceName, ok := serviceInfo["serviceName"].(string)
-	if !ok {
-		fmt.Println("Error: Service name not found in the response")
-		return
-	}
+    if serviceInfo.ServiceName == "" {
+        fmt.Println("Error: Service name not found in the response")
+        return
+    }
 
-	service := Service{
-		Name:       serviceName,
-		URL:        serviceURL,
-		Interfaces: serviceInfo["interfaces"].([]interface{}),
-	}
+    service := Service{
+        Name:       serviceInfo.ServiceName,
+        URL:        serviceURL,
+        Interfaces: serviceInfo.Interfaces,
+    }
 
-	// Save service information
-	services, err := loadServices()
-	if err != nil {
-		fmt.Printf("Error loading existing services: %v\n", err)
-		return
-	}
+    // Save service information
+    services, err := loadServices()
+    if err != nil {
+        fmt.Printf("Error loading existing services: %v\n", err)
+        return
+    }
 
-	// Check if service already exists
-	for i, s := range services {
-		if s.Name == service.Name {
-			services[i] = service // Update existing service
-			fmt.Printf("Service '%s' updated successfully\n", service.Name)
-			err = saveServices(services)
-			if err != nil {
-				fmt.Printf("Error saving service information: %v\n", err)
-				return
-			}
-			generateTypeScriptFile(service)
-			return
-		}
-	}
+    // Check if service already exists
+    for i, s := range services {
+        if s.Name == service.Name {
+            services[i] = service // Update existing service
+            fmt.Printf("Service '%s' updated successfully\n", service.Name)
+            err = saveServices(services)
+            if err != nil {
+                fmt.Printf("Error saving service information: %v\n", err)
+                return
+            }
+            generateTypeScriptFile(service)
+            return
+        }
+    }
 
-	// Add new service
-	services = append(services, service)
-	err = saveServices(services)
-	if err != nil {
-		fmt.Printf("Error saving service information: %v\n", err)
-		return
-	}
+    // Add new service
+    services = append(services, service)
+    err = saveServices(services)
+    if err != nil {
+        fmt.Printf("Error saving service information: %v\n", err)
+        return
+    }
 
-	fmt.Printf("Service '%s' installed successfully\n", service.Name)
-	generateTypeScriptFile(service)
+    fmt.Printf("Service '%s' installed successfully\n", service.Name)
+    generateTypeScriptFile(service)
 }
 
 func listServices(cmd *cobra.Command, args []string) {
@@ -114,11 +123,7 @@ func listServices(cmd *cobra.Command, args []string) {
 		if len(service.Interfaces) > 0 {
 			fmt.Println("  Interfaces:")
 			for _, iface := range service.Interfaces {
-				if ifaceMap, ok := iface.(map[string]interface{}); ok {
-					if methodName, ok := ifaceMap["methodName"].(string); ok {
-						fmt.Printf("    - %s\n", methodName)
-					}
-				}
+				fmt.Printf("    - %s\n", iface.MethodName)
 			}
 		}
 		fmt.Println()
@@ -159,54 +164,67 @@ func saveServices(services []Service) error {
 }
 
 func generateTypeScriptFile(service Service) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Error getting current working directory: %v\n", err)
-		return
-	}
+    cwd, err := os.Getwd()
+    if err != nil {
+        fmt.Printf("Error getting current working directory: %v\n", err)
+        return
+    }
 
-	genDir := filepath.Join(cwd, "gen", "rpc")
-	err = os.MkdirAll(genDir, 0755)
-	if err != nil {
-		fmt.Printf("Error creating directory: %v\n", err)
-		return
-	}
+    genDir := filepath.Join(cwd, "gen", "rpc")
+    err = os.MkdirAll(genDir, 0755)
+    if err != nil {
+        fmt.Printf("Error creating directory: %v\n", err)
+        return
+    }
 
-	fileName := filepath.Join(genDir, fmt.Sprintf("%s.ts", service.Name))
+    fileName := filepath.Join(genDir, fmt.Sprintf("%s.ts", strings.ToLower(service.Name)))
 
-	tmpl := template.Must(template.New("typescript").Parse(`
+    tmpl := template.Must(template.New("typescript").Parse(`
+// Code generated by squared-cli, DO NOT EDIT.
+/* eslint-disable */
+import { RPCContextClient } from "@squared/http-rpc-client";
 import { Context } from "@squared/context";
 
-export interface {{ .Name }}Client {
-{{- range .Interfaces }}
-  {{ .methodName }}(ctx: Context, {{ if .paramNames }}{{ range $index, $param := .paramNames }}{{ if $index }}, {{ end }}{{ $param }}: any{{ end }}{{ end }}): Promise<{{ if .responseSchema }}any{{ else }}void{{ end }}>;
-{{- end }}
-}
-
-export const create{{ .Name }}Client = (baseUrl: string): {{ .Name }}Client => {
-  return {
-{{- range .Interfaces }}
-    {{ .methodName }}: async (ctx: Context, {{ if .paramNames }}{{ range $index, $param := .paramNames }}{{ if $index }}, {{ end }}{{ $param }}: any{{ end }}{{ end }}) => {
-      // Implementation goes here
-      throw new Error("Not implemented");
-    },
-{{- end }}
-  };
+{{range .Interfaces}}
+export type {{.MethodName}}Request = {
+  {{range .ParamNames}}{{.}}: any;
+  {{end}}
 };
+
+export type {{.MethodName}}Response = {{if .ResponseType}}{{.ResponseType}}{{else}}any{{end}};
+
+{{end}}
+
+/**
+ * {{.Name}} service
+ */
+export class {{.Name}}Service extends RPCContextClient {
+  constructor(baseUrl: string) {
+    super(baseUrl, "{{.Name}}");
+  }
+  {{range .Interfaces}}
+  /**
+   * {{.MethodName}} method
+   */
+  {{.MethodName}}(ctx: Context, req: {{.MethodName}}Request): Promise<{{.MethodName}}Response> {
+    return this.request(ctx, "{{.MethodName}}", req);
+  }
+  {{end}}
+}
 `))
 
-	file, err := os.Create(fileName)
-	if err != nil {
-		fmt.Printf("Error creating file: %v\n", err)
-		return
-	}
-	defer file.Close()
+    file, err := os.Create(fileName)
+    if err != nil {
+        fmt.Printf("Error creating file: %v\n", err)
+        return
+    }
+    defer file.Close()
 
-	err = tmpl.Execute(file, service)
-	if err != nil {
-		fmt.Printf("Error generating TypeScript file: %v\n", err)
-		return
-	}
+    err = tmpl.Execute(file, service)
+    if err != nil {
+        fmt.Printf("Error generating TypeScript file: %v\n", err)
+        return
+    }
 
-	fmt.Printf("Generated TypeScript file: %s\n", fileName)
+    fmt.Printf("Generated TypeScript file: %s\n", fileName)
 }
