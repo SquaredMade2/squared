@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import type { ActivityState, ActivityStore } from "./interfaces";
 import { persist } from "zustand/middleware";
-import type { TaskEvent } from "@repo/db";
+import type { TaskEvent } from "@squared/db";
 export * from "./interfaces";
 export * from "./store";
 
