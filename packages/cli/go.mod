@@ -1,4 +1,4 @@
-module github.com/SquaredMade2/squared/packages/cli
+module github.com/SquaredMade2/squared
 
 go 1.17
 
@@ -8,3 +8,5 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 )
+
+replace github.com/SquaredMade2/squared => ./

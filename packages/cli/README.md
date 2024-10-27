@@ -1,64 +1,79 @@
 # Squared CLI
 
-Squared CLI is a command-line tool for managing RPC services in your Squared environment. This CLI is part of the Squared monorepo and is built using Go.
+## Installation
 
-## Features
+### Option 1: Using `go install`
 
-- Install RPC services by URL
-- List all available RPC services
-
-## Development
-
-To work on the Squared CLI, navigate to the `packages/squared-cli` directory in the monorepo.
-
-### Building
-
-To build the CLI, run:
+If you have Go installed, you can install the Squared CLI directly using:
 
 ```bash
-pnpm run build
+go install github.com/yourusername/squared-cli@latest
 ```
 
-This will compile the Go code and create a binary in the `bin` directory.
+Make sure your Go bin directory is in your PATH.
 
-### Running
+### Option 2: Using the installation script
 
-To run the CLI during development, use:
+1. Clone the repository:
 
-```bash
-pnpm run start
-```
+   ```shell
+   git clone https://github.com/yourusername/squared-cli.git
+   cd squared-cli
+   ```
 
-This will execute the `main.go` file directly without creating a binary.
+2. Run the installation script:
 
-### Testing
+   ```shell
+   ./install.sh
+   ```
 
-To run tests, use:
+This will build the CLI and move it to a global bin directory.
 
-```bash
-pnpm run test
-```
+### Option 3: Manual installation
 
-### Linting
+1. Clone the repository:
 
-To lint the Go code, use:
+   ```shell
+   git clone https://github.com/yourusername/squared-cli.git
+   cd squared-cli
+   ```
 
-```bash
-pnpm run lint
-```
+2. Build the CLI:
+
+   ```shell
+   make build
+   ```
+
+3. Move the binary to a directory in your PATH:
+
+   ```shell
+   sudo mv bin/squared /usr/local/bin/
+   ```
 
 ## Usage
 
-After building the CLI, you can use it as follows:
+After installation, you can use the `squared` command globally:
 
-### Install a service
-
-```bash
-./bin/squared rpc install [service_url]
+```shell
+squared rpc install http://localhost:5173/rpc/sprint
+squared rpc list
 ```
 
-### List all services
+## Development
 
-```bash
-./bin/squared rpc list
-```
+For local development:
+
+1. Clone the repository
+2. Make your changes
+3. Build and test locally:
+
+   ```shell
+   make build
+   ./bin/squared rpc list
+   ```
+
+4. To install your local version globally:
+
+   ```shell
+   make install
+   ```
