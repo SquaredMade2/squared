@@ -1,6 +1,5 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 import type { CommentState, CommentStore, CommentResponse } from "./interfaces";
 import type { Comment } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
@@ -17,12 +16,9 @@ export const createCommentStore = (
 		...initState,
 		addComment: async (comment: Partial<Comment>): Promise<CommentResponse> => {
 			try {
-				const commentId = uuidv4();
-				const response: { data: ApiReturnType<Comment> } = await axios.post(
-					apiString(commentId),
-					comment,
-				);
-				const { data: newComment, message, variant } = response.data;
+				const { data: response }: { data: ApiReturnType<Comment> } =
+					await axios.post(apiString(""), comment);
+				const { data: newComment, message, variant } = response;
 
 				if (!newComment) {
 					return { comment: null, message, variant };
@@ -42,32 +38,22 @@ export const createCommentStore = (
 		},
 		updateComment: async (
 			commentId: string,
-			comment: Partial<Comment>,
+			updatedComment: Partial<Comment>,
 		): Promise<CommentResponse> => {
 			try {
-				const response: { data: ApiReturnType<Comment> } = await axios.put(
-					apiString(commentId),
-					comment,
-				);
-				const updatedComment = response.data.data;
-				if (!updatedComment) {
-					return {
-						comment: null,
-						message: response.data.message,
-						variant: response.data.variant,
-					};
-				}
+				const { data: response }: { data: ApiReturnType<Comment> } =
+					await axios.put(apiString(commentId), updatedComment);
 
 				set((state) => ({
 					comments: state.comments.map((c) =>
-						c.id === commentId ? updatedComment : c,
+						c.id === commentId ? { ...c, ...response.data } : c,
 					),
 				}));
 
 				return {
-					comment: updatedComment,
-					message: response.data.message,
-					variant: response.data.variant,
+					comment: response.data,
+					message: response.message,
+					variant: response.variant,
 				};
 			} catch (error) {
 				return {
@@ -84,7 +70,7 @@ export const createCommentStore = (
 					comments: state.comments.filter((c) => c.id !== commentId),
 				}));
 			} catch (error) {
-				console.error("Error in deleteComment:", error);
+				console.error("Error deleting comment:", error);
 			}
 		},
 		getComment: async (commentId: string): Promise<CommentResponse> => {
@@ -97,12 +83,11 @@ export const createCommentStore = (
 					variant: "default",
 				};
 			}
-
 			try {
-				const response: { data: ApiReturnType<Comment> } = await axios.get(
-					apiString(commentId),
-				);
-				return { ...response.data, comment: response.data.data };
+				const { data: response }: { data: ApiReturnType<Comment> } =
+					await axios.get(apiString(commentId));
+				const { data: comment, ...rest } = response;
+				return { ...rest, comment };
 			} catch (error) {
 				return {
 					comment: null,
