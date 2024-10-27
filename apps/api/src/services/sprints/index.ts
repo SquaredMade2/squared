@@ -138,7 +138,7 @@ export const sprintRpcSchema = {
 export type SprintRpcSchema = typeof sprintRpcSchema;
 
 export const createSprintRpcHandler = (sprintService: SprintService) =>
-	createRpcHandler(sprintRpcSchema, {
+	createRpcHandler("sprint", sprintRpcSchema, {
 		getSprints: (input) => sprintService.getSprints(input.teamId),
 		startNextSprint: (input) => sprintService.startNextSprint(input),
 		getSprintTasks: (input) => sprintService.getSprintTasks(input.sprintId),

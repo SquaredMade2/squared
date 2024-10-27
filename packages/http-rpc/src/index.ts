@@ -212,6 +212,7 @@ export function createRpcHandler<
 		}
 	>,
 >(
+	serviceName: string,
 	schema: T,
 	implementation: {
 		[K in keyof T]: (
@@ -236,7 +237,7 @@ export function createRpcHandler<
 
 	return {
 		meta: {
-			service: "rpc",
+			service: serviceName,
 			expose,
 		},
 		implementation: methods,
