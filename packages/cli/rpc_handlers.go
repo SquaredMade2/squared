@@ -282,6 +282,14 @@ func zodToTypeScript(schema ZodSchema) string {
 			unionTypes = append(unionTypes, unionType)
 		}
 		return strings.Join(unionTypes, " | ")
+	case "ZodLiteral":
+		return fmt.Sprintf("%v", schema.Def.Catchall)
+	case "ZodEnum":
+		enumOptions := []string{}
+		for _, option := range schema.Def.Options {
+			enumOptions = append(enumOptions, fmt.Sprintf("'%s'", option.Def.TypeName))
+		}
+		return strings.Join(enumOptions, " | ")
 	case "ZodVoid":
 		return "void"
 	case "ZodNever":
