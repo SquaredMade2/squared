@@ -67,10 +67,10 @@ export const createTeamStore = (
 					}
 
 					try {
-						const response: { data: ApiReturnType<Team> } = await axios.get(
-							apiString(teamId),
-						);
-						return { ...response.data, team: response.data.data };
+						const { data: response }: { data: ApiReturnType<Team> } =
+							await axios.get(apiString(teamId));
+						const { data: team, ...rest } = response;
+						return { ...rest, team };
 					} catch (error) {
 						return {
 							team: null,
@@ -222,7 +222,7 @@ export const createTeamStore = (
 						}
 						set((state) => ({
 							sprints: state.sprints.map((s) =>
-								s.id === sprint.id ? updatedSprint : s,
+								s.id === sprintId ? { ...s, ...updatedSprint } : s,
 							),
 						}));
 

@@ -39,7 +39,7 @@ export default function Home() {
 				return;
 			}
 
-			const currentTeam = await getAllTeams(currentWorkspace.id);
+			const currentTeam = await getAllTeams(user.id);
 			if (currentTeam) {
 				router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
 			}
