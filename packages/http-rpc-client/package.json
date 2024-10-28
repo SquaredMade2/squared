@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "prebuild": "rm -rf dist",
+    "prebuild": "rimraf dist",
     "postinstall": "pnpm run build"
   },
   "dependencies": {

@@ -20,7 +20,7 @@
   "scripts": {
     "build": "ts-node ./build.ts",
     "postinstall": "pnpm run build",
-    "prebuild": "rm -rf ./dist"
+    "prebuild": "rimraf ./dist"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
