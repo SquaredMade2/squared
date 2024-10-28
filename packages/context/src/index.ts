@@ -13,9 +13,13 @@ export type Abortable = {
 	readonly abort: () => void;
 };
 
-function rootContext(): Context {
+function rootContext(
+	initialValues: { signal?: AbortSignal; deadline?: number } = {},
+): Context {
 	return Object.freeze(
 		Object.create(null, {
+			signal: { value: initialValues.signal, enumerable: true },
+			deadline: { value: initialValues.deadline, enumerable: true },
 			[customInspectSymbol]: { value: inspectContext },
 			[isContext]: { value: true },
 		}),

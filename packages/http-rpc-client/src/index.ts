@@ -11,7 +11,7 @@ class BaseClient {
 	private axiosInstance: AxiosInstance;
 
 	constructor(baseURL: string, serviceName: string) {
-		this.baseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
+		this.baseURL = baseURL.endsWith("/") ? `${baseURL}/rpc` : `${baseURL}/rpc`;
 		this.serviceName = serviceName;
 		this.axiosInstance = axios.create({ baseURL: this.baseURL });
 	}
@@ -22,7 +22,7 @@ class BaseClient {
 		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
 		params: Record<string, any>,
 	) {
-		const url = `${this.baseURL}${methodName}`;
+		const url = `${this.baseURL}/${this.serviceName}/${methodName}`;
 
 		const headers: Record<string, string> = {
 			"Content-Type": "application/json",

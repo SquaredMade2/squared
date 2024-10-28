@@ -111,12 +111,6 @@ app.get("/", (_, res) => {
   res.status(200).send("ok");
 });
 
-const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
-app.use("/rpc", rpcRequestHandler);
-
-// Use the RPC error handler
-app.use(createErrorHandler({ log: logger }));
-
 app.use(
 	cors({
 		origin: (origin, callback) => {
@@ -141,6 +135,12 @@ app.use(
 );
 
 app.use(express.json());
+
+const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
+app.use("/rpc", rpcRequestHandler);
+
+// Use the RPC error handler
+app.use(createErrorHandler({ log: logger }));
 
 // Initialize the router
 const router = express.Router();
