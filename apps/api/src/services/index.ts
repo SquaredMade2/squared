@@ -1,7 +1,5 @@
-import { PrismaClient } from "@squared/db";
+import { prisma } from "../api";
 import { SprintService, createSprintRpcHandler } from "./sprints";
-
-const prisma = new PrismaClient();
 
 export const services = {
 	sprint: new SprintService(prisma),
