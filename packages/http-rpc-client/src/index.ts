@@ -127,30 +127,6 @@ export class RpcResponseError extends Error {
 	}
 }
 
-export class RPCClient extends BaseClient {
-	async request(
-		methodName: string,
-		// biome-ignore lint/suspicious/noExplicitAny: Parameters are defined by the user and can be of any type
-		params: Record<string, any>,
-		options: RequestOptions = {},
-	) {
-		if (!options.timeout) {
-			return super.doRequest(context.background, methodName, params);
-		}
-
-		const { ctx, abort } = context.withTimeout(
-			context.background,
-			options.timeout,
-		);
-
-		try {
-			return await super.doRequest(ctx, methodName, params);
-		} finally {
-			abort();
-		}
-	}
-}
-
 export class RPCContextClient extends BaseClient {
 	async request(
 		ctx: context.Context,
