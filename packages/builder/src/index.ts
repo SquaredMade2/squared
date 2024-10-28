@@ -2,17 +2,19 @@ import "tslib";
 import type { BuildOptions, SameShape } from "esbuild";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";
+import { relative } from "node:path";
 import createCustomLogger from "@squared/logger";
 
 const logger = createCustomLogger("builder");
 
-export async function build(path: string) {
-	const file = `${path}/index.ts`;
-	const dist = `dist/${path.split("/").slice(1).join("/")}`;
+export async function build(path: string, external?: string[]) {
+	const file = relative(process.cwd(), path);
+	const dist = `dist/${path.split("/").slice(1, -1).join("/")}`;
 
 	const esbuildConfig: SameShape<BuildOptions, BuildOptions> = {
 		entryPoints: [file],
 		packages: "external",
+		external,
 		bundle: true,
 		sourcemap: true,
 		format: "cjs",
@@ -43,6 +45,9 @@ export async function build(path: string) {
 		dts: { only: true },
 		outDir: dist,
 		silent: true,
+		external,
 	});
 	logger.info(`Built ${path}/dist/index.d.ts`);
 }
+
+export default build;

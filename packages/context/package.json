@@ -2,23 +2,29 @@
   "name": "@squared/context",
   "version": "0.0.0",
   "private": true,
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     }
   },
   "scripts": {
     "test": "rm -rf ./dist && tsc && node ./dist/test.js",
     "postinstall": "pnpm run build",
-    "build": "rm -rf ./dist && tsc"
+    "prebuild": "rm -rf ./dist",
+    "build": "squared-build src/index.ts/index.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@squared/builder": "workspace:*",
     "@types/node": "^22.8.1"
   }
 }

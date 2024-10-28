@@ -1,3 +1,4 @@
 import {build} from "./src"
 
-build('src');
+build('src/index.ts');
+build('src/cli.ts');
