@@ -28,6 +28,7 @@ import { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";
+//this is a change to the api folder for CI testing
 
 export const prisma = new PrismaClient({
 	datasources: {
