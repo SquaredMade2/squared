@@ -2,30 +2,28 @@
 import { RPCContextClient } from "@squared/http-rpc-client";
 import type { Context } from "@squared/context";
 
-export type GetsprintsRequest = { teamId: string };
+export type GetSprintsRequest = { teamId: string };
 
-export type GetsprintsResponse = {
+export type GetSprintsResponse = {
+	startDate: Date;
+	endDate: Date;
 	status: "PLANNED" | "ACTIVE" | "COMPLETED";
 	teamId: string;
 	createdAt: Date;
 	updatedAt: Date;
 	id: string;
 	name: string;
-	startDate: Date;
-	endDate: Date;
 }[];
 
-export type StartnextsprintRequest = {
-	movedTasks: string[];
+export type StartNextSprintRequest = {
 	sprintData?: { name: string };
 	teamId: string;
+	movedTasks: string[];
 };
 
-export type StartnextsprintResponse =
+export type StartNextSprintResponse =
 	| { status: number; message: string; variant: "destructive" }
 	| {
-			message: string;
-			variant: "default";
 			data: {
 				id: string;
 				name: string;
@@ -36,18 +34,30 @@ export type StartnextsprintResponse =
 				createdAt: Date;
 				updatedAt: Date;
 			};
+			message: string;
+			variant: "default";
 	  };
 
-export type GetsprinttasksRequest = { sprintId: string };
+export type GetSprintTasksRequest = { sprintId: string };
 
-export type GetsprinttasksResponse = {
-	sprintId: string | null;
+export type GetSprintTasksResponse = {
+	description: string | null;
+	dateCreated: Date;
 	authorId: string;
 	effortEstimate: number | null;
-	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
-	dateCreated: Date;
-	parentId: string | null;
+	workspaceId: string;
+	id: string;
+	sprintId: string | null;
+	updatedAt: Date;
+	assigneeName: string | null;
 	deleted: boolean;
+	teamId: string;
+	dueDate: Date | null;
+	assigneeId: string | null;
+	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	labels: string[];
+	parentId: string | null;
+	title: string;
 	status:
 		| "backlog"
 		| "todo"
@@ -56,22 +66,12 @@ export type GetsprinttasksResponse = {
 		| "done"
 		| "canceled"
 		| "archived";
-	teamId: string;
-	updatedAt: Date;
-	assigneeId: string | null;
-	labels: string[];
-	workspaceId: string;
-	title: string;
-	description: string | null;
 	identifier: string;
-	assigneeName: string | null;
-	id: string;
-	dueDate: Date | null;
 }[];
 
-export type EndsprintRequest = { sprintId: string };
+export type EndSprintRequest = { sprintId: string };
 
-export type EndsprintResponse = {
+export type EndSprintResponse = {
 	teamId: string;
 	createdAt: Date;
 	updatedAt: Date;
@@ -82,32 +82,31 @@ export type EndsprintResponse = {
 	status: "PLANNED" | "ACTIVE" | "COMPLETED";
 };
 
-export type AddretrospectiveitemRequest = {
+export type AddRetrospectiveItemRequest = {
+	content: string;
 	sprintId: string;
 	type: "wentWell" | "toImprove" | "actionItems";
-	content: string;
 };
 
-export type AddretrospectiveitemResponse = {
-	updatedAt: Date;
-	id: string;
+export type AddRetrospectiveItemResponse = {
 	content: string;
 	type: string;
 	wentWellSprintId: string | null;
 	toImproveSprintId: string | null;
 	actionItemsSprintId: string | null;
 	createdAt: Date;
+	updatedAt: Date;
+	id: string;
 };
 
-export type UpdateretrospectiveitemRequest = {
+export type UpdateRetrospectiveItemRequest = {
 	retrospectiveItemId: string;
 	type?: "wentWell" | "toImprove" | "actionItems";
 	content?: string;
 	sprintId: string;
 };
 
-export type UpdateretrospectiveitemResponse = {
-	id: string;
+export type UpdateRetrospectiveItemResponse = {
 	content: string;
 	type: string;
 	wentWellSprintId: string | null;
@@ -115,40 +114,41 @@ export type UpdateretrospectiveitemResponse = {
 	actionItemsSprintId: string | null;
 	createdAt: Date;
 	updatedAt: Date;
+	id: string;
 };
 
-export type GetretrospectiveitemsRequest = { sprintId: string };
+export type GetRetrospectiveItemsRequest = { sprintId: string };
 
-export type GetretrospectiveitemsResponse = {
-	wentWell: {
+export type GetRetrospectiveItemsResponse = {
+	actionItems: {
+		wentWellSprintId: string | null;
+		toImproveSprintId: string | null;
+		actionItemsSprintId: string | null;
 		createdAt: Date;
 		updatedAt: Date;
 		id: string;
 		content: string;
 		type: string;
+	}[];
+	wentWell: {
+		content: string;
+		type: string;
 		wentWellSprintId: string | null;
 		toImproveSprintId: string | null;
 		actionItemsSprintId: string | null;
+		createdAt: Date;
+		updatedAt: Date;
+		id: string;
 	}[];
 	toImprove: {
+		toImproveSprintId: string | null;
+		actionItemsSprintId: string | null;
+		createdAt: Date;
 		updatedAt: Date;
 		id: string;
 		content: string;
 		type: string;
 		wentWellSprintId: string | null;
-		toImproveSprintId: string | null;
-		actionItemsSprintId: string | null;
-		createdAt: Date;
-	}[];
-	actionItems: {
-		id: string;
-		content: string;
-		type: string;
-		wentWellSprintId: string | null;
-		toImproveSprintId: string | null;
-		actionItemsSprintId: string | null;
-		createdAt: Date;
-		updatedAt: Date;
 	}[];
 };
 
@@ -165,8 +165,8 @@ export class SprintService extends RPCContextClient {
 	 */
 	getSprints(
 		ctx: Context,
-		req: GetsprintsRequest,
-	): Promise<GetsprintsResponse> {
+		req: GetSprintsRequest,
+	): Promise<GetSprintsResponse> {
 		return this.request(ctx, "getSprints", req);
 	}
 
@@ -175,8 +175,8 @@ export class SprintService extends RPCContextClient {
 	 */
 	startNextSprint(
 		ctx: Context,
-		req: StartnextsprintRequest,
-	): Promise<StartnextsprintResponse> {
+		req: StartNextSprintRequest,
+	): Promise<StartNextSprintResponse> {
 		return this.request(ctx, "startNextSprint", req);
 	}
 
@@ -185,15 +185,15 @@ export class SprintService extends RPCContextClient {
 	 */
 	getSprintTasks(
 		ctx: Context,
-		req: GetsprinttasksRequest,
-	): Promise<GetsprinttasksResponse> {
+		req: GetSprintTasksRequest,
+	): Promise<GetSprintTasksResponse> {
 		return this.request(ctx, "getSprintTasks", req);
 	}
 
 	/**
 	 * endSprint method
 	 */
-	endSprint(ctx: Context, req: EndsprintRequest): Promise<EndsprintResponse> {
+	endSprint(ctx: Context, req: EndSprintRequest): Promise<EndSprintResponse> {
 		return this.request(ctx, "endSprint", req);
 	}
 
@@ -202,8 +202,8 @@ export class SprintService extends RPCContextClient {
 	 */
 	addRetrospectiveItem(
 		ctx: Context,
-		req: AddretrospectiveitemRequest,
-	): Promise<AddretrospectiveitemResponse> {
+		req: AddRetrospectiveItemRequest,
+	): Promise<AddRetrospectiveItemResponse> {
 		return this.request(ctx, "addRetrospectiveItem", req);
 	}
 
@@ -212,8 +212,8 @@ export class SprintService extends RPCContextClient {
 	 */
 	updateRetrospectiveItem(
 		ctx: Context,
-		req: UpdateretrospectiveitemRequest,
-	): Promise<UpdateretrospectiveitemResponse> {
+		req: UpdateRetrospectiveItemRequest,
+	): Promise<UpdateRetrospectiveItemResponse> {
 		return this.request(ctx, "updateRetrospectiveItem", req);
 	}
 
@@ -222,8 +222,8 @@ export class SprintService extends RPCContextClient {
 	 */
 	getRetrospectiveItems(
 		ctx: Context,
-		req: GetretrospectiveitemsRequest,
-	): Promise<GetretrospectiveitemsResponse> {
+		req: GetRetrospectiveItemsRequest,
+	): Promise<GetRetrospectiveItemsResponse> {
 		return this.request(ctx, "getRetrospectiveItems", req);
 	}
 }

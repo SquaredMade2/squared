@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
-	"unicode"
 
 	"github.com/spf13/cobra"
 )
@@ -320,11 +319,10 @@ func zodToTypeScript(schema ZodSchema) string {
 }
 
 func toPascalCase(s string) string {
-    words := strings.FieldsFunc(s, func(r rune) bool {
-        return !unicode.IsLetter(r) && !unicode.IsNumber(r)
-    })
-    for i, word := range words {
-        words[i] = strings.Title(strings.ToLower(word))
+    if len(s) == 0 {
+        return s
     }
-    return strings.Join(words, "")
+    
+    // Capitalize the first letter, leave the rest unchanged
+    return strings.ToUpper(string(s[0])) + s[1:]
 }
