@@ -1,6 +1,6 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useTeamStore, useWorkspaceStore } from "@/store";
+import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
 import type { Sprint, Task, Team, Workspace } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 import { SprintService } from "@/gen/rpc/sprint";
@@ -22,6 +22,7 @@ export function useSprints() {
 	const { getSprints, getSprintTasks } = new SprintService(
 		`${process.env.NEXT_PUBLIC_SERVER_URL}/rpc/sprint`,
 	);
+	const { user } = useAuthStore((state) => state);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -37,8 +38,12 @@ export function useSprints() {
 				}
 				setWorkspace(workspace);
 
+				if (!user) {
+					throw new Error("User not found");
+				}
+
 				// Fetch team data
-				const teams = await getAllTeams(workspace.id);
+				const teams = await getAllTeams(user.id);
 				const foundTeam = teams.find(
 					(team) => team.identifier === teamIdentifier,
 				);

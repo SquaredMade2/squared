@@ -2,7 +2,12 @@ import { useEffect } from "react";
 import { Activity, Copy, Layers3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { NavBarTeamProps } from "./interfaces";
-import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import Link from "next/link";
@@ -14,13 +19,14 @@ const NavBarTeams = ({
 }: NavBarTeamProps) => {
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
+	const { user } = useAuthStore((state) => state);
 	const { getAllTasks } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	useEffect(() => {
-		if (!currentWorkspace) return;
-		getAllTeams(currentWorkspace.id);
-	}, [currentWorkspace, getAllTeams]);
+		if (!user) return;
+		getAllTeams(user.id);
+	}, [user, getAllTeams]);
 
 	const router = useRouter();
 

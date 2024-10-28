@@ -235,6 +235,9 @@ importers:
         specifier: ^4.5.5
         version: 4.5.5(@types/react@18.3.11)(immer@9.0.21)(react@18.3.1)
     devDependencies:
+      '@jest/globals':
+        specifier: ^29.7.0
+        version: 29.7.0
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -244,6 +247,9 @@ importers:
       '@testing-library/jest-dom':
         specifier: ^6.5.0
         version: 6.5.0
+      '@testing-library/react':
+        specifier: ^16.0.0
+        version: 16.0.1(@testing-library/dom@10.4.0)(@types/react-dom@18.3.1)(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.13

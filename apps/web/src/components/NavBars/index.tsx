@@ -43,9 +43,9 @@ const Navbar = () => {
 	const { toast } = useToast();
 
 	useEffect(() => {
-		if (!workspace) return;
-		getAllTeams(workspace.id);
-	}, [workspace, getAllTeams]);
+		if (!user) return;
+		getAllTeams(user.id);
+	}, [user, getAllTeams]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {

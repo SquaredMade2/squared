@@ -19,7 +19,9 @@
 		"prestart": "pnpm i",
 		"reset": "rimraf node_modules pnpm-lock.yaml",
 		"start": "next start",
-		"test": "jest --ci --passWithNoTests"
+		"test": "jest --verbose=false",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage"
 	},
 	"dependencies": {
 		"@hello-pangea/dnd": "^17.0.0",
@@ -53,9 +55,11 @@
 		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
+		"@jest/globals": "^29.7.0",
 		"@squared/db": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
 		"@types/react": "^18.3.1",
 		"@types/react-dom": "^18.3.1",

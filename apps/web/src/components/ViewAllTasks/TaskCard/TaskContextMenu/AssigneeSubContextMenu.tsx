@@ -87,7 +87,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 									className="flex justify-between"
 								>
 									<div className="flex">
-										<Avatar className="size-6 text-xxs mr-2 flex">
+										<Avatar className="size-4 text-xxs mr-2 flex">
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
