@@ -48,6 +48,7 @@ export type SprintServiceResponse<T> = ErrorResponse | SuccessResponse<T>;
 
 export interface SprintRpc {
 	getSprints: (teamId: string) => Promise<Sprint[]>;
+	initializeSprints: (teamId: string) => Promise<number>;
 	startNextSprint: ({
 		teamId,
 		movedTasks,

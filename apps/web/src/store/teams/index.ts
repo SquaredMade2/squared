@@ -1,19 +1,12 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import { persist } from "zustand/middleware";
-import type {
-	TeamState,
-	TeamStore,
-	TeamResponse,
-	InitializeSprintsBody,
-} from "./interfaces";
+import type { TeamState, TeamStore, TeamResponse } from "./interfaces";
 import type { Sprint, Team } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import { v4 as uuidv4 } from "uuid";
-import { sprintService } from "@/lib/services";
 export * from "./interfaces";
 export * from "./store";
-import * as context from "@squared/context";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/team/${path}`;
@@ -142,48 +135,6 @@ export const createTeamStore = (
 						return teams;
 					} catch (error) {
 						console.error("Error in getAllTeams:", error);
-						return [];
-					}
-				},
-				initializeSprints: async (
-					teamId: string,
-					sprint: InitializeSprintsBody,
-				): Promise<Sprint[]> => {
-					try {
-						// Get current sprints
-						const currentSprints = await sprintService.getSprints(
-							context.TODO,
-							{ teamId },
-						);
-
-						// Filter pending sprints
-						const pendingSprints = currentSprints.filter(
-							(s) => s.status === "PLANNED",
-						);
-
-						// Calculate how many sprints we can create
-						const sprintsToCreate = Math.max(0, 3 - pendingSprints.length);
-
-						if (sprintsToCreate === 0) {
-							return [];
-						}
-
-						// Modify the request to create only the allowed number of sprints
-						const modifiedSprint = { ...sprint, count: sprintsToCreate };
-
-						const response: { data: ApiReturnType<Sprint[]> } =
-							await axios.post(apiString(`${teamId}/sprints`), modifiedSprint);
-						const { data: newSprints } = response.data;
-
-						if (!newSprints) {
-							return [];
-						}
-
-						const { sprints } = get();
-						set({ sprints: [...sprints, ...newSprints] });
-
-						return newSprints;
-					} catch {
 						return [];
 					}
 				},

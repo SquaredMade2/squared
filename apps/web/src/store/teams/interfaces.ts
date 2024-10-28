@@ -42,10 +42,6 @@ type TeamActions = {
 	updateTeam: (teamId: string, team: Partial<Team>) => Promise<TeamResponse>;
 	deleteTeam: (teamId: string) => Promise<void>;
 	getAllTeams: (workspaceId: string) => Promise<Team[]>;
-	initializeSprints: (
-		teamId: string,
-		body: InitializeSprintsBody,
-	) => Promise<Sprint[]>;
 	setCurrentSprint: (sprint: Sprint) => void;
 };
 

@@ -32,6 +32,44 @@ export class SprintService implements SprintRpc {
 		return this.db.sprint.findMany({ where: { teamId } });
 	}
 
+	async initializeSprints(teamId: string): Promise<number> {
+		const team = await this.db.team.findUnique({ where: { id: teamId } });
+
+		if (!team) {
+			return 0;
+		}
+
+		const sprints = await this.db.sprint.findMany({ where: { teamId } });
+		const pendingSprints = sprints.filter((s) => s.status === "PLANNED");
+		const remainingSprints = Math.max(
+			0,
+			team.upcomingSprints - pendingSprints.length,
+		);
+
+		if (remainingSprints <= 0) {
+			return pendingSprints.length;
+		}
+
+		const sprintDuration = team.sprintDuration;
+
+		const newSprints: Omit<Sprint, "id" | "createdAt" | "updatedAt">[] =
+			Array.from({ length: remainingSprints }, (_, index) => {
+				const startDate = addWeeks(new Date(), index * sprintDuration);
+				const endDate = addWeeks(startDate, sprintDuration);
+
+				return {
+					name: `Sprint ${sprints.length + index + 1}`,
+					status: "PLANNED",
+					startDate,
+					endDate,
+					teamId,
+				};
+			});
+		await this.db.sprint.createMany({ data: newSprints });
+
+		return 1;
+	}
+
 	async startNextSprint({
 		teamId,
 		movedTasks,

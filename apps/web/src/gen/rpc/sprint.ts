@@ -17,6 +17,12 @@ export type GetSprintsResponse = {
 	updatedAt: Date;
 }[];
 
+export type InitializeSprintsRequest = {
+	teamId: string;
+};
+
+export type InitializeSprintsResponse = number;
+
 export type StartNextSprintRequest = {
 	movedTasks: string[];
 	sprintData?: {
@@ -157,6 +163,16 @@ export class SprintService extends RPCContextClient {
 		req: GetSprintsRequest,
 	): Promise<GetSprintsResponse> {
 		return this.request(ctx, "getSprints", req);
+	}
+
+	/**
+	 * initializeSprints method
+	 */
+	initializeSprints(
+		ctx: Context,
+		req: InitializeSprintsRequest,
+	): Promise<InitializeSprintsResponse> {
+		return this.request(ctx, "initializeSprints", req);
 	}
 
 	/**

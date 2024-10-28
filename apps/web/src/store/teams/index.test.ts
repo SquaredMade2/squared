@@ -1,8 +1,7 @@
 import { createTeamStore } from ".";
 import axios from "axios";
-import type { Sprint, Team } from "@squared/db";
-import { STANDARD_SPRINT, STANDARD_TEAM, STANDARD_TEAM_2 } from "@/test/mocks";
-import { sprintService } from "@/lib/services";
+import type { Team } from "@squared/db";
+import { STANDARD_TEAM, STANDARD_TEAM_2 } from "@/test/mocks";
 
 // Mock axios
 jest.mock("axios");
@@ -205,65 +204,6 @@ describe("TeamStore", () => {
 
 			const state = store.getState();
 			expect(state.teams).toEqual(mockTeams);
-		});
-	});
-
-	describe("initializeSprints", () => {
-		it("should initialize sprints for a team", async () => {
-			// Mock existing sprints (empty in this case)
-			const mockExistingSprints: Sprint[] = [];
-
-			// Mock new sprints to be created
-			const mockSprints: Sprint[] = [
-				{ ...STANDARD_SPRINT, id: "sprint-1" },
-				{ ...STANDARD_SPRINT, id: "sprint-2" },
-			];
-
-			// Mock sprintService.getSprints to return the existing sprints
-			(sprintService.getSprints as jest.Mock).mockResolvedValue(
-				mockExistingSprints,
-			);
-
-			// Mock the response for creating new sprints via the backend
-			const mockPostResponse = {
-				data: {
-					data: mockSprints,
-					message: "Sprints initialized successfully",
-					variant: "default",
-				},
-			};
-
-			// Replace `axios.post` with whatever function you're using for RPC or HTTP requests
-			jest.spyOn(axios, "post").mockResolvedValue(mockPostResponse);
-
-			// Call the function to initialize sprints
-			const result = await store
-				.getState()
-				.initializeSprints(STANDARD_TEAM.id, {
-					count: 3,
-					startDate: new Date("2023-01-01"),
-				});
-
-			// Verify that the function returns the newly created sprints
-			expect(result).toEqual(mockSprints);
-
-			// Verify that the state is updated with the new sprints
-			const state = store.getState();
-			expect(state.sprints).toEqual(mockSprints);
-
-			// Verify that sprintService.getSprints was called with the correct arguments
-			expect(sprintService.getSprints).toHaveBeenCalledWith(expect.anything(), {
-				teamId: STANDARD_TEAM.id,
-			});
-
-			// Verify that the POST request to create sprints was called correctly
-			expect(axios.post).toHaveBeenCalledWith(
-				expect.stringContaining(`${STANDARD_TEAM.id}/sprints`),
-				expect.objectContaining({
-					count: expect.any(Number), // This should be the modified count based on the pending sprints
-					startDate: expect.any(Date),
-				}),
-			);
 		});
 	});
 

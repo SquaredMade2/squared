@@ -48,9 +48,7 @@ import { sprintService } from "@/lib/services";
 import { TODO } from "@squared/context";
 
 export default function TeamSettingsSprints() {
-	const { updateTeam, setCurrentTeam, initializeSprints } = useTeamStore(
-		(state) => state,
-	);
+	const { updateTeam, setCurrentTeam } = useTeamStore((state) => state);
 	const { currentTeam, loading: teamLoading } = useTeams();
 	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
@@ -79,11 +77,10 @@ export default function TeamSettingsSprints() {
 			if (!currentTeam) throw new Error("No team found");
 			const response = await updateTeam(currentTeam.id, data);
 			if (response.team?.sprintsEnabled) {
-				const newSprints = await initializeSprints(currentTeam.id, {
-					count: currentTeam.upcomingSprints,
-					startDate: currentTeam.sprintStartDate,
+				const newSprintCount = await sprintService.initializeSprints(TODO, {
+					teamId: currentTeam.id,
 				});
-				setPendingSprints((prev) => prev + newSprints.length);
+				setPendingSprints(newSprintCount);
 			}
 			if (!response) return;
 			response.variant === "destructive"

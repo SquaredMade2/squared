@@ -69,6 +69,10 @@ export const sprintRpcSchema = {
 		input: z.object({ teamId: z.string() }),
 		output: z.array(sprintSchema),
 	},
+	initializeSprints: {
+		input: z.object({ teamId: z.string() }),
+		output: z.number(),
+	},
 	startNextSprint: {
 		input: createSchema<NextSprintPayload>()(
 			z.object({
@@ -136,6 +140,7 @@ export type SprintRpcSchema = typeof sprintRpcSchema;
 export const createSprintRpcHandler = (sprintService: SprintService) =>
 	createRpcHandler("sprint", sprintRpcSchema, {
 		getSprints: (input) => sprintService.getSprints(input.teamId),
+		initializeSprints: (input) => sprintService.initializeSprints(input.teamId),
 		startNextSprint: (input) => sprintService.startNextSprint(input),
 		getSprintTasks: (input) => sprintService.getSprintTasks(input.sprintId),
 		endSprint: (input) => sprintService.endSprint(input.sprintId),
