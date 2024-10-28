@@ -35,6 +35,7 @@ describe("TeamStore", () => {
 	beforeEach(() => {
 		store = createTeamStore();
 		jest.clearAllMocks();
+		process.env.NEXT_PUBLIC_SERVER = "http://localhost:5173";
 	});
 
 	it("should initialize with empty teams, sprints, and null current team and sprint", () => {
@@ -195,7 +196,9 @@ describe("TeamStore", () => {
 			const result = await store.getState().getAllTeams("workspace-1");
 
 			expect(mockedAxios.get).toHaveBeenCalledWith(
-				expect.stringContaining("/api/workspace/workspace-1/team"),
+				expect.stringContaining(
+					"http://localhost:5173/api/user/workspace-1/team",
+				),
 			);
 
 			expect(result).toEqual(mockTeams);
