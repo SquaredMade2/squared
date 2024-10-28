@@ -3,7 +3,7 @@ name: Deploy to Amazon ECS
 on:
   push:
     branches:
-      - main
+      - develop
   workflow_dispatch:  # Adds the manual trigger
 
 env:
@@ -18,7 +18,7 @@ jobs:
   checks:
     name: Check For Changes
     runs-on: ubuntu-latest
-    environment: API-Production
+    environment: API-Staging
     outputs:
       changed-app: ${{ steps.changed-app.outputs.result }}
     if: ${{ github.event_name != 'workflow_dispatch' }} # Skip this job if manually triggered
