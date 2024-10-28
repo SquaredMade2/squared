@@ -6,7 +6,7 @@ export type APIResponse<Type> = {
 	message?: string;
 	variant: "default" | "destructive";
 };
-
+//this is also a change
 export type Route<P = Record<string, string>> = {
 	GET?: (
 		res: Response,
