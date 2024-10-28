@@ -52,7 +52,7 @@ jobs:
         id: set-env
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
-            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "environment=API-Production" >> $GITHUB_OUTPUT
             echo "ecr_repository=squared-api-production" >> $GITHUB_OUTPUT
           else
             echo "environment=API-Staging" >> $GITHUB_OUTPUT
