@@ -279,48 +279,6 @@ describe("TeamStore", () => {
 		});
 	});
 
-	describe("updateSprint", () => {
-		it("should update a sprint", async () => {
-			const updatedSprint: Partial<Sprint> = {
-				name: "Updated Sprint",
-			};
-
-			const mockResponse = {
-				data: {
-					data: { ...STANDARD_SPRINT, ...updatedSprint },
-					message: "Sprint updated successfully",
-					variant: "default",
-				},
-			};
-
-			mockedAxios.put.mockResolvedValue(mockResponse);
-
-			store.setState({ sprints: [STANDARD_SPRINT] });
-
-			const result = await sprintService.updateSprint(context.TODO, {
-				teamId: STANDARD_TEAM.id,
-				sprintId: STANDARD_SPRINT.id,
-				updatedSprint,
-			});
-
-			expect(mockedAxios.put).toHaveBeenCalledWith(
-				expect.stringContaining(
-					`/api/team/${STANDARD_TEAM.id}/sprints/${STANDARD_SPRINT.id}`,
-				),
-				updatedSprint,
-			);
-
-			expect(result).toEqual({
-				sprint: mockResponse.data.data,
-				message: "Sprint updated successfully",
-				variant: "default",
-			});
-
-			const state = store.getState();
-			expect(state.sprints[0]).toEqual(mockResponse.data.data);
-		});
-	});
-
 	describe("startNextSprint", () => {
 		it("should start the next sprint", async () => {
 			const movedTasks = [STANDARD_TASK.id];

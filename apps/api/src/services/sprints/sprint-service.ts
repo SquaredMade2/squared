@@ -1,4 +1,10 @@
-import type { PrismaClient, Sprint, Task, Team } from "@squared/db";
+import type {
+	PrismaClient,
+	RetrospectiveItem,
+	Sprint,
+	Task,
+	Team,
+} from "@squared/db";
 import type {
 	AddRetrospectivePayload,
 	ErrorResponse,
@@ -92,14 +98,14 @@ export class SprintService implements SprintRpc {
 		sprintId,
 		type,
 		content,
-	}: AddRetrospectivePayload): Promise<void> {
+	}: AddRetrospectivePayload): Promise<RetrospectiveItem> {
 		const sprintRelationField = this.mapTypeToSprintRelationField(
 			type,
 			sprintId,
 		);
 
 		// Create retrospective item with the appropriate relation
-		await this.db.retrospectiveItem.create({
+		return await this.db.retrospectiveItem.create({
 			data: {
 				content,
 				type,
@@ -113,13 +119,13 @@ export class SprintService implements SprintRpc {
 		type,
 		content,
 		sprintId,
-	}: UpdateRetrospectiveItemPayload): Promise<void> {
+	}: UpdateRetrospectiveItemPayload): Promise<RetrospectiveItem> {
 		const sprintRelationField = type
 			? this.mapTypeToSprintRelationField(type, sprintId)
 			: {};
 
 		// Update the retrospective item with the appropriate relation and content
-		await this.db.retrospectiveItem.update({
+		return await this.db.retrospectiveItem.update({
 			where: { id: retrospectiveItemId },
 			data: {
 				content,

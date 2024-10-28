@@ -87,20 +87,19 @@ export default function SprintRetrospectivePage() {
 	const handleAddItem = useCallback(
 		async (type: ColumnType, content: string) => {
 			try {
-				await sprintService.addRetrospectiveItem(TODO, {
+				const response = await sprintService.addRetrospectiveItem(TODO, {
 					sprintId,
 					type,
 					content,
 				});
-				// const { item: newItem, message: title, variant } = response;
-				// if (newItem) {
-				// 	socket?.emit("addItem", { sprintId, ...newItem });
-				// 	setData((prevData) => ({
-				// 		...prevData,
-				// 		[type]: [...prevData[type], newItem],
-				// 	}));
-				// }
-				// toast({ title, variant });
+				if (response) {
+					socket?.emit("addItem", { sprintId, ...response });
+					setData((prevData) => ({
+						...prevData,
+						[type]: [...prevData[type], response],
+					}));
+				}
+				toast({ title: "Item added successfully" });
 			} catch (error) {
 				console.error("Error adding item:", error);
 				toast({ title: "Failed to add item", variant: "destructive" });
@@ -124,16 +123,19 @@ export default function SprintRetrospectivePage() {
 			const itemId = result.draggableId;
 
 			try {
-				await sprintService.updateRetrospectiveItem(TODO, {
+				const response = await sprintService.updateRetrospectiveItem(TODO, {
 					sprintId,
 					retrospectiveItemId: itemId,
 					type: destinationType,
 					content: "",
 				});
-				// if (!response.item) {
-				// 	toast({ title: response.message, variant: response.variant });
-				// 	return;
-				// }
+				if (!response) {
+					toast({
+						title: "There was an issue updating your item",
+						variant: "destructive",
+					});
+					return;
+				}
 
 				setData((prevData) => {
 					const newData = { ...prevData };

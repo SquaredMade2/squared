@@ -56,12 +56,12 @@ export interface SprintRpc {
 		sprintId,
 		type,
 		content,
-	}: AddRetrospectivePayload) => Promise<void>;
+	}: AddRetrospectivePayload) => Promise<RetrospectiveItem>;
 	updateRetrospectiveItem: ({
 		retrospectiveItemId,
 		type,
 		content,
 		sprintId,
-	}: UpdateRetrospectiveItemPayload) => Promise<void>;
+	}: UpdateRetrospectiveItemPayload) => Promise<RetrospectiveItem>;
 	getRetrospectiveItems: (sprintId: string) => Promise<RetrospectiveData>;
 }

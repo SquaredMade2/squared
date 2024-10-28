@@ -110,7 +110,7 @@ export const sprintRpcSchema = {
 				content: z.string(),
 			}),
 		),
-		output: z.void(),
+		output: retrospectiveItemSchema,
 	},
 	updateRetrospectiveItem: {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
@@ -121,7 +121,7 @@ export const sprintRpcSchema = {
 				sprintId: z.string(),
 			}),
 		),
-		output: z.void(),
+		output: retrospectiveItemSchema,
 	},
 	getRetrospectiveItems: {
 		input: z.object({ sprintId: z.string() }),
