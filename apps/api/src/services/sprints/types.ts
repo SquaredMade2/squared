@@ -18,8 +18,8 @@ export type AddRetrospectivePayload = {
 
 export type UpdateRetrospectiveItemPayload = {
 	retrospectiveItemId: string;
-	type: RetrospectiveItemType;
-	content: string;
+	type?: RetrospectiveItemType;
+	content?: string;
 	sprintId: string;
 };
 

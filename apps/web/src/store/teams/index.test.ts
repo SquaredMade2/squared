@@ -9,6 +9,8 @@ import {
 	STANDARD_TEAM_2,
 	STANDARD_TO_IMPROVE_ITEM,
 } from "@/test/mocks";
+import { sprintService } from "@/lib/services";
+import * as context from "@squared/context";
 
 // Mock axios
 jest.mock("axios");
@@ -262,7 +264,9 @@ describe("TeamStore", () => {
 
 			mockedAxios.get.mockResolvedValue(mockResponse);
 
-			const result = await store.getState().getSprints(STANDARD_TEAM.id);
+			const result = await sprintService.getSprints(context.TODO, {
+				teamId: STANDARD_TEAM.id,
+			});
 
 			expect(mockedAxios.get).toHaveBeenCalledWith(
 				expect.stringContaining(`/api/team/${STANDARD_TEAM.id}/sprints`),
@@ -293,9 +297,11 @@ describe("TeamStore", () => {
 
 			store.setState({ sprints: [STANDARD_SPRINT] });
 
-			const result = await store
-				.getState()
-				.updateSprint(STANDARD_TEAM.id, STANDARD_SPRINT.id, updatedSprint);
+			const result = await sprintService.updateSprint(context.TODO, {
+				teamId: STANDARD_TEAM.id,
+				sprintId: STANDARD_SPRINT.id,
+				updatedSprint,
+			});
 
 			expect(mockedAxios.put).toHaveBeenCalledWith(
 				expect.stringContaining(
@@ -318,7 +324,7 @@ describe("TeamStore", () => {
 	describe("startNextSprint", () => {
 		it("should start the next sprint", async () => {
 			const movedTasks = [STANDARD_TASK.id];
-			const sprintData: Partial<Sprint> = {
+			const sprintData = {
 				name: "Next Sprint",
 			};
 
@@ -332,9 +338,11 @@ describe("TeamStore", () => {
 
 			mockedAxios.put.mockResolvedValue(mockResponse);
 
-			const result = await store
-				.getState()
-				.startNextSprint(STANDARD_TEAM.id, movedTasks, sprintData);
+			const result = await sprintService.startNextSprint(context.TODO, {
+				teamId: STANDARD_TEAM.id,
+				movedTasks,
+				sprintData,
+			});
 
 			expect(mockedAxios.put).toHaveBeenCalledWith(
 				expect.stringContaining(`/api/team/${STANDARD_TEAM.id}/sprints/next`),
@@ -366,9 +374,9 @@ describe("TeamStore", () => {
 
 			store.setState({ sprints: [STANDARD_SPRINT] });
 
-			const result = await store
-				.getState()
-				.endSprint(STANDARD_TEAM.id, STANDARD_SPRINT.id);
+			const result = await sprintService.endSprint(context.TODO, {
+				sprintId: STANDARD_SPRINT.id,
+			});
 
 			expect(mockedAxios.delete).toHaveBeenCalledWith(
 				expect.stringContaining(
@@ -401,13 +409,11 @@ describe("TeamStore", () => {
 
 			store.setState({ currentTeam: STANDARD_TEAM });
 
-			const result = await store
-				.getState()
-				.addRetrospectiveItem(
-					STANDARD_SPRINT.id,
-					"wentWell",
-					"Test retrospective item",
-				);
+			const result = await sprintService.addRetrospectiveItem(context.TODO, {
+				sprintId: STANDARD_SPRINT.id,
+				type: "wentWell",
+				content: "Test retrospective item",
+			});
 
 			expect(mockedAxios.post).toHaveBeenCalledWith(
 				expect.stringContaining(
@@ -438,13 +444,12 @@ describe("TeamStore", () => {
 
 			store.setState({ currentTeam: STANDARD_TEAM });
 
-			const result = await store
-				.getState()
-				.updateRetrospectiveItemType(
-					STANDARD_SPRINT.id,
-					"retro-1",
-					"toImprove",
-				);
+			const result = await sprintService.updateRetrospectiveItem(context.TODO, {
+				sprintId: STANDARD_SPRINT.id,
+				retrospectiveItemId: STANDARD_RETROSPECTIVE_ITEM.id,
+				content: "retro-1",
+				type: "toImprove",
+			});
 
 			expect(mockedAxios.put).toHaveBeenCalledWith(
 				expect.stringContaining(
@@ -502,9 +507,9 @@ describe("TeamStore", () => {
 
 			store.setState({ currentTeam: STANDARD_TEAM });
 
-			const result = await store
-				.getState()
-				.getRetrospectiveItems(STANDARD_SPRINT.id);
+			const result = await sprintService.getRetrospectiveItems(context.TODO, {
+				sprintId: STANDARD_SPRINT.id,
+			});
 
 			expect(mockedAxios.get).toHaveBeenCalledWith(
 				expect.stringContaining(

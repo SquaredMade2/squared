@@ -6,20 +6,16 @@ import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "@/components/ui/use-toast";
 import type { RetrospectiveItem } from "@squared/db";
-import { useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { RetroColumn } from "@/components/Sprints";
 import TopNavBar from "@/components/TopNavBar";
+import { sprintService } from "@/lib/services";
+import { TODO } from "@squared/context";
 
 type ColumnType = "wentWell" | "toImprove" | "actionItems";
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
-	const {
-		addRetrospectiveItem,
-		updateRetrospectiveItemType,
-		getRetrospectiveItems,
-	} = useTeamStore((state) => state);
 	const sprintId = parseParams(params.sprintId);
 	const [data, setData] = useState<Record<ColumnType, RetrospectiveItem[]>>({
 		wentWell: [],
@@ -30,7 +26,9 @@ export default function SprintRetrospectivePage() {
 
 	const fetchData = useCallback(async () => {
 		try {
-			const response = await getRetrospectiveItems(sprintId);
+			const response = await sprintService.getRetrospectiveItems(TODO, {
+				sprintId,
+			});
 			setData(response);
 		} catch (error) {
 			console.error("Error fetching data:", error);
@@ -39,7 +37,7 @@ export default function SprintRetrospectivePage() {
 				variant: "destructive",
 			});
 		}
-	}, [sprintId, getRetrospectiveItems]);
+	}, [sprintId, sprintService]);
 
 	useEffect(() => {
 		const socketUrl = process.env.NEXT_PUBLIC_SERVER || "http://localhost:5173";
@@ -89,22 +87,26 @@ export default function SprintRetrospectivePage() {
 	const handleAddItem = useCallback(
 		async (type: ColumnType, content: string) => {
 			try {
-				const response = await addRetrospectiveItem(sprintId, type, content);
-				const { item: newItem, message: title, variant } = response;
-				if (newItem) {
-					socket?.emit("addItem", { sprintId, ...newItem });
-					setData((prevData) => ({
-						...prevData,
-						[type]: [...prevData[type], newItem],
-					}));
-				}
-				toast({ title, variant });
+				await sprintService.addRetrospectiveItem(TODO, {
+					sprintId,
+					type,
+					content,
+				});
+				// const { item: newItem, message: title, variant } = response;
+				// if (newItem) {
+				// 	socket?.emit("addItem", { sprintId, ...newItem });
+				// 	setData((prevData) => ({
+				// 		...prevData,
+				// 		[type]: [...prevData[type], newItem],
+				// 	}));
+				// }
+				// toast({ title, variant });
 			} catch (error) {
 				console.error("Error adding item:", error);
 				toast({ title: "Failed to add item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket, addRetrospectiveItem],
+		[sprintId, socket, sprintService],
 	);
 
 	const onDragEnd = useCallback(
@@ -122,15 +124,16 @@ export default function SprintRetrospectivePage() {
 			const itemId = result.draggableId;
 
 			try {
-				const response = await updateRetrospectiveItemType(
+				await sprintService.updateRetrospectiveItem(TODO, {
 					sprintId,
-					itemId,
-					destinationType,
-				);
-				if (!response.item) {
-					toast({ title: response.message, variant: response.variant });
-					return;
-				}
+					retrospectiveItemId: itemId,
+					type: destinationType,
+					content: "",
+				});
+				// if (!response.item) {
+				// 	toast({ title: response.message, variant: response.variant });
+				// 	return;
+				// }
 
 				setData((prevData) => {
 					const newData = { ...prevData };
@@ -157,7 +160,7 @@ export default function SprintRetrospectivePage() {
 				toast({ title: "Failed to move item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket, updateRetrospectiveItemType],
+		[sprintId, socket, sprintService],
 	);
 
 	return (

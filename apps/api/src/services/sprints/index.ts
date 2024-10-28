@@ -116,8 +116,8 @@ export const sprintRpcSchema = {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
 			z.object({
 				retrospectiveItemId: z.string(),
-				type: z.enum(["wentWell", "toImprove", "actionItems"]),
-				content: z.string(),
+				type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
+				content: z.string().optional(),
 				sprintId: z.string(),
 			}),
 		),

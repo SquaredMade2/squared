@@ -44,10 +44,13 @@ import type { Sprint, Team } from "@squared/db";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { sprintService } from "@/lib/services";
+import { TODO } from "@squared/context";
 
 export default function TeamSettingsSprints() {
-	const { updateTeam, setCurrentTeam, initializeSprints, getSprints } =
-		useTeamStore((state) => state);
+	const { updateTeam, setCurrentTeam, initializeSprints } = useTeamStore(
+		(state) => state,
+	);
 	const { currentTeam, loading: teamLoading } = useTeams();
 	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
@@ -60,14 +63,16 @@ export default function TeamSettingsSprints() {
 
 	useEffect(() => {
 		if (currentTeam) {
-			getSprints(currentTeam.id).then((sprints) => {
-				const pending = sprints.filter((s) => s.status === "PLANNED").length;
-				setPendingSprints(pending);
-				const active = sprints.find((s) => s.status === "ACTIVE");
-				setActiveSprint(active || null);
-			});
+			sprintService
+				.getSprints(TODO, { teamId: currentTeam.id })
+				.then((sprints) => {
+					const pending = sprints.filter((s) => s.status === "PLANNED").length;
+					setPendingSprints(pending);
+					const active = sprints.find((s) => s.status === "ACTIVE");
+					setActiveSprint(active || null);
+				});
 		}
-	}, [currentTeam, getSprints]);
+	}, [currentTeam, sprintService]);
 
 	const handleUpdateTeam = async (data: Partial<Team>) => {
 		try {
