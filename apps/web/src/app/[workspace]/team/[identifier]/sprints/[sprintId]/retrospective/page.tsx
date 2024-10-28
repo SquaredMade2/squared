@@ -5,19 +5,19 @@ import { useParams } from "next/navigation";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "@/components/ui/use-toast";
-import type { RetrospectiveItem } from "@squared/db";
+import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 import { RetroColumn } from "@/components/Sprints";
 import TopNavBar from "@/components/TopNavBar";
 import { sprintService } from "@/lib/services";
 import { TODO } from "@squared/context";
 
-type ColumnType = "wentWell" | "toImprove" | "actionItems";
+type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
 	const sprintId = parseParams(params.sprintId);
-	const [data, setData] = useState<Record<ColumnType, RetrospectiveItem[]>>({
+	const [data, setData] = useState<Record<RetrospectiveItemType, RetroItem[]>>({
 		wentWell: [],
 		toImprove: [],
 		actionItems: [],
@@ -85,7 +85,7 @@ export default function SprintRetrospectivePage() {
 	}, [sprintId, fetchData]);
 
 	const handleAddItem = useCallback(
-		async (type: ColumnType, content: string) => {
+		async (type: RetrospectiveItemType, content: string) => {
 			try {
 				const response = await sprintService.addRetrospectiveItem(TODO, {
 					sprintId,
@@ -112,8 +112,9 @@ export default function SprintRetrospectivePage() {
 		async (result: DropResult) => {
 			if (!result.destination) return;
 
-			const sourceType = result.source.droppableId as ColumnType;
-			const destinationType = result.destination.droppableId as ColumnType;
+			const sourceType = result.source.droppableId as RetrospectiveItemType;
+			const destinationType = result.destination
+				.droppableId as RetrospectiveItemType;
 			const sourceIndex = result.source.index;
 			const destinationIndex = result.destination.index;
 

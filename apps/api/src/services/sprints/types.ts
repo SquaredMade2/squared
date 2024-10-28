@@ -1,4 +1,4 @@
-import type { RetrospectiveItem, Sprint, Task } from "@squared/db";
+import type { RetrospectiveItemType, Sprint, Task } from "@squared/db";
 
 export type NextSprintPayload = {
 	teamId: string;
@@ -7,9 +7,6 @@ export type NextSprintPayload = {
 		name: string;
 	};
 };
-
-export type RetrospectiveItemType = "wentWell" | "toImprove" | "actionItems";
-
 export type AddRetrospectivePayload = {
 	sprintId: string;
 	type: RetrospectiveItemType;
@@ -23,10 +20,16 @@ export type UpdateRetrospectiveItemPayload = {
 	sprintId: string;
 };
 
+export type RetroItemReturn = {
+	id: string;
+	content: string;
+	type: RetrospectiveItemType;
+};
+
 export type RetrospectiveData = {
-	wentWell: RetrospectiveItem[];
-	toImprove: RetrospectiveItem[];
-	actionItems: RetrospectiveItem[];
+	wentWell: RetroItemReturn[];
+	toImprove: RetroItemReturn[];
+	actionItems: RetroItemReturn[];
 };
 
 export interface ErrorResponse {
@@ -56,12 +59,12 @@ export interface SprintRpc {
 		sprintId,
 		type,
 		content,
-	}: AddRetrospectivePayload) => Promise<RetrospectiveItem>;
+	}: AddRetrospectivePayload) => Promise<RetroItemReturn>;
 	updateRetrospectiveItem: ({
 		retrospectiveItemId,
 		type,
 		content,
 		sprintId,
-	}: UpdateRetrospectiveItemPayload) => Promise<RetrospectiveItem>;
+	}: UpdateRetrospectiveItemPayload) => Promise<RetroItemReturn>;
 	getRetrospectiveItems: (sprintId: string) => Promise<RetrospectiveData>;
 }

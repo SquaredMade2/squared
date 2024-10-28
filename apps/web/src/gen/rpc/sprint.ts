@@ -101,14 +101,9 @@ export type AddRetrospectiveItemRequest = {
 };
 
 export type AddRetrospectiveItemResponse = {
-	actionItemsSprintId: string | null;
 	content: string;
-	createdAt: Date;
 	id: string;
-	toImproveSprintId: string | null;
-	type: string;
-	updatedAt: Date;
-	wentWellSprintId: string | null;
+	type: "toImprove" | "wentWell" | "actionItems";
 };
 
 export type UpdateRetrospectiveItemRequest = {
@@ -119,14 +114,9 @@ export type UpdateRetrospectiveItemRequest = {
 };
 
 export type UpdateRetrospectiveItemResponse = {
-	actionItemsSprintId: string | null;
 	content: string;
-	createdAt: Date;
 	id: string;
-	toImproveSprintId: string | null;
-	type: string;
-	updatedAt: Date;
-	wentWellSprintId: string | null;
+	type: "toImprove" | "wentWell" | "actionItems";
 };
 
 export type GetRetrospectiveItemsRequest = {
@@ -135,34 +125,19 @@ export type GetRetrospectiveItemsRequest = {
 
 export type GetRetrospectiveItemsResponse = {
 	actionItems: {
-		actionItemsSprintId: string | null;
 		content: string;
-		createdAt: Date;
 		id: string;
-		toImproveSprintId: string | null;
-		type: string;
-		updatedAt: Date;
-		wentWellSprintId: string | null;
+		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	toImprove: {
-		actionItemsSprintId: string | null;
 		content: string;
-		createdAt: Date;
 		id: string;
-		toImproveSprintId: string | null;
-		type: string;
-		updatedAt: Date;
-		wentWellSprintId: string | null;
+		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	wentWell: {
-		actionItemsSprintId: string | null;
 		content: string;
-		createdAt: Date;
 		id: string;
-		toImproveSprintId: string | null;
-		type: string;
-		updatedAt: Date;
-		wentWellSprintId: string | null;
+		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 };
 

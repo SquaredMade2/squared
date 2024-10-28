@@ -6,8 +6,9 @@ import type {
 	AddRetrospectivePayload,
 	UpdateRetrospectiveItemPayload,
 	RetrospectiveData,
+	RetroItemReturn,
 } from "./types";
-import type { Sprint, Task, RetrospectiveItem } from "@squared/db";
+import type { Sprint, Task } from "@squared/db";
 
 // Define type-safe Zod schemas
 const sprintSchema = createSchema<Sprint>()(
@@ -55,16 +56,11 @@ const taskSchema = createSchema<Task>()(
 	}),
 );
 
-const retrospectiveItemSchema = createSchema<RetrospectiveItem>()(
+const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 	z.object({
 		id: z.string(),
 		content: z.string(),
-		type: z.string(),
-		wentWellSprintId: z.string().nullable(),
-		toImproveSprintId: z.string().nullable(),
-		actionItemsSprintId: z.string().nullable(),
-		createdAt: z.date(),
-		updatedAt: z.date(),
+		type: z.enum(["toImprove", "wentWell", "actionItems"]),
 	}),
 );
 
@@ -110,7 +106,7 @@ export const sprintRpcSchema = {
 				content: z.string(),
 			}),
 		),
-		output: retrospectiveItemSchema,
+		output: retrospectiveItemReturnSchema,
 	},
 	updateRetrospectiveItem: {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
@@ -121,15 +117,15 @@ export const sprintRpcSchema = {
 				sprintId: z.string(),
 			}),
 		),
-		output: retrospectiveItemSchema,
+		output: retrospectiveItemReturnSchema,
 	},
 	getRetrospectiveItems: {
 		input: z.object({ sprintId: z.string() }),
 		output: createSchema<RetrospectiveData>()(
 			z.object({
-				wentWell: z.array(retrospectiveItemSchema),
-				toImprove: z.array(retrospectiveItemSchema),
-				actionItems: z.array(retrospectiveItemSchema),
+				wentWell: z.array(retrospectiveItemReturnSchema),
+				toImprove: z.array(retrospectiveItemReturnSchema),
+				actionItems: z.array(retrospectiveItemReturnSchema),
 			}),
 		),
 	},

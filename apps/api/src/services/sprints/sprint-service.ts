@@ -1,6 +1,6 @@
 import type {
 	PrismaClient,
-	RetrospectiveItem,
+	RetrospectiveItemType,
 	Sprint,
 	Task,
 	Team,
@@ -8,8 +8,8 @@ import type {
 import type {
 	AddRetrospectivePayload,
 	ErrorResponse,
+	RetroItemReturn,
 	RetrospectiveData,
-	RetrospectiveItemType,
 	SprintRpc,
 	SprintServiceResponse,
 	UpdateRetrospectiveItemPayload,
@@ -96,7 +96,7 @@ export class SprintService implements SprintRpc {
 		sprintId,
 		type,
 		content,
-	}: AddRetrospectivePayload): Promise<RetrospectiveItem> {
+	}: AddRetrospectivePayload): Promise<RetroItemReturn> {
 		const sprintRelationField = this.mapTypeToSprintRelationField(
 			type,
 			sprintId,
@@ -109,6 +109,7 @@ export class SprintService implements SprintRpc {
 				type,
 				...sprintRelationField,
 			},
+			select: { id: true, content: true, type: true },
 		});
 	}
 
@@ -117,7 +118,7 @@ export class SprintService implements SprintRpc {
 		type,
 		content,
 		sprintId,
-	}: UpdateRetrospectiveItemPayload): Promise<RetrospectiveItem> {
+	}: UpdateRetrospectiveItemPayload): Promise<RetroItemReturn> {
 		const sprintRelationField = type
 			? this.mapTypeToSprintRelationField(type, sprintId)
 			: {};
@@ -130,6 +131,7 @@ export class SprintService implements SprintRpc {
 				type,
 				...sprintRelationField,
 			},
+			select: { id: true, content: true, type: true },
 		});
 	}
 
