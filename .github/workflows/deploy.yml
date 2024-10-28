@@ -57,7 +57,8 @@ jobs:
           else
             echo "environment=API-Staging" >> $GITHUB_OUTPUT
             echo "ecr_repository=squared-api-staging" >> $GITHUB_OUTPUT
-            
+          fi 
+          
       - name: Debug Branch
         run: echo "Current Branch = ${GITHUB_REF}"
 
