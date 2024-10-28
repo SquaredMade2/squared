@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import type { Sprint, Task, Team, Workspace } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
+import { SprintService } from "@/gen/rpc/sprint";
+import context from "@squared/context";
 
 export function useSprints() {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
@@ -14,13 +16,12 @@ export function useSprints() {
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
 	const { getWorkspace } = useWorkspaceStore((state) => state);
-	const {
-		getAllTeams,
-		getSprints,
-		getSprintTasks,
-		setCurrentSprint,
-		currentSprint,
-	} = useTeamStore((state) => state);
+	const { getAllTeams, setCurrentSprint, currentSprint } = useTeamStore(
+		(state) => state,
+	);
+	const { getSprints, getSprintTasks } = new SprintService(
+		`${process.env.NEXT_PUBLIC_SERVER_URL}/rpc/sprint`,
+	);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -46,7 +47,9 @@ export function useSprints() {
 				}
 				setTeam(foundTeam);
 
-				const sprints = await getSprints(foundTeam.id);
+				const sprints = await getSprints(context.TODO, {
+					teamId: foundTeam.id,
+				});
 				if (!sprints.length) {
 					throw new Error("No sprints found");
 				}
@@ -58,7 +61,9 @@ export function useSprints() {
 				if (!foundSprint) {
 					throw new Error("No active sprint found");
 				}
-				const tasks = await getSprintTasks(foundTeam.id, foundSprint.id);
+				const tasks = await getSprintTasks(context.TODO, {
+					sprintId: foundSprint.id,
+				});
 				setSprintTasks(tasks);
 				setCurrentSprint(foundSprint);
 
