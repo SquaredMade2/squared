@@ -17,7 +17,7 @@ export default {
 				},
 			],
 			requestBody: {
-				description: "GitHub webhook payload",
+				description: "The JSON payload sent by GitHub webhooks containing event data.",
 				required: true,
 				content: {
 					"application/json": {
