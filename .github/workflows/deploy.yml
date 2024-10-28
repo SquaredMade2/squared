@@ -4,24 +4,17 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Adds the manual trigger
-
-env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-  ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-  ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
-  CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+      - develop
+      - deploy-Develop-API
+  workflow_dispatch:
 
 jobs:
   checks:
     name: Check For Changes
     runs-on: ubuntu-latest
-    environment: API-Production
     outputs:
       changed-app: ${{ steps.changed-app.outputs.result }}
-    if: ${{ github.event_name != 'workflow_dispatch' }} # Skip this job if manually triggered
+    if: ${{ github.event_name != 'workflow_dispatch' }} 
 
     steps:
       - name: Checkout
@@ -37,13 +30,13 @@ jobs:
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=result::$content"
+          echo "result=$content" >> $GITHUB_OUTPUT
 
       - name: Changed app?
         id: changed-app
         if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
         run: |
-          echo "::set-output name=result::true"
+          echo "result=true" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy
@@ -54,6 +47,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set environment
+        id: set-env
+        run: |
+          if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "ecr_repository=squared-api-production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=API-Staging" >> $GITHUB_OUTPUT
+            echo "ecr_repository=squared-api-staging" >> $GITHUB_OUTPUT
+          fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -71,7 +75,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-          ECR_REPOSITORY: squared-api
+          ECR_REPOSITORY: ${{ steps.set-env.outputs.ecr_repository }}
         run: |
           docker build -f apps/api/Dockerfile -t api:latest .
           docker tag api:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
