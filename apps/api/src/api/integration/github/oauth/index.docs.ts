@@ -4,7 +4,7 @@ export default {
 			tags: ["Integration"],
 			summary: "Handles GitHub OAuth callback and user database update.",
 			description:
-				"Exchanges the GitHub authorization code for an access token that is used to grab Github username, updates the user's GitHub username in the database, and redirects to the GitHub App installation page.",
+				"Exchanges the GitHub authorization code for an access token. This access token is used to retrieve the user's GitHub username, which is then updated in the database. Finally, the user is redirected to the GitHub App installation page.",
 			parameters: [
 				{
 					in: "query",
