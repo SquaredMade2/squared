@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import {
 	Tooltip,
 	TooltipContent,
@@ -21,10 +21,7 @@ export const TaskSidebarTopRow = ({
 	const title = task.title;
 
 	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${workspaceUrl}/task/${identifier}/${formatUrl(title)}`;
-	const gitBranchName = `
-			${sanitizeBranchName(
-				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
-			)}`;
+	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
 	const copyUrl = async (): Promise<void> => {
 		await window.navigator.clipboard.writeText(TaskUrl);

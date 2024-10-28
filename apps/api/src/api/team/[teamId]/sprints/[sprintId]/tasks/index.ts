@@ -1,5 +1,7 @@
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import type { Sprint, Status, Task } from "@squared/db";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	teamId: string;
@@ -10,14 +12,63 @@ type UpdateSprintTasksBody = {
 	type: "add" | "remove";
 };
 
+const logger = createCustomLogger("sprints");
+
 export function createRoute(): Route<Params> {
 	return {
+		GET: async (res, { teamId, sprintId }): Promise<APIResponse<Task[]>> => {
+			try {
+				logger.info("Fetching tasks for sprint: %s", sprintId);
+				const team = await prisma.team.findUnique({
+					where: { id: teamId },
+				});
+
+				if (!team) {
+					res.status(404);
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive",
+					};
+				}
+
+				if (!team.sprintsEnabled) {
+					res.status(400);
+					return {
+						data: null,
+						message: "Sprints are not enabled for this team",
+						variant: "destructive",
+					};
+				}
+
+				const tasks = await prisma.task.findMany({
+					where: {
+						teamId,
+						sprintId,
+					},
+				});
+				return {
+					data: tasks,
+					message: `Successfully fetched ${tasks.length} tasks`,
+					variant: "default",
+				};
+			} catch (error) {
+				logger.error("Error fetching sprints: %0", error);
+				res.status(500);
+				return {
+					data: null,
+					message: "Internal server error",
+					variant: "destructive",
+				};
+			}
+		},
 		PUT: async (
 			res,
 			{ teamId, sprintId },
 			body: UpdateSprintTasksBody,
 		): Promise<APIResponse<boolean>> => {
 			try {
+				logger.info("Updating tasks for sprint: %s", sprintId);
 				const team = await prisma.team.findUnique({
 					where: { id: teamId },
 				});
@@ -84,9 +135,12 @@ export function createRoute(): Route<Params> {
 								sprintId: null,
 							},
 						});
-						const currentSprint = await prisma.sprint.findFirst({
+						const currentSprint = await prisma.sprint.update({
 							where: {
 								id: sprintId,
+							},
+							data: {
+								status: "COMPLETED",
 							},
 						});
 
@@ -98,13 +152,76 @@ export function createRoute(): Route<Params> {
 					}
 				}
 			} catch (error) {
-				console.error("Error fetching sprints:", error);
+				logger.error("Error fetching sprints: %0", error);
 				res.status(500);
 				return {
 					data: null,
 					message: "Internal server error",
 					variant: "destructive",
 				};
+			}
+		},
+		DELETE: async (res, { teamId, sprintId }): Promise<APIResponse<Sprint>> => {
+			try {
+				logger.info("Ending sprint: %s", sprintId);
+				const team = await prisma.team.findUnique({
+					where: { id: teamId },
+				});
+
+				if (!team) {
+					res.status(404);
+					return {
+						data: null,
+						message: "Team not found",
+						variant: "destructive",
+					};
+				}
+
+				if (!team.sprintsEnabled) {
+					res.status(400);
+					return {
+						data: null,
+						message: "Sprints are not enabled for this team",
+						variant: "destructive",
+					};
+				}
+
+				const unfinishedStatuses: Status[] = [
+					"backlog",
+					"todo",
+					"inProgress",
+					"inReview",
+				];
+
+				await prisma.task.updateMany({
+					where: {
+						teamId,
+						sprintId,
+						status: {
+							in: unfinishedStatuses,
+						},
+					},
+					data: {
+						sprintId: null,
+					},
+				});
+				const updatedSprint = await prisma.sprint.update({
+					where: {
+						id: sprintId,
+					},
+					data: {
+						status: "COMPLETED",
+					},
+				});
+				return {
+					data: updatedSprint,
+					message: "Successfully ended the sprint",
+					variant: "default",
+				};
+			} catch (error) {
+				logger.error("Error updating sprint: %0", error);
+				res.status(500);
+				throw new Error("Internal server error");
 			}
 		},
 	};

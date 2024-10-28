@@ -1,11 +1,15 @@
 import { Link } from "next-view-transitions";
 import SquaredLogoDark from "./SVG/squared-logo-dark";
+import { cn } from "@/lib/utils";
 
-export const Logo = () => {
+export const Logo = ({ className }: { className?: string }) => {
 	return (
 		<Link
 			href="/"
-			className="font-normal flex space-x-2 items-center text-sm mr-4 justify-center text-black px-2 py-1 relative z-20"
+			className={cn(
+				"font-normal flex space-x-2 items-center text-sm mr-4 justify-center text-black px-2 py-1 relative z-20",
+				className,
+			)}
 		>
 			<SquaredLogoDark />
 

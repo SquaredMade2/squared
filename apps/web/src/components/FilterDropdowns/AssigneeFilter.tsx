@@ -10,7 +10,7 @@ import {
 	CommandGroup,
 } from "@/components/ui/command";
 import { useFilterStore, useUserStore } from "@/store";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import { Check, UserSearch } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";

@@ -1,4 +1,4 @@
-import type { User, Workspace } from "@repo/db";
+import type { User, Workspace } from "@squared/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "..";

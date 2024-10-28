@@ -298,7 +298,7 @@ model Workspace {
   User                  User[]
   Tasks                 Task[]
   notifications         Notification[]
-  WorkspaceRepositories WorkspaceRepositories[] 
+  WorkspaceRepositories WorkspaceRepositories[]
 }
 
 model UserWorkspace {
@@ -331,20 +331,20 @@ model UniversalTokenLink {
 }
 
 model GithubRepoInfo {
-  id          String   @id @default(uuid())
-  repoName    String   @unique @default("")
-  owner       String   @default("")
+  id       String @id @default(uuid())
+  repoName String @unique @default("")
+  owner    String @default("")
 
-  branches    Branch[]  
+  branches      Branch[]
   WorkspaceRepo WorkspaceRepositories[]
 }
 
 model WorkspaceRepositories {
-  id          String            @id @default(uuid())
+  id          String @id @default(uuid())
   workspaceId String
   repoId      String
 
-  Workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   GitHubRepoInfo GithubRepoInfo @relation(fields: [repoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([workspaceId, repoId])
@@ -361,18 +361,34 @@ model Project {
 }
 
 model Sprint {
-  id          String       @id @default(uuid())
+  id          String              @id @default(uuid())
   name        String
   startDate   DateTime
   endDate     DateTime
   status      SprintStatus
   teamId      String
-  wentWell    String[]
-  toImprove   String[]
-  actionItems String[]
+  wentWell    RetrospectiveItem[] @relation("WentWell")
+  toImprove   RetrospectiveItem[] @relation("ToImprove")
+  actionItems RetrospectiveItem[] @relation("ActionItems")
 
   Team  Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   Tasks Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RetrospectiveItem {
+  id      String @id @default(uuid())
+  content String
+  type    String
+
+  wentWellSprint      Sprint? @relation("WentWell", fields: [wentWellSprintId], references: [id])
+  wentWellSprintId    String?
+  toImproveSprint     Sprint? @relation("ToImprove", fields: [toImproveSprintId], references: [id])
+  toImproveSprintId   String?
+  actionItemsSprint   Sprint? @relation("ActionItems", fields: [actionItemsSprintId], references: [id])
+  actionItemsSprintId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

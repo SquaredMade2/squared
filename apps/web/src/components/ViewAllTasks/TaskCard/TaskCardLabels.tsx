@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import type { TaskCardLabelsProps } from "./interfaces";
 import LabelBadge from "@/components/LabelBadges";
 import { cn } from "@/utils/cn";
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 
 export const LabelColor = ({ label }: { label: Label }) => {
 	const { color } = label;

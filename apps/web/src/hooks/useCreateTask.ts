@@ -6,17 +6,7 @@ import {
 	useTaskStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import type { Priority, Status, Task } from "@repo/db";
-
-interface CreateTaskInput {
-	title: string;
-	description?: string;
-	status?: Status;
-	priority?: Priority;
-	labels?: string[];
-	dueDate?: Date | null;
-	effortEstimate?: number | null;
-}
+import type { Task } from "@squared/db";
 
 export const useCreateTask = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +18,7 @@ export const useCreateTask = () => {
 	);
 	const { addTask } = useTaskStore((state) => state);
 
-	const createTask = async (input: CreateTaskInput) => {
+	const createTask = async (input: Partial<Task>) => {
 		setIsLoading(true);
 		setError(null);
 
@@ -44,12 +34,13 @@ export const useCreateTask = () => {
 			}
 
 			const { transformedInput: transformedTitle } = transformingMentionInputs(
-				input.title,
+				input.title ?? "",
 			);
 			const { transformedInput: transformedDescriptionInput } =
 				transformingMentionInputs(input.description ?? "");
 
 			const newTask: Partial<Task> = {
+				...input,
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,

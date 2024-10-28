@@ -1,15 +1,19 @@
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	userId: string;
 };
 
+const logger = createCustomLogger("user");
+
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { userId }): Promise<APIResponse<User>> => {
 			try {
+				logger.info("Finding user by ID: %s", userId);
 				const user: User | null = await prisma.user.findUnique({
 					where: { id: userId },
 				});
@@ -27,7 +31,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (err) {
-				console.error("Error finding user:", err);
+				logger.error("Error finding user: %0", err);
 				res.status(500);
 				return {
 					data: null,
@@ -38,6 +42,7 @@ export function createRoute(): Route<Params> {
 		},
 		PUT: async (res, { userId }, body): Promise<APIResponse<User>> => {
 			try {
+				logger.info("Updating user by ID: %s", userId);
 				const user: User | null = await prisma.user.update({
 					where: { id: userId },
 					data: body,
@@ -55,7 +60,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (err) {
-				console.error("Error updating user:", err);
+				logger.error("Error updating user: %0", err);
 				res.status(500);
 				return {
 					data: null,
@@ -66,6 +71,7 @@ export function createRoute(): Route<Params> {
 		},
 		POST: async (res, { userId }, body): Promise<APIResponse<User>> => {
 			try {
+				logger.info("Creating new user by ID: %s", userId);
 				const ifUserExists: User | null = await prisma.user.findUnique({
 					where: { id: userId },
 				});
@@ -99,7 +105,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (err) {
-				console.error("Error while creating new user:", err);
+				logger.error("Error while creating new user: %0", err);
 				res.status(500);
 				return {
 					data: null,
@@ -110,6 +116,7 @@ export function createRoute(): Route<Params> {
 		},
 		DELETE: async (res, { userId }): Promise<APIResponse<User>> => {
 			try {
+				logger.info("Deleting user by ID: %s", userId);
 				const user = await prisma.user.delete({
 					where: { id: userId },
 				});
@@ -129,7 +136,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (err) {
-				console.error("Error while creating new user", err);
+				logger.error("Error while creating new user: %0", err);
 				res.status(500);
 				return {
 					data: null,

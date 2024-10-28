@@ -1,9 +1,14 @@
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import type { TaskColumnTitleProps } from "./interfaces";
 import { cn } from "@/utils/cn";
-import { useModalStore, useUserStore, useWorkspaceStore } from "@/store";
+import {
+	useModalStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { useViewStore } from "@/store";
-import type { Priority, Status } from "@repo/db";
+import type { Priority, Status } from "@squared/db";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,
@@ -15,6 +20,7 @@ import { PriorityIcon, StatusIcon } from "../Icons";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { LabelColor } from "./TaskCard/TaskCardLabels";
+import { usePathname } from "next/navigation";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -22,13 +28,14 @@ const TaskColumnTitle = ({
 	title,
 	numberOfTasks,
 	setShowTasks,
-	sprintId,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { currentSprint } = useTeamStore((state) => state);
+	const path = usePathname();
 	const assignee = users.find((u) => u.id === title);
 	const label = currentWorkspace?.Labels.find((l) => l.id === title);
 
@@ -69,8 +76,11 @@ const TaskColumnTitle = ({
 	})();
 
 	const handleClick = (): void => {
+		setNewIssueData({
+			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
+			[key]: title,
+		});
 		setShowNewIssue(true);
-		setNewIssueData({ sprintId: sprintId ?? null, [key]: title });
 	};
 
 	return (

@@ -70,6 +70,10 @@
       "import": "./src/hover-card/index.ts",
       "require": "./src/hover-card/index.ts"
     },
+    "./icons": {
+      "import": "./src/icons/components/index.ts",
+      "require": "./src/icons/components/index.ts"
+    },
     "./id": {
       "import": "./src/id/index.ts",
       "require": "./src/id/index.ts"
@@ -192,9 +196,10 @@
     }
   },
   "scripts": {
+    "build": "pnpm --prefix ./src/icons run build",
     "build:stories": "storybook build",
     "check-types": "tsc --skipLibCheck --noEmit",
-    "dev": "pnpm storybook",
+    "sb": "pnpm storybook",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format:write": "biome format --write .",
@@ -207,9 +212,14 @@
     "@radix-ui/react-dialog": "^1.1.1",
     "aria-hidden": "^1.2.4",
     "cross-env": "^7.0.3",
+    "date-fns": "^4.0.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^11.0.0",
+    "lucide-react": "^0.447.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-remove-scroll": "2.6.0",
+    "ts-node": "^10.9.2",
     "tslib": "^2.7.0"
   },
   "devDependencies": {

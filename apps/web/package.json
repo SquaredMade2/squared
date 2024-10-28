@@ -19,7 +19,9 @@
 		"prestart": "pnpm i",
 		"reset": "rimraf node_modules pnpm-lock.yaml",
 		"start": "next start",
-		"test": "jest --ci --passWithNoTests"
+		"test": "jest --verbose=false",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage"
 	},
 	"dependencies": {
 		"@hello-pangea/dnd": "^17.0.0",
@@ -42,6 +44,7 @@
 		"react-hook-form": "^7.53.0",
 		"react-mentions": "^4.4.10",
 		"recharts": "^2.12.7",
+		"socket.io-client": "^4.8.0",
 		"tailwind-merge": "^2.5.2",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.5.4",
@@ -50,9 +53,11 @@
 		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
-		"@repo/db": "workspace:*",
+		"@jest/globals": "^29.7.0",
+		"@squared/db": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
 		"@types/react": "^18.3.1",
 		"@types/react-dom": "^18.3.1",

@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { persist } from "zustand/middleware";
 import type {
 	TeamState,
@@ -7,8 +7,10 @@ import type {
 	TeamResponse,
 	SprintResponse,
 	InitializeSprintsBody,
+	RetrospectiveItemResponse,
+	RetrospectiveData,
 } from "./interfaces";
-import type { Sprint, Team } from "@repo/db";
+import type { RetrospectiveItem, Sprint, Task, Team } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";
@@ -16,8 +18,6 @@ export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/team/${path}`;
-const sprintApiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVER}/api/sprint/${path}`;
 
 export const createTeamStore = (
 	initState: TeamState = {
@@ -67,10 +67,10 @@ export const createTeamStore = (
 					}
 
 					try {
-						const response: { data: ApiReturnType<Team> } = await axios.get(
-							apiString(teamId),
-						);
-						return { ...response.data, team: response.data.data };
+						const { data: response }: { data: ApiReturnType<Team> } =
+							await axios.get(apiString(teamId));
+						const { data: team, ...rest } = response;
+						return { ...rest, team };
 					} catch (error) {
 						return {
 							team: null,
@@ -128,11 +128,11 @@ export const createTeamStore = (
 						console.error("Error in deleteTeam:", error);
 					}
 				},
-				getAllTeams: async (workspaceId: string): Promise<Team[]> => {
+				getAllTeams: async (userId: string): Promise<Team[]> => {
 					try {
 						const { data: response }: { data: ApiReturnType<Team[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/team`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/team`,
 							);
 						const { data: teams } = response;
 						if (!teams) {
@@ -203,32 +203,33 @@ export const createTeamStore = (
 					}
 				},
 				updateSprint: async (
+					teamId: string,
 					sprintId: string,
 					sprint: Partial<Sprint>,
 				): Promise<SprintResponse> => {
 					try {
-						const response: { data: ApiReturnType<Sprint> } = await axios.put(
-							sprintApiString(sprintId),
+						const { data }: { data: ApiReturnType<Sprint> } = await axios.put(
+							`${apiString(teamId)}/sprints/${sprintId}`,
 							sprint,
 						);
-						const updatedSprint = response.data.data;
+						const { data: updatedSprint, message, variant } = data;
 						if (!updatedSprint) {
 							return {
 								sprint: null,
-								message: response.data.message,
-								variant: response.data.variant,
+								message,
+								variant,
 							};
 						}
 						set((state) => ({
 							sprints: state.sprints.map((s) =>
-								s.id === sprint.id ? updatedSprint : s,
+								s.id === sprintId ? { ...s, ...updatedSprint } : s,
 							),
 						}));
 
 						return {
 							sprint: updatedSprint,
-							message: response.data.message,
-							variant: response.data.variant,
+							message,
+							variant,
 						};
 					} catch (error) {
 						return {
@@ -240,6 +241,191 @@ export const createTeamStore = (
 				},
 				setCurrentSprint: (sprint: Sprint): void => {
 					set({ currentSprint: sprint });
+				},
+				startNextSprint: async (
+					teamId: string,
+					movedTasks: string[],
+					sprintData?: Partial<Sprint>,
+				): Promise<SprintResponse> => {
+					try {
+						const { data }: { data: ApiReturnType<Sprint> } = await axios.put(
+							`${apiString(teamId)}/sprints/next`,
+							{ movedTasks, sprintData },
+						);
+						const { data: newSprint, message, variant } = data;
+
+						if (!newSprint) {
+							return {
+								sprint: null,
+								message,
+								variant,
+							};
+						}
+						const existingSprint = get().sprints.findIndex(
+							(s) => s.id === newSprint.id,
+						);
+
+						set((state) => {
+							if (existingSprint > -1) {
+								state.sprints[existingSprint] = newSprint;
+								return { sprints: state.sprints };
+							}
+							return { sprints: [...state.sprints, newSprint] };
+						});
+
+						return {
+							sprint: newSprint,
+							message,
+							variant,
+						};
+					} catch (error) {
+						return {
+							sprint: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
+				getSprintTasks: async (
+					teamId: string,
+					sprintId: string,
+				): Promise<Task[]> => {
+					return axios
+						.get(apiString(`${teamId}/sprints/${sprintId}/tasks`))
+						.then(
+							(response: { data: ApiReturnType<Task[]> }) =>
+								response.data.data ?? [],
+						);
+				},
+				endSprint: async (
+					teamId: string,
+					sprintId: string,
+				): Promise<SprintResponse> => {
+					try {
+						const { data }: { data: ApiReturnType<Sprint> } =
+							await axios.delete(
+								`${apiString(teamId)}/sprints/${sprintId}/tasks`,
+							);
+						const { data: updatedSprint, message, variant } = data;
+						if (!updatedSprint) {
+							return {
+								sprint: null,
+								message,
+								variant,
+							};
+						}
+						set((state) => ({
+							sprints: state.sprints.map((s) =>
+								s.id === sprintId ? updatedSprint : s,
+							),
+						}));
+
+						return {
+							sprint: updatedSprint,
+							message,
+							variant,
+						};
+					} catch (error) {
+						return {
+							sprint: null,
+							message: error instanceof Error ? error.message : "Unknown error",
+							variant: "destructive",
+						};
+					}
+				},
+				addRetrospectiveItem: async (
+					sprintId,
+					type,
+					content,
+				): Promise<RetrospectiveItemResponse> => {
+					try {
+						const { currentTeam } = get();
+						const { data }: { data: ApiReturnType<RetrospectiveItem> } =
+							await axios.post(
+								apiString(
+									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
+								),
+								{
+									type,
+									content,
+								},
+							);
+						return {
+							item: data.data,
+							message: data.message,
+							variant: data.variant,
+						};
+					} catch (error) {
+						console.error("Error in addRetrospectiveItem:", error);
+						if (isAxiosError(error)) {
+							return {
+								item: null,
+								message: error.response?.data.message || "An error occurred",
+								variant: "destructive",
+							};
+						}
+						throw error;
+					}
+				},
+				updateRetrospectiveItemType: async (
+					sprintId,
+					itemId,
+					type,
+				): Promise<RetrospectiveItemResponse> => {
+					try {
+						const { currentTeam } = get();
+						const { data }: { data: ApiReturnType<RetrospectiveItem> } =
+							await axios.put(
+								apiString(
+									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
+								),
+								{
+									itemId,
+									type,
+								},
+							);
+						return {
+							item: data.data,
+							message: data.message,
+							variant: data.variant,
+						};
+					} catch (error) {
+						console.error("Error in updateRetrospectiveItem:", error);
+						if (isAxiosError(error)) {
+							return {
+								item: null,
+								message: error.response?.data.message || "An error occurred",
+								variant: "destructive",
+							};
+						}
+						throw error;
+					}
+				},
+				getRetrospectiveItems: async (sprintId): Promise<RetrospectiveData> => {
+					try {
+						const { currentTeam } = get();
+						const { data }: { data: ApiReturnType<RetrospectiveData> } =
+							await axios.get(
+								apiString(
+									`${currentTeam?.id}/sprints/${sprintId}/retrospective`,
+								),
+							);
+						if (!data.data) {
+							return {
+								wentWell: [],
+								toImprove: [],
+								actionItems: [],
+							};
+						}
+						return data.data;
+					} catch (error) {
+						console.error("Error in getRetrospectiveItems:", error);
+						return {
+							wentWell: [],
+							toImprove: [],
+							actionItems: [],
+						};
+					}
 				},
 			}),
 			{

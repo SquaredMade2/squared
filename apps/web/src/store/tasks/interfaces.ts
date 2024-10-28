@@ -1,4 +1,4 @@
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 
 export type TaskState = {

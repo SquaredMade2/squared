@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import { signOut } from "next-auth/react";
 export * from "./interfaces";
