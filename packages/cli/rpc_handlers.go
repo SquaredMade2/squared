@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -61,7 +61,7 @@ func installService(cmd *cobra.Command, args []string) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("Error reading service information: %v\n", err)
 		return
@@ -144,7 +144,7 @@ func listServices(cmd *cobra.Command, args []string) {
 
 func loadServices() ([]Service, error) {
 	configPath := filepath.Join(os.Getenv("HOME"), ".squared", "services.json")
-	data, err := ioutil.ReadFile(configPath)
+	data, err := os.ReadFile(configPath)
 	if os.IsNotExist(err) {
 		return []Service{}, nil
 	} else if err != nil {
@@ -172,7 +172,7 @@ func saveServices(services []Service) error {
 		return err
 	}
 
-	return ioutil.WriteFile(configPath, data, 0644)
+	return os.WriteFile(configPath, data, 0644)
 }
 
 func generateTypeScriptFile(service Service) {
