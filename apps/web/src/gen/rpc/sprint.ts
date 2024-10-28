@@ -5,57 +5,49 @@ import type { Context } from "@squared/context";
 export type GetsprintsRequest = { teamId: string };
 
 export type GetsprintsResponse = {
+	status: "PLANNED" | "ACTIVE" | "COMPLETED";
+	teamId: string;
+	createdAt: Date;
 	updatedAt: Date;
 	id: string;
 	name: string;
 	startDate: Date;
 	endDate: Date;
-	status: "PLANNED" | "ACTIVE" | "COMPLETED";
-	teamId: string;
-	createdAt: Date;
 }[];
 
 export type StartnextsprintRequest = {
-	teamId: string;
 	movedTasks: string[];
-	sprintData: { name: string } | undefined;
+	sprintData?: { name: string };
+	teamId: string;
 };
 
 export type StartnextsprintResponse =
-	| { message: string; variant: "destructive"; status: number }
+	| { status: number; message: string; variant: "destructive" }
 	| {
 			message: string;
 			variant: "default";
 			data: {
-				status: "PLANNED" | "ACTIVE" | "COMPLETED";
-				teamId: string;
-				createdAt: Date;
-				updatedAt: Date;
 				id: string;
 				name: string;
 				startDate: Date;
 				endDate: Date;
+				status: "PLANNED" | "ACTIVE" | "COMPLETED";
+				teamId: string;
+				createdAt: Date;
+				updatedAt: Date;
 			};
 	  };
 
 export type GetsprinttasksRequest = { sprintId: string };
 
 export type GetsprinttasksResponse = {
-	teamId: string;
-	identifier: string;
-	dueDate: Date | null;
-	effortEstimate: number | null;
-	parentId: string | null;
-	workspaceId: string;
-	title: string;
-	description: string | null;
 	sprintId: string | null;
-	updatedAt: Date;
+	authorId: string;
+	effortEstimate: number | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
-	assigneeId: string | null;
-	assigneeName: string | null;
-	labels: string[];
-	id: string;
+	dateCreated: Date;
+	parentId: string | null;
+	deleted: boolean;
 	status:
 		| "backlog"
 		| "todo"
@@ -64,15 +56,22 @@ export type GetsprinttasksResponse = {
 		| "done"
 		| "canceled"
 		| "archived";
-	authorId: string;
-	dateCreated: Date;
-	deleted: boolean;
+	teamId: string;
+	updatedAt: Date;
+	assigneeId: string | null;
+	labels: string[];
+	workspaceId: string;
+	title: string;
+	description: string | null;
+	identifier: string;
+	assigneeName: string | null;
+	id: string;
+	dueDate: Date | null;
 }[];
 
 export type EndsprintRequest = { sprintId: string };
 
 export type EndsprintResponse = {
-	status: "PLANNED" | "ACTIVE" | "COMPLETED";
 	teamId: string;
 	createdAt: Date;
 	updatedAt: Date;
@@ -80,6 +79,7 @@ export type EndsprintResponse = {
 	name: string;
 	startDate: Date;
 	endDate: Date;
+	status: "PLANNED" | "ACTIVE" | "COMPLETED";
 };
 
 export type AddretrospectiveitemRequest = {
@@ -89,25 +89,24 @@ export type AddretrospectiveitemRequest = {
 };
 
 export type AddretrospectiveitemResponse = {
-	toImproveSprintId: string | null;
-	actionItemsSprintId: string | null;
-	createdAt: Date;
 	updatedAt: Date;
 	id: string;
 	content: string;
 	type: string;
 	wentWellSprintId: string | null;
+	toImproveSprintId: string | null;
+	actionItemsSprintId: string | null;
+	createdAt: Date;
 };
 
 export type UpdateretrospectiveitemRequest = {
-	type: "wentWell" | "toImprove" | "actionItems" | undefined;
-	content: string | undefined;
-	sprintId: string;
 	retrospectiveItemId: string;
+	type?: "wentWell" | "toImprove" | "actionItems";
+	content?: string;
+	sprintId: string;
 };
 
 export type UpdateretrospectiveitemResponse = {
-	updatedAt: Date;
 	id: string;
 	content: string;
 	type: string;
@@ -115,22 +114,24 @@ export type UpdateretrospectiveitemResponse = {
 	toImproveSprintId: string | null;
 	actionItemsSprintId: string | null;
 	createdAt: Date;
+	updatedAt: Date;
 };
 
 export type GetretrospectiveitemsRequest = { sprintId: string };
 
 export type GetretrospectiveitemsResponse = {
 	wentWell: {
-		wentWellSprintId: string | null;
-		toImproveSprintId: string | null;
-		actionItemsSprintId: string | null;
 		createdAt: Date;
 		updatedAt: Date;
 		id: string;
 		content: string;
 		type: string;
+		wentWellSprintId: string | null;
+		toImproveSprintId: string | null;
+		actionItemsSprintId: string | null;
 	}[];
 	toImprove: {
+		updatedAt: Date;
 		id: string;
 		content: string;
 		type: string;
@@ -138,17 +139,16 @@ export type GetretrospectiveitemsResponse = {
 		toImproveSprintId: string | null;
 		actionItemsSprintId: string | null;
 		createdAt: Date;
-		updatedAt: Date;
 	}[];
 	actionItems: {
-		createdAt: Date;
-		updatedAt: Date;
 		id: string;
 		content: string;
 		type: string;
 		wentWellSprintId: string | null;
 		toImproveSprintId: string | null;
 		actionItemsSprintId: string | null;
+		createdAt: Date;
+		updatedAt: Date;
 	}[];
 };
 

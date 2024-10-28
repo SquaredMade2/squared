@@ -255,8 +255,14 @@ func zodToTypeScript(schema ZodSchema) string {
     case "object":
         props := []string{}
         for key, value := range schema.Properties {
-            subType := zodToTypeScript(value)
-            props = append(props, fmt.Sprintf("%s: %s", key, subType))
+            // Check if the property is optional and mark it with a ?
+            propType := zodToTypeScript(value)
+            optionalPrefix := ""
+            if value.Type == "optional" {
+                optionalPrefix = "?"
+                propType = zodToTypeScript(*value.Inner)
+            }
+            props = append(props, fmt.Sprintf("%s%s: %s", key, optionalPrefix, propType))
         }
         if len(props) == 0 {
             return "Record<string, unknown>"

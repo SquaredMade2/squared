@@ -262,6 +262,12 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 			),
 		};
 	}
+	if (schema instanceof z.ZodOptional) {
+		return {
+			type: "optional",
+			inner: serializeZodSchema(schema.unwrap()),
+		};
+	}
 	if (schema instanceof z.ZodArray) {
 		return {
 			type: "array",
