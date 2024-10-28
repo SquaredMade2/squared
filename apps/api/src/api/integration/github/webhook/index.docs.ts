@@ -47,7 +47,7 @@ export default {
 					},
 				},
 				204: {
-					description: "No action taken due to irrelevant event type.",
+					description: "No action taken because the event type is not relevant to the system's needs.",
 					content: {
 						"application/json": {
 							schema: {
