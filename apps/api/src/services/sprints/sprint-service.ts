@@ -28,11 +28,11 @@ interface StartNextSprintInput {
 export class SprintService implements SprintRpc {
 	constructor(private readonly db: PrismaClient) {}
 
-	async getSprints(teamId: string): Promise<Sprint[]> {
+	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
 		return this.db.sprint.findMany({ where: { teamId } });
 	}
 
-	async initializeSprints(teamId: string): Promise<number> {
+	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
 		const team = await this.db.team.findUnique({ where: { id: teamId } });
 
 		if (!team) {
@@ -119,11 +119,11 @@ export class SprintService implements SprintRpc {
 		};
 	}
 
-	async getSprintTasks(sprintId: string): Promise<Task[]> {
+	async getSprintTasks({ sprintId }: { sprintId: string }): Promise<Task[]> {
 		return this.db.task.findMany({ where: { sprintId } });
 	}
 
-	async endSprint(sprintId: string): Promise<Sprint> {
+	async endSprint({ sprintId }: { sprintId: string }): Promise<Sprint> {
 		return this.db.sprint.update({
 			where: { id: sprintId },
 			data: { status: "COMPLETED" },
@@ -173,7 +173,9 @@ export class SprintService implements SprintRpc {
 		});
 	}
 
-	async getRetrospectiveItems(sprintId: string): Promise<RetrospectiveData> {
+	async getRetrospectiveItems({
+		sprintId,
+	}: { sprintId: string }): Promise<RetrospectiveData> {
 		const [wentWell, toImprove, actionItems] = await Promise.all([
 			this.db.retrospectiveItem.findMany({
 				where: { wentWellSprintId: sprintId },

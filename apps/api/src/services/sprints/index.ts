@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createRpcHandler, createSchema } from "@squared/http-rpc";
+import {
+	createRpcHandler,
+	createSchema,
+	createServiceSchema,
+} from "@squared/http-rpc";
 import { SprintService } from "./sprint-service";
 import type {
 	NextSprintPayload,
@@ -7,6 +11,7 @@ import type {
 	UpdateRetrospectiveItemPayload,
 	RetrospectiveData,
 	RetroItemReturn,
+	SprintRpc,
 } from "./types";
 import type { Sprint, Task } from "@squared/db";
 
@@ -64,7 +69,7 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 	}),
 );
 
-export const sprintRpcSchema = {
+export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	getSprints: {
 		input: z.object({ teamId: z.string() }),
 		output: z.array(sprintSchema),
@@ -133,22 +138,22 @@ export const sprintRpcSchema = {
 			}),
 		),
 	},
-};
+});
 
 export type SprintRpcSchema = typeof sprintRpcSchema;
 
-export const createSprintRpcHandler = (sprintService: SprintService) =>
+export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 	createRpcHandler("sprint", sprintRpcSchema, {
-		getSprints: (input) => sprintService.getSprints(input.teamId),
-		initializeSprints: (input) => sprintService.initializeSprints(input.teamId),
+		getSprints: (input) => sprintService.getSprints(input),
+		initializeSprints: (input) => sprintService.initializeSprints(input),
 		startNextSprint: (input) => sprintService.startNextSprint(input),
-		getSprintTasks: (input) => sprintService.getSprintTasks(input.sprintId),
-		endSprint: (input) => sprintService.endSprint(input.sprintId),
+		getSprintTasks: (input) => sprintService.getSprintTasks(input),
+		endSprint: (input) => sprintService.endSprint(input),
 		addRetrospectiveItem: (input) => sprintService.addRetrospectiveItem(input),
 		updateRetrospectiveItem: (input) =>
 			sprintService.updateRetrospectiveItem(input),
 		getRetrospectiveItems: (input) =>
-			sprintService.getRetrospectiveItems(input.sprintId),
+			sprintService.getRetrospectiveItems(input),
 	});
 
 export { SprintService };

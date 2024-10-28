@@ -201,6 +201,18 @@ export function createSchema<T>() {
 	return <S extends SchemaFor<T>>(schema: S) => schema;
 }
 
+export function createServiceSchema<T>() {
+	// Define the structure expected for each method in the schema
+	type ServiceDefinition = {
+		[K in keyof T]: T[K] extends (arg: infer Input) => Promise<infer Output>
+			? { input: z.ZodType<Input>; output: z.ZodType<Output> }
+			: never;
+	};
+
+	// Accept the schema argument and enforce the structure with ServiceDefinition
+	return <S extends ServiceDefinition>(schema: S): S => schema;
+}
+
 export function createRpcHandler<
 	T extends Record<
 		string,

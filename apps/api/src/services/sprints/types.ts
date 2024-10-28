@@ -47,15 +47,15 @@ export interface SuccessResponse<T> {
 export type SprintServiceResponse<T> = ErrorResponse | SuccessResponse<T>;
 
 export interface SprintRpc {
-	getSprints: (teamId: string) => Promise<Sprint[]>;
-	initializeSprints: (teamId: string) => Promise<number>;
+	getSprints: ({ teamId }: { teamId: string }) => Promise<Sprint[]>;
+	initializeSprints: ({ teamId }: { teamId: string }) => Promise<number>;
 	startNextSprint: ({
 		teamId,
 		movedTasks,
 		sprintData,
 	}: NextSprintPayload) => Promise<SprintServiceResponse<Sprint>>;
-	getSprintTasks: (sprintId: string) => Promise<Task[]>;
-	endSprint: (sprintId: string) => Promise<Sprint>;
+	getSprintTasks: ({ sprintId }: { sprintId: string }) => Promise<Task[]>;
+	endSprint: ({ sprintId }: { sprintId: string }) => Promise<Sprint>;
 	addRetrospectiveItem: ({
 		sprintId,
 		type,
@@ -67,5 +67,7 @@ export interface SprintRpc {
 		content,
 		sprintId,
 	}: UpdateRetrospectiveItemPayload) => Promise<RetroItemReturn>;
-	getRetrospectiveItems: (sprintId: string) => Promise<RetrospectiveData>;
+	getRetrospectiveItems: ({
+		sprintId,
+	}: { sprintId: string }) => Promise<RetrospectiveData>;
 }
