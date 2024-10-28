@@ -2,62 +2,69 @@
 import { RPCContextClient } from "@squared/http-rpc-client";
 import type { Context } from "@squared/context";
 
-export type GetSprintsRequest = { teamId: string };
+export type GetSprintsRequest = {
+	teamId: string;
+};
 
 export type GetSprintsResponse = {
-	startDate: Date;
-	endDate: Date;
-	status: "PLANNED" | "ACTIVE" | "COMPLETED";
-	teamId: string;
 	createdAt: Date;
-	updatedAt: Date;
+	endDate: Date;
 	id: string;
 	name: string;
+	startDate: Date;
+	status: "PLANNED" | "ACTIVE" | "COMPLETED";
+	teamId: string;
+	updatedAt: Date;
 }[];
 
 export type StartNextSprintRequest = {
-	sprintData?: { name: string };
-	teamId: string;
 	movedTasks: string[];
+	sprintData?: {
+		name: string;
+	};
+	teamId: string;
 };
 
 export type StartNextSprintResponse =
-	| { status: number; message: string; variant: "destructive" }
+	| {
+			message: string;
+			status: number;
+			variant: "destructive";
+	  }
 	| {
 			data: {
+				createdAt: Date;
+				endDate: Date;
 				id: string;
 				name: string;
 				startDate: Date;
-				endDate: Date;
 				status: "PLANNED" | "ACTIVE" | "COMPLETED";
 				teamId: string;
-				createdAt: Date;
 				updatedAt: Date;
 			};
 			message: string;
 			variant: "default";
 	  };
 
-export type GetSprintTasksRequest = { sprintId: string };
+export type GetSprintTasksRequest = {
+	sprintId: string;
+};
 
 export type GetSprintTasksResponse = {
-	description: string | null;
-	dateCreated: Date;
-	authorId: string;
-	effortEstimate: number | null;
-	workspaceId: string;
-	id: string;
-	sprintId: string | null;
-	updatedAt: Date;
-	assigneeName: string | null;
-	deleted: boolean;
-	teamId: string;
-	dueDate: Date | null;
 	assigneeId: string | null;
-	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	assigneeName: string | null;
+	authorId: string;
+	dateCreated: Date;
+	deleted: boolean;
+	description: string | null;
+	dueDate: Date | null;
+	effortEstimate: number | null;
+	id: string;
+	identifier: string;
 	labels: string[];
 	parentId: string | null;
-	title: string;
+	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId: string | null;
 	status:
 		| "backlog"
 		| "todo"
@@ -66,20 +73,25 @@ export type GetSprintTasksResponse = {
 		| "done"
 		| "canceled"
 		| "archived";
-	identifier: string;
+	teamId: string;
+	title: string;
+	updatedAt: Date;
+	workspaceId: string;
 }[];
 
-export type EndSprintRequest = { sprintId: string };
+export type EndSprintRequest = {
+	sprintId: string;
+};
 
 export type EndSprintResponse = {
-	teamId: string;
 	createdAt: Date;
-	updatedAt: Date;
+	endDate: Date;
 	id: string;
 	name: string;
 	startDate: Date;
-	endDate: Date;
 	status: "PLANNED" | "ACTIVE" | "COMPLETED";
+	teamId: string;
+	updatedAt: Date;
 };
 
 export type AddRetrospectiveItemRequest = {
@@ -89,65 +101,67 @@ export type AddRetrospectiveItemRequest = {
 };
 
 export type AddRetrospectiveItemResponse = {
-	content: string;
-	type: string;
-	wentWellSprintId: string | null;
-	toImproveSprintId: string | null;
 	actionItemsSprintId: string | null;
+	content: string;
 	createdAt: Date;
-	updatedAt: Date;
 	id: string;
+	toImproveSprintId: string | null;
+	type: string;
+	updatedAt: Date;
+	wentWellSprintId: string | null;
 };
 
 export type UpdateRetrospectiveItemRequest = {
-	retrospectiveItemId: string;
-	type?: "wentWell" | "toImprove" | "actionItems";
 	content?: string;
+	retrospectiveItemId: string;
 	sprintId: string;
+	type?: "wentWell" | "toImprove" | "actionItems";
 };
 
 export type UpdateRetrospectiveItemResponse = {
-	content: string;
-	type: string;
-	wentWellSprintId: string | null;
-	toImproveSprintId: string | null;
 	actionItemsSprintId: string | null;
+	content: string;
 	createdAt: Date;
-	updatedAt: Date;
 	id: string;
+	toImproveSprintId: string | null;
+	type: string;
+	updatedAt: Date;
+	wentWellSprintId: string | null;
 };
 
-export type GetRetrospectiveItemsRequest = { sprintId: string };
+export type GetRetrospectiveItemsRequest = {
+	sprintId: string;
+};
 
 export type GetRetrospectiveItemsResponse = {
 	actionItems: {
-		wentWellSprintId: string | null;
-		toImproveSprintId: string | null;
 		actionItemsSprintId: string | null;
+		content: string;
 		createdAt: Date;
-		updatedAt: Date;
 		id: string;
-		content: string;
-		type: string;
-	}[];
-	wentWell: {
-		content: string;
-		type: string;
-		wentWellSprintId: string | null;
 		toImproveSprintId: string | null;
-		actionItemsSprintId: string | null;
-		createdAt: Date;
+		type: string;
 		updatedAt: Date;
-		id: string;
+		wentWellSprintId: string | null;
 	}[];
 	toImprove: {
-		toImproveSprintId: string | null;
 		actionItemsSprintId: string | null;
-		createdAt: Date;
-		updatedAt: Date;
-		id: string;
 		content: string;
+		createdAt: Date;
+		id: string;
+		toImproveSprintId: string | null;
 		type: string;
+		updatedAt: Date;
+		wentWellSprintId: string | null;
+	}[];
+	wentWell: {
+		actionItemsSprintId: string | null;
+		content: string;
+		createdAt: Date;
+		id: string;
+		toImproveSprintId: string | null;
+		type: string;
+		updatedAt: Date;
 		wentWellSprintId: string | null;
 	}[];
 };

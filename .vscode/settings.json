@@ -18,5 +18,8 @@
   },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }
