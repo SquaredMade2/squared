@@ -2,7 +2,7 @@ export default {
 	"/api/integration/github/oauth": {
 		get: {
 			tags: ["Integration"],
-			summary: "Handle GitHub OAuth callback",
+			summary: "Handles GitHub OAuth callback and user database update.",
 			description:
 				"Exchanges the GitHub authorization code for an access token that is used to grab Github username, updates the user's GitHub username in the database, and redirects to the GitHub App installation page.",
 			parameters: [
