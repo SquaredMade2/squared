@@ -16,8 +16,6 @@ import type {
 } from "./types";
 import { addWeeks } from "date-fns";
 
-// Define error response structure
-
 interface StartNextSprintInput {
 	teamId: string;
 	movedTasks: string[];
