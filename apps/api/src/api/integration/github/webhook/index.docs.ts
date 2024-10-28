@@ -13,7 +13,7 @@ export default {
 						type: "string",
 					},
 					required: true,
-					description: "Type of the GitHub event that triggered the webhook.",
+					description: "Specifies the type of GitHub event that triggered the webhook. Common events include push, pull_request, and create.",
 				},
 			],
 			requestBody: {
