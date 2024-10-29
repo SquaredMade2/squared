@@ -18,5 +18,14 @@
   },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "[go.mod]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "[go.sum]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }
