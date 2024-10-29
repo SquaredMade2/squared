@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ActivityStoreProvider } from "./activities";
+// import { ActivityStoreProvider } from "./activities";
 import { AuthStoreProvider } from "./auth";
 import { CommentStoreProvider } from "./comments";
 import { ModalStoreProvider } from "./modals";
@@ -16,28 +16,28 @@ import { FilterStoreProvider } from "./filters";
 // Create the combined provider component
 export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 	return (
-		<ActivityStoreProvider>
-			<AuthStoreProvider>
-				<CommentStoreProvider>
-					<FilterStoreProvider>
-						<ModalStoreProvider>
-							<NotificationStoreProvider>
-								<TaskStoreProvider>
-									<TeamStoreProvider>
-										<UserStoreProvider>
-											<ViewStoreProvider>
-												<WorkspaceStoreProvider>
-													{children}
-												</WorkspaceStoreProvider>
-											</ViewStoreProvider>
-										</UserStoreProvider>
-									</TeamStoreProvider>
-								</TaskStoreProvider>
-							</NotificationStoreProvider>
-						</ModalStoreProvider>
-					</FilterStoreProvider>
-				</CommentStoreProvider>
-			</AuthStoreProvider>
-		</ActivityStoreProvider>
+		// <ActivityStoreProvider>
+		<AuthStoreProvider>
+			<CommentStoreProvider>
+				<FilterStoreProvider>
+					<ModalStoreProvider>
+						<NotificationStoreProvider>
+							<TaskStoreProvider>
+								<TeamStoreProvider>
+									<UserStoreProvider>
+										<ViewStoreProvider>
+											<WorkspaceStoreProvider>
+												{children}
+											</WorkspaceStoreProvider>
+										</ViewStoreProvider>
+									</UserStoreProvider>
+								</TeamStoreProvider>
+							</TaskStoreProvider>
+						</NotificationStoreProvider>
+					</ModalStoreProvider>
+				</FilterStoreProvider>
+			</CommentStoreProvider>
+		</AuthStoreProvider>
+		// </ActivityStoreProvider>
 	);
 };

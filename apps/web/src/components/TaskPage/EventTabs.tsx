@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreatedByInformation, UpdatedByInformation } from ".";
+// import { CreatedByInformation } from ".";
 
 export const EventTabs = () => {
 	return (
@@ -12,8 +12,9 @@ export const EventTabs = () => {
 			</TabsList>
 			<TabsContent value="activity">
 				<div className="flex flex-col bg-card rounded-md text-sm">
-					<CreatedByInformation />
-					<UpdatedByInformation />
+					{/* <CreatedByInformation /> */}
+					{/* <UpdatedByInformation /> */}
+					<div>Task Events will be implemented here</div>
 				</div>
 			</TabsContent>
 			<TabsContent value="comments">
