@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"build:digitalocean": "pnpm install --production=false && pnpm run build && rm -rf node_modules && pnpm install --production --frozen-lockfile",
+		"build:digitalocean": "pnpm install --production=false && pnpm run build && rimraf node_modules && pnpm install --production --frozen-lockfile",
 		"format:write": "biome format --write .",
 		"format:check": "biome format .",
 		"check-types": "tsc --pretty --noEmit",
@@ -19,13 +19,17 @@
 		"prestart": "pnpm i",
 		"reset": "rimraf node_modules pnpm-lock.yaml",
 		"start": "next start",
-		"test": "jest --ci --passWithNoTests"
+		"test": "jest --verbose=false",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage"
 	},
 	"dependencies": {
 		"@hello-pangea/dnd": "^17.0.0",
 		"@hookform/resolvers": "^3.9.0",
 		"@repo/ui": "workspace:*",
 		"@sentry/nextjs": "^8.27.0",
+		"@squared/context": "workspace:*",
+		"@squared/http-rpc-client": "workspace:*",
 		"@squared/fonts": "workspace:*",
 		"@tanstack/react-table": "^8.20.5",
 		"axios": "^1.7.5",
@@ -51,9 +55,11 @@
 		"zustand": "^4.5.5"
 	},
 	"devDependencies": {
+		"@jest/globals": "^29.7.0",
 		"@squared/db": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
 		"@types/react": "^18.3.1",
 		"@types/react-dom": "^18.3.1",
