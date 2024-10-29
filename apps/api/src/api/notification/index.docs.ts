@@ -49,7 +49,7 @@ export default {
 						},
 					},
 				},
-				404: {
+				400: {
 					description:
 						"Invalid request body. Expected a non-empty array of notifications.",
 					content: {

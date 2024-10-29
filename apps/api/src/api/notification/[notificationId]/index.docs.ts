@@ -37,7 +37,7 @@ export default {
 						},
 					},
 				},
-				404: {
+				400: {
 					description: "Invalid notification data",
 					content: {
 						"application/json": {
@@ -121,7 +121,7 @@ export default {
 						},
 					},
 				},
-				404: {
+				400: {
 					description: "Notification not found",
 					content: {
 						"application/json": {
@@ -203,7 +203,7 @@ export default {
 						},
 					},
 				},
-				404: {
+				400: {
 					description: "Notification not found",
 					content: {
 						"application/json": {

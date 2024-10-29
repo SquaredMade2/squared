@@ -22,7 +22,7 @@ export function createRoute(): Route {
 				const { notifications, data } = body;
 
 				if (!Array.isArray(notifications) || notifications.length === 0) {
-					res.status(404);
+					res.status(400);
 					return {
 						data: null,
 						message:
