@@ -65,9 +65,9 @@ export class SprintService implements SprintRpc {
 
 		const sprintDuration = team.sprintDuration;
 
-		const newSprints: Omit<
+		const newSprints: Pick<
 			Sprint,
-			"id" | "createdAt" | "updatedAt" | "description"
+			"name" | "status" | "startDate" | "endDate" | "teamId"
 		>[] = Array.from({ length: remainingSprints }, (_, index) => {
 			const startDate = addWeeks(new Date(), index * sprintDuration);
 			const endDate = addWeeks(startDate, sprintDuration);
