@@ -19,6 +19,9 @@ WORKDIR /app
 # Copy Prisma schema files separately to ensure they are available
 COPY packages/db/prisma ./packages/db/prisma
 COPY --from=builder /app/apps/api /app/apps/api
+COPY --from=builder /app/packages/builder /app/packages/builder
+COPY --from=builder /app/packages/context /app/packages/context
+COPY --from=builder /app/packages/http-rpc /app/packages/http-rpc
 COPY --from=builder /app/packages/logger /app/packages/logger
 COPY --from=builder /app/packages/typescript-config /app/packages/typescript-config
 
