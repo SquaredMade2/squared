@@ -13,11 +13,13 @@ export default {
 						type: "string",
 					},
 					required: true,
-					description: "Specifies the type of GitHub event that triggered the webhook. Common events include push, pull_request, and create.",
+					description:
+						"Specifies the type of GitHub event that triggered the webhook. Common events include push, pull_request, and create.",
 				},
 			],
 			requestBody: {
-				description: "The JSON payload sent by GitHub webhooks containing event data.",
+				description:
+					"The JSON payload sent by GitHub webhooks containing event data.",
 				required: true,
 				content: {
 					"application/json": {
@@ -47,7 +49,8 @@ export default {
 					},
 				},
 				204: {
-					description: "No action taken because the event type is not relevant to the system's needs.",
+					description:
+						"No action taken because the event type is not relevant to the system's needs.",
 					content: {
 						"application/json": {
 							schema: {

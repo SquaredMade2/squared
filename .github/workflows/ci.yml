@@ -2,7 +2,7 @@ name: CI Pipeline
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -22,6 +22,7 @@ jobs:
       api-changed: ${{ steps.check-changes.outputs.api }}
       web-changed: ${{ steps.check-changes.outputs.web }}
       www-changed: ${{ steps.check-changes.outputs.www }}
+      run-all: ${{ steps.check-label.outputs.run-all }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,6 +35,15 @@ jobs:
           echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+
+      - name: Check for Updates label
+        id: check-label
+        run: |
+          if [[ ${{ contains(github.event.pull_request.labels.*.name, 'Updates') }} == true ]]; then
+            echo "run-all=true" >> $GITHUB_OUTPUT
+          else
+            echo "run-all=false" >> $GITHUB_OUTPUT
+          fi
 
   setup:
     name: Setup
@@ -93,11 +103,42 @@ jobs:
       - name: Type Check
         run: pnpm check-types
 
+  test-packages:
+    name: Test Packages
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.6.0
+          cache: 'pnpm'
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile
+      - name: Run Package tests
+        run: pnpm --filter="./packages/**" test
+      - name: Build Packages
+        run: pnpm --filter="./packages/**" build
+
   test-api:
     name: Test API
     needs: [detect-changes, setup]
     runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.api-changed == 'true' }}
+    if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -129,7 +170,7 @@ jobs:
     name: Test Web
     needs: [detect-changes, setup]
     runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.web-changed == 'true' }}
+    if: ${{ needs.detect-changes.outputs.web-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -161,7 +202,7 @@ jobs:
     name: Test WWW
     needs: [detect-changes, setup]
     runs-on: ubuntu-latest
-    if: ${{ needs.detect-changes.outputs.www-changed == 'true' }}
+    if: ${{ needs.detect-changes.outputs.www-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -189,7 +230,7 @@ jobs:
 
   ci-status:
     name: CI Pipeline
-    needs: [lint-and-type-check, test-api, test-web, test-www]
+    needs: [lint-and-type-check, test-packages, test-api, test-web, test-www]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -199,7 +240,7 @@ jobs:
             echo "Lint and type check failed"
             exit 1
           fi
-          if [[ "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" ]]; then
+          if [[ "${{ needs.test-packages.result }}" == "failure" || "${{ needs.test-api.result }}" == "failure" || "${{ needs.test-web.result }}" == "failure" || "${{ needs.test-www.result }}" == "failure" ]]; then
             echo "One or more tests failed"
             exit 1
           fi
