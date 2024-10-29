@@ -238,48 +238,9 @@ async function handleBranchAndCommitEvents(
 		});
 	}
 
-	const eventLog = await prisma.taskEventLog.upsert({
-		where: { taskId: task.id },
-		update: {},
-		create: {
-			id: uuidv4(),
-			taskId: task.id,
-			authorId: task.authorId,
-			authorName:
-				payload.pusher?.name || payload.sender?.login || "Unknown User",
-		},
-	});
-
-	const newActivity = await prisma.activity.create({
-		data: {
-			id: uuidv4(),
-			type: "TASK_EVENT",
-			eventLogId: eventLog.id,
-		},
-	});
-
-	await prisma.taskEvent.create({
-		data: {
-			type: "gitUpdated",
-			authorId: task.authorId,
-			authorName:
-				payload.pusher?.name || payload.sender?.login || "Unknown User",
-			taskId: eventLog.id,
-			activityId: newActivity.id,
-		},
-	});
-
 	// Handle commits if it's a push event
 	if (eventType === "push" && payload.commits) {
 		for (const commit of payload.commits) {
-			const commitActivity = await prisma.activity.create({
-				data: {
-					id: uuidv4(),
-					type: "COMMIT",
-					eventLogId: eventLog.id,
-				},
-			});
-
 			await prisma.commit.upsert({
 				where: { id: commit.id },
 				update: {
@@ -294,10 +255,9 @@ async function handleBranchAndCommitEvents(
 					timestamp: commit.timestamp,
 					url: commit.url,
 					authorName: payload.pusher?.name,
-					treeId: branch.id,
+					branchId: branch.id,
 					repoName: repoFullName,
 					owner: repoOwner,
-					activityId: commitActivity.id,
 				},
 			});
 		}

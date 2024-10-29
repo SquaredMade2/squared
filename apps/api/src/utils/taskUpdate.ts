@@ -1,10 +1,4 @@
-import type {
-	Task,
-	TaskEvent,
-	TaskEventLog,
-	Activity,
-	User,
-} from "@squared/db";
+import type { Task, User } from "@squared/db";
 import { prisma } from "../api";
 
 export async function trackChange(author: User, changes: Task, task: Task) {
@@ -20,67 +14,25 @@ export async function trackChange(author: User, changes: Task, task: Task) {
 
 	const event = `${author.name}_${changeType}#${changeValue}`;
 
-	const eventLog = await prisma.taskEventLog.upsert({
-		where: {
-			taskId: task.id,
-		},
-		update: {},
-		create: {
-			taskId: task.id,
-			authorId: author.id,
-			authorName: author.name,
-		} as TaskEventLog,
-	});
-
-	const newActivity = await prisma.activity.create({
-		data: {
-			type: "TASK_EVENT",
-			eventLogId: eventLog.id,
-		} as Activity,
-	});
-
-	await prisma.taskEvent.create({
-		data: {
-			type: changeType,
-			authorId: author.id,
-			authorName: author.name,
-			taskId: eventLog.id,
-			updatedValue: event,
-			activityId: newActivity.id,
-		} as TaskEvent,
-	});
-}
-
-export async function createLog(author: User, task: Task) {
-	const eventLog = await prisma.taskEventLog.upsert({
-		where: {
-			taskId: task.id,
-		},
-		update: {},
-		create: {
-			taskId: task.id,
-			authorId: author.id,
-			authorName: author.name,
-		} as TaskEventLog,
-	});
-
-	const newActivity = await prisma.activity.create({
-		data: {
-			type: "TASK_EVENT",
-			eventLogId: eventLog.id,
-		} as Activity,
-	});
-
-	await prisma.taskEvent.create({
-		data: {
-			type: "create",
-			authorId: author.id,
-			authorName: author.name,
-			taskId: eventLog.id,
-			updatedValue: `${author.name}_created#${task.title}`,
-			activityId: newActivity.id,
-		} as TaskEvent,
-	});
+	Promise.all([
+		await prisma.taskEvent.create({
+			data: {
+				taskId: task.id,
+				authorId: author.id,
+				authorName: author.name,
+				message: event,
+			},
+		}),
+		await prisma.notification.create({
+			data: {
+				taskId: task.id,
+				workspaceId: task.workspaceId,
+				type: "PARTICIPATING",
+				userId: author.id,
+				description: event,
+			},
+		}),
+	]);
 }
 
 export async function subscribeUser(user: User, task: Task) {

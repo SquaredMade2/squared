@@ -1,7 +1,7 @@
 import type { Task } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import { trackChange, createLog, subscribeUser } from "@/utils/taskUpdate";
+import { trackChange, subscribeUser } from "@/utils/taskUpdate";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -180,7 +180,6 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
-				createLog(author, newTask);
 				subscribeUser(author, newTask);
 
 				// Return the new task

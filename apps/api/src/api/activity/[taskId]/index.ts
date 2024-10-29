@@ -1,7 +1,6 @@
-import type { Task, Activity } from "@squared/db";
+import type { Task, TaskEvent } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
-import { v4 as uuidv4 } from "uuid";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -12,7 +11,7 @@ const logger = createCustomLogger("activity");
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (res, { taskId }): Promise<APIResponse<Activity>> => {
+		GET: async (res, { taskId }): Promise<APIResponse<TaskEvent[]>> => {
 			try {
 				logger.info("Finding task with ID: %s", taskId);
 				// Find the task by its ID
@@ -29,14 +28,11 @@ export function createRoute(): Route<Params> {
 				}
 
 				// Find all the activities associated with the task
-				const taskEventLogWithActivities = await prisma.taskEventLog.findFirst({
+				const taskEvents = await prisma.taskEvent.findMany({
 					where: { taskId },
-					include: {
-						activities: true,
-					},
 				});
 
-				if (!taskEventLogWithActivities) {
+				if (!taskEvents) {
 					return {
 						data: null,
 						message: "Task event log not found",
@@ -46,91 +42,11 @@ export function createRoute(): Route<Params> {
 
 				// Return the found activities
 				return {
-					data: taskEventLogWithActivities.activities,
+					data: taskEvents,
 					variant: "default",
 				};
 			} catch (error) {
 				logger.error("Error finding task: %0", error);
-				res.status(500);
-				return {
-					data: null,
-					message: "Internal server error",
-					variant: "destructive",
-				};
-			}
-		},
-		POST: async (res, { taskId }, body): Promise<APIResponse<Activity>> => {
-			try {
-				logger.info("Creating activity for task with ID: %s", taskId);
-				const task = await prisma.task.findUnique({
-					where: { id: taskId },
-				});
-
-				if (!task) {
-					return {
-						data: null,
-						message: "Task not found",
-						variant: "destructive",
-					};
-				}
-
-				// Check if a TaskEventLog exists for the task
-				let taskEventLog = await prisma.taskEventLog.findFirst({
-					where: { taskId },
-				});
-
-				// If no TaskEventLog exists, create a new one
-				if (!taskEventLog) {
-					taskEventLog = await prisma.taskEventLog.create({
-						data: {
-							taskId: task.id,
-							authorId: task.authorId,
-							authorName: body.author,
-						},
-					});
-				}
-
-				// Create a new activity
-				const newActivity = await prisma.activity.create({
-					data: {
-						id: uuidv4(),
-						type: body.type,
-						eventLogId: taskEventLog.id,
-						commit: body.type === "COMMIT" ? { create: body.event } : undefined,
-						taskEvent:
-							body.type === "TASK_EVENT" ? { create: body.event } : undefined,
-					},
-				});
-
-				if (body.type === "COMMIT") {
-					// Assuming that commit should be eagerly loaded
-					const newActivityWithCommit = await prisma.activity.findUnique({
-						where: { id: newActivity.id },
-						include: { commit: true },
-					});
-					return {
-						data: newActivityWithCommit,
-						variant: "default",
-					};
-				}
-				if (body.type === "TASK_EVENT") {
-					// Assuming that taskEvent should be eagerly loaded
-					const newActivityWithTaskEvent = await prisma.activity.findUnique({
-						where: { id: newActivity.id },
-						include: { taskEvent: true },
-					});
-					return {
-						data: newActivityWithTaskEvent,
-						variant: "default",
-					};
-				}
-				return {
-					data: null,
-					message: "Invalid Activity type",
-					variant: "destructive",
-				};
-			} catch (error) {
-				logger.error("Error creating task: %0", error);
 				res.status(500);
 				return {
 					data: null,
