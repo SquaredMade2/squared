@@ -1,6 +1,6 @@
 # @squared/rpc-client
 
-A lightweight, TypeScript-based rpc (Remote Procedure Call) client for modern Node.js applications. This client is designed to work seamlessly with the @squared/rpc server implementation.
+A lightweight, TypeScript-based HTTP RPC (Remote Procedure Call) client for modern Node.js applications. This client is designed to work seamlessly with the @squared/rpc server implementation.
 
 ## Features
 
