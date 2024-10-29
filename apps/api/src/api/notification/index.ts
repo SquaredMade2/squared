@@ -45,6 +45,7 @@ export function createRoute(): Route {
 							}),
 						),
 					);
+					// Return the array of updated notifications
 					return {
 						data: updatedNotifications,
 						variant: "default",
@@ -58,8 +59,6 @@ export function createRoute(): Route {
 					},
 				});
 				return { data: [], variant: "default" };
-
-				// Return the array of updated notifications
 			} catch (error) {
 				logger.error("Error updating notifications: %0", error);
 				res.status(500);
