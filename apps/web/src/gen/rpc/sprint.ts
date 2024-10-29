@@ -8,6 +8,7 @@ export type GetSprintsRequest = {
 
 export type GetSprintsResponse = {
 	createdAt: Date;
+	description: string | null;
 	endDate: Date;
 	id: string;
 	name: string;
@@ -40,6 +41,7 @@ export type StartNextSprintResponse =
 	| {
 			data: {
 				createdAt: Date;
+				description: string | null;
 				endDate: Date;
 				id: string;
 				name: string;
@@ -91,6 +93,7 @@ export type EndSprintRequest = {
 
 export type EndSprintResponse = {
 	createdAt: Date;
+	description: string | null;
 	endDate: Date;
 	id: string;
 	name: string;

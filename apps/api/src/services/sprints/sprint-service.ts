@@ -52,19 +52,21 @@ export class SprintService implements SprintRpc {
 
 		const sprintDuration = team.sprintDuration;
 
-		const newSprints: Omit<Sprint, "id" | "createdAt" | "updatedAt">[] =
-			Array.from({ length: remainingSprints }, (_, index) => {
-				const startDate = addWeeks(new Date(), index * sprintDuration);
-				const endDate = addWeeks(startDate, sprintDuration);
+		const newSprints: Omit<
+			Sprint,
+			"id" | "createdAt" | "updatedAt" | "description"
+		>[] = Array.from({ length: remainingSprints }, (_, index) => {
+			const startDate = addWeeks(new Date(), index * sprintDuration);
+			const endDate = addWeeks(startDate, sprintDuration);
 
-				return {
-					name: `Sprint ${sprints.length + index + 1}`,
-					status: "PLANNED",
-					startDate,
-					endDate,
-					teamId,
-				};
-			});
+			return {
+				name: `Sprint ${sprints.length + index + 1}`,
+				status: "PLANNED",
+				startDate,
+				endDate,
+				teamId,
+			};
+		});
 		await this.db.sprint.createMany({ data: newSprints });
 
 		return 1;

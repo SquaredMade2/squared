@@ -8,5 +8,4 @@
 ALTER TABLE "SavedFilter" ALTER COLUMN "authorId" SET NOT NULL;
 
 -- AlterTable
-ALTER TABLE "Sprint" 
-  ADD COLUMN "description" TEXT,
+ALTER TABLE "Sprint" ADD COLUMN     "description" TEXT;

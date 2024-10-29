@@ -20,6 +20,7 @@ const sprintSchema = createSchema<Sprint>()(
 	z.object({
 		id: z.string(),
 		name: z.string(),
+		description: z.string().nullable(),
 		startDate: z.date(),
 		endDate: z.date(),
 		status: z.enum(["PLANNED", "ACTIVE", "COMPLETED"]),
