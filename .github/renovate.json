@@ -12,7 +12,25 @@
     "labels": [
         "Updates"
     ],
+    "commitMessagePrefix": "[skip ci][skip vercel]",
     "packageRules": [
+        {
+            "matchManagers": [
+                "npm"
+            ],
+            "matchPaths": [
+                "apps/{web,www}/**",
+                "apps/api/**",
+                "packages/**"
+            ],
+            "labels": [
+                "Fullstack Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "@SquaredMade2/fullstack-developers"
+            ]
+        },
         {
             "matchManagers": [
                 "npm"
@@ -22,7 +40,7 @@
                 "apps/www/**"
             ],
             "labels": [
-                "Frontend",
+                "Frontend Updates",
                 "Updates"
             ],
             "reviewers": [
@@ -37,7 +55,7 @@
                 "apps/api/**"
             ],
             "labels": [
-                "Backend",
+                "Backend Updates",
                 "Updates"
             ],
             "reviewers": [
@@ -52,7 +70,7 @@
                 "packages/**"
             ],
             "labels": [
-                "Packages",
+                "Package Updates",
                 "Updates"
             ],
             "reviewers": [
@@ -65,7 +83,7 @@
                 "docker-compose"
             ],
             "labels": [
-                "DevOps",
+                "DevOps Updates",
                 "Updates"
             ],
             "reviewers": [
@@ -77,7 +95,7 @@
                 "github-actions"
             ],
             "labels": [
-                "CI/CD",
+                "CI/CD Updates",
                 "Updates"
             ],
             "reviewers": [
