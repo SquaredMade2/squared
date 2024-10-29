@@ -34,7 +34,7 @@ import "dotenv/config";
 export const prisma = new PrismaClient({
 	datasources: {
 		db: {
-			url: process.env.${process.env.NODE_ENV === "test" ? "TEST_" : ""}POSTGRES_PRISMA_URL,
+			url: process.env.POSTGRES_PRISMA_URL,
 		},
 	},
 });

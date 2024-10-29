@@ -5,7 +5,7 @@ import { SprintService, createSprintRpcHandler } from "./sprints";
 const prisma = new PrismaClient({
 	datasources: {
 		db: {
-			url: process.env.TEST_POSTGRES_PRISMA_URL,
+			url: process.env.POSTGRES_PRISMA_URL,
 		},
 	},
 });
