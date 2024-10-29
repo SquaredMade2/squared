@@ -3,7 +3,7 @@ import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
-} from "@squared/http-rpc";
+} from "@squared/rpc";
 import { SprintService } from "./sprint-service";
 import type {
 	NextSprintPayload,

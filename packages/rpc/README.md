@@ -1,8 +1,8 @@
-# @squared/http-rpc
+# @squared/rpc
 
 ## Introduction
 
-`@squared/http-rpc` is a lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) implementation designed for modern Node.js applications. It provides a simple and efficient way to create and consume RPC services over HTTP, with built-in support for context management, error handling, and schema validation.
+`@squared/rpc` is a lightweight, TypeScript-based rpc (Remote Procedure Call) implementation designed for modern Node.js applications. It provides a simple and efficient way to create and consume RPC services over HTTP, with built-in support for context management, error handling, and schema validation.
 
 ## Features
 
@@ -73,7 +73,7 @@ To create an RPC server using Express.js:
 
 ```typescript
 import express from "express";
-import { createRpcHandler } from "@squared/http-rpc";
+import { createRpcHandler } from "@squared/rpc";
 import { UserServiceImpl, userServiceSchema } from "./user-service";
 
 const app = express();
@@ -93,7 +93,7 @@ app.listen(3000, () => {
 To create an RPC client:
 
 ```typescript
-import { createRpcClient } from "@squared/http-rpc";
+import { createRpcClient } from "@squared/rpc";
 import { UserService } from "./user-service";
 
 const userClient = createRpcClient<UserService>(
@@ -126,7 +126,7 @@ Creates an RPC client for consuming a remote service.
 
 ## Error Handling
 
-`@squared/http-rpc` provides built-in error handling. Errors thrown in your service methods will be automatically caught and returned as appropriate HTTP responses.
+`@squared/rpc` provides built-in error handling. Errors thrown in your service methods will be automatically caught and returned as appropriate HTTP responses.
 
 ## Context Management
 
