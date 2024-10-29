@@ -8,7 +8,6 @@
     ],
     "prConcurrentLimit": 20,
     "automerge": false,
-    "stabilityDays": 60,
     "labels": [
         "Updates"
     ],
