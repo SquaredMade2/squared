@@ -609,6 +609,34 @@ const schemas = {
 			},
 		},
 	},
+	InvalidError: {
+		type: "object",
+		properties: {
+			data: {
+				type: "null",
+			},
+			message: {
+				type: "string",
+			},
+			variant: {
+				type: "string",
+			},
+		},
+	},
+	InternalServerError: {
+		type: "object",
+		properties: {
+			data: {
+				type: "null",
+			},
+			message: {
+				type: "string",
+			},
+			variant: {
+				type: "string",
+			},
+		},
+	},
 };
 
 export default schemas;
