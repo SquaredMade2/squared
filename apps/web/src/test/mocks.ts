@@ -117,6 +117,7 @@ export const STANDARD_TASK_2: Task = {
 export const STANDARD_SPRINT: Sprint = {
 	id: "007168DD-DD4A-4013-9D5C-A3E6AE6868E5",
 	name: "Sprint 1",
+	description: "First sprint",
 	startDate: new Date("2023-01-01"),
 	endDate: new Date("2023-01-14"),
 	status: "ACTIVE",
