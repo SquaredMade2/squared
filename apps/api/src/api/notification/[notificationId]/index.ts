@@ -23,7 +23,7 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!existingUser) {
-					res.status(400);
+					res.status(404);
 					return {
 						data: null,
 						message: "Cannot find user",

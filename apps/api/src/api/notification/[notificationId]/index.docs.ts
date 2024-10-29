@@ -37,7 +37,7 @@ export default {
 						},
 					},
 				},
-				400: {
+				404: {
 					description: "Invalid notification data",
 					content: {
 						"application/json": {
