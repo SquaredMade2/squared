@@ -5,23 +5,19 @@ import { useParams } from "next/navigation";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import { io, type Socket } from "socket.io-client";
 import { toast } from "@/components/ui/use-toast";
-import type { RetrospectiveItem } from "@squared/db";
-import { useTeamStore } from "@/store";
+import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 import { RetroColumn } from "@/components/Sprints";
 import TopNavBar from "@/components/TopNavBar";
+import { sprintService } from "@/lib/services";
+import { TODO } from "@squared/context";
 
-type ColumnType = "wentWell" | "toImprove" | "actionItems";
+type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
-	const {
-		addRetrospectiveItem,
-		updateRetrospectiveItemType,
-		getRetrospectiveItems,
-	} = useTeamStore((state) => state);
 	const sprintId = parseParams(params.sprintId);
-	const [data, setData] = useState<Record<ColumnType, RetrospectiveItem[]>>({
+	const [data, setData] = useState<Record<RetrospectiveItemType, RetroItem[]>>({
 		wentWell: [],
 		toImprove: [],
 		actionItems: [],
@@ -30,7 +26,9 @@ export default function SprintRetrospectivePage() {
 
 	const fetchData = useCallback(async () => {
 		try {
-			const response = await getRetrospectiveItems(sprintId);
+			const response = await sprintService.getRetrospectiveItems(TODO, {
+				sprintId,
+			});
 			setData(response);
 		} catch (error) {
 			console.error("Error fetching data:", error);
@@ -39,7 +37,7 @@ export default function SprintRetrospectivePage() {
 				variant: "destructive",
 			});
 		}
-	}, [sprintId, getRetrospectiveItems]);
+	}, [sprintId, sprintService]);
 
 	useEffect(() => {
 		const socketUrl = process.env.NEXT_PUBLIC_SERVER || "http://localhost:5173";
@@ -87,32 +85,36 @@ export default function SprintRetrospectivePage() {
 	}, [sprintId, fetchData]);
 
 	const handleAddItem = useCallback(
-		async (type: ColumnType, content: string) => {
+		async (type: RetrospectiveItemType, content: string) => {
 			try {
-				const response = await addRetrospectiveItem(sprintId, type, content);
-				const { item: newItem, message: title, variant } = response;
-				if (newItem) {
-					socket?.emit("addItem", { sprintId, ...newItem });
+				const response = await sprintService.addRetrospectiveItem(TODO, {
+					sprintId,
+					type,
+					content,
+				});
+				if (response) {
+					socket?.emit("addItem", { sprintId, ...response });
 					setData((prevData) => ({
 						...prevData,
-						[type]: [...prevData[type], newItem],
+						[type]: [...prevData[type], response],
 					}));
 				}
-				toast({ title, variant });
+				toast({ title: "Item added successfully" });
 			} catch (error) {
 				console.error("Error adding item:", error);
 				toast({ title: "Failed to add item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket, addRetrospectiveItem],
+		[sprintId, socket, sprintService],
 	);
 
 	const onDragEnd = useCallback(
 		async (result: DropResult) => {
 			if (!result.destination) return;
 
-			const sourceType = result.source.droppableId as ColumnType;
-			const destinationType = result.destination.droppableId as ColumnType;
+			const sourceType = result.source.droppableId as RetrospectiveItemType;
+			const destinationType = result.destination
+				.droppableId as RetrospectiveItemType;
 			const sourceIndex = result.source.index;
 			const destinationIndex = result.destination.index;
 
@@ -122,13 +124,17 @@ export default function SprintRetrospectivePage() {
 			const itemId = result.draggableId;
 
 			try {
-				const response = await updateRetrospectiveItemType(
+				const response = await sprintService.updateRetrospectiveItem(TODO, {
 					sprintId,
-					itemId,
-					destinationType,
-				);
-				if (!response.item) {
-					toast({ title: response.message, variant: response.variant });
+					retrospectiveItemId: itemId,
+					type: destinationType,
+					content: "",
+				});
+				if (!response) {
+					toast({
+						title: "There was an issue updating your item",
+						variant: "destructive",
+					});
 					return;
 				}
 
@@ -157,7 +163,7 @@ export default function SprintRetrospectivePage() {
 				toast({ title: "Failed to move item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket, updateRetrospectiveItemType],
+		[sprintId, socket, sprintService],
 	);
 
 	return (

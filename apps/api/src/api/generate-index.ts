@@ -26,6 +26,8 @@ import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 import { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
+import { createErrorHandler, createRequestHandler } from "@squared/http-rpc";
+import { rpcHandlers } from "@/services";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";
 //this is a change to the api folder for CI testing
@@ -33,7 +35,7 @@ import "dotenv/config";
 export const prisma = new PrismaClient({
 	datasources: {
 		db: {
-			url: process.env.${process.env.NODE_ENV === "test" ? "TEST_" : ""}POSTGRES_PRISMA_URL,
+			url: process.env.POSTGRES_PRISMA_URL,
 		},
 	},
 });
@@ -134,6 +136,12 @@ app.use(
 );
 
 app.use(express.json());
+
+const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
+app.use("/rpc", rpcRequestHandler);
+
+// Use the RPC error handler
+app.use(createErrorHandler({ log: logger }));
 
 // Initialize the router
 const router = express.Router();
