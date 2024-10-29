@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "check-types": "tsc --noEmit",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "lint": "biome lint --error-on-warnings ./src",
     "postinstall": "tsup src/index.ts --format cjs,esm --dts"
   },
