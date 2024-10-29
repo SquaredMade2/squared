@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`@squared/rpc` is a lightweight, TypeScript-based HTTP RPC (Remote Procedure Call) implementation designed for modern Node.js applications. It provides a simple and efficient way to create and consume RPC services over HTTP, with built-in support for context management, error handling, and schema validation.
+`@squared/rpc` is a lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) implementation designed for modern Node.js applications. It provides a simple and efficient way to create and consume RPC services over HTTP, with built-in support for context management, error handling, and schema validation.
 
 ## Features
 
