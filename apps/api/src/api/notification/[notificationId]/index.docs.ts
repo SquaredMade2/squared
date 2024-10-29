@@ -1,5 +1,3 @@
-import { put } from "axios";
-
 export default {
 	"/api/notification/{notificationId}": {
 		post: {
