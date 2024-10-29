@@ -69,6 +69,22 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+      - name: Debug - Output task definition
+        run: |
+          echo "Task Definition Contents:"
+          cat ${{ secrets.ECS_TASK_DEFINITION }}
+
+      - name: Debug - Check container name
+        run: |
+          echo "Container name being used: ${{ secrets.CONTAINER_NAME }}"
+          if grep -q "\"name\": \"${{ secrets.CONTAINER_NAME }}\"" ${{ secrets.ECS_TASK_DEFINITION }}; then
+            echo "Container name found in task definition"
+          else
+            echo "Container name NOT found in task definition"
+            echo "Available container names:"
+            grep -o '"name": "[^"]*"' ${{ secrets.ECS_TASK_DEFINITION }}
+          fi
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
