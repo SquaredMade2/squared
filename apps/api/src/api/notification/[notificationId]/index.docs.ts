@@ -42,18 +42,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InvalidError",
 							},
 						},
 					},
@@ -63,18 +52,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InternalServerError",
 							},
 						},
 					},
@@ -126,19 +104,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-										example: "Notification not found",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InvalidError",
 							},
 						},
 					},
@@ -148,19 +114,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-										example: "Internal Server Error",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InternalServerError",
 							},
 						},
 					},
@@ -208,19 +162,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-										example: "Notification not found",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InvalidError",
 							},
 						},
 					},
@@ -230,19 +172,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-										example: "Internal Server Error",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InternalServerError",
 							},
 						},
 					},

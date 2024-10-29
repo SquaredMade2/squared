@@ -55,18 +55,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InvalidError",
 							},
 						},
 					},
@@ -76,18 +65,7 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "object",
-								properties: {
-									data: {
-										type: "null",
-									},
-									message: {
-										type: "string",
-									},
-									variant: {
-										type: "string",
-									},
-								},
+								$ref: "#/components/schemas/InternalServerError",
 							},
 						},
 					},
