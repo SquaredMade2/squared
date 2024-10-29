@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { format, differenceInDays } from "date-fns";
-import { useTaskStore, useTeamStore } from "@/store";
+import { format, differenceInDays, addWeeks } from "date-fns";
+import { useTaskStore } from "@/store";
 import {
 	Card,
 	CardContent,
@@ -49,13 +49,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
+import { sprintService } from "@/lib/services";
+import { TODO } from "@squared/context";
 
 const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
 
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
-	const { updateSprint } = useTeamStore((state) => state);
 	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
@@ -70,7 +71,10 @@ export default function SprintDashboardPage() {
 		}[]
 	>([]);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-	const [editedSprint, setEditedSprint] = useState<Sprint | null>(null);
+	const [editedSprint, setEditedSprint] = useState<Pick<
+		Sprint,
+		"startDate" | "description" | "name" | "endDate" | "id"
+	> | null>(null);
 	const [startDate, setStartDate] = useState<Date | undefined>(
 		editedSprint?.startDate ? new Date(editedSprint.startDate) : new Date(),
 	);
@@ -202,12 +206,15 @@ export default function SprintDashboardPage() {
 
 	const handleEditSprint = async () => {
 		if (!editedSprint || !team) return;
-		await updateSprint(team.id, editedSprint.id, {
-			...editedSprint,
-			startDate: startDate,
-			endDate: endDate ?? new Date(),
+		const updatedSprint = await sprintService.updateSprint(TODO, {
+			sprintId: editedSprint.id,
+			sprintData: {
+				...editedSprint,
+				startDate: startDate ?? new Date(),
+				endDate: endDate ?? addWeeks(startDate ?? new Date(), 1),
+			},
 		});
-		setSprint(editedSprint);
+		setSprint(updatedSprint);
 		setIsEditModalOpen(false);
 	};
 

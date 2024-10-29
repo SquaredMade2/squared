@@ -32,6 +32,19 @@ export class SprintService implements SprintRpc {
 		return this.db.sprint.findMany({ where: { teamId } });
 	}
 
+	async updateSprint({
+		sprintId,
+		sprintData,
+	}: {
+		sprintId: string;
+		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
+	}): Promise<Sprint> {
+		return this.db.sprint.update({
+			where: { id: sprintId },
+			data: sprintData,
+		});
+	}
+
 	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
 		const team = await this.db.team.findUnique({ where: { id: teamId } });
 

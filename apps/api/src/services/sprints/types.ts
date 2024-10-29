@@ -48,6 +48,13 @@ export type SprintServiceResponse<T> = ErrorResponse | SuccessResponse<T>;
 
 export interface SprintRpc {
 	getSprints: ({ teamId }: { teamId: string }) => Promise<Sprint[]>;
+	updateSprint: ({
+		sprintId,
+		sprintData,
+	}: {
+		sprintId: string;
+		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
+	}) => Promise<Sprint>;
 	initializeSprints: ({ teamId }: { teamId: string }) => Promise<number>;
 	startNextSprint: ({
 		teamId,
