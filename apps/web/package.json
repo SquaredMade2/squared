@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"build:digitalocean": "pnpm install --production=false && pnpm run build && rm -rf node_modules && pnpm install --production --frozen-lockfile",
+		"build:digitalocean": "pnpm install --production=false && pnpm run build && rimraf node_modules && pnpm install --production --frozen-lockfile",
 		"format:write": "biome format --write .",
 		"format:check": "biome format .",
 		"check-types": "tsc --pretty --noEmit",
@@ -28,6 +28,8 @@
 		"@hookform/resolvers": "^3.9.0",
 		"@repo/ui": "workspace:*",
 		"@sentry/nextjs": "^8.27.0",
+		"@squared/context": "workspace:*",
+		"@squared/http-rpc-client": "workspace:*",
 		"@squared/fonts": "workspace:*",
 		"@tanstack/react-table": "^8.20.5",
 		"axios": "^1.7.5",
