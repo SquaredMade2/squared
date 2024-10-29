@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - deploy-Develop-API
   workflow_dispatch:  # Adds the manual trigger
 
 jobs:
