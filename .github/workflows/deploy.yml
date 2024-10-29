@@ -4,13 +4,14 @@ on:
   push:
     branches:
       - main
+      - develop
   workflow_dispatch:  # Adds the manual trigger
 
 jobs:
   checks:
     name: Check For Changes
     runs-on: ubuntu-latest
-    environment: API-Production
+    environment: ${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
     outputs:
       changed-app: ${{ steps.changed-app.outputs.result }}
     if: ${{ github.event_name != 'workflow_dispatch' }} # Skip this job if manually triggered
@@ -40,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [checks]
     if: ${{ needs.checks.outputs.changed-app == 'true' || github.event_name == 'workflow_dispatch' }}
-    environment: API-Production
+    environment: ${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
 
     steps:
       - name: Checkout
@@ -68,22 +69,6 @@ jobs:
           docker tag api:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Debug - Output task definition
-        run: |
-          echo "Task Definition Contents:"
-          cat ${{ secrets.ECS_TASK_DEFINITION }}
-
-      - name: Debug - Check container name
-        run: |
-          echo "Container name being used: ${{ secrets.CONTAINER_NAME }}"
-          if grep -q "\"name\": \"${{ secrets.CONTAINER_NAME }}\"" ${{ secrets.ECS_TASK_DEFINITION }}; then
-            echo "Container name found in task definition"
-          else
-            echo "Container name NOT found in task definition"
-            echo "Available container names:"
-            grep -o '"name": "[^"]*"' ${{ secrets.ECS_TASK_DEFINITION }}
-          fi
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
