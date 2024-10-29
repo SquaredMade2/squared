@@ -52,8 +52,46 @@ export default {
 				404: {
 					description:
 						"Invalid request body. Expected a non-empty array of notifications.",
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									data: {
+										type: "null",
+									},
+									message: {
+										type: "string",
+									},
+									variant: {
+										type: "string",
+									},
+								},
+							},
+						},
+					},
 				},
-				500: { description: "Internal server error" },
+				500: {
+					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									data: {
+										type: "null",
+									},
+									message: {
+										type: "string",
+									},
+									variant: {
+										type: "string",
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 	},
