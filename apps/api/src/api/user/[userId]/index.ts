@@ -122,10 +122,10 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					res.status(500);
+					res.status(404);
 					return {
 						data: null,
-						message: "Failed to delete User",
+						message: "User not found",
 						variant: "destructive",
 					};
 				}

@@ -1,25 +1,24 @@
 export default {
-	"/api/workspace/{workspaceId}/team": {
+	"/api/user/{userId}/avatar": {
 		get: {
-			tags: ["Team"],
-			summary: "Retrieve all teams for a specific workspace",
+			tags: ["User"],
+			summary: "User avatars",
 			description:
-				"Find and return all teams associated with a specific workspace ID.",
+				"Find and return an array of user avatars from all workspaces associated with a specific user.",
 			parameters: [
 				{
 					in: "path",
-					name: "workspaceId",
+					name: "userId",
 					schema: {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the workspace whose teams are to be retrieved",
+					description: "The ID of the user.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of team objects",
+					description: "User avatars array and variant.",
 					content: {
 						"application/json": {
 							schema: {
@@ -27,8 +26,10 @@ export default {
 								properties: {
 									data: {
 										type: "array",
-										items: {
-											$ref: "#/components/schemas/Team",
+										properties: {
+											items: {
+												$ref: "#/components/schemas/UserAvatar",
+											},
 										},
 									},
 									variant: {
@@ -40,7 +41,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Teams not found",
+					description: "User is not part of any workspace",
 					content: {
 						"application/json": {
 							schema: {

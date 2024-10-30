@@ -1,10 +1,9 @@
 export default {
-	"/api/workspace/{workspaceId}/team": {
+	"/api/workspace/{workspaceId}/label": {
 		get: {
-			tags: ["Team"],
-			summary: "Retrieve all teams for a specific workspace",
-			description:
-				"Find and return all teams associated with a specific workspace ID.",
+			tags: ["Workspace"],
+			summary: "Retrieve a list of labels by workspace ID",
+			description: "Find and return a list of labels by workspace ID.",
 			parameters: [
 				{
 					in: "path",
@@ -13,13 +12,12 @@ export default {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the workspace whose teams are to be retrieved",
+					description: "The ID of the workspace associated with the labels.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of team objects",
+					description: "A list of retrieved labels.",
 					content: {
 						"application/json": {
 							schema: {
@@ -28,7 +26,7 @@ export default {
 									data: {
 										type: "array",
 										items: {
-											$ref: "#/components/schemas/Team",
+											$ref: "#/components/schemas/Label",
 										},
 									},
 									variant: {
@@ -40,7 +38,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Teams not found",
+					description: "Filters not found",
 					content: {
 						"application/json": {
 							schema: {
