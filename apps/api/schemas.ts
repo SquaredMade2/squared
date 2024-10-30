@@ -496,7 +496,7 @@ const schemas = {
 			},
 			color: {
 				type: "string",
-				description: "Color of the label.",
+				description: "Color of the label in hex code.",
 			},
 		},
 	},
