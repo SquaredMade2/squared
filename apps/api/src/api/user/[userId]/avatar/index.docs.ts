@@ -27,7 +27,9 @@ export default {
 									data: {
 										type: "array",
 										properties: {
-											items: "#/components/schemas/UserAvatar",
+											items: {
+												$ref: "#/components/schemas/UserAvatar",
+											},
 										},
 									},
 									variant: {
