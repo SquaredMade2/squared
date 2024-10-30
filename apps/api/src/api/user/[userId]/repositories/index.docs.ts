@@ -1,10 +1,10 @@
 export default {
-	"/api/user/{userId}/workspace": {
+	"/api/user/{userId}/repositories": {
 		get: {
-			tags: ["Workspace"],
-			summary: "Retrieve all workspaces for a specific user",
+			tags: ["User"],
+			summary: "Retrieve repo names",
 			description:
-				"Find and return all workspaces associated with a specific user ID.",
+				"Find and return a list of repository names associated with a specific user's github account.",
 			parameters: [
 				{
 					in: "path",
@@ -13,13 +13,12 @@ export default {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the user whose workspaces are to be retrieved",
+					description: "The ID of the user.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of workspace objects",
+					description: "An object containing an array of repo names.",
 					content: {
 						"application/json": {
 							schema: {
@@ -28,8 +27,11 @@ export default {
 									data: {
 										type: "array",
 										items: {
-											$ref: "#/components/schemas/Workspace",
+											type: "string",
 										},
+									},
+									message: {
+										type: "string",
 									},
 									variant: {
 										type: "string",
@@ -40,7 +42,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Workspaces not found",
+					description: "GitHub username not found",
 					content: {
 						"application/json": {
 							schema: {

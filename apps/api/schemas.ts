@@ -391,6 +391,32 @@ const schemas = {
 			githubId: { type: "string", description: "GitHub ID for OAuth" },
 		},
 	},
+	UserAvatar: {
+		type: "object",
+		properties: {
+			id: {
+				type: "string",
+				description: "Unique identifier for the avatar.",
+			},
+			name: {
+				type: "string",
+				description: "Name of the avatar.",
+			},
+			avatarUrl: {
+				schema: {
+					oneOf: {
+						image: {
+							type: "string",
+							description: "URL of avatar image.",
+						},
+						none: {
+							type: "null",
+						},
+					},
+				},
+			},
+		},
+	},
 	Comment: {
 		type: "object",
 		properties: {
