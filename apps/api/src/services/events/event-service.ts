@@ -1,5 +1,5 @@
 import type { PrismaClient, Notification, TaskEvent, Task } from "@squared/db";
-import type { EventRpc, Event } from "./types";
+import type { EventRpc, Event, TaskValue } from "./types";
 
 export class EventService implements EventRpc {
 	private taskEventRepository: PrismaClient["taskEvent"];
@@ -38,13 +38,15 @@ export class EventService implements EventRpc {
 	}: {
 		taskId: string;
 		authorId: string;
-		changes: Partial<TaskEvent>;
+		changes: Partial<Task>;
 	}): Promise<TaskEvent> {
+		const diff = await this.getTaskDiff(taskId, changes);
+
 		return this.taskEventRepository.create({
 			data: {
 				taskId,
 				authorId,
-				message,
+				message: diff,
 			},
 		});
 	}
@@ -65,7 +67,6 @@ export class EventService implements EventRpc {
 			.map(([key, newValue]) => {
 				const oldValue = task[key as keyof Task];
 
-				// Handle different types of values
 				if (oldValue instanceof Date && newValue instanceof Date) {
 					if (oldValue.getTime() !== newValue.getTime()) {
 						return `${key}: ${oldValue.toISOString()} -> ${newValue.toISOString()}`;
@@ -100,5 +101,41 @@ export class EventService implements EventRpc {
 			return JSON.stringify(value);
 		}
 		return String(value);
+	}
+
+	async deserializeLogEvent(taskEvent: TaskEvent): Promise<{
+		[key: string]: { oldValue: TaskValue; newValue: TaskValue };
+	}> {
+		const changes: {
+			[key: string]: { oldValue: TaskValue; newValue: TaskValue };
+		} = {};
+		const changePairs = taskEvent.message.split(", ");
+
+		for (const pair of changePairs) {
+			const [key, values] = pair.split(": ");
+			const [oldValue, newValue] = values.split(" -> ");
+			changes[key] = {
+				oldValue: this.parseValue(oldValue),
+				newValue: this.parseValue(newValue),
+			};
+		}
+
+		return changes;
+	}
+
+	private parseValue(value: string): TaskValue {
+		if (value === "null") {
+			return null;
+		}
+		if (value.startsWith('"') && value.endsWith('"')) {
+			return value.slice(1, -1);
+		}
+		if (value.startsWith("[") && value.endsWith("]")) {
+			return JSON.parse(value);
+		}
+		if (!Number.isNaN(Date.parse(value))) {
+			return new Date(value);
+		}
+		return value;
 	}
 }
