@@ -14,7 +14,7 @@
     "labels": [
         "Updates"
     ],
-    "commitMessagePrefix": "[skip ci][skip vercel]",
+    "commitMessagePrefix": "[skip vercel]",
     "packageRules": [
         {
             "matchManagers": [
