@@ -1,15 +1,17 @@
-import type { PrismaClient, Notification, TaskEvent } from "@squared/db";
+import type { PrismaClient, Notification, TaskEvent, Task } from "@squared/db";
 import type { EventRpc, Event } from "./types";
 
 export class EventService implements EventRpc {
 	private taskEventRepository: PrismaClient["taskEvent"];
 	private commitRepository: PrismaClient["commit"];
 	private notificationRepository: PrismaClient["notification"];
+	private taskRepository: PrismaClient["task"];
 
 	constructor(db: PrismaClient) {
 		this.taskEventRepository = db.taskEvent;
 		this.commitRepository = db.commit;
 		this.notificationRepository = db.notification;
+		this.taskRepository = db.task;
 	}
 	async getTaskEvents({ taskId }: { taskId: string }): Promise<Event[]> {
 		const [taskEvents, commits] = await Promise.all([
@@ -32,11 +34,11 @@ export class EventService implements EventRpc {
 	async createLogEvent({
 		taskId,
 		authorId,
-		message,
+		changes,
 	}: {
 		taskId: string;
 		authorId: string;
-		message: string;
+		changes: Partial<TaskEvent>;
 	}): Promise<TaskEvent> {
 		return this.taskEventRepository.create({
 			data: {
@@ -45,5 +47,58 @@ export class EventService implements EventRpc {
 				message,
 			},
 		});
+	}
+
+	private async getTaskDiff(
+		taskId: string,
+		changes: Partial<Task>,
+	): Promise<string> {
+		const task = await this.taskRepository.findUnique({
+			where: { id: taskId },
+		});
+
+		if (!task) {
+			throw new Error(`Task with id ${taskId} not found`);
+		}
+
+		const diff = Object.entries(changes)
+			.map(([key, newValue]) => {
+				const oldValue = task[key as keyof Task];
+
+				// Handle different types of values
+				if (oldValue instanceof Date && newValue instanceof Date) {
+					if (oldValue.getTime() !== newValue.getTime()) {
+						return `${key}: ${oldValue.toISOString()} -> ${newValue.toISOString()}`;
+					}
+				} else if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+					if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+						return `${key}: ${JSON.stringify(oldValue)} -> ${JSON.stringify(newValue)}`;
+					}
+				} else if (oldValue !== newValue) {
+					return `${key}: ${this.formatValue(oldValue)} -> ${this.formatValue(newValue)}`;
+				}
+
+				return null;
+			})
+			.filter(Boolean)
+			.join(", ");
+
+		return diff.length > 0 ? diff : "No changes";
+	}
+
+	private formatValue(value: Task[keyof Task]): string {
+		if (value === null || value === undefined) {
+			return "null";
+		}
+		if (typeof value === "string") {
+			return `"${value}"`;
+		}
+		if (value instanceof Date) {
+			return value.toISOString();
+		}
+		if (Array.isArray(value)) {
+			return JSON.stringify(value);
+		}
+		return String(value);
 	}
 }

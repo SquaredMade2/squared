@@ -8,10 +8,10 @@ export interface EventRpc {
 	createLogEvent: ({
 		taskId,
 		authorId,
-		message,
+		changes,
 	}: {
 		taskId: string;
 		authorId: string;
-		message: string;
+		changes: Partial<TaskEvent>;
 	}) => Promise<TaskEvent>;
 }
