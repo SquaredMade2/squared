@@ -47,12 +47,12 @@ importers:
       '@squared/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@squared/rpc':
-        specifier: workspace:*
-        version: link:../../packages/rpc
       '@squared/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@squared/rpc':
+        specifier: workspace:*
+        version: link:../../packages/rpc
       axios:
         specifier: ^1.7.5
         version: 1.7.7
@@ -421,7 +421,7 @@ importers:
     dependencies:
       tslib:
         specifier: ^2.7.0
-        version: 2.7.0
+        version: 2.8.0
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -484,6 +484,31 @@ importers:
         specifier: ^4.5.0
         version: 4.9.5
 
+  packages/logger:
+    dependencies:
+      winston:
+        specifier: ^3.14.2
+        version: 3.14.2
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 1.9.3
+        version: 1.9.3
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.5.1
+        version: 22.7.5
+      '@types/winston':
+        specifier: ^2.4.4
+        version: 2.4.4
+      tsup:
+        specifier: ^8.0.2
+        version: 8.3.0(@swc/core@1.7.6(@swc/helpers@0.5.5))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.6.0)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.6.2
+
   packages/rpc:
     dependencies:
       '@squared/context':
@@ -522,7 +547,7 @@ importers:
         version: 29.2.5(@babel/core@7.25.2)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.2))(jest@29.7.0(@types/node@20.16.11)(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@20.16.11)(typescript@5.6.3)))(typescript@5.6.3)
       tslib:
         specifier: ^2.7.0
-        version: 2.7.0
+        version: 2.8.0
       typescript:
         specifier: ^5.2.2
         version: 5.6.3
@@ -542,31 +567,6 @@ importers:
       '@squared/builder':
         specifier: workspace:*
         version: link:../builder
-
-  packages/logger:
-    dependencies:
-      winston:
-        specifier: ^3.14.2
-        version: 3.14.2
-    devDependencies:
-      '@biomejs/biome':
-        specifier: 1.9.3
-        version: 1.9.3
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/node':
-        specifier: ^22.5.1
-        version: 22.7.5
-      '@types/winston':
-        specifier: ^2.4.4
-        version: 2.4.4
-      tsup:
-        specifier: ^8.0.2
-        version: 8.3.0(@swc/core@1.7.6(@swc/helpers@0.5.5))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.6.0)
-      typescript:
-        specifier: ^5.5.4
-        version: 5.6.2
 
   packages/seed:
     dependencies:
@@ -641,7 +641,7 @@ importers:
         version: 10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.7.5)(typescript@5.6.2)
       tslib:
         specifier: ^2.7.0
-        version: 2.7.0
+        version: 2.8.0
     devDependencies:
       '@stitches/core':
         specifier: ^1.2.8
@@ -7052,6 +7052,9 @@ packages:
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
+  tslib@2.8.0:
+    resolution: {integrity: sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==}
+
   tsup@8.3.0:
     resolution: {integrity: sha512-ALscEeyS03IomcuNdFdc0YWGVIkwH1Ws7nfTbAPuoILvEV2hpGQAY72LIOjglGo4ShWpZfpBqP/jpQVCzqYQag==}
     engines: {node: '>=18'}
@@ -9693,7 +9696,7 @@ snapshots:
       flat-cache: 3.2.0
       micromatch: 4.0.8
       react-docgen-typescript: 2.2.2(typescript@5.6.2)
-      tslib: 2.7.0
+      tslib: 2.8.0
       typescript: 5.6.2
       webpack: 5.95.0(@swc/core@1.7.6(@swc/helpers@0.5.5))(esbuild@0.23.1)
     transitivePeerDependencies:
@@ -9832,7 +9835,7 @@ snapshots:
   '@swc/helpers@0.5.5':
     dependencies:
       '@swc/counter': 0.1.3
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   '@swc/types@0.1.12':
     dependencies:
@@ -10451,7 +10454,7 @@ snapshots:
 
   aria-hidden@1.2.4:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   aria-query@5.3.0:
     dependencies:
@@ -10471,7 +10474,7 @@ snapshots:
 
   ast-types@0.16.1:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   astral-regex@2.0.0: {}
 
@@ -10696,7 +10699,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   camelcase-css@2.0.1: {}
 
@@ -11281,7 +11284,7 @@ snapshots:
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   dot-prop@5.3.0:
     dependencies:
@@ -13138,7 +13141,7 @@ snapshots:
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   lru-cache@10.4.3: {}
 
@@ -13778,7 +13781,7 @@ snapshots:
   no-case@3.0.4:
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   node-abort-controller@3.1.1: {}
 
@@ -13912,7 +13915,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   parent-module@1.0.1:
     dependencies:
@@ -13956,7 +13959,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   path-browserify@1.0.1: {}
 
@@ -14362,7 +14365,7 @@ snapshots:
     dependencies:
       react: 18.3.1
       react-style-singleton: 2.2.1(@types/react@18.3.11)(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       '@types/react': 18.3.11
 
@@ -14371,7 +14374,7 @@ snapshots:
       react: 18.3.1
       react-remove-scroll-bar: 2.3.6(@types/react@18.3.11)(react@18.3.1)
       react-style-singleton: 2.2.1(@types/react@18.3.11)(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
       use-callback-ref: 1.3.2(@types/react@18.3.11)(react@18.3.1)
       use-sidecar: 1.1.2(@types/react@18.3.11)(react@18.3.1)
     optionalDependencies:
@@ -14382,7 +14385,7 @@ snapshots:
       react: 18.3.1
       react-remove-scroll-bar: 2.3.6(@types/react@18.3.11)(react@18.3.1)
       react-style-singleton: 2.2.1(@types/react@18.3.11)(react@18.3.1)
-      tslib: 2.7.0
+      tslib: 2.8.0
       use-callback-ref: 1.3.2(@types/react@18.3.11)(react@18.3.1)
       use-sidecar: 1.1.2(@types/react@18.3.11)(react@18.3.1)
     optionalDependencies:
@@ -14401,7 +14404,7 @@ snapshots:
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 18.3.1
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       '@types/react': 18.3.11
 
@@ -14450,7 +14453,7 @@ snapshots:
       esprima: 4.0.1
       source-map: 0.6.1
       tiny-invariant: 1.3.3
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   recharts-scale@0.4.5:
     dependencies:
@@ -14638,7 +14641,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.0
 
   safe-buffer@5.2.1: {}
 
@@ -15396,6 +15399,8 @@ snapshots:
 
   tslib@2.7.0: {}
 
+  tslib@2.8.0: {}
+
   tsup@8.3.0(@swc/core@1.7.6(@swc/helpers@0.5.5))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.6.0):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.1)
@@ -15630,7 +15635,7 @@ snapshots:
   use-callback-ref@1.3.2(@types/react@18.3.11)(react@18.3.1):
     dependencies:
       react: 18.3.1
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       '@types/react': 18.3.11
 
@@ -15642,7 +15647,7 @@ snapshots:
     dependencies:
       detect-node-es: 1.1.0
       react: 18.3.1
-      tslib: 2.7.0
+      tslib: 2.8.0
     optionalDependencies:
       '@types/react': 18.3.11
 
