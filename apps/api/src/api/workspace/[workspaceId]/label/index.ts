@@ -13,16 +13,16 @@ export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<Label>> => {
 			try {
-				// Find labels by label ID
+				// Find labels by workspace ID
 				logger.info("Finding labels by workspace ID: %s", workspaceId);
-				const labels: Label[] | null = await prisma.label.findMany({
+				const labels: Label[] = await prisma.label.findMany({
 					where: { workspaceId },
 				});
 
-				if (!labels) {
+				if (labels.length === 0) {
 					return {
-						data: labels,
-						message: "Teams not found",
+						data: null,
+						message: "Labels not found",
 						variant: "destructive",
 					};
 				}
