@@ -1,10 +1,11 @@
 export default {
-	"/api/workspace/{workspaceId}/team": {
+	"/api/workspace/{workspaceId}/task/{taskIdentifier}": {
 		get: {
-			tags: ["Team"],
-			summary: "Retrieve all teams for a specific workspace",
+			tags: ["Task"],
+			summary:
+				"Retrieve a task within a specific workspace by the tasks unique system identifier.",
 			description:
-				"Find and return all teams associated with a specific workspace ID.",
+				"Find and return a task within a specific workspace by its unique system identifier.",
 			parameters: [
 				{
 					in: "path",
@@ -13,23 +14,28 @@ export default {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the workspace whose teams are to be retrieved",
+					description: "The ID of the workspace associated with the task.",
+				},
+				{
+					in: "path",
+					name: "taskIdentifier",
+					schema: {
+						type: "string",
+					},
+					required: true,
+					description: "A unique system identifier for a task.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of team objects",
+					description: "A task.",
 					content: {
 						"application/json": {
 							schema: {
 								type: "object",
 								properties: {
 									data: {
-										type: "array",
-										items: {
-											$ref: "#/components/schemas/Team",
-										},
+										$ref: "#/components/schemas/Task",
 									},
 									variant: {
 										type: "string",
@@ -40,7 +46,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Teams not found",
+					description: "Task not found",
 					content: {
 						"application/json": {
 							schema: {
