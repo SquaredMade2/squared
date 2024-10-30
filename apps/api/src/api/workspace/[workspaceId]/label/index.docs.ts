@@ -25,7 +25,9 @@ export default {
 								properties: {
 									data: {
 										type: "array",
-										items: "#/components/schemas/Label",
+										items: {
+											$ref: "#/components/schemas/Label",
+										},
 									},
 									variant: {
 										type: "string",

@@ -25,7 +25,9 @@ export default {
 								properties: {
 									data: {
 										type: "array",
-										items: "#/components/schemas/SavedFilter",
+										items: {
+											$ref: "#/components/schemas/SavedFilter",
+										},
 									},
 								},
 							},
