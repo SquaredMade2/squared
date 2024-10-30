@@ -26,7 +26,7 @@ import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
 import { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
-import { createErrorHandler, createRequestHandler } from "@squared/http-rpc";
+import { createErrorHandler, createRequestHandler } from "@squared/rpc";
 import { rpcHandlers } from "@/services";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";

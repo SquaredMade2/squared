@@ -61,7 +61,7 @@ export class ResponseValidationError extends ValidationError {
 	) {
 		super(
 			"response-validation",
-			"https://errors.squared.global/@squared/http-rpc/response-validation",
+			"https://errors.squared.global/@squared/rpc/response-validation",
 			message,
 			params,
 		);
@@ -163,7 +163,7 @@ export function serviceWithSchema<S extends Service>(
 					}
 					throw new ValidationError(
 						"validation",
-						"https://errors.squared.global/@squared/http-rpc/validation",
+						"https://errors.squared.global/@squared/rpc/validation",
 						`${params.instancePath} ${firstError.message}`,
 						params,
 					);

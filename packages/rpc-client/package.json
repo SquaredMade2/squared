@@ -1,5 +1,5 @@
 {
-  "name": "@squared/http-rpc-client",
+  "name": "@squared/rpc-client",
   "version": "0.0.0",
   "private": true,
   "main": "dist/index.js",
