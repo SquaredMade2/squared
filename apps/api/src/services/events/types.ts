@@ -32,12 +32,12 @@ export interface EventRpc {
 	}) => Promise<TaskEvent>;
 	createNotification: ({
 		userId,
-		message,
+		description,
 		type,
 		taskId,
 	}: {
 		userId: string;
-		message: string;
+		description: string;
 		type: NotificationType;
 		taskId: string;
 	}) => Promise<Notification>;

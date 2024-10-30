@@ -32,7 +32,6 @@ const notificationSchema = createSchema<Notification>()(
 		description: z.string().nullable(),
 		createdAt: z.date(),
 		updatedAt: z.date(),
-		workspaceId: z.string(),
 		dismissed: z.boolean(),
 		type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
 	}),
@@ -84,6 +83,15 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 		}),
 		output: taskEventSchema,
 	},
+	createNotification: {
+		input: z.object({
+			userId: z.string(),
+			taskId: z.string(),
+			description: z.string(),
+			type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
+		}),
+		output: notificationSchema,
+	},
 });
 
 export type EventRpcSchema = typeof eventRpcSchema;
@@ -93,6 +101,7 @@ export const createEventRpcHandler = (eventService: EventRpc) =>
 		getTaskEvents: (input) => eventService.getTaskEvents(input),
 		getNotifications: (input) => eventService.getNotifications(input),
 		createLogEvent: (input) => eventService.createLogEvent(input),
+		createNotification: (input) => eventService.createNotification(input),
 	});
 
 export { EventService } from "./event-service";
