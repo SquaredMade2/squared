@@ -7,8 +7,6 @@ import type {
 	Workspace,
 } from "@squared/db";
 
-export type Event = TaskEvent | Commit;
-
 export type TaskValue = string | number | boolean | Date | string[] | null;
 
 export type FullNotification = Notification & {

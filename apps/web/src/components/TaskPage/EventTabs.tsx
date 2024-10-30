@@ -13,7 +13,6 @@ export const EventTabs = () => {
 			<TabsContent value="activity">
 				<div className="flex flex-col bg-card rounded-md text-sm">
 					<CreatedByInformation />
-					{/* <UpdatedByInformation /> */}
 				</div>
 			</TabsContent>
 			<TabsContent value="comments">

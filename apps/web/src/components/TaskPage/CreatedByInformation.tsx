@@ -3,6 +3,7 @@ import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getInitials } from "@/utils/formatting";
 
+// TODO: UPDATE THIS COMPONENT TO USE THE NEW DATE TO HANDLE ALL TASK EVENTS (commits included)
 export const CreatedByInformation = () => {
 	const { events } = useEventStore((state) => state);
 
