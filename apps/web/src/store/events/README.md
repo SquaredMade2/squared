@@ -1,81 +1,122 @@
-
-# Comment Store
+# Event Zustand Store
 
 ## Overview
 
-The Comment Store is a Zustand-based store designed to manage and persist task and commit events. It provides a simple API for adding and fetching events through API calls, with data stored in sessionStorage for persistence across user sessions. This document explains the store's functionality and provides usage examples.
+This README documents the Event Zustand store, which is responsible for managing the state of events, notifications, and commits in our application. The store is built using Zustand, a small, fast, and scalable state management solution.
 
-## Table of Contents
+## Store Structure
 
-1. [CommentResponse Type](#commentresponse-type)
-2. [Comment Store Api](#comment-store-api)
-    - [addComment](#addcomment)
-    - [updateComment](#updatecomment)
-    - [deleteComment](#deletecomment)
-    - [getComment](#getcomment)
-    - [getAllComments](#getallcomments)
+The Event store consists of two main parts: the state and the actions.
 
-## CommentResponse Type
+### State
 
-The `CommentResponse` type is used to describe the structure of data returned from the API.
+The state is defined by the `EventState` type:
 
 ```typescript
-type CommentResponse = {
-  comment: Comment | null; // Can either be a comment object or null
-  message?: string;        // May contain a message
-  variant: "default" | "destructive"; // Type of toast to display
-}
+export type EventState = {
+  events: TaskEvent[];
+  notifications: GetNotificationsResponse;
+  commits: TaskEvent[];
+};
 ```
 
-## Comment Store API
+- `events`: An array of `TaskEvent` objects representing task-related events.
+- `notifications`: A `GetNotificationsResponse` object containing notification data.
+- `commits`: An array of `TaskEvent` objects representing commit-related events.
 
-### `addComment`
+### Actions
 
-The `addComment` method adds a new comment event to the store and sends it to the backend via an API call.
+The store provides the following actions to update the state:
 
 ```typescript
-addComment: (
-  comment: Partial<Comment> // Comment object to be added
-) => Promise<CommentResponse>
+type EventActions = {
+  setNotifications: (notifications: Notification[]) => void;
+  setEvents: (events: TaskEvent[]) => void;
+  setCommits: (commits: TaskEvent[]) => void;
+};
 ```
 
-### `updateComment`
+- `setNotifications`: Updates the notifications in the store.
+- `setEvents`: Updates the task events in the store.
+- `setCommits`: Updates the commit events in the store.
 
-The `updateComment` method updates a specified comment based on a given ID and sends it to the backend via an API call.
+## Usage
+
+To use the Event store in your application, follow these steps:
+
+1. Import the store:
+
+   ```typescript
+   import { useEventStore } from "@/store";
+   ```
+
+2. Access the state and actions in your component:
+
+   ```typescript
+   function MyComponent() {
+     const {
+       events,
+       notifications,
+       commits,
+       setEvents,
+       setNotifications,
+       setCommits,
+     } = useEventStore((state) => state);
+
+     // Use the state and actions as needed
+     // ...
+   }
+   ```
+
+### Examples
+
+#### Updating notifications
 
 ```typescript
-updateComment: (
-  commentId: string,        // Comment ID related to the comment to update
-  comment: Partial<Comment> // Comment object containing updated data
-) => Promise<CommentResponse>
+const updateNotifications = (newNotifications: Notification[]) => {
+  setNotifications(newNotifications);
+};
 ```
 
-### `deleteComment`
-
-The `deleteComment` method deletes a specified comment based on a given ID and sends it to the backend via an API call.
+#### Fetching and setting events
 
 ```typescript
-deleteComment: (
-  commentId: string // Comment ID related to the comment to delete
-) => Promise<void>
+const fetchAndSetEvents = async () => {
+  const fetchedEvents = await api.getEvents();
+  setEvents(fetchedEvents);
+};
 ```
 
-### `getComment`
-
-The `getComment` method fetches a specified comment from the backend.
+#### Updating commits
 
 ```typescript
-getComment: (
-  commentId: string // Comment ID related to the comment to fetch
-  ) => Promise<CommentResponse>
+const updateCommits = (newCommits: TaskEvent[]) => {
+  setCommits(newCommits);
+};
 ```
 
-### `getAllComments`
+## Best Practices
 
-The `getAllComment` method fetches all comments associated with a specified task from the backend.
+1. Always use the provided actions to update the store. Don't modify the state directly.
+2. Keep the store updates as atomic as possible. Update only what's necessary.
+3. When fetching data from an API, update the store immediately after receiving the response.
+4. Use the store's state for rendering components and avoid storing redundant data in component state.
 
-```typescript
-getAllComments: (
-  taskId: string // Task ID related to the task which all comments will be fetched
-  ) => Promise<Comment[]>
-```
+## Types
+
+The store uses the following types:
+
+- `TaskEvent`: Represents a task-related event (imported from `@squared/db`).
+- `Notification`: Represents a notification (imported from `@squared/db`).
+- `GetNotificationsResponse`: The response type for fetching notifications (imported from `@/gen/rpc/event`).
+
+Make sure these types are correctly imported and up-to-date in your project.
+
+## Troubleshooting
+
+If you encounter issues with the Event store:
+
+1. Verify that you're importing and using the store correctly.
+2. Check that all required types are properly imported.
+3. Ensure that actions are being called with the correct parameter types.
+4. Use the Redux DevTools (if configured with Zustand) to inspect the store's state and actions.

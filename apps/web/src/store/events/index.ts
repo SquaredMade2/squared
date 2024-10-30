@@ -7,10 +7,10 @@ export * from "./store";
 export const createEventStore = (
 	initState: EventState = { events: [], notifications: [], commits: [] },
 ) => {
-	return createStore<EventStore>()(() => ({
+	return createStore<EventStore>()((set) => ({
 		...initState,
 		setNotifications: (notifications) => ({ notifications }),
-		setEvents: (events) => ({ events }),
-		setCommits: (commits) => ({ commits }),
+		setEvents: (events) => set({ events }),
+		setCommits: (commits) => set({ commits }),
 	}));
 };
