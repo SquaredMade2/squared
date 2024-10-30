@@ -4,7 +4,6 @@ import {
 	createSchema,
 	createServiceSchema,
 } from "@squared/rpc";
-import { SprintService } from "./sprint-service";
 import type {
 	NextSprintPayload,
 	AddRetrospectivePayload,
@@ -156,4 +155,4 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 			sprintService.getRetrospectiveItems(input),
 	});
 
-export { SprintService };
+export { SprintService } from "./sprint-service";

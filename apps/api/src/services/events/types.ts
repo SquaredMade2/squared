@@ -1,4 +1,9 @@
-import type { Commit, Notification, TaskEvent } from "@squared/db";
+import type {
+	Commit,
+	Notification,
+	NotificationType,
+	TaskEvent,
+} from "@squared/db";
 
 export type Event = TaskEvent | Commit;
 
@@ -25,4 +30,15 @@ export interface EventRpc {
 		authorId: string;
 		changes: Partial<TaskEvent>;
 	}) => Promise<TaskEvent>;
+	createNotification: ({
+		userId,
+		message,
+		type,
+		taskId,
+	}: {
+		userId: string;
+		message: string;
+		type: NotificationType;
+		taskId: string;
+	}) => Promise<Notification>;
 }

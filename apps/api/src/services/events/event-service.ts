@@ -1,4 +1,10 @@
-import type { PrismaClient, Notification, TaskEvent, Task } from "@squared/db";
+import type {
+	PrismaClient,
+	Notification,
+	TaskEvent,
+	Task,
+	NotificationType,
+} from "@squared/db";
 import type { EventRpc, TaskValue, TaskEventsReturn } from "./types";
 
 export class EventService implements EventRpc {
@@ -42,13 +48,74 @@ export class EventService implements EventRpc {
 		authorId: string;
 		changes: Partial<Task>;
 	}): Promise<TaskEvent> {
+		const task = await this.taskRepository.findUnique({
+			where: { id: taskId },
+			include: { Author: true, Workspace: true },
+		});
+
+		if (!task) {
+			throw new Error(`Task with id ${taskId} not found`);
+		}
+
 		const diff = await this.getTaskDiff(taskId, changes);
 
-		return this.taskEventRepository.create({
+		const taskEvent = await this.taskEventRepository.create({
 			data: {
 				taskId,
 				authorId,
 				message: diff,
+			},
+		});
+
+		// Generate notification
+		if (changes.assigneeId && changes.assigneeId !== task.assigneeId) {
+			await this.createNotification({
+				userId: changes.assigneeId,
+				taskId,
+				description: `You have been assigned to task "${task.title}"`,
+				type: "ASSIGNED",
+			});
+		}
+
+		if (changes.status) {
+			const statusChangeMessage = `Task "${task.title}" status changed to ${changes.status}`;
+			await this.createNotification({
+				userId: task.authorId,
+				taskId,
+				description: statusChangeMessage,
+				type: "PARTICIPATING",
+			});
+
+			if (task.assigneeId && task.assigneeId !== task.authorId) {
+				await this.createNotification({
+					userId: task.assigneeId,
+					taskId,
+					description: statusChangeMessage,
+					type: "PARTICIPATING",
+				});
+			}
+		}
+
+		return taskEvent;
+	}
+
+	async createNotification({
+		userId,
+		taskId,
+		description,
+		type,
+	}: {
+		userId: string;
+		taskId: string;
+		description?: string;
+		type: NotificationType;
+	}): Promise<Notification> {
+		return this.notificationRepository.create({
+			data: {
+				userId,
+				taskId,
+				description,
+				type,
 			},
 		});
 	}
