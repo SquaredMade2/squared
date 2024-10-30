@@ -466,6 +466,40 @@ const schemas = {
 			},
 		},
 	},
+	Label: {
+		type: "object",
+		properties: {
+			name: {
+				type: "string",
+				description: "Name of the label.",
+			},
+			id: {
+				type: "string",
+				description: "Unique identifier for the label.",
+			},
+			description: {
+				schema: {
+					oneOf: {
+						with: {
+							type: "string",
+							description: "Description of the label.",
+						},
+						without: {
+							type: "null",
+						},
+					},
+				},
+			},
+			workspaceId: {
+				type: "string",
+				description: "Specific workspace associated with the label.",
+			},
+			color: {
+				type: "string",
+				description: "Color of the label.",
+			},
+		},
+	},
 	SavedFilter: {
 		type: "object",
 		properties: {
