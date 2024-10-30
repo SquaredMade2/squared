@@ -30,7 +30,6 @@ import { createErrorHandler, createRequestHandler } from "@squared/rpc";
 import { rpcHandlers } from "@/services";
 import { setupSwagger } from "../../swagger";
 import "dotenv/config";
-//this is a change to the api folder for CI testing
 
 export const prisma = new PrismaClient({
 	datasources: {
