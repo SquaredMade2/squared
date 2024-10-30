@@ -1,10 +1,10 @@
 export default {
-	"/api/user/{userId}/workspace": {
+	"/api/user/{userId}/avatar": {
 		get: {
-			tags: ["Workspace"],
-			summary: "Retrieve all workspaces for a specific user",
+			tags: ["User"],
+			summary: "User avatars",
 			description:
-				"Find and return all workspaces associated with a specific user ID.",
+				"Find and return an array of user avatars from all workspaces associated with a specific user.",
 			parameters: [
 				{
 					in: "path",
@@ -13,13 +13,12 @@ export default {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the user whose workspaces are to be retrieved",
+					description: "The ID of the user.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of workspace objects",
+					description: "User avatars array and variant.",
 					content: {
 						"application/json": {
 							schema: {
@@ -27,8 +26,10 @@ export default {
 								properties: {
 									data: {
 										type: "array",
-										items: {
-											$ref: "#/components/schemas/Workspace",
+										properties: {
+											items: {
+												$ref: "#/components/schemas/UserAvatar",
+											},
 										},
 									},
 									variant: {
@@ -40,7 +41,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Workspaces not found",
+					description: "User is not part of any workspace",
 					content: {
 						"application/json": {
 							schema: {
