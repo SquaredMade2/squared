@@ -1,5 +1,5 @@
 import type { PrismaClient, Notification, TaskEvent, Task } from "@squared/db";
-import type { EventRpc, Event, TaskValue } from "./types";
+import type { EventRpc, TaskValue, TaskEventsReturn } from "./types";
 
 export class EventService implements EventRpc {
 	private taskEventRepository: PrismaClient["taskEvent"];
@@ -13,18 +13,20 @@ export class EventService implements EventRpc {
 		this.notificationRepository = db.notification;
 		this.taskRepository = db.task;
 	}
-	async getTaskEvents({ taskId }: { taskId: string }): Promise<Event[]> {
+	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
 		const [taskEvents, commits] = await Promise.all([
 			this.taskEventRepository.findMany({ where: { taskId } }),
 			this.commitRepository.findMany({ where: { taskId } }),
 		]);
-		return [...taskEvents, ...commits].sort((a, b) => {
-			const aTime =
-				"createdAt" in a ? a.createdAt.getTime() : a.timestamp.getTime();
-			const bTime =
-				"createdAt" in b ? b.createdAt.getTime() : b.timestamp.getTime();
-			return aTime - bTime;
-		});
+		return [...taskEvents, ...commits]
+			.sort((a, b) => {
+				const aTime =
+					"createdAt" in a ? a.createdAt.getTime() : a.timestamp.getTime();
+				const bTime =
+					"createdAt" in b ? b.createdAt.getTime() : b.timestamp.getTime();
+				return aTime - bTime;
+			})
+			.map((e) => ("createdAt" in e ? this.deserializeLogEvent(e) : e));
 	}
 	async getNotifications({
 		userId,
@@ -103,9 +105,9 @@ export class EventService implements EventRpc {
 		return String(value);
 	}
 
-	async deserializeLogEvent(taskEvent: TaskEvent): Promise<{
+	private deserializeLogEvent(taskEvent: TaskEvent): {
 		[key: string]: { oldValue: TaskValue; newValue: TaskValue };
-	}> {
+	} {
 		const changes: {
 			[key: string]: { oldValue: TaskValue; newValue: TaskValue };
 		} = {};

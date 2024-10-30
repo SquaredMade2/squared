@@ -4,8 +4,17 @@ export type Event = TaskEvent | Commit;
 
 export type TaskValue = string | number | boolean | Date | string[] | null;
 
+export type TaskEventsReturn = Promise<
+	(
+		| {
+				[key: string]: { oldValue: TaskValue; newValue: TaskValue };
+		  }
+		| Commit
+	)[]
+>;
+
 export interface EventRpc {
-	getTaskEvents: ({ taskId }: { taskId: string }) => Promise<Event[]>;
+	getTaskEvents: ({ taskId }: { taskId: string }) => TaskEventsReturn;
 	getNotifications: ({ userId }: { userId: string }) => Promise<Notification[]>;
 	createLogEvent: ({
 		taskId,
