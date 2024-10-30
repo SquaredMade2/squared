@@ -37,7 +37,6 @@ export function createRoute(): Route<Params> {
 					},
 					include: {
 						Task: true,
-						Workspace: true,
 					},
 				});
 
@@ -111,7 +110,6 @@ export function createRoute(): Route<Params> {
 					data: body,
 					include: {
 						Task: true,
-						Workspace: true,
 					},
 				});
 

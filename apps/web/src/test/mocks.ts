@@ -1,4 +1,3 @@
-import type { NotificationTask } from "@/store/notifications";
 import type {
 	Commit,
 	Task,
@@ -219,55 +218,24 @@ export const STANDARD_NOTIFICATION_2: Notification = {
 	dismissed: false,
 };
 
-export const STANDARD_NOTIFICATION_TASK: NotificationTask = {
-	...STANDARD_NOTIFICATION,
-	Task: STANDARD_TASK,
-	Workspace: STANDARD_WORKSPACE,
-};
-export const STANDARD_NOTIFICATION_TASK_2: NotificationTask = {
-	...STANDARD_NOTIFICATION_2,
-	Task: STANDARD_TASK,
-	Workspace: STANDARD_WORKSPACE,
-};
-
 export const STANDARD_COMMIT: Commit = {
 	id: "FC3AB6C7-90C5-4376-AA9F-F1768CA6A085",
-	treeId: "tree1",
-	distinct: true,
 	message: "Initial commit",
-	timestamp: "2023-06-01T12:00:00Z",
 	url: "https://github.com/repo/commit/1",
 	authorName: STANDARD_USER.name,
-	authorEmail: STANDARD_USER.email,
-	authorUsername: STANDARD_USER.username,
-	committerName: STANDARD_USER.name,
-	committerEmail: STANDARD_USER.email,
-	committerUsername: STANDARD_USER.username,
-	added: ["file1.txt"],
-	removed: [],
-	modified: [],
 	repoName: "repo",
 	owner: "owner",
-	activityId: "activity1",
+	taskId: STANDARD_TASK.id,
+	branchId: "branch-1",
+	timestamp: new Date("2023-06-01T12:00:00Z"),
 };
 
 export const STANDARD_TASK_EVENT: TaskEvent = {
 	id: "8057DA5D-3412-4CB6-B192-7FE060AE1B9F",
-	type: "CREATED",
 	authorId: STANDARD_USER.id,
-	authorName: STANDARD_USER.name,
-	activityId: "activity1",
 	createdAt: new Date(),
 	taskId: "task1",
-	originalValue: null,
-	updatedValue: null,
-	originalAssigneeId: null,
-	originalAssigneeName: null,
-	updatedAssigneeId: null,
-	updatedAssigneeName: null,
-	gitUpdated: null,
-	originalLabels: [],
-	updatedLabels: [],
+	message: "Task created",
 };
 
 export const STANDARD_LABEL: Label = {

@@ -39,7 +39,6 @@ export function createRoute(): Route {
 								data,
 								include: {
 									Task: true,
-									Workspace: true,
 								},
 							}),
 						),

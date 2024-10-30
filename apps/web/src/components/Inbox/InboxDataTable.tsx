@@ -25,12 +25,8 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { columns } from "./columns";
-import {
-	useNotificationStore,
-	type NotificationTask,
-} from "@/store/notifications";
 import { Checkbox } from "../ui/checkbox";
-import { useAuthStore, useUserStore } from "@/store";
+import { useAuthStore, useEventStore, useUserStore } from "@/store";
 import {
 	BellOff,
 	Check,
@@ -40,12 +36,15 @@ import {
 	Circle,
 } from "lucide-react";
 import type { NotificationFilter } from "@/app/inbox/page";
+import { eventService } from "@/lib/services";
+import { TODO } from "@squared/context";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
 
 export function InboxDataTable({
 	data,
 	filterType,
 }: {
-	data: NotificationTask[];
+	data: GetNotificationsResponse;
 	filterType: NotificationFilter;
 }) {
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -58,11 +57,9 @@ export function InboxDataTable({
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
-	const { updateManyNotifications, deleteManyNotifications } =
-		useNotificationStore((state) => state);
 	const { updateUser, getUser } = useUserStore((state) => state);
 	const { user, setUser } = useAuthStore((state) => state);
-	const { notifications } = useNotificationStore((state) => state);
+	const { notifications } = useEventStore((state) => state);
 	const table = useReactTable({
 		data,
 		columns,
@@ -129,10 +126,10 @@ export function InboxDataTable({
 
 	const handleMarkAsUnread = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await updateManyNotifications(
-			selectedRows.map((row) => row.original),
-			{ read: true },
-		);
+		await eventService.toggleNotification(TODO, {
+			notificationIds: selectedRows.map((row) => row.original.id),
+			read: true,
+		});
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
@@ -142,10 +139,10 @@ export function InboxDataTable({
 
 	const handleMarkAsRead = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await updateManyNotifications(
-			selectedRows.map((row) => row.original),
-			{ read: false },
-		);
+		await eventService.toggleNotification(TODO, {
+			notificationIds: selectedRows.map((row) => row.original.id),
+			read: false,
+		});
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
@@ -155,10 +152,10 @@ export function InboxDataTable({
 
 	const handleMarkAsDismissed = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await updateManyNotifications(
-			selectedRows.map((row) => row.original),
-			{ dismissed: true },
-		);
+		await eventService.toggleNotification(TODO, {
+			notificationIds: selectedRows.map((row) => row.original.id),
+			dismissed: true,
+		});
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
@@ -168,10 +165,10 @@ export function InboxDataTable({
 
 	const handleMarkAsRestored = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await updateManyNotifications(
-			selectedRows.map((row) => row.original),
-			{ dismissed: false },
-		);
+		await eventService.toggleNotification(TODO, {
+			notificationIds: selectedRows.map((row) => row.original.id),
+			dismissed: false,
+		});
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
@@ -181,7 +178,9 @@ export function InboxDataTable({
 
 	const handleDeleteMany = async () => {
 		const selectedRows = table.getFilteredSelectedRowModel().rows;
-		await deleteManyNotifications(selectedRows.map((row) => row.original));
+		await eventService.deleteNotification(TODO, {
+			notificationIds: selectedRows.map((row) => row.original.id),
+		});
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];

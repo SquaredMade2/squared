@@ -1,8 +1,7 @@
 import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { NotificationTask } from "@/store/notifications";
-import type { Workspace } from "@squared/db";
+import type { Workspace, Notification } from "@squared/db";
 import { Label } from "@repo/ui/label";
 import {
 	BadgePlus,
@@ -19,7 +18,7 @@ type SidebarProps = {
 	setFilterType: (type: NotificationFilter) => void;
 	setWorkspace: (workspace: string) => void;
 	filterType: NotificationFilter;
-	readNotifications: NotificationTask[];
+	readNotifications: Notification[];
 	workspaces: Workspace[];
 	workspace: string | null;
 };

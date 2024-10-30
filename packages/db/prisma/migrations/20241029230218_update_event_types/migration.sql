@@ -109,8 +109,3 @@ ALTER TABLE "TaskEvent" ADD CONSTRAINT "TaskEvent_taskId_fkey" FOREIGN KEY ("tas
 -- AddForeignKey
 ALTER TABLE "TaskEvent" ADD CONSTRAINT "TaskEvent_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- DropForeignKey
-ALTER TABLE "Notification" DROP CONSTRAINT "Notification_workspaceId_fkey";
-
--- AlterTable
-ALTER TABLE "Notification" DROP COLUMN "workspaceId";

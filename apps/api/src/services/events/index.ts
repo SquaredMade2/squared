@@ -4,36 +4,22 @@ import {
 	createSchema,
 	createServiceSchema,
 } from "@squared/rpc";
-import type { Commit, Notification, TaskEvent } from "@squared/db";
-import type { EventRpc } from "./types";
+import type { TaskEvent } from "@squared/db";
+import type { FullNotification, EventRpc } from "./types";
+import {
+	commitSchema,
+	notificationSchema,
+	taskSchema,
+	workspaceSchema,
+} from "../schema";
 
 // Define type-safe Zod schemas
-const commitSchema = createSchema<Commit>()(
-	z.object({
-		id: z.string(),
-		branchId: z.string(),
-		message: z.string(),
-		timestamp: z.date(),
-		url: z.string(),
-		authorName: z.string().nullable(),
-		repoName: z.string().nullable(),
-		owner: z.string().nullable(),
-		taskId: z.string().nullable(),
-	}),
-);
 
-const notificationSchema = createSchema<Notification>()(
+const fullNotificationSchema = createSchema<FullNotification>()(
 	z.object({
-		id: z.string(),
-		userId: z.string(),
-		taskId: z.string(),
-		read: z.boolean(),
-		saved: z.boolean(),
-		description: z.string().nullable(),
-		createdAt: z.date(),
-		updatedAt: z.date(),
-		dismissed: z.boolean(),
-		type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
+		...notificationSchema.shape,
+		Workspace: workspaceSchema,
+		Task: taskSchema,
 	}),
 );
 
@@ -73,7 +59,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 	},
 	getNotifications: {
 		input: z.object({ userId: z.string() }),
-		output: z.array(notificationSchema),
+		output: z.array(fullNotificationSchema),
 	},
 	createLogEvent: {
 		input: z.object({
@@ -86,11 +72,24 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 	createNotification: {
 		input: z.object({
 			userId: z.string(),
+			workspaceId: z.string(),
 			taskId: z.string(),
 			description: z.string(),
 			type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
 		}),
 		output: notificationSchema,
+	},
+	toggleNotification: {
+		input: z.object({
+			notificationIds: z.array(z.string()),
+			read: z.boolean().optional(),
+			dismissed: z.boolean().optional(),
+		}),
+		output: z.array(notificationSchema),
+	},
+	deleteNotification: {
+		input: z.object({ notificationIds: z.array(z.string()) }),
+		output: z.void(),
 	},
 });
 
@@ -102,6 +101,8 @@ export const createEventRpcHandler = (eventService: EventRpc) =>
 		getNotifications: (input) => eventService.getNotifications(input),
 		createLogEvent: (input) => eventService.createLogEvent(input),
 		createNotification: (input) => eventService.createNotification(input),
+		toggleNotification: (input) => eventService.toggleNotification(input),
+		deleteNotification: (input) => eventService.deleteNotification(input),
 	});
 
 export { EventService } from "./event-service";

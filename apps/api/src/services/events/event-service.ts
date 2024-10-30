@@ -5,7 +5,12 @@ import type {
 	Task,
 	NotificationType,
 } from "@squared/db";
-import type { EventRpc, TaskValue, TaskEventsReturn } from "./types";
+import type {
+	EventRpc,
+	TaskValue,
+	TaskEventsReturn,
+	FullNotification,
+} from "./types";
 
 export class EventService implements EventRpc {
 	private taskEventRepository: PrismaClient["taskEvent"];
@@ -36,8 +41,11 @@ export class EventService implements EventRpc {
 	}
 	async getNotifications({
 		userId,
-	}: { userId: string }): Promise<Notification[]> {
-		return this.notificationRepository.findMany({ where: { userId } });
+	}: { userId: string }): Promise<FullNotification[]> {
+		return this.notificationRepository.findMany({
+			where: { userId },
+			include: { Task: true, Workspace: true },
+		});
 	}
 	async createLogEvent({
 		taskId,
@@ -72,6 +80,7 @@ export class EventService implements EventRpc {
 			await this.createNotification({
 				userId: changes.assigneeId,
 				taskId,
+				workspaceId: task.workspaceId,
 				description: `You have been assigned to task "${task.title}"`,
 				type: "ASSIGNED",
 			});
@@ -82,6 +91,7 @@ export class EventService implements EventRpc {
 			await this.createNotification({
 				userId: task.authorId,
 				taskId,
+				workspaceId: task.workspaceId,
 				description: statusChangeMessage,
 				type: "PARTICIPATING",
 			});
@@ -90,6 +100,7 @@ export class EventService implements EventRpc {
 				await this.createNotification({
 					userId: task.assigneeId,
 					taskId,
+					workspaceId: task.workspaceId,
 					description: statusChangeMessage,
 					type: "PARTICIPATING",
 				});
@@ -98,15 +109,16 @@ export class EventService implements EventRpc {
 
 		return taskEvent;
 	}
-
 	async createNotification({
 		userId,
 		taskId,
 		description,
+		workspaceId,
 		type,
 	}: {
 		userId: string;
 		taskId: string;
+		workspaceId: string;
 		description?: string;
 		type: NotificationType;
 	}): Promise<Notification> {
@@ -115,11 +127,40 @@ export class EventService implements EventRpc {
 				userId,
 				taskId,
 				description,
+				workspaceId,
 				type,
 			},
 		});
 	}
+	async toggleNotification({
+		notificationIds,
+		read,
+		dismissed,
+	}: {
+		notificationIds: string[];
+		read?: boolean;
+		dismissed?: boolean;
+	}): Promise<Notification[]> {
+		// First, update the notifications
+		await this.notificationRepository.updateMany({
+			where: { id: { in: notificationIds } },
+			data: { read, dismissed },
+		});
 
+		// Then, fetch and return the updated notifications
+		const updatedNotifications = await this.notificationRepository.findMany({
+			where: { id: { in: notificationIds } },
+		});
+
+		return updatedNotifications;
+	}
+	async deleteNotification({
+		notificationIds,
+	}: { notificationIds: string[] }): Promise<void> {
+		await this.notificationRepository.deleteMany({
+			where: { id: { in: notificationIds } },
+		});
+	}
 	private async getTaskDiff(
 		taskId: string,
 		changes: Partial<Task>,
@@ -155,7 +196,6 @@ export class EventService implements EventRpc {
 
 		return diff.length > 0 ? diff : "No changes";
 	}
-
 	private formatValue(value: Task[keyof Task]): string {
 		if (value === null || value === undefined) {
 			return "null";
@@ -171,7 +211,6 @@ export class EventService implements EventRpc {
 		}
 		return String(value);
 	}
-
 	private deserializeLogEvent(taskEvent: TaskEvent): {
 		[key: string]: { oldValue: TaskValue; newValue: TaskValue };
 	} {
@@ -191,7 +230,6 @@ export class EventService implements EventRpc {
 
 		return changes;
 	}
-
 	private parseValue(value: string): TaskValue {
 		if (value === "null") {
 			return null;

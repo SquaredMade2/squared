@@ -23,6 +23,7 @@ import {
 import { DialogTitle } from "@repo/ui/dialog";
 import { VisuallyHidden } from "@repo/ui/visually-hidden";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
 
 type NotificationFilter =
 	| "INBOX"
@@ -34,18 +35,13 @@ type NotificationFilter =
 	| "CREATED"
 	| "WORKSPACE";
 
-type NotificationTask = {
-	type: string;
-	workspaceId: string;
-};
-
 type Workspace = { id: string; name: string };
 
 interface MobileInboxSwitcherProps {
 	setFilterType: (type: NotificationFilter) => void;
 	setWorkspace: (workspace: string) => void;
 	filterType: NotificationFilter;
-	readNotifications: NotificationTask[];
+	readNotifications: GetNotificationsResponse;
 	workspaces: Workspace[];
 	workspace: string | null;
 	filterRead: boolean;

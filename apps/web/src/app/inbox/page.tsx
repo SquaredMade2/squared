@@ -7,13 +7,16 @@ import {
 } from "@/components/Inbox";
 import {
 	useAuthStore,
-	useNotificationStore,
+	useEventStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import IconLeftMenu from "@/components/IconNavbar";
 import type { NotificationType } from "@squared/db";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
+import { eventService } from "@/lib/services";
+import { TODO } from "@squared/context";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
 
 export type NotificationFilter =
 	| NotificationType
@@ -23,21 +26,19 @@ export type NotificationFilter =
 	| "WORKSPACE";
 
 export default function InboxPage() {
-	const { notifications, getAllNotifications } = useNotificationStore(
-		(state) => state,
-	);
+	const { notifications } = useEventStore((state) => state);
 	const { workspaces } = useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
-		useState(notifications);
+		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const { getUserAvatars } = useUserStore((state) => state);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
-			user && (await getAllNotifications(user.id));
+			user && (await eventService.getNotifications(TODO, { userId: user.id }));
 		};
 		fetchNotifications();
 	}, [user]);
