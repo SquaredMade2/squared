@@ -104,9 +104,12 @@ export const createCommentStore = (
 				const response = await axios.get(
 					`${process.env.NEXT_PUBLIC_SERVER}/api/task/${taskId}/comment`,
 				);
-				const commentData: Comment[] = response.data.data;
-				set({ comments: commentData });
-				return commentData;
+				const commentData: ApiReturnType<Comment[]> = response.data;
+				if (commentData.data) {
+					set({ comments: commentData.data });
+					return commentData.data;
+				}
+				return [];
 			} catch (error) {
 				console.error("Error in getAllComments:", error);
 				return [];
