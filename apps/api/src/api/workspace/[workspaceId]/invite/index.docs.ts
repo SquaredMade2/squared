@@ -5,16 +5,17 @@ export default {
 			summary:
 				"Create and send an invite(s) to a user or group of users to join a workspace.",
 			description:
-				"Create a new task with a given ID. If a task with the provided ID already exists, an error will be returned.",
+				"Invite token sent to users found by their emails to join a specific workspace.",
 			parameters: [
 				{
 					in: "path",
-					name: "taskId",
+					name: "workspaceId",
 					schema: {
 						type: "string",
 					},
 					required: true,
-					description: "The ID of the new task",
+					description:
+						"The ID of the workspace that the invites are being sent for.",
 				},
 			],
 			requestBody: {
@@ -23,27 +24,62 @@ export default {
 				content: {
 					"application/json": {
 						schema: {
-							$ref: "#/components/schemas/Task",
+							oneOf: {
+								email: {
+									type: "string",
+								},
+								emails: {
+									type: "array",
+									items: {
+										type: "string",
+									},
+								},
+							},
 						},
 					},
 				},
 			},
 			responses: {
 				201: {
-					description: "The newly created task object",
+					description: "Invitation sent successfully",
 					content: {
 						"application/json": {
 							schema: {
-								$ref: "#/components/schemas/Task",
+								type: "object",
+								properties: {
+									data: {
+										type: "null",
+									},
+									message: {
+										type: "string",
+									},
+									variant: {
+										type: "string",
+									},
+								},
 							},
 						},
 					},
 				},
-				400: {
-					description: "Task already exists",
+				404: {
+					description: "Workspace not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
-					description: "Internal server error",
+					description: "Internal server error or JWT_SECRET is not defined",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
