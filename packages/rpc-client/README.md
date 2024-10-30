@@ -1,6 +1,6 @@
-# @squared/http-rpc-client
+# @squared/rpc-client
 
-A lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) client for modern Node.js applications. This client is designed to work seamlessly with the @squared/http-rpc server implementation.
+A lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) client for modern Node.js applications. This client is designed to work seamlessly with the @squared/rpc server implementation.
 
 ## Features
 
@@ -18,7 +18,7 @@ A lightweight, TypeScript-based HTTP-RPC (Remote Procedure Call) client for mode
 Here's a simple example of how to use the RPCClient:
 
 ```typescript
-import { RPCClient } from "@squared/http-rpc-client";
+import { RPCClient } from "@squared/rpc-client";
 
 const client = new RPCClient("http://api.example.com", "userService");
 
@@ -39,7 +39,7 @@ getUser("123");
 If you need to pass context (e.g., for request ID or deadline), you can use the RPCContextClient:
 
 ```typescript
-import { RPCContextClient } from "@squared/http-rpc-client";
+import { RPCContextClient } from "@squared/rpc-client";
 import * as context from "@squared/context";
 
 const client = new RPCContextClient(
@@ -106,7 +106,7 @@ interface RequestOptions {
 The client throws `RpcResponseError` for errors returned by the server. You can catch and handle these errors as follows:
 
 ```typescript
-import { RpcResponseError } from "@squared/http-rpc-client";
+import { RpcResponseError } from "@squared/rpc-client";
 
 try {
   const result = await client.request("someMethod", {
