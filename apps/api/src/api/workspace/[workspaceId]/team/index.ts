@@ -15,13 +15,13 @@ export function createRoute(): Route<Params> {
 			try {
 				// Find teams by team ID
 				logger.info("Finding teams by workspace ID: %s", workspaceId);
-				const teams: Team[] | null = await prisma.team.findMany({
+				const teams: Team[] = await prisma.team.findMany({
 					where: { workspaceId },
 				});
 
-				if (!teams) {
+				if (teams.length === 0) {
 					return {
-						data: teams,
+						data: null,
 						message: "Teams not found",
 						variant: "destructive",
 					};

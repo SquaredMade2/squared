@@ -1,7 +1,7 @@
 export default {
 	"/api/workspace/{workspaceId}/filter": {
 		get: {
-			tags: ["Workspace"],
+			tags: ["Filter"],
 			summary: "Retrieve a list of filters by workspace ID",
 			description: "Find and return a list of filters by workspace ID.",
 			parameters: [

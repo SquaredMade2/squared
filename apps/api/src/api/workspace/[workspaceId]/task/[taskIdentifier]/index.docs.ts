@@ -1,7 +1,7 @@
 export default {
 	"/api/workspace/{workspaceId}/task/{taskIdentifier}": {
 		get: {
-			tags: ["Workspace"],
+			tags: ["Task"],
 			summary:
 				"Retrieve a task within a specific workspace by the tasks unique system identifier.",
 			description:

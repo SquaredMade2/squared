@@ -23,9 +23,17 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "array",
-								items: {
-									$ref: "#/components/schemas/Team",
+								type: "object",
+								properties: {
+									data: {
+										type: "array",
+										items: {
+											$ref: "#/components/schemas/Team",
+										},
+									},
+									variant: {
+										type: "string",
+									},
 								},
 							},
 						},
@@ -33,9 +41,23 @@ export default {
 				},
 				404: {
 					description: "Teams not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
