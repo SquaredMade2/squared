@@ -165,7 +165,6 @@ export const Footer = () => {
 					<div className="flex space-x-4 text-sm text-muted-foreground">
 						<div className="flex items-center">
 							<MapPin className="h-4 w-4 mr-2" />
-							123 Business St, Tech City, 12345
 						</div>
 						<div className="flex items-center">
 							<Phone className="h-4 w-4 mr-2" />
