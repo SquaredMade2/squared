@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Linkedin, Mail, Phone } from "lucide-react";
 
 export const Footer = () => {
 	const links = [
@@ -164,8 +164,7 @@ export const Footer = () => {
 					</div>
 					<div className="flex space-x-4 text-sm text-muted-foreground">
 						<div className="flex items-center">
-							<MapPin className="h-4 w-4 mr-2" />
-							123 Business St, Tech City, 12345
+							{/* <MapPin className="h-4 w-4 mr-2" /> */}
 						</div>
 						<div className="flex items-center">
 							<Phone className="h-4 w-4 mr-2" />
