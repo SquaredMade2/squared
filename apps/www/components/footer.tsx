@@ -51,7 +51,7 @@ export const Footer = () => {
 
 	return (
 		<footer className="relative bg-card text-foreground">
-			<div className="container mx-auto px-4 py-12">
+			<div className="container max-w-7xl mx-auto px-4 py-12">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 					<div className="space-y-4">
 						<Logo className="justify-start" />
