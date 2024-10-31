@@ -23,9 +23,17 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "array",
-								items: {
-									$ref: "#/components/schemas/Notification",
+								type: "object",
+								properties: {
+									data: {
+										type: "array",
+										items: {
+											$ref: "#/components/schemas/Notification",
+										},
+									},
+									variant: {
+										type: "string",
+									},
 								},
 							},
 						},
@@ -33,9 +41,23 @@ export default {
 				},
 				404: {
 					description: "User or notifications not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
@@ -65,9 +87,15 @@ export default {
 							schema: {
 								type: "object",
 								properties: {
+									data: {
+										type: "null",
+									},
 									message: {
 										type: "string",
 										example: "Notifications cleared",
+									},
+									variant: {
+										type: "string",
 									},
 								},
 							},
@@ -76,6 +104,13 @@ export default {
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
