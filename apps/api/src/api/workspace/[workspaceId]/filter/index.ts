@@ -19,10 +19,10 @@ export function createRoute(): Route<Params> {
 					where: { workspaceId },
 				});
 
-				if (!filters) {
+				if (filters.length === 0) {
 					return {
-						data: filters,
-						message: "Teams not found",
+						data: null,
+						message: "Filters not found",
 						variant: "destructive",
 					};
 				}

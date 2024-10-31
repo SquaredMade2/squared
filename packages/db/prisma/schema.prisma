@@ -54,6 +54,12 @@ enum SprintStatus {
   COMPLETED
 }
 
+enum RetrospectiveItemType {
+  wentWell
+  toImprove
+  actionItems
+}
+
 model Commit {
   id                String   @id @default(uuid())
   treeId            String
@@ -386,9 +392,9 @@ model Sprint {
 }
 
 model RetrospectiveItem {
-  id      String @id @default(uuid())
+  id      String                @id @default(uuid())
   content String
-  type    String
+  type    RetrospectiveItemType @default(toImprove)
 
   wentWellSprint      Sprint? @relation("WentWell", fields: [wentWellSprintId], references: [id])
   wentWellSprintId    String?

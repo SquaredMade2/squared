@@ -4,7 +4,6 @@ import type { Route, APIResponse } from "@/api/route";
 
 type Params = {
 	userId: string;
-	teamId: string;
 };
 
 export function createRoute(): Route<Params> {

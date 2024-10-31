@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"build:digitalocean": "pnpm install --production=false && pnpm run build && rm -rf node_modules && pnpm install --production --frozen-lockfile",
+		"build:digitalocean": "pnpm install --production=false && pnpm run build && rimraf node_modules && pnpm install --production --frozen-lockfile",
 		"format:write": "biome format --write .",
 		"format:check": "biome format .",
 		"check-types": "tsc --pretty --noEmit",
@@ -28,6 +28,8 @@
 		"@hookform/resolvers": "^3.9.0",
 		"@repo/ui": "workspace:*",
 		"@sentry/nextjs": "^8.27.0",
+		"@squared/context": "workspace:*",
+		"@squared/rpc-client": "workspace:*",
 		"@squared/fonts": "workspace:*",
 		"@tanstack/react-table": "^8.20.5",
 		"axios": "^1.7.5",
@@ -35,7 +37,7 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
 		"date-fns": "^4.0.0",
-		"lucide-react": "^0.447.0",
+		"lucide-react": "^0.454.0",
 		"next-auth": "^4.24.7",
 		"next-themes": "^0.3.0",
 		"react": "^18.3.1",
@@ -48,9 +50,9 @@
 		"tailwind-merge": "^2.5.2",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.5.4",
-		"uuid": "^10.0.0",
+		"uuid": "^11.0.0",
 		"zod": "^3.23.8",
-		"zustand": "^4.5.5"
+		"zustand": "^5.0.0"
 	},
 	"devDependencies": {
 		"@jest/globals": "^29.7.0",
