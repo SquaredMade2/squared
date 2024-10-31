@@ -90,6 +90,7 @@ export const UpdatedByInformation = () => {
 		);
 	};
 
+	// ADDRESS IN ANOTHER PR: gitlogs updated to TaskEvent Schema
 	// const displayGitUpdate = (log: TaskEvent) => {
 	// 	const gitUpdateText = log.gitUpdated || "";
 	// 	const urlPattern = /(https?:\/\/[^\s]+)/g;
@@ -182,7 +183,7 @@ export const UpdatedByInformation = () => {
 			case EventType.DescriptionUpdated:
 				return displayDescriptionUpdate(log);
 
-			// ADDRESS IN ANOTHER PR: git logs updated to TaskEvent Schema
+			// ADDRESS IN ANOTHER PR: gitlogs updated to TaskEvent Schema
 			// case EventType.GitUpdated:
 			// 	return displayGitUpdate(log);
 			case EventType.StatusUpdated:

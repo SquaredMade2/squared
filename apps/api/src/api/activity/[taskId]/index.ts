@@ -12,10 +12,7 @@ const logger = createCustomLogger("activity");
 
 export function createRoute(): Route<Params> {
 	return {
-		GET: async (
-			res,
-			{ taskId },
-		): Promise<APIResponse<Activity | TaskEvent>> => {
+		GET: async (res, { taskId }): Promise<APIResponse<TaskEvent>> => {
 			try {
 				logger.info("Finding task with ID: %s", taskId);
 				// Find the task by its ID
