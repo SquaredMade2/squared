@@ -21,16 +21,38 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								$ref: "#/components/schemas/User",
+								type: "object",
+								properties: {
+									data: {
+										$ref: "#/components/schemas/User",
+									},
+									variant: {
+										type: "string",
+									},
+								},
 							},
 						},
 					},
 				},
 				404: {
 					description: "User not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
@@ -67,16 +89,38 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								$ref: "#/components/schemas/User",
+								type: "object",
+								properties: {
+									data: {
+										$ref: "#/components/schemas/User",
+									},
+									variant: {
+										type: "string",
+									},
+								},
 							},
 						},
 					},
 				},
 				400: {
 					description: "User already exists",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
-					description: "Internal server error",
+					description: "Internal server error or failed to create new user.",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
@@ -112,16 +156,38 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								$ref: "#/components/schemas/User",
+								type: "object",
+								properties: {
+									data: {
+										$ref: "#/components/schemas/User",
+									},
+									variant: {
+										type: "string",
+									},
+								},
 							},
 						},
 					},
 				},
 				404: {
 					description: "User not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},
@@ -149,9 +215,15 @@ export default {
 							schema: {
 								type: "object",
 								properties: {
+									data: {
+										type: "null",
+									},
 									message: {
 										type: "string",
 										example: "User deleted",
+									},
+									variant: {
+										type: "string",
 									},
 								},
 							},
@@ -160,9 +232,23 @@ export default {
 				},
 				404: {
 					description: "User not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},

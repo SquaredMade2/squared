@@ -17,6 +17,12 @@ enum Status {
   archived
 }
 
+enum Effort {
+  LINEAR
+  FIBONACCI
+  EXPONENTIAL
+}
+
 enum Priority {
   noPriority
   urgent
@@ -46,6 +52,12 @@ enum SprintStatus {
   PLANNED
   ACTIVE
   COMPLETED
+}
+
+enum RetrospectiveItemType {
+  wentWell
+  toImprove
+  actionItems
 }
 
 model Commit {
@@ -212,6 +224,7 @@ model Team {
   sprintStartDate  DateTime @default(now())
   tasksPerSprint   Int      @default(10)
 
+  effort    Effort        @default(LINEAR)
   Tasks     Task[]
   Project   Project[]
   Users     UserTeam[]
@@ -379,9 +392,9 @@ model Sprint {
 }
 
 model RetrospectiveItem {
-  id      String @id @default(uuid())
+  id      String                @id @default(uuid())
   content String
-  type    String
+  type    RetrospectiveItemType @default(toImprove)
 
   wentWellSprint      Sprint? @relation("WentWell", fields: [wentWellSprintId], references: [id])
   wentWellSprintId    String?

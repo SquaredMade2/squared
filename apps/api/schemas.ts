@@ -391,6 +391,32 @@ const schemas = {
 			githubId: { type: "string", description: "GitHub ID for OAuth" },
 		},
 	},
+	UserAvatar: {
+		type: "object",
+		properties: {
+			id: {
+				type: "string",
+				description: "Unique identifier for the avatar.",
+			},
+			name: {
+				type: "string",
+				description: "Name of the avatar.",
+			},
+			avatarUrl: {
+				schema: {
+					oneOf: {
+						image: {
+							type: "string",
+							description: "URL of avatar image.",
+						},
+						none: {
+							type: "null",
+						},
+					},
+				},
+			},
+		},
+	},
 	Comment: {
 		type: "object",
 		properties: {
@@ -491,6 +517,40 @@ const schemas = {
 					"arrayIncludesAll",
 					"arrayIncludesAny",
 				],
+      },
+    },
+  },
+	Label: {
+		type: "object",
+		properties: {
+			name: {
+				type: "string",
+				description: "Name of the label.",
+			},
+			id: {
+				type: "string",
+				description: "Unique identifier for the label.",
+			},
+			description: {
+				schema: {
+					oneOf: {
+						with: {
+							type: "string",
+							description: "Description of the label.",
+						},
+						without: {
+							type: "null",
+						},
+					},
+				},
+			},
+			workspaceId: {
+				type: "string",
+				description: "Specific workspace associated with the label.",
+			},
+			color: {
+				type: "string",
+				description: "Color of the label in hex code.",
 			},
 		},
 	},
@@ -634,6 +694,34 @@ const schemas = {
 				type: "string",
 				format: "date-time",
 				description: "Date when the item was last updated",
+			},
+		},
+	},
+	InvalidError: {
+		type: "object",
+		properties: {
+			data: {
+				type: "null",
+			},
+			message: {
+				type: "string",
+			},
+			variant: {
+				type: "string",
+			},
+		},
+	},
+	InternalServerError: {
+		type: "object",
+		properties: {
+			data: {
+				type: "null",
+			},
+			message: {
+				type: "string",
+			},
+			variant: {
+				type: "string",
 			},
 		},
 	},
