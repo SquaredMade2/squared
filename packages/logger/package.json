@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@types/node": "^22.5.1",
     "@types/winston": "^2.4.4",
     "typescript": "^5.5.4",

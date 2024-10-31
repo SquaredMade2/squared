@@ -46,6 +46,23 @@ export function createRoute(): Route<Params> {
 		PUT: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
 				logger.info("Updating task by ID: %s", taskId);
+				// check if effort estimate is valid
+				if (body.effortEstimate) {
+					const effort = Number(body.effortEstimate);
+					if (
+						effort < 0 ||
+						Number.isNaN(effort) ||
+						!Number.isInteger(effort) ||
+						effort > 5
+					) {
+						return {
+							data: null,
+							message: "Effort estimate must be an integer between 1 and 5",
+							variant: "destructive",
+						};
+					}
+				}
+
 				const task = await prisma.task.update({
 					where: { id: taskId },
 					data: body,
@@ -137,6 +154,23 @@ export function createRoute(): Route<Params> {
 						message: "Team not found",
 						variant: "destructive",
 					};
+				}
+
+				// check if effort estimate is valid
+				if (body.effortEstimate) {
+					const effort = Number(body.effortEstimate);
+					if (
+						effort < 0 ||
+						Number.isNaN(effort) ||
+						!Number.isInteger(effort) ||
+						effort > 5
+					) {
+						return {
+							data: null,
+							message: "Effort estimate must be an integer between 1 and 5",
+							variant: "destructive",
+						};
+					}
 				}
 
 				// Get all tasks for the team

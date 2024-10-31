@@ -14,21 +14,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { ButtonProps } from "./interfaces";
 import { ChevronDown } from "lucide-react";
+import { useTeamStore } from "@/store";
 
 const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
+	const { currentTeam } = useTeamStore((state) => state);
+
 	const { updateTask } = useTaskStore((state) => state);
-	const sidebarEffortEstimate = currentTask?.effortEstimate ?? "";
+
 	const taskId = currentTask?.id ?? "";
+
+	const sidebarEffortEstimate = () => {
+		const effortArray = effortEstimateOptions(currentTeam?.effort);
+
+		const selectedEffortIndex = effortArray.findIndex((efforts) => {
+			return efforts.value === currentTask?.effortEstimate;
+		});
+
+		return effortArray[selectedEffortIndex];
+	};
 
 	const extractNumber = (str: string): number =>
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
-	const handleSelectEffortEstimate = async (newEffortEstimate: number) => {
+	const handleSelectEffortEstimate = async (
+		newEffortEstimate: Record<string, string | number>,
+	) => {
 		try {
-			await updateTask(taskId, { effortEstimate: newEffortEstimate });
+			await updateTask(taskId, {
+				effortEstimate: newEffortEstimate.value as number,
+			});
 			// await getTaskEvents(taskId);
 		} catch {
 			toast({
@@ -41,9 +58,9 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {
-			case estimate > 8:
+			case estimate > 4:
 				return high();
-			case estimate > 3:
+			case estimate > 2:
 				return medium();
 			default:
 				return low();
@@ -58,22 +75,24 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 					className="flex items-center justify-between w-full"
 				>
 					<div className="flex gap-2 items-center">
-						{sidebarEffortEstimate ? showIcon(sidebarEffortEstimate) : medium()}
+						{sidebarEffortEstimate
+							? showIcon(sidebarEffortEstimate().value)
+							: medium()}
 
 						<span className="text-sm font-semibold">
-							{sidebarEffortEstimate || "Effort"}
+							{extractNumber(sidebarEffortEstimate().text) || "Effort"}
 						</span>
 					</div>
 					<ChevronDown className="size-4 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{effortEstimateOptions.map((effortEstimate) => {
-					const estimateNumber = extractNumber(effortEstimate);
+				{effortEstimateOptions(currentTeam?.effort).map((effortEstimate) => {
+					const estimateNumber = extractNumber(effortEstimate.text);
 					return (
 						<DropdownMenuItem
 							key={estimateNumber}
-							onSelect={() => handleSelectEffortEstimate(estimateNumber)}
+							onSelect={() => handleSelectEffortEstimate(effortEstimate)}
 							className="flex justify-between items-center"
 						>
 							<div className="flex items-center">
