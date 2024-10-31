@@ -165,6 +165,9 @@ importers:
       '@squared/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
+      '@squared/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@squared/rpc-client':
         specifier: workspace:*
         version: link:../../packages/rpc-client

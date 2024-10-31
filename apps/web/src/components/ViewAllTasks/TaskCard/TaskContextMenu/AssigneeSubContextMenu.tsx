@@ -8,29 +8,21 @@ import {
 } from "@/components/ui/context-menu";
 import type { ContextMenuProps } from "./interfaces";
 import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users, getAllUsers } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
 	useEffect(() => {
-		const fetchUsers = async () => {
-			if (currentWorkspace?.id) {
-				const gotUsers = await getAllUsers(currentWorkspace.id);
-				const foundUser = gotUsers.find((user) => user.id === task.assigneeId);
-				setCurrentUser(foundUser ?? null);
-			}
-		};
-
-		fetchUsers();
-	}, [currentWorkspace?.id, getAllUsers]);
+		const foundUser = users.find((user) => user.id === task.assigneeId);
+		setCurrentUser(foundUser ?? null);
+	}, []);
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
