@@ -17,52 +17,47 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import type { ButtonProps } from "./interfaces";
-import { ScrollArea } from "../../ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import type { ButtonProps } from "./interfaces";
 
-const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
+export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 	const [open, setOpen] = useState(false);
 
+	// Move these to a custom hook or memoize if needed
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const { getAllUsers, users } = useUserStore((state) => ({
-		getAllUsers: state.getAllUsers,
-		users: state.users,
-	}));
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const assigneeName = currentTask ? currentTask.assigneeName : "";
-	const assigneeId = currentTask ? currentTask.assigneeId : "";
+	const updateTask = useTaskStore((state) => state.updateTask);
+	const users = useUserStore((state) => state.users);
+	const getAllUsers = useUserStore((state) => state.getAllUsers);
+
+	// Derive values from props instead of state
+	const taskId = currentTask?.id ?? "";
+	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
+	// Only fetch users when workspace changes
 	useEffect(() => {
-		const fetchUsers = async () => {
-			if (currentWorkspace?.id) {
-				await getAllUsers(currentWorkspace.id);
-			}
-		};
-
-		fetchUsers();
+		if (currentWorkspace?.id) {
+			getAllUsers(currentWorkspace.id);
+		}
 	}, [currentWorkspace?.id, getAllUsers]);
 
 	const handleSelectAssignee = async (userId: string | null) => {
-		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
-			return;
-		}
-		const selectedUser = users.find((user) => user.id === userId);
+		setOpen(false); // Close popover after selection
 
-		if (selectedUser) {
-			if (currentTask) {
-				await updateTask(taskId, {
-					assigneeId: selectedUser.id,
-					assigneeName: selectedUser.name,
-				});
-			}
-			// await getTaskEvents(taskId);
-		}
+		if (!taskId) return; // Guard clause for no task
+
+		const updates = userId
+			? {
+					assigneeId: userId,
+					assigneeName: users.find((user) => user.id === userId)?.name ?? "",
+				}
+			: { assigneeId: null, assigneeName: null };
+
+		await updateTask(taskId, updates);
 	};
 
 	return (
@@ -105,7 +100,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											assigneeId === "" ? "opacity-100" : "opacity-0",
+											!assigneeId ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
@@ -135,6 +130,4 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 			</PopoverContent>
 		</Popover>
 	);
-};
-
-export default AssigneeCombobox;
+}
