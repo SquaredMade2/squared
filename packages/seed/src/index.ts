@@ -212,9 +212,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 	});
 
 	const taskDueDate = faker.date.future();
-	const taskEffortEstimate = faker.helpers.arrayElement([
-		1, 2, 3, 5, 8, 13, 21,
-	]);
+	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);
 
 	const updatedWorkspace = await prisma.workspace.update({
 		where: { id: workspace.id },

@@ -1,5 +1,5 @@
 # Base image
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # Builder stage
 FROM base AS builder
@@ -34,7 +34,7 @@ COPY turbo.json turbo.json
 RUN pnpm turbo build --filter=www...
 
 # Runner stage
-FROM node:20-slim AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 
 # Install pnpm again to ensure it's available for the final stage
