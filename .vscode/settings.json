@@ -27,5 +27,8 @@
   },
   "[go.sum]": {
     "editor.defaultFormatter": "golang.go"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   }
 }

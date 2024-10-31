@@ -1,5 +1,5 @@
 {
-  "name": "@squared/http-rpc-client",
+  "name": "@squared/rpc",
   "version": "0.0.0",
   "private": true,
   "main": "dist/index.js",
@@ -18,15 +18,27 @@
   },
   "scripts": {
     "build": "node build.mjs",
+    "postinstall": "pnpm run build",
     "prebuild": "rimraf dist",
-    "postinstall": "pnpm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "@squared/context": "workspace:*",
-    "axios": "^1.7.5"
+    "@squared/logger": "workspace:*",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@squared/builder": "workspace:*"
+    "@squared/builder": "workspace:*",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.6",
+    "@types/node": "^22.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tslib": "^2.7.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "express": "^4.18.2"
   }
 }

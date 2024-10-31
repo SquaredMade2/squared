@@ -179,7 +179,7 @@ export function createErrorHandler(
 					code: err.inner.code || "unknown_error",
 					type:
 						err.inner.type ||
-						"https://errors.squared.global/@squared/http-rpc/unknown-error",
+						"https://errors.squared.global/@squared/rpc/unknown-error",
 				});
 			}
 		} else {
