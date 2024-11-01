@@ -26,7 +26,9 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 
 	const taskId = currentTask?.id ?? "";
 
-	const sidebarEffortEstimate = () => {
+	const sidebarEffortEstimate = ():
+		| { text: string; value: number }
+		| undefined => {
 		const effortArray = effortEstimateOptions(currentTeam?.effort);
 
 		const selectedEffortIndex = effortArray.findIndex((efforts) => {
@@ -67,6 +69,8 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 		}
 	};
 
+	const effortEstimate = sidebarEffortEstimate();
+
 	return (
 		<DropdownMenu open={open} onOpenChange={setOpen}>
 			<DropdownMenuTrigger asChild>
@@ -75,12 +79,10 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 					className="flex items-center justify-between w-full"
 				>
 					<div className="flex gap-2 items-center">
-						{sidebarEffortEstimate()
-							? showIcon(sidebarEffortEstimate().value)
-							: medium()}
+						{effortEstimate ? showIcon(effortEstimate.value) : medium()}
 
 						<span className="text-sm font-semibold">
-							{extractNumber(sidebarEffortEstimate().text) || "Effort"}
+							{effortEstimate ? extractNumber(effortEstimate.text) : "Effort"}
 						</span>
 					</div>
 					<ChevronDown className="size-4 text-muted-foreground" />
