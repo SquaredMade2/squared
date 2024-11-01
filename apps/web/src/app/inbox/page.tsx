@@ -26,7 +26,7 @@ export type NotificationFilter =
 	| "WORKSPACE";
 
 export default function InboxPage() {
-	const { notifications } = useEventStore((state) => state);
+	const { notifications, setNotifications } = useEventStore((state) => state);
 	const { workspaces } = useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
@@ -38,7 +38,12 @@ export default function InboxPage() {
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
-			user && (await eventService.getNotifications(TODO, { userId: user.id }));
+			if (user) {
+				const notifications = await eventService.getNotifications(TODO, {
+					userId: user.id,
+				});
+				setNotifications(notifications);
+			}
 		};
 		fetchNotifications();
 	}, [user]);
