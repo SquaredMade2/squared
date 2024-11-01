@@ -27,6 +27,14 @@ class ErrorBoundary extends React.Component<
 	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
 		this.setState({ errorInfo });
 		console.error("Uncaught error:", error, errorInfo);
+
+		// Log additional information
+		console.error(
+			"Full error object:",
+			JSON.stringify(error, Object.getOwnPropertyNames(error)),
+		);
+		console.error("Current URL:", window.location.href);
+		console.error("User Agent:", navigator.userAgent);
 	}
 
 	render() {
@@ -41,10 +49,20 @@ class ErrorBoundary extends React.Component<
 						<pre className="text-sm whitespace-pre-wrap break-words">
 							{this.state.error?.toString()}
 						</pre>
+						{this.state.error && (
+							<>
+								<h3 className="text-lg font-semibold mt-4 mb-2">
+									Error Stack:
+								</h3>
+								<pre className="text-sm whitespace-pre-wrap break-words">
+									{this.state.error.stack}
+								</pre>
+							</>
+						)}
 						{this.state.errorInfo && (
 							<>
 								<h3 className="text-lg font-semibold mt-4 mb-2">
-									Stack Trace:
+									Component Stack:
 								</h3>
 								<pre className="text-sm whitespace-pre-wrap break-words">
 									{this.state.errorInfo.componentStack}
@@ -52,7 +70,14 @@ class ErrorBoundary extends React.Component<
 							</>
 						)}
 					</div>
-					<Button onClick={() => window.location.reload()}>Refresh Page</Button>
+					<div className="flex space-x-4">
+						<Button onClick={() => window.location.reload()}>
+							Refresh Page
+						</Button>
+						<Button onClick={() => window.history.back()} variant="outline">
+							Go Back
+						</Button>
+					</div>
 				</div>
 			);
 		}
