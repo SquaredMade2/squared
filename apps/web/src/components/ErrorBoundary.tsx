@@ -1,6 +1,14 @@
 import React, { type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardContent,
+	CardFooter,
+} from "@/components/ui/card";
+import { AlertTriangle } from "lucide-react";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -41,46 +49,57 @@ class ErrorBoundary extends React.Component<
 	render() {
 		if (this.state.hasError) {
 			return (
-				<div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
-					<h1 className="text-2xl font-bold mb-4">
-						Oops! Something went wrong.
-					</h1>
-					<ScrollArea className="bg-muted p-4 rounded-md mb-4 w-full max-w-3xl h-[70vh]">
-						<div>
-							<h2 className="text-xl font-semibold mb-2">Error Details:</h2>
-							<pre className="text-sm whitespace-pre-wrap break-words">
-								{this.state.error?.toString()}
-							</pre>
-							{this.state.error && (
-								<>
-									<h3 className="text-lg font-semibold mt-4 mb-2">
-										Error Stack:
-									</h3>
-									<pre className="text-sm whitespace-pre-wrap break-words">
-										{this.state.error.stack}
-									</pre>
-								</>
-							)}
-							{this.state.errorInfo && (
-								<>
-									<h3 className="text-lg font-semibold mt-4 mb-2">
-										Component Stack:
-									</h3>
-									<pre className="text-sm whitespace-pre-wrap break-words">
-										{this.state.errorInfo.componentStack}
-									</pre>
-								</>
-							)}
-						</div>
-						<div className="flex space-x-4">
-							<Button onClick={() => window.location.reload()}>
-								Refresh Page
-							</Button>
+				<div className="flex items-center justify-center min-h-screen bg-background p-4">
+					<Card className="w-full max-w-3xl">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2 text-2xl font-bold text-destructive">
+								<AlertTriangle className="h-6 w-6" />
+								Oops! Something went wrong.
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<ScrollArea className="h-[60vh] w-full rounded-md border p-4">
+								<div className="space-y-4">
+									<div>
+										<h2 className="text-xl font-semibold mb-2">
+											Error Details:
+										</h2>
+										<pre className="text-sm whitespace-pre-wrap break-words bg-muted p-2 rounded-md">
+											{this.state.error?.toString()}
+										</pre>
+									</div>
+									{this.state.error && (
+										<div>
+											<h3 className="text-lg font-semibold mb-2">
+												Error Stack:
+											</h3>
+											<pre className="text-sm whitespace-pre-wrap break-words bg-muted p-2 rounded-md">
+												{this.state.error.stack}
+											</pre>
+										</div>
+									)}
+									{this.state.errorInfo && (
+										<div>
+											<h3 className="text-lg font-semibold mb-2">
+												Component Stack:
+											</h3>
+											<pre className="text-sm whitespace-pre-wrap break-words bg-muted p-2 rounded-md">
+												{this.state.errorInfo.componentStack}
+											</pre>
+										</div>
+									)}
+								</div>
+							</ScrollArea>
+						</CardContent>
+						<CardFooter className="flex justify-end space-x-4">
 							<Button onClick={() => window.history.back()} variant="outline">
 								Go Back
 							</Button>
-						</div>
-					</ScrollArea>
+							<Button onClick={() => window.location.reload()}>
+								Refresh Page
+							</Button>
+						</CardFooter>
+					</Card>
 				</div>
 			);
 		}
