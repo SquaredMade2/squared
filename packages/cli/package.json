@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "build": "go build -o bin/squared",
-    "postbuild": "./install.sh",
     "lint": "golangci-lint run"
   }
 }
