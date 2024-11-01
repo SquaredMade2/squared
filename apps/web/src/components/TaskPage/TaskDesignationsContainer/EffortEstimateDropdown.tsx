@@ -75,7 +75,7 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 					className="flex items-center justify-between w-full"
 				>
 					<div className="flex gap-2 items-center">
-						{sidebarEffortEstimate
+						{sidebarEffortEstimate()
 							? showIcon(sidebarEffortEstimate().value)
 							: medium()}
 
