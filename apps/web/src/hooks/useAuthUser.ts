@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuthStore, useUserStore } from "@/store";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast";
 
 export function useAuthUser() {
+	const renderCount = useRef(0);
+	renderCount.current += 1;
+	console.log("useAuthUser render count:", renderCount.current);
 	const { logout, setUser, user } = useAuthStore((state) => state);
 	const { getUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
@@ -43,7 +46,7 @@ export function useAuthUser() {
 		};
 
 		handleGetUser();
-	}, [status, session]);
+	}, []);
 
 	return {
 		user,

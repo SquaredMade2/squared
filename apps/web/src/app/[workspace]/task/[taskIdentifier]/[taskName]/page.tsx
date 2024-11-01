@@ -10,7 +10,7 @@ import {
 } from "@/components/TaskPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore } from "@/store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,9 @@ import { useTaskPage } from "@/hooks/useTaskPage";
 import { useToast } from "@/components/ui/use-toast";
 
 const TaskPage = () => {
+	const renderCount = useRef(0);
+	renderCount.current += 1;
+	console.log("TaskPage render count:", renderCount.current);
 	const { tasks, updateTask } = useTaskStore((state) => state);
 	const { task, isLoading, error, currentWorkspace } = useTaskPage();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);

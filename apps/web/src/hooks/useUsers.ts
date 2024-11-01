@@ -21,7 +21,7 @@ export function useUsers() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, workspaceLoading]);
+	}, [currentWorkspace]);
 
 	return {
 		loading,

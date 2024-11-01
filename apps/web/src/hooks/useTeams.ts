@@ -39,10 +39,10 @@ export function useTeams() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, teamIdentifier, workspaceLoading, userLoading]);
+	}, [currentWorkspace, users]);
 
 	return {
-		loading,
+		loading: loading || workspaceLoading || userLoading,
 		currentTeam,
 		authorized,
 		teams,

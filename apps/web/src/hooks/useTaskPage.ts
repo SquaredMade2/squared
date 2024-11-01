@@ -1,10 +1,13 @@
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTaskStore, useTeamStore, useUserStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
+	const renderCount = useRef(0);
+	renderCount.current += 1;
+	console.log("useTaskPage render count:", renderCount.current);
 	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -50,14 +53,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [
-		currentWorkspace,
-		taskIdentifier,
-		getTaskByIdentifier,
-		workspaceLoading,
-		getAllUsers,
-		teams,
-	]);
+	}, [currentWorkspace]);
 
 	return { currentWorkspace, task, isLoading, error };
 }

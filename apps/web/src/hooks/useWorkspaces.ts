@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
@@ -6,6 +6,9 @@ import { parseParams } from "@/utils/parseParams";
 import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {
+	const renderCount = useRef(0);
+	renderCount.current += 1;
+	console.log("useWorkspaces render count:", renderCount.current);
 	const { user, loading: userLoading, error: userError } = useAuthUser();
 	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
@@ -51,7 +54,7 @@ export function useWorkspaces() {
 		};
 
 		initiateStore();
-	}, [user, userLoading, userError, workspaceUrl]);
+	}, [user]);
 
 	return {
 		user,
