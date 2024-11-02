@@ -9,7 +9,7 @@ export const createEventStore = (
 ) => {
 	return createStore<EventStore>()((set) => ({
 		...initState,
-		setNotifications: (notifications) => ({ notifications }),
+		setNotifications: (notifications) => set({ notifications }),
 		setEvents: (events) => set({ events }),
 		setCommits: (commits) => set({ commits }),
 	}));
