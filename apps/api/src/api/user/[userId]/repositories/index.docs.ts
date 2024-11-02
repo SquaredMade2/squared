@@ -1,25 +1,24 @@
 export default {
-	"/api/workspace/{workspaceId}/team": {
+	"/api/user/{userId}/repositories": {
 		get: {
-			tags: ["Team"],
-			summary: "Retrieve all teams for a specific workspace",
+			tags: ["User"],
+			summary: "Retrieve repo names",
 			description:
-				"Find and return all teams associated with a specific workspace ID.",
+				"Find and return a list of repository names associated with a specific user's github account.",
 			parameters: [
 				{
 					in: "path",
-					name: "workspaceId",
+					name: "userId",
 					schema: {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the workspace whose teams are to be retrieved",
+					description: "The ID of the user.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of team objects",
+					description: "An object containing an array of repo names.",
 					content: {
 						"application/json": {
 							schema: {
@@ -28,8 +27,11 @@ export default {
 									data: {
 										type: "array",
 										items: {
-											$ref: "#/components/schemas/Team",
+											type: "string",
 										},
+									},
+									message: {
+										type: "string",
 									},
 									variant: {
 										type: "string",
@@ -40,7 +42,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Teams not found",
+					description: "GitHub username not found",
 					content: {
 						"application/json": {
 							schema: {

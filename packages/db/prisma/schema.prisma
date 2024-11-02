@@ -17,6 +17,12 @@ enum Status {
   archived
 }
 
+enum Effort {
+  LINEAR
+  FIBONACCI
+  EXPONENTIAL
+}
+
 enum Priority {
   noPriority
   urgent
@@ -218,6 +224,7 @@ model Team {
   sprintStartDate  DateTime @default(now())
   tasksPerSprint   Int      @default(10)
 
+  effort    Effort        @default(LINEAR)
   Tasks     Task[]
   Project   Project[]
   Users     UserTeam[]

@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@repo/ui"],
+  productionBrowserSourceMaps: true,
   output: "standalone",
 };
 

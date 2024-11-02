@@ -55,6 +55,7 @@ export const STANDARD_TEAM: Team = {
 	activeRequired: true,
 	sprintStartDate: new Date("2023-01-01"),
 	tasksPerSprint: 10,
+	effort: "LINEAR",
 };
 
 export const STANDARD_TEAM_2: Team = {
@@ -69,6 +70,7 @@ export const STANDARD_TEAM_2: Team = {
 	activeRequired: false,
 	sprintStartDate: new Date("2023-02-01"),
 	tasksPerSprint: 8,
+	effort: "FIBONACCI",
 };
 
 export const STANDARD_TASK: Task = {

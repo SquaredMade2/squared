@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import type { Effort } from "@squared/db";
 import { Button } from "@/components/ui/button";
 import { useTeamStore } from "@/store";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,14 @@ import * as z from "zod";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from "@repo/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -51,13 +60,52 @@ const formSchema = z.object({
 		}),
 });
 
+const effortType = [
+	{
+		id: 0,
+		dropdownTitle: "Linear",
+		dbValue: "LINEAR",
+		listOption: "Linear - [1, 2, 3, 4, 5]",
+		options: [1, 2, 3, 4, 5],
+	},
+	{
+		id: 1,
+		dropdownTitle: "Exponential",
+
+		dbValue: "EXPONENTIAL",
+		listOption: "Exponential - [1, 2, 4, 8, 16]",
+		options: [1, 2, 4, 8, 16],
+	},
+	{
+		id: 2,
+		dropdownTitle: "Fibonacci",
+
+		dbValue: "FIBONACCI",
+		listOption: "Fibonacci - [1, 2, 3, 5, 8]",
+		options: [1, 2, 3, 5, 8],
+	},
+];
+
 export default function TeamsSetting() {
+	const [showEffortDropdown, setShowEffortDropdown] = useState(false);
+	const [selectedEffort, setSelectedEffort] =
+		useState<Record<string, number | string | number[]>>();
 	const { toast } = useToast();
 	const router = useRouter();
 	const { currentTeam, teams, loading: teamLoading } = useTeams();
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 
 	const { deleteTeam, updateTeam, getTeam } = useTeamStore((state) => state);
+
+	useEffect(() => {
+		if (currentTeam?.effort === "LINEAR") {
+			setSelectedEffort(effortType[0]);
+		} else if (currentTeam?.effort === "EXPONENTIAL") {
+			setSelectedEffort(effortType[1]);
+		} else {
+			setSelectedEffort(effortType[2]);
+		}
+	}, []);
 
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
@@ -92,6 +140,7 @@ export default function TeamsSetting() {
 				const update = await updateTeam(currentTeam.id, {
 					name: values.name,
 					identifier: values.identifier,
+					effort: selectedEffort?.dbValue as Effort,
 				});
 				if (update) {
 					await getTeam(values.identifier);
@@ -120,6 +169,20 @@ export default function TeamsSetting() {
 			toast({ title: "Team deleted" });
 		}
 		setIsDeleting(false);
+	};
+
+	const handleEffortSelection = (value: string) => {
+		if (value !== selectedEffort?.name) {
+			setIsFormChanged(true);
+		}
+
+		if (value === "Linear") {
+			setSelectedEffort(effortType[0]);
+		} else if (value === "Exponential") {
+			setSelectedEffort(effortType[1]);
+		} else {
+			setSelectedEffort(effortType[2]);
+		}
 	};
 
 	if (teamLoading || workspaceLoading)
@@ -173,6 +236,49 @@ export default function TeamsSetting() {
 								</FormItem>
 							)}
 						/>
+						<div className="flex flex-col">
+							<FormLabel className="mb-2">Effort Type</FormLabel>
+							<DropdownMenu
+								open={showEffortDropdown}
+								onOpenChange={setShowEffortDropdown}
+							>
+								<DropdownMenuTrigger>
+									<menu
+										className="border flex items-center text-left px-3 rounded-md w-40 h-10 justify-between hover:cursor-pointer"
+										aria-label="Effort style dropdown menu"
+										aria-hidden="true"
+									>
+										{selectedEffort?.dropdownTitle}
+										<ChevronDown
+											className={`${showEffortDropdown ? "rotate-180" : "rotate-0"}`}
+										/>
+									</menu>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-52 p-0 mr-48 mt-3 z-10 rounded-md">
+									<DropdownMenuRadioGroup
+										value={selectedEffort?.listOption as string}
+										onValueChange={handleEffortSelection}
+										className="bg-secondary hover:cursor-pointer z-50 rounded-md"
+									>
+										{effortType.map((item, index) => (
+											<DropdownMenuRadioItem
+												key={item.id}
+												value={item.dropdownTitle}
+												className="hover:cursor-pointer"
+											>
+												<div
+													className={`${index === 1 ? "border-y-2" : ""} flex items-center space-x-2 p-3 z-10`}
+												>
+													<span className="hover:cursor-pointer">
+														{item.listOption}
+													</span>
+												</div>
+											</DropdownMenuRadioItem>
+										))}
+									</DropdownMenuRadioGroup>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</div>
 					</div>
 					<Button type="submit" disabled={!isFormChanged}>
 						Save Changes

@@ -31,7 +31,7 @@ export function createRoute(): Route<Params> {
 						workspaces.map((workspace) => workspace.workspace),
 					);
 
-				if (!userWorkspaces) {
+				if (userWorkspaces.length === 0) {
 					return {
 						data: null,
 						message: "Workspace not found",

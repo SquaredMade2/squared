@@ -1,25 +1,24 @@
 export default {
-	"/api/workspace/{workspaceId}/team": {
+	"/api/user/{userId}/team": {
 		get: {
 			tags: ["Team"],
-			summary: "Retrieve all teams for a specific workspace",
+			summary: "Retrieve teams a user belongs to.",
 			description:
-				"Find and return all teams associated with a specific workspace ID.",
+				"Find and return an array of teams that a specific user is associated with.",
 			parameters: [
 				{
 					in: "path",
-					name: "workspaceId",
+					name: "userId",
 					schema: {
 						type: "string",
 					},
 					required: true,
-					description:
-						"The ID of the workspace whose teams are to be retrieved",
+					description: "The ID of the user.",
 				},
 			],
 			responses: {
 				200: {
-					description: "An array of team objects",
+					description: "An object containing an array of teams",
 					content: {
 						"application/json": {
 							schema: {
@@ -27,8 +26,10 @@ export default {
 								properties: {
 									data: {
 										type: "array",
-										items: {
-											$ref: "#/components/schemas/Team",
+										properties: {
+											items: {
+												$ref: "#/components/schemas/User",
+											},
 										},
 									},
 									variant: {
@@ -40,7 +41,7 @@ export default {
 					},
 				},
 				404: {
-					description: "Teams not found",
+					description: "Team not found",
 					content: {
 						"application/json": {
 							schema: {
