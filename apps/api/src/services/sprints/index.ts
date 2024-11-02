@@ -20,6 +20,7 @@ const sprintSchema = createSchema<Sprint>()(
 	z.object({
 		id: z.string(),
 		name: z.string(),
+		description: z.string().nullable(),
 		startDate: z.date(),
 		endDate: z.date(),
 		status: z.enum(["PLANNED", "ACTIVE", "COMPLETED"]),
@@ -73,6 +74,26 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	getSprints: {
 		input: z.object({ teamId: z.string() }),
 		output: z.array(sprintSchema),
+	},
+	updateSprint: {
+		input: createSchema<{
+			sprintId: string;
+			sprintData: Pick<
+				Sprint,
+				"startDate" | "description" | "name" | "endDate"
+			>;
+		}>()(
+			z.object({
+				sprintId: z.string(),
+				sprintData: sprintSchema.pick({
+					name: true,
+					startDate: true,
+					endDate: true,
+					description: true,
+				}),
+			}),
+		),
+		output: sprintSchema,
 	},
 	initializeSprints: {
 		input: z.object({ teamId: z.string() }),
@@ -145,6 +166,7 @@ export type SprintRpcSchema = typeof sprintRpcSchema;
 export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 	createRpcHandler("sprint", sprintRpcSchema, {
 		getSprints: (input) => sprintService.getSprints(input),
+		updateSprint: (input) => sprintService.updateSprint(input),
 		initializeSprints: (input) => sprintService.initializeSprints(input),
 		startNextSprint: (input) => sprintService.startNextSprint(input),
 		getSprintTasks: (input) => sprintService.getSprintTasks(input),

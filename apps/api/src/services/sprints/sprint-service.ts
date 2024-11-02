@@ -15,6 +15,7 @@ import type {
 	UpdateRetrospectiveItemPayload,
 } from "./types";
 import { addWeeks } from "date-fns";
+import createCustomLogger from "@squared/logger";
 
 interface StartNextSprintInput {
 	teamId: string;
@@ -26,13 +27,31 @@ interface StartNextSprintInput {
 }
 
 export class SprintService implements SprintRpc {
-	constructor(private readonly db: PrismaClient) {}
+	private logger;
+	constructor(private readonly db: PrismaClient) {
+		this.logger = createCustomLogger("sprint-service");
+	}
 
 	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
+		this.logger.info("Getting sprints for team", { teamId });
 		return this.db.sprint.findMany({ where: { teamId } });
 	}
 
+	async updateSprint({
+		sprintId,
+		sprintData,
+	}: {
+		sprintId: string;
+		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
+	}): Promise<Sprint> {
+		return this.db.sprint.update({
+			where: { id: sprintId },
+			data: sprintData,
+		});
+	}
+
 	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
+		this.logger.info("Initializing sprints for team", { teamId });
 		const team = await this.db.team.findUnique({ where: { id: teamId } });
 
 		if (!team) {
@@ -52,19 +71,21 @@ export class SprintService implements SprintRpc {
 
 		const sprintDuration = team.sprintDuration;
 
-		const newSprints: Omit<Sprint, "id" | "createdAt" | "updatedAt">[] =
-			Array.from({ length: remainingSprints }, (_, index) => {
-				const startDate = addWeeks(new Date(), index * sprintDuration);
-				const endDate = addWeeks(startDate, sprintDuration);
+		const newSprints: Pick<
+			Sprint,
+			"name" | "status" | "startDate" | "endDate" | "teamId"
+		>[] = Array.from({ length: remainingSprints }, (_, index) => {
+			const startDate = addWeeks(new Date(), index * sprintDuration);
+			const endDate = addWeeks(startDate, sprintDuration);
 
-				return {
-					name: `Sprint ${sprints.length + index + 1}`,
-					status: "PLANNED",
-					startDate,
-					endDate,
-					teamId,
-				};
-			});
+			return {
+				name: `Sprint ${sprints.length + index + 1}`,
+				status: "PLANNED",
+				startDate,
+				endDate,
+				teamId,
+			};
+		});
 		await this.db.sprint.createMany({ data: newSprints });
 
 		return 1;
@@ -75,6 +96,7 @@ export class SprintService implements SprintRpc {
 		movedTasks,
 		sprintData,
 	}: StartNextSprintInput): Promise<SprintServiceResponse<Sprint>> {
+		this.logger.info("Starting next sprint for team", { teamId });
 		const team = await this.db.team.findUnique({ where: { id: teamId } });
 
 		if (!team) {
@@ -120,10 +142,12 @@ export class SprintService implements SprintRpc {
 	}
 
 	async getSprintTasks({ sprintId }: { sprintId: string }): Promise<Task[]> {
+		this.logger.info("Getting tasks for sprint", { sprintId });
 		return this.db.task.findMany({ where: { sprintId } });
 	}
 
 	async endSprint({ sprintId }: { sprintId: string }): Promise<Sprint> {
+		this.logger.info("Ending sprint", { sprintId });
 		return this.db.sprint.update({
 			where: { id: sprintId },
 			data: { status: "COMPLETED" },
@@ -135,6 +159,7 @@ export class SprintService implements SprintRpc {
 		type,
 		content,
 	}: AddRetrospectivePayload): Promise<RetroItemReturn> {
+		this.logger.info("Adding retrospective item", { sprintId, type });
 		const sprintRelationField = this.mapTypeToSprintRelationField(
 			type,
 			sprintId,
@@ -157,6 +182,7 @@ export class SprintService implements SprintRpc {
 		content,
 		sprintId,
 	}: UpdateRetrospectiveItemPayload): Promise<RetroItemReturn> {
+		this.logger.info("Updating retrospective item", { retrospectiveItemId });
 		const sprintRelationField = type
 			? this.mapTypeToSprintRelationField(type, sprintId)
 			: {};
@@ -176,6 +202,7 @@ export class SprintService implements SprintRpc {
 	async getRetrospectiveItems({
 		sprintId,
 	}: { sprintId: string }): Promise<RetrospectiveData> {
+		this.logger.info("Getting retrospective items for sprint", { sprintId });
 		const [wentWell, toImprove, actionItems] = await Promise.all([
 			this.db.retrospectiveItem.findMany({
 				where: { wentWellSprintId: sprintId },
@@ -203,6 +230,10 @@ export class SprintService implements SprintRpc {
 		type: RetrospectiveItemType,
 		sprintId: string,
 	): Record<string, string> {
+		this.logger.info("Mapping retrospective type to sprint relation field", {
+			type,
+			sprintId,
+		});
 		switch (type) {
 			case "wentWell":
 				return { wentWellSprintId: sprintId };
