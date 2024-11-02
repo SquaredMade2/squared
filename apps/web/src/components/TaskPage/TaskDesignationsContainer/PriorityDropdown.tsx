@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { priorityOptions } from "@/constants/designations";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -17,9 +18,18 @@ import { PriorityIcon } from "@/components/Icons";
 
 const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
-	const { updateTask } = useTaskStore((state) => state);
-	const sidebarPriority = currentTask ? currentTask?.priority : "";
-	const taskId = currentTask ? currentTask.id : "";
+	const { updateTask, tasks } = useTaskStore((state) => state);
+	const [localTask, setLocalTask] = useState(currentTask);
+
+	useEffect(() => {
+		if (currentTask) {
+			const updatedTask = tasks.find((task) => task.id === currentTask.id);
+			setLocalTask(updatedTask || currentTask);
+		}
+	}, [currentTask, tasks]);
+
+	const sidebarPriority = localTask ? localTask.priority : "";
+	const taskId = localTask ? localTask.id : "";
 
 	const handleSelectPriority = (newPriority: Priority) => {
 		if (newPriority === sidebarPriority || !taskId) return;
@@ -29,7 +39,9 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const updateItem = async (newPriority: Priority) => {
 		try {
 			await updateTask(taskId, { priority: newPriority });
-			// await getTaskEvents(taskId);
+			setLocalTask((prev) =>
+				prev ? { ...prev, priority: newPriority } : prev,
+			);
 		} catch {
 			toast({
 				title: "Error updating priority",
@@ -41,7 +53,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	return (
 		<Select
 			onValueChange={(value) => handleSelectPriority(value as Priority)}
-			defaultValue={sidebarPriority}
+			value={sidebarPriority}
 		>
 			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select priority">
@@ -52,7 +64,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 						<span className="text-sm font-semibold text-card-foreground">
 							{sidebarPriority
 								? formatPriority(sidebarPriority)
-								: sidebarPriority}
+								: "Select priority"}
 						</span>
 					</div>
 				</SelectValue>

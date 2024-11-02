@@ -17,7 +17,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import type { ButtonProps } from "./interfaces";
 import { ScrollArea } from "../../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,44 +25,53 @@ import { getInitials } from "@/utils/formatting";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
+	const [localTask, setLocalTask] = useState(currentTask);
 
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const { getAllUsers, users } = useUserStore((state) => ({
-		getAllUsers: state.getAllUsers,
+	const { users } = useUserStore((state) => ({
 		users: state.users,
 	}));
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const assigneeName = currentTask ? currentTask.assigneeName : "";
-	const assigneeId = currentTask ? currentTask.assigneeId : "";
-	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
+	const { updateTask, tasks } = useTaskStore((state) => state);
 
 	useEffect(() => {
-		const fetchUsers = async () => {
-			if (currentWorkspace?.id) {
-				await getAllUsers(currentWorkspace.id);
-			}
-		};
+		if (currentTask) {
+			const updatedTask = tasks.find((task) => task.id === currentTask.id);
+			setLocalTask(updatedTask || currentTask);
+		}
+	}, [currentTask, tasks]);
 
-		fetchUsers();
-	}, [currentWorkspace?.id, getAllUsers]);
+	const taskId = localTask ? localTask.id : "";
+	const assigneeName = localTask ? localTask.assigneeName : "";
+	const assigneeId = localTask ? localTask.assigneeId : "";
+	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			await updateTask(taskId, { assigneeId: null, assigneeName: null });
+			setLocalTask((prev) =>
+				prev ? { ...prev, assigneeId: null, assigneeName: null } : prev,
+			);
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			if (currentTask) {
+			if (localTask) {
 				await updateTask(taskId, {
 					assigneeId: selectedUser.id,
 					assigneeName: selectedUser.name,
 				});
+				setLocalTask((prev) =>
+					prev
+						? {
+								...prev,
+								assigneeId: selectedUser.id,
+								assigneeName: selectedUser.name,
+							}
+						: prev,
+				);
 			}
-			// await getTaskEvents(taskId);
 		}
+		setOpen(false);
 	};
 
 	return (
