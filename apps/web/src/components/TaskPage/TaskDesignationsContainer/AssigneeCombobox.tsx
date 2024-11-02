@@ -23,7 +23,7 @@ import { getInitials } from "@/utils/formatting";
 import { useTaskStore, useUserStore } from "@/store";
 import type { ButtonProps } from "./interfaces";
 
-export default function AssigneeCombobox({ currentTask }: ButtonProps) {
+const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 
 	// Move these to a custom hook or memoize if needed
@@ -37,18 +37,21 @@ export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
 	const handleSelectAssignee = async (userId: string | null) => {
-		setOpen(false); // Close popover after selection
+		if (!userId) {
+			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			return;
+		}
+		const selectedUser = users.find((user) => user.id === userId);
 
-		if (!taskId) return; // Guard clause for no task
-
-		const updates = userId
-			? {
-					assigneeId: userId,
-					assigneeName: users.find((user) => user.id === userId)?.name ?? "",
-				}
-			: { assigneeId: null, assigneeName: null };
-
-		await updateTask(taskId, updates);
+		if (selectedUser) {
+			if (currentTask) {
+				await updateTask(taskId, {
+					assigneeId: selectedUser.id,
+					assigneeName: selectedUser.name,
+				});
+			}
+			// await getTaskEvents(taskId);
+		}
 	};
 
 	return (
@@ -91,7 +94,7 @@ export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											!assigneeId ? "opacity-100" : "opacity-0",
+											assigneeId === "" ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
@@ -121,4 +124,6 @@ export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 			</PopoverContent>
 		</Popover>
 	);
-}
+};
+
+export default AssigneeCombobox;
