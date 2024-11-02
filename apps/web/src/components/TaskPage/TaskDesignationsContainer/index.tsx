@@ -4,7 +4,7 @@ import StatusDropdown from "./StatusDropdown";
 import DatePicker from "./DesignationsDatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
 import LabelCombobox from "./LabelCombobox";
-// import AssigneeCombobox from "./AssigneeCombobox";
+import AssigneeCombobox from "./AssigneeCombobox";
 import EffortModal from "./EffortModal";
 
 type ButtonProps = {
@@ -67,11 +67,11 @@ export function TaskDesignationsContainer({
 					currentTask={currentTask}
 					ExtraComponent={<EffortModal />}
 				/>
-				{/* <DesignationItem
+				<DesignationItem
 					label="Assignee"
 					Component={AssigneeCombobox}
 					currentTask={currentTask}
-				/> */}
+				/>
 			</div>
 		</>
 	);
@@ -81,7 +81,7 @@ export function MobileTaskSettings({ task }: { task: Task }) {
 		<div className="flex gap-2 md:hidden flex-wrap w-full">
 			<StatusDropdown currentTask={task} />
 			<PriorityDropdown currentTask={task} />
-			{/* <AssigneeCombobox currentTask={task} /> */}
+			<AssigneeCombobox currentTask={task} />
 			<LabelCombobox currentTask={task} />
 		</div>
 	);
