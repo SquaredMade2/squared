@@ -76,6 +76,9 @@ ADD COLUMN     "timestamp" TIMESTAMP(3) NOT NULL;
 -- AlterTable
 ALTER TABLE "SavedFilter" ALTER COLUMN "authorId" SET NOT NULL;
 
+-- Delete
+DELETE FROM "TaskEvent";
+
 -- AlterTable
 ALTER TABLE "TaskEvent" DROP COLUMN "activityId",
 DROP COLUMN "authorName",
