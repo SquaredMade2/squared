@@ -121,7 +121,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
-										<span className="w-2/3 truncate ml-2">{user.username}</span>
+										<span className="w-2/3 truncate ml-2">{user.name}</span>
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",
