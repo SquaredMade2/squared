@@ -31,37 +31,32 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 		getAllUsers: state.getAllUsers,
 		users: state.users,
 	}));
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const assigneeName = currentTask ? currentTask.assigneeName : "";
-	const assigneeId = currentTask ? currentTask.assigneeId : "";
+	const { updateTask } = useTaskStore((state) => ({
+		updateTask: state.updateTask,
+	}));
+
+	const taskId = currentTask?.id ?? "";
+	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
 	useEffect(() => {
-		const fetchUsers = async () => {
-			if (currentWorkspace?.id) {
-				await getAllUsers(currentWorkspace.id);
-			}
-		};
-
-		fetchUsers();
+		if (currentWorkspace?.id) {
+			getAllUsers(currentWorkspace.id);
+		}
 	}, [currentWorkspace?.id, getAllUsers]);
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			await updateTask(taskId, { assigneeId: null, assigneeName: null });
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
-
-		if (selectedUser) {
-			if (currentTask) {
-				await updateTask(taskId, {
-					assigneeId: selectedUser.id,
-					assigneeName: selectedUser.name,
-				});
-			}
-			// await getTaskEvents(taskId);
+		if (selectedUser && currentTask) {
+			await updateTask(taskId, {
+				assigneeId: selectedUser.id,
+				assigneeName: selectedUser.name,
+			});
 		}
 	};
 
@@ -71,37 +66,35 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 				<Button
 					variant="outline"
 					aria-expanded={open}
-					className="justify-between md:w-full h-8 md:h-10"
+					className="justify-between w-full md:w-[200px] h-8 md:h-10"
 				>
 					{assigneeName ? (
-						<div className="flex items-center w-28">
-							<Avatar className="size-6 text-xxs">
+						<div className="flex items-center">
+							<Avatar className="w-6 h-6 mr-2">
 								<AvatarImage src={assigneeAvatar ?? ""} />
 								<AvatarFallback>{getInitials(assigneeName)}</AvatarFallback>
 							</Avatar>
-							<span className="ml-2 w-1/2 truncate text-xs">
-								{assigneeName}
-							</span>
+							<span className="truncate">{assigneeName}</span>
 						</div>
 					) : (
 						<div className="flex items-center">
-							<UserSearch className="size-4 mr-2" />
+							<UserSearch className="w-4 h-4 mr-2" />
 							<span>Unassigned</span>
 						</div>
 					)}
-					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+					<ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className={cn("p-0 w-[200px]")}>
+			<PopoverContent className="w-[200px] p-0">
 				<Command>
 					<CommandInput placeholder="Search users..." />
 					<CommandList>
-						<ScrollArea className="h-80 pr-2">
+						<ScrollArea className="h-[300px]">
 							<CommandEmpty>No user found.</CommandEmpty>
 							<CommandGroup>
 								<CommandItem onSelect={() => handleSelectAssignee(null)}>
-									<UserSearch className="size-4 mx-1" />
-									<span className="w-2/3 truncate ml-2">Unassign</span>
+									<UserSearch className="w-4 h-4 mr-2" />
+									<span>Unassign</span>
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
@@ -113,13 +106,12 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 									<CommandItem
 										key={user.id}
 										onSelect={() => handleSelectAssignee(user.id)}
-										className="w-full"
 									>
-										<Avatar className="size-6 text-xxs">
+										<Avatar className="w-6 h-6 mr-2">
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
-										<span className="w-2/3 truncate ml-2">{user.username}</span>
+										<span className="truncate">{user.username}</span>
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",
