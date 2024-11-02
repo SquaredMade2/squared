@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,9 +18,18 @@ import { StatusIcon } from "@/components/Icons";
 
 const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const sidebarStatus = currentTask ? currentTask.status : "";
+	const { updateTask, tasks } = useTaskStore((state) => state);
+	const [localTask, setLocalTask] = useState(currentTask);
+
+	useEffect(() => {
+		if (currentTask) {
+			const updatedTask = tasks.find((task) => task.id === currentTask.id);
+			setLocalTask(updatedTask || currentTask);
+		}
+	}, [currentTask, tasks]);
+
+	const taskId = localTask ? localTask.id : "";
+	const sidebarStatus = localTask ? localTask.status : "";
 
 	const handleSelectStatus = (newStatus: Status) => {
 		if (newStatus === sidebarStatus || !taskId) return;
@@ -29,7 +39,7 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const updateItem = async (newStatus: Status) => {
 		try {
 			await updateTask(taskId, { status: newStatus });
-			// await getTaskEvents(taskId);
+			setLocalTask((prev) => (prev ? { ...prev, status: newStatus } : prev));
 		} catch {
 			toast({
 				title: "Error updating status",
@@ -41,14 +51,14 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	return (
 		<Select
 			onValueChange={(value) => handleSelectStatus(value as Status)}
-			defaultValue={sidebarStatus}
+			value={sidebarStatus}
 		>
 			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
 						<StatusIcon status={sidebarStatus || "todo"} />
 						<span className="mx-2 text-nowrap">
-							{sidebarStatus ? formatStatus(sidebarStatus) : sidebarStatus}
+							{sidebarStatus ? formatStatus(sidebarStatus) : "Select status"}
 						</span>
 					</div>
 				</SelectValue>

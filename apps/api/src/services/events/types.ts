@@ -1,0 +1,65 @@
+import type {
+	Commit,
+	Notification,
+	NotificationType,
+	Task,
+	TaskEvent,
+	Workspace,
+} from "@squared/db";
+
+export type TaskValue = string | number | boolean | Date | string[] | null;
+
+export type FullNotification = Notification & {
+	Workspace: Workspace;
+	Task: Task;
+};
+
+export type TaskEventsReturn = Promise<
+	(
+		| {
+				[key: string]: { oldValue: TaskValue; newValue: TaskValue };
+		  }
+		| Commit
+	)[]
+>;
+
+export interface EventRpc {
+	getTaskEvents: ({ taskId }: { taskId: string }) => TaskEventsReturn;
+	getNotifications: ({
+		userId,
+	}: { userId: string }) => Promise<FullNotification[]>;
+	createLogEvent: ({
+		taskId,
+		authorId,
+		changes,
+	}: {
+		taskId: string;
+		authorId: string;
+		changes: Partial<TaskEvent>;
+	}) => Promise<TaskEvent>;
+	createNotification: ({
+		userId,
+		description,
+		type,
+		taskId,
+		workspaceId,
+	}: {
+		userId: string;
+		description: string;
+		type: NotificationType;
+		taskId: string;
+		workspaceId: string;
+	}) => Promise<Notification>;
+	toggleNotification: ({
+		notificationIds,
+		read,
+		dismissed,
+	}: {
+		notificationIds: string[];
+		read?: boolean;
+		dismissed?: boolean;
+	}) => Promise<Notification[]>;
+	deleteNotification: ({
+		notificationIds,
+	}: { notificationIds: string[] }) => Promise<void>;
+}
