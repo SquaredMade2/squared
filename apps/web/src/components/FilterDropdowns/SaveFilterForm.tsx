@@ -48,7 +48,7 @@ export function SaveFilterForm({
 		mergeFilters,
 	} = useFilterStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-	const { getAllUsers } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const user = useAuthStore((state) => state.user);
 	const { toast } = useToast();
@@ -96,11 +96,7 @@ export function SaveFilterForm({
 			if (currentWorkspace) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
-						formatFilterName(
-							filter,
-							currentWorkspace.Labels,
-							getAllUsers(currentWorkspace.id),
-						),
+						formatFilterName(filter, currentWorkspace.Labels, users),
 					),
 				);
 				setFormattedFilters(formatted);
