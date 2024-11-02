@@ -247,7 +247,10 @@ describe("CommentStore", () => {
 			mockedAxios.post.mockResolvedValue(mockResponse);
 
 			await taskStore.getState().addTask(mockTask);
-			const mockComments: Comment[] = [STANDARD_COMMENT, STANDARD_COMMENT_2];
+			const mockComments: Comment[] = [
+				STANDARD_COMMENT,
+				{ ...STANDARD_COMMENT },
+			];
 
 			mockedAxios.get.mockResolvedValue({
 				data: mockComments,
