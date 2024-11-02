@@ -517,9 +517,9 @@ const schemas = {
 					"arrayIncludesAll",
 					"arrayIncludesAny",
 				],
-      },
-    },
-  },
+			},
+		},
+	},
 	Label: {
 		type: "object",
 		properties: {
