@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import { getInitials, handleWorkspaceNameOverflow } from "@/utils/formatting";
 import {
@@ -8,39 +7,20 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import {
-	useAuthStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import type { Workspace } from "@/store/workspaces";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 const WorkSpaceDropDown = () => {
-	const {
-		currentWorkspace,
-		workspaces,
-		getAllWorkspaces,
-		setCurrentWorkspace,
-	} = useWorkspaceStore((state) => state);
-	const { getAllTeams } = useTeamStore((state) => state);
-	const { getAllTasks } = useTaskStore((state) => state);
-	const { getAllUsers } = useUserStore((state) => state);
+	const { currentWorkspace, workspaces, setCurrentWorkspace } =
+		useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const router = useRouter();
 
-	useEffect(() => {
-		user && getAllWorkspaces(user.id);
-	}, [user]);
 	if (!user) return null;
 	const handleWorkspaceClick = async (workspace: Workspace) => {
 		setCurrentWorkspace(workspace);
-		const teams = await getAllTeams(user.id);
-		await getAllTasks(teams[0].id);
-		await getAllUsers(workspace.id);
 		router.push(`/${workspace.url}`);
 	};
 	const workspaceSettings = (workspaceSettingsOption: string) => {

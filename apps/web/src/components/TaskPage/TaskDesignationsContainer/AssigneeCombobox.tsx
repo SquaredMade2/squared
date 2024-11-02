@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/button";
@@ -17,31 +17,24 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTaskStore, useUserStore } from "@/store";
-import type { ButtonProps } from "./interfaces";
-import { ScrollArea } from "../../ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
+import { useTaskStore, useUserStore } from "@/store";
+import type { ButtonProps } from "./interfaces";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const [localTask, setLocalTask] = useState(currentTask);
 
-	const { users } = useUserStore((state) => ({
-		users: state.users,
-	}));
-	const { updateTask, tasks } = useTaskStore((state) => state);
+	// Move these to a custom hook or memoize if needed
+	const updateTask = useTaskStore((state) => state.updateTask);
+	const users = useUserStore((state) => state.users);
 
-	useEffect(() => {
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
-
-	const taskId = localTask ? localTask.id : "";
-	const assigneeName = localTask ? localTask.assigneeName : "";
-	const assigneeId = localTask ? localTask.assigneeId : "";
+	// Derive values from props instead of state
+	const taskId = currentTask?.id ?? "";
+	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
 	const handleSelectAssignee = async (userId: string | null) => {

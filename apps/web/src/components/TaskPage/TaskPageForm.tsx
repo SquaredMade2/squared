@@ -14,7 +14,7 @@ import { Button } from "../ui/button";
 
 export const TaskPageForm = ({ task }: { task: Task }) => {
 	const { updateTask, getTask } = useTaskStore((state) => state);
-	const { users, getAllUsers } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 
@@ -57,9 +57,6 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 		if (task) {
 			setUpdatedTitle(task.title);
 			setUpdatedDescription(task.description);
-		}
-		if (currentWorkspace) {
-			getAllUsers(currentWorkspace.id);
 		}
 	}, [task]);
 

@@ -43,7 +43,7 @@ export function useAuthUser() {
 		};
 
 		handleGetUser();
-	}, [status, session]);
+	}, [status]);
 
 	return {
 		user,
