@@ -18,8 +18,7 @@ export const EventTabs = () => {
 		const fetchTaskComments = async () => {
 			try {
 				if (task) {
-					const comments = await getComments(task.id);
-					console.log(comments);
+					await getComments(task.id);
 				}
 			} catch (err) {
 				toast({

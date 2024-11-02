@@ -105,11 +105,12 @@ export const createCommentStore = (
 					`${process.env.NEXT_PUBLIC_SERVER}/api/task/${taskId}/comment`,
 				);
 				const commentData: ApiReturnType<Comment[]> = response.data;
-				if (commentData.data) {
-					set({ comments: commentData.data });
-					return commentData.data;
+				if (!commentData.data) {
+					set({ comments: [] });
+					return [];
 				}
-				return [];
+				set({ comments: commentData.data });
+				return commentData.data;
 			} catch (error) {
 				console.error("Error in getAllComments:", error);
 				return [];
