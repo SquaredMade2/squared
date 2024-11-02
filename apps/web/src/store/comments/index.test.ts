@@ -231,35 +231,22 @@ describe("CommentStore", () => {
 
 	describe("getAllComments", () => {
 		it("should fetch all comments for a task and update the state", async () => {
-			const mockTask: Partial<Task> = {
-				title: "Test Task",
-				status: "todo",
-			};
+			const mockComments: Comment[] = [
+				STANDARD_COMMENT,
+				{ ...STANDARD_COMMENT, id: "comment-2" },
+			];
 
 			const mockResponse = {
 				data: {
-					data: { id: "mocked-uuid", ...mockTask } as Task,
-					message: "Task added successfully",
+					data: mockComments,
+					message: "Comments fetched successfully",
 					variant: "default",
 				},
 			};
 
-			mockedAxios.post.mockResolvedValue(mockResponse);
-
-			await taskStore.getState().addTask(mockTask);
-			const mockComments: Comment[] = [
-				STANDARD_COMMENT,
-				{ ...STANDARD_COMMENT },
-			];
-
-			mockedAxios.get.mockResolvedValue({
-				data: mockComments,
-				message: "Comments fetched successfully",
-				variant: "default",
-			});
+			mockedAxios.get.mockResolvedValue(mockResponse);
 
 			const result = await store.getState().getAllComments("task-1");
-			console.log("result", result);
 
 			expect(mockedAxios.get).toHaveBeenCalledWith(
 				expect.stringContaining("/api/task/task-1/comment"),
