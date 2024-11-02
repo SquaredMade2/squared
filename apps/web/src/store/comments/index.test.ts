@@ -1,7 +1,7 @@
 import { createCommentStore } from ".";
 import axios from "axios";
-import type { Comment, Task } from "@squared/db";
-import { STANDARD_COMMENT, STANDARD_COMMENT_2 } from "@/test/mocks";
+import type { Comment } from "@squared/db";
+import { STANDARD_COMMENT } from "@/test/mocks";
 import { createTaskStore } from "../tasks";
 
 // Mock axios
@@ -25,11 +25,9 @@ afterAll(() => {
 
 describe("CommentStore", () => {
 	let store: ReturnType<typeof createCommentStore>;
-	let taskStore: ReturnType<typeof createTaskStore>;
 
 	beforeEach(() => {
 		store = createCommentStore();
-		taskStore = createTaskStore();
 		jest.clearAllMocks();
 	});
 
