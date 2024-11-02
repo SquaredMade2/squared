@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { Button } from "@/components/ui/button";
@@ -30,28 +30,37 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 		users: state.users,
 	}));
 	const { updateTask } = useTaskStore((state) => state);
+
+	// Use useMemo to memoize these values
 	const taskId = currentTask ? currentTask.id : "";
 	const assigneeName = currentTask ? currentTask.assigneeName : "";
 	const assigneeId = currentTask ? currentTask.assigneeId : "";
-	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
-	const handleSelectAssignee = async (userId: string | null) => {
-		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
-			return;
-		}
-		const selectedUser = users.find((user) => user.id === userId);
+	// Use useMemo to prevent unnecessary recalculations
+	const assigneeAvatar = useMemo(() => {
+		return users.find(({ id }) => id === assigneeId)?.avatarUrl;
+	}, [users, assigneeId]);
 
-		if (selectedUser) {
-			if (currentTask) {
+	// Use useCallback to memoize this function
+	const handleSelectAssignee = useCallback(
+		async (userId: string | null) => {
+			if (!userId) {
+				updateTask(taskId, { assigneeId: null, assigneeName: null });
+				return;
+			}
+			const selectedUser = users.find((user) => user.id === userId);
+
+			if (selectedUser && currentTask) {
 				await updateTask(taskId, {
 					assigneeId: selectedUser.id,
 					assigneeName: selectedUser.name,
 				});
 			}
-			// await getTaskEvents(taskId);
-		}
-	};
+			// Close the popover after selection
+			setOpen(false);
+		},
+		[users, updateTask, taskId, currentTask],
+	);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -80,7 +89,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className={cn("p-0 w-[200px]")}>
+			<PopoverContent className="p-0 w-[200px]">
 				<Command>
 					<CommandInput placeholder="Search users..." />
 					<CommandList>
@@ -125,4 +134,4 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	);
 };
 
-export default AssigneeCombobox;
+export default memo(AssigneeCombobox);
