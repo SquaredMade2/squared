@@ -12,6 +12,7 @@ import {
 } from "@/components/Modals";
 import SearchCommand from "@/components/SearchCommand";
 import MobileMenuSheet from "@/components/MobileNav";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function ClientLayoutWrapper({
 	children,
@@ -20,22 +21,26 @@ export default function ClientLayoutWrapper({
 }) {
 	return (
 		<SessionProvider>
-			<SquaredStoreProvider>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<WorkspaceInviteModal />
-					<MobileMenuSheet />
-					<SearchCommand />
-					<WorkspaceSwitcher />
-					<TaskSelector />
-					<div className="h-full flex flex-row overflow-hidden">{children}</div>
-				</ThemeProvider>
-				<Toaster />
-			</SquaredStoreProvider>
+			<ErrorBoundary>
+				<SquaredStoreProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<WorkspaceInviteModal />
+						<MobileMenuSheet />
+						<SearchCommand />
+						<WorkspaceSwitcher />
+						<TaskSelector />
+						<div className="h-full flex flex-row overflow-hidden">
+							{children}
+						</div>
+					</ThemeProvider>
+					<Toaster />
+				</SquaredStoreProvider>
+			</ErrorBoundary>
 		</SessionProvider>
 	);
 }
