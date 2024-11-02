@@ -376,6 +376,7 @@ model Project {
 model Sprint {
   id          String              @id @default(uuid())
   name        String
+  description String?
   startDate   DateTime
   endDate     DateTime
   status      SprintStatus
