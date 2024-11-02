@@ -32,6 +32,19 @@ export class SprintService implements SprintRpc {
 		return this.db.sprint.findMany({ where: { teamId } });
 	}
 
+	async updateSprint({
+		sprintId,
+		sprintData,
+	}: {
+		sprintId: string;
+		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
+	}): Promise<Sprint> {
+		return this.db.sprint.update({
+			where: { id: sprintId },
+			data: sprintData,
+		});
+	}
+
 	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
 		const team = await this.db.team.findUnique({ where: { id: teamId } });
 
@@ -52,19 +65,21 @@ export class SprintService implements SprintRpc {
 
 		const sprintDuration = team.sprintDuration;
 
-		const newSprints: Omit<Sprint, "id" | "createdAt" | "updatedAt">[] =
-			Array.from({ length: remainingSprints }, (_, index) => {
-				const startDate = addWeeks(new Date(), index * sprintDuration);
-				const endDate = addWeeks(startDate, sprintDuration);
+		const newSprints: Pick<
+			Sprint,
+			"name" | "status" | "startDate" | "endDate" | "teamId"
+		>[] = Array.from({ length: remainingSprints }, (_, index) => {
+			const startDate = addWeeks(new Date(), index * sprintDuration);
+			const endDate = addWeeks(startDate, sprintDuration);
 
-				return {
-					name: `Sprint ${sprints.length + index + 1}`,
-					status: "PLANNED",
-					startDate,
-					endDate,
-					teamId,
-				};
-			});
+			return {
+				name: `Sprint ${sprints.length + index + 1}`,
+				status: "PLANNED",
+				startDate,
+				endDate,
+				teamId,
+			};
+		});
 		await this.db.sprint.createMany({ data: newSprints });
 
 		return 1;

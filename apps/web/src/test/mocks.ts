@@ -54,6 +54,7 @@ export const STANDARD_TEAM: Team = {
 	activeRequired: true,
 	sprintStartDate: new Date("2023-01-01"),
 	tasksPerSprint: 10,
+	effort: "LINEAR",
 };
 
 export const STANDARD_TEAM_2: Team = {
@@ -68,6 +69,7 @@ export const STANDARD_TEAM_2: Team = {
 	activeRequired: false,
 	sprintStartDate: new Date("2023-02-01"),
 	tasksPerSprint: 8,
+	effort: "FIBONACCI",
 };
 
 export const STANDARD_TASK: Task = {
@@ -116,6 +118,7 @@ export const STANDARD_TASK_2: Task = {
 export const STANDARD_SPRINT: Sprint = {
 	id: "007168DD-DD4A-4013-9D5C-A3E6AE6868E5",
 	name: "Sprint 1",
+	description: "First sprint",
 	startDate: new Date("2023-01-01"),
 	endDate: new Date("2023-01-14"),
 	status: "ACTIVE",

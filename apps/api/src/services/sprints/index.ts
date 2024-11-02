@@ -13,6 +13,7 @@ import type {
 	SprintRpc,
 } from "./types";
 import { sprintSchema, taskSchema } from "../schema";
+import type { Sprint } from "@squared/db";
 
 // Define type-safe Zod schemas
 
@@ -28,6 +29,26 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	getSprints: {
 		input: z.object({ teamId: z.string() }),
 		output: z.array(sprintSchema),
+	},
+	updateSprint: {
+		input: createSchema<{
+			sprintId: string;
+			sprintData: Pick<
+				Sprint,
+				"startDate" | "description" | "name" | "endDate"
+			>;
+		}>()(
+			z.object({
+				sprintId: z.string(),
+				sprintData: sprintSchema.pick({
+					name: true,
+					startDate: true,
+					endDate: true,
+					description: true,
+				}),
+			}),
+		),
+		output: sprintSchema,
 	},
 	initializeSprints: {
 		input: z.object({ teamId: z.string() }),
@@ -100,6 +121,7 @@ export type SprintRpcSchema = typeof sprintRpcSchema;
 export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 	createRpcHandler("sprint", sprintRpcSchema, {
 		getSprints: (input) => sprintService.getSprints(input),
+		updateSprint: (input) => sprintService.updateSprint(input),
 		initializeSprints: (input) => sprintService.initializeSprints(input),
 		startNextSprint: (input) => sprintService.startNextSprint(input),
 		getSprintTasks: (input) => sprintService.getSprintTasks(input),
