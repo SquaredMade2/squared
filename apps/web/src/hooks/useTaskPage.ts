@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { useTaskStore, useTeamStore, useUserStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useWorkspaces } from "./useWorkspaces";
+import { useUsers } from "./useUsers";
 
 export function useTaskPage() {
 	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	useUsers();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
 	const { getTaskByIdentifier, tasks } = useTaskStore((state) => state);
 	const { getAllUsers } = useUserStore((state) => state);
