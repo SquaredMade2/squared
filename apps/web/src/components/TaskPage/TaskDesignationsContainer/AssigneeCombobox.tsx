@@ -25,6 +25,7 @@ import type { ButtonProps } from "./interfaces";
 
 const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
+	const [localTask, setLocalTask] = useState(currentTask);
 
 	// Move these to a custom hook or memoize if needed
 	const updateTask = useTaskStore((state) => state.updateTask);
@@ -38,20 +39,32 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			await updateTask(taskId, { assigneeId: null, assigneeName: null });
+			setLocalTask((prev) =>
+				prev ? { ...prev, assigneeId: null, assigneeName: null } : prev,
+			);
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			if (currentTask) {
+			if (localTask) {
 				await updateTask(taskId, {
 					assigneeId: selectedUser.id,
 					assigneeName: selectedUser.name,
 				});
+				setLocalTask((prev) =>
+					prev
+						? {
+								...prev,
+								assigneeId: selectedUser.id,
+								assigneeName: selectedUser.name,
+							}
+						: prev,
+				);
 			}
-			// await getTaskEvents(taskId);
 		}
+		setOpen(false);
 	};
 
 	return (
