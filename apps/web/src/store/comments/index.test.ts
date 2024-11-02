@@ -259,6 +259,7 @@ describe("CommentStore", () => {
 			});
 
 			const result = await store.getState().getAllComments("task-1");
+			console.log("result", result);
 
 			expect(mockedAxios.get).toHaveBeenCalledWith(
 				expect.stringContaining("/api/task/task-1/comment"),
