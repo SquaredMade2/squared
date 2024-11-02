@@ -4,7 +4,6 @@ import {
 	createSchema,
 	createServiceSchema,
 } from "@squared/rpc";
-import { SprintService } from "./sprint-service";
 import type {
 	NextSprintPayload,
 	AddRetrospectivePayload,
@@ -13,54 +12,10 @@ import type {
 	RetroItemReturn,
 	SprintRpc,
 } from "./types";
-import type { Sprint, Task } from "@squared/db";
+import { sprintSchema, taskSchema } from "../schema";
+import type { Sprint } from "@squared/db";
 
 // Define type-safe Zod schemas
-const sprintSchema = createSchema<Sprint>()(
-	z.object({
-		id: z.string(),
-		name: z.string(),
-		description: z.string().nullable(),
-		startDate: z.date(),
-		endDate: z.date(),
-		status: z.enum(["PLANNED", "ACTIVE", "COMPLETED"]),
-		teamId: z.string(),
-		createdAt: z.date(),
-		updatedAt: z.date(),
-	}),
-);
-
-const taskSchema = createSchema<Task>()(
-	z.object({
-		id: z.string(),
-		title: z.string(),
-		description: z.string().nullable(),
-		status: z.enum([
-			"backlog",
-			"todo",
-			"inProgress",
-			"inReview",
-			"done",
-			"canceled",
-			"archived",
-		]),
-		sprintId: z.string().nullable(),
-		teamId: z.string(),
-		updatedAt: z.date(),
-		authorId: z.string(),
-		identifier: z.string(),
-		dueDate: z.date().nullable(),
-		effortEstimate: z.number().nullable(),
-		priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
-		dateCreated: z.date(),
-		assigneeId: z.string().nullable(),
-		assigneeName: z.string().nullable(),
-		labels: z.array(z.string()),
-		workspaceId: z.string(),
-		parentId: z.string().nullable(),
-		deleted: z.boolean(),
-	}),
-);
 
 const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 	z.object({
@@ -178,4 +133,4 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 			sprintService.getRetrospectiveItems(input),
 	});
 
-export { SprintService };
+export { SprintService } from "./sprint-service";

@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+"use client";
+
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -39,8 +41,17 @@ const LabelColor = ({ label }: { label: Label }) => {
 const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask?.id;
+	const { updateTask, tasks } = useTaskStore((state) => state);
+	const [localTask, setLocalTask] = useState(currentTask);
+
+	useEffect(() => {
+		if (currentTask) {
+			const updatedTask = tasks.find((task) => task.id === currentTask.id);
+			setLocalTask(updatedTask || currentTask);
+		}
+	}, [currentTask, tasks]);
+
+	const taskId = localTask?.id;
 
 	const allLabels = useMemo(
 		() => currentWorkspace?.Labels || [],
@@ -48,8 +59,8 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	);
 
 	const taskLabels = useMemo(
-		() => allLabels.filter((label) => currentTask?.labels.includes(label.id)),
-		[allLabels, currentTask?.labels],
+		() => allLabels.filter((label) => localTask?.labels.includes(label.id)),
+		[allLabels, localTask?.labels],
 	);
 
 	const handleSelectLabels = async (selectedLabel: Label) => {
@@ -63,6 +74,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 
 		const labelIds = updatedLabels.map((label) => label.id);
 		await updateTask(taskId, { labels: labelIds });
+		setLocalTask((prev) => (prev ? { ...prev, labels: labelIds } : prev));
 		setOpen(false);
 	};
 

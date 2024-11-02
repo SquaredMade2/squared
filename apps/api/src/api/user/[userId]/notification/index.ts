@@ -33,7 +33,6 @@ export function createRoute(): Route<Params> {
 						where: { userId },
 						include: {
 							Task: true,
-							Workspace: true,
 						},
 					});
 
