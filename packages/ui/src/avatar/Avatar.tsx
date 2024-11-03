@@ -1,8 +1,8 @@
 import * as React from "react";
 import { createContextScope } from "../context";
+import { Primitive } from "../react-primitive";
 import { useCallbackRef } from "../use-callback-ref";
 import { useLayoutEffect } from "../use-layout-effect";
-import { Primitive } from "../react-primitive";
 
 import type { Scope } from "../context";
 

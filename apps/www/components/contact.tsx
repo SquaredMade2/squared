@@ -12,8 +12,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 
-import Link from "next/link";
 import { IconBrandLinkedin } from "@tabler/icons-react";
+import Link from "next/link";
 import { Button } from "./button";
 
 const formSchema = z.object({

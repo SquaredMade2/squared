@@ -3,9 +3,9 @@
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 
 import ViewAllTasks from "@/components/ViewAllTasks";
-import { useFilterStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useGroups } from "@/hooks/useGroups";
+import { useFilterStore } from "@/store";
 
 export default function BacklogTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);

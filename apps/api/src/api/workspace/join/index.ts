@@ -1,6 +1,6 @@
-import type { Workspace } from "@squared/db";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
 import { joinWorkspace } from "@/utils/joinWorkspace";
+import type { Workspace } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type JoinBody = {

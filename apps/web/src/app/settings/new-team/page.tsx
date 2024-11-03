@@ -1,21 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
+	CardContent,
+	CardDescription,
 	CardHeader,
 	CardTitle,
-	CardDescription,
-	CardContent,
 } from "@/components/ui/card";
-import { useTeamStore } from "@/store";
-import { Separator } from "@/components/ui/separator";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
 	Form,
 	FormControl,
@@ -25,10 +18,17 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { useTeamStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
 	teamName: z.string().min(1, {

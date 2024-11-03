@@ -1,24 +1,24 @@
-import Link from "next/link";
-import {
-	// Calendar, Star, // Not used yet
-	Trash,
-} from "lucide-react";
 import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
-import StatusSubContextMenu from "./StatusSubContextMenu";
-import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
-import PrioritySubContextMenu from "./PrioritySubContextMenu";
-import type { ContextMenuProps } from "./interfaces";
-import LabelSubContextMenu from "./LabelSubContextMenu";
-import DateSubContextMenu from "./DateSubContextMenu";
+import { useToast } from "@/components/ui/use-toast";
+import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 // Will need in future
 // import RenameSubContextMenu from "./RenameSubContextMenu";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
+import {
+	// Calendar, Star, // Not used yet
+	Trash,
+} from "lucide-react";
+import Link from "next/link";
+import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
+import DateSubContextMenu from "./DateSubContextMenu";
+import LabelSubContextMenu from "./LabelSubContextMenu";
+import PrioritySubContextMenu from "./PrioritySubContextMenu";
+import StatusSubContextMenu from "./StatusSubContextMenu";
+import type { ContextMenuProps } from "./interfaces";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();

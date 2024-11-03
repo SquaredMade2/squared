@@ -1,11 +1,11 @@
 // active/page.tsx
 "use client";
 
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import ViewAllTasks from "@/components/ViewAllTasks";
-import { useFilterStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useGroups } from "@/hooks/useGroups";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { useFilterStore } from "@/store";
 
 export default function ActiveTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);

@@ -1,19 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-	useFilterStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-	useAuthStore,
-} from "@/store";
 import {
 	Form,
 	FormControl,
@@ -23,12 +10,25 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	useAuthStore,
+	useFilterStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { formatFilterName } from "@/utils/formatting";
+import { parseParams } from "@/utils/parseParams";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
-import { formatFilterName } from "@/utils/formatting";
-import type { SavedFilter } from "@/store/filters";
-import { useParams, usePathname } from "next/navigation";
-import { parseParams } from "@/utils/parseParams";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),

@@ -1,12 +1,12 @@
-import { useState } from "react";
 import {
 	useAuthStore,
+	useTaskStore,
 	useTeamStore,
 	useWorkspaceStore,
-	useTaskStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import type { Task } from "@squared/db";
+import { useState } from "react";
 
 export const useCreateTask = () => {
 	const [isLoading, setIsLoading] = useState(false);

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { InputChangeEvent, FormSubmitEvent } from "@/types";
-import { Pencil } from "lucide-react";
 import { useModalStore, useTaskStore } from "@/store";
+import type { FormSubmitEvent, InputChangeEvent } from "@/types";
+import { Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -11,9 +12,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "../ui/dialog";
-import { useToast } from "../ui/use-toast";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { useToast } from "../ui/use-toast";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");

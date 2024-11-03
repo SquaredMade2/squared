@@ -1,26 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
 	Command,
-	CommandInput,
-	CommandList,
-	CommandItem,
 	CommandEmpty,
 	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
 } from "@/components/ui/command";
 import { useFilterStore, useUserStore } from "@/store";
+import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
 import { Check, UserSearch } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getInitials } from "@/utils/formatting";
-import type { FilterOption } from "./interfaces";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 } from "../ui/dropdown-menu";
+import { ScrollArea } from "../ui/scroll-area";
+import type { FilterOption } from "./interfaces";
 
 export default function AssigneeFilterDropDown({
 	filterOption,

@@ -4,13 +4,13 @@ import type { ReactNode } from "react";
 import { AuthStoreProvider } from "./auth";
 import { CommentStoreProvider } from "./comments";
 import { EventStoreProvider } from "./events";
+import { FilterStoreProvider } from "./filters";
 import { ModalStoreProvider } from "./modals";
 import { TaskStoreProvider } from "./tasks";
 import { TeamStoreProvider } from "./teams";
 import { UserStoreProvider } from "./users";
 import { ViewStoreProvider } from "./views";
 import { WorkspaceStoreProvider } from "./workspaces";
-import { FilterStoreProvider } from "./filters";
 
 // Create the combined provider component
 export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {

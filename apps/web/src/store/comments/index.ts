@@ -1,8 +1,8 @@
-import { createStore } from "zustand/vanilla";
-import axios from "axios";
-import type { CommentState, CommentStore, CommentResponse } from "./interfaces";
 import type { Comment } from "@squared/db";
+import axios from "axios";
+import { createStore } from "zustand/vanilla";
 import type { ApiReturnType } from "../interfaces";
+import type { CommentResponse, CommentState, CommentStore } from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
 

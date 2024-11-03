@@ -1,17 +1,17 @@
 "use client";
 
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import type { ThemeProviderProps } from "next-themes/dist/types";
-import { SessionProvider } from "next-auth/react";
-import { SquaredStoreProvider } from "@/store";
-import { Toaster } from "@/components/ui/toaster";
+import MobileMenuSheet from "@/components/MobileNav";
 import {
+	TaskSelector,
 	WorkspaceInviteModal,
 	WorkspaceSwitcher,
-	TaskSelector,
 } from "@/components/Modals";
 import SearchCommand from "@/components/SearchCommand";
-import MobileMenuSheet from "@/components/MobileNav";
+import { Toaster } from "@/components/ui/toaster";
+import { SquaredStoreProvider } from "@/store";
+import { SessionProvider } from "next-auth/react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import type { ThemeProviderProps } from "next-themes/dist/types";
 
 export default function ClientLayoutWrapper({
 	children,

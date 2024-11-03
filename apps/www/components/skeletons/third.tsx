@@ -1,12 +1,12 @@
 "use client";
-import { NewIssueDropDown } from "@/components/new-issue-dropdown";
-import TodoIcon from "@/components/SVG/todo-icon";
 import BacklogIcon from "@/components/SVG/backlog-icon";
 import DoneIcon from "@/components/SVG/done-icon";
 import HighPriority from "@/components/SVG/high-priority";
-import MediumPriority from "@/components/SVG/medium-priority";
-import UrgentPriority from "@/components/SVG/urgent-priority";
 import LowEffort from "@/components/SVG/low-effort";
+import MediumPriority from "@/components/SVG/medium-priority";
+import TodoIcon from "@/components/SVG/todo-icon";
+import UrgentPriority from "@/components/SVG/urgent-priority";
+import { NewIssueDropDown } from "@/components/new-issue-dropdown";
 
 export const SkeletonThree = () => {
 	return (
