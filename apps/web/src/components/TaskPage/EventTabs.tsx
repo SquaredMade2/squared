@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreatedByInformation, UpdatedByInformation } from ".";
+import { CreatedByInformation } from ".";
 import TextEditor from "../TextEditor";
 import { useCommentStore } from "@/store";
 import CommentCard from "./CommentCard";
@@ -39,7 +39,6 @@ export const EventTabs = () => {
 			<TabsContent value="activity">
 				<div className="flex flex-col bg-card rounded-md text-sm">
 					<CreatedByInformation />
-					<UpdatedByInformation />
 				</div>
 			</TabsContent>
 			<TabsContent value="comments">

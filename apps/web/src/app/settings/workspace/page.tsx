@@ -49,9 +49,14 @@ const formSchema = z.object({
 });
 
 export default function WorkspaceSettings() {
-	const { deleteWorkspace, getAllWorkspaces, updateWorkspace } =
-		useWorkspaceStore((state) => state);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { deleteWorkspace, updateWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
+	const {
+		currentWorkspace,
+		workspaces,
+		loading: workspaceLoading,
+	} = useWorkspaces();
 	const { user } = useAuthStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
@@ -108,7 +113,6 @@ export default function WorkspaceSettings() {
 		setIsDeleting(true);
 		await deleteWorkspace(currentWorkspace.id);
 		if (user) {
-			const workspaces = await getAllWorkspaces(user.id);
 			if (workspaces.length > 0) {
 				router.replace(`/${workspaces[0].id}`);
 			} else {

@@ -33,6 +33,7 @@
 		"@repo/ui": "workspace:*",
 		"@sentry/nextjs": "^8.27.0",
 		"@squared/context": "workspace:*",
+		"@squared/logger": "workspace:*",
 		"@squared/rpc-client": "workspace:*",
 		"@squared/fonts": "workspace:*",
 		"@tanstack/react-table": "^8.20.5",
