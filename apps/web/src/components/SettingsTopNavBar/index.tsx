@@ -1,7 +1,7 @@
-import { useRouter } from "next/navigation";
-import { ChevronLeft, PanelLeft } from "lucide-react";
-import { Button } from "../ui/button";
 import { useViewStore, useWorkspaceStore } from "@/store";
+import { ChevronLeft, PanelLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 const SettingsTopNavBar = () => {
 	const router = useRouter();

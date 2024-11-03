@@ -1,27 +1,27 @@
+import { useAuthStore, useCommentStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { handleFormatSlateToComment } from "@/utils/formatting";
 import { type KeyboardEvent, useCallback, useState } from "react";
 import type { BaseEditor, Descendant } from "slate";
-import { Element, createEditor, Editor, Transforms } from "slate";
+import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
 	ReactEditor,
 	RenderElementProps,
 	RenderLeafProps,
 } from "slate-react";
-import { Slate, Editable, withReact, DefaultElement } from "slate-react";
-import { useAuthStore, useCommentStore } from "@/store";
+import { DefaultElement, Editable, Slate, withReact } from "slate-react";
+import { Button } from "../ui/button";
+import { toast } from "../ui/use-toast";
+import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
+import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
+import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
+import TextEditorToolBar from "./TextEditorToolBar";
 import type {
 	CustomDescendant,
 	CustomElement,
 	CustomText,
 	TextEditorProps,
 } from "./interfaces";
-import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
-import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
-import TextEditorToolBar from "./TextEditorToolBar";
-import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
-import { cn } from "@/utils/cn";
-import { handleFormatSlateToComment } from "@/utils/formatting";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 
 declare module "slate" {
 	interface CustomTypes {

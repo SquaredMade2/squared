@@ -1,8 +1,8 @@
+import { DocsLayout } from "@/components/DocsLayout";
+import { Footer } from "@/components/footer";
+import { NavBar } from "@/components/navbar";
 // app/docs/layout.tsx
 import type { Metadata } from "next";
-import { DocsLayout } from "@/components/DocsLayout";
-import { NavBar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
 	title: "Squared Documentation",

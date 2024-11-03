@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
 	type ColumnFiltersState,
 	type SortingState,
@@ -12,8 +11,10 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
+import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,21 +25,20 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { columns } from "./columns";
-import { Checkbox } from "../ui/checkbox";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { eventService } from "@/lib/services";
 import { useAuthStore, useEventStore, useUserStore } from "@/store";
+import { TODO } from "@squared/context";
 import {
 	BellOff,
 	Check,
+	Circle,
+	Ellipsis,
 	MoveRight,
 	Trash2,
-	Ellipsis,
-	Circle,
 } from "lucide-react";
-import type { NotificationFilter } from "@/app/inbox/page";
-import { eventService } from "@/lib/services";
-import { TODO } from "@squared/context";
-import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { Checkbox } from "../ui/checkbox";
+import { columns } from "./columns";
 
 export function InboxDataTable({
 	data,

@@ -1,21 +1,21 @@
 "use client";
 
 import { useModalStore, useWorkspaceStore } from "@/store";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import { Loader2 } from "lucide-react";
 
 export const WorkspaceInviteModal = () => {
 	const {

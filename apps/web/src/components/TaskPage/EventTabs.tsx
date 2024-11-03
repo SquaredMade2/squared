@@ -1,13 +1,13 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTaskPage } from "@/hooks/useTaskPage";
+import { useCommentStore } from "@/store";
+import { useEffect } from "react";
 import { CreatedByInformation } from ".";
 import TextEditor from "../TextEditor";
-import { useCommentStore } from "@/store";
-import CommentCard from "./CommentCard";
-import { useEffect } from "react";
 import { toast } from "../ui/use-toast";
-import { useTaskPage } from "@/hooks/useTaskPage";
+import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
 	const comments = useCommentStore((state) => state.comments);

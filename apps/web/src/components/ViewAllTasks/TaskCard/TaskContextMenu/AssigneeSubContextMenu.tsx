@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { Check, UserSearch } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import type { ContextMenuProps } from "./interfaces";
-import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore } from "@/store";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
+import { Check, UserSearch } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users } = useUserStore((state) => state);

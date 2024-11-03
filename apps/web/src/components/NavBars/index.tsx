@@ -1,17 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { NewIssueButton, NewIssueModal } from "@/components/Modals";
 import WorkSpaceDropDown from "@/components/WorkSpaceDropdown";
-import { NewIssueModal, NewIssueButton } from "@/components/Modals";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "../ui/accordion";
-import { LayoutGrid, LogOut } from "lucide-react";
-import IconLeftMenu from "../IconNavbar";
 import {
 	useAuthStore,
 	useTeamStore,
@@ -19,19 +9,29 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import type { Team } from "@squared/db";
-import NavBarTeams from "./NavBarTeams";
+import { LayoutGrid, LogOut } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import IconLeftMenu from "../IconNavbar";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "../ui/accordion";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useToast } from "../ui/use-toast";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
-import Link from "next/link";
+import { useToast } from "../ui/use-toast";
+import NavBarTeams from "./NavBarTeams";
 
 const Navbar = () => {
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);

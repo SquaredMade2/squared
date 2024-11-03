@@ -1,6 +1,3 @@
-import { CirclePlus, EllipsisVertical } from "lucide-react";
-import type { TaskColumnTitleProps } from "./interfaces";
-import { cn } from "@/utils/cn";
 import {
 	useModalStore,
 	useTeamStore,
@@ -8,7 +5,13 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { Priority, Status } from "@squared/db";
+import { CirclePlus, EllipsisVertical } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { PriorityIcon, StatusIcon } from "../Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,
@@ -16,11 +19,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { PriorityIcon, StatusIcon } from "../Icons";
-import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { LabelColor } from "./TaskCard/TaskCardLabels";
-import { usePathname } from "next/navigation";
+import type { TaskColumnTitleProps } from "./interfaces";
 
 const TaskColumnTitle = ({
 	isListView,

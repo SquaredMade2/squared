@@ -1,24 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogFooter,
-} from "@/components/ui/dialog";
+import { PriorityIcon } from "@/components/Icons";
+import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -29,24 +13,40 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { format, differenceInDays } from "date-fns";
+import { Button } from "@/components/ui/button";
 import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-	ReferenceLine,
-} from "recharts";
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSprints } from "@/hooks/useSprints";
 import { useTaskStore } from "@/store";
 import type { Priority, Sprint, Task } from "@squared/db";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { differenceInDays, format } from "date-fns";
 import { AlertCircle } from "lucide-react";
-import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
-import { useSprints } from "@/hooks/useSprints";
-import { PriorityIcon } from "@/components/Icons";
+import { useCallback, useEffect, useState } from "react";
+import {
+	Line,
+	LineChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 export default function SprintDashboard() {
 	const { sprints, currentSprint, team: currentTeam } = useSprints();

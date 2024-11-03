@@ -1,14 +1,14 @@
 import "@testing-library/jest-dom";
 import type React from "react";
 
+import type { RenderResult } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "../collapsible";
-import type { RenderResult } from "@testing-library/react";
-import { fireEvent, render } from "@testing-library/react";
-import { axe, toHaveNoViolations } from "jest-axe";
 expect.extend(toHaveNoViolations);
 
 const TRIGGER_TEXT = "Trigger";

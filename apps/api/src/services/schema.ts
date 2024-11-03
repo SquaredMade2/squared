@@ -1,8 +1,8 @@
 import type {
+	Commit,
+	Notification,
 	Sprint,
 	Task,
-	Notification,
-	Commit,
 	Workspace,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";

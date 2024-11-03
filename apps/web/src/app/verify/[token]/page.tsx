@@ -1,8 +1,8 @@
 "use client";
-import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function VerifyUserToken(): void {
 	const router = useRouter();

@@ -1,13 +1,13 @@
 import type { Priority, Status } from "@squared/db";
 import {
 	AlertTriangle,
+	Archive,
 	ArrowDown,
 	ArrowRight,
 	ArrowUp,
-	CircleDot,
-	Circle,
-	Archive,
 	CheckCircle2,
+	Circle,
+	CircleDot,
 	Eye,
 	HourglassIcon,
 	Inbox,

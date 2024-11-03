@@ -1,15 +1,15 @@
 import type {
-	PrismaClient,
 	Notification,
-	TaskEvent,
-	Task,
 	NotificationType,
+	PrismaClient,
+	Task,
+	TaskEvent,
 } from "@squared/db";
 import type {
 	EventRpc,
-	TaskValue,
-	TaskEventsReturn,
 	FullNotification,
+	TaskEventsReturn,
+	TaskValue,
 } from "./types";
 
 export class EventService implements EventRpc {

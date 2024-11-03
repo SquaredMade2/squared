@@ -1,10 +1,10 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { sprintService } from "@/lib/services";
 import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Task, Team, Workspace } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
-import { sprintService } from "@/lib/services";
+import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function useSprints() {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();

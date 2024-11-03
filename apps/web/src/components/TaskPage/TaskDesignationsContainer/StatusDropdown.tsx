@@ -1,9 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { statusOptions } from "@/constants/designations";
-import { useTaskStore } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
+import { StatusIcon } from "@/components/Icons";
 import {
 	Select,
 	SelectContent,
@@ -11,10 +8,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { statusOptions } from "@/constants/designations";
+import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squared/db";
+import { useEffect, useState } from "react";
 import type { ButtonProps } from "./interfaces";
-import { StatusIcon } from "@/components/Icons";
 
 const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const { toast } = useToast();

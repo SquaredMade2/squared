@@ -1,9 +1,4 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "../ui/checkbox";
-import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
-import { formatDistanceToNow } from "date-fns";
-import { Button } from "../ui/button";
-import { Check, BellOff, Bookmark, BookmarkMinus, Trash2 } from "lucide-react";
+import { eventService } from "@/lib/services";
 import {
 	useAuthStore,
 	useTaskStore,
@@ -11,14 +6,19 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import { useRouter } from "next/navigation";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { TooltipContent } from "@repo/ui/tooltip";
-import { StatusIcon } from "../Icons";
-import { eventService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
+import type { ColumnDef } from "@tanstack/react-table";
+import { formatDistanceToNow } from "date-fns";
+import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { StatusIcon } from "../Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 export const columns: ColumnDef<
 	Notification & { Task: Task; Workspace: Workspace }

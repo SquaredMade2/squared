@@ -1,10 +1,10 @@
-import { createStore } from "zustand/vanilla";
+import type { Task } from "@squared/db";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
-import type { TaskState, TaskStore, TaskResponse } from "./interfaces";
-import type { Task } from "@squared/db";
+import { createStore } from "zustand/vanilla";
 import type { ApiReturnType } from "../interfaces";
+import type { TaskResponse, TaskState, TaskStore } from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
 

@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -13,12 +10,15 @@ import {
 	CommandSeparator,
 	CommandShortcut,
 } from "@/components/ui/command";
+import { DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useFilterStore, useViewStore } from "@/store";
+import { useFilterStore, useModalStore, useViewStore } from "@/store";
+import { useId } from "@repo/ui/id";
+import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { useEffect } from "react";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";
-import { useId } from "@repo/ui/id";
 
 export default function SearchCommand() {
 	const { toast } = useToast();

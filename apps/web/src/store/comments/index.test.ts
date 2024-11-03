@@ -1,7 +1,7 @@
-import { createCommentStore } from ".";
-import axios from "axios";
-import type { Comment } from "@squared/db";
 import { STANDARD_COMMENT } from "@/test/mocks";
+import type { Comment } from "@squared/db";
+import axios from "axios";
+import { createCommentStore } from ".";
 
 // Mock axios
 jest.mock("axios");
