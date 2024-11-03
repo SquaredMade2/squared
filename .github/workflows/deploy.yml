@@ -23,34 +23,10 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-          if [[ "\${{ github.ref }}" == "refs/heads/main" ]]; then
-            git fetch origin main
-            COMPARE_BRANCH="main"
-          else
-            git fetch origin develop
-            COMPARE_BRANCH="develop"
-          fi
-          PREVIOUS_COMMIT=$(git rev-parse HEAD^)
+          COMPARE_BRANCH=\${{ github.ref == 'refs/heads/main' && 'main' || 'develop' }}
+          git fetch origin $COMPARE_BRANCH
           
-          echo "Comparing $PREVIOUS_COMMIT with HEAD"
-          
-          # Show the full diff
-          echo "Full diff:"
-          git diff --name-only $PREVIOUS_COMMIT HEAD
-          
-          # Check for API changes and show the result
-          API_CHANGED=$(git diff --name-only $PREVIOUS_COMMIT HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')
-          echo "API changed: $API_CHANGED"
-          
-          # Show API-specific changes if any
-          echo "API-specific changes:"
-          git diff --name-only $PREVIOUS_COMMIT HEAD | grep '^apps/api/' || echo "No API changes"
-
-          # Show the output of the job
-          echo "Job Output:"
-          echo "api=$API_CHANGED"
-          
-          # Set the output for the job
+          API_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')
           echo "api=$API_CHANGED" >> $GITHUB_OUTPUT
 
   deploy:
@@ -58,7 +34,7 @@ jobs:
     needs: [detect-changes]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || github.event_name == 'workflow_dispatch' }}
-    environment: \${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
 
     steps:
       - name: Checkout
