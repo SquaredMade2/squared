@@ -63,11 +63,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					date: new Date(),
 					taskId: task.id,
 				};
-				const commentFromAdd = await addComment(newComment);
-				const gottedComment = await getComments(task.id);
+				await addComment(newComment);
+				await getComments(task.id);
 				setEditorContent([]);
-				console.log("commentadd", commentFromAdd);
-				console.log("gottedComment", gottedComment);
 				editor.children = [
 					{
 						type: "paragraph",
