@@ -66,7 +66,7 @@ const TaskPage = () => {
 									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
 								</div>
 							</div>
-							<MobileTaskSettings task={task} />
+							<MobileTaskSettings />
 							<div className="flex w-full relative">
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
@@ -149,7 +149,7 @@ const TaskPage = () => {
 										task={task}
 										workspaceUrl={currentWorkspace?.url}
 									/>
-									<TaskDesignationsContainer task={task} />
+									<TaskDesignationsContainer />
 								</div>
 							</div>
 						</div>

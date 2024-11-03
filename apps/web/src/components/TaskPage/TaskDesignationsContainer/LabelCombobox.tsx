@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -16,7 +16,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Plus, Check, Tag } from "lucide-react";
-import type { ButtonProps } from "./interfaces";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
 import LabelBadge from "../../LabelBadges";
@@ -38,20 +37,16 @@ const LabelColor = ({ label }: { label: Label }) => {
 	);
 };
 
-const LabelCombobox = ({ currentTask }: ButtonProps) => {
+const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { updateTask, tasks } = useTaskStore((state) => state);
-	const [localTask, setLocalTask] = useState(currentTask);
+	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
 
-	useEffect(() => {
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
+	if (!currentTask) return null;
 
-	const taskId = localTask?.id;
+	const { id: taskId, labels } = currentTask;
 
 	const allLabels = useMemo(
 		() => currentWorkspace?.Labels || [],
@@ -59,8 +54,8 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	);
 
 	const taskLabels = useMemo(
-		() => allLabels.filter((label) => localTask?.labels.includes(label.id)),
-		[allLabels, localTask?.labels],
+		() => allLabels.filter((label) => labels.includes(label.id)),
+		[allLabels, labels],
 	);
 
 	const handleSelectLabels = async (selectedLabel: Label) => {
@@ -74,7 +69,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 
 		const labelIds = updatedLabels.map((label) => label.id);
 		await updateTask(taskId, { labels: labelIds });
-		setLocalTask((prev) => (prev ? { ...prev, labels: labelIds } : prev));
+		setCurrentTask({ ...currentTask, labels: labelIds });
 		setOpen(false);
 	};
 
