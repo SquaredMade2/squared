@@ -21,15 +21,15 @@ import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";
-import type { ButtonProps } from "./interfaces";
 
-const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
+const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const [localTask, setLocalTask] = useState(currentTask);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
 	// Move these to a custom hook or memoize if needed
 	const updateTask = useTaskStore((state) => state.updateTask);
 	const users = useUserStore((state) => state.users);
+	if (!currentTask) return null;
 
 	// Derive values from props instead of state
 	const taskId = currentTask?.id ?? "";
@@ -40,29 +40,21 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
 			await updateTask(taskId, { assigneeId: null, assigneeName: null });
-			setLocalTask((prev) =>
-				prev ? { ...prev, assigneeId: null, assigneeName: null } : prev,
-			);
+			setCurrentTask({ ...currentTask, assigneeId: null, assigneeName: null });
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			if (localTask) {
-				await updateTask(taskId, {
-					assigneeId: selectedUser.id,
-					assigneeName: selectedUser.name,
-				});
-				setLocalTask((prev) =>
-					prev
-						? {
-								...prev,
-								assigneeId: selectedUser.id,
-								assigneeName: selectedUser.name,
-							}
-						: prev,
-				);
-			}
+			await updateTask(taskId, {
+				assigneeId: selectedUser.id,
+				assigneeName: selectedUser.name,
+			});
+			setCurrentTask({
+				...currentTask,
+				assigneeId: selectedUser.id,
+				assigneeName: selectedUser.name,
+			});
 		}
 		setOpen(false);
 	};
@@ -121,7 +113,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
-										<span className="w-2/3 truncate ml-2">{user.username}</span>
+										<span className="w-2/3 truncate ml-2">{user.name}</span>
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",

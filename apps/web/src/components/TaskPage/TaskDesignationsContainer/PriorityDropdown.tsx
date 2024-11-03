@@ -13,23 +13,16 @@ import { priorityOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squared/db";
-import { useEffect, useState } from "react";
-import type { ButtonProps } from "./interfaces";
 
-const PriorityDropdown = ({ currentTask }: ButtonProps) => {
+const PriorityDropdown = () => {
 	const { toast } = useToast();
-	const { updateTask, tasks } = useTaskStore((state) => state);
-	const [localTask, setLocalTask] = useState(currentTask);
+	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
 
-	useEffect(() => {
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
+	if (!currentTask) return null;
 
-	const sidebarPriority = localTask ? localTask.priority : "";
-	const taskId = localTask ? localTask.id : "";
+	const { priority: sidebarPriority, id: taskId } = currentTask;
 
 	const handleSelectPriority = (newPriority: Priority) => {
 		if (newPriority === sidebarPriority || !taskId) return;
@@ -39,9 +32,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	const updateItem = async (newPriority: Priority) => {
 		try {
 			await updateTask(taskId, { priority: newPriority });
-			setLocalTask((prev) =>
-				prev ? { ...prev, priority: newPriority } : prev,
-			);
+			setCurrentTask({ ...currentTask, priority: newPriority });
 		} catch {
 			toast({
 				title: "Error updating priority",

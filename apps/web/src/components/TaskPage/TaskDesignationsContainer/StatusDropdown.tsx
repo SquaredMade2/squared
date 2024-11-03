@@ -13,23 +13,14 @@ import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squared/db";
-import { useEffect, useState } from "react";
-import type { ButtonProps } from "./interfaces";
 
-const StatusDropdown = ({ currentTask }: ButtonProps) => {
+const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { updateTask, tasks } = useTaskStore((state) => state);
-	const [localTask, setLocalTask] = useState(currentTask);
+	const { updateTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
-	useEffect(() => {
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
-
-	const taskId = localTask ? localTask.id : "";
-	const sidebarStatus = localTask ? localTask.status : "";
+	if (!currentTask) return null;
+	const { id: taskId, status: sidebarStatus } = currentTask;
 
 	const handleSelectStatus = (newStatus: Status) => {
 		if (newStatus === sidebarStatus || !taskId) return;
@@ -39,7 +30,7 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	const updateItem = async (newStatus: Status) => {
 		try {
 			await updateTask(taskId, { status: newStatus });
-			setLocalTask((prev) => (prev ? { ...prev, status: newStatus } : prev));
+			setCurrentTask({ ...currentTask, status: newStatus });
 		} catch {
 			toast({
 				title: "Error updating status",

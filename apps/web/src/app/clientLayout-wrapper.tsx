@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorBoundary from "@/components/ErrorBoundary";
 import MobileMenuSheet from "@/components/MobileNav";
 import {
 	TaskSelector,
@@ -20,22 +21,26 @@ export default function ClientLayoutWrapper({
 }) {
 	return (
 		<SessionProvider>
-			<SquaredStoreProvider>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<WorkspaceInviteModal />
-					<MobileMenuSheet />
-					<SearchCommand />
-					<WorkspaceSwitcher />
-					<TaskSelector />
-					<div className="h-full flex flex-row overflow-hidden">{children}</div>
-				</ThemeProvider>
-				<Toaster />
-			</SquaredStoreProvider>
+			<ErrorBoundary>
+				<SquaredStoreProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<WorkspaceInviteModal />
+						<MobileMenuSheet />
+						<SearchCommand />
+						<WorkspaceSwitcher />
+						<TaskSelector />
+						<div className="h-full flex flex-row overflow-hidden">
+							{children}
+						</div>
+					</ThemeProvider>
+					<Toaster />
+				</SquaredStoreProvider>
+			</ErrorBoundary>
 		</SessionProvider>
 	);
 }

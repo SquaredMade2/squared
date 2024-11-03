@@ -13,27 +13,20 @@ import { effortEstimateOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { useTeamStore } from "@/store";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { ButtonProps } from "./interfaces";
+import { useState } from "react";
 
-const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
+const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
 	const { currentTeam } = useTeamStore((state) => state);
-	const { updateTask, tasks } = useTaskStore((state) => state);
+	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
 
-	const [localTask, setLocalTask] = useState(currentTask);
+	if (!currentTask) return null;
 
-	useEffect(() => {
-		// Update localTask when currentTask or tasks change
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
-
-	const taskId = localTask?.id ?? "";
+	const { id: taskId } = currentTask;
 
 	const sidebarEffortEstimate = ():
 		| { text: string; value: number }
@@ -41,7 +34,7 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 		const effortArray = effortEstimateOptions(currentTeam?.effort);
 
 		const selectedEffortIndex = effortArray.findIndex((efforts) => {
-			return efforts.value === localTask?.effortEstimate;
+			return efforts.value === currentTask?.effortEstimate;
 		});
 
 		return effortArray[selectedEffortIndex];
@@ -57,11 +50,10 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 			await updateTask(taskId, {
 				effortEstimate: newEffortEstimate.value as number,
 			});
-			setLocalTask((prev) =>
-				prev
-					? { ...prev, effortEstimate: newEffortEstimate.value as number }
-					: prev,
-			);
+			setCurrentTask({
+				...currentTask,
+				effortEstimate: newEffortEstimate.value as number,
+			});
 		} catch {
 			toast({
 				title: "Error updating effort estimate",
