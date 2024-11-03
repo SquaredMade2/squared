@@ -45,6 +45,10 @@ jobs:
           # Show API-specific changes if any
           echo "API-specific changes:"
           git diff --name-only $PREVIOUS_COMMIT HEAD | grep '^apps/api/' || echo "No API changes"
+
+          # Show the output of the job
+          echo "Job Output:"
+          echo "api=$API_CHANGED"
           
           # Set the output for the job
           echo "api=$API_CHANGED" >> $GITHUB_OUTPUT
