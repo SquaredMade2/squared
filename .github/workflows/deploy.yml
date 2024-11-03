@@ -57,7 +57,7 @@ jobs:
     name: Deploy
     needs: [detect-changes]
     runs-on: ubuntu-latest
-    if: \${{ needs.detect-changes.outputs.api-changed == 'true' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ needs.detect-changes.outputs.api-changed == 'true' || github.event_name == 'workflow_dispatch' }}
     environment: \${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
 
     steps:
