@@ -1,12 +1,16 @@
+const withMDX = require('@next/mdx')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@repo/ui"],
   productionBrowserSourceMaps: true,
   output: "standalone",
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx']
 };
 
-module.exports = nextConfig;
+// Inject MDX into configs
+module.exports = withMDX(nextConfig)
 
 // Injected content via Sentry wizard below
 

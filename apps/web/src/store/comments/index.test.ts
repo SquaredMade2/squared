@@ -1,7 +1,7 @@
 import { createCommentStore } from ".";
 import axios from "axios";
 import type { Comment } from "@squared/db";
-import { STANDARD_COMMENT, STANDARD_COMMENT_2 } from "@/test/mocks";
+import { STANDARD_COMMENT } from "@/test/mocks";
 
 // Mock axios
 jest.mock("axios");
@@ -228,9 +228,20 @@ describe("CommentStore", () => {
 
 	describe("getAllComments", () => {
 		it("should fetch all comments for a task and update the state", async () => {
-			const mockComments: Comment[] = [STANDARD_COMMENT, STANDARD_COMMENT_2];
+			const mockComments: Comment[] = [
+				STANDARD_COMMENT,
+				{ ...STANDARD_COMMENT, id: "comment-2" },
+			];
 
-			mockedAxios.get.mockResolvedValue({ data: mockComments });
+			const mockResponse = {
+				data: {
+					data: mockComments,
+					message: "Comments fetched successfully",
+					variant: "default",
+				},
+			};
+
+			mockedAxios.get.mockResolvedValue(mockResponse);
 
 			const result = await store.getState().getAllComments("task-1");
 
