@@ -1,17 +1,17 @@
 "use client";
-import { Logo } from "../Logo";
-import { Button } from "../button";
-import { NavBarItem } from "./navbar-item";
+import { cn } from "@/lib/utils";
 import {
+	AnimatePresence,
+	motion,
 	useMotionValueEvent,
 	useScroll,
-	motion,
-	AnimatePresence,
 } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { Link } from "next-view-transitions";
+import { useState } from "react";
+import { Logo } from "../Logo";
+import { Button } from "../button";
 import { ModeToggle } from "../mode-toggle";
+import { NavBarItem } from "./navbar-item";
 
 type Props = {
 	navItems: {

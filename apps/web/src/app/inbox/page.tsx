@@ -1,22 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
+import IconLeftMenu from "@/components/IconNavbar";
 import {
 	InboxDataTable,
 	InboxSidebar,
 	MobileInboxSwitcher,
 } from "@/components/Inbox";
+import { MobileMenuSheetTrigger } from "@/components/MobileNav";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { eventService } from "@/lib/services";
 import {
 	useAuthStore,
 	useEventStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import IconLeftMenu from "@/components/IconNavbar";
-import type { NotificationType } from "@squared/db";
-import { MobileMenuSheetTrigger } from "@/components/MobileNav";
-import { eventService } from "@/lib/services";
 import { TODO } from "@squared/context";
-import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import type { NotificationType } from "@squared/db";
+import { useEffect, useState } from "react";
 
 export type NotificationFilter =
 	| NotificationType

@@ -1,14 +1,14 @@
-import React, { type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Card,
-	CardHeader,
-	CardTitle,
 	CardContent,
 	CardFooter,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertTriangle } from "lucide-react";
+import React, { type ErrorInfo, type ReactNode } from "react";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;

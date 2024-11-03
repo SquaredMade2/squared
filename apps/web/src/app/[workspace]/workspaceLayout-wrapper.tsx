@@ -1,10 +1,10 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Navbar from "@/components/NavBars";
-import { useEffect } from "react";
 import { useViewStore } from "@/store";
 import type { ViewPath } from "@/store/views";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 export default function WorkspaceLayoutWrapper({
 	children,

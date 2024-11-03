@@ -1,24 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import {
-	useAuthStore,
-	useModalStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
 import { eventService } from "@/lib/services";
+import {
+	useAuthStore,
+	useModalStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { TODO } from "@squared/context";
+import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const IconLeftMenu = () => {
 	const router = useRouter();

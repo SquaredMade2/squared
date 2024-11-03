@@ -1,17 +1,17 @@
-import { z } from "zod";
+import type { TaskEvent } from "@squared/db";
 import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
 } from "@squared/rpc";
-import type { TaskEvent } from "@squared/db";
-import type { FullNotification, EventRpc } from "./types";
+import { z } from "zod";
 import {
 	commitSchema,
 	notificationSchema,
 	taskSchema,
 	workspaceSchema,
 } from "../schema";
+import type { EventRpc, FullNotification } from "./types";
 
 // Define type-safe Zod schemas
 

@@ -1,4 +1,4 @@
-import type { ContextMenuProps } from "./interfaces";
+import { PriorityIcon } from "@/components/Icons";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -6,10 +6,10 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { priorityOptions } from "@/constants/designations";
-import type { Priority } from "@squared/db";
 import { useTaskStore } from "@/store";
-import { PriorityIcon } from "@/components/Icons";
 import { formatPriority } from "@/utils/formatting";
+import type { Priority } from "@squared/db";
+import type { ContextMenuProps } from "./interfaces";
 
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);

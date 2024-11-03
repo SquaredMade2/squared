@@ -1,11 +1,11 @@
+import { persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import type {
-	ViewStore,
-	ViewState,
-	View,
 	LastVisitedPathOption,
+	View,
+	ViewState,
+	ViewStore,
 } from "./interfaces";
-import { persist } from "zustand/middleware";
 export * from "./interfaces";
 export * from "./store";
 

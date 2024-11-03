@@ -1,9 +1,9 @@
 import "tslib";
+import { relative } from "node:path";
+import createCustomLogger from "@squared/logger";
 import type { BuildOptions, SameShape } from "esbuild";
 import * as esbuild from "esbuild";
 import * as tsup from "tsup";
-import { relative } from "node:path";
-import createCustomLogger from "@squared/logger";
 
 const logger = createCustomLogger("builder");
 

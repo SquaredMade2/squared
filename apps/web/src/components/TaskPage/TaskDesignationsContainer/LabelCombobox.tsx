@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -15,9 +14,10 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Check, Tag } from "lucide-react";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
+import { Check, Plus, Tag } from "lucide-react";
+import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
 import {
 	Tooltip,

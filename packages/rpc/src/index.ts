@@ -1,20 +1,20 @@
 import "tslib";
-import type { RequestHandler, ErrorRequestHandler } from "express";
-import * as context from "@squared/context";
 import { randomBytes } from "node:crypto";
+import * as context from "@squared/context";
+import type { ErrorRequestHandler, RequestHandler } from "express";
 import { z } from "zod";
 
+import type { Logger } from "@squared/logger";
 import {
-	type ServiceSet,
-	type ServiceDetails,
+	type Method,
 	type MethodDetails,
-	requestContexts,
-	ValidationError,
 	ResponseValidationError,
 	type Service,
-	type Method,
+	type ServiceDetails,
+	type ServiceSet,
+	ValidationError,
+	requestContexts,
 } from "./rpc-types";
-import type { Logger } from "@squared/logger";
 
 export * from "./rpc-types";
 

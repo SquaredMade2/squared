@@ -1,24 +1,19 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { StatusDropdownButton } from "./StatusDropdownButton";
-import { EffortDropdownButton } from "./EffortDropdownButton";
-import { LabelDropdownButton } from "./LabelDropdownButton";
-import { useToast } from "@/components/ui/use-toast";
-import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
 	Form,
-	FormItem,
 	FormControl,
 	FormField,
+	FormItem,
 	FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { useToast } from "@/components/ui/use-toast";
 import {
 	useAuthStore,
 	useModalStore,
@@ -26,13 +21,18 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
-import { DateDropdownButton } from "./DateDropdownButton";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-} from "@/components/ui/accordion";
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AccordionTrigger } from "@repo/ui/accordion";
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { DateDropdownButton } from "./DateDropdownButton";
+import { EffortDropdownButton } from "./EffortDropdownButton";
+import { LabelDropdownButton } from "./LabelDropdownButton";
+import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import { StatusDropdownButton } from "./StatusDropdownButton";
 
 export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");

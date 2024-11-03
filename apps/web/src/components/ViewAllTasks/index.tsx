@@ -1,10 +1,10 @@
 "use client";
-import GroupColumn from "./GroupColumn";
 import { RenameModal } from "@/components/Modals";
-import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 import { useViewStore } from "@/store";
-import { usePathname } from "next/navigation";
 import { Status } from "@squared/db";
+import { usePathname } from "next/navigation";
+import GroupColumn from "./GroupColumn";
+import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 	const { view, displayOptions } = useViewStore((state) => state);

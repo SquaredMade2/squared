@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
-import { cn } from "@/utils/cn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -18,9 +16,11 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getInitials } from "@/utils/formatting";
 import { useTaskStore, useUserStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { getInitials } from "@/utils/formatting";
+import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
+import { useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);

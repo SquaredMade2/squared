@@ -1,32 +1,32 @@
 "use client";
-import { LoadingTask } from "@/components/TaskPage/LoadingTask";
-import {
-	TaskBreadcrumbs,
-	TaskDesignationsContainer,
-	EventTabs,
-	TaskPageForm,
-	TaskSidebarTopRow,
-	MobileTaskSettings,
-} from "@/components/TaskPage";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTaskStore } from "@/store";
-import { useEffect, useState } from "react";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
+import {
+	EventTabs,
+	MobileTaskSettings,
+	TaskBreadcrumbs,
+	TaskDesignationsContainer,
+	TaskPageForm,
+	TaskSidebarTopRow,
+} from "@/components/TaskPage";
+import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import type { Status } from "@squared/db";
-import { formatUrl } from "@/utils/formatting";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { cn } from "@/utils/cn";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { formatUrl } from "@/utils/formatting";
+import type { Status } from "@squared/db";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);

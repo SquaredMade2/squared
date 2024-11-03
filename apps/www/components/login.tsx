@@ -12,12 +12,12 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { IconBrandGithub } from "@tabler/icons-react";
-import Password from "./password";
-import { Button } from "./button";
+import Link from "next/link";
 import { Logo } from "./Logo";
+import { Button } from "./button";
+import Password from "./password";
 
 const formSchema = z.object({
 	email: z

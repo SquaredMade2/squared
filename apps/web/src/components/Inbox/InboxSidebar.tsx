@@ -1,17 +1,17 @@
 import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { Workspace, Notification } from "@squared/db";
 import { Label } from "@repo/ui/label";
+import type { Notification, Workspace } from "@squared/db";
 import {
 	BadgePlus,
 	Bookmark,
 	Check,
 	Handshake,
 	Inbox,
+	type LucideIcon,
 	MapPin,
 	MessageCircleMore,
-	type LucideIcon,
 } from "lucide-react";
 
 type SidebarProps = {

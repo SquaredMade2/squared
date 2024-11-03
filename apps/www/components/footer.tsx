@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { Logo } from "./Logo";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Linkedin, Mail, Phone } from "lucide-react";
+import Link from "next/link";
+import { Logo } from "./Logo";
 
 export const Footer = () => {
 	const links = [

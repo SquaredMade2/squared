@@ -1,7 +1,4 @@
 "use client";
-import { useState } from "react";
-import { Tag } from "lucide-react";
-import type { ContextMenuProps } from "./interfaces";
 import {
 	ContextMenuCheckboxItem,
 	ContextMenuSub,
@@ -11,7 +8,10 @@ import {
 import { useTaskStore } from "@/store";
 import { useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
+import { Tag } from "lucide-react";
+import { useState } from "react";
 import { LabelColor } from "../TaskCardLabels";
+import type { ContextMenuProps } from "./interfaces";
 
 const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { currentWorkspace } = useWorkspaceStore((state) => state);

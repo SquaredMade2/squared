@@ -1,6 +1,6 @@
 import { Bold, Heading, Italic } from "lucide-react";
-import type { TextEditorToolBarProps } from "./interfaces";
 import { Button } from "../ui/button";
+import type { TextEditorToolBarProps } from "./interfaces";
 
 const TextEditorToolBar = ({
 	createBoldLeaf,

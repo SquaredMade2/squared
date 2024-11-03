@@ -1,8 +1,8 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
-import { Status, Priority, type User, type Label } from "@squared/db";
-import * as z from "zod";
+import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
+import * as z from "zod";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {

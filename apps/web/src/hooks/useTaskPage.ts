@@ -1,9 +1,9 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import { useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import { useWorkspaces } from "./useWorkspaces";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
+import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
 	const { taskIdentifier } = useParams();

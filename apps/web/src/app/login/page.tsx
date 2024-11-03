@@ -1,10 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, Suspense } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
+import { GoogleIcon } from "@/components/Svg";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -12,11 +9,14 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { GoogleIcon } from "@/components/Svg";
+import { useToast } from "@/components/ui/use-toast";
+import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });

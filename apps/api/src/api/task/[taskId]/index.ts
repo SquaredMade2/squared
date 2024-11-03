@@ -1,7 +1,7 @@
-import type { Task } from "@squared/db";
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
 import { subscribeUser } from "@/utils/taskUpdate";
+import type { Task } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {

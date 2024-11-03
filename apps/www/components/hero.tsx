@@ -1,15 +1,15 @@
 "use client";
 
-import Balancer from "react-wrap-balancer";
-import { Button } from "./button";
-import { HiArrowRight } from "react-icons/hi2";
-import { Badge } from "./badge";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
+import { HiArrowRight } from "react-icons/hi2";
+import Balancer from "react-wrap-balancer";
+import { Badge } from "./badge";
+import { Button } from "./button";
 
+import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Link } from "next-view-transitions";
 
 export const Hero = () => {
 	const { resolvedTheme } = useTheme();

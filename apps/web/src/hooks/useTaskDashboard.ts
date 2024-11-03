@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { useTaskStore } from "@/store";
-import type { Status } from "@squared/db";
+import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import type { Status } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
-import { parseParams } from "@/utils/parseParams";
 
 export function useTaskDashboard() {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();

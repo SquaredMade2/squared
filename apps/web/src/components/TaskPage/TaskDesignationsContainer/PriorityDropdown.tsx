@@ -1,7 +1,6 @@
 "use client";
 
-import { priorityOptions } from "@/constants/designations";
-import { useToast } from "@/components/ui/use-toast";
+import { PriorityIcon } from "@/components/Icons";
 import {
 	Select,
 	SelectContent,
@@ -9,10 +8,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { priorityOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squared/db";
-import { PriorityIcon } from "@/components/Icons";
 
 const PriorityDropdown = () => {
 	const { toast } = useToast();

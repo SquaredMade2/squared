@@ -1,9 +1,9 @@
 import type React from "react";
 
-import * as DialogPrimitive from "../dialog";
 import type { RenderResult } from "@testing-library/react";
-import { fireEvent, render, cleanup } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { axe } from "jest-axe";
+import * as DialogPrimitive from "../dialog";
 
 const OPEN_TEXT = "Open";
 const CLOSE_TEXT = "Close";

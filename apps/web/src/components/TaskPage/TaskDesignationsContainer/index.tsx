@@ -1,10 +1,10 @@
-import PriorityDropdown from "./PriorityDropdown";
-import StatusDropdown from "./StatusDropdown";
+import AssigneeCombobox from "./AssigneeCombobox";
 import DatePicker from "./DesignationsDatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
-import LabelCombobox from "./LabelCombobox";
-import AssigneeCombobox from "./AssigneeCombobox";
 import EffortModal from "./EffortModal";
+import LabelCombobox from "./LabelCombobox";
+import PriorityDropdown from "./PriorityDropdown";
+import StatusDropdown from "./StatusDropdown";
 
 type DesignationItemProps = {
 	label: string;
