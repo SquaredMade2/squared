@@ -23,21 +23,15 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-          if [ "\${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-            # This is the first push to the branch, check all files
-            if git diff-tree --no-commit-id --name-only -r \${{ github.sha }} | grep -q '^apps/api/'; then
-              echo "api=true" >> $GITHUB_OUTPUT
-            else
-              echo "api=false" >> $GITHUB_OUTPUT
-            fi
+          if [[ "\${{ github.ref }}" == "refs/heads/main" ]]; then
+            git fetch origin main
+            COMPARE_BRANCH="main"
           else
-            # Check for changes between the previous and current commit
-            if git diff-tree --no-commit-id --name-only -r \${{ github.event.before }} \${{ github.sha }} | grep -q '^apps/api/'; then
-              echo "api=true" >> $GITHUB_OUTPUT
-            else
-              echo "api=false" >> $GITHUB_OUTPUT
-            fi
+            git fetch origin develop
+            COMPARE_BRANCH="develop"
           fi
+          PREVIOUS_COMMIT=$(git rev-parse HEAD^)
+          echo "api=$(git diff --name-only $PREVIOUS_COMMIT HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy
