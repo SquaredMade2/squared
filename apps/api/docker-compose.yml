@@ -1,0 +1,32 @@
+version: '3.8'
+
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres-api-test-db
+    environment:
+      POSTGRES_USER: squared
+      POSTGRES_PASSWORD: squared
+      POSTGRES_DB: squared-test
+      POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5432/squared-test?schema=public
+      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5432/squared-test?schema=public
+      SEED_PASSWORD: testing123
+    ports:
+      - "5433:5432"
+
+  test:
+    build:
+      context: ../../.
+      dockerfile: ./apps/api/Dockerfile
+    restart: always
+    ports:
+      - 5174:5173
+    environment:
+      POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
+      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@postgres-api-test-db:5432/squared-test?schema=public
+      GITHUB_CLIENT_ID: test
+      GITHUB_CLIENT_SECRET: test 
+      JWT_SECRET: test 
+      PORT: 5173
+  
