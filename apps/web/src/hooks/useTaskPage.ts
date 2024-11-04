@@ -1,9 +1,9 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import { useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import { useWorkspaces } from "./useWorkspaces";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
+import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
 	const { taskIdentifier } = useParams();
@@ -11,7 +11,9 @@ export function useTaskPage() {
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { getTaskByIdentifier, tasks } = useTaskStore((state) => state);
+	const { getTaskByIdentifier, tasks, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
 	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
@@ -38,8 +40,9 @@ export function useTaskPage() {
 					currentWorkspace.id,
 					parseParams(taskIdentifier),
 				);
-				if (pageTask) {
+				if (pageTask?.task) {
 					setTask(pageTask.task);
+					setCurrentTask(pageTask.task);
 				}
 
 				setIsLoading(false);

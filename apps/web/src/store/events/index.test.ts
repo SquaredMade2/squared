@@ -1,6 +1,6 @@
-import { createEventStore, type EventStore } from ".";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import type { TaskEvent } from "@squared/db";
+import { type EventStore, createEventStore } from ".";
 
 describe("Event Store", () => {
 	let store: ReturnType<typeof createEventStore>;

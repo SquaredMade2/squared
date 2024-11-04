@@ -1,10 +1,11 @@
-import { createStore } from "zustand/vanilla";
-import axios from "axios";
-import type { CommentState, CommentStore, CommentResponse } from "./interfaces";
 import type { Comment } from "@squared/db";
+import axios from "axios";
+import { createStore } from "zustand/vanilla";
 import type { ApiReturnType } from "../interfaces";
+import type { CommentResponse, CommentState, CommentStore } from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
+import { v4 as uuidv4 } from "uuid";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/comment/${path}`;
@@ -16,10 +17,12 @@ export const createCommentStore = (
 		...initState,
 		addComment: async (comment: Partial<Comment>): Promise<CommentResponse> => {
 			try {
-				const { data: response }: { data: ApiReturnType<Comment> } =
-					await axios.post(apiString(""), comment);
-				const { data: newComment, message, variant } = response;
+				const response: { data: ApiReturnType<Comment> } = await axios.post(
+					apiString(uuidv4()),
+					comment,
+				);
 
+				const { data: newComment, message, variant } = response.data;
 				if (!newComment) {
 					return { comment: null, message, variant };
 				}
@@ -98,11 +101,17 @@ export const createCommentStore = (
 		},
 		getAllComments: async (taskId: string): Promise<Comment[]> => {
 			try {
-				const response = await axios.get<Comment[]>(
-					`${process.env.NEXT_PUBLIC_SERVER}/api/task/${taskId}/comment`,
-				);
-				set({ comments: response.data });
-				return response.data;
+				const { data: response }: { data: ApiReturnType<Comment[]> } =
+					await axios.get(
+						`${process.env.NEXT_PUBLIC_SERVER}/api/task/${taskId}/comment`,
+					);
+				const { data: comments } = response;
+				if (!comments) {
+					set({ comments: [] });
+					return [];
+				}
+				set({ comments });
+				return comments;
 			} catch (error) {
 				console.error("Error in getAllComments:", error);
 				return [];

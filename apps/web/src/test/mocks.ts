@@ -1,16 +1,16 @@
 import type {
-	Commit,
-	Task,
-	TaskEvent,
-	User,
-	Workspace,
-	Notification,
 	Comment,
+	Commit,
+	Label,
+	Notification,
+	RetrospectiveItem,
 	SavedFilter,
 	Sprint,
+	Task,
+	TaskEvent,
 	Team,
-	RetrospectiveItem,
-	Label,
+	User,
+	Workspace,
 } from "@squared/db";
 
 export const STANDARD_USER: User = {

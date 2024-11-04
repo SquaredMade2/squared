@@ -1,19 +1,19 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useFilterStore, useViewStore } from "@/store";
-import { useEffect, useState } from "react";
-import type { SavedFilter } from "@/store/filters";
-import type { Task } from "@squared/db";
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
-import { parseParams } from "@/utils/parseParams";
-import { useTeams } from "@/hooks/useTeams";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useGroups } from "@/hooks/useGroups";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { useTeams } from "@/hooks/useTeams";
+import { useFilterStore, useViewStore } from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { parseParams } from "@/utils/parseParams";
+import type { Task } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function FilterViewPage() {
 	const params = useParams();

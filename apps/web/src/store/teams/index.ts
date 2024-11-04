@@ -1,10 +1,10 @@
-import { createStore } from "zustand/vanilla";
-import axios from "axios";
-import { persist } from "zustand/middleware";
-import type { TeamState, TeamStore, TeamResponse } from "./interfaces";
 import type { Sprint, Team } from "@squared/db";
-import type { ApiReturnType } from "../interfaces";
+import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+import type { ApiReturnType } from "../interfaces";
+import type { TeamResponse, TeamState, TeamStore } from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
 

@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { Droppable } from "@hello-pangea/dnd";
-import TaskColumnTitle from "./TaskColumnTitle";
-import type { GroupColumnProps } from "./interfaces";
-import { ScrollArea } from "../ui/scroll-area";
-import { GridColumnNewIssueButton } from "../Modals";
-import TaskCard from "./TaskCard";
-import { Priority, Status, type Task } from "@squared/db";
-import { useViewStore, useTaskStore } from "@/store";
+import { useTaskStore, useViewStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
 	compareNullableStrings,
 } from "@/utils/compareSorting";
+import { Droppable } from "@hello-pangea/dnd";
+import { Priority, Status, type Task } from "@squared/db";
+import { useState } from "react";
+import { GridColumnNewIssueButton } from "../Modals";
+import { ScrollArea } from "../ui/scroll-area";
+import TaskCard from "./TaskCard";
+import TaskColumnTitle from "./TaskColumnTitle";
+import type { GroupColumnProps } from "./interfaces";
 
 const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);

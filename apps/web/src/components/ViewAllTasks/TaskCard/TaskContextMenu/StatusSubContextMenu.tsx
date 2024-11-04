@@ -1,4 +1,4 @@
-import type { ContextMenuProps } from "./interfaces";
+import { StatusIcon } from "@/components/Icons";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -7,9 +7,9 @@ import {
 } from "@/components/ui/context-menu";
 import { statusOptions } from "@/constants/designations";
 import { useTaskStore } from "@/store";
-import type { Status } from "@squared/db";
-import { StatusIcon } from "@/components/Icons";
 import { formatStatus } from "@/utils/formatting";
+import type { Status } from "@squared/db";
+import type { ContextMenuProps } from "./interfaces";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);

@@ -1,15 +1,15 @@
-import { useCallback, useEffect } from "react";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import { useToast } from "../ui/use-toast";
 import type { Task } from "@squared/db";
+import { Copy, GitPullRequestArrow, Link } from "lucide-react";
+import { useCallback, useEffect } from "react";
+import { Button } from "../ui/button";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
-import { Button } from "../ui/button";
-import { Copy, GitPullRequestArrow, Link } from "lucide-react";
+import { useToast } from "../ui/use-toast";
 
 export const TaskSidebarTopRow = ({
 	task,

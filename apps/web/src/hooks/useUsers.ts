@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { useUserStore } from "@/store";
-import { useWorkspaces } from "./useWorkspaces";
 import type { User } from "@squared/db";
+import { useEffect, useState } from "react";
+import { useWorkspaces } from "./useWorkspaces";
 
 export function useUsers() {
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();

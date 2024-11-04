@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { build } from "./index";
 import path from "node:path";
+import { build } from "./index";
 
 const [, , ...args] = process.argv;
 

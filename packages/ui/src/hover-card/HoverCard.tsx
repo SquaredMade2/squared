@@ -1,14 +1,14 @@
 import * as React from "react";
-import { composeEventHandlers } from "../primitive";
-import { createContextScope } from "../context";
-import { useControllableState } from "../use-controllable-state";
 import { useComposedRefs } from "../compose-refs";
+import { createContextScope } from "../context";
+import { DismissableLayer } from "../dismissable-layer";
 import * as PopperPrimitive from "../popper";
 import { createPopperScope } from "../popper";
 import { Portal as PortalPrimitive } from "../portal";
 import { Presence } from "../presence";
+import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
-import { DismissableLayer } from "../dismissable-layer";
+import { useControllableState } from "../use-controllable-state";
 
 import type { Scope } from "../context";
 

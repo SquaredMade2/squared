@@ -1,13 +1,13 @@
-import { Calendar, UserSearch } from "lucide-react";
-import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatDate } from "date-fns";
-import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
-import { useViewStore } from "@/store";
-import type { TaskGridProps } from "./interfaces";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import LabelBadge from "@/components/LabelBadges";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import { useViewStore } from "@/store";
+import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
+import { formatDate } from "date-fns";
+import { Calendar, UserSearch } from "lucide-react";
+import Link from "next/link";
+import type { TaskGridProps } from "./interfaces";
 
 const TaskGrid = ({
 	task,
