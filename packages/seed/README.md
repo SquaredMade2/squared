@@ -59,7 +59,7 @@ If any of the `SEED_NAME`, `SEED_EMAIL`, or `SEED_PASSWORD` variables are not pr
 
 ### Seeding Logic
 
-The main seeding logic is found in `src/index.ts`. It creates workspaces, users, teams, tasks, and comments with randomized data. Below is an overview of the key functions:
+The main seeding logic is found in `src/seed-db.ts`. It creates workspaces, users, teams, tasks, and comments with randomized data. Below is an overview of the key functions:
 
 #### `seedDB()`
 
@@ -99,7 +99,7 @@ Creates a notification related to a task for a specific user.
 
 ### Scripts
 
-- **`db:seed`**: Seeds the database with test data. This script is useful for populating the test environment.
+- **`db:seed`**: Seeds the database with dummy data. This script is useful for populating the development environment.
 
   ```bash
   pnpm run db:seed

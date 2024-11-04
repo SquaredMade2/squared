@@ -1,4 +1,4 @@
-import { hashPassword, logger, prisma } from "./helpers";
+import { logger, hashPassword, prisma } from "./helpers";
 import {
 	users,
 	workspaces,
@@ -9,7 +9,7 @@ import {
 } from "./seed-test-data";
 import "dotenv/config";
 
-async function seedTestDB() {
+async function seed() {
 	const usersWithPasswords = await Promise.all(
 		users.map(async (u) => ({
 			...u,
@@ -60,12 +60,12 @@ async function seedTestDB() {
 	});
 }
 
-seedTestDB()
-	.then(() => {
-		logger.info("Seeding for tests completed");
-		return prisma.$disconnect();
-	})
-	.catch((e) => {
-		logger.error("Error seeding database for testing: %0", e);
-		return prisma.$disconnect();
-	});
+export async function seedTestDB() {
+	await seed()
+		.then(() => {
+			logger.info("Seeding for tests completed.");
+		})
+		.catch((e) => {
+			logger.error("Error seeding database for testing: %0", e);
+		});
+}

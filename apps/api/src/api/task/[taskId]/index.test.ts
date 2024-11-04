@@ -1,9 +1,12 @@
 import request from "supertest";
-import testHost from "@/utils/testHost";
-import { tasks, prisma } from "@squared/seed";
+import { testHost } from "@/utils/testUtils";
+import { tasks, prisma, seedTestDB, resetDB } from "@squared/seed";
 import { v4 as uuidv4 } from "uuid";
 
 describe("/task/[taskId]", () => {
+	beforeAll(seedTestDB);
+	afterAll(resetDB);
+
 	it("should GET a seeded task", async () => {
 		const seededTask = tasks[0];
 		const res = await request(testHost).get(`/task/${seededTask.id}`);
@@ -13,8 +16,8 @@ describe("/task/[taskId]", () => {
 	it("should not GET a task that doesn't exist", async () => {
 		const fakeTaskId = uuidv4();
 		const res = await request(testHost).get(`/task/${fakeTaskId}`);
-		expect(res.body.message).toMatch(/not found/g);
-		expect(res.body.variant).toBe("destructive")
+		expect(res.body.message).toMatch(/not found/gi);
+		expect(res.body.variant).toBe("destructive");
 	});
 
 	it("should DELETE a task", async () => {
