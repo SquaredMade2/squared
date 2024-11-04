@@ -1,9 +1,50 @@
-import { Status, Priority } from "@repo/db";
-import type { Team, User, Workspace } from "@repo/db";
 import { faker } from "@faker-js/faker";
-import { hashPassword } from "./hash-password";
-import { prisma } from ".";
+import { Priority, Status } from "@squared/db";
+import type { Team, User, Workspace } from "@squared/db";
+import { logger, hashPassword, prisma } from "./helpers";
 import "dotenv/config";
+
+async function seedDB() {
+	const workspaces = await Promise.all([
+		addWorkspace(),
+		addWorkspace(),
+		addWorkspace(),
+	]);
+
+	const user = await addMainUser();
+
+	for (const workspace of workspaces) {
+		await addUserToWorkspace(user, workspace);
+
+		const numTeams = faker.number.int({ min: 1, max: 2 });
+
+		for (let j = 0; j < numTeams; j++) {
+			const team = await addTeam(workspace, user);
+			const numUsers = faker.number.int({ min: 3, max: 6 });
+			const numTasks = faker.number.int({ min: 30, max: 50 });
+			const users = [user];
+			for (let i = 0; i < numUsers; i++) {
+				const newUser = await addUser();
+				await addUserToWorkspace(newUser, workspace);
+				users.push(newUser);
+			}
+
+			for (let l = 0; l < numTasks; l++) {
+				const author =
+					users[faker.number.int({ min: 0, max: users.length - 1 })];
+				const task = await addTask(team, workspace, author);
+				const numComments = faker.number.int({ min: 0, max: 3 });
+
+				for (let c = 0; c < numComments; c++) {
+					const author =
+						users[faker.number.int({ min: 0, max: users.length - 1 })];
+					await addComment(author.id, task.id);
+				}
+			}
+		}
+	}
+	logger.info("Database seeding completed");
+}
 
 async function addMainUser() {
 	const name = process.env.SEED_NAME || faker.person.fullName();
@@ -144,9 +185,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 	});
 
 	const taskDueDate = faker.date.future();
-	const taskEffortEstimate = faker.helpers.arrayElement([
-		1, 2, 3, 5, 8, 13, 21,
-	]);
+	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);
 
 	const updatedWorkspace = await prisma.workspace.update({
 		where: { id: workspace.id },
@@ -219,54 +258,12 @@ async function addNotification(
 	});
 }
 
-async function seedDB() {
-	const workspaces = await Promise.all([
-		addWorkspace(),
-		addWorkspace(),
-		addWorkspace(),
-	]);
-
-	const user = await addMainUser();
-
-	for (const workspace of workspaces) {
-		await addUserToWorkspace(user, workspace);
-
-		const numTeams = faker.number.int({ min: 1, max: 2 });
-
-		for (let j = 0; j < numTeams; j++) {
-			const team = await addTeam(workspace, user);
-			const numUsers = faker.number.int({ min: 3, max: 6 });
-			const numTasks = faker.number.int({ min: 30, max: 50 });
-			const users = [user];
-			for (let i = 0; i < numUsers; i++) {
-				const newUser = await addUser();
-				await addUserToWorkspace(newUser, workspace);
-				users.push(newUser);
-			}
-
-			for (let l = 0; l < numTasks; l++) {
-				const author =
-					users[faker.number.int({ min: 0, max: users.length - 1 })];
-				const task = await addTask(team, workspace, author);
-				const numComments = faker.number.int({ min: 0, max: 3 });
-
-				for (let c = 0; c < numComments; c++) {
-					const author =
-						users[faker.number.int({ min: 0, max: users.length - 1 })];
-					await addComment(author.id, task.id);
-				}
-			}
-		}
-	}
-	console.log("Database seeding completed");
-}
-
 seedDB()
 	.then(() => {
-		console.log("Seed completed");
+		logger.info("Seed completed");
 		return prisma.$disconnect();
 	})
 	.catch((e) => {
-		console.error(e);
+		logger.error("Error seeding database: %0", e);
 		return prisma.$disconnect();
 	});

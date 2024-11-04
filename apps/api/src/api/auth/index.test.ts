@@ -1,6 +1,6 @@
 import request from "supertest";
 import testHost from "@/utils/testHost";
-import { users } from "@repo/seed";
+import { users } from "@squared/seed";
 
 describe("/auth", () => {
 	it("should not allow registering users that already exist", async () => {

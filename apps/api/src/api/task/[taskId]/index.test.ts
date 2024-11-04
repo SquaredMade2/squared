@@ -1,6 +1,6 @@
 import request from "supertest";
 import testHost from "@/utils/testHost";
-import { tasks, prisma } from "@repo/seed";
+import { tasks, prisma } from "@squared/seed";
 import { v4 as uuidv4 } from "uuid";
 
 describe("/task/[taskId]", () => {

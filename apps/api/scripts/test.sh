@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# install docker containers
+# start docker containers
 pnpm docker:api
 
 # wait for the database to be available before pushing schema

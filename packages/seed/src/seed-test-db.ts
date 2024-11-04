@@ -1,5 +1,4 @@
-import { prisma } from ".";
-import { hashPassword } from "./hash-password";
+import { hashPassword, logger, prisma } from "./helpers";
 import {
 	users,
 	workspaces,
@@ -63,10 +62,10 @@ async function seedTestDB() {
 
 seedTestDB()
 	.then(() => {
-		console.log("Seeding for tests completed");
+		logger.info("Seeding for tests completed");
 		return prisma.$disconnect();
 	})
 	.catch((e) => {
-		console.error(e);
+		logger.error("Error seeding database for testing: %0", e);
 		return prisma.$disconnect();
 	});
