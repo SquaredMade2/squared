@@ -18,7 +18,18 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
+	const { taskOrder } = displayOptions;
+	const { orderBy, orderAscending } = taskOrder;
 	const { tasks: allTasks } = useTaskStore((state) => state);
+
+	const getParentTaskIds = () => {
+		const taskIdsForGroup = tasks.map((t) => t.id);
+		return tasks
+			.filter(
+				(t) => t.parentId !== null && taskIdsForGroup.includes(t.parentId),
+			)
+			.map((t) => t.parentId);
+	};
 
 	const priorityOrder = [
 		Priority.noPriority,
@@ -38,11 +49,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		Status.archived,
 	];
 
-	const orderTasks = (
-		tasks: Task[],
-		orderBy: string,
-		orderAscending: boolean,
-	): Task[] => {
+	const orderTasks = (tasks: Task[]): Task[] => {
 		return tasks.sort((a, b) => {
 			let comparison = 0;
 
@@ -88,43 +95,74 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		});
 	};
 
-	const orderedTasks = orderTasks(
-		tasks,
-		displayOptions.taskOrder.orderBy,
-		displayOptions.taskOrder.orderAscending,
-	);
+	const orderedTasks = orderTasks(tasks);
 
-	// handle when grouping by No grouping display on grid (no columns just grid??)
-
-	// refactor this - need to be able to render subtask by itself in some cases
-	// ex. grouping is priority, parent task has urgent priority, subtask has medium priority - display separately in their respective groupcolumns
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
-		const subtasks = allTasks.filter((t) => t.parentId === task.id);
+		const parentTaskIds = getParentTaskIds();
+		const isParentTask = parentTaskIds.includes(task.id);
+		const isSubtask = task.parentId !== null;
+		const isSubtaskWithParent = parentTaskIds.includes(task.parentId);
+		if (isParentTask) {
+			const subtasksForParent = tasks.filter((t) => t.parentId === task.id);
+			return (
+				<div
+					key={task.id}
+					className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+				>
+					<TaskCard task={task} index={index} location={"dashboard"} />
+					{subtasksForParent.length > 0 && displayOptions.showSubTasks && (
+						<div
+							className={`mt-1 ${
+								isListView
+									? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
+									: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+							}`}
+						>
+							{subtasksForParent.map((subtask, subIndex) => (
+								<TaskCard
+									key={subtask.id}
+									task={subtask}
+									index={subIndex}
+									location={"dashboard"}
+									isSubtask={true}
+								/>
+							))}
+						</div>
+					)}
+				</div>
+			);
+		}
+		if (isSubtask) {
+			if (isSubtaskWithParent) return;
+			//render subtask in a different group from parent task
+			const parentTask = allTasks.find((t) => t.id === task.parentId);
+			return (
+				<div
+					className={`mt-1 ${
+						isListView
+							? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
+							: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+					}`}
+				>
+					<span className="text-">
+						{parentTask?.identifier}: {parentTask?.title}
+					</span>
+					<TaskCard
+						key={task.id}
+						task={task}
+						index={index}
+						location={"dashboard"}
+						isSubtask={true}
+					/>
+				</div>
+			);
+		}
 		return (
 			<div
 				key={task.id}
 				className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 			>
 				<TaskCard task={task} index={index} location={"dashboard"} />
-				{subtasks.length > 0 && displayOptions.showSubTasks && (
-					<div
-						className={`mt-1 ${
-							isListView
-								? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
-								: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
-						}`}
-					>
-						{subtasks.map((subtask, subIndex) => (
-							<TaskCard
-								key={subtask.id}
-								task={subtask}
-								index={subIndex}
-								location={"dashboard"}
-								isSubtask={true}
-							/>
-						))}
-					</div>
-				)}
 			</div>
 		);
 	};
@@ -169,7 +207,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						>
 							{showTasks &&
 								orderedTasks
-									.filter((task) => !task.parentId)
+									// .filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
 						</div>
 						{provided.placeholder}
