@@ -1,0 +1,251 @@
+import { subscribeUser } from "@/utils/taskUpdate";
+import type { PrismaClient, Task } from "@squared/db";
+import type { Logger } from "@squared/logger";
+import createCustomLogger from "@squared/logger";
+import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
+
+export class TaskService implements TaskRpc {
+	private readonly db: PrismaClient;
+	private readonly logger: Logger;
+	constructor(db: PrismaClient) {
+		this.db = db;
+		this.logger = createCustomLogger("tasks");
+	}
+
+	async createTask({
+		authorId,
+		title,
+		description,
+		dueDate,
+		effortEstimate,
+		teamId,
+		labels,
+		parentId,
+	}: CreateTaskParams): Promise<Task | null> {
+		this.logger.info("Creating task by payload: %0", {
+			authorId,
+			title,
+			description,
+			dueDate,
+			effortEstimate,
+			teamId,
+			labels,
+			parentId,
+		});
+
+		const team = await this.db.team.findUnique({
+			where: { id: teamId },
+			include: {
+				Workspace: true,
+			},
+		});
+		if (!team) {
+			throw new Error("Team not found");
+		}
+
+		const workspace = team.Workspace;
+		if (!workspace) {
+			throw new Error("Workspace not found");
+		}
+
+		const author = await this.db.user.findFirst({
+			where: { id: authorId },
+		});
+
+		if (!author) {
+			throw new Error("Author not found");
+		}
+
+		if (effortEstimate) {
+			// check if effort estimate is valid
+			const effort = Number(effortEstimate);
+			if (
+				effort < 0 ||
+				Number.isNaN(effort) ||
+				!Number.isInteger(effort) ||
+				effort > 5
+			) {
+				throw new Error("Invalid Effort Estimate supplied");
+			}
+		}
+
+		// Get all tasks for the team
+		const teamTasks = await this.db.task.findMany({
+			where: { teamId },
+			select: { identifier: true },
+		});
+
+		// Extract the task numbers and find the highest one
+		const taskNumbers = teamTasks.map((task) => {
+			const [_, number] = task.identifier.split("-");
+			return Number.parseInt(number, 10);
+		});
+
+		const highestTaskNumber = Math.max(0, ...taskNumbers);
+
+		// Generate the new task identifier
+		const newTaskNumber = highestTaskNumber + 1;
+		const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
+
+		const newIssueCount = workspace.tasksCreated + 1;
+
+		await this.db.workspace.update({
+			where: { id: workspace.id },
+			data: { tasksCreated: newIssueCount },
+		});
+
+		const newTask = await this.db.task.create({
+			data: {
+				authorId,
+				title,
+				description,
+				dueDate,
+				effortEstimate,
+				teamId,
+				labels,
+				parentId,
+				workspaceId: workspace.id,
+				identifier: newTaskIdentifier,
+			},
+		});
+
+		if (!newTask) {
+			throw new Error("There was an issue creating your task");
+		}
+
+		subscribeUser(author, newTask);
+
+		// Return the new task
+		return newTask;
+	}
+
+	async updateTask(args: UpdateTaskParams): Promise<Task | null> {
+		this.logger.info("Updating task with ID: %s", args.id);
+		if (args.effortEstimate) {
+			// check if effort estimate is valid
+			const effort = Number(args.effortEstimate);
+			if (
+				effort < 0 ||
+				Number.isNaN(effort) ||
+				!Number.isInteger(effort) ||
+				effort > 5
+			) {
+				throw new Error("Invalid Effort Estimate");
+			}
+		}
+
+		const task = await this.db.task.update({
+			where: { id: args.id },
+			data: args,
+		});
+
+		if (!task) {
+			throw new Error("There was an issue creating the task");
+		}
+
+		// Return the updated task with labels
+		return task;
+	}
+
+	async deleteTask({ taskId }: { taskId: string }): Promise<void> {
+		this.logger.info("Deleting task by ID: %s", taskId);
+		const task = await this.db.task.delete({
+			where: { id: taskId },
+		});
+		if (!task) {
+			throw new Error("Task not found");
+		}
+		return;
+	}
+
+	async getTask({ taskId }: { taskId: string }): Promise<Task> {
+		this.logger.info("Finding task by ID: %s", taskId);
+		const task = await this.db.task.findUnique({
+			where: { id: taskId },
+		});
+
+		if (!task) {
+			throw new Error("Task Not Found");
+		}
+
+		// Return the found task with labels
+		return task;
+	}
+
+	async getTaskByIdentifier({
+		identifier,
+		workspaceId,
+	}: { identifier: string; workspaceId: string }): Promise<Task> {
+		const task = await this.db.task.findFirst({
+			where: { identifier, workspaceId },
+		});
+
+		if (!task) {
+			throw new Error("Task Not Found");
+		}
+		return task;
+	}
+
+	async getTeamTasks({ teamId }: { teamId: string }): Promise<Task[]> {
+		this.logger.info("Getting tasks for team with id: %s", teamId);
+		return await this.db.task.findMany({
+			where: { teamId },
+		});
+	}
+
+	async addActiveSprintTasks({
+		sprintId,
+	}: { sprintId: string }): Promise<number> {
+		this.logger.info("Adding active sprints to sprint with id: %s", sprintId);
+		const sprint = await this.db.sprint.findUnique({
+			where: { id: sprintId },
+			include: {
+				Team: true,
+			},
+		});
+
+		if (!sprint) {
+			throw new Error("Sprint not found");
+		}
+
+		const team = sprint.Team;
+
+		if (!team) {
+			throw new Error("Team not found");
+		}
+
+		return await this.db.task
+			.updateMany({
+				where: {
+					teamId: team.id,
+					sprintId: null,
+					status: {
+						in: ["inProgress", "todo", "inReview"],
+					},
+				},
+				data: {
+					sprintId,
+				},
+			})
+			.then((t) => t.count);
+	}
+
+	async addSprintTasks({
+		sprintId,
+		taskIds,
+	}: { sprintId: string; taskIds: string[] }): Promise<number> {
+		this.logger.info("Adding tasks to sprint with id %s", sprintId);
+		return await this.db.task
+			.updateMany({
+				where: {
+					id: {
+						in: taskIds,
+					},
+				},
+				data: {
+					sprintId,
+				},
+			})
+			.then((t) => t.count);
+	}
+}
