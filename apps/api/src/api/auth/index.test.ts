@@ -41,7 +41,7 @@ describe("/auth", () => {
 
 			expect(res.body.message).toMatch(/already registered/gi);
 			expect(res.body.variant).toBe("destructive");
-		}, 10000);
+		});
 
 		it("should not allow registering without a password", async () => {
 			const res = await request(testHost)
