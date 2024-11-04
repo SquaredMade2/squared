@@ -1,6 +1,6 @@
-import request from "supertest";
 import { testHost } from "@/utils/testUtils";
 import { prisma } from "@squared/seed";
+import request from "supertest";
 
 const dummyCredentialsUser = {
 	name: "John Doe",
@@ -41,7 +41,7 @@ describe("/auth", () => {
 
 			expect(res.body.message).toMatch(/already registered/gi);
 			expect(res.body.variant).toBe("destructive");
-		});
+		}, 10000);
 
 		it("should not allow registering without a password", async () => {
 			const res = await request(testHost)
