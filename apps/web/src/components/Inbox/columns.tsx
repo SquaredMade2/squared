@@ -1,7 +1,6 @@
-import { eventService } from "@/lib/services";
+import { eventService, taskService } from "@/lib/services";
 import {
 	useAuthStore,
-	useTaskStore,
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
@@ -53,7 +52,6 @@ export const columns: ColumnDef<
 				(state) => state,
 			);
 			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
-			const { getAllTasks } = useTaskStore((state) => state);
 			const { userAvatars } = useUserStore((state) => state);
 			const { user } = useAuthStore((state) => state);
 			const {
@@ -94,7 +92,7 @@ export const columns: ColumnDef<
 								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 							);
 						} else {
-							await getAllTasks(teamId);
+							await taskService.getTeamTasks(TODO, { teamId });
 							router.push(
 								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 							);

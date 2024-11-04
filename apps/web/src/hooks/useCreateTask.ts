@@ -1,10 +1,7 @@
-import {
-	useAuthStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
+import { taskService } from "@/lib/services";
+import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import { useState } from "react";
 
@@ -16,7 +13,6 @@ export const useCreateTask = () => {
 	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { addTask } = useTaskStore((state) => state);
 
 	const createTask = async (input: Partial<Task>) => {
 		setIsLoading(true);
@@ -39,7 +35,9 @@ export const useCreateTask = () => {
 			const { transformedInput: transformedDescriptionInput } =
 				transformingMentionInputs(input.description ?? "");
 
-			const newTask: Partial<Task> = {
+			if (!user) throw new Error("No user found");
+
+			const newTask = {
 				...input,
 				authorId: user.id,
 				title: transformedTitle,
@@ -53,13 +51,9 @@ export const useCreateTask = () => {
 				workspaceId: currentWorkspace.id,
 			};
 
-			const {
-				task: taskCreatedResponse,
-				message,
-				variant,
-			} = await addTask(newTask);
+			const task = await taskService.createTask(TODO, newTask);
 
-			if (!taskCreatedResponse) {
+			if (!task) {
 				throw new Error("Failed to create task");
 			}
 
@@ -68,7 +62,7 @@ export const useCreateTask = () => {
 				tasksCreated: currentWorkspace.tasksCreated + 1,
 			});
 
-			return { taskCreatedResponse, message, variant };
+			return task;
 		} catch (err) {
 			setError(
 				err instanceof Error ? err.message : "An unknown error occurred",

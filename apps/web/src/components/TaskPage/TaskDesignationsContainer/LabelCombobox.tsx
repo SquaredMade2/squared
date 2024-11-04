@@ -14,7 +14,9 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { taskService } from "@/lib/services";
 import { useTaskStore, useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -40,9 +42,7 @@ const LabelColor = ({ label }: { label: Label }) => {
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
 	if (!currentTask) return null;
 
@@ -68,7 +68,7 @@ const LabelCombobox = () => {
 			: [...taskLabels, selectedLabel];
 
 		const labelIds = updatedLabels.map((label) => label.id);
-		await updateTask(taskId, { labels: labelIds });
+		await taskService.updateTask(TODO, { id: taskId, labels: labelIds });
 		setCurrentTask({ ...currentTask, labels: labelIds });
 		setOpen(false);
 	};

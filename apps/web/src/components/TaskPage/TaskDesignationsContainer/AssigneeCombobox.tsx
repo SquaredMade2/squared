@@ -16,9 +16,11 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";
 
@@ -27,7 +29,6 @@ const AssigneeCombobox = () => {
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
 	// Move these to a custom hook or memoize if needed
-	const updateTask = useTaskStore((state) => state.updateTask);
 	const users = useUserStore((state) => state.users);
 	if (!currentTask) return null;
 
@@ -39,16 +40,19 @@ const AssigneeCombobox = () => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			await updateTask(taskId, { assigneeId: null, assigneeName: null });
+			await taskService.updateTask(TODO, {
+				id: taskId,
+				assigneeId: null,
+			});
 			setCurrentTask({ ...currentTask, assigneeId: null, assigneeName: null });
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			await updateTask(taskId, {
+			await taskService.updateTask(TODO, {
+				id: taskId,
 				assigneeId: selectedUser.id,
-				assigneeName: selectedUser.name,
 			});
 			setCurrentTask({
 				...currentTask,

@@ -5,19 +5,26 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
+import { useToast } from "@/components/ui/use-toast";
 import { priorityOptions } from "@/constants/designations";
-import { useTaskStore } from "@/store";
+import { taskService } from "@/lib/services";
 import { formatPriority } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
 import type { ContextMenuProps } from "./interfaces";
 
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
-	const { updateTask } = useTaskStore((state) => state);
+	const { toast } = useToast();
 	const updateItem = async (priority: Priority) => {
 		if (task.id !== undefined) {
 			try {
-				await updateTask(task.id, { priority });
-			} catch {}
+				await taskService.updateTask(TODO, { id: task.id, priority });
+			} catch (error) {
+				toast({
+					title: "Error updating task",
+					description: error instanceof Error && error.message,
+				});
+			}
 		}
 	};
 

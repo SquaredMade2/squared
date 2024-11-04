@@ -1,14 +1,16 @@
-import type { Task } from "@squared/db";
+import type { Priority, Status, Task } from "@squared/db";
 
 export type CreateTaskParams = {
 	authorId: string;
 	title: string;
 	description?: string;
-	dueDate?: Date;
-	effortEstimate?: number;
+	dueDate?: Date | null;
+	effortEstimate?: number | null;
 	teamId: string;
-	labels: string[];
-	parentId?: string;
+	labels?: string[];
+	priority?: Priority;
+	status?: Status;
+	parentId?: string | null;
 };
 
 export type UpdateTaskParams = {
@@ -17,7 +19,9 @@ export type UpdateTaskParams = {
 	description?: string;
 	dueDate?: Date;
 	effortEstimate?: number;
-	assigneeId?: string;
+	priority?: Priority;
+	status?: Status;
+	assigneeId?: string | null;
 	labels?: string[];
 };
 

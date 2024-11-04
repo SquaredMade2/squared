@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { taskService } from "@/lib/services";
 import {
 	useAuthStore,
 	useModalStore,
@@ -24,6 +25,7 @@ import {
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccordionTrigger } from "@repo/ui/accordion";
+import { TODO } from "@squared/context";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -43,7 +45,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-	const { tasks, addTask } = useTaskStore((state) => state);
+	const { tasks } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
 
@@ -99,18 +101,14 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
-				effortEstimate: effortEstimate ?? null,
+				effortEstimate: effortEstimate,
 				dateCreated: new Date(),
 				teamId: currentTeam.id,
 				workspaceId: currentWorkspace.id,
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
-			const {
-				task: taskCreatedResponse,
-				message,
-				variant,
-			} = await addTask(newTask);
+			await taskService.createTask(TODO, newTask);
 			await updateWorkspace(currentWorkspace.id, {
 				tasksCreated: currentWorkspace.tasksCreated + 1,
 			});
@@ -120,10 +118,9 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 
 			toast({
-				title: message,
-				variant: variant,
+				title: "Task created successfully",
 			});
-			if (!taskCreatedResponse) return;
+
 			setIsOpen("");
 			setNewIssueData({});
 			form.reset({
@@ -132,11 +129,11 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			toast({
 				title: "New Issue Created",
-				variant: variant,
 			});
-		} catch (_err) {
+		} catch (error) {
 			toast({
 				title: "Error creating issue",
+				description: error instanceof Error ? error.message : "Unknown error",
 				variant: "destructive",
 			});
 		} finally {

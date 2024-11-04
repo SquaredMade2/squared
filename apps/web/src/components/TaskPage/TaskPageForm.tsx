@@ -1,9 +1,11 @@
 import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { taskService } from "@/lib/services";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import Link from "next/link";
 import { type ChangeEvent, useEffect, useState } from "react";
@@ -13,7 +15,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const TaskPageForm = ({ task }: { task: Task }) => {
-	const { updateTask, getTask } = useTaskStore((state) => state);
 	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
@@ -44,11 +45,19 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 			updatedTitle !== task.title || updatedDescription !== task.description;
 		if (changeMade && task.id !== undefined) {
 			if (task) {
-				const response = await updateTask(task.id, {
-					title: transformedTitleInput,
-					description: transformedDescriptionInput,
-				});
-				toast(response);
+				try {
+					await taskService.updateTask(TODO, {
+						id: task.id,
+						title: transformedTitleInput,
+						description: transformedDescriptionInput,
+					});
+					toast({ title: "title updated successfully" });
+				} catch (error) {
+					toast({
+						title: "Error updating task",
+						description: error instanceof Error && error.message,
+					});
+				}
 			}
 		}
 	};
@@ -63,8 +72,17 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 	useEffect(() => {
 		const fetchParentTask = async () => {
 			if (task.parentId) {
-				const { task: parentTaskData } = await getTask(task.parentId);
-				setParentTask(parentTaskData);
+				try {
+					const parentTaskData = await taskService.getTask(TODO, {
+						taskId: task.parentId,
+					});
+					setParentTask(parentTaskData);
+				} catch (error) {
+					toast({
+						title: "Error retrieving task",
+						description: error instanceof Error && error.message,
+					});
+				}
 			}
 		};
 

@@ -5,8 +5,9 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { useTaskStore } from "@/store";
+import { taskService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
 import { Tag } from "lucide-react";
 import { useState } from "react";
@@ -21,7 +22,6 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 			task.labels.includes(label.id),
 		) || [],
 	);
-	const { updateTask } = useTaskStore((state) => state);
 
 	const handleLabelChange = (label: Label, checked: boolean) => {
 		// Calculate the updated labels before setting the state
@@ -30,7 +30,10 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 			: labels.filter((l) => l.id !== label.id);
 
 		setLabels(updatedLabels); // Update the state
-		updateTask(task.id, { labels: updatedLabels.map((l) => l.id) }); // Update the task
+		taskService.updateTask(TODO, {
+			id: task.id,
+			labels: updatedLabels.map((l) => l.id),
+		}); // Update the task
 	};
 
 	return (

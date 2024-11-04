@@ -4,10 +4,12 @@ import {
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
+import { taskService } from "@/lib/services";
+import { useModalStore, useWorkspaceStore } from "@/store";
 // Will need in future
 // import RenameSubContextMenu from "./RenameSubContextMenu";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,
@@ -22,23 +24,25 @@ import type { ContextMenuProps } from "./interfaces";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
-	const { deleteTask } = useTaskStore((state) => state);
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
 
-	const alertDeletedTask = () => {
-		toast({
-			title: "Task Deleted",
-			description: `${task.title} has been successfully deleted.`,
-		});
-	};
-
 	const deleteCurrentTask = async () => {
-		await deleteTask(task.id);
-		alertDeletedTask();
+		try {
+			await taskService.deleteTask(TODO, { taskId: task.id });
+			toast({
+				title: "Task Deleted",
+				description: `${task.title} has been successfully deleted.`,
+			});
+		} catch (error) {
+			toast({
+				title: "Error deleting task",
+				description: error instanceof Error && error.message,
+			});
+		}
 	};
 
 	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;

@@ -1,7 +1,9 @@
 "use client";
 
-import { useModalStore, useTaskStore } from "@/store";
+import { taskService } from "@/lib/services";
+import { useModalStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
+import { TODO } from "@squared/context";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -17,7 +19,6 @@ import { useToast } from "../ui/use-toast";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
-	const { updateTask } = useTaskStore((state) => state);
 	const {
 		showRename,
 		setShowRename,
@@ -31,10 +32,23 @@ export const RenameModal = () => {
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
 		if (inputValue !== task?.title && task) {
-			const response = await updateTask(task.id, {
-				title: inputValue.trim(),
-			});
-			toast(response);
+			try {
+				const response = await taskService.updateTask(TODO, {
+					id: task.id,
+					title: inputValue.trim(),
+				});
+				response
+					? toast({ title: "Task updated successfully" })
+					: toast({
+							title: "Unknown issue updating task",
+							variant: "destructive",
+						});
+			} catch (error) {
+				toast({
+					title: "Error Creating Task",
+					description: error instanceof Error && error.message,
+				});
+			}
 			setShowRename(false);
 		}
 	};

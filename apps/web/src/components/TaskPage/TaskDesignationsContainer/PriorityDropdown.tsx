@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { priorityOptions } from "@/constants/designations";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
 
 const PriorityDropdown = () => {
 	const { toast } = useToast();
-	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
 	if (!currentTask) return null;
 
@@ -31,7 +31,7 @@ const PriorityDropdown = () => {
 
 	const updateItem = async (newPriority: Priority) => {
 		try {
-			await updateTask(taskId, { priority: newPriority });
+			await taskService.updateTask(TODO, { id: taskId, priority: newPriority });
 			setCurrentTask({ ...currentTask, priority: newPriority });
 		} catch {
 			toast({

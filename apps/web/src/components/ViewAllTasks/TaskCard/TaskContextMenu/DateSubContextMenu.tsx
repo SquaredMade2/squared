@@ -5,7 +5,8 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { useTaskStore } from "@/store";
+import { taskService } from "@/lib/services";
+import { TODO } from "@squared/context";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
@@ -13,10 +14,9 @@ import type { ContextMenuProps } from "./interfaces";
 const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [date, setDate] = useState<Date>();
-	const { updateTask } = useTaskStore((state) => state);
 	useEffect(() => {
 		if (date) {
-			updateTask(task.id, { dueDate: date });
+			taskService.updateTask(TODO, { id: task.id, dueDate: date });
 		}
 	}, [date]);
 

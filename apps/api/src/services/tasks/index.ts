@@ -12,12 +12,26 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		authorId: z.string(),
 		title: z.string(),
 		description: z.string().optional(),
-		dueDate: z.date().optional(),
+		dueDate: z.date().optional().nullable(),
 		// set max and min once I have internet connection
-		effortEstimate: z.number().optional(),
+		effortEstimate: z.number().optional().nullable(),
 		teamId: z.string(),
-		labels: z.array(z.string()),
-		parentId: z.string().optional(),
+		status: z
+			.enum([
+				"backlog",
+				"todo",
+				"inProgress",
+				"inReview",
+				"done",
+				"canceled",
+				"archived",
+			])
+			.optional(),
+		priority: z
+			.enum(["noPriority", "urgent", "high", "medium", "low"])
+			.optional(),
+		labels: z.array(z.string()).optional(),
+		parentId: z.string().nullable().optional(),
 	}),
 );
 
@@ -28,19 +42,33 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		description: z.string().optional(),
 		dueDate: z.date().optional(),
 		effortEstimate: z.number().optional(),
-		assigneeId: z.string().optional(),
-		labels: z.array(z.string()),
+		status: z
+			.enum([
+				"backlog",
+				"todo",
+				"inProgress",
+				"inReview",
+				"done",
+				"canceled",
+				"archived",
+			])
+			.optional(),
+		priority: z
+			.enum(["noPriority", "urgent", "high", "medium", "low"])
+			.optional(),
+		assigneeId: z.string().nullable().optional(),
+		labels: z.array(z.string()).optional(),
 	}),
 );
 
 export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 	createTask: {
 		input: createTaskParams,
-		output: z.union([taskSchema, z.null()]),
+		output: taskSchema.nullable(),
 	},
 	updateTask: {
 		input: updateTaskParams,
-		output: z.union([taskSchema, z.null()]),
+		output: taskSchema.nullable(),
 	},
 	deleteTask: {
 		input: z.object({

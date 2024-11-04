@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { effortEstimateOptions } from "@/constants/designations";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { useTeamStore } from "@/store";
+import { TODO } from "@squared/context";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -20,9 +22,7 @@ const EffortEstimateDropdown = () => {
 	const { toast } = useToast();
 
 	const { currentTeam } = useTeamStore((state) => state);
-	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
 	if (!currentTask) return null;
 
@@ -47,7 +47,8 @@ const EffortEstimateDropdown = () => {
 		newEffortEstimate: Record<string, string | number>,
 	) => {
 		try {
-			await updateTask(taskId, {
+			await taskService.updateTask(TODO, {
+				id: taskId,
 				effortEstimate: newEffortEstimate.value as number,
 			});
 			setCurrentTask({
