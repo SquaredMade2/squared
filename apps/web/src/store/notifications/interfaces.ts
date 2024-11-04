@@ -1,4 +1,4 @@
-import type { Notification, Task, Workspace } from "@repo/db";
+import type { Notification, Task, Workspace } from "@squared/db";
 
 export type NotificationState = {
 	notifications: NotificationTask[];

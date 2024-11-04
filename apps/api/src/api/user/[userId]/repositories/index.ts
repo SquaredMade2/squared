@@ -1,15 +1,19 @@
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	userId: string;
 };
+
+const logger = createCustomLogger("user");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { userId }): Promise<APIResponse<string[]>> => {
 			try {
 				// Fetch the user's GitHub username from the User model
+				logger.info("Fetching connected repositories for user: %s", userId);
 				const user = await prisma.user.findFirst({
 					where: { id: userId },
 					select: { githubUsername: true },
@@ -17,7 +21,7 @@ export function createRoute(): Route<Params> {
 
 				if (!user || !user.githubUsername) {
 					return {
-						data: [],
+						data: null,
 						message: "GitHub username not found",
 						variant: "destructive",
 					};
@@ -37,10 +41,10 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error fetching connected repositories:", error);
+				logger.error("Error fetching connected repositories: %0", error);
 				res.status(500);
 				return {
-					data: [],
+					data: null,
 					message: `Could not fetch connected repositories: ${error}`,
 					variant: "destructive",
 				};

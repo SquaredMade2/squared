@@ -1,6 +1,9 @@
 import Link from "next/link";
-import React from "react";
 import { Logo } from "./Logo";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Linkedin, Mail, MapPin, Phone } from "lucide-react";
 
 export const Footer = () => {
 	const links = [
@@ -9,94 +12,168 @@ export const Footer = () => {
 			href: "/pricing",
 		},
 		// {
-		// 	name: "Blog",
-		// 	href: "/blog",
+		//  name: "Blog",
+		//  href: "/blog",
 		// },
 		{
 			name: "Contact",
 			href: "/contact",
 		},
 	];
-	const legal: any[] = [
+	const legal: { name: string; href: string }[] = [
 		// {
-		// 	name: "Privacy Policy",
-		// 	href: "#",
+		//  name: "Privacy Policy",
+		//  href: "#",
 		// },
 		// {
-		// 	name: "Terms of Service",
-		// 	href: "#",
+		//  name: "Terms of Service",
+		//  href: "#",
 		// },
 		// {
-		// 	name: "Refund Policy",
-		// 	href: "#",
+		//  name: "Refund Policy",
+		//  href: "#",
 		// },
 	];
 	const socials = [
 		// {
-		// 	name: "Twitter",
-		// 	href: "https://twitter.com/mannupaaji",
+		//  name: "Twitter",
+		//  href: "https://twitter.com/mannupaaji",
 		// },
 		{
 			name: "LinkedIn",
 			href: "https://www.linkedin.com/company/sqauredmade/mycompany/",
 		},
 		// {
-		// 	name: "GitHub",
-		// 	href: "https://github.com/manuarora700",
+		//  name: "GitHub",
+		//  href: "https://github.com/manuarora700",
 		// },
 	];
+
 	return (
-		<div className="relative">
-			<div className="border-t border-neutral-100  dark:border-neutral-800 px-8 pt-20 pb-32 relative bg-white dark:bg-background-darkSecondary">
-				<div className="max-w-7xl mx-auto text-sm text-neutral-500 dark:text-neutral-400 flex sm:flex-row flex-col justify-between items-start ">
-					<div>
-						<div className="mr-4  md:flex mb-4">
-							<Logo />
-							{/* todo change logo */}
+		<footer className="relative bg-card text-foreground">
+			<div className="container mx-auto px-4 py-12">
+				<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+					<div className="space-y-4">
+						<Logo className="justify-start" />
+						<p className="text-sm text-muted-foreground">
+							Empowering businesses with innovative solutions since 2024.
+						</p>
+						<div className="flex space-x-4">
+							{socials.map((social) => (
+								<Link key={social.name} href={social.href}>
+									{social.name === "LinkedIn" && (
+										<Linkedin className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
+									)}
+									{/* Commented social icons kept for future use */}
+									{/* {social.name === "Twitter" && (
+                    <Twitter className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
+                  )}
+                  {social.name === "GitHub" && (
+                    <Github className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
+                  )} */}
+								</Link>
+							))}
+							<Link href="mailto:info@squared.com">
+								<Mail className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
+							</Link>
 						</div>
-						<div>Copyright &copy; 2024 Squared</div>
-						<div className="mt-2">All rights reserved</div>
 					</div>
-					<div className="grid grid-cols-3 gap-10 items-start mt-10 md:mt-0">
-						<div className="flex justify-center space-y-4 flex-col mt-4">
+					<div>
+						<h3 className="font-semibold mb-4">Quick Links</h3>
+						<ul className="space-y-2">
 							{links.map((link) => (
-								<Link
-									key={link.name}
-									className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
-									href={link.href}
-								>
-									{link.name}
-								</Link>
+								<li key={link.name}>
+									<Link
+										href={link.href}
+										className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+									>
+										{link.name}
+									</Link>
+								</li>
 							))}
-						</div>
-						<div className="flex justify-center space-y-4 flex-col mt-4">
+							{/* Commented link kept for future use */}
+							{/* <li>
+                <Link
+                  href="/blog"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Blog
+                </Link>
+              </li> */}
+						</ul>
+					</div>
+					<div>
+						<h3 className="font-semibold mb-4">Legal</h3>
+						<ul className="space-y-2">
 							{legal.map((link) => (
-								<Link
-									key={link.name}
-									className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
-									href={link.href}
-								>
-									{link.name}
-								</Link>
+								<li key={link.name}>
+									<Link
+										href={link.href}
+										className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+									>
+										{link.name}
+									</Link>
+								</li>
 							))}
+							{/* Commented legal links kept for future use */}
+							{/* <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Refund Policy
+                </Link>
+              </li> */}
+						</ul>
+					</div>
+					<div>
+						<h3 className="font-semibold mb-4">Stay Updated</h3>
+						<p className="text-sm text-muted-foreground mb-4">
+							Subscribe to our newsletter for the latest updates and offers.
+						</p>
+						<form className="space-y-2">
+							<Input type="email" placeholder="Enter your email" />
+							<Button type="submit" className="w-full">
+								Subscribe
+							</Button>
+						</form>
+					</div>
+				</div>
+				<Separator className="my-8" />
+				<div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+					<div className="text-sm text-muted-foreground">
+						Copyright &copy; {new Date().getFullYear()} Squared
+						<br />
+						All rights reserved
+					</div>
+					<div className="flex space-x-4 text-sm text-muted-foreground">
+						<div className="flex items-center">
+							<MapPin className="h-4 w-4 mr-2" />
+							123 Business St, Tech City, 12345
 						</div>
-						<div className="flex justify-center space-y-4 flex-col mt-4">
-							{socials.map((link) => (
-								<Link
-									key={link.name}
-									className="transition-colors hover:text-black text-muted dark:text-muted-dark dark:hover:text-neutral-400 text-xs sm:text-sm"
-									href={link.href}
-								>
-									{link.name}
-								</Link>
-							))}
+						<div className="flex items-center">
+							<Phone className="h-4 w-4 mr-2" />
+							+1 (555) 123-4567
 						</div>
 					</div>
 				</div>
 			</div>
-			<p className="text-center text-5xl md:text-9xl lg:text-[18rem] font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-neutral-200 dark:to-neutral-800 inset-x-0">
-				SQUARED
-			</p>
-		</div>
+		</footer>
 	);
 };

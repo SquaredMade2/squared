@@ -4,13 +4,8 @@ import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
-import {
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import type { Task } from "@repo/db";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import type { Task } from "@squared/db";
 import { Input } from "../ui/input";
 import { StatusIcon } from "../Icons";
 import Link from "next/link";
@@ -20,7 +15,6 @@ import { Button } from "../ui/button";
 export const TaskPageForm = ({ task }: { task: Task }) => {
 	const { updateTask, getTask } = useTaskStore((state) => state);
 	const { users, getAllUsers } = useUserStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 
@@ -104,7 +98,7 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 						<Button variant="ghost" className="py-0 px-1 gap-1">
 							<StatusIcon status={parentTask.status} />
 							<Link
-								href={`/${currentTeam?.name}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
+								href={`/${currentWorkspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
 							>
 								{parentTask.identifier} -

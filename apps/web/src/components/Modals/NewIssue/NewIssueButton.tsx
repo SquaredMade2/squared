@@ -1,7 +1,8 @@
 import { SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Status } from "@repo/db";
-import { useModalStore } from "@/store";
+import type { Status } from "@squared/db";
+import { useModalStore, useTeamStore, useViewStore } from "@/store";
+import { usePathname } from "next/navigation";
 
 export const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
@@ -37,20 +38,47 @@ export const NewIssueButton = () => {
 	);
 };
 
-export const GridColumnNewIssueButton = ({ status }: { status: Status }) => {
+export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
 		(state) => state,
 	);
+	const { displayOptions } = useViewStore((state) => state);
+	const { currentSprint } = useTeamStore((state) => state);
+	const path = usePathname();
+	const { groupTasksBy } = displayOptions;
+
+	const key = (() => {
+		switch (groupTasksBy) {
+			case "Status":
+				return "status";
+			case "Assignee":
+				return "assigneeId";
+			case "Priority":
+				return "priority";
+			case "Label":
+				return "labels";
+			// case "Parent Issue":
+			// 	return "parentId";
+			default:
+				return "status";
+		}
+	})();
 
 	const handleOpen = () => {
 		setShowNewIssue(true);
 		setNewIssueData({
 			...newIssueData,
-			status,
+			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
+			[key]: group,
 		});
 	};
 	return (
-		<Button onClick={() => handleOpen()} variant={"outline"} className="w-full">
+		<Button
+			onClick={() => handleOpen()}
+			variant={"outline"}
+			className="w-full"
+			aria-label="Create new task"
+		>
 			<SquarePen className="size-5" />
 		</Button>
 	);

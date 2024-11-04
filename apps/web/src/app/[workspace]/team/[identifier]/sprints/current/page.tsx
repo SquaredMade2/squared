@@ -2,12 +2,16 @@
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
-import { useTaskPage } from "@/hooks/useTaskPage";
-import { useFilterStore, useTeamStore } from "@/store";
+import { useSprints } from "@/hooks/useSprints";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { useFilterStore, useViewStore } from "@/store";
+import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function MyAssignedTasksPage() {
-	const { currentSprint } = useTeamStore((state) => state);
+	const { currentSprint, loading: sprintLoading } = useSprints();
 	const { filterTasks } = useFilterStore((state) => state);
+	const { view, getGridOptions } = useViewStore((state) => state);
 
 	const {
 		loading,
@@ -15,27 +19,40 @@ export default function MyAssignedTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskPage((tasks) =>
-		filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
+	} = useTaskDashboard();
+
+	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
+		(tasks) =>
+			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
-	if (!currentWorkspace) return null;
+	if (!currentWorkspace || !currentSprint) return null;
 
 	return (
 		<TaskPageLayout
-			loading={loading}
+			loading={loading || sprintLoading}
 			authorized={authorized}
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle="Assigned Tasks"
+			pageTitle={`Current Sprint - ${currentSprint.name}`}
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
+				<ViewAllTasks
+					getGroupedColumns={getGroupedColumns}
+					sprintId={currentSprint.id}
+				/>
+				{view === "grid" &&
+					!getGridOptions().showEmptyGroups &&
+					getHiddenColumns().length >= 1 && (
+						<div className="ml-auto">
+							<HiddenColumns
+								getHiddenColumns={getHiddenColumns}
+								getTasksForGroup={getTasksForGroup}
+							/>
+						</div>
+					)}
+			</div>
 		</TaskPageLayout>
 	);
 }

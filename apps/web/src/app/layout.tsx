@@ -1,17 +1,16 @@
-"use client";
 import "./globals.css";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import type { ThemeProviderProps } from "next-themes/dist/types";
-import { Toaster } from "@/components/ui/toaster";
-import {
-	WorkspaceInviteModal,
-	WorkspaceSwitcher,
-	TaskSelector,
-} from "@/components/Modals";
-import { SquaredStoreProvider } from "@/store";
-import { SessionProvider } from "next-auth/react";
-import SearchCommand from "@/components/SearchCommand";
-import MobileMenuSheet from "@/components/MobileNav";
+import "@squared/fonts/src/styles.css";
+import type { Metadata } from "next";
+import ClientLayoutWrapper from "./clientLayout-wrapper";
+
+export const metadata: Metadata = {
+	title: {
+		default: "Squared",
+		template: "%s | Squared",
+	},
+	description:
+		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",
+};
 
 export default function RootLayout({
 	children,
@@ -21,31 +20,8 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className="text-sm min-h-[100vh]">
-				<SessionProvider>
-					<SquaredStoreProvider>
-						<ThemeProvider
-							attribute="class"
-							defaultTheme="system"
-							enableSystem
-							disableTransitionOnChange
-						>
-							<WorkspaceInviteModal />
-							<MobileMenuSheet />
-							<SearchCommand />
-							<WorkspaceSwitcher />
-							<TaskSelector />
-							<div className="h-full flex flex-row overflow-hidden">
-								{children}
-							</div>
-						</ThemeProvider>
-						<Toaster />
-					</SquaredStoreProvider>
-				</SessionProvider>
+				<ClientLayoutWrapper>{children}</ClientLayoutWrapper>
 			</body>
 		</html>
 	);
-}
-
-function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-	return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

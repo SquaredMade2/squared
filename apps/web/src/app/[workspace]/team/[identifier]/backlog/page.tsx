@@ -1,11 +1,11 @@
-// backlog/page.tsx
 "use client";
 
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 
 import ViewAllTasks from "@/components/ViewAllTasks";
 import { useFilterStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function BacklogTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
@@ -15,11 +15,12 @@ export default function BacklogTasksPage() {
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskPage((tasks) =>
+	} = useTaskDashboard();
+
+	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks).filter((t) => t.status === "backlog"),
 	);
+
 	if (!currentWorkspace) return null;
 
 	return (
@@ -31,11 +32,7 @@ export default function BacklogTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="Backlog"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-				allowedColumns={["backlog"]}
-			/>
+			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 		</TaskPageLayout>
 	);
 }

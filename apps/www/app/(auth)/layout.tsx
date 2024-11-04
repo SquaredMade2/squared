@@ -1,14 +1,14 @@
 import { AuthLayout } from "@/layouts/auth-layout";
 export default function AuthXLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <>
-      <AuthLayout>
-        <main className="flex h-full min-h-screen w-full">{children}</main>
-      </AuthLayout>
-    </>
-  );
+	return (
+		<>
+			<AuthLayout>
+				<main className="flex h-full min-h-screen w-full">{children}</main>
+			</AuthLayout>
+		</>
+	);
 }

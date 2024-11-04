@@ -1,5 +1,3 @@
-import React from "react";
-
 function LowEffort() {
 	return (
 		<svg

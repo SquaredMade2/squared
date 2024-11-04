@@ -55,6 +55,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			const { updateNotification } = useNotificationStore((state) => state);
 			const { getAllTasks } = useTaskStore((state) => state);
 			const { userAvatars } = useUserStore((state) => state);
+			const { user } = useAuthStore((state) => state);
 			const {
 				identifier: taskIdentifier,
 				title: taskName,
@@ -82,8 +83,8 @@ export const columns: ColumnDef<NotificationTask>[] = [
 					);
 				} else {
 					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
-					if (newWorkspace) {
-						const teams = await getAllTeams(newWorkspace.id);
+					if (newWorkspace && user) {
+						const teams = await getAllTeams(user.id);
 						const team = teams.find((t) => t.id === teamId);
 						if (team?.id === currentTeam?.id) {
 							router.push(
@@ -206,6 +207,11 @@ export const columns: ColumnDef<NotificationTask>[] = [
 											}
 											variant="secondary"
 											size="icon"
+											aria-label={
+												row.original.dismissed
+													? "Delete notification"
+													: "Dismiss notification"
+											}
 											className="size-8 border border-border bg-accent hover:bg-popover"
 										>
 											{row.original.dismissed ? (
@@ -227,6 +233,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 											onClick={toggleSubscribe}
 											variant="secondary"
 											size="icon"
+											aria-label="Unsubscribe"
 											className="size-8 border border-border bg-accent hover:bg-popover"
 										>
 											<BellOff className="size-4" />
@@ -240,6 +247,7 @@ export const columns: ColumnDef<NotificationTask>[] = [
 											onClick={handleSave}
 											variant="secondary"
 											size="icon"
+											aria-label="Toggle Bookmark"
 											className="size-8 border border-border bg-accent hover:bg-popover"
 										>
 											{saved ? (

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Check, UserSearch } from "lucide-react";
 import {
 	ContextMenuItem,
@@ -11,17 +11,21 @@ import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
+import type { User } from "@squared/db";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users, getAllUsers } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
+	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
 	useEffect(() => {
 		const fetchUsers = async () => {
 			if (currentWorkspace?.id) {
-				await getAllUsers(currentWorkspace.id);
+				const gotUsers = await getAllUsers(currentWorkspace.id);
+				const foundUser = gotUsers.find((user) => user.id === task.assigneeId);
+				setCurrentUser(foundUser ?? null);
 			}
 		};
 
@@ -50,7 +54,14 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<UserSearch className="size-5 text-[#9597AD]" />
+					{!task.assigneeId || !currentUser ? (
+						<UserSearch className="size-5 text-[#9597AD]" />
+					) : (
+						<Avatar className="size-6 text-xxs mr-2 flex">
+							<AvatarImage src={currentUser.avatarUrl ?? ""} />
+							<AvatarFallback>{getInitials(currentUser.name)}</AvatarFallback>
+						</Avatar>
+					)}
 				</div>
 				Assignee
 			</ContextMenuSubTrigger>
@@ -76,7 +87,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 									className="flex justify-between"
 								>
 									<div className="flex">
-										<Avatar className="size-6 text-xxs mr-2 flex">
+										<Avatar className="size-4 text-xxs mr-2 flex">
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>

@@ -1,18 +1,12 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { IconDots, IconPlus } from "@tabler/icons-react";
-import { Switch } from "../switch";
 import { NewIssueDropDown } from "@/components/new-issue-dropdown";
-//todo fix imports
 import TodoIcon from "@/components/SVG/todo-icon";
-import BacklogIcon from "../SVG/backlog-icon";
-import DoneIcon from "../SVG/done-icon";
+import BacklogIcon from "@/components/SVG/backlog-icon";
+import DoneIcon from "@/components/SVG/done-icon";
 import HighPriority from "@/components/SVG/high-priority";
 import MediumPriority from "@/components/SVG/medium-priority";
 import UrgentPriority from "@/components/SVG/urgent-priority";
-import LowEffort from "../SVG/low-effort";
+import LowEffort from "@/components/SVG/low-effort";
 
 export const SkeletonThree = () => {
 	return (
@@ -69,32 +63,6 @@ export const SkeletonThree = () => {
 						/>
 					</div>
 				</div>
-			</div>
-		</div>
-	);
-};
-
-export const Row = ({
-	title,
-	updatedAt,
-	active = false,
-}: {
-	title: string;
-	updatedAt: string;
-	active?: boolean;
-}) => {
-	const [checked, setChecked] = useState(active);
-	return (
-		<div className="flex justify-between items-center">
-			<div className="flex space-x-2 items-center">
-				<p className="text-muted dark:text-muted-dark text-xs shadow-aceternity dark:bg-neutral-700 px-1 py-0.5 rounded-md">
-					{title}
-				</p>
-				<p className="text-muted dark:text-muted-dark text-xs">{updatedAt}</p>
-			</div>
-			<div className="flex items-center space-x-1">
-				<Switch checked={checked} setChecked={setChecked} />
-				<IconDots className="h-4 w-4 text-muted dark:text-muted-dark" />
 			</div>
 		</div>
 	);

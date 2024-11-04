@@ -1,14 +1,8 @@
 import { createStore } from "zustand/vanilla";
 import axios from "axios";
 import { persist } from "zustand/middleware";
-import type {
-	TeamState,
-	TeamStore,
-	TeamResponse,
-	SprintResponse,
-	InitializeSprintsBody,
-} from "./interfaces";
-import type { Sprint, Team } from "@repo/db";
+import type { TeamState, TeamStore, TeamResponse } from "./interfaces";
+import type { Sprint, Team } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import { v4 as uuidv4 } from "uuid";
 export * from "./interfaces";
@@ -16,8 +10,6 @@ export * from "./store";
 
 const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/team/${path}`;
-const sprintApiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVER}/api/sprint/${path}`;
 
 export const createTeamStore = (
 	initState: TeamState = {
@@ -67,10 +59,10 @@ export const createTeamStore = (
 					}
 
 					try {
-						const response: { data: ApiReturnType<Team> } = await axios.get(
-							apiString(teamId),
-						);
-						return { ...response.data, team: response.data.data };
+						const { data: response }: { data: ApiReturnType<Team> } =
+							await axios.get(apiString(teamId));
+						const { data: team, ...rest } = response;
+						return { ...rest, team };
 					} catch (error) {
 						return {
 							team: null,
@@ -128,11 +120,11 @@ export const createTeamStore = (
 						console.error("Error in deleteTeam:", error);
 					}
 				},
-				getAllTeams: async (workspaceId: string): Promise<Team[]> => {
+				getAllTeams: async (userId: string): Promise<Team[]> => {
 					try {
 						const { data: response }: { data: ApiReturnType<Team[]> } =
 							await axios.get(
-								`${process.env.NEXT_PUBLIC_SERVER}/api/workspace/${workspaceId}/team`,
+								`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/team`,
 							);
 						const { data: teams } = response;
 						if (!teams) {
@@ -144,98 +136,6 @@ export const createTeamStore = (
 					} catch (error) {
 						console.error("Error in getAllTeams:", error);
 						return [];
-					}
-				},
-				initializeSprints: async (
-					teamId: string,
-					sprint: InitializeSprintsBody,
-				): Promise<Sprint[]> => {
-					try {
-						// Get current sprints
-						const currentSprints = await get().getSprints(teamId);
-
-						// Filter pending sprints
-						const pendingSprints = currentSprints.filter(
-							(s) => s.status === "PLANNED",
-						);
-
-						// Calculate how many sprints we can create
-						const sprintsToCreate = Math.max(0, 3 - pendingSprints.length);
-
-						if (sprintsToCreate === 0) {
-							return [];
-						}
-
-						// Modify the request to create only the allowed number of sprints
-						const modifiedSprint = { ...sprint, count: sprintsToCreate };
-
-						const response: { data: ApiReturnType<Sprint[]> } =
-							await axios.post(apiString(`${teamId}/sprints`), modifiedSprint);
-						const { data: newSprints } = response.data;
-
-						if (!newSprints) {
-							return [];
-						}
-
-						const { sprints } = get();
-						set({ sprints: [...sprints, ...newSprints] });
-
-						return newSprints;
-					} catch {
-						return [];
-					}
-				},
-				getSprints: async (teamId: string): Promise<Sprint[]> => {
-					try {
-						const response: { data: ApiReturnType<Sprint[]> } = await axios.get(
-							apiString(`${teamId}/sprints`),
-						);
-						const { data: sprints } = response.data;
-						if (!sprints) {
-							set({ sprints: [] });
-							return [];
-						}
-						set({ sprints });
-						return sprints;
-					} catch (error) {
-						console.error("Error in getSprints:", error);
-						return [];
-					}
-				},
-				updateSprint: async (
-					sprintId: string,
-					sprint: Partial<Sprint>,
-				): Promise<SprintResponse> => {
-					try {
-						const response: { data: ApiReturnType<Sprint> } = await axios.put(
-							sprintApiString(sprintId),
-							sprint,
-						);
-						const updatedSprint = response.data.data;
-						if (!updatedSprint) {
-							return {
-								sprint: null,
-								message: response.data.message,
-								variant: response.data.variant,
-							};
-						}
-						set((state) => ({
-							sprints: state.sprints.map((s) =>
-								s.id === sprint.id ? updatedSprint : s,
-							),
-						}));
-
-						return {
-							sprint: updatedSprint,
-							message: response.data.message,
-							variant: response.data.variant,
-						};
-					} catch (error) {
-						return {
-							sprint: null,
-							message: error instanceof Error ? error.message : "Unknown error",
-							variant: "destructive",
-						};
 					}
 				},
 				setCurrentSprint: (sprint: Sprint): void => {

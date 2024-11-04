@@ -1,6 +1,6 @@
-import type { Task, SavedFilter as SavedFilterType } from "@repo/db";
+import type { Task, SavedFilter as SavedFilterType } from "@squared/db";
 
-type FilterValue =
+export type FilterValue =
 	| string
 	| number
 	| Date
@@ -29,6 +29,7 @@ export type FilterState = {
 	currentFilters: FilterCondition[];
 	currentFilterTypes: string[];
 	savedFilters: SavedFilter[];
+	showSaveForm: boolean;
 };
 
 export interface FilterResponse {
@@ -39,6 +40,7 @@ export interface FilterResponse {
 
 type FilterActions = {
 	setCurrentFilter: (filter: FilterCondition[]) => void;
+	setShowSaveForm: (input: boolean) => void;
 	addFilter: (filter: FilterCondition) => void;
 	clearFilter: () => void;
 	removeFilter: (field: string) => void;
@@ -51,6 +53,10 @@ type FilterActions = {
 	deleteSavedFilter: (filterId: string) => Promise<void>;
 	filterTasks: (tasks: Task[]) => Task[];
 	customFilter: (tasks: Task[], filter: FilterCondition[]) => Task[];
+	mergeFilters: (
+		newFilters: FilterCondition[],
+		savedFilterId: string,
+	) => FilterCondition[];
 };
 
 export type FilterStore = FilterState & FilterActions;

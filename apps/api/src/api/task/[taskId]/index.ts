@@ -1,17 +1,21 @@
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
 import { trackChange, createLog, subscribeUser } from "@/utils/taskUpdate";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	taskId: string;
 };
+
+const logger = createCustomLogger("task");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { taskId }): Promise<APIResponse<Task>> => {
 			try {
 				// Find the task by its ID
+				logger.info("Finding task by ID: %s", taskId);
 				const task = await prisma.task.findUnique({
 					where: { id: taskId },
 				});
@@ -30,7 +34,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding task:", error);
+				logger.error("Error finding task: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -41,6 +45,24 @@ export function createRoute(): Route<Params> {
 		},
 		PUT: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
+				logger.info("Updating task by ID: %s", taskId);
+				// check if effort estimate is valid
+				if (body.effortEstimate) {
+					const effort = Number(body.effortEstimate);
+					if (
+						effort < 0 ||
+						Number.isNaN(effort) ||
+						!Number.isInteger(effort) ||
+						effort > 5
+					) {
+						return {
+							data: null,
+							message: "Effort estimate must be an integer between 1 and 5",
+							variant: "destructive",
+						};
+					}
+				}
+
 				const task = await prisma.task.update({
 					where: { id: taskId },
 					data: body,
@@ -75,7 +97,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error updating task:", error);
+				logger.error("Error updating task:", error);
 				res.status(500);
 				return {
 					data: null,
@@ -86,6 +108,7 @@ export function createRoute(): Route<Params> {
 		},
 		POST: async (res, { taskId }, body): Promise<APIResponse<Task>> => {
 			try {
+				logger.info("Creating task by ID: %s", taskId);
 				const existingTask = await prisma.task.findUnique({
 					where: { id: taskId },
 				});
@@ -133,6 +156,23 @@ export function createRoute(): Route<Params> {
 					};
 				}
 
+				// check if effort estimate is valid
+				if (body.effortEstimate) {
+					const effort = Number(body.effortEstimate);
+					if (
+						effort < 0 ||
+						Number.isNaN(effort) ||
+						!Number.isInteger(effort) ||
+						effort > 5
+					) {
+						return {
+							data: null,
+							message: "Effort estimate must be an integer between 1 and 5",
+							variant: "destructive",
+						};
+					}
+				}
+
 				// Get all tasks for the team
 				const teamTasks = await prisma.task.findMany({
 					where: { teamId: body.teamId },
@@ -149,7 +189,7 @@ export function createRoute(): Route<Params> {
 
 				// Generate the new task identifier
 				const newTaskNumber = highestTaskNumber + 1;
-				const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString().padStart(4, "0")}`;
+				const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
 
 				const newIssueCount = workspace.tasksCreated + 1;
 
@@ -184,7 +224,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error creating task:", error);
+				logger.error("Error creating task: %0", error);
 				res.status(500);
 				return {
 					data: null,
@@ -195,6 +235,7 @@ export function createRoute(): Route<Params> {
 		},
 		DELETE: async (res, { taskId }): Promise<APIResponse<Task>> => {
 			try {
+				logger.info("Deleting task by ID: %s", taskId);
 				const task = await prisma.task.delete({
 					where: { id: taskId },
 				});
@@ -213,7 +254,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error deleting task:", error);
+				logger.error("Error deleting task: %0", error);
 				res.status(500);
 				return {
 					data: null,

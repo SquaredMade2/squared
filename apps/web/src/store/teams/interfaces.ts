@@ -1,4 +1,4 @@
-import type { Sprint, Team } from "@repo/db";
+import type { Sprint, Team, RetrospectiveItem } from "@squared/db";
 
 export type TeamState = {
 	teams: Team[];
@@ -18,10 +18,21 @@ export interface SprintResponse {
 	message?: string;
 	variant: "default" | "destructive";
 }
+export interface RetrospectiveItemResponse {
+	item: RetrospectiveItem | null;
+	message?: string;
+	variant: "default" | "destructive";
+}
 
 export type InitializeSprintsBody = {
 	count?: number;
 	startDate?: Date;
+};
+
+export type RetrospectiveData = {
+	wentWell: RetrospectiveItem[];
+	toImprove: RetrospectiveItem[];
+	actionItems: RetrospectiveItem[];
 };
 
 type TeamActions = {
@@ -31,15 +42,6 @@ type TeamActions = {
 	updateTeam: (teamId: string, team: Partial<Team>) => Promise<TeamResponse>;
 	deleteTeam: (teamId: string) => Promise<void>;
 	getAllTeams: (workspaceId: string) => Promise<Team[]>;
-	initializeSprints: (
-		teamId: string,
-		body: InitializeSprintsBody,
-	) => Promise<Sprint[]>;
-	getSprints: (teamId: string) => Promise<Sprint[]>;
-	updateSprint: (
-		sprintId: string,
-		sprint: Partial<Sprint>,
-	) => Promise<SprintResponse>;
 	setCurrentSprint: (sprint: Sprint) => void;
 };
 

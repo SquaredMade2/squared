@@ -1,5 +1,5 @@
 {
-  "name": "@repo/seed",
+  "name": "@squared/seed",
   "version": "0.0.0",
   "private": true,
   "main": "src/index.ts",
@@ -7,18 +7,17 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "db:seed": "cross-env NODE_ENV=test ts-node src/seed-db.ts",
-    "test:db:seed": "cross-env NODE_ENV=test ts-node src/seed-test-db.ts",
-    "docker:db": "docker-compose -f docker-compose.yml up -d",
-    "docker:db:down": "docker-compose -f docker-compose.yml down --volumes"
+    "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
+    "docker:db": "docker compose -f docker-compose.yml up -d",
+    "docker:db:down": "docker compose -f docker-compose.yml down --volumes"
   },
   "dependencies": {
-    "@repo/db": "workspace:*",
+    "@squared/db": "workspace:*",
+    "@squared/logger": "workspace:*",
     "dotenv": "^16.4.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.0",
-    "@repo/typescript-config": "workspace:*",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.4.1",
     "bcryptjs": "^2.4.3",

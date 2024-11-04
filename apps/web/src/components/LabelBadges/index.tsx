@@ -1,5 +1,5 @@
 import { cn } from "@/utils/cn";
-import type { Label } from "@repo/db";
+import type { Label } from "@squared/db";
 import { useTheme } from "next-themes";
 
 function hexToRGB(hex: string): [number, number, number] {

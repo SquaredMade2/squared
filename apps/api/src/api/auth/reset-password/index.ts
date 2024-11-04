@@ -1,14 +1,18 @@
 import jwt from "jsonwebtoken";
 import { sendMail } from "@/utils/mail";
 import { prisma } from "@/api";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { Route, APIResponse } from "@/api/route";
+import { passwordResetTemplate } from "@/utils/templates";
+import createCustomLogger from "@squared/logger";
 
 type Body = {
 	email: string;
 };
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const logger = createCustomLogger("auth");
 
 export function createRoute(): Route {
 	return {
@@ -34,17 +38,14 @@ export function createRoute(): Route {
 					});
 					try {
 						// Send verification email for password reset
-						await sendMail(
+						await sendMail({
+							logger,
 							email,
-							user.name,
-							emailToken,
-							"password",
-							"",
-							"",
-							"resetPassword",
-						);
+							html: passwordResetTemplate(`forgotPassword/${emailToken}`),
+							subject: "Reset your password",
+						});
 					} catch (error) {
-						console.error("Error sending email:", error);
+						logger.error("Error sending email: %0", error);
 						res.status(500);
 						return {
 							data: null,
@@ -64,7 +65,7 @@ export function createRoute(): Route {
 					variant: "destructive",
 				};
 			} catch (error) {
-				console.error("Error verifying email:", error);
+				logger.error("Error verifying email: %0", error);
 				res.status(500);
 				return {
 					data: null,

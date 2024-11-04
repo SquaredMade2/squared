@@ -1,5 +1,10 @@
 import { createStore } from "zustand/vanilla";
-import type { ViewStore, ViewState } from "./interfaces";
+import type {
+	ViewStore,
+	ViewState,
+	View,
+	LastVisitedPathOption,
+} from "./interfaces";
 import { persist } from "zustand/middleware";
 export * from "./interfaces";
 export * from "./store";
@@ -8,32 +13,37 @@ export const createViewStore = (
 	initState: ViewState = {
 		showNavbar: true,
 		showMobileNavbar: false,
-		listViewOptions: {
-			showEmptyGroups: false,
-			taskOrder: { orderBy: "Priority", orderAscending: true },
+		displayOptions: {
+			taskOrder: { orderBy: "Priority", orderAscending: false },
+			groupTasksBy: "Status",
 			showCompletedTasks: { show: true, period: "All" },
-			displayProperties: {
-				identifier: true,
-				dueDate: true,
-				avatar: true,
-				labels: true,
-				status: true,
-				priority: true,
+			showSubTasks: false,
+			viewOptions: {
+				gridOptions: {
+					showEmptyGroups: false,
+					displayProperties: {
+						identifier: true,
+						dueDate: true,
+						avatar: true,
+						labels: true,
+						status: true,
+						priority: true,
+					},
+				},
+				listOptions: {
+					showEmptyGroups: false,
+					displayProperties: {
+						identifier: true,
+						dueDate: true,
+						avatar: true,
+						labels: true,
+						status: true,
+						priority: true,
+					},
+				},
 			},
 		},
-		gridViewOptions: {
-			showEmptyGroups: false,
-			taskOrder: { orderBy: "Priority", orderAscending: true },
-			showCompletedTasks: { show: true, period: "All" },
-			displayProperties: {
-				identifier: true,
-				dueDate: true,
-				avatar: true,
-				labels: true,
-				status: true,
-				priority: true,
-			},
-		},
+		lastVisitedPage: "all",
 		view: "list",
 	},
 ) => {
@@ -41,36 +51,35 @@ export const createViewStore = (
 		persist(
 			(set, get) => ({
 				...initState,
-				setView: (view) => {
-					set({ view });
+				setView: (view: View) => set({ view }),
+				getListOptions: () => get().displayOptions.viewOptions.listOptions,
+				getGridOptions: () => get().displayOptions.viewOptions.gridOptions,
+				setShowNavbar: (input: boolean) => set({ showNavbar: input }),
+				setShowMobileNavbar: (input: boolean) =>
+					set({ showMobileNavbar: input }),
+				setListViewOptions: (input: Partial<ViewState["displayOptions"]>) => {
+					const { displayOptions } = get();
+					set({ displayOptions: { ...displayOptions, ...input } });
 				},
-				setShowNavbar: (input) => {
-					set({ showNavbar: input });
+				setGridViewOptions: (input: Partial<ViewState["displayOptions"]>) => {
+					const { displayOptions } = get();
+					set({ displayOptions: { ...displayOptions, ...input } });
 				},
-				setShowMobileNavbar: (input) => {
-					set({ showMobileNavbar: input });
-				},
-				setListViewOptions: (input) => {
-					const currentListView = get().listViewOptions;
-					set({ listViewOptions: { ...currentListView, ...input } });
-				},
-				setGridViewOptions: (input) => {
-					const currentGridView = get().gridViewOptions;
-					set({ gridViewOptions: { ...currentGridView, ...input } });
-				},
+				setLastVisitedPage: (input: LastVisitedPathOption) =>
+					set({ lastVisitedPage: input }),
 			}),
 			{
 				name: "view-store",
 				storage: {
 					getItem: (name) => {
-						const storedValue = sessionStorage.getItem(name);
+						const storedValue = localStorage.getItem(name);
 						return storedValue ? JSON.parse(storedValue) : null;
 					},
 					setItem: (name, value) => {
-						sessionStorage.setItem(name, JSON.stringify(value));
+						localStorage.setItem(name, JSON.stringify(value));
 					},
 					removeItem: (name) => {
-						sessionStorage.removeItem(name);
+						localStorage.removeItem(name);
 					},
 				},
 			},

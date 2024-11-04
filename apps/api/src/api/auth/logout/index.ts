@@ -1,9 +1,12 @@
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	userId: string;
 };
+
+const logger = createCustomLogger("auth");
 
 export function createRoute(): Route<Params> {
 	return {
@@ -16,7 +19,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error with auth request:", error);
+				logger.error("Error with auth request: %0", error);
 				res.status(500);
 				return {
 					data: null,

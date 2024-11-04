@@ -16,14 +16,15 @@ import LabelSubContextMenu from "./LabelSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 // Will need in future
 // import RenameSubContextMenu from "./RenameSubContextMenu";
-import { replaceSpacesWithDashes } from "@/utils/formatting";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "@/components/ui/use-toast";
-import { useModalStore, useTaskStore } from "@/store";
+import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { deleteTask } = useTaskStore((state) => state);
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
+	const { currentWorkspace } = useWorkspaceStore((state) => state);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
@@ -40,10 +41,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		alertDeletedTask();
 	};
 
-	const gitBranchName = `
-	${replaceSpacesWithDashes(
-		`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
-	)}`;
+	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
 	const copyBranchName = () => {
 		navigator.clipboard.writeText(gitBranchName.trim());
@@ -89,7 +87,10 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 			</ContextMenuItem>
 
 			<ContextMenuItem>
-				<Link href={`/tasks/${task.id}`} target="_blank">
+				<Link
+					href={`/${currentWorkspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
+					target="_blank"
+				>
 					Open in New Tab
 				</Link>
 			</ContextMenuItem>

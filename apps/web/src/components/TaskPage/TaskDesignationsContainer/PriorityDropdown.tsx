@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import type { Priority } from "@repo/db";
+import type { Priority } from "@squared/db";
 import type { ButtonProps } from "./interfaces";
 import { PriorityIcon } from "@/components/Icons";
 

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { StatusColumnProps } from "./interfaces";
+import type { GroupColumnProps } from "./interfaces";
 import { ScrollArea } from "../ui/scroll-area";
 import { GridColumnNewIssueButton } from "../Modals";
 import TaskCard from "./TaskCard";
-import { Priority, Status, type Task } from "@repo/db";
+import { Priority, Status, type Task } from "@squared/db";
 import { useViewStore, useTaskStore } from "@/store";
 import {
 	compareNullableDates,
@@ -13,19 +13,12 @@ import {
 	compareNullableStrings,
 } from "@/utils/compareSorting";
 
-const StatusColumn = ({
-	columnType,
-	title,
-	tasks,
-	currentView: view,
-}: StatusColumnProps) => {
+const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
-	const { listViewOptions, gridViewOptions } = useViewStore((state) => state);
+	const { displayOptions } = useViewStore((state) => state);
 	const { tasks: allTasks } = useTaskStore((state) => state);
-
-	const viewOptions = view === "list" ? listViewOptions : gridViewOptions;
 
 	const priorityOrder = [
 		Priority.noPriority,
@@ -97,16 +90,23 @@ const StatusColumn = ({
 
 	const orderedTasks = orderTasks(
 		tasks,
-		viewOptions.taskOrder.orderBy,
-		viewOptions.taskOrder.orderAscending,
+		displayOptions.taskOrder.orderBy,
+		displayOptions.taskOrder.orderAscending,
 	);
 
+	// handle when grouping by No grouping display on grid (no columns just grid??)
+
+	// refactor this - need to be able to render subtask by itself in some cases
+	// ex. grouping is priority, parent task has urgent priority, subtask has medium priority - display separately in their respective groupcolumns
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const subtasks = allTasks.filter((t) => t.parentId === task.id);
 		return (
-			<div key={task.id} className={`mb-2 ${isListView ? "w-full" : "w-72"}`}>
+			<div
+				key={task.id}
+				className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			>
 				<TaskCard task={task} index={index} location={"dashboard"} />
-				{subtasks.length > 0 && (
+				{subtasks.length > 0 && displayOptions.showSubTasks && (
 					<div
 						className={`mt-1 ${
 							isListView
@@ -131,16 +131,18 @@ const StatusColumn = ({
 
 	return (
 		<div
-			className={isListView ? "mb-2 w-full" : "pb-2 w-[300px] flex-shrink-0"}
+			className={
+				isListView ? "mb-2 w-full" : "pb-2 pr-2 w-[300px] flex-shrink-0"
+			}
 		>
 			<TaskColumnTitle
-				isListView={isListView}
+				title={group}
 				showTasks={showTasks}
-				numberOfTasks={numberOfTasks}
-				title={title}
 				setShowTasks={setShowTasks}
+				numberOfTasks={numberOfTasks}
+				isListView={isListView}
 			/>
-			<Droppable droppableId={columnType}>
+			<Droppable droppableId={group}>
 				{(provided, snapshot) => (
 					<ScrollArea
 						ref={provided.innerRef}
@@ -151,8 +153,9 @@ const StatusColumn = ({
 								snapshot.isDraggingOver && view === "grid"
 									? ""
 									: `${
-											view === "grid" &&
-											"h-[77vh] rounded pr-2 transition-all duration-500 ease-in-out"
+											view === "grid"
+												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
+												: "overflow-y-auto"
 										}`
 							} 
             `}
@@ -161,23 +164,21 @@ const StatusColumn = ({
 							className={
 								isListView
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full min-h-[135px] pb-1 gap-2 items-center"
+									: "flex flex-col z-30 w-full gap-2 items-center"
 							}
 						>
 							{showTasks &&
 								orderedTasks
 									.filter((task) => !task.parentId)
 									.map((task, index) => renderTaskWithSubtasks(task, index))}
-							{!isListView && (
-								<GridColumnNewIssueButton status={title as Status} />
-							)}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
 				)}
 			</Droppable>
+			{!isListView && <GridColumnNewIssueButton group={group} />}
 		</div>
 	);
 };
 
-export default StatusColumn;
+export default GroupColumn;

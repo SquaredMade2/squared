@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { Link } from "next-view-transitions";
 
 export const Hero = () => {
-	const { theme, setTheme } = useTheme();
+	const { resolvedTheme } = useTheme();
 	const router = useRouter();
 	return (
 		<div className="flex flex-col min-h-screen pt-20 md:pt-40 relative overflow-hidden">
@@ -31,7 +31,11 @@ export const Hero = () => {
 				}}
 				className="flex justify-center"
 			>
-				<Badge onClick={() => router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)}>
+				<Badge
+					onClick={() =>
+						router.push(`${process.env.NEXT_PUBLIC_APP_URL}/login`)
+					}
+				>
 					See what it&apos;s about
 				</Badge>
 			</motion.div>
@@ -66,7 +70,7 @@ export const Hero = () => {
 					duration: 0.5,
 					delay: 0.2,
 				}}
-				className="text-center mt-6 text-base md:text-xl text-muted dark:text-muted-dark max-w-3xl mx-auto relative z-10"
+				className="text-center mt-6 text-base md:text-xl text-foreground max-w-3xl mx-auto relative z-10"
 			>
 				<Balancer>
 					Squared the the new way to develop software. Create new tasks, plan
@@ -89,22 +93,24 @@ export const Hero = () => {
 				}}
 				className="flex items-center gap-4 justify-center mt-6 relative z-10"
 			>
-				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>Get started</Button>
+				<Button as={Link} href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
+					Get started
+				</Button>
 				<Button
 					variant="simple"
 					as={Link}
 					href="/contact"
-					className="flex space-x-2 items-center group"
+					className="flex space-x-2 items-center group font-semibold"
 				>
 					<span>Contact us</span>
-					<HiArrowRight className="text-muted group-hover:translate-x-1 stroke-[1px] h-3 w-3 transition-transform duration-200 dark:text-muted-dark" />
+					<HiArrowRight className="text-foreground group-hover:translate-x-1 stroke-[1px] h-3 w-3 transition-transform duration-200 dark:text-muted-dark" />
 				</Button>
 			</motion.div>
 			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative">
 				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background-darkAccent dark:to-background-darkAccent scale-[1.1] pointer-events-none" />
 				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
 					{/* todo change image based on dark or light theme */}
-					{theme === "light" ? (
+					{resolvedTheme === "light" ? (
 						<Image
 							src="/squared-grid-light.png"
 							alt="header"

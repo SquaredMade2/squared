@@ -64,14 +64,17 @@ export const NewIssueModal = () => {
 
 	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
 		try {
-			const { message, variant } = await createTask({
+			const createTaskParams = {
+				...newIssueData,
 				...values,
 				status,
 				priority,
 				labels,
 				dueDate,
 				effortEstimate,
-			});
+				description: values.description || undefined,
+			};
+			const { message, variant } = await createTask(createTaskParams);
 
 			toast({
 				title: message,
@@ -110,12 +113,13 @@ export const NewIssueModal = () => {
 									name="title"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-2xl">Title</FormLabel>
+											<FormLabel className="text-xl">Title</FormLabel>
 											<FormControl>
 												<Input
 													{...field}
 													placeholder="Title"
-													className="text-xl"
+													className="text-md"
+													tabIndex={0}
 												/>
 											</FormControl>
 										</FormItem>
@@ -126,13 +130,14 @@ export const NewIssueModal = () => {
 									name="description"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel className="text-2xl">Description</FormLabel>
+											<FormLabel className="text-xl">Description</FormLabel>
 											<FormControl>
 												<Textarea
 													{...field}
 													placeholder="Add Description"
-													className="text-base resize-none"
+													className="text-md resize-none"
 													rows={4}
+													tabIndex={0}
 												/>
 											</FormControl>
 										</FormItem>

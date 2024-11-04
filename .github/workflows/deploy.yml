@@ -4,24 +4,17 @@ on:
   push:
     branches:
       - main
+      - develop
   workflow_dispatch:  # Adds the manual trigger
-
-env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-  ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-  ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
-  CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
 
 jobs:
   checks:
     name: Check For Changes
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
     outputs:
       changed-app: ${{ steps.changed-app.outputs.result }}
-    if: ${{ github.event_name != 'workflow_dispatch' }} # Skip this job if manually triggered
+    if: ${{ github.event_name != 'workflow_dispatch' }} 
 
     steps:
       - name: Checkout
@@ -33,27 +26,37 @@ jobs:
       - name: Changeset
         id: changeset
         run: |
-          content=`turbo build --filter=api --dry-run=json`
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=result::$content"
+          content=$(turbo build --filter=api --dry-run=json)
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Changed app?
         id: changed-app
         if: ${{ contains(fromJSON(steps.changeset.outputs.result).packages, 'api') }}
-        run: |
-          echo "::set-output name=result::true"
+        run: echo "result=true" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: [checks]
-    if: ${{ needs.checks.outputs.changed-app || github.event_name == 'workflow_dispatch' }} # Proceed if changed app or manually triggered
+    if: ${{ needs.checks.outputs.changed-app == 'true' || github.event_name == 'workflow_dispatch' }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'API-Production' || 'API-Staging' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set environment
+        id: set-env
+        run: |
+          if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+            echo "environment=API-Production" >> $GITHUB_OUTPUT
+            echo "ecr_repository=squared-api-production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=API-Staging" >> $GITHUB_OUTPUT
+            echo "ecr_repository=squared-api-staging" >> $GITHUB_OUTPUT
+          fi 
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -71,13 +74,26 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
-          ECR_REPOSITORY: squared-api
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
           docker build -f apps/api/Dockerfile -t api:latest .
           docker tag api:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+      - name: Substitute environment variables
+        env:
+          ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
+        run: |
+          sed -i 's#PLACEHOLDER_GITHUB_CLIENT_ID#${{ secrets.GH_CLIENT_ID }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_PORT#${{ secrets.PORT }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_JWT_SECRET#${{ secrets.JWT_SECRET }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_GITHUB_CLIENT_SECRET#${{ secrets.GH_CLIENT_SECRET }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_NEXT_PUBLIC_CONFIRM_URL#${{ secrets.NEXT_PUBLIC_CONFIRM_URL }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_POSTGRES_PRISMA_URL#${{ secrets.POSTGRES_PRISMA_URL }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_EMAIL_PASSWORD#${{ secrets.EMAIL_PASSWORD }}#g' $ECS_TASK_DEFINITION
+          sed -i 's#PLACEHOLDER_EMAIL_USERNAME#${{ secrets.EMAIL_USERNAME }}#g' $ECS_TASK_DEFINITION
+                    
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1

@@ -26,12 +26,10 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { passwordSchema } from "@/utils/formatting";
 
 const formSchema = z.object({
-	newPassword: z.string({
-		required_error: "Password is required",
-		invalid_type_error: "Password must be a string",
-	}),
+	newPassword: passwordSchema,
 	confirmPassword: z.string({
 		required_error: "Password is required",
 		invalid_type_error: "Password must be a string",
@@ -177,6 +175,7 @@ function ResetPasswordForm() {
 												type="button"
 												variant="ghost"
 												size="icon"
+												aria-label="Toggle password visibility"
 												className="absolute right-0 top-0 h-full"
 												onClick={() => setHideNewPassword(!hideNewPassword)}
 											>
@@ -203,7 +202,7 @@ function ResetPasswordForm() {
 											<Input
 												id="password"
 												type={hideConfirmPassword ? "password" : "text"}
-												placeholder="Enter your password"
+												placeholder="Confirm your password"
 												required
 												{...field}
 											/>

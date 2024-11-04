@@ -1,39 +1,27 @@
 // all/page.tsx
 "use client";
 
-import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { useFilterStore, useViewStore } from "@/store";
-import { Status } from "@repo/db";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import { useGroups } from "@/hooks/useGroups";
 
 export default function AllTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
-	const { view, gridViewOptions } = useViewStore((state) => state);
+	const { view, getGridOptions } = useViewStore((state) => state);
 	const {
 		loading,
 		authorized,
 		currentWorkspace,
 		teamIdentifier,
 		handleDragEnd,
-		getFilteredStatuses,
-		getTasksForStatus,
-	} = useTaskPage(filterTasks);
+	} = useTaskDashboard();
 
-	const getHiddenColumns = (): Status[] => {
-		const filteredStatuses = getFilteredStatuses();
+	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } =
+		useGroups(filterTasks);
 
-		return filteredStatuses.filter((status) => {
-			if (status === Status.archived) return false;
-			const tasks = getTasksForStatus(status);
-			if (status === Status.done && !gridViewOptions.showCompletedTasks.show) {
-				return tasks;
-			}
-
-			return tasks && tasks.length === 0;
-		});
-	};
 	if (!currentWorkspace) return null;
 	return (
 		<TaskPageLayout
@@ -44,17 +32,14 @@ export default function AllTasksPage() {
 			handleDragEnd={handleDragEnd}
 			pageTitle="All Tasks"
 		>
-			<ViewAllTasks
-				getFilteredStatuses={getFilteredStatuses}
-				getTasksForStatus={getTasksForStatus}
-			/>
+			<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 			{view === "grid" &&
-				!gridViewOptions.showEmptyGroups &&
+				!getGridOptions().showEmptyGroups &&
 				getHiddenColumns().length >= 1 && (
 					<div className="ml-auto">
 						<HiddenColumns
 							getHiddenColumns={getHiddenColumns}
-							getTasksForStatus={getTasksForStatus}
+							getTasksForGroup={getTasksForGroup}
 						/>
 					</div>
 				)}

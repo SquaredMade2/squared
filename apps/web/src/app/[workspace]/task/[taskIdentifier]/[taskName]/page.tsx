@@ -9,13 +9,13 @@ import {
 	MobileTaskSettings,
 } from "@/components/TaskPage";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTaskStore, useTeamStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { useEffect, useState } from "react";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import type { Status } from "@repo/db";
+import type { Status } from "@squared/db";
 import { formatUrl } from "@/utils/formatting";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -25,13 +25,12 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useTaskPageData } from "@/hooks/useTaskPageData";
+import { useTaskPage } from "@/hooks/useTaskPage";
 import { useToast } from "@/components/ui/use-toast";
 
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { task, isLoading, error, workspace } = useTaskPageData();
+	const { task, isLoading, error, currentWorkspace } = useTaskPage();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
 
@@ -64,7 +63,7 @@ const TaskPage = () => {
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
 									<MobileMenuSheetTrigger />
-									<TaskBreadcrumbs task={task} workspace={workspace} />
+									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
 								</div>
 							</div>
 							<MobileTaskSettings task={task} />
@@ -119,7 +118,7 @@ const TaskPage = () => {
 																		className="mr-2"
 																	/>
 																	<Link
-																		href={`/${currentTeam?.name}/task/${
+																		href={`/${currentWorkspace?.url}/task/${
 																			subtask?.identifier
 																		}/${formatUrl(subtask.title)}`}
 																	>
@@ -146,7 +145,10 @@ const TaskPage = () => {
 									</div>
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">
-									<TaskSidebarTopRow task={task} />
+									<TaskSidebarTopRow
+										task={task}
+										workspaceUrl={currentWorkspace?.url}
+									/>
 									<TaskDesignationsContainer task={task} />
 								</div>
 							</div>

@@ -1,13 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import { useId } from "react";
 
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { IconCheck, IconCircleCheckFilled } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
 import { tiers } from "@/constants/tier";
 
-// biome-ignore lint/suspicious/noExplicitAny: <Came with template>
-export function PricingTable({ pricing }: any) {
+export function PricingTable() {
 	const CheckIcon = () => {
 		return (
 			<IconCheck className="mx-auto h-4 w-4 flex-shrink-0 text-black dark:text-white" />
@@ -134,12 +131,12 @@ export function PricingTable({ pricing }: any) {
 									<th
 										scope="col"
 										className="max-w-xs py-3.5 pl-4 pr-3 text-left text-3xl  font-extrabold text-neutral-900 dark:text-white sm:pl-0"
-									></th>
-									{tiers?.map((item, index) => (
+									/>
+									{tiers?.map((item) => (
 										<th
 											scope="col"
 											className="px-3 py-3.5 text-center text-lg font-semibold text-neutral-900 dark:text-white"
-											key={`pricing-${index}`}
+											key={`pricing-${useId()}`}
 										>
 											{item.name}
 										</th>

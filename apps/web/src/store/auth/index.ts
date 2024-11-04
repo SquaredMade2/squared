@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import type { AuthReturn, AuthState, AuthStore, Login } from "./interfaces";
-import type { User } from "@repo/db";
+import type { User } from "@squared/db";
 import type { ApiReturnType } from "../interfaces";
 import { signOut } from "next-auth/react";
 export * from "./interfaces";
@@ -28,12 +28,16 @@ export const createAuthStore = (initState: AuthState = { user: null }) => {
 					};
 				},
 				register: async (login: Login) => {
-					const response: { data: AuthReturn } = await axios.post(
-						apiString(""),
-						login,
-					);
-					set({ user: response.data.user });
-					return response.data;
+					const { data: response }: { data: ApiReturnType<User> } =
+						await axios.post(apiString(""), login);
+					const { data: user, message, variant } = response;
+
+					set({ user });
+					return {
+						user,
+						message,
+						variant,
+					};
 				},
 				verifyUser: async (token: string) => {
 					const response: { data: AuthReturn } = await axios.post(

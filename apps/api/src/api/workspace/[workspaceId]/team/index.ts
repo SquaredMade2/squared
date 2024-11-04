@@ -1,23 +1,27 @@
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import { prisma } from "@/api";
 import type { Route, APIResponse } from "@/api/route";
+import createCustomLogger from "@squared/logger";
 
 type Params = {
 	workspaceId: string;
 };
+
+const logger = createCustomLogger("workspace");
 
 export function createRoute(): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<Team>> => {
 			try {
 				// Find teams by team ID
-				const teams: Team[] | null = await prisma.team.findMany({
+				logger.info("Finding teams by workspace ID: %s", workspaceId);
+				const teams: Team[] = await prisma.team.findMany({
 					where: { workspaceId },
 				});
 
-				if (!teams) {
+				if (teams.length === 0) {
 					return {
-						data: teams,
+						data: null,
 						message: "Teams not found",
 						variant: "destructive",
 					};
@@ -29,7 +33,7 @@ export function createRoute(): Route<Params> {
 					variant: "default",
 				};
 			} catch (error) {
-				console.error("Error finding teams:", error);
+				logger.error("Error finding teams: %0", error);
 				res.status(500);
 				return {
 					data: null,

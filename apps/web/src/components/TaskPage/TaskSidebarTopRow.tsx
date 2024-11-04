@@ -1,8 +1,7 @@
 import { useCallback, useEffect } from "react";
-import { formatUrl, replaceSpacesWithDashes } from "@/utils/formatting";
-import { useTeamStore } from "@/store";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { useToast } from "../ui/use-toast";
-import type { Task } from "@repo/db";
+import type { Task } from "@squared/db";
 import {
 	Tooltip,
 	TooltipContent,
@@ -12,18 +11,17 @@ import {
 import { Button } from "../ui/button";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 
-export const TaskSidebarTopRow = ({ task }: { task: Task }) => {
+export const TaskSidebarTopRow = ({
+	task,
+	workspaceUrl,
+}: { task: Task; workspaceUrl?: string }) => {
 	const { toast } = useToast();
 
 	const identifier = task.identifier;
 	const title = task.title;
 
-	const currentTeam = useTeamStore((state) => state.currentTeam);
-	const TaskUrl = `${(process.env.NEXT_PUBLIC_URL ?? "") + (currentTeam?.name ?? "")}/task/${identifier}/${formatUrl(title)}`;
-	const gitBranchName = `
-			${replaceSpacesWithDashes(
-				`${title.toLowerCase()}-${String(identifier).toLowerCase()}`,
-			)}`;
+	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${workspaceUrl}/task/${identifier}/${formatUrl(title)}`;
+	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
 	const copyUrl = async (): Promise<void> => {
 		await window.navigator.clipboard.writeText(TaskUrl);
@@ -83,7 +81,12 @@ export const TaskSidebarTopRow = ({ task }: { task: Task }) => {
 				<TooltipProvider delayDuration={0}>
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={copyUrl}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Task URL"
+								onClick={copyUrl}
+							>
 								<Link className="size-4" />
 							</Button>
 						</TooltipTrigger>
@@ -98,7 +101,12 @@ export const TaskSidebarTopRow = ({ task }: { task: Task }) => {
 					</Tooltip>
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={copyTaskId}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Task ID"
+								onClick={copyTaskId}
+							>
 								<Copy className="size-4" />
 							</Button>
 						</TooltipTrigger>
@@ -112,7 +120,12 @@ export const TaskSidebarTopRow = ({ task }: { task: Task }) => {
 					</Tooltip>
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button variant="ghost" size="icon" onClick={copyGitBranchName}>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Git Branch Name"
+								onClick={copyGitBranchName}
+							>
 								<GitPullRequestArrow className="size-4" />
 							</Button>
 						</TooltipTrigger>

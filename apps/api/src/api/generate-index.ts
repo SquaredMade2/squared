@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import "dotenv/config";
+import createCustomLogger from "@squared/logger";
 
 // Define the output path
 const outputPath = path.join(__dirname, "index.ts");
@@ -18,22 +19,27 @@ export function generateIndex() {
 // @ts-nocheck
 import express from "express";
 import cors from "cors";
+import http from "node:http";
+import { Server } from "socket.io";
 import type { Router } from "express";
 import { toQueryHandler, toMutationHandler } from "./route";
 import type { Route } from "./route";
-import { PrismaClient } from "@repo/db";
+import { PrismaClient } from "@squared/db";
+import createCustomLogger from "@squared/logger";
+import { createErrorHandler, createRequestHandler } from "@squared/rpc";
+import { rpcHandlers } from "@/services";
 import { setupSwagger } from "../../swagger";
-import { startSprintTransitionJob } from '@/jobs/scheduler';
 import "dotenv/config";
 
-startSprintTransitionJob();
 export const prisma = new PrismaClient({
 	datasources: {
 		db: {
-			url: process.env.${process.env.NODE_ENV === "test" ? "TEST_" : ""}POSTGRES_PRISMA_URL,
+			url: process.env.POSTGRES_PRISMA_URL,
 		},
 	},
 });
+
+const logger = createCustomLogger("api");
 
 `);
 
@@ -90,6 +96,8 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 	// Adding the server setup to the generated index file
 	writeLn(`
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 const port = process.env.PORT || 5173;
 
 const productionDomain = "https://app.squaredmade.com";
@@ -97,6 +105,7 @@ const productionServerDomain = "https://api.squaredmade.com"
 const developmentDomain = "https://app-develop.squaredmade.com"
 const localDevDomain = "http://localhost:3000";
 const localServerDomain = \`http://localhost:\${port}\`;
+
 // Health check route for root path
 app.get("/", (_, res) => {
   res.status(200).send("ok");
@@ -127,6 +136,12 @@ app.use(
 
 app.use(express.json());
 
+const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
+app.use("/rpc", rpcRequestHandler);
+
+// Use the RPC error handler
+app.use(createErrorHandler({ log: logger }));
+
 // Initialize the router
 const router = express.Router();
 
@@ -136,9 +151,31 @@ createApiRouter(router, { prisma });
 // Use the router
 app.use(router);
 
+// Socket.IO setup
+io.on('connection', (socket) => {
+  logger.info('A user connected');
+
+  socket.on('joinRoom', (sprintId) => {
+    socket.join(sprintId);
+	logger.info('User joined room: %s', sprintId);
+  });
+
+  socket.on('addItem', (data) => {
+    io.to(data.sprintId).emit('itemAdded', data);
+  });
+
+  socket.on('moveItem', (data) => {
+    io.to(data.sprintId).emit('itemMoved', data);
+  });
+
+  socket.on('disconnect', () => {
+    logger.info('User disconnected');
+  });
+});
+
 // Start the server
-const server = app.listen(port, () => {
-  console.log(\`Server is running on http://localhost:\${port}\`);
+server.listen(port, () => {
+  logger.info(\`Server is running on http://localhost:\${port}\`);
 });
   
 // So tests can use app and kill server after running
@@ -146,11 +183,13 @@ export { app, server }
 `);
 }
 
+const logger = createCustomLogger("gen-index");
+
 function getRoutes(dir: string): string[] {
 	const files = fs.readdirSync(dir);
 	const routes: string[] = [];
 
-	console.log("Checking directory:", dir);
+	logger.info("Checking directory: %s", dir);
 
 	files.sort().reverse();
 
@@ -160,7 +199,7 @@ function getRoutes(dir: string): string[] {
 		if (stat.isDirectory()) {
 			routes.push(...getRoutes(path));
 		} else if (path.endsWith("/index.ts")) {
-			console.log("Found route:", path);
+			logger.info("Found route: %s", path);
 			routes.push(path.replace("/index.ts", ""));
 		}
 	}
@@ -170,4 +209,4 @@ function getRoutes(dir: string): string[] {
 // Call the function to generate the index
 generateIndex();
 
-console.log("Index file generated at:", outputPath);
+logger.info("Index file generated at: %s", outputPath);

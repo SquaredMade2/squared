@@ -1,5 +1,5 @@
 import type * as React from "react";
-const TodoIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({ fill }) => (
+const TodoIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
 	<svg
 		xmlnsXlink="http://www.w3.org/1999/xlink"
 		xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Heading } from "./heading";
 import { Subheading } from "./subheading";
 import { cn } from "@/lib/utils";
@@ -209,11 +208,10 @@ function Testimonial({
 		];
 	}, []);
 
-	const boxStyle = {};
 	return (
 		<figure
 			className={cn(
-				"animate-fade-in rounded-3xl bg-transparent p-8 opacity-0 shadow-derek dark:bg-background-darkSecondary",
+				"animate-fade-in rounded-3xl bg-card p-8 opacity-0 shadow-derek",
 				className,
 			)}
 			style={{
@@ -239,9 +237,7 @@ function Testimonial({
 						</p>
 					</div>
 				</div>
-				<p className="text-base text-muted mt-4 dark:text-muted-dark">
-					{quote}
-				</p>
+				<p className="text-base text-muted-foreground mt-4">{quote}</p>
 			</div>
 		</figure>
 	);
@@ -327,8 +323,8 @@ function TestimonialGrid() {
 				className="hidden lg:block"
 				shift={10}
 			/>
-			<div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white dark:from-background-darkAccent" />
-			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white dark:from-background-darkAccent" />
+			<div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background" />
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background" />
 		</InViewDiv>
 	);
 }

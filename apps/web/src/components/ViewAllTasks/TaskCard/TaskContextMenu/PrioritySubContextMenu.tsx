@@ -6,7 +6,7 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { priorityOptions } from "@/constants/designations";
-import type { Priority } from "@repo/db";
+import type { Priority } from "@squared/db";
 import { useTaskStore } from "@/store";
 import { PriorityIcon } from "@/components/Icons";
 import { formatPriority } from "@/utils/formatting";
@@ -25,7 +25,7 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<PriorityIcon priority="high" />
+					<PriorityIcon priority={task.priority} />
 				</div>
 				Priority
 			</ContextMenuSubTrigger>

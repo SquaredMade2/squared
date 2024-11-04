@@ -11,10 +11,9 @@ import {
 	Moon,
 	ArrowLeft,
 } from "lucide-react";
-import type { SettingsNavbarProps } from "./SettingsNavBarProps";
 import { useTheme } from "next-themes";
 import { useTeamStore, useViewStore } from "@/store";
-import type { Team } from "@repo/db";
+import type { Team } from "@squared/db";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -46,7 +45,12 @@ const SidebarContent = ({
 			<ScrollArea className="flex-grow">
 				<div className="p-6 space-y-6">
 					<div className="flex items-center space-x-2">
-						<Button variant="ghost" size="icon" onClick={() => router.back()}>
+						<Button
+							variant="ghost"
+							size="icon"
+							aria-label="Go back"
+							onClick={() => router.back()}
+						>
 							<ArrowLeft className="size-4" />
 						</Button>
 						<h1 className="text-2xl font-semibold">Settings</h1>
@@ -171,25 +175,19 @@ const SidebarContent = ({
 	);
 };
 
-const SettingsNavBar = ({
-	setLoading,
-	toggleNavbar,
-}: SettingsNavbarProps): React.ReactElement => {
+const SettingsNavBar = (): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setCurrentTeam, teams } = useTeamStore((state) => state);
-	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
+	const { showMobileNavbar, setShowMobileNavbar } = useViewStore(
+		(state) => state,
+	);
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
-		toggleNavbar?.();
-		setShowNavbar(false);
 	};
 
 	const handleTeamClick = (team: Team, path?: string) => {
-		if (setLoading) {
-			setLoading(true);
-		}
 		setCurrentTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
@@ -208,7 +206,7 @@ const SettingsNavBar = ({
 			</div>
 
 			{/* Mobile Sheet */}
-			<Sheet open={showNavbar} onOpenChange={setShowNavbar}>
+			<Sheet open={showMobileNavbar} onOpenChange={setShowMobileNavbar}>
 				<SheetContent side="left" className="p-0 w-64 bg-card">
 					<SidebarContent
 						navigateTo={navigateTo}

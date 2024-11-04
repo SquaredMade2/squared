@@ -22,6 +22,7 @@ function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
@@ -36,6 +37,9 @@ function LoginForm() {
 				redirect: false,
 				email: data.email,
 				password: data.password,
+				callbackUrl: inviteToken
+					? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
+					: process.env.NEXT_PUBLIC_URL,
 			});
 			if (response?.status === 401) {
 				toast({
@@ -44,7 +48,7 @@ function LoginForm() {
 				});
 			}
 			router.refresh();
-			router.prefetch("/");
+			router.prefetch(inviteToken ? `/join/${inviteToken}` : "/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({
@@ -57,15 +61,19 @@ function LoginForm() {
 	};
 
 	const handleGoogleLogin = async () => {
-		setIsLoading(true);
+		setIsGoogleLoading(true);
 		try {
-			await signIn("google", { callbackUrl: window.location.href });
+			await signIn("google", {
+				callbackUrl: inviteToken
+					? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
+					: process.env.NEXT_PUBLIC_URL,
+			});
 			router.refresh();
 			router.prefetch("/");
 		} catch (error) {
 			toast({ title: "Google login failed", variant: "destructive" });
 			console.error("Google login error:", error);
-			setIsLoading(false);
+			setIsGoogleLoading(false);
 		}
 	};
 
@@ -116,6 +124,7 @@ function LoginForm() {
 									type="button"
 									variant="ghost"
 									size="icon"
+									aria-label="Toggle password visibility"
 									className="absolute right-0 top-0 h-full"
 									onClick={() => setHidePassword(!hidePassword)}
 								>
@@ -127,7 +136,11 @@ function LoginForm() {
 								</Button>
 							</div>
 						</div>
-						<Button type="submit" className="w-full" disabled={isLoading}>
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isLoading || isGoogleLoading}
+						>
 							{isLoading ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							) : null}
@@ -148,9 +161,9 @@ function LoginForm() {
 						onClick={handleGoogleLogin}
 						className="w-full"
 						variant="outline"
-						disabled={isLoading}
+						disabled={isGoogleLoading || isLoading}
 					>
-						{isLoading ? (
+						{isGoogleLoading ? (
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 						) : (
 							<GoogleIcon />

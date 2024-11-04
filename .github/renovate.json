@@ -1,4 +1,5 @@
 {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "config:base"
     ],
@@ -6,103 +7,115 @@
         "on the first day of the month"
     ],
     "prConcurrentLimit": 20,
-    "automerge": false,
+    "automerge": true,
+    "automergeType": "pr",
+    "automergeStrategy": "squash",
+    "requiredStatusChecks": [],
     "labels": [
         "Updates"
     ],
+    "commitMessagePrefix": "[skip vercel]",
     "packageRules": [
         {
-            "packagePatterns": [
-                "*"
+            "matchManagers": [
+                "npm"
             ],
-            "enabledManagers": [
-                "npm",
-                "nvm",
+            "matchPaths": [
+                "apps/{web,www}/**",
+                "apps/api/**",
+                "packages/**"
+            ],
+            "labels": [
+                "Fullstack Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "team:fullstack-developers"
+            ]
+        },
+        {
+            "matchManagers": [
+                "npm"
+            ],
+            "matchPaths": [
+                "apps/web/**",
+                "apps/www/**"
+            ],
+            "labels": [
+                "Frontend Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "team:frontend-developers"
+            ]
+        },
+        {
+            "matchManagers": [
+                "npm"
+            ],
+            "matchPaths": [
+                "apps/api/**"
+            ],
+            "labels": [
+                "Backend Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "team:backend-developers"
+            ]
+        },
+        {
+            "matchManagers": [
+                "npm"
+            ],
+            "matchPaths": [
+                "packages/**"
+            ],
+            "labels": [
+                "Package Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "team:squared-developers"
+            ]
+        },
+        {
+            "matchManagers": [
                 "dockerfile",
-                "docker-compose",
+                "docker-compose"
+            ],
+            "labels": [
+                "DevOps Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "team:devops-engineers"
+            ]
+        },
+        {
+            "matchManagers": [
                 "github-actions"
             ],
-            "automerge": false,
-            "schedule": [
-                "on the first day of the month"
+            "labels": [
+                "CI/CD Updates",
+                "Updates"
+            ],
+            "reviewers": [
+                "team:devops-engineers"
+            ]
+        },
+        {
+            "matchManagers": [
+                "npm"
+            ],
+            "matchPaths": [
+                "!(apps|packages)/**"
             ],
             "labels": [
                 "Updates"
             ],
-            "assignees": [
+            "reviewers": [
                 "team:squared-developers"
-            ]
-        },
-        {
-            "packagePatterns": [
-                "*"
-            ],
-            "paths": [
-                "apps/web"
-            ],
-            "assignees": [
-                "team:frontend-developers"
-            ],
-            "labels": [
-                "Frontend Updates"
-            ]
-        },
-        {
-            "packagePatterns": [
-                "*"
-            ],
-            "paths": [
-                "apps/www"
-            ],
-            "assignees": [
-                "team:frontend-developers"
-            ],
-            "labels": [
-                "Frontend Updates"
-            ]
-        },
-        {
-            "packagePatterns": [
-                "*"
-            ],
-            "paths": [
-                "apps/api"
-            ],
-            "assignees": [
-                "team:backend-developers"
-            ],
-            "labels": [
-                "Backend Updates"
-            ]
-        },
-        {
-            "packagePatterns": [
-                "*"
-            ],
-            "paths": [
-                "packages/**/*"
-            ],
-            "assignees": [
-                "team:squared-developers"
-            ],
-            "labels": [
-                "Package Updates"
-            ]
-        },
-        {
-            "packagePatterns": [
-                "*"
-            ],
-            "paths": [
-                "apps/web",
-                "apps/api",
-                "packages/**/*"
-            ],
-            "assignees": [
-                "team:fullstack-developers"
-            ],
-            "labels": [
-                "Fullstack Updates"
             ]
         }
     ]

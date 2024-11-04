@@ -6,7 +6,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Clipboard } from "lucide-react";
 import { useAuthStore, useTaskStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Workspace } from "@repo/db";
+import type { Workspace } from "@squared/db";
 import { NoTasksNewIssueButton } from "../Modals";
 import SquaredLoader from "../Loaders/SquaredLoader";
 
@@ -16,7 +16,7 @@ interface TaskPageLayoutProps {
 	currentWorkspace: Workspace;
 	teamIdentifier: string;
 	handleDragEnd: OnDragEndResponder;
-	pageTitle: string;
+	pageTitle?: string;
 	children: ReactNode;
 }
 

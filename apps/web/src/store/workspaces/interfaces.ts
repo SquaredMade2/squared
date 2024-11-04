@@ -1,4 +1,4 @@
-import type { Label, User, Workspace as WorkspaceType } from "@repo/db";
+import type { Label, Workspace as WorkspaceType } from "@squared/db";
 
 export type WorkspaceState = {
 	workspaces: Workspace[];
@@ -28,7 +28,7 @@ type WorkspaceActions = {
 	) => Promise<WorkspaceResponse>;
 	deleteWorkspace: (workspaceId: string) => Promise<void>;
 	getAllWorkspaces: (userId: string) => Promise<Workspace[]>;
-	joinWorkspace: (token: string, user: User) => Promise<WorkspaceResponse>;
+	joinWorkspace: (token: string, userId: string) => Promise<WorkspaceResponse>;
 	inviteToWorkspace: (
 		workspaceId: string,
 		email: string | string[],

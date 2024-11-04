@@ -3,11 +3,5 @@ export type FilterOption = {
 	name: string;
 	svg: JSX.Element;
 	group: string;
+	menuContent: (filterOption: FilterOption) => JSX.Element;
 };
-
-import type { Dispatch, SetStateAction } from "react";
-
-export interface FilterDropDownProps {
-	showFilterDropDown: boolean;
-	setShowFilterDropDown: Dispatch<SetStateAction<boolean>>;
-}
