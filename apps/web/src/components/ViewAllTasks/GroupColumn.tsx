@@ -138,12 +138,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				<div
 					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
 						isListView
-							? "w-full rounded-b-lg px-2 pb-2 "
+							? "w-full rounded-b-lg px-2 py-2 "
 							: "w-72 rounded-lg p-2"
 					}`}
 				>
 					<span
-						className={`text-accent-foreground ${isListView ? "ml-10" : "ml-2"}`}
+						className={`text-accent-foreground truncate ${isListView ? "ml-10" : "ml-2"}`}
 					>
 						{parentTask?.identifier}: {parentTask?.title}
 					</span>
