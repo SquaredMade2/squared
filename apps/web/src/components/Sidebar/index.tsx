@@ -27,7 +27,6 @@ import {
 import { TODO } from "@squared/context";
 import {
 	ChevronLeft,
-	ChevronRight,
 	Home,
 	Inbox,
 	Moon,
@@ -90,17 +89,7 @@ function SidebarContent() {
 	return (
 		<>
 			<SidebarHeader className="space-y-2 px-2">
-				<div className="flex items-center justify-between">
-					<WorkspaceDropdown />
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={toggleSidebar}
-						className="group-data-[state=open]/sidebar:hidden"
-					>
-						<ChevronRight className="h-4 w-4" />
-					</Button>
-				</div>
+				<WorkspaceDropdown />
 				<NewIssueButton />
 				<div className="flex flex-col space-y-2">
 					<IconButton icon={Home} label="Home" onClick={toHome} />
@@ -193,7 +182,7 @@ function IconButton({
 						{label}
 					</span>
 					{notificationCount && notificationCount > 0 && (
-						<div className="absolute top-0.5 right-0.5 h-2 w-2 bg-primary rounded-full" />
+						<div className="absolute top-3 right-3 h-2 w-2 bg-primary rounded-full" />
 					)}
 				</Button>
 			</TooltipTrigger>
