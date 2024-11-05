@@ -1,10 +1,10 @@
-import { Heading } from "./heading";
-import { Subheading } from "./subheading";
 import { cn } from "@/lib/utils";
-import { InViewDiv } from "./in-view-div";
-import { useMemo } from "react";
-import { TestimonialColumnContainer } from "./testimonial-column-container";
 import Image from "next/image";
+import { useMemo } from "react";
+import { Heading } from "./heading";
+import { InViewDiv } from "./in-view-div";
+import { Subheading } from "./subheading";
+import { TestimonialColumnContainer } from "./testimonial-column-container";
 
 export const Testimonials = () => {
 	return (

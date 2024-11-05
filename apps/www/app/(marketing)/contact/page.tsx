@@ -1,9 +1,9 @@
 import { Background } from "@/components/background";
-import type { Metadata } from "next";
-import { FeaturedTestimonials } from "@/components/featured-testimonials";
-import { cn } from "@/lib/utils";
-import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { ContactForm } from "@/components/contact";
+import { FeaturedTestimonials } from "@/components/featured-testimonials";
+import { HorizontalGradient } from "@/components/horizontal-gradient";
+import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Contact Us - Squared",

@@ -1,15 +1,15 @@
+import type { User } from "@squared/db";
 import axios from "axios";
-import { createStore } from "zustand/vanilla";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+import type { ApiReturnType } from "../interfaces";
 import type {
+	UserAvatar,
+	UserResponse,
 	UserState,
 	UserStore,
-	UserResponse,
-	UserAvatar,
 } from "./interfaces";
-import type { User } from "@squared/db";
-import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -111,10 +111,10 @@ export const createUserStore = (
 					}
 
 					try {
-						const response: { data: ApiReturnType<User> } = await axios.get(
-							apiString(userId),
-						);
-						return { ...response.data, user: response.data.data };
+						const { data: response }: { data: ApiReturnType<User> } =
+							await axios.get(apiString(userId));
+						const { data: user, ...rest } = response;
+						return { ...rest, user };
 					} catch (error) {
 						return {
 							user: null,
@@ -142,25 +142,20 @@ export const createUserStore = (
 					}
 				},
 				getUserAvatars: async (userId: string): Promise<UserAvatar[]> => {
-					const { userAvatars } = get();
-					if (userAvatars) {
-						return userAvatars;
-					}
-
 					try {
 						const response: {
 							data: ApiReturnType<UserAvatar[]>;
 						} = await axios.get(
 							`${process.env.NEXT_PUBLIC_SERVER}/api/user/${userId}/avatar`,
 						);
-						const { data: avatar } = response.data;
-						if (!avatar) {
+						const { data: avatars } = response.data;
+						if (!avatars) {
 							return [];
 						}
-						set({ userAvatars: avatar });
-						return avatar;
+						set({ userAvatars: avatars });
+						return avatars;
 					} catch (error) {
-						console.error("Error in getUserAvatar:", error);
+						console.error("Error in getUserAvatars:", error);
 						return [];
 					}
 				},

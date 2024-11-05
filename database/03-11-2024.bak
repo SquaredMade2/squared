@@ -1,0 +1,1611 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.4
+-- Dumped by pg_dump version 16.4 (Homebrew)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: default
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+ALTER SCHEMA public OWNER TO "default";
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: default
+--
+
+COMMENT ON SCHEMA public IS '';
+
+
+--
+-- Name: ActivityType; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."ActivityType" AS ENUM (
+    'TASK_EVENT',
+    'COMMIT'
+);
+
+
+ALTER TYPE public."ActivityType" OWNER TO "default";
+
+--
+-- Name: Effort; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."Effort" AS ENUM (
+    'LINEAR',
+    'FIBONACCI',
+    'EXPONENTIAL'
+);
+
+
+ALTER TYPE public."Effort" OWNER TO "default";
+
+--
+-- Name: NotificationType; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."NotificationType" AS ENUM (
+    'ASSIGNED',
+    'PARTICIPATING',
+    'MENTIONED',
+    'CREATED'
+);
+
+
+ALTER TYPE public."NotificationType" OWNER TO "default";
+
+--
+-- Name: Priority; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."Priority" AS ENUM (
+    'noPriority',
+    'urgent',
+    'high',
+    'medium',
+    'low'
+);
+
+
+ALTER TYPE public."Priority" OWNER TO "default";
+
+--
+-- Name: RetrospectiveItemType; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."RetrospectiveItemType" AS ENUM (
+    'wentWell',
+    'toImprove',
+    'actionItems'
+);
+
+
+ALTER TYPE public."RetrospectiveItemType" OWNER TO "default";
+
+--
+-- Name: SavedFilterType; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."SavedFilterType" AS ENUM (
+    'TEAM',
+    'WORKSPACE'
+);
+
+
+ALTER TYPE public."SavedFilterType" OWNER TO "default";
+
+--
+-- Name: SprintStatus; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."SprintStatus" AS ENUM (
+    'PLANNED',
+    'ACTIVE',
+    'COMPLETED'
+);
+
+
+ALTER TYPE public."SprintStatus" OWNER TO "default";
+
+--
+-- Name: Status; Type: TYPE; Schema: public; Owner: default
+--
+
+CREATE TYPE public."Status" AS ENUM (
+    'backlog',
+    'todo',
+    'inProgress',
+    'inReview',
+    'done',
+    'canceled',
+    'archived'
+);
+
+
+ALTER TYPE public."Status" OWNER TO "default";
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: Branch; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Branch" (
+    id text NOT NULL,
+    name text NOT NULL,
+    "taskId" text NOT NULL,
+    "githubRepoInfoId" text NOT NULL
+);
+
+
+ALTER TABLE public."Branch" OWNER TO "default";
+
+--
+-- Name: Comment; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Comment" (
+    id text NOT NULL,
+    comment text NOT NULL,
+    "authorId" text NOT NULL,
+    date timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "taskId" text NOT NULL
+);
+
+
+ALTER TABLE public."Comment" OWNER TO "default";
+
+--
+-- Name: Commit; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Commit" (
+    id text NOT NULL,
+    message text NOT NULL,
+    url text NOT NULL,
+    "authorName" text,
+    "repoName" text,
+    owner text,
+    "branchId" text NOT NULL,
+    "taskId" text,
+    "timestamp" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE public."Commit" OWNER TO "default";
+
+--
+-- Name: GithubRepoInfo; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."GithubRepoInfo" (
+    id text NOT NULL,
+    "repoName" text DEFAULT ''::text NOT NULL,
+    owner text DEFAULT ''::text NOT NULL
+);
+
+
+ALTER TABLE public."GithubRepoInfo" OWNER TO "default";
+
+--
+-- Name: Label; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Label" (
+    id text NOT NULL,
+    name text NOT NULL,
+    description text,
+    color text NOT NULL,
+    "workspaceId" text NOT NULL
+);
+
+
+ALTER TABLE public."Label" OWNER TO "default";
+
+--
+-- Name: Notification; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Notification" (
+    id text NOT NULL,
+    "userId" text NOT NULL,
+    read boolean DEFAULT false NOT NULL,
+    description text,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    dismissed boolean DEFAULT false NOT NULL,
+    saved boolean DEFAULT false NOT NULL,
+    "taskId" text NOT NULL,
+    type public."NotificationType" NOT NULL,
+    "workspaceId" text NOT NULL
+);
+
+
+ALTER TABLE public."Notification" OWNER TO "default";
+
+--
+-- Name: Project; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Project" (
+    id text NOT NULL,
+    name text NOT NULL,
+    "teamId" text,
+    "workspaceId" text
+);
+
+
+ALTER TABLE public."Project" OWNER TO "default";
+
+--
+-- Name: RetrospectiveItem; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."RetrospectiveItem" (
+    id text NOT NULL,
+    content text NOT NULL,
+    "wentWellSprintId" text,
+    "toImproveSprintId" text,
+    "actionItemsSprintId" text,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    type public."RetrospectiveItemType" DEFAULT 'toImprove'::public."RetrospectiveItemType" NOT NULL
+);
+
+
+ALTER TABLE public."RetrospectiveItem" OWNER TO "default";
+
+--
+-- Name: SavedFilter; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."SavedFilter" (
+    id text NOT NULL,
+    name text NOT NULL,
+    "workspaceId" text,
+    description text DEFAULT ''::text,
+    "teamId" text,
+    type public."SavedFilterType" NOT NULL,
+    filter jsonb[],
+    "authorId" text NOT NULL
+);
+
+
+ALTER TABLE public."SavedFilter" OWNER TO "default";
+
+--
+-- Name: Sprint; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Sprint" (
+    id text NOT NULL,
+    name text NOT NULL,
+    "startDate" timestamp(3) without time zone NOT NULL,
+    "endDate" timestamp(3) without time zone NOT NULL,
+    status public."SprintStatus" NOT NULL,
+    "teamId" text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    description text
+);
+
+
+ALTER TABLE public."Sprint" OWNER TO "default";
+
+--
+-- Name: Task; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Task" (
+    id text NOT NULL,
+    "authorId" text NOT NULL,
+    title text NOT NULL,
+    description text,
+    identifier text NOT NULL,
+    "dueDate" timestamp(3) without time zone,
+    "effortEstimate" integer,
+    "teamId" text NOT NULL,
+    "dateCreated" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "assigneeId" text,
+    "assigneeName" text,
+    labels text[],
+    status public."Status" DEFAULT 'backlog'::public."Status" NOT NULL,
+    priority public."Priority" DEFAULT 'noPriority'::public."Priority" NOT NULL,
+    "workspaceId" text NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    "updatedAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "parentId" text,
+    "sprintId" text
+);
+
+
+ALTER TABLE public."Task" OWNER TO "default";
+
+--
+-- Name: TaskEvent; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."TaskEvent" (
+    id text NOT NULL,
+    "authorId" text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "taskId" text NOT NULL,
+    message text NOT NULL
+);
+
+
+ALTER TABLE public."TaskEvent" OWNER TO "default";
+
+--
+-- Name: Team; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Team" (
+    id text NOT NULL,
+    name text,
+    identifier text NOT NULL,
+    "workspaceId" text NOT NULL,
+    "activeRequired" boolean DEFAULT true NOT NULL,
+    "cooldownDuration" integer DEFAULT 1 NOT NULL,
+    "sprintDuration" integer DEFAULT 2 NOT NULL,
+    "sprintStartDate" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "sprintsEnabled" boolean DEFAULT false NOT NULL,
+    "tasksPerSprint" integer DEFAULT 10 NOT NULL,
+    "upcomingSprints" integer DEFAULT 3 NOT NULL,
+    effort public."Effort" DEFAULT 'LINEAR'::public."Effort" NOT NULL
+);
+
+
+ALTER TABLE public."Team" OWNER TO "default";
+
+--
+-- Name: UniversalTokenLink; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."UniversalTokenLink" (
+    id text NOT NULL,
+    token text DEFAULT ''::text NOT NULL,
+    "isEnabled" boolean DEFAULT true NOT NULL,
+    "workspaceId" text NOT NULL
+);
+
+
+ALTER TABLE public."UniversalTokenLink" OWNER TO "default";
+
+--
+-- Name: User; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."User" (
+    id text NOT NULL,
+    name text NOT NULL,
+    username text,
+    email text NOT NULL,
+    password text,
+    verified boolean DEFAULT false NOT NULL,
+    "lastLogin" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "onBoarding" boolean DEFAULT true NOT NULL,
+    "defaultWorkspaceId" text,
+    "avatarUrl" text,
+    "githubId" text,
+    "googleId" text,
+    "savedNotificationIds" text[] DEFAULT ARRAY[]::text[],
+    "subscribedTasks" text[] DEFAULT ARRAY[]::text[],
+    "githubUsername" text
+);
+
+
+ALTER TABLE public."User" OWNER TO "default";
+
+--
+-- Name: UserTeam; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."UserTeam" (
+    "userId" text NOT NULL,
+    "teamId" text NOT NULL
+);
+
+
+ALTER TABLE public."UserTeam" OWNER TO "default";
+
+--
+-- Name: UserWorkspace; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."UserWorkspace" (
+    "userId" text NOT NULL,
+    "workspaceId" text NOT NULL
+);
+
+
+ALTER TABLE public."UserWorkspace" OWNER TO "default";
+
+--
+-- Name: Workspace; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."Workspace" (
+    id text NOT NULL,
+    name text NOT NULL,
+    url text NOT NULL,
+    "companySize" integer,
+    "universalTokenLinkId" text,
+    "avatarUrl" text,
+    "tasksCreated" integer DEFAULT 0 NOT NULL,
+    admins text[]
+);
+
+
+ALTER TABLE public."Workspace" OWNER TO "default";
+
+--
+-- Name: WorkspaceRepositories; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public."WorkspaceRepositories" (
+    id text NOT NULL,
+    "workspaceId" text NOT NULL,
+    "repoId" text NOT NULL
+);
+
+
+ALTER TABLE public."WorkspaceRepositories" OWNER TO "default";
+
+--
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: default
+--
+
+CREATE TABLE public._prisma_migrations (
+    id character varying(36) NOT NULL,
+    checksum character varying(64) NOT NULL,
+    finished_at timestamp with time zone,
+    migration_name character varying(255) NOT NULL,
+    logs text,
+    rolled_back_at timestamp with time zone,
+    started_at timestamp with time zone DEFAULT now() NOT NULL,
+    applied_steps_count integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public._prisma_migrations OWNER TO "default";
+
+--
+-- Data for Name: Branch; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Branch" (id, name, "taskId", "githubRepoInfoId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: Comment; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Comment" (id, comment, "authorId", date, "taskId") FROM stdin;
+ed03d7df-df6c-4aaa-9896-a7483072d3b7	## This is\n**A Testing**\n*Comment for*\n```the pr```	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	2024-10-18 01:10:07.141	c2f0d014-8a02-4455-aa0a-52e03e05f14c
+33f2fa22-64d4-4bb2-a8df-fa88217f20fb	## Heading\n**Bold**\n*Italic*\n```code```\nbob	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	2024-10-22 09:20:55.844	853b205a-92f5-4d68-b7c5-6b476636e510
+c7b5920c-c466-4a29-948b-4a0d4a1ff04a	### This is\n**An example**\n*Of a rich text*\n```comment```	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	2024-11-02 21:44:19.716	cb39a492-23b0-4809-9111-8f0e57305302
+\.
+
+
+--
+-- Data for Name: Commit; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Commit" (id, message, url, "authorName", "repoName", owner, "branchId", "taskId", "timestamp") FROM stdin;
+\.
+
+
+--
+-- Data for Name: GithubRepoInfo; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."GithubRepoInfo" (id, "repoName", owner) FROM stdin;
+\.
+
+
+--
+-- Data for Name: Label; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Label" (id, name, description, color, "workspaceId") FROM stdin;
+2df95a83-41da-4bde-85d6-4cdcec56cfae	Feature	New feature	#FF5733	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+28b1e1fb-2807-40f7-8148-dcca3e95ccbf	Bug	Bug fix	#C70039	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+c7b06bba-ac93-4e48-8f3b-2bac2c86b765	Chore	General task	#900C3F	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+096d5809-07ad-43c2-b024-72d0898fb003	Refactor	Code refactor	#581845	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+cb687c84-54be-49cf-a4a7-d91efcdfabdc	Docs	Documentation	#FFC300	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+2ad6a6f1-c06c-4ef9-ba70-7b31d71651db	Test	Testing task	#DAF7A6	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+ed3ff477-f6a0-4398-90a8-6d9cb585a410	Design	Design related task	#33FFBD	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+6eb32b87-0cc1-4da3-a2f5-63e9968e8c40	Feature	New feature	#FF5733	cef0254e-49c5-45ae-bee5-d51a42b3f871
+28385ba8-fc3e-424b-a4e1-7d26664852dd	Bug	Bug fix	#C70039	cef0254e-49c5-45ae-bee5-d51a42b3f871
+e82d521b-d1bd-46b7-92d9-feb87ee7339f	Chore	General task	#900C3F	cef0254e-49c5-45ae-bee5-d51a42b3f871
+22ed6aab-2709-4e14-90e2-5e027f93ea85	Refactor	Code refactor	#581845	cef0254e-49c5-45ae-bee5-d51a42b3f871
+627024ed-4872-4c62-b2d6-04290d9dc1bd	Docs	Documentation	#FFC300	cef0254e-49c5-45ae-bee5-d51a42b3f871
+935a0423-de15-4536-b3ee-50fbabb54b36	Test	Testing task	#DAF7A6	cef0254e-49c5-45ae-bee5-d51a42b3f871
+ce11860a-91c3-4225-944f-c5d10484f7e7	Design	Design related task	#33FFBD	cef0254e-49c5-45ae-bee5-d51a42b3f871
+71047a66-8f41-4667-98f2-3d49b3fb8910	Feature	New feature	#FF5733	cb04c1b6-c313-4494-ac27-9f091c202fa1
+aab56c33-0fab-41e7-b6e3-51b3b08b0c21	Bug	Bug fix	#C70039	cb04c1b6-c313-4494-ac27-9f091c202fa1
+7f5b3655-3e71-431f-bbbf-b62e551a0e42	Chore	General task	#900C3F	cb04c1b6-c313-4494-ac27-9f091c202fa1
+aeddc49e-02d6-4748-902c-38da6617f854	Refactor	Code refactor	#581845	cb04c1b6-c313-4494-ac27-9f091c202fa1
+2815ab91-32fe-4acb-939c-961b3e401b34	Docs	Documentation	#FFC300	cb04c1b6-c313-4494-ac27-9f091c202fa1
+30bd9fc9-9a5e-4cfb-a525-4fdaf2791418	Test	Testing task	#DAF7A6	cb04c1b6-c313-4494-ac27-9f091c202fa1
+134048f7-9789-41b8-b967-49b4ea6bb5cc	Design	Design related task	#33FFBD	cb04c1b6-c313-4494-ac27-9f091c202fa1
+af796b8b-8d40-4c90-b768-b70a8e544734	Feature	New feature	#FF5733	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+f5a65885-a94d-420e-94e7-ba01b8165ae0	Bug	Bug fix	#C70039	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+850c8218-55d3-4199-8567-cd30bb3e7fea	Chore	General task	#900C3F	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+85cc47cf-79ad-49da-ae6d-6631fb35d4cb	Refactor	Code refactor	#581845	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+a1be2f46-afea-44a6-b236-b0651472348a	Docs	Documentation	#FFC300	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+56e4059b-f22e-4506-849e-a601d7ba8080	Test	Testing task	#DAF7A6	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+a9739b9c-a98b-4fd8-a579-3f433fa09fb8	Design	Design related task	#33FFBD	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+c1621a7b-6ba5-482a-a1f4-c808280760e1	Feature	New feature	#FF5733	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+37b36b72-58d3-4c27-9314-076b1e29ac5a	Bug	Bug fix	#C70039	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+b3f32216-9c75-46ee-aeb8-c1b47baa2d88	Chore	General task	#900C3F	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+e6b1b411-e288-40a6-979e-ab7ff8ef762c	Refactor	Code refactor	#581845	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+2d0844bc-d58e-4a5a-b6ff-fb9281ffee15	Docs	Documentation	#FFC300	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+591bf179-6d55-4f3f-acca-715cc35597e0	Test	Testing task	#DAF7A6	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+e7197851-ab26-4059-84b3-c94b26d7f9af	Design	Design related task	#33FFBD	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+\.
+
+
+--
+-- Data for Name: Notification; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Notification" (id, "userId", read, description, "createdAt", "updatedAt", dismissed, saved, "taskId", type, "workspaceId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: Project; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Project" (id, name, "teamId", "workspaceId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: RetrospectiveItem; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."RetrospectiveItem" (id, content, "wentWellSprintId", "toImproveSprintId", "actionItemsSprintId", "createdAt", "updatedAt", type) FROM stdin;
+21a5b820-a337-41ac-a4e2-35dec11a5026	work on getting familiar with RPC to write services	\N	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb	2024-10-31 18:15:42.772	2024-10-31 18:15:42.772	actionItems
+d172b3a5-1522-4502-b1e5-e105e08d3bbe	Got RPC Service Working	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	\N	2024-10-31 18:16:04.848	2024-10-31 18:16:04.848	wentWell
+211bd2d2-3d06-4bcc-85a8-05803095b2a6	Knocked out so many docs	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	\N	2024-10-31 18:16:09.733	2024-10-31 18:16:09.733	wentWell
+838b0563-256c-460f-828e-9e5ad0656ef1	Got out the store testing files	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	\N	2024-10-31 18:16:41.898	2024-10-31 18:16:41.898	wentWell
+12dbc6eb-9cd2-45f7-9205-f690b3a296b8	Fix dat task bug	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	2024-10-31 18:16:50.606	2024-10-31 18:16:50.606	toImprove
+02db5291-55b2-424a-bf06-032797051f75	finally have proper docs	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	\N	2024-10-31 18:16:52.005	2024-10-31 18:16:52.005	wentWell
+9d21bcac-d8dd-4222-be8a-f6f34ceb5776	PR reviews	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	2024-10-31 18:16:52.231	2024-10-31 18:16:52.231	toImprove
+a0d09a1b-a2bc-41e7-9417-386177dddeb9	learn how to write tests	\N	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb	2024-10-31 18:17:36.675	2024-10-31 18:17:36.675	actionItems
+74f1e507-9348-4c6c-9651-a21b2ed8b816	More docs to complete	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb	\N	2024-10-31 18:19:48.373	2024-10-31 18:19:48.373	toImprove
+3eb03f81-c62a-45a0-9b8c-b44cf6257680	merge backend testing stuff	\N	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb	2024-10-31 18:19:51.628	2024-10-31 18:19:51.628	actionItems
+\.
+
+
+--
+-- Data for Name: SavedFilter; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."SavedFilter" (id, name, "workspaceId", description, "teamId", type, filter, "authorId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: Sprint; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Sprint" (id, name, "startDate", "endDate", status, "teamId", "createdAt", "updatedAt", description) FROM stdin;
+1dd68a96-faa0-43c7-aa56-a68b52b959e7	Sprint 3	2024-11-02 19:41:17.474	2024-11-16 19:41:17.474	PLANNED	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 05:21:53.041	2024-10-06 05:21:53.041	\N
+0e4a502a-d2e7-4b58-96c8-ea9668eb2b12	Sprint 2	2024-10-18 19:41:17.474	2024-11-01 19:41:17.474	PLANNED	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 05:21:53.037	2024-10-19 01:43:18.494	\N
+e87cdd44-6115-44c8-9aee-c1b12f3207c6	Aragorn	2024-10-03 19:41:17.474	2024-10-17 19:41:17.474	COMPLETED	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 05:21:53.019	2024-10-19 04:48:09.123	\N
+fa99f907-1ed4-4703-a955-95aaa98bd3cb	Boromir	2024-10-19 04:48:09.149	2024-11-02 04:48:09.149	ACTIVE	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 04:48:09.151	2024-10-21 05:50:04.027	\N
+\.
+
+
+--
+-- Data for Name: Task; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Task" (id, "authorId", title, description, identifier, "dueDate", "effortEstimate", "teamId", "dateCreated", "assigneeId", "assigneeName", labels, status, priority, "workspaceId", deleted, "updatedAt", "parentId", "sprintId") FROM stdin;
+ea18913b-a12d-4d45-ac52-76e3ad573f05	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Due date display	On list view and grid view, if a task is still active and it's past the due by date, it should have the text coloured red, if it's the day before it should be orange.	SQU-252	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:03:52.705	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:03:52.705	\N	\N
+8b9ba4aa-c5cb-4037-adb0-4d03f6eb107c	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	redirect url change	-change the redirect url to use backend env instead of a separate redirect url env	SQU-261	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 23:15:24.496	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:31:25.033	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+b0b3b63c-f18b-418a-975c-be097c05ba4d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Web app	Pain	SQU-128	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:50:09.853	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{cb687c84-54be-49cf-a4a7-d91efcdfabdc}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-28 00:37:30.956	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+27bf900a-8bca-4ffb-950f-0da12d2228a5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make New Issue Button disabled when creating task		SQU-25	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:48:08.03	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{096d5809-07ad-43c2-b024-72d0898fb003}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+30541b71-fa70-4574-9458-dec7a8416b6d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create Reports	\N	SQU-76	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:36.303	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-04 00:53:22.877	\N	\N
+2cad9ed5-d79a-4f9d-bde5-30c8608a3371	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create sprints 		SQU-21	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:43:13.306	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+51ddf15c-2cf1-4ffc-9815-f36fecc6e66f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Team settings accordion	\N	SQU-30	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:42.487	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+d49a0567-ea15-48fd-82a5-1a646d1e1fdb	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Workflow settings for team	\N	SQU-75	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:34.162	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:49.678	\N	\N
+009c3c2d-1755-4cdb-a70d-ffe43fb840b2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Keyboard shortcuts for context menu	\N	SQU-29	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:40.365	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:28:56.069	\N	\N
+58ab7ffe-4bb8-436e-9e50-83864829e5fa	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Workspace dropdown loading state		SQU-9	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:40:18.383	fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+f8f97f51-05b8-48bb-9925-781b7bb40860	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Customize ordering on task view		SQU-11	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:40:51.775	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+be9e325f-efff-4f62-a681-0a985219a022	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Team Store		SQU-266	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:24.033	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:19:54.044	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+2254fe19-ecfe-462a-8b16-c677b9d4c634	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Show empty groups fix	This was fixed previously, but now it doesn't work again. The show empty groups toggle shouldn't be displaying columns that don't exist on that page. e.g. showing backlog on active page or showing other columns on the backlog page	SQU-249	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 04:59:51.538	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:02:02.493	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+9d76c663-78f0-4679-94c7-e8f2835099a3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Centralized Logging	We partially set up the logger in a previous PR, now we need to adjust it to be modular for any use (only used on non-client-side logs)	SQU-90	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:12.881	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:30:31.894	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+1c8ae8b6-25f0-4157-a896-03f563f487ca	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Subitems tabhighlighting	When you tab highlight on the left hand navbar on the teams accordion, the outline of the buttons for the subitems go out of the area and get cut off (press tab until you get to the item to see what I mean). 	SQU-251	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:02:35.266	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 08:22:31.659	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+d057c7cd-6fb5-432a-b647-2e7bf5fc03ff	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: View Store		SQU-264	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:10.087	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:19:51.23	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+6427aa3e-2c87-41dd-b2a8-faa3181ae58a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Api app	For the api docs, we'll need to use swagger on every route endpoint:\n- Define the params\n- Define the return type	SQU-130	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:50:43.693	\N	\N	{cb687c84-54be-49cf-a4a7-d91efcdfabdc}	inReview	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:09:32.919	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+48ccfa42-95cd-4e98-804e-45926d060d17	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Set up database backups (weekly)		SQU-59	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:51.285	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:51:28.562	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+5b983c74-60a3-4b89-962d-2d48ccc28f7c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Customize grouping on viewalltasks	\N	SQU-33	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:51.006	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:00.676	\N	\N
+687c14d1-0a14-42dd-8b60-ee8c3fcd13c6	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Order completed by recency on task view	\N	SQU-36	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:59.704	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:04.135	\N	\N
+dfd608b2-a23c-4311-8033-febf8cc4a6ee	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create "my issues" page (activity)	\N	SQU-35	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:55.246	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:02.989	\N	\N
+ae08742a-9317-455f-8aff-0f72074158b3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Up down arrows to navigate between tasks on task page	\N	SQU-39	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:06.067	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:07.583	\N	\N
+451c035e-b242-4652-8e4a-a5fbebdaa27b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Logic to backlog tasks after 14 days of no updates (when not marked done, cancelled or archived)	\N	SQU-57	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:46.829	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 05:03:24.26	\N	\N
+0c7e2d62-3963-4dec-a58f-ea6e7f09a175	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Enable users to create and save complex filters (e.g., "All tasks due next week by priority")	\N	SQU-44	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:19.013	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:13.581	\N	\N
+67ddab4b-e0ee-4826-b929-7277a89eff76	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Interactive Dashboard with Analytics	\N	SQU-43	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:16.891	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:12.429	\N	\N
+42c12d76-0b41-414d-931c-343473a6b977	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Recently deleted issues page	\N	SQU-42	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:14.774	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:11.274	\N	\N
+21aa76df-2bf9-4b32-8129-369af7d81f14	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Allow multi-level sorting (e.g., sort by priority, then by due date)	\N	SQU-45	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:21.123	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:14.738	\N	\N
+4d589a07-1d67-4473-accb-acc3c20ba78a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement push notifications for task updates, comments, and mentions	\N	SQU-46	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:23.246	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:15.887	\N	\N
+380ffb29-affb-40d2-a26c-7341eee8931c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Allow custom notifications settings for each user	\N	SQU-47	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:25.369	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:17.031	\N	\N
+71e07f8b-0b9c-4a87-b739-d81bc0edd57c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Allow users to sync tasks with Google Calendar, Outlook, or iCal	\N	SQU-48	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:27.484	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:18.182	\N	\N
+dc2fbc72-cd0e-4e37-9d8d-f019eaf38414	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement live co-editing on tasks and documents within the app, similar to Google Docs	\N	SQU-49	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:29.604	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:19.326	\N	\N
+45be8e3f-888a-470e-ada9-b2c0b0132313	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make list tasks collapsible based on their grouping	\N	SQU-32	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:48.886	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:28:59.529	\N	\N
+462d7955-a3d3-4f78-a0b9-f409142d1a4e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Views pages	\N	SQU-28	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:38.22	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:28:54.905	\N	\N
+64d777f3-463e-4de9-91f4-b2f7364eebc3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create user dashboard	\N	SQU-55	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:42.596	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:26.187	\N	\N
+a3e98efa-b2e7-401c-9b34-c785cfc88e30	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	SubscribedUsers for Task model (autosubscribe when a user creates a task)	\N	SQU-58	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:49.171	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:29.852	\N	\N
+2a2c8c0d-15eb-4722-b00c-bf29df7216da	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Team Creation needs to have team identifier capitalized		SQU-27	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:10:24.06	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+c64671f0-3fe9-4857-9fb9-562a17cc94c6	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Archive tasks that are done / deleted over a week ago	\N	SQU-56	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:44.714	\N	\N	\N	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.191	\N	\N
+711c269e-b97a-480e-a5c6-74638303d4b2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Default views on task view	\N	SQU-38	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:03.936	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:49:08.688	\N	\N
+aa085004-fe5d-40c3-93ac-b1b2cfdae889	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Change assignee context menu and filter to use name instead of username		SQU-26	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:53:26.723	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+85ded9aa-2fc2-4aaa-bfbf-b429d3ef863f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix up www dockerfile	\N	SQU-40	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:10.305	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 00:09:34.385	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+750309b9-a729-4f96-950a-e7ae4af369c5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Show subissues toggle on task view	\N	SQU-37	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:01.815	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	\N	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-23 10:26:47.795	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+378cec1a-2a9f-4a75-8cec-44fd0a78942c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create custom automation rules (e.g., “Automatically assign overdue tasks to Admin”)	\N	SQU-60	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:53.401	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:32.172	\N	\N
+fdfd739a-e973-4381-936e-0bbc9b83b266	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement Rate Limiting	\N	SQU-61	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:57.641	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:33.325	\N	\N
+6fc71dac-e793-4647-a59f-87b19babb260	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Allow users to set up webhooks for various events (e.g., task completion, new comment)	\N	SQU-62	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:59.765	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:34.48	\N	\N
+5f75fbb7-00cf-4e95-b63c-b300697e4fd3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Enable users to create custom fields for tasks (e.g., client name)	\N	SQU-63	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:01.902	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:35.633	\N	\N
+c0470c5c-2120-4e4b-88b3-774b40cb59c1	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement multi-factor authentication (MFA) and OAuth 2.0 for secure access	\N	SQU-64	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:04.035	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:36.79	\N	\N
+c172290a-3cfe-48df-8635-26d757f5ac8b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create Projects on Squared	\N	SQU-65	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:06.371	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:37.948	\N	\N
+8ce872f7-6b95-47fc-8327-43135941fc2e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create templates for Squared [issue, document, project]	\N	SQU-66	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:08.488	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:39.103	\N	\N
+b5d9195a-dc9d-45e7-a1a7-c4a4b821a06d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Subscribe / Unsubscribe from issues	\N	SQU-67	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:10.605	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:40.249	\N	\N
+6495da9a-2ca0-4843-88bd-1da12d4dd857	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Avatar Image uploads	Set up [upload thing](https://uploadthing.com) to upload avatar images for the squared application	SQU-69	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:14.837	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:42.551	\N	\N
+6ab509ba-7478-4148-9125-d96dde70a9da	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	See which users are currently online	\N	SQU-70	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:16.959	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:43.938	\N	\N
+dec2f767-3859-46dc-8ed6-f800ca32c124	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Customizable status	\N	SQU-71	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:21.214	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:45.086	\N	\N
+45866b19-acab-4090-b800-74f9921160c6	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Enhance the search command with autosuggestions, recent searches, and advanced filtering directly within the search interface	\N	SQU-53	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:38.348	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:23.895	\N	\N
+8569a6fe-a156-48d6-8b5c-88e79ad6fae5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Preferences page under profile settings	\N	SQU-73	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:27.815	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:47.38	\N	\N
+c7081be6-dcf8-4f84-87a8-6a6636ef878c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Security / access page under profile settings	\N	SQU-74	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:32.043	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:48.527	\N	\N
+0e6e9ef7-3d6f-4e34-a630-8001d93bf79c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	(AI) Suggest relevant tasks based on user behavior or project context	\N	SQU-51	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:34.1	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:21.623	\N	\N
+d260acc7-b592-4cf8-b980-cef735b92745	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	(AI) Implement natural language processing to create tasks from user input	\N	SQU-52	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:36.218	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:22.754	\N	\N
+d620addb-5259-4978-ae02-b273bcd5faba	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Customizable labels	\N	SQU-72	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:23.562	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:46.226	\N	\N
+f518ccec-b22b-4455-8422-f5aa83078ef9	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement an offline mode with automatic sync when reconnected to the internet	\N	SQU-54	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:40.474	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:25.046	\N	\N
+25ffe42a-12ed-4259-a7d8-a4847ba21779	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Enable exporting data in various formats (JSON, CSV) and allow importing from other task management tools	\N	SQU-81	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:51.372	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:56.797	\N	\N
+82851f83-0167-4219-a822-27b39795f0cc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Allow users to schedule and receive regular reports via email (e.g., weekly task summaries, overdue tasks)	\N	SQU-82	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:53.493	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:57.956	\N	\N
+e0574e40-8488-489d-b25c-fe96c681cd05	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement role-based access controls with customizable permissions for different user roles (e.g., admin, editor, viewer)	\N	SQU-83	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:55.647	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:59.718	\N	\N
+058ac9c5-77c2-441c-824f-6f62c7046378	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Optimize Data Fetching with SWR	\N	SQU-85	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:00.112	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:02.31	\N	\N
+beaed06e-a1de-4db3-8de1-3108de58a2e1	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Improve SEO with Server-Side Rendering	\N	SQU-86	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:02.241	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:03.457	\N	\N
+bf29d61e-266d-48ce-a5e9-222989651ceb	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Introduce Real-Time Collaboration Features (TBD)	\N	SQU-87	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:04.37	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:04.599	\N	\N
+0c7c5d46-1541-4953-9246-2c3ec234e0b2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Integrate with tools like Slack, Microsoft Teams, and Asana to enhance collaboration	\N	SQU-79	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:45.004	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:54.458	\N	\N
+67ae06de-35a0-4c01-8b06-3509ca162229	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Move environment variables and secrets to AWS Secret Manager	\N	SQU-91	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:15.227	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:09.171	\N	\N
+d4a9f5fb-483a-438d-8679-8b425688f83d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement blue-green deployments for zero-downtime releases and safer updates	\N	SQU-93	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:19.467	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:11.456	\N	\N
+875fc3e2-4df9-46eb-971f-2cee20205af3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add markdown shortcuts to rich text component		SQU-97	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:57:57.643	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:16.276	cb39a492-23b0-4809-9111-8f0e57305302	\N
+d849e8a1-0948-4fc0-9b8a-d20787643ea8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	(AI) Create an AI assistant that helps manage tasks, schedule meetings, and optimize team workflows	\N	SQU-80	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:49.249	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:55.622	\N	\N
+3e31f747-57bf-4ccc-b1e1-072651584309	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Application Performance Monitoring	\N	SQU-89	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:10.735	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:06.881	\N	\N
+dc50d4a1-d48b-467a-8c34-ca645a2735d1	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Ability to mention users with @ in rich text component		SQU-98	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:05.378	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:17.442	cb39a492-23b0-4809-9111-8f0e57305302	\N
+c79990cf-a808-4a3e-98af-5f4eb60b2c89	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Ability to reference other tasks within the team with # in rich text component		SQU-99	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:12.823	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:18.607	cb39a492-23b0-4809-9111-8f0e57305302	\N
+40fd705c-9667-4008-b75c-cb20b29ab58d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Research and implement prisma pulse	\N	SQU-77	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:38.419	\N	\N	\N	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:51.961	\N	\N
+097b9836-0f0e-43f6-8e3e-5d28f76e2fb2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Set up "BLOCKED" tasks	\N	SQU-78	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:42.88	\N	\N	\N	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:53.196	\N	\N
+4bf83827-2aa2-431d-a9c0-8fd05d901be1	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	slash commands - table in rich text component		SQU-100	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:19.993	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:19.767	cb39a492-23b0-4809-9111-8f0e57305302	\N
+fe4323ed-ff8c-4624-86e2-9c18c3c078c5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	slash commands - insert details in rich text component		SQU-102	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:37.683	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:22.061	cb39a492-23b0-4809-9111-8f0e57305302	\N
+d496d313-94ff-4ba7-9053-2645a19a45c3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	attach files in rich text component		SQU-104	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:54.477	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:24.375	cb39a492-23b0-4809-9111-8f0e57305302	\N
+62e6411e-1bf8-4b65-ae31-be5bf2513e78	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Enable workspace to have custom emojis in rich text component		SQU-106	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:59:11.575	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:26.669	cb39a492-23b0-4809-9111-8f0e57305302	\N
+213230a4-faea-443a-b1cb-50a0830a0e9e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Showing empty groups on active page shows groups that shouldn't be there	On the active page if you show hidden columns it shows the backlog and done column (which it shouldn't)	SQU-114	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:57:54.309	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+9c0a655d-0adc-4ed5-9808-f12d6b0d0672	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Allow setting task dependencies and visualize them in a Gantt chart or timeline view	\N	SQU-50	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:31.944	\N	\N	\N	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:29:20.478	\N	\N
+ecd49fdc-5b75-4198-a361-10c22886ebe9	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	slash commands - code block in rich text component		SQU-101	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:27.984	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:20.916	cb39a492-23b0-4809-9111-8f0e57305302	\N
+1caaa3df-baf1-4311-9fd6-7b2787fed35c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	image pasting in rich text component		SQU-103	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:58:46.327	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:23.214	cb39a492-23b0-4809-9111-8f0e57305302	\N
+3bbf0db3-7a2c-4cbd-9346-714c08ea0ba5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Ability to insert emojis with : in rich text component		SQU-105	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:59:03.079	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:30:25.528	cb39a492-23b0-4809-9111-8f0e57305302	\N
+c2f0d014-8a02-4455-aa0a-52e03e05f14c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add keyboard shortcuts to rich text component		SQU-96	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:57:50.439	\N	\N	{}	inReview	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:30:03.999	cb39a492-23b0-4809-9111-8f0e57305302	\N
+fb7584ae-6c8a-49f4-ab5e-e7c632e4b998	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add develop domain to CORS in api		SQU-116	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:08:20.551	06adb201-d27a-47cf-830f-12157a482792	Nate Kennedy	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+853b205a-92f5-4d68-b7c5-6b476636e510	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add formatting controls to rich text component		SQU-95	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:57:42.11	\N	\N	{}	inReview	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:30:02.091	cb39a492-23b0-4809-9111-8f0e57305302	\N
+caa2f858-176b-476d-bf47-567074d991b4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Comment Store		SQU-269	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:54.769	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:19:57.84	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+726270eb-7b34-459c-9917-e530db96ee83	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Put rich text component in the task description on new issue modal and task page		SQU-94	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:57:34.533	\N	\N	{}	todo	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:33.079	cb39a492-23b0-4809-9111-8f0e57305302	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+06d6c556-419d-4372-8c37-272ccaae6fd9	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make team accordion in sidebar open by default on the team that's currently being used		SQU-110	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:53:12.514	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+0b575f80-81bd-4ce7-acea-58efeb86997c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Single CI pipeline for all apps	- Use docker image to test api\n- Single step to see which apps have changed\n- Only test which apps have changed	SQU-125	\N	4	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:41:45.797	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae,096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+0f166a56-beec-4449-8347-a2385af75d1e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Settings/members page breaks on reload	if you go to settings/members and it loads correctly (yay), but if you refresh it loads nothing	SQU-123	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:59:00.129	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+2133216d-5168-417f-aec3-e05ee5cd2595	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Update Retrospective	Make it so that retros are no longer text boxes, but columns where everyone can add cards (live updates). So change the schema to use String[] instead of String?	SQU-162	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 01:52:54.417	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+2bcdb818-9f62-4520-8c4e-a4099d5b74d4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Edit and Delete Saved Filters	Currently there is no way to edit or delete existing views after they're created. Please implement a way to both edit and delete saved Filters (views)	SQU-15	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:41:33.265	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+2fe999ad-0776-4918-8f54-c9082d274d4d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Format Priority names in priority context menu		SQU-119	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:29:52.156	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf,ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+33e61a98-ce78-4d1a-8b60-76f168d0ad65	45194d74-03bd-4299-9f19-19814807ee23	Current sprint tasks not rendering on log in	If you log in and go directly to Current Sprint, no tasks are rendered, but if you click on Sprints, then go to Current Sprint, the tasks will be rendered	SQU-0175	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-07 00:03:58.352	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+36086481-a136-4531-89b2-2764b924b155	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Save multiple notifications in inbox		SQU-136	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:03:20.088	fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+3648f0c2-20f8-460f-a1bb-567d302e3872	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust Filter dropdown to use submenus instead of different menus		SQU-142	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:24:00.842	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+57d83a44-597d-4e17-9a43-2d23c495e799	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Change how subtasks are rendered on tasks page		SQU-14	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:41:22.995	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+86e0f743-d4f3-41ab-8d43-b7d8ef456c94	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Modal Store		SQU-273	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:52:38.175	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:02.976	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+569706f1-fdb8-4c57-b01a-f3f83d3db015	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Notifications Store		SQU-274	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:52:50.364	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:06.103	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+c60f3c44-c226-46bf-9937-27ab8600d7b8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Task Store		SQU-268	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:48.781	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:10.526	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+055f3187-edea-43e1-b6ed-c3426e4c5096	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Auth Store		SQU-272	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:52:25.779	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:00.397	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+cc3e6b24-ced2-492a-886e-03e9fd0ab94e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Activity Routes	- apps/api/src/api/activity/[taskId]	SQU-0215	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:39:43.825	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:32:40	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+9ce66a08-9066-4be0-9536-d9a50a1b2753	45194d74-03bd-4299-9f19-19814807ee23	Update team onSubmit	onSubmit function in settings/teams/[identifier]/overview/page routes to a path that does not exist	SQU-290	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-23 21:57:22.104	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:04:19.062	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+d63388d0-8044-4566-acc9-99c29148427f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add documentation for logger package		SQU-133	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:51:39.452	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{cb687c84-54be-49cf-a4a7-d91efcdfabdc}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:31:08.931	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+c1d271de-13f1-4db7-80fd-4a708b9419c5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Advanced Search page	Page with multiple options for advanced searching methods	SQU-139	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:13:29.16	\N		{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:31:05.363	\N	\N
+067a34e9-18cd-47e2-9c96-3565d4728ff9	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	"Starts with" optional choice	Add a toggle for searching by "starts with" substring	SQU-140	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:18:07.091	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:31:06.511	c1d271de-13f1-4db7-80fd-4a708b9419c5	\N
+c2efdadb-ea16-4f2b-82ce-d986df7d938d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add documentation for db package		SQU-131	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:50:58.642	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{cb687c84-54be-49cf-a4a7-d91efcdfabdc}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 00:09:32.993	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+3710c540-e342-4e33-a7ee-66c6f91d545f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	add "show subtasks" toggle on display settings	Currently you can see all of the subtasks on the page along with the regular tasks. Add a toggle to the display settings popover to toggle these subtasks on and off	SQU-0171	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:42:49.905	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+53179c51-727b-47a6-a6e5-d2c3bf760cf4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make certain icons on the task page clickable to edit tasks	- Status Icon\n- Priority Icon\n- Assignee Icon\n- Date	SQU-141	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:21:33.14	\N		{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-03 04:31:07.66	\N	\N
+5102faa7-99fb-4aff-a5f9-0646f8c60e06	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add grouping options	Add options to group tasks on the tasks pages within the display settings (status, assignee, priority, label, parent issue [for this one, no parent is one of the groups]) Layers icon	SQU-13	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:41:12.525	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+5882f0b3-6e4f-405b-af9f-8da3e2529e14	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Refactor CI Pipelines to only run tests on apps / packages that have actually changed	\N	SQU-92	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:17.345	\N	\N	\N	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+58a2740f-c187-4e9a-90a5-3fa4fb9eab87	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Refactor and improve auto-assign tasks		SQU-165	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 05:42:54.179	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+5dfcd5f7-9191-49ca-8cd5-cdc391447c54	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	restyle grid / list view options on display dropdown		SQU-1	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:37:38.892	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{096d5809-07ad-43c2-b024-72d0898fb003,ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+923cdc33-e424-4758-8aef-ec1de10a5c4b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Seed package		SQU-132	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:51:21.204	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{cb687c84-54be-49cf-a4a7-d91efcdfabdc}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 00:10:06.817	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+fb8e418e-e6ef-4214-a0c8-969853fc2662	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Refactor api generate-index to use ENV	remove test-db dependency from api package.json and refactor so that the database connection is handled via connection string each time (so in local, our connection string will simply be the test-db connection string)	SQU-121	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:45:34.122	32b450fc-b663-4e94-80b2-d821e70652ab	Aaron	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+2ab3efa2-1114-4dd6-970f-4b5d7406680a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Change vercel database region to Sydney, Australia		SQU-151	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 23:41:43.714	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+00892349-5d5b-4123-8eb9-66aaeaabd76b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	State not being cleared properly on logout		SQU-118	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:26:36.488	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+1aab0ee9-b5f6-48cd-891b-41e834b61a79	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix Theming to always default to dark instead of system		SQU-149	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 20:02:39.278	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf,2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+368e9efa-2214-4625-a5c0-68bae3e52aa2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix api so that task creations aren't as slow	The reason the task creation is fairly slow is due to it making 3 api calls (workspace, updateTask, workspace). It doesn't really need to await all of these, only the updateTask one needs to be awaited.	SQU-23	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:44:40.483	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf,096d5809-07ad-43c2-b024-72d0898fb003}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+48cd73fc-eec4-45e1-8289-6ca154fb7f83	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Icon navbar doesn't work on previews		SQU-157	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-02 22:27:33.03	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ef7462e3-d6e3-40d5-930d-5131b3a5d8d4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Use Avatar Component	Replace `<ProfileImage />` with `<Avatar />` component	SQU-160	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 01:44:28.457	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+b8bf2e77-c8ba-40e1-aac7-a8b36f095b21	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Hide google login on non-production	When NODE_ENV !== production, make it so that the google login button is hidden	SQU-0234	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:57:53.329	fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	{2df95a83-41da-4bde-85d6-4cdcec56cfae,28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-21 15:59:29.078	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+9fcde800-e920-41de-872a-6da9c00bd5e3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Operator App	create an "operator" app that is not client-facing. Purely for us for managing / viewing details of our database / clients.	SQU-0187	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 23:40:23.592	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-08 23:40:23.592	\N	\N
+c6e7e3c0-9edf-47c2-9d25-a3d54d798adb	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: User Store		SQU-271	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:52:14.872	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:17.503	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+174ec345-79ac-43ef-b072-31b6cc3857d7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	GitHub integration		SQU-19	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:42:48.176	134223a0-4364-4656-b70c-66e829728d2a	Ellis	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+5aceacd4-701d-42e6-9f23-df09f2e7c22b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Metadata		SQU-8	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:40:02.282	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+5fc81d85-b93e-48a0-b1b7-fa9ae9265002	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Reverse priority sorting	Currently the default sorting is by descending priority. You'd assume this meant that it would be highest priority first, but currently it's the opposite. We need to fix the sorting algorithm to fix this	SQU-0169	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:41:24.96	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+63741302-1b84-47e8-adf6-ff9f9152484f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Pending members	On the members page, add "pending members" that you've sent emails to that the user can invalidate if they've accidentally sent the wrong email	SQU-0186	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 23:37:39.235	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+6dcb8552-a05d-435a-92a7-4177e1e032e5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Branch link bug	copying branch link in task page doesn't have it copied as a hyperlink, only as plain text. Also the link is also invalid, copying this ticket's branch link results in "https://app-develop.squaredmade.comSquared/task/SQU-0174/branch-link-bug". The "comSquared" part is the issue, it should be "com/squared"	SQU-0174	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:45:31.822	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+6f81a05d-92c2-49f6-8546-65d4a9477003	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	custom squared loader		SQU-2	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:38:09.083	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+70b542e7-34aa-49b0-b388-d27d906d23fc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make task identifiers unique within each team		SQU-155	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-02 10:15:32.515	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+826db8a8-e7c6-470b-aeed-9bd84f08b42a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add "no assignee" to assignee filter		SQU-158	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-02 23:13:46.037	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ef36db80-cd51-43ff-96ac-2235808a9694	84e3e299-59e3-49aa-9cb1-d791f31a473a	fix viewalltasks showing notasks while loading		SQU-0188	\N	3	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-09 04:32:33.469	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+330a5933-5548-4a96-ac2e-4e83880f63ea	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Hooks Folder		SQU-275	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:53:08.523	\N	\N	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 02:40:53.133	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+8f0cae33-8406-4258-85e6-ba9f7831cc0c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create squared icon library		SQU-5	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:39:19.968	4fb2e81c-a61c-4661-88e8-6c0bcd2ebd6b	Duncan	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:31:03.321	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+7404eff5-e78d-4810-b9ab-6fb072f9328c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Activity Store		SQU-270	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:52:00.728	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:20:14.777	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+e7573e87-5cdb-46f8-95e6-69b1fc44eb3c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Change effort estimate to scale of 1-5, add translation choices in team page		SQU-20	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:43:02.379	9393518e-24bb-4ca5-8115-66676139692c	Pinak Nayak	{096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:01:22.521	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+071e527f-7e5a-4176-be5d-1dd838c6d394	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Set up different api deployments for develop and main		SQU-22	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:44:13.454	06adb201-d27a-47cf-830f-12157a482792	Nate Kennedy	{2df95a83-41da-4bde-85d6-4cdcec56cfae,28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:00:40.068	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+cb39a492-23b0-4809-9111-8f0e57305302	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Rich text editor component		SQU-6	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:39:31.553	f52bb530-05ea-4ce8-b899-605095a669c5	Ernest Cheung	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	inProgress	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.159	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+43ac33d4-6b6c-4170-8f40-6f38ec0063b9	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make current filters persist in store	We want the filters store to persist in local storage, not session storage. That way the user's last used filters are always there	SQU-120	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:40:15.139	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	canceled	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.191	\N	\N
+4e4c5783-9571-45f3-9044-641f541d0af5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Make list group columns rounded on the bottom		SQU-113	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:56:57.778	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+575bbbd0-30bd-4f58-a40a-03e244a5683c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Decrease font size of description in new issue modal	Currently the font size of the description in the new issue modal is the same size as the title, this isn't good hierarchy practice and needs to be fixed	SQU-126	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 05:42:24.365	fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+6823d515-5983-48be-9698-c27b4915a212	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust breadcrumb link on task page to take to whatever the last viewalltasks page was		SQU-111	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:54:10.296	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+87a48c31-1c41-42e0-8107-83e4e52525ba	45194d74-03bd-4299-9f19-19814807ee23	ContextMenu assignee avatars (initials) differ from Task page initials		SQU-152	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-02 00:11:55.038	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+8ad4c901-114b-467e-961e-c9e73134a7e8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adding task in column in "current sprint" page	When adding a task with the + button on the status column header should not only auto-add that status to the new issue modal, but also add that task to the current sprint	SQU-0167	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:38:45.347	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+8c1cd51b-1eed-4ee1-9b9c-88a945789cd7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Set size for status icons in grid view	The icons are all different sizes in grid view	SQU-150	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 23:34:21.052	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410,28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+98123c22-d4c6-4da2-badd-cede4279e537	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Workspace/join page	This should be functional for both routing from the login with an invite token and also for creating custom workspace links\n\nNeeded:\n- Update logic on root route "/" to be able to handle inviteToken search param (redirect to join page)	SQU-24	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:45:35.372	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+991a501d-a85a-4331-b2e4-531d4d9b84f7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Update onboarding docs		SQU-148	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 20:00:11.603	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{cb687c84-54be-49cf-a4a7-d91efcdfabdc}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+b2786715-bb4e-4188-b74c-4812a1ab5a18	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add "upcoming sprints" page		SQU-163	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 01:53:36.26	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+b5d1c3f2-f640-4632-9f1b-41108b6b7b3c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix verification links to work with middleware		SQU-122	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 23:58:44.369	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ba2d54df-b778-4003-b94b-46356e885ec2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	completed issues period on task view		SQU-4	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:38:57.731	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+47f0ca0f-75e2-4c8d-bd94-144f7608ccc7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Managing tasks documentation		SQU-279	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:06:30.572	32b450fc-b663-4e94-80b2-d821e70652ab	Aaron	{}	inProgress	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 21:36:36.88	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+7b5268fa-6ed1-4ea3-aaf8-530dd56f1c6e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Teams and collaborations		SQU-280	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:06:45.899	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	inReview	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 04:25:45.753	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+2f164373-b5b7-401c-8525-f1bd8592699c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: User guide documentation		SQU-278	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:06:12.807	8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:57:23.604	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+f58aa18a-ebc0-411b-b5bd-960b9a4814b7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Hiding columns should put it in the hidden columns dropdown, not keep it there		SQU-115	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:59:41.024	\N		{096d5809-07ad-43c2-b024-72d0898fb003}	canceled	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.191	\N	\N
+31b7eb1a-4f18-4db7-b579-ac84ee1957a8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Upgrade Sprints functionality		SQU-161	2024-10-17 13:00:00	4	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 01:47:23.723	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae,28b1e1fb-2807-40f7-8148-dcca3e95ccbf,096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:00:55.599	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+5f389e73-2bc8-4311-b069-1e48703b0051	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Change squared font	Beg Cristian for more pocket money, so that we can switch to [Noirden](https://elements.envato.com/noirden-sans-font-QZBXXB)	SQU-143	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:30:38.78	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+64965f68-7c37-4649-916b-d1481b5b73fa	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add Filters and views to the session storage (persist)		SQU-154	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-02 10:15:10.319	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+747e0b78-659b-4ce1-ae23-a4903595dd2e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	rename "confirmation" route to "verify"		SQU-159	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 00:05:19.539	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+79bd98db-e180-422f-962e-a4cda7b87c08	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix user registration toast	User registration shows destructive toast when saying that the user has been sent a verification email, it shouldn't be destructive and should instead be the default variant, this may need a backend change as well	SQU-16	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:41:47.169	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+b7d1136b-4482-4d1a-a9cf-bb86db71f1c1	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Task page description doesn't span to width of text box (when active)	https://github.com/SquaredMade2/squared/pull/512	SQU-144	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:41:42.873	8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+bdc04bc0-09bf-4951-ac3d-bf5b6f0f2007	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust height of grid view columns for tasks pages	Currently the size of the grid view isn't responsive to the size of the page, this needs to be adjusted as on larger screens it cuts off too early and on smaller screens it's harder to see	SQU-107	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:48:25.066	8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	{ed3ff477-f6a0-4398-90a8-6d9cb585a410,096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+c5a09ac0-c924-457f-a353-0efd50a1a621	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Forgot password page		SQU-7	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:39:50.347	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+c6ee1806-f28a-48d2-bd80-e789045420ee	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Assignee filter to filter by unassigned		SQU-147	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:57:49.938	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+d0d5ea20-ebda-4329-9024-ca45b29135d3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	On views/[slug], make it so that there's some indication of the filters of the view you have		SQU-10	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:40:31.605	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+d238a3e2-356d-494b-8978-536ff7607a76	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Don't let sprints start automatically	Stop sprints from being started automatically, instead make it a manual start that way users can set their goals and adjust tasks if they need to before the start of the sprint	SQU-164	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-03 05:29:42.514	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ebff01c2-c55a-4a80-afca-c1d816a99d64	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix empty toast on task edits	when you update a task's title or description on the task page, the toast popup is empty with no message	SQU-0173	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:45:09.139	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-06 21:45:09.139	\N	\N
+79e19d0d-e5e0-4a32-8bf9-9c76b3c2059a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Only show teams user is a member of	Currently the nav sidebar shows all the teams of the workspace, rather than all the teams that the user is a part of, adjust the api call / create an api route that gets the user teams rather than the workspace teams	SQU-0180	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-07 21:46:32.304	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf,096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:04:16.138	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+484398c7-cbf9-439f-ab10-a94b3981cc39	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust subtask rendering	If a subtask has a different status to it's parent, move it to that status column, but grouped with its siblings and with some indication of it's parent	SQU-0182	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 10:09:42.013	\N	\N	{096d5809-07ad-43c2-b024-72d0898fb003}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-08 10:09:42.013	\N	\N
+d7efa79e-5f52-4925-a634-45a5fb99cec5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	make assignee context menu searchable and sorted alphabetically		SQU-135	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 09:47:47.584	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+d7f62f3a-d8bf-47b5-9abf-e1c8a4060602	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix seeding error	There is a seeding error where it's saying that the db schema doesn't exist	SQU-0166	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:07:42.04	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+da3d1607-91a8-4629-95bf-9a701490ff23	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Width of empty columns on grid view is inconsistent with size of task card		SQU-108	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:50:19.529	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410,096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ddbc216a-ede6-4756-84c9-3c8e2c75481b	f94033d8-f696-4c31-b61d-e162a821361f	Testing		TES-0001	\N	\N	8d3147cd-9889-4d06-ae9a-39c53ab8b2ef	2024-10-06 22:22:23.296	\N	\N	{}	todo	noPriority	cef0254e-49c5-45ae-bee5-d51a42b3f871	f	2024-10-06 22:22:23.296	\N	\N
+e1d29c78-8a1f-42c9-82e7-8c90f6ca3726	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust Branch names	- Branch names can be too long\n- They are allowed to contain illegal characters	SQU-0181	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 01:27:17.61	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+e3957802-37e5-429b-ae04-46a6d67d9508	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Search Command scroll bug	When searching for tasks on open task search command you will be scrolled to the bottom of the command results, fix this behaviour so that when searching, the current selected element is the first one.	SQU-0172	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:43:33.895	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+e2788cf2-757a-48c7-9b87-a8d1f65f64c5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Password Security Requirements	- minimum 8 characters\n- must include a capital letter\n- must include a symbol (@,!, etc)\n- must include a number\n- maximum 30 characters	SQU-145	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:44:05.747	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+b8297f57-4c72-4ea8-91bc-bdcf56100b4f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust team accordion to highlight on sprints page too	If you're on one of the pages in the team accordion on the side nav, it currently highlights the button of the page you're on, this doesn't do it for the sprints pages however and needs to be fixed	SQU-0177	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-07 21:39:45.325	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-20 18:03:09.507	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+5737999f-b34a-4db1-aa30-bcc628d90b1b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Task Page Edits	Currently when you change something on the task page (ie the designations container), the page doesn't actually reflect the changes and you have to refresh the pages for the changes to actually be viewable	SQU-0179	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-07 21:44:29.404	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 01:44:25.391	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+ac9be0de-76be-4bf7-b946-2da2496fb84a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Redesign Invite Modal	Looks kinda shit ngl	SQU-0185	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 23:36:58.315	8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	{ed3ff477-f6a0-4398-90a8-6d9cb585a410,096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-22 21:45:53.486	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+e9c03b07-d5ef-4ae5-a993-e5f8bffd0da0	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Assignee dropdown on taskpage	Currently it shows the assignee usernames (like a previous issue), change it to use the assignee names instead	SQU-0178	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-07 21:43:11.055	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-07 21:43:11.055	\N	\N
+1aa657da-9d3d-4899-bd96-04e42f808a77	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Speed up emails	Sending emails with nodemailer with our current implementation takes way too long, find a way to make the process more efficient.	SQU-0184	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 23:28:09.431	\N	\N	{096d5809-07ad-43c2-b024-72d0898fb003}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-08 23:28:09.431	\N	\N
+e35a76b0-e8e1-4a4f-953d-f35378b5e4e2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add to team on workspace invite	When you invite a user via the workspace screen, it should recursively add them to all of the workspace teams (future PR for team-only invites)	SQU-0202	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 03:26:08.979	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 00:09:50.821	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+eb75d97a-312b-4134-8dbf-7361682521c7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Context Menu Icons	Context menu icons should show the icon of the current task (e.g. if the task you've right clicked on is low priority, it'll show low priority icon)	SQU-0196	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-10 20:56:16.104	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 05:35:41.207	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+167801ee-36b5-4f1c-aab3-6aeba5d453d3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix sidebar issue	If you go to settings, the mobile side menu appears until you close it. Then when you go back to the main pages, the sidebar that you'd expect to be there has disappeared.	SQU-0170	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:42:11.952	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+24de0336-ddea-4b9d-8953-a3c0c9005dc3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Update Task Count on Sprint Overview	Make it so that the in progress count / column includes inReview tasks as well	SQU-0183	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-08 10:15:36.346	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+efa7bfae-ca80-494d-a61f-8ae00dc1ab40	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Invalidate invite token	After an invite token is used to add a user to a workspace, invalidate that token so it can't be used again	SQU-0191	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-09 21:46:22.785	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-09 21:46:22.785	\N	\N
+e60bd500-51b5-426b-8f7d-c278d188ea99	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Refactor CI Pipelines to not have as many and to run in parallel	\N	SQU-88	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:24:06.492	\N	\N	\N	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ecf6991b-02d5-4aab-a050-8c18a9618a5f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Multiple Heading types	Able to add multiple types of headings (up to 4), Heading 1, Heading 2, Heading 3, and Heading 4. The markdown accompanyments are #, ##, ###, ####	SQU-0198	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 03:03:39.14	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 03:03:39.14	cb39a492-23b0-4809-9111-8f0e57305302	\N
+f76e326e-d97f-4e34-9daf-43ad8650b33f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Code Styling	Using a syntax-highlighting library, make the code style based on the language (auto-detect naturally)	SQU-0199	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 03:04:19.291	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 03:04:19.291	cb39a492-23b0-4809-9111-8f0e57305302	\N
+b2de7ec6-d9b7-403d-8828-b2b55d800e53	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Adjust Date display in task page	Show "MMM dd" instead of "mm/dd/yyyy"	SQU-0193	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-10 00:48:25.691	\N	\N	{096d5809-07ad-43c2-b024-72d0898fb003}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-10 00:48:25.691	\N	\N
+4537ede8-6c39-4658-89f5-e04bce1e8cbc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	View Information Styling	Just a few things to change with the view information on the right hand side of the screen\n- Make it a set height, not dynamic\n- Indication on what filters are set in this view	SQU-0194	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-10 20:33:53.532	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-10 20:33:53.532	\N	\N
+b27a2bb9-51a5-499f-bd08-68ba9bb98d52	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Dynamic View Names	Make it so when creating a view, it automatically recommends a name based on the filters	SQU-0195	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-10 20:34:55.118	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-10 20:34:55.118	\N	\N
+fdd7d0b9-3420-41e8-b25c-7ab9fe31a720	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Burndown Refactor	- Make it so that the burndown current progress actually changes based on "projected" output rather than assuming we'd remain at our current output\n- Make the burndown chart show some sort of indication on which day today is	SQU-0192	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-10 00:47:22.171	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{096d5809-07ad-43c2-b024-72d0898fb003}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+f77d1f40-fd55-4eb7-9bfe-b8e835cc91d6	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Links	- Add a link control to the text editor\n- Clicking the link control opens a modal to insert link text and a hyperlink\n- Clicking the link control whilst having text selected has the link text auto-prefilled in the modal\n- Pasting from your clipboard whilst having text selected auto-formats that text into a link	SQU-0200	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 03:14:47.385	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 03:14:47.385	cb39a492-23b0-4809-9111-8f0e57305302	\N
+75a25e77-8438-446d-bf23-2cf95046ec18	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Pending Invites	Add ability in workspace members page to invalidate invite tokens, as well as making it so. you're not sending invites to people who are already in the workspace	SQU-0201	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 03:25:08.363	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 03:25:08.363	\N	\N
+5edd0417-97f2-47f1-80c9-491b892e4ce3	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Team invite page	Invite will add them to the workspace, but only add them to the team they're invited to	SQU-0203	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 03:26:33.638	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 03:26:33.638	\N	\N
+2d1ca519-d019-4b85-9086-d7f592cfb663	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Start Next Sprint		SQU-0206	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 22:17:24.314	\N	\N	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+1712adc9-e81f-4d20-a453-4c67dc1b02b8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Toast on login with invite	There's an extra toast that pops up when logging in with the invite link saying the link has expired when it hasn't, we need to fix this	SQU-0204	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 04:08:51.825	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 04:08:51.825	\N	\N
+2db9856f-4c44-4d29-8e5c-665af649cbbf	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Grid view scrolbar	On grid view, the scrollbar goes past where it should go	SQU-0212	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 20:05:35.796	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:51:51.713	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+fe09ace4-f65b-45c4-85c0-ef1f5eaee236	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	End Sprint		SQU-0205	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 22:17:14.492	\N	\N	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+ffd36df0-e56d-4a81-8fcc-51fff3ca102d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Ordering Subtasks on Task Page	We want to be able to customize the order that subtasks appear on the task page, implement this with drag and drop (and show highlighted lines on valid drop spots)	SQU-0208	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 22:19:30.319	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 22:19:30.319	\N	\N
+48273ad4-0312-4a97-9632-46fd8497d919	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Subtask Identifiers	Show subtask task identifiers and status icons on task page	SQU-0209	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 22:19:57.931	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-12 22:20:20.098	\N	\N
+13984bc8-47be-4c8f-ac1b-1192a678a55d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Managing your account		SQU-283	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:07:57.239	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{}	inReview	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:05:53.688	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+15fb9915-56a1-4c5e-b558-52705f2bd13f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Restyle "add tasks" modal in sprints page	- Make the tasks searchable\n- Make it look better\n- Add options for views / filters\n- Don't show tasks that are already completed	SQU-0168	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-06 21:39:51.931	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	31b7eb1a-4f18-4db7-b579-ac84ee1957a8	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+67f9e89d-e979-4cf8-b2cb-171b76f8077a	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Views Page not loading	views pages stuck in loading state and never actually fully loading	SQU-0211	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 08:39:08.239	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+e7a6b8de-dcdc-47a7-9b74-5753ea7174cb	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Open issue function on command		SQU-3	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:38:32.226	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+94b9448b-acd4-4279-b912-7d0498ba1bd1	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Root web docs		SQU-263	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:01.995	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 04:27:18.887	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+79889cde-f101-4867-a448-d2f3e54f9b4d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Hide columns button	Remove the hide column button on grid view and make the list view "columns" collapsible	SQU-0232	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:53:41.116	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:53:41.116	\N	\N
+213f3a14-f608-4531-8fc9-b5b9ff0f95bc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	List view identifier	On list view, if there's larger identifers than others (more digits in the number), it messes up the styling so it looks less uniform, make it a set width so that all icons are alligned next to them	SQU-0233	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:54:44.025	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	backlog	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:54:44.025	\N	\N
+1ab6a049-7dee-413e-b3a9-a4dc0047198d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Team members page	\N	SQU-31	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:44.621	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:49:08.688	\N	\N
+4cbee07b-ced4-43cb-b0fc-397a336be530	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Export members list to csv on members settings page	\N	SQU-34	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:21:53.133	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	inProgress	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-29 07:16:19.075	\N	\N
+f516a14b-4329-4a98-9679-ef8ca18422d4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: FAQ		SQU-285	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:08:29.18	4fb2e81c-a61c-4661-88e8-6c0bcd2ebd6b	Duncan	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-28 21:46:07.253	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+54f25364-3ff2-44af-9ca4-2c9ba041caa8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Manage your team and permissions	assigned to daniel	SQU-284	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:08:15.612	\N	\N	{}	todo	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 18:05:51.709	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+266c6cd4-0ab9-4856-9e86-c5907370f4aa	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	New tab bug in sprints	When trying to open a task in new tab from sprints view, the URL is incorrect	SQU-0213	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 20:14:06.807	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-21 21:00:13.602	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+84e50bf6-2ce1-45e2-b589-1a5119fe052c	32b450fc-b663-4e94-80b2-d821e70652ab	Clicking grid view while it is already active bricks the app	On the all page, change view to grid. After the view changes, attempt to click on grid again. The app will break. This is true if you select the list view twice in a row as well.	SQU-0214	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:25:26.917	32b450fc-b663-4e94-80b2-d821e70652ab	Aaron	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+4c142c21-8cbb-4b2b-a07a-c7cff5484e27	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Padding bottom on list tasks	When you hover over a list task, there is a bottom padding that's outside of the hover button, we'll need to fix this without affecting grid view	SQU-0225	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:26:55.347	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:26:55.347	\N	\N
+6ff12480-b086-498e-88b0-7f5f94d64328	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Task Routes	- apps/api/src/api/task/[taskId]\n- apps/api/src/api/task/[taskId]/comment	SQU-0221	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:43:05.706	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:32:59.558	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+3aecab4c-6c24-411a-a051-e0876a86e683	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Notification Routes	- apps/api/src/api/notification\n- apps/api/src/api/notification/[notificationId]	SQU-0220	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:42:52.308	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-29 08:20:38.311	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+4ec6bb0c-f05d-4eaf-bf37-c7a2c723b297	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Auth Routes	- apps/api/src/api/auth/[token]\n- apps/api/src/api/auth/logout\n- apps/api/src/api/auth/reset-password\n- apps/api/src/api/auth/reset-password/[token]	SQU-0216	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:41:12.809	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	{}	inReview	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:59:15.402	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+31c9e7f6-c4b7-454b-871d-2074b9167abc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Comment Routes	- apps/api/src/api/comment/[commentId]	SQU-0217	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:41:34.393	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:32:41.995	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+1901a74a-3a20-4064-95c7-7182793a7f9c	84e3e299-59e3-49aa-9cb1-d791f31a473a	Account created successfully modal text is same color as background		SQU-291	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-24 15:54:30.353	\N	\N	{}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 15:54:30.353	\N	\N
+110e7aba-7ec5-49f1-9f9d-7313bd388f4e	c63cf987-004a-4d16-8aa7-6a8b4550da23	Add search bar next to filter on all task page	Integrate a search bar for tasks next the filter button in the all tasks view page	SQU-0230	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:45:34.464	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:45:34.464	\N	\N
+e37ff09a-ac68-4c94-87f8-d3f9a0bced69	c63cf987-004a-4d16-8aa7-6a8b4550da23	Show created by and assigned by	Integrate UI on the task page that shows who created the task as well as who assigned the task	SQU-0228	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:43:57.257	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 19:46:20.9	\N	\N
+36585452-35e2-4910-a368-8ee655d19000	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Filter Routes	- apps/api/src/api/filter/[filterId]	SQU-0218	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:42:00.303	32b450fc-b663-4e94-80b2-d821e70652ab	Aaron	{}	inReview	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:45:38.662	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+b54f5608-0d38-44e8-8c90-1b6032105c14	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Integration routes	- apps/api/src/api/integration/github/oauth\n- apps/api/src/api/integration/github/webhook	SQU-0219	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:42:29.901	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:59:25.694	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+416c3d18-38b9-43c3-8a38-3485f6aea5f5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add task to current sprint	When you add task in the current sprint page, this was meant to be fixed a while ago, it should add it to the current sprint	SQU-0226	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:42:41.987	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 08:22:27.006	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+1cc7b0e1-dc22-4f90-a344-3c0fd0fb19be	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Team Routes	- apps/api/src/api/team/[teamId] - done\n- apps/api/src/api/team/[teamId]/task - done\n- apps/api/src/api/team/[teamId]/sprints - done\n- apps/api/src/api/team/[teamId]/sprints/[sprintId] - done\n- apps/api/src/api/team/[teamId]/sprints/[sprintId]/tasks - 	SQU-0222	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:45:53.039	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-28 22:18:59.153	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+83913986-320e-4a9a-ad18-a79ad60c7ab2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: User Routes	- apps/api/src/api/user/[userId]\n- apps/api/src/api/user/[userId]/avatar\n- apps/api/src/api/user/[userId]/notification\n- apps/api/src/api/user/[userId]/repositories\n- apps/api/src/api/user/[userId]/workspace	SQU-0223	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:47:12.669	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:55:01.725	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+4e230d67-5477-49a6-8bed-2b39d6dfedb8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Workspace undefined	There are a lot of calls to look for an undefined workspace, so you'll need to do 2 things: \n1. Find out where the undefined workspace is being called from and fix it\n2. Adjust the store method so it doesn't make undefined calls anyways	SQU-253	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:26:09.427	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	todo	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-29 05:36:38.265	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+02256021-e7cc-41c7-9e3c-d9f43a9d15ef	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Todo same colour as done on sprint page	In the sprint details page, the pie chart has todo the same colour as done	SQU-0231	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:50:48.793	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+0515e226-8385-44fc-8556-8a1a1f32ed8f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Sprint Page Scrollarea	When you scroll on the sprint pages, the side nav isn't fixed, we don't want to make the side nav fixes so the solution is to put the sprint pages in a scrollarea	SQU-0236	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:59:41.696	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+3f67cfc0-5d91-47b3-8dc6-0b931dd1c1f7	c63cf987-004a-4d16-8aa7-6a8b4550da23	Refactor subtask ui for list and grid view	Current subtask ui is difficult to differentiate between itself and parent/other tasks around it. Refactor the UI to make the subtasks more distinguishable.	SQU-0238	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 20:05:27.472	\N	\N	{096d5809-07ad-43c2-b024-72d0898fb003}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-15 20:05:27.472	\N	\N
+1986df26-8189-4d48-ac46-1b1ab31ef51c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Login buttons	Only the login button you click should have the loading state, the other one should simply be disabled	SQU-0235	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:58:21.57	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+48fa485e-9749-49bb-8d75-3dd7d645d6d5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	scroll bug grid view	the scrollbar current goes past where the actual content extends to	SQU-0237	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 20:03:04.156	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+d901f188-c1b7-40cd-bd98-ce873bb81dd7	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Check next to assignee name in assignee context menu		SQU-134	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 09:47:09.337	45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	{}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+3b36d1fd-2bcf-4f6a-a558-e3a8b26f62d0	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Connect with Github	Set up ability to connect with github account on the user profile page so that way they can connect their google account to their squared account even if they signed up with a different provider. Also make it so that if their github account has a profile picture and they don't have a squared profile, assign that pfp as their new squared avatar (make sure to ask the user for consent first)	SQU-257	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:31:50.672	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:31:50.672	\N	\N
+41e9215e-e199-451d-86fa-eee092abc6c8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	set up gRPC	Set up golang RPC service for faster and more secure calls to our backend	SQU-254	\N	4	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:28:45.186	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:28:45.186	\N	\N
+cfbc4f56-973d-419e-b515-a99656882f16	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix Seed Script TaskIdentifiers	In the seed script, task identifiers are generated off of the workspace identifier, this needs to be changed to use the team identifier instead	SQU-255	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:30:19.634	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	todo	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:30:19.634	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+d12558bb-ab21-45ed-9bf1-e557b239780f	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Connect With Google	Set up ability to connect with google account on the user profile page so that way they can connect their google account to their squared account even if they signed up with a different provider. Also make it so that if their google account has a profile picture and they don't have a squared profile, assign that pfp as their new squared avatar (make sure to ask the user for consent first)	SQU-256	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:31:32.633	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:31:32.633	\N	\N
+3ff7c00a-27af-4e20-86e2-0b1cb3d5347d	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	response statuses on api	Adjust all of the backend api returns to also return res.status'. Then adjust the frontend api calls to handle these statuses with axios error handling (that way we can see the message the backend sends)	SQU-260	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:37:10.252	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae,096d5809-07ad-43c2-b024-72d0898fb003}	todo	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:37:10.252	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+a9a86d24-9173-4b6f-ab2f-a334fc945ed8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Update CompletedTaskPeriodOptions	Make it an enum with camelcase strings and make a formatter function to accompany it to reduce possible issues	SQU-0243	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-17 22:51:57.573	\N	\N	{096d5809-07ad-43c2-b024-72d0898fb003}	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 22:26:39.813	\N	\N
+f0f24588-071b-4f91-a8a2-db0b6ebc2e06	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Workspace Store		SQU-267	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:33.76	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 06:11:02.14	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+62edb5b1-2a06-40cd-9e1e-9cb062563306	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Setup Notifications	Currently, no notifications are being generated, we need to set this up on subscribed tasks' updates initially.	SQU-259	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:33:44.108	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 21:52:11.008	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+ded8b974-556c-46b6-8a63-5de5b11e1790	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Filter Store		SQU-265	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 05:51:15.196	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-26 06:10:59.452	b0b3b63c-f18b-418a-975c-be097c05ba4d	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+200be4d3-3b59-45d7-87ad-83d01bb5791e	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add last viewed task to user schema	It should be the `String` type and be optional	SQU-18	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:42:28.558	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{096d5809-07ad-43c2-b024-72d0898fb003}	inProgress	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.159	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+6ec6401e-7264-4754-8a63-08d344c486f2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Update security by encrypting login data being sent from frontend to backend	*** Per research, TLS is more than sufficient for data security to the backend. TLS already encrypts the data on its way to the backend. Any additonal data handling on the frontend goes against SOP	SQU-68	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:12.718	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	canceled	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.191	\N	\N
+d8178e1e-1d79-44c1-979f-d3e0abeed395	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Workspace invite link	\N	SQU-84	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:23:57.985	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	todo	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 04:48:09.191	\N	\N
+bd9b23e3-62fb-40c0-ab53-fd3ed77ed957	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Conditional rendering on inbox for read toggle	When Only one type of inbox item is selected (read or unread) then the ellipsis (...) won't be there and it'll say either mark as read or mark as unread	SQU-138	\N	5	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:10:15.762	fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	{2df95a83-41da-4bde-85d6-4cdcec56cfae,c7b06bba-ac93-4e48-8f3b-2bac2c86b765}	done	low	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 21:21:25.242	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+cfbdf72a-9ddb-4097-8e5d-8e0116532e0c	45194d74-03bd-4299-9f19-19814807ee23	Add author/owner name to savedFilters (views)	In views/[filterId] on the sidebar, "owner" is currently whatever the user is. We should add author/owner property to the savedFilter when it is created	SQU-0189	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-09 13:31:12.076	134223a0-4364-4656-b70c-66e829728d2a	Ellis	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf,2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-20 17:48:55.164	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+a5a55669-9f8d-4a5a-a3a2-c4675c41e265	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Task Page anon load	When you open a task page without naturally navigating through the site (opening in new tab or clicking on a link), it doesn't load properly	SQU-0240	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-17 06:03:06.525	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-21 21:00:05.962	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+abe298a4-b28f-41f6-a072-8316b35b3cd0	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Email sent ui change on register	Make a new page or view on `/register` that clearly says that the email has been sent rather than having a toast popup	SQU-137	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-01 19:06:10.348	8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 14:54:05.555	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+4f9cffd9-5581-419c-9a2a-29042bcf33ef	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add task to sprint toast	When you add a new item to a sprint on the sprints page, you should get a toast notification saying you were successful in adding x amount of tasks	SQU-0241	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-17 06:04:00.602	84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 23:45:31.073	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+a2cc13c8-d9a5-48f2-b01c-a5af7dbb16e6	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix activity	on the task page, the activity functionality currently doesn't work that well. We need to:\n- Update the backend so every time the task is updated it creates an activity\n- Activities are rendered properly on the frontend	SQU-0210	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-12 22:21:30.657	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	inReview	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 06:05:41.423	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+f8c10728-3b2b-4da2-9e49-6091c3d0137b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Put user details / logout on sidebar	The current mobile view has a good design for showing the user at the bottom of the mobile navbar. We need to make it so that we have that on our sidebar, and the logout icon on the icon nav only shows when the sidebar is hidden (or on a page where the sidebar doesn't exist)	SQU-112	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:55:42.997	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+f9d19ad6-b4a1-40aa-8047-305d1071eb68	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Due date on task card	When there is no due date set on a task, don't show it on the task cards in grid view, only show when there is actually a due date set	SQU-109	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 22:51:49.643	fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+a4086e76-00a1-4ddc-876d-e5c5aaff5c75	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Workflow optimization		SQU-281	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:07:01.506	\N	\N	{}	todo	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-21 07:09:25.44	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+09af045d-4853-405c-bdd6-360cf5f545fc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Remove ugly SQUARED on the footer		SQU-286	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:09:47.274	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-23 10:25:39.567	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+22d35d92-5c92-4528-b7c2-57b573905f48	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Restyle Contact Page WWW		SQU-292	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-24 18:27:44.076	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:27:44.076	\N	\N
+5c79d737-eeed-41ab-ac23-5057b92cbe81	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Tailwind config www	Change the colour variables on the www tailwind config to use the same variables as the main web application. You will need to replace every instance of the colours being used within www to complete this task	SQU-287	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:13:12.319	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{096d5809-07ad-43c2-b024-72d0898fb003}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-23 10:25:35.897	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+e5d78984-1ad0-4b01-a585-eab27d2f0dd0	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Sign up documentation		SQU-276	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:05:51.954	8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-28 21:38:11.101	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+8204f8b0-9b93-4e36-a93f-a323984f4234	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Quick start documentation		SQU-277	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:06:00.857	134223a0-4364-4656-b70c-66e829728d2a	Ellis	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:57:36.235	1a710125-fc3d-4c42-a525-13ccb612141b	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+01c8efeb-9a03-4e3a-8be9-487556279450	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add tasks to sprint bug	You have to deselect the sprint, the reselect it to add a task	SQU-0227	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:43:49.211	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+5f7cf9dd-740e-4bc9-b74f-6bd8532350d8	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add tasks to sprint modal bug	When you add tasks to sprint, it should close the modal	SQU-0229	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-15 19:44:06.998	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+6db44834-e800-45fb-87c4-66c0b4896eee	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	State being inconsistent	It has become apparent that managing all of the data within the state has become... unruly. We will need to refactor a lot of how the state is used / managed as we need to account for constantly fluctuating data. This means relying more on our API being much faster and to be making api calls instead of drawing data from our state (no longer persisting data in session storage for items such as tasks, workspaces or teams). Instead the only things persisting in session storage will be user / client specific and we will instead rely on the api for everything else.\n\n- Views pages\n- Settings pages	SQU-156	2024-10-16 13:00:00	4	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-02 10:33:26.969	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+9509ef3a-abb4-41e5-823f-53b10925a87b	45194d74-03bd-4299-9f19-19814807ee23	Views filters not working	filtering functionality is not working in views	SQU-0190	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-09 19:45:37.126	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+b9bf7d3f-ff7d-4049-baa0-f112563b25dc	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	New Issue tabs	Pressing tab when selected on the title for new issue should go to the description next	SQU-0197	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-10 20:57:08.491	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+bd976a66-5171-4b75-a190-ee1003477635	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Grid columns scrollbar	Scroll area not set up correctly and on windows the scrollbar is still ugly	SQU-0242	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-17 19:17:48.446	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:24.331	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+e8add4d2-179f-4d68-9804-454c1088fb13	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Update Math for burndown chart	Just need to update the logic behind the burndown chart so then the "predictive" curve is more reflective of current progress instead of just curving down to 0	SQU-0239	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-17 02:57:29.038	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:16:58.603	\N	e87cdd44-6115-44c8-9aee-c1b12f3207c6
+8752e242-8e01-4b40-94e7-30ad924d6f13	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Github OAuth Login	Make it so that we're able to log in or sign up with our github accounts for squared, the logic is already mostly set up in the backend.	SQU-258	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:32:41.116	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-19 05:32:41.116	\N	\N
+f3fdc9e2-778e-4006-9f71-3f8a94de3fe4	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Branch name quick fix with identifier	Fix so that the  identifier isn't directly concatenated with branch name (it should be spaced with "-". 	SQU-262	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 23:30:32.363	fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-22 08:39:40.378	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+ff7c425b-4b38-4e45-920d-cd733e2eed88	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	www font	Update www to use the @repo/font package that's installed and set up within the web application to enable Noirden font on the landing page	SQU-288	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-21 07:14:07.077	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-23 10:25:37.667	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+68655afb-7164-493c-b2d0-99b034151e8c	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Sprint tasks not showing up	After creating a sprint in the sprint view, it doesn't show up in the current sprint page, but you also can't add it to the sprint	SQU-289	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-22 07:45:16.702	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 08:22:28.764	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+b0701fca-d906-402f-b08d-cda311dbe4f4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Edit Sprints	Should be able to edit the current or pending sprints, as in the title, add a description or change the start and end dates	SQU-248	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 04:55:21.743	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 05:35:35.195	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+a063b743-bc89-433d-84d2-fcdaad561b27	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	www mock users in contact page	Fix it so that the names are completed stupidity	SQU-293	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-24 18:28:59.065	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-24 18:28:59.065	\N	\N
+5ff587e8-3ad5-4429-8e66-5dcd3ec090b2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Implement new mobile menu on all pages	\N	SQU-41	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 07:22:12.42	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410,2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 08:24:12.144	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+d5ff2b12-1262-4e5e-83cf-4587179aee32	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Context Menu Icon Sizing	Sizing of the icons are inconsistent, specific one that caught my attention was the assignee icon when there's someone assigned to the task	SQU-294	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-25 08:24:43.098	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:04:11.415	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+69b61902-b5ea-4efa-b654-287f521d7fba	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Testing Scripts for Web		SQU-295	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-25 08:26:39.619	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2ad6a6f1-c06c-4ef9-ba70-7b31d71651db}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:04:12.979	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+ff6227fd-55ba-4e1c-b210-cceb886f4156	4fb2e81c-a61c-4661-88e8-6c0bcd2ebd6b	Login and Signup buttons on desktop navbar 404 error	When using the sign up and login buttons on the desktop navbar component they send the user to a 404 error page by next.js. The problem is most likely due to the link being a enviormental variable coming from process.env. 	SQU-296	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-25 17:51:38.408	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	backlog	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-25 17:51:38.408	\N	\N
+42543853-9250-46b7-8fcb-60542d0fa682	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Create tests for api backend routes 	- Create Dockerfile for seed package\n- Create docker-compose file in api to start a test database and api server images\n- Create docs files in every api route\n- Create test files in every api route\n- Set up test script to run test files within docker container	SQU-17	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-09-30 06:42:06.715	32b450fc-b663-4e94-80b2-d821e70652ab	aaron	{2ad6a6f1-c06c-4ef9-ba70-7b31d71651db}	inProgress	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-27 18:32:07.458	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+4a439fca-9532-4378-aca6-cadecbad64a4	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Docs: Workspace Routes	- apps/api/src/api/workspace/[workspaceId]\n- apps/api/src/api/workspace/[workspaceId]/filter\n- apps/api/src/api/workspace/[workspaceId]/invite\n- apps/api/src/api/workspace/[workspaceId]/label\n- apps/api/src/api/workspace/[workspaceId]/task/[taskIdentifier]\n- apps/api/src/api/workspace/[workspaceId]/team\n- apps/api/src/api/workspace/[workspaceId]/user\n- apps/api/src/api/workspace/join	SQU-0224	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-13 21:48:38.004	c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	{}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:55:07.585	6427aa3e-2c87-41dd-b2a8-faa3181ae58a	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+1a710125-fc3d-4c42-a525-13ccb612141b	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	www docs	Create the subtask docs with routes the same as the links in the entry page for the docs	SQU-250	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-19 05:00:41.12	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae,cb687c84-54be-49cf-a4a7-d91efcdfabdc}	inProgress	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:09:47.033	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+6ae28dd1-0e19-480e-a712-7ff9004a1507	c63cf987-004a-4d16-8aa7-6a8b4550da23	Add an add all option in assign tasks in sprint	Adding a quick select option in the assign tasks modal in sprints. Can either be a checkbox that once selected auto-selects all available tasks or an add all button that assigns all tasks.	SQU-298	\N	2	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-29 18:11:14.645	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-29 18:11:14.645	\N	\N
+7b68fad7-d7b5-4784-9d17-28fd3457e272	c63cf987-004a-4d16-8aa7-6a8b4550da23	Create relations option for tasks	Create functionality that would allow a task to become a subtask of another related task.	SQU-299	\N	3	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-29 18:13:04.47	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-29 18:13:04.47	\N	\N
+90ae8925-0d53-4153-bbb9-aa65488cfab2	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	RPC Service		SQU-297	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-29 08:00:18.272	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	done	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:10:09.58	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+d4844157-3d4c-42d0-ad16-7f0a9e21e7c0	32b450fc-b663-4e94-80b2-d821e70652ab	remove address on footer	need to remove address on footer asap	SQU-300	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 16:57:13.709	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 18:48:11.574	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+98a55c9d-9cba-4b42-b99c-89cea1267b96	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Sorting Options for Sprint Task	Sorting options when adding tasks to the sprint on the sprint page	SQU-304	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 19:06:45.502	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:06:45.502	\N	\N
+3949e520-e39f-44f5-8a77-2723d17e85f5	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	WWW mobile nav	Design and implement a new mobile nav on the www site using the sheet ui component	SQU-305	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 19:08:22.276	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410,096d5809-07ad-43c2-b024-72d0898fb003}	todo	high	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:08:22.276	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+f757859b-e17a-4eb3-83be-afcb4d368406	32b450fc-b663-4e94-80b2-d821e70652ab	fix footer styling	need footer width to match width of nav bar	SQU-306	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 21:08:59.577	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	done	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-01 15:13:38.04	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+ef525862-7cde-44bd-977a-ba3f32fbad32	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix Rendering Issue	On both the task page and the github integrations page, there is a massive issue where the page won't load due to repetitive rendering	SQU-303	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 19:03:09.009	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 05:35:38.824	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+84a0b3c9-a028-437f-a96b-966e040ca146	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Moving tasks scroll	When moving tasks between columns, you get scrolled to the top	SQU-301	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 18:39:59.744	\N	\N	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	todo	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-10-31 19:08:41.941	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+7fad8d01-0351-4907-839f-3aeb30883efc	32b450fc-b663-4e94-80b2-d821e70652ab	fix styling for nav bar	make it seamlessly fit with the other components	SQU-307	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-11-01 15:13:24.044	\N	\N	{ed3ff477-f6a0-4398-90a8-6d9cb585a410}	todo	noPriority	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-01 15:13:24.044	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+7ad59471-bad0-416f-b0da-3b16f70a4578	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Add canceled option	In areas where you can change a task's status, you should be able to choose "canceled", to cancel a task without deleting it. The all tasks page should also show a canceled column	SQU-308	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-11-02 10:08:52.679	\N	\N	{2df95a83-41da-4bde-85d6-4cdcec56cfae}	backlog	medium	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 10:08:52.679	\N	\N
+a44bc681-6c95-4c8d-b58e-ab01bd7aee09	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Fix Refresh Bug	Fix the issue where it keeps showing loading state of task page.	SQU-302	\N	\N	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	2024-10-31 19:00:31.661	7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	{28b1e1fb-2807-40f7-8148-dcca3e95ccbf}	done	urgent	3f102a06-9163-4217-87a7-d87cbbaf7ae3	f	2024-11-02 21:52:01.531	\N	fa99f907-1ed4-4703-a955-95aaa98bd3cb
+\.
+
+
+--
+-- Data for Name: TaskEvent; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."TaskEvent" (id, "authorId", "createdAt", "taskId", message) FROM stdin;
+\.
+
+
+--
+-- Data for Name: Team; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Team" (id, name, identifier, "workspaceId", "activeRequired", "cooldownDuration", "sprintDuration", "sprintStartDate", "sprintsEnabled", "tasksPerSprint", "upcomingSprints", effort) FROM stdin;
+a83ffea4-ed76-4f31-91a0-b35ed9c33e5d	Squared	SQU	3f102a06-9163-4217-87a7-d87cbbaf7ae3	t	1	2	2024-10-06 13:00:00	t	10	1	LINEAR
+8d3147cd-9889-4d06-ae9a-39c53ab8b2ef	Test	TES	cef0254e-49c5-45ae-bee5-d51a42b3f871	t	1	2	2024-10-06 22:21:36.269	f	10	3	LINEAR
+6c9bf94c-4b7a-410e-b4df-20977c851c00	hello	HEL	cb04c1b6-c313-4494-ac27-9f091c202fa1	t	1	2	2024-10-06 22:23:39.94	f	10	3	LINEAR
+58a8c9b0-4aa9-47df-b881-2acceeda269c	Yaryna	YAR	1c30d402-7355-4b9a-8377-5546ecbd1ec7	t	1	2	2024-10-11 01:13:54.652	f	10	3	LINEAR
+ef9ae0e5-3b68-4822-b94b-ef64bc31b081	Testing	TES	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b	t	1	2	2024-10-16 03:16:07.624	f	10	3	LINEAR
+\.
+
+
+--
+-- Data for Name: UniversalTokenLink; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."UniversalTokenLink" (id, token, "isEnabled", "workspaceId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."User" (id, name, username, email, password, verified, "lastLogin", "onBoarding", "defaultWorkspaceId", "avatarUrl", "githubId", "googleId", "savedNotificationIds", "subscribedTasks", "githubUsername") FROM stdin;
+f52bb530-05ea-4ce8-b899-605095a669c5	Ernest Cheung	ernest.cheung	ernestcheung02@gmail.com	$2a$10$0Atz4gwiWNPeo6kldJ0p6O/fPI/u2SrWnYU33V5tQNssvRiwHA3Ke	t	2024-09-17 06:44:33.264	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{}	\N
+9eab2289-0d39-4c6d-b6e4-a9228d7f0d7c	oerkperl	oerkperl	biribara2@gmail.com	$2a$10$crNPyv0twOm065.cq/Lw1OFpcuhoYVa9FNXi9eqENGulfIUyYRXZO	t	2024-10-04 09:04:16.863	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{}	\N
+06adb201-d27a-47cf-830f-12157a482792	Nate Kennedy	nate.kennedy	ncummens15@gmail.com	$2a$10$ZMLrS1D5bxRhs1y3gXG23.wzFNv.LJk6vLvu1hBHW0Ir0Y3hsPhiG	t	2024-09-30 23:26:32.29	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{}	\N
+7b00df7f-35b9-4053-940e-65ae1ceb0f1f	Jacob Sanderson	jacob.sanderson	jacob.s.sanderson@gmail.com	$2a$10$etcSP.a4Jrk9IWtJRLMT5ugCi0NP7qG9i1UPXQ9MeiN/vLNUTVyrO	t	2024-09-30 04:41:29.983	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/76940960	\N	\N	{}	{5dfcd5f7-9191-49ca-8cd5-cdc391447c54,0312607d-d40e-403f-8df8-c155f8d767c9,6f81a05d-92c2-49f6-8546-65d4a9477003,e7a6b8de-dcdc-47a7-9b74-5753ea7174cb,ba2d54df-b778-4003-b94b-46356e885ec2,8f0cae33-8406-4258-85e6-ba9f7831cc0c,cb39a492-23b0-4809-9111-8f0e57305302,c5a09ac0-c924-457f-a353-0efd50a1a621,5aceacd4-701d-42e6-9f23-df09f2e7c22b,58ab7ffe-4bb8-436e-9e50-83864829e5fa,d0d5ea20-ebda-4329-9024-ca45b29135d3,f8f97f51-05b8-48bb-9925-781b7bb40860,c22e7eac-5343-40bd-91d6-b606a3960eaa,5102faa7-99fb-4aff-a5f9-0646f8c60e06,57d83a44-597d-4e17-9a43-2d23c495e799,2bcdb818-9f62-4520-8c4e-a4099d5b74d4,79bd98db-e180-422f-962e-a4cda7b87c08,42543853-9250-46b7-8fcb-60542d0fa682,200be4d3-3b59-45d7-87ad-83d01bb5791e,fc6a3232-49d5-44d0-b711-ba7bd5637a67,174ec345-79ac-43ef-b072-31b6cc3857d7,4415af53-da97-4209-babd-97f9363cc061,e7573e87-5cdb-46f8-95e6-69b1fc44eb3c,2cad9ed5-d79a-4f9d-bde5-30c8608a3371,499c3397-fcab-4a41-bc03-bf73b509b02a,071e527f-7e5a-4176-be5d-1dd838c6d394,368e9efa-2214-4625-a5c0-68bae3e52aa2,98123c22-d4c6-4da2-badd-cede4279e537,1af89964-a601-4739-b108-5acf05eb7c95,27bf900a-8bca-4ffb-950f-0da12d2228a5,aa085004-fe5d-40c3-93ac-b1b2cfdae889,2a2c8c0d-15eb-4722-b00c-bf29df7216da,67feb8d3-54ff-4d2f-b185-92f23dbdadb5,726270eb-7b34-459c-9917-e530db96ee83,853b205a-92f5-4d68-b7c5-6b476636e510,c2f0d014-8a02-4455-aa0a-52e03e05f14c,875fc3e2-4df9-46eb-971f-2cee20205af3,dc50d4a1-d48b-467a-8c34-ca645a2735d1,c79990cf-a808-4a3e-98af-5f4eb60b2c89,4bf83827-2aa2-431d-a9c0-8fd05d901be1,ecd49fdc-5b75-4198-a361-10c22886ebe9,fe4323ed-ff8c-4624-86e2-9c18c3c078c5,1caaa3df-baf1-4311-9fd6-7b2787fed35c,d496d313-94ff-4ba7-9053-2645a19a45c3,3bbf0db3-7a2c-4cbd-9346-714c08ea0ba5,62e6411e-1bf8-4b65-ae31-be5bf2513e78,d49a0567-ea15-48fd-82a5-1a646d1e1fdb,30541b71-fa70-4574-9458-dec7a8416b6d,462d7955-a3d3-4f78-a0b9-f409142d1a4e,009c3c2d-1755-4cdb-a70d-ffe43fb840b2,51ddf15c-2cf1-4ffc-9815-f36fecc6e66f,1ab6a049-7dee-413e-b3a9-a4dc0047198d,45be8e3f-888a-470e-ada9-b2c0b0132313,5b983c74-60a3-4b89-962d-2d48ccc28f7c,4cbee07b-ced4-43cb-b0fc-397a336be530,dfd608b2-a23c-4311-8033-febf8cc4a6ee,687c14d1-0a14-42dd-8b60-ee8c3fcd13c6,750309b9-a729-4f96-950a-e7ae4af369c5,711c269e-b97a-480e-a5c6-74638303d4b2,ae08742a-9317-455f-8aff-0f72074158b3,85ded9aa-2fc2-4aaa-bfbf-b429d3ef863f,5ff587e8-3ad5-4429-8e66-5dcd3ec090b2,42c12d76-0b41-414d-931c-343473a6b977,67ddab4b-e0ee-4826-b929-7277a89eff76,0c7e2d62-3963-4dec-a58f-ea6e7f09a175,21aa76df-2bf9-4b32-8129-369af7d81f14,4d589a07-1d67-4473-accb-acc3c20ba78a,380ffb29-affb-40d2-a26c-7341eee8931c,71e07f8b-0b9c-4a87-b739-d81bc0edd57c,dc2fbc72-cd0e-4e37-9d8d-f019eaf38414,9c0a655d-0adc-4ed5-9808-f12d6b0d0672,0e6e9ef7-3d6f-4e34-a630-8001d93bf79c,d260acc7-b592-4cf8-b980-cef735b92745,45866b19-acab-4090-b800-74f9921160c6,f518ccec-b22b-4455-8422-f5aa83078ef9,64d777f3-463e-4de9-91f4-b2f7364eebc3,c64671f0-3fe9-4857-9fb9-562a17cc94c6,451c035e-b242-4652-8e4a-a5fbebdaa27b,a3e98efa-b2e7-401c-9b34-c785cfc88e30,48ccfa42-95cd-4e98-804e-45926d060d17,378cec1a-2a9f-4a75-8cec-44fd0a78942c,fdfd739a-e973-4381-936e-0bbc9b83b266,6fc71dac-e793-4647-a59f-87b19babb260,5f75fbb7-00cf-4e95-b63c-b300697e4fd3,c0470c5c-2120-4e4b-88b3-774b40cb59c1,c172290a-3cfe-48df-8635-26d757f5ac8b,8ce872f7-6b95-47fc-8327-43135941fc2e,b5d9195a-dc9d-45e7-a1a7-c4a4b821a06d,6ec6401e-7264-4754-8a63-08d344c486f2,6495da9a-2ca0-4843-88bd-1da12d4dd857,6ab509ba-7478-4148-9125-d96dde70a9da,dec2f767-3859-46dc-8ed6-f800ca32c124,d620addb-5259-4978-ae02-b273bcd5faba,8569a6fe-a156-48d6-8b5c-88e79ad6fae5,c7081be6-dcf8-4f84-87a8-6a6636ef878c,40fd705c-9667-4008-b75c-cb20b29ab58d,097b9836-0f0e-43f6-8e3e-5d28f76e2fb2,0c7c5d46-1541-4953-9246-2c3ec234e0b2,d849e8a1-0948-4fc0-9b8a-d20787643ea8,25ffe42a-12ed-4259-a7d8-a4847ba21779,82851f83-0167-4219-a822-27b39795f0cc,e0574e40-8488-489d-b25c-fe96c681cd05,d8178e1e-1d79-44c1-979f-d3e0abeed395,058ac9c5-77c2-441c-824f-6f62c7046378,beaed06e-a1de-4db3-8de1-3108de58a2e1,bf29d61e-266d-48ce-a5e9-222989651ceb,e60bd500-51b5-426b-8f7d-c278d188ea99,3e31f747-57bf-4ccc-b1e1-072651584309,9d76c663-78f0-4679-94c7-e8f2835099a3,67ae06de-35a0-4c01-8b06-3509ca162229,5882f0b3-6e4f-405b-af9f-8da3e2529e14,d4a9f5fb-483a-438d-8679-8b425688f83d,bdc04bc0-09bf-4951-ac3d-bf5b6f0f2007,da3d1607-91a8-4629-95bf-9a701490ff23,f9d19ad6-b4a1-40aa-8047-305d1071eb68,06d6c556-419d-4372-8c37-272ccaae6fd9,6823d515-5983-48be-9698-c27b4915a212,f8c10728-3b2b-4da2-9e49-6091c3d0137b,4e4c5783-9571-45f3-9044-641f541d0af5,213230a4-faea-443a-b1cb-50a0830a0e9e,f58aa18a-ebc0-411b-b5bd-960b9a4814b7,fb7584ae-6c8a-49f4-ab5e-e7c632e4b998,ed0e3c3c-575b-427d-b6f0-22ed54348993,7ef8e99c-9f9a-45d6-943a-4cb7b1d18706,00892349-5d5b-4123-8eb9-66aaeaabd76b,2fe999ad-0776-4918-8f54-c9082d274d4d,43ac33d4-6b6c-4170-8f40-6f38ec0063b9,fb8e418e-e6ef-4214-a0c8-969853fc2662,b5d1c3f2-f640-4632-9f1b-41108b6b7b3c,0f166a56-beec-4449-8347-a2385af75d1e,a8f9de95-e21a-40c6-ba91-baefb2ceef86,0b575f80-81bd-4ce7-acea-58efeb86997c,575bbbd0-30bd-4f58-a40a-03e244a5683c,5ad33483-017b-4945-939d-7cd19328eadc,b0b3b63c-f18b-418a-975c-be097c05ba4d,326d0cd3-3736-4337-b206-b1c7e2eeb6aa,6427aa3e-2c87-41dd-b2a8-faa3181ae58a,c2efdadb-ea16-4f2b-82ce-d986df7d938d,923cdc33-e424-4758-8aef-ec1de10a5c4b,d63388d0-8044-4566-acc9-99c29148427f,d901f188-c1b7-40cd-bd98-ce873bb81dd7,d7efa79e-5f52-4925-a634-45a5fb99cec5,36086481-a136-4531-89b2-2764b924b155,abe298a4-b28f-41f6-a072-8316b35b3cd0,bd9b23e3-62fb-40c0-ab53-fd3ed77ed957,c1d271de-13f1-4db7-80fd-4a708b9419c5,067a34e9-18cd-47e2-9c96-3565d4728ff9,53179c51-727b-47a6-a6e5-d2c3bf760cf4,3648f0c2-20f8-460f-a1bb-567d302e3872,5f389e73-2bc8-4311-b069-1e48703b0051,b7d1136b-4482-4d1a-a9cf-bb86db71f1c1,e2788cf2-757a-48c7-9b87-a8d1f65f64c5,2c6c8344-dca2-446e-81ae-40be845bcb00,c6ee1806-f28a-48d2-bd80-e789045420ee,991a501d-a85a-4331-b2e4-531d4d9b84f7,1aab0ee9-b5f6-48cd-891b-41e834b61a79,8c1cd51b-1eed-4ee1-9b9c-88a945789cd7,2ab3efa2-1114-4dd6-970f-4b5d7406680a,826088b4-0cd1-4f01-aebf-41a109016649,64965f68-7c37-4649-916b-d1481b5b73fa,70b542e7-34aa-49b0-b388-d27d906d23fc,6db44834-e800-45fb-87c4-66c0b4896eee,48cd73fc-eec4-45e1-8289-6ca154fb7f83,826db8a8-e7c6-470b-aeed-9bd84f08b42a,747e0b78-659b-4ce1-ae23-a4903595dd2e,ef7462e3-d6e3-40d5-930d-5131b3a5d8d4,31b7eb1a-4f18-4db7-b579-ac84ee1957a8,2133216d-5168-417f-aec3-e05ee5cd2595,b2786715-bb4e-4188-b74c-4812a1ab5a18,d238a3e2-356d-494b-8978-536ff7607a76,58a2740f-c187-4e9a-90a5-3fa4fb9eab87,d7f62f3a-d8bf-47b5-9abf-e1c8a4060602,8ad4c901-114b-467e-961e-c9e73134a7e8,15fb9915-56a1-4c5e-b558-52705f2bd13f,5fc81d85-b93e-48a0-b1b7-fa9ae9265002,167801ee-36b5-4f1c-aab3-6aeba5d453d3,3710c540-e342-4e33-a7ee-66c6f91d545f,e3957802-37e5-429b-ae04-46a6d67d9508,ebff01c2-c55a-4a80-afca-c1d816a99d64,6dcb8552-a05d-435a-92a7-4177e1e032e5,b8297f57-4c72-4ea8-91bc-bdcf56100b4f,e9c03b07-d5ef-4ae5-a993-e5f8bffd0da0,5737999f-b34a-4db1-aa30-bcc628d90b1b,79e19d0d-e5e0-4a32-8bf9-9c76b3c2059a,e1d29c78-8a1f-42c9-82e7-8c90f6ca3726,484398c7-cbf9-439f-ab10-a94b3981cc39,24de0336-ddea-4b9d-8953-a3c0c9005dc3,1aa657da-9d3d-4899-bd96-04e42f808a77,ac9be0de-76be-4bf7-b946-2da2496fb84a,63741302-1b84-47e8-adf6-ff9f9152484f,9fcde800-e920-41de-872a-6da9c00bd5e3,efa7bfae-ca80-494d-a61f-8ae00dc1ab40,fdd7d0b9-3420-41e8-b25c-7ab9fe31a720,b2de7ec6-d9b7-403d-8828-b2b55d800e53,4537ede8-6c39-4658-89f5-e04bce1e8cbc,b27a2bb9-51a5-499f-bd08-68ba9bb98d52,eb75d97a-312b-4134-8dbf-7361682521c7,b9bf7d3f-ff7d-4049-baa0-f112563b25dc,ecf6991b-02d5-4aab-a050-8c18a9618a5f,f76e326e-d97f-4e34-9daf-43ad8650b33f,f77d1f40-fd55-4eb7-9bfe-b8e835cc91d6,75a25e77-8438-446d-bf23-2cf95046ec18,e35a76b0-e8e1-4a4f-953d-f35378b5e4e2,5edd0417-97f2-47f1-80c9-491b892e4ce3,1712adc9-e81f-4d20-a453-4c67dc1b02b8,fe09ace4-f65b-45c4-85c0-ef1f5eaee236,2d1ca519-d019-4b85-9086-d7f592cfb663,85fe80dc-a14b-4cdd-b263-403ebe0cdfa5,ffd36df0-e56d-4a81-8fcc-51fff3ca102d,48273ad4-0312-4a97-9632-46fd8497d919,a2cc13c8-d9a5-48f2-b01c-a5af7dbb16e6,67f9e89d-e979-4cf8-b2cb-171b76f8077a,2db9856f-4c44-4d29-8e5c-665af649cbbf,266c6cd4-0ab9-4856-9e86-c5907370f4aa,cc3e6b24-ced2-492a-886e-03e9fd0ab94e,4ec6bb0c-f05d-4eaf-bf37-c7a2c723b297,31c9e7f6-c4b7-454b-871d-2074b9167abc,36585452-35e2-4910-a368-8ee655d19000,b54f5608-0d38-44e8-8c90-1b6032105c14,3aecab4c-6c24-411a-a051-e0876a86e683,6ff12480-b086-498e-88b0-7f5f94d64328,1cc7b0e1-dc22-4f90-a344-3c0fd0fb19be,83913986-320e-4a9a-ad18-a79ad60c7ab2,4a439fca-9532-4378-aca6-cadecbad64a4,4c142c21-8cbb-4b2b-a07a-c7cff5484e27,416c3d18-38b9-43c3-8a38-3485f6aea5f5,01c8efeb-9a03-4e3a-8be9-487556279450,5f7cf9dd-740e-4bc9-b74f-6bd8532350d8,02256021-e7cc-41c7-9e3c-d9f43a9d15ef,79889cde-f101-4867-a448-d2f3e54f9b4d,213f3a14-f608-4531-8fc9-b5b9ff0f95bc,b8bf2e77-c8ba-40e1-aac7-a8b36f095b21,1986df26-8189-4d48-ac46-1b1ab31ef51c,0515e226-8385-44fc-8556-8a1a1f32ed8f,48fa485e-9749-49bb-8d75-3dd7d645d6d5,e8add4d2-179f-4d68-9804-454c1088fb13,a5a55669-9f8d-4a5a-a3a2-c4675c41e265,4f9cffd9-5581-419c-9a2a-29042bcf33ef,bd976a66-5171-4b75-a190-ee1003477635,a9a86d24-9173-4b6f-ab2f-a334fc945ed8,b0701fca-d906-402f-b08d-cda311dbe4f4,2254fe19-ecfe-462a-8b16-c677b9d4c634,1a710125-fc3d-4c42-a525-13ccb612141b,1c8ae8b6-25f0-4157-a896-03f563f487ca,ea18913b-a12d-4d45-ac52-76e3ad573f05,4e230d67-5477-49a6-8bed-2b39d6dfedb8,41e9215e-e199-451d-86fa-eee092abc6c8,cfbc4f56-973d-419e-b515-a99656882f16,d12558bb-ab21-45ed-9bf1-e557b239780f,3b36d1fd-2bcf-4f6a-a558-e3a8b26f62d0,8752e242-8e01-4b40-94e7-30ad924d6f13,62edb5b1-2a06-40cd-9e1e-9cb062563306,3ff7c00a-27af-4e20-86e2-0b1cb3d5347d,94b9448b-acd4-4279-b912-7d0498ba1bd1,d057c7cd-6fb5-432a-b647-2e7bf5fc03ff,ded8b974-556c-46b6-8a63-5de5b11e1790,be9e325f-efff-4f62-a681-0a985219a022,f0f24588-071b-4f91-a8a2-db0b6ebc2e06,c60f3c44-c226-46bf-9937-27ab8600d7b8,caa2f858-176b-476d-bf47-567074d991b4,7404eff5-e78d-4810-b9ab-6fb072f9328c,c6e7e3c0-9edf-47c2-9d25-a3d54d798adb,055f3187-edea-43e1-b6ed-c3426e4c5096,86e0f743-d4f3-41ab-8d43-b7d8ef456c94,569706f1-fdb8-4c57-b01a-f3f83d3db015,330a5933-5548-4a96-ac2e-4e83880f63ea,e5d78984-1ad0-4b01-a585-eab27d2f0dd0,8204f8b0-9b93-4e36-a93f-a323984f4234,2f164373-b5b7-401c-8525-f1bd8592699c,47f0ca0f-75e2-4c8d-bd94-144f7608ccc7,7b5268fa-6ed1-4ea3-aaf8-530dd56f1c6e,a4086e76-00a1-4ddc-876d-e5c5aaff5c75,084ad76a-425d-450e-9f6c-b91a972e1098,13984bc8-47be-4c8f-ac1b-1192a678a55d,54f25364-3ff2-44af-9ca4-2c9ba041caa8,f516a14b-4329-4a98-9679-ef8ca18422d4,09af045d-4853-405c-bdd6-360cf5f545fc,5c79d737-eeed-41ab-ac23-5057b92cbe81,ff7c425b-4b38-4e45-920d-cd733e2eed88,68655afb-7164-493c-b2d0-99b034151e8c,085172e2-434c-44c8-83ab-e1ad0b59d138,22d35d92-5c92-4528-b7c2-57b573905f48,a063b743-bc89-433d-84d2-fcdaad561b27,d5ff2b12-1262-4e5e-83cf-4587179aee32,69b61902-b5ea-4efa-b654-287f521d7fba,90ae8925-0d53-4153-bbb9-aa65488cfab2,84a0b3c9-a028-437f-a96b-966e040ca146,a44bc681-6c95-4c8d-b58e-ab01bd7aee09,ef525862-7cde-44bd-977a-ba3f32fbad32,98a55c9d-9cba-4b42-b99c-89cea1267b96,3949e520-e39f-44f5-8a77-2723d17e85f5,7ad59471-bad0-416f-b0da-3b16f70a4578}	\N
+f94033d8-f696-4c31-b61d-e162a821361f	Sajin Rana	\N	sajinrana2000@gmail.com	\N	t	2024-10-06 22:21:23.369	f	\N	https://lh3.googleusercontent.com/a/ACg8ocJTwuBx705yZGeq9V5pi_2_LrHxqck4az4dze2G5KQPvlyw9Hfr=s96-c	\N	107093816690300261327	{}	{ddbc216a-ede6-4756-84c9-3c8e2c75481b}	\N
+134223a0-4364-4656-b70c-66e829728d2a	Ellis	ellis	ellischungg7@gmail.com	$2a$10$95rhnCDmCttKOOHhaNRKWOMLVn8sGRHwYeXdtaGkfE5GyLV25PyQS	t	2024-10-01 09:41:34.393	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/45402390?v=4	\N	\N	{}	{}	\N
+b583d7bb-dd9f-43f2-833b-e3e30ece1f0e	Cristian	yoloonthebattlefield	cristianfloreadev@gmail.com	$2a$10$eX0oRAAnYoGfRnQj.FuYJegAPaFmzvAaTCNgH1MnzAwQf5heGCSsa	t	2024-10-03 21:01:24.693	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/22493808	\N	\N	{}	{}	\N
+31bda3a0-0a28-4870-9ff6-b3adf36cd09e	Owen Yhaan Ganza	\N	ganzaowenyhaan@gmail.com	\N	t	2024-10-09 19:04:05.938	t	\N	https://lh3.googleusercontent.com/a/ACg8ocLKBJrqjOgRqcDKCZmY165A3V0UzC6dpUc2rZDUPHCCGB8iYg=s96-c	\N	100381733687362975762	{}	{}	\N
+84e3e299-59e3-49aa-9cb1-d791f31a473a	James H	james.h	jameshensley.work@gmail.com	$2a$10$eurm90AUQkK8tCpniR.PiO4bOjvUTeqtCSMyNlhMsSWOScd55yuPu	t	2024-09-30 18:51:22.826	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{44aad382-4517-49e1-bb8f-957f2edb26b7,ef36db80-cd51-43ff-96ac-2235808a9694,1901a74a-3a20-4064-95c7-7182793a7f9c}	\N
+fe71fc3c-6b24-4668-9799-1286c0d579b2	Serhii Derkach	serhii.derkach	serhiiderkach1995@gmail.com	$2a$10$hOYP/1qA6jNMZzwOCRlWp.tQ1D9buksJu/9wl3o77nr74lBe.Tm3e	t	2024-10-03 22:54:37.713	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{9feac400-f55f-4173-92c0-4e0ec4459af3,3ae04b01-cc79-4111-be6f-309da5cbbfa0}	\N
+061c0ecf-3b05-4ed3-ae1f-20830b308d82	Chase White	chase.white	cheverlator@yahoo.com	$2a$10$TlQqlJtWFYT9GRtxLIGai.Bhnr8Rwg64XxaiEILwjSGOZ6Qa3CNcS	f	2024-10-17 02:28:32.342	t	\N	\N	\N	\N	{}	{}	\N
+32b450fc-b663-4e94-80b2-d821e70652ab	Aaron	aaron	aarongreen1997@gmail.com	$2a$10$5IU72MptWZMcSySLTy1pC.9C28BOm1sv06awL/4JuiijCa4VEBDVu	t	2024-09-25 19:21:25.229	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/101513222	\N	\N	{}	{84e50bf6-2ce1-45e2-b589-1a5119fe052c,d4844157-3d4c-42d0-ad16-7f0a9e21e7c0,f757859b-e17a-4eb3-83be-afcb4d368406,7fad8d01-0351-4907-839f-3aeb30883efc}	\N
+fa58c0e9-2247-4157-a2fe-aeec3f673ef8	Edward Chung	edward.chung	edwardchung2024@gmail.com	$2a$10$JrtdaHXhpFzBzxNNYFD41ObTgxLu2GtJEu3Uz2XeAyalcSiSVfI.O	t	2024-10-01 09:36:50.683	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/46979810	\N	\N	{}	{8b9ba4aa-c5cb-4037-adb0-4d03f6eb107c,f3fdc9e2-778e-4006-9f71-3f8a94de3fe4}	\N
+f1abae3f-5d98-4ad1-9b08-7db87f8ad143	Oerk Perl	\N	oerkperl@gmail.com	\N	t	2024-10-06 13:55:50.529	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://lh3.googleusercontent.com/a/ACg8ocJmF9AX0lv0Nc9ZhlNUJOPgChE7IWdlmnhu6PMliONcy7ni5w=s96-c	\N	117235675796602627429	{}	{e75f88d9-ad0e-440f-9242-5c58c55ed407,eb077be5-4ced-436c-9698-fb4160abc6de,58b3d4a4-49f9-430a-bccc-28f741b63e04,0f84d01d-b3f2-4123-9374-858c918ecd23,c22629c3-1269-4bdb-97c9-c8461f05b70b}	\N
+c63cf987-004a-4d16-8aa7-6a8b4550da23	Chase White	chase.white	cheverlator@gmail.com	$2a$10$1I.SxLnt3kbgtGazn1i0xui5eIUqmoq1J7.lRFEzay6wE0bbux3BG	t	2024-10-01 00:21:01.008	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/87402262	\N	\N	{}	{c2e5a803-3e69-4daf-9f5e-f4fc99b2afe5,d7b10394-a762-4dd4-9165-48a3af2f5f83,0249345a-adb0-4102-ac62-7070995a5691,e37ff09a-ac68-4c94-87f8-d3f9a0bced69,110e7aba-7ec5-49f1-9f9d-7313bd388f4e,3f67cfc0-5d91-47b3-8dc6-0b931dd1c1f7,7c3ffc01-7b4e-41a2-b71e-d1930f5ab01a,6d859e55-2106-4f9f-9283-c10de71635cf,0a0a1836-30d0-4e3f-8761-cd9668b7d4ed,0bc35ebc-42e3-43ab-b628-c74768f6f241,e7e6380a-5d96-4061-ab7c-477075d32381,f45e2fc8-0ace-409e-9cfe-01dda514808e,6ae28dd1-0e19-480e-a712-7ff9004a1507,7b68fad7-d7b5-4784-9d17-28fd3457e272}	\N
+9393518e-24bb-4ca5-8115-66676139692c	Pinak Nayak	pinak.nayak	npinak.dev@gmail.com	$2a$10$7G1DwYRD6JCT7jrwXsyetu5VHLltc6tbU9nlkYuCDp8Lgy2mYhb8e	t	2024-10-04 20:12:28.523	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/77262741	\N	\N	{}	{}	\N
+ad9cdd88-3a52-4e34-bc13-114fa877c5c4	Yaryna	yaryna	yarina.ryzhova@gmail.com	$2a$10$knFGhOmEMmNHbiOxcwx9F.8t490GSqzkMpH8gUt9yxWvqcXgz8G8W	t	2024-10-11 01:12:59.609	f	\N	\N	\N	\N	{}	{}	\N
+8d2b306a-1816-448f-b254-d5d8bf939084	Daniel	daniel	daniel.lloyd.hughes@gmail.com	$2a$10$P1pFzw.4KXQ8ifYDsugOcO1yFv16saT8CKk0hewYk/sy7weM.M6L6	t	2024-10-01 21:56:18.013	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	https://avatars.githubusercontent.com/u/110635984	\N	\N	{}	{}	\N
+45194d74-03bd-4299-9f19-19814807ee23	Kaila Bullard	kaila.bullard	k.m.bullard14@gmail.com	$2a$10$SvZo0PHMitJ1rCTAgOsd1OjgTqIW1Mfoga9LyetHM5TZ5sC02u06S	t	2024-09-30 21:28:22.159	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{87a48c31-1c41-42e0-8107-83e4e52525ba,39d372a6-44c8-41f1-a42a-844fe22baf3a,33e61a98-ce78-4d1a-8b60-76f168d0ad65,dc9fc6ed-7294-4adb-b2d4-267650450eb0,cfbdf72a-9ddb-4097-8e5d-8e0116532e0c,9509ef3a-abb4-41e5-823f-53b10925a87b,9ce66a08-9066-4be0-9536-d9a50a1b2753}	\N
+4fb2e81c-a61c-4661-88e8-6c0bcd2ebd6b	Duncan	duncan	duncanWhyte09@outlook.com	$2a$10$1U3k5tEDoyXT5WqLzfP4.OYdUJw.Gtr.fEU4PLFuyTuAtBXfbns52	t	2024-10-01 19:03:49.544	f	3f102a06-9163-4217-87a7-d87cbbaf7ae3	\N	\N	\N	{}	{ff6227fd-55ba-4e1c-b210-cceb886f4156}	\N
+\.
+
+
+--
+-- Data for Name: UserTeam; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."UserTeam" ("userId", "teamId") FROM stdin;
+7b00df7f-35b9-4053-940e-65ae1ceb0f1f	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+f52bb530-05ea-4ce8-b899-605095a669c5	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+32b450fc-b663-4e94-80b2-d821e70652ab	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+45194d74-03bd-4299-9f19-19814807ee23	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+84e3e299-59e3-49aa-9cb1-d791f31a473a	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+06adb201-d27a-47cf-830f-12157a482792	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+c63cf987-004a-4d16-8aa7-6a8b4550da23	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+fa58c0e9-2247-4157-a2fe-aeec3f673ef8	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+134223a0-4364-4656-b70c-66e829728d2a	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+4fb2e81c-a61c-4661-88e8-6c0bcd2ebd6b	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+8d2b306a-1816-448f-b254-d5d8bf939084	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+b583d7bb-dd9f-43f2-833b-e3e30ece1f0e	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+fe71fc3c-6b24-4668-9799-1286c0d579b2	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+9393518e-24bb-4ca5-8115-66676139692c	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+9eab2289-0d39-4c6d-b6e4-a9228d7f0d7c	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+f1abae3f-5d98-4ad1-9b08-7db87f8ad143	a83ffea4-ed76-4f31-91a0-b35ed9c33e5d
+f94033d8-f696-4c31-b61d-e162a821361f	8d3147cd-9889-4d06-ae9a-39c53ab8b2ef
+f94033d8-f696-4c31-b61d-e162a821361f	6c9bf94c-4b7a-410e-b4df-20977c851c00
+ad9cdd88-3a52-4e34-bc13-114fa877c5c4	58a8c9b0-4aa9-47df-b881-2acceeda269c
+fe71fc3c-6b24-4668-9799-1286c0d579b2	ef9ae0e5-3b68-4822-b94b-ef64bc31b081
+\.
+
+
+--
+-- Data for Name: UserWorkspace; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."UserWorkspace" ("userId", "workspaceId") FROM stdin;
+7b00df7f-35b9-4053-940e-65ae1ceb0f1f	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+f52bb530-05ea-4ce8-b899-605095a669c5	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+32b450fc-b663-4e94-80b2-d821e70652ab	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+45194d74-03bd-4299-9f19-19814807ee23	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+84e3e299-59e3-49aa-9cb1-d791f31a473a	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+06adb201-d27a-47cf-830f-12157a482792	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+c63cf987-004a-4d16-8aa7-6a8b4550da23	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+134223a0-4364-4656-b70c-66e829728d2a	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+fa58c0e9-2247-4157-a2fe-aeec3f673ef8	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+4fb2e81c-a61c-4661-88e8-6c0bcd2ebd6b	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+8d2b306a-1816-448f-b254-d5d8bf939084	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+fe71fc3c-6b24-4668-9799-1286c0d579b2	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+b583d7bb-dd9f-43f2-833b-e3e30ece1f0e	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+9393518e-24bb-4ca5-8115-66676139692c	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+9eab2289-0d39-4c6d-b6e4-a9228d7f0d7c	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+f1abae3f-5d98-4ad1-9b08-7db87f8ad143	3f102a06-9163-4217-87a7-d87cbbaf7ae3
+f94033d8-f696-4c31-b61d-e162a821361f	cef0254e-49c5-45ae-bee5-d51a42b3f871
+f94033d8-f696-4c31-b61d-e162a821361f	cb04c1b6-c313-4494-ac27-9f091c202fa1
+ad9cdd88-3a52-4e34-bc13-114fa877c5c4	1c30d402-7355-4b9a-8377-5546ecbd1ec7
+fe71fc3c-6b24-4668-9799-1286c0d579b2	b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b
+\.
+
+
+--
+-- Data for Name: Workspace; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."Workspace" (id, name, url, "companySize", "universalTokenLinkId", "avatarUrl", "tasksCreated", admins) FROM stdin;
+b9729bf2-271f-4f02-ac94-9ef7c5ca8f5b	Testing	testing	\N	\N	\N	0	{fe71fc3c-6b24-4668-9799-1286c0d579b2}
+3f102a06-9163-4217-87a7-d87cbbaf7ae3	Squared	squared	11	\N	\N	313	{7b00df7f-35b9-4053-940e-65ae1ceb0f1f}
+1c30d402-7355-4b9a-8377-5546ecbd1ec7	Yaryna	yaryna	\N	\N	\N	0	{ad9cdd88-3a52-4e34-bc13-114fa877c5c4}
+cef0254e-49c5-45ae-bee5-d51a42b3f871	Test	test	\N	\N	\N	1	{f94033d8-f696-4c31-b61d-e162a821361f}
+cb04c1b6-c313-4494-ac27-9f091c202fa1	hello	hello	\N	\N	\N	0	{f94033d8-f696-4c31-b61d-e162a821361f}
+\.
+
+
+--
+-- Data for Name: WorkspaceRepositories; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public."WorkspaceRepositories" (id, "workspaceId", "repoId") FROM stdin;
+\.
+
+
+--
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: default
+--
+
+COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
+4c484570-068c-45b8-9342-b0e611ddda19	92cb12c7ccd442b560c02012db4e9523dc34f9cff444c4eb593ba19d3eb9190d	2024-10-19 02:46:39.94819+00	20241012045128_init_migration		\N	2024-10-19 02:46:39.94819+00	0
+88659bd6-fc82-4df7-a216-68c47ca38aca	6abdb51cf47aa8c9b677677bf45dbfb497d4d444785477aaaf5819b55a9b5039	2024-10-19 02:46:46.960152+00	20241012045159_add_retrospective_items	\N	\N	2024-10-19 02:46:46.705452+00	1
+42a4a7f5-196d-4e91-810b-d115c3600a8a	b30786308cc0546b062707922065628662cdfaf4b3b05b4cdf5da17ea28b0a4e	2024-10-19 02:46:47.14048+00	20241012045543_remove_extra_sprint_id	\N	\N	2024-10-19 02:46:47.009473+00	1
+7ebfcb38-2b58-4461-8ba4-1c2930d0796e	c60451ff81892aadf854564431f717fd7ab9d3bf9f9fbe95f7e37950a7a0be5f	2024-10-19 02:52:33.840275+00	20241019015740_added_author_id_to_saved	\N	\N	2024-10-19 02:52:33.700711+00	1
+0039f923-c2b7-4ba3-ba5e-0a37eea8de04	e49e440a57e74ef2d34a5a8e832c67dba2dec71d2013e691c4b1fb05988d86ce	2024-10-31 09:01:07.140635+00	20241028213502_add_retro_type_enum	\N	\N	2024-10-31 09:01:06.965616+00	1
+a5ee6ceb-fad0-45fb-901b-cc448a6024d7	b381bfce85f306f4f7c85bd90d5cbb487d734139812990cd375d818be4369b66	2024-10-31 09:01:52.404615+00	20241020211551_add_team_effort	\N	\N	2024-10-31 09:01:52.263101+00	1
+5a2b57ca-085d-4da3-b319-f95675f1d215	96723a2ca7f7ce2d61a01d5ffc6b240f231b4d5cd953e046a9b6ea60c606dd10	2024-11-02 21:59:05.563378+00	20241029090249_add_sprint_description	\N	\N	2024-11-02 21:59:05.423154+00	1
+3f12ffd7-3e1e-4b23-8143-5762c5b8bc3f	00d5ec65d1107d3d6bc72c3dd02301869b05b515a61c282c5a632c42d49c070a	2024-11-02 21:59:05.828479+00	20241029230218_update_event_types	\N	\N	2024-11-02 21:59:05.619914+00	1
+\.
+
+
+--
+-- Name: Branch Branch_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Branch"
+    ADD CONSTRAINT "Branch_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Comment Comment_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Comment"
+    ADD CONSTRAINT "Comment_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Commit Commit_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Commit"
+    ADD CONSTRAINT "Commit_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: GithubRepoInfo GithubRepoInfo_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."GithubRepoInfo"
+    ADD CONSTRAINT "GithubRepoInfo_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Label Label_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Label"
+    ADD CONSTRAINT "Label_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Notification Notification_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Notification"
+    ADD CONSTRAINT "Notification_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Project Project_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Project"
+    ADD CONSTRAINT "Project_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: RetrospectiveItem RetrospectiveItem_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."RetrospectiveItem"
+    ADD CONSTRAINT "RetrospectiveItem_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: SavedFilter SavedFilter_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."SavedFilter"
+    ADD CONSTRAINT "SavedFilter_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Sprint Sprint_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Sprint"
+    ADD CONSTRAINT "Sprint_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: TaskEvent TaskEvent_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."TaskEvent"
+    ADD CONSTRAINT "TaskEvent_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Task Task_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Task"
+    ADD CONSTRAINT "Task_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Team Team_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Team"
+    ADD CONSTRAINT "Team_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: UniversalTokenLink UniversalTokenLink_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UniversalTokenLink"
+    ADD CONSTRAINT "UniversalTokenLink_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: UserTeam UserTeam_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UserTeam"
+    ADD CONSTRAINT "UserTeam_pkey" PRIMARY KEY ("userId", "teamId");
+
+
+--
+-- Name: UserWorkspace UserWorkspace_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UserWorkspace"
+    ADD CONSTRAINT "UserWorkspace_pkey" PRIMARY KEY ("userId", "workspaceId");
+
+
+--
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: WorkspaceRepositories WorkspaceRepositories_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."WorkspaceRepositories"
+    ADD CONSTRAINT "WorkspaceRepositories_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: Workspace Workspace_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Workspace"
+    ADD CONSTRAINT "Workspace_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public._prisma_migrations
+    ADD CONSTRAINT _prisma_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: GithubRepoInfo_repoName_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "GithubRepoInfo_repoName_key" ON public."GithubRepoInfo" USING btree ("repoName");
+
+
+--
+-- Name: Task_teamId_identifier_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "Task_teamId_identifier_key" ON public."Task" USING btree ("teamId", identifier);
+
+
+--
+-- Name: Task_workspaceId_identifier_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "Task_workspaceId_identifier_key" ON public."Task" USING btree ("workspaceId", identifier);
+
+
+--
+-- Name: Team_workspaceId_identifier_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "Team_workspaceId_identifier_key" ON public."Team" USING btree ("workspaceId", identifier);
+
+
+--
+-- Name: UniversalTokenLink_workspaceId_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "UniversalTokenLink_workspaceId_key" ON public."UniversalTokenLink" USING btree ("workspaceId");
+
+
+--
+-- Name: User_email_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "User_email_key" ON public."User" USING btree (email);
+
+
+--
+-- Name: WorkspaceRepositories_workspaceId_repoId_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "WorkspaceRepositories_workspaceId_repoId_key" ON public."WorkspaceRepositories" USING btree ("workspaceId", "repoId");
+
+
+--
+-- Name: Workspace_url_key; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE UNIQUE INDEX "Workspace_url_key" ON public."Workspace" USING btree (url);
+
+
+--
+-- Name: teamIdx; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE INDEX "teamIdx" ON public."SavedFilter" USING btree ("teamId");
+
+
+--
+-- Name: workspaceIdx; Type: INDEX; Schema: public; Owner: default
+--
+
+CREATE INDEX "workspaceIdx" ON public."SavedFilter" USING btree ("workspaceId");
+
+
+--
+-- Name: Branch Branch_githubRepoInfoId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Branch"
+    ADD CONSTRAINT "Branch_githubRepoInfoId_fkey" FOREIGN KEY ("githubRepoInfoId") REFERENCES public."GithubRepoInfo"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Branch Branch_taskId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Branch"
+    ADD CONSTRAINT "Branch_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES public."Task"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Comment Comment_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Comment"
+    ADD CONSTRAINT "Comment_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Comment Comment_taskId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Comment"
+    ADD CONSTRAINT "Comment_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES public."Task"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Commit Commit_branchId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Commit"
+    ADD CONSTRAINT "Commit_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES public."Branch"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Commit Commit_taskId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Commit"
+    ADD CONSTRAINT "Commit_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES public."Task"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Label Label_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Label"
+    ADD CONSTRAINT "Label_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Notification Notification_taskId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Notification"
+    ADD CONSTRAINT "Notification_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES public."Task"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Notification Notification_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Notification"
+    ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Notification Notification_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Notification"
+    ADD CONSTRAINT "Notification_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Project Project_teamId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Project"
+    ADD CONSTRAINT "Project_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Team"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Project Project_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Project"
+    ADD CONSTRAINT "Project_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: RetrospectiveItem RetrospectiveItem_actionItemsSprintId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."RetrospectiveItem"
+    ADD CONSTRAINT "RetrospectiveItem_actionItemsSprintId_fkey" FOREIGN KEY ("actionItemsSprintId") REFERENCES public."Sprint"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: RetrospectiveItem RetrospectiveItem_toImproveSprintId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."RetrospectiveItem"
+    ADD CONSTRAINT "RetrospectiveItem_toImproveSprintId_fkey" FOREIGN KEY ("toImproveSprintId") REFERENCES public."Sprint"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: RetrospectiveItem RetrospectiveItem_wentWellSprintId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."RetrospectiveItem"
+    ADD CONSTRAINT "RetrospectiveItem_wentWellSprintId_fkey" FOREIGN KEY ("wentWellSprintId") REFERENCES public."Sprint"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: SavedFilter SavedFilter_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."SavedFilter"
+    ADD CONSTRAINT "SavedFilter_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: SavedFilter SavedFilter_teamId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."SavedFilter"
+    ADD CONSTRAINT "SavedFilter_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Team"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: SavedFilter SavedFilter_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."SavedFilter"
+    ADD CONSTRAINT "SavedFilter_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Sprint Sprint_teamId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Sprint"
+    ADD CONSTRAINT "Sprint_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Team"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: TaskEvent TaskEvent_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."TaskEvent"
+    ADD CONSTRAINT "TaskEvent_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: TaskEvent TaskEvent_taskId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."TaskEvent"
+    ADD CONSTRAINT "TaskEvent_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES public."Task"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Task Task_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Task"
+    ADD CONSTRAINT "Task_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Task Task_parentId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Task"
+    ADD CONSTRAINT "Task_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES public."Task"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Task Task_sprintId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Task"
+    ADD CONSTRAINT "Task_sprintId_fkey" FOREIGN KEY ("sprintId") REFERENCES public."Sprint"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: Task Task_teamId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Task"
+    ADD CONSTRAINT "Task_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Team"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Task Task_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Task"
+    ADD CONSTRAINT "Task_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Team Team_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."Team"
+    ADD CONSTRAINT "Team_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: UniversalTokenLink UniversalTokenLink_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UniversalTokenLink"
+    ADD CONSTRAINT "UniversalTokenLink_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: UserTeam UserTeam_teamId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UserTeam"
+    ADD CONSTRAINT "UserTeam_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Team"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: UserTeam UserTeam_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UserTeam"
+    ADD CONSTRAINT "UserTeam_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: UserWorkspace UserWorkspace_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UserWorkspace"
+    ADD CONSTRAINT "UserWorkspace_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: UserWorkspace UserWorkspace_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."UserWorkspace"
+    ADD CONSTRAINT "UserWorkspace_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: User User_defaultWorkspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_defaultWorkspaceId_fkey" FOREIGN KEY ("defaultWorkspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: WorkspaceRepositories WorkspaceRepositories_repoId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."WorkspaceRepositories"
+    ADD CONSTRAINT "WorkspaceRepositories_repoId_fkey" FOREIGN KEY ("repoId") REFERENCES public."GithubRepoInfo"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: WorkspaceRepositories WorkspaceRepositories_workspaceId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: default
+--
+
+ALTER TABLE ONLY public."WorkspaceRepositories"
+    ADD CONSTRAINT "WorkspaceRepositories_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES public."Workspace"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: default
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: cloud_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE cloud_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO neon_superuser WITH GRANT OPTION;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: cloud_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE cloud_admin IN SCHEMA public GRANT ALL ON TABLES TO neon_superuser WITH GRANT OPTION;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

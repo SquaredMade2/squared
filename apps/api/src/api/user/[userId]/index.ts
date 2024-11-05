@@ -1,6 +1,6 @@
-import type { User } from "@squared/db";
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
+import type { User } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -122,10 +122,10 @@ export function createRoute(): Route<Params> {
 				});
 
 				if (!user) {
-					res.status(500);
+					res.status(404);
 					return {
 						data: null,
-						message: "Failed to delete User",
+						message: "User not found",
 						variant: "destructive",
 					};
 				}

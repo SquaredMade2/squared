@@ -1,4 +1,4 @@
-import type { Sprint, Team, RetrospectiveItem, Task } from "@squared/db";
+import type { Sprint, Team } from "@squared/db";
 
 export type TeamState = {
 	teams: Team[];
@@ -13,28 +13,6 @@ export interface TeamResponse {
 	variant: "default" | "destructive";
 }
 
-export interface SprintResponse {
-	sprint: Sprint | null;
-	message?: string;
-	variant: "default" | "destructive";
-}
-export interface RetrospectiveItemResponse {
-	item: RetrospectiveItem | null;
-	message?: string;
-	variant: "default" | "destructive";
-}
-
-export type InitializeSprintsBody = {
-	count?: number;
-	startDate?: Date;
-};
-
-export type RetrospectiveData = {
-	wentWell: RetrospectiveItem[];
-	toImprove: RetrospectiveItem[];
-	actionItems: RetrospectiveItem[];
-};
-
 type TeamActions = {
 	addTeam: (team: Partial<Team>) => Promise<TeamResponse>;
 	getTeam: (teamId: string) => Promise<TeamResponse>;
@@ -42,35 +20,7 @@ type TeamActions = {
 	updateTeam: (teamId: string, team: Partial<Team>) => Promise<TeamResponse>;
 	deleteTeam: (teamId: string) => Promise<void>;
 	getAllTeams: (workspaceId: string) => Promise<Team[]>;
-	initializeSprints: (
-		teamId: string,
-		body: InitializeSprintsBody,
-	) => Promise<Sprint[]>;
-	getSprints: (teamId: string) => Promise<Sprint[]>;
-	updateSprint: (
-		teamId: string,
-		sprintId: string,
-		sprint: Partial<Sprint>,
-	) => Promise<SprintResponse>;
 	setCurrentSprint: (sprint: Sprint) => void;
-	startNextSprint: (
-		teamId: string,
-		movedTasks: string[],
-		sprintData?: Partial<Sprint>,
-	) => Promise<SprintResponse>;
-	getSprintTasks: (teamId: string, sprintId: string) => Promise<Task[]>;
-	endSprint: (teamId: string, sprintId: string) => Promise<SprintResponse>;
-	addRetrospectiveItem: (
-		sprintId: string,
-		type: "wentWell" | "toImprove" | "actionItems",
-		content: string,
-	) => Promise<RetrospectiveItemResponse>;
-	updateRetrospectiveItemType: (
-		sprintId: string,
-		itemId: string,
-		type: "wentWell" | "toImprove" | "actionItems",
-	) => Promise<RetrospectiveItemResponse>;
-	getRetrospectiveItems: (sprintId: string) => Promise<RetrospectiveData>;
 };
 
 export type TeamStore = TeamState & TeamActions;

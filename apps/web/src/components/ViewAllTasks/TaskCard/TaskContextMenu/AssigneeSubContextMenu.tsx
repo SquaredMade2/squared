@@ -1,36 +1,28 @@
-import { useEffect, useState } from "react";
-import { Check, UserSearch } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import type { ContextMenuProps } from "./interfaces";
-import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
+import { Check, UserSearch } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users, getAllUsers } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
 	useEffect(() => {
-		const fetchUsers = async () => {
-			if (currentWorkspace?.id) {
-				const gotUsers = await getAllUsers(currentWorkspace.id);
-				const foundUser = gotUsers.find((user) => user.id === task.assigneeId);
-				setCurrentUser(foundUser ?? null);
-			}
-		};
-
-		fetchUsers();
-	}, [currentWorkspace?.id, getAllUsers]);
+		const foundUser = users.find((user) => user.id === task.assigneeId);
+		setCurrentUser(foundUser ?? null);
+	}, []);
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
@@ -57,7 +49,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 					{!task.assigneeId || !currentUser ? (
 						<UserSearch className="size-5 text-[#9597AD]" />
 					) : (
-						<Avatar className="size-6 text-xxs mr-2 flex">
+						<Avatar className="size-4 text-xxs mr-2 flex">
 							<AvatarImage src={currentUser.avatarUrl ?? ""} />
 							<AvatarFallback>{getInitials(currentUser.name)}</AvatarFallback>
 						</Avatar>
@@ -72,7 +64,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						onClick={() => handleSelectAssignee(null)}
 					>
 						<div className="flex">
-							<UserSearch className="size-4 mx-1 mr-3" />
+							<UserSearch className="size-5 mx-1 mr-3" />
 							Unassigned
 						</div>
 						{!task.assigneeId && <Check className="w-4 h-4" />}

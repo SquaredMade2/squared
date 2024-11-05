@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import type React from "react";
-import { serialize } from "next-mdx-remote/serialize";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
-import { formatDate } from "date-fns/format";
-import type { Comment } from "@squared/db";
 import { useUserStore } from "@/store";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { toast } from "../ui/use-toast";
 import type { UserAvatar } from "@/store/users";
 import { getInitials } from "@/utils/formatting";
+import type { Comment } from "@squared/db";
+import { formatDate } from "date-fns/format";
+import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
+import { useEffect, useState } from "react";
+import type React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { toast } from "../ui/use-toast";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";
@@ -113,12 +113,10 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 		};
 		const JSXCommentData = async () => {
 			try {
-				const formattedComment = comment.comment.replace(
-					/\n{2,}/g,
-					"<br/><br/> \n",
-				);
+				const formattedComment = comment.comment
+					.replace(/\n{2,}/g, "<br /><br />")
+					.replace(/\n/g, "<br />\n");
 
-				console.log(formattedComment);
 				const mdxSource = await serialize(formattedComment);
 				setCommentData(mdxSource);
 			} catch (err) {

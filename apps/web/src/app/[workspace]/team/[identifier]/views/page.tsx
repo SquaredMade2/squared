@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useFilterStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
+	CardContent,
+	CardDescription,
 	CardHeader,
 	CardTitle,
-	CardDescription,
-	CardContent,
 } from "@/components/ui/card";
-import { PlusCircle } from "lucide-react";
-import type { SavedFilter } from "@/store/filters";
 import { useTeams } from "@/hooks/useTeams";
+import { useFilterStore } from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ViewsPage() {
 	const router = useRouter();

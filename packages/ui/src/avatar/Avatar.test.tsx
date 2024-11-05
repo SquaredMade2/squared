@@ -1,6 +1,6 @@
-import { axe } from "jest-axe";
 import type { RenderResult } from "@testing-library/react";
 import { render, waitFor } from "@testing-library/react";
+import { axe } from "jest-axe";
 import * as Avatar from "../avatar";
 
 const ROOT_TEST_ID = "avatar-root";

@@ -1,12 +1,12 @@
 "use client";
-import { Draggable } from "@hello-pangea/dnd";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
-import TaskContextMenu from "./TaskContextMenu";
-import TaskList from "./TaskList";
-import TaskGrid from "./TaskGrid";
-import type { TaskCardProps } from "./interfaces";
+import { Draggable } from "@hello-pangea/dnd";
 import type { Task } from "@squared/db";
+import TaskContextMenu from "./TaskContextMenu";
+import TaskGrid from "./TaskGrid";
+import TaskList from "./TaskList";
+import type { TaskCardProps } from "./interfaces";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);

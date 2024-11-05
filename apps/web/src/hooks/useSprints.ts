@@ -1,8 +1,10 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import { sprintService } from "@/lib/services";
+import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
+import * as context from "@squared/context";
+import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function useSprints() {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
@@ -14,13 +16,10 @@ export function useSprints() {
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
 	const { getWorkspace } = useWorkspaceStore((state) => state);
-	const {
-		getAllTeams,
-		getSprints,
-		getSprintTasks,
-		setCurrentSprint,
-		currentSprint,
-	} = useTeamStore((state) => state);
+	const { getAllTeams, setCurrentSprint, currentSprint } = useTeamStore(
+		(state) => state,
+	);
+	const { user } = useAuthStore((state) => state);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -36,8 +35,12 @@ export function useSprints() {
 				}
 				setWorkspace(workspace);
 
+				if (!user) {
+					throw new Error("User not found");
+				}
+
 				// Fetch team data
-				const teams = await getAllTeams(workspace.id);
+				const teams = await getAllTeams(user.id);
 				const foundTeam = teams.find(
 					(team) => team.identifier === teamIdentifier,
 				);
@@ -46,7 +49,9 @@ export function useSprints() {
 				}
 				setTeam(foundTeam);
 
-				const sprints = await getSprints(foundTeam.id);
+				const sprints = await sprintService.getSprints(context.TODO, {
+					teamId: foundTeam.id,
+				});
 				if (!sprints.length) {
 					throw new Error("No sprints found");
 				}
@@ -58,7 +63,9 @@ export function useSprints() {
 				if (!foundSprint) {
 					throw new Error("No active sprint found");
 				}
-				const tasks = await getSprintTasks(foundTeam.id, foundSprint.id);
+				const tasks = await sprintService.getSprintTasks(context.TODO, {
+					sprintId: foundSprint.id,
+				});
 				setSprintTasks(tasks);
 				setCurrentSprint(foundSprint);
 

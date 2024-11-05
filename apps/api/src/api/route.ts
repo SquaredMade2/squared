@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { ParsedQs } from "qs";
 
 export type APIResponse<Type> = {
@@ -6,7 +6,6 @@ export type APIResponse<Type> = {
 	message?: string;
 	variant: "default" | "destructive";
 };
-
 export type Route<P = Record<string, string>> = {
 	GET?: (
 		res: Response,

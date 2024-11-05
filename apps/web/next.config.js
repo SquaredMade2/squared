@@ -4,6 +4,7 @@ const withMDX = require('@next/mdx')
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@repo/ui"],
+  productionBrowserSourceMaps: true,
   output: "standalone",
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx']
 };

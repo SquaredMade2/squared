@@ -1,7 +1,7 @@
+import { hideOthers } from "aria-hidden";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { clamp } from "../number";
-import { composeEventHandlers } from "../primitive";
+import { RemoveScroll } from "react-remove-scroll";
 import { createCollection } from "../collection";
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
@@ -10,9 +10,11 @@ import { DismissableLayer } from "../dismissable-layer";
 import { useFocusGuards } from "../focus-guards";
 import { FocusScope } from "../focus-scope";
 import { useId } from "../id";
+import { clamp } from "../number";
 import * as PopperPrimitive from "../popper";
 import { createPopperScope } from "../popper";
 import { Portal as PortalPrimitive } from "../portal";
+import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
 import { Slot } from "../slot";
 import { useCallbackRef } from "../use-callback-ref";
@@ -20,8 +22,6 @@ import { useControllableState } from "../use-controllable-state";
 import { useLayoutEffect } from "../use-layout-effect";
 import { usePrevious } from "../use-previous";
 import { VisuallyHidden } from "../visually-hidden";
-import { hideOthers } from "aria-hidden";
-import { RemoveScroll } from "react-remove-scroll";
 
 import type { Scope } from "../context";
 

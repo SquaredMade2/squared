@@ -1,11 +1,11 @@
 import React from "react";
 import { createContextScope } from "../context";
+import { useDirection } from "../direction";
 import { Primitive } from "../react-primitive";
 import * as RovingFocusGroup from "../roving-focus";
 import { createRovingFocusGroupScope } from "../roving-focus";
 import { Toggle } from "../toggle";
 import { useControllableState } from "../use-controllable-state";
-import { useDirection } from "../direction";
 
 import type { Scope } from "../context";
 

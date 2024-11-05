@@ -23,9 +23,17 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "array",
-								items: {
-									$ref: "#/components/schemas/User",
+								type: "object",
+								properties: {
+									data: {
+										type: "array",
+										items: {
+											$ref: "#/components/schemas/User",
+										},
+									},
+									variant: {
+										type: "string",
+									},
 								},
 							},
 						},
@@ -33,9 +41,23 @@ export default {
 				},
 				404: {
 					description: "Users not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},

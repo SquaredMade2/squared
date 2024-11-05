@@ -1,8 +1,8 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
-import { Status, Priority, type User, type Label } from "@squared/db";
-import * as z from "zod";
+import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
+import * as z from "zod";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -47,7 +47,7 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 		: workspaceName;
 };
 
-export const getInitials = (name: string): string => {
+export const getInitials = (name?: string): string => {
 	if (!name || typeof name !== "string") return "";
 
 	const words = name.trim().split(/\s+/);
@@ -206,13 +206,12 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 export const formatFilterName = async (
 	filter: FilterCondition,
 	labels: Label[],
-	users: Promise<User[]>,
+	users: User[],
 ): Promise<{ name: string; value: string }> => {
 	if (!filter.value) return { name: filter.field, value: "" };
 	switch (filter.field) {
 		case "assigneeId": {
-			const allUsers = await users;
-			const filteredUsers = allUsers.filter(
+			const filteredUsers = users.filter(
 				(u) => Array.isArray(filter.value) && filter.value.includes(u.id),
 			);
 			return {

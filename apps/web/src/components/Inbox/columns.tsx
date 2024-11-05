@@ -1,13 +1,4 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "../ui/checkbox";
-import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
-import { formatDistanceToNow } from "date-fns";
-import {
-	useNotificationStore,
-	type NotificationTask,
-} from "@/store/notifications";
-import { Button } from "../ui/button";
-import { Check, BellOff, Bookmark, BookmarkMinus, Trash2 } from "lucide-react";
+import { eventService } from "@/lib/services";
 import {
 	useAuthStore,
 	useTaskStore,
@@ -15,13 +6,23 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import { useRouter } from "next/navigation";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { TooltipContent } from "@repo/ui/tooltip";
+import { TODO } from "@squared/context";
+import type { Notification, Task, Workspace } from "@squared/db";
+import type { ColumnDef } from "@tanstack/react-table";
+import { formatDistanceToNow } from "date-fns";
+import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
-export const columns: ColumnDef<NotificationTask>[] = [
+export const columns: ColumnDef<
+	Notification & { Task: Task; Workspace: Workspace }
+>[] = [
 	{
 		id: "select",
 		cell: ({ row }) => (
@@ -52,9 +53,9 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				(state) => state,
 			);
 			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
-			const { updateNotification } = useNotificationStore((state) => state);
 			const { getAllTasks } = useTaskStore((state) => state);
 			const { userAvatars } = useUserStore((state) => state);
+			const { user } = useAuthStore((state) => state);
 			const {
 				identifier: taskIdentifier,
 				title: taskName,
@@ -75,15 +76,18 @@ export const columns: ColumnDef<NotificationTask>[] = [
 			);
 
 			const handleClick = async () => {
-				updateNotification(row.original.id, { read: true });
+				eventService.toggleNotification(TODO, {
+					notificationIds: [row.original.id],
+					read: true,
+				});
 				if (currentWorkspace?.id === workspaceId) {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 					);
 				} else {
 					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
-					if (newWorkspace) {
-						const teams = await getAllTeams(newWorkspace.id);
+					if (newWorkspace && user) {
+						const teams = await getAllTeams(user.id);
 						const team = teams.find((t) => t.id === teamId);
 						if (team?.id === currentTeam?.id) {
 							router.push(
@@ -150,19 +154,21 @@ export const columns: ColumnDef<NotificationTask>[] = [
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateNotification, deleteNotification } = useNotificationStore(
-				(state) => state,
-			);
 			const { updateUser, getUser } = useUserStore((state) => state);
 			const { user, setUser } = useAuthStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {
-				await updateNotification(row.original.id, { dismissed: true });
+				await eventService.toggleNotification(TODO, {
+					notificationIds: [row.original.id],
+					dismissed: true,
+				});
 			};
 
 			const handleDelete = async () => {
-				await deleteNotification(row.original.id);
+				await eventService.deleteNotification(TODO, {
+					notificationIds: [row.original.id],
+				});
 			};
 
 			const toggleSubscribe = async () => {

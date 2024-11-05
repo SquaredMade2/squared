@@ -99,7 +99,7 @@
 	}
 
 	.markdown-content p {
-		@apply text-base mb-4 text-gray-600 dark:text-gray-400;
+		@apply text-base mb-4 text-gray-600 dark:text-gray-200;
 	}
 
 	.markdown-content ul,

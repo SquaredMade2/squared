@@ -1,8 +1,8 @@
-import { Bold, Heading, Italic, Link } from "lucide-react";
-import type { TextEditorToolBarProps } from "./interfaces";
-import { Button } from "../ui/button";
 import { useModalStore } from "@/store";
+import { Bold, Heading, Italic, Link } from "lucide-react";
+import { Button } from "../ui/button";
 import LinkModal from "./LinkModal";
+import type { TextEditorToolBarProps } from "./interfaces";
 
 const TextEditorToolBar = ({
 	createBoldLeaf,

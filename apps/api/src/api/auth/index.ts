@@ -1,12 +1,12 @@
-import type { User } from "@squared/db";
 import { prisma } from "@/api";
-import jwt from "jsonwebtoken";
-import type { Route, APIResponse } from "@/api/route";
-import { comparePassword, hashPassword, returnToken } from "./helpers";
-import { sendMail } from "@/utils/mail";
+import type { APIResponse, Route } from "@/api/route";
 import { joinWorkspace } from "@/utils/joinWorkspace";
+import { sendMail } from "@/utils/mail";
 import { verifyEmailTemplate } from "@/utils/templates";
+import type { User } from "@squared/db";
 import createCustomLogger from "@squared/logger";
+import jwt from "jsonwebtoken";
+import { comparePassword, hashPassword, returnToken } from "./helpers";
 
 type Body = {
 	provider: "credentials" | "google" | "github";

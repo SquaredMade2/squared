@@ -1,6 +1,6 @@
-import type { SavedFilter } from "@squared/db";
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
+import type { SavedFilter } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -19,10 +19,10 @@ export function createRoute(): Route<Params> {
 					where: { workspaceId },
 				});
 
-				if (!filters) {
+				if (filters.length === 0) {
 					return {
-						data: filters,
-						message: "Teams not found",
+						data: null,
+						message: "Filters not found",
 						variant: "destructive",
 					};
 				}

@@ -23,8 +23,3 @@ export type TaskColumnTitleProps = {
 	numberOfTasks: number;
 	setShowTasks: (input: boolean) => void;
 };
-
-export interface HideStatusProps {
-	setShowTasks: (input: boolean) => void;
-	showTasks: boolean;
-}

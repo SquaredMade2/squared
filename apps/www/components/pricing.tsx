@@ -1,9 +1,9 @@
 "use client";
-import { IconCircleCheckFilled } from "@tabler/icons-react";
-import { cn } from "@/lib/utils";
 import { tiers } from "@/constants/tier";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { Button } from "./button";
 
 export function Pricing() {

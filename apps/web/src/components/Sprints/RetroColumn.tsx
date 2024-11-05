@@ -1,17 +1,17 @@
-import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import type { RetrospectiveItem } from "@squared/db";
+import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
 import AddRetroItemModal from "./AddRetroItemModal";
 
-type ColumnType = "wentWell" | "toImprove" | "actionItems";
+type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
 
 interface RetroColumnProps {
 	title: string;
-	type: ColumnType;
-	items: RetrospectiveItem[];
-	onAddItem: (type: ColumnType, content: string) => void;
+	type: RetrospectiveItemType;
+	items: RetroItem[];
+	onAddItem: (type: RetrospectiveItemType, content: string) => void;
 }
 
 export const RetroColumn = ({

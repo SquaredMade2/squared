@@ -1,25 +1,25 @@
-import { usePathname, useRouter } from "next/navigation";
-import { useWorkspaceStore, useTeamStore, useViewStore } from "@/store";
-import {
-	Box,
-	Copy,
-	Plus,
-	Circle,
-	Search,
-	LogOut,
-	Trash2,
-	Layers3,
-	Settings,
-	ArrowRight,
-	MoveDiagonal,
-	ChevronRight,
-	ClipboardCopy,
-	ArrowLeftRight,
-	PanelLeft,
-} from "lucide-react";
+import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import { useAuthStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
 import type { Team } from "@squared/db";
+import {
+	ArrowLeftRight,
+	ArrowRight,
+	Box,
+	ChevronRight,
+	Circle,
+	ClipboardCopy,
+	Copy,
+	Layers3,
+	LogOut,
+	MoveDiagonal,
+	PanelLeft,
+	Plus,
+	Search,
+	Settings,
+	Trash2,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import type { SearchbarStructure } from "./interfaces";
 
 export class CommandSchema {

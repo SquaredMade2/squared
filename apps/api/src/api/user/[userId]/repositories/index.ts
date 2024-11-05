@@ -1,5 +1,5 @@
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -21,7 +21,7 @@ export function createRoute(): Route<Params> {
 
 				if (!user || !user.githubUsername) {
 					return {
-						data: [],
+						data: null,
 						message: "GitHub username not found",
 						variant: "destructive",
 					};
@@ -44,7 +44,7 @@ export function createRoute(): Route<Params> {
 				logger.error("Error fetching connected repositories: %0", error);
 				res.status(500);
 				return {
-					data: [],
+					data: null,
 					message: `Could not fetch connected repositories: ${error}`,
 					variant: "destructive",
 				};

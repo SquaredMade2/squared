@@ -1,6 +1,6 @@
-import type { Workspace } from "@squared/db";
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
+import type { Workspace } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -31,7 +31,7 @@ export function createRoute(): Route<Params> {
 						workspaces.map((workspace) => workspace.workspace),
 					);
 
-				if (!userWorkspaces) {
+				if (userWorkspaces.length === 0) {
 					return {
 						data: null,
 						message: "Workspace not found",

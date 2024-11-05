@@ -1,11 +1,11 @@
-import { Container } from "@/components/container";
 import { Background } from "@/components/background";
+import { Container } from "@/components/container";
 import { Heading } from "@/components/heading";
-import { Subheading } from "@/components/subheading";
 import { Pricing } from "@/components/pricing";
-import { PricingTable } from "./pricing-table";
+import { Subheading } from "@/components/subheading";
 // import { Companies } from "@/components/companies"; -- Disabled until we finalize clients
 import type { Metadata } from "next";
+import { PricingTable } from "./pricing-table";
 
 export const metadata: Metadata = {
 	title: "Pricing - Squared",

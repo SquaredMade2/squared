@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
 
 export default function Home() {
 	const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ export default function Home() {
 				return;
 			}
 
-			const currentTeam = await getAllTeams(currentWorkspace.id);
+			const currentTeam = await getAllTeams(user.id);
 			if (currentTeam) {
 				router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
 			}

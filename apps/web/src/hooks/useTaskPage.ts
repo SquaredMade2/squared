@@ -1,7 +1,8 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useTaskStore, useTeamStore, useUserStore } from "@/store";
+import { useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
@@ -10,8 +11,10 @@ export function useTaskPage() {
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { getTaskByIdentifier, tasks } = useTaskStore((state) => state);
-	const { getAllUsers } = useUserStore((state) => state);
+	const { getTaskByIdentifier, tasks, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
+	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
 	);
@@ -24,7 +27,6 @@ export function useTaskPage() {
 				if (!currentWorkspace) {
 					throw new Error("Workspace not found");
 				}
-				await getAllUsers(currentWorkspace.id);
 
 				// Fetch team data
 				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
@@ -38,8 +40,9 @@ export function useTaskPage() {
 					currentWorkspace.id,
 					parseParams(taskIdentifier),
 				);
-				if (pageTask) {
+				if (pageTask?.task) {
 					setTask(pageTask.task);
+					setCurrentTask(pageTask.task);
 				}
 
 				setIsLoading(false);
@@ -55,7 +58,6 @@ export function useTaskPage() {
 		taskIdentifier,
 		getTaskByIdentifier,
 		workspaceLoading,
-		getAllUsers,
 		teams,
 	]);
 

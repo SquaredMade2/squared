@@ -1,26 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { format, differenceInDays } from "date-fns";
-import { useParams } from "next/navigation";
-import { useSprints } from "@/hooks/useSprints";
-import { useTaskStore, useTeamStore } from "@/store";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { toast } from "@/components/ui/use-toast";
 import {
 	SprintError,
 	SprintLoading,
 	SprintNotFound,
 } from "@/components/Sprints";
+import { TransferTaskModal } from "@/components/Sprints/TransferTaskModal";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -31,22 +16,39 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { TransferTaskModal } from "@/components/Sprints/TransferTaskModal";
-import { parseParams } from "@/utils/parseParams";
+import { Button } from "@/components/ui/button";
 import {
-	LineChart,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { toast } from "@/components/ui/use-toast";
+import { useSprints } from "@/hooks/useSprints";
+import { sprintService } from "@/lib/services";
+import { useTaskStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
+import type { Sprint, Task } from "@squared/db";
+import { differenceInDays, format } from "date-fns";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import {
+	Cell,
 	Line,
+	LineChart,
+	Pie,
+	PieChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
 	XAxis,
 	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-	PieChart,
-	Pie,
-	Cell,
-	ReferenceLine,
 } from "recharts";
-import Link from "next/link";
-import type { Task, Sprint } from "@squared/db";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -55,7 +57,6 @@ export default function EndSprintPage() {
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
 	const { getAllTasks } = useTaskStore((state) => state);
-	const { endSprint, getSprintTasks } = useTeamStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
@@ -81,7 +82,9 @@ export default function EndSprintPage() {
 		setSprint(currentSprint || null);
 		if (currentSprint && team) {
 			const loadSprintTasks = async () => {
-				const tasks = await getSprintTasks(team?.id, parseParams(sprintId));
+				const tasks = await sprintService.getSprintTasks(TODO, {
+					sprintId: parseParams(sprintId),
+				});
 				setTasks(tasks);
 			};
 			loadSprintTasks();
@@ -144,8 +147,10 @@ export default function EndSprintPage() {
 			if (newSprint) {
 				setShowTaskSelectionModal(true);
 			} else {
-				const response = await endSprint(team.id, sprint.id);
-				toast(response);
+				await sprintService.endSprint(TODO, {
+					sprintId: sprint.id,
+				});
+				toast({ title: "Sprint ended successfully" });
 				router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
 			}
 		} catch (error) {

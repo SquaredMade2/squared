@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
 	Dialog,
 	DialogContent,
@@ -11,11 +8,15 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { sprintService } from "@/lib/services";
+import { TODO } from "@squared/context";
 import type { Task, Team } from "@squared/db";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { ScrollArea } from "../ui/scroll-area";
-import { useTeamStore } from "@/store";
-import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 
 interface TransferTaskModalProps {
@@ -37,7 +38,6 @@ export const TransferTaskModal = ({
 }: TransferTaskModalProps) => {
 	const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
 	const [sprintName, setSprintName] = useState(initialSprintName);
-	const { startNextSprint } = useTeamStore((state) => state);
 	const router = useRouter();
 	const { toast } = useToast();
 
@@ -51,13 +51,13 @@ export const TransferTaskModal = ({
 
 	const handleConfirm = async () => {
 		if (!team) return;
-		const response = await startNextSprint(
-			team.id,
-			selectedTasks.map((t) => t.id),
-			{
+		const response = await sprintService.startNextSprint(TODO, {
+			teamId: team.id,
+			movedTasks: selectedTasks.map((t) => t.id),
+			sprintData: {
 				name: sprintName,
 			},
-		);
+		});
 		toast(response);
 		router.push(redirectUrl);
 		onClose();

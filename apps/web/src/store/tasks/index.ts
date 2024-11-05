@@ -1,10 +1,10 @@
-import { createStore } from "zustand/vanilla";
+import type { Task } from "@squared/db";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
-import type { TaskState, TaskStore, TaskResponse } from "./interfaces";
-import type { Task } from "@squared/db";
+import { createStore } from "zustand/vanilla";
 import type { ApiReturnType } from "../interfaces";
+import type { TaskResponse, TaskState, TaskStore } from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -111,10 +111,10 @@ export const createTaskStore = (
 					}
 
 					try {
-						const response: { data: ApiReturnType<Task> } = await axios.get(
-							apiString(taskId),
-						);
-						return { ...response.data, task: response.data.data };
+						const { data: response }: { data: ApiReturnType<Task> } =
+							await axios.get(apiString(taskId));
+						const { data: task, ...rest } = response;
+						return { ...rest, task };
 					} catch (error) {
 						return {
 							task: null,
@@ -168,15 +168,16 @@ export const createTaskStore = (
 							`${process.env.NEXT_PUBLIC_SERVER}/api/team/${teamId}/sprints/${sprintId}/tasks`,
 							{ type },
 						);
-						const { tasks: currentTasks } = get();
-						if (response.data.data) {
-							const updatedTasks = currentTasks.map((task) => {
-								if (response.data.data?.includes(task)) {
-									return { ...task, sprintId };
-								}
-								return task;
-							});
-							set({ tasks: updatedTasks });
+						const { data: updatedTasks } = response.data;
+						if (updatedTasks) {
+							set((state) => ({
+								tasks: state.tasks.map((task) => {
+									const updatedTask = updatedTasks.find(
+										(t) => t.id === task.id,
+									);
+									return updatedTask ? updatedTask : task;
+								}),
+							}));
 						}
 						return response.data;
 					} catch (error) {

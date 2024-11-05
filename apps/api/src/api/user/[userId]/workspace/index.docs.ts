@@ -23,9 +23,17 @@ export default {
 					content: {
 						"application/json": {
 							schema: {
-								type: "array",
-								items: {
-									$ref: "#/components/schemas/Workspace",
+								type: "object",
+								properties: {
+									data: {
+										type: "array",
+										items: {
+											$ref: "#/components/schemas/Workspace",
+										},
+									},
+									variant: {
+										type: "string",
+									},
 								},
 							},
 						},
@@ -33,9 +41,23 @@ export default {
 				},
 				404: {
 					description: "Workspaces not found",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InvalidError",
+							},
+						},
+					},
 				},
 				500: {
 					description: "Internal server error",
+					content: {
+						"application/json": {
+							schema: {
+								$ref: "#/components/schemas/InternalServerError",
+							},
+						},
+					},
 				},
 			},
 		},

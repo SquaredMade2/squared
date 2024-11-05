@@ -1,13 +1,13 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreatedByInformation, UpdatedByInformation } from ".";
-import TextEditor from "../TextEditor";
-import { useCommentStore } from "@/store";
-import CommentCard from "./CommentCard";
-import { useEffect } from "react";
-import { toast } from "../ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { useCommentStore } from "@/store";
+import { useEffect } from "react";
+import { CreatedByInformation } from ".";
+import TextEditor from "../TextEditor";
+import { toast } from "../ui/use-toast";
+import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
 	const comments = useCommentStore((state) => state.comments);
@@ -39,7 +39,6 @@ export const EventTabs = () => {
 			<TabsContent value="activity">
 				<div className="flex flex-col bg-card rounded-md text-sm">
 					<CreatedByInformation />
-					<UpdatedByInformation />
 				</div>
 			</TabsContent>
 			<TabsContent value="comments">

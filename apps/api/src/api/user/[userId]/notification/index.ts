@@ -1,6 +1,6 @@
-import type { Notification, Task, User } from "@squared/db";
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
+import type { Notification, Task, User } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -33,7 +33,6 @@ export function createRoute(): Route<Params> {
 						where: { userId },
 						include: {
 							Task: true,
-							Workspace: true,
 						},
 					});
 

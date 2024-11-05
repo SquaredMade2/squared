@@ -1,6 +1,5 @@
-import type React from "react";
-import type { Node, NodeEntry } from "slate";
 import type { Task } from "@squared/db";
+import type { Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
-import { cn } from "@/utils/cn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -17,52 +15,48 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import type { ButtonProps } from "./interfaces";
-import { ScrollArea } from "../../ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTaskStore, useUserStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
+import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
+import { useState } from "react";
 
-const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
+const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const { getAllUsers, users } = useUserStore((state) => ({
-		getAllUsers: state.getAllUsers,
-		users: state.users,
-	}));
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const assigneeName = currentTask ? currentTask.assigneeName : "";
-	const assigneeId = currentTask ? currentTask.assigneeId : "";
+	// Move these to a custom hook or memoize if needed
+	const updateTask = useTaskStore((state) => state.updateTask);
+	const users = useUserStore((state) => state.users);
+	if (!currentTask) return null;
+
+	// Derive values from props instead of state
+	const taskId = currentTask?.id ?? "";
+	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
-
-	useEffect(() => {
-		const fetchUsers = async () => {
-			if (currentWorkspace?.id) {
-				await getAllUsers(currentWorkspace.id);
-			}
-		};
-
-		fetchUsers();
-	}, [currentWorkspace?.id, getAllUsers]);
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			await updateTask(taskId, { assigneeId: null, assigneeName: null });
+			setCurrentTask({ ...currentTask, assigneeId: null, assigneeName: null });
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			if (currentTask) {
-				await updateTask(taskId, {
-					assigneeId: selectedUser.id,
-					assigneeName: selectedUser.name,
-				});
-			}
-			// await getTaskEvents(taskId);
+			await updateTask(taskId, {
+				assigneeId: selectedUser.id,
+				assigneeName: selectedUser.name,
+			});
+			setCurrentTask({
+				...currentTask,
+				assigneeId: selectedUser.id,
+				assigneeName: selectedUser.name,
+			});
 		}
+		setOpen(false);
 	};
 
 	return (
@@ -119,7 +113,7 @@ const AssigneeCombobox = ({ currentTask }: ButtonProps) => {
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
-										<span className="w-2/3 truncate ml-2">{user.username}</span>
+										<span className="w-2/3 truncate ml-2">{user.name}</span>
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",

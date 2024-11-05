@@ -1,12 +1,12 @@
 import * as React from "react";
-import { composeEventHandlers } from "../primitive";
 import { composeRefs } from "../compose-refs";
 import { createContextScope } from "../context";
-import { useControllableState } from "../use-controllable-state";
-import { Primitive } from "../react-primitive";
+import { useId } from "../id";
 import * as MenuPrimitive from "../menu";
 import { createMenuScope } from "../menu";
-import { useId } from "../id";
+import { composeEventHandlers } from "../primitive";
+import { Primitive } from "../react-primitive";
+import { useControllableState } from "../use-controllable-state";
 
 import type { Scope } from "../context";
 
