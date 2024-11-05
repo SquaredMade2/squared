@@ -13,13 +13,29 @@ import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
 
+const priorityOrder = [
+	Priority.noPriority,
+	Priority.low,
+	Priority.medium,
+	Priority.high,
+	Priority.urgent,
+];
+
+const statusOrder = [
+	Status.backlog,
+	Status.todo,
+	Status.inProgress,
+	Status.inReview,
+	Status.done,
+	Status.canceled,
+	Status.archived,
+];
+
 const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
-	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
-	const { taskOrder } = displayOptions;
-	const { orderBy, orderAscending } = taskOrder;
+	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { tasks: allTasks } = useTaskStore((state) => state);
 
 	const getParentTaskIds = () => {
@@ -30,24 +46,6 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			)
 			.map((t) => t.parentId);
 	};
-
-	const priorityOrder = [
-		Priority.noPriority,
-		Priority.low,
-		Priority.medium,
-		Priority.high,
-		Priority.urgent,
-	];
-
-	const statusOrder = [
-		Status.backlog,
-		Status.todo,
-		Status.inProgress,
-		Status.inReview,
-		Status.done,
-		Status.canceled,
-		Status.archived,
-	];
 
 	const orderTasks = (tasks: Task[]): Task[] => {
 		return tasks.sort((a, b) => {
@@ -100,25 +98,26 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const renderTaskWithSubtasks = (task: Task, index: number) => {
 		const parentTaskIds = getParentTaskIds();
 		const isParentTask = parentTaskIds.includes(task.id);
-		const isSubtask = task.parentId !== null;
 		const isSubtaskWithParent = parentTaskIds.includes(task.parentId);
+
+		if (isSubtaskWithParent) return; // skip rendering for subtask with parent in same group
 		if (isParentTask) {
-			const subtasksForParent = tasks.filter((t) => t.parentId === task.id);
+			const subtasks = tasks.filter((t) => t.parentId === task.id);
 			return (
 				<div
 					key={task.id}
 					className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 				>
 					<TaskCard task={task} index={index} location={"dashboard"} />
-					{subtasksForParent.length > 0 && displayOptions.showSubTasks && (
+					{subtasks.length > 0 && displayOptions.showSubTasks && (
 						<div
-							className={`mt-1 ${
+							className={`mt-1 bg-secondary dark:bg-secondary/30 ${
 								isListView
-									? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
-									: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+									? "w-full rounded-b-lg px-2 pb-2"
+									: "w-72 rounded-lg p-2"
 							}`}
 						>
-							{subtasksForParent.map((subtask, subIndex) => (
+							{subtasks.map((subtask, subIndex) => (
 								<TaskCard
 									key={subtask.id}
 									task={subtask}
@@ -132,19 +131,20 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				</div>
 			);
 		}
-		if (isSubtask) {
-			if (isSubtaskWithParent) return;
-			//render subtask in a different group from parent task
+		//render subtask in a different group from parent task
+		if (task.parentId && !isSubtaskWithParent) {
 			const parentTask = allTasks.find((t) => t.id === task.parentId);
 			return (
 				<div
-					className={`mt-1 ${
+					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
 						isListView
-							? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
-							: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
+							? "w-full rounded-b-lg px-2 pb-2 "
+							: "w-72 rounded-lg p-2"
 					}`}
 				>
-					<span className="text-">
+					<span
+						className={`text-accent-foreground ${isListView ? "ml-10" : "ml-2"}`}
+					>
 						{parentTask?.identifier}: {parentTask?.title}
 					</span>
 					<TaskCard
@@ -177,7 +177,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				title={group}
 				showTasks={showTasks}
 				setShowTasks={setShowTasks}
-				numberOfTasks={numberOfTasks}
+				numberOfTasks={tasks.length}
 				isListView={isListView}
 			/>
 			<Droppable droppableId={group}>
@@ -206,9 +206,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 							}
 						>
 							{showTasks &&
-								orderedTasks
-									// .filter((task) => !task.parentId)
-									.map((task, index) => renderTaskWithSubtasks(task, index))}
+								orderedTasks.map((task, index) =>
+									renderTaskWithSubtasks(task, index),
+								)}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
