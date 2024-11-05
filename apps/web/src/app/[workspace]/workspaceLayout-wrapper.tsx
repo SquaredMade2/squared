@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/components/NavBars";
+import { SidebarNav } from "@/components/Sidebar";
 import { useViewStore } from "@/store";
 import type { ViewPath } from "@/store/views";
 import { usePathname } from "next/navigation";
@@ -44,7 +44,7 @@ export default function WorkspaceLayoutWrapper({
 
 	return (
 		<div className="flex w-full overflow-hidden relative">
-			{isSubdirectory && <Navbar />}
+			{isSubdirectory && <SidebarNav />}
 			<main
 				className={`flex flex-grow overflow-hidden ${isSubdirectory ? "" : "w-full"}`}
 			>
