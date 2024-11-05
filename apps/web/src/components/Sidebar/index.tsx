@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button";
 import {
 	Sidebar,
-	SidebarContent,
+	SidebarContent as SidebarContainer,
 	SidebarFooter,
 	SidebarHeader,
 	SidebarProvider,
 	SidebarTrigger,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import {
 	Tooltip,
@@ -24,7 +25,16 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
-import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	Home,
+	Inbox,
+	Moon,
+	Search,
+	Settings,
+	Sun,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -33,7 +43,7 @@ import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
-export function SidebarNav() {
+function SidebarContent() {
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const { teams, getAllTeams, currentTeam } = useTeamStore((state) => state);
 	const { user, logout } = useAuthStore((state) => state);
@@ -42,6 +52,7 @@ export function SidebarNav() {
 	const { toast } = useToast();
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const [notifications, setNotifications] = React.useState(0);
+	const { toggleSidebar } = useSidebar();
 
 	React.useEffect(() => {
 		if (!user) return;
@@ -76,50 +87,77 @@ export function SidebarNav() {
 		router.push(`/${workspace?.url}/team/${currentTeam?.identifier}/all`);
 	};
 
+	return (
+		<>
+			<SidebarHeader className="space-y-2 px-2">
+				<div className="flex items-center justify-between">
+					<WorkspaceDropdown />
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={toggleSidebar}
+						className="group-data-[state=open]/sidebar:hidden"
+					>
+						<ChevronRight className="h-4 w-4" />
+					</Button>
+				</div>
+				<NewIssueButton />
+				<div className="flex flex-col space-y-2">
+					<IconButton icon={Home} label="Home" onClick={toHome} />
+					<IconButton
+						icon={Search}
+						label="Search"
+						onClick={() => setShowCommand(true)}
+					/>
+					<IconButton
+						icon={Settings}
+						label="Settings"
+						onClick={() => navigateTo("settings/workspace")}
+					/>
+					<IconButton
+						icon={Inbox}
+						label="Inbox"
+						onClick={() => navigateTo("inbox")}
+						notificationCount={notifications}
+					/>
+				</div>
+			</SidebarHeader>
+			<SidebarContainer>
+				<TeamAccordion teams={teams} currentTeam={currentTeam} />
+			</SidebarContainer>
+			<SidebarFooter className="space-y-2 px-2">
+				<IconButton
+					icon={theme === "dark" ? Moon : Sun}
+					label={
+						theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"
+					}
+					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+				/>
+				<UserProfile user={user} onLogout={handleLogout} />
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={toggleSidebar}
+					className="w-full justify-start group-data-[state=closed]/sidebar:hidden"
+				>
+					<ChevronLeft className="h-4 w-4" />
+					<span className="ml-2">Collapse sidebar</span>
+				</Button>
+			</SidebarFooter>
+		</>
+	);
+}
+
+export function SidebarNav() {
+	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+
 	if (!workspace) return null;
 
 	return (
 		<TooltipProvider delayDuration={0}>
 			<SidebarProvider>
-				<Sidebar collapsible="icon">
-					<SidebarHeader className="space-y-2">
-						<WorkspaceDropdown />
-						<NewIssueButton />
-						<div className="flex flex-col space-y-2 px-2">
-							<IconButton icon={Home} label="Home" onClick={toHome} />
-							<IconButton
-								icon={Search}
-								label="Search"
-								onClick={() => setShowCommand(true)}
-							/>
-							<IconButton
-								icon={Settings}
-								label="Settings"
-								onClick={() => navigateTo("settings/workspace")}
-							/>
-							<IconButton
-								icon={Inbox}
-								label="Inbox"
-								onClick={() => navigateTo("inbox")}
-								notificationCount={notifications}
-							/>
-						</div>
-					</SidebarHeader>
-					<SidebarContent>
-						<TeamAccordion teams={teams} currentTeam={currentTeam} />
-					</SidebarContent>
-					<SidebarFooter className="space-y-2">
-						<IconButton
-							icon={theme === "dark" ? Moon : Sun}
-							label={
-								theme === "dark"
-									? "Switch to Light Mode"
-									: "Switch to Dark Mode"
-							}
-							onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-						/>
-						<UserProfile user={user} onLogout={handleLogout} />
-					</SidebarFooter>
+				<Sidebar collapsible="icon" className="w-64 group/sidebar">
+					<SidebarContent />
 				</Sidebar>
 				<SidebarTrigger className="fixed top-4 left-4 z-50 md:hidden" />
 			</SidebarProvider>
@@ -145,13 +183,13 @@ function IconButton({
 			<TooltipTrigger asChild>
 				<Button
 					variant="ghost"
-					size="icon"
+					size="sm"
 					aria-label={label}
 					onClick={onClick}
 					className="relative w-full justify-start"
 				>
-					<Icon className="h-4 w-4" />
-					<span className="ml-2 group-data-[collapsible=icon]:hidden">
+					<Icon className="h-4 w-4 shrink-0" />
+					<span className="ml-2 group-data-[state=closed]/sidebar:hidden">
 						{label}
 					</span>
 					{notificationCount && notificationCount > 0 && (
