@@ -13,6 +13,14 @@ export const createTaskStore = (
 				...initState,
 				setCurrentTask: (task) => set({ currentTask: task }),
 				setTasks: (tasks) => set({ tasks }),
+				createTask: (task) =>
+					set((state) => ({
+						tasks: [...state.tasks, task],
+					})),
+				updateTask: (task) =>
+					set((state) => ({
+						tasks: state.tasks.map((t) => (t.id === task.id ? task : t)),
+					})),
 			}),
 			{
 				name: "task-store",

@@ -64,11 +64,11 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 	createTask: {
 		input: createTaskParams,
-		output: taskSchema.nullable(),
+		output: taskSchema,
 	},
 	updateTask: {
 		input: updateTaskParams,
-		output: taskSchema.nullable(),
+		output: taskSchema,
 	},
 	deleteTask: {
 		input: z.object({

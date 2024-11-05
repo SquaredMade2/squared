@@ -49,7 +49,7 @@ export type CreateTaskResponse = {
 	title: string;
 	updatedAt: Date;
 	workspaceId: string;
-} | null;
+};
 
 export type UpdateTaskRequest = {
 	assigneeId?: string | null;
@@ -97,7 +97,7 @@ export type UpdateTaskResponse = {
 	title: string;
 	updatedAt: Date;
 	workspaceId: string;
-} | null;
+};
 
 export type DeleteTaskRequest = {
 	taskId: string;

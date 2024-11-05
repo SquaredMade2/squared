@@ -18,7 +18,9 @@ import type { Status } from "@squared/db";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
 	if (!currentTask) return null;
 	const { id: taskId, status: sidebarStatus } = currentTask;
@@ -30,7 +32,9 @@ const StatusDropdown = () => {
 
 	const updateItem = async (newStatus: Status) => {
 		try {
-			await taskService.updateTask(TODO, { id: taskId, status: newStatus });
+			updateTask(
+				await taskService.updateTask(TODO, { id: taskId, status: newStatus }),
+			);
 			setCurrentTask({ ...currentTask, status: newStatus });
 		} catch {
 			toast({

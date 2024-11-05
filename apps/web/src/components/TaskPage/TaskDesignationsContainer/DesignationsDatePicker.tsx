@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 
 const DesignationsDatePicker = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 	if (!currentTask) return null;
 	const { id: taskId } = currentTask;
 
@@ -23,7 +25,12 @@ const DesignationsDatePicker = () => {
 
 	const handleSave = async () => {
 		try {
-			await taskService.updateTask(TODO, { id: taskId, dueDate: selectedDate });
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					dueDate: selectedDate,
+				}),
+			);
 			setCurrentTask({ ...currentTask, dueDate: selectedDate ?? null });
 			toast({
 				title: "Success",

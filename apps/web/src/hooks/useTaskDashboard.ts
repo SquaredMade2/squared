@@ -12,7 +12,7 @@ import { useWorkspaces } from "./useWorkspaces";
 export function useTaskDashboard() {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
-	const { tasks, setTasks } = useTaskStore((state) => state);
+	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
 	const [loading, setLoading] = useState(true);
 
 	const params = useParams();
@@ -51,6 +51,7 @@ export function useTaskDashboard() {
 			id: updatedTask.id,
 			status: updatedTask.status,
 		});
+		updateTask(updatedTask);
 	};
 
 	return {

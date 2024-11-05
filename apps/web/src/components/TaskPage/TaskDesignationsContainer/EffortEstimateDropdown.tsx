@@ -22,7 +22,9 @@ const EffortEstimateDropdown = () => {
 	const { toast } = useToast();
 
 	const { currentTeam } = useTeamStore((state) => state);
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
 	if (!currentTask) return null;
 
@@ -47,10 +49,12 @@ const EffortEstimateDropdown = () => {
 		newEffortEstimate: Record<string, string | number>,
 	) => {
 		try {
-			await taskService.updateTask(TODO, {
-				id: taskId,
-				effortEstimate: newEffortEstimate.value as number,
-			});
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					effortEstimate: newEffortEstimate.value as number,
+				}),
+			);
 			setCurrentTask({
 				...currentTask,
 				effortEstimate: newEffortEstimate.value as number,

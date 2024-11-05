@@ -1,5 +1,10 @@
 import { taskService } from "@/lib/services";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
@@ -10,6 +15,7 @@ export const useCreateTask = () => {
 	const [error, setError] = useState<string | null>(null);
 	const { user } = useAuthStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
+	const { createTask: addTask } = useTaskStore((state) => state);
 	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
@@ -56,6 +62,7 @@ export const useCreateTask = () => {
 			if (!task) {
 				throw new Error("Failed to create task");
 			}
+			addTask(task);
 
 			setCurrentWorkspace({
 				...currentWorkspace,

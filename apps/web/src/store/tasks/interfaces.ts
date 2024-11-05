@@ -14,6 +14,8 @@ export interface TaskResponse {
 type TaskActions = {
 	setCurrentTask: (task: Task) => void;
 	setTasks: (tasks: Task[]) => void;
+	updateTask: (task: Task) => void;
+	createTask: (task: Task) => void;
 };
 
 export type TaskStore = TaskState & TaskActions;

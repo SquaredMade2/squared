@@ -21,7 +21,7 @@ export class TaskService implements TaskRpc {
 		teamId,
 		labels,
 		parentId,
-	}: CreateTaskParams): Promise<Task | null> {
+	}: CreateTaskParams): Promise<Task> {
 		this.logger.info("Creating task by payload: %0", {
 			authorId,
 			title,
@@ -119,7 +119,7 @@ export class TaskService implements TaskRpc {
 		return newTask;
 	}
 
-	async updateTask(args: UpdateTaskParams): Promise<Task | null> {
+	async updateTask(args: UpdateTaskParams): Promise<Task> {
 		this.logger.info("Updating task with ID: %s", args.id);
 		if (args.effortEstimate) {
 			// check if effort estimate is valid

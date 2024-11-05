@@ -8,6 +8,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { statusOptions } from "@/constants/designations";
 import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status } from "@squared/db";
@@ -15,11 +16,12 @@ import type { ContextMenuProps } from "./interfaces";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
+	const { updateTask } = useTaskStore((state) => state);
 
 	const handleSetStatus: (status: Status) => void = async (status) => {
 		if (task.id !== undefined) {
 			try {
-				await taskService.updateTask(TODO, { id: task.id, status });
+				updateTask(await taskService.updateTask(TODO, { id: task.id, status }));
 			} catch (err) {
 				toast({
 					title: "Error updating task",

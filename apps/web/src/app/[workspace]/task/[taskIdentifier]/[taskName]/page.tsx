@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 const TaskPage = () => {
 	const { tasks } = useTaskStore((state) => state);
 	const { task, isLoading, error, currentWorkspace } = useTaskPage();
+	const { updateTask } = useTaskStore((state) => state);
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
 
@@ -42,10 +43,12 @@ const TaskPage = () => {
 		subtaskId: string,
 		newStatus: string,
 	) => {
-		await taskService.updateTask(TODO, {
-			id: subtaskId,
-			status: newStatus as Status,
-		});
+		updateTask(
+			await taskService.updateTask(TODO, {
+				id: subtaskId,
+				status: newStatus as Status,
+			}),
+		);
 	};
 
 	useEffect(() => {

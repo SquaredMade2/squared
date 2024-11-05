@@ -45,7 +45,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-	const { tasks } = useTaskStore((state) => state);
+	const { tasks, createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
 
@@ -108,7 +108,8 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
-			await taskService.createTask(TODO, newTask);
+			const createdTask = await taskService.createTask(TODO, newTask);
+			createTask(createdTask);
 			await updateWorkspace(currentWorkspace.id, {
 				tasksCreated: currentWorkspace.tasksCreated + 1,
 			});

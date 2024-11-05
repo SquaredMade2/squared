@@ -42,7 +42,9 @@ const LabelColor = ({ label }: { label: Label }) => {
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
 	if (!currentTask) return null;
 
@@ -68,7 +70,9 @@ const LabelCombobox = () => {
 			: [...taskLabels, selectedLabel];
 
 		const labelIds = updatedLabels.map((label) => label.id);
-		await taskService.updateTask(TODO, { id: taskId, labels: labelIds });
+		updateTask(
+			await taskService.updateTask(TODO, { id: taskId, labels: labelIds }),
+		);
 		setCurrentTask({ ...currentTask, labels: labelIds });
 		setOpen(false);
 	};

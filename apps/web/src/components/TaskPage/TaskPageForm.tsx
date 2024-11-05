@@ -1,7 +1,7 @@
 import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
 import { taskService } from "@/lib/services";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -17,6 +17,7 @@ import { Input } from "../ui/input";
 export const TaskPageForm = ({ task }: { task: Task }) => {
 	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { updateTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task.title ?? "");
@@ -46,11 +47,13 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 		if (changeMade && task.id !== undefined) {
 			if (task) {
 				try {
-					await taskService.updateTask(TODO, {
-						id: task.id,
-						title: transformedTitleInput,
-						description: transformedDescriptionInput,
-					});
+					updateTask(
+						await taskService.updateTask(TODO, {
+							id: task.id,
+							title: transformedTitleInput,
+							description: transformedDescriptionInput,
+						}),
+					);
 					toast({ title: "title updated successfully" });
 				} catch (error) {
 					toast({

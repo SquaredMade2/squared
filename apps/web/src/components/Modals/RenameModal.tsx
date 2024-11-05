@@ -1,7 +1,7 @@
 "use client";
 
 import { taskService } from "@/lib/services";
-import { useModalStore } from "@/store";
+import { useModalStore, useTaskStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 import { TODO } from "@squared/context";
 import { Pencil } from "lucide-react";
@@ -25,6 +25,7 @@ export const RenameModal = () => {
 		renameData: task,
 	} = useModalStore((state) => state);
 	const { toast } = useToast();
+	const { updateTask } = useTaskStore((state) => state);
 	const handleChange = (e: InputChangeEvent): void => {
 		setInputValue(e.target.value);
 	};
@@ -33,16 +34,13 @@ export const RenameModal = () => {
 		e.preventDefault();
 		if (inputValue !== task?.title && task) {
 			try {
-				const response = await taskService.updateTask(TODO, {
-					id: task.id,
-					title: inputValue.trim(),
-				});
-				response
-					? toast({ title: "Task updated successfully" })
-					: toast({
-							title: "Unknown issue updating task",
-							variant: "destructive",
-						});
+				updateTask(
+					await taskService.updateTask(TODO, {
+						id: task.id,
+						title: inputValue.trim(),
+					}),
+				);
+				toast({ title: "Task updated successfully" });
 			} catch (error) {
 				toast({
 					title: "Error Creating Task",

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { taskService } from "@/lib/services";
-import { useUserStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
@@ -17,6 +17,7 @@ import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users } = useUserStore((state) => state);
+	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
@@ -27,17 +28,21 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			taskService.updateTask(TODO, { id: taskId, assigneeId: null });
+			updateTask(
+				await taskService.updateTask(TODO, { id: taskId, assigneeId: null }),
+			);
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
 			if (task) {
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					assigneeId: selectedUser.id,
-				});
+				updateTask(
+					await taskService.updateTask(TODO, {
+						id: taskId,
+						assigneeId: selectedUser.id,
+					}),
+				);
 			}
 			// await getTaskEvents(taskId);
 		}

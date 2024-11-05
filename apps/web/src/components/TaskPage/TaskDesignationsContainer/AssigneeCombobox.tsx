@@ -26,7 +26,9 @@ import { useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
 	// Move these to a custom hook or memoize if needed
 	const users = useUserStore((state) => state.users);
@@ -40,10 +42,12 @@ const AssigneeCombobox = () => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			await taskService.updateTask(TODO, {
-				id: taskId,
-				assigneeId: null,
-			});
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: null,
+				}),
+			);
 			setCurrentTask({ ...currentTask, assigneeId: null, assigneeName: null });
 			return;
 		}

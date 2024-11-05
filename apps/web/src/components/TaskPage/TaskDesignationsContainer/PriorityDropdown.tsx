@@ -18,7 +18,9 @@ import type { Priority } from "@squared/db";
 
 const PriorityDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
 	if (!currentTask) return null;
 
@@ -31,7 +33,12 @@ const PriorityDropdown = () => {
 
 	const updateItem = async (newPriority: Priority) => {
 		try {
-			await taskService.updateTask(TODO, { id: taskId, priority: newPriority });
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					priority: newPriority,
+				}),
+			);
 			setCurrentTask({ ...currentTask, priority: newPriority });
 		} catch {
 			toast({
