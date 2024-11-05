@@ -29,7 +29,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useSprints } from "@/hooks/useSprints";
-import { sprintService } from "@/lib/services";
+import { sprintService, taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
@@ -57,7 +57,7 @@ const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const { tasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -92,7 +92,7 @@ export default function SprintDashboardPage() {
 	useEffect(() => {
 		const loadData = async () => {
 			if (team) {
-				await getAllTasks(team.id);
+				await taskService.getTeamTasks(TODO, { teamId: team.id });
 			}
 		};
 		loadData();
@@ -194,14 +194,12 @@ export default function SprintDashboardPage() {
 
 	const handleBulkAssign = async () => {
 		if (!sprint) return;
-		for (const task of selectedTasks) {
-			await updateTask(task.id, {
-				sprintId: sprint.id,
-				status: task.status === "backlog" ? "todo" : task.status,
-			});
-		}
+		await taskService.addSprintTasks(TODO, {
+			sprintId: sprint.id,
+			taskIds: selectedTasks.map((t) => t.id),
+		});
 		setSelectedTasks([]);
-		team && (await getAllTasks(team.id));
+		team && (await taskService.getTeamTasks(TODO, { teamId: team.id }));
 	};
 
 	const handleEditSprint = async () => {

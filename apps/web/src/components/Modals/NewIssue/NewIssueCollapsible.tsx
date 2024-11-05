@@ -101,7 +101,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
-				effortEstimate: effortEstimate,
+				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
 				teamId: currentTeam.id,
 				workspaceId: currentWorkspace.id,

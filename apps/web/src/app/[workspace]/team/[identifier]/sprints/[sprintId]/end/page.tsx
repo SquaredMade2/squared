@@ -27,8 +27,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
-import { sprintService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { sprintService, taskService } from "@/lib/services";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Sprint, Task } from "@squared/db";
@@ -56,7 +55,6 @@ export default function EndSprintPage() {
 	const router = useRouter();
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
-	const { getAllTasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
@@ -71,7 +69,7 @@ export default function EndSprintPage() {
 	useEffect(() => {
 		const loadData = async () => {
 			if (team) {
-				await getAllTasks(team.id);
+				await taskService.getTeamTasks(TODO, { teamId: team.id });
 			}
 		};
 		loadData();
