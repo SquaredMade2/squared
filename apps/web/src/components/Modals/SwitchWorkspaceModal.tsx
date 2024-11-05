@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Check, PlusCircle } from "lucide-react";
-import { cn } from "@/utils/cn";
 import {
 	Command,
 	CommandEmpty,
@@ -26,7 +23,10 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
+import { cn } from "@/utils/cn";
+import { Check, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import WorkspaceInitials from "../WorkspaceImage";
 
 export function WorkspaceSwitcher() {

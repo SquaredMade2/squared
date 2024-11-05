@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import MyTasksNavbar from "@/components/MyTasksNavbar";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "My Tasks",

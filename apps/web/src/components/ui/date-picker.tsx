@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,6 +8,9 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/utils/cn";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import * as React from "react";
 
 interface DatePickerProps {
 	date: Date | undefined;

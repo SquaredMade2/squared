@@ -1,7 +1,7 @@
-import { createTeamStore } from ".";
-import axios from "axios";
-import type { Team } from "@squared/db";
 import { STANDARD_TEAM, STANDARD_TEAM_2 } from "@/test/mocks";
+import type { Team } from "@squared/db";
+import axios from "axios";
+import { createTeamStore } from ".";
 
 // Mock axios
 jest.mock("axios");

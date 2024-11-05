@@ -1,8 +1,8 @@
-import type { User } from "@squared/db";
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
-import jwt from "jsonwebtoken";
+import type { APIResponse, Route } from "@/api/route";
+import type { User } from "@squared/db";
 import createCustomLogger from "@squared/logger";
+import jwt from "jsonwebtoken";
 
 type Params = {
 	token: string;

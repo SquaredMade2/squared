@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
 	Dialog,
 	DialogContent,
@@ -11,13 +8,16 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { Task, Team } from "@squared/db";
-import { PriorityIcon, StatusIcon } from "../Icons";
-import { ScrollArea } from "../ui/scroll-area";
-import { useRouter } from "next/navigation";
-import { useToast } from "../ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { sprintService } from "@/lib/services";
 import { TODO } from "@squared/context";
+import type { Task, Team } from "@squared/db";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { PriorityIcon, StatusIcon } from "../Icons";
+import { ScrollArea } from "../ui/scroll-area";
+import { useToast } from "../ui/use-toast";
 
 interface TransferTaskModalProps {
 	isOpen: boolean;

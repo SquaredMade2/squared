@@ -1,7 +1,7 @@
 import type { RenderResult } from "@testing-library/react";
 import { fireEvent, render } from "@testing-library/react";
-import * as Toggle from "./Toggle";
 import { axe } from "jest-axe";
+import * as Toggle from "./Toggle";
 
 const TEXT_CHILD = "Like";
 

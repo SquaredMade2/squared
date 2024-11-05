@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import { FileSearch } from "lucide-react";
 import { useAuthStore, useWorkspaceStore } from "@/store";
+import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import type { Workspace } from "@squared/db";
+import { FileSearch } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();

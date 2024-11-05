@@ -1,15 +1,15 @@
+import type { User } from "@squared/db";
 import axios from "axios";
-import { createStore } from "zustand/vanilla";
 import { v4 as uuidv4 } from "uuid";
 import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+import type { ApiReturnType } from "../interfaces";
 import type {
+	UserAvatar,
+	UserResponse,
 	UserState,
 	UserStore,
-	UserResponse,
-	UserAvatar,
 } from "./interfaces";
-import type { User } from "@squared/db";
-import type { ApiReturnType } from "../interfaces";
 export * from "./interfaces";
 export * from "./store";
 

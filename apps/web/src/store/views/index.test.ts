@@ -1,5 +1,5 @@
 import { createViewStore } from ".";
-import type { ViewState, LastVisitedPathOption } from "./interfaces";
+import type { LastVisitedPathOption, ViewState } from "./interfaces";
 
 // Mock localStorage
 const mockLocalStorage = {

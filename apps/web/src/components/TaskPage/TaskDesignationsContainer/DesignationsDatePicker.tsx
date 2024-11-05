@@ -1,25 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { useTaskStore } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
 import { DatePicker } from "@/components/ui/date-picker";
-import type { ButtonProps } from "./interfaces";
+import { useToast } from "@/components/ui/use-toast";
+import { useTaskStore } from "@/store";
+import { useEffect, useState } from "react";
 
-const DesignationsDatePicker = ({ currentTask }: ButtonProps) => {
+const DesignationsDatePicker = () => {
 	const { toast } = useToast();
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const initialDate = currentTask?.dueDate
-		? new Date(currentTask.dueDate)
-		: undefined;
-	const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-		initialDate,
+	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+		(state) => state,
 	);
+	if (!currentTask) return null;
+	const { id: taskId } = currentTask;
+
+	const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+	useEffect(() => {
+		setSelectedDate(
+			currentTask?.dueDate ? new Date(currentTask.dueDate) : undefined,
+		);
+	}, [currentTask]);
 
 	const handleSave = async () => {
 		try {
 			await updateTask(taskId, { dueDate: selectedDate });
+			setCurrentTask({ ...currentTask, dueDate: selectedDate ?? null });
 			toast({
 				title: "Success",
 				description: "Due date updated successfully",

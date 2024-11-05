@@ -1,10 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { effortEstimateOptions } from "@/constants/designations";
-import { useTaskStore } from "@/store";
-import { high, medium, low } from "@/components/Svg";
-import { useToast } from "@/components/ui/use-toast";
+import { high, low, medium } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -12,19 +8,25 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ButtonProps } from "./interfaces";
-import { ChevronDown } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { effortEstimateOptions } from "@/constants/designations";
+import { useTaskStore } from "@/store";
 import { useTeamStore } from "@/store";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
-const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
+const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
 	const { currentTeam } = useTeamStore((state) => state);
+	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
 
-	const { updateTask } = useTaskStore((state) => state);
+	if (!currentTask) return null;
 
-	const taskId = currentTask?.id ?? "";
+	const { id: taskId } = currentTask;
 
 	const sidebarEffortEstimate = ():
 		| { text: string; value: number }
@@ -48,7 +50,10 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 			await updateTask(taskId, {
 				effortEstimate: newEffortEstimate.value as number,
 			});
-			// await getTaskEvents(taskId);
+			setCurrentTask({
+				...currentTask,
+				effortEstimate: newEffortEstimate.value as number,
+			});
 		} catch {
 			toast({
 				title: "Error updating effort estimate",

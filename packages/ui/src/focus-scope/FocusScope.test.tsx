@@ -1,9 +1,9 @@
 import type React from "react";
 
-import { FocusScope } from "../focus-scope";
 import { render, waitFor } from "@testing-library/react";
 import type { RenderResult } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { FocusScope } from "../focus-scope";
 
 const INNER_NAME_INPUT_LABEL = "Name";
 const INNER_EMAIL_INPUT_LABEL = "Email";

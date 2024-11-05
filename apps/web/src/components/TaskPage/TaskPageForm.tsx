@@ -1,16 +1,16 @@
-import { useEffect, useState, type ChangeEvent } from "react";
 import MentionInput from "@/components/MentionsInput";
-import { CustomMentionStyle } from "@/utils/mentionInputStyle";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import type { OnChangeHandlerFunc } from "react-mentions";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import type { Task } from "@squared/db";
-import { Input } from "../ui/input";
-import { StatusIcon } from "../Icons";
-import Link from "next/link";
 import { formatUrl } from "@/utils/formatting";
+import { CustomMentionStyle } from "@/utils/mentionInputStyle";
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import type { Task } from "@squared/db";
+import Link from "next/link";
+import { type ChangeEvent, useEffect, useState } from "react";
+import type { OnChangeHandlerFunc } from "react-mentions";
+import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export const TaskPageForm = ({ task }: { task: Task }) => {
 	const { updateTask, getTask } = useTaskStore((state) => state);

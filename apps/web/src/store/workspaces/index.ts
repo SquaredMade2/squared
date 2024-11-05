@@ -1,15 +1,15 @@
-import { createStore } from "zustand/vanilla";
-import { persist } from "zustand/middleware";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+import type { SavedFilter } from "../filters";
+import type { ApiReturnType } from "../interfaces";
 import type {
+	Workspace,
+	WorkspaceResponse,
 	WorkspaceState,
 	WorkspaceStore,
-	WorkspaceResponse,
-	Workspace,
 } from "./interfaces";
-import type { ApiReturnType } from "../interfaces";
-import type { SavedFilter } from "../filters";
 export * from "./interfaces";
 export * from "./store";
 

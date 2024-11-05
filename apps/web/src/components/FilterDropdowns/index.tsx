@@ -1,28 +1,28 @@
 import {
-	CircleDashed,
 	Calendar,
+	CircleDashed,
 	Clock,
-	Tag,
 	Filter,
-	X,
+	Tag,
 	User,
+	X,
 } from "lucide-react";
 
-import type { FilterOption } from "./interfaces";
-import { Button } from "../ui/button";
 import { useFilterStore } from "@/store";
-import PriorityFilterDropDown from "./PriorityFilter";
-import StatusFilterDropDown from "./StatusFilter";
-import EffortFilterDropDown from "./EffortFilter";
-import LabelFilterDropDown from "./LabelFilter";
-import DueDateFilterDropDown from "./DueDateFilter";
-import AssigneeFilterDropDown from "./AssigneeFilter";
 import { PriorityIcon } from "../Icons";
+import { Button } from "../ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import AssigneeFilterDropDown from "./AssigneeFilter";
+import DueDateFilterDropDown from "./DueDateFilter";
+import EffortFilterDropDown from "./EffortFilter";
+import LabelFilterDropDown from "./LabelFilter";
+import PriorityFilterDropDown from "./PriorityFilter";
+import StatusFilterDropDown from "./StatusFilter";
+import type { FilterOption } from "./interfaces";
 
 // Renamed groupOne to filterOptions for better semantics
 const filterOptions: FilterOption[] = [

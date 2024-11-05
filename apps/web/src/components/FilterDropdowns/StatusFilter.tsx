@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
 	DropdownMenuCheckboxItem,
 	DropdownMenuSub,
@@ -7,6 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
 import { Status } from "@squared/db";
+import { useEffect, useState } from "react";
 import { StatusIcon } from "../Icons";
 import type { FilterOption } from "./interfaces";
 

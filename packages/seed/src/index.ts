@@ -1,6 +1,6 @@
-import { PrismaClient, Status, Priority } from "@squared/db";
-import type { Team, User, Workspace } from "@squared/db";
 import { faker } from "@faker-js/faker";
+import { Priority, PrismaClient, Status } from "@squared/db";
+import type { Team, User, Workspace } from "@squared/db";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 import createCustomLogger from "@squared/logger";

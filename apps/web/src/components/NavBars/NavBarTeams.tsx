@@ -1,16 +1,16 @@
-import { useEffect } from "react";
-import { Activity, Copy, Layers3 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import type { NavBarTeamProps } from "./interfaces";
 import {
 	useAuthStore,
 	useTaskStore,
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
+import { Activity, Copy, Layers3 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import Link from "next/link";
+import type { NavBarTeamProps } from "./interfaces";
 
 const NavBarTeams = ({
 	teamIdentifier,

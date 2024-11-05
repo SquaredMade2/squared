@@ -1,10 +1,17 @@
+import {
+	useFilterStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { getInitials } from "@/utils/formatting";
+import type { Task } from "@squared/db";
+import { Info, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Info, Trash } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import LabelBadge from "../LabelBadges";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -13,18 +20,11 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 } from "../ui/alert-dialog";
-import type { SavedFilter } from "@/store/filters";
-import {
-	useFilterStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import type { Task } from "@squared/db";
-import LabelBadge from "../LabelBadges";
-import { getInitials } from "@/utils/formatting";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;

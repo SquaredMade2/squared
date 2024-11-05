@@ -1,7 +1,7 @@
-import { createAuthStore } from ".";
+import { STANDARD_USER } from "@/test/mocks";
 import axios from "axios";
 import { signOut } from "next-auth/react";
-import { STANDARD_USER } from "@/test/mocks";
+import { createAuthStore } from ".";
 
 // Mock axios and next-auth
 jest.mock("axios");

@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -13,10 +14,10 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, Check, Tag } from "lucide-react";
-import type { ButtonProps } from "./interfaces";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
+import { Check, Plus, Tag } from "lucide-react";
+import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
 import {
 	Tooltip,
@@ -36,11 +37,16 @@ const LabelColor = ({ label }: { label: Label }) => {
 	);
 };
 
-const LabelCombobox = ({ currentTask }: ButtonProps) => {
+const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask?.id;
+	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
+
+	if (!currentTask) return null;
+
+	const { id: taskId, labels } = currentTask;
 
 	const allLabels = useMemo(
 		() => currentWorkspace?.Labels || [],
@@ -48,8 +54,8 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 	);
 
 	const taskLabels = useMemo(
-		() => allLabels.filter((label) => currentTask?.labels.includes(label.id)),
-		[allLabels, currentTask?.labels],
+		() => allLabels.filter((label) => labels.includes(label.id)),
+		[allLabels, labels],
 	);
 
 	const handleSelectLabels = async (selectedLabel: Label) => {
@@ -63,6 +69,7 @@ const LabelCombobox = ({ currentTask }: ButtonProps) => {
 
 		const labelIds = updatedLabels.map((label) => label.id);
 		await updateTask(taskId, { labels: labelIds });
+		setCurrentTask({ ...currentTask, labels: labelIds });
 		setOpen(false);
 	};
 

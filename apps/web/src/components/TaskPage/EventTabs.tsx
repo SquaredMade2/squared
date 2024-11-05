@@ -1,9 +1,35 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreatedByInformation, UpdatedByInformation } from ".";
+import { useTaskPage } from "@/hooks/useTaskPage";
+import { useCommentStore } from "@/store";
+import { useEffect } from "react";
+import { CreatedByInformation } from ".";
+import TextEditor from "../TextEditor";
+import { toast } from "../ui/use-toast";
+import CommentCard from "./CommentCard";
 
 export const EventTabs = () => {
+	const comments = useCommentStore((state) => state.comments);
+	const getComments = useCommentStore((state) => state.getAllComments);
+	const { task } = useTaskPage();
+
+	useEffect(() => {
+		const fetchTaskComments = async () => {
+			try {
+				if (task) {
+					await getComments(task.id);
+				}
+			} catch (err) {
+				toast({
+					title: "Error getting comments",
+					description: err instanceof Error ? err.message : "",
+					variant: "destructive",
+				});
+			}
+		};
+		fetchTaskComments();
+	}, [task]);
 	return (
 		<Tabs defaultValue="activity" className="w-full mt-8">
 			<TabsList className="grid w-1/2 grid-cols-2 bg-transparent">
@@ -13,12 +39,13 @@ export const EventTabs = () => {
 			<TabsContent value="activity">
 				<div className="flex flex-col bg-card rounded-md text-sm">
 					<CreatedByInformation />
-					<UpdatedByInformation />
 				</div>
 			</TabsContent>
 			<TabsContent value="comments">
-				{/* TODO: Implement CommentForm component */}
-				<div>Comments will be implemented here</div>
+				{comments.map((comment) => {
+					return <CommentCard key={comment.id} comment={comment} />;
+				})}
+				{task && <TextEditor task={task} />}
 			</TabsContent>
 		</Tabs>
 	);
