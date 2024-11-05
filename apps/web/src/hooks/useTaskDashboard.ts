@@ -12,7 +12,7 @@ import { useWorkspaces } from "./useWorkspaces";
 export function useTaskDashboard() {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
-	const { tasks } = useTaskStore((state) => state);
+	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [loading, setLoading] = useState(true);
 
 	const params = useParams();
@@ -23,7 +23,9 @@ export function useTaskDashboard() {
 			if (teamLoading || workspaceLoading) return;
 			setLoading(true);
 			if (currentTeam) {
-				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id });
+				setTasks(
+					await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+				);
 			}
 			setLoading(false);
 		};

@@ -57,7 +57,7 @@ const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
-	const { tasks } = useTaskStore((state) => state);
+	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -88,15 +88,6 @@ export default function SprintDashboardPage() {
 			`/${workspace?.url}/team/${team?.identifier}/sprints/${sprintId}/end`,
 		);
 	};
-
-	useEffect(() => {
-		const loadData = async () => {
-			if (team) {
-				await taskService.getTeamTasks(TODO, { teamId: team.id });
-			}
-		};
-		loadData();
-	}, [team]);
 
 	useEffect(() => {
 		const currentSprint = sprints.find((s) => s.id === sprintId);
@@ -199,7 +190,7 @@ export default function SprintDashboardPage() {
 			taskIds: selectedTasks.map((t) => t.id),
 		});
 		setSelectedTasks([]);
-		team && (await taskService.getTeamTasks(TODO, { teamId: team.id }));
+		team && setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
 	};
 
 	const handleEditSprint = async () => {

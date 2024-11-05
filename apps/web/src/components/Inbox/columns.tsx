@@ -1,4 +1,4 @@
-import { eventService, taskService } from "@/lib/services";
+import { eventService } from "@/lib/services";
 import {
 	useAuthStore,
 	useTeamStore,
@@ -92,7 +92,6 @@ export const columns: ColumnDef<
 								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 							);
 						} else {
-							await taskService.getTeamTasks(TODO, { teamId });
 							router.push(
 								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 							);

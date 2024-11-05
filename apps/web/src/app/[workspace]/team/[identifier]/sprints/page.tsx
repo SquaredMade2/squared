@@ -52,7 +52,7 @@ import {
 
 export default function SprintDashboard() {
 	const { sprints, currentSprint, team: currentTeam } = useSprints();
-	const { tasks } = useTaskStore((state) => state);
+	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [upcomingSprints, setUpcomingSprints] = useState<Sprint[]>([]);
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -199,7 +199,9 @@ export default function SprintDashboard() {
 
 		setSelectedTasks([]);
 		currentTeam &&
-			(await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }));
+			setTasks(
+				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+			);
 	};
 
 	const prepareAutoAssign = () => {
@@ -248,7 +250,9 @@ export default function SprintDashboard() {
 		});
 		setIsAutoAssignConfirmOpen(false);
 		currentTeam &&
-			(await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }));
+			setTasks(
+				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+			);
 	};
 
 	return (
