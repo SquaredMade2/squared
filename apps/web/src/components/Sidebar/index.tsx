@@ -108,7 +108,7 @@ function SidebarContent() {
 					<TeamAccordion teams={teams} currentTeam={currentTeam} />
 				</SidebarContainer>
 			)}
-			<SidebarFooter className="space-y-2 px-2">
+			<SidebarFooter className="space-y-2 px-2 mt-auto">
 				<IconButton
 					icon={theme === "dark" ? Moon : Sun}
 					label={

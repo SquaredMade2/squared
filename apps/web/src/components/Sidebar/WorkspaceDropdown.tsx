@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
+import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
 
 export function WorkspaceDropdown() {
@@ -19,20 +21,41 @@ export function WorkspaceDropdown() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="w-full justify-between">
-					<span className={state === "collapsed" ? "sr-only" : "truncate"}>
-						{currentWorkspace?.name}
-					</span>
-					<ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+				<Button
+					variant="outline"
+					className={`w-full justify-start items-center gap-2 transition-all duration-300 ease-in-out ${state === "collapsed" && "px-0 border-none"}`}
+				>
+					<Avatar className="h-8 w-8 shrink-0">
+						<AvatarFallback>
+							{getInitials(currentWorkspace?.name || "WS")}
+						</AvatarFallback>
+					</Avatar>
+					{state === "expanded" && (
+						<>
+							<span
+								className={"truncate transition-all duration-300 ease-in-out"}
+							>
+								{currentWorkspace?.name}
+							</span>
+							<ChevronDown
+								className={
+									"h-4 w-4 shrink-0 opacity-50 ml-auto transition-all duration-300 ease-in-out"
+								}
+							/>
+						</>
+					)}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-full">
+			<DropdownMenuContent className="w-56">
 				{workspaces.map((workspace) => (
 					<DropdownMenuItem
 						key={workspace.id}
 						onSelect={() => setCurrentWorkspace(workspace)}
 					>
-						{workspace.name}
+						<Avatar className="h-6 w-6 mr-2">
+							<AvatarFallback>{getInitials(workspace.name)}</AvatarFallback>
+						</Avatar>
+						<span className="truncate">{workspace.name}</span>
 					</DropdownMenuItem>
 				))}
 			</DropdownMenuContent>
