@@ -157,7 +157,6 @@ function LoginForm() {
 							</span>
 						</div>
 					</div>
-					// test
 					{process.env.NODE_ENV === "production" && (
 						<Button
 							onClick={handleGoogleLogin}
