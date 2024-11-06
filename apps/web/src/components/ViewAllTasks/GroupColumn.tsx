@@ -164,6 +164,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			const isParentTask = parentTaskIds.includes(task.id);
 			const isSubtaskWithParent = parentTaskIds.includes(task.parentId);
 
+			if (isSubtaskWithParent) return;
+
 			if (isParentTask) {
 				const subtasks = tasks.filter((t) => t.parentId === task.id);
 				return renderTaskWithSubtasks(task, index, subtasks);
