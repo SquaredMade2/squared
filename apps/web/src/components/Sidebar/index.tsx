@@ -25,16 +25,7 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
-import {
-	ChevronLeft,
-	ChevronRight,
-	Home,
-	Inbox,
-	Moon,
-	Search,
-	Settings,
-	Sun,
-} from "lucide-react";
+import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -52,7 +43,7 @@ function SidebarContent() {
 	const { toast } = useToast();
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const [notifications, setNotifications] = React.useState(0);
-	const { toggleSidebar, state } = useSidebar();
+	const { state } = useSidebar();
 
 	React.useEffect(() => {
 		if (!user) return;
@@ -90,17 +81,7 @@ function SidebarContent() {
 	return (
 		<>
 			<SidebarHeader className="space-y-2 px-2">
-				<div className="flex items-center justify-between">
-					<WorkspaceDropdown />
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={toggleSidebar}
-						className={state === "expanded" ? "block" : "hidden"}
-					>
-						<ChevronLeft className="h-4 w-4" />
-					</Button>
-				</div>
+				<WorkspaceDropdown />
 				<NewIssueButton />
 				<div className="flex flex-col space-y-2">
 					<IconButton icon={Home} label="Home" onClick={toHome} />
@@ -136,15 +117,6 @@ function SidebarContent() {
 					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
 				/>
 				<UserProfile user={user} onLogout={handleLogout} />
-				<Button
-					variant="ghost"
-					size="icon"
-					onClick={toggleSidebar}
-					className={`w-full justify-start ${state === "collapsed" ? "block" : "hidden"}`}
-				>
-					<ChevronRight className="h-4 w-4" />
-					<span className="ml-2">Expand sidebar</span>
-				</Button>
 			</SidebarFooter>
 		</>
 	);
@@ -157,14 +129,14 @@ export function SidebarNav() {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<SidebarProvider>
+			<SidebarProvider className="relative">
 				<Sidebar
 					collapsible="icon"
 					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 				>
 					<SidebarContent />
 				</Sidebar>
-				<SidebarTrigger className="fixed top-4 left-4 z-50 md:hidden" />
+				<ToggleSidebarButton />
 			</SidebarProvider>
 		</TooltipProvider>
 	);
@@ -175,6 +147,18 @@ interface IconButtonProps {
 	label: string;
 	onClick: () => void;
 	notificationCount?: number;
+}
+
+function ToggleSidebarButton() {
+	const { state } = useSidebar();
+
+	return (
+		<SidebarTrigger
+			className={`absolute top-4 z-50 transition-all duration-300 ease-in-out ${
+				state === "collapsed" ? "left-16" : "left-[17rem]"
+			}`}
+		/>
+	);
 }
 
 function IconButton({
