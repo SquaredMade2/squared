@@ -31,9 +31,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const TaskPage = () => {
-	const { tasks } = useTaskStore((state) => state);
+	const { tasks, updateTask } = useTaskStore((state) => state);
 	const { task, isLoading, error, currentWorkspace } = useTaskPage();
-	const { updateTask } = useTaskStore((state) => state);
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
 

@@ -13,8 +13,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		title: z.string(),
 		description: z.string().optional(),
 		dueDate: z.date().optional().nullable(),
-		// set max and min once I have internet connection
-		effortEstimate: z.number().optional().nullable(),
+		effortEstimate: z.number().min(1).max(5).optional().nullable(),
 		teamId: z.string(),
 		status: z
 			.enum([
@@ -41,7 +40,7 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		title: z.string().optional(),
 		description: z.string().optional(),
 		dueDate: z.date().optional(),
-		effortEstimate: z.number().optional(),
+		effortEstimate: z.number().min(1).max(5).optional(),
 		status: z
 			.enum([
 				"backlog",

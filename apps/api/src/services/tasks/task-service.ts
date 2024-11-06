@@ -19,6 +19,8 @@ export class TaskService implements TaskRpc {
 		dueDate,
 		effortEstimate,
 		teamId,
+		status,
+		priority,
 		labels,
 		parentId,
 	}: CreateTaskParams): Promise<Task> {
@@ -29,6 +31,8 @@ export class TaskService implements TaskRpc {
 			dueDate,
 			effortEstimate,
 			teamId,
+			status,
+			priority,
 			labels,
 			parentId,
 		});
@@ -104,6 +108,8 @@ export class TaskService implements TaskRpc {
 				teamId,
 				labels,
 				parentId,
+				status,
+				priority,
 				workspaceId: workspace.id,
 				identifier: newTaskIdentifier,
 			},
