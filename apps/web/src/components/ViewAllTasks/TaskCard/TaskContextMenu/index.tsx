@@ -51,6 +51,10 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		navigator.clipboard.writeText(gitBranchName.trim());
 	};
 
+	const copyTaskIdentifier = () => {
+		navigator.clipboard.writeText(identifier);
+	};
+
 	return (
 		<ContextMenuContent>
 			<StatusSubContextMenu task={task} />
@@ -88,6 +92,9 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 			<ContextMenuItem onClick={copyBranchName}>
 				Copy Branch Name
+			</ContextMenuItem>
+			<ContextMenuItem onClick={copyTaskIdentifier}>
+				Copy Task ID
 			</ContextMenuItem>
 
 			<ContextMenuItem>
