@@ -16,17 +16,23 @@ import { Input } from "@/components/ui/input";
 import { useModalStore } from "@/store";
 import type { Workspace } from "@squared/db";
 import { useState } from "react";
+import { CSVLink } from "react-csv";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	workspace: Workspace | null;
 }
+interface TData {
+	name: string;
+	role: string;
+	email: string;
+	github: string;
+	avatar: string;
+	username: string;
+}
 
-export function DataTable<TData, TValue>({
-	columns,
-	data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TValue>({ columns, data }: DataTableProps<TValue>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
@@ -54,6 +60,21 @@ export function DataTable<TData, TValue>({
 		setShowWorkspaceInvite(true);
 	};
 
+	const generateMembersCsv = () => {
+		const members = data.map((member) => {
+			return {
+				name: member.name,
+				role: member.role,
+				email: member.email,
+				github: member.github || "N/A",
+				avatar: member.avatar || "N/A",
+				username: member.username,
+			};
+		});
+		return members;
+	};
+	const membersCsv = generateMembersCsv();
+
 	return (
 		<div className="flex flex-col items-start gap-4">
 			<div>
@@ -75,8 +96,12 @@ export function DataTable<TData, TValue>({
 						onChange={handleSearch}
 						className="max-w-xs"
 					/>
-
-					<Button onClick={handleWorkspaceInvite}>Invite People</Button>
+					<div className="flex justify-center items-center gap-2">
+						<Button onClick={handleWorkspaceInvite}>Invite People</Button>
+						<Button>
+							<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+						</Button>
+					</div>
 				</div>
 				<Table>
 					<TableBody className="divide-y divide-border">
