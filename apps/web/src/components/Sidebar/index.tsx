@@ -123,7 +123,7 @@ function SidebarContent() {
 				</div>
 			</SidebarHeader>
 			{state === "expanded" && (
-				<SidebarContainer>
+				<SidebarContainer className="px-2">
 					<TeamAccordion teams={teams} currentTeam={currentTeam} />
 				</SidebarContainer>
 			)}
@@ -193,7 +193,7 @@ function IconButton({
 					size="sm"
 					aria-label={label}
 					onClick={onClick}
-					className="relative w-full justify-start"
+					className={`relative w-full justify-start ${state === "collapsed" && "px-2"}`}
 				>
 					<Icon className="h-4 w-4 shrink-0" />
 					<span
@@ -206,7 +206,9 @@ function IconButton({
 						{label}
 					</span>
 					{notificationCount && notificationCount > 0 && (
-						<div className="absolute top-0.5 right-0.5 h-2 w-2 bg-primary rounded-full" />
+						<div
+							className={`absolute h-2 w-2 bg-primary rounded-full ${state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"}`}
+						/>
 					)}
 				</Button>
 			</TooltipTrigger>

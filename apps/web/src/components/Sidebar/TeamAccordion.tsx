@@ -33,7 +33,12 @@ export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 	const currentPage = getCurrentPage(pathname);
 
 	return (
-		<Accordion type="single" collapsible defaultValue={currentTeam?.id}>
+		<Accordion
+			type="single"
+			collapsible
+			defaultValue={currentTeam?.id}
+			className="px-2"
+		>
 			{teams?.map((team: Team) => (
 				<AccordionItem key={team.id} value={team.id}>
 					<AccordionTrigger className="text-sm py-2">

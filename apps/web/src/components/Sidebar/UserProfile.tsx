@@ -26,7 +26,10 @@ export function UserProfile({ user, onLogout }: UserProfileProps) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="w-full justify-start px-2">
+				<Button
+					variant="ghost"
+					className={`w-full justify-start ${state === "collapsed" && "px-1"}`}
+				>
 					<Avatar className="h-6 w-6 mr-2">
 						<AvatarImage src={user?.avatarUrl ?? ""} />
 						<AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
