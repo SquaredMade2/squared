@@ -95,76 +95,87 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	const orderedTasks = orderTasks(tasks);
 
-	const renderTaskWithSubtasks = (task: Task, index: number) => {
-		const parentTaskIds = getParentTaskIds();
-		const isParentTask = parentTaskIds.includes(task.id);
-		const isSubtaskWithParent = parentTaskIds.includes(task.parentId);
+	const renderTask = (task: Task, index: number) => (
+		<div
+			key={task.id}
+			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+		>
+			<TaskCard task={task} index={index} location={"dashboard"} />
+		</div>
+	);
 
-		if (isSubtaskWithParent) return; // skip rendering for subtask with parent in same group
-		if (isParentTask) {
-			const subtasks = tasks.filter((t) => t.parentId === task.id);
-			return (
-				<div
-					key={task.id}
-					className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
-				>
-					<TaskCard task={task} index={index} location={"dashboard"} />
-					{subtasks.length > 0 && displayOptions.showSubTasks && (
-						<div
-							className={`mt-1 bg-secondary dark:bg-secondary/30 ${
-								isListView
-									? "w-full rounded-b-lg px-2 pb-2"
-									: "w-72 rounded-lg p-2"
-							}`}
-						>
-							{subtasks.map((subtask, subIndex) => (
-								<TaskCard
-									key={subtask.id}
-									task={subtask}
-									index={subIndex}
-									location={"dashboard"}
-									isSubtask={true}
-								/>
-							))}
-						</div>
-					)}
-				</div>
-			);
-		}
-		//render subtask in a different group from parent task
-		if (task.parentId && !isSubtaskWithParent) {
-			const parentTask = allTasks.find((t) => t.id === task.parentId);
-			return (
+	const renderTaskWithSubtasks = (
+		task: Task,
+		index: number,
+		subtasks: Task[],
+	) => (
+		<div
+			key={task.id}
+			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+		>
+			<TaskCard task={task} index={index} location={"dashboard"} />
+			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
 					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
-						isListView
-							? "w-full rounded-b-lg px-2 py-2 "
-							: "w-72 rounded-lg p-2"
+						isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
 					}`}
 				>
-					<span
-						className={`text-accent-foreground truncate ${isListView ? "ml-10" : "ml-2"}`}
-					>
-						{parentTask?.identifier}: {parentTask?.title}
-					</span>
-					<TaskCard
-						key={task.id}
-						task={task}
-						index={index}
-						location={"dashboard"}
-						isSubtask={true}
-					/>
+					{subtasks.map((subtask, subIndex) => (
+						<TaskCard
+							key={subtask.id}
+							task={subtask}
+							index={subIndex}
+							location={"dashboard"}
+							isSubtask={true}
+						/>
+					))}
 				</div>
-			);
-		}
-		return (
-			<div
-				key={task.id}
-				className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			)}
+		</div>
+	);
+
+	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
+		<div
+			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
+			}`}
+		>
+			<span
+				className={`text-accent-foreground truncate ${isListView ? "ml-10" : "ml-2"}`}
 			>
-				<TaskCard task={task} index={index} location={"dashboard"} />
-			</div>
-		);
+				{parentTask?.identifier}: {parentTask?.title}
+			</span>
+			{subtasks.map((subtask, index) => (
+				<TaskCard
+					key={subtask.id}
+					task={subtask}
+					index={index}
+					location={"dashboard"}
+					isSubtask={true}
+				/>
+			))}
+		</div>
+	);
+
+	const renderGroup = (tasks: Task[]) => {
+		const parentTaskIds = getParentTaskIds();
+
+		return tasks.map((task, index) => {
+			const isParentTask = parentTaskIds.includes(task.id);
+			const isSubtaskWithParent = parentTaskIds.includes(task.parentId);
+
+			if (isParentTask) {
+				const subtasks = tasks.filter((t) => t.parentId === task.id);
+				return renderTaskWithSubtasks(task, index, subtasks);
+			}
+			//render subtask in a different group from parent task
+			if (task.parentId && !isSubtaskWithParent) {
+				const parentTask = allTasks.find((t) => t.id === task.parentId);
+				const subtasks = tasks.filter((t) => t.parentId === task.parentId);
+				return renderSubtasks(parentTask, subtasks);
+			}
+			return renderTask(task, index);
+		});
 	};
 
 	return (
@@ -205,10 +216,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 									: "flex flex-col z-30 w-full gap-2 items-center"
 							}
 						>
-							{showTasks &&
-								orderedTasks.map((task, index) =>
-									renderTaskWithSubtasks(task, index),
-								)}
+							{showTasks && renderGroup(orderedTasks)}
+							{/* // orderedTasks.map((task, index) => renderGroup(task, index))} */}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
