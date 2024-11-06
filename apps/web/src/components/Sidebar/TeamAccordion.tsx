@@ -1,14 +1,16 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Team } from "@squared/db";
-import { LayoutGrid } from "lucide-react";
+import { ChevronDown, ChevronUp, LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {
@@ -18,6 +20,7 @@ interface TeamAccordionProps {
 
 export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 	const pathname = usePathname();
+	const [openTeams, setOpenTeams] = useState<string[]>([currentTeam?.id || ""]);
 
 	const getCurrentPage = (path: string) => {
 		if (path.endsWith("/all")) return "all";
@@ -32,30 +35,50 @@ export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 
 	const currentPage = getCurrentPage(pathname);
 
+	const toggleTeam = (teamId: string) => {
+		setOpenTeams((prev) =>
+			prev.includes(teamId)
+				? prev.filter((id) => id !== teamId)
+				: [...prev, teamId],
+		);
+	};
+
 	return (
-		<Accordion
-			type="single"
-			collapsible
-			defaultValue={currentTeam?.id}
-			className="px-2"
-		>
-			{teams?.map((team: Team) => (
-				<AccordionItem key={team.id} value={team.id}>
-					<AccordionTrigger className="text-sm py-2">
-						<div className="flex items-center gap-2">
-							<LayoutGrid className="text-[#9577FF] h-4 w-4" />
-							{team.name}
-						</div>
-					</AccordionTrigger>
-					<AccordionContent>
-						<NavBarTeams
-							teamIdentifier={team.identifier}
-							currentPage={currentPage}
-							active={currentTeam?.id === team.id}
-						/>
-					</AccordionContent>
-				</AccordionItem>
-			))}
-		</Accordion>
+		<ScrollArea className="h-[calc(100vh-16rem)]">
+			<div className="space-y-2 py-2">
+				{teams?.map((team: Team) => (
+					<Collapsible
+						key={team.id}
+						open={openTeams.includes(team.id)}
+						onOpenChange={() => toggleTeam(team.id)}
+					>
+						<CollapsibleTrigger asChild>
+							<Button
+								variant="ghost"
+								className="w-full justify-between"
+								size="sm"
+							>
+								<div className="flex items-center gap-2">
+									<LayoutGrid className="text-primary h-4 w-4" />
+									<span className="text-sm font-medium">{team.name}</span>
+								</div>
+								{openTeams.includes(team.id) ? (
+									<ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+								) : (
+									<ChevronUp className="h-4 w-4 shrink-0 transition-transform duration-200" />
+								)}
+							</Button>
+						</CollapsibleTrigger>
+						<CollapsibleContent className="pl-6 pt-1">
+							<NavBarTeams
+								teamIdentifier={team.identifier}
+								currentPage={currentPage}
+								active={currentTeam?.id === team.id}
+							/>
+						</CollapsibleContent>
+					</Collapsible>
+				))}
+			</div>
+		</ScrollArea>
 	);
 }
