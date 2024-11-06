@@ -8,7 +8,9 @@ import { useEffect } from "react";
 
 export default function WorkspaceLayoutWrapper({
 	children,
-}: { children: React.ReactNode }) {
+}: {
+	children: React.ReactNode;
+}) {
 	const pathname = usePathname();
 	const { setLastVisitedPage } = useViewStore((state) => state);
 	// Check if we're in a subdirectory
@@ -40,16 +42,16 @@ export default function WorkspaceLayoutWrapper({
 		} else if (isValidViewPath(pathname)) {
 			setLastVisitedPage(getViewPath(pathname));
 		}
-	}, [pathname]);
+	}, [pathname, setLastVisitedPage]);
 
 	return (
-		<div className="flex w-full overflow-hidden relative">
-			{isSubdirectory && <SidebarNav />}
-			<main
-				className={`flex flex-grow overflow-hidden ${isSubdirectory ? "" : "w-full"}`}
-			>
-				{children}
-			</main>
+		<div className="flex h-screen overflow-hidden">
+			{isSubdirectory && (
+				<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
+					<SidebarNav />
+				</div>
+			)}
+			<main className="flex-grow overflow-auto">{children}</main>
 		</div>
 	);
 }
