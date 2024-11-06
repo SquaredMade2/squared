@@ -27,6 +27,7 @@ import {
 import { TODO } from "@squared/context";
 import {
 	ChevronLeft,
+	ChevronRight,
 	Home,
 	Inbox,
 	Moon,
@@ -51,7 +52,7 @@ function SidebarContent() {
 	const { toast } = useToast();
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const [notifications, setNotifications] = React.useState(0);
-	const { toggleSidebar } = useSidebar();
+	const { toggleSidebar, state } = useSidebar();
 
 	React.useEffect(() => {
 		if (!user) return;
@@ -89,7 +90,17 @@ function SidebarContent() {
 	return (
 		<>
 			<SidebarHeader className="space-y-2 px-2">
-				<WorkspaceDropdown />
+				<div className="flex items-center justify-between">
+					<WorkspaceDropdown />
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={toggleSidebar}
+						className={state === "expanded" ? "block" : "hidden"}
+					>
+						<ChevronLeft className="h-4 w-4" />
+					</Button>
+				</div>
 				<NewIssueButton />
 				<div className="flex flex-col space-y-2">
 					<IconButton icon={Home} label="Home" onClick={toHome} />
@@ -111,9 +122,11 @@ function SidebarContent() {
 					/>
 				</div>
 			</SidebarHeader>
-			<SidebarContainer>
-				<TeamAccordion teams={teams} currentTeam={currentTeam} />
-			</SidebarContainer>
+			{state === "expanded" && (
+				<SidebarContainer>
+					<TeamAccordion teams={teams} currentTeam={currentTeam} />
+				</SidebarContainer>
+			)}
 			<SidebarFooter className="space-y-2 px-2">
 				<IconButton
 					icon={theme === "dark" ? Moon : Sun}
@@ -127,10 +140,10 @@ function SidebarContent() {
 					variant="ghost"
 					size="icon"
 					onClick={toggleSidebar}
-					className="w-full justify-start group-data-[state=closed]/sidebar:hidden"
+					className={`w-full justify-start ${state === "collapsed" ? "block" : "hidden"}`}
 				>
-					<ChevronLeft className="h-4 w-4" />
-					<span className="ml-2">Collapse sidebar</span>
+					<ChevronRight className="h-4 w-4" />
+					<span className="ml-2">Expand sidebar</span>
 				</Button>
 			</SidebarFooter>
 		</>
@@ -145,7 +158,10 @@ export function SidebarNav() {
 	return (
 		<TooltipProvider delayDuration={0}>
 			<SidebarProvider>
-				<Sidebar collapsible="icon" className="w-64 group/sidebar">
+				<Sidebar
+					collapsible="icon"
+					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+				>
 					<SidebarContent />
 				</Sidebar>
 				<SidebarTrigger className="fixed top-4 left-4 z-50 md:hidden" />
@@ -167,6 +183,8 @@ function IconButton({
 	onClick,
 	notificationCount,
 }: IconButtonProps) {
+	const { state } = useSidebar();
+
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
@@ -178,11 +196,17 @@ function IconButton({
 					className="relative w-full justify-start"
 				>
 					<Icon className="h-4 w-4 shrink-0" />
-					<span className="ml-2 group-data-[state=closed]/sidebar:hidden">
+					<span
+						className={`ml-2 transition-all duration-300 ${
+							state === "collapsed"
+								? "w-0 opacity-0 overflow-hidden"
+								: "w-auto opacity-100"
+						}`}
+					>
 						{label}
 					</span>
 					{notificationCount && notificationCount > 0 && (
-						<div className="absolute top-3 right-3 h-2 w-2 bg-primary rounded-full" />
+						<div className="absolute top-0.5 right-0.5 h-2 w-2 bg-primary rounded-full" />
 					)}
 				</Button>
 			</TooltipTrigger>

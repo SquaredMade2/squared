@@ -10,6 +10,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSidebar } from "@/components/ui/sidebar";
 import type { User } from "@squared/db";
 import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
@@ -20,6 +21,8 @@ interface UserProfileProps {
 }
 
 export function UserProfile({ user, onLogout }: UserProfileProps) {
+	const { state } = useSidebar();
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -28,14 +31,16 @@ export function UserProfile({ user, onLogout }: UserProfileProps) {
 						<AvatarImage src={user?.avatarUrl ?? ""} />
 						<AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
 					</Avatar>
-					<div className="flex-1 text-left group-data-[state=closed]/sidebar:hidden">
-						<p className="text-sm font-medium leading-none">
-							{user?.name || "User"}
-						</p>
-						<p className="text-xs text-muted-foreground truncate">
-							{user?.email || "user@example.com"}
-						</p>
-					</div>
+					{state === "expanded" && (
+						<div className="flex-1 text-left">
+							<p className="text-sm font-medium leading-none">
+								{user?.name || "User"}
+							</p>
+							<p className="text-xs text-muted-foreground truncate">
+								{user?.email || "user@example.com"}
+							</p>
+						</div>
+					)}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="w-56">

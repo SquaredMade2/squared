@@ -7,19 +7,23 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export function WorkspaceDropdown() {
 	const { currentWorkspace, workspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
+	const { state } = useSidebar();
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="w-full justify-between">
-					{currentWorkspace?.name}
-					<ChevronsUpDown className="ml-2 h-4 w-4" />
+					<span className={state === "collapsed" ? "sr-only" : "truncate"}>
+						{currentWorkspace?.name}
+					</span>
+					<ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-full">
