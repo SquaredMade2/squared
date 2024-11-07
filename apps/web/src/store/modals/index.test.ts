@@ -21,6 +21,7 @@ describe("ModalStore", () => {
 			showTaskSelector: false,
 			showLinkForm: false,
 			newIssueData: {},
+			setShowLinkForm: expect.any(Function),
 			setShowNewIssue: expect.any(Function),
 			setShowRename: expect.any(Function),
 			setRenameData: expect.any(Function),
