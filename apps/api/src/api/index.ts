@@ -10,7 +10,7 @@ import { initializeServices } from "../services";
 import { type AllRouteDeps, createApiRouter } from "./generated-routes";
 import "dotenv/config";
 
-const prisma = new PrismaClient({
+export const prisma = new PrismaClient({
 	datasources: {
 		db: {
 			url: process.env.POSTGRES_PRISMA_URL,
