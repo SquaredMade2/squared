@@ -254,4 +254,23 @@ export class TaskService implements TaskRpc {
 			})
 			.then((t) => t.count);
 	}
+
+	async reorderSubtasks(args: {
+		parentId: string;
+		newOrder: string[];
+	}): Promise<Task[]> {
+		const updates = args.newOrder.map((id, index) =>
+			this.db.task.update({
+				where: { id },
+				data: { order: index },
+			}),
+		);
+
+		await this.db.$transaction(updates);
+
+		return await this.db.task.findMany({
+			where: { parentId: args.parentId },
+			orderBy: { order: "asc" },
+		});
+	}
 }
