@@ -14,7 +14,7 @@ export function useTaskPage() {
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
-	useUsers();
+	const { users, loading: userLoading } = useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
 	);
@@ -53,7 +53,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams]);
+	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { currentWorkspace, task, isLoading, error };
+	return { currentWorkspace, users, task, isLoading, error };
 }
