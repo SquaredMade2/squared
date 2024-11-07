@@ -90,6 +90,7 @@ async function addMainUser() {
 			password: hashedPassword,
 			verified: true,
 			onBoarding: false,
+			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
 	});
 	return user;
@@ -112,6 +113,7 @@ async function addUser() {
 			password: hashedPassword,
 			verified: true,
 			onBoarding: false,
+			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
 	});
 	return user;
