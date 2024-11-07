@@ -28,7 +28,7 @@ export const taskSchema = createSchema<Task>()(
 		authorId: z.string(),
 		identifier: z.string(),
 		dueDate: z.date().nullable(),
-		effortEstimate: z.number().nullable(),
+		effortEstimate: z.number().min(1).max(5).nullable(),
 		priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
 		dateCreated: z.date(),
 		assigneeId: z.string().nullable(),

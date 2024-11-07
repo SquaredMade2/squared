@@ -157,19 +157,21 @@ function LoginForm() {
 							</span>
 						</div>
 					</div>
-					<Button
-						onClick={handleGoogleLogin}
-						className="w-full"
-						variant="outline"
-						disabled={isGoogleLoading || isLoading}
-					>
-						{isGoogleLoading ? (
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-						) : (
-							<GoogleIcon />
-						)}
-						Sign in with Google
-					</Button>
+					{process.env.NODE_ENV === "production" && (
+						<Button
+							onClick={handleGoogleLogin}
+							className="w-full"
+							variant="outline"
+							disabled={isGoogleLoading || isLoading}
+						>
+							{isGoogleLoading ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : (
+								<GoogleIcon />
+							)}
+							Sign in with Google
+						</Button>
+					)}
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-px">
 					<p className="text-sm text-muted-foreground">
