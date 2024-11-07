@@ -2,14 +2,17 @@ import { subscribeUser } from "@/utils/taskUpdate";
 import type { PrismaClient, Task } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
+import type { EventService } from "../events";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
 export class TaskService implements TaskRpc {
 	private readonly db: PrismaClient;
 	private readonly logger: Logger;
-	constructor(db: PrismaClient) {
+	private readonly eventService: EventService;
+	constructor(db: PrismaClient, eventService: EventService) {
 		this.db = db;
 		this.logger = createCustomLogger("tasks");
+		this.eventService = eventService;
 	}
 
 	async createTask({

@@ -1,27 +1,27 @@
-import "dotenv/config";
-import { PrismaClient } from "@squared/db";
+import type { PrismaClient } from "@squared/db";
 import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
 
-const prisma = new PrismaClient({
-	datasources: {
-		db: {
-			url: process.env.POSTGRES_PRISMA_URL,
-		},
-	},
-});
-export const services = {
-	sprint: new SprintService(prisma),
-	event: new EventService(prisma),
-	task: new TaskService(prisma),
-};
+export function initializeServices(prisma: PrismaClient) {
+	const eventService = new EventService(prisma);
+	const sprintService = new SprintService(prisma);
+	const taskService = new TaskService(prisma, eventService);
 
-export const rpcHandlers = {
-	sprint: createSprintRpcHandler(services.sprint),
-	event: createEventRpcHandler(services.event),
-	task: createTaskRpcHandler(services.task),
-};
+	const services = {
+		event: eventService,
+		sprint: sprintService,
+		task: taskService,
+	};
 
-export type Services = typeof services;
-export type RpcHandlers = typeof rpcHandlers;
+	const rpcHandlers = {
+		event: createEventRpcHandler(services.event),
+		sprint: createSprintRpcHandler(services.sprint),
+		task: createTaskRpcHandler(services.task),
+	};
+
+	return { services, rpcHandlers };
+}
+
+export type Services = ReturnType<typeof initializeServices>["services"];
+export type RpcHandlers = ReturnType<typeof initializeServices>["rpcHandlers"];
