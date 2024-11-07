@@ -74,6 +74,12 @@
 					}
 				}
 			}
+		},
+		{
+			"include": ["apps/api/src/api/index.ts"],
+			"organizeImports": {
+				"enabled": false
+			}
 		}
 	],
 	"javascript": {
