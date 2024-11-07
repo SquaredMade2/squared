@@ -34,7 +34,7 @@ const Subtasks = ({
 	users: User[];
 }) => {
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
-	const { tasks, setTasks } = useTaskStore((state) => state);
+	const { setTasks } = useTaskStore((state) => state);
 
 	const onDragEnd = async (result: DropResult) => {
 		if (!result.destination) return;
@@ -50,10 +50,7 @@ const Subtasks = ({
 
 		setTasks(updatedTasks);
 
-		return tasks.map((task) => {
-			const updatedTask = updatedTasks.find((ut) => ut.id === task.id);
-			return updatedTask ? updatedTask : task;
-		});
+		return updatedTasks;
 	};
 
 	return (
