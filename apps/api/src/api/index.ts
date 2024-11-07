@@ -24,10 +24,37 @@ const server = http.createServer(app);
 const io = new Server(server);
 const port = process.env.PORT || 5173;
 
+const productionDomain = "https://app.squaredmade.com";
+const productionServerDomain = "https://api.squaredmade.com";
+const developmentDomain = "https://app-develop.squaredmade.com";
+const localDevDomain = "http://localhost:3000";
+const localServerDomain = `http://localhost:${port}`;
+const vercelRegex = /^https:\/\/web-(\w+)-squaredmade\.vercel\.app$/;
+
 // CORS setup (unchanged)
 app.use(
 	cors({
-		// ... (your existing CORS configuration)
+		origin: (
+			origin: string | undefined,
+			callback: (err: Error | null, allow?: boolean) => void,
+		) => {
+			// Allow requests from Vercel branch deployments, production domain, and local development
+			if (
+				!origin ||
+				vercelRegex.test(origin) ||
+				origin === productionDomain ||
+				origin === productionServerDomain ||
+				origin === developmentDomain ||
+				origin === localDevDomain ||
+				origin === localServerDomain
+			) {
+				callback(null, true);
+			} else {
+				callback(new Error("Not allowed by CORS"));
+			}
+		},
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true, // Allows credentials to be sent in requests
 	}),
 );
 
@@ -48,7 +75,6 @@ const router = express.Router();
 const routeDeps: AllRouteDeps = {
 	prisma,
 	...services,
-	// Add any other dependencies needed by your routes
 };
 createApiRouter(router, routeDeps);
 
