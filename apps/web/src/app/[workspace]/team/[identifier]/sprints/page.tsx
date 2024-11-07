@@ -249,9 +249,9 @@ export default function SprintDashboard() {
 	};
 
 	return (
-		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh]">
+		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh] w-full">
 			<div className="space-y-6">
-				<h1 className="text-3xl font-bold">Sprint Dashboard</h1>
+				<h1 className="text-3xl font-bold ml-8">Sprint Dashboard</h1>
 				{currentSprint && (
 					<Card>
 						<CardHeader>

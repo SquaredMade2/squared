@@ -13,7 +13,6 @@ export default function WorkspaceLayoutWrapper({
 }) {
 	const pathname = usePathname();
 	const { setLastVisitedPage } = useViewStore((state) => state);
-	// Check if we're in a subdirectory
 	const isSubdirectory = pathname.split("/").filter(Boolean).length > 3;
 
 	const isValidViewPath = (value: string) => {
@@ -45,13 +44,13 @@ export default function WorkspaceLayoutWrapper({
 	}, [pathname, setLastVisitedPage]);
 
 	return (
-		<div className="flex h-screen overflow-hidden">
+		<div className="flex h-screen overflow-hidden w-screen">
 			{isSubdirectory && (
 				<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
 					<SidebarNav />
 				</div>
 			)}
-			<main className="flex-grow overflow-auto">{children}</main>
+			<main className="flex-grow overflow-auto w-full h-full">{children}</main>
 		</div>
 	);
 }
