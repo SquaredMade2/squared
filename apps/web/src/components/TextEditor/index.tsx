@@ -1,4 +1,4 @@
-import { useAuthStore, useCommentStore } from "@/store";
+import { useAuthStore, useCommentStore, useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { type KeyboardEvent, useCallback, useState } from "react";
@@ -43,6 +43,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const addComment = useCommentStore((state) => state.addComment);
 	const getComments = useCommentStore((state) => state.getAllComments);
+	const { setShowLinkForm } = useModalStore((state) => state);
 	const currentUser = useAuthStore((state) => state.user);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
@@ -88,6 +89,20 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		}
 	};
 
+	const injectLinkContent = (linkName: string, linkUrl: string) => {
+		if (!editor.selection) {
+			toast({
+				title: "Place text cursor",
+				description:
+					"Place a text cursor in the designated area to insert the link",
+				variant: "destructive",
+			});
+			return;
+		}
+		const linkNode = { text: linkName, url: linkUrl };
+		Transforms.insertNodes(editor, linkNode);
+	};
+
 	// Helper Functions
 
 	const checkIfSlateEmpty = (editor: BaseEditor & ReactEditor) => {
@@ -124,7 +139,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const isLinkActive = () => {
 		const allMarks = Editor.marks(editor);
-		if (allMarks?.link) {
+		if (allMarks?.url) {
 			return true;
 		}
 		return false;
@@ -165,27 +180,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		Editor.addMark(editor, "code", Boolean(!isCodeActive()));
 	};
 
-	const createLinkLeaf = (url: string) => {
-		if (isLinkActive()) {
-			Editor.removeMark(editor, "link");
-		} else {
-			Editor.addMark(editor, "link", url);
-		}
-	};
-
-	const insertLink = () => {
-		const url = prompt("Link URL");
-		if (url) {
-			createLinkLeaf(url);
-		}
-	};
-
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
 		//     ctrl <something>, you dont want to add the character <something> in while doing a shortcut
 		// !!!
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
+		if (isLinkActive()) {
+			Editor.removeMark(editor, "url");
+		}
 		switch (e.key) {
 			// Element Blocks
 
@@ -221,53 +224,12 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				}
 				break;
 			}
-			case "o": {
-				if (e.ctrlKey) {
+			case "l": {
+				if (e[universalHotKey]) {
 					e.preventDefault();
-					insertLink();
+					setShowLinkForm(true);
 				}
 				break;
-			}
-			case "Enter": {
-				const { selection } = editor;
-				if (selection) {
-					// TODO: implement links with below
-					// const content = Editor.string(editor, selection);
-					// console.log(selection);
-					// const link = handleFormatLink(content);
-					// if (link) {
-					// 	const textBeforeLink = content.slice(0, link.index);
-					// 	const textAfterLink = content.slice(link.index, link.full.length);
-					// 	Transforms.select(editor, {
-					// 		anchor: { path: selection.anchor.path, offset: 0 },
-					// 		focus: { path: selection.anchor.path, offset: content.length },
-					// 	});
-					// 	Transforms.insertText(editor, textBeforeLink);
-					// 	Transforms.insertNodes(editor, {
-					// 		type: "link",
-					// 		url: link.linkUrl,
-					// 		children: [{ text: link.linkName }],
-					// 	});
-					// 	Transforms.insertText(editor, textAfterLink);
-					// }
-					// console.log(link);
-					// link.forEach(({ fullMatch, linkName, linkUrl, index }) => {
-					// 	const textBeforeLink = content.slice(0, index);
-					// 	const textAfterLink = content.slice(index + fullMatch.length);
-					// 	Transforms.select(editor, {
-					// 		anchor: { path: selection.anchor.path, offset: 0 },
-					// 		focus: { path: selection.anchor.path, offset: content.length },
-					// 	});
-					// 	console.log("lol");
-					// 	// Transforms.insertText(editor, textBeforeLink);
-					// 	Transforms.insertNodes(editor, {
-					// 		type: "link",
-					// 		url: linkUrl,
-					// 		children: [{ text: link.linkName }],
-					// 	});
-					// 	// Transforms.insertText(editor, textAfterLink);
-					// });
-				}
 			}
 		}
 	};
@@ -313,6 +275,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						isCodeActive={isCodeActive()}
 						createHeaderBlock={createHeaderBlock}
 						isHeaderBlock={isHeaderBlock()}
+						injectLinkContent={injectLinkContent}
+						// Others
+						selection={editor.selection}
 					/>
 					<Editable
 						onKeyDown={handleSetEditorContent}

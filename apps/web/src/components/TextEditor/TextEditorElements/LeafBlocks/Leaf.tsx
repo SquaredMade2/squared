@@ -4,18 +4,17 @@ import CodeLeaf from "./CodeLeaf";
 
 const Leaf = (props: RenderLeafProps) => {
 	const renderLeafType = () => {
-		if (props.leaf.link) {
+		if (props.leaf.url) {
 			return (
-				<span {...props.attributes}>
-					<a
-						href={props.leaf.link}
-						target="_blank"
-						rel="noopener noreferrer"
-						aria-label={`Link to ${props.leaf.link}`}
-					>
-						{props.children}
-					</a>
-				</span>
+				<a
+					{...props.attributes}
+					href={props.leaf.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label={`Link to ${props.leaf.url}`}
+				>
+					{props.children}
+				</a>
 			);
 		}
 		if (props.leaf.code) {

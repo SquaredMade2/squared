@@ -1,5 +1,5 @@
 import type { Task } from "@squared/db";
-import type { Node, NodeEntry } from "slate";
+import type { BaseSelection, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
@@ -16,14 +16,21 @@ export interface TextEditorToolBarProps {
 
 	isCodeActive: boolean;
 
+	injectLinkContent: (linkName: string, linkUrl: string) => void;
+
 	// Blocks
 
 	createHeaderBlock: () => void;
 	isHeaderBlock: NodeEntry<Node>;
+
+	// Others
+
+	selection: BaseSelection;
 }
 
-export interface LinkDropdownProps {
-	children: React.ReactNode;
+export interface LinkModalProps {
+	injectLinkContent: (linkName: string, linkUrl: string) => void;
+	selection: BaseSelection;
 }
 
 export type CustomElementAttributes = Omit<
@@ -37,7 +44,6 @@ export type CustomElementAttributes = Omit<
 export type CustomElement = {
 	type: string;
 	children: CustomText[];
-	url?: string;
 	attributes?: CustomElementAttributes;
 };
 
@@ -46,7 +52,7 @@ export type CustomText = {
 	bold?: boolean;
 	italic?: boolean;
 	code?: boolean;
-	link?: string;
+	url?: string;
 };
 
 export type CustomDescendant = CustomElement | CustomText;

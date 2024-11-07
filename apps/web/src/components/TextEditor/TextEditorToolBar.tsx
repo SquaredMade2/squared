@@ -1,5 +1,4 @@
-import { useModalStore } from "@/store";
-import { Bold, Heading, Italic, Link } from "lucide-react";
+import { Bold, Heading, Italic } from "lucide-react";
 import { Button } from "../ui/button";
 import LinkModal from "./LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
@@ -13,6 +12,9 @@ const TextEditorToolBar = ({
 	isCodeActive,
 	createHeaderBlock,
 	isHeaderBlock,
+
+	injectLinkContent,
+	selection,
 	// Todos:
 	// Quote
 	// Link
@@ -26,8 +28,6 @@ const TextEditorToolBar = ({
 	// slash commands
 	// Separator
 }: TextEditorToolBarProps) => {
-	const { showLinkForm, setShowLinkForm } = useModalStore((state) => state);
-	console.log(showLinkForm);
 	return (
 		<div className="flex flex-row items-center shadow-md rounded-m p-2 p-10 h-16 border">
 			<Button
@@ -80,7 +80,7 @@ const TextEditorToolBar = ({
 				<Heading className="size-4" />
 				<span className="sr-only">Header</span>
 			</Button>
-			<LinkModal />
+			<LinkModal injectLinkContent={injectLinkContent} selection={selection} />
 		</div>
 	);
 };
