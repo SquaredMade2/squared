@@ -53,6 +53,7 @@ async function seedDB() {
 			for (let i = 0; i < numUsers; i++) {
 				const newUser = await addUser();
 				await addUserToWorkspace(newUser, workspace);
+				await addUserToTeam(newUser, team);
 				users.push(newUser);
 			}
 
@@ -98,7 +99,7 @@ async function addUser() {
 	const firstName = faker.person.firstName();
 	const lastName = faker.person.lastName();
 	const fullName = `${firstName} ${lastName}`;
-	const username = faker.internet.userName({ firstName, lastName });
+	const username = faker.internet.username({ firstName, lastName });
 	const email = faker.internet.email({ firstName, lastName });
 	const password = process.env.SEED_PASSWORD || faker.internet.password();
 	const hashedPassword = await hashPassword(password);
@@ -119,6 +120,19 @@ async function addUser() {
 async function addUserToWorkspace(user: User, workspace: Workspace) {
 	await prisma.workspace.update({
 		where: { id: workspace.id },
+		data: {
+			Users: {
+				create: {
+					userId: user.id,
+				},
+			},
+		},
+	});
+}
+
+async function addUserToTeam(user: User, team: Team) {
+	await prisma.team.update({
+		where: { id: team.id },
 		data: {
 			Users: {
 				create: {

@@ -1,5 +1,10 @@
 import { sprintService } from "@/lib/services";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
+import {
+	useAuthStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
 import type { Sprint, Task, Team, Workspace } from "@squared/db";
@@ -8,6 +13,7 @@ import { useEffect, useState } from "react";
 
 export function useSprints() {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
+	const { setTasks } = useTaskStore((state) => state);
 	const [workspace, setWorkspace] = useState<Workspace | null>(null);
 	const [team, setTeam] = useState<Team | null>(null);
 	const [sprints, setSprints] = useState<Sprint[]>([]);
@@ -66,6 +72,7 @@ export function useSprints() {
 				const tasks = await sprintService.getSprintTasks(context.TODO, {
 					sprintId: foundSprint.id,
 				});
+				setTasks(tasks);
 				setSprintTasks(tasks);
 				setCurrentSprint(foundSprint);
 
