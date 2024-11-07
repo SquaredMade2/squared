@@ -5,20 +5,21 @@ import {
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
+import { TODO } from "@squared/context";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const [date, setDate] = useState<Date>();
 	const { updateTask } = useTaskStore((state) => state);
-	useEffect(() => {
-		if (date) {
-			updateTask(task.id, { dueDate: date });
-		}
-	}, [date]);
+	const handleUpdate = async (date?: Date) => {
+		updateTask(
+			await taskService.updateTask(TODO, { id: task.id, dueDate: date }),
+		);
+	};
 
 	return (
 		<ContextMenuSub open={dropdownOpen} onOpenChange={setDropdownOpen}>
@@ -31,8 +32,8 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 			<ContextMenuSubContent>
 				<Calendar
 					mode="single"
-					selected={date}
-					onSelect={setDate}
+					selected={task.dueDate ?? undefined}
+					onSelect={handleUpdate}
 					initialFocus
 				/>
 			</ContextMenuSubContent>

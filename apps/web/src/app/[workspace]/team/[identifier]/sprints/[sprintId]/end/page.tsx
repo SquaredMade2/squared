@@ -28,10 +28,8 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "@/components/ui/use-toast";
 import { useSprints } from "@/hooks/useSprints";
 import { sprintService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
-import type { Sprint, Task } from "@squared/db";
+import type { Sprint } from "@squared/db";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -55,42 +53,31 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 export default function EndSprintPage() {
 	const router = useRouter();
 	const { sprintId } = useParams();
-	const { sprints, team, workspace, loading, error } = useSprints();
-	const { getAllTasks } = useTaskStore((state) => state);
+	const {
+		sprints,
+		team,
+		workspace,
+		loading,
+		error,
+		sprintTasks: tasks,
+	} = useSprints();
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
 	const [newSprint, setNewSprint] = useState(false);
-	const [tasks, setTasks] = useState<Task[]>([]);
 	const [currentDay, setCurrentDay] = useState(0);
 	const [burndownData, setBurndownData] = useState<
 		{ day: number; tasks: number; ideal: number }[]
 	>([]);
 
 	useEffect(() => {
-		const loadData = async () => {
-			if (team) {
-				await getAllTasks(team.id);
-			}
-		};
-		loadData();
-	}, [team]);
-
-	useEffect(() => {
 		const currentSprint = sprints.find((s) => s.id === sprintId);
 		setSprint(currentSprint || null);
 		if (currentSprint && team) {
-			const loadSprintTasks = async () => {
-				const tasks = await sprintService.getSprintTasks(TODO, {
-					sprintId: parseParams(sprintId),
-				});
-				setTasks(tasks);
-			};
-			loadSprintTasks();
 			setNewSprintName(`Sprint ${sprints.length + 1}`);
 		}
-	}, [sprints, sprintId, team]);
+	}, [sprints, team]);
 
 	const getBurndownData = useCallback(() => {
 		if (!sprint) return [];
