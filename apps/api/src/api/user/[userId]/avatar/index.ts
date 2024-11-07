@@ -1,5 +1,5 @@
 import { prisma } from "@/api";
-import type { Route, APIResponse } from "@/api/route";
+import type { APIResponse, Route } from "@/api/route";
 import createCustomLogger from "@squared/logger";
 
 type Params = {

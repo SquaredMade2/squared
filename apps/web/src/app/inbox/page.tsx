@@ -1,19 +1,22 @@
 "use client";
-import { useEffect, useState } from "react";
+import IconLeftMenu from "@/components/IconNavbar";
 import {
 	InboxDataTable,
 	InboxSidebar,
 	MobileInboxSwitcher,
 } from "@/components/Inbox";
+import { MobileMenuSheetTrigger } from "@/components/MobileNav";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { eventService } from "@/lib/services";
 import {
 	useAuthStore,
-	useNotificationStore,
+	useEventStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import IconLeftMenu from "@/components/IconNavbar";
+import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
-import { MobileMenuSheetTrigger } from "@/components/MobileNav";
+import { useEffect, useState } from "react";
 
 export type NotificationFilter =
 	| NotificationType
@@ -23,21 +26,24 @@ export type NotificationFilter =
 	| "WORKSPACE";
 
 export default function InboxPage() {
-	const { notifications, getAllNotifications } = useNotificationStore(
-		(state) => state,
-	);
+	const { notifications, setNotifications } = useEventStore((state) => state);
 	const { workspaces } = useWorkspaceStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
-		useState(notifications);
+		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const { getUserAvatars } = useUserStore((state) => state);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
-			user && (await getAllNotifications(user.id));
+			if (user) {
+				const notifications = await eventService.getNotifications(TODO, {
+					userId: user.id,
+				});
+				setNotifications(notifications);
+			}
 		};
 		fetchNotifications();
 	}, [user]);

@@ -1,22 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import {
-	useAuthStore,
-	useModalStore,
-	useNotificationStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { eventService } from "@/lib/services";
+import {
+	useAuthStore,
+	useModalStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
+import { TODO } from "@squared/context";
 import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const IconLeftMenu = () => {
@@ -24,7 +25,6 @@ const IconLeftMenu = () => {
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { setShowCommand } = useModalStore((state) => state);
-	const { getAllNotifications } = useNotificationStore((state) => state);
 	const [notifications, setNotifications] = useState(0);
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const { user } = useAuthStore((state) => state);
@@ -41,7 +41,9 @@ const IconLeftMenu = () => {
 	useEffect(() => {
 		setMounted(true);
 		const fetchNotifications = async () => {
-			const notifications = user && (await getAllNotifications(user.id));
+			const notifications =
+				user &&
+				(await eventService.getNotifications(TODO, { userId: user.id }));
 			setNotifications(notifications?.filter((n) => !n.read).length || 0);
 		};
 		fetchNotifications();

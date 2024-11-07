@@ -1,8 +1,8 @@
-import { Container } from "@/components/container";
-import { Hero } from "@/components/hero";
 import { Background } from "@/components/background";
+import { Container } from "@/components/container";
 import { Features } from "@/components/features";
 import { GridFeatures } from "@/components/grid-features";
+import { Hero } from "@/components/hero";
 import { Testimonials } from "@/components/testimonials";
 
 export default function Home() {

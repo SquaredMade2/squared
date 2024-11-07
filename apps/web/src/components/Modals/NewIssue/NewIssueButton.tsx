@@ -1,7 +1,7 @@
-import { SquarePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Status } from "@squared/db";
 import { useModalStore, useTeamStore, useViewStore } from "@/store";
+import type { Status } from "@squared/db";
+import { SquarePen } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export const NewIssueButton = () => {

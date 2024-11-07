@@ -1,16 +1,16 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useUserStore, useAuthStore } from "@/store";
+import { useAuthStore, useUserStore } from "@/store";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const GithubSettings: React.FC = () => {
 	const authUser = useAuthStore((state) => state.user);

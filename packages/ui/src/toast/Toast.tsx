@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { composeEventHandlers } from "../primitive";
-import { useComposedRefs } from "../compose-refs";
 import { createCollection } from "../collection";
+import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
 import * as DismissableLayer from "../dismissable-layer";
 import { Portal } from "../portal";
 import { Presence } from "../presence";
+import { composeEventHandlers } from "../primitive";
 import { Primitive, dispatchDiscreteCustomEvent } from "../react-primitive";
 import { useCallbackRef } from "../use-callback-ref";
 import { useControllableState } from "../use-controllable-state";

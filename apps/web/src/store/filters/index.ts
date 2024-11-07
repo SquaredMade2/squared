@@ -1,17 +1,17 @@
-import { createStore } from "zustand/vanilla";
-import type {
-	FilterStore,
-	FilterState,
-	FilterResponse,
-	SavedFilter,
-	FilterCondition,
-} from "./interfaces";
-import { persist } from "zustand/middleware";
-import { v4 as uuidv4 } from "uuid";
-import { checkCondition, parseFilter } from "./helpers";
 import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
-import type { ApiReturnType } from "../interfaces";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+import type { ApiReturnType } from "../interfaces";
+import { checkCondition, parseFilter } from "./helpers";
+import type {
+	FilterCondition,
+	FilterResponse,
+	FilterState,
+	FilterStore,
+	SavedFilter,
+} from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
 

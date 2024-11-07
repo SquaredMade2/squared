@@ -1,4 +1,4 @@
-import type { Task, Label, User } from "@squared/db";
+import type { Label, Task, User } from "@squared/db";
 
 export interface TaskGridProps {
 	task: Task;

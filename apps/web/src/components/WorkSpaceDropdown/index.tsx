@@ -1,17 +1,17 @@
 import WorkspaceInitials from "@/components/WorkspaceImage";
+import { useAuthStore, useWorkspaceStore } from "@/store";
+import type { Workspace } from "@/store/workspaces";
 import { getInitials, handleWorkspaceNameOverflow } from "@/utils/formatting";
+import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { useAuthStore, useWorkspaceStore } from "@/store";
-import { useRouter } from "next/navigation";
-import { Check } from "lucide-react";
-import type { Workspace } from "@/store/workspaces";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 const WorkSpaceDropDown = () => {
 	const { currentWorkspace, workspaces, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);

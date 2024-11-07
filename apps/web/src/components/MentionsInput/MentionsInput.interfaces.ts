@@ -1,5 +1,5 @@
-import type { FocusEvent } from "react";
 import type { CustomMentionStyleType } from "@/utils/mentionInputStyle";
+import type { FocusEvent } from "react";
 import type { OnChangeHandlerFunc } from "react-mentions";
 
 export interface MentionsInputProps {

@@ -1,37 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import {
-	useAuthStore,
-	useModalStore,
-	useViewStore,
-	useWorkspaceStore,
-} from "@/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
-import { useToast } from "@/components/ui/use-toast";
+import { Separator } from "@/components/ui/separator";
 import {
 	Sheet,
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
+import { useToast } from "@/components/ui/use-toast";
 import {
+	useAuthStore,
+	useModalStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
+import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import {
+	ChevronRight,
 	Home,
-	Search,
-	Settings,
 	Inbox,
-	Sun,
-	Moon,
 	LogOut,
 	Menu,
-	ChevronRight,
+	Moon,
+	Search,
+	Settings,
+	Sun,
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTheme } from "next-themes";
 import Image from "next/image";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const MobileMenuSheet = () => {
 	const [mounted, setMounted] = useState(false);

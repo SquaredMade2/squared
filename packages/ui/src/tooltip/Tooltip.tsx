@@ -1,5 +1,4 @@
 import * as React from "react";
-import { composeEventHandlers } from "../primitive";
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
 import { DismissableLayer } from "../dismissable-layer";
@@ -8,6 +7,7 @@ import * as PopperPrimitive from "../popper";
 import { createPopperScope } from "../popper";
 import { Portal as PortalPrimitive } from "../portal";
 import { Presence } from "../presence";
+import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
 import { Slottable } from "../slot";
 import { useControllableState } from "../use-controllable-state";

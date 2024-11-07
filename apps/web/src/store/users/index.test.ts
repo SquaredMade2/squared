@@ -1,7 +1,7 @@
-import { createUserStore, type UserAvatar } from ".";
-import axios from "axios";
-import type { User } from "@squared/db";
 import { STANDARD_USER, STANDARD_WORKSPACE } from "@/test/mocks";
+import type { User } from "@squared/db";
+import axios from "axios";
+import { type UserAvatar, createUserStore } from ".";
 
 // Mock axios
 jest.mock("axios");

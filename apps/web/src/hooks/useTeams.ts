@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { useTeamStore } from "@/store";
-import { useWorkspaces } from "./useWorkspaces";
-import type { Team } from "@squared/db";
 import { parseParams } from "@/utils/parseParams";
+import type { Team } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
+import { useWorkspaces } from "./useWorkspaces";
 
 export function useTeams() {
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(

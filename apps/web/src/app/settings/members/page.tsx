@@ -1,11 +1,11 @@
 "use client";
-import { Separator } from "@/components/ui/separator";
-import { DataTable } from "./data-table";
-import { columns } from "./columns";
-import type { ReactNode } from "react";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { Separator } from "@/components/ui/separator";
 import { useUsers } from "@/hooks/useUsers";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import type { ReactNode } from "react";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 export default function WorkspaceMembersPage() {
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();

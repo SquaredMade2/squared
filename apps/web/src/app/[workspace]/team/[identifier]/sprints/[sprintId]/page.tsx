@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { format, differenceInDays, addWeeks } from "date-fns";
-import { useTaskStore } from "@/store";
+import {
+	AssignTasksDialog,
+	SprintError,
+	SprintLoading,
+	SprintNotFound,
+} from "@/components/Sprints";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -11,33 +14,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-	PieChart,
-	Pie,
-	Cell,
-	ReferenceLine,
-} from "recharts";
-import {
-	AssignTasksDialog,
-	SprintError,
-	SprintLoading,
-	SprintNotFound,
-} from "@/components/Sprints";
-import Link from "next/link";
-import { ArrowLeft, Edit } from "lucide-react";
-import type { Sprint, Status, Task } from "@squared/db";
-import { useSprints } from "@/hooks/useSprints";
-import { formatStatus } from "@/utils/formatting";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
 	Dialog,
 	DialogContent,
@@ -46,11 +23,34 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/ui/date-picker";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useSprints } from "@/hooks/useSprints";
 import { sprintService } from "@/lib/services";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
+import type { Sprint, Status, Task } from "@squared/db";
+import { addWeeks, differenceInDays, format } from "date-fns";
+import { ArrowLeft, Edit } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import {
+	Cell,
+	Line,
+	LineChart,
+	Pie,
+	PieChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
 

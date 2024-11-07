@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaClient } from "@squared/db";
+import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 
 const prisma = new PrismaClient({
@@ -11,10 +12,12 @@ const prisma = new PrismaClient({
 });
 export const services = {
 	sprint: new SprintService(prisma),
+	event: new EventService(prisma),
 };
 
 export const rpcHandlers = {
 	sprint: createSprintRpcHandler(services.sprint),
+	event: createEventRpcHandler(services.event),
 };
 
 export type Services = typeof services;
