@@ -256,6 +256,40 @@ export type ReorderSubtasksResponse = {
 	workspaceId: string;
 }[];
 
+export type GetSubtasksRequest = {
+	parentId: string;
+};
+
+export type GetSubtasksResponse = {
+	assigneeId: string | null;
+	assigneeName: string | null;
+	authorId: string;
+	dateCreated: Date;
+	deleted: boolean;
+	description: string | null;
+	dueDate: Date | null;
+	effortEstimate: number | null;
+	id: string;
+	identifier: string;
+	labels: string[];
+	order: number;
+	parentId: string | null;
+	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId: string | null;
+	status:
+		| "backlog"
+		| "todo"
+		| "inProgress"
+		| "inReview"
+		| "done"
+		| "canceled"
+		| "archived";
+	teamId: string;
+	title: string;
+	updatedAt: Date;
+	workspaceId: string;
+}[];
+
 /**
  * task service
  */
@@ -346,5 +380,15 @@ export class TaskService extends RPCContextClient {
 		req: ReorderSubtasksRequest,
 	): Promise<ReorderSubtasksResponse> {
 		return this.request(ctx, "reorderSubtasks", req);
+	}
+
+	/**
+	 * getSubtasks method
+	 */
+	getSubtasks(
+		ctx: Context,
+		req: GetSubtasksRequest,
+	): Promise<GetSubtasksResponse> {
+		return this.request(ctx, "getSubtasks", req);
 	}
 }

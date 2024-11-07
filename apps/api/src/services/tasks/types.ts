@@ -44,4 +44,5 @@ export interface TaskRpc {
 		parentId: string;
 		newOrder: string[];
 	}) => Promise<Task[]>;
+	getSubtasks: (args: { parentId: string }) => Promise<Task[]>;
 }

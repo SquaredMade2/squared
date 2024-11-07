@@ -2,6 +2,7 @@ import { taskService } from "@/lib/services";
 import { useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
+import type { Task } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
@@ -18,6 +19,7 @@ export function useTaskPage() {
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
 	);
+	const [subtasks, setSubtasks] = useState<Task[]>([]);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -43,6 +45,10 @@ export function useTaskPage() {
 				if (pageTask) {
 					setTask(pageTask);
 					setCurrentTask(pageTask);
+					const fetchedSubtasks = await taskService.getSubtasks(TODO, {
+						parentId: pageTask?.id,
+					});
+					setSubtasks(fetchedSubtasks);
 				}
 
 				setIsLoading(false);
@@ -55,5 +61,5 @@ export function useTaskPage() {
 		fetchData();
 	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { currentWorkspace, users, task, isLoading, error };
+	return { currentWorkspace, users, task, isLoading, error, subtasks };
 }

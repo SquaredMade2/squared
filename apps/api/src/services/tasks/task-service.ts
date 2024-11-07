@@ -273,4 +273,11 @@ export class TaskService implements TaskRpc {
 			orderBy: { order: "asc" },
 		});
 	}
+
+	async getSubtasks({ parentId }: { parentId: string }): Promise<Task[]> {
+		return await this.db.task.findMany({
+			where: { parentId },
+			orderBy: { order: "asc" },
+		});
+	}
 }

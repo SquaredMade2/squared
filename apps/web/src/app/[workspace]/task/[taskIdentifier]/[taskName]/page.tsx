@@ -14,16 +14,13 @@ import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
-import { useTaskStore } from "@/store";
 import { useEffect } from "react";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
-	const { tasks } = useTaskStore((state) => state);
-	const { task, isLoading, error, currentWorkspace, users } = useTaskPage();
+	const { task, isLoading, error, currentWorkspace, users, subtasks } =
+		useTaskPage();
 	const { toast } = useToast();
-
-	const subtasks = tasks.filter((t) => t.parentId === task?.id);
 
 	useEffect(() => {
 		if (error) {
