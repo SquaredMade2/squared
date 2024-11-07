@@ -158,26 +158,30 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	);
 
 	const renderGroup = (tasks: Task[]) => {
-		const parentTaskIds = getParentTaskIds();
+		const parentIdsForGroup = getParentTaskIds();
+		const subtaskParentIds = new Set(
+			tasks.filter((t) => t.parentId).map((t) => t.parentId),
+		);
+		return [
+			tasks
+				.filter((t) => !t.parentId)
+				.map((task, index) => {
+					const isParentTask = parentIdsForGroup.includes(task.id);
 
-		return tasks.map((task, index) => {
-			const isParentTask = parentTaskIds.includes(task.id);
-			const isSubtaskWithParent = parentTaskIds.includes(task.parentId);
-
-			if (isSubtaskWithParent) return;
-
-			if (isParentTask) {
-				const subtasks = tasks.filter((t) => t.parentId === task.id);
-				return renderTaskWithSubtasks(task, index, subtasks);
-			}
+					if (isParentTask) {
+						const subtasks = tasks.filter((t) => t.parentId === task.id);
+						return renderTaskWithSubtasks(task, index, subtasks);
+					}
+					return renderTask(task, index);
+				}),
 			//render subtask in a different group from parent task
-			if (task.parentId && !isSubtaskWithParent) {
-				const parentTask = allTasks.find((t) => t.id === task.parentId);
-				const subtasks = tasks.filter((t) => t.parentId === task.parentId);
+			Array.from(subtaskParentIds).map((id) => {
+				const parentTask = allTasks.find((t) => t.id === id);
+				const subtasks = tasks.filter((t) => t.parentId === id);
+				if (parentIdsForGroup.includes(id)) return;
 				return renderSubtasks(parentTask, subtasks);
-			}
-			return renderTask(task, index);
-		});
+			}),
+		];
 	};
 
 	return (
