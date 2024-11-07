@@ -18,12 +18,13 @@ import type { Workspace } from "@squared/db";
 import { useState } from "react";
 import { CSVLink } from "react-csv";
 
-interface DataTableProps<TValue> {
+interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	workspace: Workspace | null;
 }
-interface TData {
+
+interface Member {
 	name: string;
 	role: string;
 	email: string;
@@ -32,7 +33,10 @@ interface TData {
 	username: string;
 }
 
-export function DataTable<TValue>({ columns, data }: DataTableProps<TValue>) {
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+}: DataTableProps<TData, TValue>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
@@ -61,7 +65,7 @@ export function DataTable<TValue>({ columns, data }: DataTableProps<TValue>) {
 	};
 
 	const generateMembersCsv = () => {
-		const members = data.map((member) => {
+		const members = (data as Member[]).map((member) => {
 			return {
 				name: member.name,
 				role: member.role,
