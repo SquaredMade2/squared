@@ -33,7 +33,9 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
+import { TODO } from "@squared/context";
 import type { Priority, Sprint, Task } from "@squared/db";
 import { differenceInDays, format } from "date-fns";
 import { AlertCircle } from "lucide-react";
@@ -50,7 +52,7 @@ import {
 
 export default function SprintDashboard() {
 	const { sprints, currentSprint, team: currentTeam } = useSprints();
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [upcomingSprints, setUpcomingSprints] = useState<Sprint[]>([]);
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -190,15 +192,16 @@ export default function SprintDashboard() {
 	const handleBulkAssign = async () => {
 		if (!targetSprint) return;
 
-		for (const task of selectedTasks) {
-			await updateTask(task.id, {
-				sprintId: targetSprint,
-				status: task.status === "backlog" ? "todo" : task.status,
-			});
-		}
+		await taskService.addSprintTasks(TODO, {
+			sprintId: targetSprint,
+			taskIds: selectedTasks.map((t) => t.id),
+		});
 
 		setSelectedTasks([]);
-		currentTeam && (await getAllTasks(currentTeam.id));
+		currentTeam &&
+			setTasks(
+				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+			);
 	};
 
 	const prepareAutoAssign = () => {
@@ -241,11 +244,15 @@ export default function SprintDashboard() {
 
 	const handleAutoAssign = async () => {
 		if (!currentSprint) return;
-		for (const task of tasksToAutoAssign) {
-			await updateTask(task.id, { sprintId: currentSprint.id });
-		}
+		await taskService.addSprintTasks(TODO, {
+			sprintId: currentSprint.id,
+			taskIds: tasksToAutoAssign.map((t) => t.id),
+		});
 		setIsAutoAssignConfirmOpen(false);
-		currentTeam && (await getAllTasks(currentTeam.id));
+		currentTeam &&
+			setTasks(
+				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+			);
 	};
 
 	return (
