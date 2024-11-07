@@ -2,12 +2,14 @@
 
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/components/ui/use-toast";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
+import { TODO } from "@squared/context";
 import { useEffect, useState } from "react";
 
 const DesignationsDatePicker = () => {
 	const { toast } = useToast();
-	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
 	if (!currentTask) return null;
@@ -23,7 +25,12 @@ const DesignationsDatePicker = () => {
 
 	const handleSave = async () => {
 		try {
-			await updateTask(taskId, { dueDate: selectedDate });
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					dueDate: selectedDate,
+				}),
+			);
 			setCurrentTask({ ...currentTask, dueDate: selectedDate ?? null });
 			toast({
 				title: "Success",
