@@ -1,4 +1,4 @@
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
+import { PriorityIcon } from "@/components/Icons";
 import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ import {
 } from "@hello-pangea/dnd";
 import { TODO } from "@squared/context";
 import type { Task, User } from "@squared/db";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -78,7 +78,7 @@ const Subtasks = ({
 							<ul
 								{...provided.droppableProps}
 								ref={provided.innerRef}
-								className="space-y-2"
+								className="space-y-2 my-4"
 							>
 								{subtasks.map((subtask, index) => (
 									<Draggable
@@ -105,11 +105,33 @@ const Subtasks = ({
 														<TaskContextMenu task={subtask} />
 														<Button
 															variant="ghost"
-															className="w-full justify-start items-center"
+															className="w-full justify-start gap-2"
 															type="button"
 														>
-															<StatusIcon status={subtask.status} />
+															<span className="text-muted-foreground">
+																{subtask.identifier}
+															</span>
 															<PriorityIcon priority={subtask.priority} />
+															{subtask.assigneeId ? (
+																<Avatar className="w-6 h-6 ml-2">
+																	<AvatarImage
+																		src={
+																			users.find(
+																				(u) => u.id === subtask.assigneeId,
+																			)?.avatarUrl ?? undefined
+																		}
+																		alt={subtask.assigneeName ?? undefined}
+																	/>
+																	<AvatarFallback>
+																		{subtask.assigneeName
+																			?.split(" ")
+																			.map((n) => n[0])
+																			.join("")}
+																	</AvatarFallback>
+																</Avatar>
+															) : (
+																<UserSearch className="size-6" />
+															)}
 															<Link
 																href={`/${currentWorkspaceUrl}/task/${
 																	subtask?.identifier
@@ -127,24 +149,6 @@ const Subtasks = ({
 																	{subtask.title}
 																</span>
 															</Link>
-															{subtask.assigneeId && (
-																<Avatar className="w-6 h-6 ml-2">
-																	<AvatarImage
-																		src={
-																			users.find(
-																				(u) => u.id === subtask.assigneeId,
-																			)?.avatarUrl ?? undefined
-																		}
-																		alt={subtask.assigneeName ?? undefined}
-																	/>
-																	<AvatarFallback>
-																		{subtask.assigneeName
-																			?.split(" ")
-																			.map((n) => n[0])
-																			.join("")}
-																	</AvatarFallback>
-																</Avatar>
-															)}
 														</Button>
 													</ContextMenuTrigger>
 												</ContextMenu>
