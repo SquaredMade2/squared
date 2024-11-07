@@ -19,6 +19,7 @@ describe("ModalStore", () => {
 			showWorkspaceInvite: false,
 			showSwitchWorkspace: false,
 			showTaskSelector: false,
+			showLinkForm: false,
 			newIssueData: {},
 			setShowNewIssue: expect.any(Function),
 			setShowRename: expect.any(Function),
