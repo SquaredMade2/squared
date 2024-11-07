@@ -8,6 +8,8 @@ import {
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatUrl } from "@/utils/formatting";
 import {
@@ -16,6 +18,7 @@ import {
 	type DropResult,
 	Droppable,
 } from "@hello-pangea/dnd";
+import { TODO } from "@squared/context";
 import type { Task, User } from "@squared/db";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -31,6 +34,7 @@ const Subtasks = ({
 	users: User[];
 }) => {
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
+	const { tasks } = useTaskStore((state) => state);
 
 	const onDragEnd = async (result: DropResult) => {
 		if (!result.destination) return;
@@ -39,9 +43,15 @@ const Subtasks = ({
 		const [reorderedItem] = items.splice(result.source.index, 1);
 		items.splice(result.destination.index, 0, reorderedItem);
 
-		// Update the order in your state or backend
-		// This is a placeholder for where you would update the order
-		console.log("New order:", items);
+		const updatedTasks = await taskService.reorderSubtasks(TODO, {
+			parentId: subtasks[0].parentId ?? "",
+			newOrder: items.map((item) => item.id),
+		});
+
+		return tasks.map((task) => {
+			const updatedTask = updatedTasks.find((ut) => ut.id === task.id);
+			return updatedTask ? updatedTask : task;
+		});
 	};
 	return (
 		<Collapsible
