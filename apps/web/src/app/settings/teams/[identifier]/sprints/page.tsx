@@ -32,8 +32,8 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import { sprintService } from "@/lib/services";
-import { useTaskStore, useTeamStore } from "@/store";
+import { sprintService, taskService } from "@/lib/services";
+import { useTeamStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
 import type { Sprint, Team } from "@squared/db";
@@ -50,7 +50,6 @@ import { useEffect, useState } from "react";
 export default function TeamSettingsSprints() {
 	const { updateTeam, setCurrentTeam } = useTeamStore((state) => state);
 	const { currentTeam, loading: teamLoading } = useTeams();
-	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		currentTeam?.sprintStartDate || null,
@@ -103,21 +102,17 @@ export default function TeamSettingsSprints() {
 		if (!currentTeam || !activeSprint) return;
 
 		try {
-			const response = await toggleSprintTasks(
-				currentTeam.id,
-				activeSprint.id,
-				"add",
-			);
+			const response = await taskService.addActiveSprintTasks(TODO, {
+				sprintId: activeSprint.id,
+			});
 
-			if (response.data) {
+			if (response) {
 				toast({
 					title: `${type === "active" ? "Active" : "Completed"} tasks added to sprint`,
 					description:
 						"The tasks have been successfully added to the current sprint.",
 					variant: "default",
 				});
-			} else {
-				throw new Error(response.message);
 			}
 		} catch (error) {
 			toast({

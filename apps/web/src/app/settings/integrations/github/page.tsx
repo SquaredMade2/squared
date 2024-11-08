@@ -14,17 +14,17 @@ import { useEffect } from "react";
 
 const GithubSettings: React.FC = () => {
 	const authUser = useAuthStore((state) => state.user);
-	const { connectedRepos, getUserRepositories } = useUserStore((state) => ({
-		connectedRepos: state.connectedRepos,
-		getUserRepositories: state.getUserRepositories,
-	}));
+	const connectedRepos = useUserStore((state) => state.connectedRepos);
+	const getUserRepositories = useUserStore(
+		(state) => state.getUserRepositories,
+	);
 	const router = useRouter();
 
 	useEffect(() => {
 		if (authUser?.id) {
 			getUserRepositories(authUser.id);
 		}
-	}, [authUser, getUserRepositories]);
+	}, [authUser?.id, getUserRepositories]);
 
 	const handleClick = (): void => {
 		if (!authUser?.id) return;
