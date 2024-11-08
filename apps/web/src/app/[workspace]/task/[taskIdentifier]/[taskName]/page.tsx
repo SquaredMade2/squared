@@ -1,5 +1,4 @@
 "use client";
-import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
 import {
 	EventTabs,
@@ -69,7 +68,6 @@ const TaskPage = () => {
 						<div className="flex flex-col w-full relative">
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-									<MobileMenuSheetTrigger />
 									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
 								</div>
 							</div>

@@ -4,7 +4,6 @@ import {
 	InboxSidebar,
 	MobileInboxSwitcher,
 } from "@/components/Inbox";
-import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService } from "@/lib/services";
@@ -120,7 +119,6 @@ export default function InboxPage() {
 			<div className="flex flex-col w-full">
 				<div className="w-full px-4 md:px-8">
 					<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-						<MobileMenuSheetTrigger />
 						<h1 className="text-2xl font-bold md:ml-6">Inbox</h1>
 					</div>
 					<div className="flex">
