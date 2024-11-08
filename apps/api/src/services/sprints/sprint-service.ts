@@ -74,7 +74,7 @@ export class SprintService implements SprintRpc {
 		await this.db.sprint.create({
 			data: {
 				name: `Sprint ${sprints.length + 1}`,
-				status: "PLANNED",
+				status: "ACTIVE",
 				startDate: new Date(), // Start from today
 				endDate: addWeeks(new Date(), sprintDuration),
 				teamId,
