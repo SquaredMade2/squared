@@ -136,6 +136,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
 		<div
+			key={parentTask?.id}
 			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
 				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
 			}`}
@@ -162,26 +163,51 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		const subtaskParentIds = new Set(
 			tasks.filter((t) => t.parentId).map((t) => t.parentId),
 		);
-		return [
-			tasks
-				.filter((t) => !t.parentId)
-				.map((task, index) => {
-					const isParentTask = parentIdsForGroup.includes(task.id);
 
+		const renderableItems = tasks
+			.map((task) => {
+				if (!task.parentId) {
+					const isParentTask = parentIdsForGroup.includes(task.id);
 					if (isParentTask) {
 						const subtasks = tasks.filter((t) => t.parentId === task.id);
-						return renderTaskWithSubtasks(task, index, subtasks);
+						return {
+							task,
+							render: (index: number) =>
+								renderTaskWithSubtasks(task, index, subtasks),
+						};
 					}
-					return renderTask(task, index);
-				}),
-			//render subtask in a different group from parent task
-			Array.from(subtaskParentIds).map((id) => {
+					return {
+						task,
+						render: (index: number) => renderTask(task, index),
+					};
+				}
+				return null;
+			})
+			.filter(Boolean);
+
+		const orphanedSubtaskGroups = Array.from(subtaskParentIds)
+			.map((id) => {
+				if (parentIdsForGroup.includes(id)) return null;
 				const parentTask = allTasks.find((t) => t.id === id);
 				const subtasks = tasks.filter((t) => t.parentId === id);
-				if (parentIdsForGroup.includes(id)) return;
-				return renderSubtasks(parentTask, subtasks);
-			}),
-		];
+				return {
+					task: parentTask,
+					render: () => renderSubtasks(parentTask, subtasks),
+				};
+			})
+			.filter(Boolean);
+
+		const allItems = [...renderableItems, ...orphanedSubtaskGroups];
+		const sortedItems = orderTasks(
+			allItems
+				.map((item) => item?.task)
+				.filter((task): task is Task => task !== undefined),
+		);
+
+		return sortedItems.map((sortedTask, index) => {
+			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+			return item?.render(index);
+		});
 	};
 
 	return (
@@ -222,8 +248,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 									: "flex flex-col z-30 w-full gap-2 items-center"
 							}
 						>
-							{showTasks && renderGroup(orderedTasks)}
-							{/* // orderedTasks.map((task, index) => renderGroup(task, index))} */}
+							{showTasks && renderGroup(tasks)}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
