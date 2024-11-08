@@ -1,7 +1,7 @@
+import { CompletedTaskPeriodOptions } from "@/lib/constants";
 import { useViewStore } from "@/store";
 import {
 	type CompletedTaskPeriod,
-	CompletedTaskPeriodOptions,
 	type DisplayOptions,
 	type DisplayProperty,
 	type TaskGroup,
