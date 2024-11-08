@@ -1,14 +1,12 @@
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns/format";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 // TODO: UPDATE THIS COMPONENT TO USE THE NEW DATE TO HANDLE ALL TASK EVENTS (commits included)
 export const CreatedByInformation = () => {
-	const { events } = useEventStore((state) => state);
-
 	const currentTask = useTaskStore((state) => state.currentTask);
-	const authorId = events[0]?.authorId ?? "";
+	const authorId = currentTask?.authorId;
 	const { users } = useUserStore((state) => state);
 	const foundUser = users.find((user) => user.id === authorId);
 
