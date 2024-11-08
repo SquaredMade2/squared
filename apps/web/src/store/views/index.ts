@@ -44,7 +44,7 @@ export const createViewStore = (
 			},
 		},
 		lastVisitedPage: "all",
-		view: "list",
+		view: "grid",
 	},
 ) => {
 	return createStore<ViewStore>()(

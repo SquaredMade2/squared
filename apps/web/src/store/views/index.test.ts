@@ -54,7 +54,7 @@ describe("ViewStore", () => {
 			},
 		});
 		expect(state.lastVisitedPage).toBe("all");
-		expect(state.view).toBe("list");
+		expect(state.view).toBe("grid");
 	});
 
 	describe("setView", () => {
