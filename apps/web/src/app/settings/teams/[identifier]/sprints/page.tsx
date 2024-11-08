@@ -45,6 +45,7 @@ import {
 	Maximize2,
 	X,
 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function TeamSettingsSprints() {
@@ -137,13 +138,7 @@ export default function TeamSettingsSprints() {
 			</div>
 		);
 	if (!currentTeam) return null;
-	const {
-		sprintsEnabled,
-		sprintDuration,
-		cooldownDuration,
-		upcomingSprints,
-		activeRequired,
-	} = currentTeam;
+	const { sprintsEnabled, sprintDuration } = currentTeam;
 
 	return (
 		<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
@@ -198,18 +193,11 @@ export default function TeamSettingsSprints() {
 						</p>
 					)}
 					{isSprintInfoExpanded && (
-						<Button
-							variant="link"
-							className="p-0 h-auto mt-4"
-							// TODO: ADD CORRESPONDING LINK ON WWW APPLICATION
-							onClick={() =>
-								toast({
-									title: "Just pretend you've been taken to the docs page 🤫",
-								})
-							}
-						>
-							Read more <ChevronRight className="h-4 w-4 ml-2" />
-						</Button>
+						<Link href="www.squaredmade.com/docs/sprints" passHref>
+							<Button variant="link" className="p-0 h-auto mt-4">
+								Read more <ChevronRight className="h-4 w-4 ml-2" />
+							</Button>
+						</Link>
 					)}
 				</CardContent>
 			</Card>
@@ -234,8 +222,6 @@ export default function TeamSettingsSprints() {
 								startOfWeek(new Date(), { weekStartsOn: 1 }),
 								7,
 							),
-							upcomingSprints: 3,
-							activeRequired: true,
 						})
 					}
 					aria-label="Enable sprints"
@@ -263,28 +249,6 @@ export default function TeamSettingsSprints() {
 										{[1, 2, 3, 4, 5, 6, 7, 8].map((weeks) => (
 											<SelectItem key={weeks} value={weeks.toString()}>
 												{weeks} {weeks === 1 ? "week" : "weeks"}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="flex justify-between items-center w-full">
-								<Label htmlFor="cooldownDuration">
-									Cooldown after each sprint (days)
-								</Label>
-								<Select
-									value={cooldownDuration.toString()}
-									onValueChange={(value) =>
-										handleUpdateTeam({ cooldownDuration: Number(value) })
-									}
-								>
-									<SelectTrigger className="w-60 bg-secondary">
-										<SelectValue placeholder="Select cooldown" />
-									</SelectTrigger>
-									<SelectContent className="w-60">
-										{[0, 1, 2, 3, 4, 5, 6, 7].map((days) => (
-											<SelectItem key={days} value={days.toString()}>
-												{days} {days === 1 ? "day" : "days"}
 											</SelectItem>
 										))}
 									</SelectContent>
@@ -329,28 +293,6 @@ export default function TeamSettingsSprints() {
 										/>
 									</PopoverContent>
 								</Popover>
-							</div>
-							<div className="flex justify-between items-center w-full">
-								<Label htmlFor="upcomingSprints">
-									Number of upcoming sprints to create (max 3 pending)
-								</Label>
-								<Select
-									value={upcomingSprints.toString()}
-									onValueChange={(value) =>
-										handleUpdateTeam({ upcomingSprints: Number(value) })
-									}
-								>
-									<SelectTrigger className="w-60 bg-secondary">
-										<SelectValue placeholder="Select number" />
-									</SelectTrigger>
-									<SelectContent className="w-60">
-										{[1, 2, 3].map((num) => (
-											<SelectItem key={num} value={num.toString()}>
-												{num} {num === 1 ? "sprint" : "sprints"}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
 							</div>
 							<p className="text-sm text-muted-foreground">
 								Current pending sprints: {pendingSprints}
@@ -400,64 +342,8 @@ export default function TeamSettingsSprints() {
 									</AlertDialog>
 								</div>
 							</div>
-							<div className="space-y-2">
-								<div className="flex items-center justify-between">
-									<div className="flex flex-col items-start">
-										<Label htmlFor="addCompletedTasks" className="mb-2">
-											Add completed tasks to current sprint
-										</Label>
-										<p className="text-sm text-muted-foreground w-11/12">
-											Add all unassigned completed tasks (Done) to the current
-											sprint.
-										</p>
-									</div>
-									<AlertDialog>
-										<AlertDialogTrigger asChild>
-											<Button variant="outline">Add Completed Tasks</Button>
-										</AlertDialogTrigger>
-										<AlertDialogContent>
-											<AlertDialogHeader>
-												<AlertDialogTitle>
-													Add Completed Tasks to Sprint
-												</AlertDialogTitle>
-												<AlertDialogDescription>
-													This will add all unassigned completed tasks to the
-													current sprint. Are you sure you want to continue?
-												</AlertDialogDescription>
-											</AlertDialogHeader>
-											<AlertDialogFooter>
-												<AlertDialogCancel>Cancel</AlertDialogCancel>
-												<AlertDialogAction
-													onClick={() => handleAddTasksToSprint("completed")}
-												>
-													Continue
-												</AlertDialogAction>
-											</AlertDialogFooter>
-										</AlertDialogContent>
-									</AlertDialog>
-								</div>
-							</div>
 						</CardContent>
 					</Card>
-
-					<div className="flex items-center justify-between mt-6">
-						<div className="flex flex-col items-start">
-							<Label htmlFor="activeRequired" className="mb-2">
-								Active issues are required to belong to a sprint.
-							</Label>
-							<p className="text-sm text-muted-foreground">
-								Boost focus and accountability by ensuring all active work is
-								sprint-aligned
-							</p>
-						</div>
-						<Switch
-							id="activeRequired"
-							checked={activeRequired}
-							onCheckedChange={(checked) =>
-								handleUpdateTeam({ activeRequired: checked })
-							}
-						/>
-					</div>
 				</>
 			)}
 		</div>
