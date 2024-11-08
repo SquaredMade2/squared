@@ -89,9 +89,7 @@ export default function SprintDashboard() {
 	}, [sprints]);
 
 	useEffect(() => {
-		console.log("Tasks", tasks);
 		const unassigned = tasks.filter((task) => !task.sprintId);
-		console.log("Unassigned Tasks", unassigned);
 		setUnassignedTasks(unassigned);
 	}, [tasks]);
 
