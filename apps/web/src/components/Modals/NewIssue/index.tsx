@@ -74,11 +74,10 @@ export const NewIssueModal = () => {
 				effortEstimate,
 				description: values.description || undefined,
 			};
-			const { message, variant } = await createTask(createTaskParams);
+			await createTask(createTaskParams);
 
 			toast({
-				title: message,
-				variant: variant,
+				title: "Task Created Succesfully",
 			});
 
 			setShowNewIssue(false);

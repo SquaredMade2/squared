@@ -1,4 +1,5 @@
 import type {
+	Comment,
 	Commit,
 	Notification,
 	Sprint,
@@ -28,7 +29,7 @@ export const taskSchema = createSchema<Task>()(
 		authorId: z.string(),
 		identifier: z.string(),
 		dueDate: z.date().nullable(),
-		effortEstimate: z.number().nullable(),
+		effortEstimate: z.number().min(1).max(5).nullable(),
 		priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
 		dateCreated: z.date(),
 		assigneeId: z.string().nullable(),
@@ -94,5 +95,15 @@ export const workspaceSchema = createSchema<Workspace>()(
 		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
+	}),
+);
+
+export const commentSchema = createSchema<Comment>()(
+	z.object({
+		id: z.string(),
+		comment: z.string(),
+		authorId: z.string(),
+		taskId: z.string(),
+		date: z.date(),
 	}),
 );

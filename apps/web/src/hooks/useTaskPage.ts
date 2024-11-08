@@ -1,5 +1,7 @@
-import { useTaskStore, useTeamStore } from "@/store";
+import { commentService, taskService } from "@/lib/services";
+import { useCommentStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
@@ -11,9 +13,8 @@ export function useTaskPage() {
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { getTaskByIdentifier, tasks, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { tasks, setCurrentTask } = useTaskStore((state) => state);
+	const { setComments } = useCommentStore((state) => state);
 	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
@@ -36,13 +37,16 @@ export function useTaskPage() {
 				}
 
 				// Fetch task data
-				const pageTask = await getTaskByIdentifier(
-					currentWorkspace.id,
-					parseParams(taskIdentifier),
-				);
-				if (pageTask?.task) {
-					setTask(pageTask.task);
-					setCurrentTask(pageTask.task);
+				const pageTask = await taskService.getTaskByIdentifier(TODO, {
+					workspaceId: currentWorkspace.id,
+					identifier: parseParams(taskIdentifier),
+				});
+				if (pageTask) {
+					setTask(pageTask);
+					setCurrentTask(pageTask);
+					setComments(
+						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
+					);
 				}
 
 				setIsLoading(false);
@@ -53,13 +57,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [
-		currentWorkspace,
-		taskIdentifier,
-		getTaskByIdentifier,
-		workspaceLoading,
-		teams,
-	]);
+	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams]);
 
 	return { currentWorkspace, task, isLoading, error };
 }

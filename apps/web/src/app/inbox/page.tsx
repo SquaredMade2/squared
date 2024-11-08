@@ -1,11 +1,11 @@
 "use client";
-import IconLeftMenu from "@/components/IconNavbar";
 import {
 	InboxDataTable,
 	InboxSidebar,
 	MobileInboxSwitcher,
 } from "@/components/Inbox";
 import { MobileMenuSheetTrigger } from "@/components/MobileNav";
+import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService } from "@/lib/services";
 import {
@@ -115,13 +115,13 @@ export default function InboxPage() {
 	return (
 		<div className="flex w-full">
 			<div className="hidden md:block">
-				<IconLeftMenu />
+				<SidebarNav />
 			</div>
-			<div className="flex flex-col w-full md:ml-14 ml-0">
+			<div className="flex flex-col w-full">
 				<div className="w-full px-4 md:px-8">
 					<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
 						<MobileMenuSheetTrigger />
-						<h1 className="text-2xl font-bold">Inbox</h1>
+						<h1 className="text-2xl font-bold md:ml-6">Inbox</h1>
 					</div>
 					<div className="flex">
 						<InboxSidebar

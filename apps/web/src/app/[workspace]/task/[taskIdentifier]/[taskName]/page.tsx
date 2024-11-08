@@ -20,9 +20,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatUrl } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Status } from "@squared/db";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +42,12 @@ const TaskPage = () => {
 		subtaskId: string,
 		newStatus: string,
 	) => {
-		await updateTask(subtaskId, { status: newStatus as Status });
+		updateTask(
+			await taskService.updateTask(TODO, {
+				id: subtaskId,
+				status: newStatus as Status,
+			}),
+		);
 	};
 
 	useEffect(() => {
