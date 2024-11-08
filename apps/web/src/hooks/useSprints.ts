@@ -1,4 +1,4 @@
-import { sprintService } from "@/lib/services";
+import { sprintService, taskService } from "@/lib/services";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
@@ -69,11 +69,16 @@ export function useSprints(sprintId?: string) {
 				if (!foundSprint) {
 					throw new Error("Sprint not found");
 				}
-				const tasks = await sprintService.getSprintTasks(context.TODO, {
-					sprintId: foundSprint.id,
-				});
+				const [sprintTasks, tasks] = await Promise.all([
+					sprintService.getSprintTasks(context.TODO, {
+						sprintId: foundSprint.id,
+					}),
+					taskService.getTeamTasks(context.TODO, {
+						teamId: foundTeam.id,
+					}),
+				]);
 				setTasks(tasks);
-				setSprintTasks(tasks);
+				setSprintTasks(sprintTasks);
 				setCurrentSprint(foundSprint);
 
 				setLoading(false);
