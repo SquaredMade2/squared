@@ -398,11 +398,19 @@ export default function SprintDashboardPage() {
 				</div>
 			</div>
 			<Tabs defaultValue="all" className="w-full">
-				<TabsList>
-					<TabsTrigger value="all">All Tasks</TabsTrigger>
-					<TabsTrigger value="todo">To Do</TabsTrigger>
-					<TabsTrigger value="inProgress">In Progress</TabsTrigger>
-					<TabsTrigger value="done">Done</TabsTrigger>
+				<TabsList className="w-full">
+					<TabsTrigger value="all" className="flex-1">
+						All Tasks
+					</TabsTrigger>
+					<TabsTrigger value="todo" className="flex-1">
+						To Do
+					</TabsTrigger>
+					<TabsTrigger value="inProgress" className="flex-1">
+						In Progress
+					</TabsTrigger>
+					<TabsTrigger value="done" className="flex-1">
+						Done
+					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="all">
 					<TaskList tasks={sprintTasks} />
