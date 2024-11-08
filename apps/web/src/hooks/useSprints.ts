@@ -1,4 +1,4 @@
-import { sprintService } from "@/lib/services";
+import { sprintService, taskService } from "@/lib/services";
 import {
 	useAuthStore,
 	useTaskStore,
@@ -69,11 +69,16 @@ export function useSprints() {
 				if (!foundSprint) {
 					throw new Error("No active sprint found");
 				}
-				const tasks = await sprintService.getSprintTasks(context.TODO, {
-					sprintId: foundSprint.id,
-				});
+				const [sprintTasks, tasks] = await Promise.all([
+					sprintService.getSprintTasks(context.TODO, {
+						sprintId: foundSprint.id,
+					}),
+					taskService.getTeamTasks(context.TODO, {
+						teamId: foundTeam.id,
+					}),
+				]);
 				setTasks(tasks);
-				setSprintTasks(tasks);
+				setSprintTasks(sprintTasks);
 				setCurrentSprint(foundSprint);
 
 				setLoading(false);
@@ -84,7 +89,7 @@ export function useSprints() {
 		}
 
 		fetchData();
-	}, [workspaceUrl, teamIdentifier]);
+	}, [workspaceUrl, teamIdentifier, user]);
 
 	return {
 		workspace,
