@@ -13,7 +13,7 @@ export const CreatedByInformation = () => {
 	const displayDate = () => {
 		if (currentTask) {
 			// Assigning it as a new Date automatically makes it a local date
-			const currentTaskDate = new Date("2024-09-11T21:14:27.222Z");
+			const currentTaskDate = currentTask.dateCreated;
 			const formattedDate = formatDate(currentTaskDate, "dd MMM yyyy");
 			return formattedDate;
 		}
