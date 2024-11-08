@@ -1,6 +1,8 @@
+import { commentService } from "@/lib/services";
 import { useAuthStore, useCommentStore, useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import { type KeyboardEvent, useCallback, useState } from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
@@ -41,9 +43,8 @@ const initialValue: CustomDescendant[] = [
 const TextEditor = ({ task }: TextEditorProps) => {
 	// State
 
-	const addComment = useCommentStore((state) => state.addComment);
-	const getComments = useCommentStore((state) => state.getAllComments);
 	const { setShowLinkForm } = useModalStore((state) => state);
+	const setComments = useCommentStore((state) => state.setComments);
 	const currentUser = useAuthStore((state) => state.user);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
@@ -64,8 +65,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					date: new Date(),
 					taskId: task.id,
 				};
-				await addComment(newComment);
-				await getComments(task.id);
+				setComments(
+					await commentService.addComment(TODO, { comment: newComment }),
+				);
 				setEditorContent([]);
 				editor.children = [
 					{

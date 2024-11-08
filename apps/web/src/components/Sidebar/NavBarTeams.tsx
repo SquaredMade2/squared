@@ -12,7 +12,12 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import type { NavBarTeamProps } from "./interfaces";
+
+interface NavBarTeamProps {
+	teamIdentifier: string;
+	currentPage: string;
+	active: boolean;
+}
 
 const NavBarTeams = ({
 	teamIdentifier,
