@@ -93,8 +93,6 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		});
 	};
 
-	const orderedTasks = orderTasks(tasks);
-
 	const renderTask = (task: Task, index: number) => (
 		<div
 			key={task.id}
