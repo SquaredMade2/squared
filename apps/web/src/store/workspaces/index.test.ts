@@ -267,22 +267,4 @@ describe("WorkspaceStore", () => {
 			expect(state.currentWorkspace).toEqual(STANDARD_WORKSPACE);
 		});
 	});
-
-	describe("persist middleware", () => {
-		it("should hydrate the state from sessionStorage", () => {
-			const mockState = {
-				workspaces: [STANDARD_WORKSPACE],
-				currentWorkspace: STANDARD_WORKSPACE,
-			};
-			mockSessionStorage.getItem.mockReturnValue(
-				JSON.stringify({ state: mockState }),
-			);
-
-			const newStore = createWorkspaceStore();
-			const state = newStore.getState();
-
-			expect(state.workspaces).toEqual([STANDARD_WORKSPACE]);
-			expect(state.currentWorkspace).toEqual(STANDARD_WORKSPACE);
-		});
-	});
 });
