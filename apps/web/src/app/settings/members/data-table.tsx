@@ -14,29 +14,19 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useModalStore } from "@/store";
-import type { Workspace } from "@squared/db";
+import type { User, Workspace } from "@squared/db";
 import { useState } from "react";
 import { CSVLink } from "react-csv";
 
-interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[];
-	data: TData[];
+export type MemberWithRole = User & {
+	role: "admin" | "member";
+};
+interface DataTableProps {
+	columns: ColumnDef<MemberWithRole, unknown>[];
+	data: MemberWithRole[];
 	workspace: Workspace | null;
 }
-
-interface Member {
-	name: string;
-	role: string;
-	email: string;
-	github: string;
-	avatar: string;
-	username: string;
-}
-
-export function DataTable<TData, TValue>({
-	columns,
-	data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable({ columns, data }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
@@ -65,13 +55,13 @@ export function DataTable<TData, TValue>({
 	};
 
 	const generateMembersCsv = () => {
-		const members = (data as Member[]).map((member) => {
+		const members = (data as MemberWithRole[]).map((member) => {
 			return {
 				name: member.name,
 				role: member.role,
 				email: member.email,
-				github: member.github || "N/A",
-				avatar: member.avatar || "N/A",
+				github: member.githubUsername || "N/A",
+				avatar: member.avatarUrl || "N/A",
 				username: member.username,
 			};
 		});
