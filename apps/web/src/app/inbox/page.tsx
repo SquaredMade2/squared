@@ -1,4 +1,5 @@
 "use client";
+
 import {
 	InboxDataTable,
 	InboxSidebar,
@@ -45,7 +46,8 @@ export default function InboxPage() {
 			}
 		};
 		fetchNotifications();
-	}, [user]);
+	}, [user, setNotifications]);
+
 	useEffect(() => {
 		switch (filterType) {
 			case "ASSIGNED":
@@ -102,6 +104,7 @@ export default function InboxPage() {
 				setWorkspace(null);
 		}
 	}, [filterType, notifications, workspace, user]);
+
 	useEffect(() => {
 		const fetchAvatars = async () => {
 			if (user) {
@@ -109,17 +112,17 @@ export default function InboxPage() {
 			}
 		};
 		fetchAvatars();
-	}, [user]);
+	}, [user, getUserAvatars]);
 
 	return (
 		<div className="flex w-full">
-			<div className="hidden md:block">
+			<div className="fixed inset-y-0 z-50 md:relative md:z-0 mt-px">
 				<SidebarNav />
 			</div>
 			<div className="flex flex-col w-full">
 				<div className="w-full px-4 md:px-8">
 					<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-						<h1 className="text-2xl font-bold md:ml-6">Inbox</h1>
+						<h1 className="text-2xl font-bold ml-4">Inbox</h1>
 					</div>
 					<div className="flex">
 						<InboxSidebar
