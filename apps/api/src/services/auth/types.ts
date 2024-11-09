@@ -16,9 +16,9 @@ export type Register = {
 export type OauthLogin = {
 	email: string;
 	oauthId: string;
-	name: string;
-	username: string;
-	avatarUrl: string;
+	name?: string;
+	username?: string;
+	avatarUrl?: string | null;
 };
 
 export type UserToken = {

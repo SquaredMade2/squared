@@ -1,6 +1,5 @@
-import type { ApiReturnType } from "@/store/interfaces";
-import type { User } from "@squared/db";
-import axios from "axios";
+import { authService } from "@/lib/services";
+import { TODO } from "@squared/context";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -26,20 +25,18 @@ const handler = NextAuth({
 			},
 			async authorize(credentials) {
 				try {
-					const { data: response }: { data: ApiReturnType<User> } =
-						await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
-							provider: "credentials",
-							type: "login",
-							email: credentials?.email,
-							password: credentials?.password,
-						});
-					const { data: user, message } = response;
+					if (!credentials?.email || !credentials?.password)
+						throw new Error("Invalid login credentials");
+					const response = await authService.login(TODO, {
+						email: credentials?.email,
+						password: credentials?.password,
+					});
 
-					if (user) {
-						return user;
+					if (response) {
+						return response.user;
 					}
 					// If user is not found or password is incorrect
-					throw new Error(message || "Invalid login credentials");
+					throw new Error("Invalid login credentials");
 				} catch (error) {
 					console.log("error", error instanceof Error ? error.message : error);
 					// Customize the error message based on the response
@@ -57,17 +54,14 @@ const handler = NextAuth({
 		async signIn({ user, account }) {
 			if (account?.provider === "google" && user) {
 				// Ping the backend with the user's OAuth details
-				const { data: response }: { data: ApiReturnType<User> } =
-					await axios.post(`${process.env.NEXT_PUBLIC_SERVER}/api/auth/`, {
-						provider: "google",
-						type: "login",
-						name: user.name ?? undefined,
-						email: user.email,
-						oauthId: user.id,
-						avatarUrl: user.image ?? null,
-					});
-				const { data: dbUser } = response;
-				if (dbUser) {
+				const response = await authService.googleLogin(TODO, {
+					email: user.email,
+					name: user.name,
+					oauthId: user.id,
+					avatarUrl: user.image,
+				});
+				if (response) {
+					const { user: dbUser } = response;
 					// Save the returned user data to the session
 					user.id = dbUser.id;
 					user.name = dbUser.name;

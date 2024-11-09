@@ -28,9 +28,9 @@ const oAuthLoginSchema = createSchema<OauthLogin>()(
 	z.object({
 		email: z.string(),
 		oauthId: z.string(),
-		name: z.string(),
-		username: z.string(),
-		avatarUrl: z.string(),
+		name: z.string().optional(),
+		username: z.string().optional(),
+		avatarUrl: z.string().nullable().optional(),
 	}),
 );
 
