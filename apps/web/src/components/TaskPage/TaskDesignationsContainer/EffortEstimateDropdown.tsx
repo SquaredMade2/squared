@@ -9,7 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { effortEstimateOptions } from "@/constants/designations";
+import { effortEstimateOptions } from "@/lib/constants";
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { useTeamStore } from "@/store";
