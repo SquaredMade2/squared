@@ -220,7 +220,7 @@ export default function SprintDashboardPage() {
 
 	return (
 		<div className="container mx-auto p-4 space-y-8">
-			<h1 className="text-3xl font-bold">Sprint: {sprint.name}</h1>
+			<h1 className="text-3xl font-bold ml-10">Sprint: {sprint.name}</h1>
 			<div className="grid gap-6 md:grid-cols-2">
 				<Card>
 					<CardHeader>
