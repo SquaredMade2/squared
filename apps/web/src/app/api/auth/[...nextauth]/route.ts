@@ -33,13 +33,18 @@ const handler = NextAuth({
 					});
 
 					if (response) {
-						return response.user;
+						// Return the user object and the token separately
+						return {
+							id: response.user.id,
+							email: response.user.email,
+							name: response.user.name,
+							avatarUrl: response.user.avatarUrl,
+							accessToken: response.token, // This will be handled in the jwt callback
+						};
 					}
-					// If user is not found or password is incorrect
 					throw new Error("Invalid login credentials");
 				} catch (error) {
 					console.log("error", error instanceof Error ? error.message : error);
-					// Customize the error message based on the response
 					throw new Error(
 						error instanceof Error ? error.message : "Login failed",
 					);
@@ -53,7 +58,6 @@ const handler = NextAuth({
 	callbacks: {
 		async signIn({ user, account }) {
 			if (account?.provider === "google" && user) {
-				// Ping the backend with the user's OAuth details
 				const response = await authService.googleLogin(TODO, {
 					email: user.email,
 					name: user.name,
@@ -61,32 +65,47 @@ const handler = NextAuth({
 					avatarUrl: user.image,
 				});
 				if (response) {
-					const { user: dbUser } = response;
-					// Save the returned user data to the session
+					const { user: dbUser, token } = response;
+					// Update the user object, but don't add the token here
 					user.id = dbUser.id;
 					user.name = dbUser.name;
 					user.email = dbUser.email;
 					user.avatarUrl = dbUser.avatarUrl ?? null;
+					// The token will be handled in the jwt callback
+					// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+					(user as any).accessToken = token;
 					return true;
 				}
 				return false;
 			}
-			return true; // Default allow sign-in
+			return true;
 		},
-		async session({ session, token }) {
-			if (session.user && token.sub) {
-				session.user.id = token.sub;
-				session.user.name = token.name ?? "";
-				session.user.email = token.email ?? "";
-				session.user.avatarUrl = token.picture ?? "";
+		async jwt({ token, user, account }) {
+			if (user) {
+				token.id = user.id;
+				token.name = user.name;
+				token.email = user.email;
+				token.picture = user.avatarUrl;
 			}
-			return session;
-		},
-		async jwt({ token, account }) {
 			if (account) {
 				token.id = account.providerAccountId;
 			}
+			// Store the access token at the token level
+			if (user && "accessToken" in user) {
+				token.accessToken = user.accessToken;
+			}
 			return token;
+		},
+		async session({ session, token }) {
+			if (session.user) {
+				session.user.id = token.id as string;
+				session.user.name = token.name as string;
+				session.user.email = token.email as string;
+				session.user.avatarUrl = token.picture as string | null;
+			}
+			// Add the access token to the session, not the user
+			session.accessToken = token.accessToken as string;
+			return session;
 		},
 	},
 });
