@@ -3,7 +3,7 @@ import { useAuthStore, useCommentStore, useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { TODO } from "@squared/context";
-import { type KeyboardEvent, useCallback, useState } from "react";
+import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -92,6 +92,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	};
 
 	const injectLinkContent = (linkName: string, linkUrl: string) => {
+		if (!(linkName && linkUrl)) return;
 		if (!editor.selection) {
 			toast({
 				title: "Place text cursor",
@@ -125,21 +126,25 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	};
 
 	const isBoldActive = () => {
+		if (!editor.selection) return false;
 		const allMarks = Editor.marks(editor);
 		return Boolean(allMarks?.bold);
 	};
 
 	const isItalicActive = () => {
+		if (!editor.selection) return false;
 		const allMarks = Editor.marks(editor);
 		return Boolean(allMarks?.italic);
 	};
 
 	const isCodeActive = () => {
+		if (!editor.selection) return false;
 		const allMarks = Editor.marks(editor);
 		return Boolean(allMarks?.code);
 	};
 
 	const isLinkActive = () => {
+		if (!editor.selection) return false;
 		const allMarks = Editor.marks(editor);
 		if (allMarks?.url) {
 			return true;
@@ -252,6 +257,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			default:
 				return <DefaultElement {...props} />;
 		}
+	}, []);
+
+	// Effects
+
+	useEffect(() => {
+		editor.selection = {
+			anchor: { path: [0, 0], offset: 0 },
+			focus: { path: [0, 0], offset: 0 },
+		};
 	}, []);
 
 	return (

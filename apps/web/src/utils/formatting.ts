@@ -274,3 +274,12 @@ export const formatFilterName = async (
 			return { name: filter.field, value: filter.value.toLocaleString() };
 	}
 };
+
+export const verifyUrlFormat = (url: string): string | boolean => {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
+	}
+};

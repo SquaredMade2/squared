@@ -1,15 +1,16 @@
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { DialogHeader } from "@/components/ui/dialog";
+import { toast } from "@/components/ui/use-toast";
 import { useModalStore } from "@/store";
+import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { DialogHeader } from "../ui/dialog";
-import { toast } from "../ui/use-toast";
 import type { LinkModalProps } from "./interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
@@ -22,9 +23,7 @@ const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 	// Helper Functions
 
 	const handleInjectLinkContent = () => {
-		const urlFormat =
-			/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]{1,5})?(\/\S*)?$/;
-		if (!linkUrl.match(urlFormat)) {
+		if (!verifyUrlFormat(linkUrl)) {
 			toast({
 				title: "Invalid Link",
 				description: "Please provide a valid link.",
