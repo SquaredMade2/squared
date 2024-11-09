@@ -12,8 +12,9 @@ export class AuthService implements AuthRpc {
 	private readonly db: PrismaClient;
 	private readonly JWT_SECRET: string;
 	private readonly logger: Logger;
-	constructor(db: PrismaClient, secret: string) {
+	constructor(db: PrismaClient, secret?: string) {
 		this.db = db;
+		if (!secret) throw new Error("Invalid JWT Secret");
 		this.JWT_SECRET = secret;
 		this.logger = createCustomLogger("auth");
 	}

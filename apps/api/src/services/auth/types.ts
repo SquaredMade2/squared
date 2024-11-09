@@ -5,12 +5,6 @@ export type Login = {
 	password: string;
 };
 
-export type JoinWorkspaceParams = {
-	email: string;
-	password: string;
-	joinWorkspaceToken: string;
-};
-
 export type Register = {
 	email: string;
 	password: string;

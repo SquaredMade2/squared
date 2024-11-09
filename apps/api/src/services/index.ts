@@ -1,5 +1,7 @@
 import "dotenv/config";
 import { PrismaClient } from "@squared/db";
+import { createAuthRpcHandler } from "./auth";
+import { AuthService } from "./auth/auth-service";
 import { createCommentRpcHandler } from "./comments";
 import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
@@ -13,11 +15,15 @@ const prisma = new PrismaClient({
 		},
 	},
 });
+
+const secret = process.env.JWT_SECRET;
+
 export const services = {
 	sprint: new SprintService(prisma),
 	event: new EventService(prisma),
 	task: new TaskService(prisma),
 	comment: new CommentService(prisma),
+	auth: new AuthService(prisma, secret),
 };
 
 export const rpcHandlers = {
@@ -25,6 +31,7 @@ export const rpcHandlers = {
 	event: createEventRpcHandler(services.event),
 	task: createTaskRpcHandler(services.task),
 	comment: createCommentRpcHandler(services.comment),
+	auth: createAuthRpcHandler(services.auth),
 };
 
 export type Services = typeof services;
