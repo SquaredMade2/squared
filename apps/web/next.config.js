@@ -9,7 +9,7 @@ const nextConfig = {
   output: "standalone",
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   images: {
-    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com"],
+    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com","api.dicebear.com"],
   },
 };
 
