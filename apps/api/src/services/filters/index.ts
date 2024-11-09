@@ -34,3 +34,5 @@ export const createFilterRpcHandler = (filterService: FilterRpc) =>
 		createFilter: (input) => filterService.createFilter(input),
 		deleteFilter: (input) => filterService.deleteFilter(input),
 	});
+
+export { FilterService } from "./filter-service";

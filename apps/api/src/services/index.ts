@@ -3,6 +3,7 @@ import { PrismaClient } from "@squared/db";
 import { createCommentRpcHandler } from "./comments";
 import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
+import { FilterService, createFilterRpcHandler } from "./filters";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
 
@@ -18,6 +19,7 @@ export const services = {
 	event: new EventService(prisma),
 	task: new TaskService(prisma),
 	comment: new CommentService(prisma),
+	filter: new FilterService(prisma),
 };
 
 export const rpcHandlers = {
@@ -25,6 +27,7 @@ export const rpcHandlers = {
 	event: createEventRpcHandler(services.event),
 	task: createTaskRpcHandler(services.task),
 	comment: createCommentRpcHandler(services.comment),
+	filter: createFilterRpcHandler(services.filter),
 };
 
 export type Services = typeof services;
