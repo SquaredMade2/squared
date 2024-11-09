@@ -18,22 +18,24 @@ export class FilterService implements FilterRpc {
 	}
 
 	async createFilter(body: CreateFilterParams) {
-		const { filterId, id, ...filterData } = body;
+		const { id, ...filterData } = body;
 		this.logger.info("Creating filter: %0", { body });
 
 		const existingFilter = await this.db.savedFilter.findUnique({
-			where: { id: filterId },
+			where: { id },
 		});
 		if (existingFilter) {
 			throw new Error("Filter already exists.");
 		}
 
-		const parent = this.filterHasValidParent(
+		const hasParent = this.filterHasValidParent(
 			filterData.workspaceId,
 			filterData.teamId,
 		);
-		if (!parent) {
-			throw new Error("Parent not found.");
+		if (!hasParent) {
+			throw new Error(
+				"Parent not found. Filters require specifying a parent workspace or team identifier.",
+			);
 		}
 
 		const newFilter = await this.db.savedFilter.create({
@@ -81,21 +83,29 @@ export class FilterService implements FilterRpc {
 		return filter;
 	}
 
-	async getFilter({ parentId }: GetFilterParams): Promise<SavedFilter[]> {
-		this.logger.info("Fetching filter: %s", parentId);
-		const savedFilters = await this.db.savedFilter.findMany({
-			where: {
-				OR: [{ teamId: parentId }, { workspaceId: parentId }],
-			},
-		});
-
-		return savedFilters;
+	async getFilter({
+		workspaceId,
+		teamId,
+	}: GetFilterParams): Promise<SavedFilter[]> {
+		if (workspaceId) {
+			this.logger.info("Fetching filter for team ID: %s", teamId);
+			return await this.db.savedFilter.findMany({
+				where: { teamId },
+			});
+		}
+		if (teamId) {
+			this.logger.info("Fetching filter for workspace ID: %s", workspaceId);
+			return await this.db.savedFilter.findMany({
+				where: { workspaceId },
+			});
+		}
+		throw new Error("Failed to specify a team or workspace ID.");
 	}
 
-	async deleteFilter({ filterId }: DeleteFilterParams): Promise<SavedFilter> {
-		this.logger.info("Deleting filter by ID: %s", filterId);
+	async deleteFilter({ id }: DeleteFilterParams): Promise<SavedFilter> {
+		this.logger.info("Deleting filter by ID: %s", id);
 		const filter = await this.db.savedFilter.delete({
-			where: { id: filterId },
+			where: { id },
 		});
 
 		if (!filter) {

@@ -3,12 +3,13 @@ import type { SavedFilter, Task } from "@squared/db";
 // The parent ID for getting saved filters can either be a team's ID or a
 // workspaces ID. It is NOT the id of any one individual saved filter.
 export type GetFilterParams = {
-	parentId: string;
+	workspaceId?: string;
+	teamId?: string;
 };
 
 // For deleting a filter, the specific ID of the saved filter is used.
 export type DeleteFilterParams = {
-	filterId: string;
+	id: string;
 };
 
 type FilterValue = string | number | Date | boolean | null | string[];
@@ -25,13 +26,10 @@ type FilterCondition = {
 		| "arrayIncludesAny";
 };
 
-type SavedFilterPlusCondition = Omit<SavedFilter, "filter"> & {
+export type SavedFilterPlusCondition = Omit<SavedFilter, "filter"> & {
 	filter: FilterCondition[];
 };
-
-export type CreateFilterParams = SavedFilterPlusCondition & {
-	filterId: string;
-};
+export type CreateFilterParams = SavedFilterPlusCondition;
 export type UpdateFilterParams = SavedFilterPlusCondition;
 
 export interface FilterRpc {

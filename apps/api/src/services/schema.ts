@@ -107,3 +107,19 @@ export const commentSchema = createSchema<Comment>()(
 		date: z.date(),
 	}),
 );
+
+export const filterSchema = createSchema()(
+	z.object({
+		name: z.string(),
+		id: z.string(),
+		description: z.string().nullable(),
+
+		// prisma schema specifies the filter condition as Json array,
+		// need to update schema for better type validation
+		filter: z.array(z.any()),
+		workspaceId: z.string().nullable(),
+		teamId: z.string().nullable(),
+		authorId: z.string(),
+		type: z.union([z.literal("TEAM"), z.literal("WORKSPACE")]),
+	}),
+);
