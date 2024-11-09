@@ -250,10 +250,15 @@ export class TaskService implements TaskRpc {
 	async addSprintTasks({
 		sprintId,
 		taskIds,
-	}: { sprintId: string; taskIds: string[] }): Promise<number> {
+	}: {
+		sprintId: string;
+		taskIds: string[];
+	}): Promise<number> {
 		this.logger.info("Adding tasks to sprint with id %s", sprintId);
-		return await this.db.task
-			.updateMany({
+
+		return await this.db.$transaction(async (tx) => {
+			// First, update all tasks to the sprint
+			const updateResult = await tx.task.updateMany({
 				where: {
 					id: {
 						in: taskIds,
@@ -262,7 +267,22 @@ export class TaskService implements TaskRpc {
 				data: {
 					sprintId,
 				},
-			})
-			.then((t) => t.count);
+			});
+
+			// Then, update the status of backlog tasks to todo
+			await tx.task.updateMany({
+				where: {
+					id: {
+						in: taskIds,
+					},
+					status: "backlog",
+				},
+				data: {
+					status: "todo",
+				},
+			});
+
+			return updateResult.count;
+		});
 	}
 }

@@ -14,7 +14,6 @@ export default function WorkspaceLayoutWrapper({
 }) {
 	const pathname = usePathname();
 	const { setLastVisitedPage } = useViewStore((state) => state);
-	const isSubdirectory = pathname.split("/").filter(Boolean).length > 3;
 
 	const isValidViewPath = (value: string) => {
 		const regex = /\/views\/.+$/;
@@ -46,11 +45,9 @@ export default function WorkspaceLayoutWrapper({
 
 	return (
 		<div className="flex h-screen overflow-hidden w-screen">
-			{isSubdirectory && (
-				<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
-					<SidebarNav />
-				</div>
-			)}
+			<div className="flex-shrink-0 transition-all duration-300 ease-in-out">
+				<SidebarNav />
+			</div>
 			<main className="flex-grow overflow-auto w-full h-full">
 				<NewIssueModal />
 				{children}
