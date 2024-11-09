@@ -1,6 +1,4 @@
 "use client";
-
-import { MobileMenuSheetTrigger } from "@/components/MobileNav";
 import { NewIssueCollapsible } from "@/components/Modals";
 import {
 	EventTabs,
@@ -37,11 +35,10 @@ const TaskPage = () => {
 				<LoadingTask />
 			) : (
 				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
-					<div className="w-full h-full p-2 md:p-5 xl:px-10 ">
+					<div className="w-full h-full p-1 md:pb-5 xl:px-10 ">
 						<div className="flex flex-col w-full relative">
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-									<MobileMenuSheetTrigger />
 									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
 								</div>
 							</div>

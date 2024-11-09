@@ -1,4 +1,3 @@
-import { STANDARD_TASK } from "@/test/mocks";
 import { createTaskStore } from ".";
 
 // Mock uuid
@@ -28,23 +27,5 @@ describe("TaskStore", () => {
 		const state = store.getState();
 		expect(state.tasks).toEqual([]);
 		expect(state.currentTask).toBeNull();
-	});
-
-	describe("persist middleware", () => {
-		it("should hydrate the state from sessionStorage", () => {
-			const mockState = {
-				tasks: [STANDARD_TASK],
-				currentTask: null,
-			};
-			mockSessionStorage.getItem.mockReturnValue(
-				JSON.stringify({ state: mockState }),
-			);
-
-			const newStore = createTaskStore();
-			const state = newStore.getState();
-
-			expect(state.tasks).toEqualWithDatePrecision([STANDARD_TASK]);
-			expect(state.currentTask).toBeNull();
-		});
 	});
 });

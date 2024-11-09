@@ -1,5 +1,5 @@
-import { taskService } from "@/lib/services";
-import { useTaskStore, useTeamStore } from "@/store";
+import { commentService, taskService } from "@/lib/services";
+import { useCommentStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
@@ -16,6 +16,8 @@ export function useTaskPage() {
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
 	const { users, loading: userLoading } = useUsers();
+	const { setComments } = useCommentStore((state) => state);
+	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
 	);
@@ -49,6 +51,9 @@ export function useTaskPage() {
 						parentId: pageTask?.id,
 					});
 					setSubtasks(fetchedSubtasks);
+					setComments(
+						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
+					);
 				}
 
 				setIsLoading(false);
