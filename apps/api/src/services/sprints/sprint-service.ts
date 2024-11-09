@@ -10,21 +10,13 @@ import { addWeeks } from "date-fns";
 import type {
 	AddRetrospectivePayload,
 	ErrorResponse,
+	NextSprintPayload,
 	RetroItemReturn,
 	RetrospectiveData,
 	SprintRpc,
 	SprintServiceResponse,
 	UpdateRetrospectiveItemPayload,
 } from "./types";
-
-interface StartNextSprintInput {
-	teamId: string;
-	movedTasks: string[];
-	sprintData?: {
-		id?: string;
-		name?: string;
-	};
-}
 
 export class SprintService implements SprintRpc {
 	private logger;
@@ -86,9 +78,8 @@ export class SprintService implements SprintRpc {
 
 	async startNextSprint({
 		teamId,
-		movedTasks,
 		sprintData,
-	}: StartNextSprintInput): Promise<SprintServiceResponse<Sprint>> {
+	}: NextSprintPayload): Promise<SprintServiceResponse<Sprint>> {
 		this.logger.info("Starting next sprint for team", { teamId });
 		const team = await this.db.team.findUnique({ where: { id: teamId } });
 
@@ -112,20 +103,17 @@ export class SprintService implements SprintRpc {
 
 		await this.completeCurrentSprint(teamSprints);
 
-		const newSprintData = await this.createOrUpdateSprint({
+		const newSprintData = await this.createSprint({
 			sprintData,
 			team,
 			teamSprints,
 			teamId,
 		});
 
-		await this.updateTasksForNewSprint(
-			movedTasks,
-			currentSprint?.id || null,
-			newSprintData.id,
-		);
-
-		await this.resetIncompleteTasks(currentSprint?.id || null);
+		await this.db.task.updateMany({
+			where: { sprintId: currentSprint?.id, status: { not: "done" } },
+			data: { sprintId: newSprintData.id },
+		});
 
 		return {
 			data: newSprintData,
@@ -250,7 +238,7 @@ export class SprintService implements SprintRpc {
 		});
 	}
 
-	private async createOrUpdateSprint({
+	private async createSprint({
 		team,
 		teamSprints,
 		teamId,
@@ -259,22 +247,9 @@ export class SprintService implements SprintRpc {
 		team: Team;
 		teamSprints: Sprint[];
 		teamId: string;
-		sprintData: StartNextSprintInput["sprintData"];
+		sprintData: NextSprintPayload["sprintData"];
 	}): Promise<Sprint> {
 		const sprintDuration = team.sprintDuration;
-
-		if (sprintData?.id) {
-			return await this.db.sprint.update({
-				where: { id: sprintData.id },
-				data: {
-					status: "ACTIVE",
-					startDate: new Date(),
-					endDate: addWeeks(new Date(), sprintDuration),
-					teamId,
-					...sprintData,
-				},
-			});
-		}
 
 		return await this.db.sprint.create({
 			data: {
@@ -285,32 +260,6 @@ export class SprintService implements SprintRpc {
 				teamId,
 				...sprintData,
 			},
-		});
-	}
-
-	private async updateTasksForNewSprint(
-		movedTasks: string[],
-		currentSprintId: string | null,
-		newSprintId: string,
-	): Promise<void> {
-		await this.db.task.updateMany({
-			where: {
-				id: { in: movedTasks },
-				sprintId: currentSprintId,
-			},
-			data: { sprintId: newSprintId },
-		});
-	}
-
-	private async resetIncompleteTasks(
-		currentSprintId: string | null,
-	): Promise<void> {
-		await this.db.task.updateMany({
-			where: {
-				sprintId: currentSprintId,
-				status: { not: "done" },
-			},
-			data: { sprintId: null },
 		});
 	}
 }

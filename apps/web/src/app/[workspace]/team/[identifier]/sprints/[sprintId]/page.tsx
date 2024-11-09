@@ -23,7 +23,7 @@ import {
 	SprintLoading,
 	SprintNotFound,
 } from "@/components/Sprints";
-import { TransferTaskModal } from "@/components/Sprints/TransferTaskModal";
+import { NewSprintModal } from "@/components/Sprints/NewSprintModal";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -71,7 +71,7 @@ export default function SprintDashboardPage() {
 		{ day: number; tasks: number; ideal: number }[]
 	>([]);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
-	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
+	const [showNextSprint, setShowNextSprint] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
 	const [newSprint, setNewSprint] = useState(false);
 
@@ -174,7 +174,7 @@ export default function SprintDashboardPage() {
 
 		try {
 			if (newSprint) {
-				setShowTaskSelectionModal(true);
+				setShowNextSprint(true);
 			} else {
 				await sprintService.endSprint(TODO, {
 					sprintId: sprint.id,
@@ -457,12 +457,9 @@ export default function SprintDashboardPage() {
 				</AlertDialogContent>
 			</AlertDialog>
 
-			<TransferTaskModal
-				isOpen={showTaskSelectionModal}
-				onClose={() => setShowTaskSelectionModal(false)}
-				tasks={sprintTasks.filter((t) =>
-					["backlog", "todo", "inReview", "inProgress"].includes(t.status),
-				)}
+			<NewSprintModal
+				isOpen={showNextSprint}
+				onClose={() => setShowNextSprint(false)}
 				team={team}
 				initialSprintName={newSprintName}
 				redirectUrl={`/${workspace?.url}/team/${team?.identifier}/sprints`}

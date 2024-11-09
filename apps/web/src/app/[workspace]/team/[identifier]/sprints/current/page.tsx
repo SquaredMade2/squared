@@ -26,6 +26,12 @@ export default function MyAssignedTasksPage() {
 			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
+	// console.log(
+	// 	"currentWorkspace",
+	// 	currentWorkspace,
+	// 	"currentSprint",
+	// 	currentSprint,
+	// );
 	if (!currentWorkspace || !currentSprint) return null;
 
 	return (
