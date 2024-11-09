@@ -1,5 +1,6 @@
 "use client";
 
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
@@ -26,14 +27,20 @@ export default function MyAssignedTasksPage() {
 			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
 	);
 
-	// console.log(
-	// 	"currentWorkspace",
-	// 	currentWorkspace,
-	// 	"currentSprint",
-	// 	currentSprint,
-	// );
-	if (!currentWorkspace || !currentSprint) return null;
+	if (sprintLoading) {
+		return (
+			<div className="h-screen w-full">
+				<div className="flex h-full justify-center items-center">
+					<div className="flex flex-col gap-4 items-center">
+						<div className="font-bold text-3xl">Loading</div>
+						<SquaredLoader />
+					</div>
+				</div>
+			</div>
+		);
+	}
 
+	if (!currentWorkspace || !currentSprint) return null;
 	return (
 		<TaskPageLayout
 			loading={loading || sprintLoading}
