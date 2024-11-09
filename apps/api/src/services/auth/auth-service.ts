@@ -1,3 +1,4 @@
+import { joinWorkspace } from "@/utils/joinWorkspace";
 import { sendMail } from "@/utils/mail";
 import { passwordResetTemplate, verifyEmailTemplate } from "@/utils/templates";
 import type { PrismaClient, User, Workspace } from "@squared/db";
@@ -91,6 +92,7 @@ export class AuthService implements AuthRpc {
 		name,
 		username,
 		password,
+		inviteToken,
 	}: Register): Promise<User | null> {
 		const existingUser = await this.db.user.findUnique({
 			where: { email },
@@ -109,6 +111,16 @@ export class AuthService implements AuthRpc {
 				password: hashedPassword,
 			},
 		});
+		if (inviteToken && user) {
+			const { status } = await joinWorkspace(inviteToken, user.id);
+			if (status === 200) {
+				const newUser = await this.db.user.findUnique({
+					where: { id: user.id },
+				});
+				return newUser;
+			}
+			return user;
+		}
 
 		// Send a verification email
 		const emailToken = jwt.sign({ user: user.id }, this.JWT_SECRET, {

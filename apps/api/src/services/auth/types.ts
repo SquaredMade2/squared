@@ -16,6 +16,7 @@ export type Register = {
 	password: string;
 	name: string;
 	username: string;
+	inviteToken?: string;
 };
 
 export type OauthLogin = {
