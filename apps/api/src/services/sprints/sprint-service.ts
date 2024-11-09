@@ -34,7 +34,7 @@ export class SprintService implements SprintRpc {
 
 	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
 		this.logger.info("Getting sprints for team", { teamId });
-		return this.db.sprint.findMany({ where: { teamId } });
+		return await this.db.sprint.findMany({ where: { teamId } });
 	}
 
 	async updateSprint({
@@ -52,43 +52,73 @@ export class SprintService implements SprintRpc {
 
 	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
 		this.logger.info("Initializing sprints for team", { teamId });
-		const team = await this.db.team.findUnique({ where: { id: teamId } });
 
-		if (!team) {
-			return 0;
-		}
+		return this.db.$transaction(async (tx) => {
+			const team = await tx.team.findUnique({ where: { id: teamId } });
 
-		const sprints = await this.db.sprint.findMany({ where: { teamId } });
-		const pendingSprints = sprints.filter((s) => s.status === "PLANNED");
-		const remainingSprints = Math.max(
-			0,
-			team.upcomingSprints - pendingSprints.length,
-		);
+			if (!team) {
+				return 0;
+			}
 
-		if (remainingSprints <= 0) {
-			return pendingSprints.length;
-		}
+			const sprints = await tx.sprint.findMany({
+				where: { teamId },
+				orderBy: { startDate: "asc" },
+			});
+			const pendingSprints = sprints.filter((s) => s.status === "PLANNED");
+			const remainingSprints = Math.max(
+				0,
+				team.upcomingSprints - pendingSprints.length,
+			);
 
-		const sprintDuration = team.sprintDuration;
+			let createdCount = 0;
 
-		const newSprints: Pick<
-			Sprint,
-			"name" | "status" | "startDate" | "endDate" | "teamId"
-		>[] = Array.from({ length: remainingSprints }, (_, index) => {
-			const startDate = addWeeks(new Date(), index * sprintDuration);
-			const endDate = addWeeks(startDate, sprintDuration);
+			if (remainingSprints > 0) {
+				const sprintDuration = team.sprintDuration;
 
-			return {
-				name: `Sprint ${sprints.length + index + 1}`,
-				status: "PLANNED",
-				startDate,
-				endDate,
-				teamId,
-			};
+				const newSprints: Pick<
+					Sprint,
+					"name" | "status" | "startDate" | "endDate" | "teamId"
+				>[] = Array.from({ length: remainingSprints }, (_, index) => {
+					const startDate = addWeeks(new Date(), index * sprintDuration);
+					const endDate = addWeeks(startDate, sprintDuration);
+
+					return {
+						name: `Sprint ${sprints.length + index + 1}`,
+						status: "PLANNED",
+						startDate,
+						endDate,
+						teamId,
+					};
+				});
+
+				const createdSprints = await tx.sprint.createMany({
+					data: newSprints,
+				});
+				createdCount = createdSprints.count;
+			}
+
+			// Check if there's any active sprint
+			const activeSprintExists = await tx.sprint.findFirst({
+				where: { teamId, status: "ACTIVE" },
+			});
+
+			if (!activeSprintExists) {
+				// Get the oldest sprint (either existing or newly created)
+				const oldestSprint = await tx.sprint.findFirst({
+					where: { teamId },
+					orderBy: { startDate: "asc" },
+				});
+
+				if (oldestSprint) {
+					await tx.sprint.update({
+						where: { id: oldestSprint.id },
+						data: { status: "ACTIVE" },
+					});
+				}
+			}
+
+			return createdCount;
 		});
-		await this.db.sprint.createMany({ data: newSprints });
-
-		return 1;
 	}
 
 	async startNextSprint({
