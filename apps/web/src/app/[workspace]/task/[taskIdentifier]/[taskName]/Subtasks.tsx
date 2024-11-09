@@ -34,7 +34,7 @@ const Subtasks = ({
 	users: User[];
 }) => {
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
-	const { setTasks } = useTaskStore((state) => state);
+	const { setSubtasks } = useTaskStore((state) => state);
 
 	const onDragEnd = async (result: DropResult) => {
 		if (!result.destination) return;
@@ -43,14 +43,14 @@ const Subtasks = ({
 		const [reorderedItem] = items.splice(result.source.index, 1);
 		items.splice(result.destination.index, 0, reorderedItem);
 
-		const updatedTasks = await taskService.reorderSubtasks(TODO, {
+		const updatedSubtasks = await taskService.reorderSubtasks(TODO, {
 			parentId: subtasks[0].parentId ?? "",
 			newOrder: items.map((item) => item.id),
 		});
 
-		setTasks(updatedTasks);
+		setSubtasks(updatedSubtasks);
 
-		return updatedTasks;
+		return updatedSubtasks;
 	};
 
 	return (
