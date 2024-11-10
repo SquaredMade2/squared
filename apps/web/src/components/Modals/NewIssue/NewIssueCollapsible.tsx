@@ -43,9 +43,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-	const { workspace, updateWorkspace, setWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const { tasks, createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
@@ -83,9 +81,6 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return;
 		}
-		await updateWorkspace(workspace?.id, {
-			tasksCreated: (workspace.tasksCreated ?? 0) + 1,
-		});
 		try {
 			const { transformedInput: transformedTitle } =
 				transformingMentionInputs(title);
@@ -111,9 +106,6 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			};
 			const createdTask = await taskService.createTask(TODO, newTask);
 			createTask(createdTask);
-			await updateWorkspace(workspace.id, {
-				tasksCreated: workspace.tasksCreated + 1,
-			});
 			setWorkspace({
 				...workspace,
 				tasksCreated: workspace.tasksCreated + 1,
