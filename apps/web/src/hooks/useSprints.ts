@@ -1,8 +1,8 @@
 import { sprintService, taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { parseParams } from "@/utils/parseParams";
@@ -25,7 +25,7 @@ export function useSprints() {
 	const { getAllTeams, setCurrentSprint, currentSprint } = useTeamStore(
 		(state) => state,
 	);
-	const { user } = useAuthStore((state) => state);
+	const currentUser = useUserStore((state) => state.currentUser);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -41,12 +41,12 @@ export function useSprints() {
 				}
 				setWorkspace(workspace);
 
-				if (!user) {
+				if (!currentUser) {
 					throw new Error("User not found");
 				}
 
 				// Fetch team data
-				const teams = await getAllTeams(user.id);
+				const teams = await getAllTeams(currentUser.id);
 				const foundTeam = teams.find(
 					(team) => team.identifier === teamIdentifier,
 				);
@@ -89,7 +89,7 @@ export function useSprints() {
 		}
 
 		fetchData();
-	}, [workspaceUrl, teamIdentifier, user]);
+	}, [workspaceUrl, teamIdentifier, currentUser]);
 
 	return {
 		workspace,

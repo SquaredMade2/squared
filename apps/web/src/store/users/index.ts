@@ -16,10 +16,16 @@ const apiString = (path: string) =>
 	`${process.env.NEXT_PUBLIC_SERVER}/api/user/${path}`;
 
 export const createUserStore = (
-	initState: UserState = { users: [], userAvatars: [], connectedRepos: [] },
+	initState: UserState = {
+		users: [],
+		userAvatars: [],
+		connectedRepos: [],
+		user: null,
+	},
 ) => {
 	return createStore<UserStore>()((set, get) => ({
 		...initState,
+		setUser: (user: User | null) => set({ user }),
 		addUser: async (user: Partial<User>): Promise<UserResponse> => {
 			const userId = uuidv4();
 			try {

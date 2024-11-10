@@ -1,5 +1,5 @@
+import { logout } from "@/lib/auth";
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import { useAuthStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
 import type { Team } from "@squared/db";
 import {
@@ -383,7 +383,6 @@ export class CommandSchema {
 					icon: <LogOut className="mr-2 h-4 w-4" />,
 					text: "Log out",
 					function: async () => {
-						const logout = useAuthStore((state) => state.logout);
 						try {
 							await logout();
 							this.showToast("Logged out successfully", "default");

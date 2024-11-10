@@ -1,5 +1,5 @@
 import { commentService } from "@/lib/services";
-import { useAuthStore, useCommentStore } from "@/store";
+import { useCommentStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { TODO } from "@squared/context";
@@ -44,7 +44,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	// State
 
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentUser = useAuthStore((state) => state.user);
+	const currentUser = useUserStore((state) => state.user);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor

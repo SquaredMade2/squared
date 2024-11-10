@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/dialog";
 import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { cn } from "@/utils/cn";
@@ -37,7 +37,7 @@ export function WorkspaceSwitcher() {
 	const { workspaces, currentWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
 	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { setTasks } = useTaskStore((state) => state);
 	const [selectedWorkspace, setSelectedWorkspace] = useState(currentWorkspace);
 	const router = useRouter();

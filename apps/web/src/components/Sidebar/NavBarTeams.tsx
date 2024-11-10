@@ -1,8 +1,8 @@
 import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
@@ -27,7 +27,7 @@ const NavBarTeams = ({
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
 	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { setTasks } = useTaskStore((state) => state);
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { toast } = useToast();
 
 	useEffect(() => {

@@ -1,10 +1,5 @@
 import { eventService } from "@/lib/services";
-import {
-	useAuthStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useTeamStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TooltipContent } from "@repo/ui/tooltip";
 import { TODO } from "@squared/context";
@@ -52,8 +47,7 @@ export const columns: ColumnDef<
 				(state) => state,
 			);
 			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
-			const { userAvatars } = useUserStore((state) => state);
-			const { user } = useAuthStore((state) => state);
+			const { userAvatars, user } = useUserStore((state) => state);
 			const {
 				identifier: taskIdentifier,
 				title: taskName,
@@ -151,8 +145,9 @@ export const columns: ColumnDef<
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateUser, getUser } = useUserStore((state) => state);
-			const { user, setUser } = useAuthStore((state) => state);
+			const { updateUser, getUser, user, setUser } = useUserStore(
+				(state) => state,
+			);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {
