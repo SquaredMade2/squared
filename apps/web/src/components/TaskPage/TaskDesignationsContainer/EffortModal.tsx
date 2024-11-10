@@ -1,8 +1,5 @@
 import { high, low, medium } from "@/components/Svg";
-import {
-	complexityScale,
-	effortEstimateOptions,
-} from "@/constants/designations";
+import { complexityScale, effortEstimateOptions } from "@/lib/constants";
 import { useTeamStore } from "@/store";
 import { CircleHelp } from "lucide-react";
 import { Button } from "../../ui/button";

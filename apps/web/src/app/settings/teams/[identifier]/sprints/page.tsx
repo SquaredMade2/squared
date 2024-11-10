@@ -1,5 +1,22 @@
 "use client";
 
+import { useToast } from "@/components/ui/use-toast";
+import { useTeams } from "@/hooks/useTeams";
+import { sprintService, taskService } from "@/lib/services";
+import { useTeamStore } from "@/store";
+import { TODO } from "@squared/context";
+import type { Sprint, Team } from "@squared/db";
+import { addDays, format, startOfWeek } from "date-fns";
+import {
+	CalendarIcon,
+	ChevronDown,
+	ChevronRight,
+	Maximize2,
+	X,
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
@@ -30,24 +47,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/components/ui/use-toast";
-import { useTeams } from "@/hooks/useTeams";
-import { sprintService, taskService } from "@/lib/services";
-import { useTeamStore } from "@/store";
 import { cn } from "@/utils/cn";
-import { TODO } from "@squared/context";
-import type { Sprint, Team } from "@squared/db";
-import { addDays, format, startOfWeek } from "date-fns";
-import {
-	CalendarIcon,
-	ChevronDown,
-	ChevronRight,
-	Maximize2,
-	X,
-} from "lucide-react";
-import { useEffect, useState } from "react";
 
-export default function TeamSettingsSprints() {
+export default function SprintSettings() {
 	const { updateTeam, setCurrentTeam } = useTeamStore((state) => state);
 	const { currentTeam, loading: teamLoading } = useTeams();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
@@ -98,7 +100,7 @@ export default function TeamSettingsSprints() {
 		}
 	};
 
-	const handleAddTasksToSprint = async (type: "active" | "completed") => {
+	const handleAddTasksToSprint = async () => {
 		if (!currentTeam || !activeSprint) return;
 
 		try {
@@ -108,7 +110,7 @@ export default function TeamSettingsSprints() {
 
 			if (response) {
 				toast({
-					title: `${type === "active" ? "Active" : "Completed"} tasks added to sprint`,
+					title: "Active tasks added to sprint",
 					description:
 						"The tasks have been successfully added to the current sprint.",
 					variant: "default",
@@ -116,7 +118,7 @@ export default function TeamSettingsSprints() {
 			}
 		} catch (error) {
 			toast({
-				title: `Error adding ${type} tasks to sprint`,
+				title: "Error adding active tasks to sprint",
 				description:
 					error instanceof Error ? error.message : "An unknown error occurred",
 				variant: "destructive",
@@ -137,13 +139,7 @@ export default function TeamSettingsSprints() {
 			</div>
 		);
 	if (!currentTeam) return null;
-	const {
-		sprintsEnabled,
-		sprintDuration,
-		cooldownDuration,
-		upcomingSprints,
-		activeRequired,
-	} = currentTeam;
+	const { sprintsEnabled, sprintDuration } = currentTeam;
 
 	return (
 		<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
@@ -198,18 +194,11 @@ export default function TeamSettingsSprints() {
 						</p>
 					)}
 					{isSprintInfoExpanded && (
-						<Button
-							variant="link"
-							className="p-0 h-auto mt-4"
-							// TODO: ADD CORRESPONDING LINK ON WWW APPLICATION
-							onClick={() =>
-								toast({
-									title: "Just pretend you've been taken to the docs page 🤫",
-								})
-							}
-						>
-							Read more <ChevronRight className="h-4 w-4 ml-2" />
-						</Button>
+						<Link href="www.squaredmade.com/docs/sprints" passHref>
+							<Button variant="link" className="p-0 h-auto mt-4">
+								Read more <ChevronRight className="h-4 w-4 ml-2" />
+							</Button>
+						</Link>
 					)}
 				</CardContent>
 			</Card>
@@ -234,8 +223,6 @@ export default function TeamSettingsSprints() {
 								startOfWeek(new Date(), { weekStartsOn: 1 }),
 								7,
 							),
-							upcomingSprints: 3,
-							activeRequired: true,
 						})
 					}
 					aria-label="Enable sprints"
@@ -263,28 +250,6 @@ export default function TeamSettingsSprints() {
 										{[1, 2, 3, 4, 5, 6, 7, 8].map((weeks) => (
 											<SelectItem key={weeks} value={weeks.toString()}>
 												{weeks} {weeks === 1 ? "week" : "weeks"}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="flex justify-between items-center w-full">
-								<Label htmlFor="cooldownDuration">
-									Cooldown after each sprint (days)
-								</Label>
-								<Select
-									value={cooldownDuration.toString()}
-									onValueChange={(value) =>
-										handleUpdateTeam({ cooldownDuration: Number(value) })
-									}
-								>
-									<SelectTrigger className="w-60 bg-secondary">
-										<SelectValue placeholder="Select cooldown" />
-									</SelectTrigger>
-									<SelectContent className="w-60">
-										{[0, 1, 2, 3, 4, 5, 6, 7].map((days) => (
-											<SelectItem key={days} value={days.toString()}>
-												{days} {days === 1 ? "day" : "days"}
 											</SelectItem>
 										))}
 									</SelectContent>
@@ -330,134 +295,49 @@ export default function TeamSettingsSprints() {
 									</PopoverContent>
 								</Popover>
 							</div>
-							<div className="flex justify-between items-center w-full">
-								<Label htmlFor="upcomingSprints">
-									Number of upcoming sprints to create (max 3 pending)
-								</Label>
-								<Select
-									value={upcomingSprints.toString()}
-									onValueChange={(value) =>
-										handleUpdateTeam({ upcomingSprints: Number(value) })
-									}
-								>
-									<SelectTrigger className="w-60 bg-secondary">
-										<SelectValue placeholder="Select number" />
-									</SelectTrigger>
-									<SelectContent className="w-60">
-										{[1, 2, 3].map((num) => (
-											<SelectItem key={num} value={num.toString()}>
-												{num} {num === 1 ? "sprint" : "sprints"}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
 							<p className="text-sm text-muted-foreground">
 								Current pending sprints: {pendingSprints}
 							</p>
 						</CardContent>
 					</Card>
-					<p className="my-6 text-muted-foreground">
-						You can add unassigned tasks to the current active sprint using the
-						buttons below.
-					</p>
-					<Card>
+
+					<Card className="mt-6">
 						<CardContent className="space-y-4 py-6">
-							<div className="space-y-4">
-								<div className="flex items-center justify-between">
-									<div className="flex flex-col items-start">
-										<Label htmlFor="addActiveTasks" className="mb-2">
-											Add active tasks to current sprint
-										</Label>
-										<p className="text-sm text-muted-foreground w-11/12">
-											Add all unassigned active tasks (To Do, In Progress, In
-											Review) to the current sprint.
-										</p>
-									</div>
-									<AlertDialog>
-										<AlertDialogTrigger asChild>
-											<Button variant="outline">Add Active Tasks</Button>
-										</AlertDialogTrigger>
-										<AlertDialogContent>
-											<AlertDialogHeader>
-												<AlertDialogTitle>
-													Add Active Tasks to Sprint
-												</AlertDialogTitle>
-												<AlertDialogDescription>
-													This will add all unassigned active tasks to the
-													current sprint. Are you sure you want to continue?
-												</AlertDialogDescription>
-											</AlertDialogHeader>
-											<AlertDialogFooter>
-												<AlertDialogCancel>Cancel</AlertDialogCancel>
-												<AlertDialogAction
-													onClick={() => handleAddTasksToSprint("active")}
-												>
-													Continue
-												</AlertDialogAction>
-											</AlertDialogFooter>
-										</AlertDialogContent>
-									</AlertDialog>
+							<div className="flex items-center justify-between">
+								<div className="flex flex-col items-start">
+									<Label htmlFor="addActiveTasks" className="mb-2">
+										Add active tasks to current sprint
+									</Label>
+									<p className="text-sm text-muted-foreground w-11/12">
+										Add all unassigned active tasks (To Do, In Progress, In
+										Review) to the current sprint.
+									</p>
 								</div>
-							</div>
-							<div className="space-y-2">
-								<div className="flex items-center justify-between">
-									<div className="flex flex-col items-start">
-										<Label htmlFor="addCompletedTasks" className="mb-2">
-											Add completed tasks to current sprint
-										</Label>
-										<p className="text-sm text-muted-foreground w-11/12">
-											Add all unassigned completed tasks (Done) to the current
-											sprint.
-										</p>
-									</div>
-									<AlertDialog>
-										<AlertDialogTrigger asChild>
-											<Button variant="outline">Add Completed Tasks</Button>
-										</AlertDialogTrigger>
-										<AlertDialogContent>
-											<AlertDialogHeader>
-												<AlertDialogTitle>
-													Add Completed Tasks to Sprint
-												</AlertDialogTitle>
-												<AlertDialogDescription>
-													This will add all unassigned completed tasks to the
-													current sprint. Are you sure you want to continue?
-												</AlertDialogDescription>
-											</AlertDialogHeader>
-											<AlertDialogFooter>
-												<AlertDialogCancel>Cancel</AlertDialogCancel>
-												<AlertDialogAction
-													onClick={() => handleAddTasksToSprint("completed")}
-												>
-													Continue
-												</AlertDialogAction>
-											</AlertDialogFooter>
-										</AlertDialogContent>
-									</AlertDialog>
-								</div>
+								<AlertDialog>
+									<AlertDialogTrigger asChild>
+										<Button variant="outline">Add Active Tasks</Button>
+									</AlertDialogTrigger>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
+												Add Active Tasks to Sprint
+											</AlertDialogTitle>
+											<AlertDialogDescription>
+												This will add all unassigned active tasks to the current
+												sprint. Are you sure you want to continue?
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>Cancel</AlertDialogCancel>
+											<AlertDialogAction onClick={handleAddTasksToSprint}>
+												Continue
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
 							</div>
 						</CardContent>
 					</Card>
-
-					<div className="flex items-center justify-between mt-6">
-						<div className="flex flex-col items-start">
-							<Label htmlFor="activeRequired" className="mb-2">
-								Active issues are required to belong to a sprint.
-							</Label>
-							<p className="text-sm text-muted-foreground">
-								Boost focus and accountability by ensuring all active work is
-								sprint-aligned
-							</p>
-						</div>
-						<Switch
-							id="activeRequired"
-							checked={activeRequired}
-							onCheckedChange={(checked) =>
-								handleUpdateTeam({ activeRequired: checked })
-							}
-						/>
-					</div>
 				</>
 			)}
 		</div>
