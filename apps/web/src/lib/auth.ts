@@ -1,12 +1,8 @@
 "use client";
 
-import { useUserStore } from "@/store";
 import { signOut } from "next-auth/react";
 
 export const logout = async () => {
-	const setUser = useUserStore((state) => state.setUser);
-	setUser(null);
-
 	// Clear all session storage items
 	sessionStorage.clear();
 
