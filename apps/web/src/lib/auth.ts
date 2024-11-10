@@ -3,9 +3,6 @@
 import { signOut } from "next-auth/react";
 
 export const logout = async () => {
-	// Clear all session storage items
-	sessionStorage.clear();
-
 	// Sign out using NextAuth and redirect to login page
 	await signOut({ redirect: false });
 
