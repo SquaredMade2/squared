@@ -1,136 +1,137 @@
-
-# Task Store
+# Sprint Store
 
 ## Overview
 
-This module provides a store for managing tasks using Zustand with session storage persistence. The TaskStore includes functionality for adding, updating, deleting, and retrieving tasks. It also supports fetching tasks from an API and handling team-related tasks.
+This module provides a store for managing sprints using Zustand. The SprintStore includes functionality for adding, updating, and retrieving sprints. It offers a lightweight and type-safe solution for managing sprint-related state in React applications.
 
 ## Table of Contents
 
-1. [TaskResponse Type](#taskresponse-type)
-2. [Task API](task-api)
-    - [addTask](#addtask)
-    - [updateTask](#updatetask)
-    - [setCurrentTask](#setcurrenttask)
-    - [deleteTask](#deletetask)
-    - [setTaskList](#settasklist)
-    - [getTask](#gettask)
-    - [getTaskByIdentifier](#gettaskbyidentifier)
-    - [getAllTasks](#getalltasks)
-    - [toggleSprintTasks](#togglesprinttasks)
-3. [Session Persistence](#session-persistence)
+1. [SprintState Type](#sprintstate-type)
+2. [Sprint API](#sprint-api)
+   - [setSprint](#setsprint)
+   - [setSprints](#setsprints)
+   - [createSprint](#createsprint)
+   - [updateSprint](#updatesprint)
+3. [Usage](#usage)
+4. [Installation](#installation)
 
-## TaskResponse Type
+## SprintState Type
 
-The `TaskResponse` type defines the structure of data returned from the API when returning a task response.
+The `SprintState` type defines the structure of the sprint store state:
 
 ```typescript
-type TaskResponse = {
-  task: Task | null; // Task object is successfully processed, otherwise null
-  message?: string;  // A message describing the result of the operation
-  variant: "default" | "destructive"; // Type of toast to display
-}
+type SprintState = {
+  sprints: Sprint[];
+  sprint: Sprint | null;
+};
 ```
 
-## Task API
+## Sprint API
 
-### `addTask`
+### `setSprint`
 
-Adds a new task to the store and persists it. Returns a TaskResponse containing the new task, message, and variant.
+Sets the current active sprint in the store.
 
 ```typescript
-addTask: (task: Partial<Task>) => Promise<TaskResponse>
+ setSprint: (sprint: Sprint) => voidsetSprint: (sprint: Sprint) => void
+
 ```
 
-### `updateTask`
+### `setSprints`
 
-Updates an existing task based on the task ID and provided task data.
+Updates the entire list of sprints in the store.
 
 ```typescript
-updateTask: (taskId: string, task: Partial<Task>) => Promise<TaskResponse>
+ setSprints: (sprints: Sprint[]) => voidsetSprints: (sprints: Sprint[]) => void
+
 ```
 
-### `setCurrentTask`
+### `createSprint`
 
-Sets the given task as the current active task in the store.
+Adds a new sprint to the store.
 
 ```typescript
-setCurrentTask: (task: Task) => void
+ createSprint: (sprint: Sprint) => voidcreateSprint: (sprint: Sprint) => void
+
 ```
 
-### `deleteTask`
+### `updateSprint`
 
-Deletes a task from the store by its ID.
+Updates an existing sprint in the store based on the sprint ID.
 
 ```typescript
-deleteTask: (taskId: string) => Promise<void>
+ updateSprint: (sprint: Sprint) => voidupdateSprint: (sprint: Sprint) => void
+
 ```
 
-### `setTaskList`
+## Usage
 
-Sets the task list in the store with a new array of tasks.
+Here's an example of how to use the SprintStore:
 
 ```typescript
-setTaskList: (tasks: Task[]) => void
+import { createSprintStore } from "@squared/sprint-store";
+import { createSprintStore } from "@squared/sprint-store";
+
+// Create a new store instance
+const sprintStore = createSprintStore();
+
+// Add a new sprint
+sprintStore.getState().createSprint({
+  id: "1",
+  name: "Sprint 1",
+  // ... other sprint properties
+});
+
+// Update a sprint
+sprintStore.getState().updateSprint({
+  id: "1",
+  name: "Sprint 1 - Updated",
+  // ... other sprint properties
+});
+
+// Set the current active sprint
+const currentSprint = sprintStore.getState().sprints[0];
+sprintStore.getState().setSprint(currentSprint);
+
+// Get all sprints
+const allSprints = sprintStore.getState().sprints;
 ```
 
-### `getTask`
+## Installation
 
-Retrieves a task by its ID. If the task is not found in the store, it fetches it from the API.
+To install the Sprint Store in your project, run:
 
-```typescript
-getTask: (taskId: string) => Promise<TaskResponse>
+```shellscript
+ npm install @squared/sprint-storenpm install @squared/sprint-store
+
 ```
 
-### `getTaskByIdentifier`
+Make sure you have Zustand installed as a peer dependency:
 
-Fetches a task by its identifier from a specific workspace.
+```shellscript
+ npm install zustandnpm install zustand
 
-```typescript
-getTaskByIdentifier: (
-  workspaceId: string,
-  taskIdentifier: string,
-) => Promise<TaskResponse>
 ```
 
-### `getAllTasks`
+## Types
 
-Retrieves all tasks for a specific team from the API.
-
-```typescript
-getAllTasks: (teamId: string) => Promise<Task[]>
-```
-
-### `toggleSprintTasks`
-
-Adds or removes tasks from a sprint based on the provided action type.
+The SprintStore uses the following types:
 
 ```typescript
-toggleSprintTasks: (
-  teamId: string,
-  sprintId: string,
-  type: "add" | "remove",
-) => Promise<ApiReturnType<Task[]>>
-```
+import type { Sprint } from "@squared/db";
+import type { Sprint } from "@squared/db";
 
-## Session Persistence
+type SprintState = {
+  sprints: Sprint[];
+  sprint: Sprint | null;
+};
 
-The TaskStore uses sessionStorage for persistence via Zustand's persist middleware. The data is automatically stored and retrieved from the browser's session storage under the key task-store.
+type SprintActions = {
+  setSprint: (sprint: Sprint) => void;
+  setSprints: (sprints: Sprint[]) => void;
+  updateSprint: (sprint: Sprint) => void;
+  createSprint: (sprint: Sprint) => void;
+};
 
-```typescript
-{
-  name: "task-store",
-  storage: {
-    getItem: (name) => {
-      const storedValue = sessionStorage.getItem(name);
-      return storedValue ? JSON.parse(storedValue) : null;
-    },
-    setItem: (name, value) => {
-      sessionStorage.setItem(name, JSON.stringify(value));
-    },
-    removeItem: (name) => {
-      sessionStorage.removeItem(name);
-    },
-  },
-}
+type SprintStore = SprintState & SprintActions;
 ```
