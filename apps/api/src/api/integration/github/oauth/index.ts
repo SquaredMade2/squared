@@ -1,7 +1,7 @@
 import { prisma } from "@/api";
-import axios from "axios";
 import type { Route } from "@/api/route";
 import createCustomLogger from "@squared/logger";
+import axios from "axios";
 
 const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;

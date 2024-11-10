@@ -1,7 +1,7 @@
-import * as React from "react";
-import { axe } from "jest-axe";
 import type { RenderResult } from "@testing-library/react";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
+import { axe } from "jest-axe";
+import * as React from "react";
 import { Checkbox, CheckboxIndicator } from "../checkbox";
 
 const CHECKBOX_ROLE = "checkbox";

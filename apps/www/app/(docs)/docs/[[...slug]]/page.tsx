@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { extractMetadata, type MDXMetadata } from "@/lib/mdx";
+import { type MDXMetadata, extractMetadata } from "@/lib/mdx";
 import matter from "gray-matter";
+import { MDXRemote } from "next-mdx-remote/rsc";
 
 interface PageProps {
 	params: { slug?: string[] };

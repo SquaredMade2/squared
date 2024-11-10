@@ -1,7 +1,7 @@
 "use client";
+import { motion } from "framer-motion";
 import { DesktopNavbar } from "./desktop-navbar";
 import { MobileNavbar } from "./mobile-navbar";
-import { motion } from "framer-motion";
 
 const navItems = [
 	{

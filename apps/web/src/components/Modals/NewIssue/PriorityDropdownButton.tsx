@@ -1,17 +1,17 @@
-import { Check } from "lucide-react";
-import { formatPriority } from "@/utils/formatting";
-import { priorityOptions } from "@/constants/designations";
+import { PriorityIcon } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
-import { useModalStore } from "@/store";
 import {
 	DropdownMenu,
-	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
+	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { priorityOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squared/db";
-import { PriorityIcon } from "@/components/Icons";
+import { Check } from "lucide-react";
 
 export const PriorityDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);

@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { useWorkspaceStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
 import { parseParams } from "@/utils/parseParams";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {

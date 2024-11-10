@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function TokenVerificationPage({
 	params,

@@ -1,8 +1,6 @@
 "use client";
 
-import { statusOptions } from "@/constants/designations";
-import { useTaskStore } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
+import { StatusIcon } from "@/components/Icons";
 import {
 	Select,
 	SelectContent,
@@ -10,16 +8,22 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { statusOptions } from "@/lib/constants";
+import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Status } from "@squared/db";
-import type { ButtonProps } from "./interfaces";
-import { StatusIcon } from "@/components/Icons";
 
-const StatusDropdown = ({ currentTask }: ButtonProps) => {
+const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { updateTask } = useTaskStore((state) => state);
-	const taskId = currentTask ? currentTask.id : "";
-	const sidebarStatus = currentTask ? currentTask.status : "";
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
+
+	if (!currentTask) return null;
+	const { id: taskId, status: sidebarStatus } = currentTask;
 
 	const handleSelectStatus = (newStatus: Status) => {
 		if (newStatus === sidebarStatus || !taskId) return;
@@ -28,8 +32,10 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 
 	const updateItem = async (newStatus: Status) => {
 		try {
-			await updateTask(taskId, { status: newStatus });
-			// await getTaskEvents(taskId);
+			updateTask(
+				await taskService.updateTask(TODO, { id: taskId, status: newStatus }),
+			);
+			setCurrentTask({ ...currentTask, status: newStatus });
 		} catch {
 			toast({
 				title: "Error updating status",
@@ -41,14 +47,14 @@ const StatusDropdown = ({ currentTask }: ButtonProps) => {
 	return (
 		<Select
 			onValueChange={(value) => handleSelectStatus(value as Status)}
-			defaultValue={sidebarStatus}
+			value={sidebarStatus}
 		>
 			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
 						<StatusIcon status={sidebarStatus || "todo"} />
 						<span className="mx-2 text-nowrap">
-							{sidebarStatus ? formatStatus(sidebarStatus) : sidebarStatus}
+							{sidebarStatus ? formatStatus(sidebarStatus) : "Select status"}
 						</span>
 					</div>
 				</SelectValue>

@@ -1,17 +1,17 @@
-import { Check } from "lucide-react";
-import { statusOptions } from "@/constants/designations";
-import { formatStatus } from "@/utils/formatting";
+import { StatusIcon } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
-import { useModalStore } from "@/store";
 import {
 	DropdownMenu,
-	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
+	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { statusOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squared/db";
-import { StatusIcon } from "@/components/Icons";
+import { Check } from "lucide-react";
 
 export const StatusDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);

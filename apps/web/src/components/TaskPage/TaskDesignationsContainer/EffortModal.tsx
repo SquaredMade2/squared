@@ -1,9 +1,8 @@
-import {
-	effortEstimateOptions,
-	complexityScale,
-} from "@/constants/designations";
-import { high, medium, low } from "@/components/Svg";
+import { high, low, medium } from "@/components/Svg";
+import { complexityScale, effortEstimateOptions } from "@/lib/constants";
+import { useTeamStore } from "@/store";
 import { CircleHelp } from "lucide-react";
+import { Button } from "../../ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -11,8 +10,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../../ui/dialog";
-import { Button } from "../../ui/button";
-import { useTeamStore } from "@/store";
 
 const EffortModal = () => {
 	const { currentTeam } = useTeamStore((state) => state);

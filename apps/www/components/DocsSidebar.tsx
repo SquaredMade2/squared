@@ -1,14 +1,14 @@
-import Link from "next/link";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import path from "node:path";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { type MDXFile, getMDXFiles } from "@/lib/mdx";
 import { cn } from "@/lib/utils";
-import { getMDXFiles, type MDXFile } from "@/lib/mdx";
-import path from "node:path";
+import Link from "next/link";
 
 interface DocsSidebarProps {
 	currentSlug: string;

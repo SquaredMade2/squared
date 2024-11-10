@@ -1,9 +1,9 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useWorkspaceStore } from "@/store";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import { useWorkspaceStore } from "@/store";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const HomePage = () => {
 	const router = useRouter();

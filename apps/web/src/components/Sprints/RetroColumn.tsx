@@ -1,4 +1,4 @@
-import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

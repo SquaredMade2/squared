@@ -26,7 +26,7 @@ export const Button: React.FC<{
 	return (
 		<Tag
 			className={cn(
-				"bg-black relative z-10 hover:bg-black/90  text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center",
+				"bg-black relative z-10 hover:bg-black/90  dark:hover:text-white text-sm md:text-sm transition font-medium duration-200  rounded-full px-4 py-2  flex items-center justify-center",
 				variantClass,
 				className,
 			)}

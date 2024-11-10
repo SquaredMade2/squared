@@ -11,14 +11,7 @@ export interface CommentResponse {
 }
 
 type CommentActions = {
-	addComment: (comment: Partial<Comment>) => Promise<CommentResponse>;
-	updateComment: (
-		commentId: string,
-		comment: Partial<Comment>,
-	) => Promise<CommentResponse>;
-	deleteComment: (commentId: string) => Promise<void>;
-	getComment: (commentId: string) => Promise<CommentResponse>;
-	getAllComments: (taskId: string) => Promise<Comment[]>;
+	setComments: (comments: Comment[]) => void;
 };
 
 export type CommentStore = CommentState & CommentActions;

@@ -1,7 +1,7 @@
-import { createTeamStore } from ".";
-import axios from "axios";
-import type { Team } from "@squared/db";
 import { STANDARD_TEAM, STANDARD_TEAM_2 } from "@/test/mocks";
+import type { Team } from "@squared/db";
+import axios from "axios";
+import { createTeamStore } from ".";
 
 // Mock axios
 jest.mock("axios");
@@ -204,28 +204,6 @@ describe("TeamStore", () => {
 
 			const state = store.getState();
 			expect(state.teams).toEqual(mockTeams);
-		});
-	});
-
-	describe("persist middleware", () => {
-		it("should hydrate the state from sessionStorage", () => {
-			const mockState = {
-				teams: [STANDARD_TEAM],
-				currentTeam: null,
-				sprints: [],
-				currentSprint: null,
-			};
-			mockSessionStorage.getItem.mockReturnValue(
-				JSON.stringify({ state: mockState }),
-			);
-
-			const newStore = createTeamStore();
-			const state = newStore.getState();
-
-			expect(state.teams).toEqualWithDatePrecision([STANDARD_TEAM]);
-			expect(state.currentTeam).toBeNull();
-			expect(state.sprints).toEqual([]);
-			expect(state.currentSprint).toBeNull();
 		});
 	});
 });

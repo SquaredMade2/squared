@@ -6,8 +6,8 @@
     "paths": {
       "@/*": ["*"]
     },
-    "moduleResolution": "node16",
-    "module": "Node16",
+    "moduleResolution": "bundler",
+    "module": "esnext",
     "types": ["jest", "jest-extended"]
   },
   "include": [

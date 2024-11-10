@@ -1,7 +1,10 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useTaskStore, useTeamStore, useUserStore } from "@/store";
+import { commentService, taskService } from "@/lib/services";
+import { useCommentStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskPage() {
@@ -10,8 +13,9 @@ export function useTaskPage() {
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { getTaskByIdentifier, tasks } = useTaskStore((state) => state);
-	const { getAllUsers } = useUserStore((state) => state);
+	const { tasks, setCurrentTask } = useTaskStore((state) => state);
+	const { setComments } = useCommentStore((state) => state);
+	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
 	);
@@ -24,7 +28,6 @@ export function useTaskPage() {
 				if (!currentWorkspace) {
 					throw new Error("Workspace not found");
 				}
-				await getAllUsers(currentWorkspace.id);
 
 				// Fetch team data
 				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
@@ -34,12 +37,16 @@ export function useTaskPage() {
 				}
 
 				// Fetch task data
-				const pageTask = await getTaskByIdentifier(
-					currentWorkspace.id,
-					parseParams(taskIdentifier),
-				);
+				const pageTask = await taskService.getTaskByIdentifier(TODO, {
+					workspaceId: currentWorkspace.id,
+					identifier: parseParams(taskIdentifier),
+				});
 				if (pageTask) {
-					setTask(pageTask.task);
+					setTask(pageTask);
+					setCurrentTask(pageTask);
+					setComments(
+						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
+					);
 				}
 
 				setIsLoading(false);
@@ -50,14 +57,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [
-		currentWorkspace,
-		taskIdentifier,
-		getTaskByIdentifier,
-		workspaceLoading,
-		getAllUsers,
-		teams,
-	]);
+	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams]);
 
 	return { currentWorkspace, task, isLoading, error };
 }

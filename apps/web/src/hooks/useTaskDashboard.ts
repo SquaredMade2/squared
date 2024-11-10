@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
-import type { Status } from "@squared/db";
+import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
+import { TODO } from "@squared/context";
+import type { Status } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
-import { parseParams } from "@/utils/parseParams";
 
 export function useTaskDashboard() {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
-	const { tasks, updateTask, getAllTasks } = useTaskStore((state) => state);
+	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
 	const [loading, setLoading] = useState(true);
 
 	const params = useParams();
@@ -21,7 +23,9 @@ export function useTaskDashboard() {
 			if (teamLoading || workspaceLoading) return;
 			setLoading(true);
 			if (currentTeam) {
-				await getAllTasks(currentTeam.id);
+				setTasks(
+					await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+				);
 			}
 			setLoading(false);
 		};
@@ -43,7 +47,11 @@ export function useTaskDashboard() {
 			...draggedTask,
 			status: destination.droppableId as Status,
 		};
-		await updateTask(updatedTask.id, { status: updatedTask.status });
+		await taskService.updateTask(TODO, {
+			id: updatedTask.id,
+			status: updatedTask.status,
+		});
+		updateTask(updatedTask);
 	};
 
 	return {

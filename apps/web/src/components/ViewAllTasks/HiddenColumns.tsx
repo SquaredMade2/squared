@@ -1,19 +1,19 @@
-import type { Priority, Status, Task } from "@squared/db";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "../ui/accordion";
-import { Droppable } from "@hello-pangea/dnd";
 import {
 	useTaskStore,
 	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { PriorityIcon, StatusIcon } from "../Icons";
 import { formatPriority, formatStatus } from "@/utils/formatting";
+import { Droppable } from "@hello-pangea/dnd";
+import type { Priority, Status, Task } from "@squared/db";
+import { PriorityIcon, StatusIcon } from "../Icons";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "../ui/accordion";
 
 const HiddenColumns = ({
 	getHiddenColumns,

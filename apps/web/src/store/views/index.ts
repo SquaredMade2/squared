@@ -1,11 +1,12 @@
-import { createStore } from "zustand/vanilla";
-import type {
-	ViewStore,
-	ViewState,
-	View,
-	LastVisitedPathOption,
-} from "./interfaces";
 import { persist } from "zustand/middleware";
+import { createStore } from "zustand/vanilla";
+import {
+	CompletedTaskPeriod,
+	type LastVisitedPathOption,
+	type View,
+	type ViewState,
+	type ViewStore,
+} from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
 
@@ -16,7 +17,7 @@ export const createViewStore = (
 		displayOptions: {
 			taskOrder: { orderBy: "Priority", orderAscending: false },
 			groupTasksBy: "Status",
-			showCompletedTasks: { show: true, period: "All" },
+			showCompletedTasks: { show: true, period: CompletedTaskPeriod.all },
 			showSubTasks: false,
 			viewOptions: {
 				gridOptions: {
@@ -44,7 +45,7 @@ export const createViewStore = (
 			},
 		},
 		lastVisitedPage: "all",
-		view: "list",
+		view: "grid",
 	},
 ) => {
 	return createStore<ViewStore>()(

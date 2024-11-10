@@ -1,6 +1,6 @@
-import type { ComponentProps } from "react";
+import { type RenderResult, fireEvent, render } from "@testing-library/react";
 import { axe } from "jest-axe";
-import { render, fireEvent, type RenderResult } from "@testing-library/react";
+import type { ComponentProps } from "react";
 import * as ToggleGroup from "./ToggleGroup";
 
 describe("given a single ToggleGroup", () => {

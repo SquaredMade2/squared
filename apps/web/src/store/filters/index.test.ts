@@ -1,13 +1,13 @@
-import { createFilterStore } from ".";
-import axios from "axios";
-import type { Task, SavedFilter as SavedFilterType } from "@squared/db";
-import type { FilterCondition, SavedFilter } from "./interfaces";
 import {
 	STANDARD_SAVED_FILTER,
 	STANDARD_SAVED_FILTER_2,
 	STANDARD_TASK,
 	STANDARD_TASK_2,
 } from "@/test/mocks";
+import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
+import axios from "axios";
+import { createFilterStore } from ".";
+import type { FilterCondition, SavedFilter } from "./interfaces";
 
 // Mock axios
 jest.mock("axios");

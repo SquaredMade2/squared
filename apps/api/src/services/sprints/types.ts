@@ -2,9 +2,9 @@ import type { RetrospectiveItemType, Sprint, Task } from "@squared/db";
 
 export type NextSprintPayload = {
 	teamId: string;
-	movedTasks: string[];
 	sprintData?: {
 		name: string;
+		description?: string;
 	};
 };
 export type AddRetrospectivePayload = {
@@ -48,10 +48,16 @@ export type SprintServiceResponse<T> = ErrorResponse | SuccessResponse<T>;
 
 export interface SprintRpc {
 	getSprints: ({ teamId }: { teamId: string }) => Promise<Sprint[]>;
+	updateSprint: ({
+		sprintId,
+		sprintData,
+	}: {
+		sprintId: string;
+		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
+	}) => Promise<Sprint>;
 	initializeSprints: ({ teamId }: { teamId: string }) => Promise<number>;
 	startNextSprint: ({
 		teamId,
-		movedTasks,
 		sprintData,
 	}: NextSprintPayload) => Promise<SprintServiceResponse<Sprint>>;
 	getSprintTasks: ({ sprintId }: { sprintId: string }) => Promise<Task[]>;

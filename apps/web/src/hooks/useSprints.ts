@@ -1,13 +1,15 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import { sprintService, taskService } from "@/lib/services";
+import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
-import { sprintService } from "@/lib/services";
+import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useAuthUser } from "./useAuthUser";
 
-export function useSprints() {
+export function useSprints(sprintId?: string) {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
+	const { setTasks } = useTaskStore((state) => state);
 	const [workspace, setWorkspace] = useState<Workspace | null>(null);
 	const [team, setTeam] = useState<Team | null>(null);
 	const [sprints, setSprints] = useState<Sprint[]>([]);
@@ -19,12 +21,15 @@ export function useSprints() {
 	const { getAllTeams, setCurrentSprint, currentSprint } = useTeamStore(
 		(state) => state,
 	);
-	const { user } = useAuthStore((state) => state);
+	const { user, loading: userLoading } = useAuthUser();
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
 				setLoading(true);
+				if (userLoading) {
+					return;
+				}
 
 				// Fetch workspace data
 				const { workspace, message: workspaceMessage } = await getWorkspace(
@@ -57,16 +62,23 @@ export function useSprints() {
 				}
 				setSprints(sprints);
 
-				const foundSprint = sprints.find(
-					(sprint) => sprint.status === "ACTIVE",
-				);
+				const foundSprint = sprintId
+					? sprints.find((sprint) => sprint.id === sprintId)
+					: sprints.find((sprint) => sprint.status === "ACTIVE");
+
 				if (!foundSprint) {
-					throw new Error("No active sprint found");
+					throw new Error("Sprint not found");
 				}
-				const tasks = await sprintService.getSprintTasks(context.TODO, {
-					sprintId: foundSprint.id,
-				});
-				setSprintTasks(tasks);
+				const [sprintTasks, tasks] = await Promise.all([
+					sprintService.getSprintTasks(context.TODO, {
+						sprintId: foundSprint.id,
+					}),
+					taskService.getTeamTasks(context.TODO, {
+						teamId: foundTeam.id,
+					}),
+				]);
+				setTasks(tasks);
+				setSprintTasks(sprintTasks);
 				setCurrentSprint(foundSprint);
 
 				setLoading(false);
@@ -77,7 +89,7 @@ export function useSprints() {
 		}
 
 		fetchData();
-	}, [workspaceUrl, teamIdentifier]);
+	}, [workspaceUrl, teamIdentifier, userLoading]);
 
 	return {
 		workspace,

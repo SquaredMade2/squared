@@ -1,41 +1,41 @@
-import {
-	ChevronDown,
-	SlidersVertical,
-	ArrowUpWideNarrow,
-	ArrowDownWideNarrow,
-	AlignJustify,
-	LayoutGrid,
-	Layers,
-} from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { CompletedTaskPeriodOptions } from "@/lib/constants";
 import { useViewStore } from "@/store";
-import { Switch } from "../ui/switch";
-import { Separator } from "../ui/separator";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import {
+	type CompletedTaskPeriod,
+	type DisplayOptions,
+	type DisplayProperty,
+	type TaskGroup,
+	TaskGroupOptions,
+	type TaskOrder,
+	TaskOrderOptions,
+	type View,
+} from "@/store/views";
+import {
+	AlignJustify,
+	ArrowDownWideNarrow,
+	ArrowUpWideNarrow,
+	ChevronDown,
+	Layers,
+	LayoutGrid,
+	SlidersVertical,
+} from "lucide-react";
+import { Button } from "../ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Separator } from "../ui/separator";
+import { Switch } from "../ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
-import {
-	CompletedTaskPeriodOptions,
-	TaskOrderOptions,
-	type CompletedTaskPeriod,
-	type DisplayProperty,
-	type TaskOrder,
-	type View,
-	type DisplayOptions,
-	type TaskGroup,
-	TaskGroupOptions,
-} from "@/store/views";
 
 const TopNavBarDisplay = () => {
 	const {

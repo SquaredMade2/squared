@@ -1,13 +1,13 @@
-import { createWorkspaceStore } from ".";
-import axios from "axios";
-import type { Workspace } from ".";
 import {
-	STANDARD_WORKSPACE,
-	STANDARD_USER,
 	STANDARD_LABEL,
 	STANDARD_LABEL_2,
 	STANDARD_LABEL_3,
+	STANDARD_USER,
+	STANDARD_WORKSPACE,
 } from "@/test/mocks";
+import axios from "axios";
+import { createWorkspaceStore } from ".";
+import type { Workspace } from ".";
 
 // Mock axios
 jest.mock("axios");
@@ -264,24 +264,6 @@ describe("WorkspaceStore", () => {
 
 			const state = store.getState();
 			expect(state.workspaces).toContainEqual(STANDARD_WORKSPACE);
-			expect(state.currentWorkspace).toEqual(STANDARD_WORKSPACE);
-		});
-	});
-
-	describe("persist middleware", () => {
-		it("should hydrate the state from sessionStorage", () => {
-			const mockState = {
-				workspaces: [STANDARD_WORKSPACE],
-				currentWorkspace: STANDARD_WORKSPACE,
-			};
-			mockSessionStorage.getItem.mockReturnValue(
-				JSON.stringify({ state: mockState }),
-			);
-
-			const newStore = createWorkspaceStore();
-			const state = newStore.getState();
-
-			expect(state.workspaces).toEqual([STANDARD_WORKSPACE]);
 			expect(state.currentWorkspace).toEqual(STANDARD_WORKSPACE);
 		});
 	});

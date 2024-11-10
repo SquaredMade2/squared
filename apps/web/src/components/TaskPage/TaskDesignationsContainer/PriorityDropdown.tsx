@@ -1,7 +1,6 @@
 "use client";
 
-import { priorityOptions } from "@/constants/designations";
-import { useToast } from "@/components/ui/use-toast";
+import { PriorityIcon } from "@/components/Icons";
 import {
 	Select,
 	SelectContent,
@@ -9,17 +8,23 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { priorityOptions } from "@/lib/constants";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
-import type { ButtonProps } from "./interfaces";
-import { PriorityIcon } from "@/components/Icons";
 
-const PriorityDropdown = ({ currentTask }: ButtonProps) => {
+const PriorityDropdown = () => {
 	const { toast } = useToast();
-	const { updateTask } = useTaskStore((state) => state);
-	const sidebarPriority = currentTask ? currentTask?.priority : "";
-	const taskId = currentTask ? currentTask.id : "";
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
+
+	if (!currentTask) return null;
+
+	const { priority: sidebarPriority, id: taskId } = currentTask;
 
 	const handleSelectPriority = (newPriority: Priority) => {
 		if (newPriority === sidebarPriority || !taskId) return;
@@ -28,8 +33,13 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 
 	const updateItem = async (newPriority: Priority) => {
 		try {
-			await updateTask(taskId, { priority: newPriority });
-			// await getTaskEvents(taskId);
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					priority: newPriority,
+				}),
+			);
+			setCurrentTask({ ...currentTask, priority: newPriority });
 		} catch {
 			toast({
 				title: "Error updating priority",
@@ -41,7 +51,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 	return (
 		<Select
 			onValueChange={(value) => handleSelectPriority(value as Priority)}
-			defaultValue={sidebarPriority}
+			value={sidebarPriority}
 		>
 			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
 				<SelectValue placeholder="Select priority">
@@ -52,7 +62,7 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 						<span className="text-sm font-semibold text-card-foreground">
 							{sidebarPriority
 								? formatPriority(sidebarPriority)
-								: sidebarPriority}
+								: "Select priority"}
 						</span>
 					</div>
 				</SelectValue>
