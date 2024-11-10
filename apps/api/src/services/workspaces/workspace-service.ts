@@ -1,6 +1,6 @@
 import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
-import type { PrismaClient } from "@squared/db";
+import type { PrismaClient, Team, User, Workspace } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import jwt from "jsonwebtoken";
 import type {
@@ -164,77 +164,26 @@ export class WorkspaceService implements WorkspaceRpc {
 		token,
 		userId,
 	}: { token: string; userId: string }): Promise<WorkspaceLabels | null> {
-		// Verify the token
-		const decoded = jwt.verify(token, this.JWT_SECRET) as {
-			workspaceId: string;
-		};
+		this.logger.info(`User ${userId} attempting to join workspace with token`);
 
-		const existingUserWorkspace = await this.db.userWorkspace.findFirst({
-			where: {
-				userId,
-				workspaceId: decoded.workspaceId,
-			},
-		});
-
-		const workspace = await this.db.workspace.findUnique({
-			where: { id: decoded.workspaceId },
-			include: {
-				Labels: true,
-			},
-		});
-
-		if (existingUserWorkspace) {
-			return await this.db.workspace.findUnique({
-				where: { id: decoded.workspaceId },
-				include: {
-					Labels: true,
-				},
-			});
+		const workspaceId = this.verifyToken(token);
+		if (!workspaceId) {
+			throw new Error("Invalid token");
 		}
 
-		const user = await this.db.user.findUnique({
-			where: { id: userId },
-		});
-		const teams = await this.db.team.findMany({
-			where: {
-				workspaceId: decoded.workspaceId,
-			},
-		});
+		const [existingUserWorkspace, workspace, user, teams] =
+			await this.fetchJoinWorkspaceData(workspaceId, userId);
 
-		if (!workspace) throw new Error("Workspace not found.");
-		if (teams.length === 0) throw new Error("No teams found.");
 		if (!user) throw new Error("User not found.");
+		if (existingUserWorkspace) return workspace;
 
-		await Promise.all([
-			this.db.userWorkspace.create({
-				data: {
-					user: { connect: { id: userId } },
-					workspace: { connect: { id: decoded.workspaceId } },
-				},
-			}),
-			this.db.userTeam.createMany({
-				data: teams.map((team) => ({
-					userId,
-					teamId: team.id,
-				})),
-			}),
-		]);
+		this.validateJoinWorkspaceData(workspace, teams, user);
 
-		// Fetch the updated workspace with user info
-		const updatedWorkspace = await this.db.workspace.findUnique({
-			where: { id: decoded.workspaceId },
-			include: {
-				Labels: true,
-			},
-		});
+		await this.createUserWorkspaceConnections(userId, workspaceId, teams);
 
-		if (user.onBoarding || !user.verified) {
-			await this.db.user.update({
-				where: { id: userId },
-				data: { onBoarding: false, verified: true },
-			});
-		}
-		return updatedWorkspace;
+		await this.updateUserOnboarding(user);
+
+		return workspace;
 	}
 	async inviteToWorkspace({
 		workspaceId,
@@ -243,7 +192,10 @@ export class WorkspaceService implements WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}): Promise<void> {
-		this.logger.info("Inviting user to workspace: %0", { email, workspaceId });
+		this.logger.info("Inviting user to workspace: %0", {
+			email,
+			workspaceId,
+		});
 
 		// Check if the workspace exists
 		const workspace = await this.db.workspace.findUnique({
@@ -289,6 +241,62 @@ export class WorkspaceService implements WorkspaceRpc {
 					path: newUser ? `register?token=${token}` : `login?token=${token}`,
 					workspaceName: workspace.name,
 				}),
+			});
+		}
+	}
+	private verifyToken(token: string): string | null {
+		try {
+			const decoded = jwt.verify(token, this.JWT_SECRET) as {
+				workspaceId: string;
+			};
+			return decoded.workspaceId;
+		} catch (error) {
+			this.logger.error("Token verification failed", error);
+			return null;
+		}
+	}
+	private async fetchJoinWorkspaceData(workspaceId: string, userId: string) {
+		return await Promise.all([
+			this.db.userWorkspace.findFirst({ where: { userId, workspaceId } }),
+			this.db.workspace.findUnique({
+				where: { id: workspaceId },
+				include: { Labels: true },
+			}),
+			this.db.user.findUnique({ where: { id: userId } }),
+			this.db.team.findMany({ where: { workspaceId } }),
+		]);
+	}
+	private validateJoinWorkspaceData(
+		workspace: Workspace | null,
+		teams: Team[],
+		user: User | null,
+	) {
+		if (!workspace) throw new Error("Workspace not found.");
+		if (teams.length === 0) throw new Error("No teams found.");
+		if (!user) throw new Error("User not found.");
+	}
+	private async createUserWorkspaceConnections(
+		userId: string,
+		workspaceId: string,
+		teams: Team[],
+	) {
+		await Promise.all([
+			this.db.userWorkspace.create({
+				data: {
+					user: { connect: { id: userId } },
+					workspace: { connect: { id: workspaceId } },
+				},
+			}),
+			this.db.userTeam.createMany({
+				data: teams.map((team) => ({ userId, teamId: team.id })),
+			}),
+		]);
+	}
+	private async updateUserOnboarding(user: User) {
+		if (user.onBoarding || !user.verified) {
+			await this.db.user.update({
+				where: { id: user.id },
+				data: { onBoarding: false, verified: true },
 			});
 		}
 	}
