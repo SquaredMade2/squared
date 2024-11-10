@@ -14,13 +14,8 @@ export default function MyAssignedTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
 	const { view, getGridOptions } = useViewStore((state) => state);
 
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
 		(tasks) =>
@@ -40,12 +35,12 @@ export default function MyAssignedTasksPage() {
 		);
 	}
 
-	if (!currentWorkspace || !currentSprint) return null;
+	if (!workspace || !currentSprint) return null;
 	return (
 		<TaskPageLayout
 			loading={loading || sprintLoading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle={`Current Sprint - ${currentSprint.name}`}

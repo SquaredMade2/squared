@@ -10,7 +10,7 @@ export function useTeams() {
 	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
 		(state) => state,
 	);
-	const { loading: workspaceLoading, currentWorkspace, user } = useWorkspaces();
+	const { loading: workspaceLoading, workspace, user } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
 	const [loading, setLoading] = useState(true);
 	const [teams, setTeams] = useState<Team[]>([]);
@@ -24,7 +24,7 @@ export function useTeams() {
 			if (workspaceLoading) return;
 			setLoading(true);
 
-			if (user && currentWorkspace) {
+			if (user && workspace) {
 				const userHasAccess = users.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
 				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
@@ -39,7 +39,7 @@ export function useTeams() {
 		};
 
 		initiateStore();
-	}, [currentWorkspace, teamIdentifier, workspaceLoading, userLoading]);
+	}, [workspace, teamIdentifier, workspaceLoading, userLoading]);
 
 	return {
 		loading,

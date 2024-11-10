@@ -11,7 +11,7 @@ export function useTaskPage() {
 	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
 	const { setComments } = useCommentStore((state) => state);
@@ -25,7 +25,7 @@ export function useTaskPage() {
 			if (workspaceLoading) return;
 
 			try {
-				if (!currentWorkspace) {
+				if (!workspace) {
 					throw new Error("Workspace not found");
 				}
 
@@ -38,7 +38,7 @@ export function useTaskPage() {
 
 				// Fetch task data
 				const pageTask = await taskService.getTaskByIdentifier(TODO, {
-					workspaceId: currentWorkspace.id,
+					workspaceId: workspace.id,
 					identifier: parseParams(taskIdentifier),
 				});
 				if (pageTask) {
@@ -57,7 +57,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams]);
+	}, [workspace, taskIdentifier, workspaceLoading, teams]);
 
-	return { currentWorkspace, task, isLoading, error };
+	return { workspace, task, isLoading, error };
 }

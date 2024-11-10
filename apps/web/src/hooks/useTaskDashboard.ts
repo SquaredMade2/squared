@@ -11,7 +11,7 @@ import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskDashboard() {
 	const { loading: teamLoading, currentTeam, authorized } = useTeams();
-	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
+	const { loading: workspaceLoading, workspace } = useWorkspaces();
 	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
 	const [loading, setLoading] = useState(true);
 
@@ -57,7 +57,7 @@ export function useTaskDashboard() {
 	return {
 		loading,
 		authorized,
-		currentWorkspace,
+		workspace,
 		teamIdentifier,
 		handleDragEnd,
 	};

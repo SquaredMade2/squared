@@ -31,7 +31,7 @@ import { useEffect, useState } from "react";
 
 const TaskPage = () => {
 	const { tasks, updateTask } = useTaskStore((state) => state);
-	const { task, isLoading, error, currentWorkspace } = useTaskPage();
+	const { task, isLoading, error, workspace } = useTaskPage();
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
 	const { toast } = useToast();
 
@@ -68,7 +68,7 @@ const TaskPage = () => {
 						<div className="flex flex-col w-full relative">
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
+									<TaskBreadcrumbs task={task} workspace={workspace} />
 								</div>
 							</div>
 							<MobileTaskSettings />
@@ -123,7 +123,7 @@ const TaskPage = () => {
 																		className="mr-2"
 																	/>
 																	<Link
-																		href={`/${currentWorkspace?.url}/task/${
+																		href={`/${workspace?.url}/task/${
 																			subtask?.identifier
 																		}/${formatUrl(subtask.title)}`}
 																	>
@@ -152,7 +152,7 @@ const TaskPage = () => {
 								<div className="md:flex hidden flex-col gap-4">
 									<TaskSidebarTopRow
 										task={task}
-										workspaceUrl={currentWorkspace?.url}
+										workspaceUrl={workspace?.url}
 									/>
 									<TaskDesignationsContainer />
 								</div>
