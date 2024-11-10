@@ -1,5 +1,10 @@
 import { sprintService, taskService } from "@/lib/services";
-import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
+import {
+	useSprintStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
 import type { Sprint, Task, Team, Workspace } from "@squared/db";
@@ -18,9 +23,8 @@ export function useSprints(sprintId?: string) {
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
 	const { getWorkspace } = useWorkspaceStore((state) => state);
-	const { getAllTeams, setCurrentSprint, currentSprint } = useTeamStore(
-		(state) => state,
-	);
+	const { setSprint, sprint } = useSprintStore((state) => state);
+	const { getAllTeams } = useTeamStore((state) => state);
 	const { user, loading: userLoading } = useAuthUser();
 
 	useEffect(() => {
@@ -79,7 +83,7 @@ export function useSprints(sprintId?: string) {
 				]);
 				setTasks(tasks);
 				setSprintTasks(sprintTasks);
-				setCurrentSprint(foundSprint);
+				setSprint(foundSprint);
 
 				setLoading(false);
 			} catch (err) {
@@ -95,9 +99,9 @@ export function useSprints(sprintId?: string) {
 		workspace,
 		team,
 		sprints,
-		currentSprint,
+		sprint,
 		sprintTasks,
-		setCurrentSprint,
+		setSprint,
 		loading,
 		error,
 	};
