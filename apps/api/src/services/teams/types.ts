@@ -1,0 +1,30 @@
+import type { Effort, Team } from "@squared/db";
+
+export type CreateTeamParams = {
+	name: string;
+	identifier: string;
+	workspaceId: string;
+};
+
+export type UpdateTeamParams = {
+	id: string;
+	name?: string;
+	identifier?: string;
+	effort?: Effort;
+	sprintsEnabled?: boolean;
+	sprintDuration?: number;
+	cooldownDuration?: number;
+	sprintStartDate?: Date;
+	upcomingSprints?: number;
+	activeRequired?: boolean;
+};
+
+export interface TeamRpc {
+	createTeam: (args: CreateTeamParams) => Promise<Team>;
+	updateTeam: (args: UpdateTeamParams) => Promise<Team>;
+	deleteTeam: (args: { teamId: string }) => Promise<void>;
+	getTeam: (args: { teamId: string }) => Promise<Team>;
+	// setCurrentTeam:;
+	// getAllTeams:;
+	// setCurrentSprint:;
+}

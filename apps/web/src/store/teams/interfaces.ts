@@ -7,20 +7,11 @@ export type TeamState = {
 	currentSprint: Sprint | null;
 };
 
-export interface TeamResponse {
-	team: Team | null;
-	message?: string;
-	variant: "default" | "destructive";
-}
-
 type TeamActions = {
-	addTeam: (team: Partial<Team>) => Promise<TeamResponse>;
-	getTeam: (teamId: string) => Promise<TeamResponse>;
 	setCurrentTeam: (team: Team) => void;
-	updateTeam: (teamId: string, team: Partial<Team>) => Promise<TeamResponse>;
-	deleteTeam: (teamId: string) => Promise<void>;
-	getAllTeams: (workspaceId: string) => Promise<Team[]>;
-	setCurrentSprint: (sprint: Sprint) => void;
+	setTeams: (teams: Team[]) => void;
+	updateTeam: (team: Team) => void;
+	createTeam: (team: Team) => void;
 };
 
 export type TeamStore = TeamState & TeamActions;
