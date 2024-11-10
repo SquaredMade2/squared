@@ -29,7 +29,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ${markActiveChecks.isBoldActive() ? "" : "text-muted-foreground"}`}
+				className={`size-8 ${!markActiveChecks.isBoldActive() && "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createLeaf("bold");
@@ -42,7 +42,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ${markActiveChecks.isItalicActive() ? "" : "text-muted-foreground"}`}
+				className={`size-8 ${!markActiveChecks.isItalicActive() && "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createLeaf("italic");
@@ -55,7 +55,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ml-2 ${markActiveChecks.isCodeActive() ? "" : "text-muted-foreground"}`}
+				className={`size-8 ml-2 ${!markActiveChecks.isCodeActive() && "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createLeaf("code");
