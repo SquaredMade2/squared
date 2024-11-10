@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useModalStore, useTeamStore, useViewStore } from "@/store";
+import { useModalStore, useSprintStore, useViewStore } from "@/store";
 import type { Status } from "@squared/db";
 import { SquarePen } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -51,7 +51,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 		(state) => state,
 	);
 	const { displayOptions } = useViewStore((state) => state);
-	const { currentSprint } = useTeamStore((state) => state);
+	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
 	const { groupTasksBy } = displayOptions;
 
@@ -76,7 +76,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 		setShowNewIssue(true);
 		setNewIssueData({
 			...newIssueData,
-			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
+			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: group,
 		});
 	};

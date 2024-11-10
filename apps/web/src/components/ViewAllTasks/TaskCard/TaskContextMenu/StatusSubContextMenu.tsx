@@ -6,7 +6,7 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { statusOptions } from "@/constants/designations";
+import { statusOptions } from "@/lib/constants";
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";

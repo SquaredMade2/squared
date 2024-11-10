@@ -1,4 +1,4 @@
-import { createTaskStore } from ".";
+import { createSprintStore } from ".";
 
 // Mock uuid
 jest.mock("uuid", () => ({
@@ -15,17 +15,17 @@ Object.defineProperty(window, "sessionStorage", {
 	value: mockSessionStorage,
 });
 
-describe("TaskStore", () => {
-	let store: ReturnType<typeof createTaskStore>;
+describe("SprintStore", () => {
+	let store: ReturnType<typeof createSprintStore>;
 
 	beforeEach(() => {
-		store = createTaskStore();
+		store = createSprintStore();
 		jest.clearAllMocks();
 	});
 
-	it("should initialize with an empty tasks array and null currentTask", () => {
+	it("should initialize with an empty sprints array and null currentSprint", () => {
 		const state = store.getState();
-		expect(state.tasks).toEqual([]);
-		expect(state.currentTask).toBeNull();
+		expect(state.sprints).toEqual([]);
+		expect(state.sprint).toBeNull();
 	});
 });

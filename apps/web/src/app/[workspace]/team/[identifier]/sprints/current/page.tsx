@@ -1,5 +1,6 @@
 "use client";
 
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
@@ -9,7 +10,7 @@ import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 
 export default function MyAssignedTasksPage() {
-	const { currentSprint, loading: sprintLoading } = useSprints();
+	const { sprint, loading: sprintLoading } = useSprints();
 	const { filterTasks } = useFilterStore((state) => state);
 	const { view, getGridOptions } = useViewStore((state) => state);
 
@@ -22,12 +23,23 @@ export default function MyAssignedTasksPage() {
 	} = useTaskDashboard();
 
 	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
-		(tasks) =>
-			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
+		(tasks) => filterTasks(tasks.filter((t) => t.sprintId === sprint?.id)),
 	);
 
-	if (!currentWorkspace || !currentSprint) return null;
+	if (sprintLoading) {
+		return (
+			<div className="h-screen w-full">
+				<div className="flex h-full justify-center items-center">
+					<div className="flex flex-col gap-4 items-center">
+						<div className="font-bold text-3xl">Loading</div>
+						<SquaredLoader />
+					</div>
+				</div>
+			</div>
+		);
+	}
 
+	if (!currentWorkspace || !sprint) return null;
 	return (
 		<TaskPageLayout
 			loading={loading || sprintLoading}
@@ -35,12 +47,12 @@ export default function MyAssignedTasksPage() {
 			currentWorkspace={currentWorkspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle={`Current Sprint - ${currentSprint.name}`}
+			pageTitle={`Current Sprint - ${sprint.name}`}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
 					getGroupedColumns={getGroupedColumns}
-					sprintId={currentSprint.id}
+					sprintId={sprint.id}
 				/>
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&

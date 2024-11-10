@@ -1,6 +1,6 @@
 import {
 	useModalStore,
-	useTeamStore,
+	useSprintStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
@@ -34,7 +34,7 @@ const TaskColumnTitle = ({
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { currentSprint } = useTeamStore((state) => state);
+	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
 	const assignee = users.find((u) => u.id === title);
 	const label = currentWorkspace?.Labels.find((l) => l.id === title);
@@ -77,7 +77,7 @@ const TaskColumnTitle = ({
 
 	const handleClick = (): void => {
 		setNewIssueData({
-			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
+			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: title,
 		});
 		setShowNewIssue(true);

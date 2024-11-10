@@ -1,3 +1,4 @@
+import { CompletedTaskPeriod } from "@/store/views";
 import type { Priority, Status } from "@squared/db";
 
 export const statusOptions: Status[] = [
@@ -54,4 +55,11 @@ export const complexityScale = [
 	"1 Week",
 	"Weeks",
 	"Months",
+];
+
+export const CompletedTaskPeriodOptions: CompletedTaskPeriod[] = [
+	CompletedTaskPeriod.all,
+	CompletedTaskPeriod.pastWeek,
+	CompletedTaskPeriod.pastMonth,
+	CompletedTaskPeriod.none,
 ];

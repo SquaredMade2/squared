@@ -50,8 +50,6 @@ export const STANDARD_TEAM: Team = {
 	sprintsEnabled: true,
 	sprintDuration: 2,
 	cooldownDuration: 1,
-	upcomingSprints: 3,
-	activeRequired: true,
 	sprintStartDate: new Date("2023-01-01"),
 	tasksPerSprint: 10,
 	effort: "LINEAR",
@@ -65,8 +63,6 @@ export const STANDARD_TEAM_2: Team = {
 	sprintsEnabled: false,
 	sprintDuration: 1,
 	cooldownDuration: 0,
-	upcomingSprints: 2,
-	activeRequired: false,
 	sprintStartDate: new Date("2023-02-01"),
 	tasksPerSprint: 8,
 	effort: "FIBONACCI",
@@ -91,6 +87,7 @@ export const STANDARD_TASK: Task = {
 	deleted: false,
 	parentId: null,
 	sprintId: null,
+	order: 0,
 	priority: "medium",
 };
 export const STANDARD_TASK_2: Task = {
@@ -105,6 +102,7 @@ export const STANDARD_TASK_2: Task = {
 	teamId: "team-1",
 	dateCreated: new Date(),
 	assigneeId: null,
+	order: 1,
 	assigneeName: null,
 	labels: [],
 	workspaceId: STANDARD_WORKSPACE.id,

@@ -7,7 +7,7 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { priorityOptions } from "@/constants/designations";
+import { priorityOptions } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squared/db";

@@ -13,7 +13,7 @@ type Tier = {
 
 export const tiers: Tier[] = [
 	{
-		name: "Hobby",
+		name: "Starter",
 		id: "tier-hobby",
 		href: "#",
 		priceMonthly: "$4/mo",
@@ -27,11 +27,11 @@ export const tiers: Tier[] = [
 			"Community forum access",
 		],
 		featured: false,
-		cta: "Browse Components",
+		cta: "Buy now",
 		onClick: () => {},
 	},
 	{
-		name: "Starter",
+		name: "Advanced",
 		id: "tier-starter",
 		href: "#",
 		priceMonthly: "$8/mo",

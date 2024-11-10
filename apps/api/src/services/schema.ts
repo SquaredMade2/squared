@@ -40,6 +40,7 @@ export const taskSchema = createSchema<Task>()(
 		workspaceId: z.string(),
 		parentId: z.string().nullable(),
 		deleted: z.boolean(),
+		order: z.number(),
 	}),
 );
 

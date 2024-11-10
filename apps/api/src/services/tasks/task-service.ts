@@ -139,10 +139,21 @@ export class TaskService implements TaskRpc {
 				throw new Error("Invalid Effort Estimate");
 			}
 		}
+		let assigneeName = null;
+		if (args.assigneeId) {
+			assigneeName = await this.db.user
+				.findFirst({
+					where: { id: args.assigneeId },
+				})
+				.then((a) => a?.name);
+			if (!assigneeName) {
+				throw new Error("Assignee not found");
+			}
+		}
 
 		const task = await this.db.task.update({
 			where: { id: args.id },
-			data: args,
+			data: { ...args, assigneeName },
 		});
 
 		if (!task) {
@@ -239,10 +250,15 @@ export class TaskService implements TaskRpc {
 	async addSprintTasks({
 		sprintId,
 		taskIds,
-	}: { sprintId: string; taskIds: string[] }): Promise<number> {
+	}: {
+		sprintId: string;
+		taskIds: string[];
+	}): Promise<number> {
 		this.logger.info("Adding tasks to sprint with id %s", sprintId);
-		return await this.db.task
-			.updateMany({
+
+		return await this.db.$transaction(async (tx) => {
+			// First, update all tasks to the sprint
+			const updateResult = await tx.task.updateMany({
 				where: {
 					id: {
 						in: taskIds,
@@ -251,7 +267,48 @@ export class TaskService implements TaskRpc {
 				data: {
 					sprintId,
 				},
-			})
-			.then((t) => t.count);
+			});
+
+			// Then, update the status of backlog tasks to todo
+			await tx.task.updateMany({
+				where: {
+					id: {
+						in: taskIds,
+					},
+					status: "backlog",
+				},
+				data: {
+					status: "todo",
+				},
+			});
+
+			return updateResult.count;
+		});
+	}
+
+	async reorderSubtasks(args: {
+		parentId: string;
+		newOrder: string[];
+	}): Promise<Task[]> {
+		const updates = args.newOrder.map((id, index) =>
+			this.db.task.update({
+				where: { id },
+				data: { order: index },
+			}),
+		);
+
+		await this.db.$transaction(updates);
+
+		return await this.db.task.findMany({
+			where: { parentId: args.parentId },
+			orderBy: { order: "asc" },
+		});
+	}
+
+	async getSubtasks({ parentId }: { parentId: string }): Promise<Task[]> {
+		return await this.db.task.findMany({
+			where: { parentId },
+			orderBy: { order: "asc" },
+		});
 	}
 }

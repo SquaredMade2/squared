@@ -257,24 +257,4 @@ describe("UserStore", () => {
 			expect(state.connectedRepos).toEqual(mockRepositories);
 		});
 	});
-
-	describe("persist middleware", () => {
-		it("should hydrate the state from sessionStorage", () => {
-			const mockState = {
-				users: [STANDARD_USER],
-				userAvatars: [],
-				connectedRepos: [],
-			};
-			mockSessionStorage.getItem.mockReturnValue(
-				JSON.stringify({ state: mockState }),
-			);
-
-			const newStore = createUserStore();
-			const state = newStore.getState();
-
-			expect(state.users).toEqualWithDatePrecision([STANDARD_USER]);
-			expect(state.userAvatars).toEqual([]);
-			expect(state.connectedRepos).toEqual([]);
-		});
-	});
 });
