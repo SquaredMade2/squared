@@ -1,4 +1,5 @@
 import type {
+	Comment,
 	Commit,
 	Notification,
 	Sprint,
@@ -37,6 +38,7 @@ export const taskSchema = createSchema<Task>()(
 		workspaceId: z.string(),
 		parentId: z.string().nullable(),
 		deleted: z.boolean(),
+		order: z.number(),
 	}),
 );
 
@@ -94,5 +96,15 @@ export const workspaceSchema = createSchema<Workspace>()(
 		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
+	}),
+);
+
+export const commentSchema = createSchema<Comment>()(
+	z.object({
+		id: z.string(),
+		comment: z.string(),
+		authorId: z.string(),
+		taskId: z.string(),
+		date: z.date(),
 	}),
 );

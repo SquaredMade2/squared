@@ -47,8 +47,8 @@ export type InitializeSprintsRequest = {
 export type InitializeSprintsResponse = number;
 
 export type StartNextSprintRequest = {
-	movedTasks: string[];
 	sprintData?: {
+		description?: string;
 		name: string;
 	};
 	teamId: string;
@@ -92,6 +92,7 @@ export type GetSprintTasksResponse = {
 	id: string;
 	identifier: string;
 	labels: string[];
+	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;

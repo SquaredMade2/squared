@@ -1,4 +1,4 @@
-import { createViewStore } from ".";
+import { CompletedTaskPeriod, createViewStore } from ".";
 import type { LastVisitedPathOption, ViewState } from "./interfaces";
 
 // Mock localStorage
@@ -54,7 +54,7 @@ describe("ViewStore", () => {
 			},
 		});
 		expect(state.lastVisitedPage).toBe("all");
-		expect(state.view).toBe("list");
+		expect(state.view).toBe("grid");
 	});
 
 	describe("setView", () => {
@@ -128,7 +128,10 @@ describe("ViewStore", () => {
 	describe("setGridViewOptions", () => {
 		it("should update the grid view options", () => {
 			const newOptions: Partial<ViewState["displayOptions"]> = {
-				showCompletedTasks: { show: false, period: "Past week" },
+				showCompletedTasks: {
+					show: false,
+					period: CompletedTaskPeriod.pastWeek,
+				},
 				showSubTasks: true,
 			};
 			store.getState().setGridViewOptions(newOptions);
@@ -156,7 +159,10 @@ describe("ViewStore", () => {
 				displayOptions: {
 					taskOrder: { orderBy: "Due Date", orderAscending: true },
 					groupTasksBy: "Priority",
-					showCompletedTasks: { show: false, period: "Past month" },
+					showCompletedTasks: {
+						show: false,
+						period: CompletedTaskPeriod.pastMonth,
+					},
 					showSubTasks: true,
 					viewOptions: {
 						gridOptions: {

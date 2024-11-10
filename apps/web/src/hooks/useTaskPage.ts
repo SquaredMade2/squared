@@ -1,5 +1,5 @@
-import { taskService } from "@/lib/services";
-import { useTaskStore, useTeamStore } from "@/store";
+import { commentService, taskService } from "@/lib/services";
+import { useCommentStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
@@ -13,7 +13,11 @@ export function useTaskPage() {
 	const [error, setError] = useState<string | null>(null);
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { tasks, setCurrentTask } = useTaskStore((state) => state);
+	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
+		(state) => state,
+	);
+	const { users, loading: userLoading } = useUsers();
+	const { setComments } = useCommentStore((state) => state);
 	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
@@ -43,6 +47,13 @@ export function useTaskPage() {
 				if (pageTask) {
 					setTask(pageTask);
 					setCurrentTask(pageTask);
+					const fetchedSubtasks = await taskService.getSubtasks(TODO, {
+						parentId: pageTask?.id,
+					});
+					setSubtasks(fetchedSubtasks);
+					setComments(
+						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
+					);
 				}
 
 				setIsLoading(false);
@@ -53,7 +64,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams]);
+	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { currentWorkspace, task, isLoading, error };
+	return { currentWorkspace, users, task, isLoading, error, subtasks };
 }

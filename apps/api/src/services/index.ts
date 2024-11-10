@@ -1,4 +1,6 @@
+import "dotenv/config";
 import type { PrismaClient } from "@squared/db";
+import { CommentService, createCommentRpcHandler } from "./comments";
 import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
@@ -7,17 +9,20 @@ export function initializeServices(prisma: PrismaClient) {
 	const eventService = new EventService(prisma);
 	const sprintService = new SprintService(prisma);
 	const taskService = new TaskService(prisma, eventService);
+	const commentService = new CommentService(prisma);
 
 	const services = {
 		event: eventService,
 		sprint: sprintService,
 		task: taskService,
+		comment: commentService,
 	};
 
 	const rpcHandlers = {
 		event: createEventRpcHandler(services.event),
 		sprint: createSprintRpcHandler(services.sprint),
 		task: createTaskRpcHandler(services.task),
+		comment: createCommentRpcHandler(services.comment),
 	};
 
 	return { services, rpcHandlers };

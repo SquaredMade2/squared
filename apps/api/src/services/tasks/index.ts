@@ -107,6 +107,19 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		}),
 		output: z.number(),
 	},
+	reorderSubtasks: {
+		input: z.object({
+			parentId: z.string(),
+			newOrder: z.array(z.string()),
+		}),
+		output: z.array(taskSchema),
+	},
+	getSubtasks: {
+		input: z.object({
+			parentId: z.string(),
+		}),
+		output: z.array(taskSchema),
+	},
 });
 
 export type TaskRpcSchema = typeof taskRpcSchema;
@@ -121,6 +134,8 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 		getTeamTasks: (input) => taskService.getTeamTasks(input),
 		addActiveSprintTasks: (input) => taskService.addActiveSprintTasks(input),
 		addSprintTasks: (input) => taskService.addSprintTasks(input),
+		reorderSubtasks: (input) => taskService.reorderSubtasks(input),
+		getSubtasks: (input) => taskService.getSubtasks(input),
 	});
 
 export { TaskService } from "./task-service";
