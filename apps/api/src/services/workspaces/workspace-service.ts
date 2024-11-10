@@ -2,6 +2,7 @@ import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
 import type { PrismaClient, Team, User, Workspace } from "@squared/db";
 import type { Logger } from "@squared/logger";
+import createCustomLogger from "@squared/logger";
 import jwt from "jsonwebtoken";
 import type {
 	CreateWorkspaceParams,
@@ -29,10 +30,11 @@ export class WorkspaceService implements WorkspaceRpc {
 	private readonly logger: Logger;
 	private readonly JWT_SECRET: string;
 
-	constructor(db: PrismaClient, logger: Logger, JWT_SECRET: string) {
+	constructor(db: PrismaClient, JWT_SECRET?: string) {
 		this.db = db;
-		this.logger = logger;
+		if (!JWT_SECRET) throw new Error("JWT_SECRET is required");
 		this.JWT_SECRET = JWT_SECRET;
+		this.logger = createCustomLogger("workspace");
 	}
 
 	async createWorkspace({

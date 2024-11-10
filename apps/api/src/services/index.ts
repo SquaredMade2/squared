@@ -5,6 +5,7 @@ import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
+import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
 
 const prisma = new PrismaClient({
 	datasources: {
@@ -13,11 +14,15 @@ const prisma = new PrismaClient({
 		},
 	},
 });
+
+const jwtSecret = process.env.JWT_SECRET;
+
 export const services = {
 	sprint: new SprintService(prisma),
 	event: new EventService(prisma),
 	task: new TaskService(prisma),
 	comment: new CommentService(prisma),
+	workspace: new WorkspaceService(prisma, jwtSecret),
 };
 
 export const rpcHandlers = {
@@ -25,6 +30,7 @@ export const rpcHandlers = {
 	event: createEventRpcHandler(services.event),
 	task: createTaskRpcHandler(services.task),
 	comment: createCommentRpcHandler(services.comment),
+	workspace: createWorkspaceRpcHandler(services.workspace),
 };
 
 export type Services = typeof services;
