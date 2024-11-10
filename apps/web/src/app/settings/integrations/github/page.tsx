@@ -29,7 +29,7 @@ const GithubSettings: React.FC = () => {
 		if (!user?.id) return;
 
 		router.push(
-			`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_SERVER}/api/integration/github/oauth&scope=repo,user&state=${authUser.id}`,
+			`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_SERVER}/api/integration/github/oauth&scope=repo,user&state=${user.id}`,
 		);
 	};
 

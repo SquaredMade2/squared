@@ -195,40 +195,18 @@ export class AuthService implements AuthRpc {
 		}
 		throw new Error("Invalid token");
 	}
-	async checkTokenValid({
-		token,
-	}: { token: string }): Promise<{ user: User; message: string }> {
-		let isExpired: JwtPayload | string | undefined;
+	async checkTokenValid({ token }: { token: string }): Promise<void> {
 		try {
-			isExpired = jwt.verify(token, JWT_SECRET) as JwtPayload;
+			jwt.verify(token, this.JWT_SECRET) as JwtPayload;
 		} catch (error: unknown) {
+			this.logger.error("Error with auth request: %0", error);
 			if (error as TokenExpiredError) {
-				const tokenError = error as TokenExpiredError;
-				isExpired = tokenError.name;
-			} else if (error instanceof Error) {
-				isExpired = error.name;
+				throw new Error("Token is expired");
+			}
+			if (error instanceof Error) {
+				throw new Error("Token is invalid");
 			}
 		}
-
-		if (
-			isExpired === "TokenExpiredError" ||
-			isExpired === "JsonWebTokenError"
-		) {
-			const decoded: JwtPayload = jwt.decode(token) as JwtPayload;
-			const user = await prisma.user.findUnique({
-				where: { id: decoded.user },
-			});
-			return {
-				data: user,
-				message: "Token is expired or invalid",
-				variant: "destructive",
-			};
-		}
-		return {
-			data: null,
-			message: "Token verified",
-			variant: "default",
-		};
 	}
 
 	private comparePassword(password: string, hashed: string): Promise<boolean> {

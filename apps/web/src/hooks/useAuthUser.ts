@@ -5,9 +5,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export function useAuthUser() {
-	const { getUser, currentUser, setCurrentUser } = useUserStore(
-		(state) => state,
-	);
+	const { getUser, user, setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
 	const { toast } = useToast();
 	const [loading, setLoading] = useState(true);
@@ -22,7 +20,7 @@ export function useAuthUser() {
 				if (status === "authenticated" && session?.user) {
 					const { user: loggedUser } = await getUser(session.user.id);
 					if (loggedUser) {
-						setCurrentUser(loggedUser);
+						setUser(loggedUser);
 					} else {
 						// User not found in the database
 						await logout();
@@ -47,7 +45,7 @@ export function useAuthUser() {
 	}, [status]);
 
 	return {
-		user: currentUser,
+		user,
 		loading,
 		error,
 	};

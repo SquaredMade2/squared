@@ -4,8 +4,8 @@ import { useUserStore } from "@/store";
 import { signOut } from "next-auth/react";
 
 export const logout = async () => {
-	const setCurrentUser = useUserStore((state) => state.setCurrentUser);
-	setCurrentUser(null);
+	const setUser = useUserStore((state) => state.setUser);
+	setUser(null);
 
 	// Clear all session storage items
 	sessionStorage.clear();
