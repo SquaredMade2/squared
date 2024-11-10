@@ -57,12 +57,16 @@ export function createRoute(): Route {
 					return;
 				}
 
-				await prisma.user.update({
-					where: { id: userId },
-					data: {
-						githubUsername: currentUserLogin,
-					},
-				});
+				try {
+					await prisma.user.update({
+						where: { id: userId },
+						data: {
+							githubUsername: currentUserLogin,
+						},
+					});
+				} catch (error) {
+					logger.warn("Failed to update user with GitHub username: %0", error);
+				}
 
 				// Redirect to GitHub's App installation page
 				res.redirect(
