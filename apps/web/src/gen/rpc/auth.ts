@@ -118,6 +118,11 @@ export type CheckTokenValidRequest = {
 	token: string;
 };
 
+export type CheckTokenValidResponse = {
+	email: string;
+	message: string;
+} | null;
+
 /**
  * auth service
  */
@@ -180,7 +185,10 @@ export class AuthService extends RPCContextClient {
 	/**
 	 * checkTokenValid method
 	 */
-	checkTokenValid(ctx: Context, req: CheckTokenValidRequest): Promise<void> {
+	checkTokenValid(
+		ctx: Context,
+		req: CheckTokenValidRequest,
+	): Promise<CheckTokenValidResponse> {
 		return this.request(ctx, "checkTokenValid", req);
 	}
 }

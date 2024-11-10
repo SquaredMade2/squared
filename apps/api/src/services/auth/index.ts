@@ -68,7 +68,12 @@ export const authRpcSchema = createServiceSchema<AuthRpc>()({
 	},
 	checkTokenValid: {
 		input: z.object({ token: z.string() }),
-		output: z.void(),
+		output: z
+			.object({
+				email: z.string(),
+				message: z.string(),
+			})
+			.nullable(),
 	},
 });
 

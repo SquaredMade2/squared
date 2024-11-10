@@ -26,6 +26,11 @@ export type UserToken = {
 	token: string;
 };
 
+export type CheckTokenValidReturn = {
+	email: string;
+	message: string;
+} | null;
+
 export interface AuthRpc {
 	login: (login: Login) => Promise<UserToken | null>;
 	googleLogin: (login: OauthLogin) => Promise<UserToken | null>;
@@ -36,5 +41,7 @@ export interface AuthRpc {
 		token,
 		newPassword,
 	}: { token: string; newPassword: string }) => Promise<void>;
-	checkTokenValid: ({ token }: { token: string }) => Promise<void>;
+	checkTokenValid: ({
+		token,
+	}: { token: string }) => Promise<CheckTokenValidReturn>;
 }

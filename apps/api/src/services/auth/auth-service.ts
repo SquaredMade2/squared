@@ -5,8 +5,15 @@ import type { PrismaClient, User, Workspace } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import bcrypt from "bcryptjs";
-import jwt, { type JwtPayload, type TokenExpiredError } from "jsonwebtoken";
-import type { AuthRpc, Login, OauthLogin, Register, UserToken } from "./types";
+import jwt, { type JwtPayload, TokenExpiredError } from "jsonwebtoken";
+import type {
+	AuthRpc,
+	CheckTokenValidReturn,
+	Login,
+	OauthLogin,
+	Register,
+	UserToken,
+} from "./types";
 
 export class AuthService implements AuthRpc {
 	private readonly db: PrismaClient;
@@ -195,18 +202,31 @@ export class AuthService implements AuthRpc {
 		}
 		throw new Error("Invalid token");
 	}
-	async checkTokenValid({ token }: { token: string }): Promise<void> {
+	async checkTokenValid({
+		token,
+	}: { token: string }): Promise<CheckTokenValidReturn> {
 		try {
 			jwt.verify(token, this.JWT_SECRET) as JwtPayload;
 		} catch (error: unknown) {
 			this.logger.error("Error with auth request: %0", error);
-			if (error as TokenExpiredError) {
-				throw new Error("Token is expired");
+			let err: string | undefined;
+			if (error instanceof TokenExpiredError || error instanceof Error) {
+				err = error.name;
 			}
-			if (error instanceof Error) {
-				throw new Error("Token is invalid");
+			if (err === "TokenExpiredError" || err === "JsonWebTokenError") {
+				const decoded: JwtPayload = jwt.decode(token) as JwtPayload;
+				const user = await this.db.user.findUnique({
+					where: { id: decoded.user },
+				});
+				if (!user) throw new Error("User not found");
+				return {
+					email: user.email,
+					message: "Token is expired or invalid",
+				};
 			}
+			throw error;
 		}
+		return null;
 	}
 
 	private comparePassword(password: string, hashed: string): Promise<boolean> {
