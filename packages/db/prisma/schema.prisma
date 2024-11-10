@@ -146,6 +146,7 @@ model Task {
   deleted        Boolean   @default(false)
   parentId       String?
   sprintId       String?
+  order          Int       @default(0)
 
   parent   Task?       @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
   children Task[]      @relation("ParentChild")
