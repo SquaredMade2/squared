@@ -87,6 +87,7 @@ export const STANDARD_TASK: Task = {
 	deleted: false,
 	parentId: null,
 	sprintId: null,
+	order: 0,
 	priority: "medium",
 };
 export const STANDARD_TASK_2: Task = {
@@ -101,6 +102,7 @@ export const STANDARD_TASK_2: Task = {
 	teamId: "team-1",
 	dateCreated: new Date(),
 	assigneeId: null,
+	order: 1,
 	assigneeName: null,
 	labels: [],
 	workspaceId: STANDARD_WORKSPACE.id,
