@@ -24,7 +24,7 @@ const NavBarTeams = ({
 	currentPage,
 	active,
 }: NavBarTeamProps) => {
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
 	const { setTasks } = useTaskStore((state) => state);
 	const { user } = useAuthStore((state) => state);
@@ -40,7 +40,7 @@ const NavBarTeams = ({
 	const handleActiveParams = (param: string): void => {
 		if (teamIdentifier) {
 			getTeamOnSelect();
-			router.push(`/${currentWorkspace?.url}/team/${teamIdentifier}/${param}`);
+			router.push(`/${workspace?.url}/team/${teamIdentifier}/${param}`);
 		} else {
 			toast({ title: "Team identifier not found", variant: "destructive" });
 		}
@@ -118,7 +118,7 @@ const NavBarTeams = ({
 				</>
 			)}
 			<Link
-				href={`/${currentWorkspace?.url}/team/${teamIdentifier}/views`}
+				href={`/${workspace?.url}/team/${teamIdentifier}/views`}
 				className="block"
 			>
 				<Button

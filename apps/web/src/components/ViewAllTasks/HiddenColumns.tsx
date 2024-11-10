@@ -25,7 +25,7 @@ const HiddenColumns = ({
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { tasks } = useTaskStore((state) => state);
 
 	const formatColumnTitle = (title: string) => {
@@ -39,9 +39,7 @@ const HiddenColumns = ({
 			case "Priority":
 				return formatPriority(title as Priority);
 			case "Label": {
-				const labelName = currentWorkspace?.Labels.find(
-					(label) => label.id === title,
-				);
+				const labelName = workspace?.Labels.find((label) => label.id === title);
 				return labelName ? labelName.name : "No label";
 			}
 			case "Parent Issue": {

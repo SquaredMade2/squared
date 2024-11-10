@@ -43,8 +43,9 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const { user } = useAuthStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const { workspace, updateWorkspace, setWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const { tasks, createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
@@ -75,15 +76,15 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return;
 		}
-		if (!currentWorkspace || !currentTeam || !user) {
+		if (!workspace || !currentTeam || !user) {
 			toast({
 				title: "Error authenticating user",
 				variant: "destructive",
 			});
 			return;
 		}
-		await updateWorkspace(currentWorkspace?.id, {
-			tasksCreated: (currentWorkspace.tasksCreated ?? 0) + 1,
+		await updateWorkspace(workspace?.id, {
+			tasksCreated: (workspace.tasksCreated ?? 0) + 1,
 		});
 		try {
 			const { transformedInput: transformedTitle } =
@@ -96,7 +97,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
+				identifier: `${currentTeam.identifier}-${workspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
@@ -104,18 +105,18 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
 				teamId: currentTeam.id,
-				workspaceId: currentWorkspace.id,
+				workspaceId: workspace.id,
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
 			const createdTask = await taskService.createTask(TODO, newTask);
 			createTask(createdTask);
-			await updateWorkspace(currentWorkspace.id, {
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			await updateWorkspace(workspace.id, {
+				tasksCreated: workspace.tasksCreated + 1,
 			});
-			setCurrentWorkspace({
-				...currentWorkspace,
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			setWorkspace({
+				...workspace,
+				tasksCreated: workspace.tasksCreated + 1,
 			});
 
 			toast({

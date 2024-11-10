@@ -113,6 +113,19 @@ export class WorkspaceService implements WorkspaceRpc {
 			},
 		});
 	}
+	async getWorkspaceByUrl({
+		url,
+	}: { url: string }): Promise<WorkspaceLabels | null> {
+		this.logger.info("Getting workspace with url %s", url);
+		return await this.db.workspace.findUnique({
+			where: {
+				url,
+			},
+			include: {
+				Labels: true,
+			},
+		});
+	}
 	async updateWorkspace({
 		workspaceId,
 		workspace,

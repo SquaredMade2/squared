@@ -50,6 +50,28 @@ export type GetWorkspaceResponse = {
 	url: string;
 } | null;
 
+export type GetWorkspaceByUrlRequest = {
+	url: string;
+};
+
+export type GetWorkspaceByUrlResponse = {
+	Labels: {
+		color: string;
+		description: string | null;
+		id: string;
+		name: string;
+		workspaceId: string;
+	}[];
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	id: string;
+	name: string;
+	tasksCreated: number;
+	universalTokenLinkId: string | null;
+	url: string;
+} | null;
+
 export type UpdateWorkspaceRequest = {
 	workspace: {
 		name: string;
@@ -156,6 +178,16 @@ export class WorkspaceService extends RPCContextClient {
 		req: GetWorkspaceRequest,
 	): Promise<GetWorkspaceResponse> {
 		return this.request(ctx, "getWorkspace", req);
+	}
+
+	/**
+	 * getWorkspaceByUrl method
+	 */
+	getWorkspaceByUrl(
+		ctx: Context,
+		req: GetWorkspaceByUrlRequest,
+	): Promise<GetWorkspaceByUrlResponse> {
+		return this.request(ctx, "getWorkspaceByUrl", req);
 	}
 
 	/**

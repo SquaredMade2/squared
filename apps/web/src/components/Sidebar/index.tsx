@@ -35,7 +35,7 @@ import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
 function SidebarContent() {
-	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { teams, getAllTeams, currentTeam } = useTeamStore((state) => state);
 	const { user, logout } = useAuthStore((state) => state);
 	const { setShowCommand } = useModalStore((state) => state);
@@ -123,7 +123,7 @@ function SidebarContent() {
 }
 
 export function SidebarNav() {
-	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	if (!workspace) return null;
 

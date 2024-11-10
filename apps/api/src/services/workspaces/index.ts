@@ -28,6 +28,12 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: workspaceLabelSchema.nullable(),
 	},
+	getWorkspaceByUrl: {
+		input: z.object({
+			url: z.string(),
+		}),
+		output: workspaceLabelSchema.nullable(),
+	},
 	updateWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
@@ -69,6 +75,7 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 	createRpcHandler("workspace", workspaceRpcSchema, {
 		createWorkspace: (input) => workspaceService.createWorkspace(input),
 		getWorkspace: (input) => workspaceService.getWorkspace(input),
+		getWorkspaceByUrl: (input) => workspaceService.getWorkspaceByUrl(input),
 		updateWorkspace: (input) => workspaceService.updateWorkspace(input),
 		deleteWorkspace: (input) => workspaceService.deleteWorkspace(input),
 		getUserWorkspaces: (input) => workspaceService.getUserWorkspaces(input),

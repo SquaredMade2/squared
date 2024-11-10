@@ -19,6 +19,7 @@ export interface WorkspaceRpc {
 	getWorkspace: (args: {
 		workspaceId: string;
 	}) => Promise<WorkspaceLabels | null>;
+	getWorkspaceByUrl: (args: { url: string }) => Promise<WorkspaceLabels | null>;
 	updateWorkspace: (args: {
 		workspaceId: string;
 		workspace: WorkspaceParams;

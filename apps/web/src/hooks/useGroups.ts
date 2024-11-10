@@ -4,7 +4,7 @@ import { Priority, Status, type Task } from "@squared/db";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { tasks } = useTaskStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { displayOptions, view, getGridOptions, getListOptions } = useViewStore(
 		(state) => state,
 	);
@@ -38,7 +38,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				];
 				break;
 			case "Label": {
-				const workspaceLabels = currentWorkspace?.Labels.map((l) => l.id) || [];
+				const workspaceLabels = workspace?.Labels.map((l) => l.id) || [];
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}

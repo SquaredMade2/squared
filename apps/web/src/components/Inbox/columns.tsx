@@ -1,4 +1,4 @@
-import { eventService } from "@/lib/services";
+import { eventService, workspaceService } from "@/lib/services";
 import {
 	useAuthStore,
 	useTeamStore,
@@ -48,9 +48,7 @@ export const columns: ColumnDef<
 		id: "content",
 		cell: ({ row }) => {
 			const router = useRouter();
-			const { getWorkspace, currentWorkspace } = useWorkspaceStore(
-				(state) => state,
-			);
+			const { workspace } = useWorkspaceStore((state) => state);
 			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
 			const { userAvatars } = useUserStore((state) => state);
 			const { user } = useAuthStore((state) => state);
@@ -78,12 +76,14 @@ export const columns: ColumnDef<
 					notificationIds: [row.original.id],
 					read: true,
 				});
-				if (currentWorkspace?.id === workspaceId) {
+				if (workspace?.id === workspaceId) {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 					);
 				} else {
-					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
+					const newWorkspace = await workspaceService.getWorkspace(TODO, {
+						workspaceId,
+					});
 					if (newWorkspace && user) {
 						const teams = await getAllTeams(user.id);
 						const team = teams.find((t) => t.id === teamId);

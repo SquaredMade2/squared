@@ -49,7 +49,7 @@ export function SaveFilterForm({
 	} = useFilterStore((state) => state);
 	const { currentTeam } = useTeamStore((state) => state);
 	const { users } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const user = useAuthStore((state) => state.user);
 	const { toast } = useToast();
 	const [isSaving, setIsSaving] = useState(false);
@@ -93,10 +93,10 @@ export function SaveFilterForm({
 
 	useEffect(() => {
 		const formatFilters = async () => {
-			if (currentWorkspace) {
+			if (workspace) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
-						formatFilterName(filter, currentWorkspace.Labels, users),
+						formatFilterName(filter, workspace.Labels, users),
 					),
 				);
 				setFormattedFilters(formatted);
@@ -146,7 +146,7 @@ export function SaveFilterForm({
 					filter: currentFilters,
 					type: "TEAM",
 					teamId: currentTeam.id,
-					workspaceId: currentWorkspace?.id,
+					workspaceId: workspace?.id,
 					authorId: user?.id,
 				});
 				toast({

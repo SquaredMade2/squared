@@ -16,7 +16,7 @@ import { Input } from "../ui/input";
 
 export const TaskPageForm = ({ task }: { task: Task }) => {
 	const { users } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { updateTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
@@ -116,7 +116,7 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 						<Button variant="ghost" className="py-0 px-1 gap-1">
 							<StatusIcon status={parentTask.status} />
 							<Link
-								href={`/${currentWorkspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
+								href={`/${workspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
 							>
 								{parentTask.identifier} -

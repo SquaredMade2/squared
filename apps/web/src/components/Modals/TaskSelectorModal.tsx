@@ -21,7 +21,7 @@ export function TaskSelector() {
 	const { showTaskSelector: open, setShowTaskSelector: setOpen } =
 		useModalStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	return (
 		<CommandDialog open={open} onOpenChange={setOpen}>
@@ -39,7 +39,7 @@ export function TaskSelector() {
 								onSelect={() => {
 									setCurrentTask(task);
 									router.push(
-										`/${currentWorkspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
+										`/${workspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
 									);
 									setOpen(false);
 								}}

@@ -1,6 +1,9 @@
 "use client";
 
+import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,12 +21,7 @@ import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
 
 export const WorkspaceInviteModal = () => {
-	const {
-		currentWorkspace,
-		getWorkspace,
-		setCurrentWorkspace,
-		inviteToWorkspace,
-	} = useWorkspaceStore((state) => state);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(
 		(state) => state,
 	);
@@ -32,15 +30,19 @@ export const WorkspaceInviteModal = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { toast } = useToast();
 	useEffect(() => {
-		if (!currentWorkspace) {
+		const fetchWorkspace = async () => {
 			const { workspaceId } = params;
-			getWorkspace(workspaceId as string).then(({ workspace }) => {
-				if (workspace) {
-					setCurrentWorkspace(workspace);
-				}
-			});
+			setWorkspace(
+				await workspaceService.getWorkspace(TODO, {
+					workspaceId: parseParams(workspaceId),
+				}),
+			);
+		};
+
+		if (!workspace) {
+			fetchWorkspace();
 		}
-	}, [currentWorkspace, getWorkspace, params, setCurrentWorkspace]);
+	}, [workspace, params, setWorkspace]);
 
 	const handleInvite = async () => {
 		const emails = inviteEmails
@@ -48,12 +50,15 @@ export const WorkspaceInviteModal = () => {
 			.map((email) => email.trim())
 			.filter(Boolean);
 
-		if (!emails.length || !currentWorkspace) return;
+		if (!emails.length || !workspace) return;
 
 		setIsLoading(true);
 
 		try {
-			await inviteToWorkspace(currentWorkspace.id, emails);
+			await workspaceService.inviteToWorkspace(TODO, {
+				workspaceId: workspace.id,
+				email: emails,
+			});
 			setInviteEmails("");
 			setShowWorkspaceInvite(false);
 			toast({
@@ -76,9 +81,9 @@ export const WorkspaceInviteModal = () => {
 				<DialogHeader>
 					<div className="flex gap-2 items-center text-lg">
 						<Avatar>
-							<AvatarImage src={currentWorkspace?.avatarUrl ?? undefined} />
+							<AvatarImage src={workspace?.avatarUrl ?? undefined} />
 							<AvatarFallback className="capitalize">
-								{currentWorkspace?.name
+								{workspace?.name
 									?.split(" ")
 									.map((word) => word[0])
 									.join("")
