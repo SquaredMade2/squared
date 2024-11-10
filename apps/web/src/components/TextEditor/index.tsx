@@ -22,6 +22,7 @@ import type {
 	CustomDescendant,
 	CustomElement,
 	CustomText,
+	MarkTypes,
 	TextEditorProps,
 } from "./interfaces";
 
@@ -125,33 +126,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		return editorContent.length === 0;
 	};
 
-	const isBoldActive = () => {
-		if (!editor.selection) return false;
-		const allMarks = Editor.marks(editor);
-		return Boolean(allMarks?.bold);
-	};
-
-	const isItalicActive = () => {
-		if (!editor.selection) return false;
-		const allMarks = Editor.marks(editor);
-		return Boolean(allMarks?.italic);
-	};
-
-	const isCodeActive = () => {
-		if (!editor.selection) return false;
-		const allMarks = Editor.marks(editor);
-		return Boolean(allMarks?.code);
-	};
-
-	const isLinkActive = () => {
-		if (!editor.selection) return false;
-		const allMarks = Editor.marks(editor);
-		if (allMarks?.url) {
-			return true;
-		}
-		return false;
-	};
-
 	const isHeaderBlock = () => {
 		// return if the block exists in the highlighted area
 		const [match] = Editor.nodes(editor, {
@@ -175,16 +149,38 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	// Create Leafs (Portion of Row)
 
-	const createBoldLeaf = () => {
-		Editor.addMark(editor, "bold", Boolean(!isBoldActive()));
+	const useLeafActive = (markType: MarkTypes) => {
+		switch (markType) {
+			case "bold":
+				return "isBoldActive";
+			case "italic":
+				return "isItalicActive";
+			case "code":
+				return "isCodeActive";
+			case "url":
+				return "isLinkActive";
+		}
 	};
 
-	const createItalicLeaf = () => {
-		Editor.addMark(editor, "italic", Boolean(!isItalicActive()));
+	const isMarkActive = (type: MarkTypes): boolean => {
+		if (!editor.selection) return false;
+		const marks = Editor.marks(editor);
+		return type === "url" ? !!marks?.[type] : Boolean(marks?.[type]);
 	};
 
-	const createCodeLeaf = () => {
-		Editor.addMark(editor, "code", Boolean(!isCodeActive()));
+	const useEditorMarks = () => ({
+		isBoldActive: () => isMarkActive("bold"),
+		isItalicActive: () => isMarkActive("italic"),
+		isCodeActive: () => isMarkActive("code"),
+		isLinkActive: () => isMarkActive("url"),
+	});
+
+	const createLeaf = (markType: MarkTypes) => {
+		Editor.addMark(
+			editor,
+			markType,
+			!useEditorMarks()[useLeafActive(markType)](),
+		);
 	};
 
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -193,7 +189,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		// !!!
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
-		if (isLinkActive()) {
+		if (isMarkActive("url")) {
 			Editor.removeMark(editor, "url");
 		}
 		switch (e.key) {
@@ -202,7 +198,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			case "`": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createCodeLeaf();
+					createLeaf("code");
 				}
 				break;
 			}
@@ -220,14 +216,14 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			case "b": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createBoldLeaf();
+					createLeaf("bold");
 				}
 				break;
 			}
 			case "i": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createItalicLeaf();
+					createLeaf("italic");
 				}
 				break;
 			}
@@ -282,16 +278,13 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				>
 					<TextEditorToolBar
 						// Leafs
-						createBoldLeaf={createBoldLeaf}
-						createItalicLeaf={createItalicLeaf}
-						isBoldActive={isBoldActive()}
-						isItalicActive={isItalicActive()}
+
+						createLeaf={createLeaf}
+						markActiveChecks={useEditorMarks()}
+						injectLinkContent={injectLinkContent}
 						// Blocks
-						createCodeLeaf={createCodeLeaf}
-						isCodeActive={isCodeActive()}
 						createHeaderBlock={createHeaderBlock}
 						isHeaderBlock={isHeaderBlock()}
-						injectLinkContent={injectLinkContent}
 						// Others
 						selection={editor.selection}
 					/>

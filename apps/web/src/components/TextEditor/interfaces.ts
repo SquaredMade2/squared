@@ -7,15 +7,8 @@ export interface TextEditorProps {
 
 export interface TextEditorToolBarProps {
 	// Leafs
-	createBoldLeaf: () => void;
-	createItalicLeaf: () => void;
-	createCodeLeaf: () => void;
-
-	isBoldActive: boolean;
-	isItalicActive: boolean;
-
-	isCodeActive: boolean;
-
+	createLeaf: (markType: MarkTypes) => void;
+	markActiveChecks: MarkActives;
 	injectLinkContent: (linkName: string, linkUrl: string) => void;
 
 	// Blocks
@@ -32,6 +25,13 @@ export interface LinkModalProps {
 	injectLinkContent: (linkName: string, linkUrl: string) => void;
 	selection: BaseSelection;
 }
+
+export type MarkActives = {
+	isBoldActive: () => boolean;
+	isItalicActive: () => boolean;
+	isCodeActive: () => boolean;
+	isLinkActive: () => boolean;
+};
 
 export type CustomElementAttributes = Omit<
 	JSX.IntrinsicElements["div"],
@@ -54,5 +54,7 @@ export type CustomText = {
 	code?: boolean;
 	url?: string;
 };
+
+export type MarkTypes = keyof Omit<CustomText, "text">;
 
 export type CustomDescendant = CustomElement | CustomText;

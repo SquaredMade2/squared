@@ -4,16 +4,12 @@ import LinkModal from "./LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";
 
 const TextEditorToolBar = ({
-	createBoldLeaf,
-	createItalicLeaf,
-	createCodeLeaf,
-	isBoldActive,
-	isItalicActive,
-	isCodeActive,
+	createLeaf,
+	markActiveChecks,
+	injectLinkContent,
 	createHeaderBlock,
 	isHeaderBlock,
 
-	injectLinkContent,
 	selection,
 	// Todos:
 	// Quote
@@ -33,10 +29,10 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ${isBoldActive ? "" : "text-muted-foreground"}`}
+				className={`size-8 ${markActiveChecks.isBoldActive() ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
-					createBoldLeaf();
+					createLeaf("bold");
 				}}
 			>
 				<Bold className="w-4 h-4" />
@@ -46,10 +42,10 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ${isItalicActive ? "" : "text-muted-foreground"}`}
+				className={`size-8 ${markActiveChecks.isItalicActive() ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
-					createItalicLeaf();
+					createLeaf("italic");
 				}}
 			>
 				<Italic className="w-4 h-4" />
@@ -59,10 +55,10 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ml-2 ${isCodeActive ? "" : "text-muted-foreground"}`}
+				className={`size-8 ml-2 ${markActiveChecks.isCodeActive() ? "" : "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
-					createCodeLeaf();
+					createLeaf("code");
 				}}
 			>
 				<span>{"</>"}</span>
