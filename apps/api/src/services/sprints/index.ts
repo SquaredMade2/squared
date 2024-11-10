@@ -58,8 +58,9 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		input: createSchema<NextSprintPayload>()(
 			z.object({
 				teamId: z.string(),
-				movedTasks: z.array(z.string()),
-				sprintData: z.object({ name: z.string() }).optional(),
+				sprintData: z
+					.object({ description: z.string().optional(), name: z.string() })
+					.optional(),
 			}),
 		),
 		output: z.union([

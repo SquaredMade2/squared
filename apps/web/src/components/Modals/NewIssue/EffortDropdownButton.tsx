@@ -6,7 +6,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { effortEstimateOptions } from "@/constants/designations";
+import { effortEstimateOptions } from "@/lib/constants";
 import { useModalStore, useTeamStore } from "@/store";
 import { Check } from "lucide-react";
 

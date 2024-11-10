@@ -47,8 +47,8 @@ export type InitializeSprintsRequest = {
 export type InitializeSprintsResponse = number;
 
 export type StartNextSprintRequest = {
-	movedTasks: string[];
 	sprintData?: {
+		description?: string;
 		name: string;
 	};
 	teamId: string;
