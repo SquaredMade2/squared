@@ -34,7 +34,7 @@ const IntegrationSettings = () => {
 									</div>
 								</div>
 								<div className="flex flex-col mx-5 space-y-1">
-									<CardTitle>Github</CardTitle>
+									<CardTitle>GitHub</CardTitle>
 									<CardDescription>
 										Automate your pull request and commit workflows and keep
 										issues synced both ways

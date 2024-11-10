@@ -48,7 +48,7 @@ const GithubSettings: React.FC = () => {
 							</div>
 						</div>
 						<header className="text-2xl text-foreground font-medium">
-							Github
+							GitHub
 						</header>
 					</div>
 
