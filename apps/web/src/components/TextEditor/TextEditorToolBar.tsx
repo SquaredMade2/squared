@@ -67,7 +67,7 @@ const TextEditorToolBar = ({
 			<Button
 				variant="ghost"
 				size="icon"
-				className={`size-8 ${isHeaderBlock ? "" : "text-muted-foreground"}`}
+				className={`size-8 ${!isHeaderBlock && "text-muted-foreground"}`}
 				onMouseDown={(e) => {
 					e.preventDefault();
 					createHeaderBlock();
