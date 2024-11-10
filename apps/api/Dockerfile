@@ -61,7 +61,6 @@ RUN pnpm turbo build --filter=api...
 FROM base AS runner
 WORKDIR /app
 COPY --from=installer /app .
-RUN pnpm --filter=@squared/db db:deploy
 WORKDIR /app/apps/api
 
 RUN npm install -g turbo pnpm ts-node tsconfig-paths
