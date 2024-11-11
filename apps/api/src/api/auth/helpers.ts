@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "..";
 
-
+// this is a change
 export const comparePassword = (
 	password: string,
 	hashed: string,

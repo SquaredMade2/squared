@@ -49,6 +49,8 @@ jobs:
           else
             echo "environment=API-Staging" >> $GITHUB_OUTPUT
             echo "ecr_repository=squared-api-staging" >> $GITHUB_OUTPUT
+            echo ${{ vars.ECS_SERVICE }} 
+            echo ${{ vars.ECS_CLUSTER }}
           fi 
 
       - name: Configure AWS credentials
