@@ -1,32 +1,31 @@
 import "dotenv/config";
-import type { PrismaClient } from "@squared/db";
-import { CommentService, createCommentRpcHandler } from "./comments";
+import { PrismaClient } from "@squared/db";
+import { createCommentRpcHandler } from "./comments";
+import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
 
-export function initializeServices(prisma: PrismaClient) {
-	const eventService = new EventService(prisma);
-	const sprintService = new SprintService(prisma);
-	const taskService = new TaskService(prisma, eventService);
-	const commentService = new CommentService(prisma);
+const prisma = new PrismaClient({
+	datasources: {
+		db: {
+			url: process.env.POSTGRES_PRISMA_URL,
+		},
+	},
+});
+export const services = {
+	sprint: new SprintService(prisma),
+	event: new EventService(prisma),
+	task: new TaskService(prisma),
+	comment: new CommentService(prisma),
+};
 
-	const services = {
-		event: eventService,
-		sprint: sprintService,
-		task: taskService,
-		comment: commentService,
-	};
+export const rpcHandlers = {
+	sprint: createSprintRpcHandler(services.sprint),
+	event: createEventRpcHandler(services.event),
+	task: createTaskRpcHandler(services.task),
+	comment: createCommentRpcHandler(services.comment),
+};
 
-	const rpcHandlers = {
-		event: createEventRpcHandler(services.event),
-		sprint: createSprintRpcHandler(services.sprint),
-		task: createTaskRpcHandler(services.task),
-		comment: createCommentRpcHandler(services.comment),
-	};
-
-	return { services, rpcHandlers };
-}
-
-export type Services = ReturnType<typeof initializeServices>["services"];
-export type RpcHandlers = ReturnType<typeof initializeServices>["rpcHandlers"];
+export type Services = typeof services;
+export type RpcHandlers = typeof rpcHandlers;

@@ -42,3 +42,4 @@ error.log*
 .vercel
 .elasticbeanstalk
 generated
+apps/api/src/api/index.ts
