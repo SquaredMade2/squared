@@ -26,15 +26,13 @@ export class TeamService implements TeamRpc {
 			throw new Error("Team already exists");
 		}
 
-		const newTeam = await this.db.team.create({
+		return await this.db.team.create({
 			data: {
 				name,
 				identifier,
 				workspaceId,
 			},
 		});
-
-		return newTeam;
 	}
 
 	async updateTeam(args: UpdateTeamParams): Promise<Team> {
