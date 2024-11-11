@@ -1,5 +1,5 @@
 import type { Task } from "@squared/db";
-import type { Node, NodeEntry } from "slate";
+import type { BaseSelection, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
@@ -7,20 +7,31 @@ export interface TextEditorProps {
 
 export interface TextEditorToolBarProps {
 	// Leafs
-	createBoldLeaf: () => void;
-	createItalicLeaf: () => void;
-	createCodeLeaf: () => void;
-
-	isBoldActive: boolean;
-	isItalicActive: boolean;
-
-	isCodeActive: boolean;
+	createLeaf: (markType: MarkTypes) => void;
+	markActiveChecks: MarkActives;
+	injectLinkContent: (linkName: string, linkUrl: string) => void;
 
 	// Blocks
 
 	createHeaderBlock: () => void;
 	isHeaderBlock: NodeEntry<Node>;
+
+	// Others
+
+	selection: BaseSelection;
 }
+
+export interface LinkModalProps {
+	injectLinkContent: (linkName: string, linkUrl: string) => void;
+	selection: BaseSelection;
+}
+
+export type MarkActives = {
+	isBoldActive: () => boolean;
+	isItalicActive: () => boolean;
+	isCodeActive: () => boolean;
+	isLinkActive: () => boolean;
+};
 
 export type CustomElementAttributes = Omit<
 	JSX.IntrinsicElements["div"],
@@ -33,7 +44,6 @@ export type CustomElementAttributes = Omit<
 export type CustomElement = {
 	type: string;
 	children: CustomText[];
-	url?: string;
 	attributes?: CustomElementAttributes;
 };
 
@@ -41,8 +51,10 @@ export type CustomText = {
 	text: string;
 	bold?: boolean;
 	italic?: boolean;
-	link?: boolean;
 	code?: boolean;
+	url?: string;
 };
+
+export type MarkTypes = keyof Omit<CustomText, "text">;
 
 export type CustomDescendant = CustomElement | CustomText;
