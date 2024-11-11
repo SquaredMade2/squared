@@ -74,7 +74,7 @@ export class TeamService implements TeamRpc {
 		identifier,
 	}: { identifier: string }): Promise<Team | null> {
 		this.logger.info("Finding team: %s", identifier);
-		return await this.db.team.findUnique({ where: { identifier } });
+		return await this.db.team.findFirst({ where: { identifier } });
 	}
 
 	async getUserTeams({
