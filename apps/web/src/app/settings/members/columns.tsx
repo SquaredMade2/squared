@@ -12,7 +12,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
 
-export const columns: ColumnDef<MemberWithRole & { role: string }>[] = [
+export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "name",
 		cell: ({ row }) => {

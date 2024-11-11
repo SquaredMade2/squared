@@ -56,14 +56,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 
 	const generateMembersCsv = () => {
 		const members = (data as MemberWithRole[]).map((member) => {
-			return {
-				name: member.name,
-				role: member.role,
-				email: member.email,
-				github: member.githubUsername || "N/A",
-				avatar: member.avatarUrl || "N/A",
-				username: member.username,
-			};
+			return { ...member };
 		});
 		return members;
 	};
