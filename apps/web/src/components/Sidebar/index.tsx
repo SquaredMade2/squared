@@ -47,6 +47,7 @@ function SidebarContent() {
 
 	React.useEffect(() => {
 		if (!user || !workspace) return;
+
 		const setAllTeams = async () => {
 			setTeams(
 				await teamService.getUserTeams(TODO, {
@@ -56,17 +57,19 @@ function SidebarContent() {
 			);
 		};
 
-		setAllTeams();
-		fetchNotifications();
-	}, [user, setTeams]);
+		const fetchNotifications = async () => {
+			const notifications = await eventService.getNotifications(TODO, {
+				userId: user.id,
+			});
+			setNotifications(notifications?.filter((n) => !n.read).length || 0);
+		};
 
-	const fetchNotifications = async () => {
-		if (!user) return;
-		const notifications = await eventService.getNotifications(TODO, {
-			userId: user.id,
-		});
-		setNotifications(notifications?.filter((n) => !n.read).length || 0);
-	};
+		const fetchData = async () => {
+			await Promise.all([setAllTeams(), fetchNotifications()]);
+		};
+
+		fetchData();
+	}, [user, setTeams]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {

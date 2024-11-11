@@ -100,12 +100,16 @@ export default function TeamsSetting() {
 	const { deleteTeam, updateTeam, setTeam } = useTeamStore((state) => state);
 
 	useEffect(() => {
-		if (team?.effort === "LINEAR") {
-			setSelectedEffort(effortType[0]);
-		} else if (team?.effort === "EXPONENTIAL") {
-			setSelectedEffort(effortType[1]);
-		} else {
-			setSelectedEffort(effortType[2]);
+		switch (team?.effort) {
+			case "LINEAR":
+				setSelectedEffort(effortType[0]);
+				break;
+			case "EXPONENTIAL":
+				setSelectedEffort(effortType[1]);
+				break;
+			case "FIBONACCI":
+				setSelectedEffort(effortType[2]);
+				break;
 		}
 	}, []);
 
