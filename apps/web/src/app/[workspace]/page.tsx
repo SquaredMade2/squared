@@ -44,8 +44,8 @@ export default function Home() {
 				userId: user.id,
 				workspaceId: currentWorkspace.id,
 			});
-			if (currentTeam) {
-				router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
+			if (allTeams) {
+				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
 			}
 			setLoading(false);
 		};
