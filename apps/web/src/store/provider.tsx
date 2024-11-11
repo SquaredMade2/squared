@@ -5,6 +5,7 @@ import { CommentStoreProvider } from "./comments";
 import { EventStoreProvider } from "./events";
 import { FilterStoreProvider } from "./filters";
 import { ModalStoreProvider } from "./modals";
+import { SprintStoreProvider } from "./sprints";
 import { TaskStoreProvider } from "./tasks";
 import { TeamStoreProvider } from "./teams";
 import { UserStoreProvider } from "./users";
@@ -18,15 +19,19 @@ export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 			<EventStoreProvider>
 				<FilterStoreProvider>
 					<ModalStoreProvider>
-						<TaskStoreProvider>
-							<TeamStoreProvider>
-								<UserStoreProvider>
-									<ViewStoreProvider>
-										<WorkspaceStoreProvider>{children}</WorkspaceStoreProvider>
-									</ViewStoreProvider>
-								</UserStoreProvider>
-							</TeamStoreProvider>
-						</TaskStoreProvider>
+						<SprintStoreProvider>
+							<TaskStoreProvider>
+								<TeamStoreProvider>
+									<UserStoreProvider>
+										<ViewStoreProvider>
+											<WorkspaceStoreProvider>
+												{children}
+											</WorkspaceStoreProvider>
+										</ViewStoreProvider>
+									</UserStoreProvider>
+								</TeamStoreProvider>
+							</TaskStoreProvider>
+						</SprintStoreProvider>
 					</ModalStoreProvider>
 				</FilterStoreProvider>
 			</EventStoreProvider>

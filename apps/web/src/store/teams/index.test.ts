@@ -40,9 +40,7 @@ describe("TeamStore", () => {
 	it("should initialize with empty teams, sprints, and null current team and sprint", () => {
 		const state = store.getState();
 		expect(state.teams).toEqual([]);
-		expect(state.sprints).toEqual([]);
 		expect(state.currentTeam).toBeNull();
-		expect(state.currentSprint).toBeNull();
 	});
 
 	describe("addTeam", () => {

@@ -12,6 +12,7 @@ export const createModalStore = (
 		showWorkspaceInvite: false,
 		showSwitchWorkspace: false,
 		showTaskSelector: false,
+		showLinkForm: false,
 		newIssueData: {},
 	},
 ) => {
@@ -37,6 +38,9 @@ export const createModalStore = (
 		},
 		setShowSwitchWorkspace: (input) => {
 			set({ showSwitchWorkspace: input });
+		},
+		setShowLinkForm: (input) => {
+			set({ showLinkForm: input });
 		},
 		setShowTaskSelector: (input) => {
 			set({ showTaskSelector: input });

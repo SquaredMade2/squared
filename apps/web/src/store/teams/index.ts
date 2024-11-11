@@ -1,4 +1,4 @@
-import type { Sprint, Team } from "@squared/db";
+import type { Team } from "@squared/db";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { createStore } from "zustand/vanilla";
@@ -14,8 +14,6 @@ export const createTeamStore = (
 	initState: TeamState = {
 		teams: [],
 		currentTeam: null,
-		sprints: [],
-		currentSprint: null,
 	},
 ) => {
 	return createStore<TeamStore>()((set, get) => ({
@@ -132,9 +130,6 @@ export const createTeamStore = (
 				console.error("Error in getAllTeams:", error);
 				return [];
 			}
-		},
-		setCurrentSprint: (sprint: Sprint): void => {
-			set({ currentSprint: sprint });
 		},
 	}));
 };
