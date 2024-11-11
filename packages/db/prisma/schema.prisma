@@ -170,7 +170,7 @@ model Task {
 model Team {
   id               String   @id @default(uuid())
   name             String?
-  identifier       String @unique
+  identifier       String
   workspaceId      String
   sprintsEnabled   Boolean  @default(false)
   sprintDuration   Int      @default(2)
