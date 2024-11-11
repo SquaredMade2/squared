@@ -42,7 +42,7 @@ const TaskGrid = ({
 						{showAvatar &&
 							(user?.name ? (
 								<Avatar className="size-6">
-									<AvatarImage src={user?.avatarUrl ?? undefined} />
+									<AvatarImage src={user.avatarUrl ?? undefined} />
 									<AvatarFallback className="text-xxs">
 										{getInitials(user.name)}
 									</AvatarFallback>
