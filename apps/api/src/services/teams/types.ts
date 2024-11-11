@@ -8,9 +8,13 @@ export type CreateTeamParams = {
 
 export type UpdateTeamParams = {
 	id: string;
-	name?: string;
-	identifier?: string;
-	effort?: Effort;
+	name: string;
+	identifier: string;
+	effort: Effort;
+};
+
+export type UpdateTeamSprintsParams = {
+	id: string;
 	sprintsEnabled?: boolean;
 	sprintDuration?: number;
 	cooldownDuration?: number;
@@ -20,6 +24,7 @@ export type UpdateTeamParams = {
 export interface TeamRpc {
 	createTeam: (args: CreateTeamParams) => Promise<Team>;
 	updateTeam: (args: UpdateTeamParams) => Promise<Team>;
+	updateTeamSprints: (args: UpdateTeamSprintsParams) => Promise<Team>;
 	deleteTeam: (args: { teamId: string }) => Promise<void>;
 	getTeam: (args: { teamId: string }) => Promise<Team | null>;
 	getTeamByIdentifier: (args: { identifier: string }) => Promise<Team | null>;

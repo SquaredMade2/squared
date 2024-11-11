@@ -22,17 +22,34 @@ export type CreateTeamResponse = {
 };
 
 export type UpdateTeamRequest = {
-	cooldownDuration?: number;
-	effort?: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
+	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
 	id: string;
-	identifier?: string;
-	name?: string;
+	identifier: string;
+	name: string;
+};
+
+export type UpdateTeamResponse = {
+	cooldownDuration: number;
+	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
+	id: string;
+	identifier: string;
+	name: string | null;
+	sprintDuration: number;
+	sprintStartDate: Date;
+	sprintsEnabled: boolean;
+	tasksPerSprint: number;
+	workspaceId: string;
+};
+
+export type UpdateTeamSprintsRequest = {
+	cooldownDuration?: number;
+	id: string;
 	sprintDuration?: number;
 	sprintStartDate?: Date;
 	sprintsEnabled?: boolean;
 };
 
-export type UpdateTeamResponse = {
+export type UpdateTeamSprintsResponse = {
 	cooldownDuration: number;
 	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
 	id: string;
@@ -127,6 +144,16 @@ export class TeamService extends RPCContextClient {
 		req: UpdateTeamRequest,
 	): Promise<UpdateTeamResponse> {
 		return this.request(ctx, "updateTeam", req);
+	}
+
+	/**
+	 * updateTeamSprints method
+	 */
+	updateTeamSprints(
+		ctx: Context,
+		req: UpdateTeamSprintsRequest,
+	): Promise<UpdateTeamSprintsResponse> {
+		return this.request(ctx, "updateTeamSprints", req);
 	}
 
 	/**

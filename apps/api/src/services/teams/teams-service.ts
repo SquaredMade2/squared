@@ -1,7 +1,12 @@
 import type { PrismaClient, Team } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
-import type { CreateTeamParams, TeamRpc, UpdateTeamParams } from "./types";
+import type {
+	CreateTeamParams,
+	TeamRpc,
+	UpdateTeamParams,
+	UpdateTeamSprintsParams,
+} from "./types";
 
 export class TeamService implements TeamRpc {
 	private readonly db: PrismaClient;
@@ -41,6 +46,11 @@ export class TeamService implements TeamRpc {
 			where: { id: args.id },
 			data: args,
 		});
+	}
+
+	async updateTeamSprints(args: UpdateTeamSprintsParams): Promise<Team> {
+		this.logger.info("Updating team: %s", args.id);
+		return await this.db.team.update({ where: { id: args.id }, data: args });
 	}
 
 	async deleteTeam({ teamId }: { teamId: string }): Promise<void> {
