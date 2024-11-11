@@ -23,6 +23,8 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
+          echo ${{ vars.ECS_SERVICE }} 
+          echo ${{ vars.ECS_CLUSTER }}
           COMPARE_BRANCH=\${{ github.ref == 'refs/heads/main' && 'main' || 'develop' }}
           git fetch origin $COMPARE_BRANCH
           
@@ -49,8 +51,6 @@ jobs:
           else
             echo "environment=API-Staging" >> $GITHUB_OUTPUT
             echo "ecr_repository=squared-api-staging" >> $GITHUB_OUTPUT
-            echo ${{ vars.ECS_SERVICE }} 
-            echo ${{ vars.ECS_CLUSTER }}
           fi 
 
       - name: Configure AWS credentials
