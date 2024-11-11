@@ -54,27 +54,36 @@ export class TeamService implements TeamRpc {
 
 	async deleteTeam({ teamId }: { teamId: string }): Promise<void> {
 		this.logger.info("Deleting team: %s", teamId);
-		const team: Team | null = await this.db.team.delete({
+		await this.db.team.delete({
 			where: { id: teamId },
 		});
-
-		if (!team) {
-			throw new Error("Team not found");
-		}
-
-		return;
 	}
 
-	async getTeam({ teamId }: { teamId: string }): Promise<Team> {
+	async getTeam({ teamId }: { teamId: string }): Promise<Team | null> {
 		this.logger.info("Finding team: %s", teamId);
-		const team: Team | null = await this.db.team.findFirst({
+		return await this.db.team.findUnique({
 			where: { id: teamId },
 		});
+	}
 
-		if (!team) {
-			throw new Error("Team not found");
-		}
+	async getTeamByIdentifier({
+		identifier,
+	}: { identifier: string }): Promise<Team | null> {
+		this.logger.info("Finding team: %s", identifier);
+		return await this.db.team.findFirst({ where: { identifier } });
+	}
 
-		return team;
+	async getUserTeams({
+		userId,
+		workspaceId,
+	}: { userId: string; workspaceId: string }): Promise<Team[]> {
+		this.logger.info("Finding teams for user: %0", userId);
+		const teamIds = await this.db.userTeam
+			.findMany({ where: { userId } })
+			.then((t) => t.map((ut) => ut.teamId));
+
+		return await this.db.team.findMany({
+			where: { workspaceId, id: { in: teamIds } },
+		});
 	}
 }

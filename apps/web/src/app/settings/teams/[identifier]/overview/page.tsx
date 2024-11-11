@@ -27,6 +27,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -36,6 +37,7 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
+import { TODO } from "@squared/context";
 import type { Effort } from "@squared/db";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -92,15 +94,15 @@ export default function TeamsSetting() {
 		useState<Record<string, number | string | number[]>>();
 	const { toast } = useToast();
 	const router = useRouter();
-	const { currentTeam, teams, loading: teamLoading } = useTeams();
+	const { team, teams, loading: teamLoading } = useTeams();
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 
-	const { deleteTeam, updateTeam, getTeam } = useTeamStore((state) => state);
+	const { deleteTeam, updateTeam, setTeam } = useTeamStore((state) => state);
 
 	useEffect(() => {
-		if (currentTeam?.effort === "LINEAR") {
+		if (team?.effort === "LINEAR") {
 			setSelectedEffort(effortType[0]);
-		} else if (currentTeam?.effort === "EXPONENTIAL") {
+		} else if (team?.effort === "EXPONENTIAL") {
 			setSelectedEffort(effortType[1]);
 		} else {
 			setSelectedEffort(effortType[2]);
@@ -110,40 +112,43 @@ export default function TeamsSetting() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 
-	if (!currentTeam || !currentTeam.name) return null;
+	if (!team || !team.name) return null;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: currentTeam.name,
-			identifier: currentTeam.identifier,
+			name: team.name,
+			identifier: team.identifier,
 		},
 	});
 
 	useEffect(() => {
 		const subscription = form.watch((value) => {
-			if (
-				value.name !== currentTeam.name ||
-				value.identifier !== currentTeam.identifier
-			) {
+			if (value.name !== team.name || value.identifier !== team.identifier) {
 				setIsFormChanged(true);
 			} else {
 				setIsFormChanged(false);
 			}
 		});
 		return () => subscription.unsubscribe();
-	}, [form, currentTeam]);
+	}, [form, team]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (currentTeam && currentWorkspace) {
+		if (team && currentWorkspace) {
 			try {
-				const update = await updateTeam(currentTeam.id, {
+				const updatedTeam = await teamService.updateTeam(TODO, {
+					id: team.id,
 					name: values.name,
 					identifier: values.identifier,
 					effort: selectedEffort?.dbValue as Effort,
 				});
-				if (update) {
-					await getTeam(values.identifier);
+				updateTeam(updatedTeam);
+				if (updatedTeam) {
+					setTeam(
+						await teamService.getTeamByIdentifier(TODO, {
+							identifier: values.identifier,
+						}),
+					);
 					router.refresh();
 					toast({ title: "Team updated successfully" });
 				}
@@ -164,7 +169,8 @@ export default function TeamsSetting() {
 				variant: "destructive",
 			});
 		} else {
-			currentTeam && deleteTeam(currentTeam.id);
+			await teamService.deleteTeam(TODO, { teamId: team.id });
+			team && deleteTeam(team.id);
 			router.push(`/${currentWorkspace?.url}`);
 			toast({ title: "Team deleted" });
 		}
@@ -198,7 +204,7 @@ export default function TeamsSetting() {
 
 	return (
 		<div className="container mx-auto py-10 md:w-3/4 w-full">
-			<h1 className="text-3xl font-bold mb-2">{currentTeam.name}</h1>
+			<h1 className="text-3xl font-bold mb-2">{team.name}</h1>
 			<p className="text-muted-foreground mb-6">Manage team settings</p>
 
 			<Separator className="my-6" />

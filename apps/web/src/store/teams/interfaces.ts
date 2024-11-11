@@ -2,14 +2,15 @@ import type { Team } from "@squared/db";
 
 export type TeamState = {
 	teams: Team[];
-	currentTeam: Team | null;
+	team: Team | null;
 };
 
 type TeamActions = {
-	setCurrentTeam: (team: Team) => void;
+	setTeam: (team: Team | null) => void;
 	setTeams: (teams: Team[]) => void;
 	updateTeam: (team: Team) => void;
 	createTeam: (team: Team) => void;
+	deleteTeam: (teamId: string) => void;
 };
 
 export type TeamStore = TeamState & TeamActions;

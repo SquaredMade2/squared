@@ -25,8 +25,6 @@ const updateTeamParams = createSchema<UpdateTeamParams>()(
 		sprintDuration: z.number().optional(),
 		cooldownDuration: z.number().optional(),
 		sprintStartDate: z.date().optional(),
-		upcomingSprints: z.number().optional(),
-		activeRequired: z.boolean().optional(),
 	}),
 );
 
@@ -34,18 +32,30 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 	createTeam: { input: createTeamParams, output: teamSchema },
 	updateTeam: { input: updateTeamParams, output: teamSchema },
 	deleteTeam: { input: z.object({ teamId: z.string() }), output: z.void() },
-	getTeam: { input: z.object({ teamId: z.string() }), output: teamSchema },
+	getTeam: {
+		input: z.object({ teamId: z.string() }),
+		output: teamSchema.nullable(),
+	},
+	getTeamByIdentifier: {
+		input: z.object({ identifier: z.string() }),
+		output: teamSchema.nullable(),
+	},
+	getUserTeams: {
+		input: z.object({ userId: z.string(), workspaceId: z.string() }),
+		output: z.array(teamSchema),
+	},
 });
 
 export type TeamRpcSchema = typeof teamRpcSchema;
 
-export const createTeamRpcHandler = (teamService: TeamRpc) => {
+export const createTeamRpcHandler = (teamService: TeamRpc) =>
 	createRpcHandler("team", teamRpcSchema, {
 		createTeam: (input) => teamService.createTeam(input),
 		updateTeam: (input) => teamService.updateTeam(input),
 		deleteTeam: (input) => teamService.deleteTeam(input),
 		getTeam: (input) => teamService.getTeam(input),
+		getTeamByIdentifier: (input) => teamService.getTeamByIdentifier(input),
+		getUserTeams: (input) => teamService.getUserTeams(input),
 	});
-};
 
 export { TeamService } from "./teams-service";

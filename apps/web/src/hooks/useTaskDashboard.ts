@@ -10,7 +10,7 @@ import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskDashboard() {
-	const { loading: teamLoading, currentTeam, authorized } = useTeams();
+	const { loading: teamLoading, team, authorized } = useTeams();
 	const { loading: workspaceLoading, currentWorkspace } = useWorkspaces();
 	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
 	const [loading, setLoading] = useState(true);
@@ -22,16 +22,14 @@ export function useTaskDashboard() {
 		const initiateStore = async () => {
 			if (teamLoading || workspaceLoading) return;
 			setLoading(true);
-			if (currentTeam) {
-				setTasks(
-					await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
-				);
+			if (team) {
+				setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
 			}
 			setLoading(false);
 		};
 
 		initiateStore();
-	}, [teamLoading, currentTeam, workspaceLoading]);
+	}, [teamLoading, team, workspaceLoading]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,

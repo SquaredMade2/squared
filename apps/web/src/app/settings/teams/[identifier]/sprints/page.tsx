@@ -2,7 +2,7 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import { sprintService, taskService } from "@/lib/services";
+import { sprintService, taskService, teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Sprint, Team } from "@squared/db";
@@ -50,43 +50,54 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/utils/cn";
 
 export default function SprintSettings() {
-	const { updateTeam, setCurrentTeam } = useTeamStore((state) => state);
-	const { currentTeam, loading: teamLoading } = useTeams();
+	const { updateTeam, setTeam } = useTeamStore((state) => state);
+	const { team, loading: teamLoading } = useTeams();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
-		currentTeam?.sprintStartDate || null,
+		team?.sprintStartDate || null,
 	);
 	const [pendingSprints, setPendingSprints] = useState(0);
 	const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 	const { toast } = useToast();
 
 	useEffect(() => {
-		if (currentTeam) {
-			sprintService
-				.getSprints(TODO, { teamId: currentTeam.id })
-				.then((sprints) => {
-					const pending = sprints.filter((s) => s.status === "PLANNED").length;
-					setPendingSprints(pending);
-					const active = sprints.find((s) => s.status === "ACTIVE");
-					setActiveSprint(active || null);
-				});
+		if (team) {
+			sprintService.getSprints(TODO, { teamId: team.id }).then((sprints) => {
+				const pending = sprints.filter((s) => s.status === "PLANNED").length;
+				setPendingSprints(pending);
+				const active = sprints.find((s) => s.status === "ACTIVE");
+				setActiveSprint(active || null);
+			});
 		}
-	}, [currentTeam, sprintService]);
+	}, [team, sprintService]);
 
-	const handleUpdateTeam = async (data: Partial<Team>) => {
+	const handleUpdateTeam = async (
+		data: Partial<
+			Pick<
+				Team,
+				| "sprintsEnabled"
+				| "sprintDuration"
+				| "cooldownDuration"
+				| "sprintStartDate"
+			>
+		>,
+	) => {
 		try {
-			if (!currentTeam) throw new Error("No team found");
-			const response = await updateTeam(currentTeam.id, data);
-			if (response.team?.sprintsEnabled) {
+			if (!team) throw new Error("No team found");
+			const updatedTeam = await teamService.updateTeam(TODO, {
+				id: team.id,
+				...data,
+			});
+			setTeam(updatedTeam);
+			updateTeam(updatedTeam);
+			if (updatedTeam.sprintsEnabled) {
 				const newSprintCount = await sprintService.initializeSprints(TODO, {
-					teamId: currentTeam.id,
+					teamId: team.id,
 				});
 				setPendingSprints(newSprintCount);
 			}
-			if (!response) return;
-			response.variant === "destructive"
-				? toast(response)
-				: response.team && setCurrentTeam(response.team);
+			if (!updatedTeam) return;
+			toast({ title: "Team updated successfully" });
 		} catch (error) {
 			error instanceof Error
 				? toast({
@@ -101,7 +112,7 @@ export default function SprintSettings() {
 	};
 
 	const handleAddTasksToSprint = async () => {
-		if (!currentTeam || !activeSprint) return;
+		if (!team || !activeSprint) return;
 
 		try {
 			const response = await taskService.addActiveSprintTasks(TODO, {
@@ -138,8 +149,8 @@ export default function SprintSettings() {
 				</div>
 			</div>
 		);
-	if (!currentTeam) return null;
-	const { sprintsEnabled, sprintDuration } = currentTeam;
+	if (!team) return null;
+	const { sprintsEnabled, sprintDuration } = team;
 
 	return (
 		<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
@@ -213,7 +224,7 @@ export default function SprintSettings() {
 					</p>
 				</div>
 				<Switch
-					checked={currentTeam.sprintsEnabled}
+					checked={team.sprintsEnabled}
 					onCheckedChange={(checked) =>
 						handleUpdateTeam({
 							sprintsEnabled: checked,

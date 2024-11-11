@@ -15,16 +15,15 @@ export type UpdateTeamParams = {
 	sprintDuration?: number;
 	cooldownDuration?: number;
 	sprintStartDate?: Date;
-	upcomingSprints?: number;
-	activeRequired?: boolean;
 };
 
 export interface TeamRpc {
 	createTeam: (args: CreateTeamParams) => Promise<Team>;
 	updateTeam: (args: UpdateTeamParams) => Promise<Team>;
 	deleteTeam: (args: { teamId: string }) => Promise<void>;
-	getTeam: (args: { teamId: string }) => Promise<Team>;
-	// setCurrentTeam:;
-	// getAllTeams:;
-	// setCurrentSprint:;
+	getTeam: (args: { teamId: string }) => Promise<Team | null>;
+	getTeamByIdentifier: (args: { identifier: string }) => Promise<Team | null>;
+	getUserTeams: (args: { userId: string; workspaceId: string }) => Promise<
+		Team[]
+	>;
 }

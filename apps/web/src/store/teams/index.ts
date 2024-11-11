@@ -6,13 +6,13 @@ export * from "./store";
 export const createTeamStore = (
 	initState: TeamState = {
 		teams: [],
-		currentTeam: null,
+		team: null,
 	},
 ) => {
 	return createStore<TeamStore>()((set) => ({
 		...initState,
-		setCurrentTeam: (team) => {
-			set({ currentTeam: team });
+		setTeam: (team) => {
+			set({ team });
 		},
 		setTeams: (teams) => set({ teams }),
 		createTeam: (team) => set((state) => ({ teams: [...state.teams, team] })),
@@ -20,5 +20,7 @@ export const createTeamStore = (
 			set((state) => ({
 				teams: state.teams.map((t) => (t.id === team.id ? team : t)),
 			})),
+		deleteTeam: (team) =>
+			set((state) => ({ teams: state.teams.filter((t) => t.id === team) })),
 	}));
 };

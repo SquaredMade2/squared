@@ -140,8 +140,6 @@ export const teamSchema = createSchema<Team>()(
 		sprintsEnabled: z.boolean(),
 		sprintDuration: z.number(),
 		cooldownDuration: z.number(),
-		upcomingSprints: z.number(),
-		activeRequired: z.boolean(),
 		sprintStartDate: z.date(),
 		tasksPerSprint: z.number(),
 		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
