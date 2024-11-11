@@ -1,10 +1,8 @@
-import type { Sprint, Team } from "@squared/db";
+import type { Team } from "@squared/db";
 
 export type TeamState = {
 	teams: Team[];
 	currentTeam: Team | null;
-	sprints: Sprint[];
-	currentSprint: Sprint | null;
 };
 
 export interface TeamResponse {
@@ -20,7 +18,6 @@ type TeamActions = {
 	updateTeam: (teamId: string, team: Partial<Team>) => Promise<TeamResponse>;
 	deleteTeam: (teamId: string) => Promise<void>;
 	getAllTeams: (workspaceId: string) => Promise<Team[]>;
-	setCurrentSprint: (sprint: Sprint) => void;
 };
 
 export type TeamStore = TeamState & TeamActions;

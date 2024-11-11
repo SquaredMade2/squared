@@ -13,7 +13,10 @@ export function useTaskPage() {
 	const [error, setError] = useState<string | null>(null);
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { tasks, setCurrentTask } = useTaskStore((state) => state);
+	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
+		(state) => state,
+	);
+	const { users, loading: userLoading } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
 	useUsers();
 	const [task, setTask] = useState(
@@ -44,6 +47,10 @@ export function useTaskPage() {
 				if (pageTask) {
 					setTask(pageTask);
 					setCurrentTask(pageTask);
+					const fetchedSubtasks = await taskService.getSubtasks(TODO, {
+						parentId: pageTask?.id,
+					});
+					setSubtasks(fetchedSubtasks);
 					setComments(
 						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
 					);
@@ -57,7 +64,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [workspace, taskIdentifier, workspaceLoading, teams]);
+	}, [workspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { workspace, task, isLoading, error };
+	return { workspace, users, task, isLoading, error, subtasks };
 }

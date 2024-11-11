@@ -10,7 +10,7 @@ import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useFilterStore, useViewStore } from "@/store";
 
 export default function MyAssignedTasksPage() {
-	const { currentSprint, loading: sprintLoading } = useSprints();
+	const { sprint, loading: sprintLoading } = useSprints();
 	const { filterTasks } = useFilterStore((state) => state);
 	const { view, getGridOptions } = useViewStore((state) => state);
 
@@ -18,8 +18,7 @@ export default function MyAssignedTasksPage() {
 		useTaskDashboard();
 
 	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
-		(tasks) =>
-			filterTasks(tasks.filter((t) => t.sprintId === currentSprint?.id)),
+		(tasks) => filterTasks(tasks.filter((t) => t.sprintId === sprint?.id)),
 	);
 
 	if (sprintLoading) {
@@ -35,7 +34,7 @@ export default function MyAssignedTasksPage() {
 		);
 	}
 
-	if (!workspace || !currentSprint) return null;
+	if (!workspace || !sprint) return null;
 	return (
 		<TaskPageLayout
 			loading={loading || sprintLoading}
@@ -43,12 +42,12 @@ export default function MyAssignedTasksPage() {
 			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
-			pageTitle={`Current Sprint - ${currentSprint.name}`}
+			pageTitle={`Current Sprint - ${sprint.name}`}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
 				<ViewAllTasks
 					getGroupedColumns={getGroupedColumns}
-					sprintId={currentSprint.id}
+					sprintId={sprint.id}
 				/>
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
