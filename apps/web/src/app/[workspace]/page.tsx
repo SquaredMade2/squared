@@ -40,7 +40,7 @@ export default function Home() {
 				return;
 			}
 
-			const currentTeam = await teamService.getUserTeams(TODO, {
+			const allTeams = await teamService.getUserTeams(TODO, {
 				userId: user.id,
 				workspaceId: currentWorkspace.id,
 			});
