@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Team } from "@squared/db";
 import { ChevronDown, ChevronUp, LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {
@@ -20,7 +20,15 @@ interface TeamAccordionProps {
 
 export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 	const pathname = usePathname();
-	const [openTeams, setOpenTeams] = useState<string[]>([currentTeam?.id || ""]);
+	const [openTeams, setOpenTeams] = useState<string[]>([]);
+
+	useEffect(() => {
+		if (currentTeam) {
+			setOpenTeams((prev) =>
+				prev.includes(currentTeam.id) ? prev : [...prev, currentTeam.id],
+			);
+		}
+	}, [currentTeam]);
 
 	const getCurrentPage = (path: string) => {
 		if (path.endsWith("/all")) return "all";
