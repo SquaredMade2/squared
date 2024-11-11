@@ -221,20 +221,20 @@ export function AssignTasksDialog({
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="p-4">
-									<div className="flex items-center mb-2">
+									<div className="group flex items-center w-full rounded py-2 px-4 border-b border-border hover:bg-accent">
 										<Checkbox
 											id="select-all"
 											checked={selectedTasks.length === filteredTasks.length}
 											onCheckedChange={handleSelectAll}
 										/>
-										<Label htmlFor="select-all" className="ml-2">
+										<Label htmlFor="select-all" className="ml-3 font-semibold">
 											Select All
 										</Label>
 									</div>
 									{filteredTasks.map((task) => (
 										<div
 											key={task.id}
-											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border hover:bg-accent"
+											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border rounded hover:bg-accent"
 										>
 											<div className="shrink min-w-0 flex items-center gap-2">
 												<Checkbox
