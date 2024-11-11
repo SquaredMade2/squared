@@ -72,9 +72,10 @@ export class TeamService implements TeamRpc {
 
 	async getTeamByIdentifier({
 		identifier,
-	}: { identifier: string }): Promise<Team | null> {
+		workspaceId,
+	}: { identifier: string; workspaceId: string }): Promise<Team | null> {
 		this.logger.info("Finding team: %s", identifier);
-		return await this.db.team.findFirst({ where: { identifier } });
+		return await this.db.team.findFirst({ where: { identifier, workspaceId } });
 	}
 
 	async getUserTeams({

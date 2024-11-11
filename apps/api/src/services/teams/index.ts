@@ -49,7 +49,7 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 		output: teamSchema.nullable(),
 	},
 	getTeamByIdentifier: {
-		input: z.object({ identifier: z.string() }),
+		input: z.object({ identifier: z.string(), workspaceId: z.string() }),
 		output: teamSchema.nullable(),
 	},
 	getUserTeams: {

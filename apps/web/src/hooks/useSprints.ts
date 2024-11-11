@@ -51,6 +51,7 @@ export function useSprints(sprintId?: string) {
 
 				const foundTeam = await teamService.getTeamByIdentifier(context.TODO, {
 					identifier: parseParams(teamIdentifier),
+					workspaceId: workspace.id,
 				});
 				if (!foundTeam) {
 					throw new Error("Team not found");

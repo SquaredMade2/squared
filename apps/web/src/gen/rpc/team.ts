@@ -85,6 +85,7 @@ export type GetTeamResponse = {
 
 export type GetTeamByIdentifierRequest = {
 	identifier: string;
+	workspaceId: string;
 };
 
 export type GetTeamByIdentifierResponse = {
