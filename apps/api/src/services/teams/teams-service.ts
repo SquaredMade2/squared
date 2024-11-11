@@ -48,7 +48,7 @@ export class TeamService implements TeamRpc {
 		});
 	}
 
-	async updateTeamSprints(args: UpdateTeamSprintsParams): Promise<Team> {
+	async updateTeamSprints({id, ...args}: UpdateTeamSprintsParams): Promise<Team> {
 		this.logger.info("Updating team: %s", args.id);
 		return await this.db.team.update({ where: { id: args.id }, data: args });
 	}
