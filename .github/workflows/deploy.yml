@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - change-vars-from-secrets-to-env
   workflow_dispatch:
 
 jobs:
