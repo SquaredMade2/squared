@@ -171,6 +171,9 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 		if ("children" in line) {
 			// for every leaf, or subtext that has format, format them as MDX
 			const allLeafs = line.children.map((leaf) => {
+				if (leaf.url) {
+					return `[${leaf.text}](${leaf.url})`;
+				}
 				// helper vars
 				const returnBoldMarks = leaf.bold ? "**" : "";
 				const returnItalicMarks = leaf.italic ? "*" : "";
@@ -178,7 +181,6 @@ export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
 				// add new marks here, needs both left and right bc future might need them
 				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
 				const rightSurrounderMark = leftSurrounderMark;
-
 				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
 			});
 
@@ -270,5 +272,14 @@ export const formatFilterName = async (
 		}
 		default:
 			return { name: filter.field, value: filter.value.toLocaleString() };
+	}
+};
+
+export const verifyUrlFormat = (url: string): string | boolean => {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
 	}
 };

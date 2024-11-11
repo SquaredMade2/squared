@@ -34,6 +34,7 @@ export type CreateTaskResponse = {
 	id: string;
 	identifier: string;
 	labels: string[];
+	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
@@ -82,6 +83,7 @@ export type UpdateTaskResponse = {
 	id: string;
 	identifier: string;
 	labels: string[];
+	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
@@ -119,6 +121,7 @@ export type GetTaskResponse = {
 	id: string;
 	identifier: string;
 	labels: string[];
+	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
@@ -153,6 +156,7 @@ export type GetTaskByIdentifierResponse = {
 	id: string;
 	identifier: string;
 	labels: string[];
+	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
@@ -186,6 +190,7 @@ export type GetTeamTasksResponse = {
 	id: string;
 	identifier: string;
 	labels: string[];
+	order: number;
 	parentId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
@@ -215,6 +220,75 @@ export type AddSprintTasksRequest = {
 };
 
 export type AddSprintTasksResponse = number;
+
+export type ReorderSubtasksRequest = {
+	newOrder: string[];
+	parentId: string;
+};
+
+export type ReorderSubtasksResponse = {
+	assigneeId: string | null;
+	assigneeName: string | null;
+	authorId: string;
+	dateCreated: Date;
+	deleted: boolean;
+	description: string | null;
+	dueDate: Date | null;
+	effortEstimate: number | null;
+	id: string;
+	identifier: string;
+	labels: string[];
+	order: number;
+	parentId: string | null;
+	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId: string | null;
+	status:
+		| "backlog"
+		| "todo"
+		| "inProgress"
+		| "inReview"
+		| "done"
+		| "canceled"
+		| "archived";
+	teamId: string;
+	title: string;
+	updatedAt: Date;
+	workspaceId: string;
+}[];
+
+export type GetSubtasksRequest = {
+	parentId: string;
+};
+
+export type GetSubtasksResponse = {
+	assigneeId: string | null;
+	assigneeName: string | null;
+	authorId: string;
+	dateCreated: Date;
+	deleted: boolean;
+	description: string | null;
+	dueDate: Date | null;
+	effortEstimate: number | null;
+	id: string;
+	identifier: string;
+	labels: string[];
+	order: number;
+	parentId: string | null;
+	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId: string | null;
+	status:
+		| "backlog"
+		| "todo"
+		| "inProgress"
+		| "inReview"
+		| "done"
+		| "canceled"
+		| "archived";
+	teamId: string;
+	title: string;
+	updatedAt: Date;
+	workspaceId: string;
+}[];
 
 /**
  * task service
@@ -296,5 +370,25 @@ export class TaskService extends RPCContextClient {
 		req: AddSprintTasksRequest,
 	): Promise<AddSprintTasksResponse> {
 		return this.request(ctx, "addSprintTasks", req);
+	}
+
+	/**
+	 * reorderSubtasks method
+	 */
+	reorderSubtasks(
+		ctx: Context,
+		req: ReorderSubtasksRequest,
+	): Promise<ReorderSubtasksResponse> {
+		return this.request(ctx, "reorderSubtasks", req);
+	}
+
+	/**
+	 * getSubtasks method
+	 */
+	getSubtasks(
+		ctx: Context,
+		req: GetSubtasksRequest,
+	): Promise<GetSubtasksResponse> {
+		return this.request(ctx, "getSubtasks", req);
 	}
 }
