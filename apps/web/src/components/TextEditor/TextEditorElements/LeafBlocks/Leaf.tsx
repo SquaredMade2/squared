@@ -1,25 +1,19 @@
-// import { handleFormatLink } from "@/utils/formatting";
 import type { RenderLeafProps } from "slate-react";
 import CodeLeaf from "./CodeLeaf";
 
 const Leaf = (props: RenderLeafProps) => {
 	const renderLeafType = () => {
-		if (props.leaf.link) {
+		if (props.leaf.url) {
 			return (
-				<span {...props.attributes}>
-					{/* TODO: implement links */}
-					{/* {beforeLink}
-					<a
-						href={formattedLink.linkUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						aria-label={`Link to ${formattedLink.linkName}`}
-					>
-						{formattedLink.linkName}
-					</a>
-					{afterLink} */}
+				<a
+					{...props.attributes}
+					href={props.leaf.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label={`Link to ${props.leaf.url}`}
+				>
 					{props.children}
-				</span>
+				</a>
 			);
 		}
 		if (props.leaf.code) {
