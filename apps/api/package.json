@@ -12,7 +12,6 @@
 		"format:write": "biome format --write .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"postinstall": "pnpm run gen",
 		"start": "ts-node src/api/index.ts",
 		"test": "echo \"Error: no test specified\""
 	},

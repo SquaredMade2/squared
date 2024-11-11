@@ -11,7 +11,7 @@
 			"cypress",
 			"*.stories.tsx"
 		],
-		"include": ["src", "api", "www"]
+		"include": ["src/**/*"]
 	},
 	"organizeImports": {
 		"enabled": true
@@ -63,22 +63,6 @@
 						"noAccumulatingSpread": "off"
 					}
 				}
-			}
-		},
-		{
-			"include": ["apps/api/src/api/index.ts"],
-			"linter": {
-				"rules": {
-					"complexity": {
-						"noBannedTypes": "off"
-					}
-				}
-			}
-		},
-		{
-			"include": ["apps/api/src/api/index.ts"],
-			"organizeImports": {
-				"enabled": false
 			}
 		}
 	],
