@@ -10,8 +10,6 @@ type TeamActions = {
 	setTeams: (teams: Team[]) => void;
 	updateTeam: (team: Team) => void;
 	createTeam: (team: Team) => void;
-	deleteTeam: (teamId: string) => Promise<void>;
-	getAllTeams: (workspaceId: string) => Promise<Team[]>;
 };
 
 export type TeamStore = TeamState & TeamActions;
