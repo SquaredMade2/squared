@@ -163,6 +163,7 @@ const TopNavBarDisplay = () => {
 											<DropdownMenuItem
 												key={option}
 												className="text-xs"
+												disabled={option === taskOrder.orderBy}
 												onSelect={() =>
 													setOptions({
 														groupTasksBy: option,
@@ -193,6 +194,7 @@ const TopNavBarDisplay = () => {
 											<DropdownMenuItem
 												key={option}
 												className="text-xs"
+												disabled={option === groupTasksBy}
 												onSelect={() =>
 													setOptions({
 														taskOrder: { ...taskOrder, orderBy: option },
