@@ -160,10 +160,10 @@ export class AuthService implements AuthRpc {
 		return user;
 	}
 	async resetPasswordEmail({ email }: { email: string }): Promise<void> {
+		this.logger.info("Resetting password for %s", email);
 		const user = await this.db.user.findUnique({
 			where: { email },
 		});
-
 		if (user) {
 			const emailToken = jwt.sign({ user: user.id }, this.JWT_SECRET, {
 				expiresIn: 60 * 15,
@@ -176,6 +176,7 @@ export class AuthService implements AuthRpc {
 					html: passwordResetTemplate(`forgotPassword/${emailToken}`),
 					subject: "Reset your password",
 				});
+				return;
 			} catch (error) {
 				this.logger.error("Error sending email: %0", error);
 				throw new Error("Error sending email.");
