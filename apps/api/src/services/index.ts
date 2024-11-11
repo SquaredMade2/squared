@@ -13,11 +13,17 @@ const prisma = new PrismaClient({
 		},
 	},
 });
+
+const sprint = new SprintService(prisma);
+const event = new EventService(prisma);
+const task = new TaskService(prisma);
+const comment = new CommentService(prisma);
+
 export const services = {
-	sprint: new SprintService(prisma),
-	event: new EventService(prisma),
-	task: new TaskService(prisma),
-	comment: new CommentService(prisma),
+	sprint,
+	event,
+	task,
+	comment,
 };
 
 export const rpcHandlers = {
