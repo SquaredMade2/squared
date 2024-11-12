@@ -36,7 +36,6 @@ export const taskSchema = createSchema<Task>()(
 		priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
 		dateCreated: z.date(),
 		assigneeId: z.string().nullable(),
-		assigneeName: z.string().nullable(),
 		labels: z.array(z.string()),
 		workspaceId: z.string(),
 		parentId: z.string().nullable(),

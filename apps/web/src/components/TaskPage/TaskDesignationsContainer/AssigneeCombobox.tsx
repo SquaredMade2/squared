@@ -21,22 +21,29 @@ import { useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
+import type { User } from "@squared/db";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
+	const [assignee, setAssignee] = useState<User | null>(null);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
 
-	// Move these to a custom hook or memoize if needed
 	const users = useUserStore((state) => state.users);
+	useEffect(() => {
+		const foundUser = users.find((user) => user.id === currentTask?.assigneeId);
+		setAssignee(foundUser ?? null);
+	}, [currentTask, users]);
+
+	// Move these to a custom hook or memoize if needed
 	if (!currentTask) return null;
 
 	// Derive values from props instead of state
 	const taskId = currentTask?.id ?? "";
-	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeName = assignee?.name ?? "";
 	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
@@ -48,20 +55,21 @@ const AssigneeCombobox = () => {
 					assigneeId: null,
 				}),
 			);
-			setCurrentTask({ ...currentTask, assigneeId: null, assigneeName: null });
+			setCurrentTask({ ...currentTask, assigneeId: null });
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			await taskService.updateTask(TODO, {
-				id: taskId,
-				assigneeId: selectedUser.id,
-			});
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: selectedUser.id,
+				}),
+			);
 			setCurrentTask({
 				...currentTask,
 				assigneeId: selectedUser.id,
-				assigneeName: selectedUser.name,
 			});
 		}
 		setOpen(false);

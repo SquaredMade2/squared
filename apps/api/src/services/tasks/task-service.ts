@@ -139,21 +139,10 @@ export class TaskService implements TaskRpc {
 				throw new Error("Invalid Effort Estimate");
 			}
 		}
-		let assigneeName = null;
-		if (args.assigneeId) {
-			assigneeName = await this.db.user
-				.findFirst({
-					where: { id: args.assigneeId },
-				})
-				.then((a) => a?.name);
-			if (!assigneeName) {
-				throw new Error("Assignee not found");
-			}
-		}
 
 		const task = await this.db.task.update({
 			where: { id: args.id },
-			data: { ...args, assigneeName },
+			data: args,
 		});
 
 		if (!task) {
