@@ -200,6 +200,7 @@ export class AuthService implements AuthRpc {
 				where: { id: decoded.user },
 				data: { password: hashedPassword },
 			});
+			return;
 		}
 		throw new Error("Invalid token");
 	}
