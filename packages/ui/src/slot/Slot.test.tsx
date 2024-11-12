@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Slot, Slottable } from "../slot";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Slot, Slottable } from "../slot";
 
 describe("given a slotted Trigger", () => {
 	describe("with onClick on itself", () => {

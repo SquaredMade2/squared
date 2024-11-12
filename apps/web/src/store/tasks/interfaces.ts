@@ -1,9 +1,9 @@
 import type { Task } from "@squared/db";
-import type { ApiReturnType } from "../interfaces";
 
 export type TaskState = {
 	tasks: Task[];
 	currentTask: Task | null;
+	subtasks: Task[];
 };
 
 export interface TaskResponse {
@@ -13,22 +13,12 @@ export interface TaskResponse {
 }
 
 type TaskActions = {
-	addTask: (task: Partial<Task>) => Promise<TaskResponse>;
-	updateTask: (taskId: string, task: Partial<Task>) => Promise<TaskResponse>;
 	setCurrentTask: (task: Task) => void;
-	deleteTask: (taskId: string) => Promise<void>;
-	setTaskList: (tasks: Task[]) => void;
-	getTask: (taskId: string) => Promise<TaskResponse>;
-	getTaskByIdentifier: (
-		workspaceId: string,
-		taskIdentifier: string,
-	) => Promise<TaskResponse>;
-	getAllTasks: (teamId: string) => Promise<Task[]>;
-	toggleSprintTasks: (
-		teamId: string,
-		sprintId: string,
-		type: "add" | "remove",
-	) => Promise<ApiReturnType<Task[]>>;
+	setTasks: (tasks: Task[]) => void;
+	setSubtasks: (subtasks: Task[]) => void;
+	updateTask: (task: Task) => void;
+	createTask: (task: Task) => void;
+	deleteTask: (taskId: string) => void;
 };
 
 export type TaskStore = TaskState & TaskActions;

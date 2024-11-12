@@ -1,36 +1,40 @@
 "use client";
-import { useState } from "react";
-import { Tag } from "lucide-react";
-import type { ContextMenuProps } from "./interfaces";
 import {
 	ContextMenuCheckboxItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { useTaskStore } from "@/store";
-import { useWorkspaceStore } from "@/store";
+import { taskService } from "@/lib/services";
+import { useTaskStore, useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
+import { Tag } from "lucide-react";
+import { useState } from "react";
 import { LabelColor } from "../TaskCardLabels";
+import type { ContextMenuProps } from "./interfaces";
 
 const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-
-	const [labels, setLabels] = useState<Label[]>(
-		currentWorkspace?.Labels.filter((label) =>
-			task.labels.includes(label.id),
-		) || [],
-	);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { updateTask } = useTaskStore((state) => state);
 
-	const handleLabelChange = (label: Label, checked: boolean) => {
+	const [labels, setLabels] = useState<Label[]>(
+		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [],
+	);
+
+	const handleLabelChange = async (label: Label, checked: boolean) => {
 		// Calculate the updated labels before setting the state
 		const updatedLabels = checked
 			? [...labels, label]
 			: labels.filter((l) => l.id !== label.id);
 
 		setLabels(updatedLabels); // Update the state
-		updateTask(task.id, { labels: updatedLabels.map((l) => l.id) }); // Update the task
+		updateTask(
+			await taskService.updateTask(TODO, {
+				id: task.id,
+				labels: updatedLabels.map((l) => l.id),
+			}),
+		); // Update the task
 	};
 
 	return (
@@ -42,7 +46,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{currentWorkspace?.Labels.map((label) => {
+				{workspace?.Labels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
 							key={label.id}

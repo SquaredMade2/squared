@@ -1,36 +1,35 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import SettingsTopNavBar from "@/components/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useUserStore, useAuthStore } from "@/store";
+import { useUserStore } from "@/store";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const GithubSettings: React.FC = () => {
-	const authUser = useAuthStore((state) => state.user);
-	const { connectedRepos, getUserRepositories } = useUserStore((state) => ({
-		connectedRepos: state.connectedRepos,
-		getUserRepositories: state.getUserRepositories,
-	}));
+	const { connectedRepos, user } = useUserStore((state) => state);
+	const getUserRepositories = useUserStore(
+		(state) => state.getUserRepositories,
+	);
 	const router = useRouter();
 
 	useEffect(() => {
-		if (authUser?.id) {
-			getUserRepositories(authUser.id);
+		if (user?.id) {
+			getUserRepositories(user.id);
 		}
-	}, [authUser, getUserRepositories]);
+	}, [user?.id, getUserRepositories]);
 
 	const handleClick = (): void => {
-		if (!authUser?.id) return;
+		if (!user?.id) return;
 
 		router.push(
-			`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_SERVER}/api/integration/github/oauth&scope=repo,user&state=${authUser.id}`,
+			`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_SERVER}/api/integration/github/oauth&scope=repo,user&state=${user.id}`,
 		);
 	};
 

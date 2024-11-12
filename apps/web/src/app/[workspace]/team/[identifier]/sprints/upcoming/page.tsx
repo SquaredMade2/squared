@@ -1,10 +1,10 @@
 "use client";
 
-import { useSprints } from "@/hooks/useSprints";
 import { SprintError, SprintLoading } from "@/components/Sprints";
-import { useTaskStore } from "@/store";
 import { SprintCard } from "@/components/Sprints/SprintCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSprints } from "@/hooks/useSprints";
+import { useTaskStore } from "@/store";
 
 export default function UpcomingSprints() {
 	const { workspace, team, sprints, loading, error } = useSprints();

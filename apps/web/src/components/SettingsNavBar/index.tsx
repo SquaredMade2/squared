@@ -1,23 +1,23 @@
 "use client";
 
-import type React from "react";
-import { useRouter } from "next/navigation";
-import {
-	BriefcaseBusiness,
-	CircleUser,
-	Plus,
-	Users,
-	Sun,
-	Moon,
-	ArrowLeft,
-} from "lucide-react";
-import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useTeamStore, useViewStore } from "@/store";
 import type { Team } from "@squared/db";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+	ArrowLeft,
+	BriefcaseBusiness,
+	CircleUser,
+	Moon,
+	Plus,
+	Sun,
+	Users,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
+import type React from "react";
 import {
 	Accordion,
 	AccordionContent,
@@ -178,7 +178,7 @@ const SidebarContent = ({
 const SettingsNavBar = (): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
-	const { setCurrentTeam, teams } = useTeamStore((state) => state);
+	const { setTeam, teams } = useTeamStore((state) => state);
 	const { showMobileNavbar, setShowMobileNavbar } = useViewStore(
 		(state) => state,
 	);
@@ -188,7 +188,7 @@ const SettingsNavBar = (): React.ReactElement => {
 	};
 
 	const handleTeamClick = (team: Team, path?: string) => {
-		setCurrentTeam(team);
+		setTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
 

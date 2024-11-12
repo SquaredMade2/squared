@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useWorkspaceStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { workspaceService } from "@/lib/services";
+import { TODO } from "@squared/context";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function JoinWorkspace() {
 	const { data: session, status } = useSession();
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { joinWorkspace } = useWorkspaceStore((state) => state);
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 
@@ -32,11 +32,11 @@ export default function JoinWorkspace() {
 			if (!token) {
 				throw new Error("Invalid token");
 			}
-			const { workspace, message, variant } = await joinWorkspace(
+			const workspace = await workspaceService.joinWorkspace(TODO, {
 				token,
-				session.user.id,
-			);
-			toast({ title: message, variant });
+				userId: session.user.id,
+			});
+			toast({ title: "Workspace joined successfully" });
 			if (workspace?.url) {
 				router.push(`/${workspace.url}`);
 			}

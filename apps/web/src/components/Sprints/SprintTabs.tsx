@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Sprint, Task } from "@squared/db";
+import { useState } from "react";
 import { SprintCard } from "./SprintCard";
 
 interface SprintTabsProps {
@@ -44,7 +44,9 @@ export function SprintTabs({
 							<SprintCard sprint={activeSprint} tasks={tasks} isActive />
 						</>
 					)}
-					<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
+					{upcomingSprints.length > 0 && (
+						<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
+					)}
 					{upcomingSprints.map((sprint) => (
 						<SprintCard sprint={sprint} tasks={tasks} key={sprint.id} />
 					))}

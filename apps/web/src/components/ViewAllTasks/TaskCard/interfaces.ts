@@ -1,8 +1,8 @@
-import type { Task, Label, User } from "@squared/db";
+import type { Label, Task, User } from "@squared/db";
 
 export interface TaskGridProps {
 	task: Task;
-	user?: User;
+	user: User | null;
 	taskLabels: Label[];
 	currentWorkspaceUrl?: string;
 	isSubtask?: boolean;
@@ -12,7 +12,7 @@ export interface TaskListProps {
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
 	task: Task;
-	user?: User;
+	user: User | null;
 	taskLabels: Label[];
 	currentWorkspaceUrl?: string;
 }

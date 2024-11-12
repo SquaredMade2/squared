@@ -1,10 +1,17 @@
+import {
+	useFilterStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { getInitials } from "@/utils/formatting";
+import type { Task } from "@squared/db";
+import { Info, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Info, Trash } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import LabelBadge from "../LabelBadges";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -13,18 +20,11 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 } from "../ui/alert-dialog";
-import type { SavedFilter } from "@/store/filters";
-import {
-	useFilterStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import type { Task } from "@squared/db";
-import LabelBadge from "../LabelBadges";
-import { getInitials } from "@/utils/formatting";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;
@@ -37,12 +37,12 @@ const ViewsDetailSidebar = ({
 }: ViewsDetailSidebarProps) => {
 	const router = useRouter();
 	const { users } = useUserStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { team } = useTeamStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { tasks } = useTaskStore((state) => state);
 	const { deleteSavedFilter } = useFilterStore((state) => state);
 	const filteredTasks = filterTasksWithFilter(tasks);
-	const allLabels = currentWorkspace?.Labels;
+	const allLabels = workspace?.Labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const author = users.find((u) => u.id === filter.authorId);
@@ -100,7 +100,7 @@ const ViewsDetailSidebar = ({
 						<div className="flex justify-between items-center">
 							<span className="text-xs">Visibility</span>
 							<Badge variant="outline" className="">
-								{currentTeam?.name}
+								{team?.name}
 							</Badge>
 						</div>
 						<div className="flex justify-between items-center">

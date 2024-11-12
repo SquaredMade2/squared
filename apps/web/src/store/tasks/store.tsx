@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useRef, useContext, type ReactNode } from "react";
+import { type ReactNode, createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
-import { createTaskStore, type TaskStore } from ".";
+import { type TaskStore, createTaskStore } from ".";
 
 type TaskStoreApi = ReturnType<typeof createTaskStore>;
 

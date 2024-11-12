@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { useTheme } from "next-themes";
-import { MoonIcon } from "lucide-react";
 import { IconSunLow } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import { MoonIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import * as React from "react";
 
 export function ModeToggle() {
 	const { resolvedTheme, setTheme } = useTheme();

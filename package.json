@@ -16,10 +16,11 @@
     "docker:db:down": "pnpm --filter=@squared/seed run docker:db:down",
     "docker:db:seed": "pnpm --filter=@squared/seed run db:seed",
     "docker:up": "docker compose up",
+    "docker:db:rebuild": "pnpm docker:db:down && pnpm docker:db:init",
     "dev": "turbo run dev",
     "check-types": "turbo run check-types",
     "clean": "turbo run clean",
-    "format:write": "biome format --write .",
+    "format:write": "biome format --write . && biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true --write .",
     "format:check": "biome format .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
@@ -63,5 +64,5 @@
       ]
     }
   },
-  "packageManager": "pnpm@9.11.0"
+  "packageManager": "pnpm@9.12.3"
 }

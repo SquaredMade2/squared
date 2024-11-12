@@ -1,7 +1,7 @@
 import * as React from "react";
 import { composeEventHandlers } from "../primitive";
-import { useControllableState } from "../use-controllable-state";
 import { Primitive } from "../react-primitive";
+import { useControllableState } from "../use-controllable-state";
 
 /* -------------------------------------------------------------------------------------------------
  * Toggle

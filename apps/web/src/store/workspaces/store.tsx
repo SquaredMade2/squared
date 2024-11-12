@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useRef, useContext, type ReactNode } from "react";
+import { type ReactNode, createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
-import { createWorkspaceStore, type WorkspaceStore } from ".";
+import { type WorkspaceStore, createWorkspaceStore } from ".";
 
 type WorkspaceStoreApi = ReturnType<typeof createWorkspaceStore>;
 

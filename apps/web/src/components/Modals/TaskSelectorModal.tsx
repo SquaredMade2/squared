@@ -1,6 +1,10 @@
 "use client";
 
-import { DialogTitle } from "../ui/dialog";
+import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
+import { formatUrl } from "@/utils/formatting";
+import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { useRouter } from "next/navigation";
+import { StatusIcon } from "../Icons";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -9,19 +13,15 @@ import {
 	CommandItem,
 	CommandList,
 } from "../ui/command";
-import { useTaskStore, useModalStore, useWorkspaceStore } from "@/store";
+import { DialogTitle } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
-import { StatusIcon } from "../Icons";
-import { formatUrl } from "@/utils/formatting";
-import { useRouter } from "next/navigation";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
 
 export function TaskSelector() {
 	const router = useRouter();
 	const { showTaskSelector: open, setShowTaskSelector: setOpen } =
 		useModalStore((state) => state);
 	const { tasks, setCurrentTask } = useTaskStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	return (
 		<CommandDialog open={open} onOpenChange={setOpen}>
@@ -39,7 +39,7 @@ export function TaskSelector() {
 								onSelect={() => {
 									setCurrentTask(task);
 									router.push(
-										`/${currentWorkspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
+										`/${workspace?.url}/task/${task?.identifier}/${formatUrl(task.title)}`,
 									);
 									setOpen(false);
 								}}

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import LabelBadge from "@/components/LabelBadges";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -13,10 +13,10 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Tag, Check } from "lucide-react";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
-import LabelBadge from "@/components/LabelBadges";
+import { Check, Tag } from "lucide-react";
+import { useMemo, useState } from "react";
 
 const LabelColor = ({ label }: { label: Label }) => {
 	const { color } = label;
@@ -31,13 +31,10 @@ const LabelColor = ({ label }: { label: Label }) => {
 
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 
-	const taskLabels = useMemo(
-		() => currentWorkspace?.Labels || [],
-		[currentWorkspace],
-	);
+	const taskLabels = useMemo(() => workspace?.Labels || [], [workspace]);
 	const newIssueLabels = useMemo(
 		() => taskLabels.filter((label) => newIssueData.labels?.includes(label.id)),
 		[taskLabels, newIssueData.labels],

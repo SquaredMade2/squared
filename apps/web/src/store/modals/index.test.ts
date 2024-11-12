@@ -1,6 +1,6 @@
 import { STANDARD_TASK } from "@/test/mocks";
-import { createModalStore } from ".";
 import type { Task } from "@squared/db";
+import { createModalStore } from ".";
 
 describe("ModalStore", () => {
 	let store: ReturnType<typeof createModalStore>;
@@ -19,7 +19,9 @@ describe("ModalStore", () => {
 			showWorkspaceInvite: false,
 			showSwitchWorkspace: false,
 			showTaskSelector: false,
+			showLinkForm: false,
 			newIssueData: {},
+			setShowLinkForm: expect.any(Function),
 			setShowNewIssue: expect.any(Function),
 			setShowRename: expect.any(Function),
 			setRenameData: expect.any(Function),

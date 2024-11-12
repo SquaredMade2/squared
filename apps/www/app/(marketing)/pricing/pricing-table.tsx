@@ -1,8 +1,8 @@
 "use client";
 import { useId } from "react";
 
-import { IconCheck } from "@tabler/icons-react";
 import { tiers } from "@/constants/tier";
+import { IconCheck } from "@tabler/icons-react";
 
 export function PricingTable() {
 	const CheckIcon = () => {

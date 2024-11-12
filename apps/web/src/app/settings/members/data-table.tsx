@@ -2,20 +2,20 @@
 
 import {
 	type ColumnDef,
+	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
-	useReactTable,
-	type ColumnFiltersState,
 	getFilteredRowModel,
+	useReactTable,
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
 import { useModalStore } from "@/store";
 import type { Workspace } from "@squared/db";
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

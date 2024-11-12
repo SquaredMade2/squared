@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
-import { cn } from "@/utils/cn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -18,46 +16,63 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { taskService } from "@/lib/services";
+import { useTaskStore, useUserStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import type { ButtonProps } from "./interfaces";
+import { TODO } from "@squared/context";
+import type { User } from "@squared/db";
+import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function AssigneeCombobox({ currentTask }: ButtonProps) {
+const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
+	const [assignee, setAssignee] = useState<User | null>(null);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
+
+	const users = useUserStore((state) => state.users);
+	useEffect(() => {
+		const foundUser = users.find((user) => user.id === currentTask?.assigneeId);
+		setAssignee(foundUser ?? null);
+	}, [currentTask, users]);
 
 	// Move these to a custom hook or memoize if needed
-	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const updateTask = useTaskStore((state) => state.updateTask);
-	const users = useUserStore((state) => state.users);
-	const getAllUsers = useUserStore((state) => state.getAllUsers);
+	if (!currentTask) return null;
 
 	// Derive values from props instead of state
 	const taskId = currentTask?.id ?? "";
-	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeName = assignee?.name ?? "";
 	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
-	// Only fetch users when workspace changes
-	useEffect(() => {
-		if (currentWorkspace?.id) {
-			getAllUsers(currentWorkspace.id);
-		}
-	}, [currentWorkspace?.id, getAllUsers]);
-
 	const handleSelectAssignee = async (userId: string | null) => {
-		setOpen(false); // Close popover after selection
+		if (!userId) {
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: null,
+				}),
+			);
+			setCurrentTask({ ...currentTask, assigneeId: null });
+			return;
+		}
+		const selectedUser = users.find((user) => user.id === userId);
 
-		if (!taskId) return; // Guard clause for no task
-
-		const updates = userId
-			? {
-					assigneeId: userId,
-					assigneeName: users.find((user) => user.id === userId)?.name ?? "",
-				}
-			: { assigneeId: null, assigneeName: null };
-
-		await updateTask(taskId, updates);
+		if (selectedUser) {
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: selectedUser.id,
+				}),
+			);
+			setCurrentTask({
+				...currentTask,
+				assigneeId: selectedUser.id,
+			});
+		}
+		setOpen(false);
 	};
 
 	return (
@@ -100,7 +115,7 @@ export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											!assigneeId ? "opacity-100" : "opacity-0",
+											assigneeId === "" ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
@@ -114,7 +129,7 @@ export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 											<AvatarImage src={user.avatarUrl ?? ""} />
 											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
 										</Avatar>
-										<span className="w-2/3 truncate ml-2">{user.username}</span>
+										<span className="w-2/3 truncate ml-2">{user.name}</span>
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",
@@ -130,4 +145,6 @@ export default function AssigneeCombobox({ currentTask }: ButtonProps) {
 			</PopoverContent>
 		</Popover>
 	);
-}
+};
+
+export default AssigneeCombobox;

@@ -1,4 +1,4 @@
-import { createLogger, format, transports, type Logger } from "winston";
+import { type Logger, createLogger, format, transports } from "winston";
 
 // Define the log levels we want to support
 const logLevels = {

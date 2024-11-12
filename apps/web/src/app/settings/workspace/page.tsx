@@ -1,19 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useAuthStore, useWorkspaceStore } from "@/store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -25,14 +12,29 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { workspaceService } from "@/lib/services";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -49,10 +51,11 @@ const formSchema = z.object({
 });
 
 export default function WorkspaceSettings() {
-	const { deleteWorkspace, getAllWorkspaces, updateWorkspace } =
-		useWorkspaceStore((state) => state);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
-	const { user } = useAuthStore((state) => state);
+	const { deleteWorkspace, updateWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
+	const { workspace, workspaces, loading: workspaceLoading } = useWorkspaces();
+	const { user } = useUserStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
@@ -61,20 +64,18 @@ export default function WorkspaceSettings() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: currentWorkspace?.name || "",
-			url:
-				currentWorkspace?.url.replace("https://app.squaredmade.com/", "") || "",
+			name: workspace?.name || "",
+			url: workspace?.url.replace("https://app.squaredmade.com/", "") || "",
 		},
 	});
 
 	useEffect(() => {
-		if (!currentWorkspace) return;
+		if (!workspace) return;
 
 		const subscription = form.watch((value) => {
 			if (
-				value.name !== currentWorkspace.name ||
-				value.url !==
-					currentWorkspace.url.replace("https://app.squaredmade.com/", "")
+				value.name !== workspace.name ||
+				value.url !== workspace.url.replace("https://app.squaredmade.com/", "")
 			) {
 				setIsFormChanged(true);
 			} else {
@@ -83,17 +84,19 @@ export default function WorkspaceSettings() {
 		});
 
 		return () => subscription.unsubscribe();
-	}, [form, currentWorkspace]);
+	}, [form, workspace]);
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			const response = await updateWorkspace(currentWorkspace.id, {
-				name: values.name,
-				url: values.url,
+			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
+				workspaceId: workspace.id,
+				workspace: { name: values.name, url: values.url },
 			});
-			toast(response);
+			updateWorkspace(updatedWorkspace);
+
+			toast({ title: "Workspace updated successfully" });
 			setIsFormChanged(false);
 		} catch (error) {
 			console.error("Error updating workspace:", error);
@@ -106,9 +109,8 @@ export default function WorkspaceSettings() {
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		await deleteWorkspace(currentWorkspace.id);
+		await deleteWorkspace(workspace.id);
 		if (user) {
-			const workspaces = await getAllWorkspaces(user.id);
 			if (workspaces.length > 0) {
 				router.replace(`/${workspaces[0].id}`);
 			} else {
@@ -137,17 +139,14 @@ export default function WorkspaceSettings() {
 
 			<div className="flex items-center space-x-4 mb-6">
 				<Avatar className="size-28">
-					<AvatarImage
-						src={currentWorkspace.avatarUrl ?? ""}
-						alt="Workspace Logo"
-					/>
+					<AvatarImage src={workspace.avatarUrl ?? ""} alt="Workspace Logo" />
 					<AvatarFallback className="text-5xl">
-						{currentWorkspace.name[0]}
+						{workspace.name[0]}
 					</AvatarFallback>
 				</Avatar>
 				<div>
-					<h2 className="text-xl font-semibold">{currentWorkspace.name}</h2>
-					<p className="text-muted-foreground">{currentWorkspace.url}</p>
+					<h2 className="text-xl font-semibold">{workspace.name}</h2>
+					<p className="text-muted-foreground">{workspace.url}</p>
 				</div>
 			</div>
 

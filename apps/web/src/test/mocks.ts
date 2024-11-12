@@ -1,17 +1,16 @@
-import type { NotificationTask } from "@/store/notifications";
 import type {
-	Commit,
-	Task,
-	TaskEvent,
-	User,
-	Workspace,
-	Notification,
 	Comment,
+	Commit,
+	Label,
+	Notification,
+	RetrospectiveItem,
 	SavedFilter,
 	Sprint,
+	Task,
+	TaskEvent,
 	Team,
-	RetrospectiveItem,
-	Label,
+	User,
+	Workspace,
 } from "@squared/db";
 
 export const STANDARD_USER: User = {
@@ -51,8 +50,6 @@ export const STANDARD_TEAM: Team = {
 	sprintsEnabled: true,
 	sprintDuration: 2,
 	cooldownDuration: 1,
-	upcomingSprints: 3,
-	activeRequired: true,
 	sprintStartDate: new Date("2023-01-01"),
 	tasksPerSprint: 10,
 	effort: "LINEAR",
@@ -66,8 +63,6 @@ export const STANDARD_TEAM_2: Team = {
 	sprintsEnabled: false,
 	sprintDuration: 1,
 	cooldownDuration: 0,
-	upcomingSprints: 2,
-	activeRequired: false,
 	sprintStartDate: new Date("2023-02-01"),
 	tasksPerSprint: 8,
 	effort: "FIBONACCI",
@@ -85,13 +80,13 @@ export const STANDARD_TASK: Task = {
 	teamId: "team-1",
 	dateCreated: new Date(),
 	assigneeId: null,
-	assigneeName: null,
 	labels: [],
 	workspaceId: STANDARD_WORKSPACE.id,
 	updatedAt: new Date(),
 	deleted: false,
 	parentId: null,
 	sprintId: null,
+	order: 0,
 	priority: "medium",
 };
 export const STANDARD_TASK_2: Task = {
@@ -106,7 +101,7 @@ export const STANDARD_TASK_2: Task = {
 	teamId: "team-1",
 	dateCreated: new Date(),
 	assigneeId: null,
-	assigneeName: null,
+	order: 1,
 	labels: [],
 	workspaceId: STANDARD_WORKSPACE.id,
 	updatedAt: new Date(),
@@ -119,6 +114,7 @@ export const STANDARD_TASK_2: Task = {
 export const STANDARD_SPRINT: Sprint = {
 	id: "007168DD-DD4A-4013-9D5C-A3E6AE6868E5",
 	name: "Sprint 1",
+	description: "First sprint",
 	startDate: new Date("2023-01-01"),
 	endDate: new Date("2023-01-14"),
 	status: "ACTIVE",
@@ -221,55 +217,24 @@ export const STANDARD_NOTIFICATION_2: Notification = {
 	dismissed: false,
 };
 
-export const STANDARD_NOTIFICATION_TASK: NotificationTask = {
-	...STANDARD_NOTIFICATION,
-	Task: STANDARD_TASK,
-	Workspace: STANDARD_WORKSPACE,
-};
-export const STANDARD_NOTIFICATION_TASK_2: NotificationTask = {
-	...STANDARD_NOTIFICATION_2,
-	Task: STANDARD_TASK,
-	Workspace: STANDARD_WORKSPACE,
-};
-
 export const STANDARD_COMMIT: Commit = {
 	id: "FC3AB6C7-90C5-4376-AA9F-F1768CA6A085",
-	treeId: "tree1",
-	distinct: true,
 	message: "Initial commit",
-	timestamp: "2023-06-01T12:00:00Z",
 	url: "https://github.com/repo/commit/1",
 	authorName: STANDARD_USER.name,
-	authorEmail: STANDARD_USER.email,
-	authorUsername: STANDARD_USER.username,
-	committerName: STANDARD_USER.name,
-	committerEmail: STANDARD_USER.email,
-	committerUsername: STANDARD_USER.username,
-	added: ["file1.txt"],
-	removed: [],
-	modified: [],
 	repoName: "repo",
 	owner: "owner",
-	activityId: "activity1",
+	taskId: STANDARD_TASK.id,
+	branchId: "branch-1",
+	timestamp: new Date("2023-06-01T12:00:00Z"),
 };
 
 export const STANDARD_TASK_EVENT: TaskEvent = {
 	id: "8057DA5D-3412-4CB6-B192-7FE060AE1B9F",
-	type: "CREATED",
 	authorId: STANDARD_USER.id,
-	authorName: STANDARD_USER.name,
-	activityId: "activity1",
 	createdAt: new Date(),
 	taskId: "task1",
-	originalValue: null,
-	updatedValue: null,
-	originalAssigneeId: null,
-	originalAssigneeName: null,
-	updatedAssigneeId: null,
-	updatedAssigneeName: null,
-	gitUpdated: null,
-	originalLabels: [],
-	updatedLabels: [],
+	message: "Task created",
 };
 
 export const STANDARD_LABEL: Label = {

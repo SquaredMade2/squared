@@ -1,19 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-	useFilterStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-	useAuthStore,
-} from "@/store";
 import {
 	Form,
 	FormControl,
@@ -23,12 +10,24 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	useFilterStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { formatFilterName } from "@/utils/formatting";
+import { parseParams } from "@/utils/parseParams";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
-import { formatFilterName } from "@/utils/formatting";
-import type { SavedFilter } from "@/store/filters";
-import { useParams, usePathname } from "next/navigation";
-import { parseParams } from "@/utils/parseParams";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),
@@ -47,10 +46,9 @@ export function SaveFilterForm({
 		clearFilter,
 		mergeFilters,
 	} = useFilterStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { getAllUsers } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const user = useAuthStore((state) => state.user);
+	const { team } = useTeamStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const [isSaving, setIsSaving] = useState(false);
 	const [formattedFilters, setFormattedFilters] = useState<
@@ -93,14 +91,10 @@ export function SaveFilterForm({
 
 	useEffect(() => {
 		const formatFilters = async () => {
-			if (currentWorkspace) {
+			if (workspace) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
-						formatFilterName(
-							filter,
-							currentWorkspace.Labels,
-							getAllUsers(currentWorkspace.id),
-						),
+						formatFilterName(filter, workspace.Labels, users),
 					),
 				);
 				setFormattedFilters(formatted);
@@ -111,7 +105,7 @@ export function SaveFilterForm({
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
-		if (!currentTeam) {
+		if (!team) {
 			toast({
 				title: "Error",
 				description: "No team found",
@@ -143,14 +137,14 @@ export function SaveFilterForm({
 					});
 				}
 				//create new view
-			} else if (currentTeam) {
+			} else if (team) {
 				await saveFilter({
 					name: values.title,
 					description: values.description ?? null,
 					filter: currentFilters,
 					type: "TEAM",
-					teamId: currentTeam.id,
-					workspaceId: currentWorkspace?.id,
+					teamId: team.id,
+					workspaceId: workspace?.id,
 					authorId: user?.id,
 				});
 				toast({

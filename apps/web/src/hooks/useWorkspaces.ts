@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
-import type { Workspace } from "@/store/workspaces";
 import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {
 	const { user, loading: userLoading, error: userError } = useAuthUser();
-	const { currentWorkspace, getAllWorkspaces, setCurrentWorkspace } =
+	const { workspace, workspaces, setWorkspace, setWorkspaces } =
 		useWorkspaceStore((state) => state);
 	const [loading, setLoading] = useState(true);
-	const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 	const [error, setError] = useState<string | null>(null);
 
 	const params = useParams();
@@ -25,14 +25,14 @@ export function useWorkspaces() {
 
 			try {
 				if (user) {
-					const allWorkspaces = await getAllWorkspaces(user.id);
+					const allWorkspaces = await workspaceService.getUserWorkspaces(TODO, {
+						userId: user.id,
+					});
 					setWorkspaces(allWorkspaces);
-					const workspace = allWorkspaces?.find(
-						(ws) => ws.url === workspaceUrl,
+					setWorkspace(
+						allWorkspaces?.find((ws) => ws.url === workspaceUrl) ?? null,
 					);
-					if (workspace) {
-						setCurrentWorkspace(workspace);
-					} else if (workspaceUrl) {
+					if (workspaceUrl && !workspace) {
 						setError(`Workspace with URL "${workspaceUrl}" not found`);
 					}
 				} else if (userError) {
@@ -57,7 +57,7 @@ export function useWorkspaces() {
 		user,
 		loading: userLoading || loading,
 		error: userError || error,
-		currentWorkspace,
+		workspace,
 		workspaces,
 	};
 }
