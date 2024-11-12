@@ -19,6 +19,7 @@ import {
 	LayoutGrid,
 	SlidersVertical,
 } from "lucide-react";
+import { useEffect } from "react";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,
@@ -56,6 +57,23 @@ const TopNavBarDisplay = () => {
 	const groupByOptions: TaskGroup[] = TaskGroupOptions;
 	const completedPeriodOptions: CompletedTaskPeriod[] =
 		CompletedTaskPeriodOptions;
+
+	useEffect(() => {
+		if (groupTasksBy === taskOrder.orderBy) {
+			const orderMap: { [key in "Priority" | "Status" | "Assignee"]: string } =
+				{
+					Priority: "Status",
+					Status: "Priority",
+					Assignee: "Status",
+				};
+			setOptions({
+				taskOrder: {
+					...taskOrder,
+					orderBy: orderMap[groupTasksBy as "Priority" | "Status" | "Assignee"],
+				},
+			});
+		}
+	}, [groupTasksBy, taskOrder.orderBy]);
 
 	const tooltipContent = (): string => {
 		return ["Title", "Status", "Assignee"].includes(taskOrder.orderBy)
@@ -163,7 +181,6 @@ const TopNavBarDisplay = () => {
 											<DropdownMenuItem
 												key={option}
 												className="text-xs"
-												disabled={option === taskOrder.orderBy}
 												onSelect={() =>
 													setOptions({
 														groupTasksBy: option,
@@ -190,20 +207,21 @@ const TopNavBarDisplay = () => {
 										</Button>
 									</DropdownMenuTrigger>
 									<DropdownMenuContent className="w-[120px]">
-										{orderByOptions.map((option) => (
-											<DropdownMenuItem
-												key={option}
-												className="text-xs"
-												disabled={option === groupTasksBy}
-												onSelect={() =>
-													setOptions({
-														taskOrder: { ...taskOrder, orderBy: option },
-													})
-												}
-											>
-												{option}
-											</DropdownMenuItem>
-										))}
+										{orderByOptions
+											.filter((option) => option !== groupTasksBy)
+											.map((option) => (
+												<DropdownMenuItem
+													key={option}
+													className="text-xs"
+													onSelect={() =>
+														setOptions({
+															taskOrder: { ...taskOrder, orderBy: option },
+														})
+													}
+												>
+													{option}
+												</DropdownMenuItem>
+											))}
 									</DropdownMenuContent>
 								</DropdownMenu>
 								<Tooltip>
