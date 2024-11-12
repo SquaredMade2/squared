@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useUserStore } from "@/store";
+import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -28,8 +28,7 @@ const formSchema = z.object({
 
 export default function Profile() {
 	const { toast } = useToast();
-	const { user } = useAuthStore((state) => state);
-	const { updateUser } = useUserStore((state) => state);
+	const { updateUser, user } = useUserStore((state) => state);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -57,7 +57,7 @@ export default function WorkspaceSettings() {
 		workspaces,
 		loading: workspaceLoading,
 	} = useWorkspaces();
-	const { user } = useAuthStore((state) => state);
+	const { user } = useUserStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();

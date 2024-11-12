@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { ChevronLeft } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -17,8 +17,7 @@ const Join = () => {
 	const { getAllWorkspaces, workspaces, addWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { user, setUser } = useAuthStore((state) => state);
-	const { updateUser, getUser } = useUserStore((state) => state);
+	const { updateUser, getUser, user, setUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 

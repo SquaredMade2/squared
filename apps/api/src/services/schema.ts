@@ -4,6 +4,8 @@ import type {
 	Notification,
 	Sprint,
 	Task,
+	Team,
+	User,
 	Workspace,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
@@ -106,5 +108,40 @@ export const commentSchema = createSchema<Comment>()(
 		authorId: z.string(),
 		taskId: z.string(),
 		date: z.date(),
+	}),
+);
+
+export const userSchema = createSchema<User>()(
+	z.object({
+		id: z.string().uuid(),
+		name: z.string(),
+		username: z.string().nullable(),
+		email: z.string().email(),
+		password: z.string().nullable(),
+		verified: z.boolean(),
+		lastLogin: z.date(),
+		onBoarding: z.boolean(),
+		defaultWorkspaceId: z.string().nullable(),
+		avatarUrl: z.string().nullable(),
+		savedNotificationIds: z.array(z.string()),
+		subscribedTasks: z.array(z.string()),
+		googleId: z.string().nullable(),
+		githubUsername: z.string().nullable(),
+		githubId: z.string().nullable(),
+	}),
+);
+
+export const teamSchema = createSchema<Team>()(
+	z.object({
+		name: z.string().nullable(),
+		id: z.string(),
+		identifier: z.string(),
+		workspaceId: z.string(),
+		sprintsEnabled: z.boolean(),
+		sprintDuration: z.number(),
+		cooldownDuration: z.number(),
+		sprintStartDate: z.date(),
+		tasksPerSprint: z.number(),
+		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
 	}),
 );

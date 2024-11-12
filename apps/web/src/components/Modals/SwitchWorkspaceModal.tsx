@@ -16,14 +16,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { taskService } from "@/lib/services";
-import {
-	useAuthStore,
-	useModalStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
+import { teamService } from "@/lib/services";
+import { useModalStore, useUserStore, useWorkspaceStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
 import { Check, PlusCircle } from "lucide-react";
@@ -36,20 +30,19 @@ export function WorkspaceSwitcher() {
 		useModalStore((state) => state);
 	const { workspaces, currentWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
-	const { user } = useAuthStore((state) => state);
-	const { setTasks } = useTaskStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const [selectedWorkspace, setSelectedWorkspace] = useState(currentWorkspace);
 	const router = useRouter();
 
 	useEffect(() => {
 		if (selectedWorkspace) {
 			const switchWorkspace = async () => {
-				const newTeams = user ? await getAllTeams(user.id) : [];
-				setCurrentTeam(newTeams[0]);
-				setTasks(
-					await taskService.getTeamTasks(TODO, { teamId: newTeams[0].id }),
-				);
+				const newTeams = user
+					? await teamService.getUserTeams(TODO, {
+							userId: user.id,
+							workspaceId: selectedWorkspace.id,
+						})
+					: [];
 				router.push(
 					`/${selectedWorkspace.url}/team/${newTeams[0].identifier}/all`,
 				);
