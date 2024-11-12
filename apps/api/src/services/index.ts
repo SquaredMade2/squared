@@ -20,24 +20,32 @@ const prisma = new PrismaClient({
 
 const secret = process.env.JWT_SECRET;
 
+const auth = new AuthService(prisma, secret);
+const comment = new CommentService(prisma);
+const event = new EventService(prisma);
+const sprint = new SprintService(prisma);
+const team = new TeamService(prisma);
+const task = new TaskService(prisma);
+const workspace = new WorkspaceService(prisma, secret);
+
 export const services = {
-	sprint: new SprintService(prisma),
-	event: new EventService(prisma),
-	task: new TaskService(prisma),
-	comment: new CommentService(prisma),
-	workspace: new WorkspaceService(prisma, secret),
-	auth: new AuthService(prisma, secret),
-	team: new TeamService(prisma),
+	auth,
+	comment,
+	event,
+	sprint,
+	team,
+	task,
+	workspace,
 };
 
 export const rpcHandlers = {
-	sprint: createSprintRpcHandler(services.sprint),
-	event: createEventRpcHandler(services.event),
-	task: createTaskRpcHandler(services.task),
-	comment: createCommentRpcHandler(services.comment),
-	workspace: createWorkspaceRpcHandler(services.workspace),
 	auth: createAuthRpcHandler(services.auth),
+	comment: createCommentRpcHandler(services.comment),
+	event: createEventRpcHandler(services.event),
+	sprint: createSprintRpcHandler(services.sprint),
+	task: createTaskRpcHandler(services.task),
 	team: createTeamRpcHandler(services.team),
+	workspace: createWorkspaceRpcHandler(services.workspace),
 };
 
 export type Services = typeof services;
