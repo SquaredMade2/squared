@@ -24,7 +24,7 @@ export default {
 					},
 				},
 				500: {
-					description: "Internal server error",
+					description: "Error logging out: Internal server error",
 				},
 			},
 		},
