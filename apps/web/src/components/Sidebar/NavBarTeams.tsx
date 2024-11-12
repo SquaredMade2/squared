@@ -1,15 +1,9 @@
 import { taskService } from "@/lib/services";
-import {
-	useAuthStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { Activity, Copy, Layers3 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 
@@ -25,15 +19,9 @@ const NavBarTeams = ({
 	active,
 }: NavBarTeamProps) => {
 	const currentWorkspace = useWorkspaceStore((state) => state.currentWorkspace);
-	const { teams, getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
+	const { teams, setTeam } = useTeamStore((state) => state);
 	const { setTasks } = useTaskStore((state) => state);
-	const { user } = useAuthStore((state) => state);
 	const { toast } = useToast();
-
-	useEffect(() => {
-		if (!user) return;
-		getAllTeams(user.id);
-	}, [user, getAllTeams]);
 
 	const router = useRouter();
 
@@ -49,7 +37,7 @@ const NavBarTeams = ({
 	const getTeamOnSelect = async () => {
 		const team = teams.find((team) => team.identifier === teamIdentifier);
 		if (team) {
-			setCurrentTeam(team);
+			setTeam(team);
 			setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
 		}
 	};

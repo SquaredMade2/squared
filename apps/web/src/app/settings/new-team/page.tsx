@@ -23,8 +23,10 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -52,7 +54,7 @@ export default function CreateTeam() {
 	const router = useRouter();
 	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, loading: teamLoading, authorized } = useTeams();
-	const { addTeam } = useTeamStore((state) => state);
+	const { createTeam: addTeam } = useTeamStore((state) => state);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -78,11 +80,13 @@ export default function CreateTeam() {
 		);
 
 		if (!doesTeamExist) {
-			await addTeam({
-				name: values.teamName.trim(),
-				identifier: values.teamIdentifier.toUpperCase(),
-				workspaceId: currentWorkspace.id,
-			});
+			addTeam(
+				await teamService.createTeam(TODO, {
+					name: values.teamName.trim(),
+					identifier: values.teamIdentifier.toUpperCase(),
+					workspaceId: currentWorkspace.id,
+				}),
+			);
 			router.push(
 				`/${currentWorkspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
 			);
