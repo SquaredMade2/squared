@@ -24,6 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
 import { useParams } from "next/navigation";
@@ -60,7 +61,7 @@ export function AssignTasksDialog({
 		activeSprint?.id,
 	);
 	const params = useParams();
-	let workspaceUrl = params.workspace;
+	const workspaceUrl = parseParams(params.workspace);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 
 	useEffect(() => {
@@ -73,9 +74,6 @@ export function AssignTasksDialog({
 
 	useEffect(() => {
 		const fetchWorkspace = async () => {
-			if (Array.isArray(workspaceUrl)) {
-				workspaceUrl = workspaceUrl[0];
-			}
 			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
 				url: workspaceUrl,
 			});
