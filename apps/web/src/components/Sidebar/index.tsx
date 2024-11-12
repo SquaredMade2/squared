@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { logout } from "@/lib/auth";
-import { eventService, teamService } from "@/lib/services";
+import { eventService, teamService, workspaceService } from "@/lib/services";
 import {
 	useModalStore,
 	useTeamStore,
@@ -26,17 +26,17 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
+import type { Workspace } from "@squared/db";
 import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { NewIssueButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
-function SidebarContent() {
-	const { workspace } = useWorkspaceStore((state) => state);
+function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const { teams, setTeams, team } = useTeamStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const { setShowCommand } = useModalStore((state) => state);
@@ -136,9 +136,22 @@ function SidebarContent() {
 }
 
 export function SidebarNav() {
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+	const params = useParams();
+	let workspaceUrl = params.workspace;
+	if (Array.isArray(workspaceUrl)) {
+		workspaceUrl = workspaceUrl[0];
+	}
 
-	if (!workspace) return null;
+	React.useEffect(() => {
+		const fetchWorkspace = async () => {
+			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
+				url: workspaceUrl,
+			});
+			setWorkspace(currentWorkspace);
+		};
+		fetchWorkspace();
+	}, [workspaceUrl]);
 
 	return (
 		<TooltipProvider delayDuration={0}>
@@ -147,7 +160,7 @@ export function SidebarNav() {
 					collapsible="icon"
 					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 				>
-					<SidebarContent />
+					<SidebarContent workspace={workspace} />
 				</Sidebar>
 				<ToggleSidebarButton />
 			</SidebarProvider>
