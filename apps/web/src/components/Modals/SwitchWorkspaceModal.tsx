@@ -28,10 +28,11 @@ import WorkspaceInitials from "../WorkspaceImage";
 export function WorkspaceSwitcher() {
 	const { showSwitchWorkspace: open, setShowSwitchWorkspace: setOpen } =
 		useModalStore((state) => state);
-	const { workspaces, currentWorkspace, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const user = useUserStore((state) => state.user);
-	const [selectedWorkspace, setSelectedWorkspace] = useState(currentWorkspace);
+	const [selectedWorkspace, setSelectedWorkspace] = useState(workspace);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -47,7 +48,7 @@ export function WorkspaceSwitcher() {
 					`/${selectedWorkspace.url}/team/${newTeams[0].identifier}/all`,
 				);
 			};
-			setCurrentWorkspace(selectedWorkspace);
+			setWorkspace(selectedWorkspace);
 			switchWorkspace();
 		}
 	}, [selectedWorkspace]);

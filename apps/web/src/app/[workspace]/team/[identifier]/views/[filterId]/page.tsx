@@ -54,13 +54,8 @@ export default function FilterViewPage() {
 		return filterTasks(customFilter(tasks, filter.filter));
 	};
 
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns, getTasksForGroup, getHiddenColumns } = useGroups(
 		filterTasksWithFilter,
@@ -74,14 +69,14 @@ export default function FilterViewPage() {
 		);
 	}
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 	if (!filter) return null;
 
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}

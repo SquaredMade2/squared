@@ -16,16 +16,14 @@ export const useCreateTask = () => {
 	const user = useUserStore((state) => state.user);
 	const { team } = useTeamStore((state) => state);
 	const { createTask: addTask } = useTaskStore((state) => state);
-	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 
 	const createTask = async (input: Partial<Task>) => {
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			if (!currentWorkspace) {
+			if (!workspace) {
 				throw new Error("Error authenticating workspace");
 			}
 			if (!team) {
@@ -51,7 +49,7 @@ export const useCreateTask = () => {
 				dueDate: input.dueDate ?? null,
 				effortEstimate: input.effortEstimate ?? null,
 				teamId: team.id,
-				workspaceId: currentWorkspace.id,
+				workspaceId: workspace.id,
 			};
 
 			const task = await taskService.createTask(TODO, newTask);
@@ -61,9 +59,9 @@ export const useCreateTask = () => {
 			}
 			addTask(task);
 
-			setCurrentWorkspace({
-				...currentWorkspace,
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			setWorkspace({
+				...workspace,
+				tasksCreated: workspace.tasksCreated + 1,
 			});
 
 			return task;

@@ -38,11 +38,11 @@ const ViewsDetailSidebar = ({
 	const router = useRouter();
 	const { users } = useUserStore((state) => state);
 	const { team } = useTeamStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { tasks } = useTaskStore((state) => state);
 	const { deleteSavedFilter } = useFilterStore((state) => state);
 	const filteredTasks = filterTasksWithFilter(tasks);
-	const allLabels = currentWorkspace?.Labels;
+	const allLabels = workspace?.Labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const author = users.find((u) => u.id === filter.authorId);

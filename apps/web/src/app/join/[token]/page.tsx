@@ -2,7 +2,9 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useToast } from "@/components/ui/use-toast";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { workspaceService } from "@/lib/services";
+import { useUserStore } from "@/store";
+import { TODO } from "@squared/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +15,6 @@ export default function TokenVerificationPage({
 	const router = useRouter();
 	const { getUser, setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
-	const { joinWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const [isVerifying, setIsVerifying] = useState(true);
 
@@ -21,10 +22,10 @@ export default function TokenVerificationPage({
 		const verifyToken = async () => {
 			if (status === "authenticated" && session?.user) {
 				try {
-					const { workspace } = await joinWorkspace(
-						params.token,
-						session.user.id,
-					);
+					const workspace = await workspaceService.joinWorkspace(TODO, {
+						token: params.token,
+						userId: session.user.id,
+					});
 					if (workspace) {
 						const { user } = await getUser(session.user.id);
 						setUser(user);
@@ -47,7 +48,7 @@ export default function TokenVerificationPage({
 		};
 
 		verifyToken();
-	}, [status, session, params.token, joinWorkspace, router, toast]);
+	}, [status, session, params.token, router, toast]);
 
 	if (isVerifying) {
 		return (

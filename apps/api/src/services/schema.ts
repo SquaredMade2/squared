@@ -1,6 +1,7 @@
 import type {
 	Comment,
 	Commit,
+	Label,
 	Notification,
 	Sprint,
 	Task,
@@ -35,7 +36,6 @@ export const taskSchema = createSchema<Task>()(
 		priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
 		dateCreated: z.date(),
 		assigneeId: z.string().nullable(),
-		assigneeName: z.string().nullable(),
 		labels: z.array(z.string()),
 		workspaceId: z.string(),
 		parentId: z.string().nullable(),
@@ -108,6 +108,32 @@ export const commentSchema = createSchema<Comment>()(
 		authorId: z.string(),
 		taskId: z.string(),
 		date: z.date(),
+	}),
+);
+
+export const labelSchema = createSchema<Label>()(
+	z.object({
+		id: z.string(),
+		name: z.string(),
+		description: z.string().nullable(),
+		color: z.string(),
+		workspaceId: z.string(),
+	}),
+);
+
+export const workspaceLabelSchema = createSchema<
+	Workspace & { Labels: Label[] }
+>()(
+	z.object({
+		id: z.string(),
+		name: z.string(),
+		url: z.string(),
+		companySize: z.number().nullable(),
+		tasksCreated: z.number(),
+		universalTokenLinkId: z.string().nullable(),
+		avatarUrl: z.string().nullable(),
+		admins: z.array(z.string()),
+		Labels: z.array(labelSchema),
 	}),
 );
 

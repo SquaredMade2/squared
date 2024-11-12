@@ -10,25 +10,20 @@ export default function MyCreatedTasksPage() {
 	const user = useUserStore((state) => state.user);
 	const { filterTasks } = useFilterStore((state) => state);
 
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks.filter((t) => t.authorId === user?.id)),
 	);
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle="Created Tasks"

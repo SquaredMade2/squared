@@ -1,4 +1,4 @@
-import { useTaskStore, useViewStore } from "@/store";
+import { useTaskStore, useUserStore, useViewStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -38,6 +38,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const { displayOptions } = useViewStore((state) => state);
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { tasks: allTasks } = useTaskStore((state) => state);
+	const users = useUserStore((state) => state.users);
 
 	const getParentTaskIds = () => {
 		const taskIdsForGroup = tasks.map((t) => t.id);
@@ -65,9 +66,14 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						priorityOrder.indexOf(a.priority) -
 						priorityOrder.indexOf(b.priority);
 					break;
-				case "Assignee":
-					comparison = compareNullableStrings(a.assigneeName, b.assigneeName);
+				case "Assignee": {
+					const aAssignee =
+						users.find((u) => u.id === a.assigneeId)?.name ?? null;
+					const bAssignee =
+						users.find((u) => u.id === b.assigneeId)?.name ?? null;
+					comparison = compareNullableStrings(aAssignee, bAssignee);
 					break;
+				}
 				case "Effort":
 					comparison = compareNullableNumbers(
 						a.effortEstimate,

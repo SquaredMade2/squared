@@ -11,23 +11,18 @@ import { useFilterStore, useViewStore } from "@/store";
 export default function AllTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
 	const { view, getGridOptions } = useViewStore((state) => state);
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } =
 		useGroups(filterTasks);
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle="All Tasks"
