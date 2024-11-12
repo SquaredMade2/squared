@@ -25,6 +25,7 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
+import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Workspace } from "@squared/db";
 import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
@@ -138,10 +139,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 export function SidebarNav() {
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const params = useParams();
-	let workspaceUrl = params.workspace;
-	if (Array.isArray(workspaceUrl)) {
-		workspaceUrl = workspaceUrl[0];
-	}
+	const workspaceUrl = parseParams(params.workspace);
 
 	React.useEffect(() => {
 		const fetchWorkspace = async () => {
