@@ -54,7 +54,7 @@ export default {
 					},
 				},
 				400: {
-					description: "Invalid or missing token",
+					description: "Invalid token",
 				},
 				500: {
 					description: "Internal server error",
