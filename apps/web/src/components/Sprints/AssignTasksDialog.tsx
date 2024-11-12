@@ -22,7 +22,11 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { workspaceService } from "@/lib/services";
+import { useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
+import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { toast } from "../ui/use-toast";
@@ -51,9 +55,13 @@ export function AssignTasksDialog({
 	const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 	const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
 	const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
+	const [filterLabel, setFilterLabel] = useState<string>("all");
 	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
 		activeSprint?.id,
 	);
+	const params = useParams();
+	let workspaceUrl = params.workspace;
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 
 	useEffect(() => {
 		if (activeSprint) {
@@ -62,6 +70,19 @@ export function AssignTasksDialog({
 			setSelectedSprintId(upcomingSprints[0].id);
 		}
 	}, [activeSprint, upcomingSprints]);
+
+	useEffect(() => {
+		const fetchWorkspace = async () => {
+			if (Array.isArray(workspaceUrl)) {
+				workspaceUrl = workspaceUrl[0];
+			}
+			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
+				url: workspaceUrl,
+			});
+			setWorkspace(currentWorkspace);
+		};
+		fetchWorkspace();
+	}, [workspaceUrl]);
 
 	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks(
@@ -113,6 +134,7 @@ export function AssignTasksDialog({
 			.filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()))
 			.filter((t) => filterPriority === "all" || t.priority === filterPriority)
 			.filter((t) => filterStatus === "all" || t.status === filterStatus)
+			.filter((t) => filterLabel === "all" || t.labels.includes(filterLabel))
 			.sort((a, b) => {
 				const priorityDiff = mapPriority(b.priority) - mapPriority(a.priority);
 				if (priorityDiff !== 0) return priorityDiff;
@@ -122,7 +144,7 @@ export function AssignTasksDialog({
 					? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
 					: 0;
 			});
-	}, [unassignedTasks, searchQuery, filterPriority, filterStatus]);
+	}, [unassignedTasks, searchQuery, filterPriority, filterStatus, filterLabel]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -203,6 +225,22 @@ export function AssignTasksDialog({
 									<SelectItem value="todo">To Do</SelectItem>
 									<SelectItem value="inProgress">In Progress</SelectItem>
 									<SelectItem value="inReview">In Review</SelectItem>
+								</SelectContent>
+							</Select>
+							<Select
+								value={filterLabel}
+								onValueChange={(value) => setFilterLabel(value)}
+							>
+								<SelectTrigger className="w-full sm:w-[150px]">
+									<SelectValue placeholder="Labels" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Labels</SelectItem>
+									{workspace?.Labels.map((label) => (
+										<SelectItem key={label.id} value={label.id}>
+											{label.name}
+										</SelectItem>
+									))}
 								</SelectContent>
 							</Select>
 						</div>
