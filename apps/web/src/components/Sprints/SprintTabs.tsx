@@ -44,7 +44,9 @@ export function SprintTabs({
 							<SprintCard sprint={activeSprint} tasks={tasks} isActive />
 						</>
 					)}
-					<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
+					{upcomingSprints.length > 0 && (
+						<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
+					)}
 					{upcomingSprints.map((sprint) => (
 						<SprintCard sprint={sprint} tasks={tasks} key={sprint.id} />
 					))}
