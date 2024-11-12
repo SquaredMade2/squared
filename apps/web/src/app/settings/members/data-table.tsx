@@ -56,7 +56,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 
 	const generateMembersCsv = () => {
 		const members = (data as MemberWithRole[]).map((member) => {
-			return { ...member };
+			return member;
 		});
 		return members;
 	};
