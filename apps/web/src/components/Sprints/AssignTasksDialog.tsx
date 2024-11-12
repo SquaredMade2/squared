@@ -200,6 +200,7 @@ export function AssignTasksDialog({
 								<SelectContent>
 									<SelectItem value="all">All Statuses</SelectItem>
 									<SelectItem value="backlog">Backlog</SelectItem>
+									<SelectItem value="todo">To Do</SelectItem>
 									<SelectItem value="inProgress">In Progress</SelectItem>
 									<SelectItem value="inReview">In Review</SelectItem>
 								</SelectContent>
