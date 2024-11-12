@@ -51,21 +51,14 @@ export class EventService implements EventRpc {
 		taskId,
 		authorId,
 		changes,
+		previousTask,
 	}: {
 		taskId: string;
 		authorId: string;
 		changes: Partial<Task>;
+		previousTask: Task;
 	}): Promise<TaskEvent> {
-		const task = await this.taskRepository.findUnique({
-			where: { id: taskId },
-			include: { Author: true, Workspace: true },
-		});
-
-		if (!task) {
-			throw new Error(`Task with id ${taskId} not found`);
-		}
-
-		const diff = await this.getTaskDiff(taskId, changes);
+		const diff = this.getTaskDiff(previousTask, changes);
 
 		const taskEvent = await this.taskEventRepository.create({
 			data: {
@@ -76,31 +69,31 @@ export class EventService implements EventRpc {
 		});
 
 		// Generate notification
-		if (changes.assigneeId && changes.assigneeId !== task.assigneeId) {
+		if (changes.assigneeId && changes.assigneeId !== previousTask.assigneeId) {
 			await this.createNotification({
 				userId: changes.assigneeId,
 				taskId,
-				workspaceId: task.workspaceId,
-				description: `You have been assigned to task "${task.title}"`,
+				workspaceId: previousTask.workspaceId,
+				description: `You have been assigned to task "${previousTask.title}"`,
 				type: "ASSIGNED",
 			});
 		}
 
 		if (changes.status) {
-			const statusChangeMessage = `Task "${task.title}" status changed to ${changes.status}`;
+			const statusChangeMessage = `Task "${previousTask.title}" status changed to ${changes.status}`;
 			await this.createNotification({
-				userId: task.authorId,
+				userId: previousTask.authorId,
 				taskId,
-				workspaceId: task.workspaceId,
+				workspaceId: previousTask.workspaceId,
 				description: statusChangeMessage,
 				type: "PARTICIPATING",
 			});
 
-			if (task.assigneeId && task.assigneeId !== task.authorId) {
+			if (previousTask.assigneeId && previousTask.assigneeId !== previousTask.authorId) {
 				await this.createNotification({
-					userId: task.assigneeId,
+					userId: previousTask.assigneeId,
 					taskId,
-					workspaceId: task.workspaceId,
+					workspaceId: previousTask.workspaceId,
 					description: statusChangeMessage,
 					type: "PARTICIPATING",
 				});
@@ -110,18 +103,18 @@ export class EventService implements EventRpc {
 		return taskEvent;
 	}
 	async createNotification({
-		userId,
-		taskId,
-		description,
-		workspaceId,
-		type,
-	}: {
-		userId: string;
-		taskId: string;
-		workspaceId: string;
-		description?: string;
-		type: NotificationType;
-	}): Promise<Notification> {
+			userId,
+			taskId,
+			description,
+			workspaceId,
+			type,
+		}: {
+			userId: string;
+			taskId: string;
+			workspaceId: string;
+			description?: string;
+			type: NotificationType;
+		}): Promise<Notification> {
 		return this.notificationRepository.create({
 			data: {
 				userId,
@@ -161,34 +154,23 @@ export class EventService implements EventRpc {
 			where: { id: { in: notificationIds } },
 		});
 	}
-	private async getTaskDiff(
-		taskId: string,
+	private getTaskDiff(
+		previousTask: Task,
 		changes: Partial<Task>,
-	): Promise<string> {
-		const task = await this.taskRepository.findUnique({
-			where: { id: taskId },
-		});
-
-		if (!task) {
-			throw new Error(`Task with id ${taskId} not found`);
-		}
-
+	): string {
 		const diff = Object.entries(changes)
 			.map(([key, newValue]) => {
-				const oldValue = task[key as keyof Task];
+				if (key === 'id' || key === 'updatedAt') return null;
+				if (newValue === undefined) return null;
+				
+				const oldValue = previousTask[key as keyof Task];
+				const formattedOldValue = this.formatValue(oldValue);
+				const formattedNewValue = this.formatValue(newValue);
 
-				if (oldValue instanceof Date && newValue instanceof Date) {
-					if (oldValue.getTime() !== newValue.getTime()) {
-						return `${key}: ${oldValue.toISOString()} -> ${newValue.toISOString()}`;
-					}
-				} else if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-					if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-						return `${key}: ${JSON.stringify(oldValue)} -> ${JSON.stringify(newValue)}`;
-					}
-				} else if (oldValue !== newValue) {
-					return `${key}: ${this.formatValue(oldValue)} -> ${this.formatValue(newValue)}`;
+				if (formattedOldValue !== formattedNewValue) {
+					const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
+					return diffString;
 				}
-
 				return null;
 			})
 			.filter(Boolean)
@@ -207,6 +189,12 @@ export class EventService implements EventRpc {
 			return value.toISOString();
 		}
 		if (Array.isArray(value)) {
+			// Special handling for labels array
+			if (value.length > 0 && typeof value[0] === 'string' && value[0].match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+				return JSON.stringify(value.map(id => {
+					return `Label ${id.substring(0, 8)}`;
+				}));
+			}
 			return JSON.stringify(value);
 		}
 		return String(value);

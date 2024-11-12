@@ -3,13 +3,17 @@ import type { PrismaClient, Task } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
+import { EventService } from "../events/event-service";
 
 export class TaskService implements TaskRpc {
 	private readonly db: PrismaClient;
 	private readonly logger: Logger;
+	private readonly eventService: EventService;
+
 	constructor(db: PrismaClient) {
 		this.db = db;
 		this.logger = createCustomLogger("tasks");
+		this.eventService = new EventService(db);
 	}
 
 	async createTask({
@@ -127,8 +131,16 @@ export class TaskService implements TaskRpc {
 
 	async updateTask(args: UpdateTaskParams): Promise<Task> {
 		this.logger.info("Updating task with ID: %s", args.id);
+		
+		const previousTask = await this.db.task.findUnique({
+			where: { id: args.id },
+		});
+
+		if (!previousTask) {
+			throw new Error("Task not found");
+		}
+
 		if (args.effortEstimate) {
-			// check if effort estimate is valid
 			const effort = Number(args.effortEstimate);
 			if (
 				effort < 0 ||
@@ -146,10 +158,16 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!task) {
-			throw new Error("There was an issue creating the task");
+			throw new Error("There was an issue updating the task");
 		}
 
-		// Return the updated task with labels
+		await this.eventService.createLogEvent({
+			taskId: task.id,
+			authorId: args.authorId || task.authorId,
+			changes: args,
+			previousTask,
+		});
+
 		return task;
 	}
 

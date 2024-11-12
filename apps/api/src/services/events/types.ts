@@ -32,10 +32,12 @@ export interface EventRpc {
 		taskId,
 		authorId,
 		changes,
+		previousTask,
 	}: {
 		taskId: string;
 		authorId: string;
-		changes: Partial<TaskEvent>;
+		changes: Partial<Task>;
+		previousTask: Task;
 	}) => Promise<TaskEvent>;
 	createNotification: ({
 		userId,
