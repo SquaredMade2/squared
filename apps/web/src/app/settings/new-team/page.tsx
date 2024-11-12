@@ -52,7 +52,7 @@ const formSchema = z.object({
 export default function CreateTeam() {
 	const { toast } = useToast();
 	const router = useRouter();
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, loading: teamLoading, authorized } = useTeams();
 	const { createTeam: addTeam } = useTeamStore((state) => state);
 
@@ -65,7 +65,7 @@ export default function CreateTeam() {
 	});
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (!currentWorkspace) {
+		if (!workspace) {
 			toast({
 				title: "No workspace selected",
 				variant: "destructive",
@@ -84,11 +84,11 @@ export default function CreateTeam() {
 				await teamService.createTeam(TODO, {
 					name: values.teamName.trim(),
 					identifier: values.teamIdentifier.toUpperCase(),
-					workspaceId: currentWorkspace.id,
+					workspaceId: workspace.id,
 				}),
 			);
 			router.push(
-				`/${currentWorkspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
+				`/${workspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
 			);
 			toast({ title: "Team created" });
 		} else {
@@ -100,9 +100,9 @@ export default function CreateTeam() {
 	};
 
 	useEffect(() => {
-		if (!authorized && currentWorkspace) {
-			router.push(`/${currentWorkspace.url}`);
-		} else if (!currentWorkspace) {
+		if (!authorized && workspace) {
+			router.push(`/${workspace.url}`);
+		} else if (!workspace) {
 			router.push("/");
 		}
 	}, []);

@@ -18,6 +18,7 @@ type TaskActions = {
 	setSubtasks: (subtasks: Task[]) => void;
 	updateTask: (task: Task) => void;
 	createTask: (task: Task) => void;
+	deleteTask: (taskId: string) => void;
 };
 
 export type TaskStore = TaskState & TaskActions;

@@ -94,8 +94,8 @@ export default function TeamsSetting() {
 		useState<Record<string, number | string | number[]>>();
 	const { toast } = useToast();
 	const router = useRouter();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { team, teams, loading: teamLoading } = useTeams();
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
 
 	const { deleteTeam, updateTeam, setTeam } = useTeamStore((state) => state);
 
@@ -138,7 +138,7 @@ export default function TeamsSetting() {
 	}, [form, team]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (team && currentWorkspace) {
+		if (team && workspace) {
 			try {
 				const updatedTeam = await teamService.updateTeam(TODO, {
 					id: team.id,
@@ -151,7 +151,7 @@ export default function TeamsSetting() {
 					setTeam(
 						await teamService.getTeamByIdentifier(TODO, {
 							identifier: values.identifier,
-							workspaceId: currentWorkspace.id,
+							workspaceId: workspace.id,
 						}),
 					);
 					router.refresh();
@@ -176,7 +176,7 @@ export default function TeamsSetting() {
 		} else {
 			await teamService.deleteTeam(TODO, { teamId: team.id });
 			team && deleteTeam(team.id);
-			router.push(`/${currentWorkspace?.url}`);
+			router.push(`/${workspace?.url}`);
 			toast({ title: "Team deleted" });
 		}
 		setIsDeleting(false);

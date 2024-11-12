@@ -1,16 +1,16 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const HomePage = () => {
 	const router = useRouter();
 	const { user, loading, error } = useAuthUser();
-	const { getWorkspace, getAllWorkspaces } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { setWorkspaces } = useWorkspaceStore((state) => state);
 
 	useEffect(() => {
 		const handleRedirection = async () => {
@@ -19,14 +19,19 @@ const HomePage = () => {
 			try {
 				if (user) {
 					if (user.defaultWorkspaceId) {
-						const { workspace } = await getWorkspace(user.defaultWorkspaceId);
+						const workspace = await workspaceService.getWorkspace(TODO, {
+							workspaceId: user.defaultWorkspaceId,
+						});
 						if (workspace?.url) {
 							router.push(`/${workspace.url}`);
 							return;
 						}
 					}
 
-					const workspaces = await getAllWorkspaces(user.id);
+					const workspaces = await workspaceService.getUserWorkspaces(TODO, {
+						userId: user.id,
+					});
+					setWorkspaces(workspaces);
 					if (workspaces.length) {
 						router.push(`/${workspaces[0].url}`);
 						return;

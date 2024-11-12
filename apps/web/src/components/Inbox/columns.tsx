@@ -1,4 +1,4 @@
-import { eventService } from "@/lib/services";
+import { eventService, workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TooltipContent } from "@repo/ui/tooltip";
@@ -43,11 +43,9 @@ export const columns: ColumnDef<
 		id: "content",
 		cell: ({ row }) => {
 			const router = useRouter();
-			const { getWorkspace, currentWorkspace } = useWorkspaceStore(
-				(state) => state,
-			);
-			const { userAvatars, user } = useUserStore((state) => state);
+			const { workspace } = useWorkspaceStore((state) => state);
 			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
+			const { userAvatars, user } = useUserStore((state) => state);
 
 			const taskId = taskIdentifier.split("-")[1];
 			const {
@@ -68,12 +66,14 @@ export const columns: ColumnDef<
 					notificationIds: [row.original.id],
 					read: true,
 				});
-				if (currentWorkspace?.id === workspaceId) {
+				if (workspace?.id === workspaceId) {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 					);
 				} else {
-					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
+					const newWorkspace = await workspaceService.getWorkspace(TODO, {
+						workspaceId,
+					});
 					if (newWorkspace && user) {
 						router.push(
 							`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,

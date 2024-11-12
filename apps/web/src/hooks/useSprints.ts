@@ -1,10 +1,10 @@
-import { sprintService, taskService, teamService } from "@/lib/services";
 import {
-	useSprintStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
+	sprintService,
+	taskService,
+	teamService,
+	workspaceService,
+} from "@/lib/services";
+import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
 import type { Sprint, Task, Workspace } from "@squared/db";
@@ -21,7 +21,6 @@ export function useSprints(sprintId?: string) {
 	const [error, setError] = useState<string | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
-	const { getWorkspace } = useWorkspaceStore((state) => state);
 	const { setSprint, sprint } = useSprintStore((state) => state);
 	const { setTeam, team } = useTeamStore((state) => state);
 	const { user, loading: userLoading } = useAuthUser();
@@ -35,11 +34,14 @@ export function useSprints(sprintId?: string) {
 				}
 
 				// Fetch workspace data
-				const { workspace, message: workspaceMessage } = await getWorkspace(
-					parseParams(workspaceUrl),
+				const workspace = await workspaceService.getWorkspaceByUrl(
+					context.TODO,
+					{
+						url: parseParams(workspaceUrl),
+					},
 				);
 				if (!workspace) {
-					throw new Error(workspaceMessage || "Workspace not found");
+					throw new Error("Workspace not found");
 				}
 				setWorkspace(workspace);
 

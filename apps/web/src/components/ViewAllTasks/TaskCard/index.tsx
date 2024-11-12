@@ -10,13 +10,11 @@ import type { TaskCardProps } from "./interfaces";
 
 const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const { view } = useViewStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { users } = useUserStore((state) => state);
 
 	const taskLabels =
-		currentWorkspace?.Labels.filter((label) =>
-			task.labels.includes(label.id),
-		) || [];
+		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [];
 
 	const renderTask = (taskToRender: Task, isSubtask = false) => (
 		<div className={`w-full ${isSubtask ? "mt-1" : ""}`}>
@@ -25,7 +23,7 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 					task={taskToRender}
 					user={users.filter((u) => u.id === task.assigneeId)[0]}
 					taskLabels={taskLabels}
-					currentWorkspaceUrl={currentWorkspace?.url}
+					currentWorkspaceUrl={workspace?.url}
 				/>
 			) : (
 				<TaskList
@@ -33,7 +31,7 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 					user={users.filter((u) => u.id === task.assigneeId)[0]}
 					location={location}
 					highlightText={highlightText}
-					currentWorkspaceUrl={currentWorkspace?.url}
+					currentWorkspaceUrl={workspace?.url}
 					taskLabels={taskLabels}
 				/>
 			)}

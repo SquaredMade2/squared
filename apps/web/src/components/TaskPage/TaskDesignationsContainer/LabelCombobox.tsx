@@ -41,7 +41,7 @@ const LabelColor = ({ label }: { label: Label }) => {
 
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
@@ -50,10 +50,7 @@ const LabelCombobox = () => {
 
 	const { id: taskId, labels } = currentTask;
 
-	const allLabels = useMemo(
-		() => currentWorkspace?.Labels || [],
-		[currentWorkspace],
-	);
+	const allLabels = useMemo(() => workspace?.Labels || [], [workspace]);
 
 	const taskLabels = useMemo(
 		() => allLabels.filter((label) => labels.includes(label.id)),

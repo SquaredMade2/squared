@@ -1,6 +1,7 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { workspaceService } from "@/lib/services";
 import { teamService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
@@ -15,7 +16,7 @@ export default function Home() {
 	const params = useParams();
 
 	const user = useUserStore((state) => state.user);
-	const getWorkspace = useWorkspaceStore((state) => state.getWorkspace);
+	const setWorkspace = useWorkspaceStore((state) => state.setWorkspace);
 	let workspaceUrl = params.workspace;
 	if (Array.isArray(workspaceUrl)) {
 		workspaceUrl = workspaceUrl[0];
@@ -33,12 +34,15 @@ export default function Home() {
 				return;
 			}
 
-			const { workspace: currentWorkspace } = await getWorkspace(workspaceUrl);
+			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
+				url: workspaceUrl,
+			});
 			if (!currentWorkspace) {
 				setWorkspaceFound(false);
 				setLoading(false);
 				return;
 			}
+			setWorkspace(currentWorkspace);
 
 			const allTeams = await teamService.getUserTeams(TODO, {
 				userId: user.id,
