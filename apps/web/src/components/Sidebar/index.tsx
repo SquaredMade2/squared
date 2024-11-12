@@ -17,11 +17,12 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { eventService } from "@/lib/services";
+import { logout } from "@/lib/auth";
+import { eventService, teamService } from "@/lib/services";
 import {
-	useAuthStore,
 	useModalStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
@@ -35,9 +36,9 @@ import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
 function SidebarContent() {
-	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
-	const { teams, getAllTeams, currentTeam } = useTeamStore((state) => state);
-	const { user, logout } = useAuthStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
+	const { teams, setTeams, team } = useTeamStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { setShowCommand } = useModalStore((state) => state);
 	const router = useRouter();
 	const { toast } = useToast();
@@ -46,18 +47,30 @@ function SidebarContent() {
 	const { state } = useSidebar();
 
 	React.useEffect(() => {
-		if (!user) return;
-		getAllTeams(user.id);
-		fetchNotifications();
-	}, [user, getAllTeams]);
+		if (!user || !workspace) return;
 
-	const fetchNotifications = async () => {
-		if (!user) return;
-		const notifications = await eventService.getNotifications(TODO, {
-			userId: user.id,
-		});
-		setNotifications(notifications?.filter((n) => !n.read).length || 0);
-	};
+		const setAllTeams = async () => {
+			setTeams(
+				await teamService.getUserTeams(TODO, {
+					userId: user.id,
+					workspaceId: workspace.id,
+				}),
+			);
+		};
+
+		const fetchNotifications = async () => {
+			const notifications = await eventService.getNotifications(TODO, {
+				userId: user.id,
+			});
+			setNotifications(notifications?.filter((n) => !n.read).length || 0);
+		};
+
+		const fetchData = async () => {
+			await Promise.all([setAllTeams(), fetchNotifications()]);
+		};
+
+		fetchData();
+	}, [user, setTeams]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {
@@ -75,7 +88,7 @@ function SidebarContent() {
 	};
 
 	const toHome = () => {
-		router.push(`/${workspace?.url}/team/${currentTeam?.identifier}/all`);
+		router.push(`/${workspace?.url}/team/${team?.identifier}/all`);
 	};
 
 	return (
@@ -105,7 +118,7 @@ function SidebarContent() {
 			</SidebarHeader>
 			{state === "expanded" && (
 				<SidebarContainer className="px-2">
-					<TeamAccordion teams={teams} currentTeam={currentTeam} />
+					<TeamAccordion teams={teams} currentTeam={team} />
 				</SidebarContainer>
 			)}
 			<SidebarFooter className="space-y-2 px-2 mt-auto">
@@ -123,7 +136,7 @@ function SidebarContent() {
 }
 
 export function SidebarNav() {
-	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	if (!workspace) return null;
 

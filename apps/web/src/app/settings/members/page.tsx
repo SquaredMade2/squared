@@ -8,7 +8,7 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
 export default function WorkspaceMembersPage() {
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
 
 	if (workspaceLoading || userLoading) {
@@ -23,14 +23,14 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MembersSettingsWrapper>
-			{currentWorkspace && (
+			{workspace && (
 				<DataTable
 					columns={columns}
 					data={users.map((m) => ({
 						...m,
-						role: currentWorkspace.admins.includes(m.id) ? "admin" : "member",
+						role: workspace.admins.includes(m.id) ? "admin" : "member",
 					}))}
-					workspace={currentWorkspace}
+					workspace={workspace}
 				/>
 			)}
 		</MembersSettingsWrapper>

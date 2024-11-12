@@ -5,11 +5,11 @@ import { Button } from "../ui/button";
 
 const SettingsTopNavBar = () => {
 	const router = useRouter();
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 	const handleBackClick = () => {
-		if (currentWorkspace) {
-			router.push(`/${currentWorkspace.url}`);
+		if (workspace) {
+			router.push(`/${workspace.url}`);
 		}
 	};
 

@@ -11,8 +11,8 @@ export function useTaskPage() {
 	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
-	const { teams, setCurrentTeam } = useTeamStore((state) => state);
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
+	const { teams, setTeam } = useTeamStore((state) => state);
 	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
 		(state) => state,
 	);
@@ -28,7 +28,7 @@ export function useTaskPage() {
 			if (workspaceLoading) return;
 
 			try {
-				if (!currentWorkspace) {
+				if (!workspace) {
 					throw new Error("Workspace not found");
 				}
 
@@ -36,12 +36,12 @@ export function useTaskPage() {
 				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
 				const team = teams.find((t) => t.identifier === teamIdentifier);
 				if (team) {
-					setCurrentTeam(team);
+					setTeam(team);
 				}
 
 				// Fetch task data
 				const pageTask = await taskService.getTaskByIdentifier(TODO, {
-					workspaceId: currentWorkspace.id,
+					workspaceId: workspace.id,
 					identifier: parseParams(taskIdentifier),
 				});
 				if (pageTask) {
@@ -64,7 +64,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams, userLoading]);
+	}, [workspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { currentWorkspace, users, task, isLoading, error, subtasks };
+	return { workspace, users, task, isLoading, error, subtasks };
 }

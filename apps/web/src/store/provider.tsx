@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { AuthStoreProvider } from "./auth";
 import { CommentStoreProvider } from "./comments";
 import { EventStoreProvider } from "./events";
 import { FilterStoreProvider } from "./filters";
@@ -16,28 +15,26 @@ import { WorkspaceStoreProvider } from "./workspaces";
 // Create the combined provider component
 export const SquaredStoreProvider = ({ children }: { children: ReactNode }) => {
 	return (
-		<AuthStoreProvider>
-			<CommentStoreProvider>
-				<EventStoreProvider>
-					<FilterStoreProvider>
-						<ModalStoreProvider>
-							<SprintStoreProvider>
-								<TaskStoreProvider>
-									<TeamStoreProvider>
-										<UserStoreProvider>
-											<ViewStoreProvider>
-												<WorkspaceStoreProvider>
-													{children}
-												</WorkspaceStoreProvider>
-											</ViewStoreProvider>
-										</UserStoreProvider>
-									</TeamStoreProvider>
-								</TaskStoreProvider>
-							</SprintStoreProvider>
-						</ModalStoreProvider>
-					</FilterStoreProvider>
-				</EventStoreProvider>
-			</CommentStoreProvider>
-		</AuthStoreProvider>
+		<CommentStoreProvider>
+			<EventStoreProvider>
+				<FilterStoreProvider>
+					<ModalStoreProvider>
+						<SprintStoreProvider>
+							<TaskStoreProvider>
+								<TeamStoreProvider>
+									<UserStoreProvider>
+										<ViewStoreProvider>
+											<WorkspaceStoreProvider>
+												{children}
+											</WorkspaceStoreProvider>
+										</ViewStoreProvider>
+									</UserStoreProvider>
+								</TeamStoreProvider>
+							</TaskStoreProvider>
+						</SprintStoreProvider>
+					</ModalStoreProvider>
+				</FilterStoreProvider>
+			</EventStoreProvider>
+		</CommentStoreProvider>
 	);
 };
