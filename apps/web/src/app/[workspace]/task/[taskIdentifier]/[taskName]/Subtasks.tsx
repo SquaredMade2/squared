@@ -153,11 +153,11 @@ const SubtaskList = ({ task, user, currentWorkspaceUrl }: SubtaskListProps) => {
 							<span className="truncate min-w-0">{task.title}</span>
 						</div>
 						<div className="flex col-span-4 items-center lg:pr-5 justify-end gap-2">
-							{task.assigneeName ? (
+							{user ? (
 								<Avatar className="size-6 flex-shrink-0">
-									<AvatarImage src={user?.avatarUrl ?? undefined} />
+									<AvatarImage src={user.avatarUrl ?? undefined} />
 									<AvatarFallback className="text-xxs">
-										{getInitials(task.assigneeName)}
+										{getInitials(user.name ?? "")}
 									</AvatarFallback>
 								</Avatar>
 							) : (

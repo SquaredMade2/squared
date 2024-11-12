@@ -16,8 +16,7 @@ import { useEffect } from "react";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
-	const { task, isLoading, error, currentWorkspace, users, subtasks } =
-		useTaskPage();
+	const { task, isLoading, error, workspace, users, subtasks } = useTaskPage();
 	const { toast } = useToast();
 
 	useEffect(() => {
@@ -39,7 +38,7 @@ const TaskPage = () => {
 						<div className="flex flex-col w-full relative">
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-									<TaskBreadcrumbs task={task} workspace={currentWorkspace} />
+									<TaskBreadcrumbs task={task} workspace={workspace} />
 								</div>
 							</div>
 							<MobileTaskSettings />
@@ -51,7 +50,7 @@ const TaskPage = () => {
 											<Subtasks
 												subtasks={subtasks}
 												users={users}
-												currentWorkspaceUrl={currentWorkspace?.url}
+												currentWorkspaceUrl={workspace?.url}
 											/>
 										)}
 										<NewIssueCollapsible parentId={task.id} />
@@ -61,7 +60,7 @@ const TaskPage = () => {
 								<div className="md:flex hidden flex-col gap-4">
 									<TaskSidebarTopRow
 										task={task}
-										workspaceUrl={currentWorkspace?.url}
+										workspaceUrl={workspace?.url}
 									/>
 									<TaskDesignationsContainer />
 								</div>

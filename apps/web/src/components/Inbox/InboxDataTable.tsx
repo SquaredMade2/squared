@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService } from "@/lib/services";
-import { useAuthStore, useEventStore, useUserStore } from "@/store";
+import { useEventStore, useUserStore } from "@/store";
 import { TODO } from "@squared/context";
 import {
 	BellOff,
@@ -57,8 +57,7 @@ export function InboxDataTable({
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
-	const { updateUser, getUser } = useUserStore((state) => state);
-	const { user, setUser } = useAuthStore((state) => state);
+	const { updateUser, getUser, user, setUser } = useUserStore((state) => state);
 	const { notifications } = useEventStore((state) => state);
 	const table = useReactTable({
 		data,

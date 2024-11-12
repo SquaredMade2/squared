@@ -254,7 +254,6 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			identifier: identifier,
 			teamId: team.id,
 			assigneeId: user.id,
-			assigneeName: user.name,
 			labels: randomLabelIds,
 			workspaceId: workspace.id,
 		},
