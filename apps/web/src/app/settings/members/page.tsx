@@ -8,7 +8,7 @@ import { columns } from "./columns";
 import { DataTable, type MemberWithRole } from "./data-table";
 
 export default function WorkspaceMembersPage() {
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
 
 	const membersWithRoles: MemberWithRole[] = currentWorkspace
@@ -30,7 +30,7 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MembersSettingsWrapper>
-			{currentWorkspace && (
+			{workspace && (
 				<DataTable
 					columns={columns}
 					data={membersWithRoles}

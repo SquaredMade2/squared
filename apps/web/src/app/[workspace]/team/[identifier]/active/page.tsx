@@ -9,13 +9,8 @@ import { useFilterStore } from "@/store";
 
 export default function ActiveTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks).filter(
@@ -26,13 +21,13 @@ export default function ActiveTasksPage() {
 		),
 	);
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle="Active Tasks"

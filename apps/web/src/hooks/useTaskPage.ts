@@ -1,5 +1,7 @@
-import { useTaskStore, useTeamStore } from "@/store";
+import { commentService, taskService } from "@/lib/services";
+import { useCommentStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
@@ -9,11 +11,13 @@ export function useTaskPage() {
 	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
-	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { getTaskByIdentifier, tasks, setCurrentTask } = useTaskStore(
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
+	const { teams, setTeam } = useTeamStore((state) => state);
+	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
 		(state) => state,
 	);
+	const { users, loading: userLoading } = useUsers();
+	const { setComments } = useCommentStore((state) => state);
 	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
@@ -24,7 +28,7 @@ export function useTaskPage() {
 			if (workspaceLoading) return;
 
 			try {
-				if (!currentWorkspace) {
+				if (!workspace) {
 					throw new Error("Workspace not found");
 				}
 
@@ -32,17 +36,24 @@ export function useTaskPage() {
 				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
 				const team = teams.find((t) => t.identifier === teamIdentifier);
 				if (team) {
-					setCurrentTeam(team);
+					setTeam(team);
 				}
 
 				// Fetch task data
-				const pageTask = await getTaskByIdentifier(
-					currentWorkspace.id,
-					parseParams(taskIdentifier),
-				);
-				if (pageTask?.task) {
-					setTask(pageTask.task);
-					setCurrentTask(pageTask.task);
+				const pageTask = await taskService.getTaskByIdentifier(TODO, {
+					workspaceId: workspace.id,
+					identifier: parseParams(taskIdentifier),
+				});
+				if (pageTask) {
+					setTask(pageTask);
+					setCurrentTask(pageTask);
+					const fetchedSubtasks = await taskService.getSubtasks(TODO, {
+						parentId: pageTask?.id,
+					});
+					setSubtasks(fetchedSubtasks);
+					setComments(
+						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
+					);
 				}
 
 				setIsLoading(false);
@@ -53,13 +64,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [
-		currentWorkspace,
-		taskIdentifier,
-		getTaskByIdentifier,
-		workspaceLoading,
-		teams,
-	]);
+	}, [workspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { currentWorkspace, task, isLoading, error };
+	return { workspace, users, task, isLoading, error, subtasks };
 }

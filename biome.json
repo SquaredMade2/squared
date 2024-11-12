@@ -66,7 +66,7 @@
 			}
 		},
 		{
-			"include": ["apps/api/src/api/index.ts"],
+			"include": ["apps/api/src/api/generated-routes.ts"],
 			"linter": {
 				"rules": {
 					"complexity": {

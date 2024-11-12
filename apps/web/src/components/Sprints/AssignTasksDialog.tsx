@@ -71,6 +71,10 @@ export function AssignTasksDialog({
 		);
 	};
 
+	const handleSelectAll = (checked: boolean) => {
+		setSelectedTasks(checked ? filteredTasks : []);
+	};
+
 	const mapPriority = (priority: Priority) => {
 		switch (priority) {
 			case "noPriority":
@@ -196,6 +200,7 @@ export function AssignTasksDialog({
 								<SelectContent>
 									<SelectItem value="all">All Statuses</SelectItem>
 									<SelectItem value="backlog">Backlog</SelectItem>
+									<SelectItem value="todo">To Do</SelectItem>
 									<SelectItem value="inProgress">In Progress</SelectItem>
 									<SelectItem value="inReview">In Review</SelectItem>
 								</SelectContent>
@@ -217,10 +222,20 @@ export function AssignTasksDialog({
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="p-4">
+									<div className="group flex items-center w-full rounded py-2 px-4 border-b border-border hover:bg-accent">
+										<Checkbox
+											id="select-all"
+											checked={selectedTasks.length === filteredTasks.length}
+											onCheckedChange={handleSelectAll}
+										/>
+										<Label htmlFor="select-all" className="ml-3 font-semibold">
+											Select All
+										</Label>
+									</div>
 									{filteredTasks.map((task) => (
 										<div
 											key={task.id}
-											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border hover:bg-accent"
+											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border rounded hover:bg-accent"
 										>
 											<div className="shrink min-w-0 flex items-center gap-2">
 												<Checkbox
@@ -258,37 +273,52 @@ export function AssignTasksDialog({
 							className="flex-grow overflow-hidden mt-0"
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-									{filteredTasks.map((task) => (
-										<div
-											key={task.id}
-											className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
-										>
-											<div className="flex items-center justify-between mb-2">
-												<Checkbox
-													id={task.id}
-													checked={selectedTasks.includes(task)}
-													onCheckedChange={() => handleTaskSelection(task)}
-												/>
-												<div className="flex items-center gap-2">
-													<PriorityIcon priority={task.priority} />
-													<StatusIcon status={task.status} />
+								<div className="p-4">
+									<div className="flex items-center mb-2">
+										<Checkbox
+											id="select-all-grid"
+											checked={selectedTasks.length === filteredTasks.length}
+											onCheckedChange={handleSelectAll}
+										/>
+										<Label htmlFor="select-all-grid" className="ml-2">
+											Select All
+										</Label>
+									</div>
+									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+										{filteredTasks.map((task) => (
+											<div
+												key={task.id}
+												className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
+											>
+												<div className="flex items-center justify-between mb-2">
+													<Checkbox
+														id={task.id}
+														checked={selectedTasks.includes(task)}
+														onCheckedChange={() => handleTaskSelection(task)}
+													/>
+													<div className="flex items-center gap-2">
+														<PriorityIcon priority={task.priority} />
+														<StatusIcon status={task.status} />
+													</div>
 												</div>
-											</div>
-											<span className="text-sm font-medium mb-2 line-clamp-2">
-												{task.title}
-											</span>
-											{task.dueDate && (
-												<span className="text-xs text-muted-foreground">
-													Due:{" "}
-													{new Date(task.dueDate).toLocaleDateString("en-US", {
-														month: "short",
-														day: "numeric",
-													})}
+												<span className="text-sm font-medium mb-2 line-clamp-2">
+													{task.title}
 												</span>
-											)}
-										</div>
-									))}
+												{task.dueDate && (
+													<span className="text-xs text-muted-foreground">
+														Due:{" "}
+														{new Date(task.dueDate).toLocaleDateString(
+															"en-US",
+															{
+																month: "short",
+																day: "numeric",
+															},
+														)}
+													</span>
+												)}
+											</div>
+										))}
+									</div>
 								</div>
 							</ScrollArea>
 						</TabsContent>
@@ -300,7 +330,9 @@ export function AssignTasksDialog({
 							handleBulkAssign();
 							setIsOpen(false);
 							toast({
-								title: `You successfully added ${selectedTasks.length} ${selectedTasks.length < 2 ? "task" : "tasks"} to ${activeSprint?.name}.`,
+								title: `You successfully added ${selectedTasks.length} ${
+									selectedTasks.length < 2 ? "task" : "tasks"
+								} to ${activeSprint?.name}.`,
 							});
 						}}
 						disabled={selectedTasks.length < 1}

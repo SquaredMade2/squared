@@ -15,7 +15,7 @@ export const TaskBreadcrumbs = ({
 	workspace,
 }: { task: Task; workspace: Workspace | null }) => {
 	const { workspaces } = useWorkspaceStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
+	const { team } = useTeamStore((state) => state);
 	const { lastVisitedPage } = useViewStore((state) => state);
 	const index: number = workspace
 		? workspaces.findIndex((item) => item.id === workspace.id)
@@ -23,13 +23,13 @@ export const TaskBreadcrumbs = ({
 
 	return (
 		<>
-			<Breadcrumb>
+			<Breadcrumb className="ml-4">
 				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
 					<BreadcrumbItem>
 						{workspace && (
 							<Link
 								className="flex items-center text-muted-foreground hover:text-foreground"
-								href={`/${workspace.url}/team/${currentTeam?.identifier}/${lastVisitedPage}`}
+								href={`/${workspace.url}/team/${team?.identifier}/${lastVisitedPage}`}
 							>
 								<div className="mt-0.5 rounded">
 									<WorkspaceInitials

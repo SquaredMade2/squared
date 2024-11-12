@@ -23,7 +23,7 @@ import type { FilterOption } from "./interfaces";
 export default function LabelFilterDropDown({
 	filterOption,
 }: { filterOption: FilterOption }) {
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
 	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
 		(state) => state,
@@ -61,7 +61,7 @@ export default function LabelFilterDropDown({
 	}, [currentFilterTypes]);
 
 	const filteredLabels =
-		currentWorkspace?.Labels?.filter((label) =>
+		workspace?.Labels?.filter((label) =>
 			label.name.toLowerCase().includes(searchQuery.toLowerCase()),
 		) || [];
 

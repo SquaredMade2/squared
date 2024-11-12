@@ -9,9 +9,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { effortEstimateOptions } from "@/constants/designations";
+import { effortEstimateOptions } from "@/lib/constants";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { useTeamStore } from "@/store";
+import { TODO } from "@squared/context";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -19,8 +21,8 @@ const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
-	const { currentTeam } = useTeamStore((state) => state);
-	const { updateTask, currentTask, setCurrentTask } = useTaskStore(
+	const { team } = useTeamStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
 
@@ -31,7 +33,7 @@ const EffortEstimateDropdown = () => {
 	const sidebarEffortEstimate = ():
 		| { text: string; value: number }
 		| undefined => {
-		const effortArray = effortEstimateOptions(currentTeam?.effort);
+		const effortArray = effortEstimateOptions(team?.effort);
 
 		const selectedEffortIndex = effortArray.findIndex((efforts) => {
 			return efforts.value === currentTask?.effortEstimate;
@@ -47,9 +49,12 @@ const EffortEstimateDropdown = () => {
 		newEffortEstimate: Record<string, string | number>,
 	) => {
 		try {
-			await updateTask(taskId, {
-				effortEstimate: newEffortEstimate.value as number,
-			});
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					effortEstimate: newEffortEstimate.value as number,
+				}),
+			);
 			setCurrentTask({
 				...currentTask,
 				effortEstimate: newEffortEstimate.value as number,
@@ -94,7 +99,7 @@ const EffortEstimateDropdown = () => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{effortEstimateOptions(currentTeam?.effort).map((effortEstimate) => {
+				{effortEstimateOptions(team?.effort).map((effortEstimate) => {
 					const estimateNumber = extractNumber(effortEstimate.text);
 					return (
 						<DropdownMenuItem

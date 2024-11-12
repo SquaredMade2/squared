@@ -2,9 +2,9 @@ import type { RetrospectiveItemType, Sprint, Task } from "@squared/db";
 
 export type NextSprintPayload = {
 	teamId: string;
-	movedTasks: string[];
 	sprintData?: {
 		name: string;
+		description?: string;
 	};
 };
 export type AddRetrospectivePayload = {
@@ -58,7 +58,6 @@ export interface SprintRpc {
 	initializeSprints: ({ teamId }: { teamId: string }) => Promise<number>;
 	startNextSprint: ({
 		teamId,
-		movedTasks,
 		sprintData,
 	}: NextSprintPayload) => Promise<SprintServiceResponse<Sprint>>;
 	getSprintTasks: ({ sprintId }: { sprintId: string }) => Promise<Task[]>;

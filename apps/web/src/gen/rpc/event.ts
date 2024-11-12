@@ -37,6 +37,7 @@ export type GetNotificationsResponse = {
 		id: string;
 		identifier: string;
 		labels: string[];
+		order: number;
 		parentId: string | null;
 		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 		sprintId: string | null;

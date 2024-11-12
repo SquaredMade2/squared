@@ -1,7 +1,14 @@
 import "dotenv/config";
 import { PrismaClient } from "@squared/db";
+import { createAuthRpcHandler } from "./auth";
+import { AuthService } from "./auth/auth-service";
+import { createCommentRpcHandler } from "./comments";
+import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
+import { TaskService, createTaskRpcHandler } from "./tasks";
+import { TeamService, createTeamRpcHandler } from "./teams";
+import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
 
 const prisma = new PrismaClient({
 	datasources: {
@@ -10,14 +17,35 @@ const prisma = new PrismaClient({
 		},
 	},
 });
+
+const secret = process.env.JWT_SECRET;
+
+const auth = new AuthService(prisma, secret);
+const comment = new CommentService(prisma);
+const event = new EventService(prisma);
+const sprint = new SprintService(prisma);
+const team = new TeamService(prisma);
+const task = new TaskService(prisma);
+const workspace = new WorkspaceService(prisma, secret);
+
 export const services = {
-	sprint: new SprintService(prisma),
-	event: new EventService(prisma),
+	auth,
+	comment,
+	event,
+	sprint,
+	team,
+	task,
+	workspace,
 };
 
 export const rpcHandlers = {
-	sprint: createSprintRpcHandler(services.sprint),
+	auth: createAuthRpcHandler(services.auth),
+	comment: createCommentRpcHandler(services.comment),
 	event: createEventRpcHandler(services.event),
+	sprint: createSprintRpcHandler(services.sprint),
+	task: createTaskRpcHandler(services.task),
+	team: createTeamRpcHandler(services.team),
+	workspace: createWorkspaceRpcHandler(services.workspace),
 };
 
 export type Services = typeof services;

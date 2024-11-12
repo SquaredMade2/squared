@@ -14,16 +14,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccordionTrigger } from "@repo/ui/accordion";
+import { TODO } from "@squared/context";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,11 +41,10 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { toast } = useToast();
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const { user } = useAuthStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
-	const { tasks, addTask } = useTaskStore((state) => state);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+	const user = useUserStore((state) => state.user);
+	const { team } = useTeamStore((state) => state);
+	const { tasks, createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
 
@@ -73,16 +74,14 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return;
 		}
-		if (!currentWorkspace || !currentTeam || !user) {
+
+		if (!workspace || !team || !user) {
 			toast({
 				title: "Error authenticating user",
 				variant: "destructive",
 			});
 			return;
 		}
-		await updateWorkspace(currentWorkspace?.id, {
-			tasksCreated: (currentWorkspace.tasksCreated ?? 0) + 1,
-		});
 		try {
 			const { transformedInput: transformedTitle } =
 				transformingMentionInputs(title);
@@ -94,36 +93,29 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
+				identifier: `${team.identifier}-${workspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
-				teamId: currentTeam.id,
-				workspaceId: currentWorkspace.id,
+				teamId: team.id,
+				workspaceId: workspace.id,
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
-			const {
-				task: taskCreatedResponse,
-				message,
-				variant,
-			} = await addTask(newTask);
-			await updateWorkspace(currentWorkspace.id, {
-				tasksCreated: currentWorkspace.tasksCreated + 1,
-			});
-			setCurrentWorkspace({
-				...currentWorkspace,
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			const createdTask = await taskService.createTask(TODO, newTask);
+			createTask(createdTask);
+			setWorkspace({
+				...workspace,
+				tasksCreated: workspace.tasksCreated + 1,
 			});
 
 			toast({
-				title: message,
-				variant: variant,
+				title: "Task created successfully",
 			});
-			if (!taskCreatedResponse) return;
+
 			setIsOpen("");
 			setNewIssueData({});
 			form.reset({
@@ -132,11 +124,11 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			toast({
 				title: "New Issue Created",
-				variant: variant,
 			});
-		} catch (_err) {
+		} catch (error) {
 			toast({
 				title: "Error creating issue",
+				description: error instanceof Error ? error.message : "Unknown error",
 				variant: "destructive",
 			});
 		} finally {

@@ -1,7 +1,9 @@
-import { useAuthStore, useCommentStore } from "@/store";
+import { commentService } from "@/lib/services";
+import { useCommentStore, useModalStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
-import { type KeyboardEvent, useCallback, useState } from "react";
+import { TODO } from "@squared/context";
+import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -20,6 +22,7 @@ import type {
 	CustomDescendant,
 	CustomElement,
 	CustomText,
+	MarkTypes,
 	TextEditorProps,
 } from "./interfaces";
 
@@ -41,9 +44,9 @@ const initialValue: CustomDescendant[] = [
 const TextEditor = ({ task }: TextEditorProps) => {
 	// State
 
-	const addComment = useCommentStore((state) => state.addComment);
-	const getComments = useCommentStore((state) => state.getAllComments);
-	const currentUser = useAuthStore((state) => state.user);
+	const { setShowLinkForm } = useModalStore((state) => state);
+	const setComments = useCommentStore((state) => state.setComments);
+	const currentUser = useUserStore((state) => state.user);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
@@ -63,8 +66,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					date: new Date(),
 					taskId: task.id,
 				};
-				await addComment(newComment);
-				await getComments(task.id);
+				setComments(
+					await commentService.addComment(TODO, { comment: newComment }),
+				);
 				setEditorContent([]);
 				editor.children = [
 					{
@@ -88,6 +92,21 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		}
 	};
 
+	const injectLinkContent = (linkName: string, linkUrl: string) => {
+		if (!(linkName && linkUrl)) return;
+		if (!editor.selection) {
+			toast({
+				title: "Place text cursor",
+				description:
+					"Place a text cursor in the designated area to insert the link",
+				variant: "destructive",
+			});
+			return;
+		}
+		const linkNode = { text: linkName, url: linkUrl };
+		Transforms.insertNodes(editor, linkNode);
+	};
+
 	// Helper Functions
 
 	const checkIfSlateEmpty = (editor: BaseEditor & ReactEditor) => {
@@ -106,29 +125,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		);
 		return editorContent.length === 0;
 	};
-
-	const isBoldActive = () => {
-		const allMarks = Editor.marks(editor);
-		return Boolean(allMarks?.bold);
-	};
-
-	const isItalicActive = () => {
-		const allMarks = Editor.marks(editor);
-		return Boolean(allMarks?.italic);
-	};
-
-	const isCodeActive = () => {
-		const allMarks = Editor.marks(editor);
-		return Boolean(allMarks?.code);
-	};
-
-	// const isLinkActive = () => {
-	// 	const allMarks = Editor.marks(editor);
-	// 	if (allMarks?.link) {
-	// 		return true;
-	// 	}
-	// 	return false;
-	// };
 
 	const isHeaderBlock = () => {
 		// return if the block exists in the highlighted area
@@ -150,27 +146,42 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			{ match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) },
 		);
 	};
+
 	// Create Leafs (Portion of Row)
 
-	const createBoldLeaf = () => {
-		Editor.addMark(editor, "bold", Boolean(!isBoldActive()));
+	const useLeafActive = (markType: MarkTypes) => {
+		switch (markType) {
+			case "bold":
+				return "isBoldActive";
+			case "italic":
+				return "isItalicActive";
+			case "code":
+				return "isCodeActive";
+			case "url":
+				return "isLinkActive";
+		}
 	};
 
-	const createItalicLeaf = () => {
-		Editor.addMark(editor, "italic", Boolean(!isItalicActive()));
+	const isMarkActive = (type: MarkTypes): boolean => {
+		if (!editor.selection) return false;
+		const marks = Editor.marks(editor);
+		return type === "url" ? !!marks?.[type] : Boolean(marks?.[type]);
 	};
 
-	const createCodeLeaf = () => {
-		Editor.addMark(editor, "code", Boolean(!isCodeActive()));
-	};
+	const useEditorMarks = () => ({
+		isBoldActive: () => isMarkActive("bold"),
+		isItalicActive: () => isMarkActive("italic"),
+		isCodeActive: () => isMarkActive("code"),
+		isLinkActive: () => isMarkActive("url"),
+	});
 
-	// const createLinkLeaf = () => {
-	// 	if (isLinkActive()) {
-	// 		Editor.addMark(editor, "link", false);
-	// 	} else {
-	// 		Editor.addMark(editor, "link", true);
-	// 	}
-	// };
+	const createLeaf = (markType: MarkTypes) => {
+		Editor.addMark(
+			editor,
+			markType,
+			!useEditorMarks()[useLeafActive(markType)](),
+		);
+	};
 
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
 		// !!! Each if needs a prevent default, because it prevents it from edge case where if you do
@@ -178,13 +189,16 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		// !!!
 		const ifMac = navigator.userAgent.indexOf("Mac") !== -1;
 		const universalHotKey = ifMac ? "metaKey" : "ctrlKey";
+		if (isMarkActive("url")) {
+			Editor.removeMark(editor, "url");
+		}
 		switch (e.key) {
 			// Element Blocks
 
 			case "`": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createCodeLeaf();
+					createLeaf("code");
 				}
 				break;
 			}
@@ -202,64 +216,23 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			case "b": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createBoldLeaf();
+					createLeaf("bold");
 				}
 				break;
 			}
 			case "i": {
 				if (e[universalHotKey]) {
 					e.preventDefault();
-					createItalicLeaf();
+					createLeaf("italic");
 				}
 				break;
 			}
-			// case "o": {
-			// 	if (e.ctrlKey) {
-			// 		e.preventDefault();
-			// 		createLinkLeaf();
-			// 	}
-			// 	break;
-			// }
-			case "Enter": {
-				const { selection } = editor;
-				if (selection) {
-					// TODO: implement links with below
-					// const content = Editor.string(editor, selection);
-					// console.log(selection);
-					// const link = handleFormatLink(content);
-					// if (link) {
-					// 	const textBeforeLink = content.slice(0, link.index);
-					// 	const textAfterLink = content.slice(link.index, link.full.length);
-					// 	Transforms.select(editor, {
-					// 		anchor: { path: selection.anchor.path, offset: 0 },
-					// 		focus: { path: selection.anchor.path, offset: content.length },
-					// 	});
-					// 	Transforms.insertText(editor, textBeforeLink);
-					// 	Transforms.insertNodes(editor, {
-					// 		type: "link",
-					// 		url: link.linkUrl,
-					// 		children: [{ text: link.linkName }],
-					// 	});
-					// 	Transforms.insertText(editor, textAfterLink);
-					// }
-					// console.log(link);
-					// link.forEach(({ fullMatch, linkName, linkUrl, index }) => {
-					// 	const textBeforeLink = content.slice(0, index);
-					// 	const textAfterLink = content.slice(index + fullMatch.length);
-					// 	Transforms.select(editor, {
-					// 		anchor: { path: selection.anchor.path, offset: 0 },
-					// 		focus: { path: selection.anchor.path, offset: content.length },
-					// 	});
-					// 	console.log("lol");
-					// 	// Transforms.insertText(editor, textBeforeLink);
-					// 	Transforms.insertNodes(editor, {
-					// 		type: "link",
-					// 		url: linkUrl,
-					// 		children: [{ text: link.linkName }],
-					// 	});
-					// 	// Transforms.insertText(editor, textAfterLink);
-					// });
+			case "l": {
+				if (e[universalHotKey]) {
+					e.preventDefault();
+					setShowLinkForm(true);
 				}
+				break;
 			}
 		}
 	};
@@ -282,6 +255,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		}
 	}, []);
 
+	// Effects
+
+	useEffect(() => {
+		editor.selection = {
+			anchor: { path: [0, 0], offset: 0 },
+			focus: { path: [0, 0], offset: 0 },
+		};
+	}, []);
+
 	return (
 		<Slate
 			editor={editor}
@@ -296,15 +278,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				>
 					<TextEditorToolBar
 						// Leafs
-						createBoldLeaf={createBoldLeaf}
-						createItalicLeaf={createItalicLeaf}
-						isBoldActive={isBoldActive()}
-						isItalicActive={isItalicActive()}
+
+						createLeaf={createLeaf}
+						markActiveChecks={useEditorMarks()}
+						injectLinkContent={injectLinkContent}
 						// Blocks
-						createCodeLeaf={createCodeLeaf}
-						isCodeActive={isCodeActive()}
 						createHeaderBlock={createHeaderBlock}
 						isHeaderBlock={isHeaderBlock()}
+						// Others
+						selection={editor.selection}
 					/>
 					<Editable
 						onKeyDown={handleSetEditorContent}

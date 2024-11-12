@@ -16,44 +16,60 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
+import { TODO } from "@squared/context";
+import type { User } from "@squared/db";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const [assignee, setAssignee] = useState<User | null>(null);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
+
+	const users = useUserStore((state) => state.users);
+	useEffect(() => {
+		const foundUser = users.find((user) => user.id === currentTask?.assigneeId);
+		setAssignee(foundUser ?? null);
+	}, [currentTask, users]);
 
 	// Move these to a custom hook or memoize if needed
-	const updateTask = useTaskStore((state) => state.updateTask);
-	const users = useUserStore((state) => state.users);
 	if (!currentTask) return null;
 
 	// Derive values from props instead of state
 	const taskId = currentTask?.id ?? "";
-	const assigneeName = currentTask?.assigneeName ?? "";
+	const assigneeName = assignee?.name ?? "";
 	const assigneeId = currentTask?.assigneeId ?? "";
 	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			await updateTask(taskId, { assigneeId: null, assigneeName: null });
-			setCurrentTask({ ...currentTask, assigneeId: null, assigneeName: null });
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: null,
+				}),
+			);
+			setCurrentTask({ ...currentTask, assigneeId: null });
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
-			await updateTask(taskId, {
-				assigneeId: selectedUser.id,
-				assigneeName: selectedUser.name,
-			});
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: selectedUser.id,
+				}),
+			);
 			setCurrentTask({
 				...currentTask,
 				assigneeId: selectedUser.id,
-				assigneeName: selectedUser.name,
 			});
 		}
 		setOpen(false);

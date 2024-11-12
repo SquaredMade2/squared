@@ -18,17 +18,17 @@ import { useEffect, useState } from "react";
 export default function ViewsPage() {
 	const router = useRouter();
 	const { savedFilters, getSavedFilters } = useFilterStore((state) => state);
-	const { currentTeam, loading: teamLoading } = useTeams();
+	const { team, loading: teamLoading } = useTeams();
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchSavedFilters = async () => {
 			if (teamLoading) return;
-			currentTeam && (await getSavedFilters(currentTeam.id));
+			team && (await getSavedFilters(team.id));
 			setIsLoading(false);
 		};
 		fetchSavedFilters();
-	}, [getSavedFilters, currentTeam, teamLoading]);
+	}, [getSavedFilters, team, teamLoading]);
 
 	const handleFilterSelect = (filter: SavedFilter) => {
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
@@ -44,7 +44,7 @@ export default function ViewsPage() {
 		);
 	}
 
-	if (!isLoading && !currentTeam) {
+	if (!isLoading && !team) {
 		return (
 			<div className="flex justify-center items-center h-screen">
 				<p>

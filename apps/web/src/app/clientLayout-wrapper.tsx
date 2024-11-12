@@ -1,7 +1,6 @@
 "use client";
 
 import ErrorBoundary from "@/components/ErrorBoundary";
-import MobileMenuSheet from "@/components/MobileNav";
 import {
 	TaskSelector,
 	WorkspaceInviteModal,
@@ -30,7 +29,6 @@ export default function ClientLayoutWrapper({
 						disableTransitionOnChange
 					>
 						<WorkspaceInviteModal />
-						<MobileMenuSheet />
 						<SearchCommand />
 						<WorkspaceSwitcher />
 						<TaskSelector />

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { useModalStore, useTeamStore, useViewStore } from "@/store";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useModalStore, useSprintStore, useViewStore } from "@/store";
 import type { Status } from "@squared/db";
 import { SquarePen } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -7,6 +8,7 @@ import { usePathname } from "next/navigation";
 export const NewIssueButton = () => {
 	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
 		useModalStore((state) => state);
+	const { state: sidebarState } = useSidebar();
 	const titleArr: { status: Status } = { status: "todo" };
 
 	const handleOpen = () => {
@@ -17,22 +19,28 @@ export const NewIssueButton = () => {
 		});
 	};
 
+	const isCollapsed = sidebarState === "collapsed";
+
 	return (
 		<Button
 			variant="outline"
-			className="shadow-lg border-blue-500 hover:shadow-glow"
+			className={`shadow-lg border-blue-500 hover:shadow-glow ${
+				isCollapsed ? "px-0" : ""
+			}`}
 			onClick={handleOpen}
 		>
-			<span>
-				<SquarePen className="size-5" />
-			</span>
-			<span className="px-2 w-auto">
-				{Object.keys(newIssueData).length > 0 && !showNewIssue
-					? "Resume editing"
-					: "New Issue"}
-			</span>
-			{Object.keys(newIssueData).length > 0 && !showNewIssue && (
-				<div className="w-1.5 h-1.5 rounded-md bg-accent border-border ml-2" />
+			<SquarePen className="size-5" />
+			{!isCollapsed && (
+				<>
+					<span className="px-2 w-auto">
+						{Object.keys(newIssueData).length > 0 && !showNewIssue
+							? "Resume editing"
+							: "New Issue"}
+					</span>
+					{Object.keys(newIssueData).length > 0 && !showNewIssue && (
+						<div className="w-1.5 h-1.5 rounded-md bg-accent border-border ml-2" />
+					)}
+				</>
 			)}
 		</Button>
 	);
@@ -43,7 +51,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 		(state) => state,
 	);
 	const { displayOptions } = useViewStore((state) => state);
-	const { currentSprint } = useTeamStore((state) => state);
+	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
 	const { groupTasksBy } = displayOptions;
 
@@ -68,7 +76,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 		setShowNewIssue(true);
 		setNewIssueData({
 			...newIssueData,
-			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
+			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: group,
 		});
 	};

@@ -1,4 +1,4 @@
-import { useTaskStore, useViewStore } from "@/store";
+import { useTaskStore, useUserStore, useViewStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -13,36 +13,42 @@ import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
 
+const priorityOrder = [
+	Priority.noPriority,
+	Priority.low,
+	Priority.medium,
+	Priority.high,
+	Priority.urgent,
+];
+
+const statusOrder = [
+	Status.backlog,
+	Status.todo,
+	Status.inProgress,
+	Status.inReview,
+	Status.done,
+	Status.canceled,
+	Status.archived,
+];
+
 const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
-	const numberOfTasks = tasks.length;
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
+	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { tasks: allTasks } = useTaskStore((state) => state);
+	const users = useUserStore((state) => state.users);
 
-	const priorityOrder = [
-		Priority.noPriority,
-		Priority.low,
-		Priority.medium,
-		Priority.high,
-		Priority.urgent,
-	];
+	const getParentTaskIds = () => {
+		const taskIdsForGroup = tasks.map((t) => t.id);
+		return tasks
+			.filter(
+				(t) => t.parentId !== null && taskIdsForGroup.includes(t.parentId),
+			)
+			.map((t) => t.parentId);
+	};
 
-	const statusOrder = [
-		Status.backlog,
-		Status.todo,
-		Status.inProgress,
-		Status.inReview,
-		Status.done,
-		Status.canceled,
-		Status.archived,
-	];
-
-	const orderTasks = (
-		tasks: Task[],
-		orderBy: string,
-		orderAscending: boolean,
-	): Task[] => {
+	const orderTasks = (tasks: Task[]): Task[] => {
 		return tasks.sort((a, b) => {
 			let comparison = 0;
 
@@ -59,9 +65,14 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						priorityOrder.indexOf(a.priority) -
 						priorityOrder.indexOf(b.priority);
 					break;
-				case "Assignee":
-					comparison = compareNullableStrings(a.assigneeName, b.assigneeName);
+				case "Assignee": {
+					const aAssignee =
+						users.find((u) => u.id === a.assigneeId)?.name ?? null;
+					const bAssignee =
+						users.find((u) => u.id === b.assigneeId)?.name ?? null;
+					comparison = compareNullableStrings(aAssignee, bAssignee);
 					break;
+				}
 				case "Effort":
 					comparison = compareNullableNumbers(
 						a.effortEstimate,
@@ -88,45 +99,119 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		});
 	};
 
-	const orderedTasks = orderTasks(
-		tasks,
-		displayOptions.taskOrder.orderBy,
-		displayOptions.taskOrder.orderAscending,
+	const renderTask = (task: Task, index: number) => (
+		<div
+			key={task.id}
+			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+		>
+			<TaskCard task={task} index={index} location={"dashboard"} />
+		</div>
 	);
 
-	// handle when grouping by No grouping display on grid (no columns just grid??)
+	const renderTaskWithSubtasks = (
+		task: Task,
+		index: number,
+		subtasks: Task[],
+	) => (
+		<div
+			key={task.id}
+			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+		>
+			<TaskCard task={task} index={index} location={"dashboard"} />
+			{subtasks.length > 0 && displayOptions.showSubTasks && (
+				<div
+					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+						isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
+					}`}
+				>
+					{subtasks.map((subtask, subIndex) => (
+						<TaskCard
+							key={subtask.id}
+							task={subtask}
+							index={subIndex}
+							location={"dashboard"}
+							isSubtask={true}
+						/>
+					))}
+				</div>
+			)}
+		</div>
+	);
 
-	// refactor this - need to be able to render subtask by itself in some cases
-	// ex. grouping is priority, parent task has urgent priority, subtask has medium priority - display separately in their respective groupcolumns
-	const renderTaskWithSubtasks = (task: Task, index: number) => {
-		const subtasks = allTasks.filter((t) => t.parentId === task.id);
-		return (
-			<div
-				key={task.id}
-				className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
+		<div
+			key={parentTask?.id}
+			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
+			}`}
+		>
+			<span
+				className={`text-accent-foreground truncate ${isListView ? "ml-10" : "ml-2"}`}
 			>
-				<TaskCard task={task} index={index} location={"dashboard"} />
-				{subtasks.length > 0 && displayOptions.showSubTasks && (
-					<div
-						className={`mt-1 ${
-							isListView
-								? "w-full rounded-b-lg px-2 pb-2 bg-secondary dark:bg-secondary/30"
-								: "w-72 dark:bg-secondary/30 bg-secondary rounded-lg p-2"
-						}`}
-					>
-						{subtasks.map((subtask, subIndex) => (
-							<TaskCard
-								key={subtask.id}
-								task={subtask}
-								index={subIndex}
-								location={"dashboard"}
-								isSubtask={true}
-							/>
-						))}
-					</div>
-				)}
-			</div>
+				{parentTask?.identifier}: {parentTask?.title}
+			</span>
+			{subtasks.map((subtask, index) => (
+				<TaskCard
+					key={subtask.id}
+					task={subtask}
+					index={index}
+					location={"dashboard"}
+					isSubtask={true}
+				/>
+			))}
+		</div>
+	);
+
+	const renderGroup = (tasks: Task[]) => {
+		const parentIdsForGroup = getParentTaskIds();
+		const subtaskParentIds = new Set(
+			tasks.filter((t) => t.parentId).map((t) => t.parentId),
 		);
+
+		const renderableItems = tasks
+			.map((task) => {
+				if (!task.parentId) {
+					const isParentTask = parentIdsForGroup.includes(task.id);
+					if (isParentTask) {
+						const subtasks = tasks.filter((t) => t.parentId === task.id);
+						return {
+							task,
+							render: (index: number) =>
+								renderTaskWithSubtasks(task, index, subtasks),
+						};
+					}
+					return {
+						task,
+						render: (index: number) => renderTask(task, index),
+					};
+				}
+				return null;
+			})
+			.filter(Boolean);
+
+		const orphanedSubtaskGroups = Array.from(subtaskParentIds)
+			.map((id) => {
+				if (parentIdsForGroup.includes(id)) return null;
+				const parentTask = allTasks.find((t) => t.id === id);
+				const subtasks = tasks.filter((t) => t.parentId === id);
+				return {
+					task: parentTask,
+					render: () => renderSubtasks(parentTask, subtasks),
+				};
+			})
+			.filter(Boolean);
+
+		const allItems = [...renderableItems, ...orphanedSubtaskGroups];
+		const sortedItems = orderTasks(
+			allItems
+				.map((item) => item?.task)
+				.filter((task): task is Task => task !== undefined),
+		);
+
+		return sortedItems.map((sortedTask, index) => {
+			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+			return item?.render(index);
+		});
 	};
 
 	return (
@@ -139,7 +224,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				title={group}
 				showTasks={showTasks}
 				setShowTasks={setShowTasks}
-				numberOfTasks={numberOfTasks}
+				numberOfTasks={tasks.length}
 				isListView={isListView}
 			/>
 			<Droppable droppableId={group}>
@@ -167,10 +252,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 									: "flex flex-col z-30 w-full gap-2 items-center"
 							}
 						>
-							{showTasks &&
-								orderedTasks
-									.filter((task) => !task.parentId)
-									.map((task, index) => renderTaskWithSubtasks(task, index))}
+							{showTasks && renderGroup(tasks)}
 						</div>
 						{provided.placeholder}
 					</ScrollArea>
