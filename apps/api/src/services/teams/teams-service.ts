@@ -75,7 +75,7 @@ export class TeamService implements TeamRpc {
 		workspaceId,
 	}: { identifier: string; workspaceId: string }): Promise<Team | null> {
 		this.logger.info("Finding team: %s", identifier);
-		return await this.db.team.findUnique({
+		return await this.db.team.findFirst({
 			where: { identifier, workspaceId },
 		});
 	}
