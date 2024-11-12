@@ -18,13 +18,15 @@ const prisma = new PrismaClient({
 	},
 });
 
-const auth = new AuthService(prisma);
+const secret = process.env.JWT_SECRET;
+
+const auth = new AuthService(prisma, secret);
 const comment = new CommentService(prisma);
 const event = new EventService(prisma);
 const sprint = new SprintService(prisma);
 const team = new TeamService(prisma);
 const task = new TaskService(prisma);
-const workspace = new WorkspaceService(prisma);
+const workspace = new WorkspaceService(prisma, secret);
 
 export const services = {
 	auth,
