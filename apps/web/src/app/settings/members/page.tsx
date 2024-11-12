@@ -11,10 +11,10 @@ export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
 
-	const membersWithRoles: MemberWithRole[] = currentWorkspace
+	const membersWithRoles: MemberWithRole[] = workspace
 		? users.map((user) => ({
 				...user,
-				role: currentWorkspace.admins.includes(user.id) ? "admin" : "member",
+				role: workspace.admins.includes(user.id) ? "admin" : "member",
 			}))
 		: [];
 
@@ -34,7 +34,7 @@ export default function WorkspaceMembersPage() {
 				<DataTable
 					columns={columns}
 					data={membersWithRoles}
-					workspace={currentWorkspace}
+					workspace={workspace}
 				/>
 			)}
 		</MembersSettingsWrapper>
