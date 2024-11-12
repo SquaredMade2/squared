@@ -12,6 +12,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
+import { truncateString } from "@/utils/formatting";
 
 const priorityOrder = [
 	Priority.noPriority,
@@ -142,7 +143,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			<span
 				className={`text-accent-foreground truncate ${isListView ? "ml-10" : "ml-2"}`}
 			>
-				{parentTask?.identifier}: {parentTask?.title}
+				{parentTask?.identifier}: {truncateString(parentTask?.title ?? "", 35)}
 			</span>
 			{subtasks.map((subtask, index) => (
 				<TaskCard
