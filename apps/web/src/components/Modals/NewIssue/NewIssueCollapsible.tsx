@@ -42,7 +42,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { toast } = useToast();
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const user = useUserStore((state) => state.user);
-	const { currentTeam } = useTeamStore((state) => state);
+	const { team } = useTeamStore((state) => state);
 	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
 	const { tasks, createTask } = useTaskStore((state) => state);
@@ -75,7 +75,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return;
 		}
-		if (!currentWorkspace || !currentTeam || !user) {
+		if (!currentWorkspace || !team || !user) {
 			toast({
 				title: "Error authenticating user",
 				variant: "destructive",
@@ -96,14 +96,14 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${currentWorkspace.tasksCreated + 1}`,
+				identifier: `${team.identifier}-${currentWorkspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
-				teamId: currentTeam.id,
+				teamId: team.id,
 				workspaceId: currentWorkspace.id,
 				updatedAt: new Date(),
 				parentId: parentId,

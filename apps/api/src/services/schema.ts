@@ -4,6 +4,7 @@ import type {
 	Notification,
 	Sprint,
 	Task,
+	Team,
 	User,
 	Workspace,
 } from "@squared/db";
@@ -127,5 +128,20 @@ export const userSchema = createSchema<User>()(
 		googleId: z.string().nullable(),
 		githubUsername: z.string().nullable(),
 		githubId: z.string().nullable(),
+	}),
+);
+
+export const teamSchema = createSchema<Team>()(
+	z.object({
+		name: z.string().nullable(),
+		id: z.string(),
+		identifier: z.string(),
+		workspaceId: z.string(),
+		sprintsEnabled: z.boolean(),
+		sprintDuration: z.number(),
+		cooldownDuration: z.number(),
+		sprintStartDate: z.date(),
+		tasksPerSprint: z.number(),
+		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
 	}),
 );

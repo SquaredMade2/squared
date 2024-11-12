@@ -26,7 +26,7 @@ export class CommandSchema {
 	router: ReturnType<typeof useRouter>;
 	pathname: string;
 	currentWorkspace: Workspace | null;
-	currentTeam: Team | null;
+	team: Team | null;
 	setShowNewIssue: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;
 	setShowNavbar: (input: boolean) => void;
@@ -62,7 +62,7 @@ export class CommandSchema {
 			(state) => state.currentWorkspace,
 		);
 		this.showNavbar = useViewStore((state) => state.showNavbar);
-		this.currentTeam = useTeamStore((state) => state.currentTeam);
+		this.team = useTeamStore((state) => state.team);
 		this.setShowNewIssue = setShowNewIssue;
 		this.setShowSwitchWorkspace = setShowSwitchWorkspace;
 		this.setShowNavbar = setShowNavbar;
@@ -115,9 +115,9 @@ export class CommandSchema {
 					text: "Create new view",
 					function: () => {
 						this.clearFilter();
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(
-								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views/new`,
+								`/${this.currentWorkspace.url}/team/${this.team.identifier}/views/new`,
 							);
 						} else {
 							console.error("Current workspace or team is null");
@@ -191,9 +191,9 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Go to active tasks",
 					function: () => {
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(
-								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/active`,
+								`/${this.currentWorkspace.url}/team/${this.team.identifier}/active`,
 							);
 						} else {
 							console.error("Current workspace or team is null");
@@ -205,9 +205,9 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Go to backlog",
 					function: () => {
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(
-								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/backlog`,
+								`/${this.currentWorkspace.url}/team/${this.team.identifier}/backlog`,
 							);
 						} else {
 							console.error("Current workspace or team is null");
@@ -219,9 +219,9 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Go to all tasks",
 					function: () => {
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(
-								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/all`,
+								`/${this.currentWorkspace.url}/team/${this.team.identifier}/all`,
 							);
 						} else {
 							console.error("Current workspace or team is null");
@@ -242,9 +242,9 @@ export class CommandSchema {
 					text: "Go to views",
 					function: () => {
 						this.clearFilter();
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(
-								`/${this.currentWorkspace.url}/team/${this.currentTeam.identifier}/views`,
+								`/${this.currentWorkspace.url}/team/${this.team.identifier}/views`,
 							);
 						} else {
 							console.error("Current workspace or team is null");
@@ -259,7 +259,7 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Go to archive",
 					function: () => {
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(`/${this.currentWorkspace.url}/archive/tasks`);
 						} else {
 							console.error("Current workspace or team is null");
@@ -271,7 +271,7 @@ export class CommandSchema {
 					icon: <Trash2 className="mr-2 h-4 w-4" />,
 					text: "Go to recently deleted tasks",
 					function: () => {
-						if (this.currentWorkspace && this.currentTeam) {
+						if (this.currentWorkspace && this.team) {
 							this.router.push(
 								`/${this.currentWorkspace.url}/archive/recently-deleted-tasks`,
 							);
@@ -359,10 +359,8 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Team Settings",
 					function: () => {
-						if (this.currentWorkspace && this.currentTeam) {
-							this.router.push(
-								`/settings/teams/${this.currentTeam.identifier}`,
-							);
+						if (this.currentWorkspace && this.team) {
+							this.router.push(`/settings/teams/${this.team.identifier}`);
 						} else {
 							console.error("Current workspace or team is null null");
 						}

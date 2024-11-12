@@ -46,7 +46,7 @@ export function SaveFilterForm({
 		clearFilter,
 		mergeFilters,
 	} = useFilterStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
+	const { team } = useTeamStore((state) => state);
 	const { users, user } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
@@ -105,7 +105,7 @@ export function SaveFilterForm({
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
-		if (!currentTeam) {
+		if (!team) {
 			toast({
 				title: "Error",
 				description: "No team found",
@@ -137,13 +137,13 @@ export function SaveFilterForm({
 					});
 				}
 				//create new view
-			} else if (currentTeam) {
+			} else if (team) {
 				await saveFilter({
 					name: values.title,
 					description: values.description ?? null,
 					filter: currentFilters,
 					type: "TEAM",
-					teamId: currentTeam.id,
+					teamId: team.id,
 					workspaceId: currentWorkspace?.id,
 					authorId: user?.id,
 				});

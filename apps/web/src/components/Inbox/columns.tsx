@@ -1,5 +1,5 @@
 import { eventService } from "@/lib/services";
-import { useTeamStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TooltipContent } from "@repo/ui/tooltip";
 import { TODO } from "@squared/context";
@@ -46,13 +46,9 @@ export const columns: ColumnDef<
 			const { getWorkspace, currentWorkspace } = useWorkspaceStore(
 				(state) => state,
 			);
-			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
 			const { userAvatars, user } = useUserStore((state) => state);
-			const {
-				identifier: taskIdentifier,
-				title: taskName,
-				teamId,
-			} = row.original.Task;
+			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
+
 			const taskId = taskIdentifier.split("-")[1];
 			const {
 				name: workspaceName,
@@ -79,17 +75,9 @@ export const columns: ColumnDef<
 				} else {
 					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
 					if (newWorkspace && user) {
-						const teams = await getAllTeams(user.id);
-						const team = teams.find((t) => t.id === teamId);
-						if (team?.id === currentTeam?.id) {
-							router.push(
-								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
-							);
-						} else {
-							router.push(
-								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
-							);
-						}
+						router.push(
+							`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
+						);
 					}
 				}
 			};
