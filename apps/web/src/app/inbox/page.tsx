@@ -8,12 +8,7 @@ import {
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService } from "@/lib/services";
-import {
-	useAuthStore,
-	useEventStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
 import { useEffect, useState } from "react";
@@ -28,13 +23,12 @@ export type NotificationFilter =
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
 	const { workspaces } = useWorkspaceStore((state) => state);
-	const { user } = useAuthStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
-	const { getUserAvatars } = useUserStore((state) => state);
+	const { getUserAvatars, user } = useUserStore((state) => state);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {

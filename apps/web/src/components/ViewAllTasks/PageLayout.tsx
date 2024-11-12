@@ -2,7 +2,7 @@
 
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useAuthStore, useTaskStore, useViewStore } from "@/store";
+import { useTaskStore, useUserStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squared/db";
 import { Clipboard } from "lucide-react";
@@ -30,7 +30,7 @@ export function TaskPageLayout({
 	children,
 }: TaskPageLayoutProps) {
 	const { view } = useViewStore((state) => state);
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { tasks } = useTaskStore((state) => state);
 
 	if (loading) {

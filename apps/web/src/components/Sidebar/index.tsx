@@ -17,11 +17,12 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { logout } from "@/lib/auth";
 import { eventService, teamService } from "@/lib/services";
 import {
-	useAuthStore,
 	useModalStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
@@ -37,7 +38,7 @@ import { WorkspaceDropdown } from "./WorkspaceDropdown";
 function SidebarContent() {
 	const { currentWorkspace: workspace } = useWorkspaceStore((state) => state);
 	const { teams, setTeams, team } = useTeamStore((state) => state);
-	const { user, logout } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { setShowCommand } = useModalStore((state) => state);
 	const router = useRouter();
 	const { toast } = useToast();

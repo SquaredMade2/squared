@@ -2,7 +2,7 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,8 +11,7 @@ export default function TokenVerificationPage({
 	params,
 }: { params: { token: string } }) {
 	const router = useRouter();
-	const { setUser } = useAuthStore((state) => state);
-	const { getUser } = useUserStore((state) => state);
+	const { getUser, setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
 	const { joinWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();

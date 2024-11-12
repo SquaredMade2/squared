@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-	useAuthStore,
 	useFilterStore,
 	useTeamStore,
 	useUserStore,
@@ -48,9 +47,8 @@ export function SaveFilterForm({
 		mergeFilters,
 	} = useFilterStore((state) => state);
 	const { team } = useTeamStore((state) => state);
-	const { users } = useUserStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
 	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const user = useAuthStore((state) => state.user);
 	const { toast } = useToast();
 	const [isSaving, setIsSaving] = useState(false);
 	const [formattedFilters, setFormattedFilters] = useState<

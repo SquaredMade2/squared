@@ -1,5 +1,5 @@
 import { commentService } from "@/lib/services";
-import { useAuthStore, useCommentStore, useModalStore } from "@/store";
+import { useCommentStore, useModalStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { TODO } from "@squared/context";
@@ -46,7 +46,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentUser = useAuthStore((state) => state.user);
+	const currentUser = useUserStore((state) => state.user);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor

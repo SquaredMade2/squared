@@ -1,8 +1,8 @@
 import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -13,7 +13,7 @@ import { useState } from "react";
 export const useCreateTask = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { team } = useTeamStore((state) => state);
 	const { createTask: addTask } = useTaskStore((state) => state);
 	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
@@ -30,9 +30,6 @@ export const useCreateTask = () => {
 			}
 			if (!team) {
 				throw new Error("Error authenticating team");
-			}
-			if (!user) {
-				throw new Error("Error authenticating user");
 			}
 
 			const { transformedInput: transformedTitle } = transformingMentionInputs(

@@ -1,3 +1,4 @@
+import { AuthService } from "@/gen/rpc/auth";
 import { CommentService } from "@/gen/rpc/comment";
 import { EventService } from "@/gen/rpc/event";
 import { SprintService } from "@/gen/rpc/sprint";
@@ -10,4 +11,5 @@ export const sprintService = new SprintService(serverUrl);
 export const eventService = new EventService(serverUrl);
 export const taskService = new TaskService(serverUrl);
 export const commentService = new CommentService(serverUrl);
+export const authService = new AuthService(serverUrl);
 export const teamService = new TeamService(serverUrl);

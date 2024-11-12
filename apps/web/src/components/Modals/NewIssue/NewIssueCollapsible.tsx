@@ -16,10 +16,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -41,7 +41,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { toast } = useToast();
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { team } = useTeamStore((state) => state);
 	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);

@@ -1,5 +1,5 @@
 import { eventService } from "@/lib/services";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TooltipContent } from "@repo/ui/tooltip";
 import { TODO } from "@squared/context";
@@ -46,10 +46,9 @@ export const columns: ColumnDef<
 			const { getWorkspace, currentWorkspace } = useWorkspaceStore(
 				(state) => state,
 			);
-
-			const { userAvatars } = useUserStore((state) => state);
-			const { user } = useAuthStore((state) => state);
+			const { userAvatars, user } = useUserStore((state) => state);
 			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
+
 			const taskId = taskIdentifier.split("-")[1];
 			const {
 				name: workspaceName,
@@ -134,8 +133,9 @@ export const columns: ColumnDef<
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateUser, getUser } = useUserStore((state) => state);
-			const { user, setUser } = useAuthStore((state) => state);
+			const { updateUser, getUser, user, setUser } = useUserStore(
+				(state) => state,
+			);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {

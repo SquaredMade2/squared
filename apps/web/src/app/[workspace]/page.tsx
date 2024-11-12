@@ -2,7 +2,7 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { teamService } from "@/lib/services";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export default function Home() {
 	const router = useRouter();
 	const params = useParams();
 
-	const user = useAuthStore((state) => state.user);
+	const user = useUserStore((state) => state.user);
 	const getWorkspace = useWorkspaceStore((state) => state.getWorkspace);
 	let workspaceUrl = params.workspace;
 	if (Array.isArray(workspaceUrl)) {
