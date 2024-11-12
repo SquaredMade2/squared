@@ -2,7 +2,8 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { workspaceService } from "@/lib/services";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { teamService } from "@/lib/services";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,9 +15,8 @@ export default function Home() {
 	const router = useRouter();
 	const params = useParams();
 
-	const user = useAuthStore((state) => state.user);
+	const user = useUserStore((state) => state.user);
 	const setWorkspace = useWorkspaceStore((state) => state.setWorkspace);
-	const getAllTeams = useTeamStore((state) => state.getAllTeams);
 	let workspaceUrl = params.workspace;
 	if (Array.isArray(workspaceUrl)) {
 		workspaceUrl = workspaceUrl[0];
@@ -44,9 +44,12 @@ export default function Home() {
 			}
 			setWorkspace(currentWorkspace);
 
-			const currentTeam = await getAllTeams(user.id);
-			if (currentTeam) {
-				router.push(`/${workspaceUrl}/team/${currentTeam[0].identifier}/all`);
+			const allTeams = await teamService.getUserTeams(TODO, {
+				userId: user.id,
+				workspaceId: currentWorkspace.id,
+			});
+			if (allTeams) {
+				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
 			}
 			setLoading(false);
 		};

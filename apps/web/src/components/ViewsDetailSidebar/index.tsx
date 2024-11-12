@@ -37,8 +37,8 @@ const ViewsDetailSidebar = ({
 }: ViewsDetailSidebarProps) => {
 	const router = useRouter();
 	const { users } = useUserStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { team } = useTeamStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { tasks } = useTaskStore((state) => state);
 	const { deleteSavedFilter } = useFilterStore((state) => state);
 	const filteredTasks = filterTasksWithFilter(tasks);
@@ -100,7 +100,7 @@ const ViewsDetailSidebar = ({
 						<div className="flex justify-between items-center">
 							<span className="text-xs">Visibility</span>
 							<Badge variant="outline" className="">
-								{currentTeam?.name}
+								{team?.name}
 							</Badge>
 						</div>
 						<div className="flex justify-between items-center">

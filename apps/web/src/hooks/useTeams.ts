@@ -1,19 +1,17 @@
+import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
-import type { Team } from "@squared/db";
+import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTeams() {
-	const { currentTeam, getAllTeams, setCurrentTeam } = useTeamStore(
-		(state) => state,
-	);
 	const { loading: workspaceLoading, workspace, user } = useWorkspaces();
+	const { team, teams, setTeam, setTeams } = useTeamStore((state) => state);
 	const { users, loading: userLoading } = useUsers();
 	const [loading, setLoading] = useState(true);
-	const [teams, setTeams] = useState<Team[]>([]);
 	const [authorized, setAuthorized] = useState(false);
 
 	const params = useParams();
@@ -27,11 +25,14 @@ export function useTeams() {
 			if (user && workspace) {
 				const userHasAccess = users.some((u) => u.id === user.id);
 				setAuthorized(userHasAccess);
-				if (userHasAccess && currentTeam?.identifier !== teamIdentifier) {
-					const allTeams = await getAllTeams(user.id);
+				if (userHasAccess && team?.identifier !== teamIdentifier) {
+					const allTeams = await teamService.getUserTeams(TODO, {
+						userId: user.id,
+						workspaceId: workspace.id,
+					});
 					setTeams(allTeams);
 					const team = allTeams.find((t) => t.identifier === teamIdentifier);
-					team && setCurrentTeam(team);
+					team && setTeam(team);
 				}
 			}
 
@@ -43,7 +44,7 @@ export function useTeams() {
 
 	return {
 		loading,
-		currentTeam,
+		team,
 		authorized,
 		teams,
 	};

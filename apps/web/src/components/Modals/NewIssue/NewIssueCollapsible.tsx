@@ -16,10 +16,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -41,9 +41,9 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { toast } = useToast();
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const { user } = useAuthStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+	const user = useUserStore((state) => state.user);
+	const { team } = useTeamStore((state) => state);
 	const { tasks, createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
@@ -74,7 +74,8 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return;
 		}
-		if (!workspace || !currentTeam || !user) {
+
+		if (!workspace || !team || !user) {
 			toast({
 				title: "Error authenticating user",
 				variant: "destructive",
@@ -92,14 +93,14 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescriptionInput,
-				identifier: `${currentTeam.identifier}-${workspace.tasksCreated + 1}`,
+				identifier: `${team.identifier}-${workspace.tasksCreated + 1}`,
 				status: status ?? "backlog",
 				priority: priority ?? "noPriority",
 				labels: labels || [],
 				dueDate: dueDate ?? null,
 				effortEstimate: effortEstimate ?? null,
 				dateCreated: new Date(),
-				teamId: currentTeam.id,
+				teamId: team.id,
 				workspaceId: workspace.id,
 				updatedAt: new Date(),
 				parentId: parentId,

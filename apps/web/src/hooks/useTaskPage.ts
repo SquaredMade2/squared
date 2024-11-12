@@ -12,7 +12,7 @@ export function useTaskPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { teams, setCurrentTeam } = useTeamStore((state) => state);
+	const { teams, setTeam } = useTeamStore((state) => state);
 	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
 		(state) => state,
 	);
@@ -36,7 +36,7 @@ export function useTaskPage() {
 				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
 				const team = teams.find((t) => t.identifier === teamIdentifier);
 				if (team) {
-					setCurrentTeam(team);
+					setTeam(team);
 				}
 
 				// Fetch task data

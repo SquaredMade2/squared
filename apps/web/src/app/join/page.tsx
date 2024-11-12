@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { workspaceService } from "@/lib/services";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { ChevronLeft } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -19,8 +19,7 @@ const Join = () => {
 	const { setWorkspaces, workspaces, createWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { user, setUser } = useAuthStore((state) => state);
-	const { updateUser, getUser } = useUserStore((state) => state);
+	const { updateUser, getUser, user, setUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 

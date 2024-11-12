@@ -4,10 +4,10 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { useAuthStore, useFilterStore } from "@/store";
+import { useFilterStore, useUserStore } from "@/store";
 
 export default function MyCreatedTasksPage() {
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { filterTasks } = useFilterStore((state) => state);
 
 	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
