@@ -2,11 +2,9 @@
 
 import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
-import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import { Loader2 } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -21,28 +19,13 @@ import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
 
 export const WorkspaceInviteModal = () => {
-	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(
 		(state) => state,
 	);
-	const params = useParams();
 	const [inviteEmails, setInviteEmails] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { toast } = useToast();
-	useEffect(() => {
-		const fetchWorkspace = async () => {
-			const { workspaceId } = params;
-			setWorkspace(
-				await workspaceService.getWorkspace(TODO, {
-					workspaceId: parseParams(workspaceId),
-				}),
-			);
-		};
-
-		if (!workspace) {
-			fetchWorkspace();
-		}
-	}, [workspace, params, setWorkspace]);
 
 	const handleInvite = async () => {
 		const emails = inviteEmails
