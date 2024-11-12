@@ -16,13 +16,15 @@ export class EventService implements EventRpc {
 	private taskEventRepository: PrismaClient["taskEvent"];
 	private commitRepository: PrismaClient["commit"];
 	private notificationRepository: PrismaClient["notification"];
-	private taskRepository: PrismaClient["task"];
+	private labelRepository: PrismaClient["label"];
+	private userRepository: PrismaClient["user"];
 
 	constructor(db: PrismaClient) {
 		this.taskEventRepository = db.taskEvent;
 		this.commitRepository = db.commit;
 		this.notificationRepository = db.notification;
-		this.taskRepository = db.task;
+		this.labelRepository = db.label;
+		this.userRepository = db.user;
 	}
 	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
 		const [taskEvents, commits] = await Promise.all([
@@ -58,7 +60,7 @@ export class EventService implements EventRpc {
 		changes: Partial<Task>;
 		previousTask: Task;
 	}): Promise<TaskEvent> {
-		const diff = this.getTaskDiff(previousTask, changes);
+		const diff = await this.getTaskDiff(previousTask, changes);
 
 		const taskEvent = await this.taskEventRepository.create({
 			data: {
@@ -154,34 +156,56 @@ export class EventService implements EventRpc {
 			where: { id: { in: notificationIds } },
 		});
 	}
-	private getTaskDiff(
+	private async getTaskDiff(
 		previousTask: Task,
 		changes: Partial<Task>,
-	): string {
-		const diff = Object.entries(changes)
-			.map(([key, newValue]) => {
-				if (key === 'id' || key === 'updatedAt') return null;
-				if (newValue === undefined) return null;
-				
-				const oldValue = previousTask[key as keyof Task];
-				const formattedOldValue = this.formatValue(oldValue);
-				const formattedNewValue = this.formatValue(newValue);
+	): Promise<string> {
+		const diff = await Promise.all(
+			Object.entries(changes)
+				.map(async ([key, newValue]) => {
+					if (key === 'id' || key === 'updatedAt') return null;
+					if (newValue === undefined) return null;
+					
+					const oldValue = previousTask[key as keyof Task];
+					const formattedOldValue = await this.formatValue(oldValue, key);
+					const formattedNewValue = await this.formatValue(newValue, key);
 
-				if (formattedOldValue !== formattedNewValue) {
-					const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
-					return diffString;
-				}
-				return null;
-			})
-			.filter(Boolean)
-			.join(", ");
+					if (formattedOldValue !== formattedNewValue) {
+						const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
+						return diffString;
+					}
+					return null;
+				})
+		);
 
-		return diff.length > 0 ? diff : "No changes";
+		// Filter out null values, if empty, it means there are no changes made
+		const filteredDiff = diff.filter(Boolean).join(", ");
+		return filteredDiff.length > 0 ? filteredDiff : "No changes";
 	}
-	private formatValue(value: Task[keyof Task]): string {
+	private async formatValue(value: Task[keyof Task], key: string): Promise<string> {
 		if (value === null || value === undefined) {
 			return "null";
 		}
+
+		// Handle assigneeId
+		if (key === 'assigneeId' && typeof value === 'string') {
+			const user = await this.userRepository.findUnique({
+				where: { id: value },
+				select: { name: true }
+			});
+			return `"${user?.name ?? 'Unknown User'}"`;
+		}
+
+		// Handle labels array
+		if (Array.isArray(value) && key === 'labels') {
+			const labelIds = value as string[];
+			const labels = await this.labelRepository.findMany({
+				where: { id: { in: labelIds } },
+				select: { name: true }
+			});
+			return JSON.stringify(labels.map(l => l.name));
+		}
+
 		if (typeof value === "string") {
 			return `"${value}"`;
 		}
@@ -189,12 +213,6 @@ export class EventService implements EventRpc {
 			return value.toISOString();
 		}
 		if (Array.isArray(value)) {
-			// Special handling for labels array
-			if (value.length > 0 && typeof value[0] === 'string' && value[0].match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
-				return JSON.stringify(value.map(id => {
-					return `Label ${id.substring(0, 8)}`;
-				}));
-			}
 			return JSON.stringify(value);
 		}
 		return String(value);
