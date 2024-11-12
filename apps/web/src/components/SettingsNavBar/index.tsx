@@ -178,7 +178,7 @@ const SidebarContent = ({
 const SettingsNavBar = (): React.ReactElement => {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
-	const { setCurrentTeam, teams } = useTeamStore((state) => state);
+	const { setTeam, teams } = useTeamStore((state) => state);
 	const { showMobileNavbar, setShowMobileNavbar } = useViewStore(
 		(state) => state,
 	);
@@ -188,7 +188,7 @@ const SettingsNavBar = (): React.ReactElement => {
 	};
 
 	const handleTeamClick = (team: Team, path?: string) => {
-		setCurrentTeam(team);
+		setTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
 

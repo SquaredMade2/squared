@@ -1,5 +1,4 @@
 export { SquaredStoreProvider } from "./provider";
-export { useAuthStore } from "./auth";
 export { useCommentStore } from "./comments";
 export { useEventStore } from "./events";
 export { useModalStore } from "./modals";

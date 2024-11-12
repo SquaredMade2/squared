@@ -1,13 +1,13 @@
-import { sprintService, taskService } from "@/lib/services";
 import {
-	useSprintStore,
-	useTaskStore,
-	useTeamStore,
-	useWorkspaceStore,
-} from "@/store";
+	sprintService,
+	taskService,
+	teamService,
+	workspaceService,
+} from "@/lib/services";
+import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
-import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import type { Sprint, Task, Workspace } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthUser } from "./useAuthUser";
@@ -16,15 +16,13 @@ export function useSprints(sprintId?: string) {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
 	const { setTasks } = useTaskStore((state) => state);
 	const [workspace, setWorkspace] = useState<Workspace | null>(null);
-	const [team, setTeam] = useState<Team | null>(null);
 	const [sprints, setSprints] = useState<Sprint[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
-	const { getWorkspace } = useWorkspaceStore((state) => state);
 	const { setSprint, sprint } = useSprintStore((state) => state);
-	const { getAllTeams } = useTeamStore((state) => state);
+	const { setTeam, team } = useTeamStore((state) => state);
 	const { user, loading: userLoading } = useAuthUser();
 
 	useEffect(() => {
@@ -36,11 +34,14 @@ export function useSprints(sprintId?: string) {
 				}
 
 				// Fetch workspace data
-				const { workspace, message: workspaceMessage } = await getWorkspace(
-					parseParams(workspaceUrl),
+				const workspace = await workspaceService.getWorkspaceByUrl(
+					context.TODO,
+					{
+						url: parseParams(workspaceUrl),
+					},
 				);
 				if (!workspace) {
-					throw new Error(workspaceMessage || "Workspace not found");
+					throw new Error("Workspace not found");
 				}
 				setWorkspace(workspace);
 
@@ -49,10 +50,11 @@ export function useSprints(sprintId?: string) {
 				}
 
 				// Fetch team data
-				const teams = await getAllTeams(user.id);
-				const foundTeam = teams.find(
-					(team) => team.identifier === teamIdentifier,
-				);
+
+				const foundTeam = await teamService.getTeamByIdentifier(context.TODO, {
+					identifier: parseParams(teamIdentifier),
+					workspaceId: workspace.id,
+				});
 				if (!foundTeam) {
 					throw new Error("Team not found");
 				}

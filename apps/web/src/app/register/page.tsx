@@ -21,9 +21,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore } from "@/store";
+import { authService } from "@/lib/services";
 import { passwordSchema } from "@/utils/formatting";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
 import { Eye, EyeOff, Loader2, Mail, User } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -48,7 +49,6 @@ function RegisterForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
-	const { register } = useAuthStore((state) => state);
 	const inviteToken = searchParams.get("token");
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -64,17 +64,14 @@ function RegisterForm() {
 		setIsLoading(true);
 		try {
 			// First, register the user using your custom register function
-			const { user, variant } = await register({
+			const user = await authService.register(TODO, {
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
 				email: values.email,
 				password: values.password,
-				type: "register",
-				provider: "credentials",
-				token: inviteToken,
 			});
 
-			if (variant !== "destructive") setIsShowRegisteredModal(true);
+			setIsShowRegisteredModal(true);
 
 			if (user?.verified && inviteToken) {
 				await signIn("credentials", {
