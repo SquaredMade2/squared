@@ -36,7 +36,7 @@ export default function JoinWorkspace() {
 				token,
 				userId: session.user.id,
 			});
-			toast({ title: "Workspace joint successfully" });
+			toast({ title: "Workspace joined successfully" });
 			if (workspace?.url) {
 				router.push(`/${workspace.url}`);
 			}
