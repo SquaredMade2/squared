@@ -84,7 +84,7 @@ export class TeamService implements TeamRpc {
 		userId,
 		workspaceId,
 	}: { userId: string; workspaceId: string }): Promise<Team[]> {
-		this.logger.info("Finding teams for user: %0", userId);
+		this.logger.info("Finding teams for user: %s", userId);
 		const teamIds = await this.db.userTeam
 			.findMany({ where: { userId } })
 			.then((t) => t.map((ut) => ut.teamId));
