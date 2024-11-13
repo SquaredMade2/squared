@@ -2,6 +2,7 @@
 
 import {
 	BriefcaseBusiness,
+	ChevronLeft,
 	CircleUser,
 	Moon,
 	Plus,
@@ -28,7 +29,7 @@ import {
 	SidebarTrigger,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import { useTeamStore } from "@/store";
+import { useTeamStore, useWorkspaceStore } from "@/store";
 import type { Team } from "@squared/db";
 import { WorkspaceDropdown } from "../Sidebar/WorkspaceDropdown";
 import { TooltipProvider } from "../ui/tooltip";
@@ -37,6 +38,7 @@ function SettingsNavbarContent() {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setTeam, teams } = useTeamStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
@@ -45,10 +47,23 @@ function SettingsNavbarContent() {
 		setTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
+
 	return (
 		<>
 			<SidebarHeader className="border-b p-4">
 				<WorkspaceDropdown />
+				<Button
+					variant="ghost"
+					onClick={() =>
+						teams[0] &&
+						router.push(`/${workspace?.url}/team/${teams[0].identifier}/all`)
+					}
+					size="sm"
+					className="py-px gap-2 text-muted-foreground text-sm"
+				>
+					<ChevronLeft />
+					Back to Dashboard
+				</Button>
 			</SidebarHeader>
 			<SidebarContent>
 				<ScrollArea className="h-[calc(100vh-8rem)]">
