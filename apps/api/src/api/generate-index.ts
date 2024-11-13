@@ -173,10 +173,16 @@ io.on('connection', (socket) => {
   });
 });
 
-// Start the server
-server.listen(port, () => {
-  logger.info(\`Server is running on http://localhost:\${port}\`);
-});
+// Do not start server if running tests
+if (process.env.NODE_ENV !== "test") {
+	// Start the server
+	server.listen(port, () => {
+		logger.info(\`Server is running on http://localhost:\${port}\`);
+	});
+}
+
+// export the express instance for supertest to make its requests with
+export { app };
 `);
 }
 

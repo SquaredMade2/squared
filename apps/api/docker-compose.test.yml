@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: squared
+      POSTGRES_PASSWORD: squared
+      POSTGRES_DB: squared-test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U squared -d squared-test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  test:
+    build:
+      context: ../../.
+      dockerfile: ./apps/api/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      POSTGRES_PRISMA_URL: postgresql://squared:squared@db:5432/squared-test?schema=public
+      TEST_POSTGRES_PRISMA_URL: postgresql://squared:squared@db:5432/squared-test?schema=public
+      GITHUB_CLIENT_ID: test
+      GITHUB_CLIENT_SECRET: test 
+      JWT_SECRET: test 
+    command: >
+      sh -c "
+        cd /app/packages/db && pnpm db:push &&
+        cd /app/apps/api && pnpm jest --ci --runInBand --forceExit
+      "

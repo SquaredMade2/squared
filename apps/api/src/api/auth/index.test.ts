@@ -1,35 +1,35 @@
-import { testHost } from "@/utils/testUtils";
 import { prisma } from "@squared/seed";
 import request from "supertest";
-
-const dummyCredentialsUser = {
-	name: "John Doe",
-	username: "john-doe",
-	email: "john_doe@gmail.net",
-};
-
-async function createCredentialsUser() {
-	await prisma.user.create({
-		data: dummyCredentialsUser,
-	});
-}
-
-async function deleteCredentialsUser() {
-	await prisma.user.delete({
-		where: {
-			email: dummyCredentialsUser.email,
-		},
-	});
-}
+import { app } from "..";
 
 describe("/auth", () => {
 	describe("credentials", () => {
+		const dummyCredentialsUser = {
+			name: "John Doe",
+			username: "john-doe",
+			email: "john_doe@gmail.net",
+		};
+
+		async function createCredentialsUser() {
+			await prisma.user.create({
+				data: dummyCredentialsUser,
+			});
+		}
+
+		async function deleteCredentialsUser() {
+			await prisma.user.delete({
+				where: {
+					email: dummyCredentialsUser.email,
+				},
+			});
+		}
+
 		beforeEach(createCredentialsUser);
 		afterEach(deleteCredentialsUser);
 
 		it("should not allow registering users that already exist", async () => {
-			const res = await request(testHost)
-				.post("/auth")
+			const res = await request(app)
+				.post("/api/auth")
 				.send({
 					...dummyCredentialsUser,
 					password: "testing123",
@@ -44,8 +44,8 @@ describe("/auth", () => {
 		});
 
 		it("should not allow registering without a password", async () => {
-			const res = await request(testHost)
-				.post("/auth")
+			const res = await request(app)
+				.post("/api/auth")
 				.send({
 					...dummyCredentialsUser,
 					provider: "credentials",
