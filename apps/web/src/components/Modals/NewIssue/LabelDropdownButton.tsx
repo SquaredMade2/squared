@@ -31,13 +31,10 @@ const LabelColor = ({ label }: { label: Label }) => {
 
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 
-	const taskLabels = useMemo(
-		() => currentWorkspace?.Labels || [],
-		[currentWorkspace],
-	);
+	const taskLabels = useMemo(() => workspace?.Labels || [], [workspace]);
 	const newIssueLabels = useMemo(
 		() => taskLabels.filter((label) => newIssueData.labels?.includes(label.id)),
 		[taskLabels, newIssueData.labels],

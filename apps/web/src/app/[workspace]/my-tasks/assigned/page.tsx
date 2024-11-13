@@ -4,31 +4,26 @@ import ViewAllTasks from "@/components/ViewAllTasks";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { useAuthStore, useFilterStore } from "@/store";
+import { useFilterStore, useUserStore } from "@/store";
 
 export default function MyAssignedTasksPage() {
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { filterTasks } = useFilterStore((state) => state);
 
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns } = useGroups((tasks) =>
 		filterTasks(tasks.filter((t) => t.assigneeId === user?.id)),
 	);
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle="Assigned Tasks"

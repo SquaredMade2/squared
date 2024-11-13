@@ -7,6 +7,7 @@ export type UserAvatar = {
 };
 
 export type UserState = {
+	user: User | null;
 	users: User[];
 	userAvatars: UserAvatar[];
 	connectedRepos: string[];
@@ -19,6 +20,7 @@ export interface UserResponse {
 }
 
 type UserActions = {
+	setUser: (user: User | null) => void;
 	addUser: (user: Partial<User>) => Promise<UserResponse>;
 	updateUser: (userId: string, user: Partial<User>) => Promise<UserResponse>;
 	deleteUser: (userId: string) => Promise<void>;
