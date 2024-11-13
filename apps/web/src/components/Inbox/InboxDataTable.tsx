@@ -26,7 +26,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { eventService } from "@/lib/services";
+import { eventService, userService } from "@/lib/services";
 import { useEventStore, useUserStore } from "@/store";
 import { TODO } from "@squared/context";
 import {
@@ -57,7 +57,7 @@ export function InboxDataTable({
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
-	const { updateUser, getUser, user, setUser } = useUserStore((state) => state);
+	const { updateUser, user, setUser } = useUserStore((state) => state);
 	const { notifications } = useEventStore((state) => state);
 	const table = useReactTable({
 		data,
@@ -189,7 +189,7 @@ export function InboxDataTable({
 
 	const handleMoveAllToSaved = async () => {
 		// WORK WITH FILTER TYPE TO MOV
-		const currentUser = user && (await getUser(user.id)).user;
+		const currentUser = user;
 		if (!currentUser) {
 			return;
 		}
@@ -201,11 +201,13 @@ export function InboxDataTable({
 				...selectedNotificationIds,
 			]),
 		];
-		const response = await updateUser(user.id, {
-			savedNotificationIds: newSavedNotificationIds,
+		const response = await userService.updateUserNotifications(TODO, {
+			userId: user.id,
+			notificationIds: newSavedNotificationIds,
 		});
 		if (response) {
-			setUser(response.user);
+			setUser(user);
+			updateUser(user);
 		}
 	};
 

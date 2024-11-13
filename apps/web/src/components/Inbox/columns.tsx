@@ -1,4 +1,4 @@
-import { eventService, workspaceService } from "@/lib/services";
+import { eventService, userService, workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TooltipContent } from "@repo/ui/tooltip";
@@ -133,9 +133,7 @@ export const columns: ColumnDef<
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateUser, getUser, user, setUser } = useUserStore(
-				(state) => state,
-			);
+			const { updateUser, user, setUser } = useUserStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {
@@ -157,21 +155,23 @@ export const columns: ColumnDef<
 			};
 
 			const handleSave = async () => {
-				const currentUser = user && (await getUser(user.id)).user;
+				const currentUser = user;
+				let response = user;
 				if (currentUser) {
 					setUser(currentUser);
-				}
-				const response =
-					user &&
-					(await updateUser(user.id, {
-						savedNotificationIds: saved
+					response = await userService.updateUserNotifications(TODO, {
+						userId: currentUser.id,
+						notificationIds: saved
 							? user.savedNotificationIds?.filter(
 									(id) => id !== row.original.id,
 								)
 							: [...(user.savedNotificationIds || []), row.original.id],
-					}));
+					});
+				}
+
 				if (response) {
-					setUser(response.user);
+					setUser(response);
+					updateUser(response);
 				}
 			};
 
