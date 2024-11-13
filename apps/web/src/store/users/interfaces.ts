@@ -13,21 +13,12 @@ export type UserState = {
 	connectedRepos: string[];
 };
 
-export interface UserResponse {
-	user: User | null;
-	message?: string;
-	variant: "default" | "destructive";
-}
-
 type UserActions = {
 	setUser: (user: User | null) => void;
-	addUser: (user: Partial<User>) => Promise<UserResponse>;
-	updateUser: (userId: string, user: Partial<User>) => Promise<UserResponse>;
-	deleteUser: (userId: string) => Promise<void>;
-	getUser: (userId: string) => Promise<UserResponse>;
-	getAllUsers: (workspaceId: string) => Promise<User[]>;
-	getUserAvatars: (userId: string) => Promise<UserAvatar[]>;
-	getUserRepositories: (userId: string) => Promise<string[]>;
+	setUsers: (users: User[]) => void;
+	setUserAvatars: (avatars: UserAvatar[]) => void;
+	setConnectedRepos: (repos: string[]) => void;
+	updateUser: (user: User) => void;
 };
 
 export type UserStore = UserState & UserActions;

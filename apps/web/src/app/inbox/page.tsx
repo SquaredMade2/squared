@@ -7,7 +7,7 @@ import {
 } from "@/components/Inbox";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { eventService } from "@/lib/services";
+import { eventService, userService } from "@/lib/services";
 import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
@@ -22,13 +22,15 @@ export type NotificationFilter =
 
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
-	const { workspaces } = useWorkspaceStore((state) => state);
+	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
-	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
-	const { getUserAvatars, user } = useUserStore((state) => state);
+	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
+	const { setUserAvatars, user } = useUserStore((state) => state);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -89,7 +91,7 @@ export default function InboxPage() {
 			case "WORKSPACE":
 				setFilteredNotifications(
 					notifications.filter(
-						(n) => n.workspaceId === workspace && !n.dismissed,
+						(n) => n.workspaceId === workspace?.id && !n.dismissed,
 					),
 				);
 				break;
@@ -101,12 +103,14 @@ export default function InboxPage() {
 
 	useEffect(() => {
 		const fetchAvatars = async () => {
-			if (user) {
-				await getUserAvatars(user.id);
+			if (workspace) {
+				setUserAvatars(
+					await userService.getUserAvatars(TODO, { workspaceId: workspace.id }),
+				);
 			}
 		};
 		fetchAvatars();
-	}, [user, getUserAvatars]);
+	}, [user]);
 
 	return (
 		<div className="flex w-full">
@@ -122,21 +126,21 @@ export default function InboxPage() {
 						<InboxSidebar
 							setFilterType={setFilterType}
 							filterType={filterType}
-							setWorkspace={setWorkspace}
+							setWorkspace={setWorkspaceName}
 							readNotifications={notifications.filter(
 								(n) => !n.read || !n.dismissed,
 							)}
 							workspaces={workspaces}
-							workspace={workspace}
+							workspace={workspaceName}
 						/>
 						<div className="flex flex-col gap-4 w-full">
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
 								filterType={filterType}
-								setWorkspace={setWorkspace}
+								setWorkspace={setWorkspaceName}
 								readNotifications={notifications.filter((n) => !n.read)}
 								workspaces={workspaces}
-								workspace={workspace}
+								workspace={workspaceName}
 								filterRead={filterRead}
 								setFilterRead={setFilterRead}
 							/>
