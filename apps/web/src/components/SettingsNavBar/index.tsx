@@ -1,7 +1,6 @@
 "use client";
 
 import {
-	ArrowLeft,
 	BriefcaseBusiness,
 	CircleUser,
 	Moon,
@@ -27,12 +26,14 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 	SidebarTrigger,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import { useTeamStore } from "@/store";
 import type { Team } from "@squared/db";
 import { WorkspaceDropdown } from "../Sidebar/WorkspaceDropdown";
+import { TooltipProvider } from "../ui/tooltip";
 
-export default function SettingsNavBar() {
+function SettingsNavbarContent() {
 	const router = useRouter();
 	const { setTheme, resolvedTheme: theme } = useTheme();
 	const { setTeam, teams } = useTeamStore((state) => state);
@@ -40,29 +41,18 @@ export default function SettingsNavBar() {
 	const navigateTo = (targetRoute: string) => {
 		router.replace(`/settings/${targetRoute}`);
 	};
-
 	const handleTeamClick = (team: Team, path?: string) => {
 		setTeam(team);
 		navigateTo(`teams/${team.identifier}/${path ?? "overview"}`);
 	};
-
 	return (
-		<Sidebar className="border-r" collapsible="icon">
+		<>
 			<SidebarHeader className="border-b p-4">
 				<WorkspaceDropdown />
 			</SidebarHeader>
 			<SidebarContent>
 				<ScrollArea className="h-[calc(100vh-8rem)]">
 					<div className="space-y-4 p-4">
-						<div className="flex items-center space-x-2">
-							<Button asChild variant="ghost" size="icon" aria-label="Go back">
-								<SidebarTrigger>
-									<ArrowLeft className="h-4 w-4" />
-								</SidebarTrigger>
-							</Button>
-							<h1 className="text-2xl font-semibold">Settings</h1>
-						</div>
-
 						<div className="space-y-4">
 							<div>
 								<h2 className="flex items-center text-sm font-medium text-muted-foreground mb-2">
@@ -177,6 +167,32 @@ export default function SettingsNavBar() {
 					</Button>
 				</div>
 			</SidebarFooter>
-		</Sidebar>
+		</>
+	);
+}
+
+function ToggleSidebarButton() {
+	const { state } = useSidebar();
+
+	return (
+		<SidebarTrigger
+			className={`absolute top-4 z-50 transition-all duration-300 ease-in-out ${
+				state === "collapsed" ? "left-4" : "md:left-[17rem]"
+			}`}
+		/>
+	);
+}
+
+export default function SettingsNavBar() {
+	return (
+		<TooltipProvider delayDuration={0}>
+			<Sidebar
+				collapsible="offcanvas"
+				className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+			>
+				<SettingsNavbarContent />
+			</Sidebar>
+			<ToggleSidebarButton />
+		</TooltipProvider>
 	);
 }
