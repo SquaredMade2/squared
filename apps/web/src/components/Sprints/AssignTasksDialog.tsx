@@ -30,6 +30,7 @@ import type { Priority, Sprint, Status, Task } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
+import LabelBadge from "../LabelBadges";
 import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
@@ -268,39 +269,51 @@ export function AssignTasksDialog({
 											Select All
 										</Label>
 									</div>
-									{filteredTasks.map((task) => (
-										<div
-											key={task.id}
-											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border rounded hover:bg-accent"
-										>
-											<div className="shrink min-w-0 flex items-center gap-2">
-												<Checkbox
-													id={task.id}
-													checked={selectedTasks.includes(task)}
-													onCheckedChange={() => handleTaskSelection(task)}
-													className="mr-2 flex-shrink-0"
-												/>
-												<PriorityIcon priority={task.priority} />
-												<StatusIcon status={task.status} />
-												<span className="text-sm font-medium truncate max-w-64 sm:max-w-48 md:max-w-lg">
-													{task.title}
-												</span>
-											</div>
-											<div className="flex-shrink-0 ml-2">
-												{task.dueDate && (
-													<span className="text-xs text-muted-foreground whitespace-nowrap">
-														{new Date(task.dueDate).toLocaleDateString(
-															"en-US",
-															{
-																month: "short",
-																day: "numeric",
-															},
-														)}
+									{filteredTasks.map((task) => {
+										const taskLabels = workspace?.Labels.filter((label) =>
+											task.labels.includes(label.id),
+										);
+										return (
+											<div
+												key={task.id}
+												className="group flex items-center justify-between w-full py-2 px-4 border-b border-border rounded hover:bg-accent"
+											>
+												<div className="shrink min-w-0 flex items-center gap-2">
+													<Checkbox
+														id={task.id}
+														checked={selectedTasks.includes(task)}
+														onCheckedChange={() => handleTaskSelection(task)}
+														className="mr-2 flex-shrink-0"
+													/>
+													<PriorityIcon priority={task.priority} />
+													<StatusIcon status={task.status} />
+													<span className="text-sm font-medium truncate max-w-64">
+														{task.title}
 													</span>
-												)}
+												</div>
+												<div className="flex-shrink-0 flex items-center justify-end gap-2 ml-2">
+													<div className="flex flex-row">
+														{taskLabels?.map((label) => (
+															<div key={label.id} className="mx-0.5">
+																<LabelBadge label={label} />
+															</div>
+														))}
+													</div>
+													{task.dueDate && (
+														<span className="text-xs text-muted-foreground whitespace-nowrap">
+															{new Date(task.dueDate).toLocaleDateString(
+																"en-US",
+																{
+																	month: "short",
+																	day: "numeric",
+																},
+															)}
+														</span>
+													)}
+												</div>
 											</div>
-										</div>
-									))}
+										);
+									})}
 								</div>
 							</ScrollArea>
 						</TabsContent>
@@ -321,39 +334,51 @@ export function AssignTasksDialog({
 										</Label>
 									</div>
 									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-										{filteredTasks.map((task) => (
-											<div
-												key={task.id}
-												className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
-											>
-												<div className="flex items-center justify-between mb-2">
-													<Checkbox
-														id={task.id}
-														checked={selectedTasks.includes(task)}
-														onCheckedChange={() => handleTaskSelection(task)}
-													/>
-													<div className="flex items-center gap-2">
-														<PriorityIcon priority={task.priority} />
-														<StatusIcon status={task.status} />
+										{filteredTasks.map((task) => {
+											const taskLabels = workspace?.Labels.filter((label) =>
+												task.labels.includes(label.id),
+											);
+											return (
+												<div
+													key={task.id}
+													className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
+												>
+													<div className="flex items-center justify-between mb-2">
+														<Checkbox
+															id={task.id}
+															checked={selectedTasks.includes(task)}
+															onCheckedChange={() => handleTaskSelection(task)}
+														/>
+														<div className="flex items-center gap-2">
+															<PriorityIcon priority={task.priority} />
+															<StatusIcon status={task.status} />
+														</div>
 													</div>
-												</div>
-												<span className="text-sm font-medium mb-2 line-clamp-2">
-													{task.title}
-												</span>
-												{task.dueDate && (
-													<span className="text-xs text-muted-foreground">
-														Due:{" "}
-														{new Date(task.dueDate).toLocaleDateString(
-															"en-US",
-															{
-																month: "short",
-																day: "numeric",
-															},
-														)}
+													<span className="text-sm font-medium mb-2 line-clamp-2">
+														{task.title}
 													</span>
-												)}
-											</div>
-										))}
+													<div className="flex flex-wrap mb-1">
+														{taskLabels?.map((label) => (
+															<span key={label.id} className="flex-shrink mb-1">
+																<LabelBadge label={label} />
+															</span>
+														))}
+													</div>
+													{task.dueDate && (
+														<span className="text-xs text-muted-foreground">
+															Due:{" "}
+															{new Date(task.dueDate).toLocaleDateString(
+																"en-US",
+																{
+																	month: "short",
+																	day: "numeric",
+																},
+															)}
+														</span>
+													)}
+												</div>
+											);
+										})}
 									</div>
 								</div>
 							</ScrollArea>
