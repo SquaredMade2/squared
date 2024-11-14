@@ -4,12 +4,13 @@ export * from "./interfaces";
 export * from "./store";
 
 export const createTaskStore = (
-	initState: TaskState = { tasks: [], currentTask: null },
+	initState: TaskState = { tasks: [], subtasks: [], currentTask: null },
 ) => {
 	return createStore<TaskStore>()((set) => ({
 		...initState,
 		setCurrentTask: (task) => set({ currentTask: task }),
 		setTasks: (tasks) => set({ tasks }),
+		setSubtasks: (subtasks) => set({ subtasks }),
 		createTask: (task) =>
 			set((state) => ({
 				tasks: [...state.tasks, task],
@@ -17,6 +18,10 @@ export const createTaskStore = (
 		updateTask: (task) =>
 			set((state) => ({
 				tasks: state.tasks.map((t) => (t.id === task.id ? task : t)),
+			})),
+		deleteTask: (taskId) =>
+			set((state) => ({
+				tasks: state.tasks.filter((t) => t.id !== taskId),
 			})),
 	}));
 };

@@ -1,0 +1,24 @@
+import type { User } from "@squared/db";
+
+export type UserAvatar = {
+	id: string;
+	name: string;
+	avatarUrl: string | null;
+};
+
+export interface UserRpc {
+	onBoardUser: (args: { userId: string }) => Promise<User>;
+	updateUser: (args: {
+		userId: string;
+		name: string;
+		username?: string;
+	}) => Promise<User>;
+	updateUserNotifications: (args: {
+		userId: string;
+		notificationIds: string[];
+	}) => Promise<User>;
+	getUser: (args: { userId: string }) => Promise<User | null>;
+	getWorkspaceUsers: (args: { workspaceId: string }) => Promise<User[]>;
+	getUserAvatars: (args: { workspaceId: string }) => Promise<UserAvatar[]>;
+	getUserRepositories: (args: { userId: string }) => Promise<string[]>;
+}

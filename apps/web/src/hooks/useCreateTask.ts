@@ -1,8 +1,8 @@
 import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
 	useTaskStore,
 	useTeamStore,
+	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -13,26 +13,21 @@ import { useState } from "react";
 export const useCreateTask = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { user } = useAuthStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
+	const user = useUserStore((state) => state.user);
+	const { team } = useTeamStore((state) => state);
 	const { createTask: addTask } = useTaskStore((state) => state);
-	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 
 	const createTask = async (input: Partial<Task>) => {
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			if (!currentWorkspace) {
+			if (!workspace) {
 				throw new Error("Error authenticating workspace");
 			}
-			if (!currentTeam) {
+			if (!team) {
 				throw new Error("Error authenticating team");
-			}
-			if (!user) {
-				throw new Error("Error authenticating user");
 			}
 
 			const { transformedInput: transformedTitle } = transformingMentionInputs(
@@ -53,8 +48,8 @@ export const useCreateTask = () => {
 				labels: input.labels || [],
 				dueDate: input.dueDate ?? null,
 				effortEstimate: input.effortEstimate ?? null,
-				teamId: currentTeam.id,
-				workspaceId: currentWorkspace.id,
+				teamId: team.id,
+				workspaceId: workspace.id,
 			};
 
 			const task = await taskService.createTask(TODO, newTask);
@@ -64,9 +59,9 @@ export const useCreateTask = () => {
 			}
 			addTask(task);
 
-			setCurrentWorkspace({
-				...currentWorkspace,
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			setWorkspace({
+				...workspace,
+				tasksCreated: workspace.tasksCreated + 1,
 			});
 
 			return task;

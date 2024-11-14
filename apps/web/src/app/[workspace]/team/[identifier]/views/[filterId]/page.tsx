@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 
 export default function FilterViewPage() {
 	const params = useParams();
-	const { currentTeam, loading: teamLoading } = useTeams();
+	const { team, loading: teamLoading } = useTeams();
 	const { customFilter, filterTasks, getSavedFilters } = useFilterStore(
 		(state) => state,
 	);
@@ -29,9 +29,9 @@ export default function FilterViewPage() {
 	useEffect(() => {
 		const getData = async () => {
 			if (teamLoading) return;
-			if (currentTeam) {
+			if (team) {
 				setIsLoading(true);
-				const filters = await getSavedFilters(currentTeam?.id);
+				const filters = await getSavedFilters(team?.id);
 				const filterId = parseParams(params.filterId);
 				const filterSlug = filterId.split("-").pop();
 				const foundFilter = filters.find((f) =>
@@ -44,7 +44,7 @@ export default function FilterViewPage() {
 			}
 		};
 		getData();
-	}, [params.filterId, currentTeam, teamLoading]);
+	}, [params.filterId, team, teamLoading]);
 
 	const filterTasksWithFilter = (tasks: Task[]) => {
 		if (!filter) {
@@ -54,13 +54,8 @@ export default function FilterViewPage() {
 		return filterTasks(customFilter(tasks, filter.filter));
 	};
 
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns, getTasksForGroup, getHiddenColumns } = useGroups(
 		filterTasksWithFilter,
@@ -74,14 +69,14 @@ export default function FilterViewPage() {
 		);
 	}
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 	if (!filter) return null;
 
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}

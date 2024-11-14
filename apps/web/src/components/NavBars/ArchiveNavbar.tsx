@@ -16,15 +16,15 @@ type ArchivePaths = (typeof tabs)[number]["id"];
 export default function ArchiveNavbar() {
 	const router = useRouter();
 	const pathname = usePathname();
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	const activeTab = pathname.split("/").pop() as ArchivePaths;
 
 	const navigate = useCallback(
 		(path: ArchivePaths) => {
-			router.push(`/${currentWorkspace?.url}/archive/${path}`);
+			router.push(`/${workspace?.url}/archive/${path}`);
 		},
-		[router, currentWorkspace?.url],
+		[router, workspace?.url],
 	);
 
 	return (

@@ -25,7 +25,7 @@ import type { ContextMenuProps } from "./interfaces";
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
@@ -99,7 +99,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 			<ContextMenuItem>
 				<Link
-					href={`/${currentWorkspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
+					href={`/${workspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
 					target="_blank"
 				>
 					Open in New Tab

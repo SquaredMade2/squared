@@ -1,9 +1,9 @@
 export { SquaredStoreProvider } from "./provider";
-export { useAuthStore } from "./auth";
 export { useCommentStore } from "./comments";
 export { useEventStore } from "./events";
 export { useModalStore } from "./modals";
 export { useFilterStore } from "./filters";
+export { useSprintStore } from "./sprints";
 export { useTaskStore } from "./tasks";
 export { useTeamStore } from "./teams";
 export { useUserStore } from "./users";

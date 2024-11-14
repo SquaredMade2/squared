@@ -11,9 +11,12 @@ export function useTaskPage() {
 	const { taskIdentifier } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
-	const { teams, setCurrentTeam } = useTeamStore((state) => state);
-	const { tasks, setCurrentTask } = useTaskStore((state) => state);
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
+	const { teams, setTeam } = useTeamStore((state) => state);
+	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
+		(state) => state,
+	);
+	const { users, loading: userLoading } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
 	useUsers();
 	const [task, setTask] = useState(
@@ -25,7 +28,7 @@ export function useTaskPage() {
 			if (workspaceLoading) return;
 
 			try {
-				if (!currentWorkspace) {
+				if (!workspace) {
 					throw new Error("Workspace not found");
 				}
 
@@ -33,17 +36,21 @@ export function useTaskPage() {
 				const teamIdentifier = parseParams(taskIdentifier).split("-")[0];
 				const team = teams.find((t) => t.identifier === teamIdentifier);
 				if (team) {
-					setCurrentTeam(team);
+					setTeam(team);
 				}
 
 				// Fetch task data
 				const pageTask = await taskService.getTaskByIdentifier(TODO, {
-					workspaceId: currentWorkspace.id,
+					workspaceId: workspace.id,
 					identifier: parseParams(taskIdentifier),
 				});
 				if (pageTask) {
 					setTask(pageTask);
 					setCurrentTask(pageTask);
+					const fetchedSubtasks = await taskService.getSubtasks(TODO, {
+						parentId: pageTask?.id,
+					});
+					setSubtasks(fetchedSubtasks);
 					setComments(
 						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
 					);
@@ -57,7 +64,7 @@ export function useTaskPage() {
 		}
 
 		fetchData();
-	}, [currentWorkspace, taskIdentifier, workspaceLoading, teams]);
+	}, [workspace, taskIdentifier, workspaceLoading, teams, userLoading]);
 
-	return { currentWorkspace, task, isLoading, error };
+	return { workspace, users, task, isLoading, error, subtasks };
 }
