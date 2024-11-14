@@ -24,7 +24,7 @@ export function useWorkspaces() {
 			setError(null);
 
 			try {
-				if (user) {
+				if (user && !workspace) {
 					const allWorkspaces = await workspaceService.getUserWorkspaces(TODO, {
 						userId: user.id,
 					});

@@ -1,6 +1,5 @@
-import { prisma } from "@/api";
 import type { APIResponse, Route } from "@/api/route";
-import type { SavedFilter } from "@squared/db";
+import type { PrismaClient, SavedFilter } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 
 type Params = {
@@ -9,7 +8,9 @@ type Params = {
 
 const logger = createCustomLogger("workspace");
 
-export function createRoute(): Route<Params> {
+export function createRoute({
+	prisma,
+}: { prisma: PrismaClient }): Route<Params> {
 	return {
 		GET: async (res, { workspaceId }): Promise<APIResponse<SavedFilter[]>> => {
 			try {
