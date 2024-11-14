@@ -14,8 +14,9 @@ import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
 
 export function WorkspaceDropdown() {
-	const { currentWorkspace, workspaces, setCurrentWorkspace } =
-		useWorkspaceStore((state) => state);
+	const { workspace, workspaces, setWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const { state } = useSidebar();
 
 	return (
@@ -27,7 +28,7 @@ export function WorkspaceDropdown() {
 				>
 					<Avatar className="h-8 w-8 shrink-0">
 						<AvatarFallback>
-							{getInitials(currentWorkspace?.name || "WS")}
+							{getInitials(workspace?.name || "WS")}
 						</AvatarFallback>
 					</Avatar>
 					{state === "expanded" && (
@@ -35,7 +36,7 @@ export function WorkspaceDropdown() {
 							<span
 								className={"truncate transition-all duration-300 ease-in-out"}
 							>
-								{currentWorkspace?.name}
+								{workspace?.name}
 							</span>
 							<ChevronDown
 								className={
@@ -50,7 +51,7 @@ export function WorkspaceDropdown() {
 				{workspaces.map((workspace) => (
 					<DropdownMenuItem
 						key={workspace.id}
-						onSelect={() => setCurrentWorkspace(workspace)}
+						onSelect={() => setWorkspace(workspace)}
 					>
 						<Avatar className="h-6 w-6 mr-2">
 							<AvatarFallback>{getInitials(workspace.name)}</AvatarFallback>

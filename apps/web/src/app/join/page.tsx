@@ -5,7 +5,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
+import { userService, workspaceService } from "@/lib/services";
+import { useUserStore, useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import { ChevronLeft } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -14,11 +16,10 @@ import { useEffect, useState } from "react";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
-	const { getAllWorkspaces, workspaces, addWorkspace } = useWorkspaceStore(
+	const { setWorkspaces, workspaces, createWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { user, setUser } = useAuthStore((state) => state);
-	const { updateUser, getUser } = useUserStore((state) => state);
+	const { updateUser, user, setUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -37,12 +38,20 @@ const Join = () => {
 	useEffect(() => {
 		const initStore = async () => {
 			if (user) {
-				getAllWorkspaces(user.id);
+				setWorkspaces(
+					await workspaceService.getUserWorkspaces(TODO, { userId: user.id }),
+				);
 			} else if (data?.user) {
-				const { user: newUser } = await getUser(data.user.id);
+				const newUser = await userService.getUser(TODO, {
+					userId: data.user.id,
+				});
 				if (!newUser) await signOut();
 				setUser(newUser);
-				getAllWorkspaces(data.user.id);
+				setWorkspaces(
+					await workspaceService.getUserWorkspaces(TODO, {
+						userId: data.user.id,
+					}),
+				);
 			}
 		};
 		initStore();
@@ -95,13 +104,19 @@ const Join = () => {
 			url: urlInputValue,
 		};
 		try {
-			const response = await addWorkspace(newWorkspaceInput, user.id);
-			const { workspace, message, variant } = response;
-			toast({ title: message, variant });
+			const workspace = await workspaceService.createWorkspace(TODO, {
+				workspace: newWorkspaceInput,
+				userId: user.id,
+			});
+			createWorkspace(workspace);
+			toast({ title: "Workspace created successfully" });
 			if (workspace) {
 				if (user.onBoarding) {
-					const updatedUser = await updateUser(user.id, { onBoarding: false });
-					setUser(updatedUser.user);
+					const updatedUser = await userService.onBoardUser(TODO, {
+						userId: user.id,
+					});
+					updateUser(updatedUser);
+					setUser(updatedUser);
 				}
 				router.refresh();
 				router.push(`/${workspace.url}`);

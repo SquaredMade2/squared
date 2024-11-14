@@ -7,7 +7,7 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { statusOptions } from "@/constants/designations";
+import { statusOptions } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squared/db";

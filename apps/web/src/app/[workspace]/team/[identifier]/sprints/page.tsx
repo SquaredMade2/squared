@@ -51,7 +51,7 @@ import {
 } from "recharts";
 
 export default function SprintDashboard() {
-	const { sprints, currentSprint, team: currentTeam } = useSprints();
+	const { sprints, sprint, team: currentTeam } = useSprints();
 	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [upcomingSprints, setUpcomingSprints] = useState<Sprint[]>([]);
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
@@ -73,8 +73,8 @@ export default function SprintDashboard() {
 	>([]);
 
 	useEffect(() => {
-		setTargetSprint(currentSprint?.id);
-	}, [currentSprint]);
+		setTargetSprint(sprint?.id);
+	}, [sprint]);
 
 	useEffect(() => {
 		if (sprints.length > 0) {
@@ -109,20 +109,18 @@ export default function SprintDashboard() {
 	);
 
 	const getBurndownData = useCallback(() => {
-		if (!currentSprint) return [];
+		if (!sprint) return [];
 
-		const sprintTasks = tasks.filter(
-			(task) => task.sprintId === currentSprint.id,
-		);
+		const sprintTasks = tasks.filter((task) => task.sprintId === sprint.id);
 		const sprintDays = differenceInDays(
-			new Date(currentSprint.endDate),
-			new Date(currentSprint.startDate),
+			new Date(sprint.endDate),
+			new Date(sprint.startDate),
 		);
 		const totalTasks = sprintTasks.length;
 		const today = new Date();
 		const currentSprintDay = differenceInDays(
 			today,
-			new Date(currentSprint.startDate),
+			new Date(sprint.startDate),
 		);
 
 		// Calculate the number of completed tasks so far
@@ -138,7 +136,7 @@ export default function SprintDashboard() {
 		let completedTasksCount = completedTasksSoFar;
 
 		const data = Array.from({ length: sprintDays + 1 }, (_, i) => {
-			const date = new Date(currentSprint.startDate);
+			const date = new Date(sprint.startDate);
 			date.setDate(date.getDate() + i);
 
 			if (i > currentSprintDay) {
@@ -160,16 +158,14 @@ export default function SprintDashboard() {
 		});
 
 		return data;
-	}, [currentSprint, tasks]);
+	}, [sprint, tasks]);
 
 	useEffect(() => {
 		setCurrentDay(
-			currentSprint
-				? differenceInDays(new Date(), new Date(currentSprint.startDate))
-				: 0,
+			sprint ? differenceInDays(new Date(), new Date(sprint.startDate)) : 0,
 		);
 		setBurndownData(getBurndownData());
-	}, [currentSprint, getBurndownData]);
+	}, [sprint, getBurndownData]);
 
 	const getVelocity = useCallback(() => {
 		if (completedSprints.length === 0) return 0;
@@ -185,9 +181,9 @@ export default function SprintDashboard() {
 	}, [completedSprints, tasks]);
 
 	const getCapacity = useCallback(() => {
-		if (!currentSprint) return 0;
-		return tasks.filter((task) => task.sprintId === currentSprint.id).length;
-	}, [currentSprint, tasks]);
+		if (!sprint) return 0;
+		return tasks.filter((task) => task.sprintId === sprint.id).length;
+	}, [sprint, tasks]);
 
 	const handleBulkAssign = async () => {
 		if (!targetSprint) return;
@@ -205,10 +201,10 @@ export default function SprintDashboard() {
 	};
 
 	const prepareAutoAssign = () => {
-		if (!currentSprint) return;
+		if (!sprint) return;
 		const defaultTaskCount = Math.max(
 			(currentTeam?.tasksPerSprint || 10) -
-				tasks.filter((t) => t.sprintId === currentSprint.id).length,
+				tasks.filter((t) => t.sprintId === sprint.id).length,
 			0,
 		);
 		setCustomTaskCount(defaultTaskCount.toString());
@@ -216,7 +212,7 @@ export default function SprintDashboard() {
 	};
 
 	const handleCustomizeAutoAssign = () => {
-		if (!currentSprint) return;
+		if (!sprint) return;
 		const mapPriority = (priority: Priority) => {
 			switch (priority) {
 				case "noPriority":
@@ -243,9 +239,9 @@ export default function SprintDashboard() {
 	};
 
 	const handleAutoAssign = async () => {
-		if (!currentSprint) return;
+		if (!sprint) return;
 		await taskService.addSprintTasks(TODO, {
-			sprintId: currentSprint.id,
+			sprintId: sprint.id,
 			taskIds: tasksToAutoAssign.map((t) => t.id),
 		});
 		setIsAutoAssignConfirmOpen(false);
@@ -259,22 +255,19 @@ export default function SprintDashboard() {
 		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh] w-full">
 			<div className="space-y-6">
 				<h1 className="text-3xl font-bold ml-8">Sprint Dashboard</h1>
-				{currentSprint && (
+				{sprint && (
 					<Card>
 						<CardHeader>
-							<CardTitle>{currentSprint.name}</CardTitle>
+							<CardTitle>{sprint.name}</CardTitle>
 							<CardDescription>
-								{format(new Date(currentSprint.startDate), "PP")} -{" "}
-								{format(new Date(currentSprint.endDate), "PP")}
+								{format(new Date(sprint.startDate), "PP")} -{" "}
+								{format(new Date(sprint.endDate), "PP")}
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<Progress
-								value={calculateProgress(currentSprint)}
-								className="w-full"
-							/>
+							<Progress value={calculateProgress(sprint)} className="w-full" />
 							<p className="mt-2 text-sm text-muted-foreground">
-								{Math.round(calculateProgress(currentSprint))}% Complete
+								{Math.round(calculateProgress(sprint))}% Complete
 							</p>
 						</CardContent>
 					</Card>
@@ -357,7 +350,7 @@ export default function SprintDashboard() {
 					<h2 className="text-2xl font-semibold">Task Assignment</h2>
 					<div className="space-x-2">
 						<AssignTasksDialog
-							activeSprint={currentSprint}
+							activeSprint={sprint}
 							handleBulkAssign={handleBulkAssign}
 							selectedTasks={selectedTasks}
 							setSelectedTasks={setSelectedTasks}
@@ -441,7 +434,7 @@ export default function SprintDashboard() {
 				<SprintTabs
 					upcomingSprints={upcomingSprints}
 					completedSprints={completedSprints}
-					activeSprint={currentSprint}
+					activeSprint={sprint}
 					tasks={tasks}
 					calculateProgress={calculateProgress}
 				/>

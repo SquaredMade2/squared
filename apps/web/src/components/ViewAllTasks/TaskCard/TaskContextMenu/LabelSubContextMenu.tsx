@@ -15,13 +15,11 @@ import { LabelColor } from "../TaskCardLabels";
 import type { ContextMenuProps } from "./interfaces";
 
 const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { updateTask } = useTaskStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
-		currentWorkspace?.Labels.filter((label) =>
-			task.labels.includes(label.id),
-		) || [],
+		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [],
 	);
 
 	const handleLabelChange = async (label: Label, checked: boolean) => {
@@ -48,7 +46,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 				Label
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{currentWorkspace?.Labels.map((label) => {
+				{workspace?.Labels.map((label) => {
 					return (
 						<ContextMenuCheckboxItem
 							key={label.id}

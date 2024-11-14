@@ -22,9 +22,15 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { workspaceService } from "@/lib/services";
+import { useWorkspaceStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
+import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
+import LabelBadge from "../LabelBadges";
 import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
@@ -51,9 +57,13 @@ export function AssignTasksDialog({
 	const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 	const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
 	const [filterStatus, setFilterStatus] = useState<Status | "all">("all");
+	const [filterLabel, setFilterLabel] = useState<string>("all");
 	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
 		activeSprint?.id,
 	);
+	const params = useParams();
+	const workspaceUrl = parseParams(params.workspace);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 
 	useEffect(() => {
 		if (activeSprint) {
@@ -63,12 +73,26 @@ export function AssignTasksDialog({
 		}
 	}, [activeSprint, upcomingSprints]);
 
+	useEffect(() => {
+		const fetchWorkspace = async () => {
+			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
+				url: workspaceUrl,
+			});
+			setWorkspace(currentWorkspace);
+		};
+		fetchWorkspace();
+	}, [workspaceUrl]);
+
 	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks(
 			selectedTasks.includes(task)
 				? selectedTasks.filter((t) => t.id !== task.id)
 				: [...selectedTasks, task],
 		);
+	};
+
+	const handleSelectAll = (checked: boolean) => {
+		setSelectedTasks(checked ? filteredTasks : []);
 	};
 
 	const mapPriority = (priority: Priority) => {
@@ -109,6 +133,7 @@ export function AssignTasksDialog({
 			.filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()))
 			.filter((t) => filterPriority === "all" || t.priority === filterPriority)
 			.filter((t) => filterStatus === "all" || t.status === filterStatus)
+			.filter((t) => filterLabel === "all" || t.labels.includes(filterLabel))
 			.sort((a, b) => {
 				const priorityDiff = mapPriority(b.priority) - mapPriority(a.priority);
 				if (priorityDiff !== 0) return priorityDiff;
@@ -118,7 +143,7 @@ export function AssignTasksDialog({
 					? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
 					: 0;
 			});
-	}, [unassignedTasks, searchQuery, filterPriority, filterStatus]);
+	}, [unassignedTasks, searchQuery, filterPriority, filterStatus, filterLabel]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -196,8 +221,25 @@ export function AssignTasksDialog({
 								<SelectContent>
 									<SelectItem value="all">All Statuses</SelectItem>
 									<SelectItem value="backlog">Backlog</SelectItem>
+									<SelectItem value="todo">To Do</SelectItem>
 									<SelectItem value="inProgress">In Progress</SelectItem>
 									<SelectItem value="inReview">In Review</SelectItem>
+								</SelectContent>
+							</Select>
+							<Select
+								value={filterLabel}
+								onValueChange={(value) => setFilterLabel(value)}
+							>
+								<SelectTrigger className="w-full sm:w-[150px]">
+									<SelectValue placeholder="Labels" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Labels</SelectItem>
+									{workspace?.Labels.map((label) => (
+										<SelectItem key={label.id} value={label.id}>
+											{label.name}
+										</SelectItem>
+									))}
 								</SelectContent>
 							</Select>
 						</div>
@@ -217,39 +259,61 @@ export function AssignTasksDialog({
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
 								<div className="p-4">
-									{filteredTasks.map((task) => (
-										<div
-											key={task.id}
-											className="group flex items-center justify-between w-full py-2 px-4 border-b border-border hover:bg-accent"
-										>
-											<div className="shrink min-w-0 flex items-center gap-2">
-												<Checkbox
-													id={task.id}
-													checked={selectedTasks.includes(task)}
-													onCheckedChange={() => handleTaskSelection(task)}
-													className="mr-2 flex-shrink-0"
-												/>
-												<PriorityIcon priority={task.priority} />
-												<StatusIcon status={task.status} />
-												<span className="text-sm font-medium truncate max-w-64 sm:max-w-48 md:max-w-lg">
-													{task.title}
-												</span>
-											</div>
-											<div className="flex-shrink-0 ml-2">
-												{task.dueDate && (
-													<span className="text-xs text-muted-foreground whitespace-nowrap">
-														{new Date(task.dueDate).toLocaleDateString(
-															"en-US",
-															{
-																month: "short",
-																day: "numeric",
-															},
-														)}
+									<div className="group flex items-center w-full rounded py-2 px-4 border-b border-border hover:bg-accent">
+										<Checkbox
+											id="select-all"
+											checked={selectedTasks.length === filteredTasks.length}
+											onCheckedChange={handleSelectAll}
+										/>
+										<Label htmlFor="select-all" className="ml-3 font-semibold">
+											Select All
+										</Label>
+									</div>
+									{filteredTasks.map((task) => {
+										const taskLabels = workspace?.Labels.filter((label) =>
+											task.labels.includes(label.id),
+										);
+										return (
+											<div
+												key={task.id}
+												className="group flex items-center justify-between w-full py-2 px-4 border-b border-border rounded hover:bg-accent"
+											>
+												<div className="shrink min-w-0 flex items-center gap-2">
+													<Checkbox
+														id={task.id}
+														checked={selectedTasks.includes(task)}
+														onCheckedChange={() => handleTaskSelection(task)}
+														className="mr-2 flex-shrink-0"
+													/>
+													<PriorityIcon priority={task.priority} />
+													<StatusIcon status={task.status} />
+													<span className="text-sm font-medium truncate max-w-64">
+														{task.title}
 													</span>
-												)}
+												</div>
+												<div className="flex-shrink-0 flex items-center justify-end gap-2 ml-2">
+													<div className="flex flex-row">
+														{taskLabels?.map((label) => (
+															<div key={label.id} className="mx-0.5">
+																<LabelBadge label={label} />
+															</div>
+														))}
+													</div>
+													{task.dueDate && (
+														<span className="text-xs text-muted-foreground whitespace-nowrap">
+															{new Date(task.dueDate).toLocaleDateString(
+																"en-US",
+																{
+																	month: "short",
+																	day: "numeric",
+																},
+															)}
+														</span>
+													)}
+												</div>
 											</div>
-										</div>
-									))}
+										);
+									})}
 								</div>
 							</ScrollArea>
 						</TabsContent>
@@ -258,37 +322,64 @@ export function AssignTasksDialog({
 							className="flex-grow overflow-hidden mt-0"
 						>
 							<ScrollArea className="h-full w-full rounded-md border">
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-									{filteredTasks.map((task) => (
-										<div
-											key={task.id}
-											className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
-										>
-											<div className="flex items-center justify-between mb-2">
-												<Checkbox
-													id={task.id}
-													checked={selectedTasks.includes(task)}
-													onCheckedChange={() => handleTaskSelection(task)}
-												/>
-												<div className="flex items-center gap-2">
-													<PriorityIcon priority={task.priority} />
-													<StatusIcon status={task.status} />
+								<div className="p-4">
+									<div className="flex items-center mb-2">
+										<Checkbox
+											id="select-all-grid"
+											checked={selectedTasks.length === filteredTasks.length}
+											onCheckedChange={handleSelectAll}
+										/>
+										<Label htmlFor="select-all-grid" className="ml-2">
+											Select All
+										</Label>
+									</div>
+									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+										{filteredTasks.map((task) => {
+											const taskLabels = workspace?.Labels.filter((label) =>
+												task.labels.includes(label.id),
+											);
+											return (
+												<div
+													key={task.id}
+													className="group flex flex-col p-4 border rounded-lg hover:bg-accent"
+												>
+													<div className="flex items-center justify-between mb-2">
+														<Checkbox
+															id={task.id}
+															checked={selectedTasks.includes(task)}
+															onCheckedChange={() => handleTaskSelection(task)}
+														/>
+														<div className="flex items-center gap-2">
+															<PriorityIcon priority={task.priority} />
+															<StatusIcon status={task.status} />
+														</div>
+													</div>
+													<span className="text-sm font-medium mb-2 line-clamp-2">
+														{task.title}
+													</span>
+													<div className="flex flex-wrap mb-1">
+														{taskLabels?.map((label) => (
+															<span key={label.id} className="flex-shrink mb-1">
+																<LabelBadge label={label} />
+															</span>
+														))}
+													</div>
+													{task.dueDate && (
+														<span className="text-xs text-muted-foreground">
+															Due:{" "}
+															{new Date(task.dueDate).toLocaleDateString(
+																"en-US",
+																{
+																	month: "short",
+																	day: "numeric",
+																},
+															)}
+														</span>
+													)}
 												</div>
-											</div>
-											<span className="text-sm font-medium mb-2 line-clamp-2">
-												{task.title}
-											</span>
-											{task.dueDate && (
-												<span className="text-xs text-muted-foreground">
-													Due:{" "}
-													{new Date(task.dueDate).toLocaleDateString("en-US", {
-														month: "short",
-														day: "numeric",
-													})}
-												</span>
-											)}
-										</div>
-									))}
+											);
+										})}
+									</div>
 								</div>
 							</ScrollArea>
 						</TabsContent>
@@ -300,7 +391,9 @@ export function AssignTasksDialog({
 							handleBulkAssign();
 							setIsOpen(false);
 							toast({
-								title: `You successfully added ${selectedTasks.length} ${selectedTasks.length < 2 ? "task" : "tasks"} to ${activeSprint?.name}.`,
+								title: `You successfully added ${selectedTasks.length} ${
+									selectedTasks.length < 2 ? "task" : "tasks"
+								} to ${activeSprint?.name}.`,
 							});
 						}}
 						disabled={selectedTasks.length < 1}

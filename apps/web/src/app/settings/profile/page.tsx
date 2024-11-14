@@ -14,9 +14,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthStore, useUserStore } from "@/store";
+import { userService } from "@/lib/services";
+import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -28,8 +30,7 @@ const formSchema = z.object({
 
 export default function Profile() {
 	const { toast } = useToast();
-	const { user } = useAuthStore((state) => state);
-	const { updateUser } = useUserStore((state) => state);
+	const { updateUser, user } = useUserStore((state) => state);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -58,13 +59,14 @@ export default function Profile() {
 				description: "Your profile information remains the same.",
 			});
 		}
+		updateUser(
+			await userService.updateUser(TODO, {
+				name: fullName.trim(),
+				username: username?.trim(),
+				userId: user.id,
+			}),
+		);
 
-		const data = {
-			name: fullName.trim(),
-			username: username?.trim(),
-			id: user.id,
-		};
-		await updateUser(user.id, data);
 		toast({
 			title: "Profile updated",
 			description: "Your profile information has been successfully updated.",

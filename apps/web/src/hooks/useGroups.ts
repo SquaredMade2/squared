@@ -1,10 +1,16 @@
-import { useTaskStore, useViewStore, useWorkspaceStore } from "@/store";
+import {
+	useTaskStore,
+	useUserStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
 import type { CompletedTaskPeriod, TaskGroup } from "@/store/views";
 import { Priority, Status, type Task } from "@squared/db";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { tasks } = useTaskStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { displayOptions, view, getGridOptions, getListOptions } = useViewStore(
 		(state) => state,
 	);
@@ -38,7 +44,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				];
 				break;
 			case "Label": {
-				const workspaceLabels = currentWorkspace?.Labels.map((l) => l.id) || [];
+				const workspaceLabels = workspace?.Labels.map((l) => l.id) || [];
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}
@@ -109,7 +115,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const getGroupedColumns = () => {
 		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
 
-		const groupedColumns = groupColumnTitles
+		let groupedColumns = groupColumnTitles
 			.map((group) => {
 				let tasksForGroup = getTasksForGroup(group);
 
@@ -132,6 +138,18 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			})
 			.filter((item) => item !== null); // Filter out null values
 
+		if (groupTasksBy === "Assignee") {
+			groupedColumns = groupedColumns.sort((a, b) => {
+				if (a.group === "Unassigned") return 1;
+				if (b.group === "Unassigned") return -1;
+
+				const aUsername = users.find((u) => u.id === a.group)?.username ?? "";
+				const bUsername = users.find((u) => u.id === b.group)?.username ?? "";
+
+				// Compare by the first letter of the username
+				return aUsername[0].localeCompare(bUsername[0]);
+			});
+		}
 		return groupedColumns;
 	};
 
