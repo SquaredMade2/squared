@@ -1,3 +1,4 @@
+import { filterService } from "@/lib/services";
 import {
 	useFilterStore,
 	useTaskStore,
@@ -7,6 +8,7 @@ import {
 } from "@/store";
 import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import { Info, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -75,7 +77,8 @@ const ViewsDetailSidebar = ({
 	const assigneeCount = getAssigneeCount();
 	const labelCount = getLabelCount();
 
-	const handleDeleteSavedFilter = () => {
+	const handleDeleteSavedFilter = async () => {
+		await filterService.deleteFilter(TODO, { filterId: filter.id });
 		deleteSavedFilter(filter.id);
 		router.back();
 	};
