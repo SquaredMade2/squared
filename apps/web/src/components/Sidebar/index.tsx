@@ -18,19 +18,18 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { logout } from "@/lib/auth";
-import { eventService, teamService, workspaceService } from "@/lib/services";
+import { eventService, teamService } from "@/lib/services";
 import {
 	useModalStore,
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Workspace } from "@squared/db";
 import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { NewIssueButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
@@ -137,19 +136,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 }
 
 export function SidebarNav() {
-	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
-	const params = useParams();
-	const workspaceUrl = parseParams(params.workspace);
-
-	React.useEffect(() => {
-		const fetchWorkspace = async () => {
-			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
-				url: workspaceUrl,
-			});
-			setWorkspace(currentWorkspace);
-		};
-		fetchWorkspace();
-	}, [workspaceUrl]);
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	return (
 		<TooltipProvider delayDuration={0}>
