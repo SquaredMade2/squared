@@ -1,5 +1,5 @@
-import { prisma } from "@/api";
 import type { Route } from "@/api/route";
+import type { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import axios from "axios";
 
@@ -16,7 +16,7 @@ if (!clientId || !clientSecret) {
 
 const logger = createCustomLogger("integrations");
 
-export function createRoute(): Route {
+export function createRoute({ prisma }: { prisma: PrismaClient }): Route {
 	return {
 		GET: async (res, _, query): Promise<void> => {
 			logger.info("Received OAuth callback request");

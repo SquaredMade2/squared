@@ -1,5 +1,5 @@
-import { prisma } from "@/api";
 import type { Route } from "@/api/route";
+import type { PrismaClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { v4 as uuidv4 } from "uuid";
 
@@ -50,7 +50,9 @@ type Params = Record<string, never>;
 
 const logger = createCustomLogger("integrations");
 
-export function createRoute(): Route<Params> {
+export function createRoute({
+	prisma,
+}: { prisma: PrismaClient }): Route<Params> {
 	return {
 		POST: async (res, _, body): Promise<void> => {
 			logger.info("Received GitHub webhook");
@@ -59,7 +61,7 @@ export function createRoute(): Route<Params> {
 
 			try {
 				if (eventType === "installation_repositories") {
-					await handleRepositoryChanges(payload);
+					await handleRepositoryChanges(payload, prisma);
 					res
 						.status(200)
 						.json({ message: "Repositories processed successfully" });
@@ -67,7 +69,7 @@ export function createRoute(): Route<Params> {
 				}
 
 				if (eventType === "create" || eventType === "push") {
-					await handleBranchAndCommitEvents(payload, eventType);
+					await handleBranchAndCommitEvents(payload, eventType, prisma);
 					res.status(200).json({ message: "Webhook processed successfully" });
 					return;
 				}
@@ -84,7 +86,10 @@ export function createRoute(): Route<Params> {
 }
 
 // Handle repository addition and removal
-async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
+async function handleRepositoryChanges(
+	payload: GitHubWebhookPayload,
+	prisma: PrismaClient,
+) {
 	const repositoriesAdded = payload.repositories_added || [];
 	const repositoriesRemoved = payload.repositories_removed || [];
 	const githubUsername = payload.installation?.account?.login;
@@ -175,6 +180,7 @@ async function handleRepositoryChanges(payload: GitHubWebhookPayload) {
 async function handleBranchAndCommitEvents(
 	payload: GitHubWebhookPayload,
 	eventType: string,
+	prisma: PrismaClient,
 ) {
 	const branchName = payload.ref?.split("/").pop();
 	const repoFullName = payload.repository?.full_name || "";

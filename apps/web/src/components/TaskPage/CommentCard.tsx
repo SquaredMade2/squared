@@ -26,7 +26,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	>(<p>Loading...</p>);
 	// Keep here as per rest of the code below line 37
 	// const commentData: Descendant[] = JSON.parse(comment.comment);
-	const getUser = useUserStore((state) => state.getUser);
+	const users = useUserStore((state) => state.users);
 
 	// Functions
 
@@ -91,11 +91,11 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	useEffect(() => {
 		const handleGetUser = async () => {
 			try {
-				const { user } = await getUser(comment.authorId);
+				const user = users.find((u) => u.id === comment.authorId);
 				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
 				if (hasUserAvatarData(user) && user !== null) {
-					setAuthorName(user.name ?? "");
-					setAvatarUrl(user.avatarUrl ?? "");
+					setAuthorName(user?.name ?? "");
+					setAvatarUrl(user?.avatarUrl ?? "");
 				} else {
 					toast({
 						title: "Error getting author",
@@ -148,7 +148,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 
 				<p className="text-foreground ml-2 mr-4">{authorName}</p>
 			</div>
-			<p className="markdown-content flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md p-5">
+			<p className="markdown-content flex flex-col min-w-60 min-h-20 p-3 bg-secondary rounded-md">
 				{"compiledSource" in commentData && <MDXRemote {...commentData} />}
 			</p>
 		</div>
