@@ -8,9 +8,11 @@ import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import { useTeams } from "@/hooks/useTeams";
+import { filterService } from "@/lib/services";
 import { useFilterStore, useViewStore } from "@/store";
 import type { SavedFilter } from "@/store/filters";
 import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,7 +20,7 @@ import { useEffect, useState } from "react";
 export default function FilterViewPage() {
 	const params = useParams();
 	const { team, loading: teamLoading } = useTeams();
-	const { customFilter, filterTasks, getSavedFilters } = useFilterStore(
+	const { customFilter, filterTasks, setSavedFilters } = useFilterStore(
 		(state) => state,
 	);
 	const { view, getGridOptions } = useViewStore((state) => state);
@@ -31,7 +33,10 @@ export default function FilterViewPage() {
 			if (teamLoading) return;
 			if (team) {
 				setIsLoading(true);
-				const filters = await getSavedFilters(team?.id);
+				const filters = await filterService.getFilters(TODO, {
+					teamId: team.id,
+				});
+				setSavedFilters(filters);
 				const filterId = parseParams(params.filterId);
 				const filterSlug = filterId.split("-").pop();
 				const foundFilter = filters.find((f) =>

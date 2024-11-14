@@ -323,7 +323,7 @@ func zodToTypeScript(schema ZodSchema) string {
 		for i, option := range schema.Options {
 			unionTypes[i] = zodToTypeScript(option)
 		}
-		return strings.Join(unionTypes, " | ")
+		return fmt.Sprintf("(%s)", strings.Join(unionTypes, " | "))
 	case "literal":
 		if schema.Value != nil {
 			return fmt.Sprintf("\"%v\"", schema.Value)

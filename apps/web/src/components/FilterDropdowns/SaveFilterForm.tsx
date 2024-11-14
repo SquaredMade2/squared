@@ -121,7 +121,7 @@ export function SaveFilterForm({
 				const newFilters = mergeFilters(currentFilters, currentSavedFilter.id);
 				// edit existing view
 				if (type === "edit") {
-					const response = updateSavedFilter(
+					updateSavedFilter(
 						await filterService.updateFilter(TODO, {
 							filterId: currentSavedFilter.id,
 							filters: {
@@ -132,27 +132,31 @@ export function SaveFilterForm({
 						}),
 					);
 					toast({
-						title: response.message,
-						variant: response.variant,
+						title: "Filter Updated Successfully",
 					});
 					// create new view from existing view
-				} else if (type === "new") {
-					await saveFilter({
-						name: values.title,
-						description: values.description ?? null,
-						filter: newFilters,
-					});
+				} else if (type === "new" && user) {
+					saveFilter(
+						await filterService.createFilter(TODO, {
+							name: values.title,
+							description: values.description ?? null,
+							filter: newFilters,
+							authorId: user.id,
+							teamId: team.id,
+						}),
+					);
 				}
 				//create new view
-			} else if (team) {
-				await saveFilter({
-					name: values.title,
-					description: values.description ?? null,
-					filter: currentFilters,
-					type: "TEAM",
-					teamId: team.id,
-					authorId: user?.id,
-				});
+			} else if (team && user) {
+				saveFilter(
+					await filterService.createFilter(TODO, {
+						name: values.title,
+						description: values.description ?? null,
+						filter: currentFilters,
+						teamId: team.id,
+						authorId: user.id,
+					}),
+				);
 				toast({
 					title: "Filter Saved Successfully",
 				});

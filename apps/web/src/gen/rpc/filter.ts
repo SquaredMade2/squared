@@ -33,10 +33,64 @@ export type CreateFilterRequest = {
 			| "lessThan"
 			| "arrayIncludesAll"
 			| "arrayIncludesAny";
-		value: string | number | Date | boolean | null | string | null[] | string[];
+		value:
+			| string
+			| number
+			| Date
+			| boolean
+			| null
+			| (string | null)[]
+			| string[];
 	}[];
 	name: string;
 	teamId: string;
+};
+
+export type CreateFilterResponse = {
+	authorId: string;
+	description: string | null;
+	filter: {
+		field:
+			| "id"
+			| "title"
+			| "description"
+			| "status"
+			| "sprintId"
+			| "teamId"
+			| "updatedAt"
+			| "authorId"
+			| "identifier"
+			| "dueDate"
+			| "effortEstimate"
+			| "priority"
+			| "dateCreated"
+			| "assigneeId"
+			| "labels"
+			| "workspaceId"
+			| "parentId"
+			| "deleted"
+			| "order";
+		operator:
+			| "equals"
+			| "contains"
+			| "greaterThan"
+			| "lessThan"
+			| "arrayIncludesAll"
+			| "arrayIncludesAny";
+		value:
+			| string
+			| number
+			| Date
+			| boolean
+			| null
+			| (string | null)[]
+			| string[];
+	}[];
+	id: string;
+	name: string;
+	teamId: string | null;
+	type: "TEAM" | "WORKSPACE";
+	workspaceId: string | null;
 };
 
 export type GetFiltersRequest = {
@@ -74,7 +128,14 @@ export type GetFiltersResponse = {
 			| "lessThan"
 			| "arrayIncludesAll"
 			| "arrayIncludesAny";
-		value: string | number | Date | boolean | null | string | null[] | string[];
+		value:
+			| string
+			| number
+			| Date
+			| boolean
+			| null
+			| (string | null)[]
+			| string[];
 	}[];
 	id: string;
 	name: string;
@@ -121,8 +182,7 @@ export type UpdateFilterRequest = {
 				| Date
 				| boolean
 				| null
-				| string
-				| null[]
+				| (string | null)[]
 				| string[];
 		}[];
 		name?: string;
@@ -160,7 +220,14 @@ export type UpdateFilterResponse = {
 			| "lessThan"
 			| "arrayIncludesAll"
 			| "arrayIncludesAny";
-		value: string | number | Date | boolean | null | string | null[] | string[];
+		value:
+			| string
+			| number
+			| Date
+			| boolean
+			| null
+			| (string | null)[]
+			| string[];
 	}[];
 	id: string;
 	name: string;
@@ -184,7 +251,10 @@ export class FilterService extends RPCContextClient {
 	/**
 	 * createFilter method
 	 */
-	createFilter(ctx: Context, req: CreateFilterRequest): Promise<void> {
+	createFilter(
+		ctx: Context,
+		req: CreateFilterRequest,
+	): Promise<CreateFilterResponse> {
 		return this.request(ctx, "createFilter", req);
 	}
 

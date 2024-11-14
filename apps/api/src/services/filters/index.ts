@@ -79,7 +79,7 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 			teamId: z.string(),
 			authorId: z.string(),
 		}),
-		output: z.void(),
+		output: savedFilterSchema,
 	},
 	getFilters: {
 		input: z.object({ teamId: z.string() }),

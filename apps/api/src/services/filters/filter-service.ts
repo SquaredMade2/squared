@@ -17,18 +17,23 @@ export class FilterService implements FilterRpc {
 		this.logger = createCustomLogger("filters");
 	}
 
-	async createFilter(params: CreateFilterParams): Promise<void> {
+	async createFilter(params: CreateFilterParams): Promise<SavedFilter> {
 		this.logger.info("Creating filter with payload: %0", params);
-		await this.db.savedFilter.create({
-			data: {
-				name: params.name,
-				description: params.description,
-				type: "TEAM",
-				filter: params.filter,
-				teamId: params.teamId,
-				authorId: params.authorId,
-			},
-		});
+		return await this.db.savedFilter
+			.create({
+				data: {
+					name: params.name,
+					description: params.description,
+					type: "TEAM",
+					filter: params.filter,
+					teamId: params.teamId,
+					authorId: params.authorId,
+				},
+			})
+			.then(({ filter, ...rest }: SavedFilterType) => ({
+				...rest,
+				filter: filter as FilterCondition[],
+			}));
 	}
 
 	async getFilters({ teamId }: { teamId: string }): Promise<SavedFilter[]> {
