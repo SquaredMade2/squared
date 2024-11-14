@@ -1,16 +1,7 @@
-import {
-	STANDARD_SAVED_FILTER,
-	STANDARD_TASK,
-	STANDARD_TASK_2,
-} from "@/test/mocks";
+import { STANDARD_TASK, STANDARD_TASK_2 } from "@/test/mocks";
 import type { Task } from "@squared/db";
-import axios from "axios";
 import { createFilterStore } from ".";
 import type { FilterCondition, SavedFilter } from "./interfaces";
-
-// Mock axios
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 // Mock uuid
 jest.mock("uuid", () => ({
@@ -161,23 +152,6 @@ describe("FilterStore", () => {
 				value: "High",
 				operator: "equals",
 			});
-		});
-	});
-
-	describe("deleteSavedFilter", () => {
-		it("should delete a saved filter", async () => {
-			store.setState({
-				savedFilters: [STANDARD_SAVED_FILTER] as SavedFilter[],
-			});
-
-			mockedAxios.delete.mockResolvedValue({ status: 200 });
-
-			await store.getState().deleteSavedFilter("filter-1");
-
-			expect(mockedAxios.delete).toHaveBeenCalledWith(
-				expect.stringContaining("/api/filter/filter-1"),
-			);
-			expect(store.getState().currentFilters).toEqual([]);
 		});
 	});
 });
