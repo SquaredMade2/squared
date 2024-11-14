@@ -1,6 +1,6 @@
-import { prisma } from "@/api";
 import type { APIResponse, Route } from "@/api/route";
 import type {
+	PrismaClient,
 	SavedFilter as SavedFilterType,
 	Task,
 	Team,
@@ -32,7 +32,9 @@ type SavedFilter = Omit<SavedFilterType, "filter"> & {
 
 const logger = createCustomLogger("filter");
 
-export function createRoute(): Route<Params> {
+export function createRoute({
+	prisma,
+}: { prisma: PrismaClient }): Route<Params> {
 	return {
 		PUT: async (
 			res,

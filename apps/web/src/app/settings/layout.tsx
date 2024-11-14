@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import SettingsLayoutWrapper from "./settingsLayout-wrapper";
+import SettingsLayoutWrapper from "./SettingsLayoutWrapper";
 
 export const metadata: Metadata = {
 	title: "Settings",
