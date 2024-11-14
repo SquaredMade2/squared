@@ -8,6 +8,8 @@ import { EventService, createEventRpcHandler } from "./events";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
 import { TeamService, createTeamRpcHandler } from "./teams";
+import { createUserRpcHandler } from "./users";
+import { UserService } from "./users/user-service";
 import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
 
 const prisma = new PrismaClient({
@@ -26,6 +28,7 @@ const event = new EventService(prisma);
 const sprint = new SprintService(prisma);
 const team = new TeamService(prisma);
 const task = new TaskService(prisma);
+const user = new UserService(prisma);
 const workspace = new WorkspaceService(prisma, secret);
 
 export const services = {
@@ -35,6 +38,7 @@ export const services = {
 	sprint,
 	team,
 	task,
+	user,
 	workspace,
 };
 
@@ -45,6 +49,7 @@ export const rpcHandlers = {
 	sprint: createSprintRpcHandler(services.sprint),
 	task: createTaskRpcHandler(services.task),
 	team: createTeamRpcHandler(services.team),
+	user: createUserRpcHandler(services.user),
 	workspace: createWorkspaceRpcHandler(services.workspace),
 };
 
