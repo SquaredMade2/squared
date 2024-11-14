@@ -1,26 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { format, differenceInDays } from "date-fns";
-import { useParams } from "next/navigation";
-import { useSprints } from "@/hooks/useSprints";
-import { useTaskStore } from "@/store";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { toast } from "@/components/ui/use-toast";
 import {
 	SprintError,
 	SprintLoading,
 	SprintNotFound,
 } from "@/components/Sprints";
+import { TransferTaskModal } from "@/components/Sprints/TransferTaskModal";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -31,66 +16,68 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { TransferTaskModal } from "@/components/Sprints/TransferTaskModal";
-import { parseParams } from "@/utils/parseParams";
+import { Button } from "@/components/ui/button";
 import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-	PieChart,
-	Pie,
-	Cell,
-	ReferenceLine,
-} from "recharts";
-import Link from "next/link";
-import type { Task, Sprint } from "@squared/db";
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { toast } from "@/components/ui/use-toast";
+import { useSprints } from "@/hooks/useSprints";
 import { sprintService } from "@/lib/services";
 import { TODO } from "@squared/context";
+import type { Sprint } from "@squared/db";
+import { differenceInDays, format } from "date-fns";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import {
+	Cell,
+	Line,
+	LineChart,
+	Pie,
+	PieChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function EndSprintPage() {
 	const router = useRouter();
 	const { sprintId } = useParams();
-	const { sprints, team, workspace, loading, error } = useSprints();
-	const { getAllTasks } = useTaskStore((state) => state);
+	const {
+		sprints,
+		team,
+		workspace,
+		loading,
+		error,
+		sprintTasks: tasks,
+	} = useSprints();
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [showEndSprintDialog, setShowEndSprintDialog] = useState(false);
 	const [showTaskSelectionModal, setShowTaskSelectionModal] = useState(false);
 	const [newSprintName, setNewSprintName] = useState("");
 	const [newSprint, setNewSprint] = useState(false);
-	const [tasks, setTasks] = useState<Task[]>([]);
 	const [currentDay, setCurrentDay] = useState(0);
 	const [burndownData, setBurndownData] = useState<
 		{ day: number; tasks: number; ideal: number }[]
 	>([]);
 
 	useEffect(() => {
-		const loadData = async () => {
-			if (team) {
-				await getAllTasks(team.id);
-			}
-		};
-		loadData();
-	}, [team]);
-
-	useEffect(() => {
 		const currentSprint = sprints.find((s) => s.id === sprintId);
 		setSprint(currentSprint || null);
 		if (currentSprint && team) {
-			const loadSprintTasks = async () => {
-				const tasks = await sprintService.getSprintTasks(TODO, {
-					sprintId: parseParams(sprintId),
-				});
-				setTasks(tasks);
-			};
-			loadSprintTasks();
 			setNewSprintName(`Sprint ${sprints.length + 1}`);
 		}
-	}, [sprints, sprintId, team]);
+	}, [sprints, team]);
 
 	const getBurndownData = useCallback(() => {
 		if (!sprint) return [];

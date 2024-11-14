@@ -1,9 +1,9 @@
 import { prisma } from "@/api";
-import jwt from "jsonwebtoken";
 import type { Route } from "@/api/route";
 import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
 import createCustomLogger from "@squared/logger";
+import jwt from "jsonwebtoken";
 
 type Params = {
 	workspaceId: string;

@@ -1,5 +1,5 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 import * as context from "@squared/context";
+import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
 export interface RequestOptions {
 	timeout?: number;

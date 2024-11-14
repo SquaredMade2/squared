@@ -1,8 +1,8 @@
 "use client";
 
-import { createContext, useRef, useContext, type ReactNode } from "react";
+import { type ReactNode, createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
-import { createUserStore, type UserStore } from ".";
+import { type UserStore, createUserStore } from ".";
 
 type UserStoreApi = ReturnType<typeof createUserStore>;
 

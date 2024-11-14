@@ -1,22 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
-import type { Effort } from "@squared/db";
-import { Button } from "@/components/ui/button";
-import { useTeamStore } from "@/store";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -28,12 +12,23 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useTeamStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -41,7 +36,12 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "@repo/ui/dropdown-menu";
+import type { Effort } from "@squared/db";
 import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
 	name: z.string().min(2, {

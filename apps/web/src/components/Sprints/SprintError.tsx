@@ -1,6 +1,6 @@
 import { AlertTriangle } from "lucide-react";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 interface SprintErrorProps {
 	error: string;

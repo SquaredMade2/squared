@@ -1,8 +1,8 @@
+import type { RenderResult } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
+import { axe } from "jest-axe";
 // biome-ignore lint/style/useImportType: <explanation>
 import React from "react";
-import { axe } from "jest-axe";
-import type { RenderResult } from "@testing-library/react";
-import { render, fireEvent } from "@testing-library/react";
 import * as AlertDialog from ".";
 
 const OPEN_TEXT = "Open";

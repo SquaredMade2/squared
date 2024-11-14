@@ -1,24 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Calendar } from "@/components/ui/calendar";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -30,27 +12,44 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import {
-	X,
-	Maximize2,
-	ChevronRight,
-	CalendarIcon,
-	ChevronDown,
-} from "lucide-react";
-import { addDays, format, startOfWeek } from "date-fns";
-import { useTeamStore, useTaskStore } from "@/store";
-import { cn } from "@/utils/cn";
-import type { Sprint, Team } from "@squared/db";
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { sprintService } from "@/lib/services";
+import { sprintService, taskService } from "@/lib/services";
+import { useTeamStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
+import type { Sprint, Team } from "@squared/db";
+import { addDays, format, startOfWeek } from "date-fns";
+import {
+	CalendarIcon,
+	ChevronDown,
+	ChevronRight,
+	Maximize2,
+	X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function TeamSettingsSprints() {
 	const { updateTeam, setCurrentTeam } = useTeamStore((state) => state);
 	const { currentTeam, loading: teamLoading } = useTeams();
-	const { toggleSprintTasks } = useTaskStore((state) => state);
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		currentTeam?.sprintStartDate || null,
@@ -103,21 +102,17 @@ export default function TeamSettingsSprints() {
 		if (!currentTeam || !activeSprint) return;
 
 		try {
-			const response = await toggleSprintTasks(
-				currentTeam.id,
-				activeSprint.id,
-				"add",
-			);
+			const response = await taskService.addActiveSprintTasks(TODO, {
+				sprintId: activeSprint.id,
+			});
 
-			if (response.data) {
+			if (response) {
 				toast({
 					title: `${type === "active" ? "Active" : "Completed"} tasks added to sprint`,
 					description:
 						"The tasks have been successfully added to the current sprint.",
 					variant: "default",
 				});
-			} else {
-				throw new Error(response.message);
 			}
 		} catch (error) {
 			toast({

@@ -1,13 +1,13 @@
-import { UserSearch } from "lucide-react";
+import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useViewStore } from "@/store";
-import TaskCardLabels from "./TaskCardLabels";
-import { formatDate } from "date-fns";
 import { formatUrl, getInitials } from "@/utils/formatting";
+import { formatDate } from "date-fns";
+import { UserSearch } from "lucide-react";
 import Link from "next/link";
+import TaskCardLabels from "./TaskCardLabels";
 import type { TaskListProps } from "./interfaces";
-import { PriorityIcon, StatusIcon } from "@/components/Icons";
 
 const TaskList = ({
 	highlightText,

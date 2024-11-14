@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore, useUserStore } from "@/store";
 import { useSession } from "next-auth/react";
-import { useToast } from "@/components/ui/use-toast";
+import { useEffect, useState } from "react";
 
 export function useAuthUser() {
 	const { logout, setUser, user } = useAuthStore((state) => state);
@@ -43,7 +43,7 @@ export function useAuthUser() {
 		};
 
 		handleGetUser();
-	}, [status, session]);
+	}, [status]);
 
 	return {
 		user,

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	CommandDialog,
@@ -10,6 +9,9 @@ import {
 	CommandList,
 	CommandSeparator,
 } from "@/components/ui/command";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { DialogTitle } from "@repo/ui/dialog";
+import { VisuallyHidden } from "@repo/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,
@@ -20,8 +22,7 @@ import {
 	MapPin,
 	MessageCircleMore,
 } from "lucide-react";
-import { DialogTitle } from "@repo/ui/dialog";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type NotificationFilter =
@@ -34,18 +35,13 @@ type NotificationFilter =
 	| "CREATED"
 	| "WORKSPACE";
 
-type NotificationTask = {
-	type: string;
-	workspaceId: string;
-};
-
 type Workspace = { id: string; name: string };
 
 interface MobileInboxSwitcherProps {
 	setFilterType: (type: NotificationFilter) => void;
 	setWorkspace: (workspace: string) => void;
 	filterType: NotificationFilter;
-	readNotifications: NotificationTask[];
+	readNotifications: GetNotificationsResponse;
 	workspaces: Workspace[];
 	workspace: string | null;
 	filterRead: boolean;

@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { format, differenceInDays } from "date-fns";
-import { useTaskStore } from "@/store";
+import {
+	AssignTasksDialog,
+	SprintError,
+	SprintLoading,
+	SprintNotFound,
+} from "@/components/Sprints";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -11,41 +14,50 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
-	LineChart,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useSprints } from "@/hooks/useSprints";
+import { sprintService, taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import { TODO } from "@squared/context";
+import type { Sprint, Status, Task } from "@squared/db";
+import { addWeeks, differenceInDays, format } from "date-fns";
+import { ArrowLeft, Edit } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import {
+	Cell,
 	Line,
+	LineChart,
+	Pie,
+	PieChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
 	XAxis,
 	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-	PieChart,
-	Pie,
-	Cell,
-	ReferenceLine,
 } from "recharts";
-import {
-	AssignTasksDialog,
-	SprintError,
-	SprintLoading,
-	SprintNotFound,
-} from "@/components/Sprints";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import type { Sprint, Status, Task } from "@squared/db";
-import { useSprints } from "@/hooks/useSprints";
-import { formatStatus } from "@/utils/formatting";
 
 const COLORS = ["#00C49F", "#904AD8", "#FFBB28", "#0088FE", "#EF4444"];
-const statusOrder = ["Done", "In Review", "In Progress", "To Do", "Canceled"];
 
 export default function SprintDashboardPage() {
 	const { sprintId } = useParams();
 	const { sprints, team, workspace, loading, error } = useSprints();
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [sprint, setSprint] = useState<Sprint | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -58,6 +70,17 @@ export default function SprintDashboardPage() {
 			ideal: number;
 		}[]
 	>([]);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [editedSprint, setEditedSprint] = useState<Pick<
+		Sprint,
+		"startDate" | "description" | "name" | "endDate" | "id"
+	> | null>(null);
+	const [startDate, setStartDate] = useState<Date | undefined>(
+		editedSprint?.startDate ? new Date(editedSprint.startDate) : new Date(),
+	);
+	const [endDate, setEndDate] = useState<Date | undefined>(
+		editedSprint?.endDate ? new Date(editedSprint.endDate) : new Date(),
+	);
 	const router = useRouter();
 
 	const handleEndSprint = () => {
@@ -67,17 +90,9 @@ export default function SprintDashboardPage() {
 	};
 
 	useEffect(() => {
-		const loadData = async () => {
-			if (team) {
-				await getAllTasks(team.id);
-			}
-		};
-		loadData();
-	}, [team]);
-
-	useEffect(() => {
 		const currentSprint = sprints.find((s) => s.id === sprintId);
 		setSprint(currentSprint || null);
+		setEditedSprint(currentSprint || null);
 		if (currentSprint) {
 			setSprintTasks(
 				tasks.filter((task) => task.sprintId === currentSprint.id),
@@ -157,7 +172,9 @@ export default function SprintDashboardPage() {
 		);
 
 		const sortedEntries = Object.entries(statusCounts).sort(([a], [b]) => {
-			return statusOrder.indexOf(a) - statusOrder.indexOf(b);
+			return (
+				statusOrder.indexOf(a as Status) - statusOrder.indexOf(b as Status)
+			);
 		});
 
 		return sortedEntries.map(([status, count]) => ({
@@ -168,14 +185,26 @@ export default function SprintDashboardPage() {
 
 	const handleBulkAssign = async () => {
 		if (!sprint) return;
-		for (const task of selectedTasks) {
-			await updateTask(task.id, {
-				sprintId: sprint.id,
-				status: task.status === "backlog" ? "todo" : task.status,
-			});
-		}
+		await taskService.addSprintTasks(TODO, {
+			sprintId: sprint.id,
+			taskIds: selectedTasks.map((t) => t.id),
+		});
 		setSelectedTasks([]);
-		team && (await getAllTasks(team.id));
+		team && setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
+	};
+
+	const handleEditSprint = async () => {
+		if (!editedSprint || !team) return;
+		const updatedSprint = await sprintService.updateSprint(TODO, {
+			sprintId: editedSprint.id,
+			sprintData: {
+				...editedSprint,
+				startDate: startDate ?? new Date(),
+				endDate: endDate ?? addWeeks(startDate ?? new Date(), 1),
+			},
+		});
+		setSprint(updatedSprint);
+		setIsEditModalOpen(false);
 	};
 
 	if (loading) {
@@ -213,6 +242,87 @@ export default function SprintDashboardPage() {
 						</Button>
 					</Link>
 					<h1 className="text-3xl font-bold">{sprint.name}</h1>
+					<Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+						<DialogTrigger asChild>
+							<Button variant="outline" size="sm">
+								<Edit className="mr-2 h-4 w-4" /> Edit Sprint
+							</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Edit Sprint</DialogTitle>
+							</DialogHeader>
+							<div className="grid gap-4 py-4">
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="name" className="text-right">
+										Name
+									</Label>
+									<Input
+										id="name"
+										value={editedSprint?.name || ""}
+										onChange={(e) =>
+											setEditedSprint((prev) =>
+												prev ? { ...prev, name: e.target.value } : null,
+											)
+										}
+										className="col-span-3"
+									/>
+								</div>
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="description" className="text-right">
+										Description
+									</Label>
+									<Textarea
+										id="description"
+										value={editedSprint?.description || ""}
+										onChange={(e) =>
+											setEditedSprint((prev) =>
+												prev ? { ...prev, description: e.target.value } : null,
+											)
+										}
+										className="col-span-3"
+									/>
+								</div>
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="startDate" className="text-right">
+										Start Date
+									</Label>
+									<div className="col-span-3">
+										<DatePicker
+											date={startDate}
+											setDate={setStartDate}
+											handleSubmit={() => {
+												setEditedSprint((prev) =>
+													prev
+														? { ...prev, startDate: startDate ?? new Date() }
+														: null,
+												);
+											}}
+										/>
+									</div>
+								</div>
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="endDate" className="text-right">
+										End Date
+									</Label>
+									<div className="col-span-3">
+										<DatePicker
+											date={endDate}
+											setDate={setEndDate}
+											handleSubmit={() => {
+												setEditedSprint((prev) =>
+													prev
+														? { ...prev, endDate: endDate ?? new Date() }
+														: null,
+												);
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+							<Button onClick={handleEditSprint}>Save Changes</Button>
+						</DialogContent>
+					</Dialog>
 				</div>
 
 				<Card>
@@ -228,6 +338,9 @@ export default function SprintDashboardPage() {
 						<p className="mt-2 text-sm text-muted-foreground">
 							{Math.round(calculateProgress())}% Complete
 						</p>
+						{sprint.description && (
+							<p className="mt-4 text-sm">{sprint.description}</p>
+						)}
 					</CardContent>
 				</Card>
 
@@ -304,15 +417,12 @@ export default function SprintDashboardPage() {
 											`${name} ${(percent * 100).toFixed(0)}%`
 										}
 									>
-										{getTaskStatusData().map((entry) => {
-											const colorIndex = statusOrder.indexOf(entry.name);
-											return (
-												<Cell
-													key={`cell-${entry.value}`}
-													fill={COLORS[colorIndex]}
-												/>
-											);
-										})}
+										{getTaskStatusData().map((entry, index) => (
+											<Cell
+												key={`cell-${entry.name}-${entry.value}`}
+												fill={COLORS[index % COLORS.length]}
+											/>
+										))}
 									</Pie>
 									<Tooltip />
 								</PieChart>

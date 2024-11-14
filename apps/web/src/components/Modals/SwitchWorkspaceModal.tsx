@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Check, PlusCircle } from "lucide-react";
-import { cn } from "@/utils/cn";
 import {
 	Command,
 	CommandEmpty,
@@ -19,6 +16,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { taskService } from "@/lib/services";
 import {
 	useAuthStore,
 	useModalStore,
@@ -26,7 +24,11 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
+import { cn } from "@/utils/cn";
+import { TODO } from "@squared/context";
+import { Check, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import WorkspaceInitials from "../WorkspaceImage";
 
 export function WorkspaceSwitcher() {
@@ -35,8 +37,8 @@ export function WorkspaceSwitcher() {
 	const { workspaces, currentWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
 	const { getAllTeams, setCurrentTeam } = useTeamStore((state) => state);
-	const { getAllTasks } = useTaskStore((state) => state);
 	const { user } = useAuthStore((state) => state);
+	const { setTasks } = useTaskStore((state) => state);
 	const [selectedWorkspace, setSelectedWorkspace] = useState(currentWorkspace);
 	const router = useRouter();
 
@@ -45,7 +47,9 @@ export function WorkspaceSwitcher() {
 			const switchWorkspace = async () => {
 				const newTeams = user ? await getAllTeams(user.id) : [];
 				setCurrentTeam(newTeams[0]);
-				await getAllTasks(newTeams[0].id);
+				setTasks(
+					await taskService.getTeamTasks(TODO, { teamId: newTeams[0].id }),
+				);
 				router.push(
 					`/${selectedWorkspace.url}/team/${newTeams[0].identifier}/all`,
 				);

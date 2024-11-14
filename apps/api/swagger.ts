@@ -1,10 +1,10 @@
-import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
-import type { Router } from "express";
 import fs from "node:fs/promises";
 import path from "node:path";
-import schemas from "./schemas";
 import createCustomLogger from "@squared/logger";
+import type { Router } from "express";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import schemas from "./schemas";
 
 const API_DIR = path.join(__dirname, "src", "api");
 const logger = createCustomLogger("swagger");

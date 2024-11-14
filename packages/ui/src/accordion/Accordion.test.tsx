@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
 
-import * as AccordionPrimitive from "../accordion";
 import type { RenderResult } from "@testing-library/react";
 import { fireEvent, render } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
+import * as AccordionPrimitive from "../accordion";
 expect.extend(toHaveNoViolations);
 
 const ITEMS = ["One", "Two", "Three"];

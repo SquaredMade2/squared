@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Sprint, Task } from "@squared/db";
+import { useState } from "react";
 import { SprintCard } from "./SprintCard";
 
 interface SprintTabsProps {

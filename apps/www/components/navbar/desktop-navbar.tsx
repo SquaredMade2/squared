@@ -1,17 +1,17 @@
 "use client";
-import { Logo } from "../Logo";
-import { Button } from "../button";
-import { NavBarItem } from "./navbar-item";
+import { cn } from "@/lib/utils";
 import {
+	AnimatePresence,
+	motion,
 	useMotionValueEvent,
 	useScroll,
-	motion,
-	AnimatePresence,
 } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { Link } from "next-view-transitions";
+import { useState } from "react";
+import { Logo } from "../Logo";
+import { Button } from "../button";
 import { ModeToggle } from "../mode-toggle";
+import { NavBarItem } from "./navbar-item";
 
 type Props = {
 	navItems: {
@@ -36,7 +36,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 	return (
 		<div
 			className={cn(
-				"w-full flex relative justify-between px-4 py-2 rounded-full bg-transparent transition duration-200",
+				"w-full flex relative justify-between px-4 py-2 rounded-3xl bg-transparent transition duration-200",
 				showBackground &&
 					"bg-neutral-50 dark:bg-background-darkSecondary shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
 			)}
@@ -50,7 +50,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 						transition={{
 							duration: 1,
 						}}
-						className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-background-darkSecondary pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-full"
+						className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-background-darkSecondary pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-3xl"
 					/>
 				)}
 			</AnimatePresence>

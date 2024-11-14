@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import ArchiveNavbar from "@/components/NavBars/ArchiveNavbar";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Archive",

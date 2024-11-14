@@ -1,24 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogFooter,
-} from "@/components/ui/dialog";
+import { PriorityIcon } from "@/components/Icons";
+import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -29,28 +13,46 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { format, differenceInDays } from "date-fns";
+import { Button } from "@/components/ui/button";
 import {
-	LineChart,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSprints } from "@/hooks/useSprints";
+import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
+import { TODO } from "@squared/context";
+import type { Priority, Sprint, Task } from "@squared/db";
+import { differenceInDays, format } from "date-fns";
+import { AlertCircle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import {
 	Line,
+	LineChart,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
 	XAxis,
 	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-	ReferenceLine,
 } from "recharts";
-import { useTaskStore } from "@/store";
-import type { Priority, Sprint, Task } from "@squared/db";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
-import { useSprints } from "@/hooks/useSprints";
-import { PriorityIcon } from "@/components/Icons";
 
 export default function SprintDashboard() {
 	const { sprints, currentSprint, team: currentTeam } = useSprints();
-	const { tasks, getAllTasks, updateTask } = useTaskStore((state) => state);
+	const { tasks, setTasks } = useTaskStore((state) => state);
 	const [upcomingSprints, setUpcomingSprints] = useState<Sprint[]>([]);
 	const [completedSprints, setCompletedSprints] = useState<Sprint[]>([]);
 	const [unassignedTasks, setUnassignedTasks] = useState<Task[]>([]);
@@ -190,15 +192,16 @@ export default function SprintDashboard() {
 	const handleBulkAssign = async () => {
 		if (!targetSprint) return;
 
-		for (const task of selectedTasks) {
-			await updateTask(task.id, {
-				sprintId: targetSprint,
-				status: task.status === "backlog" ? "todo" : task.status,
-			});
-		}
+		await taskService.addSprintTasks(TODO, {
+			sprintId: targetSprint,
+			taskIds: selectedTasks.map((t) => t.id),
+		});
 
 		setSelectedTasks([]);
-		currentTeam && (await getAllTasks(currentTeam.id));
+		currentTeam &&
+			setTasks(
+				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+			);
 	};
 
 	const prepareAutoAssign = () => {
@@ -241,17 +244,21 @@ export default function SprintDashboard() {
 
 	const handleAutoAssign = async () => {
 		if (!currentSprint) return;
-		for (const task of tasksToAutoAssign) {
-			await updateTask(task.id, { sprintId: currentSprint.id });
-		}
+		await taskService.addSprintTasks(TODO, {
+			sprintId: currentSprint.id,
+			taskIds: tasksToAutoAssign.map((t) => t.id),
+		});
 		setIsAutoAssignConfirmOpen(false);
-		currentTeam && (await getAllTasks(currentTeam.id));
+		currentTeam &&
+			setTasks(
+				await taskService.getTeamTasks(TODO, { teamId: currentTeam.id }),
+			);
 	};
 
 	return (
-		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh]">
+		<ScrollArea className="container mx-auto p-4 overflow-y-auto h-[100vh] w-full">
 			<div className="space-y-6">
-				<h1 className="text-3xl font-bold">Sprint Dashboard</h1>
+				<h1 className="text-3xl font-bold ml-8">Sprint Dashboard</h1>
 				{currentSprint && (
 					<Card>
 						<CardHeader>

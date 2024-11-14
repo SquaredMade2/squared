@@ -1,24 +1,20 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { StatusDropdownButton } from "./StatusDropdownButton";
-import { EffortDropdownButton } from "./EffortDropdownButton";
-import { LabelDropdownButton } from "./LabelDropdownButton";
-import { useToast } from "@/components/ui/use-toast";
-import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
 	Form,
-	FormItem,
 	FormControl,
 	FormField,
+	FormItem,
 	FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { useToast } from "@/components/ui/use-toast";
+import { taskService } from "@/lib/services";
 import {
 	useAuthStore,
 	useModalStore,
@@ -26,13 +22,19 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
-import { DateDropdownButton } from "./DateDropdownButton";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-} from "@/components/ui/accordion";
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AccordionTrigger } from "@repo/ui/accordion";
+import { TODO } from "@squared/context";
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { DateDropdownButton } from "./DateDropdownButton";
+import { EffortDropdownButton } from "./EffortDropdownButton";
+import { LabelDropdownButton } from "./LabelDropdownButton";
+import { PriorityDropdownButton } from "./PriorityDropdownButton";
+import { StatusDropdownButton } from "./StatusDropdownButton";
 
 export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");
@@ -43,7 +45,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 	const { currentTeam } = useTeamStore((state) => state);
 	const { currentWorkspace, updateWorkspace, setCurrentWorkspace } =
 		useWorkspaceStore((state) => state);
-	const { tasks, addTask } = useTaskStore((state) => state);
+	const { tasks, createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
 
@@ -106,11 +108,8 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
-			const {
-				task: taskCreatedResponse,
-				message,
-				variant,
-			} = await addTask(newTask);
+			const createdTask = await taskService.createTask(TODO, newTask);
+			createTask(createdTask);
 			await updateWorkspace(currentWorkspace.id, {
 				tasksCreated: currentWorkspace.tasksCreated + 1,
 			});
@@ -120,10 +119,9 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 
 			toast({
-				title: message,
-				variant: variant,
+				title: "Task created successfully",
 			});
-			if (!taskCreatedResponse) return;
+
 			setIsOpen("");
 			setNewIssueData({});
 			form.reset({
@@ -132,11 +130,11 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			toast({
 				title: "New Issue Created",
-				variant: variant,
 			});
-		} catch (_err) {
+		} catch (error) {
 			toast({
 				title: "Error creating issue",
+				description: error instanceof Error ? error.message : "Unknown error",
 				variant: "destructive",
 			});
 		} finally {

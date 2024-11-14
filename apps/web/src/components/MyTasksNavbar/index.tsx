@@ -1,10 +1,10 @@
 "use client";
 
 import { useWorkspaceStore } from "@/store";
+import { ArrowLeft } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Button } from "../ui/button";
-import { ArrowLeft } from "lucide-react";
 
 const tabs = [
 	{ id: "assigned", label: "Assigned" },

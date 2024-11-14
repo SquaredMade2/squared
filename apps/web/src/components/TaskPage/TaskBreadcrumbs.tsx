@@ -1,14 +1,14 @@
 "use client";
+import WorkspaceInitials from "@/components/WorkspaceImage";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import WorkspaceInitials from "@/components/WorkspaceImage";
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import Link from "next/link";
 import type { Task, Workspace } from "@squared/db";
+import Link from "next/link";
 
 export const TaskBreadcrumbs = ({
 	task,
@@ -23,7 +23,7 @@ export const TaskBreadcrumbs = ({
 
 	return (
 		<>
-			<Breadcrumb>
+			<Breadcrumb className="ml-4">
 				<BreadcrumbList className="w-full whitespace-nowrap flex items-center gap-2 text-foreground">
 					<BreadcrumbItem>
 						{workspace && (

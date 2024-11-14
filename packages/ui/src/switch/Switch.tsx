@@ -1,11 +1,11 @@
 import * as React from "react";
-import { composeEventHandlers } from "../primitive";
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
+import { composeEventHandlers } from "../primitive";
+import { Primitive } from "../react-primitive";
 import { useControllableState } from "../use-controllable-state";
 import { usePrevious } from "../use-previous";
 import { useSize } from "../use-size";
-import { Primitive } from "../react-primitive";
 
 import type { Scope } from "../context";
 

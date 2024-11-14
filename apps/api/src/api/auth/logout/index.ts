@@ -1,5 +1,5 @@
+import type { APIResponse, Route } from "@/api/route";
 import type { User } from "@squared/db";
-import type { Route, APIResponse } from "@/api/route";
 import createCustomLogger from "@squared/logger";
 
 type Params = {

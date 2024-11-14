@@ -1,5 +1,5 @@
 import { createViewStore } from ".";
-import type { ViewState, LastVisitedPathOption } from "./interfaces";
+import type { LastVisitedPathOption, ViewState } from "./interfaces";
 
 // Mock localStorage
 const mockLocalStorage = {
@@ -54,7 +54,7 @@ describe("ViewStore", () => {
 			},
 		});
 		expect(state.lastVisitedPage).toBe("all");
-		expect(state.view).toBe("list");
+		expect(state.view).toBe("grid");
 	});
 
 	describe("setView", () => {

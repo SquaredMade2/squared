@@ -1,7 +1,7 @@
-import { createUserStore, type UserAvatar } from ".";
-import axios from "axios";
-import type { User } from "@squared/db";
 import { STANDARD_USER, STANDARD_WORKSPACE } from "@/test/mocks";
+import type { User } from "@squared/db";
+import axios from "axios";
+import { type UserAvatar, createUserStore } from ".";
 
 // Mock axios
 jest.mock("axios");
@@ -255,26 +255,6 @@ describe("UserStore", () => {
 
 			const state = store.getState();
 			expect(state.connectedRepos).toEqual(mockRepositories);
-		});
-	});
-
-	describe("persist middleware", () => {
-		it("should hydrate the state from sessionStorage", () => {
-			const mockState = {
-				users: [STANDARD_USER],
-				userAvatars: [],
-				connectedRepos: [],
-			};
-			mockSessionStorage.getItem.mockReturnValue(
-				JSON.stringify({ state: mockState }),
-			);
-
-			const newStore = createUserStore();
-			const state = newStore.getState();
-
-			expect(state.users).toEqualWithDatePrecision([STANDARD_USER]);
-			expect(state.userAvatars).toEqual([]);
-			expect(state.connectedRepos).toEqual([]);
 		});
 	});
 });

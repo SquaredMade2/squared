@@ -1,19 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useAuthStore, useWorkspaceStore } from "@/store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -25,14 +12,27 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { useAuthStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -49,9 +49,14 @@ const formSchema = z.object({
 });
 
 export default function WorkspaceSettings() {
-	const { deleteWorkspace, getAllWorkspaces, updateWorkspace } =
-		useWorkspaceStore((state) => state);
-	const { currentWorkspace, loading: workspaceLoading } = useWorkspaces();
+	const { deleteWorkspace, updateWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
+	const {
+		currentWorkspace,
+		workspaces,
+		loading: workspaceLoading,
+	} = useWorkspaces();
 	const { user } = useAuthStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
@@ -108,7 +113,6 @@ export default function WorkspaceSettings() {
 		setIsDeleting(true);
 		await deleteWorkspace(currentWorkspace.id);
 		if (user) {
-			const workspaces = await getAllWorkspaces(user.id);
 			if (workspaces.length > 0) {
 				router.replace(`/${workspaces[0].id}`);
 			} else {

@@ -1,15 +1,15 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
-import { Eye, EyeOff, Mail, User, Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/components/ui/use-toast";
 import RegistrationModal from "@/components/Modals/RegistrationModal";
-import { useAuthStore } from "@/store";
+import { GoogleIcon } from "@/components/Svg";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -18,18 +18,18 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { GoogleIcon } from "@/components/Svg";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuthStore } from "@/store";
 import { passwordSchema } from "@/utils/formatting";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Loader2, Mail, User } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
 	name: z

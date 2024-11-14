@@ -1,7 +1,7 @@
 "use client";
-import type React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import type React from "react";
 import { BlurImage } from "../blur-image";
 
 export const SkeletonOne = () => {

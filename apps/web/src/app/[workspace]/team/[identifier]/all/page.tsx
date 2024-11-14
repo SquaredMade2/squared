@@ -1,12 +1,12 @@
 // all/page.tsx
 "use client";
 
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
-import { useFilterStore, useViewStore } from "@/store";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import { useGroups } from "@/hooks/useGroups";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { useFilterStore, useViewStore } from "@/store";
 
 export default function AllTasksPage() {
 	const { filterTasks } = useFilterStore((state) => state);
