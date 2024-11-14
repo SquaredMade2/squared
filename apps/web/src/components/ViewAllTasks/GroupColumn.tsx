@@ -146,7 +146,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			}`}
 		>
 			<span
-				className={`text-accent-foreground truncate ${isListView ? "ml-10" : "ml-2"}`}
+				className={`text-accent-foreground truncate max-w-[250px] inline-block ${isListView ? "ml-10" : "ml-2"}`}
 			>
 				{parentTask?.identifier}: {parentTask?.title}
 			</span>

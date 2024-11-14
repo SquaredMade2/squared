@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { workspaceService } from "@/lib/services";
+import { userService, workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { ChevronLeft } from "lucide-react";
@@ -19,7 +19,7 @@ const Join = () => {
 	const { setWorkspaces, workspaces, createWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { updateUser, getUser, user, setUser } = useUserStore((state) => state);
+	const { updateUser, user, setUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -42,7 +42,9 @@ const Join = () => {
 					await workspaceService.getUserWorkspaces(TODO, { userId: user.id }),
 				);
 			} else if (data?.user) {
-				const { user: newUser } = await getUser(data.user.id);
+				const newUser = await userService.getUser(TODO, {
+					userId: data.user.id,
+				});
 				if (!newUser) await signOut();
 				setUser(newUser);
 				setWorkspaces(
@@ -110,8 +112,11 @@ const Join = () => {
 			toast({ title: "Workspace created successfully" });
 			if (workspace) {
 				if (user.onBoarding) {
-					const updatedUser = await updateUser(user.id, { onBoarding: false });
-					setUser(updatedUser.user);
+					const updatedUser = await userService.onBoardUser(TODO, {
+						userId: user.id,
+					});
+					updateUser(updatedUser);
+					setUser(updatedUser);
 				}
 				router.refresh();
 				router.push(`/${workspace.url}`);
