@@ -1,5 +1,5 @@
 import WorkspaceInitials from "@/components/WorkspaceImage";
-import { useAuthStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { handleWorkspaceNameOverflow } from "@/utils/formatting";
 import type { Workspace } from "@squared/db";
 import { FileSearch } from "lucide-react";
@@ -10,7 +10,7 @@ import { useState } from "react";
 const WorkspaceNotFoundPage = (): React.ReactElement => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
-	const user = useAuthStore((state) => state.user);
+	const user = useUserStore((state) => state.user);
 	const workspaces = useWorkspaceStore((state) => state.workspaces);
 	const handleOffClick: () => void = () => {
 		if (menuOpen) {

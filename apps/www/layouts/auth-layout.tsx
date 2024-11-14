@@ -1,4 +1,4 @@
-import { FeaturedTestimonials } from "@/components/featured-testimonials";
+// import { FeaturedTestimonials } from "@/components/featured-testimonials";
 import { HorizontalGradient } from "@/components/horizontal-gradient";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
 				{children}
 				<div className="relative w-full z-20 hidden md:flex border-l border-neutral-100 dark:border-neutral-800 overflow-hidden bg-gray-50 dark:bg-neutral-900 items-center justify-center">
 					<div className="max-w-sm mx-auto">
-						<FeaturedTestimonials />
+						{/* <FeaturedTestimonials /> */}
 						<p
 							className={cn(
 								"font-semibold text-xl text-center text-muted dark:text-muted-dark",

@@ -13,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-	useAuthStore,
 	useFilterStore,
 	useTeamStore,
 	useUserStore,
@@ -47,10 +46,9 @@ export function SaveFilterForm({
 		clearFilter,
 		mergeFilters,
 	} = useFilterStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { users } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const user = useAuthStore((state) => state.user);
+	const { team } = useTeamStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const [isSaving, setIsSaving] = useState(false);
 	const [formattedFilters, setFormattedFilters] = useState<
@@ -93,10 +91,10 @@ export function SaveFilterForm({
 
 	useEffect(() => {
 		const formatFilters = async () => {
-			if (currentWorkspace) {
+			if (workspace) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
-						formatFilterName(filter, currentWorkspace.Labels, users),
+						formatFilterName(filter, workspace.Labels, users),
 					),
 				);
 				setFormattedFilters(formatted);
@@ -107,7 +105,7 @@ export function SaveFilterForm({
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
-		if (!currentTeam) {
+		if (!team) {
 			toast({
 				title: "Error",
 				description: "No team found",
@@ -139,14 +137,14 @@ export function SaveFilterForm({
 					});
 				}
 				//create new view
-			} else if (currentTeam) {
+			} else if (team) {
 				await saveFilter({
 					name: values.title,
 					description: values.description ?? null,
 					filter: currentFilters,
 					type: "TEAM",
-					teamId: currentTeam.id,
-					workspaceId: currentWorkspace?.id,
+					teamId: team.id,
+					workspaceId: workspace?.id,
 					authorId: user?.id,
 				});
 				toast({

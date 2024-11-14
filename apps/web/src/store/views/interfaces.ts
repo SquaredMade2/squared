@@ -27,14 +27,13 @@ export const TaskGroupOptions = [
 
 export type TaskGroup = (typeof TaskGroupOptions)[number];
 
-export const CompletedTaskPeriodOptions = [
-	"All",
-	"Past day",
-	"Past week",
-	"Past month",
-	"None",
-];
-export type CompletedTaskPeriod = (typeof CompletedTaskPeriodOptions)[number];
+export enum CompletedTaskPeriod {
+	all = "All",
+	pastDay = "Past day",
+	pastWeek = "Past week",
+	pastMonth = "Past month",
+	none = "None",
+}
 
 // Grouping related types
 export namespace ViewOptions {

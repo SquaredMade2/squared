@@ -16,15 +16,15 @@ type MyTasksPaths = (typeof tabs)[number]["id"];
 const MyTasksNavbar = () => {
 	const router = useRouter();
 	const pathname = usePathname();
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	const activeTab = pathname.split("/").pop() as MyTasksPaths;
 
 	const navigate = useCallback(
 		(path: MyTasksPaths) => {
-			router.push(`/${currentWorkspace?.url}/my-tasks/${path}`);
+			router.push(`/${workspace?.url}/my-tasks/${path}`);
 		},
-		[router, currentWorkspace?.url],
+		[router, workspace?.url],
 	);
 	return (
 		<div className="flex justify-start space-x-4 my-4 items-center">
