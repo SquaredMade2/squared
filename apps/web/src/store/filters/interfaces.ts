@@ -44,13 +44,10 @@ type FilterActions = {
 	addFilter: (filter: FilterCondition) => void;
 	clearFilter: () => void;
 	removeFilter: (field: string) => void;
-	saveFilter: (filter: Partial<SavedFilter>) => Promise<FilterResponse>;
-	getSavedFilters: (groupId: string) => Promise<SavedFilter[]>;
-	updateSavedFilter: (
-		filterId: string,
-		filter: Partial<SavedFilter>,
-	) => Promise<FilterResponse>;
-	deleteSavedFilter: (filterId: string) => Promise<void>;
+	saveFilter: (filter: SavedFilter) => void;
+	setSavedFilters: (filters: SavedFilter[]) => void;
+	updateSavedFilter: (filter: SavedFilter) => void;
+	deleteSavedFilter: (filterId: string) => void;
 	filterTasks: (tasks: Task[]) => Task[];
 	customFilter: (tasks: Task[], filter: FilterCondition[]) => Task[];
 	mergeFilters: (

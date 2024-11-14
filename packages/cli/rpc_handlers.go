@@ -341,6 +341,8 @@ func zodToTypeScript(schema ZodSchema) string {
 		return "unknown | undefined"
 	case "void":
 		return "void"
+	case "null":
+		return "null"
 	default:
 		return "unknown"
 	}

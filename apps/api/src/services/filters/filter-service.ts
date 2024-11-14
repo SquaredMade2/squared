@@ -31,9 +31,7 @@ export class FilterService implements FilterRpc {
 		});
 	}
 
-	async getSavedFilters({
-		teamId,
-	}: { teamId: string }): Promise<SavedFilter[]> {
+	async getFilters({ teamId }: { teamId: string }): Promise<SavedFilter[]> {
 		this.logger.info("Getting filters for team with id: %s", teamId);
 		return this.db.savedFilter
 			.findMany({
@@ -47,7 +45,7 @@ export class FilterService implements FilterRpc {
 			);
 	}
 
-	async updateSavedFilter({
+	async updateFilter({
 		filterId,
 		filters,
 	}: {
@@ -57,15 +55,20 @@ export class FilterService implements FilterRpc {
 			description?: string | null;
 			filter: FilterCondition[];
 		};
-	}): Promise<void> {
+	}): Promise<SavedFilter> {
 		this.logger.info("Updating filter with id: %s", filterId);
-		await this.db.savedFilter.update({
-			where: { id: filterId },
-			data: filters,
-		});
+		return await this.db.savedFilter
+			.update({
+				where: { id: filterId },
+				data: filters,
+			})
+			.then(({ filter, ...rest }: SavedFilterType) => ({
+				...rest,
+				filter: filter as FilterCondition[],
+			}));
 	}
 
-	async deleteSavedFilter({ filterId }: { filterId: string }): Promise<void> {
+	async deleteFilter({ filterId }: { filterId: string }): Promise<void> {
 		this.logger.info("Deleting filter with id: %s", filterId);
 		await this.db.savedFilter.delete({ where: { id: filterId } });
 	}

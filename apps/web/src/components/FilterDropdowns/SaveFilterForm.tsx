@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { filterService } from "@/lib/services";
 import {
 	useFilterStore,
 	useTeamStore,
@@ -22,6 +23,7 @@ import type { SavedFilter } from "@/store/filters";
 import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -119,11 +121,16 @@ export function SaveFilterForm({
 				const newFilters = mergeFilters(currentFilters, currentSavedFilter.id);
 				// edit existing view
 				if (type === "edit") {
-					const response = await updateSavedFilter(currentSavedFilter.id, {
-						name: values.title,
-						description: values.description ?? null,
-						filter: newFilters,
-					});
+					const response = updateSavedFilter(
+						await filterService.updateFilter(TODO, {
+							filterId: currentSavedFilter.id,
+							filters: {
+								name: values.title,
+								description: values.description ?? null,
+								filter: newFilters,
+							},
+						}),
+					);
 					toast({
 						title: response.message,
 						variant: response.variant,

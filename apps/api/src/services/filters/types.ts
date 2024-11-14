@@ -35,14 +35,14 @@ export type SavedFilter = Omit<SavedFilterType, "filter"> & {
 
 export interface FilterRpc {
 	createFilter: (params: CreateFilterParams) => Promise<void>;
-	getSavedFilters: ({ teamId }: { teamId: string }) => Promise<SavedFilter[]>;
-	updateSavedFilter: (args: {
+	getFilters: ({ teamId }: { teamId: string }) => Promise<SavedFilter[]>;
+	updateFilter: (args: {
 		filterId: string;
 		filters: {
 			name?: string;
 			description?: string | null;
 			filter: FilterCondition[];
 		};
-	}) => Promise<void>;
-	deleteSavedFilter: ({ filterId }: { filterId: string }) => Promise<void>;
+	}) => Promise<SavedFilter>;
+	deleteFilter: ({ filterId }: { filterId: string }) => Promise<void>;
 }

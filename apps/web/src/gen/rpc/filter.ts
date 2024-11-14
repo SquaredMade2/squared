@@ -33,25 +33,17 @@ export type CreateFilterRequest = {
 			| "lessThan"
 			| "arrayIncludesAll"
 			| "arrayIncludesAny";
-		value:
-			| string
-			| number
-			| Date
-			| boolean
-			| unknown
-			| string
-			| unknown[]
-			| string[];
+		value: string | number | Date | boolean | null | string | null[] | string[];
 	}[];
 	name: string;
 	teamId: string;
 };
 
-export type GetSavedFiltersRequest = {
+export type GetFiltersRequest = {
 	teamId: string;
 };
 
-export type GetSavedFiltersResponse = {
+export type GetFiltersResponse = {
 	authorId: string;
 	description: string | null;
 	filter: {
@@ -82,15 +74,7 @@ export type GetSavedFiltersResponse = {
 			| "lessThan"
 			| "arrayIncludesAll"
 			| "arrayIncludesAny";
-		value:
-			| string
-			| number
-			| Date
-			| boolean
-			| unknown
-			| string
-			| unknown[]
-			| string[];
+		value: string | number | Date | boolean | null | string | null[] | string[];
 	}[];
 	id: string;
 	name: string;
@@ -99,7 +83,7 @@ export type GetSavedFiltersResponse = {
 	workspaceId: string | null;
 }[];
 
-export type UpdateSavedFilterRequest = {
+export type UpdateFilterRequest = {
 	filterId: string;
 	filters: {
 		description: string | null;
@@ -136,16 +120,56 @@ export type UpdateSavedFilterRequest = {
 				| number
 				| Date
 				| boolean
-				| unknown
+				| null
 				| string
-				| unknown[]
+				| null[]
 				| string[];
 		}[];
 		name?: string;
 	};
 };
 
-export type DeleteSavedFilterRequest = {
+export type UpdateFilterResponse = {
+	authorId: string;
+	description: string | null;
+	filter: {
+		field:
+			| "id"
+			| "title"
+			| "description"
+			| "status"
+			| "sprintId"
+			| "teamId"
+			| "updatedAt"
+			| "authorId"
+			| "identifier"
+			| "dueDate"
+			| "effortEstimate"
+			| "priority"
+			| "dateCreated"
+			| "assigneeId"
+			| "labels"
+			| "workspaceId"
+			| "parentId"
+			| "deleted"
+			| "order";
+		operator:
+			| "equals"
+			| "contains"
+			| "greaterThan"
+			| "lessThan"
+			| "arrayIncludesAll"
+			| "arrayIncludesAny";
+		value: string | number | Date | boolean | null | string | null[] | string[];
+	}[];
+	id: string;
+	name: string;
+	teamId: string | null;
+	type: "TEAM" | "WORKSPACE";
+	workspaceId: string | null;
+};
+
+export type DeleteFilterRequest = {
 	filterId: string;
 };
 
@@ -165,32 +189,29 @@ export class FilterService extends RPCContextClient {
 	}
 
 	/**
-	 * getSavedFilters method
+	 * getFilters method
 	 */
-	getSavedFilters(
+	getFilters(
 		ctx: Context,
-		req: GetSavedFiltersRequest,
-	): Promise<GetSavedFiltersResponse> {
-		return this.request(ctx, "getSavedFilters", req);
+		req: GetFiltersRequest,
+	): Promise<GetFiltersResponse> {
+		return this.request(ctx, "getFilters", req);
 	}
 
 	/**
-	 * updateSavedFilter method
+	 * updateFilter method
 	 */
-	updateSavedFilter(
+	updateFilter(
 		ctx: Context,
-		req: UpdateSavedFilterRequest,
-	): Promise<void> {
-		return this.request(ctx, "updateSavedFilter", req);
+		req: UpdateFilterRequest,
+	): Promise<UpdateFilterResponse> {
+		return this.request(ctx, "updateFilter", req);
 	}
 
 	/**
-	 * deleteSavedFilter method
+	 * deleteFilter method
 	 */
-	deleteSavedFilter(
-		ctx: Context,
-		req: DeleteSavedFilterRequest,
-	): Promise<void> {
-		return this.request(ctx, "deleteSavedFilter", req);
+	deleteFilter(ctx: Context, req: DeleteFilterRequest): Promise<void> {
+		return this.request(ctx, "deleteFilter", req);
 	}
 }
