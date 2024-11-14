@@ -8,22 +8,29 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
+import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const GithubSettings: React.FC = () => {
 	const { connectedRepos, user } = useUserStore((state) => state);
-	const getUserRepositories = useUserStore(
-		(state) => state.getUserRepositories,
-	);
+	const setConnectedRepos = useUserStore((state) => state.setConnectedRepos);
 	const router = useRouter();
 
 	useEffect(() => {
-		if (user?.id) {
-			getUserRepositories(user.id);
-		}
-	}, [user?.id, getUserRepositories]);
+		const getUserRepositories = async () => {
+			if (user?.id) {
+				setConnectedRepos(
+					await userService.getUserRepositories(TODO, {
+						userId: user.id,
+					}),
+				);
+			}
+		};
+		getUserRepositories();
+	}, [user?.id]);
 
 	const handleClick = (): void => {
 		if (!user?.id) return;

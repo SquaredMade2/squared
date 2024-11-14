@@ -1,21 +1,24 @@
+import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
-import type { User } from "@squared/db";
+import { TODO } from "@squared/context";
 import { useEffect, useState } from "react";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useUsers() {
 	const { loading: workspaceLoading, workspace } = useWorkspaces();
-	const getAllUsers = useUserStore((state) => state.getAllUsers);
+	const { users, setUsers } = useUserStore((state) => state);
 	const [loading, setLoading] = useState(true);
-	const [users, setUsers] = useState<User[]>([]);
 
 	useEffect(() => {
 		const initiateStore = async () => {
 			if (workspaceLoading) return;
 			setLoading(true);
 			if (workspace) {
-				const allUsers = await getAllUsers(workspace.id);
-				setUsers(allUsers);
+				setUsers(
+					await userService.getWorkspaceUsers(TODO, {
+						workspaceId: workspace.id,
+					}),
+				);
 			}
 			setLoading(false);
 		};
