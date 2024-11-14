@@ -12,8 +12,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 
-import { IconBrandLinkedin } from "@tabler/icons-react";
-import Link from "next/link";
+// import { IconBrandLinkedin } from "@tabler/icons-react";
+// import Link from "next/link";
 import { Button } from "./button";
 
 const formSchema = z.object({
@@ -60,37 +60,37 @@ export function ContactForm() {
 		} catch {}
 	}
 
-	const socials = [
-		// {
-		//   title: "twitter",
-		//   href: "https://twitter.com/mannupaaji",
-		//   icon: (
-		//     <IconBrandX className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-		//   ),
-		// },
-		// {
-		//   title: "github",
-		//   href: "https://github.com/manuarora700",
-		//   icon: (
-		//     <IconBrandGithub className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-		//   ),
-		// },
-		{
-			// todo change to Squared LinkedIn
-			title: "linkedin",
-			href: "https://linkedin.com/manuarora28",
-			icon: (
-				<IconBrandLinkedin className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-			),
-		},
-	];
+	// const socials = [
+	// 	// {
+	// 	//   title: "twitter",
+	// 	//   href: "https://twitter.com/mannupaaji",
+	// 	//   icon: (
+	// 	//     <IconBrandX className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
+	// 	//   ),
+	// 	// },
+	// 	// {
+	// 	//   title: "github",
+	// 	//   href: "https://github.com/manuarora700",
+	// 	//   icon: (
+	// 	//     <IconBrandGithub className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
+	// 	//   ),
+	// 	// },
+	// 	{
+	// 		// todo change to Squared LinkedIn
+	// 		title: "linkedin",
+	// 		href: "https://linkedin.com/manuarora28",
+	// 		icon: (
+	// 			<IconBrandLinkedin className="h-5 w-5 text-muted dark:text-neutral-300 dark:text-muted-dark dark:hover:text-white hover:text-black" />
+	// 		),
+	// 	},
+	// ];
 
 	return (
 		<Form {...form}>
-			<div className="flex relative z-20 items-center w-full justify-center px-4 py-4 lg:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-card">
+			<div className="flex relative z-20 items-center w-full justify-center px-4 py-4 lg:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
 				<div className="mx-auto w-full max-w-md">
 					<div>
-						<h1 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
+						<h1 className="mt-8 text-4xl font-bold leading-9 tracking-tight text-black dark:text-white">
 							Contact Us
 						</h1>
 						<p className="mt-4 text-muted-foreground text-sm max-w-sm">
@@ -121,8 +121,8 @@ export function ContactForm() {
 													<input
 														id="name"
 														type="name"
-														placeholder="John Doe"
-														className="block w-full px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+														placeholder="Full Name"
+														className="block w-full px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white dark:bg-background-darkAccent bg-neutral-100"
 														{...field}
 													/>
 												</div>
@@ -147,8 +147,8 @@ export function ContactForm() {
 													<input
 														id="email"
 														type="email"
-														placeholder="hello@johndoe.com"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+														placeholder="Email"
+														className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white \"
 														{...field}
 													/>
 												</div>
@@ -173,8 +173,8 @@ export function ContactForm() {
 													<input
 														id="company"
 														type="company"
-														placeholder="Squared Made"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+														placeholder="Company"
+														className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
 														{...field}
 													/>
 												</div>
@@ -192,7 +192,7 @@ export function ContactForm() {
 												htmlFor="message"
 												className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
 											>
-												message
+												Message
 											</label>
 											<FormControl>
 												<div className="mt-2">
@@ -200,7 +200,7 @@ export function ContactForm() {
 														rows={5}
 														id="message"
 														placeholder="Enter your message here"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+														className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
 														{...field}
 													/>
 												</div>
@@ -211,18 +211,18 @@ export function ContactForm() {
 								/>
 
 								<div>
-									<Button className="w-full">Submit</Button>
+									<Button className="w-full rounded-xl">Submit</Button>
 								</div>
 							</form>
 						</div>
 					</div>
-					<div className="flex items-center justify-center space-x-4 py-4">
+					{/* <div className="flex items-center justify-center space-x-4 py-4">
 						{socials.map((social) => (
 							<Link href={social.href} key={social.title}>
 								{social.icon}
 							</Link>
 						))}
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</Form>
