@@ -15,7 +15,7 @@ The current status of the task.
 - **Backlog**: Task exists but is set aside due to current volume of work.
 - **To Do**: Task ready to be started but is still waiting for a team member to select it.
 - **In Progress**: Task actively being worked on.
-- **In Review**: Task considered to be done by the assignee and is going through the approval process.
+- **In Review**: Task considered to be done by assignee and is going through the approval process.
 - **Done**: Task is complete.
 - **Cancelled**: Task is no longer needed.
 
@@ -23,11 +23,11 @@ The current status of the task.
 
 Describes the importance of the task.
 
-- **No**: Task has no assigned priority.
 - **Urgent**: Task is critically important and should be done as soon as possible.
-- **High**: Task 
-- **Medium**: Task 
-- **Low**: Task still needs to be completed but can wait.
+- **High**: Task is very important and can block progress.
+- **Medium**: Task has a potential to block progress.
+- **Low**: Task is of minor importance.
+- **No Priority**: Task has no assigned priority.
 
 ### Labels
 
@@ -47,7 +47,7 @@ When the task is due. You can specify both a date and a time.
 
 ### Effort
 
-Estimated effort needed to complete the task. Squared uses the <a href="https://www.mountaingoatsoftware.com/blog/why-the-fibonacci-sequence-works-well-for-estimating" target="_blank">Fibonacci sequence</a> to map effort to a number. Higher values represent an exponential increasing complexity.
+Estimated effort needed to complete the task. Squared estimates using the <a href="https://www.mountaingoatsoftware.com/blog/why-the-fibonacci-sequence-works-well-for-estimating" target="_blank">Fibonacci sequence</a>. Higher values represent an exponential increase in complexity.
 
 ### Assignee
 
@@ -55,6 +55,6 @@ The team member assigned to the task. At this time, only one team member can be 
 
 ## Subtasks
 
-More involved tasks can be further broken down by creating subtasks. Subtasks share the same properties as regular tasks but are directly tied to their parent task.
+More involved tasks can be further broken down by creating subtasks. Subtasks share the same properties as regular tasks but are directly tied to their parent task. Different team members can be assigned to each subtask.
 
 ## 
