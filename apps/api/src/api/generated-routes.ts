@@ -9,36 +9,16 @@ import type { Route } from "./route";
 import * as $e36540 from "./filter/[filterId]";
 import * as $8b611e from "./integration/github/oauth";
 import * as $bbf840 from "./integration/github/webhook";
-import * as $d8d9aa from "./user/[userId]";
-import * as $bd3df0 from "./user/[userId]/avatar";
-import * as $31d753 from "./user/[userId]/notification";
-import * as $f96059 from "./user/[userId]/repositories";
 import * as $0c244a from "./workspace/[workspaceId]/filter";
 import * as $c29ed4 from "./workspace/[workspaceId]/label";
-import * as $2d5459 from "./workspace/[workspaceId]/user";
 
-export type AllRouteDeps = Parameters<typeof $2d5459.createRoute>[0] &
-	Parameters<typeof $c29ed4.createRoute>[0] &
+export type AllRouteDeps = Parameters<typeof $c29ed4.createRoute>[0] &
 	Parameters<typeof $0c244a.createRoute>[0] &
-	Parameters<typeof $f96059.createRoute>[0] &
-	Parameters<typeof $31d753.createRoute>[0] &
-	Parameters<typeof $d8d9aa.createRoute>[0] &
-	Parameters<typeof $bd3df0.createRoute>[0] &
 	Parameters<typeof $bbf840.createRoute>[0] &
 	Parameters<typeof $8b611e.createRoute>[0] &
 	Parameters<typeof $e36540.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
-	{
-		type Params = { workspaceId: string };
-		const r: Route<Params> = $2d5459.createRoute(deps);
-
-		router.get("/api/workspace/:workspaceId/user", toQueryHandler(r.GET));
-		router.post("/api/workspace/:workspaceId/user", toMutationHandler(r.POST));
-		router.put("/api/workspace/:workspaceId/user", toMutationHandler(r.PUT));
-		router.delete("/api/workspace/:workspaceId/user", toQueryHandler(r.DELETE));
-	}
-
 	{
 		type Params = { workspaceId: string };
 		const r: Route<Params> = $c29ed4.createRoute(deps);
@@ -66,46 +46,6 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 			"/api/workspace/:workspaceId/filter",
 			toQueryHandler(r.DELETE),
 		);
-	}
-
-	{
-		type Params = { userId: string };
-		const r: Route<Params> = $f96059.createRoute(deps);
-
-		router.get("/api/user/:userId/repositories", toQueryHandler(r.GET));
-		router.post("/api/user/:userId/repositories", toMutationHandler(r.POST));
-		router.put("/api/user/:userId/repositories", toMutationHandler(r.PUT));
-		router.delete("/api/user/:userId/repositories", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = { userId: string };
-		const r: Route<Params> = $31d753.createRoute(deps);
-
-		router.get("/api/user/:userId/notification", toQueryHandler(r.GET));
-		router.post("/api/user/:userId/notification", toMutationHandler(r.POST));
-		router.put("/api/user/:userId/notification", toMutationHandler(r.PUT));
-		router.delete("/api/user/:userId/notification", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = { userId: string };
-		const r: Route<Params> = $d8d9aa.createRoute(deps);
-
-		router.get("/api/user/:userId", toQueryHandler(r.GET));
-		router.post("/api/user/:userId", toMutationHandler(r.POST));
-		router.put("/api/user/:userId", toMutationHandler(r.PUT));
-		router.delete("/api/user/:userId", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = { userId: string };
-		const r: Route<Params> = $bd3df0.createRoute(deps);
-
-		router.get("/api/user/:userId/avatar", toQueryHandler(r.GET));
-		router.post("/api/user/:userId/avatar", toMutationHandler(r.POST));
-		router.put("/api/user/:userId/avatar", toMutationHandler(r.PUT));
-		router.delete("/api/user/:userId/avatar", toQueryHandler(r.DELETE));
 	}
 
 	{

@@ -18,7 +18,7 @@ export type FilterCondition = {
 		| "greaterThan"
 		| "lessThan"
 		| "arrayIncludesAll"
-		| "arrayIncludesAny"; // Add more operators as needed
+		| "arrayIncludesAny";
 };
 
 export type SavedFilter = Omit<SavedFilterType, "filter"> & {

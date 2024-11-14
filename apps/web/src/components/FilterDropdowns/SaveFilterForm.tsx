@@ -144,7 +144,6 @@ export function SaveFilterForm({
 					filter: currentFilters,
 					type: "TEAM",
 					teamId: team.id,
-					workspaceId: workspace?.id,
 					authorId: user?.id,
 				});
 				toast({
