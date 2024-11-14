@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WorkspaceLayoutWrapper from "./workspaceLayout-wrapper";
+import WorkspaceLayoutWrapper from "./WorkspaceLayoutWrapper";
 
 export const metadata: Metadata = {
 	title: "Workspace",

@@ -72,7 +72,6 @@ app.use(createErrorHandler({ log: logger }));
 const router = express.Router();
 
 // Create the API router
-// @ts-expect-error: The PrismaClient is passed as a dependency to the routes
 createApiRouter(router, { prisma });
 
 // Use the router
