@@ -5,33 +5,13 @@ import { setupSwagger } from "../../swagger";
 import { toMutationHandler, toQueryHandler } from "./route";
 import type { Route } from "./route";
 
-import * as $e36540 from "./filter/[filterId]";
 import * as $8b611e from "./integration/github/oauth";
 import * as $bbf840 from "./integration/github/webhook";
-import * as $0c244a from "./workspace/[workspaceId]/filter";
 
-export type AllRouteDeps = Parameters<typeof $0c244a.createRoute>[0] &
-	Parameters<typeof $bbf840.createRoute>[0] &
-	Parameters<typeof $8b611e.createRoute>[0] &
-	Parameters<typeof $e36540.createRoute>[0];
+export type AllRouteDeps = Parameters<typeof $bbf840.createRoute>[0] &
+	Parameters<typeof $8b611e.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
-	{
-		type Params = { workspaceId: string };
-		const r: Route<Params> = $0c244a.createRoute(deps);
-
-		router.get("/api/workspace/:workspaceId/filter", toQueryHandler(r.GET));
-		router.post(
-			"/api/workspace/:workspaceId/filter",
-			toMutationHandler(r.POST),
-		);
-		router.put("/api/workspace/:workspaceId/filter", toMutationHandler(r.PUT));
-		router.delete(
-			"/api/workspace/:workspaceId/filter",
-			toQueryHandler(r.DELETE),
-		);
-	}
-
 	{
 		type Params = {};
 		const r: Route<Params> = $bbf840.createRoute(deps);
@@ -50,16 +30,6 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 		router.post("/api/integration/github/oauth", toMutationHandler(r.POST));
 		router.put("/api/integration/github/oauth", toMutationHandler(r.PUT));
 		router.delete("/api/integration/github/oauth", toQueryHandler(r.DELETE));
-	}
-
-	{
-		type Params = { filterId: string };
-		const r: Route<Params> = $e36540.createRoute(deps);
-
-		router.get("/api/filter/:filterId", toQueryHandler(r.GET));
-		router.post("/api/filter/:filterId", toMutationHandler(r.POST));
-		router.put("/api/filter/:filterId", toMutationHandler(r.PUT));
-		router.delete("/api/filter/:filterId", toQueryHandler(r.DELETE));
 	}
 
 	// Setup Swagger documentation
