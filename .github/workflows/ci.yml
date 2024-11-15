@@ -169,7 +169,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
       - name: Run tests
-        run: pnpm run test:ci
+        run: pnpm run --filter=api test:ci
         env:
           DATABASE_URL: postgresql://squared:squared@localhost:5433/squared-test
       - name: Build API

@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { afterAll, beforeAll, beforeEach } from "@jest/globals";
 import { PrismaClient } from "@squared/db";
 import dotenv from "dotenv";
 
@@ -6,27 +7,50 @@ dotenv.config({ path: ".env.test" });
 
 const prisma = new PrismaClient();
 
+const waitForDatabase = async (retries = 5, delay = 2000) => {
+	for (let i = 0; i < retries; i++) {
+		try {
+			await prisma.$queryRaw`SELECT 1`;
+			console.log("Database is ready");
+			return;
+		} catch {
+			console.log(`Attempt ${i + 1}: Database not ready, retrying...`);
+			await new Promise((resolve) => setTimeout(resolve, delay));
+		}
+	}
+	throw new Error("Database connection failed after multiple attempts");
+};
+
 beforeAll(async () => {
-	// Start the test database
-	execSync("pnpm run --filter=@squared/seed docker:db", { stdio: "inherit" });
+	try {
+		// Start the test database
+		execSync("pnpm run --filter=@squared/seed docker:db", { stdio: "inherit" });
 
-	// Wait for the database to be ready
-	await new Promise((resolve) => setTimeout(resolve, 5000));
+		// Wait for the database to be ready
+		await waitForDatabase();
 
-	// Run migrations
-	execSync("pnpm run --filter=@squared/db db:push", { stdio: "inherit" });
+		// Run migrations
+		execSync("pnpm run --filter=@squared/db db:push", { stdio: "inherit" });
 
-	// Seed the database
-	execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
-});
+		// Seed the database
+		execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
+	} catch (error) {
+		console.error("Error setting up test environment:", error);
+		throw error;
+	}
+}, 60000); // Increase timeout to 60 seconds
 
 afterAll(async () => {
-	await prisma.$disconnect();
+	try {
+		await prisma.$disconnect();
 
-	// Stop the test database
-	execSync("pnpm run --filter=@squared/seed docker:db:down", {
-		stdio: "inherit",
-	});
+		// Stop the test database
+		execSync("pnpm run --filter=@squared/seed docker:db:down", {
+			stdio: "inherit",
+		});
+	} catch (error) {
+		console.error("Error tearing down test environment:", error);
+	}
 });
 
 beforeEach(async () => {
