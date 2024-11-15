@@ -23,6 +23,7 @@ import { useCreateTask } from "@/hooks/useCreateTask";
 import { useModalStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, LayoutGrid } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DateDropdownButton } from "./DateDropdownButton";
@@ -39,7 +40,21 @@ export const NewIssueModal = () => {
 		useModalStore((state) => state);
 	const { createTask, isLoading, error } = useCreateTask();
 
-	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
+	const {
+		status,
+		priority,
+		dueDate,
+		effortEstimate,
+		labels,
+		title,
+		description,
+	} = newIssueData;
+
+	// pre-populate title and description fields if duplicating
+	useEffect(() => {
+		if (title) form.setValue("title", title);
+		if (description) form.setValue("description", description);
+	}, [showNewIssue]);
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
