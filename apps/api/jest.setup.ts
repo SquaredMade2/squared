@@ -1,5 +1,4 @@
 import { execSync } from "node:child_process";
-import { afterAll, beforeAll, beforeEach } from "@jest/globals";
 import { PrismaClient } from "@squared/db";
 import dotenv from "dotenv";
 
@@ -38,7 +37,7 @@ beforeAll(async () => {
 		console.error("Error setting up test environment:", error);
 		throw error;
 	}
-}, 60000); // Increase timeout to 60 seconds
+}, 120000); // Increase timeout to 120 seconds
 
 afterAll(async () => {
 	try {
@@ -51,7 +50,7 @@ afterAll(async () => {
 	} catch (error) {
 		console.error("Error tearing down test environment:", error);
 	}
-});
+}, 30000); // Add a timeout for afterAll
 
 beforeEach(async () => {
 	// Clean up the database before each test
