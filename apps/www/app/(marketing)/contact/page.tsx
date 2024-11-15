@@ -1,7 +1,5 @@
 import { Background } from "@/components/background";
 import { ContactForm } from "@/components/contact";
-// import { FeaturedTestimonials } from "@/components/featured-testimonials";
-// import { HorizontalGradient } from "@/components/horizontal-gradient";
 // import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -18,27 +16,22 @@ export default function ContactPage() {
 				<Background />
 				<ContactForm />
 				<div className="relative w-full z-20 hidden md:flex border-l border-neutral-100 dark:border-neutral-900 overflow-hidden items-center justify-center">
-					<div className="max-w-sm mx-auto">
-						{/* <FeaturedTestimonials /> */}
-						{/* <p
+					{/* <div className="max-w-sm mx-auto">
+						<p
 							className={cn(
 								"font-semibold text-xl text-center text-muted-foreground",
 							)}
 						>
 							Squared is used by thousands of users
-						</p> */}
-						{/* <p
+						</p>
+						<p
 							className={cn(
 								"font-normal text-base text-center text-neutral-500 dark:text-neutral-200 mt-8",
 							)}
 						>
 							Need help or want to find out more? Send us an email!
-						</p> */}
-					</div>
-					{/* <HorizontalGradient className="top-20" />
-				<HorizontalGradient className="bottom-20" />
-				<HorizontalGradient className="-right-80 transform rotate-90 inset-y-0 h-full scale-x-150" />
-				<HorizontalGradient className="-left-80 transform rotate-90 inset-y-0 h-full scale-x-150" /> */}
+						</p>
+					</div> */}
 				</div>
 			</div>
 		</div>
