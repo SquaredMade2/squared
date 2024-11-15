@@ -15,7 +15,7 @@ export function Pricing() {
 
 	return (
 		<div className="relative">
-			<div className="flex items-center justify-center bg-neutral-100 dark:bg-background-darkAccent  w-fit mx-auto mb-12 rounded-2xl overflow-hidden p-2">
+			<div className="flex items-center justify-center bg-neutral-100 dark:bg-background  w-fit mx-auto mb-12 rounded-2xl overflow-hidden p-2">
 				{tabs.map((tab) => (
 					<button
 						key={tab.value}

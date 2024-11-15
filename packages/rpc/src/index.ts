@@ -331,5 +331,8 @@ function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
 	if (schema instanceof z.ZodVoid) {
 		return { type: "void" };
 	}
+	if (schema instanceof z.ZodNull) {
+		return { type: "null" };
+	}
 	return { type: "unknown" };
 }

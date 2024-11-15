@@ -1,21 +1,14 @@
-import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import type { Task } from "@squared/db";
 import { createStore } from "zustand/vanilla";
-import type { ApiReturnType } from "../interfaces";
-import { checkCondition, parseFilter } from "./helpers";
+import { checkCondition } from "./helpers";
 import type {
 	FilterCondition,
-	FilterResponse,
 	FilterState,
 	FilterStore,
 	SavedFilter,
 } from "./interfaces";
 export * from "./interfaces";
 export * from "./store";
-
-const apiString = (path: string) =>
-	`${process.env.NEXT_PUBLIC_SERVER}/api/filter/${path}`;
 
 export const createFilterStore = (
 	initState: FilterState = {
@@ -127,99 +120,21 @@ export const createFilterStore = (
 			//Convert the map back into an array of FilterCondition
 			return Array.from(filterMap.values());
 		},
-		saveFilter: async (
-			filter: Partial<SavedFilter>,
-		): Promise<FilterResponse> => {
-			try {
-				const filterId = uuidv4();
-				const { data: response }: { data: ApiReturnType<SavedFilterType> } =
-					await axios.post(apiString(filterId), filter);
-
-				const { data: newFilter } = response;
-				if (!newFilter) {
-					return {
-						filter: null,
-						message: "Failed to save filter",
-						variant: "destructive",
-					};
-				}
-				const parsedFilter = parseFilter(newFilter);
-				const currentSavedFilters = get().savedFilters;
-
-				set({ savedFilters: [...currentSavedFilters, parsedFilter] });
-
-				return {
-					filter: parsedFilter?.filter || null,
-					message: response.message,
-					variant: response.variant,
-				};
-			} catch (error) {
-				return {
-					filter: null,
-					message: error instanceof Error ? error.message : "Unknown error",
-					variant: "destructive",
-				};
-			}
+		saveFilter: (filter: SavedFilter): void =>
+			set((state) => ({
+				savedFilters: [...state.savedFilters, filter],
+			})),
+		setSavedFilters: (savedFilters): void => set({ savedFilters }),
+		updateSavedFilter: (filter: SavedFilter): void => {
+			set((state) => ({
+				savedFilters: state.savedFilters.map((t) =>
+					t.id === filter.id ? filter : t,
+				),
+			}));
 		},
-		getSavedFilters: async (groupId: string): Promise<SavedFilter[]> => {
-			try {
-				const { data: response }: { data: ApiReturnType<SavedFilterType[]> } =
-					await axios.get(apiString(groupId));
-				const { data: filters } = response;
-				if (!filters) {
-					return [];
-				}
-				const parsedFilters = filters.map(parseFilter);
-				set({ savedFilters: parsedFilters });
-
-				return parsedFilters;
-			} catch {
-				console.error("Error fetching saved filters");
-				return [];
-			}
-		},
-		updateSavedFilter: async (
-			filterId: string,
-			filter: Partial<SavedFilter>,
-		): Promise<FilterResponse> => {
-			try {
-				const { data: response }: { data: ApiReturnType<SavedFilterType> } =
-					await axios.put(apiString(filterId), filter);
-				const { data: filters } = response;
-
-				if (!filters) {
-					return {
-						filter: null,
-						message: "Failed to update filter",
-						variant: "destructive",
-					};
-				}
-				const parsedFilter = parseFilter(filters);
-				const currentSavedFilters = get().savedFilters;
-				set({
-					savedFilters: currentSavedFilters.map((f) =>
-						f.id === filterId ? parsedFilter : f,
-					),
-				});
-
-				return {
-					filter: parsedFilter.filter,
-					message: response.message,
-					variant: response.variant,
-				};
-			} catch (error) {
-				return {
-					filter: null,
-					message: error instanceof Error ? error.message : "Unknown error",
-					variant: "destructive",
-				};
-			}
-		},
-		deleteSavedFilter: async (filterId): Promise<void> => {
-			const response = await axios.delete(apiString(filterId));
-			if (response.status === 200) {
-				set({ currentFilters: [] });
-			}
-		},
+		deleteSavedFilter: (filterId) =>
+			set((state) => ({
+				savedFilters: state.savedFilters.filter((t) => t.id !== filterId),
+			})),
 	}));
 };

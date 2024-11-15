@@ -26,6 +26,7 @@ import {
 	useWorkspaceStore,
 } from "@/store";
 import { TODO } from "@squared/context";
+import type { Workspace } from "@squared/db";
 import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -35,8 +36,7 @@ import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
-function SidebarContent() {
-	const { workspace } = useWorkspaceStore((state) => state);
+function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const { teams, setTeams, team } = useTeamStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const { setShowCommand } = useModalStore((state) => state);
@@ -136,9 +136,7 @@ function SidebarContent() {
 }
 
 export function SidebarNav() {
-	const workspace = useWorkspaceStore((state) => state.workspace);
-
-	if (!workspace) return null;
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	return (
 		<TooltipProvider delayDuration={0}>
@@ -147,7 +145,7 @@ export function SidebarNav() {
 					collapsible="icon"
 					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
 				>
-					<SidebarContent />
+					<SidebarContent workspace={workspace} />
 				</Sidebar>
 				<ToggleSidebarButton />
 			</SidebarProvider>

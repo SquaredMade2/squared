@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { filterService } from "@/lib/services";
 import {
 	useFilterStore,
 	useTeamStore,
@@ -22,6 +23,7 @@ import type { SavedFilter } from "@/store/filters";
 import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
 import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -119,34 +121,42 @@ export function SaveFilterForm({
 				const newFilters = mergeFilters(currentFilters, currentSavedFilter.id);
 				// edit existing view
 				if (type === "edit") {
-					const response = await updateSavedFilter(currentSavedFilter.id, {
-						name: values.title,
-						description: values.description ?? null,
-						filter: newFilters,
-					});
+					updateSavedFilter(
+						await filterService.updateFilter(TODO, {
+							filterId: currentSavedFilter.id,
+							filters: {
+								name: values.title,
+								description: values.description ?? null,
+								filter: newFilters,
+							},
+						}),
+					);
 					toast({
-						title: response.message,
-						variant: response.variant,
+						title: "Filter Updated Successfully",
 					});
 					// create new view from existing view
-				} else if (type === "new") {
-					await saveFilter({
-						name: values.title,
-						description: values.description ?? null,
-						filter: newFilters,
-					});
+				} else if (type === "new" && user) {
+					saveFilter(
+						await filterService.createFilter(TODO, {
+							name: values.title,
+							description: values.description ?? null,
+							filter: newFilters,
+							authorId: user.id,
+							teamId: team.id,
+						}),
+					);
 				}
 				//create new view
-			} else if (team) {
-				await saveFilter({
-					name: values.title,
-					description: values.description ?? null,
-					filter: currentFilters,
-					type: "TEAM",
-					teamId: team.id,
-					workspaceId: workspace?.id,
-					authorId: user?.id,
-				});
+			} else if (team && user) {
+				saveFilter(
+					await filterService.createFilter(TODO, {
+						name: values.title,
+						description: values.description ?? null,
+						filter: currentFilters,
+						teamId: team.id,
+						authorId: user.id,
+					}),
+				);
 				toast({
 					title: "Filter Saved Successfully",
 				});
