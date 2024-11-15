@@ -12,8 +12,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 
-import { IconBrandLinkedin } from "@tabler/icons-react";
-import Link from "next/link";
 import { Button } from "./button";
 
 const formSchema = z.object({
@@ -60,168 +58,131 @@ export function ContactForm() {
 		} catch {}
 	}
 
-	const socials = [
-		// {
-		//   title: "twitter",
-		//   href: "https://twitter.com/mannupaaji",
-		//   icon: (
-		//     <IconBrandX className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-		//   ),
-		// },
-		// {
-		//   title: "github",
-		//   href: "https://github.com/manuarora700",
-		//   icon: (
-		//     <IconBrandGithub className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-		//   ),
-		// },
-		{
-			// todo change to Squared LinkedIn
-			title: "linkedin",
-			href: "https://linkedin.com/manuarora28",
-			icon: (
-				<IconBrandLinkedin className="h-5 w-5 text-muted dark:text-muted-dark hover:text-black" />
-			),
-		},
-	];
-
 	return (
 		<Form {...form}>
-			<div className="flex relative z-20 items-center w-full justify-center px-4 py-4 lg:py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-card">
-				<div className="mx-auto w-full max-w-md">
+			<div className="mx-auto w-full max-w-xl z-20 mt-28 mr-8">
+				<div>
+					<h1 className="mt-8 text-4xl font-bold leading-9 tracking-tight text-black dark:text-white">
+						Contact Us
+					</h1>
+					<p className="mt-4 text-muted-foreground text-sm max-w-sm">
+						We'd love to hear from you! Send us a message, and we'll respond as
+						soon as possible.
+					</p>
+				</div>
+
+				<div className="py-10">
 					<div>
-						<h1 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
-							Contact Us
-						</h1>
-						<p className="mt-4 text-muted-foreground text-sm max-w-sm">
-							Please reach out to us and we will get back to you at the speed of
-							light.
-						</p>
-					</div>
+						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+							<FormField
+								control={form.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<label
+											htmlFor="name"
+											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+										>
+											Full Name
+										</label>
+										<FormControl>
+											<div className="mt-2">
+												<input
+													id="name"
+													type="name"
+													placeholder="Full Name"
+													className="block w-full px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white dark:bg-background-darkAccent bg-neutral-100"
+													{...field}
+												/>
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<label
+											htmlFor="email"
+											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+										>
+											Email address
+										</label>
+										<FormControl>
+											<div className="mt-2">
+												<input
+													id="email"
+													type="email"
+													placeholder="Email"
+													className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white \"
+													{...field}
+												/>
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="company"
+								render={({ field }) => (
+									<FormItem>
+										<label
+											htmlFor="company"
+											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+										>
+											Company
+										</label>
+										<FormControl>
+											<div className="mt-2">
+												<input
+													id="company"
+													type="company"
+													placeholder="Company"
+													className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+													{...field}
+												/>
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="message"
+								render={({ field }) => (
+									<FormItem>
+										<label
+											htmlFor="message"
+											className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
+										>
+											Message
+										</label>
+										<FormControl>
+											<div className="mt-2">
+												<textarea
+													rows={5}
+													id="message"
+													placeholder="Enter your message here"
+													className="block w-full bg-neutral-100 dark:bg-background-darkAccent px-4 rounded-xl border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
+													{...field}
+												/>
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-					<div className="py-10">
-						<div>
-							<form
-								onSubmit={form.handleSubmit(onSubmit)}
-								className="space-y-6"
-							>
-								<FormField
-									control={form.control}
-									name="name"
-									render={({ field }) => (
-										<FormItem>
-											<label
-												htmlFor="name"
-												className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-											>
-												Full Name
-											</label>
-											<FormControl>
-												<div className="mt-2">
-													<input
-														id="name"
-														type="name"
-														placeholder="John Doe"
-														className="block w-full px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-														{...field}
-													/>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="email"
-									render={({ field }) => (
-										<FormItem>
-											<label
-												htmlFor="email"
-												className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-											>
-												Email address
-											</label>
-											<FormControl>
-												<div className="mt-2">
-													<input
-														id="email"
-														type="email"
-														placeholder="hello@johndoe.com"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-														{...field}
-													/>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="company"
-									render={({ field }) => (
-										<FormItem>
-											<label
-												htmlFor="company"
-												className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-											>
-												Company
-											</label>
-											<FormControl>
-												<div className="mt-2">
-													<input
-														id="company"
-														type="company"
-														placeholder="Squared Made"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-														{...field}
-													/>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="message"
-									render={({ field }) => (
-										<FormItem>
-											<label
-												htmlFor="message"
-												className="block text-sm font-medium leading-6 text-neutral-700 dark:text-muted-dark"
-											>
-												message
-											</label>
-											<FormControl>
-												<div className="mt-2">
-													<textarea
-														rows={5}
-														id="message"
-														placeholder="Enter your message here"
-														className="block w-full bg-white dark:bg-background-dark px-4 rounded-md border-0 py-1.5  shadow-aceternity text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-														{...field}
-													/>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-
-								<div>
-									<Button className="w-full">Submit</Button>
-								</div>
-							</form>
-						</div>
-					</div>
-					<div className="flex items-center justify-center space-x-4 py-4">
-						{socials.map((social) => (
-							<Link href={social.href} key={social.title}>
-								{social.icon}
-							</Link>
-						))}
+							<div>
+								<Button className="w-full rounded-xl">Submit</Button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
