@@ -1,6 +1,5 @@
 import { Background } from "@/components/background";
 import { ContactForm } from "@/components/contact";
-// import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,24 +14,6 @@ export default function ContactPage() {
 			<div className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 relative overflow-hidden">
 				<Background />
 				<ContactForm />
-				<div className="relative w-full z-20 hidden md:flex border-l border-neutral-100 dark:border-neutral-900 overflow-hidden items-center justify-center">
-					{/* <div className="max-w-sm mx-auto">
-						<p
-							className={cn(
-								"font-semibold text-xl text-center text-muted-foreground",
-							)}
-						>
-							Squared is used by thousands of users
-						</p>
-						<p
-							className={cn(
-								"font-normal text-base text-center text-neutral-500 dark:text-neutral-200 mt-8",
-							)}
-						>
-							Need help or want to find out more? Send us an email!
-						</p>
-					</div> */}
-				</div>
 			</div>
 		</div>
 	);
