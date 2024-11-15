@@ -172,6 +172,7 @@ jobs:
         run: pnpm run --filter=api test:ci
         env:
           POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5433/squared-test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
       - name: Build API
         run: pnpm --filter=api build
 
