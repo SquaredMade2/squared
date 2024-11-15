@@ -1,14 +1,14 @@
-import React, { type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Card,
-	CardHeader,
-	CardTitle,
 	CardContent,
 	CardFooter,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertTriangle } from "lucide-react";
+import React, { type ErrorInfo, type ReactNode } from "react";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -20,7 +20,7 @@ interface ErrorBoundaryState {
 	errorInfo: ErrorInfo | null;
 }
 
-class ErrorBoundary extends React.Component<
+export default class ErrorBoundary extends React.Component<
 	ErrorBoundaryProps,
 	ErrorBoundaryState
 > {
@@ -45,6 +45,14 @@ class ErrorBoundary extends React.Component<
 		console.error("Current URL:", window.location.href);
 		console.error("User Agent:", navigator.userAgent);
 	}
+
+	handleGoBack = () => {
+		window.history.back();
+		// Add a small delay before reloading to ensure the navigation occurs
+		setTimeout(() => {
+			window.location.reload();
+		}, 100);
+	};
 
 	render() {
 		if (this.state.hasError) {
@@ -92,7 +100,7 @@ class ErrorBoundary extends React.Component<
 							</ScrollArea>
 						</CardContent>
 						<CardFooter className="flex justify-end space-x-4">
-							<Button onClick={() => window.history.back()} variant="outline">
+							<Button onClick={this.handleGoBack} variant="outline">
 								Go Back
 							</Button>
 							<Button onClick={() => window.location.reload()}>
@@ -107,5 +115,3 @@ class ErrorBoundary extends React.Component<
 		return this.props.children;
 	}
 }
-
-export default ErrorBoundary;

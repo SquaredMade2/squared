@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { Logo } from "./Logo";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Linkedin, Mail, Phone } from "lucide-react";
+import Link from "next/link";
+import { Logo } from "./Logo";
 
 export const Footer = () => {
 	const links = [
@@ -20,20 +20,20 @@ export const Footer = () => {
 			href: "/contact",
 		},
 	];
-	const legal: { name: string; href: string }[] = [
-		// {
-		//  name: "Privacy Policy",
-		//  href: "#",
-		// },
-		// {
-		//  name: "Terms of Service",
-		//  href: "#",
-		// },
-		// {
-		//  name: "Refund Policy",
-		//  href: "#",
-		// },
-	];
+	// const legal: { name: string; href: string }[] = [
+	// {
+	//  name: "Privacy Policy",
+	//  href: "#",
+	// },
+	// {
+	//  name: "Terms of Service",
+	//  href: "#",
+	// },
+	// {
+	//  name: "Refund Policy",
+	//  href: "#",
+	// },
+	// ];
 	const socials = [
 		// {
 		//  name: "Twitter",
@@ -52,7 +52,7 @@ export const Footer = () => {
 	return (
 		<footer className="relative bg-card text-foreground">
 			<div className="container max-w-7xl mx-auto px-4 py-12">
-				<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 					<div className="space-y-4">
 						<Logo className="justify-start" />
 						<p className="text-sm text-muted-foreground">
@@ -91,18 +91,17 @@ export const Footer = () => {
 									</Link>
 								</li>
 							))}
-							{/* Commented link kept for future use */}
-							{/* <li>
-                <Link
-                  href="/blog"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Blog
-                </Link>
-              </li> */}
+							<li>
+								<Link
+									href="/blog"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									Blog
+								</Link>
+							</li>
 						</ul>
 					</div>
-					<div>
+					{/* <div>
 						<h3 className="font-semibold mb-4">Legal</h3>
 						<ul className="space-y-2">
 							{legal.map((link) => (
@@ -115,33 +114,32 @@ export const Footer = () => {
 									</Link>
 								</li>
 							))}
-							{/* Commented legal links kept for future use */}
-							{/* <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Refund Policy
-                </Link>
-              </li> */}
+							<li>
+								<Link
+									href="#"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									Privacy Policy
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="#"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									Terms of Service
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="#"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									Refund Policy
+								</Link>
+							</li>
 						</ul>
-					</div>
+					</div> */}
 					<div>
 						<h3 className="font-semibold mb-4">Stay Updated</h3>
 						<p className="text-sm text-muted-foreground mb-4">

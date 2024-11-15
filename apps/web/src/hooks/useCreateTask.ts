@@ -1,36 +1,33 @@
-import { useState } from "react";
+import { taskService } from "@/lib/services";
 import {
-	useAuthStore,
-	useTeamStore,
-	useWorkspaceStore,
 	useTaskStore,
+	useTeamStore,
+	useUserStore,
+	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
+import { useState } from "react";
 
 export const useCreateTask = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { user } = useAuthStore((state) => state);
-	const { currentTeam } = useTeamStore((state) => state);
-	const { currentWorkspace, setCurrentWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
-	const { addTask } = useTaskStore((state) => state);
+	const user = useUserStore((state) => state.user);
+	const { team } = useTeamStore((state) => state);
+	const { createTask: addTask } = useTaskStore((state) => state);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 
 	const createTask = async (input: Partial<Task>) => {
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			if (!currentWorkspace) {
+			if (!workspace) {
 				throw new Error("Error authenticating workspace");
 			}
-			if (!currentTeam) {
+			if (!team) {
 				throw new Error("Error authenticating team");
-			}
-			if (!user) {
-				throw new Error("Error authenticating user");
 			}
 
 			const { transformedInput: transformedTitle } = transformingMentionInputs(
@@ -39,7 +36,9 @@ export const useCreateTask = () => {
 			const { transformedInput: transformedDescriptionInput } =
 				transformingMentionInputs(input.description ?? "");
 
-			const newTask: Partial<Task> = {
+			if (!user) throw new Error("No user found");
+
+			const newTask = {
 				...input,
 				authorId: user.id,
 				title: transformedTitle,
@@ -49,26 +48,23 @@ export const useCreateTask = () => {
 				labels: input.labels || [],
 				dueDate: input.dueDate ?? null,
 				effortEstimate: input.effortEstimate ?? null,
-				teamId: currentTeam.id,
-				workspaceId: currentWorkspace.id,
+				teamId: team.id,
+				workspaceId: workspace.id,
 			};
 
-			const {
-				task: taskCreatedResponse,
-				message,
-				variant,
-			} = await addTask(newTask);
+			const task = await taskService.createTask(TODO, newTask);
 
-			if (!taskCreatedResponse) {
+			if (!task) {
 				throw new Error("Failed to create task");
 			}
+			addTask(task);
 
-			setCurrentWorkspace({
-				...currentWorkspace,
-				tasksCreated: currentWorkspace.tasksCreated + 1,
+			setWorkspace({
+				...workspace,
+				tasksCreated: workspace.tasksCreated + 1,
 			});
 
-			return { taskCreatedResponse, message, variant };
+			return task;
 		} catch (err) {
 			setError(
 				err instanceof Error ? err.message : "An unknown error occurred",

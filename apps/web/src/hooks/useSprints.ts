@@ -1,37 +1,52 @@
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useAuthStore, useTeamStore, useWorkspaceStore } from "@/store";
-import type { Sprint, Task, Team, Workspace } from "@squared/db";
+import {
+	sprintService,
+	taskService,
+	teamService,
+	workspaceService,
+} from "@/lib/services";
+import {
+	useSprintStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
-import { sprintService } from "@/lib/services";
+import type { Sprint, Task } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useAuthUser } from "./useAuthUser";
 
-export function useSprints() {
+export function useSprints(sprintId?: string) {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
-	const [workspace, setWorkspace] = useState<Workspace | null>(null);
-	const [team, setTeam] = useState<Team | null>(null);
+	const { setTasks } = useTaskStore((state) => state);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const [sprints, setSprints] = useState<Sprint[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [sprintTasks, setSprintTasks] = useState<Task[]>([]);
 
-	const { getWorkspace } = useWorkspaceStore((state) => state);
-	const { getAllTeams, setCurrentSprint, currentSprint } = useTeamStore(
-		(state) => state,
-	);
-	const { user } = useAuthStore((state) => state);
+	const { setSprint, sprint } = useSprintStore((state) => state);
+	const { setTeam, team } = useTeamStore((state) => state);
+	const { user, loading: userLoading } = useAuthUser();
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
 				setLoading(true);
+				if (userLoading) {
+					return;
+				}
 
 				// Fetch workspace data
-				const { workspace, message: workspaceMessage } = await getWorkspace(
-					parseParams(workspaceUrl),
+				const workspace = await workspaceService.getWorkspaceByUrl(
+					context.TODO,
+					{
+						url: parseParams(workspaceUrl),
+					},
 				);
 				if (!workspace) {
-					throw new Error(workspaceMessage || "Workspace not found");
+					throw new Error("Workspace not found");
 				}
 				setWorkspace(workspace);
 
@@ -40,10 +55,11 @@ export function useSprints() {
 				}
 
 				// Fetch team data
-				const teams = await getAllTeams(user.id);
-				const foundTeam = teams.find(
-					(team) => team.identifier === teamIdentifier,
-				);
+
+				const foundTeam = await teamService.getTeamByIdentifier(context.TODO, {
+					identifier: parseParams(teamIdentifier),
+					workspaceId: workspace.id,
+				});
 				if (!foundTeam) {
 					throw new Error("Team not found");
 				}
@@ -57,17 +73,24 @@ export function useSprints() {
 				}
 				setSprints(sprints);
 
-				const foundSprint = sprints.find(
-					(sprint) => sprint.status === "ACTIVE",
-				);
+				const foundSprint = sprintId
+					? sprints.find((sprint) => sprint.id === sprintId)
+					: sprints.find((sprint) => sprint.status === "ACTIVE");
+
 				if (!foundSprint) {
-					throw new Error("No active sprint found");
+					throw new Error("Sprint not found");
 				}
-				const tasks = await sprintService.getSprintTasks(context.TODO, {
-					sprintId: foundSprint.id,
-				});
-				setSprintTasks(tasks);
-				setCurrentSprint(foundSprint);
+				const [sprintTasks, tasks] = await Promise.all([
+					sprintService.getSprintTasks(context.TODO, {
+						sprintId: foundSprint.id,
+					}),
+					taskService.getTeamTasks(context.TODO, {
+						teamId: foundTeam.id,
+					}),
+				]);
+				setTasks(tasks);
+				setSprintTasks(sprintTasks);
+				setSprint(foundSprint);
 
 				setLoading(false);
 			} catch (err) {
@@ -77,15 +100,15 @@ export function useSprints() {
 		}
 
 		fetchData();
-	}, [workspaceUrl, teamIdentifier]);
+	}, [workspaceUrl, teamIdentifier, userLoading]);
 
 	return {
 		workspace,
 		team,
 		sprints,
-		currentSprint,
+		sprint,
 		sprintTasks,
-		setCurrentSprint,
+		setSprint,
 		loading,
 		error,
 	};

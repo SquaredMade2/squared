@@ -1,46 +1,31 @@
 "use client";
 
+import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 } from "../ui/dialog";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import { Loader2 } from "lucide-react";
 
 export const WorkspaceInviteModal = () => {
-	const {
-		currentWorkspace,
-		getWorkspace,
-		setCurrentWorkspace,
-		inviteToWorkspace,
-	} = useWorkspaceStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 	const { showWorkspaceInvite, setShowWorkspaceInvite } = useModalStore(
 		(state) => state,
 	);
-	const params = useParams();
 	const [inviteEmails, setInviteEmails] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { toast } = useToast();
-	useEffect(() => {
-		if (!currentWorkspace) {
-			const { workspaceId } = params;
-			getWorkspace(workspaceId as string).then(({ workspace }) => {
-				if (workspace) {
-					setCurrentWorkspace(workspace);
-				}
-			});
-		}
-	}, [currentWorkspace, getWorkspace, params, setCurrentWorkspace]);
 
 	const handleInvite = async () => {
 		const emails = inviteEmails
@@ -48,12 +33,15 @@ export const WorkspaceInviteModal = () => {
 			.map((email) => email.trim())
 			.filter(Boolean);
 
-		if (!emails.length || !currentWorkspace) return;
+		if (!emails.length || !workspace) return;
 
 		setIsLoading(true);
 
 		try {
-			await inviteToWorkspace(currentWorkspace.id, emails);
+			await workspaceService.inviteToWorkspace(TODO, {
+				workspaceId: workspace.id,
+				email: emails,
+			});
 			setInviteEmails("");
 			setShowWorkspaceInvite(false);
 			toast({
@@ -76,9 +64,9 @@ export const WorkspaceInviteModal = () => {
 				<DialogHeader>
 					<div className="flex gap-2 items-center text-lg">
 						<Avatar>
-							<AvatarImage src={currentWorkspace?.avatarUrl ?? undefined} />
+							<AvatarImage src={workspace?.avatarUrl ?? undefined} />
 							<AvatarFallback className="capitalize">
-								{currentWorkspace?.name
+								{workspace?.name
 									?.split(" ")
 									.map((word) => word[0])
 									.join("")

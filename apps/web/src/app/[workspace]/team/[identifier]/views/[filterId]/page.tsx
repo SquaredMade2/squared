@@ -1,24 +1,26 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useFilterStore, useViewStore } from "@/store";
-import { useEffect, useState } from "react";
-import type { SavedFilter } from "@/store/filters";
-import type { Task } from "@squared/db";
-import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
+import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
-import { parseParams } from "@/utils/parseParams";
-import { useTeams } from "@/hooks/useTeams";
-import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useGroups } from "@/hooks/useGroups";
+import { useTaskDashboard } from "@/hooks/useTaskDashboard";
+import { useTeams } from "@/hooks/useTeams";
+import { filterService } from "@/lib/services";
+import { useFilterStore, useViewStore } from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
+import type { Task } from "@squared/db";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function FilterViewPage() {
 	const params = useParams();
-	const { currentTeam, loading: teamLoading } = useTeams();
-	const { customFilter, filterTasks, getSavedFilters } = useFilterStore(
+	const { team, loading: teamLoading } = useTeams();
+	const { customFilter, filterTasks, setSavedFilters } = useFilterStore(
 		(state) => state,
 	);
 	const { view, getGridOptions } = useViewStore((state) => state);
@@ -29,9 +31,12 @@ export default function FilterViewPage() {
 	useEffect(() => {
 		const getData = async () => {
 			if (teamLoading) return;
-			if (currentTeam) {
+			if (team) {
 				setIsLoading(true);
-				const filters = await getSavedFilters(currentTeam?.id);
+				const filters = await filterService.getFilters(TODO, {
+					teamId: team.id,
+				});
+				setSavedFilters(filters);
 				const filterId = parseParams(params.filterId);
 				const filterSlug = filterId.split("-").pop();
 				const foundFilter = filters.find((f) =>
@@ -44,7 +49,7 @@ export default function FilterViewPage() {
 			}
 		};
 		getData();
-	}, [params.filterId, currentTeam, teamLoading]);
+	}, [params.filterId, team, teamLoading]);
 
 	const filterTasksWithFilter = (tasks: Task[]) => {
 		if (!filter) {
@@ -54,13 +59,8 @@ export default function FilterViewPage() {
 		return filterTasks(customFilter(tasks, filter.filter));
 	};
 
-	const {
-		loading,
-		authorized,
-		currentWorkspace,
-		teamIdentifier,
-		handleDragEnd,
-	} = useTaskDashboard();
+	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
+		useTaskDashboard();
 
 	const { getGroupedColumns, getTasksForGroup, getHiddenColumns } = useGroups(
 		filterTasksWithFilter,
@@ -74,14 +74,14 @@ export default function FilterViewPage() {
 		);
 	}
 
-	if (!currentWorkspace) return null;
+	if (!workspace) return null;
 	if (!filter) return null;
 
 	return (
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}
-			currentWorkspace={currentWorkspace}
+			currentWorkspace={workspace}
 			teamIdentifier={teamIdentifier}
 			handleDragEnd={handleDragEnd}
 			pageTitle={filter.name}

@@ -1,21 +1,23 @@
-import { useEffect, useState, type ChangeEvent } from "react";
 import MentionInput from "@/components/MentionsInput";
+import { useToast } from "@/components/ui/use-toast";
+import { taskService } from "@/lib/services";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import type { OnChangeHandlerFunc } from "react-mentions";
-import { useToast } from "@/components/ui/use-toast";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
-import { Input } from "../ui/input";
-import { StatusIcon } from "../Icons";
 import Link from "next/link";
-import { formatUrl } from "@/utils/formatting";
+import { type ChangeEvent, useEffect, useState } from "react";
+import type { OnChangeHandlerFunc } from "react-mentions";
+import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export const TaskPageForm = ({ task }: { task: Task }) => {
-	const { updateTask, getTask } = useTaskStore((state) => state);
 	const { users } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { updateTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task.title ?? "");
@@ -44,11 +46,21 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 			updatedTitle !== task.title || updatedDescription !== task.description;
 		if (changeMade && task.id !== undefined) {
 			if (task) {
-				const response = await updateTask(task.id, {
-					title: transformedTitleInput,
-					description: transformedDescriptionInput,
-				});
-				toast(response);
+				try {
+					updateTask(
+						await taskService.updateTask(TODO, {
+							id: task.id,
+							title: transformedTitleInput,
+							description: transformedDescriptionInput,
+						}),
+					);
+					toast({ title: "title updated successfully" });
+				} catch (error) {
+					toast({
+						title: "Error updating task",
+						description: error instanceof Error && error.message,
+					});
+				}
 			}
 		}
 	};
@@ -63,8 +75,17 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 	useEffect(() => {
 		const fetchParentTask = async () => {
 			if (task.parentId) {
-				const { task: parentTaskData } = await getTask(task.parentId);
-				setParentTask(parentTaskData);
+				try {
+					const parentTaskData = await taskService.getTask(TODO, {
+						taskId: task.parentId,
+					});
+					setParentTask(parentTaskData);
+				} catch (error) {
+					toast({
+						title: "Error retrieving task",
+						description: error instanceof Error && error.message,
+					});
+				}
 			}
 		};
 
@@ -95,7 +116,7 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 						<Button variant="ghost" className="py-0 px-1 gap-1">
 							<StatusIcon status={parentTask.status} />
 							<Link
-								href={`/${currentWorkspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
+								href={`/${workspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
 							>
 								{parentTask.identifier} -

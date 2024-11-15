@@ -1,32 +1,52 @@
+import { cn } from "@/utils/cn";
 import type { Priority, Status } from "@squared/db";
 import {
 	AlertTriangle,
+	Archive,
 	ArrowDown,
 	ArrowRight,
 	ArrowUp,
-	CircleDot,
-	Circle,
-	Archive,
 	CheckCircle2,
+	Circle,
+	CircleDot,
 	Eye,
 	HourglassIcon,
 	Inbox,
 	XCircle,
 } from "lucide-react";
 
-export const PriorityIcon = ({ priority }: { priority: Priority }) => {
+export const PriorityIcon = ({
+	priority,
+	className,
+}: { priority: Priority; className?: string }) => {
 	const Icon = () => {
 		switch (priority) {
 			case "low":
-				return <ArrowDown className="size-4 text-blue-500 shrink-0" />;
+				return (
+					<ArrowDown
+						className={cn("size-4 text-blue-500 shrink-0", className)}
+					/>
+				);
 			case "medium":
-				return <ArrowRight className="size-4 text-yellow-500 shrink-0" />;
+				return (
+					<ArrowRight
+						className={cn("size-4 text-yellow-500 shrink-0", className)}
+					/>
+				);
 			case "high":
-				return <ArrowUp className="size-4 text-orange-500 shrink-0" />;
+				return (
+					<ArrowUp
+						className={cn("size-4 text-orange-500 shrink-0", className)}
+					/>
+				);
 			case "urgent":
-				return <AlertTriangle className="size-4 text-destructive shrink-0" />;
+				return (
+					<AlertTriangle
+						className={cn("size-4 text-destructive shrink-0", className)}
+					/>
+				);
 			default:
-				return <CircleDot className="size-4 shrink-0" />;
+				return <CircleDot className={cn("size-4 shrink-0", className)} />;
 		}
 	};
 	return <Icon />;

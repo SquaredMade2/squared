@@ -1,17 +1,17 @@
 "use client";
-import { NewIssueDropDown } from "@/components/new-issue-dropdown";
-import TodoIcon from "@/components/SVG/todo-icon";
 import BacklogIcon from "@/components/SVG/backlog-icon";
 import DoneIcon from "@/components/SVG/done-icon";
 import HighPriority from "@/components/SVG/high-priority";
-import MediumPriority from "@/components/SVG/medium-priority";
-import UrgentPriority from "@/components/SVG/urgent-priority";
 import LowEffort from "@/components/SVG/low-effort";
+import MediumPriority from "@/components/SVG/medium-priority";
+import TodoIcon from "@/components/SVG/todo-icon";
+import UrgentPriority from "@/components/SVG/urgent-priority";
+import { NewIssueDropDown } from "@/components/new-issue-dropdown";
 
 export const SkeletonThree = () => {
 	return (
 		<div className="h-full w-full sm:w-[100%] mx-auto bg-white dark:bg-background-darkSecondary shadow-2xl dark:shadow-white/40 mt-10 group rounded-md">
-			<div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-background-darkAccent dark:via-background-darkAccent to-transparent w-full pointer-events-none z-[11]" />
+			<div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-background dark:via-background to-transparent w-full pointer-events-none z-[11]" />
 
 			<div className="flex flex-1 w-full h-full flex-col space-y-2 ">
 				<div className="flex justify-between border-b dark:border-neutral-700 pb-2 p-4">

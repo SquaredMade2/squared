@@ -1,19 +1,19 @@
-import { z } from "zod";
+import type { Sprint } from "@squared/db";
 import {
 	createRpcHandler,
 	createSchema,
 	createServiceSchema,
 } from "@squared/rpc";
-import type {
-	NextSprintPayload,
-	AddRetrospectivePayload,
-	UpdateRetrospectiveItemPayload,
-	RetrospectiveData,
-	RetroItemReturn,
-	SprintRpc,
-} from "./types";
+import { z } from "zod";
 import { sprintSchema, taskSchema } from "../schema";
-import type { Sprint } from "@squared/db";
+import type {
+	AddRetrospectivePayload,
+	NextSprintPayload,
+	RetroItemReturn,
+	RetrospectiveData,
+	SprintRpc,
+	UpdateRetrospectiveItemPayload,
+} from "./types";
 
 // Define type-safe Zod schemas
 
@@ -58,8 +58,9 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		input: createSchema<NextSprintPayload>()(
 			z.object({
 				teamId: z.string(),
-				movedTasks: z.array(z.string()),
-				sprintData: z.object({ name: z.string() }).optional(),
+				sprintData: z
+					.object({ description: z.string().optional(), name: z.string() })
+					.optional(),
 			}),
 		),
 		output: z.union([

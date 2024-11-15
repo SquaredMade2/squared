@@ -1,14 +1,14 @@
 "use client";
 
-import type { ReactNode } from "react";
 import TopNavBar from "@/components/TopNavBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Clipboard } from "lucide-react";
-import { useAuthStore, useTaskStore, useViewStore } from "@/store";
+import { useTaskStore, useUserStore, useViewStore } from "@/store";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squared/db";
-import { NoTasksNewIssueButton } from "../Modals";
+import { Clipboard } from "lucide-react";
+import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
+import { NoTasksNewIssueButton } from "../Modals";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -30,7 +30,7 @@ export function TaskPageLayout({
 	children,
 }: TaskPageLayoutProps) {
 	const { view } = useViewStore((state) => state);
-	const { user } = useAuthStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { tasks } = useTaskStore((state) => state);
 
 	if (loading) {

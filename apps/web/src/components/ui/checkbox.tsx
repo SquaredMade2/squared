@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import * as CheckboxPrimitive from "@repo/ui/checkbox";
 import { Check } from "lucide-react";
+import * as React from "react";
 
 import { cn } from "@/utils/cn";
 

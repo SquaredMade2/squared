@@ -1,10 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { effortEstimateOptions } from "@/constants/designations";
-import { useTaskStore } from "@/store";
-import { high, medium, low } from "@/components/Svg";
-import { useToast } from "@/components/ui/use-toast";
+import { high, low, medium } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -12,36 +8,35 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ButtonProps } from "./interfaces";
-import { ChevronDown } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { effortEstimateOptions } from "@/lib/constants";
+import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
 import { useTeamStore } from "@/store";
+import { TODO } from "@squared/context";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
-const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
+const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
-	const { currentTeam } = useTeamStore((state) => state);
-	const { updateTask, tasks } = useTaskStore((state) => state);
+	const { team } = useTeamStore((state) => state);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
-	const [localTask, setLocalTask] = useState(currentTask);
+	if (!currentTask) return null;
 
-	useEffect(() => {
-		// Update localTask when currentTask or tasks change
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
-
-	const taskId = localTask?.id ?? "";
+	const { id: taskId } = currentTask;
 
 	const sidebarEffortEstimate = ():
 		| { text: string; value: number }
 		| undefined => {
-		const effortArray = effortEstimateOptions(currentTeam?.effort);
+		const effortArray = effortEstimateOptions(team?.effort);
 
 		const selectedEffortIndex = effortArray.findIndex((efforts) => {
-			return efforts.value === localTask?.effortEstimate;
+			return efforts.value === currentTask?.effortEstimate;
 		});
 
 		return effortArray[selectedEffortIndex];
@@ -54,14 +49,16 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 		newEffortEstimate: Record<string, string | number>,
 	) => {
 		try {
-			await updateTask(taskId, {
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					effortEstimate: newEffortEstimate.value as number,
+				}),
+			);
+			setCurrentTask({
+				...currentTask,
 				effortEstimate: newEffortEstimate.value as number,
 			});
-			setLocalTask((prev) =>
-				prev
-					? { ...prev, effortEstimate: newEffortEstimate.value as number }
-					: prev,
-			);
 		} catch {
 			toast({
 				title: "Error updating effort estimate",
@@ -102,7 +99,7 @@ const EffortEstimateDropdown = ({ currentTask }: ButtonProps) => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{effortEstimateOptions(currentTeam?.effort).map((effortEstimate) => {
+				{effortEstimateOptions(team?.effort).map((effortEstimate) => {
 					const estimateNumber = extractNumber(effortEstimate.text);
 					return (
 						<DropdownMenuItem

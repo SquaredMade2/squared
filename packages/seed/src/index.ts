@@ -1,6 +1,6 @@
-import { PrismaClient, Status, Priority } from "@squared/db";
-import type { Team, User, Workspace } from "@squared/db";
 import { faker } from "@faker-js/faker";
+import { Priority, PrismaClient, Status } from "@squared/db";
+import type { Team, User, Workspace } from "@squared/db";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 import createCustomLogger from "@squared/logger";
@@ -53,6 +53,7 @@ async function seedDB() {
 			for (let i = 0; i < numUsers; i++) {
 				const newUser = await addUser();
 				await addUserToWorkspace(newUser, workspace);
+				await addUserToTeam(newUser, team);
 				users.push(newUser);
 			}
 
@@ -89,6 +90,7 @@ async function addMainUser() {
 			password: hashedPassword,
 			verified: true,
 			onBoarding: false,
+			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
 	});
 	return user;
@@ -98,7 +100,7 @@ async function addUser() {
 	const firstName = faker.person.firstName();
 	const lastName = faker.person.lastName();
 	const fullName = `${firstName} ${lastName}`;
-	const username = faker.internet.userName({ firstName, lastName });
+	const username = faker.internet.username({ firstName, lastName });
 	const email = faker.internet.email({ firstName, lastName });
 	const password = process.env.SEED_PASSWORD || faker.internet.password();
 	const hashedPassword = await hashPassword(password);
@@ -111,6 +113,7 @@ async function addUser() {
 			password: hashedPassword,
 			verified: true,
 			onBoarding: false,
+			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
 	});
 	return user;
@@ -119,6 +122,19 @@ async function addUser() {
 async function addUserToWorkspace(user: User, workspace: Workspace) {
 	await prisma.workspace.update({
 		where: { id: workspace.id },
+		data: {
+			Users: {
+				create: {
+					userId: user.id,
+				},
+			},
+		},
+	});
+}
+
+async function addUserToTeam(user: User, team: Team) {
+	await prisma.team.update({
+		where: { id: team.id },
 		data: {
 			Users: {
 				create: {
@@ -238,7 +254,6 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			identifier: identifier,
 			teamId: team.id,
 			assigneeId: user.id,
-			assigneeName: user.name,
 			labels: randomLabelIds,
 			workspaceId: workspace.id,
 		},

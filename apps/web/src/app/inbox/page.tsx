@@ -1,22 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import {
 	InboxDataTable,
 	InboxSidebar,
 	MobileInboxSwitcher,
 } from "@/components/Inbox";
-import {
-	useAuthStore,
-	useEventStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import IconLeftMenu from "@/components/IconNavbar";
-import type { NotificationType } from "@squared/db";
-import { MobileMenuSheetTrigger } from "@/components/MobileNav";
-import { eventService } from "@/lib/services";
-import { TODO } from "@squared/context";
+import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { eventService, userService } from "@/lib/services";
+import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
+import type { NotificationType } from "@squared/db";
+import { useEffect, useState } from "react";
 
 export type NotificationFilter =
 	| NotificationType
@@ -27,14 +22,15 @@ export type NotificationFilter =
 
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
-	const { workspaces } = useWorkspaceStore((state) => state);
-	const { user } = useAuthStore((state) => state);
+	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
+		(state) => state,
+	);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
-	const [workspace, setWorkspace] = useState<string | null>(null);
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
-	const { getUserAvatars } = useUserStore((state) => state);
+	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
+	const { setUserAvatars, user } = useUserStore((state) => state);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -46,7 +42,8 @@ export default function InboxPage() {
 			}
 		};
 		fetchNotifications();
-	}, [user]);
+	}, [user, setNotifications]);
+
 	useEffect(() => {
 		switch (filterType) {
 			case "ASSIGNED":
@@ -94,7 +91,7 @@ export default function InboxPage() {
 			case "WORKSPACE":
 				setFilteredNotifications(
 					notifications.filter(
-						(n) => n.workspaceId === workspace && !n.dismissed,
+						(n) => n.workspaceId === workspace?.id && !n.dismissed,
 					),
 				);
 				break;
@@ -103,10 +100,13 @@ export default function InboxPage() {
 				setWorkspace(null);
 		}
 	}, [filterType, notifications, workspace, user]);
+
 	useEffect(() => {
 		const fetchAvatars = async () => {
-			if (user) {
-				await getUserAvatars(user.id);
+			if (workspace) {
+				setUserAvatars(
+					await userService.getUserAvatars(TODO, { workspaceId: workspace.id }),
+				);
 			}
 		};
 		fetchAvatars();
@@ -114,34 +114,33 @@ export default function InboxPage() {
 
 	return (
 		<div className="flex w-full">
-			<div className="hidden md:block">
-				<IconLeftMenu />
+			<div className="fixed inset-y-0 z-50 md:relative md:z-0 mt-px">
+				<SidebarNav />
 			</div>
-			<div className="flex flex-col w-full md:ml-14 ml-0">
+			<div className="flex flex-col w-full">
 				<div className="w-full px-4 md:px-8">
 					<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-						<MobileMenuSheetTrigger />
-						<h1 className="text-2xl font-bold">Inbox</h1>
+						<h1 className="text-2xl font-bold ml-4">Inbox</h1>
 					</div>
 					<div className="flex">
 						<InboxSidebar
 							setFilterType={setFilterType}
 							filterType={filterType}
-							setWorkspace={setWorkspace}
+							setWorkspace={setWorkspaceName}
 							readNotifications={notifications.filter(
 								(n) => !n.read || !n.dismissed,
 							)}
 							workspaces={workspaces}
-							workspace={workspace}
+							workspace={workspaceName}
 						/>
 						<div className="flex flex-col gap-4 w-full">
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
 								filterType={filterType}
-								setWorkspace={setWorkspace}
+								setWorkspace={setWorkspaceName}
 								readNotifications={notifications.filter((n) => !n.read)}
 								workspaces={workspaces}
-								workspace={workspace}
+								workspace={workspaceName}
 								filterRead={filterRead}
 								setFilterRead={setFilterRead}
 							/>

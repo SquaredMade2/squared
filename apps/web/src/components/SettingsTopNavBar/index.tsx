@@ -1,15 +1,15 @@
-import { useRouter } from "next/navigation";
-import { ChevronLeft, PanelLeft } from "lucide-react";
-import { Button } from "../ui/button";
 import { useViewStore, useWorkspaceStore } from "@/store";
+import { ChevronLeft, PanelLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 const SettingsTopNavBar = () => {
 	const router = useRouter();
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { showNavbar, setShowNavbar } = useViewStore((state) => state);
 	const handleBackClick = () => {
-		if (currentWorkspace) {
-			router.push(`/${currentWorkspace.url}`);
+		if (workspace) {
+			router.push(`/${workspace.url}`);
 		}
 	};
 

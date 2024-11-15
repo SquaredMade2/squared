@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Eye, EyeOff } from "lucide-react";
-import { useAuthStore } from "@/store";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -17,16 +18,17 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { authService } from "@/lib/services";
 import { passwordSchema } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
+import { Eye, EyeOff } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
 	newPassword: passwordSchema,
@@ -42,9 +44,6 @@ function ResetPasswordForm() {
 	const [isTokenExpired, setIsTokenExpired] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [userEmail, setUserEmail] = useState("");
-	const { resetPassword, resetPasswordEmail, checkTokenValid } = useAuthStore(
-		(state) => state,
-	);
 	const router = useRouter();
 	const params = useParams();
 	const token = params.token as string;
@@ -53,15 +52,13 @@ function ResetPasswordForm() {
 	useEffect(() => {
 		const checkingTokenValid = async (): Promise<void> => {
 			try {
-				const response = await checkTokenValid(token);
-				if (response.message === "Token is expired or invalid") {
-					setUserEmail(() => {
-						return response.user !== null ? response.user.email : "";
-					});
-					setIsTokenExpired(() => true);
+				const response = await authService.checkTokenValid(TODO, { token });
+				if (response && response.message === "Token is expired or invalid") {
+					setUserEmail(response.email ?? "");
+					setIsTokenExpired(true);
 					toast({
 						title: response.message,
-						variant: response.variant,
+						variant: "destructive",
 					});
 				}
 			} catch (error) {
@@ -94,12 +91,15 @@ function ResetPasswordForm() {
 		}
 
 		try {
-			const response = await resetPassword(token, values.newPassword);
-			toast({ title: response.message });
+			await authService.resetPassword(TODO, {
+				token,
+				newPassword: values.newPassword,
+			});
+			toast({ title: "Password Reset Successfully" });
 			router.push("/login");
 		} catch (error) {
 			toast({
-				title: "Failed to reset password. Please try again.",
+				title: parseError(error, "Failed to reset password. Please try again."),
 				variant: "destructive",
 			});
 			console.error("Failed to reset password:", error);
@@ -108,8 +108,12 @@ function ResetPasswordForm() {
 
 	async function handleSendReset() {
 		try {
-			const response = await resetPasswordEmail(userEmail);
-			toast({ title: response.message, variant: response.variant });
+			await authService.resetPasswordEmail(TODO, { email: userEmail });
+			toast({
+				title: "Email Sent",
+				description:
+					"An email has been sent to your email to reset your password",
+			});
 			setIsSuccess(true);
 		} catch (error) {
 			if (error instanceof Error)

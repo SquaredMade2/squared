@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { priorityOptions } from "@/constants/designations";
-import { useToast } from "@/components/ui/use-toast";
+import { PriorityIcon } from "@/components/Icons";
 import {
 	Select,
 	SelectContent,
@@ -10,26 +8,23 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { priorityOptions } from "@/lib/constants";
+import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
-import type { ButtonProps } from "./interfaces";
-import { PriorityIcon } from "@/components/Icons";
 
-const PriorityDropdown = ({ currentTask }: ButtonProps) => {
+const PriorityDropdown = () => {
 	const { toast } = useToast();
-	const { updateTask, tasks } = useTaskStore((state) => state);
-	const [localTask, setLocalTask] = useState(currentTask);
+	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
+		(state) => state,
+	);
 
-	useEffect(() => {
-		if (currentTask) {
-			const updatedTask = tasks.find((task) => task.id === currentTask.id);
-			setLocalTask(updatedTask || currentTask);
-		}
-	}, [currentTask, tasks]);
+	if (!currentTask) return null;
 
-	const sidebarPriority = localTask ? localTask.priority : "";
-	const taskId = localTask ? localTask.id : "";
+	const { priority: sidebarPriority, id: taskId } = currentTask;
 
 	const handleSelectPriority = (newPriority: Priority) => {
 		if (newPriority === sidebarPriority || !taskId) return;
@@ -38,10 +33,13 @@ const PriorityDropdown = ({ currentTask }: ButtonProps) => {
 
 	const updateItem = async (newPriority: Priority) => {
 		try {
-			await updateTask(taskId, { priority: newPriority });
-			setLocalTask((prev) =>
-				prev ? { ...prev, priority: newPriority } : prev,
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					priority: newPriority,
+				}),
 			);
+			setCurrentTask({ ...currentTask, priority: newPriority });
 		} catch {
 			toast({
 				title: "Error updating priority",

@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useAuthStore, useUserStore, useWorkspaceStore } from "@/store";
-import { useToast } from "@/components/ui/use-toast";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useToast } from "@/components/ui/use-toast";
+import { userService, workspaceService } from "@/lib/services";
+import { useUserStore } from "@/store";
+import { TODO } from "@squared/context";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function TokenVerificationPage({
 	params,
 }: { params: { token: string } }) {
 	const router = useRouter();
-	const { setUser } = useAuthStore((state) => state);
-	const { getUser } = useUserStore((state) => state);
+	const { setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
-	const { joinWorkspace } = useWorkspaceStore((state) => state);
 	const { toast } = useToast();
 	const [isVerifying, setIsVerifying] = useState(true);
 
@@ -22,13 +22,14 @@ export default function TokenVerificationPage({
 		const verifyToken = async () => {
 			if (status === "authenticated" && session?.user) {
 				try {
-					const { workspace } = await joinWorkspace(
-						params.token,
-						session.user.id,
-					);
+					const workspace = await workspaceService.joinWorkspace(TODO, {
+						token: params.token,
+						userId: session.user.id,
+					});
 					if (workspace) {
-						const { user } = await getUser(session.user.id);
-						setUser(user);
+						setUser(
+							await userService.getUser(TODO, { userId: session.user.id }),
+						);
 						router.push(`/${workspace.url}`);
 					} else {
 						router.push("/");
@@ -48,7 +49,7 @@ export default function TokenVerificationPage({
 		};
 
 		verifyToken();
-	}, [status, session, params.token, joinWorkspace, router, toast]);
+	}, [status, session, params.token, router, toast]);
 
 	if (isVerifying) {
 		return (

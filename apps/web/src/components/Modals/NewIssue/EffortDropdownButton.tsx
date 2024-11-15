@@ -1,21 +1,21 @@
-import { high, medium, low } from "@/components/Svg";
-import { useModalStore, useTeamStore } from "@/store";
+import { high, low, medium } from "@/components/Svg";
+import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useModalStore, useTeamStore } from "@/store";
 import { Check } from "lucide-react";
-import { effortEstimateOptions } from "@/constants/designations";
 
 export const EffortDropdownButton = () => {
 	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
 	const effortEstimate = newIssueData.effortEstimate;
-	const { currentTeam } = useTeamStore((state) => state);
+	const { team } = useTeamStore((state) => state);
 
-	const difficultyLevels = effortEstimateOptions(currentTeam?.effort as string);
+	const difficultyLevels = effortEstimateOptions(team?.effort as string);
 
 	const showIcon = (estimate: number): JSX.Element => {
 		switch (true) {

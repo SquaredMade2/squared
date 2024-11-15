@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import * as ProgressPrimitive from "@repo/ui/progress";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 

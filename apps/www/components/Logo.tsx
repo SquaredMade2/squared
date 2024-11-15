@@ -1,6 +1,6 @@
+import { cn } from "@/lib/utils";
 import { Link } from "next-view-transitions";
 import SquaredLogoDark from "./SVG/squared-logo-dark";
-import { cn } from "@/lib/utils";
 
 export const Logo = ({ className }: { className?: string }) => {
 	return (

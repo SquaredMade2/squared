@@ -1,15 +1,15 @@
 "use client";
 
-import Balancer from "react-wrap-balancer";
-import { Button } from "./button";
-import { HiArrowRight } from "react-icons/hi2";
-import { Badge } from "./badge";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
+import { HiArrowRight } from "react-icons/hi2";
+import Balancer from "react-wrap-balancer";
+import { Badge } from "./badge";
+import { Button } from "./button";
 
+import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Link } from "next-view-transitions";
 
 export const Hero = () => {
 	const { resolvedTheme } = useTheme();
@@ -107,7 +107,7 @@ export const Hero = () => {
 				</Button>
 			</motion.div>
 			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative">
-				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background-darkAccent dark:to-background-darkAccent scale-[1.1] pointer-events-none" />
+				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background dark:to-background scale-[1.1] pointer-events-none" />
 				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
 					{/* todo change image based on dark or light theme */}
 					{resolvedTheme === "light" ? (

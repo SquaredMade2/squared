@@ -1,14 +1,17 @@
-import { CirclePlus, EllipsisVertical } from "lucide-react";
-import type { TaskColumnTitleProps } from "./interfaces";
-import { cn } from "@/utils/cn";
 import {
 	useModalStore,
-	useTeamStore,
+	useSprintStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { useViewStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { Priority, Status } from "@squared/db";
+import { CirclePlus, EllipsisVertical } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { PriorityIcon, StatusIcon } from "../Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
 	DropdownMenu,
@@ -16,11 +19,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { PriorityIcon, StatusIcon } from "../Icons";
-import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { LabelColor } from "./TaskCard/TaskCardLabels";
-import { usePathname } from "next/navigation";
+import type { TaskColumnTitleProps } from "./interfaces";
 
 const TaskColumnTitle = ({
 	isListView,
@@ -33,11 +33,11 @@ const TaskColumnTitle = ({
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
-	const { currentWorkspace } = useWorkspaceStore((state) => state);
-	const { currentSprint } = useTeamStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { sprint } = useSprintStore((state) => state);
 	const path = usePathname();
 	const assignee = users.find((u) => u.id === title);
-	const label = currentWorkspace?.Labels.find((l) => l.id === title);
+	const label = workspace?.Labels.find((l) => l.id === title);
 
 	const formatColumnTitle = (title: string) => {
 		switch (groupTasksBy) {
@@ -77,7 +77,7 @@ const TaskColumnTitle = ({
 
 	const handleClick = (): void => {
 		setNewIssueData({
-			sprintId: path.includes("sprint") ? (currentSprint?.id ?? null) : null,
+			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: title,
 		});
 		setShowNewIssue(true);

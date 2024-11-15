@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import { useAuthStore, useUserStore } from "@/store";
-import { useSession } from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast";
+import { logout } from "@/lib/auth";
+import { userService } from "@/lib/services";
+import { useUserStore } from "@/store";
+import { TODO } from "@squared/context";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export function useAuthUser() {
-	const { logout, setUser, user } = useAuthStore((state) => state);
-	const { getUser } = useUserStore((state) => state);
+	const { user, setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
 	const { toast } = useToast();
 	const [loading, setLoading] = useState(true);
@@ -18,13 +20,14 @@ export function useAuthUser() {
 
 			try {
 				if (status === "authenticated" && session?.user) {
-					const { user: loggedUser } = await getUser(session.user.id);
+					const loggedUser = await userService.getUser(TODO, {
+						userId: session.user.id,
+					});
 					if (loggedUser) {
 						setUser(loggedUser);
 					} else {
 						// User not found in the database
 						await logout();
-						setError("User not found. Please sign up.");
 					}
 				} else if (status === "unauthenticated") {
 					await logout();

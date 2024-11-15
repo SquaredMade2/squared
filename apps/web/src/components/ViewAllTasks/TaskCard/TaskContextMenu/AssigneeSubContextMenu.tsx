@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
-import { Check, UserSearch } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import type { ContextMenuProps } from "./interfaces";
-import { ScrollBar, ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
+import { Check, UserSearch } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { users } = useUserStore((state) => state);
@@ -26,17 +28,21 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(taskId, { assigneeId: null, assigneeName: null });
+			updateTask(
+				await taskService.updateTask(TODO, { id: taskId, assigneeId: null }),
+			);
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 
 		if (selectedUser) {
 			if (task) {
-				await updateTask(taskId, {
-					assigneeId: selectedUser.id,
-					assigneeName: selectedUser.name,
-				});
+				updateTask(
+					await taskService.updateTask(TODO, {
+						id: taskId,
+						assigneeId: selectedUser.id,
+					}),
+				);
 			}
 			// await getTaskEvents(taskId);
 		}

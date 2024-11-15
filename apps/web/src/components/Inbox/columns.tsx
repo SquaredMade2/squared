@@ -1,24 +1,18 @@
-import type { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "../ui/checkbox";
-import { AvatarImage, AvatarFallback, Avatar } from "../ui/avatar";
-import { formatDistanceToNow } from "date-fns";
-import { Button } from "../ui/button";
-import { Check, BellOff, Bookmark, BookmarkMinus, Trash2 } from "lucide-react";
-import {
-	useAuthStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import { useRouter } from "next/navigation";
+import { eventService, userService, workspaceService } from "@/lib/services";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { TooltipContent } from "@repo/ui/tooltip";
-import { StatusIcon } from "../Icons";
-import { eventService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
+import type { ColumnDef } from "@tanstack/react-table";
+import { formatDistanceToNow } from "date-fns";
+import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { StatusIcon } from "../Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 export const columns: ColumnDef<
 	Notification & { Task: Task; Workspace: Workspace }
@@ -49,18 +43,10 @@ export const columns: ColumnDef<
 		id: "content",
 		cell: ({ row }) => {
 			const router = useRouter();
-			const { getWorkspace, currentWorkspace } = useWorkspaceStore(
-				(state) => state,
-			);
-			const { getAllTeams, currentTeam } = useTeamStore((state) => state);
-			const { getAllTasks } = useTaskStore((state) => state);
-			const { userAvatars } = useUserStore((state) => state);
-			const { user } = useAuthStore((state) => state);
-			const {
-				identifier: taskIdentifier,
-				title: taskName,
-				teamId,
-			} = row.original.Task;
+			const { workspace } = useWorkspaceStore((state) => state);
+			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
+			const { userAvatars, user } = useUserStore((state) => state);
+
 			const taskId = taskIdentifier.split("-")[1];
 			const {
 				name: workspaceName,
@@ -80,25 +66,18 @@ export const columns: ColumnDef<
 					notificationIds: [row.original.id],
 					read: true,
 				});
-				if (currentWorkspace?.id === workspaceId) {
+				if (workspace?.id === workspaceId) {
 					router.push(
 						`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
 					);
 				} else {
-					const { workspace: newWorkspace } = await getWorkspace(workspaceId);
+					const newWorkspace = await workspaceService.getWorkspace(TODO, {
+						workspaceId,
+					});
 					if (newWorkspace && user) {
-						const teams = await getAllTeams(user.id);
-						const team = teams.find((t) => t.id === teamId);
-						if (team?.id === currentTeam?.id) {
-							router.push(
-								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
-							);
-						} else {
-							await getAllTasks(teamId);
-							router.push(
-								`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
-							);
-						}
+						router.push(
+							`/${workspaceUrl}/task/${taskIdentifier}/${formatUrl(taskName)}`,
+						);
 					}
 				}
 			};
@@ -154,8 +133,7 @@ export const columns: ColumnDef<
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateUser, getUser } = useUserStore((state) => state);
-			const { user, setUser } = useAuthStore((state) => state);
+			const { updateUser, user, setUser } = useUserStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 
 			const handleDismiss = async () => {
@@ -177,21 +155,23 @@ export const columns: ColumnDef<
 			};
 
 			const handleSave = async () => {
-				const currentUser = user && (await getUser(user.id)).user;
+				const currentUser = user;
+				let response = user;
 				if (currentUser) {
 					setUser(currentUser);
-				}
-				const response =
-					user &&
-					(await updateUser(user.id, {
-						savedNotificationIds: saved
+					response = await userService.updateUserNotifications(TODO, {
+						userId: currentUser.id,
+						notificationIds: saved
 							? user.savedNotificationIds?.filter(
 									(id) => id !== row.original.id,
 								)
 							: [...(user.savedNotificationIds || []), row.original.id],
-					}));
+					});
+				}
+
 				if (response) {
-					setUser(response.user);
+					setUser(response);
+					updateUser(response);
 				}
 			};
 

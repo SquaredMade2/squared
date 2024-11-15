@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { high, low, medium } from "@/components/Svg";
 import {
 	DropdownMenuItem,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-import { low, medium, high } from "@/components/Svg";
 import { useFilterStore } from "@/store/filters";
 import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 const effortOptions = [

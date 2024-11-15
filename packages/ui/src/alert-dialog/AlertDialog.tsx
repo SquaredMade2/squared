@@ -1,6 +1,6 @@
 import * as React from "react";
-import { createContextScope } from "../context";
 import { useComposedRefs } from "../compose-refs";
+import { createContextScope } from "../context";
 import * as DialogPrimitive from "../dialog";
 import { createDialogScope } from "../dialog";
 import { composeEventHandlers } from "../primitive";

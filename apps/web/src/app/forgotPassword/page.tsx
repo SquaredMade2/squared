@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/store";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -17,15 +19,14 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { authService } from "@/lib/services";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
+import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
 	email: z.string().email({
@@ -35,7 +36,6 @@ const formSchema = z.object({
 
 function ForgotPasswordForm() {
 	const [isSuccess, setIsSuccess] = useState(false);
-	const { resetPasswordEmail } = useAuthStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -48,8 +48,8 @@ function ForgotPasswordForm() {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
-			const response = await resetPasswordEmail(values.email);
-			toast({ title: response.message, variant: response.variant });
+			await authService.resetPasswordEmail(TODO, { email: values.email });
+			toast({ title: "Password reset email sent successfully" });
 			setIsSuccess(true);
 		} catch (error) {
 			if (error instanceof Error)

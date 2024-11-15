@@ -1,27 +1,20 @@
-import type { Task } from "@squared/db";
-import PriorityDropdown from "./PriorityDropdown";
-import StatusDropdown from "./StatusDropdown";
+import AssigneeCombobox from "./AssigneeCombobox";
 import DatePicker from "./DesignationsDatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
-import LabelCombobox from "./LabelCombobox";
-// import AssigneeCombobox from "./AssigneeCombobox";
 import EffortModal from "./EffortModal";
-
-type ButtonProps = {
-	currentTask: Task | null;
-};
+import LabelCombobox from "./LabelCombobox";
+import PriorityDropdown from "./PriorityDropdown";
+import StatusDropdown from "./StatusDropdown";
 
 type DesignationItemProps = {
 	label: string;
-	Component: React.ComponentType<ButtonProps>;
-	currentTask: Task | null;
+	Component: React.ComponentType;
 	ExtraComponent?: React.ReactNode;
 };
 
 const DesignationItem = ({
 	label,
 	Component,
-	currentTask,
 	ExtraComponent,
 }: DesignationItemProps) => (
 	<div className="flex flex-row items-center w-full">
@@ -31,58 +24,35 @@ const DesignationItem = ({
 				<div className="ml-1.5 flex items-center">{ExtraComponent}</div>
 			)}
 		</div>
-		<Component currentTask={currentTask} />
+		<Component />
 	</div>
 );
 
-export function TaskDesignationsContainer({
-	task: currentTask,
-}: { task: Task }) {
+export function TaskDesignationsContainer() {
 	return (
 		<>
 			<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
-				<DesignationItem
-					label="Status"
-					Component={StatusDropdown}
-					currentTask={currentTask}
-				/>
-				<DesignationItem
-					label="Priority"
-					Component={PriorityDropdown}
-					currentTask={currentTask}
-				/>
-				<DesignationItem
-					label="Labels"
-					Component={LabelCombobox}
-					currentTask={currentTask}
-				/>
-				<DesignationItem
-					label="Due Date"
-					Component={DatePicker}
-					currentTask={currentTask}
-				/>
+				<DesignationItem label="Status" Component={StatusDropdown} />
+				<DesignationItem label="Priority" Component={PriorityDropdown} />
+				<DesignationItem label="Labels" Component={LabelCombobox} />
+				<DesignationItem label="Due Date" Component={DatePicker} />
 				<DesignationItem
 					label="Effort"
 					Component={EffortEstimateDropdown}
-					currentTask={currentTask}
 					ExtraComponent={<EffortModal />}
 				/>
-				{/* <DesignationItem
-					label="Assignee"
-					Component={AssigneeCombobox}
-					currentTask={currentTask}
-				/> */}
+				<DesignationItem label="Assignee" Component={AssigneeCombobox} />
 			</div>
 		</>
 	);
 }
-export function MobileTaskSettings({ task }: { task: Task }) {
+export function MobileTaskSettings() {
 	return (
 		<div className="flex gap-2 md:hidden flex-wrap w-full">
-			<StatusDropdown currentTask={task} />
-			<PriorityDropdown currentTask={task} />
-			{/* <AssigneeCombobox currentTask={task} /> */}
-			<LabelCombobox currentTask={task} />
+			<StatusDropdown />
+			<PriorityDropdown />
+			<AssigneeCombobox />
+			<LabelCombobox />
 		</div>
 	);
 }

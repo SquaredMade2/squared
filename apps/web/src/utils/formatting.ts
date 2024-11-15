@@ -1,7 +1,8 @@
+import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
-import { Status, Priority, type User, type Label } from "@squared/db";
-import * as z from "zod";
+import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
+import * as z from "zod";
 
 export const truncateString = (string: string, maxLength: number): string => {
 	if (string.length > maxLength) {
@@ -104,6 +105,41 @@ export const formatPriority = (priority: Priority) => {
 	}
 };
 
+// TODO: Implement formatting link
+// export const handleFormatLink = (url: string) => {
+// // if is in url link format [nameOfLink]LinkUrl
+// // return obj separating values
+// // else return the original
+// const linkFormat = /^\[(.+?)\](https?:\/\/[^\s]+)$/;
+// const matchedFormat = url.match(linkFormat);
+// if (matchedFormat) {
+// 	return {
+// 		full: matchedFormat[0],
+// 		linkName: matchedFormat[1],
+// 		linkUrl: matchedFormat[2],
+// 		index: matchedFormat.index,
+// 	};
+// }
+// return null;
+// interface Match {
+// 	full: string;
+// 	linkName: string;
+// 	linkUrl: string;
+// 	index: number;
+// }
+// const linkFormat = /\[(.+?)\]\((https?:\/\/[^\s]+)\)/g;
+// const links: Match[] = [];
+// let match: RegExpExecArray | null;
+// while ((match = linkFormat.exec(url)) !== null) {
+// 	links.push({
+// 		full: match[0],
+// 		linkName: match[1],
+// 		linkUrl: match[2],
+// 		index: match.index,
+// 	});
+// }
+// return links;
+// };
 export const passwordSchema = z
 	.string()
 	.min(8, "Password must be at least 8 characters")
@@ -126,6 +162,49 @@ export const passwordSchema = z
 		"Password must contain at least one special character",
 	);
 
+export const handleFormatSlateToComment = (slateArr: CustomDescendant[]) => {
+	const arrOfFormattedLines = slateArr.map((line) => {
+		// each formatted line/row
+		const formattedLine = [];
+
+		// if there is a formatted piece of text (this is for each subline of each row)
+		if ("children" in line) {
+			// for every leaf, or subtext that has format, format them as MDX
+			const allLeafs = line.children.map((leaf) => {
+				if (leaf.url) {
+					return `[${leaf.text}](${leaf.url})`;
+				}
+				// helper vars
+				const returnBoldMarks = leaf.bold ? "**" : "";
+				const returnItalicMarks = leaf.italic ? "*" : "";
+				const returnCodeMarks = leaf.code ? "```" : "";
+				// add new marks here, needs both left and right bc future might need them
+				const leftSurrounderMark = `${returnItalicMarks}${returnBoldMarks}${returnCodeMarks}`;
+				const rightSurrounderMark = leftSurrounderMark;
+				return `${leftSurrounderMark}${leaf.text}${rightSurrounderMark}`;
+			});
+
+			// Handle current block/row (each row can only have one block)
+			const returnHeaderBlock = line.type === "header" ? "### " : "";
+			const leftSurrounderBlock = `${returnHeaderBlock}`;
+			// will need below for future formatting
+			const rightSurrounderBlock = `${""}`;
+			formattedLine.push(
+				`${leftSurrounderBlock}${allLeafs.join("")}${rightSurrounderBlock}`,
+			);
+		} else {
+			formattedLine.push(line.text);
+		}
+
+		return formattedLine.join("");
+	});
+
+	return arrOfFormattedLines.join("\n");
+};
+
+// TODO: implement comment format ("**bolded**") to ({ type: 'bold', text: 'bolded' })
+// export const handleFormatCommentToSlate = (commentStr) => {
+// };
 export const formatFilterName = async (
 	filter: FilterCondition,
 	labels: Label[],
@@ -193,5 +272,14 @@ export const formatFilterName = async (
 		}
 		default:
 			return { name: filter.field, value: filter.value.toLocaleString() };
+	}
+};
+
+export const verifyUrlFormat = (url: string): string | boolean => {
+	try {
+		new URL(url);
+		return true;
+	} catch {
+		return false;
 	}
 };
