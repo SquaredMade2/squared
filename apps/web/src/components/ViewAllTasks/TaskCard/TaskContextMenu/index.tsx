@@ -80,7 +80,15 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 			<ContextMenuItem
 				onClick={() => {
-					setNewIssueData(task);
+					setNewIssueData({
+						status: task.status,
+						priority: task.priority,
+						dueDate: task.dueDate,
+						effortEstimate: task.effortEstimate,
+						labels: task.labels,
+						title: task.title,
+						description: task.description,
+					});
 					setShowNewIssue(true);
 				}}
 			>
