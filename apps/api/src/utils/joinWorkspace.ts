@@ -1,13 +1,13 @@
 import type { APIResponse } from "@/api/route";
-import type { Workspace } from "@squared/db";
+import type { PrismaClient, Workspace } from "@squared/db";
 import jwt from "jsonwebtoken";
-import { prisma } from "../api";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const joinWorkspace = async (
 	token: string,
 	userId: string,
+	prisma: PrismaClient,
 ): Promise<APIResponse<Workspace> & { status: number }> => {
 	if (!JWT_SECRET) {
 		return {

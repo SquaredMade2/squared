@@ -55,6 +55,15 @@ export function createApp() {
 
 	app.use(express.json());
 
+	if (rpcHandlers && Object.keys(rpcHandlers).length > 0) {
+		const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
+		app.use("/rpc", rpcRequestHandler);
+	} else {
+		logger.warn(
+			"rpcHandlers is undefined or empty. RPC endpoints will not be available.",
+		);
+	}
+
 	const rpcRequestHandler = createRequestHandler(Object.values(rpcHandlers));
 	app.use("/rpc", rpcRequestHandler);
 
