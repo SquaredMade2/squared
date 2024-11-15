@@ -173,6 +173,10 @@ jobs:
         env:
           POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5433/squared-test
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          EMAIL_USERNAME: info@squaredmade.com
+          EMAIL_PASSWORD: H=3x=_uhQa
       - name: Build API
         run: pnpm --filter=api build
 
