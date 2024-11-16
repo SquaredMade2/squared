@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Linkedin, Mail, Phone } from "lucide-react";
+import { Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "./Logo";
 
@@ -99,6 +99,14 @@ export const Footer = () => {
 									Blog
 								</Link>
 							</li>
+							<li>
+								<Link
+									href="/docs"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+								>
+									Docs
+								</Link>
+							</li>
 						</ul>
 					</div>
 					{/* <div>
@@ -165,8 +173,8 @@ export const Footer = () => {
 							{/* <MapPin className="h-4 w-4 mr-2" /> */}
 						</div>
 						<div className="flex items-center">
-							<Phone className="h-4 w-4 mr-2" />
-							+1 (555) 123-4567
+							{/* <Phone className="h-4 w-4 mr-2" />
+							+1 (555) 123-4567 */}
 						</div>
 					</div>
 				</div>
