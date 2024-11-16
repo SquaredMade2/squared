@@ -37,7 +37,7 @@ export const SkeletonTwo = () => {
 						<UserMessage>
 							David changed the status of TES-Add-More-Color-Themes to Done
 						</UserMessage>
-						<AIMessage>Reddy created issue TES-Design-Projects-Page</AIMessage>
+						<AIMessage>Reddy created task TES-Design-Projects-Page</AIMessage>
 						<UserMessage>
 							Reddy sent you a comment in TES-Design-Projects-Page
 						</UserMessage>
@@ -46,7 +46,7 @@ export const SkeletonTwo = () => {
 							2024
 						</AIMessage>
 						<UserMessage>
-							Omar requests your approval for issue TES-Create-Task-Menu
+							Omar requests your approval for task TES-Create-Task-Menu
 						</UserMessage>
 						{/* <AIMessage>I&apos; batman.</AIMessage>
 						<AIMessage>

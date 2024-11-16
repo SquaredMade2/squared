@@ -11,8 +11,8 @@ import { useModalStore, useTeamStore } from "@/store";
 import { Check } from "lucide-react";
 
 export const EffortDropdownButton = () => {
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const effortEstimate = newIssueData.effortEstimate;
+	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
+	const effortEstimate = newTaskData.effortEstimate;
 	const { team } = useTeamStore((state) => state);
 
 	const difficultyLevels = effortEstimateOptions(team?.effort as string);
@@ -32,7 +32,7 @@ export const EffortDropdownButton = () => {
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
 	const handleSelectEffort = (effortEstimate: number) => {
-		setNewIssueData({ ...newIssueData, effortEstimate });
+		setNewTaskData({ ...newTaskData, effortEstimate });
 	};
 
 	const buttonContent = (effortEstimate: number | null | undefined) => (

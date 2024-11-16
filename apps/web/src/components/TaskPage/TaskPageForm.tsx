@@ -112,7 +112,7 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 				/>
 				{parentTask && (
 					<div className="text-sm text-muted-foreground flex items-center gap-1">
-						Subissue of
+						Subtask of
 						<Button variant="ghost" className="py-0 px-1 gap-1">
 							<StatusIcon status={parentTask.status} />
 							<Link

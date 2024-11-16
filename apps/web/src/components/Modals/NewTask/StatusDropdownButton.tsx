@@ -14,11 +14,11 @@ import type { Status } from "@squared/db";
 import { Check } from "lucide-react";
 
 export const StatusDropdownButton = () => {
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const newIssueStatus = newIssueData.status;
+	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
+	const newTaskStatus = newTaskData.status;
 
 	const handleSelectStatus = (status: Status) => {
-		setNewIssueData({ ...newIssueData, status });
+		setNewTaskData({ ...newTaskData, status });
 	};
 
 	return (
@@ -26,16 +26,16 @@ export const StatusDropdownButton = () => {
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="max-w-full w-full">
 					<span className="cursor-pointer">
-						<StatusIcon status={newIssueStatus || "todo"} />
+						<StatusIcon status={newTaskStatus || "todo"} />
 					</span>
 					<span className="ml-2 cursor-pointer">
-						{formatStatus(newIssueStatus ?? "backlog")}
+						{formatStatus(newTaskStatus ?? "backlog")}
 					</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent side="left" align="start" className="w-[150px]">
 				<DropdownMenuRadioGroup
-					value={newIssueStatus}
+					value={newTaskStatus}
 					onValueChange={(status) => handleSelectStatus(status as Status)}
 				>
 					{statusOptions.map((status) => (
@@ -50,7 +50,7 @@ export const StatusDropdownButton = () => {
 									{formatStatus(status)}
 								</span>
 							</div>
-							{newIssueStatus === status && <Check className="h-4 w-4" />}
+							{newTaskStatus === status && <Check className="h-4 w-4" />}
 						</DropdownMenuItem>
 					))}
 				</DropdownMenuRadioGroup>
