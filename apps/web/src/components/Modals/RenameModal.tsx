@@ -32,22 +32,24 @@ export const RenameModal = () => {
 
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
-		if (inputValue !== task?.title && task) {
-			try {
-				updateTask(
-					await taskService.updateTask(TODO, {
-						id: task.id,
-						title: inputValue.trim(),
-					}),
-				);
-				toast({ title: "Task updated successfully" });
-			} catch (error) {
-				toast({
-					title: "Error Creating Task",
-					description: error instanceof Error && error.message,
-				});
+		if (task) {
+			if (inputValue !== task.title && inputValue.length > 2) {
+				try {
+					updateTask(
+						await taskService.updateTask(TODO, {
+							id: task.id,
+							title: inputValue.trim(),
+						}),
+					);
+					toast({ title: "Task updated successfully" });
+				} catch (error) {
+					toast({
+						title: "Error Updating Task",
+						description: error instanceof Error && error.message,
+					});
+				}
+				setShowRename(false);
 			}
-			setShowRename(false);
 		}
 	};
 
@@ -74,9 +76,14 @@ export const RenameModal = () => {
 							placeholder="Rename..."
 							onChange={handleChange}
 						/>
+						<span
+							className={`text-destructive ${inputValue.length > 2 && "opacity-0"}`}
+						>
+							Title must be at least 2 characters
+						</span>
 						<div className="w-full border-border border" />
 						<DialogFooter>
-							<Button>
+							<Button disabled={inputValue.length < 2}>
 								<span className="mr-2.5">
 									<Pencil className="size-4" />
 								</span>
