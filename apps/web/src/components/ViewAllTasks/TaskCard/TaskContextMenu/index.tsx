@@ -56,6 +56,11 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		navigator.clipboard.writeText(identifier);
 	};
 
+	const handleDuplicate = () => {
+		setNewIssueData(task);
+		setShowNewIssue(true);
+	};
+
 	return (
 		<ContextMenuContent>
 			<StatusSubContextMenu task={task} />
@@ -78,11 +83,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 				Rename Task
 			</ContextMenuItem>
 
-			<ContextMenuItem
-				onClick={handleDuplicate}
-			>
-				Duplicate
-			</ContextMenuItem>
+			<ContextMenuItem onClick={handleDuplicate}>Duplicate</ContextMenuItem>
 
 			<ContextMenuSeparator />
 			{/*  No Subscribe feature yet
