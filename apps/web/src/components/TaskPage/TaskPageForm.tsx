@@ -19,14 +19,12 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { updateTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
-
 	const [updatedTitle, setUpdatedTitle] = useState(task.title ?? "");
 	const [updatedDescription, setUpdatedDescription] = useState(
 		task.description ?? null,
 	);
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 	const [parentTask, setParentTask] = useState<Task | null>(null);
-
 	const { transformedInput: transformedTitleInput } = transformingMentionInputs(
 		updatedTitle ?? "",
 	);
@@ -40,10 +38,13 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 		setUpdatedDescription(e.target.value);
 	};
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (e: FocusEvent) => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
 			updatedTitle !== task.title || updatedDescription !== task.description;
+		const titleOnlyChanged: boolean =
+			updatedTitle !== task.title;
+		const inputElement = e.target as HTMLFormElement
 		if (changeMade && task.id !== undefined) {
 			if (task) {
 				try {
@@ -54,7 +55,9 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 							description: transformedDescriptionInput,
 						}),
 					);
-					toast({ title: "title updated successfully" });
+					if (titleOnlyChanged && inputElement.name === "title") {
+						toast({ title: "Title Updated Successfully" });
+					}
 				} catch (error) {
 					toast({
 						title: "Error updating task",
