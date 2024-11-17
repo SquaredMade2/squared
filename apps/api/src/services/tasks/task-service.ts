@@ -119,7 +119,7 @@ export class TaskService implements TaskRpc {
 			throw new Error("There was an issue creating your task");
 		}
 
-		subscribeUser(author, newTask);
+		subscribeUser(author, newTask, this.db);
 
 		// Return the new task
 		return newTask;

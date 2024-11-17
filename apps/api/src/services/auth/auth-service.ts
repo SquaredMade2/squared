@@ -120,7 +120,7 @@ export class AuthService implements AuthRpc {
 			},
 		});
 		if (inviteToken && user) {
-			const { status } = await joinWorkspace(inviteToken, user.id);
+			const { status } = await joinWorkspace(inviteToken, user.id, this.db);
 			if (status === 200) {
 				const newUser = await this.db.user.findUnique({
 					where: { id: user.id },
