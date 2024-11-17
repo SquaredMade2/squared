@@ -1,7 +1,10 @@
-import type { Task, User } from "@squared/db";
-import { prisma } from "../api";
+import type { PrismaClient, Task, User } from "@squared/db";
 
-export async function subscribeUser(user: User, task: Task) {
+export async function subscribeUser(
+	user: User,
+	task: Task,
+	prisma: PrismaClient,
+) {
 	if (!user.subscribedTasks.includes(task.id)) {
 		await prisma.user.update({
 			where: { id: user.id },
