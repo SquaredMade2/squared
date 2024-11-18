@@ -1,6 +1,6 @@
 "use client";
 
-import { NewIssueModal } from "@/components/Modals";
+import { NewTaskModal } from "@/components/Modals";
 import { SidebarNav } from "@/components/Sidebar";
 import { useViewStore } from "@/store";
 import type { ViewPath } from "@/store/views";
@@ -49,7 +49,7 @@ export default function WorkspaceLayoutWrapper({
 				<SidebarNav />
 			</div>
 			<main className="flex-grow overflow-auto w-full h-full">
-				<NewIssueModal />
+				<NewTaskModal />
 				{children}
 			</main>
 		</div>

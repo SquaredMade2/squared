@@ -17,18 +17,10 @@ import { useEffect } from "react";
 
 export function DateDropdownButton() {
 	const [date, setDate] = React.useState<Date>();
-	const { setNewIssueData, newIssueData, showNewIssue } = useModalStore(
-		(state) => state,
-	);
-
-	// pre-populate if duplicating
-	useEffect(() => {
-		if (newIssueData.dueDate) setDate(newIssueData.dueDate);
-	}, [showNewIssue]);
-
+	const { setNewTaskData, newTaskData } = useModalStore((state) => state);
 	useEffect(() => {
 		if (date) {
-			setNewIssueData({ ...newIssueData, dueDate: date });
+			setNewTaskData({ ...newTaskData, dueDate: date });
 		}
 	}, [date]);
 

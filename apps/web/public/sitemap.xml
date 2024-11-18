@@ -64,7 +64,7 @@
 
   <url>
     <loc
-      >https://develop.squaredmade.com/app/workspace/[workspace]/issue/[identifier]/page/</loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/task/[identifier]/page/</loc
     >
   </url>
 
@@ -106,7 +106,7 @@
 
   <url>
     <loc
-      >https://develop.squaredmade.com/app/workspace/[workspace]/issue/[identifier]/[issue]/page/</loc
+      >https://develop.squaredmade.com/app/workspace/[workspace]/task/[identifier]/[task]/page/</loc
     >
   </url>
 

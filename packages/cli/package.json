@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "go build -o bin/squared",
+    "build-cli": "go build -o bin/squared",
     "lint": "golangci-lint run"
   }
 }

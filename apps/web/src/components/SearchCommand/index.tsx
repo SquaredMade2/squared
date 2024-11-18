@@ -23,7 +23,7 @@ import type { SearchbarItem, SearchbarStructure } from "./interfaces";
 export default function SearchCommand() {
 	const { toast } = useToast();
 	const {
-		setShowNewIssue,
+		setShowNewTask,
 		showCommand,
 		setShowCommand,
 		setShowSwitchWorkspace,
@@ -40,7 +40,7 @@ export default function SearchCommand() {
 	};
 
 	const commandItems = new CommandSchema({
-		setShowNewIssue,
+		setShowNewTask,
 		setShowSwitchWorkspace,
 		setShowNavbar,
 		setShowTaskSelector,

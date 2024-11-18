@@ -36,17 +36,17 @@ import { LabelDropdownButton } from "./LabelDropdownButton";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
 import { StatusDropdownButton } from "./StatusDropdownButton";
 
-export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
+export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const [isOpen, setIsOpen] = useState<string | undefined>("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { toast } = useToast();
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
+	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const { team } = useTeamStore((state) => state);
 	const { tasks, createTask } = useTaskStore((state) => state);
 
-	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
+	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
@@ -63,7 +63,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 		},
 	});
 
-	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
+	const handleCreateTask = async (values: z.infer<typeof formSchema>) => {
 		const { title, description } = values;
 		setIsSubmitting(true);
 
@@ -117,17 +117,17 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 
 			setIsOpen("");
-			setNewIssueData({});
+			setNewTaskData({});
 			form.reset({
 				title: "",
 				description: "",
 			});
 			toast({
-				title: "New Issue Created",
+				title: "New Task Created",
 			});
 		} catch (error) {
 			toast({
-				title: "Error creating issue",
+				title: "Error creating Task",
 				description: error instanceof Error ? error.message : "Unknown error",
 				variant: "destructive",
 			});
@@ -152,7 +152,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 			value={isOpen}
 			onValueChange={setIsOpen}
 		>
-			<AccordionItem value="subissue-collapsible">
+			<AccordionItem value="subtask-collapsible">
 				<AccordionTrigger asChild>
 					<Button
 						type="button"
@@ -167,7 +167,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 				<AccordionContent className="px-1">
 					<Form {...form}>
 						<form
-							onSubmit={form.handleSubmit(handleCreateIssue)}
+							onSubmit={form.handleSubmit(handleCreateTask)}
 							className="space-y-4"
 						>
 							<div className="flex flex-col space-y-4">
@@ -222,7 +222,7 @@ export const NewIssueCollapsible = ({ parentId }: { parentId: string }) => {
 									Cancel
 								</Button>
 								<Button type="submit" className="hover:cursor-pointer">
-									{isSubmitting ? "Creating..." : "Create Issue"}{" "}
+									{isSubmitting ? "Creating..." : "Create Task"}{" "}
 								</Button>
 							</div>
 						</form>

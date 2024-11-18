@@ -7,7 +7,7 @@ import {
 import { Droppable } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { useState } from "react";
-import { GridColumnNewIssueButton } from "../Modals";
+import { GridColumnNewTaskButton } from "../Modals";
 import { ScrollArea } from "../ui/scroll-area";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
@@ -258,7 +258,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 					</ScrollArea>
 				)}
 			</Droppable>
-			{!isListView && <GridColumnNewIssueButton group={group} />}
+			{!isListView && <GridColumnNewTaskButton group={group} />}
 		</div>
 	);
 };
