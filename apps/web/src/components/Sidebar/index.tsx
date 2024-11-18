@@ -70,7 +70,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 		};
 
 		fetchData();
-	}, [user, setTeams]);
+	}, [user, setTeams, workspace]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {
