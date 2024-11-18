@@ -172,7 +172,7 @@ export const NewTaskModal = () => {
 						<DialogFooter className="mt-6">
 							<Button
 								onClick={handleDiscard}
-								className="hover:cursor-pointer bg-transparent"
+								className="hover:cursor-pointer bg-transparent text-foreground"
 								variant="destructive"
 								type="button"
 							>
