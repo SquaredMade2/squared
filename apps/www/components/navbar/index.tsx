@@ -32,7 +32,7 @@ export function NavBar() {
 				ease: [0.6, 0.05, 0.1, 0.9],
 				duration: 0.8,
 			}}
-			className="fixed max-md:top-4 inset-x-0 z-50 w-[95%] max-w-7xl mx-auto"
+			className="fixed max-md:top-4 inset-x-0 z-50 w-[95%] max-md:max-w-7xl mx-auto"
 		>
 			<div className="hidden lg:block w-full">
 				<DesktopNavbar navItems={navItems} />
