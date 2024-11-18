@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import {
 	AnimatePresence,
@@ -6,7 +7,7 @@ import {
 	useMotionValueEvent,
 	useScroll,
 } from "framer-motion";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 import { useState } from "react";
 import { Logo } from "../Logo";
 import { Button } from "../button";
@@ -23,38 +24,32 @@ type Props = {
 
 export const DesktopNavbar = ({ navItems }: Props) => {
 	const { scrollY } = useScroll();
-
 	const [showBackground, setShowBackground] = useState(false);
 
 	useMotionValueEvent(scrollY, "change", (value) => {
-		if (value > 100) {
-			setShowBackground(true);
-		} else {
-			setShowBackground(false);
-		}
+		setShowBackground(value > 100);
 	});
+
 	return (
 		<div
 			className={cn(
-				"w-full flex relative justify-between px-4 py-2 rounded-3xl bg-transparent transition duration-200",
-				showBackground &&
-					"bg-neutral-50 dark:bg-background-darkSecondary shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
+				"w-full flex relative justify-between px-4 py-2 rounded-3xl transition duration-200",
+				showBackground && "bg-background/60 backdrop-blur-md shadow-sm",
 			)}
 		>
 			<AnimatePresence>
 				{showBackground && (
 					<motion.div
-						key={String(showBackground)}
+						key="background"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						transition={{
-							duration: 1,
-						}}
-						className="absolute inset-0 h-full w-full bg-neutral-100 dark:bg-background-darkSecondary pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent,white)] rounded-3xl"
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.3 }}
+						className="absolute inset-0 h-full w-full bg-background/50 backdrop-blur-md pointer-events-none rounded-3xl"
 					/>
 				)}
 			</AnimatePresence>
-			<div className="flex flex-row gap-2 items-center">
+			<div className="flex flex-row gap-2 items-center z-10">
 				<Logo />
 				<div className="flex items-center gap-1.5">
 					{navItems.map((item) => (
@@ -64,7 +59,7 @@ export const DesktopNavbar = ({ navItems }: Props) => {
 					))}
 				</div>
 			</div>
-			<div className="flex space-x-2 items-center">
+			<div className="flex space-x-2 items-center z-10">
 				<ModeToggle />
 				<Button
 					variant="simple"

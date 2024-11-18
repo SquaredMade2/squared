@@ -1,12 +1,13 @@
 "use client";
+
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useMotionValueEvent, useScroll } from "framer-motion";
-import { Link } from "next-view-transitions";
+import { Menu } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import { IoIosMenu } from "react-icons/io";
-import { IoIosClose } from "react-icons/io";
 import { Logo } from "../Logo";
-import { Button } from "../button";
 import { ModeToggle } from "../mode-toggle";
 
 export const MobileNavbar = ({
@@ -14,78 +15,63 @@ export const MobileNavbar = ({
 }: {
 	navItems: { title: string; link: string }[];
 }) => {
-	const [open, setOpen] = useState(false);
-
 	const { scrollY } = useScroll();
-
 	const [showBackground, setShowBackground] = useState(false);
 
 	useMotionValueEvent(scrollY, "change", (value) => {
-		if (value > 100) {
-			setShowBackground(true);
-		} else {
-			setShowBackground(false);
-		}
+		setShowBackground(value > 100);
 	});
 
 	return (
 		<div
 			className={cn(
-				"flex justify-between bg-white dark:bg-neutral-900 items-center w-full rounded-full px-2.5 py-1.5 transition duration-200",
+				"flex justify-between bg-background/80 backdrop-blur-md items-center w-full rounded-full px-4 py-1.5 transition duration-200",
 				showBackground &&
-					"bg-neutral-50 dark:bg-neutral-900 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
+					"bg-background/80 shadow-[0px_-2px_0px_0px_var(--neutral-100),0px_2px_0px_0px_var(--neutral-100)] dark:shadow-[0px_-2px_0px_0px_var(--neutral-800),0px_2px_0px_0px_var(--neutral-800)]",
 			)}
 		>
 			<Logo />
-			<IoIosMenu
-				className="text-black dark:text-white h-6 w-6"
-				onClick={() => setOpen(!open)}
-			/>
-			{open && (
-				<div className="fixed inset-0 bg-white dark:bg-black z-50 flex flex-col items-start justify-start space-y-10  pt-5  text-xl text-zinc-600  transition duration-200 hover:text-zinc-800">
-					<div className="flex items-center justify-between w-full px-5">
-						<Logo />
-						<div className="flex items-center space-x-2">
-							<ModeToggle />
-							<IoIosClose
-								className="h-8 w-8 text-black dark:text-white"
-								onClick={() => setOpen(!open)}
-							/>
+			<div className="flex items-center space-x-2">
+				<ModeToggle />
+				<Sheet>
+					<SheetTrigger asChild>
+						<Button variant="ghost" size="icon">
+							<Menu className="h-6 w-6" />
+							<span className="sr-only">Toggle menu</span>
+						</Button>
+					</SheetTrigger>
+					<SheetContent side="right" className="w-[300px] sm:w-[400px]">
+						<div className="flex flex-col h-full">
+							<div className="flex items-center justify-between mb-8">
+								<Logo />
+							</div>
+							<nav className="flex flex-col gap-4 mb-8">
+								{navItems.map((item) => (
+									<Link
+										key={item.link}
+										href={item.link}
+										className="text-lg font-medium hover:text-primary transition-colors"
+									>
+										{item.title}
+									</Link>
+								))}
+							</nav>
+							<div className="mt-auto space-y-4">
+								<Button className="w-full" asChild>
+									<Link href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}>
+										Sign Up
+									</Link>
+								</Button>
+								<Button className="w-full" variant="outline" asChild>
+									<Link href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}>
+										Login
+									</Link>
+								</Button>
+							</div>
 						</div>
-					</div>
-					<div className="flex flex-col items-start justify-start gap-[14px] px-8">
-						{navItems.map((navItem) => (
-							<>
-								<Link
-									key={`link=${navItem.link}`}
-									href={navItem.link}
-									onClick={() => setOpen(false)}
-									className="relative"
-								>
-									<span className="block text-[26px] text-black dark:text-white">
-										{navItem.title}
-									</span>
-								</Link>
-							</>
-						))}
-					</div>
-					<div className="flex flex-row w-full items-start gap-2.5  px-8 py-4 ">
-						<Button
-							as={Link}
-							href={`${process.env.NEXT_PUBLIC_APP_URL}/register`}
-						>
-							Sign Up
-						</Button>
-						<Button
-							variant="simple"
-							as={Link}
-							href={`${process.env.NEXT_PUBLIC_APP_URL}/login`}
-						>
-							Login
-						</Button>
-					</div>
-				</div>
-			)}
+					</SheetContent>
+				</Sheet>
+			</div>
 		</div>
 	);
 };
