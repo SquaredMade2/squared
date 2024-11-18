@@ -29,7 +29,7 @@ const TaskColumnTitle = ({
 	numberOfTasks,
 	setShowTasks,
 }: TaskColumnTitleProps) => {
-	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
+	const { setNewTaskData, setShowNewTask } = useModalStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const { users } = useUserStore((state) => state);
@@ -51,7 +51,7 @@ const TaskColumnTitle = ({
 			case "Label": {
 				return label ? label.name : "No label";
 			}
-			// case "Parent Issue": {
+			// case "Parent Task": {
 			// 	const parentTask = tasks.find((t) => t.id === title);
 			// 	return parentTask ? parentTask.title : "No parent";
 			// }
@@ -68,7 +68,7 @@ const TaskColumnTitle = ({
 				return "priority";
 			case "Label":
 				return "labels";
-			// case "Parent Issue":
+			// case "Parent Task":
 			// 	return "parentId";
 			default:
 				return "status";
@@ -76,11 +76,11 @@ const TaskColumnTitle = ({
 	})();
 
 	const handleClick = (): void => {
-		setNewIssueData({
+		setNewTaskData({
 			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: title,
 		});
-		setShowNewIssue(true);
+		setShowNewTask(true);
 	};
 
 	return (

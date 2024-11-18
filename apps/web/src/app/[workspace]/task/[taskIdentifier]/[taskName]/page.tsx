@@ -1,5 +1,5 @@
 "use client";
-import { NewIssueCollapsible } from "@/components/Modals";
+import { NewTaskCollapsible } from "@/components/Modals";
 import {
 	EventTabs,
 	MobileTaskSettings,
@@ -53,7 +53,7 @@ const TaskPage = () => {
 												currentWorkspaceUrl={workspace?.url}
 											/>
 										)}
-										<NewIssueCollapsible parentId={task.id} />
+										<NewTaskCollapsible parentId={task.id} />
 										<EventTabs />
 									</div>
 								</ScrollArea>

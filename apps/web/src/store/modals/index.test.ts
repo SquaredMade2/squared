@@ -12,7 +12,7 @@ describe("ModalStore", () => {
 	it("should initialize with default values", () => {
 		const state = store.getState();
 		expect(state).toEqual({
-			showNewIssue: false,
+			showNewTask: false,
 			showCommand: false,
 			showRename: false,
 			renameData: null,
@@ -20,12 +20,12 @@ describe("ModalStore", () => {
 			showSwitchWorkspace: false,
 			showTaskSelector: false,
 			showLinkForm: false,
-			newIssueData: {},
+			newTaskData: {},
 			setShowLinkForm: expect.any(Function),
-			setShowNewIssue: expect.any(Function),
+			setShowNewTask: expect.any(Function),
 			setShowRename: expect.any(Function),
 			setRenameData: expect.any(Function),
-			setNewIssueData: expect.any(Function),
+			setNewTaskData: expect.any(Function),
 			setShowCommand: expect.any(Function),
 			setShowWorkspaceInvite: expect.any(Function),
 			setShowSwitchWorkspace: expect.any(Function),
@@ -33,13 +33,13 @@ describe("ModalStore", () => {
 		});
 	});
 
-	describe("setShowNewIssue", () => {
-		it("should update showNewIssue state", () => {
-			store.getState().setShowNewIssue(true);
-			expect(store.getState().showNewIssue).toBe(true);
+	describe("setShowNewTask", () => {
+		it("should update showNewTask state", () => {
+			store.getState().setShowNewTask(true);
+			expect(store.getState().showNewTask).toBe(true);
 
-			store.getState().setShowNewIssue(false);
-			expect(store.getState().showNewIssue).toBe(false);
+			store.getState().setShowNewTask(false);
+			expect(store.getState().showNewTask).toBe(false);
 		});
 	});
 
@@ -60,16 +60,16 @@ describe("ModalStore", () => {
 		});
 	});
 
-	describe("setNewIssueData", () => {
-		it("should update newIssueData state", () => {
-			const mockNewIssueData: Partial<Task> = {
+	describe("setNewTaskData", () => {
+		it("should update newTaskData state", () => {
+			const mockNewTaskData: Partial<Task> = {
 				title: "New Task",
 				status: "todo",
 				priority: "high",
 			};
 
-			store.getState().setNewIssueData(mockNewIssueData);
-			expect(store.getState().newIssueData).toEqual(mockNewIssueData);
+			store.getState().setNewTaskData(mockNewTaskData);
+			expect(store.getState().newTaskData).toEqual(mockNewTaskData);
 		});
 	});
 
