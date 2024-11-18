@@ -1,4 +1,14 @@
 import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
@@ -15,6 +25,7 @@ import {
 	Trash,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 import LabelSubContextMenu from "./LabelSubContextMenu";
@@ -23,6 +34,7 @@ import StatusSubContextMenu from "./StatusSubContextMenu";
 import type { ContextMenuProps } from "./interfaces";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
+	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 	const { toast } = useToast();
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
@@ -56,64 +68,86 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	};
 
 	return (
-		<ContextMenuContent>
-			<StatusSubContextMenu task={task} />
+		<>
+			<ContextMenuContent>
+				<StatusSubContextMenu task={task} />
 
-			<AssigneeSubContextMenu task={task} />
+				<AssigneeSubContextMenu task={task} />
 
-			<PrioritySubContextMenu task={task} />
+				<PrioritySubContextMenu task={task} />
 
-			<LabelSubContextMenu task={task} />
+				<LabelSubContextMenu task={task} />
 
-			<DateSubContextMenu task={task} />
+				<DateSubContextMenu task={task} />
 
-			{/* Need to make this with a Dialog comp */}
-			<ContextMenuItem
-				onClick={() => {
-					setRenameData(task);
-					setShowRename(true);
-				}}
-			>
-				Rename Task
-			</ContextMenuItem>
-
-			<ContextMenuSeparator />
-			{/*  No Subscribe feature yet
-			<ContextMenuItem>
-				<div className='text-danger mr-2'>
-					<Star className="size-4"/>
-				</div>
-				Subscribe
-			</ContextMenuItem> */}
-			{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
-			{/* <ContextMenuItem onClick={() => copyToClipboard(task.id)}>
-				Copy Link
-			</ContextMenuItem> */}
-
-			<ContextMenuItem onClick={copyBranchName}>
-				Copy Branch Name
-			</ContextMenuItem>
-			<ContextMenuItem onClick={copyTaskIdentifier}>
-				Copy Task ID
-			</ContextMenuItem>
-
-			<ContextMenuItem>
-				<Link
-					href={`/${workspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
-					target="_blank"
+				{/* Need to make this with a Dialog comp */}
+				<ContextMenuItem
+					onClick={() => {
+						setRenameData(task);
+						setShowRename(true);
+					}}
 				>
-					Open in New Tab
-				</Link>
-			</ContextMenuItem>
-			<ContextMenuSeparator />
+					Rename Task
+				</ContextMenuItem>
 
-			<ContextMenuItem onClick={deleteCurrentTask}>
-				<div className="mr-2">
-					<Trash className="size-4" color="red" />
-				</div>
-				<span className="text-destructive">Delete</span>
-			</ContextMenuItem>
-		</ContextMenuContent>
+				<ContextMenuSeparator />
+				{/*  No Subscribe feature yet
+			<ContextMenuItem>
+			<div className='text-danger mr-2'>
+			<Star className="size-4"/>
+			</div>
+			Subscribe
+			</ContextMenuItem> */}
+				{/* <ContextMenuItem>Favorite</ContextMenuItem> */}
+				{/* <ContextMenuItem onClick={() => copyToClipboard(task.id)}>
+				Copy Link
+				</ContextMenuItem> */}
+
+				<ContextMenuItem onClick={copyBranchName}>
+					Copy Branch Name
+				</ContextMenuItem>
+				<ContextMenuItem onClick={copyTaskIdentifier}>
+					Copy Task ID
+				</ContextMenuItem>
+
+				<ContextMenuItem>
+					<Link
+						href={`/${workspace?.url}/task/${identifier}/${formatUrl(task.title)}`}
+						target="_blank"
+					>
+						Open in New Tab
+					</Link>
+				</ContextMenuItem>
+				<ContextMenuSeparator />
+
+				<ContextMenuItem onClick={() => setShowConfirmDelete(true)}>
+					<div className="mr-2">
+						<Trash className="size-4" color="red" />
+					</div>
+					<span className="text-destructive">Delete</span>
+				</ContextMenuItem>
+			</ContextMenuContent>
+
+			<AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete Task</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete {task.title}?
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							className="bg-destructive hover:bg-destructive-foreground"
+							onClick={deleteCurrentTask}
+						>
+							Delete Task
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</>
 	);
 };
 
