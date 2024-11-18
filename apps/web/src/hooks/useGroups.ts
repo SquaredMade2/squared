@@ -14,10 +14,10 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { displayOptions, view, getGridOptions, getListOptions } = useViewStore(
 		(state) => state,
 	);
-	const { groupTasksBy } = displayOptions;
+	const { groupTasksBy, rowGrouping } = displayOptions;
 
 	//all logic related to grouping by parent task is commented out until subtask rendering is fixed
-	const getGroupColumnTitles = (group: TaskGroup) => {
+	const getGroupTitles = (group: TaskGroup | null) => {
 		let groupTitles: string[];
 		switch (group) {
 			case "Status":
@@ -113,7 +113,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	};
 
 	const getGroupedColumns = () => {
-		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
+		const groupColumnTitles = getGroupTitles(groupTasksBy);
 
 		let groupedColumns = groupColumnTitles
 			.map((group) => {
@@ -153,8 +153,49 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		return groupedColumns;
 	};
 
+	const getGroupedRows = () => {
+		const groupRowTitles = getGroupTitles(rowGrouping);
+
+		let groupedRows = groupRowTitles
+			.map((group) => {
+				let tasksForGroup = getTasksForGroup(group);
+
+				if (groupTasksBy === "Status") {
+					if (group === Status.archived) return null;
+					if (group === Status.done) {
+						const { period, show } = displayOptions.showCompletedTasks;
+						if (!show) return null;
+						tasksForGroup = filterTasksByPeriod(tasksForGroup, period);
+					}
+				}
+
+				const showEmptyGroups =
+					view === "grid"
+						? getGridOptions().showEmptyGroups
+						: getListOptions().showEmptyGroups;
+				if (tasksForGroup.length === 0 && !showEmptyGroups) return null;
+
+				return { group, tasks: tasksForGroup };
+			})
+			.filter((item) => item !== null); // Filter out null values
+
+		if (groupTasksBy === "Assignee") {
+			groupedRows = groupedRows.sort((a, b) => {
+				if (a.group === "Unassigned") return 1;
+				if (b.group === "Unassigned") return -1;
+
+				const aUsername = users.find((u) => u.id === a.group)?.username ?? "";
+				const bUsername = users.find((u) => u.id === b.group)?.username ?? "";
+
+				// Compare by the first letter of the username
+				return aUsername[0].localeCompare(bUsername[0]);
+			});
+		}
+		return groupedRows;
+	};
+
 	const getHiddenColumns = (): string[] => {
-		const groupColumnTitles = getGroupColumnTitles(groupTasksBy);
+		const groupColumnTitles = getGroupTitles(groupTasksBy);
 		return groupColumnTitles.filter((group) => {
 			const tasks = getTasksForGroup(group);
 			if (displayOptions.groupTasksBy === "Status") {
@@ -167,5 +208,10 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		});
 	};
 
-	return { getGroupedColumns, getHiddenColumns, getTasksForGroup };
+	return {
+		getGroupedColumns,
+		getGroupedRows,
+		getHiddenColumns,
+		getTasksForGroup,
+	};
 }

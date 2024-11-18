@@ -8,26 +8,19 @@ import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { Priority, Status } from "@squared/db";
-import { CirclePlus, EllipsisVertical } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+
 import { LabelColor } from "./TaskCard/TaskCardLabels";
 import type { TaskColumnTitleProps } from "./interfaces";
 
 const TaskColumnTitle = ({
 	isListView,
-	showTasks,
 	title,
 	numberOfTasks,
-	setShowTasks,
 }: TaskColumnTitleProps) => {
 	const { setNewIssueData, setShowNewIssue } = useModalStore((state) => state);
 	const { displayOptions } = useViewStore((state) => state);
@@ -95,38 +88,36 @@ const TaskColumnTitle = ({
 				)}
 			>
 				{!isListView ? (
-					showTasks && (
-						<div
-							className={
-								isListView
-									? "flex items-center text-foreground text-sm"
-									: "flex items-center gap-4 text-foreground text-sm pr-8"
-							}
-						>
-							{groupTasksBy === "Status" ? (
-								<StatusIcon status={title as Status} />
-							) : groupTasksBy === "Priority" ? (
-								<PriorityIcon priority={title as Priority} />
-							) : groupTasksBy === "Assignee" && assignee ? (
-								<Avatar className="size-4 text-xxs">
-									<AvatarImage src={assignee.avatarUrl ?? ""} />
-									<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
-								</Avatar>
-							) : groupTasksBy === "Label" && label ? (
-								<LabelColor label={label} />
-							) : (
-								<div />
-							)}
-							<div className="flex gap-2 items-center">
-								<span className="text-sm max-w-36 truncate">
-									{formatColumnTitle(title)}
-								</span>
-								<span className="ml-1 text-muted-foreground">
-									{numberOfTasks}
-								</span>
-							</div>
+					<div
+						className={
+							isListView
+								? "flex items-center text-foreground text-sm"
+								: "flex items-center gap-4 text-foreground text-sm pr-8"
+						}
+					>
+						{groupTasksBy === "Status" ? (
+							<StatusIcon status={title as Status} />
+						) : groupTasksBy === "Priority" ? (
+							<PriorityIcon priority={title as Priority} />
+						) : groupTasksBy === "Assignee" && assignee ? (
+							<Avatar className="size-4 text-xxs">
+								<AvatarImage src={assignee.avatarUrl ?? ""} />
+								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+							</Avatar>
+						) : groupTasksBy === "Label" && label ? (
+							<LabelColor label={label} />
+						) : (
+							<div />
+						)}
+						<div className="flex gap-2 items-center">
+							<span className="text-sm max-w-36 truncate">
+								{formatColumnTitle(title)}
+							</span>
+							<span className="ml-1 text-muted-foreground">
+								{numberOfTasks}
+							</span>
 						</div>
-					)
+					</div>
 				) : (
 					<div
 						className={`flex items-center text-foreground text-sm ${isListView && "ml-2 gap-4 pr-8"}`}
@@ -162,26 +153,6 @@ const TaskColumnTitle = ({
 					>
 						<CirclePlus className="size-5" />
 					</Button>
-
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								aria-label="Show task visibility modal"
-							>
-								<EllipsisVertical className="cursor-pointer size-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							<DropdownMenuItem
-								onClick={() => setShowTasks(!showTasks)}
-								className="cursor-pointer"
-							>
-								{showTasks ? "Hide" : "Unhide"}
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
 				</div>
 			</div>
 		</div>

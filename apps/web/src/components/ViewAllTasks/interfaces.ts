@@ -1,4 +1,4 @@
-import type { Status, Task } from "@squared/db";
+import type { Task } from "@squared/db";
 
 export type GroupedColumn = {
 	group: string;
@@ -6,8 +6,8 @@ export type GroupedColumn = {
 };
 export interface ViewAllTasksProps {
 	getGroupedColumns: () => GroupedColumn[];
-	allowedColumns?: Status[];
-	sprintId?: string;
+	getGroupedRows: () => GroupedColumn[];
+	tasks: Task[];
 }
 
 export interface GroupColumnProps {
@@ -18,8 +18,8 @@ export interface GroupColumnProps {
 
 export type TaskColumnTitleProps = {
 	isListView: boolean;
-	showTasks: boolean;
+	showTasks?: boolean;
 	title: string;
 	numberOfTasks: number;
-	setShowTasks: (input: boolean) => void;
+	setShowTasks?: (input: boolean) => void;
 };

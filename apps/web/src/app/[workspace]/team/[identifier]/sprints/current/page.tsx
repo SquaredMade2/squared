@@ -1,9 +1,9 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
+import TaskMatrix from "@/components/ViewAllTasks/TaskMatrix";
 import { useGroups } from "@/hooks/useGroups";
 import { useSprints } from "@/hooks/useSprints";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
@@ -17,8 +17,13 @@ export default function MyAssignedTasksPage() {
 	const { loading, authorized, workspace, teamIdentifier, handleDragEnd } =
 		useTaskDashboard();
 
-	const { getGroupedColumns, getHiddenColumns, getTasksForGroup } = useGroups(
-		(tasks) => filterTasks(tasks.filter((t) => t.sprintId === sprint?.id)),
+	const {
+		getGroupedColumns,
+		getHiddenColumns,
+		getTasksForGroup,
+		getGroupedRows,
+	} = useGroups((tasks) =>
+		filterTasks(tasks.filter((t) => t.sprintId === sprint?.id)),
 	);
 
 	if (sprintLoading) {
@@ -45,9 +50,10 @@ export default function MyAssignedTasksPage() {
 			pageTitle={`Current Sprint - ${sprint.name}`}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
-				<ViewAllTasks
+				<TaskMatrix
 					getGroupedColumns={getGroupedColumns}
-					sprintId={sprint.id}
+					getGroupedRows={getGroupedRows}
+					tasks={[]}
 				/>
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&
