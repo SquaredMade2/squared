@@ -1,4 +1,5 @@
 "use client";
+
 import { RenameModal } from "@/components/Modals";
 import { useUserStore, useViewStore } from "@/store";
 import {
@@ -15,9 +16,10 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "../ui/collapsible";
+import GroupColumn from "./GroupColumn";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
-import type { ViewAllTasksProps } from "./interfaces";
+import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const priorityOrder = [
 	Priority.noPriority,
@@ -274,53 +276,74 @@ const TaskMatrix = ({
 		});
 	};
 
+	console.log("groupedColumns", groupedColumns);
+	console.log("groupedRows", groupedRows);
 	return (
 		<>
 			<RenameModal />
-			<div className={view === "list" ? "block min-w-full" : "flex"}>
-				<div className="flex flex-nowrap gap-4 mb-4">
-					{groupedColumns.map(({ group, tasks }) => (
-						<TaskColumnTitle
-							key={group}
-							title={group}
-							numberOfTasks={tasks.length}
-							isListView={view === "list"}
-						/>
+			{rowGrouping ? (
+				<div className={view === "list" ? "block min-w-full" : "flex"}>
+					<div className="flex flex-nowrap gap-4 mb-4">
+						{groupedColumns.map(({ group, tasks }) => (
+							<TaskColumnTitle
+								key={group}
+								title={group}
+								numberOfTasks={tasks.length}
+								isListView={view === "list"}
+							/>
+						))}
+					</div>
+					{Object.entries(groupedRows).map(([group, { tasks }]) => (
+						<Collapsible key={group} className="mb-4">
+							<CollapsibleTrigger className="flex items-center w-full p-2 bg-muted rounded-t-md">
+								<ChevronRight className="h-4 w-4 mr-2" />
+								<span className="font-semibold">{group}</span>
+								<span className="ml-2 text-muted-foreground">
+									({tasks.length})
+								</span>
+							</CollapsibleTrigger>
+							<CollapsibleContent>
+								<div className="flex flex-nowrap gap-4 bg-muted/30 p-2 rounded-b-md">
+									{groupedColumns.map((column) => {
+										console.log("group", group);
+										console.log("column", column);
+										return (
+											<Droppable
+												key={`${group}-${column.group}`}
+												droppableId={`${group}-${column.group}`}
+											>
+												{(provided) => (
+													<div
+														{...provided.droppableProps}
+														ref={provided.innerRef}
+														className="space-y-2"
+													>
+														{renderGroup(
+															tasks.filter(
+																(task) => task.status === column.group,
+															),
+														)}
+														{provided.placeholder}
+													</div>
+												)}
+											</Droppable>
+										);
+									})}
+								</div>
+							</CollapsibleContent>
+						</Collapsible>
 					))}
 				</div>
-				{Object.entries(groupedRows).map(([group, { tasks }]) => (
-					<Collapsible key={group} className="mb-4">
-						<CollapsibleTrigger className="flex items-center w-full p-2 bg-muted rounded-t-md">
-							<ChevronRight className="h-4 w-4 mr-2" />
-							<span className="font-semibold">{group}</span>
-							<span className="ml-2 text-muted-foreground">
-								({tasks.length})
-							</span>
-						</CollapsibleTrigger>
-						<CollapsibleContent>
-							<div className="flex flex-nowrap gap-4 bg-muted/30 p-2 rounded-b-md">
-								{groupedColumns.map((column) => (
-									<Droppable
-										key={`${group}-${column}`}
-										droppableId={column.group}
-									>
-										{(provided) => (
-											<div
-												{...provided.droppableProps}
-												ref={provided.innerRef}
-												className="space-y-2"
-											>
-												{renderGroup(tasks)}
-												{provided.placeholder}
-											</div>
-										)}
-									</Droppable>
-								))}
-							</div>
-						</CollapsibleContent>
-					</Collapsible>
-				))}
-			</div>
+			) : (
+				groupedColumns.map((column: GroupedColumn) => (
+					<GroupColumn
+						key={column.group}
+						group={column.group}
+						tasks={column.tasks}
+						currentView={view}
+					/>
+				))
+			)}
 		</>
 	);
 };
