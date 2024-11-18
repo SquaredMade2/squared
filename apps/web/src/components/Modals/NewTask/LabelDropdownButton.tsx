@@ -32,27 +32,27 @@ const LabelColor = ({ label }: { label: Label }) => {
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
+	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 
 	const taskLabels = useMemo(() => workspace?.Labels || [], [workspace]);
-	const newIssueLabels = useMemo(
-		() => taskLabels.filter((label) => newIssueData.labels?.includes(label.id)),
-		[taskLabels, newIssueData.labels],
+	const newTaskLabels = useMemo(
+		() => taskLabels.filter((label) => newTaskData.labels?.includes(label.id)),
+		[taskLabels, newTaskData.labels],
 	);
 
 	const handleSelectLabels = (selectedLabel: Label) => {
-		const updatedLabels = newIssueLabels.includes(selectedLabel)
-			? newIssueLabels.filter((label) => label.id !== selectedLabel.id)
-			: [...newIssueLabels, selectedLabel];
+		const updatedLabels = newTaskLabels.includes(selectedLabel)
+			? newTaskLabels.filter((label) => label.id !== selectedLabel.id)
+			: [...newTaskLabels, selectedLabel];
 
-		setNewIssueData({
-			...newIssueData,
+		setNewTaskData({
+			...newTaskData,
 			labels: updatedLabels.map((label) => label.id),
 		});
 	};
 
 	const renderLabelButton = () => {
-		if (newIssueLabels.length === 0) {
+		if (newTaskLabels.length === 0) {
 			return (
 				<>
 					<Tag className="size-4" />
@@ -61,23 +61,23 @@ export const LabelDropdownButton = () => {
 			);
 		}
 
-		if (newIssueLabels.length === 1) {
+		if (newTaskLabels.length === 1) {
 			return (
 				<>
-					<LabelColor label={newIssueLabels[0]} />
-					<span className="ml-2">{newIssueLabels[0].name}</span>
+					<LabelColor label={newTaskLabels[0]} />
+					<span className="ml-2">{newTaskLabels[0].name}</span>
 				</>
 			);
 		}
 
 		return (
 			<>
-				{newIssueLabels.map((label, index) => (
+				{newTaskLabels.map((label, index) => (
 					<div key={label.id} className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}>
 						<LabelColor label={label} />
 					</div>
 				))}
-				<span className="ml-4">{`${newIssueLabels.length} labels`}</span>
+				<span className="ml-4">{`${newTaskLabels.length} labels`}</span>
 			</>
 		);
 	};
@@ -103,7 +103,7 @@ export const LabelDropdownButton = () => {
 									className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
 								>
 									<LabelBadge label={label} />
-									{newIssueLabels.includes(label) && (
+									{newTaskLabels.includes(label) && (
 										<Check className="size-4" />
 									)}
 								</CommandItem>

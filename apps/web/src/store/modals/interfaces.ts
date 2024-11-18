@@ -1,8 +1,8 @@
 import type { Task } from "@squared/db";
 
 export type ModalState = {
-	showNewIssue: boolean;
-	newIssueData: Partial<Task>;
+	showNewTask: boolean;
+	newTaskData: Partial<Task>;
 	showCommand: boolean;
 	showRename: boolean;
 	renameData: Task | null;
@@ -13,10 +13,10 @@ export type ModalState = {
 };
 
 type ModalActions = {
-	setShowNewIssue: (input: boolean) => void;
+	setShowNewTask: (input: boolean) => void;
 	setShowRename: (input: boolean) => void;
 	setRenameData: (input: Task) => void;
-	setNewIssueData: (task: Partial<Task>) => void;
+	setNewTaskData: (task: Partial<Task>) => void;
 	setShowCommand: (input: boolean) => void;
 	setShowWorkspaceInvite: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;

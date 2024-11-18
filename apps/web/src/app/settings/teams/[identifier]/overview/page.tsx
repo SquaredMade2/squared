@@ -240,7 +240,7 @@ export default function TeamsSetting() {
 										<Input {...field} maxLength={5} />
 									</FormControl>
 									<FormDescription>
-										Used in issue IDs. Max 5 characters, uppercase letters and
+										Used in task IDs. Max 5 characters, uppercase letters and
 										numbers only.
 									</FormDescription>
 									<FormMessage />
@@ -303,7 +303,7 @@ export default function TeamsSetting() {
 				<h2 className="text-xl font-semibold mb-4">Delete Team</h2>
 				<p className="text-muted-foreground mb-4">
 					<span className="font-medium">Warning: </span>
-					Deleting the team will also permanently delete any issues associated
+					Deleting the team will also permanently delete any tasks associated
 					with it. This can't be undone and your data cannot be recovered by
 					Squared.
 				</p>
