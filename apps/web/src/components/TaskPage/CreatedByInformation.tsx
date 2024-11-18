@@ -27,7 +27,7 @@ export const CreatedByInformation = () => {
 				<AvatarFallback>{getInitials(foundUser?.name)}</AvatarFallback>
 			</Avatar>
 			<p className="text-foreground ml-2 mr-4">{foundUser?.name}</p>
-			<p className="text-sm text-muted-foreground">created the issue</p>
+			<p className="text-sm text-muted-foreground">created the task</p>
 		</div>
 	);
 };

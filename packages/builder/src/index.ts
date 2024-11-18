@@ -1,5 +1,5 @@
 import "tslib";
-import { relative } from "node:path";
+import { join, sep } from "node:path";
 import createCustomLogger from "@squared/logger";
 import type { BuildOptions, SameShape } from "esbuild";
 import * as esbuild from "esbuild";
@@ -8,8 +8,9 @@ import * as tsup from "tsup";
 const logger = createCustomLogger("builder");
 
 export async function build(path: string, external?: string[]) {
-	const file = relative(process.cwd(), path);
-	const dist = `dist/${path.split("/").slice(1, -1).join("/")}`;
+	const normalizedPath = path.split(sep).join("/");
+	const file = normalizedPath;
+	const dist = join("dist", normalizedPath.split("/").slice(1, -1).join("/"));
 
 	const esbuildConfig: SameShape<BuildOptions, BuildOptions> = {
 		entryPoints: [file],

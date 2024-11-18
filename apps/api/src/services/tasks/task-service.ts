@@ -91,11 +91,11 @@ export class TaskService implements TaskRpc {
 		const newTaskNumber = highestTaskNumber + 1;
 		const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
 
-		const newIssueCount = workspace.tasksCreated + 1;
+		const newTaskCount = workspace.tasksCreated + 1;
 
 		await this.db.workspace.update({
 			where: { id: workspace.id },
-			data: { tasksCreated: newIssueCount },
+			data: { tasksCreated: newTaskCount },
 		});
 
 		const newTask = await this.db.task.create({

@@ -30,16 +30,16 @@ import { EffortDropdownButton } from "./EffortDropdownButton";
 import { LabelDropdownButton } from "./LabelDropdownButton";
 import { PriorityDropdownButton } from "./PriorityDropdownButton";
 import { StatusDropdownButton } from "./StatusDropdownButton";
-export * from "./NewIssueButton";
-export * from "./NewIssueCollapsible";
+export * from "./NewTaskButton";
+export * from "./NewTaskCollapsible";
 
-export const NewIssueModal = () => {
+export const NewTaskModal = () => {
 	const { toast } = useToast();
-	const { showNewIssue, newIssueData, setNewIssueData, setShowNewIssue } =
+	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
 	const { createTask, isLoading, error } = useCreateTask();
 
-	const { status, priority, dueDate, effortEstimate, labels } = newIssueData;
+	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
 	const formSchema = z.object({
 		title: z.string().min(2, {
@@ -57,15 +57,15 @@ export const NewIssueModal = () => {
 	});
 
 	const handleDiscard = () => {
-		setNewIssueData({});
+		setNewTaskData({});
 		form.reset();
-		setShowNewIssue(false);
+		setShowNewTask(false);
 	};
 
-	const handleCreateIssue = async (values: z.infer<typeof formSchema>) => {
+	const handleCreateTask = async (values: z.infer<typeof formSchema>) => {
 		try {
 			const createTaskParams = {
-				...newIssueData,
+				...newTaskData,
 				...values,
 				status,
 				priority,
@@ -80,19 +80,19 @@ export const NewIssueModal = () => {
 				title: "Task Created Succesfully",
 			});
 
-			setShowNewIssue(false);
-			setNewIssueData({});
+			setShowNewTask(false);
+			setNewTaskData({});
 			form.reset();
 		} catch {
 			toast({
-				title: error || "Error creating issue",
+				title: error || "Error creating task",
 				variant: "destructive",
 			});
 		}
 	};
 
 	return (
-		<Dialog open={showNewIssue} onOpenChange={setShowNewIssue}>
+		<Dialog open={showNewTask} onOpenChange={setShowNewTask}>
 			<DialogContent className="max-w-full bg-popover">
 				<DialogHeader>
 					<div className="flex items-center">
@@ -100,11 +100,11 @@ export const NewIssueModal = () => {
 							<LayoutGrid className="text-[#9577FF] w-4 h-4" />
 						</div>
 						<ChevronRight />
-						<DialogTitle className="text-sm">New Issue</DialogTitle>
+						<DialogTitle className="text-sm">New Task</DialogTitle>
 					</div>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(handleCreateIssue)}>
+					<form onSubmit={form.handleSubmit(handleCreateTask)}>
 						<div className="flex space-x-4 ">
 							<div className="w-4/5 space-y-4 ">
 								<FormField
@@ -168,7 +168,7 @@ export const NewIssueModal = () => {
 								className="hover:cursor-pointer"
 								disabled={isLoading}
 							>
-								{isLoading ? "Creating..." : "Create Issue"}
+								{isLoading ? "Creating..." : "Create Task"}
 							</Button>
 						</DialogFooter>
 					</form>
