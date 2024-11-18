@@ -24,7 +24,7 @@ import type { ContextMenuProps } from "./interfaces";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
-	const { setShowRename, setRenameData, setShowNewIssue, setNewIssueData } =
+	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
 		useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 
@@ -57,8 +57,8 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	};
 
 	const handleDuplicate = () => {
-		setNewIssueData(task);
-		setShowNewIssue(true);
+		setNewTaskData(task);
+		setShowNewTask(true);
 	};
 
 	return (
