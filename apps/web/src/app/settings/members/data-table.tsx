@@ -13,23 +13,37 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { userService } from "@/lib/services";
 import { useModalStore } from "@/store";
-import type { User, Workspace } from "@squared/db";
-import { useState } from "react";
+import { TODO } from "@squared/context";
+import type { Team, User, Workspace } from "@squared/db";
+import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 
 export type MemberWithRole = User & {
 	role: "admin" | "member";
+	teams: Team[];
+	active: string;
 };
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
 	workspace: Workspace | null;
 }
+
+interface CsvType {
+	name: string;
+	email: string;
+	role: "admin" | "member";
+	teams: string;
+	active: string;
+	lastLogin: Date;
+}
 export function DataTable({ columns, data }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const { setShowWorkspaceInvite } = useModalStore((state) => state);
+	const [membersCsv, setMembersCsv] = useState<CsvType[] | null>(null);
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -54,13 +68,33 @@ export function DataTable({ columns, data }: DataTableProps) {
 		setShowWorkspaceInvite(true);
 	};
 
-	const generateMembersCsv = () => {
-		const members = (data as MemberWithRole[]).map((member) => {
-			return member;
-		});
+	const generateMembersCsv = async () => {
+		const members = await Promise.all(
+			data.map(async (member: MemberWithRole) => {
+				const teams = await userService.getUserTeams(TODO, {
+					userId: member.id,
+				});
+				const teamNames = teams.map((team) => team.name).join(", ");
+				return {
+					name: member.name,
+					email: member.email,
+					role: member.role,
+					teams: teamNames,
+					active: "active",
+					lastLogin: member.lastLogin,
+				};
+			}),
+		);
 		return members;
 	};
-	const membersCsv = generateMembersCsv();
+
+	useEffect(() => {
+		const generateCsv = async () => {
+			const csv = await generateMembersCsv();
+			setMembersCsv(csv);
+		};
+		generateCsv();
+	}, []);
 
 	return (
 		<div className="flex flex-col items-start gap-4">
@@ -86,7 +120,9 @@ export function DataTable({ columns, data }: DataTableProps) {
 					<div className="flex justify-center items-center gap-2">
 						<Button onClick={handleWorkspaceInvite}>Invite People</Button>
 						<Button>
-							<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+							{membersCsv && (
+								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+							)}
 						</Button>
 					</div>
 				</div>

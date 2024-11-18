@@ -7,18 +7,22 @@ The User Store is a Zustand-based store designed to manage and persist user-rela
 
 ## Table of Contents
 
-1. [User Store Types](#user-store-types)
+- [User Store](#user-store)
+  - [Overview](#overview)
+  - [Table of Contents](#table-of-contents)
+  - [User Store Types](#user-store-types)
     - [UserAvatar](#useravatar)
     - [UserResponse](#userresponse)
-2. [User Store API](#user-store-api)
-    - [addUser](#adduser)
-    - [updateUser](#updateuser)
-    - [deleteUser](#deleteuser)
-    - [getUser](#getuser)
-    - [getAllUsers](#getallusers)
-    - [getUserAvatars](#getuseravatars)
-    - [getUserRepositories](#getuserrepositories)
-3. [Session Persistence](#session-persistence)
+  - [User Store API](#user-store-api)
+    - [`addUser`](#adduser)
+    - [`updateUser`](#updateuser)
+    - [`deleteUser`](#deleteuser)
+    - [`getUser`](#getuser)
+    - [`getAllUsers`](#getallusers)
+    - [`getUserAvatars`](#getuseravatars)
+    - [`getUserRepositories`](#getuserrepositories)
+    - [`getUserTeams`](#getuserteams)
+  - [Session Persistence](#session-persistence)
 
 ## User Store Types
 
@@ -102,6 +106,14 @@ The `getUserRepositories` function retrieves the repositories connected to a spe
 
 ```typescript
 getUserRepositories: (userId: string) => Promise<string[]>
+```
+
+### `getUserTeams`
+
+The `getUserTeams` function retrieves a list of teams that a user is a member of from the backend.
+
+```typescript
+getUserTeams: (userId: string) => Promise<Team[]>
 ```
 
 ## Session Persistence
