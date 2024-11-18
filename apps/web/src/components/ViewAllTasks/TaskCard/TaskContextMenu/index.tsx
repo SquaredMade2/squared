@@ -22,7 +22,7 @@ import PrioritySubContextMenu from "./PrioritySubContextMenu";
 import StatusSubContextMenu from "./StatusSubContextMenu";
 import type { ContextMenuProps } from "./interfaces";
 
-const TaskContextMenu = ({ task }: ContextMenuProps) => {
+const TaskContextMenu = ({ task, type }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { setShowRename, setRenameData } = useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
@@ -57,15 +57,15 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 	return (
 		<ContextMenuContent>
-			<StatusSubContextMenu task={task} />
+			<StatusSubContextMenu task={task} type={type} />
 
-			<AssigneeSubContextMenu task={task} />
+			<AssigneeSubContextMenu task={task} type={type} />
 
-			<PrioritySubContextMenu task={task} />
+			<PrioritySubContextMenu task={task} type={type} />
 
-			<LabelSubContextMenu task={task} />
+			<LabelSubContextMenu task={task} type={type} />
 
-			<DateSubContextMenu task={task} />
+			<DateSubContextMenu task={task} type={type} />
 
 			{/* Need to make this with a Dialog comp */}
 			<ContextMenuItem

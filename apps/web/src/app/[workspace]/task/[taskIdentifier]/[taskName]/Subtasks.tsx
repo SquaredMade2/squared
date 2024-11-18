@@ -24,13 +24,9 @@ import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-const Subtasks = ({
-	subtasks,
-}: {
-	subtasks: Task[];
-}) => {
+const Subtasks = () => {
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
-	const { setSubtasks } = useTaskStore((state) => state);
+	const { setSubtasks, subtasks } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
 
 	const onDragEnd = async (result: DropResult) => {
@@ -96,7 +92,7 @@ const Subtasks = ({
 												>
 													<ContextMenu>
 														<ContextMenuTrigger>
-															<TaskContextMenu task={subtask} />
+															<TaskContextMenu task={subtask} type="subtask" />
 															<SubtaskList
 																task={subtask}
 																user={users.find(

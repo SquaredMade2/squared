@@ -15,9 +15,9 @@ import { Check, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
-const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
+const AssigneeSubContextMenu = ({ task, type }: ContextMenuProps) => {
 	const { users } = useUserStore((state) => state);
-	const { updateTask } = useTaskStore((state) => state);
+	const { updateTask, updateSubtask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
@@ -28,9 +28,12 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(
-				await taskService.updateTask(TODO, { id: taskId, assigneeId: null }),
-			);
+			const updatedTask = await taskService.updateTask(TODO, {
+				id: taskId,
+				assigneeId: null,
+			});
+
+			type === "subtask" ? updateSubtask(updatedTask) : updateTask(updatedTask);
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);

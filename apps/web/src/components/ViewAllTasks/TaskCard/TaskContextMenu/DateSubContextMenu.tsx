@@ -12,13 +12,16 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
-const DateSubContextMenu = ({ task }: ContextMenuProps) => {
+const DateSubContextMenu = ({ task, type }: ContextMenuProps) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const { updateTask } = useTaskStore((state) => state);
+	const { updateTask, updateSubtask } = useTaskStore((state) => state);
 	const handleUpdate = async (date?: Date) => {
-		updateTask(
-			await taskService.updateTask(TODO, { id: task.id, dueDate: date }),
-		);
+		const updatedTask = await taskService.updateTask(TODO, {
+			id: task.id,
+			dueDate: date,
+		});
+
+		type === "subtask" ? updateSubtask(updatedTask) : updateTask(updatedTask);
 	};
 
 	return (

@@ -48,7 +48,7 @@ const TaskPage = () => {
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm />
-										{subtasks.length > 0 && <Subtasks subtasks={subtasks} />}
+										{subtasks.length > 0 && <Subtasks />}
 										<NewIssueCollapsible parentId={currentTask.id} />
 										<EventTabs />
 									</div>
