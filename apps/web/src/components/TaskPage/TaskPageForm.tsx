@@ -8,7 +8,7 @@ import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import Link from "next/link";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
@@ -40,10 +40,12 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 		setUpdatedDescription(e.target.value);
 	};
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (e: FormEvent) => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
 			updatedTitle !== task.title || updatedDescription !== task.description;
+		const titleOnlyChanged: boolean =
+			updatedTitle !== task.title;
 		if (changeMade && task.id !== undefined) {
 			if (task) {
 				try {
@@ -54,7 +56,9 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 							description: transformedDescriptionInput,
 						}),
 					);
-					toast({ title: "title updated successfully" });
+					if (titleOnlyChanged && e.target instanceof HTMLInputElement && e.target.name === "title") {
+						toast({ title: "Title Updated Successfully" });
+					}
 				} catch (error) {
 					toast({
 						title: "Error updating task",
