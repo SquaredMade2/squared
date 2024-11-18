@@ -25,6 +25,7 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -51,7 +52,8 @@ const TopNavBarDisplay = () => {
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
-	const { taskOrder, groupTasksBy, showCompletedTasks } = displayOptions;
+	const { taskOrder, groupTasksBy, rowGrouping, showCompletedTasks } =
+		displayOptions;
 
 	const orderByOptions: TaskOrder[] = TaskOrderOptions;
 	const groupByOptions: TaskGroup[] = TaskGroupOptions;
@@ -184,6 +186,49 @@ const TopNavBarDisplay = () => {
 												onSelect={() =>
 													setOptions({
 														groupTasksBy: option,
+													})
+												}
+											>
+												{option}
+											</DropdownMenuItem>
+										))}
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
+							<div className="flex items-center justify-between mb-3">
+								<span className="text-xs text-foreground mr-4">Sections</span>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant="outline"
+											size="sm"
+											className="flex-grow justify-between"
+										>
+											<span className="text-xs">
+												{rowGrouping ?? "No Sections"}
+											</span>
+											<Layers className="size-4" />
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent>
+										<DropdownMenuItem
+											className="text-xs"
+											onSelect={() =>
+												setOptions({
+													rowGrouping: null,
+												})
+											}
+										>
+											No Sections
+										</DropdownMenuItem>
+										<DropdownMenuSeparator />
+										{groupByOptions.map((option) => (
+											<DropdownMenuItem
+												key={option}
+												className="text-xs"
+												onSelect={() =>
+													setOptions({
+														rowGrouping: option,
 													})
 												}
 											>
