@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Globe } from "../globe";
 export const SkeletonFour = () => {
 	return (
-		<div className="h-full  flex flex-col items-center relative bg-white dark:bg-[#1E2437] mt-10">
+		<div className="h-full  flex flex-col items-center relative bg-white dark:bg-background mt-10">
 			<InfiniteMovingCards speed="fast" direction="left">
 				<MovingGrid />
 			</InfiniteMovingCards>

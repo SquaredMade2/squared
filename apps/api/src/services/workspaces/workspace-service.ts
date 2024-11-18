@@ -32,7 +32,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 	constructor(db: PrismaClient, JWT_SECRET?: string) {
 		this.db = db;
-		if (!JWT_SECRET) throw new Error("JWT_SECRET is required");
+		if (!JWT_SECRET) this.throwError("JWT_SECRET is not defined.");
 		this.JWT_SECRET = JWT_SECRET;
 		this.logger = createCustomLogger("workspace");
 	}
@@ -53,8 +53,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		});
 
 		if (existingWorkspace) {
-			this.logger.error("Workspace already exists");
-			throw new Error("Workspace already exists");
+			this.throwError("Workspace already exists");
 		}
 
 		const newWorkspace = await this.db.workspace.create({
@@ -80,8 +79,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		});
 
 		if (!newWorkspace) {
-			this.logger.error("Workspace not created");
-			throw new Error("Workspace not created");
+			this.throwError("Workspace not created");
 		}
 
 		await this.db.team.create({
@@ -183,13 +181,13 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		const workspaceId = this.verifyToken(token);
 		if (!workspaceId) {
-			throw new Error("Invalid token");
+			this.throwError("Invalid token");
 		}
 
 		const [existingUserWorkspace, workspace, user, teams] =
 			await this.fetchJoinWorkspaceData(workspaceId, userId);
 
-		if (!user) throw new Error("User not found.");
+		if (!user) this.throwError("User not found.");
 		if (existingUserWorkspace) return workspace;
 
 		this.validateJoinWorkspaceData(workspace, teams, user);
@@ -226,7 +224,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		const workspaceEmails = workspace?.Users.map((u) => u.user.email) ?? [];
 
-		if (!workspace) throw new Error("Workspace not found.");
+		if (!workspace) this.throwError("Workspace not found.");
 
 		// Generate token
 		const token = jwt.sign({ workspaceId, email }, this.JWT_SECRET, {
@@ -270,6 +268,10 @@ export class WorkspaceService implements WorkspaceRpc {
 			return null;
 		}
 	}
+	private throwError(message: string): never {
+		this.logger.error(message);
+		throw new Error(message);
+	}
 	private async fetchJoinWorkspaceData(workspaceId: string, userId: string) {
 		return await Promise.all([
 			this.db.userWorkspace.findFirst({ where: { userId, workspaceId } }),
@@ -286,9 +288,10 @@ export class WorkspaceService implements WorkspaceRpc {
 		teams: Team[],
 		user: User | null,
 	) {
-		if (!workspace) throw new Error("Workspace not found.");
-		if (teams.length === 0) throw new Error("No teams found.");
-		if (!user) throw new Error("User not found.");
+		if (!workspace) this.throwError("Workspace not found.");
+		if (teams.length === 0)
+			this.throwError("No teams found in this workspace.");
+		if (!user) this.throwError("User not found.");
 	}
 	private async createUserWorkspaceConnections(
 		userId: string,

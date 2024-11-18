@@ -68,7 +68,15 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			changes: z.record(taskValueSchema),
 			previousTask: z.object({
 				id: z.string(),
-				status: z.enum(['backlog', 'todo', 'inProgress', 'inReview', 'done', 'canceled', 'archived']),
+				status: z.enum([
+					"backlog",
+					"todo",
+					"inProgress",
+					"inReview",
+					"done",
+					"canceled",
+					"archived",
+				]),
 				authorId: z.string(),
 				description: z.string().nullable(),
 				updatedAt: z.date(),
@@ -85,8 +93,8 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 				teamId: z.string(),
 				effortEstimate: z.number().nullable(),
 				dueDate: z.date().nullable(),
-				priority: z.enum(['noPriority', 'urgent', 'high', 'medium', 'low'])
-			})
+				priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
+			}),
 		}),
 		output: taskEventSchema,
 	},

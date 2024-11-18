@@ -4,10 +4,15 @@ import {
 	teamService,
 	workspaceService,
 } from "@/lib/services";
-import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
+import {
+	useSprintStore,
+	useTaskStore,
+	useTeamStore,
+	useWorkspaceStore,
+} from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import * as context from "@squared/context";
-import type { Sprint, Task, Workspace } from "@squared/db";
+import type { Sprint, Task } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthUser } from "./useAuthUser";
@@ -15,7 +20,7 @@ import { useAuthUser } from "./useAuthUser";
 export function useSprints(sprintId?: string) {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
 	const { setTasks } = useTaskStore((state) => state);
-	const [workspace, setWorkspace] = useState<Workspace | null>(null);
+	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const [sprints, setSprints] = useState<Sprint[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);

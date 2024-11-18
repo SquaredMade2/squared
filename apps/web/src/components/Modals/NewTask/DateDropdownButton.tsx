@@ -17,12 +17,13 @@ import { useEffect } from "react";
 
 export function DateDropdownButton() {
 	const [date, setDate] = React.useState<Date>();
-	const { setNewIssueData, newIssueData } = useModalStore((state) => state);
+	const { setNewTaskData, newTaskData } = useModalStore((state) => state);
 	useEffect(() => {
 		if (date) {
-			setNewIssueData({ ...newIssueData, dueDate: date });
+			setNewTaskData({ ...newTaskData, dueDate: date });
 		}
 	}, [date]);
+
 	return (
 		<Popover>
 			<PopoverTrigger asChild>

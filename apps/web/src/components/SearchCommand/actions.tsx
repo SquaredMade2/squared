@@ -27,7 +27,7 @@ export class CommandSchema {
 	pathname: string;
 	workspace: Workspace | null;
 	team: Team | null;
-	setShowNewIssue: (input: boolean) => void;
+	setShowNewTask: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;
 	setShowNavbar: (input: boolean) => void;
 	showNavbar: boolean;
@@ -39,14 +39,14 @@ export class CommandSchema {
 	) => void;
 
 	constructor({
-		setShowNewIssue,
+		setShowNewTask,
 		setShowSwitchWorkspace,
 		setShowNavbar,
 		setShowTaskSelector,
 		clearFilter,
 		showToast,
 	}: {
-		setShowNewIssue: (input: boolean) => void;
+		setShowNewTask: (input: boolean) => void;
 		setShowSwitchWorkspace: (input: boolean) => void;
 		setShowNavbar: (input: boolean) => void;
 		setShowTaskSelector: (input: boolean) => void;
@@ -61,7 +61,7 @@ export class CommandSchema {
 		this.workspace = useWorkspaceStore((state) => state.workspace);
 		this.showNavbar = useViewStore((state) => state.showNavbar);
 		this.team = useTeamStore((state) => state.team);
-		this.setShowNewIssue = setShowNewIssue;
+		this.setShowNewTask = setShowNewTask;
 		this.setShowSwitchWorkspace = setShowSwitchWorkspace;
 		this.setShowNavbar = setShowNavbar;
 		this.setShowTaskSelector = setShowTaskSelector;
@@ -71,18 +71,18 @@ export class CommandSchema {
 
 	getSchema(): SearchbarStructure {
 		return {
-			Issue: {
-				createNewIssue: {
+			Task: {
+				createNewTask: {
 					icon: <Plus className="mr-2 h-4 w-4" />,
-					text: "Create new issue...",
+					text: "Create new task...",
 					function: () => {
-						this.setShowNewIssue(true);
+						this.setShowNewTask(true);
 					},
 					shortcut: ["C"],
 				},
-				createNewIssueFromTemplate: {
+				createNewTaskFromTemplate: {
 					icon: <Plus className="mr-2 h-4 w-4" />,
-					text: "Create new issue from template...",
+					text: "Create new task from template...",
 					function: () => {
 						/* this is for the future functionality */
 					},
@@ -125,9 +125,9 @@ export class CommandSchema {
 				},
 			},
 			Templates: {
-				createNewIssueTemplate: {
+				createNewTaskTemplate: {
 					icon: <Copy className="size-4 mr-2" />,
-					text: "Create new issue template...",
+					text: "Create new task template...",
 					function: () => {
 						/* This is for the future functionality */
 					},
@@ -159,9 +159,9 @@ export class CommandSchema {
 					},
 					shortcut: ["O", "then", "I"],
 				},
-				openLastViewedIssue: {
+				openLastViewedTask: {
 					icon: <ChevronRight className="size-4 mr-2" />,
-					text: "Open last viewed issue",
+					text: "Open last viewed task",
 					function: () => {
 						/* This is for the future functionality */
 					},

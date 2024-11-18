@@ -9,26 +9,31 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useTeams } from "@/hooks/useTeams";
+import { filterService } from "@/lib/services";
 import { useFilterStore } from "@/store";
 import type { SavedFilter } from "@/store/filters";
+import { TODO } from "@squared/context";
 import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ViewsPage() {
 	const router = useRouter();
-	const { savedFilters, getSavedFilters } = useFilterStore((state) => state);
+	const { savedFilters, setSavedFilters } = useFilterStore((state) => state);
 	const { team, loading: teamLoading } = useTeams();
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchSavedFilters = async () => {
 			if (teamLoading) return;
-			team && (await getSavedFilters(team.id));
+			team &&
+				setSavedFilters(
+					await filterService.getFilters(TODO, { teamId: team.id }),
+				);
 			setIsLoading(false);
 		};
 		fetchSavedFilters();
-	}, [getSavedFilters, team, teamLoading]);
+	}, [team, teamLoading]);
 
 	const handleFilterSelect = (filter: SavedFilter) => {
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");

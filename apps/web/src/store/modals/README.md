@@ -2,24 +2,24 @@
 
 ## Overview
 
-The Modals Store is a Zustand-based store designed to manage various modal events and rename and new issue data. It provides a simple API for setting view states for `New Issue`, `Task Rename`, `Search Command`, `Workspace Invite` and `Switch Workspace` modals as well as rename and new issue data states. This document explains the store's functionality.
+The Modals Store is a Zustand-based store designed to manage various modal events and rename and new task data. It provides a simple API for setting view states for `New Task`, `Task Rename`, `Search Command`, `Workspace Invite` and `Switch Workspace` modals as well as rename and new task data states. This document explains the store's functionality.
 
 ## Table of Contents
 
 1. [Modals Store State](#modals-store-state)
-    - [showNewIssue](#shownewissue)
+    - [showNewTask](#shownewtask)
     - [showCommand](#showcommand)
     - [showRename](#showrename)
     - [renameData](#renamedata)
     - [showWorkspaceInvite](#showworkspaceinvite)
     - [showSwitchWorkspace](#showswitchworkspace)
     - [showTaskSelector](#showtaskselector)
-    - [newIssueData](#newissuedata)
+    - [newTaskData](#newtaskdata)
 2. [Modals Store Actions](#modals-store-actions)
-    - [setShowNewIssue](#setshownewissue)
+    - [setShowNewTask](#setshownewtask)
     - [setShowRename](#setshowrename)
     - [setRenameData](#setrenamedata)
-    - [setNewIssueData](#setnewissuedata)
+    - [setNewTaskData](#setnewtaskdata)
     - [setShowCommand](#setshowcommand)
     - [setShowWorkspaceInvite](#setshowworkspaceinvite)
     - [setShowSwitchWorkspace](#setshowswitchworkspace)
@@ -27,9 +27,9 @@ The Modals Store is a Zustand-based store designed to manage various modal event
 
 ## Modals Store State
 
-### `showNewIssue`
+### `showNewTask`
 
-The `showNewIssue` is a boolean state value used to track whether to show the New Issue Modal or not.
+The `showNewTask` is a boolean state value used to track whether to show the New Task Modal or not.
 
 ### `showCommand`
 
@@ -55,19 +55,19 @@ The `showSwitchWorkspace` is a boolean state value used to track whether to show
 
 The `showTaskSelector` is a boolean state value used to track whether to show the Task Selector Modal or not.
 
-### `newIssueData`
+### `newTaskData`
 
-The `newIssueData` is an object state value that contains the data used to create a new issue.
+The `newTaskData` is an object state value that contains the data used to create a new task.
 
 ## Modals Store Actions
 
-### `setShowNewIssue`
+### `setShowNewTask`
 
-The `setShowNewIssue` function is used to update the showNewIssue state.
+The `setShowNewTask` function is used to update the showNewTask state.
 
 ```typescript
-setShowNewIssue(input) {
-  set({ showNewIssue: input });
+setShowNewTask(input) {
+  set({ showNewTask: input });
 }
 ```
 
@@ -91,13 +91,13 @@ setRenameData(input) {
 }
 ```
 
-### `setNewIssueData`
+### `setNewTaskData`
 
-The `setNewIssueData` function is used to update the newIssueData state.
+The `setNewTaskData` function is used to update the newTaskData state.
 
 ```typescript
-setNewIssueData(task) {
-  set({ newIssueData: task });
+setNewTaskData(task) {
+  set({ newTaskData: task });
 }
 ```
 

@@ -5,6 +5,7 @@ import { AuthService } from "./auth/auth-service";
 import { createCommentRpcHandler } from "./comments";
 import { CommentService } from "./comments/comment-service";
 import { EventService, createEventRpcHandler } from "./events";
+import { FilterService, createFilterRpcHandler } from "./filters";
 import { SprintService, createSprintRpcHandler } from "./sprints";
 import { TaskService, createTaskRpcHandler } from "./tasks";
 import { TeamService, createTeamRpcHandler } from "./teams";
@@ -25,6 +26,7 @@ const secret = process.env.JWT_SECRET;
 const auth = new AuthService(prisma, secret);
 const comment = new CommentService(prisma);
 const event = new EventService(prisma);
+const filter = new FilterService(prisma);
 const sprint = new SprintService(prisma);
 const team = new TeamService(prisma);
 const task = new TaskService(prisma);
@@ -35,6 +37,7 @@ export const services = {
 	auth,
 	comment,
 	event,
+	filter,
 	sprint,
 	team,
 	task,
@@ -46,6 +49,7 @@ export const rpcHandlers = {
 	auth: createAuthRpcHandler(services.auth),
 	comment: createCommentRpcHandler(services.comment),
 	event: createEventRpcHandler(services.event),
+	filter: createFilterRpcHandler(services.filter),
 	sprint: createSprintRpcHandler(services.sprint),
 	task: createTaskRpcHandler(services.task),
 	team: createTeamRpcHandler(services.team),

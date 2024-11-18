@@ -91,7 +91,10 @@ export class EventService implements EventRpc {
 				type: "PARTICIPATING",
 			});
 
-			if (previousTask.assigneeId && previousTask.assigneeId !== previousTask.authorId) {
+			if (
+				previousTask.assigneeId &&
+				previousTask.assigneeId !== previousTask.authorId
+			) {
 				await this.createNotification({
 					userId: previousTask.assigneeId,
 					taskId,
@@ -105,18 +108,18 @@ export class EventService implements EventRpc {
 		return taskEvent;
 	}
 	async createNotification({
-			userId,
-			taskId,
-			description,
-			workspaceId,
-			type,
-		}: {
-			userId: string;
-			taskId: string;
-			workspaceId: string;
-			description?: string;
-			type: NotificationType;
-		}): Promise<Notification> {
+		userId,
+		taskId,
+		description,
+		workspaceId,
+		type,
+	}: {
+		userId: string;
+		taskId: string;
+		workspaceId: string;
+		description?: string;
+		type: NotificationType;
+	}): Promise<Notification> {
 		return this.notificationRepository.create({
 			data: {
 				userId,
@@ -161,49 +164,51 @@ export class EventService implements EventRpc {
 		changes: Partial<Task>,
 	): Promise<string> {
 		const diff = await Promise.all(
-			Object.entries(changes)
-				.map(async ([key, newValue]) => {
-					if (key === 'id' || key === 'updatedAt') return null;
-					if (newValue === undefined) return null;
-					
-					const oldValue = previousTask[key as keyof Task];
-					const formattedOldValue = await this.formatValue(oldValue, key);
-					const formattedNewValue = await this.formatValue(newValue, key);
+			Object.entries(changes).map(async ([key, newValue]) => {
+				if (key === "id" || key === "updatedAt") return null;
+				if (newValue === undefined) return null;
 
-					if (formattedOldValue !== formattedNewValue) {
-						const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
-						return diffString;
-					}
-					return null;
-				})
+				const oldValue = previousTask[key as keyof Task];
+				const formattedOldValue = await this.formatValue(oldValue, key);
+				const formattedNewValue = await this.formatValue(newValue, key);
+
+				if (formattedOldValue !== formattedNewValue) {
+					const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
+					return diffString;
+				}
+				return null;
+			}),
 		);
 
 		// Filter out null values, if empty, it means there are no changes made
 		const filteredDiff = diff.filter(Boolean).join(", ");
 		return filteredDiff.length > 0 ? filteredDiff : "No changes";
 	}
-	private async formatValue(value: Task[keyof Task], key: string): Promise<string> {
+	private async formatValue(
+		value: Task[keyof Task],
+		key: string,
+	): Promise<string> {
 		if (value === null || value === undefined) {
 			return "null";
 		}
 
 		// Handle assigneeId
-		if (key === 'assigneeId' && typeof value === 'string') {
+		if (key === "assigneeId" && typeof value === "string") {
 			const user = await this.userRepository.findUnique({
 				where: { id: value },
-				select: { name: true }
+				select: { name: true },
 			});
-			return `"${user?.name ?? 'Unknown User'}"`;
+			return `"${user?.name ?? "Unknown User"}"`;
 		}
 
 		// Handle labels array
-		if (Array.isArray(value) && key === 'labels') {
+		if (Array.isArray(value) && key === "labels") {
 			const labelIds = value as string[];
 			const labels = await this.labelRepository.findMany({
 				where: { id: { in: labelIds } },
-				select: { name: true }
+				select: { name: true },
 			});
-			return JSON.stringify(labels.map(l => l.name));
+			return JSON.stringify(labels.map((l) => l.name));
 		}
 
 		if (typeof value === "string") {

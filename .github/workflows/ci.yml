@@ -2,7 +2,6 @@ name: CI Pipeline
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -133,6 +132,20 @@ jobs:
     needs: [detect-changes, setup]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.api-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: squared
+          POSTGRES_PASSWORD: squared
+          POSTGRES_DB: squared-test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -155,8 +168,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --frozen-lockfile
-      - name: Run API tests
-        run: pnpm --filter=api test
+      - name: Run tests
+        run: pnpm run --filter=api test:ci
+        env:
+          POSTGRES_PRISMA_URL: postgresql://squared:squared@localhost:5433/squared-test
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          EMAIL_USERNAME: info@squaredmade.com
+          EMAIL_PASSWORD: H=3x=_uhQa
+          POSTGRES_PORT: 5434
+          NODE_ENV: test
       - name: Build API
         run: pnpm --filter=api build
 

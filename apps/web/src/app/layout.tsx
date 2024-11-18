@@ -2,7 +2,7 @@ import "./globals.css";
 import "@squared/fonts/src/styles.css";
 import createCustomLogger from "@squared/logger";
 import type { Metadata } from "next";
-import ClientLayoutWrapper from "./clientLayout-wrapper";
+import ClientLayoutWrapper from "./AppLayoutWrapper";
 
 const logger = createCustomLogger("layout");
 
