@@ -119,11 +119,6 @@ export function DataTable({ columns, data }: DataTableProps) {
 					/>
 					<div className="flex justify-center items-center gap-2">
 						<Button onClick={handleWorkspaceInvite}>Invite People</Button>
-						<Button>
-							{membersCsv && (
-								<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
-							)}
-						</Button>
 					</div>
 				</div>
 				<Table>
@@ -156,6 +151,17 @@ export function DataTable({ columns, data }: DataTableProps) {
 						)}
 					</TableBody>
 				</Table>
+				<div className="flex flex-col justify-end items-center py-4 w-full gap-2 md:flex-row">
+					<p className="text-muted-foreground">
+						Download your member data in a CSV format for use elsewhere. This
+						includes names, emails, roles, and much more!
+					</p>
+					<Button variant={"outline"}>
+						{membersCsv && (
+							<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+						)}
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
