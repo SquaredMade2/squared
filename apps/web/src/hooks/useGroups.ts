@@ -57,9 +57,10 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		return Array.from(new Set(groupTitles));
 	};
 
-	const getTasksForGroup = (group: string) => {
+	const getTasksForGroup = (group: string, type: "column" | "row") => {
 		const taskFilter = filterTasks(tasks);
-		switch (groupTasksBy) {
+
+		switch (type === "column" ? groupTasksBy : rowGrouping) {
 			case "Status":
 				return taskFilter.filter((task) => task.status === group);
 			case "Assignee":
@@ -117,7 +118,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 		let groupedColumns = groupColumnTitles
 			.map((group) => {
-				let tasksForGroup = getTasksForGroup(group);
+				let tasksForGroup = getTasksForGroup(group, "column");
 
 				if (groupTasksBy === "Status") {
 					if (group === Status.archived) return null;
@@ -158,9 +159,9 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 
 		let groupedRows = groupRowTitles
 			.map((group) => {
-				let tasksForGroup = getTasksForGroup(group);
+				let tasksForGroup = getTasksForGroup(group, "row");
 
-				if (groupTasksBy === "Status") {
+				if (rowGrouping === "Status") {
 					if (group === Status.archived) return null;
 					if (group === Status.done) {
 						const { period, show } = displayOptions.showCompletedTasks;
@@ -179,7 +180,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 			})
 			.filter((item) => item !== null); // Filter out null values
 
-		if (groupTasksBy === "Assignee") {
+		if (rowGrouping === "Assignee") {
 			groupedRows = groupedRows.sort((a, b) => {
 				if (a.group === "Unassigned") return 1;
 				if (b.group === "Unassigned") return -1;
@@ -197,7 +198,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const getHiddenColumns = (): string[] => {
 		const groupColumnTitles = getGroupTitles(groupTasksBy);
 		return groupColumnTitles.filter((group) => {
-			const tasks = getTasksForGroup(group);
+			const tasks = getTasksForGroup(group, "column");
 			if (displayOptions.groupTasksBy === "Status") {
 				if (group === Status.archived) return false;
 				if (group === Status.done && !displayOptions.showCompletedTasks.show) {

@@ -20,7 +20,7 @@ const HiddenColumns = ({
 	getTasksForGroup,
 }: {
 	getHiddenColumns: () => string[];
-	getTasksForGroup: (group: string) => Task[];
+	getTasksForGroup: (group: string, type: "column" | "row") => Task[];
 }) => {
 	const { displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
@@ -77,7 +77,7 @@ const HiddenColumns = ({
 											</div>
 											<span>{formatColumnTitle(column)}</span>
 											<span className="ml-1 text-muted-foreground">
-												{getTasksForGroup(column).length}
+												{getTasksForGroup(column, "column").length}
 											</span>
 										</div>
 									</div>

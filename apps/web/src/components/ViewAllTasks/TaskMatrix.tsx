@@ -225,6 +225,7 @@ const TaskMatrix = ({
 	);
 
 	const renderGroup = (tasks: Task[]) => {
+		console.log("tasks to render: ", tasks);
 		const parentIdsForGroup = getParentTaskIds();
 		const subtaskParentIds = new Set(
 			tasks.filter((t) => t.parentId).map((t) => t.parentId),
@@ -276,8 +277,8 @@ const TaskMatrix = ({
 		});
 	};
 
-	console.log("groupedColumns", groupedColumns);
-	console.log("groupedRows", groupedRows);
+	// console.log("groupedColumns", groupedColumns);
+	// console.log("groupedRows", groupedRows);
 	return (
 		<>
 			<RenameModal />
@@ -305,8 +306,10 @@ const TaskMatrix = ({
 							<CollapsibleContent>
 								<div className="flex flex-nowrap gap-4 bg-muted/30 p-2 rounded-b-md">
 									{groupedColumns.map((column) => {
-										console.log("group", group);
-										console.log("column", column);
+										const tasksForColumn = tasks.filter(
+											(task) => task.status === column.group,
+										);
+										console.log("tasksForColumn", tasksForColumn);
 										return (
 											<Droppable
 												key={`${group}-${column.group}`}
