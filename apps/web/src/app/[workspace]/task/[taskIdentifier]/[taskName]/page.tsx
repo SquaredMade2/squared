@@ -12,11 +12,13 @@ import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
+import { useTaskStore } from "@/store";
 import { useEffect } from "react";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
-	const { task, isLoading, error, workspace, users, subtasks } = useTaskPage();
+	const { isLoading, error, subtasks } = useTaskPage();
+	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	useEffect(() => {
@@ -30,7 +32,7 @@ const TaskPage = () => {
 
 	return (
 		<div className="w-full h-screen flex bg-background overflow-hidden">
-			{isLoading || !task ? (
+			{isLoading || !currentTask ? (
 				<LoadingTask />
 			) : (
 				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
@@ -38,30 +40,21 @@ const TaskPage = () => {
 						<div className="flex flex-col w-full relative">
 							<div className="w-full snap-start z-0 overflow-x-hidden">
 								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-									<TaskBreadcrumbs task={task} workspace={workspace} />
+									<TaskBreadcrumbs />
 								</div>
 							</div>
 							<MobileTaskSettings />
 							<div className="flex w-full relative">
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
-										<TaskPageForm task={task} />
-										{subtasks.length > 0 && (
-											<Subtasks
-												subtasks={subtasks}
-												users={users}
-												currentWorkspaceUrl={workspace?.url}
-											/>
-										)}
-										<NewIssueCollapsible parentId={task.id} />
+										<TaskPageForm />
+										{subtasks.length > 0 && <Subtasks subtasks={subtasks} />}
+										<NewIssueCollapsible parentId={currentTask.id} />
 										<EventTabs />
 									</div>
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">
-									<TaskSidebarTopRow
-										task={task}
-										workspaceUrl={workspace?.url}
-									/>
+									<TaskSidebarTopRow />
 									<TaskDesignationsContainer />
 								</div>
 							</div>

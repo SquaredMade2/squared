@@ -6,15 +6,17 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import type { Task, Workspace } from "@squared/db";
+import {
+	useTaskStore,
+	useTeamStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
 import Link from "next/link";
 
-export const TaskBreadcrumbs = ({
-	task,
-	workspace,
-}: { task: Task; workspace: Workspace | null }) => {
-	const { workspaces } = useWorkspaceStore((state) => state);
+export const TaskBreadcrumbs = () => {
+	const { workspaces, workspace } = useWorkspaceStore((state) => state);
+	const { currentTask: task } = useTaskStore((state) => state);
 	const { team } = useTeamStore((state) => state);
 	const { lastVisitedPage } = useViewStore((state) => state);
 	const index: number = workspace
@@ -44,7 +46,7 @@ export const TaskBreadcrumbs = ({
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />
 					<BreadcrumbItem className="truncate max-w-full">
-						{task.title ?? ""}
+						{task?.title ?? ""}
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
