@@ -9,8 +9,8 @@
     "tailwind-plugin.js"
   ],
   "scripts": {
-    "build": "tsc && npm run build:css",
-    "build:css": "mkdir -p dist && cp src/styles.css dist/styles.css && cp -R src/fonts dist/fonts"
+    "prebuild": "rimraf dist",
+    "build": "tsc && node scripts/build-css.js"
   },
   "keywords": [
     "font",

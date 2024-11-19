@@ -6,7 +6,7 @@ import LowEffort from "@/components/SVG/low-effort";
 import MediumPriority from "@/components/SVG/medium-priority";
 import TodoIcon from "@/components/SVG/todo-icon";
 import UrgentPriority from "@/components/SVG/urgent-priority";
-import { NewIssueDropDown } from "@/components/new-issue-dropdown";
+import { NewTaskDropDown } from "@/components/new-task-dropdown";
 
 export const SkeletonThree = () => {
 	return (
@@ -16,7 +16,7 @@ export const SkeletonThree = () => {
 			<div className="flex flex-1 w-full h-full flex-col space-y-2 ">
 				<div className="flex justify-between border-b dark:border-neutral-700 pb-2 p-4">
 					<p className="text-muted text-sm font-bold dark:text-muted-dark">
-						LIV › New Issue
+						LIV › New Task
 					</p>
 					{/* <p className="shadow-derek text-muted dark:text-muted-dark text-sm px-2 py-1 rounded-md flex-shrink-0 flex space-x-1 items-center dark:bg-neutral-700">
             <IconPlus className="h-4 w-4 text-muted dark:text-muted-dark" />{" "}
@@ -37,7 +37,7 @@ export const SkeletonThree = () => {
 					</div>
 
 					<div className="flex gap-7">
-						<NewIssueDropDown
+						<NewTaskDropDown
 							options={[
 								{ value: "Todo", id: 0, icon: TodoIcon },
 								{ value: "Backlog", id: 1, icon: BacklogIcon },
@@ -45,7 +45,7 @@ export const SkeletonThree = () => {
 							]}
 						/>
 						{/* Priority */}
-						<NewIssueDropDown
+						<NewTaskDropDown
 							options={[
 								{ value: "Urgent", id: 0, icon: UrgentPriority },
 								{ value: "High", id: 1, icon: HighPriority },
@@ -53,7 +53,7 @@ export const SkeletonThree = () => {
 							]}
 						/>
 						{/* Effort */}
-						<NewIssueDropDown
+						<NewTaskDropDown
 							options={[
 								{ value: "Effort: 1", id: 0, icon: LowEffort },
 								{ value: "Effort: 2", id: 1, icon: LowEffort },

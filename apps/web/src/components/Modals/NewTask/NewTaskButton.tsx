@@ -5,16 +5,16 @@ import type { Status } from "@squared/db";
 import { SquarePen } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export const NewIssueButton = () => {
-	const { showNewIssue, setShowNewIssue, newIssueData, setNewIssueData } =
+export const NewTaskButton = () => {
+	const { showNewTask, setShowNewTask, newTaskData, setNewTaskData } =
 		useModalStore((state) => state);
 	const { state: sidebarState } = useSidebar();
 	const titleArr: { status: Status } = { status: "todo" };
 
 	const handleOpen = () => {
-		setShowNewIssue(true);
-		setNewIssueData({
-			...newIssueData,
+		setShowNewTask(true);
+		setNewTaskData({
+			...newTaskData,
 			status: titleArr.status,
 		});
 	};
@@ -33,11 +33,11 @@ export const NewIssueButton = () => {
 			{!isCollapsed && (
 				<>
 					<span className="px-2 w-auto">
-						{Object.keys(newIssueData).length > 0 && !showNewIssue
+						{Object.keys(newTaskData).length > 0 && !showNewTask
 							? "Resume editing"
-							: "New Issue"}
+							: "New Task"}
 					</span>
-					{Object.keys(newIssueData).length > 0 && !showNewIssue && (
+					{Object.keys(newTaskData).length > 0 && !showNewTask && (
 						<div className="w-1.5 h-1.5 rounded-md bg-accent border-border ml-2" />
 					)}
 				</>
@@ -46,8 +46,8 @@ export const NewIssueButton = () => {
 	);
 };
 
-export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
-	const { setShowNewIssue, newIssueData, setNewIssueData } = useModalStore(
+export const GridColumnNewTaskButton = ({ group }: { group: string }) => {
+	const { setShowNewTask, newTaskData, setNewTaskData } = useModalStore(
 		(state) => state,
 	);
 	const { displayOptions } = useViewStore((state) => state);
@@ -65,7 +65,7 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 				return "priority";
 			case "Label":
 				return "labels";
-			// case "Parent Issue":
+			// case "Parent Task":
 			// 	return "parentId";
 			default:
 				return "status";
@@ -73,9 +73,9 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 	})();
 
 	const handleOpen = () => {
-		setShowNewIssue(true);
-		setNewIssueData({
-			...newIssueData,
+		setShowNewTask(true);
+		setNewTaskData({
+			...newTaskData,
 			sprintId: path.includes("sprint") ? (sprint?.id ?? null) : null,
 			[key]: group,
 		});
@@ -92,11 +92,11 @@ export const GridColumnNewIssueButton = ({ group }: { group: string }) => {
 	);
 };
 
-export const NoTasksNewIssueButton = () => {
-	const { setShowNewIssue } = useModalStore((state) => state);
+export const NoTasksNewTaskButton = () => {
+	const { setShowNewTask } = useModalStore((state) => state);
 
 	const handleOpen = () => {
-		setShowNewIssue(true);
+		setShowNewTask(true);
 	};
 
 	return (
