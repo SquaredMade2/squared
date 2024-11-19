@@ -81,7 +81,7 @@ export const RenameModal = () => {
 									<Pencil className="size-4" />
 								</span>
 								<p>
-									Rename issue to
+									Rename task to
 									<span className="ml-2 italic">{`"${inputValue}"`}</span>
 								</p>
 							</Button>

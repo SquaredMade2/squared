@@ -23,7 +23,7 @@ export const tiers: Tier[] = [
 			"Unlimited Members",
 			"Email support within 48 hours",
 			"All integrations, APIs, and webhooks",
-			"250 issues (+unlimited archived)",
+			"250 tasks (+unlimited archived)",
 			"Community forum access",
 		],
 		featured: false,
@@ -39,7 +39,7 @@ export const tiers: Tier[] = [
 		description: "Perfect for small businesses",
 		features: [
 			"Everything in Hobby, plus",
-			"Unlimited issues and file uploads (100 mb per file)",
+			"Unlimited tasks and file uploads (100 mb per file)",
 			"Admin Tools",
 			"Email support within 24 hours",
 			"SSO access",
@@ -58,7 +58,7 @@ export const tiers: Tier[] = [
 		features: [
 			"Everything in Starter, plus",
 			"Progress reports",
-			"Unlimited issues and file uploads (1 GB per file)",
+			"Unlimited tasks and file uploads (1 GB per file)",
 			"Access to super advanced API endpoints",
 			"Email support within 6 hours",
 			"Self hosting options",

@@ -170,7 +170,7 @@ export default function CreateTeam() {
 													/>
 													<FormDescription>
 														This is used as the identifier (e.g. ENG-123) for
-														all issues of the team. Keep it short and simple.
+														all tasks of the team. Keep it short and simple.
 													</FormDescription>
 												</div>
 											</FormControl>
