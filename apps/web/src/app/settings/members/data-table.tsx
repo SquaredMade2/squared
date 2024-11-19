@@ -80,6 +80,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 					teams: teamNames,
 					active: "active",
 					lastLogin: member.lastLogin,
+					createdAt: member.createdAt,
 				};
 			}),
 		);
