@@ -5,7 +5,7 @@ export * from "./store";
 
 export const createModalStore = (
 	initState: ModalState = {
-		showNewIssue: false,
+		showNewTask: false,
 		showCommand: false,
 		showRename: false,
 		renameData: null,
@@ -13,13 +13,13 @@ export const createModalStore = (
 		showSwitchWorkspace: false,
 		showTaskSelector: false,
 		showLinkForm: false,
-		newIssueData: {},
+		newTaskData: {},
 	},
 ) => {
 	return createStore<ModalStore>()((set) => ({
 		...initState,
-		setShowNewIssue: (input) => {
-			set({ showNewIssue: input });
+		setShowNewTask: (input) => {
+			set({ showNewTask: input });
 		},
 		setShowRename: (input) => {
 			set({ showRename: input });
@@ -27,8 +27,8 @@ export const createModalStore = (
 		setRenameData: (input) => {
 			set({ renameData: input });
 		},
-		setNewIssueData: (task) => {
-			set({ newIssueData: task });
+		setNewTaskData: (task) => {
+			set({ newTaskData: task });
 		},
 		setShowCommand: (input) => {
 			set({ showCommand: input });

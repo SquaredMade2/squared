@@ -48,7 +48,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}
-			// case "Parent Issue":
+			// case "Parent Task":
 			// 	groupTitles = tasks.map((task) => task.parentId || "No parent");
 			// 	break;
 			default:
@@ -69,7 +69,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				return taskFilter.filter((task) => task.priority === group);
 			case "Label":
 				return taskFilter.filter((task) => task.labels.includes(group));
-			// case "Parent Issue": {
+			// case "Parent Task": {
 			// 	const hasParentTask = taskFilter.filter(
 			// 		(task) => task.parentId === group,
 			// 	);

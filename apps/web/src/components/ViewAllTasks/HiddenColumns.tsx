@@ -42,7 +42,7 @@ const HiddenColumns = ({
 				const labelName = workspace?.Labels.find((label) => label.id === title);
 				return labelName ? labelName.name : "No label";
 			}
-			case "Parent Issue": {
+			case "Parent Task": {
 				const parentTask = tasks.find((t) => t.id === title);
 				return parentTask ? parentTask.title : "No parent";
 			}
