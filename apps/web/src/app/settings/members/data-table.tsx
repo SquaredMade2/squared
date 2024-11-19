@@ -16,14 +16,12 @@ import { Input } from "@/components/ui/input";
 import { userService } from "@/lib/services";
 import { useModalStore } from "@/store";
 import { TODO } from "@squared/context";
-import type { Team, User, Workspace } from "@squared/db";
+import type { User, Workspace } from "@squared/db";
 import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 
 export type MemberWithRole = User & {
 	role: "admin" | "member";
-	teams: Team[];
-	active: string;
 };
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
