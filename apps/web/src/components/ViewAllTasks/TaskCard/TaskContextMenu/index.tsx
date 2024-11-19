@@ -138,11 +138,10 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							className="bg-destructive hover:bg-destructive-foreground"
-							onClick={deleteCurrentTask}
-						>
+						<AlertDialogAction asChild>
+						   <Button variant="destructive" onClick={deleteCurrentTask}>
 							Delete Task
+						   </Button>
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
