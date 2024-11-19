@@ -8,6 +8,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
 	ContextMenuContent,
 	ContextMenuItem,
@@ -139,9 +140,9 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction asChild>
-						   <Button variant="destructive" onClick={deleteCurrentTask}>
-							Delete Task
-						   </Button>
+							<Button variant="destructive" onClick={deleteCurrentTask}>
+								Delete Task
+							</Button>
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
