@@ -96,7 +96,7 @@ const FilterDropDown: React.FunctionComponent = () => {
 	return (
 		<div className="flex items-center">
 			<DropdownMenu>
-				<DropdownMenuTrigger>
+				<DropdownMenuTrigger asChild>
 					<Button variant="ghost">
 						<div className="flex gap-2 items-center">
 							<Filter className="size-5" />
