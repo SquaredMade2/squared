@@ -37,7 +37,8 @@ import type { ContextMenuProps } from "./interfaces";
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 	const { toast } = useToast();
-	const { setShowRename, setRenameData } = useModalStore((state) => state);
+	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
+		useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	const title = task !== undefined ? task.title : "";
@@ -68,6 +69,11 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 		navigator.clipboard.writeText(identifier);
 	};
 
+	const handleDuplicate = () => {
+		setNewTaskData(task);
+		setShowNewTask(true);
+	};
+
 	return (
 		<>
 			<ContextMenuContent>
@@ -90,6 +96,8 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 				>
 					Rename Task
 				</ContextMenuItem>
+
+				<ContextMenuItem onClick={handleDuplicate}>Duplicate</ContextMenuItem>
 
 				<ContextMenuSeparator />
 				{/*  No Subscribe feature yet

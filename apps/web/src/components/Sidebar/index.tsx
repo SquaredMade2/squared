@@ -27,10 +27,19 @@ import {
 } from "@/store";
 import { TODO } from "@squared/context";
 import type { Workspace } from "@squared/db";
-import { Home, Inbox, Moon, Search, Settings, Sun } from "lucide-react";
+import {
+	Home,
+	Inbox,
+	type LucideIcon,
+	Moon,
+	Search,
+	Settings,
+	Sun,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
@@ -70,7 +79,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 		};
 
 		fetchData();
-	}, [user, setTeams]);
+	}, [user, setTeams, workspace]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {
@@ -153,13 +162,6 @@ export function SidebarNav() {
 	);
 }
 
-interface IconButtonProps {
-	icon: React.ElementType;
-	label: string;
-	onClick: () => void;
-	notificationCount?: number;
-}
-
 function ToggleSidebarButton() {
 	const { state } = useSidebar();
 
@@ -172,13 +174,29 @@ function ToggleSidebarButton() {
 	);
 }
 
-function IconButton({
+interface IconButtonProps {
+	icon: LucideIcon;
+	label: string;
+	onClick: () => void;
+	notificationCount?: number;
+}
+
+export function IconButton({
 	icon: Icon,
 	label,
 	onClick,
 	notificationCount,
 }: IconButtonProps) {
 	const { state } = useSidebar();
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) {
+		return null;
+	}
 
 	return (
 		<Tooltip>
@@ -192,7 +210,7 @@ function IconButton({
 						state === "collapsed" ? "px-2" : ""
 					}`}
 				>
-					<Icon className="h-4 w-4 shrink-0" />
+					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
 					<span
 						className={`ml-2 transition-all duration-300 ${
 							state === "collapsed"
@@ -202,11 +220,14 @@ function IconButton({
 					>
 						{label}
 					</span>
-					{notificationCount && notificationCount > 0 ? (
+					{notificationCount && notificationCount > 0 && (
 						<div
-							className={`absolute h-2 w-2 bg-primary rounded-full ${state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"}`}
+							className={`absolute h-2 w-2 bg-primary rounded-full ${
+								state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"
+							}`}
+							aria-hidden="true"
 						/>
-					) : null}
+					)}
 				</Button>
 			</TooltipTrigger>
 			<TooltipContent side="right">{label}</TooltipContent>
