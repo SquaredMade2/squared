@@ -40,7 +40,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { NewIssueButton } from "../Modals";
+import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
 import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
@@ -79,7 +79,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 		};
 
 		fetchData();
-	}, [user, setTeams]);
+	}, [user, setTeams, workspace]);
 
 	const handleLogout = async (): Promise<void> => {
 		try {
@@ -104,7 +104,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 		<>
 			<SidebarHeader className="space-y-2 px-2">
 				<WorkspaceDropdown />
-				<NewIssueButton />
+				<NewTaskButton />
 				<div className="flex flex-col space-y-2">
 					<IconButton icon={Home} label="Home" onClick={toHome} />
 					<IconButton

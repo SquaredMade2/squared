@@ -14,11 +14,11 @@ import type { Priority } from "@squared/db";
 import { Check } from "lucide-react";
 
 export const PriorityDropdownButton = () => {
-	const { newIssueData, setNewIssueData } = useModalStore((state) => state);
-	const newIssuePriority = newIssueData.priority;
+	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
+	const newTaskPriority = newTaskData.priority;
 
 	const handleSelectPriority = (priority: Priority) => {
-		setNewIssueData({ ...newIssueData, priority });
+		setNewTaskData({ ...newTaskData, priority });
 	};
 
 	return (
@@ -26,10 +26,10 @@ export const PriorityDropdownButton = () => {
 			<DropdownMenuTrigger asChild>
 				<Button variant="outline" className="max-w-full w-full">
 					<span className="cursor-pointer">
-						<PriorityIcon priority={newIssuePriority || "noPriority"} />
+						<PriorityIcon priority={newTaskPriority || "noPriority"} />
 					</span>
 					<span className="ml-2 cursor-pointer">
-						{formatPriority(newIssuePriority || "noPriority")}
+						{formatPriority(newTaskPriority || "noPriority")}
 					</span>
 				</Button>
 			</DropdownMenuTrigger>
@@ -40,7 +40,7 @@ export const PriorityDropdownButton = () => {
 				className="w-[150px]"
 			>
 				<DropdownMenuRadioGroup
-					value={newIssuePriority}
+					value={newTaskPriority}
 					onValueChange={(priority) =>
 						handleSelectPriority(priority as Priority)
 					}
@@ -57,7 +57,7 @@ export const PriorityDropdownButton = () => {
 									{formatPriority(priority)}
 								</span>
 							</div>
-							{newIssuePriority === priority && <Check className="h-4 w-4" />}
+							{newTaskPriority === priority && <Check className="h-4 w-4" />}
 						</DropdownMenuItem>
 					))}
 				</DropdownMenuRadioGroup>
