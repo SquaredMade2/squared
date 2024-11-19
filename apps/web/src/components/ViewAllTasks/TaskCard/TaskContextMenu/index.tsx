@@ -133,7 +133,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete Task</AlertDialogTitle>
 						<AlertDialogDescription>
-							Are you sure you want to delete {task.title}?
+							Are you sure you want to delete "{task.title}"?
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
