@@ -70,7 +70,9 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {`);
 
 	writeLn(`
   // Setup Swagger documentation
-  setupSwagger(router);
+   if (process.env.NODE_ENV !== 'test') {
+    setupSwagger(router);
+  }
 }`);
 }
 

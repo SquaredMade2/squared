@@ -8,7 +8,7 @@ import type { Workspace } from "@squared/db";
 import { Clipboard } from "lucide-react";
 import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
-import { NoTasksNewIssueButton } from "../Modals";
+import { NoTasksNewTaskButton } from "../Modals";
 
 interface TaskPageLayoutProps {
 	loading: boolean;
@@ -66,7 +66,7 @@ export function TaskPageLayout({
 						You haven't created any tasks. Start by adding a new task to your
 						dashboard.
 					</p>
-					<NoTasksNewIssueButton />
+					<NoTasksNewTaskButton />
 				</div>
 			) : currentWorkspace ? (
 				<div className="flex-grow overflow-hidden">

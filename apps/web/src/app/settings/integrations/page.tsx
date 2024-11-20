@@ -37,7 +37,7 @@ const IntegrationSettings = () => {
 									<CardTitle>Github</CardTitle>
 									<CardDescription>
 										Automate your pull request and commit workflows and keep
-										issues synced both ways
+										tasks synced both ways
 									</CardDescription>
 								</div>
 							</CardHeader>

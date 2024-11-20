@@ -26,13 +26,14 @@ export class AuthService implements AuthRpc {
 		this.logger = createCustomLogger("auth");
 	}
 	async login({ email, password }: Login): Promise<UserToken | null> {
+		this.logger.info("Logging in user %s", email);
 		// Check if the user exists
 		const user: User | null = await this.db.user.findUnique({
 			where: { email },
 		});
 
 		if (!user) {
-			throw new Error("No user found, please register.");
+			this.throwError("No user found, please register.");
 		}
 
 		if (!user.verified) {
@@ -47,16 +48,16 @@ export class AuthService implements AuthRpc {
 				subject: "Verify Your Email",
 				html: verifyEmailTemplate(`verify/${emailToken}`),
 			});
-			throw new Error(
+			this.throwError(
 				"Your email is not verified. A verification link has been sent to your email.",
 			);
 		}
 
-		if (!user.password) throw new Error("This user has no password.");
+		if (!user.password) this.throwError("This user has no password.");
 
 		const passwordMatch = await this.comparePassword(password, user.password);
 
-		if (!passwordMatch) throw new Error("Incorrect Password");
+		if (!passwordMatch) this.throwError("Incorrect Password");
 
 		const { token } = await this.returnToken(user, this.JWT_SECRET);
 
@@ -69,10 +70,12 @@ export class AuthService implements AuthRpc {
 		username,
 		avatarUrl,
 	}: OauthLogin): Promise<UserToken | null> {
+		this.logger.info("Logging in user %s", email);
 		let user: User | null = await this.db.user.findUnique({
 			where: { email },
 		});
 		if (!user) {
+			this.logger.info("Creating new user %s", email);
 			user = await this.db.user.create({
 				data: {
 					email,
@@ -84,7 +87,7 @@ export class AuthService implements AuthRpc {
 				},
 			});
 		} else if (user && user.googleId !== oauthId) {
-			throw new Error(
+			this.throwError(
 				"This email is already registered with a different account.",
 			);
 		}
@@ -102,11 +105,12 @@ export class AuthService implements AuthRpc {
 		password,
 		inviteToken,
 	}: Register): Promise<User | null> {
+		this.logger.info("Registering user %s", email);
 		const existingUser = await this.db.user.findUnique({
 			where: { email },
 		});
 
-		if (existingUser) throw new Error("This email is already registered.");
+		if (existingUser) this.throwError("This email is already registered.");
 
 		// Creating the user
 		const hashedPassword = await this.hashPassword(password);
@@ -120,7 +124,8 @@ export class AuthService implements AuthRpc {
 			},
 		});
 		if (inviteToken && user) {
-			const { status } = await joinWorkspace(inviteToken, user.id);
+			this.logger.info("Joining workspace with invite token %s", inviteToken);
+			const { status } = await joinWorkspace(inviteToken, user.id, this.db);
 			if (status === 200) {
 				const newUser = await this.db.user.findUnique({
 					where: { id: user.id },
@@ -144,11 +149,14 @@ export class AuthService implements AuthRpc {
 		} catch (error) {
 			this.logger.error("Error sending email: %0", error);
 			await this.db.user.delete({ where: { id: user.id } });
-			throw new Error("Error sending email");
+			this.throwError(
+				`Error sending email: ${error instanceof Error && error.message}`,
+			);
 		}
 		return user;
 	}
 	async verifyUser({ token }: { token: string }): Promise<User | null> {
+		this.logger.info("Verifying user with token %s", token);
 		const decoded: JwtPayload = jwt.verify(
 			token,
 			this.JWT_SECRET,
@@ -178,8 +186,9 @@ export class AuthService implements AuthRpc {
 				});
 				return;
 			} catch (error) {
-				this.logger.error("Error sending email: %0", error);
-				throw new Error("Error sending email.");
+				this.throwError(
+					`Error sending email: ${error instanceof Error && error.message}`,
+				);
 			}
 		}
 		throw new Error("Email not found");
@@ -188,6 +197,7 @@ export class AuthService implements AuthRpc {
 		token,
 		newPassword,
 	}: { token: string; newPassword: string }): Promise<void> {
+		this.logger.info("Resetting password with token %s", token);
 		if (token) {
 			const decoded: JwtPayload = jwt.verify(
 				token,
@@ -202,11 +212,12 @@ export class AuthService implements AuthRpc {
 			});
 			return;
 		}
-		throw new Error("Invalid token");
+		this.throwError("Invalid token");
 	}
 	async checkTokenValid({
 		token,
 	}: { token: string }): Promise<CheckTokenValidReturn> {
+		this.logger.info("Checking if token is valid");
 		try {
 			jwt.verify(token, this.JWT_SECRET) as JwtPayload;
 		} catch (error: unknown) {
@@ -276,5 +287,10 @@ export class AuthService implements AuthRpc {
 				});
 			});
 		});
+	}
+
+	private throwError(message: string): never {
+		this.logger.error("Error: %s", message);
+		throw new Error(message);
 	}
 }

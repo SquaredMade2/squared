@@ -33,5 +33,7 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
 	}
 
 	// Setup Swagger documentation
-	setupSwagger(router);
+	if (process.env.NODE_ENV !== "test") {
+		setupSwagger(router);
+	}
 }
