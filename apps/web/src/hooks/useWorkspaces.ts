@@ -35,12 +35,11 @@ export function useWorkspaces() {
 					if (workspaceUrl && !workspace) {
 						setError(`Workspace with URL "${workspaceUrl}" not found`);
 					}
-					setLoading(false);
 				} else if (userError) {
 					setError(userError);
 				}
+				setLoading(false);
 			} catch (err) {
-				console.error("Error fetching workspaces:", err);
 				setError(
 					err instanceof Error
 						? err.message
