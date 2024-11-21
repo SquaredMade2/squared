@@ -12,14 +12,14 @@ const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 		url: z.string(),
 		name: z.string(),
 	}),
-);
+).strict();
 
 export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	createWorkspace: {
 		input: z.object({
 			userId: z.string(),
 			workspace: workspaceParamsSchema,
-		}),
+		}).strict(),
 		output: workspaceLabelSchema,
 	},
 	getWorkspace: {

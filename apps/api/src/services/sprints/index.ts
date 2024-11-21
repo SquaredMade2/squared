@@ -27,7 +27,7 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 
 export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	getSprints: {
-		input: z.object({ teamId: z.string() }),
+		input: z.object({ teamId: z.string() }).strict(),
 		output: z.array(sprintSchema),
 	},
 	updateSprint: {
@@ -47,11 +47,11 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 					description: true,
 				}),
 			}),
-		),
+		).strict(),
 		output: sprintSchema,
 	},
 	initializeSprints: {
-		input: z.object({ teamId: z.string() }),
+		input: z.object({ teamId: z.string() }).strict(),
 		output: z.number(),
 	},
 	startNextSprint: {
@@ -62,26 +62,26 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 					.object({ description: z.string().optional(), name: z.string() })
 					.optional(),
 			}),
-		),
+		).strict(),
 		output: z.union([
 			z.object({
 				status: z.number(),
 				message: z.string(),
 				variant: z.literal("destructive"),
-			}),
+			}).strict(),
 			z.object({
 				data: sprintSchema,
 				message: z.string(),
 				variant: z.literal("default"),
-			}),
+			}).strict(),
 		]),
 	},
 	getSprintTasks: {
-		input: z.object({ sprintId: z.string() }),
-		output: z.array(taskSchema),
+		input: z.object({ sprintId: z.string() }).strict(),
+		output: z.array(taskSchema.strict()),
 	},
 	endSprint: {
-		input: z.object({ sprintId: z.string() }),
+		input: z.object({ sprintId: z.string() }).strict(),
 		output: sprintSchema,
 	},
 	addRetrospectiveItem: {
@@ -91,8 +91,8 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 				type: z.enum(["wentWell", "toImprove", "actionItems"]),
 				content: z.string(),
 			}),
-		),
-		output: retrospectiveItemReturnSchema,
+		).strict(),
+		output: retrospectiveItemReturnSchema.strict(),
 	},
 	updateRetrospectiveItem: {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
@@ -101,19 +101,19 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 				type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
 				content: z.string().optional(),
 				sprintId: z.string(),
-			}),
+			}).strict(),
 		),
-		output: retrospectiveItemReturnSchema,
+		output: retrospectiveItemReturnSchema.strict(),
 	},
 	getRetrospectiveItems: {
-		input: z.object({ sprintId: z.string() }),
+		input: z.object({ sprintId: z.string() }).strict(),
 		output: createSchema<RetrospectiveData>()(
 			z.object({
 				wentWell: z.array(retrospectiveItemReturnSchema),
 				toImprove: z.array(retrospectiveItemReturnSchema),
 				actionItems: z.array(retrospectiveItemReturnSchema),
 			}),
-		),
+		).strict(),
 	},
 });
 

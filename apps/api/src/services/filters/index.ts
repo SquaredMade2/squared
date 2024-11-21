@@ -78,11 +78,11 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 			filter: z.array(filterConditionSchema),
 			teamId: z.string(),
 			authorId: z.string(),
-		}),
-		output: savedFilterSchema,
+		}).strict(),
+		output: savedFilterSchema.strict(),
 	},
 	getFilters: {
-		input: z.object({ teamId: z.string() }),
+		input: z.object({ teamId: z.string() }).strict(),
 		output: z.array(savedFilterSchema),
 	},
 	updateFilter: {
@@ -94,10 +94,10 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 				filter: z.array(filterConditionSchema),
 			}),
 		}),
-		output: savedFilterSchema,
+		output: savedFilterSchema.strict(),
 	},
 	deleteFilter: {
-		input: z.object({ filterId: z.string() }),
+		input: z.object({ filterId: z.string() }).strict(),
 		output: z.void(),
 	},
 });

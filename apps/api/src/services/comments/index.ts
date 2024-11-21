@@ -5,15 +5,15 @@ import type { CommentRpc } from "./types";
 
 export const commentRpcSchema = createServiceSchema<CommentRpc>()({
 	addComment: {
-		input: z.object({ comment: commentSchema.omit({ id: true }) }),
+		input: z.object({ comment: commentSchema.omit({ id: true }) }).strict(),
 		output: z.array(commentSchema),
 	},
 	deleteComment: {
-		input: z.object({ commentId: z.string() }),
+		input: z.object({ commentId: z.string() }).strict(),
 		output: z.void(),
 	},
 	getTaskComments: {
-		input: z.object({ taskId: z.string() }),
+		input: z.object({ taskId: z.string() }).strict(),
 		output: z.array(commentSchema),
 	},
 });

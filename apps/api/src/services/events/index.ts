@@ -47,27 +47,27 @@ const taskEventReturnSchema = z.union([
 		z.object({
 			oldValue: taskValueSchema,
 			newValue: taskValueSchema,
-		}),
+		}).strict(),
 	),
 	commitSchema,
 ]);
 
 export const eventRpcSchema = createServiceSchema<EventRpc>()({
 	getTaskEvents: {
-		input: z.object({ taskId: z.string() }),
+		input: z.object({ taskId: z.string() }).strict(),
 		output: z.array(taskEventReturnSchema),
 	},
 	getNotifications: {
-		input: z.object({ userId: z.string() }),
-		output: z.array(fullNotificationSchema),
+		input: z.object({ userId: z.string() }).strict(),
+		output: z.array(fullNotificationSchema.strict()),
 	},
 	createLogEvent: {
 		input: z.object({
 			taskId: z.string(),
 			authorId: z.string(),
 			changes: z.record(taskValueSchema),
-		}),
-		output: taskEventSchema,
+		}).strict(),
+		output: taskEventSchema.strict(),
 	},
 	createNotification: {
 		input: z.object({
@@ -76,7 +76,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			taskId: z.string(),
 			description: z.string(),
 			type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
-		}),
+		}).strict(),
 		output: notificationSchema,
 	},
 	toggleNotification: {
@@ -84,11 +84,11 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			notificationIds: z.array(z.string()),
 			read: z.boolean().optional(),
 			dismissed: z.boolean().optional(),
-		}),
+		}).strict(),
 		output: z.array(notificationSchema),
 	},
 	deleteNotification: {
-		input: z.object({ notificationIds: z.array(z.string()) }),
+		input: z.object({ notificationIds: z.array(z.string()) }).strict(),
 		output: z.void(),
 	},
 });

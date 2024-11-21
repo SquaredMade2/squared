@@ -8,7 +8,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 	onBoardUser: {
 		input: z.object({
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: userSchema,
 	},
 	updateUser: {
@@ -16,44 +16,44 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 			userId: z.string(),
 			name: z.string(),
 			username: z.string().optional(),
-		}),
+		}).strict(),
 		output: userSchema,
 	},
 	updateUserNotifications: {
 		input: z.object({
 			userId: z.string(),
 			notificationIds: z.array(z.string()),
-		}),
+		}).strict(),
 		output: userSchema,
 	},
 	getUser: {
 		input: z.object({
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: userSchema.nullable(),
 	},
 	getWorkspaceUsers: {
 		input: z.object({
 			workspaceId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(userSchema),
 	},
 	getUserAvatars: {
 		input: z.object({
 			workspaceId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(
 			z.object({
 				id: z.string(),
 				name: z.string(),
 				avatarUrl: z.string().nullable(),
-			}),
+			}).strict(),
 		),
 	},
 	getUserRepositories: {
 		input: z.object({
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(z.string()),
 	},
 });

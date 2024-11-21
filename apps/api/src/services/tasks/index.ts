@@ -32,7 +32,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		labels: z.array(z.string()).optional(),
 		parentId: z.string().nullable().optional(),
 	}),
-);
+).strict("Create Task Schema unknown params");
 
 const updateTaskParams = createSchema<UpdateTaskParams>()(
 	z.object({
@@ -58,7 +58,7 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		assigneeId: z.string().nullable().optional(),
 		labels: z.array(z.string()).optional(),
 	}),
-);
+).strict();
 
 export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 	createTask: {
@@ -72,52 +72,52 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 	deleteTask: {
 		input: z.object({
 			taskId: z.string(),
-		}),
+		}).strict(),
 		output: z.void(),
 	},
 	getTask: {
 		input: z.object({
 			taskId: z.string(),
-		}),
+		}).strict(),
 		output: taskSchema,
 	},
 	getTaskByIdentifier: {
 		input: z.object({
 			identifier: z.string(),
 			workspaceId: z.string(),
-		}),
+		}).strict(),
 		output: taskSchema,
 	},
 	getTeamTasks: {
 		input: z.object({
 			teamId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(taskSchema),
 	},
 	addActiveSprintTasks: {
 		input: z.object({
 			sprintId: z.string(),
-		}),
+		}).strict(),
 		output: z.number(),
 	},
 	addSprintTasks: {
 		input: z.object({
 			sprintId: z.string(),
 			taskIds: z.array(z.string()),
-		}),
+		}).strict(),
 		output: z.number(),
 	},
 	reorderSubtasks: {
 		input: z.object({
 			parentId: z.string(),
 			newOrder: z.array(z.string()),
-		}),
+		}).strict(),
 		output: z.array(taskSchema),
 	},
 	getSubtasks: {
 		input: z.object({
 			parentId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(taskSchema),
 	},
 });

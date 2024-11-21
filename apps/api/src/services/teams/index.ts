@@ -18,7 +18,7 @@ const createTeamParams = createSchema<CreateTeamParams>()(
 		identifier: z.string(),
 		workspaceId: z.string(),
 	}),
-);
+).strict();
 
 const updateTeamParams = createSchema<UpdateTeamParams>()(
 	z.object({
@@ -27,7 +27,7 @@ const updateTeamParams = createSchema<UpdateTeamParams>()(
 		identifier: z.string(),
 		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
 	}),
-);
+).strict();
 
 const updateTeamSprintsParams = createSchema<UpdateTeamSprintsParams>()(
 	z.object({
@@ -37,23 +37,23 @@ const updateTeamSprintsParams = createSchema<UpdateTeamSprintsParams>()(
 		cooldownDuration: z.number().optional(),
 		sprintStartDate: z.date().optional(),
 	}),
-);
+).strict();
 
 export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 	createTeam: { input: createTeamParams, output: teamSchema },
 	updateTeam: { input: updateTeamParams, output: teamSchema },
 	updateTeamSprints: { input: updateTeamSprintsParams, output: teamSchema },
-	deleteTeam: { input: z.object({ teamId: z.string() }), output: z.void() },
+	deleteTeam: { input: z.object({ teamId: z.string() }).strict(), output: z.void() },
 	getTeam: {
-		input: z.object({ teamId: z.string() }),
+		input: z.object({ teamId: z.string() }).strict(),
 		output: teamSchema.nullable(),
 	},
 	getTeamByIdentifier: {
-		input: z.object({ identifier: z.string(), workspaceId: z.string() }),
+		input: z.object({ identifier: z.string(), workspaceId: z.string() }).strict(),
 		output: teamSchema.nullable(),
 	},
 	getUserTeams: {
-		input: z.object({ userId: z.string(), workspaceId: z.string() }),
+		input: z.object({ userId: z.string(), workspaceId: z.string() }).strict(),
 		output: z.array(teamSchema),
 	},
 });

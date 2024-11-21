@@ -12,7 +12,7 @@ const loginSchema = createSchema<Login>()(
 		email: z.string(),
 		password: z.string(),
 	}),
-);
+).strict();
 
 const registerSchema = createSchema<Register>()(
 	z.object({
@@ -22,7 +22,7 @@ const registerSchema = createSchema<Register>()(
 		username: z.string(),
 		inviteToken: z.string().optional(),
 	}),
-);
+).strict();
 
 const oAuthLoginSchema = createSchema<OauthLogin>()(
 	z.object({
@@ -32,14 +32,14 @@ const oAuthLoginSchema = createSchema<OauthLogin>()(
 		username: z.string().optional(),
 		avatarUrl: z.string().nullable().optional(),
 	}),
-);
+).strict();
 
 const userTokenSchema = createSchema<UserToken>()(
 	z.object({
 		user: userSchema,
 		token: z.string(),
 	}),
-);
+).strict();
 
 export const authRpcSchema = createServiceSchema<AuthRpc>()({
 	login: {
@@ -55,25 +55,24 @@ export const authRpcSchema = createServiceSchema<AuthRpc>()({
 		output: userSchema.nullable(),
 	},
 	verifyUser: {
-		input: z.object({ token: z.string() }),
+		input: z.object({ token: z.string() }).strict(),
 		output: userSchema.nullable(),
 	},
 	resetPasswordEmail: {
-		input: z.object({ email: z.string() }),
+		input: z.object({ email: z.string() }).strict(),
 		output: z.void(),
 	},
 	resetPassword: {
-		input: z.object({ token: z.string(), newPassword: z.string() }),
+		input: z.object({ token: z.string(), newPassword: z.string() }).strict(),
 		output: z.void(),
 	},
 	checkTokenValid: {
-		input: z.object({ token: z.string() }),
+		input: z.object({ token: z.string() }).strict(),
 		output: z
 			.object({
 				email: z.string(),
 				message: z.string(),
-			})
-			.nullable(),
+			}).strict().nullable(),
 	},
 });
 
