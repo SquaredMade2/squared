@@ -23,6 +23,7 @@ export function DateDropdownButton() {
 			setNewTaskData({ ...newTaskData, dueDate: date });
 		}
 	}, [date]);
+
 	return (
 		<Popover>
 			<PopoverTrigger asChild>

@@ -38,15 +38,13 @@ export function useWorkspaces() {
 				} else if (userError) {
 					setError(userError);
 				}
+				setLoading(false);
 			} catch (err) {
-				console.error("Error fetching workspaces:", err);
 				setError(
 					err instanceof Error
 						? err.message
 						: "An error occurred while fetching workspaces",
 				);
-			} finally {
-				setLoading(false);
 			}
 		};
 
