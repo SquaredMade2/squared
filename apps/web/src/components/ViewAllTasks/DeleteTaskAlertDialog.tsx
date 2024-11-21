@@ -12,7 +12,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { Button, buttonVariants } from "../ui/button";
+import { buttonVariants } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 
 export const DeleteTaskAlertDialog = ({
