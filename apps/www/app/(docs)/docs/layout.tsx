@@ -20,13 +20,12 @@ export default async function Layout({
 	children: React.ReactNode;
 	params: { slug?: string[] };
 }>) {
-	const team = (await params)
+	const team = await params;
 	console.log(team); // Выводим params, чтобы увидеть, что в нем содержится
 
-	const currentSlug = params.slug && params.slug.length > 0 
-	   ? params.slug.join("/") 
-	  : "index"; // Если пустой, то fallback на "index"
-  
+	const currentSlug =
+		params.slug && params.slug.length > 0 ? params.slug.join("/") : "index"; // Если пустой, то fallback на "index"
+
 	console.log(currentSlug); // Проверяем значение currentSlug
 	return (
 		<>

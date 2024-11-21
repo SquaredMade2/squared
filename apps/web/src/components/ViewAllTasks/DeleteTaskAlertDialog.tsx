@@ -1,4 +1,5 @@
 import { taskService } from "@/lib/services";
+import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import type { Dispatch, SetStateAction } from "react";
@@ -35,7 +36,7 @@ export const DeleteTaskAlertDialog = ({
 		} catch (error) {
 			toast({
 				title: "Error deleting task",
-				description: error instanceof Error && error.message,
+				description: parseError(error),
 			});
 		}
 	};
