@@ -12,7 +12,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 
 export const DeleteTaskAlertDialog = ({
@@ -25,7 +25,7 @@ export const DeleteTaskAlertDialog = ({
 	setShowConfirmDelete: Dispatch<SetStateAction<boolean>>;
 }) => {
 	const { toast } = useToast();
-	const deleteCurrentTask = async () => {
+	const deleteTask = async () => {
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
 			toast({
@@ -51,10 +51,11 @@ export const DeleteTaskAlertDialog = ({
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction asChild>
-						<Button variant="destructive" onClick={deleteCurrentTask}>
-							Delete Task
-						</Button>
+					<AlertDialogAction
+						className={buttonVariants({ variant: "destructive" })}
+						onClick={deleteTask}
+					>
+						Delete Task
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
