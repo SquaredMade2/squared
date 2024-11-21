@@ -235,7 +235,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		data: { tasksCreated: { increment: 1 } },
 	});
 
-	const formattedName = workspace.name
+	const formattedName = team.identifier
 		.replace(/\s+/g, "")
 		.substring(0, 3)
 		.toUpperCase();
