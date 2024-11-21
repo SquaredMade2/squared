@@ -19,6 +19,7 @@ import { useToast } from "../ui/use-toast";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
+	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 	const {
 		showRename,
 		setShowRename,
@@ -32,8 +33,9 @@ export const RenameModal = () => {
 
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
-		if (task) {
-			if (inputValue !== task.title && inputValue.length > 2) {
+		setHasSubmitted(true);
+		if (task && inputValue.length > 2) {
+			if (inputValue !== task.title) {
 				try {
 					updateTask(
 						await taskService.updateTask(TODO, {
@@ -49,6 +51,7 @@ export const RenameModal = () => {
 					});
 				}
 				setShowRename(false);
+				setHasSubmitted(false);
 			}
 		}
 	};
@@ -76,14 +79,16 @@ export const RenameModal = () => {
 							placeholder="Rename..."
 							onChange={handleChange}
 						/>
-						<span
-							className={`text-destructive ${inputValue.length > 2 && "opacity-0"}`}
-						>
-							Title must be at least 2 characters
-						</span>
+						{hasSubmitted && inputValue.length < 2 && (
+							<span
+								className={`text-destructive ${inputValue.length > 2 && "opacity-0"}`}
+							>
+								Title must be at least 2 characters
+							</span>
+						)}
 						<div className="w-full border-border border" />
 						<DialogFooter>
-							<Button disabled={inputValue.length < 2}>
+							<Button>
 								<span className="mr-2.5">
 									<Pencil className="size-4" />
 								</span>
