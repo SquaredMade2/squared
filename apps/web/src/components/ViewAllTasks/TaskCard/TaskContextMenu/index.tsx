@@ -1,32 +1,17 @@
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
-import { taskService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
-// Will need in future
-// import RenameSubContextMenu from "./RenameSubContextMenu";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { DeleteTaskAlertDialog } from "../../DeleteTaskAlertDialog";
 import AssigneeSubContextMenu from "./AssigneeSubContextMenu";
 import DateSubContextMenu from "./DateSubContextMenu";
 import LabelSubContextMenu from "./LabelSubContextMenu";
@@ -36,28 +21,12 @@ import type { ContextMenuProps } from "./interfaces";
 
 const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-	const { toast } = useToast();
 	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
 		useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
-
-	const deleteCurrentTask = async () => {
-		try {
-			await taskService.deleteTask(TODO, { taskId: task.id });
-			toast({
-				title: "Task Deleted",
-				description: `${task.title} has been successfully deleted.`,
-			});
-		} catch (error) {
-			toast({
-				title: "Error deleting task",
-				description: error instanceof Error && error.message,
-			});
-		}
-	};
 
 	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;
 
@@ -137,24 +106,11 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 				</ContextMenuItem>
 			</ContextMenuContent>
 
-			<AlertDialog open={showConfirmDelete} onOpenChange={setShowConfirmDelete}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Delete Task</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to delete "{task.title}"?
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction asChild>
-							<Button variant="destructive" onClick={deleteCurrentTask}>
-								Delete Task
-							</Button>
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<DeleteTaskAlertDialog
+				task={task}
+				showConfirmDelete={showConfirmDelete}
+				setShowConfirmDelete={setShowConfirmDelete}
+			/>
 		</>
 	);
 };
