@@ -20,7 +20,6 @@ export const tiers: Tier[] = [
 		priceYearly: "Free",
 		description: "Great for individual developers exploring the platform.",
 		features: [
-			"Unlimited members",
 			"Email support within 48 hours",
 			"Access to all integrations, APIs, and webhooks",
 			"250 tasks (+ unlimited archived)",
@@ -41,13 +40,14 @@ export const tiers: Tier[] = [
 		description: "Designed for small businesses to manage tasks effectively.",
 		features: [
 			"Everything in Free, plus",
+			"Unlimited members",
 			"Unlimited tasks and file uploads (100 MB per file)",
 			"Admin tools for better control",
 			"Email support within 24 hours",
 			"SSO access for enhanced security",
 		],
 		featured: false,
-		cta: "Upgrade now",
+		cta: "Try Pro",
 		onClick: () => {
 			/* Handle Pro tier click */
 		},
