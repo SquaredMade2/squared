@@ -22,9 +22,7 @@ export type NotificationFilter =
 
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
-	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { workspaces, workspace } = useWorkspaceStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
@@ -50,7 +48,6 @@ export default function InboxPage() {
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "ASSIGNED" && !n.dismissed),
 				);
-				setWorkspace(null);
 				break;
 			case "PARTICIPATING":
 				setFilteredNotifications(
@@ -58,23 +55,19 @@ export default function InboxPage() {
 						(n) => n.type === "PARTICIPATING" && !n.dismissed,
 					),
 				);
-				setWorkspace(null);
 				break;
 			case "MENTIONED":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "MENTIONED" && !n.dismissed),
 				);
-				setWorkspace(null);
 				break;
 			case "CREATED":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "CREATED" && !n.dismissed),
 				);
-				setWorkspace(null);
 				break;
 			case "INBOX":
 				setFilteredNotifications(notifications.filter((n) => !n.dismissed));
-				setWorkspace(null);
 				break;
 			case "SAVED":
 				setFilteredNotifications(
@@ -82,11 +75,9 @@ export default function InboxPage() {
 						(n) => user?.savedNotificationIds?.includes(n.id) && !n.dismissed,
 					),
 				);
-				setWorkspace(null);
 				break;
 			case "DONE":
 				setFilteredNotifications(notifications.filter((n) => n.dismissed));
-				setWorkspace(null);
 				break;
 			case "WORKSPACE":
 				setFilteredNotifications(
@@ -97,7 +88,6 @@ export default function InboxPage() {
 				break;
 			default:
 				setFilteredNotifications(notifications);
-				setWorkspace(null);
 		}
 	}, [filterType, notifications, workspace, user]);
 
