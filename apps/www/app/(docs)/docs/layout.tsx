@@ -13,20 +13,15 @@ export const metadata: Metadata = {
 	},
 };
 
-export default async function Layout({
+export default function Layout({
 	children,
 	params,
 }: Readonly<{
 	children: React.ReactNode;
 	params: { slug?: string[] };
 }>) {
-	const team = await params;
-	console.log(team); // Выводим params, чтобы увидеть, что в нем содержится
+	const currentSlug = params.slug?.join("/") || "index";
 
-	const currentSlug =
-		params.slug && params.slug.length > 0 ? params.slug.join("/") : "index"; // Если пустой, то fallback на "index"
-
-	console.log(currentSlug); // Проверяем значение currentSlug
 	return (
 		<>
 			<NavBar />

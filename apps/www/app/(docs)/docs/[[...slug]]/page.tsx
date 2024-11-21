@@ -18,7 +18,6 @@ export async function generateMetadata({
 }
 
 const Page = async ({ params }: PageProps) => {
-	// console.log(params)
 	const slug = params.slug?.join("/") || "index";
 	const filePath = path.join(process.cwd(), "docs", `${slug}.mdx`);
 
