@@ -8,9 +8,15 @@ import {
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService, userService } from "@/lib/services";
-import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
+import {
+	useEventStore,
+	useUserStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
 import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export type NotificationFilter =
@@ -29,6 +35,8 @@ export default function InboxPage() {
 	const [filterRead, setFilterRead] = useState(false);
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 	const { setUserAvatars, user } = useUserStore((state) => state);
+	const { setLastVisitedPage } = useViewStore((state) => state);
+	const pathname = usePathname();
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -101,6 +109,12 @@ export default function InboxPage() {
 		};
 		fetchAvatars();
 	}, [user]);
+
+	useEffect(() => {
+		if (pathname === "/inbox") {
+			setLastVisitedPage("inbox");
+		}
+	}, [pathname, setLastVisitedPage]);
 
 	return (
 		<div className="flex w-full">

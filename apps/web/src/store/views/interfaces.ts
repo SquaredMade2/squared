@@ -70,6 +70,7 @@ const LastVisitedPathOptions = [
 	"active",
 	"backlog",
 	"sprints/current",
+	"inbox",
 ] as const;
 export type LastVisitedPathOption =
 	| (typeof LastVisitedPathOptions)[number]
