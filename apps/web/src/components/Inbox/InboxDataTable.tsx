@@ -395,7 +395,7 @@ export function InboxDataTable({
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
 									className={`
-										${!row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}
+										${row.original.read ? "bg-transparent hover:bg-primary/20" : "bg-card hover:bg-primary/20"}
 										transition-colors
 									`}
 									onMouseEnter={() => setHoveredRowId(row.id)}
