@@ -1,6 +1,6 @@
 import { createRpcHandler, createServiceSchema } from "@squared/rpc";
 import z from "zod";
-import { userSchema } from "../schema";
+import { teamSchema, userSchema } from "../schema";
 import type { UserRpc } from "./types";
 import type { UserService } from "./user-service";
 
@@ -56,6 +56,12 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.array(z.string()),
 	},
+	getUserTeams: {
+		input: z.object({
+			userId: z.string(),
+		}),
+		output: z.array(teamSchema),
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -70,4 +76,5 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getWorkspaceUsers: (input) => userService.getWorkspaceUsers(input),
 		getUserAvatars: (input) => userService.getUserAvatars(input),
 		getUserRepositories: (input) => userService.getUserRepositories(input),
+		getUserTeams: (input) => userService.getUserTeams(input),
 	});
