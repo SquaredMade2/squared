@@ -44,12 +44,12 @@ export class TaskService implements TaskRpc {
 			},
 		});
 		if (!team) {
-			throw new Error("Team not found");
+			this.throwError("Team not found");
 		}
 
 		const workspace = team.Workspace;
 		if (!workspace) {
-			throw new Error("Workspace not found");
+			this.throwError("Workspace not found");
 		}
 
 		const author = await this.db.user.findFirst({
@@ -57,7 +57,7 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!author) {
-			throw new Error("Author not found");
+			this.throwError("Author not found");
 		}
 
 		if (effortEstimate) {
@@ -69,7 +69,7 @@ export class TaskService implements TaskRpc {
 				!Number.isInteger(effort) ||
 				effort > 5
 			) {
-				throw new Error("Invalid Effort Estimate supplied");
+				this.throwError("Invalid Effort Estimate supplied");
 			}
 		}
 
@@ -91,11 +91,11 @@ export class TaskService implements TaskRpc {
 		const newTaskNumber = highestTaskNumber + 1;
 		const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
 
-		const newIssueCount = workspace.tasksCreated + 1;
+		const newTaskCount = workspace.tasksCreated + 1;
 
 		await this.db.workspace.update({
 			where: { id: workspace.id },
-			data: { tasksCreated: newIssueCount },
+			data: { tasksCreated: newTaskCount },
 		});
 
 		const newTask = await this.db.task.create({
@@ -116,7 +116,7 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!newTask) {
-			throw new Error("There was an issue creating your task");
+			this.throwError("There was an issue creating your task");
 		}
 
 		subscribeUser(author, newTask, this.db);
@@ -136,7 +136,7 @@ export class TaskService implements TaskRpc {
 				!Number.isInteger(effort) ||
 				effort > 5
 			) {
-				throw new Error("Invalid Effort Estimate");
+				this.throwError("Invalid Effort Estimate");
 			}
 		}
 
@@ -146,7 +146,7 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!task) {
-			throw new Error("There was an issue creating the task");
+			this.throwError("There was an issue creating the task");
 		}
 
 		// Return the updated task with labels
@@ -159,7 +159,7 @@ export class TaskService implements TaskRpc {
 			where: { id: taskId },
 		});
 		if (!task) {
-			throw new Error("Task not found");
+			this.throwError("There was an issue deleting the task");
 		}
 		return;
 	}
@@ -171,7 +171,7 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!task) {
-			throw new Error("Task Not Found");
+			this.throwError("Task Not Found");
 		}
 
 		// Return the found task with labels
@@ -187,7 +187,7 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!task) {
-			throw new Error("Task Not Found");
+			this.throwError("Task Not Found");
 		}
 		return task;
 	}
@@ -211,13 +211,13 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!sprint) {
-			throw new Error("Sprint not found");
+			this.throwError("Sprint not found");
 		}
 
 		const team = sprint.Team;
 
 		if (!team) {
-			throw new Error("Team not found");
+			this.throwError("Team not found");
 		}
 
 		return await this.db.task
@@ -299,5 +299,10 @@ export class TaskService implements TaskRpc {
 			where: { parentId },
 			orderBy: { order: "asc" },
 		});
+	}
+
+	private throwError(message: string): never {
+		this.logger.error(message);
+		throw new Error(message);
 	}
 }

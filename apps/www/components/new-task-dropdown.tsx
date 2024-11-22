@@ -7,7 +7,7 @@ type Props = {
 	options: Record<any, any>[];
 };
 
-export const NewIssueDropDown = ({ options }: Props) => {
+export const NewTaskDropDown = ({ options }: Props) => {
 	const [openMenu, setOpenMenu] = useState(false);
 	const [title, setTitle] = useState("");
 	const [Icon, setIcon] = useState(() => <div>{}</div>);

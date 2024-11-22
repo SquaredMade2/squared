@@ -26,7 +26,7 @@ export const Features = () => {
 			className: "border-b col-span-1 md:col-span-2 dark:border-neutral-800",
 		},
 		{
-			title: "An engaging issue tracking interface",
+			title: "An engaging task tracking interface",
 			description: "We make it easy to create and assign tasks to your team.",
 			skeleton: <SkeletonThree />,
 			className: "col-span-1 md:col-span-3 border-r dark:border-neutral-800",

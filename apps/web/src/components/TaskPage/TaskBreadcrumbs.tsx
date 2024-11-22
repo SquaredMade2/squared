@@ -31,7 +31,7 @@ export const TaskBreadcrumbs = () => {
 						{workspace && (
 							<Link
 								className="flex items-center text-muted-foreground hover:text-foreground"
-								href={`/${workspace.url}/team/${team?.identifier}/${lastVisitedPage}`}
+								href={`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace.url}/team/${team?.identifier}/${lastVisitedPage}`}`}
 							>
 								<div className="mt-0.5 rounded">
 									<WorkspaceInitials

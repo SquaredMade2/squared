@@ -8,9 +8,15 @@ import {
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService, userService } from "@/lib/services";
-import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
+import {
+	useEventStore,
+	useUserStore,
+	useViewStore,
+	useWorkspaceStore,
+} from "@/store";
 import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export type NotificationFilter =
@@ -22,15 +28,15 @@ export type NotificationFilter =
 
 export default function InboxPage() {
 	const { notifications, setNotifications } = useEventStore((state) => state);
-	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { workspaces, workspace } = useWorkspaceStore((state) => state);
 	const [filterType, setFilterType] = useState<NotificationFilter>("INBOX");
 	const [filteredNotifications, setFilteredNotifications] =
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 	const { setUserAvatars, user } = useUserStore((state) => state);
+	const { setLastVisitedPage } = useViewStore((state) => state);
+	const pathname = usePathname();
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -50,7 +56,6 @@ export default function InboxPage() {
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "ASSIGNED" && !n.dismissed),
 				);
-				setWorkspace(null);
 				break;
 			case "PARTICIPATING":
 				setFilteredNotifications(
@@ -58,23 +63,19 @@ export default function InboxPage() {
 						(n) => n.type === "PARTICIPATING" && !n.dismissed,
 					),
 				);
-				setWorkspace(null);
 				break;
 			case "MENTIONED":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "MENTIONED" && !n.dismissed),
 				);
-				setWorkspace(null);
 				break;
 			case "CREATED":
 				setFilteredNotifications(
 					notifications.filter((n) => n.type === "CREATED" && !n.dismissed),
 				);
-				setWorkspace(null);
 				break;
 			case "INBOX":
 				setFilteredNotifications(notifications.filter((n) => !n.dismissed));
-				setWorkspace(null);
 				break;
 			case "SAVED":
 				setFilteredNotifications(
@@ -82,11 +83,9 @@ export default function InboxPage() {
 						(n) => user?.savedNotificationIds?.includes(n.id) && !n.dismissed,
 					),
 				);
-				setWorkspace(null);
 				break;
 			case "DONE":
 				setFilteredNotifications(notifications.filter((n) => n.dismissed));
-				setWorkspace(null);
 				break;
 			case "WORKSPACE":
 				setFilteredNotifications(
@@ -97,7 +96,6 @@ export default function InboxPage() {
 				break;
 			default:
 				setFilteredNotifications(notifications);
-				setWorkspace(null);
 		}
 	}, [filterType, notifications, workspace, user]);
 
@@ -111,6 +109,12 @@ export default function InboxPage() {
 		};
 		fetchAvatars();
 	}, [user]);
+
+	useEffect(() => {
+		if (pathname === "/inbox") {
+			setLastVisitedPage("inbox");
+		}
+	}, [pathname, setLastVisitedPage]);
 
 	return (
 		<div className="flex w-full">

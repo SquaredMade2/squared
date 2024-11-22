@@ -19,6 +19,7 @@ import { useToast } from "../ui/use-toast";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");
+	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 	const {
 		showRename,
 		setShowRename,
@@ -32,22 +33,26 @@ export const RenameModal = () => {
 
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
-		if (inputValue !== task?.title && task) {
-			try {
-				updateTask(
-					await taskService.updateTask(TODO, {
-						id: task.id,
-						title: inputValue.trim(),
-					}),
-				);
-				toast({ title: "Task updated successfully" });
-			} catch (error) {
-				toast({
-					title: "Error Creating Task",
-					description: error instanceof Error && error.message,
-				});
+		setHasSubmitted(true);
+		if (task && inputValue.length > 2) {
+			if (inputValue !== task.title) {
+				try {
+					updateTask(
+						await taskService.updateTask(TODO, {
+							id: task.id,
+							title: inputValue.trim(),
+						}),
+					);
+					toast({ title: "Task updated successfully" });
+				} catch (error) {
+					toast({
+						title: "Error Updating Task",
+						description: error instanceof Error && error.message,
+					});
+				}
+				setShowRename(false);
+				setHasSubmitted(false);
 			}
-			setShowRename(false);
 		}
 	};
 
@@ -74,6 +79,13 @@ export const RenameModal = () => {
 							placeholder="Rename..."
 							onChange={handleChange}
 						/>
+						{hasSubmitted && inputValue.length < 2 && (
+							<span
+								className={`text-destructive ${inputValue.length > 2 && "opacity-0"}`}
+							>
+								Title must be at least 2 characters
+							</span>
+						)}
 						<div className="w-full border-border border" />
 						<DialogFooter>
 							<Button>
@@ -81,7 +93,7 @@ export const RenameModal = () => {
 									<Pencil className="size-4" />
 								</span>
 								<p>
-									Rename issue to
+									Rename task to
 									<span className="ml-2 italic">{`"${inputValue}"`}</span>
 								</p>
 							</Button>
