@@ -1,6 +1,6 @@
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import type { Task } from "@squared/db";
-import { Copy, GitPullRequestArrow, Link } from "lucide-react";
+import { Copy, GitPullRequestArrow, Link, Ellipsis } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { Button } from "../ui/button";
 import {
@@ -137,6 +137,26 @@ export const TaskSidebarTopRow = ({
 								<KeyboardShortcut>.</KeyboardShortcut>
 							</div>
 						</TooltipContent>
+					</Tooltip>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Copy Git Branch Name"
+								onClick={copyGitBranchName}
+							>
+								<Ellipsis className="size-4" />
+							</Button>
+						</TooltipTrigger>
+						{/* <TooltipContent className="flex gap-4 items-center">
+							<span className="text-xs">Copy Git Branch Name</span>
+							<div className="flex gap-1">
+								<KeyboardShortcut>Ctrl</KeyboardShortcut>
+								<KeyboardShortcut>Shift</KeyboardShortcut>
+								<KeyboardShortcut>.</KeyboardShortcut>
+							</div>
+						</TooltipContent> */}
 					</Tooltip>
 				</TooltipProvider>
 			</div>
