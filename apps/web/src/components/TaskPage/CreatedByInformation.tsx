@@ -23,7 +23,6 @@ export const CreatedByInformation = () => {
 				});
 
 				setEvents(response as TaskEvent[]);
-				console.log("Fetched Events:", response);
 			} catch (error) {
 				console.error("Failed to fetch task events:", error);
 			}
