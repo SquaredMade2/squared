@@ -10,6 +10,7 @@ export type CreateTaskParams = {
 	labels?: string[];
 	priority?: Priority;
 	status?: Status;
+	sprintId?: string | null;
 	parentId?: string | null;
 };
 
