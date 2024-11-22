@@ -27,19 +27,24 @@ export class EventService implements EventRpc {
 		this.userRepository = db.user;
 	}
 	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
-		const [taskEvents, commits] = await Promise.all([
-			this.taskEventRepository.findMany({ where: { taskId } }),
-			this.commitRepository.findMany({ where: { taskId } }),
-		]);
-		return [...taskEvents, ...commits]
-			.sort((a, b) => {
-				const aTime =
-					"createdAt" in a ? a.createdAt.getTime() : a.timestamp.getTime();
-				const bTime =
-					"createdAt" in b ? b.createdAt.getTime() : b.timestamp.getTime();
-				return aTime - bTime;
-			})
-			.map((e) => ("createdAt" in e ? this.deserializeLogEvent(e) : e));
+		// Promise.all with commits is causing errors for now, so I'm only implementing the taskEvents for now
+		// will handle commits in future PR
+		try {
+			const taskEvents = await this.taskEventRepository.findMany({
+				where: { taskId },
+				include: { Task: true, Author: true },
+				orderBy: { createdAt: "asc" },
+			});
+
+			console.log(
+				`Fetched ${taskEvents.length} TaskEvents for Task ID ${taskId}.`,
+			);
+
+			return taskEvents as unknown as TaskEventsReturn;
+		} catch (error) {
+			console.error(`Error fetching task events for Task ID ${taskId}:`, error);
+			throw new Error("Failed to fetch task events.");
+		}
 	}
 	async getNotifications({
 		userId,
@@ -61,6 +66,11 @@ export class EventService implements EventRpc {
 		previousTask: Task;
 	}): Promise<TaskEvent> {
 		const diff = await this.getTaskDiff(previousTask, changes);
+
+		if (diff === "No changes") {
+			console.log("No changes detected. No TaskEvent created.");
+			throw new Error("No changes detected.");
+		}
 
 		const taskEvent = await this.taskEventRepository.create({
 			data: {

@@ -1,6 +1,9 @@
+import { eventService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
+import { TODO } from "@squared/context";
 import { formatDate } from "date-fns/format";
+import { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 // TODO: UPDATE THIS COMPONENT TO USE THE NEW DATE TO HANDLE ALL TASK EVENTS (commits included)
@@ -9,6 +12,23 @@ export const CreatedByInformation = () => {
 	const authorId = currentTask?.authorId;
 	const { users } = useUserStore((state) => state);
 	const foundUser = users.find((user) => user.id === authorId);
+
+	useEffect(() => {
+		const fetchTaskEvents = async () => {
+			try {
+				const events = await eventService.getTaskEvents(TODO, {
+					taskId: currentTask?.id || "",
+				});
+
+				console.log("Fetched Events:", events);
+			} catch (error) {
+				console.error("Failed to fetch task events:", error);
+			}
+		};
+		if (currentTask?.id) {
+			fetchTaskEvents();
+		}
+	}, [currentTask?.id]);
 
 	const displayDate = () => {
 		if (currentTask) {
