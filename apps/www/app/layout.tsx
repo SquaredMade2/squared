@@ -8,8 +8,6 @@ export const metadata: Metadata = {
 	title: "Squared",
 	description:
 		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",
-
-	//todo figure out what this is and change it
 	openGraph: {
 		images: ["/banner.png"],
 	},
