@@ -1,4 +1,5 @@
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
+import { Popover } from "@repo/ui/popover";
 import type { Task } from "@squared/db";
 import { Copy, Ellipsis, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
@@ -145,21 +146,15 @@ export const TaskSidebarTopRow = ({
 						</TooltipContent>
 					</Tooltip>
 					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								aria-label="Delete task modal"
-								onClick={displayDeleteModal}
-							>
-								<Ellipsis className="size-4" />
-							</Button>
-							{showDropdown && (
-								<div className="text-sm font-semibold text-card-foreground">
-									Delete task
-								</div>
-							)}
-						</TooltipTrigger>
+						<Button
+							variant="ghost"
+							size="icon"
+							aria-label="Delete task modal"
+							onClick={displayDeleteModal}
+						>
+							<Ellipsis className="size-4" />
+						</Button>
+						{showDropdown && <Popover />}
 					</Tooltip>
 				</TooltipProvider>
 			</div>
