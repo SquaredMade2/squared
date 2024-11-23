@@ -1,6 +1,5 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
@@ -44,15 +43,13 @@ export default function WorkspaceMembersPage() {
 
 const MembersSettingsWrapper = ({ children }: { children: ReactNode }) => (
 	<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">
-		<ScrollArea className="h-screen">
-			<div className="flex flex-col gap-2 items-start">
-				<h1 className="text-2xl">Members</h1>
-				<p className="text-xs text-muted-foreground">
-					Manage members for this workspace
-				</p>
-			</div>
-			<Separator className="mb-8" />
-			{children}
-		</ScrollArea>
+		<div className="flex flex-col gap-2 items-start">
+			<h1 className="text-2xl">Members</h1>
+			<p className="text-xs text-muted-foreground">
+				Manage members for this workspace
+			</p>
+		</div>
+		<Separator className="mb-8" />
+		{children}
 	</div>
 );
