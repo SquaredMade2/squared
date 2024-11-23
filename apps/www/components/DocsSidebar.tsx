@@ -19,6 +19,7 @@ interface NestedItem extends MDXFile {
 }
 
 const customOrder = [
+	"index",
     "quick-start",
     "sign-up",
     "manage-your-team",
@@ -26,7 +27,6 @@ const customOrder = [
     "task-management-best-practices",
     "managing-your-account",
     "teams-collaborate",
-	"index",
     "faq",
 ];
 
