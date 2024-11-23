@@ -146,6 +146,7 @@ export const userSchema = createSchema<User>()(
 		password: z.string().nullable(),
 		verified: z.boolean(),
 		lastLogin: z.date(),
+		createdAt: z.date(),
 		onBoarding: z.boolean(),
 		defaultWorkspaceId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),

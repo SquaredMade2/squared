@@ -5,11 +5,18 @@ import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import type { ReactNode } from "react";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { DataTable, type MemberWithRole } from "./data-table";
 
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
+
+	const membersWithRoles: MemberWithRole[] = workspace
+		? users.map((user) => ({
+				...user,
+				role: workspace.admins.includes(user.id) ? "admin" : "member",
+			}))
+		: [];
 
 	if (workspaceLoading || userLoading) {
 		return (
@@ -26,10 +33,7 @@ export default function WorkspaceMembersPage() {
 			{workspace && (
 				<DataTable
 					columns={columns}
-					data={users.map((m) => ({
-						...m,
-						role: workspace.admins.includes(m.id) ? "admin" : "member",
-					}))}
+					data={membersWithRoles}
 					workspace={workspace}
 				/>
 			)}
