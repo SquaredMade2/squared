@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 	description:
 		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",
 	openGraph: {
-		images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+		images: ["/banner.png"],
 	},
 };
 
