@@ -1,9 +1,8 @@
-import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import type { Task } from "@squared/db";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
-// import { useState } from "react";
 import { Button } from "../ui/button";
 import {
 	Tooltip,
@@ -18,8 +17,6 @@ export const TaskSidebarTopRow = ({
 	workspaceUrl,
 }: { task: Task; workspaceUrl?: string }) => {
 	const { toast } = useToast();
-	// const [showDropdown, setShowDropdown] = useState(false);
-
 	const identifier = task.identifier;
 	const title = task.title;
 
@@ -41,10 +38,6 @@ export const TaskSidebarTopRow = ({
 			description: "Paste it wherever you like",
 		});
 	};
-
-	// const displayDeleteModal = () => {
-	// 	setShowDropdown(true);
-	// };
 
 	const copyGitBranchName = async (): Promise<void> => {
 		await navigator.clipboard.writeText(gitBranchName.trim());
