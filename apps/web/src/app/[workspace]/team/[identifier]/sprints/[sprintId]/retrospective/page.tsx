@@ -37,7 +37,7 @@ export default function SprintRetrospectivePage() {
 				variant: "destructive",
 			});
 		}
-	}, [sprintId, sprintService]);
+	}, [sprintId]);
 
 	useEffect(() => {
 		const socketUrl = process.env.NEXT_PUBLIC_SERVER || "http://localhost:5173";
@@ -105,7 +105,7 @@ export default function SprintRetrospectivePage() {
 				toast({ title: "Failed to add item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket, sprintService],
+		[sprintId, socket],
 	);
 
 	const onDragEnd = useCallback(
@@ -124,11 +124,17 @@ export default function SprintRetrospectivePage() {
 			const itemId = result.draggableId;
 
 			try {
+				// Find the item being moved
+				const movedItem = data[sourceType].find((item) => item.id === itemId);
+				if (!movedItem) {
+					throw new Error("Item not found");
+				}
+
 				const response = await sprintService.updateRetrospectiveItem(TODO, {
 					sprintId,
 					retrospectiveItemId: itemId,
 					type: destinationType,
-					content: "",
+					content: movedItem.content,
 				});
 				if (!response) {
 					toast({
@@ -163,7 +169,7 @@ export default function SprintRetrospectivePage() {
 				toast({ title: "Failed to move item", variant: "destructive" });
 			}
 		},
-		[sprintId, socket, sprintService],
+		[sprintId, socket, data],
 	);
 
 	return (
