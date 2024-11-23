@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 	//todo figure out what this is and change it
 	openGraph: {
-		images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+		images: ["/banner.png"],
 	},
 };
 
