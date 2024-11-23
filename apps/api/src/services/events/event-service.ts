@@ -199,7 +199,16 @@ export class EventService implements EventRpc {
 		key: string,
 	): Promise<string> {
 		if (value === null || value === undefined) {
-			return "null";
+			switch (key) {
+				case "labels":
+					return "no labels";
+				case "effortEstimate":
+					return "no estimate";
+				case "assigneeId":
+					return "unassigned";
+				default:
+					return "none";
+			}
 		}
 
 		// Handle assigneeId
@@ -208,27 +217,32 @@ export class EventService implements EventRpc {
 				where: { id: value },
 				select: { name: true },
 			});
-			return `"${user?.name ?? "Unknown User"}"`;
+			return user?.name ?? "Unknown User";
 		}
 
 		// Handle labels array
 		if (Array.isArray(value) && key === "labels") {
 			const labelIds = value as string[];
+			if (labelIds.length === 0) {
+				return "no labels";
+			}
 			const labels = await this.labelRepository.findMany({
 				where: { id: { in: labelIds } },
 				select: { name: true },
 			});
-			return JSON.stringify(labels.map((l) => l.name));
+			return labels.map((l) => l.name).join(", ");
+		}
+
+		// Handle effort estimate
+		if (key === "effortEstimate") {
+			return String(value);
 		}
 
 		if (typeof value === "string") {
-			return `"${value}"`;
+			return value;
 		}
 		if (value instanceof Date) {
 			return value.toISOString();
-		}
-		if (Array.isArray(value)) {
-			return JSON.stringify(value);
 		}
 		return String(value);
 	}
