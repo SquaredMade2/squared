@@ -1,7 +1,8 @@
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import type { Task } from "@squared/db";
-import { Copy, GitPullRequestArrow, Link, Ellipsis } from "lucide-react";
+import { Copy, Ellipsis, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import {
 	Tooltip,
@@ -16,6 +17,7 @@ export const TaskSidebarTopRow = ({
 	workspaceUrl,
 }: { task: Task; workspaceUrl?: string }) => {
 	const { toast } = useToast();
+	const [showDropdown, setShowDropdown] = useState(false);
 
 	const identifier = task.identifier;
 	const title = task.title;
@@ -37,6 +39,10 @@ export const TaskSidebarTopRow = ({
 			title: `${identifier} copied to clipboard`,
 			description: "Paste it wherever you like",
 		});
+	};
+
+	const displayDeleteModal = () => {
+		setShowDropdown(true);
 	};
 
 	const copyGitBranchName = async (): Promise<void> => {
@@ -143,20 +149,17 @@ export const TaskSidebarTopRow = ({
 							<Button
 								variant="ghost"
 								size="icon"
-								aria-label="Copy Git Branch Name"
-								onClick={copyGitBranchName}
+								aria-label="Delete task modal"
+								onClick={displayDeleteModal}
 							>
 								<Ellipsis className="size-4" />
 							</Button>
+							{showDropdown && (
+								<div className="text-sm font-semibold text-card-foreground">
+									Delete task
+								</div>
+							)}
 						</TooltipTrigger>
-						{/* <TooltipContent className="flex gap-4 items-center">
-							<span className="text-xs">Copy Git Branch Name</span>
-							<div className="flex gap-1">
-								<KeyboardShortcut>Ctrl</KeyboardShortcut>
-								<KeyboardShortcut>Shift</KeyboardShortcut>
-								<KeyboardShortcut>.</KeyboardShortcut>
-							</div>
-						</TooltipContent> */}
 					</Tooltip>
 				</TooltipProvider>
 			</div>
