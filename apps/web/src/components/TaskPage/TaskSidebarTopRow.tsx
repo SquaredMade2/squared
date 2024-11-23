@@ -1,9 +1,9 @@
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import { Popover } from "@repo/ui/popover";
+import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
 import type { Task } from "@squared/db";
-import { Copy, Ellipsis, GitPullRequestArrow, Link } from "lucide-react";
+import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
-import { useState } from "react";
+// import { useState } from "react";
 import { Button } from "../ui/button";
 import {
 	Tooltip,
@@ -18,7 +18,7 @@ export const TaskSidebarTopRow = ({
 	workspaceUrl,
 }: { task: Task; workspaceUrl?: string }) => {
 	const { toast } = useToast();
-	const [showDropdown, setShowDropdown] = useState(false);
+	// const [showDropdown, setShowDropdown] = useState(false);
 
 	const identifier = task.identifier;
 	const title = task.title;
@@ -42,9 +42,9 @@ export const TaskSidebarTopRow = ({
 		});
 	};
 
-	const displayDeleteModal = () => {
-		setShowDropdown(true);
-	};
+	// const displayDeleteModal = () => {
+	// 	setShowDropdown(true);
+	// };
 
 	const copyGitBranchName = async (): Promise<void> => {
 		await navigator.clipboard.writeText(gitBranchName.trim());
@@ -145,17 +145,8 @@ export const TaskSidebarTopRow = ({
 							</div>
 						</TooltipContent>
 					</Tooltip>
-					<Tooltip>
-						<Button
-							variant="ghost"
-							size="icon"
-							aria-label="Delete task modal"
-							onClick={displayDeleteModal}
-						>
-							<Ellipsis className="size-4" />
-						</Button>
-						{showDropdown && <Popover />}
-					</Tooltip>
+
+					<DeleteTaskPopOver />
 				</TooltipProvider>
 			</div>
 		</div>
