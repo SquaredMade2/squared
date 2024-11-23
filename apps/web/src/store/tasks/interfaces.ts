@@ -17,7 +17,6 @@ type TaskActions = {
 	setTasks: (tasks: Task[]) => void;
 	setSubtasks: (subtasks: Task[]) => void;
 	updateTask: (task: Task) => void;
-	updateSubtask: (task: Task) => void;
 	createTask: (task: Task) => void;
 	deleteTask: (taskId: string) => void;
 };

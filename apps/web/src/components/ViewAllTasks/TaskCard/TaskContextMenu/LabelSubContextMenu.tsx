@@ -14,9 +14,9 @@ import { useState } from "react";
 import { LabelColor } from "../TaskCardLabels";
 import type { ContextMenuProps } from "./interfaces";
 
-const LabelSubContextMenu = ({ task, type }: ContextMenuProps) => {
+const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const { updateTask, updateSubtask } = useTaskStore((state) => state);
+	const { updateTask } = useTaskStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
 		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [],
@@ -29,12 +29,12 @@ const LabelSubContextMenu = ({ task, type }: ContextMenuProps) => {
 			: labels.filter((l) => l.id !== label.id);
 
 		setLabels(updatedLabels); // Update the state
-		const updatedTask = await taskService.updateTask(TODO, {
-			id: task.id,
-			labels: updatedLabels.map((l) => l.id),
-		});
-
-		type === "subtask" ? updateSubtask(updatedTask) : updateTask(updatedTask);
+		updateTask(
+			await taskService.updateTask(TODO, {
+				id: task.id,
+				labels: updatedLabels.map((l) => l.id),
+			}),
+		);
 	};
 
 	return (

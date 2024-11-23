@@ -92,7 +92,7 @@ const Subtasks = () => {
 												>
 													<ContextMenu>
 														<ContextMenuTrigger>
-															<TaskContextMenu task={subtask} type="subtask" />
+															<TaskContextMenu task={subtask} />
 															<SubtaskList
 																task={subtask}
 																user={users.find(

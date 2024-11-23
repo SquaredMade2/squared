@@ -14,20 +14,18 @@ import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
 import type { ContextMenuProps } from "./interfaces";
 
-const PrioritySubContextMenu = ({ task, type }: ContextMenuProps) => {
+const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
-	const { updateTask, updateSubtask } = useTaskStore((state) => state);
+	const { updateTask } = useTaskStore((state) => state);
 	const updateItem = async (priority: Priority) => {
 		if (task.id !== undefined) {
 			try {
-				const updatedTask = await taskService.updateTask(TODO, {
-					id: task.id,
-					priority,
-				});
-
-				type === "subtask"
-					? updateSubtask(updatedTask)
-					: updateTask(updatedTask);
+				updateTask(
+					await taskService.updateTask(TODO, {
+						id: task.id,
+						priority,
+					}),
+				);
 			} catch (error) {
 				toast({
 					title: "Error updating task",

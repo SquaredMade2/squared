@@ -43,6 +43,7 @@ export const RenameModal = () => {
 							title: inputValue.trim(),
 						}),
 					);
+
 					toast({ title: "Task updated successfully" });
 				} catch (error) {
 					toast({

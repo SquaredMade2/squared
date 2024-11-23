@@ -18,16 +18,16 @@ export const createTaskStore = (
 		updateTask: (task) =>
 			set((state) => ({
 				tasks: state.tasks.map((t) => (t.id === task.id ? task : t)),
+				subtasks: state.subtasks.map((t) => (t.id === task.id ? task : t)),
 				currentTask:
-					state.currentTask?.id === task.id ? task : state.currentTask,
-			})),
-		updateSubtask: (task) =>
-			set((state) => ({
-				subtasks: state.tasks.map((t) => (t.id === task.id ? task : t)),
+					task.id === state.currentTask?.id ? task : state.currentTask,
 			})),
 		deleteTask: (taskId) =>
 			set((state) => ({
 				tasks: state.tasks.filter((t) => t.id !== taskId),
+				subtasks: state.subtasks.filter((t) => t.id !== taskId),
+				currentTask:
+					state.currentTask?.id === taskId ? null : state.currentTask,
 			})),
 	}));
 };
