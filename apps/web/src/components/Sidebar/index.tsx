@@ -220,7 +220,7 @@ export function IconButton({
 					>
 						{label}
 					</span>
-					{notificationCount && notificationCount > 0 && (
+					{!!(notificationCount && notificationCount > 0) && (
 						<div
 							className={`absolute h-2 w-2 bg-primary rounded-full ${
 								state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"
