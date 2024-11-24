@@ -14,15 +14,16 @@ import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-export const TaskPageForm = ({ task }: { task: Task }) => {
+export const TaskPageForm = () => {
 	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
+	const task = useTaskStore((state) => state.currentTask);
 	const { updateTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
-	const [updatedTitle, setUpdatedTitle] = useState(task.title ?? "");
+	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
 	const [updatedDescription, setUpdatedDescription] = useState(
-		task.description ?? null,
+		task?.description ?? null,
 	);
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 	const [parentTask, setParentTask] = useState<Task | null>(null);
@@ -43,9 +44,9 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 	const handleSubmit = async (e: FormEvent) => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
-			updatedTitle !== task.title || updatedDescription !== task.description;
-		const titleOnlyChanged: boolean = updatedTitle !== task.title;
-		if (changeMade && task.id !== undefined) {
+			updatedTitle !== task?.title || updatedDescription !== task?.description;
+		const titleOnlyChanged: boolean = updatedTitle !== task?.title;
+		if (changeMade && task?.id !== undefined) {
 			if (task) {
 				try {
 					updateTask(
@@ -81,7 +82,7 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 
 	useEffect(() => {
 		const fetchParentTask = async () => {
-			if (task.parentId) {
+			if (task?.parentId) {
 				try {
 					const parentTaskData = await taskService.getTask(TODO, {
 						taskId: task.parentId,
@@ -97,7 +98,7 @@ export const TaskPageForm = ({ task }: { task: Task }) => {
 		};
 
 		fetchParentTask();
-	}, [task.parentId]);
+	}, [task?.parentId]);
 
 	return (
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>

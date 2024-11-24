@@ -21,7 +21,10 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 		if (task.id !== undefined) {
 			try {
 				updateTask(
-					await taskService.updateTask(TODO, { id: task.id, priority }),
+					await taskService.updateTask(TODO, {
+						id: task.id,
+						priority,
+					}),
 				);
 			} catch (error) {
 				toast({

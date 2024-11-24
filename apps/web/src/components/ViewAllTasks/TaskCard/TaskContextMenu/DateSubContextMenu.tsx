@@ -17,7 +17,10 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 	const handleUpdate = async (date?: Date) => {
 		updateTask(
-			await taskService.updateTask(TODO, { id: task.id, dueDate: date }),
+			await taskService.updateTask(TODO, {
+				id: task.id,
+				dueDate: date,
+			}),
 		);
 	};
 
