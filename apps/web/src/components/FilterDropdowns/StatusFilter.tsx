@@ -65,9 +65,8 @@ const StatusFilterDropDown = ({
 	filterOption,
 }: { filterOption: FilterOption }) => {
 	const [selectedStatuses, setSelectedStatuses] = useState<Status[]>([]);
-	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
-		(state) => state,
-	);
+	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
+		useFilterStore((state) => state);
 
 	const handleStatusChange = (status: Status, checked: boolean) => {
 		setSelectedStatuses((prev) =>
@@ -84,7 +83,15 @@ const StatusFilterDropDown = ({
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("status");
+			if (currentFilterTypes.includes("status")) {
+				setSelectedStatuses(
+					currentFilters
+						.filter((filter) => filter.field === "status")
+						.flatMap((filter) => filter.value) as Status[],
+				);
+			} else {
+				removeFilter("status");
+			}
 		}
 	}, [selectedStatuses, addFilter, removeFilter]);
 

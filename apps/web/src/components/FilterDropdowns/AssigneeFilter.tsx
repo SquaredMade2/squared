@@ -29,9 +29,8 @@ export default function AssigneeFilterDropDown({
 	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
 		[],
 	);
-	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
-		(state) => state,
-	);
+	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
+		useFilterStore((state) => state);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleAssigneeChange = (label: User | null) => {
@@ -51,7 +50,19 @@ export default function AssigneeFilterDropDown({
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("assigneeId");
+			if (currentFilterTypes.includes("assigneeId")) {
+				setSelectedAssignees(
+					currentFilters
+						.filter((filter) => filter.field === "assigneeId")
+						.flatMap((filter) =>
+							users.filter((user) =>
+								(filter.value as string[]).includes(user.id),
+							),
+						),
+				);
+			} else {
+				removeFilter("assigneeId");
+			}
 		}
 	}, [selectedAssignees]);
 
