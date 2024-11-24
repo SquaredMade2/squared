@@ -198,6 +198,7 @@ model User {
   password             String?
   verified             Boolean  @default(false)
   lastLogin            DateTime @default(now())
+  createdAt            DateTime @default(now())
   onBoarding           Boolean  @default(true)
   defaultWorkspaceId   String?
   avatarUrl            String?

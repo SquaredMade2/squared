@@ -235,11 +235,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		data: { tasksCreated: { increment: 1 } },
 	});
 
-	const formattedName = workspace.name
-		.replace(/\s+/g, "")
-		.substring(0, 3)
-		.toUpperCase();
-	const identifier = `${formattedName}-${updatedWorkspace.tasksCreated + 1}`;
+	const identifier = `${team.identifier}-${updatedWorkspace.tasksCreated + 1}`;
 	const randomLabelIds = getRandomLabels(taskLabels);
 
 	const task = await prisma.task.create({

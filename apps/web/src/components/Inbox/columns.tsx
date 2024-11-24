@@ -92,7 +92,7 @@ export const columns: ColumnDef<
 					</div>
 					<div className="flex flex-col sm:flex-row justify-between w-full">
 						<div
-							className={`flex flex-col ${read ? "text-muted-foreground" : ""}`}
+							className={`flex flex-col ${!read ? "text-muted-foreground" : ""}`}
 						>
 							<div className="flex gap-2 text-xxs">
 								<div>{workspaceName}</div>

@@ -1,6 +1,6 @@
 import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
+import { useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import type { Task } from "@squared/db";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { Button } from "../ui/button";
@@ -12,13 +12,13 @@ import {
 } from "../ui/tooltip";
 import { useToast } from "../ui/use-toast";
 
-export const TaskSidebarTopRow = ({
-	task,
-	workspaceUrl,
-}: { task: Task; workspaceUrl?: string }) => {
+export const TaskSidebarTopRow = () => {
 	const { toast } = useToast();
-	const identifier = task.identifier;
-	const title = task.title;
+	const task = useTaskStore((state) => state.currentTask);
+	const workspaceUrl = useWorkspaceStore((state) => state.workspace?.url);
+
+	const identifier = task?.identifier ?? "";
+	const title = task?.title ?? "";
 
 	const TaskUrl = `${process.env.NEXT_PUBLIC_URL}/${workspaceUrl}/task/${identifier}/${formatUrl(title)}`;
 	const gitBranchName = `${sanitizeBranchName(title.toLowerCase())}-${String(identifier).toLowerCase()}`;

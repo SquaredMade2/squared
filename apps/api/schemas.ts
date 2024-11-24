@@ -362,6 +362,11 @@ const schemas = {
 				type: "boolean",
 				description: "Indicates if the user's email is verified",
 			},
+			createdAt: {
+				type: "string",
+				format: "date-time",
+				description: "Timestamp when the user was created",
+			},
 			lastLogin: {
 				type: "string",
 				format: "date-time",
