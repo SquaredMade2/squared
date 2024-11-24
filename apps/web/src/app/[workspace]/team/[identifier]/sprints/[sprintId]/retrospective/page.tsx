@@ -1,7 +1,6 @@
 "use client";
 
 import { RetroColumn } from "@/components/Sprints";
-import TopNavBar from "@/components/TopNavBar";
 import { toast } from "@/components/ui/use-toast";
 import { sprintService } from "@/lib/services";
 import { parseParams } from "@/utils/parseParams";
@@ -176,8 +175,8 @@ export default function SprintRetrospectivePage() {
 		<DragDropContext onDragEnd={onDragEnd}>
 			<div className="container mx-auto py-10">
 				<div className="w-full flex flex-col h-screen overflow-hidden">
-					<div className="w-full px-2 sm:px-5">
-						<TopNavBar pageTitle="Sprint Retrospective" />
+					<div className="mb-4 py-4 border-b border-border w-full">
+						<h1 className="text-xl font-bold">Sprint Retrospective</h1>
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 						<RetroColumn

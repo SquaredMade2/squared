@@ -10,6 +10,7 @@ export type CreateTaskRequest = {
 	labels?: string[];
 	parentId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId?: string | null;
 	status?:
 		| "backlog"
 		| "todo"
@@ -24,7 +25,6 @@ export type CreateTaskRequest = {
 
 export type CreateTaskResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -73,7 +73,6 @@ export type UpdateTaskRequest = {
 
 export type UpdateTaskResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -111,7 +110,6 @@ export type GetTaskRequest = {
 
 export type GetTaskResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -146,7 +144,6 @@ export type GetTaskByIdentifierRequest = {
 
 export type GetTaskByIdentifierResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -180,7 +177,6 @@ export type GetTeamTasksRequest = {
 
 export type GetTeamTasksResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -228,7 +224,6 @@ export type ReorderSubtasksRequest = {
 
 export type ReorderSubtasksResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -262,7 +257,6 @@ export type GetSubtasksRequest = {
 
 export type GetSubtasksResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;

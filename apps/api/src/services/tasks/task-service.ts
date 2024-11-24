@@ -23,6 +23,7 @@ export class TaskService implements TaskRpc {
 		priority,
 		labels,
 		parentId,
+		sprintId,
 	}: CreateTaskParams): Promise<Task> {
 		this.logger.info("Creating task by payload: %0", {
 			authorId,
@@ -110,6 +111,7 @@ export class TaskService implements TaskRpc {
 				parentId,
 				status,
 				priority,
+				sprintId,
 				workspaceId: workspace.id,
 				identifier: newTaskIdentifier,
 			},
