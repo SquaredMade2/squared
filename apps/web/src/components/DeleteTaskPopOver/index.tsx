@@ -15,8 +15,8 @@ export default function DeleteTaskPopOver() {
 					<Ellipsis />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-24 p-1">
-				<div className="text-xs text-center">
+			<PopoverContent className="w-24 p-0">
+				<div className="text-xs text-center flex items-center justify-center p-0 gap-6">
 					<DeleteTaskModal />
 				</div>
 			</PopoverContent>

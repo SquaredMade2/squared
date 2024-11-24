@@ -9,13 +9,18 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 
 export default function DeleteTaskModal() {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant="ghost">Delete</Button>
+				<Button className="gap-2" variant="destructive">
+					<Trash className="w-4 h-4" />
+					Delete
+				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
@@ -27,9 +32,7 @@ export default function DeleteTaskModal() {
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction asChild>
-						<Button variant="destructive">Confirm</Button>
-					</AlertDialogAction>
+					<AlertDialogAction>Delete</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>

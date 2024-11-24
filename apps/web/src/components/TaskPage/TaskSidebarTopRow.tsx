@@ -138,7 +138,6 @@ export const TaskSidebarTopRow = ({
 							</div>
 						</TooltipContent>
 					</Tooltip>
-
 					<DeleteTaskPopOver />
 				</TooltipProvider>
 			</div>
