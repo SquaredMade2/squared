@@ -1,16 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/utils/cn";
 import type { Team } from "@squared/db";
-import { ChevronDown, ChevronUp, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "../ui/accordion";
+import { buttonVariants } from "../ui/button";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {
@@ -20,15 +22,7 @@ interface TeamAccordionProps {
 
 export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 	const pathname = usePathname();
-	const [openTeams, setOpenTeams] = useState<string[]>([]);
-
-	useEffect(() => {
-		if (currentTeam) {
-			setOpenTeams((prev) =>
-				prev.includes(currentTeam.id) ? prev : [...prev, currentTeam.id],
-			);
-		}
-	}, [currentTeam]);
+	const [openItems, setOpenItems] = useState<string[]>([]);
 
 	const getCurrentPage = (path: string) => {
 		if (path.endsWith("/all")) return "all";
@@ -43,50 +37,48 @@ export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 
 	const currentPage = getCurrentPage(pathname);
 
-	const toggleTeam = (teamId: string) => {
-		setOpenTeams((prev) =>
-			prev.includes(teamId)
-				? prev.filter((id) => id !== teamId)
-				: [...prev, teamId],
-		);
+	useEffect(() => {
+		if (currentTeam) {
+			setOpenItems((prev) =>
+				prev.includes(currentTeam.id) ? prev : [...prev, currentTeam.id],
+			);
+		}
+	}, [currentTeam]);
+
+	const handleAccordionChange = (value: string[]) => {
+		setOpenItems(value);
 	};
 
 	return (
 		<ScrollArea className="h-[calc(100vh-16rem)]">
-			<div className="space-y-2 py-2">
+			<Accordion
+				type="multiple"
+				value={openItems}
+				onValueChange={handleAccordionChange}
+			>
 				{teams?.map((team: Team) => (
-					<Collapsible
-						key={team.id}
-						open={openTeams.includes(team.id)}
-						onOpenChange={() => toggleTeam(team.id)}
-					>
-						<CollapsibleTrigger asChild>
-							<Button
-								variant="ghost"
-								className="w-full justify-between"
-								size="sm"
-							>
-								<div className="flex items-center gap-2">
-									<LayoutGrid className="text-primary h-4 w-4" />
-									<span className="text-sm font-medium">{team.name}</span>
-								</div>
-								{openTeams.includes(team.id) ? (
-									<ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-								) : (
-									<ChevronUp className="h-4 w-4 shrink-0 transition-transform duration-200" />
-								)}
-							</Button>
-						</CollapsibleTrigger>
-						<CollapsibleContent className="pl-6 pt-1">
+					<AccordionItem value={team.id} key={team.id} className="pb-2">
+						<AccordionTrigger
+							className={cn(
+								buttonVariants({ variant: "ghost" }),
+								"justify-between",
+							)}
+						>
+							<div className="flex items-center gap-2">
+								<LayoutGrid className="text-primary h-4 w-4" />
+								<span className="text-sm font-medium">{team.name}</span>
+							</div>
+						</AccordionTrigger>
+						<AccordionContent className="pl-6 pt-1">
 							<NavBarTeams
 								teamIdentifier={team.identifier}
 								currentPage={currentPage}
 								active={currentTeam?.id === team.id}
 							/>
-						</CollapsibleContent>
-					</Collapsible>
+						</AccordionContent>
+					</AccordionItem>
 				))}
-			</div>
+			</Accordion>
 		</ScrollArea>
 	);
 }

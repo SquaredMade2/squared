@@ -29,9 +29,8 @@ export default function EffortFilterDropDown({
 	filterOption,
 }: { filterOption: FilterOption }) {
 	const [selectedEffort, setSelectedEffort] = useState<number | null>(null);
-	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
-		(state) => state,
-	);
+	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
+		useFilterStore((state) => state);
 
 	useEffect(() => {
 		if (selectedEffort !== null) {
@@ -42,7 +41,17 @@ export default function EffortFilterDropDown({
 				operator: "equals",
 			});
 		} else {
-			removeFilter("effortEstimate");
+			if (currentFilterTypes.includes("effortEstimate")) {
+				setSelectedEffort(
+					Number(
+						currentFilters
+							.filter((filter) => filter.field === "effortEstimate")
+							.flatMap((filter) => filter.value),
+					),
+				);
+			} else {
+				removeFilter("effortEstimate");
+			}
 		}
 	}, [selectedEffort, addFilter, removeFilter]);
 
