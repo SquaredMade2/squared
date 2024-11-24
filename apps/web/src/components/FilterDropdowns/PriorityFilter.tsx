@@ -57,9 +57,8 @@ const PriorityFilterDropDown = ({
 	filterOption,
 }: { filterOption: FilterOption }) => {
 	const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([]);
-	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
-		(state) => state,
-	);
+	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
+		useFilterStore((state) => state);
 
 	const handlePriorityChange = (priority: Priority, checked: boolean) => {
 		setSelectedPriorities((prev) =>
@@ -76,7 +75,15 @@ const PriorityFilterDropDown = ({
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("priority");
+			if (currentFilterTypes.includes("priority")) {
+				setSelectedPriorities(
+					currentFilters
+						.filter((filter) => filter.field === "priority")
+						.flatMap((filter) => filter.value) as Priority[],
+				);
+			} else {
+				removeFilter("priority");
+			}
 		}
 	}, [selectedPriorities]);
 

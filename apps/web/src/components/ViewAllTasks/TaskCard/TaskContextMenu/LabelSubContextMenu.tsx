@@ -34,7 +34,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 				id: task.id,
 				labels: updatedLabels.map((l) => l.id),
 			}),
-		); // Update the task
+		);
 	};
 
 	return (

@@ -28,10 +28,12 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 
 	const handleSelectAssignee = async (userId: string | null) => {
 		if (!userId) {
-			updateTask(
-				await taskService.updateTask(TODO, { id: taskId, assigneeId: null }),
+			return updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId: null,
+				}),
 			);
-			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
 

@@ -25,9 +25,8 @@ export default function LabelFilterDropDown({
 }: { filterOption: FilterOption }) {
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
-	const { addFilter, removeFilter, currentFilterTypes } = useFilterStore(
-		(state) => state,
-	);
+	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
+		useFilterStore((state) => state);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleLabelChange = (label: Label) => {
@@ -47,7 +46,20 @@ export default function LabelFilterDropDown({
 				operator: "arrayIncludesAny",
 			});
 		} else {
-			removeFilter("labels");
+			if (currentFilterTypes.includes("labels")) {
+				setSelectedLabels(
+					currentFilters
+						.filter((filter) => filter.field === "labels")
+						.flatMap(
+							(filter) =>
+								workspace?.Labels?.filter((label) =>
+									(filter.value as string[]).includes(label.id),
+								) ?? [],
+						),
+				);
+			} else {
+				removeFilter("labels");
+			}
 		}
 	}, [selectedLabels, addFilter, removeFilter]);
 

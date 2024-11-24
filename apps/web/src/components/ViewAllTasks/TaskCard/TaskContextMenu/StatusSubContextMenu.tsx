@@ -21,7 +21,12 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const handleSetStatus: (status: Status) => void = async (status) => {
 		if (task.id !== undefined) {
 			try {
-				updateTask(await taskService.updateTask(TODO, { id: task.id, status }));
+				updateTask(
+					await taskService.updateTask(TODO, {
+						id: task.id,
+						status,
+					}),
+				);
 			} catch (err) {
 				toast({
 					title: "Error updating task",
