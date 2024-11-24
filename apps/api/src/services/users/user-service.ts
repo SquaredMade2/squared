@@ -15,7 +15,7 @@ export class UserService implements UserRpc {
 		this.logger.info("Onboarding user with id: %s", userId);
 		return await this.db.user.update({
 			where: { id: userId },
-			data: { onBoarding: true },
+			data: { onBoarding: false },
 		});
 	}
 
