@@ -18,6 +18,18 @@ interface NestedItem extends MDXFile {
 	children: Record<string, NestedItem>;
 }
 
+const customOrder = [
+	"index",
+    "quick-start",
+    "sign-up",
+    "manage-your-team",
+    "managing-tasks",
+    "task-management-best-practices",
+    "managing-your-account",
+    "teams-collaborate",
+    "faq",
+];
+
 function organizeFiles(files: MDXFile[]): NestedItem[] {
 	const fileMap: Record<string, NestedItem> = {};
 
@@ -43,28 +55,34 @@ function organizeFiles(files: MDXFile[]): NestedItem[] {
 			}
 		}
 	}
-
-	function arrayToRecord(items: NestedItem[]): Record<string, NestedItem> {
-		return items.reduce(
-			(acc, item) => {
-				acc[item.slug] = item;
-				return acc;
-			},
-			{} as Record<string, NestedItem>,
-		);
+  
+	function sortFilesByCustomOrder(files: NestedItem[], customOrder: string[]): NestedItem[] {
+	  return files
+		.sort((a, b) => {
+		  const indexA = customOrder.indexOf(a.slug.split("/").pop() || "");
+		  const indexB = customOrder.indexOf(b.slug.split("/").pop() || "");
+  
+		  if (indexA === -1 && indexB === -1) {
+			return a.metadata.title.localeCompare(b.metadata.title);
+		  }
+		  if (indexA === -1) return 1;
+		  if (indexB === -1) return -1;
+		  return indexA - indexB;
+		})
+		.map((file) => ({
+		  ...file,
+		  children: Object.fromEntries(
+			sortFilesByCustomOrder(Object.values(file.children), customOrder).map((child) => [
+			  child.slug,
+			  child,
+			])
+		  ),
+		}));
 	}
-
-	function sortFiles(files: Record<string, NestedItem>): NestedItem[] {
-		return Object.values(files)
-			.sort((a, b) => a.slug.localeCompare(b.slug))
-			.map((file) => ({
-				...file,
-				children: arrayToRecord(sortFiles(file.children)),
-			}));
-	}
-
-	return sortFiles(fileMap);
-}
+  
+	return sortFilesByCustomOrder(Object.values(fileMap), customOrder);
+  }
+  
 
 function NestedLinks({
 	items,
