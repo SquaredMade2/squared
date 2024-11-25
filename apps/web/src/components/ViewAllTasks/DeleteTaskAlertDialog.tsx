@@ -1,4 +1,5 @@
 import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
@@ -25,10 +26,12 @@ export const DeleteTaskAlertDialog = ({
 	showConfirmDelete: boolean;
 	setShowConfirmDelete: Dispatch<SetStateAction<boolean>>;
 }) => {
+	const { deleteTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
-	const deleteTask = async () => {
+	const handleDelete = async () => {
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
+			deleteTask(task.id);
 			toast({
 				title: "Task Deleted",
 				description: `${task.title} has been successfully deleted.`,
@@ -54,7 +57,7 @@ export const DeleteTaskAlertDialog = ({
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						className={buttonVariants({ variant: "destructive" })}
-						onClick={deleteTask}
+						onClick={handleDelete}
 					>
 						Delete Task
 					</AlertDialogAction>
