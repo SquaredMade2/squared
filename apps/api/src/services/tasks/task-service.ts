@@ -2,7 +2,7 @@ import { subscribeUser } from "@/utils/taskUpdate";
 import type { PrismaClient, Task } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
-import { EventService } from "../events/event-service";
+import type { EventService } from "../events/event-service";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
 export class TaskService implements TaskRpc {

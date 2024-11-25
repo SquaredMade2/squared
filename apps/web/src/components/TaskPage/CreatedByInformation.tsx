@@ -1,4 +1,4 @@
-import { useUserStore, useEventStore } from "@/store";
+import { useEventStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -12,7 +12,7 @@ export const CreatedByInformation = () => {
 			{events.map((event) => {
 				const eventAuthor = users.find((user) => user.id === event.authorId);
 				return (
-					<div key={event.id} className="flex items-center px-8 mt-4">
+					<div key={event.id} className="flex items-center p-2">
 						<div className="mr-4 text-muted-foreground">
 							{formatDate(new Date(event.createdAt), "dd MMM yyyy")}
 						</div>

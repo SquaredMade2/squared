@@ -1,12 +1,17 @@
-import { commentService, taskService, eventService } from "@/lib/services";
-import { useCommentStore, useTaskStore, useTeamStore, useEventStore } from "@/store";
+import { commentService, eventService, taskService } from "@/lib/services";
+import {
+	useCommentStore,
+	useEventStore,
+	useTaskStore,
+	useTeamStore,
+} from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
+import { TaskEvent } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
-import { TaskEvent } from "@squared/db";
 
 export function useTaskPage() {
 	const { taskIdentifier } = useParams();
@@ -52,7 +57,7 @@ export function useTaskPage() {
 					const [subtasks, comments, taskEvents] = await Promise.all([
 						taskService.getSubtasks(TODO, { parentId: pageTask?.id }),
 						commentService.getTaskComments(TODO, { taskId: pageTask.id }),
-						eventService.getTaskEvents(TODO, { taskId: pageTask.id })
+						eventService.getTaskEvents(TODO, { taskId: pageTask.id }),
 					]);
 					setSubtasks(subtasks);
 					setComments(comments);

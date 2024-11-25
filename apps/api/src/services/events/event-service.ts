@@ -5,15 +5,14 @@ import type {
 	Task,
 	TaskEvent,
 } from "@squared/db";
+import type { Logger } from "@squared/logger";
+import createCustomLogger from "@squared/logger";
 import type {
 	EventRpc,
 	FullNotification,
 	TaskEventsReturn,
 	TaskValue,
 } from "./types";
-import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
-
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
@@ -74,7 +73,9 @@ export class EventService implements EventRpc {
 		const diff = await this.getTaskDiff(previousTask, changes);
 
 		if (diff === "No changes") {
-			this.logger.info(`No changes detected for Task ${taskId}. No TaskEvent created.`);
+			this.logger.info(
+				`No changes detected for Task ${taskId}. No TaskEvent created.`,
+			);
 			return null;
 		}
 
@@ -192,7 +193,7 @@ export class EventService implements EventRpc {
 				const oldValue = previousTask[key as keyof Task];
 				const [formattedOldValue, formattedNewValue] = await Promise.all([
 					this.formatValue(oldValue, key),
-					this.formatValue(newValue, key)
+					this.formatValue(newValue, key),
 				]);
 
 				if (formattedOldValue !== formattedNewValue) {
@@ -204,12 +205,12 @@ export class EventService implements EventRpc {
 		);
 
 		const filteredDiff = diff.filter(Boolean).join(", ");
-		
+
 		// Case 2: Has changes that were detected
 		if (filteredDiff.length > 0) {
 			return filteredDiff;
 		}
-		
+
 		// Case 3: No actual changes detected
 		return "No changes";
 	}
