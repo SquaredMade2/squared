@@ -47,7 +47,7 @@ export class EventService implements EventRpc {
 			`Fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
 		);
 
-		return [...taskEvents, ...commits] as unknown as TaskEventsReturn;
+		return Promise.resolve([...taskEvents, ...commits]) as TaskEventsReturn;
 	}
 	async getNotifications({
 		userId,
