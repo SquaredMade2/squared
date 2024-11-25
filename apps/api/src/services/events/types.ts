@@ -38,7 +38,7 @@ export interface EventRpc {
 		authorId: string;
 		changes: Partial<Task>;
 		previousTask: Task;
-	}) => Promise<TaskEvent>;
+	}) => Promise<TaskEvent | null>;
 	createNotification: ({
 		userId,
 		description,

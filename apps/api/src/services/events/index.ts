@@ -96,7 +96,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 				priority: z.enum(["noPriority", "urgent", "high", "medium", "low"]),
 			}),
 		}),
-		output: taskEventSchema,
+		output: z.union([taskEventSchema, z.null()]),
 	},
 	createNotification: {
 		input: z.object({

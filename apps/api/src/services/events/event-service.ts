@@ -11,8 +11,12 @@ import type {
 	TaskEventsReturn,
 	TaskValue,
 } from "./types";
+import type { Logger } from "@squared/logger";
+import createCustomLogger from "@squared/logger";
+
 
 export class EventService implements EventRpc {
+	private readonly logger: Logger;
 	private taskEventRepository: PrismaClient["taskEvent"];
 	private commitRepository: PrismaClient["commit"];
 	private notificationRepository: PrismaClient["notification"];
@@ -20,6 +24,7 @@ export class EventService implements EventRpc {
 	private userRepository: PrismaClient["user"];
 
 	constructor(db: PrismaClient) {
+		this.logger = createCustomLogger("tasks");
 		this.taskEventRepository = db.taskEvent;
 		this.commitRepository = db.commit;
 		this.notificationRepository = db.notification;
@@ -27,26 +32,23 @@ export class EventService implements EventRpc {
 		this.userRepository = db.user;
 	}
 	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
-		try {
-			const [taskEvents, commits] = await Promise.all([
-				this.taskEventRepository.findMany({
-					where: { taskId },
-					include: { Task: true, Author: true },
-					orderBy: { createdAt: "asc" },
-				}),
-				this.commitRepository.findMany({
-					where: { taskId },
-					orderBy: { timestamp: "asc" },
-				}),
-			]);
-			console.log(
-				`Fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
-			);
-			return [...taskEvents, ...commits] as unknown as TaskEventsReturn;
-		} catch (error) {
-			console.error(`Error fetching task events for Task ID ${taskId}:`, error);
-			throw new Error("Failed to fetch task events.");
-		}
+		const [taskEvents, commits] = await Promise.all([
+			this.taskEventRepository.findMany({
+				where: { taskId },
+				include: { Task: true, Author: true },
+				orderBy: { createdAt: "asc" },
+			}),
+			this.commitRepository.findMany({
+				where: { taskId },
+				orderBy: { timestamp: "asc" },
+			}),
+		]);
+
+		this.logger.info(
+			`Fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
+		);
+
+		return [...taskEvents, ...commits] as unknown as TaskEventsReturn;
 	}
 	async getNotifications({
 		userId,
@@ -66,12 +68,14 @@ export class EventService implements EventRpc {
 		authorId: string;
 		changes: Partial<Task>;
 		previousTask: Task;
-	}): Promise<TaskEvent> {
+	}): Promise<TaskEvent | null> {
+		this.logger.info(`Checking for changes on Task ${taskId}`);
+
 		const diff = await this.getTaskDiff(previousTask, changes);
 
 		if (diff === "No changes") {
-			console.log("No changes detected. No TaskEvent created.");
-			throw new Error("No changes detected.");
+			this.logger.info(`No changes detected for Task ${taskId}. No TaskEvent created.`);
+			return null;
 		}
 
 		const taskEvent = await this.taskEventRepository.create({
@@ -181,8 +185,10 @@ export class EventService implements EventRpc {
 				if (newValue === undefined) return null;
 
 				const oldValue = previousTask[key as keyof Task];
-				const formattedOldValue = await this.formatValue(oldValue, key);
-				const formattedNewValue = await this.formatValue(newValue, key);
+				const [formattedOldValue, formattedNewValue] = await Promise.all([
+					this.formatValue(oldValue, key),
+					this.formatValue(newValue, key)
+				]);
 
 				if (formattedOldValue !== formattedNewValue) {
 					const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
@@ -203,13 +209,13 @@ export class EventService implements EventRpc {
 		if (value === null || value === undefined) {
 			switch (key) {
 				case "labels":
-					return "no labels";
+					return "No labels";
 				case "effortEstimate":
-					return "no estimate";
+					return "No estimate";
 				case "assigneeId":
-					return "unassigned";
+					return "Unassigned";
 				default:
-					return "none";
+					return "None";
 			}
 		}
 
@@ -226,7 +232,7 @@ export class EventService implements EventRpc {
 		if (Array.isArray(value) && key === "labels") {
 			const labelIds = value as string[];
 			if (labelIds.length === 0) {
-				return "no labels";
+				return "No labels";
 			}
 			const labels = await this.labelRepository.findMany({
 				where: { id: { in: labelIds } },
@@ -238,10 +244,6 @@ export class EventService implements EventRpc {
 		// Handle effort estimate
 		if (key === "effortEstimate") {
 			return String(value);
-		}
-
-		if (typeof value === "string") {
-			return value;
 		}
 		if (value instanceof Date) {
 			return value.toISOString();

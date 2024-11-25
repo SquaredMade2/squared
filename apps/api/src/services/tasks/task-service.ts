@@ -10,10 +10,10 @@ export class TaskService implements TaskRpc {
 	private readonly logger: Logger;
 	private readonly eventService: EventService;
 
-	constructor(db: PrismaClient) {
+	constructor(db: PrismaClient, eventService: EventService) {
 		this.db = db;
 		this.logger = createCustomLogger("tasks");
-		this.eventService = new EventService(db);
+		this.eventService = eventService;
 	}
 
 	async createTask({
@@ -137,7 +137,7 @@ export class TaskService implements TaskRpc {
 		});
 
 		if (!previousTask) {
-			throw new Error("Task not found");
+			this.throwError("Task not found");
 		}
 
 		if (args.effortEstimate) {
@@ -161,9 +161,9 @@ export class TaskService implements TaskRpc {
 			this.throwError("There was an issue creating the task");
 		}
 
-		await this.eventService.createLogEvent({
+		this.eventService.createLogEvent({
 			taskId: task.id,
-			authorId: args.authorId || task.authorId,
+			authorId: task.authorId,
 			changes: args,
 			previousTask,
 		});

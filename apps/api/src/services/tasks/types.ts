@@ -15,7 +15,6 @@ export type CreateTaskParams = {
 
 export type UpdateTaskParams = {
 	id: string;
-	authorId?: string;
 	title?: string;
 	description?: string;
 	dueDate?: Date;
