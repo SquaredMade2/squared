@@ -7,7 +7,7 @@ import {
 } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
-import { TaskEvent } from "@squared/db";
+import type { TaskEvent } from "@squared/db";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
