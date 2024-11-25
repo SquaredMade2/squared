@@ -27,20 +27,22 @@ export class EventService implements EventRpc {
 		this.userRepository = db.user;
 	}
 	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
-		// Promise.all with commits is causing errors for now, so I'm only implementing the taskEvents for now
-		// will handle commits in future PR
 		try {
-			const taskEvents = await this.taskEventRepository.findMany({
-				where: { taskId },
-				include: { Task: true, Author: true },
-				orderBy: { createdAt: "asc" },
-			});
-
+			const [taskEvents, commits] = await Promise.all([
+				this.taskEventRepository.findMany({
+					where: { taskId },
+					include: { Task: true, Author: true },
+					orderBy: { createdAt: "asc" },
+				}),
+				this.commitRepository.findMany({
+					where: { taskId },
+					orderBy: { timestamp: "asc" },
+				}),
+			]);
 			console.log(
-				`Fetched ${taskEvents.length} TaskEvents for Task ID ${taskId}.`,
+				`Fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
 			);
-
-			return taskEvents as unknown as TaskEventsReturn;
+			return [...taskEvents, ...commits] as unknown as TaskEventsReturn;
 		} catch (error) {
 			console.error(`Error fetching task events for Task ID ${taskId}:`, error);
 			throw new Error("Failed to fetch task events.");
