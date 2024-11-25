@@ -1,5 +1,5 @@
 import { eventService } from "@/lib/services";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore, useUserStore, useEventStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { TaskEvent } from "@squared/db";
@@ -12,25 +12,7 @@ export const CreatedByInformation = () => {
 	const authorId = currentTask?.authorId;
 	const { users } = useUserStore((state) => state);
 	const foundUser = users.find((user) => user.id === authorId);
-
-	const [events, setEvents] = useState<TaskEvent[]>([]);
-
-	useEffect(() => {
-		const fetchTaskEvents = async () => {
-			try {
-				const response = await eventService.getTaskEvents(TODO, {
-					taskId: currentTask?.id || "",
-				});
-
-				setEvents(response as TaskEvent[]);
-			} catch (error) {
-				console.error("Failed to fetch task events:", error);
-			}
-		};
-		if (currentTask?.id) {
-			fetchTaskEvents();
-		}
-	}, [currentTask?.id]);
+	const events = useEventStore((state) => state.events);
 
 	const displayDate = () => {
 		if (currentTask) {

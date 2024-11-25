@@ -1,11 +1,12 @@
-import { commentService, taskService } from "@/lib/services";
-import { useCommentStore, useTaskStore, useTeamStore } from "@/store";
+import { commentService, taskService, eventService } from "@/lib/services";
+import { useCommentStore, useTaskStore, useTeamStore, useEventStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
+import { TaskEvent } from "@squared/db";
 
 export function useTaskPage() {
 	const { taskIdentifier } = useParams();
@@ -18,6 +19,7 @@ export function useTaskPage() {
 	);
 	const { users, loading: userLoading } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
+	const { setEvents } = useEventStore((state) => state);
 	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
@@ -47,13 +49,14 @@ export function useTaskPage() {
 				if (pageTask) {
 					setTask(pageTask);
 					setCurrentTask(pageTask);
-					const fetchedSubtasks = await taskService.getSubtasks(TODO, {
-						parentId: pageTask?.id,
-					});
-					setSubtasks(fetchedSubtasks);
-					setComments(
-						await commentService.getTaskComments(TODO, { taskId: pageTask.id }),
-					);
+					const [subtasks, comments, taskEvents] = await Promise.all([
+						taskService.getSubtasks(TODO, { parentId: pageTask?.id }),
+						commentService.getTaskComments(TODO, { taskId: pageTask.id }),
+						eventService.getTaskEvents(TODO, { taskId: pageTask.id })
+					]);
+					setSubtasks(subtasks);
+					setComments(comments);
+					setEvents(taskEvents as TaskEvent[]);
 				}
 
 				setIsLoading(false);
