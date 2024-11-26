@@ -164,7 +164,6 @@ export const columns: ColumnDef<
 			};
 
 			const handleSave = async () => {
-				console.log('HAAAAANDLE')
 				const currentUser = user;
 				let response = user;
 				if (currentUser) {
@@ -178,7 +177,6 @@ export const columns: ColumnDef<
 							: [...(user.savedNotificationIds || []), row.original.id],
 					});
 				}
-
 				if (response) {
 					setUser(response);
 					updateUser(response);

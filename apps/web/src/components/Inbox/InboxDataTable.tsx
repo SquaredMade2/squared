@@ -162,11 +162,11 @@ export function InboxDataTable({
 			});
 			setNotifications(updatedNotifications)
 		}
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		table.setRowSelection(updatedRowSelection);
+		// const updatedRowSelection = { ...table.getState().rowSelection };
+		// for (const row of selectedRows) {
+		// 	delete updatedRowSelection[row.id];
+		// }
+		// table.setRowSelection(updatedRowSelection);
 	};
 
 	const handleMarkAsRestored = async () => {
@@ -212,10 +212,11 @@ export function InboxDataTable({
 			notificationIds: newSavedNotificationIds,
 		});
 		if (response) {
-			setUser(user);
-			updateUser(user);
+			setUser(response); 
+			updateUser(response); 
 		}
 	};
+	
 
 	return (
 		<div className="w-full md:container">
