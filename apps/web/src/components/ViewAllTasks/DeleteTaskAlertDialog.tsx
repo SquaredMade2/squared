@@ -3,6 +3,7 @@ import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
+import { redirect } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import {
 	AlertDialog,
@@ -21,10 +22,12 @@ export const DeleteTaskAlertDialog = ({
 	task,
 	showConfirmDelete,
 	setShowConfirmDelete,
+	redirectTask,
 }: {
 	task: Task;
 	showConfirmDelete: boolean;
 	setShowConfirmDelete: Dispatch<SetStateAction<boolean>>;
+	redirectTask?: boolean;
 }) => {
 	const { deleteTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
@@ -32,6 +35,9 @@ export const DeleteTaskAlertDialog = ({
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
 			deleteTask(task.id);
+			if (redirectTask) {
+				redirect("/tasks");
+			}
 			toast({
 				title: "Task Deleted",
 				description: `${task.title} has been successfully deleted.`,

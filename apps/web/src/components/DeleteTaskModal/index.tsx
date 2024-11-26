@@ -1,40 +1,34 @@
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+// import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 import { Button } from "@/components/ui/button";
+import type { Task } from "@squared/db";
 import { Trash } from "lucide-react";
+import { useState } from "react";
+import { DeleteTaskAlertDialog } from "../ViewAllTasks/DeleteTaskAlertDialog";
 
-export default function DeleteTaskModal() {
+export default function DeleteTaskModal({ task }: { task: Task }) {
+	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
+	const showConfirmDeleteModal = () => {
+		setShowConfirmDelete(true);
+	};
 	return (
-		<AlertDialog>
-			<AlertDialogTrigger asChild>
-				<Button className="gap-2" variant="destructive">
-					<Trash className="w-4 h-4" />
-					Delete
-				</Button>
-			</AlertDialogTrigger>
-			<AlertDialogContent>
-				<AlertDialogHeader>
-					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete your task
-						and remove your data from our servers.
-					</AlertDialogDescription>
-				</AlertDialogHeader>
-				<AlertDialogFooter>
-					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction>Delete</AlertDialogAction>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
+		<>
+			<Button
+				onClick={showConfirmDeleteModal}
+				className="gap-2"
+				variant="destructive"
+			>
+				<Trash className="w-4 h-4" />
+				Delete
+			</Button>
+
+			<DeleteTaskAlertDialog
+				redirectTask={true}
+				task={task}
+				showConfirmDelete={showConfirmDelete}
+				setShowConfirmDelete={setShowConfirmDelete}
+			/>
+		</>
 	);
 }

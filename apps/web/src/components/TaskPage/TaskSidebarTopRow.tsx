@@ -138,7 +138,7 @@ export const TaskSidebarTopRow = () => {
 							</div>
 						</TooltipContent>
 					</Tooltip>
-					<DeleteTaskPopOver />
+					{task && <DeleteTaskPopOver task={task} />}
 				</TooltipProvider>
 			</div>
 		</div>

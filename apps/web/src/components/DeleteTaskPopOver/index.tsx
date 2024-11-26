@@ -6,8 +6,9 @@ import {
 } from "@/components/ui/popover";
 import { Ellipsis } from "lucide-react";
 import DeleteTaskModal from "../DeleteTaskModal";
+import type { Task } from "@squared/db";
 
-export default function DeleteTaskPopOver() {
+export default function DeleteTaskPopOver({ task }: { task: Task }) {
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
@@ -17,7 +18,7 @@ export default function DeleteTaskPopOver() {
 			</PopoverTrigger>
 			<PopoverContent className="w-24 p-0">
 				<div className="text-xs text-center flex items-center justify-center p-0">
-					<DeleteTaskModal />
+					<DeleteTaskModal task={task} />
 				</div>
 			</PopoverContent>
 		</Popover>
