@@ -1,5 +1,5 @@
 import { eventService, userService, workspaceService } from "@/lib/services";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore, useEventStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TooltipContent } from "@repo/ui/tooltip";
 import { TODO } from "@squared/context";
@@ -42,6 +42,8 @@ export const columns: ColumnDef<
 	{
 		id: "content",
 		cell: ({ row }) => {
+			
+
 			const router = useRouter();
 			const { workspace } = useWorkspaceStore((state) => state);
 			const { identifier: taskIdentifier, title: taskName } = row.original.Task;
@@ -135,12 +137,19 @@ export const columns: ColumnDef<
 
 			const { updateUser, user, setUser } = useUserStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
+			const { setNotifications } = useEventStore((state) => state);
 
 			const handleDismiss = async () => {
 				await eventService.toggleNotification(TODO, {
 					notificationIds: [row.original.id],
 					dismissed: true,
 				});
+				if (user) {
+					const updatedNotifications = await eventService.getNotifications(TODO, {
+						userId: user.id,
+					});
+					setNotifications(updatedNotifications)
+				}
 			};
 
 			const handleDelete = async () => {
@@ -155,6 +164,7 @@ export const columns: ColumnDef<
 			};
 
 			const handleSave = async () => {
+				console.log('HAAAAANDLE')
 				const currentUser = user;
 				let response = user;
 				if (currentUser) {

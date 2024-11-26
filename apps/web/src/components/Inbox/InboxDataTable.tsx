@@ -58,7 +58,7 @@ export function InboxDataTable({
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
 	const { updateUser, user, setUser } = useUserStore((state) => state);
-	const { notifications } = useEventStore((state) => state);
+	const { notifications, setNotifications } = useEventStore((state) => state);
 	const table = useReactTable({
 		data,
 		columns,
@@ -146,6 +146,7 @@ export function InboxDataTable({
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
 		}
+		
 		table.setRowSelection(updatedRowSelection);
 	};
 
@@ -155,6 +156,12 @@ export function InboxDataTable({
 			notificationIds: selectedRows.map((row) => row.original.id),
 			dismissed: true,
 		});
+		if (user) {
+			const updatedNotifications = await eventService.getNotifications(TODO, {
+				userId: user.id,
+			});
+			setNotifications(updatedNotifications)
+		}
 		const updatedRowSelection = { ...table.getState().rowSelection };
 		for (const row of selectedRows) {
 			delete updatedRowSelection[row.id];
@@ -188,7 +195,6 @@ export function InboxDataTable({
 	};
 
 	const handleMoveAllToSaved = async () => {
-		// WORK WITH FILTER TYPE TO MOV
 		const currentUser = user;
 		if (!currentUser) {
 			return;
