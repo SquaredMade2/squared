@@ -68,7 +68,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			changes: z.record(taskValueSchema),
 			previousTask: taskSchema,
 		}),
-		output: z.union([taskEventSchema, z.null()]),
+		output: taskEventSchema.nullable(),
 	},
 	createNotification: {
 		input: z.object({
