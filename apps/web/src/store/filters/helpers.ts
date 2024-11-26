@@ -104,17 +104,16 @@ export function getFilterAssignees(
 	const assigneeFilter = currentFilters.find((f) => f.field === "assigneeId");
 	if (!assigneeFilter) return [];
 
-	// these values are an array of user ids, I really just have to do the array check thing
-	// because filter values can be a union type so typescript will complain otherwise
-	const filterValueArray = Array.isArray(assigneeFilter.value)
+	// I have to do this array check thing because filter values are a union type, so typescript will complain otherwise
+	const assigneeIds = Array.isArray(assigneeFilter.value)
 		? assigneeFilter.value
 		: [assigneeFilter.value];
 
-	const initialUsers = users.filter((u) => filterValueArray.includes(u.id));
+	const assignees = users.filter((u) => assigneeIds.includes(u.id));
 
 	// the "unassigned" user is just a user who is null
-	const hasUnassigned = filterValueArray.includes(null);
-	return hasUnassigned ? [...initialUsers, null] : initialUsers;
+	const hasUnassigned = assigneeIds.includes(null);
+	return hasUnassigned ? [...assignees, null] : assignees;
 }
 
 export function parseFilter(newFilter: SavedFilterType): SavedFilter {
