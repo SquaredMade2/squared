@@ -112,7 +112,7 @@ export function getFilterAssignees(
 
 	const initialUsers = users.filter((u) => filterValueArray.includes(u.id));
 
-	// the "unassigned" user is just a user whose id is null
+	// the "unassigned" user is just a user who is null
 	const hasUnassigned = filterValueArray.includes(null);
 	return hasUnassigned ? [...initialUsers, null] : initialUsers;
 }
