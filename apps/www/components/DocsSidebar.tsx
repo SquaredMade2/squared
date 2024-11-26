@@ -20,14 +20,14 @@ interface NestedItem extends MDXFile {
 
 const customOrder = [
 	"index",
-    "quick-start",
-    "sign-up",
-    "manage-your-team",
-    "managing-tasks",
-    "task-management-best-practices",
-    "managing-your-account",
-    "teams-collaborate",
-    "faq",
+	"quick-start",
+	"sign-up",
+	"manage-your-team",
+	"managing-tasks",
+	"task-management-best-practices",
+	"managing-your-account",
+	"teams-collaborate",
+	"faq",
 ];
 
 function organizeFiles(files: MDXFile[]): NestedItem[] {
@@ -55,34 +55,35 @@ function organizeFiles(files: MDXFile[]): NestedItem[] {
 			}
 		}
 	}
-  
-	function sortFilesByCustomOrder(files: NestedItem[], customOrder: string[]): NestedItem[] {
-	  return files
-		.sort((a, b) => {
-		  const indexA = customOrder.indexOf(a.slug.split("/").pop() || "");
-		  const indexB = customOrder.indexOf(b.slug.split("/").pop() || "");
-  
-		  if (indexA === -1 && indexB === -1) {
-			return a.metadata.title.localeCompare(b.metadata.title);
-		  }
-		  if (indexA === -1) return 1;
-		  if (indexB === -1) return -1;
-		  return indexA - indexB;
-		})
-		.map((file) => ({
-		  ...file,
-		  children: Object.fromEntries(
-			sortFilesByCustomOrder(Object.values(file.children), customOrder).map((child) => [
-			  child.slug,
-			  child,
-			])
-		  ),
-		}));
+
+	function sortFilesByCustomOrder(
+		files: NestedItem[],
+		customOrder: string[],
+	): NestedItem[] {
+		return files
+			.sort((a, b) => {
+				const indexA = customOrder.indexOf(a.slug.split("/").pop() || "");
+				const indexB = customOrder.indexOf(b.slug.split("/").pop() || "");
+
+				if (indexA === -1 && indexB === -1) {
+					return a.metadata.title.localeCompare(b.metadata.title);
+				}
+				if (indexA === -1) return 1;
+				if (indexB === -1) return -1;
+				return indexA - indexB;
+			})
+			.map((file) => ({
+				...file,
+				children: Object.fromEntries(
+					sortFilesByCustomOrder(Object.values(file.children), customOrder).map(
+						(child) => [child.slug, child],
+					),
+				),
+			}));
 	}
-  
+
 	return sortFilesByCustomOrder(Object.values(fileMap), customOrder);
-  }
-  
+}
 
 function NestedLinks({
 	items,
