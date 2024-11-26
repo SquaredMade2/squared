@@ -104,7 +104,8 @@ export function getFilterAssignees(
 	const assigneeFilter = currentFilters.find((f) => f.field === "assigneeId");
 	if (!assigneeFilter) return [];
 
-	// these values are user ids
+	// these values are an array of user ids, I really just have to do the array check thing
+	// because filter values can be a union type so typescript will complain otherwise
 	const filterValueArray = Array.isArray(assigneeFilter.value)
 		? assigneeFilter.value
 		: [assigneeFilter.value];
