@@ -18,7 +18,6 @@ export function useTaskPage() {
 	);
 	const { users, loading: userLoading } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
-	useUsers();
 	const [task, setTask] = useState(
 		tasks.find((t) => t.identifier === taskIdentifier) || null,
 	);

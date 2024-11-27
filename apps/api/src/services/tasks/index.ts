@@ -31,6 +31,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 			.optional(),
 		labels: z.array(z.string()).optional(),
 		parentId: z.string().nullable().optional(),
+		sprintId: z.string().nullable().optional(),
 	}),
 ).strict("Create Task Schema unknown params");
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 	description:
 		"Documentation for Squared, a platform to help organize software development projects.",
 	openGraph: {
-		images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
+		images: ["/banner.png"],
 	},
 };
 

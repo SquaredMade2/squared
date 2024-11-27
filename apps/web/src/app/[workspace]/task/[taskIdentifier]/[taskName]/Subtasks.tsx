@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import {
 	DragDropContext,
@@ -24,17 +24,10 @@ import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-const Subtasks = ({
-	subtasks,
-	currentWorkspaceUrl,
-	users,
-}: {
-	subtasks: Task[];
-	currentWorkspaceUrl?: string;
-	users: User[];
-}) => {
+const Subtasks = () => {
 	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
-	const { setSubtasks } = useTaskStore((state) => state);
+	const { setSubtasks, subtasks } = useTaskStore((state) => state);
+	const users = useUserStore((state) => state.users);
 
 	const onDragEnd = async (result: DropResult) => {
 		if (!result.destination) return;
@@ -105,7 +98,6 @@ const Subtasks = ({
 																user={users.find(
 																	(u) => u.id === subtask.assigneeId,
 																)}
-																currentWorkspaceUrl={currentWorkspaceUrl}
 															/>
 														</ContextMenuTrigger>
 													</ContextMenu>
@@ -125,10 +117,12 @@ const Subtasks = ({
 interface SubtaskListProps {
 	task: Task;
 	user?: User;
-	currentWorkspaceUrl?: string;
 }
 
-const SubtaskList = ({ task, user, currentWorkspaceUrl }: SubtaskListProps) => {
+const SubtaskList = ({ task, user }: SubtaskListProps) => {
+	const currentWorkspaceUrl = useWorkspaceStore(
+		(state) => state.workspace,
+	)?.url;
 	return (
 		<Link
 			className="group/main grid grid-cols-24 items-center w-full py-2 bg-card border-t border-solid border-border hover:bg-accent"

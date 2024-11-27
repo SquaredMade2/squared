@@ -15,6 +15,7 @@ export type OnBoardUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -39,6 +40,7 @@ export type UpdateUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -62,6 +64,7 @@ export type UpdateUserNotificationsResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -84,6 +87,7 @@ export type GetUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -106,6 +110,7 @@ export type GetWorkspaceUsersResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -130,6 +135,23 @@ export type GetUserRepositoriesRequest = {
 };
 
 export type GetUserRepositoriesResponse = string[];
+
+export type GetUserTeamsRequest = {
+	userId: string;
+};
+
+export type GetUserTeamsResponse = {
+	cooldownDuration: number;
+	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
+	id: string;
+	identifier: string;
+	name: string | null;
+	sprintDuration: number;
+	sprintStartDate: Date;
+	sprintsEnabled: boolean;
+	tasksPerSprint: number;
+	workspaceId: string;
+}[];
 
 /**
  * user service
@@ -204,5 +226,15 @@ export class UserService extends RPCContextClient {
 		req: GetUserRepositoriesRequest,
 	): Promise<GetUserRepositoriesResponse> {
 		return this.request(ctx, "getUserRepositories", req);
+	}
+
+	/**
+	 * getUserTeams method
+	 */
+	getUserTeams(
+		ctx: Context,
+		req: GetUserTeamsRequest,
+	): Promise<GetUserTeamsResponse> {
+		return this.request(ctx, "getUserTeams", req);
 	}
 }

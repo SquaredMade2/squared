@@ -111,7 +111,7 @@ const AssigneeCombobox = () => {
 							<CommandGroup>
 								<CommandItem onSelect={() => handleSelectAssignee(null)}>
 									<UserSearch className="size-4 mx-1" />
-									<span className="w-2/3 truncate ml-2">Unassign</span>
+									<span className="w-2/3 truncate ml-2">Unassigned</span>
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
@@ -119,25 +119,29 @@ const AssigneeCombobox = () => {
 										)}
 									/>
 								</CommandItem>
-								{users.map((user) => (
-									<CommandItem
-										key={user.id}
-										onSelect={() => handleSelectAssignee(user.id)}
-										className="w-full"
-									>
-										<Avatar className="size-6 text-xxs">
-											<AvatarImage src={user.avatarUrl ?? ""} />
-											<AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-										</Avatar>
-										<span className="w-2/3 truncate ml-2">{user.name}</span>
-										<Check
-											className={cn(
-												"ml-auto h-4 w-4",
-												assigneeId === user.id ? "opacity-100" : "opacity-0",
-											)}
-										/>
-									</CommandItem>
-								))}
+								{users
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.map((user) => (
+										<CommandItem
+											key={user.id}
+											onSelect={() => handleSelectAssignee(user.id)}
+											className="w-full"
+										>
+											<Avatar className="size-6 text-xxs">
+												<AvatarImage src={user.avatarUrl ?? ""} />
+												<AvatarFallback>
+													{getInitials(user.name)}
+												</AvatarFallback>
+											</Avatar>
+											<span className="w-2/3 truncate ml-2">{user.name}</span>
+											<Check
+												className={cn(
+													"ml-auto h-4 w-4",
+													assigneeId === user.id ? "opacity-100" : "opacity-0",
+												)}
+											/>
+										</CommandItem>
+									))}
 							</CommandGroup>
 						</ScrollArea>
 					</CommandList>

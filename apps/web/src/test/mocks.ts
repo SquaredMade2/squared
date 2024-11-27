@@ -21,6 +21,7 @@ export const STANDARD_USER: User = {
 	password: null,
 	verified: false,
 	lastLogin: new Date(),
+	createdAt: new Date(),
 	onBoarding: false,
 	defaultWorkspaceId: null,
 	avatarUrl: null,

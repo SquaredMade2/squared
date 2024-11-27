@@ -8,11 +8,11 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { User } from "@squared/db";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
+import type { MemberWithRole } from "./data-table";
 
-export const columns: ColumnDef<User & { role: string }>[] = [
+export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "name",
 		cell: ({ row }) => {
