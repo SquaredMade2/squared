@@ -110,7 +110,6 @@ export default function Profile() {
 										});
 									}}
 									onUploadError={(error: Error) => {
-										alert(`ERROR! ${error.message}`);
 										toast({
 											variant: "destructive",
 											title: "Error",
