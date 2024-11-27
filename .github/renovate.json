@@ -18,101 +18,10 @@
     "packageRules": [
         {
             "matchManagers": [
-                "npm"
-            ],
-            "matchPaths": [
-                "apps/{web,www}/**",
-                "apps/api/**",
-                "packages/**"
-            ],
-            "labels": [
-                "Fullstack Updates",
-                "Updates"
-            ],
-            "reviewers": [
-                "team:fullstack-developers"
-            ]
-        },
-        {
-            "matchManagers": [
-                "npm"
-            ],
-            "matchPaths": [
-                "apps/web/**",
-                "apps/www/**"
-            ],
-            "labels": [
-                "Frontend Updates",
-                "Updates"
-            ],
-            "reviewers": [
-                "team:frontend-developers"
-            ]
-        },
-        {
-            "matchManagers": [
-                "npm"
-            ],
-            "matchPaths": [
-                "apps/api/**"
-            ],
-            "labels": [
-                "Backend Updates",
-                "Updates"
-            ],
-            "reviewers": [
-                "team:backend-developers"
-            ]
-        },
-        {
-            "matchManagers": [
-                "npm"
-            ],
-            "matchPaths": [
-                "packages/**"
-            ],
-            "labels": [
-                "Package Updates",
-                "Updates"
-            ],
-            "reviewers": [
-                "team:squared-developers"
-            ]
-        },
-        {
-            "matchManagers": [
+                "npm",
                 "dockerfile",
-                "docker-compose"
-            ],
-            "labels": [
-                "DevOps Updates",
-                "Updates"
-            ],
-            "reviewers": [
-                "team:devops-engineers"
-            ]
-        },
-        {
-            "matchManagers": [
+                "docker-compose",
                 "github-actions"
-            ],
-            "labels": [
-                "CI/CD Updates",
-                "Updates"
-            ],
-            "reviewers": [
-                "team:devops-engineers"
-            ]
-        },
-        {
-            "matchManagers": [
-                "npm"
-            ],
-            "matchPaths": [
-                "!(apps|packages)/**"
-            ],
-            "labels": [
-                "Updates"
             ],
             "reviewers": [
                 "team:squared-developers"
