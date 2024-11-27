@@ -14,7 +14,7 @@ const f = createUploadthing();
 export const uploadThingRouter = {
 	imageUploader: f({
 		image: {
-			maxFileSize: "1MB",
+			maxFileSize: "512KB",
 			maxFileCount: 1,
 		},
 	})
@@ -29,13 +29,10 @@ export const uploadThingRouter = {
 			return { userId: input.userId };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
-			console.log("Upload complete for userId:", metadata.userId);
-			console.log("file url", file.url);
-
 			try {
 				await userService.updateUserAvatar(TODO, {
 					userId: metadata.userId,
-					avatarUrl: file.url,
+					avatarUrl: `https://utfs.io/f/${file.key}`,
 				});
 				return { message: "avatar update complete" };
 			} catch (e) {
