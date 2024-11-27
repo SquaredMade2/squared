@@ -24,10 +24,11 @@ export const ourFileRouter = {
 		.middleware(async ({ req }) => {
 			// This code runs on your server before upload
 			const body = await req.json();
+			logger.info("Attempting to update avatar for user %s", body?.userId);
 			const user = await userService.getUser(TODO, { userId: body?.userId });
 
 			// If you throw, the user will not be able to upload
-			if (!user) throw new UploadThingError("Invalid user");
+			if (!user) throw new UploadThingError("No user found");
 
 			// Whatever is returned here is accessible in onUploadComplete as `metadata`
 			return { userId: user.id };
