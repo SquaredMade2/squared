@@ -1,9 +1,11 @@
+"use client";
+
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import {
 	AlertDialog,
@@ -31,13 +33,12 @@ export const DeleteTaskAlertDialog = ({
 }) => {
 	const { deleteTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
+	const router = useRouter();
 	const handleDelete = async () => {
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
 			deleteTask(task.id);
-			if (redirectTask) {
-				redirect("/tasks");
-			}
+
 			toast({
 				title: "Task Deleted",
 				description: `${task.title} has been successfully deleted.`,
@@ -47,6 +48,10 @@ export const DeleteTaskAlertDialog = ({
 				title: "Error deleting task",
 				description: parseError(error),
 			});
+		} finally {
+			if (redirectTask) {
+				router.push("/");
+			}
 		}
 	};
 
