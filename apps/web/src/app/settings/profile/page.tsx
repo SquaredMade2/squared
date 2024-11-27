@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { userService } from "@/lib/services";
+import { UploadButton } from "@/lib/ut";
 import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -96,6 +97,17 @@ export default function Profile() {
 										{getInitials(user.name)}
 									</AvatarFallback>
 								</Avatar>
+								<UploadButton
+									endpoint="imageUploader"
+									input={{ userId: user.id }}
+									onClientUploadComplete={(res) => {
+										console.log("Files: ", res);
+										alert("Upload Completed");
+									}}
+									onUploadError={(error: Error) => {
+										alert(`ERROR! ${error.message}`);
+									}}
+								/>
 							</FormItem>
 						</div>
 						<FormItem>

@@ -1,51 +1,47 @@
 import { userService } from "@/lib/services";
 import { TODO } from "@squared/context";
-import createCustomLogger from "@squared/logger";
+import { getServerSession } from "next-auth";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
+import { z } from "zod";
 
 const f = createUploadthing();
-const logger = createCustomLogger("uploadThing");
 
-// FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
-	// Define as many FileRoutes as you like, each with a unique routeSlug
+/**
+ * nextjs app router guide:
+ * https://docs.uploadthing.com/getting-started/appdir#setting-up-your-environment
+ */
+export const uploadThingRouter = {
 	imageUploader: f({
 		image: {
-			/**
-			 * For full list of options and defaults, see the File Route API reference
-			 * @see https://docs.uploadthing.com/file-routes#route-config
-			 */
 			maxFileSize: "1MB",
 			maxFileCount: 1,
 		},
 	})
-		// Set permissions and file types for this FileRoute
-		.middleware(async ({ req }) => {
-			// This code runs on your server before upload
-			const body = await req.json();
-			logger.info("Attempting to update avatar for user %s", body?.userId);
-			const user = await userService.getUser(TODO, { userId: body?.userId });
+		.input(z.object({ userId: z.string() }))
+		.middleware(async ({ input }) => {
+			const session = await getServerSession();
+			if (!session) throw new UploadThingError("unauthorized request");
 
-			// If you throw, the user will not be able to upload
-			if (!user) throw new UploadThingError("No user found");
+			const user = await userService.getUser(TODO, { userId: input.userId });
+			if (!user) throw new UploadThingError("failed to find user");
 
-			// Whatever is returned here is accessible in onUploadComplete as `metadata`
-			return { userId: user.id };
+			return { userId: input.userId };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
-			// This code RUNS ON YOUR SERVER after upload
-			logger.log("Upload complete for userId %s", metadata.userId);
-			logger.log("file url %s", file.url);
+			console.log("Upload complete for userId:", metadata.userId);
+			console.log("file url", file.url);
 
-			await userService.updateUserAvatar(TODO, {
-				userId: metadata.userId,
-				avatarUrl: file.url,
-			});
-
-			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-			return { uploadedBy: metadata.userId };
+			try {
+				await userService.updateUserAvatar(TODO, {
+					userId: metadata.userId,
+					avatarUrl: file.url,
+				});
+				return { message: "avatar update complete" };
+			} catch (e) {
+				throw new UploadThingError(`failed to update user avatar url: ${e}`);
+			}
 		}),
 } satisfies FileRouter;
 
-export type OurFileRouter = typeof ourFileRouter;
+export type UploadThingRouter = typeof uploadThingRouter;
