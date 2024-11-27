@@ -35,7 +35,7 @@ export class UserService implements UserRpc {
 		avatarUrl,
 	}: { userId: string; avatarUrl: string }) {
 		this.logger.info(
-			"Updating user avatar with id %s and url: %s",
+			"Updating user avatar with\n\tuserId:  %s\n\turl:     %s",
 			userId,
 			avatarUrl,
 		);

@@ -101,11 +101,21 @@ export default function Profile() {
 									endpoint="imageUploader"
 									input={{ userId: user.id }}
 									onClientUploadComplete={(res) => {
-										console.log("Files: ", res);
-										alert("Upload Completed");
+										// each uploaded file is an array element in the res object
+										// since avatar img is only one file it will be the 0 index
+										const message = res[0].serverData.message;
+										toast({
+											title: "Success",
+											description: message,
+										});
 									}}
 									onUploadError={(error: Error) => {
 										alert(`ERROR! ${error.message}`);
+										toast({
+											variant: "destructive",
+											title: "Error",
+											description: error.message,
+										});
 									}}
 								/>
 							</FormItem>

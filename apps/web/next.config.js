@@ -9,15 +9,7 @@ const nextConfig = {
   output: "standalone",
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   images: {
-    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com","api.dicebear.com"],
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "utfs.io",
-        pathname: "/f/*",
-      },
-    ],
-
+    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com","api.dicebear.com", "utfs.io"],
   },
 };
 

@@ -32,11 +32,15 @@ export const uploadThingRouter = {
 			try {
 				await userService.updateUserAvatar(TODO, {
 					userId: metadata.userId,
+
+					// do not use raw bucket url:
+					// https://docs.uploadthing.com/working-with-files
 					avatarUrl: `https://utfs.io/f/${file.key}`,
 				});
-				return { message: "avatar update complete" };
+
+				return { message: "Avatar updated successfully." };
 			} catch (e) {
-				throw new UploadThingError(`failed to update user avatar url: ${e}`);
+				throw new UploadThingError(`Failed to update avatar: ${e}`);
 			}
 		}),
 } satisfies FileRouter;
