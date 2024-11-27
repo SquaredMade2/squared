@@ -110,7 +110,9 @@ export function SaveFilterForm({
 	const handleUrl = (filter: SavedFilter) => {
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
 		const filterId = filter.id.split("-")[0];
-		router.push(`views/${filterName}-${filterId}`);
+		pathname.includes("/views")
+			? router.push(`${filterName}-${filterId}`)
+			: router.push(`views/${filterName}-${filterId}`);
 	};
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -143,7 +145,7 @@ export function SaveFilterForm({
 							f.id === updatedFilter.id ? updatedFilter : f,
 						),
 					);
-					router.refresh();
+					handleUrl(updatedFilter);
 					toast({
 						title: "Filter Updated Successfully",
 					});
