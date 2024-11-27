@@ -94,7 +94,7 @@ export function checkCondition(
  * Because there is no persisted store for assignees in the filter menu and the filter dropdown menu is destroyed whenever closed,
  * the default state of assignees is used whenever the dropdown is opened.
  *
- * This function allows selected assignees to be remembered throughout opening and closing of the filter menu, 
+ * This function allows selected assignees to be remembered throughout opening and closing of the filter menu,
  * following in line with behaviors of other fields.
  */
 export function getFilterAssignees(
