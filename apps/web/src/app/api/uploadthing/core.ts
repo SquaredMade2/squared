@@ -14,10 +14,23 @@ const getFileKey = (url: string) => {
 	return splitUrl[splitUrl.length - 1];
 };
 
+const authHandler = async (userId: string) => {
+	const session = await getServerSession();
+	const user = await userService.getUser(TODO, {
+		userId,
+	});
+
+	const hasSession = !!session;
+	const hasUser = !!user;
+	const emailsMatch = session?.user.email === user?.email;
+
+	return hasSession && hasUser && emailsMatch;
+};
+
 /**
  * nextjs app router guide:
  * https://docs.uploadthing.com/getting-started/appdir#setting-up-your-environment
- * 
+ *
  * make sure the UPLOADTHING_TOKEN variable is in the .env
  */
 export const uploadThingRouter = {
@@ -34,12 +47,8 @@ export const uploadThingRouter = {
 			}),
 		)
 		.middleware(async ({ input: { userId, prevUrl } }) => {
-			const session = await getServerSession();
-			const user = await userService.getUser(TODO, {
-				userId,
-			});
-
-			if (!session || !user || user.email !== session.user.email) {
+			const isAuthenticated = await authHandler(userId);
+			if (!isAuthenticated) {
 				throw new UploadThingError("Unauthorized request");
 			}
 
