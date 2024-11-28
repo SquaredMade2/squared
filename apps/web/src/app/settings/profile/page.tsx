@@ -98,8 +98,13 @@ export default function Profile() {
 									</AvatarFallback>
 								</Avatar>
 								<UploadButton
-									endpoint="imageUploader"
-									input={{ userId: user.id }}
+									className="ut-button:bg-primary ut-allowed-content:text-muted-foreground ut-button:text-sm ut-allowed-content:text-xs"
+									endpoint="avatarImage"
+									input={{
+										userId: user.id,
+										email: user.email,
+										prevUrl: user.avatarUrl,
+									}}
 									onClientUploadComplete={(res) => {
 										// each uploaded file is an array element in the res object
 										// since avatar img is only one file it will be the 0 index

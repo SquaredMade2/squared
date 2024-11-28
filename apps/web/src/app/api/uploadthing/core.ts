@@ -3,44 +3,61 @@ import { TODO } from "@squared/context";
 import { getServerSession } from "next-auth";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { z } from "zod";
+import { UTApi } from "uploadthing/server";
+import { avatarImageInputSchema } from "./schema";
 
 const f = createUploadthing();
+const utApi = new UTApi();
+
+const getFileKey = (url: string) => {
+	const splitUrl = url.split("/");
+	return splitUrl[splitUrl.length - 1];
+};
+
+const auth = async (email: string) => {
+	const session = await getServerSession();
+	return !!session && session.user.email === email;
+};
 
 /**
  * nextjs app router guide:
  * https://docs.uploadthing.com/getting-started/appdir#setting-up-your-environment
  */
 export const uploadThingRouter = {
-	imageUploader: f({
+	avatarImage: f({
 		image: {
-			maxFileSize: "512KB",
+			maxFileSize: "1MB",
 			maxFileCount: 1,
 		},
 	})
-		.input(z.object({ userId: z.string() }))
-		.middleware(async ({ input }) => {
-			const session = await getServerSession();
-			if (!session) throw new UploadThingError("unauthorized request");
+		.input(avatarImageInputSchema)
+		.middleware(async ({ input: { email, userId, prevUrl } }) => {
+			const isAuthorized = await auth(email);
+			if (!isAuthorized) {
+				throw new UploadThingError("Unauthorized request");
+			}
 
-			const user = await userService.getUser(TODO, { userId: input.userId });
-			if (!user) throw new UploadThingError("failed to find user");
-
-			return { userId: input.userId };
+			return { userId, prevUrl };
 		})
-		.onUploadComplete(async ({ metadata, file }) => {
+		.onUploadComplete(async ({ metadata: { userId, prevUrl }, file }) => {
 			try {
 				await userService.updateUserAvatar(TODO, {
-					userId: metadata.userId,
+					userId,
 
 					// do not use raw bucket url:
 					// https://docs.uploadthing.com/working-with-files
 					avatarUrl: `https://utfs.io/f/${file.key}`,
 				});
 
+				// delete the old avatar image to save space
+				if (prevUrl) {
+					const prevKey = getFileKey(prevUrl);
+					await utApi.deleteFiles(prevKey);
+				}
+
 				return { message: "Avatar updated successfully." };
 			} catch (e) {
-				throw new UploadThingError(`Failed to update avatar: ${e}`);
+				throw new UploadThingError(String(e));
 			}
 		}),
 } satisfies FileRouter;
