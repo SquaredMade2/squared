@@ -198,6 +198,13 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		return workspace;
 	}
+	async removeUserFromWorkspace({
+		workspaceId, userId
+	}: {workspaceId: string, userId: string;}): Promise<> {
+		this.logger.info('Removing user from workspace');
+
+		
+	}
 	async inviteToWorkspace({
 		workspaceId,
 		email,
