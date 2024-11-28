@@ -162,11 +162,11 @@ export function InboxDataTable({
 			});
 			setNotifications(updatedNotifications)
 		}
-		// const updatedRowSelection = { ...table.getState().rowSelection };
-		// for (const row of selectedRows) {
-		// 	delete updatedRowSelection[row.id];
-		// }
-		// table.setRowSelection(updatedRowSelection);
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
 	};
 
 	const handleMarkAsRestored = async () => {
@@ -180,6 +180,12 @@ export function InboxDataTable({
 			delete updatedRowSelection[row.id];
 		}
 		table.setRowSelection(updatedRowSelection);
+		if (user) {
+			const updatedNotifications = await eventService.getNotifications(TODO, {
+				userId: user.id,
+			});
+			setNotifications(updatedNotifications)
+		}
 	};
 
 	const handleDeleteMany = async () => {
@@ -215,6 +221,11 @@ export function InboxDataTable({
 			setUser(response); 
 			updateUser(response); 
 		}
+		const updatedRowSelection = { ...table.getState().rowSelection };
+		for (const row of selectedRows) {
+			delete updatedRowSelection[row.id];
+		}
+		table.setRowSelection(updatedRowSelection);
 	};
 	
 
