@@ -1,5 +1,3 @@
-// import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-
 import { Button } from "@/components/ui/button";
 import type { Task } from "@squared/db";
 import { Trash } from "lucide-react";
