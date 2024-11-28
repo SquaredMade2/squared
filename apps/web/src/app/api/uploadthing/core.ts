@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { UTApi } from "uploadthing/server";
-import { avatarImageInputSchema } from "./schema";
+import { z } from "zod";
 
 const f = createUploadthing();
 const utApi = new UTApi();
@@ -14,14 +14,11 @@ const getFileKey = (url: string) => {
 	return splitUrl[splitUrl.length - 1];
 };
 
-const auth = async (email: string) => {
-	const session = await getServerSession();
-	return !!session && session.user.email === email;
-};
-
 /**
  * nextjs app router guide:
  * https://docs.uploadthing.com/getting-started/appdir#setting-up-your-environment
+ * 
+ * make sure the UPLOADTHING_TOKEN variable is in the .env
  */
 export const uploadThingRouter = {
 	avatarImage: f({
@@ -30,10 +27,19 @@ export const uploadThingRouter = {
 			maxFileCount: 1,
 		},
 	})
-		.input(avatarImageInputSchema)
-		.middleware(async ({ input: { email, userId, prevUrl } }) => {
-			const isAuthorized = await auth(email);
-			if (!isAuthorized) {
+		.input(
+			z.object({
+				userId: z.string(),
+				prevUrl: z.string().nullable(),
+			}),
+		)
+		.middleware(async ({ input: { userId, prevUrl } }) => {
+			const session = await getServerSession();
+			const user = await userService.getUser(TODO, {
+				userId,
+			});
+
+			if (!session || !user || user.email !== session.user.email) {
 				throw new UploadThingError("Unauthorized request");
 			}
 

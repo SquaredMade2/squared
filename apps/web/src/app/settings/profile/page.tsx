@@ -102,7 +102,6 @@ export default function Profile() {
 									endpoint="avatarImage"
 									input={{
 										userId: user.id,
-										email: user.email,
 										prevUrl: user.avatarUrl,
 									}}
 									onClientUploadComplete={(res) => {
