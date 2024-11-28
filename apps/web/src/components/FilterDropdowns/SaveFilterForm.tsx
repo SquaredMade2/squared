@@ -24,7 +24,7 @@ import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -45,6 +45,7 @@ export function SaveFilterForm({
 		saveFilter,
 		savedFilters,
 		updateSavedFilter,
+		setSavedFilters,
 		clearFilter,
 		mergeFilters,
 	} = useFilterStore((state) => state);
@@ -60,6 +61,7 @@ export function SaveFilterForm({
 		useState<SavedFilter | null>(null);
 	const params = useParams();
 	const pathname = usePathname();
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -105,6 +107,14 @@ export function SaveFilterForm({
 		formatFilters();
 	}, [currentFilters]);
 
+	const handleUrl = (filter: SavedFilter) => {
+		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
+		const filterId = filter.id.split("-")[0];
+		pathname.includes("/views")
+			? router.push(`${filterName}-${filterId}`)
+			: router.push(`views/${filterName}-${filterId}`);
+	};
+
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
 		if (!team) {
@@ -121,45 +131,47 @@ export function SaveFilterForm({
 				const newFilters = mergeFilters(currentFilters, currentSavedFilter.id);
 				// edit existing view
 				if (type === "edit") {
-					updateSavedFilter(
-						await filterService.updateFilter(TODO, {
-							filterId: currentSavedFilter.id,
-							filters: {
-								name: values.title,
-								description: values.description ?? null,
-								filter: newFilters,
-							},
-						}),
+					const updatedFilter = await filterService.updateFilter(TODO, {
+						filterId: currentSavedFilter.id,
+						filters: {
+							name: values.title,
+							description: values.description ?? null,
+							filter: newFilters,
+						},
+					});
+					updateSavedFilter(updatedFilter);
+					setSavedFilters(
+						savedFilters.map((f) =>
+							f.id === updatedFilter.id ? updatedFilter : f,
+						),
 					);
+					handleUrl(updatedFilter);
 					toast({
 						title: "Filter Updated Successfully",
 					});
 					// create new view from existing view
 				} else if (type === "new" && user) {
-					saveFilter(
-						await filterService.createFilter(TODO, {
-							name: values.title,
-							description: values.description ?? null,
-							filter: newFilters,
-							authorId: user.id,
-							teamId: team.id,
-						}),
-					);
+					const savedFilter = await filterService.createFilter(TODO, {
+						name: values.title,
+						description: values.description ?? null,
+						filter: newFilters,
+						authorId: user.id,
+						teamId: team.id,
+					});
+					saveFilter(savedFilter);
+					handleUrl(savedFilter);
 				}
 				//create new view
 			} else if (team && user) {
-				saveFilter(
-					await filterService.createFilter(TODO, {
-						name: values.title,
-						description: values.description ?? null,
-						filter: currentFilters,
-						teamId: team.id,
-						authorId: user.id,
-					}),
-				);
-				toast({
-					title: "Filter Saved Successfully",
+				const savedFilter = await filterService.createFilter(TODO, {
+					name: values.title,
+					description: values.description ?? null,
+					filter: currentFilters,
+					teamId: team.id,
+					authorId: user.id,
 				});
+				saveFilter(savedFilter);
+				handleUrl(savedFilter);
 			} else {
 				toast({
 					title: "Team not found",
@@ -182,7 +194,6 @@ export function SaveFilterForm({
 
 		setIsSaving(false);
 		clearFilter();
-		//route to newly created view
 		onCancel();
 	};
 
