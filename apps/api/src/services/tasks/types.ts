@@ -25,6 +25,7 @@ export type UpdateTaskParams = {
 	assigneeId?: string | null;
 	labels?: string[];
 	parentId?: string | null;
+	sprintId?: string | null;
 };
 
 export interface TaskRpc {

@@ -69,6 +69,11 @@ const ParentTaskCombobox = () => {
 						<ScrollArea className="h-80 pr-2">
 							<CommandEmpty>No tasks found.</CommandEmpty>
 							<CommandGroup>
+								{parentTaskId !== null && (
+									<CommandItem onSelect={() => handleAssignParentTask(null)}>
+										Unassign from {parentTaskTitle}
+									</CommandItem>
+								)}
 								{tasks
 									.filter((t) => t.id !== taskId)
 									.map((task) => (
