@@ -9,22 +9,12 @@ import { z } from "zod";
 const f = createUploadthing();
 const utApi = new UTApi();
 
+/**
+ * Files will be stored at utfs.io/f/${key}
+ */
 const getFileKey = (url: string) => {
 	const splitUrl = url.split("/");
 	return splitUrl[splitUrl.length - 1];
-};
-
-const authHandler = async (userId: string) => {
-	const session = await getServerSession();
-	const user = await userService.getUser(TODO, {
-		userId,
-	});
-
-	const hasSession = !!session;
-	const hasUser = !!user;
-	const emailsMatch = session?.user.email === user?.email;
-
-	return hasSession && hasUser && emailsMatch;
 };
 
 /**
@@ -40,19 +30,16 @@ export const uploadThingRouter = {
 			maxFileCount: 1,
 		},
 	})
-		.input(
-			z.object({
-				userId: z.string(),
-				prevUrl: z.string().nullable(),
-			}),
-		)
-		.middleware(async ({ input: { userId, prevUrl } }) => {
-			const isAuthenticated = await authHandler(userId);
-			if (!isAuthenticated) {
-				throw new UploadThingError("Unauthorized request");
+		.input(z.object({ userId: z.string() }))
+		.middleware(async ({ input: { userId } }) => {
+			const session = await getServerSession();
+			const user = await userService.getUser(TODO, { userId });
+
+			if (!session || !user || session.user.email !== user.email) {
+				throw new UploadThingError("Failed to authenticate");
 			}
 
-			return { userId, prevUrl };
+			return { userId, prevUrl: user.avatarUrl };
 		})
 		.onUploadComplete(async ({ metadata: { userId, prevUrl }, file }) => {
 			try {
