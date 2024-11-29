@@ -38,19 +38,20 @@ const ParentTaskCombobox = () => {
 
 	const handleAssignParentTask = async (parent: string | null) => {
 		if (!parent) {
-			updateTask(
-				await taskService.updateTask(TODO, { id: taskId, parentId: null }),
-			);
-			setCurrentTask({ ...currentTask, parentId: null });
+			const updatedTask = await taskService.updateTask(TODO, {
+				id: taskId,
+				parentId: null,
+			});
+			updateTask(updatedTask);
+			setCurrentTask(updatedTask);
 			return;
 		}
-		updateTask(
-			await taskService.updateTask(TODO, {
-				id: taskId,
-				parentId: parent,
-			}),
-		);
-		setCurrentTask({ ...currentTask, parentId: parent });
+		const updatedTask = await taskService.updateTask(TODO, {
+			id: taskId,
+			parentId: parent,
+		});
+		updateTask(updatedTask);
+		setCurrentTask(updatedTask);
 	};
 
 	return (
