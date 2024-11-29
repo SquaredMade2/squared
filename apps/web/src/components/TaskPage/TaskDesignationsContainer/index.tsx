@@ -5,6 +5,7 @@ import EffortModal from "./EffortModal";
 import LabelCombobox from "./LabelCombobox";
 import ParentTaskCombobox from "./ParentTaskCombobox";
 import PriorityDropdown from "./PriorityDropdown";
+import SprintCombobox from "./SprintCombobox";
 import StatusDropdown from "./StatusDropdown";
 
 export function TaskDesignationsContainer() {
@@ -60,7 +61,7 @@ export function TaskDesignationsContainer() {
 					<div className="flex items-center shrink-0 text-muted-foreground text-sm font-semibold my-1 w-[95px]">
 						<span>Sprint</span>
 					</div>
-					{/* create sprint selector */}
+					<SprintCombobox />
 				</div>
 			</div>
 		</>
