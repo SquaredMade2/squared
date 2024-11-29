@@ -24,6 +24,7 @@ export type UpdateTaskParams = {
 	status?: Status;
 	assigneeId?: string | null;
 	labels?: string[];
+	parentId?: string | null;
 };
 
 export interface TaskRpc {
