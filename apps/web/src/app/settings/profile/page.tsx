@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -31,7 +32,8 @@ const formSchema = z.object({
 
 export default function Profile() {
 	const { toast } = useToast();
-	const { updateUser, user } = useUserStore((state) => state);
+	const { updateUser } = useUserStore((state) => state);
+	const { user } = useAuthUser() 
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
