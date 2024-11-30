@@ -1,3 +1,4 @@
+import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
@@ -137,6 +138,7 @@ export const TaskSidebarTopRow = () => {
 							</div>
 						</TooltipContent>
 					</Tooltip>
+					{task && <DeleteTaskPopOver task={task} />}
 				</TooltipProvider>
 			</div>
 		</div>
