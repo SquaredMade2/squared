@@ -26,7 +26,7 @@ export const TaskPageForm = () => {
 	);
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 	const [parentTask, setParentTask] = useState<Task | null>(null);
-	console.log("parentTask", parentTask, "currentask parent", task?.parentId);
+
 	const { transformedInput: transformedTitleInput } = transformingMentionInputs(
 		updatedTitle ?? "",
 	);
@@ -81,9 +81,7 @@ export const TaskPageForm = () => {
 
 	useEffect(() => {
 		const fetchParentTask = async () => {
-			console.log(task?.parentId);
 			if (task?.parentId) {
-				console.log(task.parentId);
 				try {
 					const parentTaskData = await taskService.getTask(TODO, {
 						taskId: task.parentId,
