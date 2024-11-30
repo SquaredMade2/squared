@@ -113,7 +113,7 @@ export function getFilterAssignees(
 
 	// the "unassigned" user is just a user who is null
 	const hasUnassigned = assigneeIds.includes(null);
-	return hasUnassigned ? [...assignees, null] : assignees;
+	return hasUnassigned ? [null, ...assignees] : assignees;
 }
 
 export function parseFilter(newFilter: SavedFilterType): SavedFilter {

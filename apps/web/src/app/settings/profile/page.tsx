@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
@@ -30,7 +31,8 @@ const formSchema = z.object({
 
 export default function Profile() {
 	const { toast } = useToast();
-	const { updateUser, user } = useUserStore((state) => state);
+	const { updateUser } = useUserStore((state) => state);
+	const { user } = useAuthUser();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
