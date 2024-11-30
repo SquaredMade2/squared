@@ -9,7 +9,7 @@ import SprintCombobox from "./SprintCombobox";
 import StatusDropdown from "./StatusDropdown";
 
 export function TaskDesignationsContainer() {
-	const designations = [
+	const Designations = [
 		{ name: "Status", component: <StatusDropdown /> },
 		{ name: "Priority", component: <PriorityDropdown /> },
 		{ name: "Labels", component: <LabelCombobox /> },
@@ -25,8 +25,8 @@ export function TaskDesignationsContainer() {
 	];
 
 	return (
-		<div className="flex flex-col relative w-full z-[1] rounded-lg p-5 gap-5 bg-card">
-			{designations.map((designation) => (
+		<div className="flex flex-col relative w-full z-1 rounded-lg p-5 gap-5 bg-card">
+			{Designations.map((designation) => (
 				<div
 					key={designation.name}
 					className="flex flex-row items-center w-full"
