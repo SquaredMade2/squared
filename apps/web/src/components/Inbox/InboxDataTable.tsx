@@ -121,6 +121,15 @@ export function InboxDataTable({
 		!checked && table.toggleAllRowsSelected(checked);
 	};
 
+	const updateRowSelection = () => {
+		const updatedRowSelection = Object.fromEntries(
+			Object.entries(table.getState().rowSelection).filter(
+			  ([id]) => !selectedRows.some(row => row.id === id)
+			)
+		  );
+		  table.setRowSelection(updatedRowSelection);
+	};
+
 	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
 
 	const handleMarkAsUnread = async () => {
@@ -129,11 +138,7 @@ export function InboxDataTable({
 			notificationIds: selectedRows.map((row) => row.original.id),
 			read: true,
 		});
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		table.setRowSelection(updatedRowSelection);
+		updateRowSelection();
 	};
 
 	const handleMarkAsRead = async () => {
@@ -142,12 +147,7 @@ export function InboxDataTable({
 			notificationIds: selectedRows.map((row) => row.original.id),
 			read: false,
 		});
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		
-		table.setRowSelection(updatedRowSelection);
+		updateRowSelection();
 	};
 
 	const handleMarkAsDismissed = async () => {
@@ -162,11 +162,7 @@ export function InboxDataTable({
 			});
 			setNotifications(updatedNotifications)
 		}
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		table.setRowSelection(updatedRowSelection);
+		updateRowSelection();
 	};
 
 	const handleMarkAsRestored = async () => {
@@ -175,11 +171,7 @@ export function InboxDataTable({
 			notificationIds: selectedRows.map((row) => row.original.id),
 			dismissed: false,
 		});
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		table.setRowSelection(updatedRowSelection);
+		updateRowSelection();
 		if (user) {
 			const updatedNotifications = await eventService.getNotifications(TODO, {
 				userId: user.id,
@@ -193,11 +185,7 @@ export function InboxDataTable({
 		await eventService.deleteNotification(TODO, {
 			notificationIds: selectedRows.map((row) => row.original.id),
 		});
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		table.setRowSelection(updatedRowSelection);
+		updateRowSelection();
 	};
 
 	const handleMoveAllToSaved = async () => {
@@ -221,11 +209,7 @@ export function InboxDataTable({
 			setUser(response); 
 			updateUser(response); 
 		}
-		const updatedRowSelection = { ...table.getState().rowSelection };
-		for (const row of selectedRows) {
-			delete updatedRowSelection[row.id];
-		}
-		table.setRowSelection(updatedRowSelection);
+		updateRowSelection();
 	};
 	
 
