@@ -15,6 +15,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { sprintService, taskService } from "@/lib/services";
 import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -28,11 +29,13 @@ const SprintCombobox = () => {
 	);
 	const [assignedSprint, setAssignedSprint] = useState<string | null>(null);
 
+	const taskId = currentTask?.id ?? "";
+	const sprintName = sprints.find((s) => s.id === assignedSprint)?.name ?? "";
+
 	useEffect(() => {
 		if (currentTask?.sprintId) {
 			setAssignedSprint(currentTask.sprintId);
 		}
-
 		const fetchSprints = async () => {
 			if (team) {
 				const fetchedSprints = await sprintService.getSprints(TODO, {
@@ -41,29 +44,17 @@ const SprintCombobox = () => {
 				setSprints(fetchedSprints);
 			}
 		};
-
 		fetchSprints();
 	}, [team, currentTask]);
 
-	const taskId = currentTask?.id ?? "";
-	const sprintName = sprints.find((s) => s.id === assignedSprint)?.name ?? "";
-
 	const handleAssignToSprint = async (sprintId: string | null) => {
-		if (!sprintId) {
-			const updatedTask = await taskService.updateTask(TODO, {
-				id: taskId,
-				sprintId: null,
-			});
-			updateTask(updatedTask);
-			setCurrentTask(updatedTask);
-			return;
-		}
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
 			sprintId: sprintId,
 		});
 		updateTask(updatedTask);
 		setCurrentTask(updatedTask);
+		setOpen(false);
 	};
 
 	return (
@@ -74,7 +65,7 @@ const SprintCombobox = () => {
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent>
+			<PopoverContent className={cn("p-0 w-[200px]")}>
 				<Command>
 					<CommandInput placeholder="Search sprints..." />
 					<CommandList>

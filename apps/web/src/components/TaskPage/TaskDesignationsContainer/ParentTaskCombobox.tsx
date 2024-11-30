@@ -22,10 +22,12 @@ import { useEffect, useState } from "react";
 
 const ParentTaskCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const [parentTaskId, setParentTaskId] = useState<string | null>(null);
 	const { tasks, currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const [parentTaskId, setParentTaskId] = useState<string | null>(null);
+	const taskId = currentTask?.id ?? "";
+	const parentTaskTitle = tasks.find((t) => t.id === parentTaskId)?.title ?? "";
 
 	useEffect(() => {
 		if (currentTask?.parentId) {
@@ -33,32 +35,21 @@ const ParentTaskCombobox = () => {
 		}
 	}, [currentTask]);
 
-	const taskId = currentTask?.id ?? "";
-	const parentTaskTitle = tasks.find((t) => t.id === parentTaskId)?.title ?? "";
-
 	const handleAssignParentTask = async (parent: string | null) => {
-		if (!parent) {
-			const updatedTask = await taskService.updateTask(TODO, {
-				id: taskId,
-				parentId: null,
-			});
-			updateTask(updatedTask);
-			setCurrentTask(updatedTask);
-			return;
-		}
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
 			parentId: parent,
 		});
 		updateTask(updatedTask);
 		setCurrentTask(updatedTask);
+		setOpen(false);
 	};
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
 				<Button variant="outline" className="justify-between w-full">
-					{parentTaskTitle ? parentTaskTitle : "No parent assigned"}
+					{currentTask?.parentId ? parentTaskTitle : "No parent assigned"}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
