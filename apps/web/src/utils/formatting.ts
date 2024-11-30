@@ -1,5 +1,6 @@
 import type { CustomDescendant } from "@/components/TextEditor";
 import type { FilterCondition } from "@/store/filters";
+import { getFilterAssignees } from "@/store/filters/helpers";
 import { type Label, Priority, Status, type User } from "@squared/db";
 import { format } from "date-fns";
 import * as z from "zod";
@@ -213,13 +214,10 @@ export const formatFilterName = async (
 	if (!filter.value) return { name: filter.field, value: "" };
 	switch (filter.field) {
 		case "assigneeId": {
-			const filteredUsers = users.filter(
-				(u) => Array.isArray(filter.value) && filter.value.includes(u.id),
-			);
+			const assignees = getFilterAssignees([filter], users);
 			return {
-				name:
-					filteredUsers?.length && filteredUsers.length > 1 ? "Users" : "User",
-				value: filteredUsers?.map((u) => u.name).join(", ") ?? "",
+				name: assignees.length > 1 ? "Assignees" : "Assignee",
+				value: assignees.map((a) => a?.name || "Unassigned").join(", "),
 			};
 		}
 		case "status":

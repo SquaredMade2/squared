@@ -1,4 +1,4 @@
-import type { SavedFilter as SavedFilterType, Task } from "@squared/db";
+import type { SavedFilter as SavedFilterType, Task, User } from "@squared/db";
 import type { FilterCondition, SavedFilter } from "./interfaces";
 
 export function checkCondition(
@@ -88,6 +88,32 @@ export function checkCondition(
 			console.warn(`Unknown operator: ${condition.operator}`);
 			return false;
 	}
+}
+
+/**
+ * Because there is no persisted store for assignees in the filter menu and the filter dropdown menu is destroyed whenever closed,
+ * the default state of assignees is used whenever the dropdown is opened.
+ *
+ * This function allows selected assignees to be remembered throughout opening and closing of the filter menu,
+ * following in line with behaviors of other fields.
+ */
+export function getFilterAssignees(
+	currentFilters: FilterCondition[],
+	users: User[],
+) {
+	const assigneeFilter = currentFilters.find((f) => f.field === "assigneeId");
+	if (!assigneeFilter) return [];
+
+	// I have to do this array check thing because filter values are a union type, so typescript will complain otherwise
+	const assigneeIds = Array.isArray(assigneeFilter.value)
+		? assigneeFilter.value
+		: [assigneeFilter.value];
+
+	const assignees = users.filter((u) => assigneeIds.includes(u.id));
+
+	// the "unassigned" user is just a user who is null
+	const hasUnassigned = assigneeIds.includes(null);
+	return hasUnassigned ? [null, ...assignees] : assignees;
 }
 
 export function parseFilter(newFilter: SavedFilterType): SavedFilter {

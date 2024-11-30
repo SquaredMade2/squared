@@ -9,6 +9,7 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { useFilterStore, useUserStore } from "@/store";
+import { getFilterAssignees } from "@/store/filters/helpers";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
 import { Check, UserSearch } from "lucide-react";
@@ -26,11 +27,11 @@ export default function AssigneeFilterDropDown({
 	filterOption,
 }: { filterOption: FilterOption }) {
 	const { users } = useUserStore((state) => state);
-	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
-		[],
-	);
 	const { addFilter, removeFilter, currentFilterTypes, currentFilters } =
 		useFilterStore((state) => state);
+	const [selectedAssignees, setSelectedAssignees] = useState<(User | null)[]>(
+		getFilterAssignees(currentFilters, users),
+	);
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleAssigneeChange = (label: User | null) => {
@@ -42,27 +43,13 @@ export default function AssigneeFilterDropDown({
 	};
 
 	useEffect(() => {
+		removeFilter("assigneeId");
 		if (selectedAssignees.length > 0) {
-			removeFilter("assigneeId");
 			addFilter({
 				field: "assigneeId",
 				value: selectedAssignees.map((u) => u?.id || null),
 				operator: "arrayIncludesAny",
 			});
-		} else {
-			if (currentFilterTypes.includes("assigneeId")) {
-				setSelectedAssignees(
-					currentFilters
-						.filter((filter) => filter.field === "assigneeId")
-						.flatMap((filter) =>
-							users.filter((user) =>
-								(filter.value as string[]).includes(user.id),
-							),
-						),
-				);
-			} else {
-				removeFilter("assigneeId");
-			}
 		}
 	}, [selectedAssignees]);
 
