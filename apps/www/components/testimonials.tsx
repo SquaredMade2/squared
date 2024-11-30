@@ -9,11 +9,10 @@ import { TestimonialColumnContainer } from "./testimonial-column-container";
 export const Testimonials = () => {
 	return (
 		<div className="relative z-20 py-10 md:py-40">
-			<Heading as="h2">Loved by users across the globe</Heading>
+			<Heading as="h2">Powering Teams Across the Globe</Heading>
 			<Subheading className="text-center max-w-lg mx-auto">
-				Squared is making waves among teams and individuals worldwide. Our
-				product is loved for its simplicity and effectiveness, sparking
-				conversations and recommendations from our users.
+				Squared is empowering teams and individuals around the world to achieve
+				more every day.
 			</Subheading>
 			<TestimonialGrid />
 		</div>
