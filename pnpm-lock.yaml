@@ -269,7 +269,7 @@ importers:
         version: 4.8.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       tailwind-merge:
         specifier: ^2.5.4
-        version: 2.5.4
+        version: 2.5.5
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.8.4)(typescript@5.6.3)))
@@ -441,7 +441,7 @@ importers:
         version: 4.0.0
       tailwind-merge:
         specifier: ^2.3.0
-        version: 2.5.4
+        version: 2.5.5
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -7231,8 +7231,8 @@ packages:
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
 
-  tailwind-merge@2.5.4:
-    resolution: {integrity: sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==}
+  tailwind-merge@2.5.5:
+    resolution: {integrity: sha512-0LXunzzAZzo0tEPxV3I297ffKZPlKDrjj7NXphC8V5ak9yHC5zRmxnOe2m/Rd/7ivsOMJe3JZ2JVocoDdQTRBA==}
 
   tailwindcss-animate@1.0.7:
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
@@ -15675,7 +15675,7 @@ snapshots:
 
   symbol-tree@3.2.4: {}
 
-  tailwind-merge@2.5.4: {}
+  tailwind-merge@2.5.5: {}
 
   tailwindcss-animate@1.0.7(tailwindcss@3.4.14(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.8.4)(typescript@5.6.3))):
     dependencies:
