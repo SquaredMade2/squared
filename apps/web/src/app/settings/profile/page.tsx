@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
@@ -21,7 +22,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useAuthUser } from "@/hooks/useAuthUser";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -32,7 +32,7 @@ const formSchema = z.object({
 export default function Profile() {
 	const { toast } = useToast();
 	const { updateUser } = useUserStore((state) => state);
-	const { user } = useAuthUser() 
+	const { user } = useAuthUser();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
