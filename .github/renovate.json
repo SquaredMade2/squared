@@ -7,10 +7,6 @@
         "on the first day of the month"
     ],
     "prConcurrentLimit": 20,
-    "automerge": true,
-    "automergeType": "pr",
-    "automergeStrategy": "squash",
-    "requiredStatusChecks": [],
     "labels": [
         "Updates"
     ],
