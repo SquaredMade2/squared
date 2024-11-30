@@ -17,7 +17,7 @@ import { sprintService, taskService } from "@/lib/services";
 import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
-import { ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const SprintCombobox = () => {
@@ -61,7 +61,7 @@ const SprintCombobox = () => {
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
 				<Button variant="outline" className="justify-between w-full">
-					{sprintName ? sprintName : "No sprint assigned"}
+					{currentTask?.sprintId ? sprintName : "No sprint assigned"}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
@@ -69,12 +69,12 @@ const SprintCombobox = () => {
 				<Command>
 					<CommandInput placeholder="Search sprints..." />
 					<CommandList>
-						<ScrollArea className="h-80 pr-2">
+						<ScrollArea className="h-60 pr-2">
 							<CommandEmpty>No sprints found.</CommandEmpty>
 							<CommandGroup>
-								{assignedSprint !== null && (
+								{currentTask?.sprintId && (
 									<CommandItem onSelect={() => handleAssignToSprint(null)}>
-										Unassign from {sprintName}
+										Remove from {sprintName}
 									</CommandItem>
 								)}
 								{sprints.map((sprint) => (
@@ -84,6 +84,14 @@ const SprintCombobox = () => {
 										className="w-full"
 									>
 										{sprint.name}
+										<Check
+											className={cn(
+												"ml-auto h-4 w-4",
+												assignedSprint === sprint.id
+													? "opacity-100"
+													: "opacity-0",
+											)}
+										/>
 									</CommandItem>
 								))}
 							</CommandGroup>
