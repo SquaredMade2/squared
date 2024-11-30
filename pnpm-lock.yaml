@@ -269,7 +269,7 @@ importers:
         version: 4.8.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       tailwind-merge:
         specifier: ^2.5.4
-        version: 2.5.4
+        version: 2.5.5
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.14(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.8.4)(typescript@5.6.3)))
@@ -441,7 +441,7 @@ importers:
         version: 4.0.0
       tailwind-merge:
         specifier: ^2.3.0
-        version: 2.5.4
+        version: 2.5.5
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -2883,8 +2883,8 @@ packages:
   '@swc/helpers@0.5.5':
     resolution: {integrity: sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==}
 
-  '@swc/types@0.1.12':
-    resolution: {integrity: sha512-wBJA+SdtkbFhHjTMYH+dEH1y4VpfGdAc2Kw/LK09i9bXd/K6j6PkDcFCEzb6iVfZMkPRrl/q0e3toqTAJdkIVA==}
+  '@swc/types@0.1.17':
+    resolution: {integrity: sha512-V5gRru+aD8YVyCOMAjMpWR1Ui577DD5KSJsHP8RAxopAH22jFz6GZd/qxqjO6MJHQhcsjvjOFXyDhyLQUnMveQ==}
 
   '@tabler/icons-react@3.21.0':
     resolution: {integrity: sha512-Qq0GnZzzccbv/zuMyXAUUPlogNAqx9KsF8cr/ev3bxs+GMObqNEjXv1eZl9GFzxyQTS435siJNU8A1BaIYhX8g==}
@@ -6080,8 +6080,8 @@ packages:
       encoding:
         optional: true
 
-  node-gyp-build@4.8.2:
-    resolution: {integrity: sha512-IRUxE4BVsHWXkV/SFOut4qTlagw2aM8T5/vnTsmrHJvVoKueJHRc/JaFND7QDDc61kLYUJ6qlZM3sqTSyx2dTw==}
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
   node-int64@0.4.0:
@@ -7231,8 +7231,8 @@ packages:
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
 
-  tailwind-merge@2.5.4:
-    resolution: {integrity: sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==}
+  tailwind-merge@2.5.5:
+    resolution: {integrity: sha512-0LXunzzAZzo0tEPxV3I297ffKZPlKDrjj7NXphC8V5ak9yHC5zRmxnOe2m/Rd/7ivsOMJe3JZ2JVocoDdQTRBA==}
 
   tailwindcss-animate@1.0.7:
     resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
@@ -10394,7 +10394,7 @@ snapshots:
   '@swc/core@1.7.6(@swc/helpers@0.5.5)':
     dependencies:
       '@swc/counter': 0.1.3
-      '@swc/types': 0.1.12
+      '@swc/types': 0.1.17
     optionalDependencies:
       '@swc/core-darwin-arm64': 1.7.6
       '@swc/core-darwin-x64': 1.7.6
@@ -10416,7 +10416,7 @@ snapshots:
       '@swc/counter': 0.1.3
       tslib: 2.8.0
 
-  '@swc/types@0.1.12':
+  '@swc/types@0.1.17':
     dependencies:
       '@swc/counter': 0.1.3
     optional: true
@@ -11314,7 +11314,7 @@ snapshots:
 
   bufferutil@4.0.8:
     dependencies:
-      node-gyp-build: 4.8.2
+      node-gyp-build: 4.8.4
     optional: true
 
   bundle-require@5.0.0(esbuild@0.24.0):
@@ -14394,7 +14394,7 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-gyp-build@4.8.2:
+  node-gyp-build@4.8.4:
     optional: true
 
   node-int64@0.4.0: {}
@@ -15687,7 +15687,7 @@ snapshots:
 
   symbol-tree@3.2.4: {}
 
-  tailwind-merge@2.5.4: {}
+  tailwind-merge@2.5.5: {}
 
   tailwindcss-animate@1.0.7(tailwindcss@3.4.14(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.8.4)(typescript@5.6.3))):
     dependencies:
@@ -16197,7 +16197,7 @@ snapshots:
 
   utf-8-validate@6.0.4:
     dependencies:
-      node-gyp-build: 4.8.2
+      node-gyp-build: 4.8.4
     optional: true
 
   util-deprecate@1.0.2: {}
