@@ -63,12 +63,6 @@ export default function ViewsPage() {
 		<div className="container mx-auto p-4">
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold">Saved Views</h1>
-				<Button
-					onClick={() => console.log("Create new view clickedd")}
-					variant="outline"
-				>
-					<PlusCircle className="mr-2 h-4 w-4" /> Create New View
-				</Button>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{savedFilters.map((filter) => (
@@ -94,7 +88,8 @@ export default function ViewsPage() {
 			</div>
 			{savedFilters.length === 0 && (
 				<p className="text-center text-muted-foreground mt-8">
-					No saved views found. Create a new view to get started.
+					No saved views found. Create a new view from the task dashboard to get
+					started.
 				</p>
 			)}
 		</div>
