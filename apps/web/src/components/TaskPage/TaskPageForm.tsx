@@ -17,8 +17,7 @@ import { Input } from "../ui/input";
 export const TaskPageForm = () => {
 	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const task = useTaskStore((state) => state.currentTask);
-	const { updateTask } = useTaskStore((state) => state);
+	const { updateTask, currentTask: task } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
@@ -27,7 +26,7 @@ export const TaskPageForm = () => {
 	);
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 	const [parentTask, setParentTask] = useState<Task | null>(null);
-
+	console.log("parentTask", parentTask, "currentask parent", task?.parentId);
 	const { transformedInput: transformedTitleInput } = transformingMentionInputs(
 		updatedTitle ?? "",
 	);
@@ -82,7 +81,9 @@ export const TaskPageForm = () => {
 
 	useEffect(() => {
 		const fetchParentTask = async () => {
+			console.log(task?.parentId);
 			if (task?.parentId) {
+				console.log(task.parentId);
 				try {
 					const parentTaskData = await taskService.getTask(TODO, {
 						taskId: task.parentId,
@@ -94,6 +95,8 @@ export const TaskPageForm = () => {
 						description: error instanceof Error && error.message,
 					});
 				}
+			} else {
+				setParentTask(null);
 			}
 		};
 
