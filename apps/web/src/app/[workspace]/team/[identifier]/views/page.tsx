@@ -1,6 +1,4 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -13,7 +11,6 @@ import { filterService } from "@/lib/services";
 import { useFilterStore } from "@/store";
 import type { SavedFilter } from "@/store/filters";
 import { TODO } from "@squared/context";
-import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
