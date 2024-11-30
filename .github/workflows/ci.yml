@@ -48,7 +48,7 @@ jobs:
           version: 9.14.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.6.0
+          node-version: 23.3.0
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -76,7 +76,7 @@ jobs:
           version: 9.14.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.6.0
+          node-version: 23.3.0
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -107,7 +107,7 @@ jobs:
           version: 9.14.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.6.0
+          node-version: 23.3.0
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -153,7 +153,7 @@ jobs:
           version: 9.14.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.6.0
+          node-version: 23.3.0
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -194,7 +194,7 @@ jobs:
           version: 9.14.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.6.0
+          node-version: 23.3.0
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -226,7 +226,7 @@ jobs:
           version: 9.14.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.6.0
+          node-version: 23.3.0
           cache: 'pnpm'
       - name: Get pnpm store directory
         id: pnpm-cache
