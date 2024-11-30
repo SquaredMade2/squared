@@ -17,7 +17,7 @@ import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
-import { ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const ParentTaskCombobox = () => {
@@ -35,10 +35,10 @@ const ParentTaskCombobox = () => {
 		}
 	}, [currentTask]);
 
-	const handleAssignParentTask = async (parent: string | null) => {
+	const handleAssignParentTask = async (parentId: string | null) => {
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
-			parentId: parent,
+			parentId,
 		});
 		updateTask(updatedTask);
 		setCurrentTask(updatedTask);
@@ -60,7 +60,7 @@ const ParentTaskCombobox = () => {
 						<ScrollArea className="h-80 pr-2">
 							<CommandEmpty>No tasks found.</CommandEmpty>
 							<CommandGroup>
-								{parentTaskId !== null && (
+								{currentTask?.parentId && (
 									<CommandItem onSelect={() => handleAssignParentTask(null)}>
 										Unassign from {parentTaskTitle}
 									</CommandItem>
@@ -74,6 +74,14 @@ const ParentTaskCombobox = () => {
 											className="w-full"
 										>
 											{task.title}
+											<Check
+												className={cn(
+													"ml-auto h-4 w-4",
+													currentTask?.parentId === task.id
+														? "opacity-100"
+														: "opacity-0",
+												)}
+											/>
 										</CommandItem>
 									))}
 							</CommandGroup>
