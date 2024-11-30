@@ -2,6 +2,7 @@
 
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
+import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
@@ -32,8 +33,12 @@ export const DeleteTaskAlertDialog = ({
 	redirectTask?: boolean;
 }) => {
 	const { deleteTask } = useTaskStore((state) => state);
+	const { lastVisitedPage } = useViewStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { team } = useTeamStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
+
 	const handleDelete = async () => {
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
@@ -50,7 +55,9 @@ export const DeleteTaskAlertDialog = ({
 			});
 		} finally {
 			if (redirectTask) {
-				router.push("/");
+				router.push(
+					`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
+				);
 			}
 		}
 	};
