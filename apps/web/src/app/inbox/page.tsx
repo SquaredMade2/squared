@@ -18,6 +18,7 @@ import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuthUser } from "@/hooks/useAuthUser";
 
 export type NotificationFilter =
 	| NotificationType
@@ -34,8 +35,9 @@ export default function InboxPage() {
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
-	const { setUserAvatars, user } = useUserStore((state) => state);
+	const { setUserAvatars } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
+	const { user } = useAuthUser() 
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -115,7 +117,7 @@ export default function InboxPage() {
 			setLastVisitedPage("inbox");
 		}
 	}, [pathname, setLastVisitedPage]);
-
+	
 	return (
 		<div className="flex w-full">
 			<div className="fixed inset-y-0 z-50 md:relative md:z-0 mt-px">
