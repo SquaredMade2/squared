@@ -115,7 +115,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					<IconButton
 						icon={Settings}
 						label="Settings"
-						onClick={() => navigateTo(`settings/workspace/${workspace?.url}`)}
+						onClick={() => navigateTo(`settings/${workspace?.url}`)}
 					/>
 					<IconButton
 						icon={Inbox}
