@@ -7,6 +7,7 @@ import {
 } from "@/components/Inbox";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import { eventService, userService } from "@/lib/services";
 import {
 	useEventStore,
@@ -18,7 +19,6 @@ import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useAuthUser } from "@/hooks/useAuthUser";
 
 export type NotificationFilter =
 	| NotificationType
@@ -37,7 +37,7 @@ export default function InboxPage() {
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 	const { setUserAvatars } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
-	const { user } = useAuthUser() 
+	const { user } = useAuthUser();
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -117,7 +117,7 @@ export default function InboxPage() {
 			setLastVisitedPage("inbox");
 		}
 	}, [pathname, setLastVisitedPage]);
-	
+
 	return (
 		<div className="flex w-full">
 			<div className="fixed inset-y-0 z-50 md:relative md:z-0 mt-px">
