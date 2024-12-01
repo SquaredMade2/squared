@@ -38,6 +38,12 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.array(userSchema),
 	},
+	getTeamUsers: {
+		input: z.object({
+			teamId: z.string(),
+		}),
+		output: z.array(userSchema),
+	},
 	getUserAvatars: {
 		input: z.object({
 			workspaceId: z.string(),
@@ -74,6 +80,7 @@ export const createUserRpcHandler = (userService: UserService) =>
 			userService.updateUserNotifications(input),
 		getUser: (input) => userService.getUser(input),
 		getWorkspaceUsers: (input) => userService.getWorkspaceUsers(input),
+		getTeamUsers: (input) => userService.getTeamUsers(input),
 		getUserAvatars: (input) => userService.getUserAvatars(input),
 		getUserRepositories: (input) => userService.getUserRepositories(input),
 		getUserTeams: (input) => userService.getUserTeams(input),

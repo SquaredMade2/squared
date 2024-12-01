@@ -8,6 +8,7 @@ export type OnBoardUserRequest = {
 
 export type OnBoardUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -15,7 +16,6 @@ export type OnBoardUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -33,6 +33,7 @@ export type UpdateUserRequest = {
 
 export type UpdateUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -40,7 +41,6 @@ export type UpdateUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -57,6 +57,7 @@ export type UpdateUserNotificationsRequest = {
 
 export type UpdateUserNotificationsResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -64,7 +65,6 @@ export type UpdateUserNotificationsResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -80,6 +80,7 @@ export type GetUserRequest = {
 
 export type GetUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -87,7 +88,6 @@ export type GetUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -103,6 +103,7 @@ export type GetWorkspaceUsersRequest = {
 
 export type GetWorkspaceUsersResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -110,7 +111,29 @@ export type GetWorkspaceUsersResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	name: string;
+	onBoarding: boolean;
+	password: string | null;
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+	verified: boolean;
+}[];
+
+export type GetTeamUsersRequest = {
+	teamId: string;
+};
+
+export type GetTeamUsersResponse = {
+	avatarUrl: string | null;
 	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	githubId: string | null;
+	githubUsername: string | null;
+	googleId: string | null;
+	id: string;
+	lastLogin: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -206,6 +229,16 @@ export class UserService extends RPCContextClient {
 		req: GetWorkspaceUsersRequest,
 	): Promise<GetWorkspaceUsersResponse> {
 		return this.request(ctx, "getWorkspaceUsers", req);
+	}
+
+	/**
+	 * getTeamUsers method
+	 */
+	getTeamUsers(
+		ctx: Context,
+		req: GetTeamUsersRequest,
+	): Promise<GetTeamUsersResponse> {
+		return this.request(ctx, "getTeamUsers", req);
 	}
 
 	/**

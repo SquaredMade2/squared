@@ -65,6 +65,18 @@ export class UserService implements UserRpc {
 			.then((uw) => uw.map((u) => u.user));
 	}
 
+	async getTeamUsers({ teamId }: { teamId: string }) {
+		this.logger.info("Fetching team users with id: %s", teamId);
+		return await this.db.userTeam
+			.findMany({
+				where: { teamId },
+				include: {
+					user: true,
+				},
+			})
+			.then((ut) => ut.map((u) => u.user));
+	}
+
 	async getUserAvatars({ workspaceId }: { workspaceId: string }) {
 		this.logger.info("Fetching user avatars with id: %s", workspaceId);
 		return await this.db.userWorkspace
