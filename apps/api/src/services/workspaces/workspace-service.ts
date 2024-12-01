@@ -201,17 +201,22 @@ export class WorkspaceService implements WorkspaceRpc {
 	async removeUserFromWorkspace({
 		workspaceId,
 		userId,
-	}: { workspaceId: string; userId: string }): Promise<WorkspaceLabels> {
+	}: { workspaceId: string; userId: string }): Promise<void> {
 		this.logger.info("Removing user from workspace");
 
-		await Promise.all([
-			this.db.userWorkspace.delete({ where: { userId, workspaceId } }),
-			this.db.userTeam.createMany({
-				data: teams.map((team) => ({ userId, teamId: team.id })),
-			}),
-		]);
+		const workspaceTeams = await this.db.team.findMany({
+			where: { workspaceId },
+		});
 
-		return workspace;
+		if (workspaceTeams.length > 0) {
+			workspaceTeams.map(async (team) => {
+				await this.db.userTeam.delete({
+					where: { userId, teamId: team.id },
+				});
+			});
+		}
+
+		await this.db.userWorkspace.delete({ where: { userId, workspaceId } });
 	}
 	async inviteToWorkspace({
 		workspaceId,

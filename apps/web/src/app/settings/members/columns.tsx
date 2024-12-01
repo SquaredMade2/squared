@@ -8,9 +8,14 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { workspaceService } from "@/lib/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
+
+async function handleClick() {
+	await workspaceService.removeUserFromWorkspace();
+}
 
 export const columns: ColumnDef<MemberWithRole>[] = [
 	{
@@ -54,7 +59,11 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
-						<DropdownMenuItem>Remove from Workspace</DropdownMenuItem>
+						<DropdownMenuItem>
+							<Button onClick={() => handleClick()}>
+								Remove from Workspace
+							</Button>
+						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);
