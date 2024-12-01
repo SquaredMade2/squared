@@ -12,10 +12,11 @@ const SprintCombobox = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
-	const [assignedSprintId, setAssignedSprintId] = useState<string | null>(null);
+	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
 
 	const taskId = currentTask?.id ?? "";
-	const sprintName = sprints.find((s) => s.id === assignedSprintId)?.name ?? "";
+	const sprintId = assignedSprintId?.id ?? "";
+	const sprintName = assignedSprintId?.name ?? "";
 
 	useEffect(() => {
 		const fetchSprints = async () => {
@@ -29,7 +30,7 @@ const SprintCombobox = () => {
 		fetchSprints();
 
 		const foundSprint = sprints.find((s) => s.id === currentTask?.sprintId);
-		setAssignedSprintId(foundSprint?.id ?? null);
+		setAssignedSprintId(foundSprint ?? null);
 	}, [team, currentTask]);
 
 	const handleAssignToSprint = async (sprintId: string | null) => {
@@ -49,10 +50,10 @@ const SprintCombobox = () => {
 			<DesignationCombobox
 				open={open}
 				setOpen={setOpen}
-				triggerText={currentTask?.sprintId ? sprintName : "No sprint assigned"}
+				triggerText={sprintName ? sprintName : "No sprint assigned"}
 				emptyText="No sprints found."
 				listItems={sprints}
-				selectedItemId={assignedSprintId}
+				selectedItemId={sprintId}
 				selectedItemLabel={sprintName}
 				itemLabel={(sprint: Sprint) => sprint.name}
 				itemId={(sprint: Sprint) => sprint.id}
