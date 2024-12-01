@@ -141,6 +141,13 @@ function SettingsNavbarContent() {
 												<Button
 													variant="ghost"
 													className="w-full justify-start"
+													onClick={() => handleTeamClick(team, "members")}
+												>
+													Members
+												</Button>
+												<Button
+													variant="ghost"
+													className="w-full justify-start"
 													onClick={() => handleTeamClick(team, "sprints")}
 												>
 													Sprints
