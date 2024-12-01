@@ -1,24 +1,7 @@
-// import { Button } from "@/components/ui/button";
-// import {
-// 	Command,
-// 	CommandEmpty,
-// 	CommandGroup,
-// 	CommandInput,
-// 	CommandItem,
-// 	CommandList,
-// } from "@/components/ui/command";
-// import {
-// 	Popover,
-// 	PopoverContent,
-// 	PopoverTrigger,
-// } from "@/components/ui/popover";
-// import { ScrollArea } from "@/components/ui/scroll-area";
 import { sprintService, taskService } from "@/lib/services";
 import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
-// import { cn } from "@/utils/cn";
 import { TODO } from "@squared/context";
 import type { Sprint } from "@squared/db";
-// import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
@@ -35,9 +18,6 @@ const SprintCombobox = () => {
 	const sprintName = sprints.find((s) => s.id === assignedSprintId)?.name ?? "";
 
 	useEffect(() => {
-		if (currentTask?.sprintId) {
-			setAssignedSprintId(currentTask.sprintId);
-		}
 		const fetchSprints = async () => {
 			if (team) {
 				const fetchedSprints = await sprintService.getSprints(TODO, {
@@ -47,6 +27,9 @@ const SprintCombobox = () => {
 			}
 		};
 		fetchSprints();
+
+		const foundSprint = sprints.find((s) => s.id === currentTask?.sprintId);
+		setAssignedSprintId(foundSprint?.id ?? null);
 	}, [team, currentTask]);
 
 	const handleAssignToSprint = async (sprintId: string | null) => {
@@ -58,7 +41,9 @@ const SprintCombobox = () => {
 		setCurrentTask(updatedTask);
 		setOpen(false);
 	};
-	console.log(sprintName);
+
+	if (!currentTask) return null;
+
 	return (
 		<>
 			<DesignationCombobox
@@ -73,48 +58,6 @@ const SprintCombobox = () => {
 				itemId={(sprint: Sprint) => sprint.id}
 				onItemSelect={handleAssignToSprint}
 			/>
-			{/* <Popover open={open} onOpenChange={setOpen}> */}
-			{/* <PopoverTrigger asChild>
-					<Button variant="outline" className="justify-between w-full">
-						{currentTask?.sprintId ? sprintName : "No sprint assigned"}
-						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-					</Button>
-				</PopoverTrigger> */}
-			{/* <PopoverContent className={cn("p-0 w-[200px]")}>
-					<Command> */}
-			{/* <CommandInput placeholder="Search sprints..." /> */}
-			{/* <CommandList>
-							<ScrollArea className="h-60 pr-2"> */}
-			{/* <CommandEmpty>No sprints found.</CommandEmpty> */}
-			{/* <CommandGroup>
-									{currentTask?.sprintId && (
-										<CommandItem onSelect={() => handleAssignToSprint(null)}>
-											Remove from {sprintName}
-										</CommandItem>
-									)}
-									{sprints.map((sprint) => (
-										<CommandItem
-											key={sprint.id}
-											onSelect={() => handleAssignToSprint(sprint.id)}
-											className="w-full"
-										>
-											{sprint.name}
-											<Check
-												className={cn(
-													"ml-auto h-4 w-4",
-													assignedSprintId === sprint.id
-														? "opacity-100"
-														: "opacity-0",
-												)}
-											/>
-										</CommandItem>
-									))}
-								</CommandGroup>
-							</ScrollArea>
-						</CommandList>
-					</Command>
-				</PopoverContent>
-			</Popover> */}
 		</>
 	);
 };
