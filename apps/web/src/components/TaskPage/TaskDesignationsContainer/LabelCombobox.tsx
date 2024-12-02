@@ -1,5 +1,6 @@
 "use client";
 
+import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -27,17 +28,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "../../ui/tooltip";
-
-const LabelColor = ({ label }: { label: Label }) => {
-	const { color } = label;
-	const validatedColor = color.startsWith("#") ? color : `#${color}`;
-	return (
-		<div
-			className="w-3 h-3 rounded-lg"
-			style={{ backgroundColor: validatedColor }}
-		/>
-	);
-};
 
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
