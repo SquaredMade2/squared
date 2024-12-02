@@ -22,12 +22,6 @@ import type { Label } from "@squared/db";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "../../ui/tooltip";
 
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
@@ -95,18 +89,11 @@ const LabelCombobox = () => {
 		<div className="md:w-full">
 			<div className="hidden md:block w-full">
 				<div className="mb-2 space-x-1 space-y-1">
-					<TooltipProvider>
-						{taskLabels.map((label: Label) => (
-							<Tooltip key={label.id}>
-								<TooltipTrigger asChild>
-									<span>
-										<LabelBadge label={label} />
-									</span>
-								</TooltipTrigger>
-								<TooltipContent>{label.description}</TooltipContent>
-							</Tooltip>
-						))}
-					</TooltipProvider>
+					{taskLabels.map((label: Label) => (
+						<span key={label.id}>
+							<LabelBadge label={label} />
+						</span>
+					))}
 				</div>
 			</div>
 			<Popover open={open} onOpenChange={setOpen}>
