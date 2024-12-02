@@ -9,21 +9,37 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+// import { userService } from "@/lib/services";
+// import { TODO } from "@squared/context";
 import type { Team, User } from "@squared/db";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 
+export type MemberWithRole = User & {
+	role: "admin" | "member";
+};
 interface DataTableProps {
-	columns: ColumnDef<User>[];
-	data: User[];
+	columns: ColumnDef<MemberWithRole>[];
+	data: MemberWithRole[];
 	team: Team | null;
+}
+
+interface CsvType {
+	name: string;
+	email: string;
+	role: "admin" | "member";
+	active: string;
+	lastLogin: Date;
 }
 
 export function DataTable({ columns, data }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [membersCsv, setMembersCsv] = useState<CsvType[] | null>(null);
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -44,6 +60,24 @@ export function DataTable({ columns, data }: DataTableProps) {
 			columnFilters,
 		},
 	});
+
+	const generateMembersCsv = () => {
+		const members = data.map((member: MemberWithRole) => {
+			return {
+				name: member.name,
+				email: member.email,
+				role: member.role,
+				active: "active",
+				lastLogin: member.lastLogin,
+				createdAt: member.createdAt,
+			};
+		});
+		return members;
+	};
+
+	useEffect(() => {
+		setMembersCsv(generateMembersCsv());
+	}, [data]);
 
 	return (
 		<div className="flex flex-col items-start gap-4">
@@ -105,6 +139,11 @@ export function DataTable({ columns, data }: DataTableProps) {
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!
 					</p>
+					<Button variant="outline">
+						{membersCsv && (
+							<CSVLink data={membersCsv}>Export Members to CSV</CSVLink>
+						)}
+					</Button>
 				</div>
 			</div>
 		</div>

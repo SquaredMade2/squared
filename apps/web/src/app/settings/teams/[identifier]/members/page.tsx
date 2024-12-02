@@ -5,14 +5,16 @@ import { Separator } from "@/components/ui/separator";
 import { useTeams } from "@/hooks/useTeams";
 import { userService } from "@/lib/services";
 
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
 import { type ReactNode, useEffect, useState } from "react";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { DataTable, type MemberWithRole } from "./data-table";
 
 export default function TeamMembersPage() {
 	const { team, loading: teamLoading } = useTeams();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const [teamUsers, setTeamUsers] = useState<User[]>([]);
 
 	useEffect(() => {
@@ -24,7 +26,12 @@ export default function TeamMembersPage() {
 		fetchTeamUsers();
 	}, [team]);
 
-	if (teamLoading) {
+	const membersWithRoles: MemberWithRole[] = teamUsers.map((user) => ({
+		...user,
+		role: workspace?.admins.includes(user.id) ? "admin" : "member",
+	}));
+
+	if (teamLoading || workspaceLoading) {
 		return (
 			<MemberSettingsWrapper>
 				<div className="w-full flex justify-center p-20">
@@ -37,7 +44,7 @@ export default function TeamMembersPage() {
 	return (
 		<MemberSettingsWrapper>
 			{teamUsers && (
-				<DataTable columns={columns} data={teamUsers} team={team} />
+				<DataTable columns={columns} data={membersWithRoles} team={team} />
 			)}
 		</MemberSettingsWrapper>
 	);
