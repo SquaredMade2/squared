@@ -45,8 +45,8 @@ export const TaskPageForm = () => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
 			updatedTitle !== task?.title || updatedDescription !== task?.description;
-		const titleOnlyChanged: boolean = updatedTitle !== task?.title;
-		const descriptionOnlyChanged: boolean =
+		const titleChanged: boolean = updatedTitle !== task?.title;
+		const descriptionChanged: boolean =
 			updatedDescription !== task?.description;
 		if (changeMade && task?.id !== undefined) {
 			if (task) {
@@ -59,7 +59,7 @@ export const TaskPageForm = () => {
 						}),
 					);
 					if (
-						titleOnlyChanged &&
+						titleChanged &&
 						e.target instanceof HTMLInputElement &&
 						e.target.name === "title"
 					) {
@@ -67,7 +67,7 @@ export const TaskPageForm = () => {
 					}
 
 					if (
-						descriptionOnlyChanged &&
+						descriptionChanged &&
 						e.target instanceof HTMLTextAreaElement &&
 						e.target.name === "editDescription"
 					) {
