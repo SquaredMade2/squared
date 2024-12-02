@@ -66,9 +66,6 @@ export const TaskPageForm = () => {
 						toast({ title: "Title updated successfully" });
 					}
 
-					console.log("description only changed");
-					console.log(e.target);
-
 					if (
 						descriptionOnlyChanged &&
 						e.target instanceof HTMLTextAreaElement &&
