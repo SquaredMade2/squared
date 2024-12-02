@@ -124,10 +124,10 @@ export function InboxDataTable({
 	const updateRowSelection = () => {
 		const updatedRowSelection = Object.fromEntries(
 			Object.entries(table.getState().rowSelection).filter(
-			  ([id]) => !selectedRows.some(row => row.id === id)
-			)
-		  );
-		  table.setRowSelection(updatedRowSelection);
+				([id]) => !selectedRows.some((row) => row.id === id),
+			),
+		);
+		table.setRowSelection(updatedRowSelection);
 	};
 
 	const isAllSelected = table.getIsAllPageRowsSelected() && selectAllInInbox;
@@ -160,7 +160,7 @@ export function InboxDataTable({
 			const updatedNotifications = await eventService.getNotifications(TODO, {
 				userId: user.id,
 			});
-			setNotifications(updatedNotifications)
+			setNotifications(updatedNotifications);
 		}
 		updateRowSelection();
 	};
@@ -176,7 +176,7 @@ export function InboxDataTable({
 			const updatedNotifications = await eventService.getNotifications(TODO, {
 				userId: user.id,
 			});
-			setNotifications(updatedNotifications)
+			setNotifications(updatedNotifications);
 		}
 	};
 
@@ -206,12 +206,11 @@ export function InboxDataTable({
 			notificationIds: newSavedNotificationIds,
 		});
 		if (response) {
-			setUser(response); 
-			updateUser(response); 
+			setUser(response);
+			updateUser(response);
 		}
 		updateRowSelection();
 	};
-	
 
 	return (
 		<div className="w-full md:container">
