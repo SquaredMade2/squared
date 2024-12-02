@@ -1,8 +1,12 @@
+"use client";
+
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
+import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
+import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import {
 	AlertDialog,
@@ -21,17 +25,25 @@ export const DeleteTaskAlertDialog = ({
 	task,
 	showConfirmDelete,
 	setShowConfirmDelete,
+	redirectTask,
 }: {
 	task: Task;
 	showConfirmDelete: boolean;
 	setShowConfirmDelete: Dispatch<SetStateAction<boolean>>;
+	redirectTask?: boolean;
 }) => {
 	const { deleteTask } = useTaskStore((state) => state);
+	const { lastVisitedPage } = useViewStore((state) => state);
+	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { team } = useTeamStore((state) => state);
 	const { toast } = useToast();
+	const router = useRouter();
+
 	const handleDelete = async () => {
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
 			deleteTask(task.id);
+
 			toast({
 				title: "Task Deleted",
 				description: `${task.title} has been successfully deleted.`,
@@ -41,6 +53,12 @@ export const DeleteTaskAlertDialog = ({
 				title: "Error deleting task",
 				description: parseError(error),
 			});
+		} finally {
+			if (redirectTask) {
+				router.push(
+					`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
+				);
+			}
 		}
 	};
 
