@@ -46,6 +46,8 @@ export const TaskPageForm = () => {
 		const changeMade: boolean =
 			updatedTitle !== task?.title || updatedDescription !== task?.description;
 		const titleOnlyChanged: boolean = updatedTitle !== task?.title;
+		const descriptionOnlyChanged: boolean =
+			updatedDescription !== task?.description;
 		if (changeMade && task?.id !== undefined) {
 			if (task) {
 				try {
@@ -62,6 +64,14 @@ export const TaskPageForm = () => {
 						e.target.name === "title"
 					) {
 						toast({ title: "Title Updated Successfully" });
+					}
+
+					if (
+						descriptionOnlyChanged &&
+						e.target instanceof HTMLInputElement &&
+						e.target.name === "description"
+					) {
+						toast({ title: "Description Updated Successfully" });
 					}
 				} catch (error) {
 					toast({
