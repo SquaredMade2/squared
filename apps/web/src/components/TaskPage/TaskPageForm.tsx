@@ -63,15 +63,18 @@ export const TaskPageForm = () => {
 						e.target instanceof HTMLInputElement &&
 						e.target.name === "title"
 					) {
-						toast({ title: "Title Updated Successfully" });
+						toast({ title: "Title updated successfully" });
 					}
+
+					console.log("description only changed");
+					console.log(e.target);
 
 					if (
 						descriptionOnlyChanged &&
-						e.target instanceof HTMLInputElement &&
-						e.target.name === "description"
+						e.target instanceof HTMLTextAreaElement &&
+						e.target.name === "editDescription"
 					) {
-						toast({ title: "Description Updated Successfully" });
+						toast({ title: "Description updated successfully" });
 					}
 				} catch (error) {
 					toast({
