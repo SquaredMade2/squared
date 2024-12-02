@@ -1,4 +1,10 @@
 import LabelBadge from "@/components/LabelBadges";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import type { Label } from "@squared/db";
@@ -38,28 +44,40 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 
 	return (
 		<>
-			{view === "list" ? (
-				<div
-					ref={containerRef}
-					className={cn(
-						`flex flex-wrap items-center justify-end text-muted-foreground gap-1 w-fit max-w-full min-w-[${minWidth}px] `,
-					)}
-				>
-					{labels.map((label) => (
-						<div key={label.id} className="label-badge flex-shrink">
-							<LabelBadge label={label} />
-						</div>
-					))}
-				</div>
-			) : (
-				<>
-					{labels.map((label) => (
-						<div key={label.id} className="label-badge flex-shrink mb-1">
-							<LabelBadge label={label} />
-						</div>
-					))}
-				</>
-			)}
+			<TooltipProvider>
+				{view === "list" ? (
+					<div
+						ref={containerRef}
+						className={cn(
+							`flex flex-wrap items-center justify-end text-muted-foreground gap-1 w-fit max-w-full min-w-[${minWidth}px] `,
+						)}
+					>
+						{labels.map((label) => (
+							<Tooltip key={label.id}>
+								<TooltipTrigger asChild>
+									<div key={label.id} className="label-badge flex-shrink">
+										<LabelBadge label={label} />
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>{label.description}</TooltipContent>
+							</Tooltip>
+						))}
+					</div>
+				) : (
+					<>
+						{labels.map((label) => (
+							<Tooltip key={label.id}>
+								<TooltipTrigger asChild>
+									<div key={label.id} className="label-badge flex-shrink mb-1">
+										<LabelBadge label={label} />
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>{label.description}</TooltipContent>
+							</Tooltip>
+						))}
+					</>
+				)}
+			</TooltipProvider>
 		</>
 	);
 }
