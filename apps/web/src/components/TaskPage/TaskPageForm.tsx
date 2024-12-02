@@ -17,8 +17,7 @@ import { Input } from "../ui/input";
 export const TaskPageForm = () => {
 	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const task = useTaskStore((state) => state.currentTask);
-	const { updateTask } = useTaskStore((state) => state);
+	const { updateTask, currentTask: task } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
@@ -104,6 +103,8 @@ export const TaskPageForm = () => {
 						description: error instanceof Error && error.message,
 					});
 				}
+			} else {
+				setParentTask(null);
 			}
 		};
 
