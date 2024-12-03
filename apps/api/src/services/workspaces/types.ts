@@ -19,7 +19,9 @@ export interface WorkspaceRpc {
 	getWorkspace: (args: {
 		workspaceId: string;
 	}) => Promise<WorkspaceLabels | null>;
-	getWorkspaceByUrl: (args: { url: string }) => Promise<WorkspaceLabels | null>;
+	getWorkspaceByUrl: (args: {
+		url: string;
+	}) => Promise<WorkspaceLabels | null>;
 	updateWorkspace: (args: {
 		workspaceId: string;
 		workspace: WorkspaceParams;
@@ -30,6 +32,10 @@ export interface WorkspaceRpc {
 		token: string;
 		userId: string;
 	}) => Promise<WorkspaceLabels | null>;
+	removeUserFromWorkspace: (args: {
+		workspaceId: string;
+		userId: string;
+	}) => Promise<void>;
 	inviteToWorkspace: (args: {
 		workspaceId: string;
 		email: string | string[];

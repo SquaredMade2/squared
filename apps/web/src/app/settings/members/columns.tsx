@@ -13,10 +13,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
 
-async function handleClick() {
-	await workspaceService.removeUserFromWorkspace();
-}
-
 export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "name",
@@ -51,6 +47,10 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "manage",
 		cell: () => {
+			async function handleClick() {
+				await workspaceService.removeUserFromWorkspace();
+			}
+
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
