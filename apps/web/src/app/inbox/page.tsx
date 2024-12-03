@@ -7,6 +7,7 @@ import {
 } from "@/components/Inbox";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import { eventService, userService } from "@/lib/services";
 import {
 	useEventStore,
@@ -34,8 +35,9 @@ export default function InboxPage() {
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
-	const { setUserAvatars, user } = useUserStore((state) => state);
+	const { setUserAvatars } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
+	const { user } = useAuthUser();
 	const pathname = usePathname();
 
 	useEffect(() => {
