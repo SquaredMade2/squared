@@ -209,14 +209,18 @@ export class WorkspaceService implements WorkspaceRpc {
 		});
 
 		if (workspaceTeams.length > 0) {
-			workspaceTeams.map(async (team) => {
-				await this.db.userTeam.delete({
-					where: { userId, teamId: team.id },
-				});
-			});
+			await Promise.all(
+				workspaceTeams.map(async (team) => {
+					await this.db.userTeam.delete({
+						where: { userId_teamId: { userId, teamId: team.id } },
+					});
+				}),
+			);
 		}
 
-		await this.db.userWorkspace.delete({ where: { userId, workspaceId } });
+		await this.db.userWorkspace.delete({
+			where: { userId_workspaceId: { userId, workspaceId } },
+		});
 	}
 	async inviteToWorkspace({
 		workspaceId,

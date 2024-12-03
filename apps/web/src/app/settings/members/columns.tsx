@@ -9,8 +9,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { workspaceService } from "@/lib/services";
+import { TODO } from "@squared/context";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
+import { useParams } from "next/navigation";
 import type { MemberWithRole } from "./data-table";
 
 export const columns: ColumnDef<MemberWithRole>[] = [
@@ -46,7 +48,13 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	},
 	{
 		accessorKey: "manage",
-		cell: () => {
+		cell: async ({ row }) => {
+			const userId = row.original.id;
+			const params = useParams();
+			const workspaceUrl = params.workspace;
+			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
+				url: workspaceUrl,
+			});
 			async function handleClick() {
 				await workspaceService.removeUserFromWorkspace();
 			}
