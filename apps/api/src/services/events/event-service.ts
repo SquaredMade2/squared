@@ -184,11 +184,6 @@ export class EventService implements EventRpc {
 		previousTask: Task,
 		changes: Partial<Task>,
 	): Promise<string> {
-		// Case 1: Empty changes object means it's a creation event
-		if (Object.keys(changes).length === 0) {
-			return "created task";
-		}
-
 		const diff = await Promise.all(
 			Object.entries(changes).map(async ([key, newValue]) => {
 				if (key === "id" || key === "updatedAt") return null;
@@ -210,12 +205,10 @@ export class EventService implements EventRpc {
 
 		const filteredDiff = diff.filter(Boolean).join(", ");
 
-		// Case 2: Has changes that were detected
 		if (filteredDiff.length > 0) {
 			return filteredDiff;
 		}
 
-		// Case 3: No actual changes detected
 		return "No changes";
 	}
 	private async formatValue(
