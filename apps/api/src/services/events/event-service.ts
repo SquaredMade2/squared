@@ -16,11 +16,11 @@ import type {
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
-	private taskEventRepository: PrismaClient["taskEvent"];
-	private commitRepository: PrismaClient["commit"];
-	private notificationRepository: PrismaClient["notification"];
-	private labelRepository: PrismaClient["label"];
-	private userRepository: PrismaClient["user"];
+	private readonly taskEventRepository: PrismaClient["taskEvent"];
+	private readonly commitRepository: PrismaClient["commit"];
+	private readonly notificationRepository: PrismaClient["notification"];
+	private readonly labelRepository: PrismaClient["label"];
+	private readonly userRepository: PrismaClient["user"];
 
 	constructor(db: PrismaClient) {
 		this.logger = createCustomLogger("tasks");
@@ -31,6 +31,10 @@ export class EventService implements EventRpc {
 		this.userRepository = db.user;
 	}
 	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
+		this.logger.info(
+			`Fetching TaskEvents and Commits for Task ID ${taskId}...`,
+		);
+
 		const [taskEvents, commits] = await Promise.all([
 			this.taskEventRepository.findMany({
 				where: { taskId },
@@ -44,7 +48,7 @@ export class EventService implements EventRpc {
 		]);
 
 		this.logger.info(
-			`Fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
+			`Successfully fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
 		);
 
 		return Promise.resolve([...taskEvents, ...commits]) as TaskEventsReturn;

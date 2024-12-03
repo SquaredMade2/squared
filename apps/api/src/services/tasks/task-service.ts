@@ -127,7 +127,7 @@ export class TaskService implements TaskRpc {
 
 		subscribeUser(author, newTask, this.db);
 
-		await this.eventService.createLogEvent({
+		this.eventService.createLogEvent({
 			taskId: newTask.id,
 			authorId: newTask.authorId,
 			changes: {},
