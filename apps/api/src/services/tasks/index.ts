@@ -33,7 +33,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		parentId: z.string().nullable().optional(),
 		sprintId: z.string().nullable().optional(),
 	}),
-).strict("Create Task Schema unknown params");
+).strict();
 
 const updateTaskParams = createSchema<UpdateTaskParams>()(
 	z.object({
@@ -129,76 +129,16 @@ export type TaskRpcSchema = typeof taskRpcSchema;
 
 export const createTaskRpcHandler = (taskService: TaskRpc) =>
 	createRpcHandler("task", taskRpcSchema, {
-		createTask: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.createTask;
-			inputSchema.parse(input);
-			const newTask = await taskService.createTask(input);
-			outputSchema.parse(newTask);
-			return newTask
-		},
-		updateTask: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.updateTask;
-			inputSchema.parse(input);
-			const updatedTask = await taskService.updateTask(input);
-			outputSchema.parse(updatedTask);
-			return updatedTask
-		},
-		deleteTask: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.deleteTask;
-			inputSchema.parse(input);
-			const deleteTask = await taskService.deleteTask(input);
-			outputSchema.parse(deleteTask);
-			return deleteTask
-		},
-		getTask: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.getTask;
-			inputSchema.parse(input);
-			const task = await taskService.getTask(input);
-			outputSchema.parse(task);
-			return task
-		},
-		getTaskByIdentifier: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.getTaskByIdentifier;
-			inputSchema.parse(input);
-			const task = await taskService.getTaskByIdentifier(input);
-			outputSchema.parse(task);
-			return task
-		},
-		getTeamTasks: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.getTeamTasks;
-			inputSchema.parse(input);
-			const teamTasks = await taskService.getTeamTasks(input);
-			outputSchema.parse(teamTasks);
-			return teamTasks
-		},
-		addActiveSprintTasks: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.addActiveSprintTasks;
-			inputSchema.parse(input);
-			const sprintTaskNumber = await taskService.addActiveSprintTasks(input);
-			outputSchema.parse(sprintTaskNumber);
-			return sprintTaskNumber
-		},
-		addSprintTasks: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.addSprintTasks;
-			inputSchema.parse(input);
-			const sprintTasks = await taskService.addSprintTasks(input);
-			outputSchema.parse(sprintTasks);
-			return sprintTasks
-		},
-		reorderSubtasks: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.reorderSubtasks;
-			inputSchema.parse(input);
-			const reorderedSubtasks = await taskService.reorderSubtasks(input);
-			outputSchema.parse(reorderedSubtasks);
-			return reorderedSubtasks
-		},
-		getSubtasks: async (input) => {
-			const {input: inputSchema, output: outputSchema} = taskRpcSchema.getSubtasks;
-			inputSchema.parse(input);
-			const subTasks = await taskService.getSubtasks(input);
-			outputSchema.parse(subTasks);
-			return subTasks
-		},
+		createTask: async (input) => taskService.createTask(input),
+		updateTask: async (input) => taskService.updateTask(input),
+		deleteTask: async (input) => taskService.deleteTask(input),
+		getTask: async (input) => taskService.getTask(input),
+		getTaskByIdentifier: async (input) => taskService.getTaskByIdentifier(input),
+		getTeamTasks: async (input) => taskService.getTeamTasks(input),
+		addActiveSprintTasks: async (input) => taskService.addActiveSprintTasks(input),
+		addSprintTasks: async (input) => taskService.addSprintTasks(input),
+		reorderSubtasks: async (input) => taskService.reorderSubtasks(input),
+		getSubtasks: async (input) => taskService.getSubtasks(input)
 	});
 
 export { TaskService } from "./task-service";
