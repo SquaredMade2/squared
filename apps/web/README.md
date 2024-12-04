@@ -36,7 +36,7 @@ root
 
 ## Overview
 
-This web application is built using Next.js and React, with TypeScript for type safety. It appears to be a task management and team collaboration platform with features like authentication, task tracking, and team management.
+This web application is built using Next.js and React, with TypeScript for type safety. It is a task management and team collaboration platform with features like authentication, task tracking, and team management.
 
 ### Key Features
 
