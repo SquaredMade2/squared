@@ -1,6 +1,6 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { MembersPage } from "@/components/Settings/MembersPage";
+import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";

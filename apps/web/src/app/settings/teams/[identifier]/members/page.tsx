@@ -2,7 +2,7 @@
 
 import MemberSettingsWrapper from "@/app/settings/MemberSettingsWrapper";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { MembersPage } from "@/components/Settings/MembersPage";
+import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { userService } from "@/lib/services";

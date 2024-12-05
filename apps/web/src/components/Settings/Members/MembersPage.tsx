@@ -1,6 +1,8 @@
 import MemberSettingsWrapper from "@/app/settings/MemberSettingsWrapper";
 import type { Team, User, Workspace } from "@squared/db";
-import SquaredLoader from "../Loaders/SquaredLoader";
+import SquaredLoader from "../../Loaders/SquaredLoader";
+import { columns } from "./columns";
+import { DataTable, type MemberWithRole } from "./data-table";
 
 export function MembersPage({
 	page,
@@ -17,7 +19,7 @@ export function MembersPage({
 	team?: Team | null;
 	admins: string[];
 }) {
-	const membersWithRoles = members.map((member) => ({
+	const membersWithRoles: MemberWithRole[] = members.map((member) => ({
 		...member,
 		role: admins.includes(member.id) ? "admin" : "member",
 	}));
@@ -38,7 +40,7 @@ export function MembersPage({
 					columns={columns}
 					data={membersWithRoles}
 					workspace={workspace}
-					team={team}
+					team={team ? team : null}
 				/>
 			)}
 		</MemberSettingsWrapper>
