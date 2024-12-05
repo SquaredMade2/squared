@@ -79,7 +79,9 @@ export default function LabelBadge({ label }: { label: Label }) {
 						{label.name}
 					</span>
 				</TooltipTrigger>
-				<TooltipContent>{label.description}</TooltipContent>
+				<TooltipContent className="cursor-default">
+					{label.description}
+				</TooltipContent>
 			</Tooltip>
 		</TooltipProvider>
 	);
