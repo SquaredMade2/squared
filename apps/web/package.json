@@ -39,6 +39,7 @@
 		"@tanstack/react-table": "^8.20.5",
 		"@types/mdx": "^2.0.13",
 		"@types/react-csv": "^1.1.10",
+		"@uploadthing/react": "^7.1.1",
 		"axios": "^1.7.5",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
@@ -61,6 +62,7 @@
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "^5.5.4",
+		"uploadthing": "^7.3.0",
 		"uuid": "^11.0.0",
 		"zod": "^3.23.8",
 		"zustand": "^5.0.0"

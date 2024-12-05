@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import { userService } from "@/lib/services";
+import { UploadButton } from "@/lib/ut";
 import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -98,6 +99,27 @@ export default function Profile() {
 										{getInitials(user.name)}
 									</AvatarFallback>
 								</Avatar>
+								<UploadButton
+									className="ut-button:bg-primary ut-allowed-content:text-muted-foreground ut-button:text-sm ut-allowed-content:text-xs"
+									endpoint="avatarImage"
+									input={{ userId: user.id }}
+									onClientUploadComplete={(res) => {
+										// each uploaded file is an array element in res, and
+										// since avatar img is only one file it will be the 0 index
+										const message = res[0].serverData.message;
+										toast({
+											title: "Success",
+											description: message,
+										});
+									}}
+									onUploadError={(error: Error) => {
+										toast({
+											variant: "destructive",
+											title: "Error",
+											description: error.message,
+										});
+									}}
+								/>
 							</FormItem>
 						</div>
 						<FormItem>

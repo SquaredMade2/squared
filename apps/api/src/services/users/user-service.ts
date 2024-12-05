@@ -30,6 +30,21 @@ export class UserService implements UserRpc {
 		});
 	}
 
+	async updateUserAvatar({
+		userId,
+		avatarUrl,
+	}: { userId: string; avatarUrl: string }) {
+		this.logger.info(
+			"Updating user avatar with\n\tuserId:  %s\n\turl:     %s",
+			userId,
+			avatarUrl,
+		);
+		return await this.db.user.update({
+			where: { id: userId },
+			data: { avatarUrl },
+		});
+	}
+
 	async updateUserNotifications({
 		userId,
 		notificationIds: savedNotificationIds,
