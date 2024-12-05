@@ -15,7 +15,6 @@ export default function TeamMembersPage() {
 	const { team, loading: teamLoading } = useTeams();
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const [teamUsers, setTeamUsers] = useState<User[]>([]);
-	const isLoading = teamLoading || workspaceLoading;
 
 	useEffect(() => {
 		const fetchTeamUsers = async () => {
@@ -44,8 +43,6 @@ export default function TeamMembersPage() {
 	return (
 		<MemberSettingsWrapper page="team">
 			<MembersPage
-				page="team"
-				isLoading={isLoading}
 				members={membersWithRoles}
 				team={team}
 				workspace={workspace}

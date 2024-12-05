@@ -9,7 +9,6 @@ import type { MemberWithRole } from "./data-table";
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
-	const isLoading = workspaceLoading || userLoading;
 
 	const membersWithRoles: MemberWithRole[] = workspace
 		? users.map((user) => ({
@@ -31,8 +30,6 @@ export default function WorkspaceMembersPage() {
 	return (
 		<MemberSettingsWrapper page="workspace">
 			<MembersPage
-				page="workspace"
-				isLoading={isLoading}
 				members={membersWithRoles}
 				workspace={workspace}
 				admins={workspace?.admins || []}
