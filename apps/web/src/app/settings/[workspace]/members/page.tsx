@@ -1,14 +1,15 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { MembersPage } from "@/components/Settings/MembersPage";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";
-import { columns } from "./columns";
-import { DataTable, type MemberWithRole } from "./data-table";
+import type { MemberWithRole } from "./data-table";
 
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
+	const isLoading = workspaceLoading || userLoading;
 
 	const membersWithRoles: MemberWithRole[] = workspace
 		? users.map((user) => ({
@@ -29,13 +30,13 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="workspace">
-			{workspace && (
-				<DataTable
-					columns={columns}
-					data={membersWithRoles}
-					workspace={workspace}
-				/>
-			)}
+			<MembersPage
+				page="workspace"
+				isLoading={isLoading}
+				members={membersWithRoles}
+				workspace={workspace}
+				admins={workspace?.admins || []}
+			/>
 		</MemberSettingsWrapper>
 	);
 }

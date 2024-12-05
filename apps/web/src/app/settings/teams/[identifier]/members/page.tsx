@@ -2,19 +2,20 @@
 
 import MemberSettingsWrapper from "@/app/settings/MemberSettingsWrapper";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { MembersPage } from "@/components/Settings/MembersPage";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { userService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
 import { useEffect, useState } from "react";
-import { columns } from "./columns";
-import { DataTable, type MemberWithRole } from "./data-table";
+import type { MemberWithRole } from "./data-table";
 
 export default function TeamMembersPage() {
 	const { team, loading: teamLoading } = useTeams();
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const [teamUsers, setTeamUsers] = useState<User[]>([]);
+	const isLoading = teamLoading || workspaceLoading;
 
 	useEffect(() => {
 		const fetchTeamUsers = async () => {
@@ -42,9 +43,14 @@ export default function TeamMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="team">
-			{teamUsers && (
-				<DataTable columns={columns} data={membersWithRoles} team={team} />
-			)}
+			<MembersPage
+				page="team"
+				isLoading={isLoading}
+				members={membersWithRoles}
+				team={team}
+				workspace={workspace}
+				admins={workspace?.admins || []}
+			/>
 		</MemberSettingsWrapper>
 	);
 }
