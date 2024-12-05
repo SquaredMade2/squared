@@ -78,21 +78,21 @@ function SettingsNavbarContent() {
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo("workspace")}
+										onClick={() => navigateTo(`${workspace?.url}`)}
 									>
 										General
 									</Button>
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo("members")}
+										onClick={() => navigateTo(`${workspace?.url}/members`)}
 									>
 										Members
 									</Button>
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo("integrations")}
+										onClick={() => navigateTo(`${workspace?.url}/integrations`)}
 									>
 										Integrations
 									</Button>
@@ -110,7 +110,7 @@ function SettingsNavbarContent() {
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo("profile")}
+										onClick={() => navigateTo("account/profile")}
 									>
 										Profile
 									</Button>

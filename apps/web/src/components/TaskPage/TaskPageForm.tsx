@@ -44,7 +44,9 @@ export const TaskPageForm = () => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
 			updatedTitle !== task?.title || updatedDescription !== task?.description;
-		const titleOnlyChanged: boolean = updatedTitle !== task?.title;
+		const titleChanged: boolean = updatedTitle !== task?.title;
+		const descriptionChanged: boolean =
+			updatedDescription !== task?.description;
 		if (changeMade && task?.id !== undefined) {
 			if (task) {
 				try {
@@ -56,11 +58,19 @@ export const TaskPageForm = () => {
 						}),
 					);
 					if (
-						titleOnlyChanged &&
+						titleChanged &&
 						e.target instanceof HTMLInputElement &&
 						e.target.name === "title"
 					) {
-						toast({ title: "Title Updated Successfully" });
+						toast({ title: "Title updated successfully" });
+					}
+
+					if (
+						descriptionChanged &&
+						e.target instanceof HTMLTextAreaElement &&
+						e.target.name === "editDescription"
+					) {
+						toast({ title: "Description updated successfully" });
 					}
 				} catch (error) {
 					toast({
