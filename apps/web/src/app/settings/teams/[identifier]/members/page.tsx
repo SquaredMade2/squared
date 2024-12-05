@@ -3,13 +3,13 @@
 import MemberSettingsWrapper from "@/app/settings/MemberSettingsWrapper";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
+import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { userService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
 import { useEffect, useState } from "react";
-import type { MemberWithRole } from "./data-table";
 
 export default function TeamMembersPage() {
 	const { team, loading: teamLoading } = useTeams();
