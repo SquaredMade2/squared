@@ -17,8 +17,7 @@ import { Input } from "../ui/input";
 export const TaskPageForm = () => {
 	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const task = useTaskStore((state) => state.currentTask);
-	const { updateTask } = useTaskStore((state) => state);
+	const { updateTask, currentTask: task } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
@@ -45,7 +44,9 @@ export const TaskPageForm = () => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
 			updatedTitle !== task?.title || updatedDescription !== task?.description;
-		const titleOnlyChanged: boolean = updatedTitle !== task?.title;
+		const titleChanged: boolean = updatedTitle !== task?.title;
+		const descriptionChanged: boolean =
+			updatedDescription !== task?.description;
 		if (changeMade && task?.id !== undefined) {
 			if (task) {
 				try {
@@ -57,11 +58,19 @@ export const TaskPageForm = () => {
 						}),
 					);
 					if (
-						titleOnlyChanged &&
+						titleChanged &&
 						e.target instanceof HTMLInputElement &&
 						e.target.name === "title"
 					) {
-						toast({ title: "Title Updated Successfully" });
+						toast({ title: "Title updated successfully" });
+					}
+
+					if (
+						descriptionChanged &&
+						e.target instanceof HTMLTextAreaElement &&
+						e.target.name === "editDescription"
+					) {
+						toast({ title: "Description updated successfully" });
 					}
 				} catch (error) {
 					toast({
@@ -94,6 +103,8 @@ export const TaskPageForm = () => {
 						description: error instanceof Error && error.message,
 					});
 				}
+			} else {
+				setParentTask(null);
 			}
 		};
 
