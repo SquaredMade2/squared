@@ -44,7 +44,7 @@ const handler = NextAuth({
 					}
 					throw new Error("Invalid login credentials");
 				} catch (error) {
-					console.log("error", error instanceof Error ? error.message : error);
+					console.error("Error logging in: ", error);
 					throw new Error(
 						error instanceof Error ? error.message : "Login failed",
 					);
