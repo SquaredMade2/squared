@@ -309,7 +309,6 @@ export class TaskService extends RPCContextClient {
 		ctx: Context,
 		req: UpdateTaskRequest,
 	): Promise<UpdateTaskResponse> {
-		console.log(req); //todo delete
 		return this.request(ctx, "updateTask", req);
 	}
 
