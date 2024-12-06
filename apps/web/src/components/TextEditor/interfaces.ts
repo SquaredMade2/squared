@@ -1,8 +1,10 @@
 import type { Task } from "@squared/db";
+import type { RefObject } from "react";
 import type { BaseSelection, Node, NodeEntry } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
+	scrollRef: RefObject<HTMLDivElement | null>;
 }
 
 export interface TextEditorToolBarProps {
@@ -26,11 +28,16 @@ export interface LinkModalProps {
 	selection: BaseSelection;
 }
 
+export interface TextEditorCommandProps {
+	cursorPosition: { x: number; y: number } | null;
+}
+
 export type MarkActives = {
 	isBoldActive: () => boolean;
 	isItalicActive: () => boolean;
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
+	isCommandActive: () => void;
 };
 
 export type CustomElementAttributes = Omit<
@@ -53,6 +60,7 @@ export type CustomText = {
 	italic?: boolean;
 	code?: boolean;
 	url?: string;
+	command?: boolean;
 };
 
 export type MarkTypes = keyof Omit<CustomText, "text">;

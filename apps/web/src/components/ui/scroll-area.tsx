@@ -4,22 +4,45 @@ import { cn } from "@/utils/cn";
 import * as ScrollAreaPrimitive from "@repo/ui/scroll-area";
 import * as React from "react";
 
-const ScrollArea = React.forwardRef<
-	React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...props }, ref) => (
-	<ScrollAreaPrimitive.Root
-		ref={ref}
-		className={cn("relative overflow-hidden", className)}
-		{...props}
-	>
-		<ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
-			{children}
-		</ScrollAreaPrimitive.Viewport>
-		<ScrollBar />
-		<ScrollAreaPrimitive.Corner />
-	</ScrollAreaPrimitive.Root>
-));
+type ScrollAreaProps = React.ComponentPropsWithoutRef<
+	typeof ScrollAreaPrimitive.Root
+> & {
+	viewportRef?: React.RefObject<HTMLDivElement>;
+};
+
+const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
+	({ className, children, viewportRef, ...props }, ref) => {
+		// This all basically allows for an optional ref to access the Viewport component ref (for scroll access)
+		// while allowing default ref top still be root
+		const internalViewportRef = React.useRef<HTMLDivElement>(null);
+		const finalViewportRef = viewportRef || internalViewportRef;
+		const setRootRef = (element: HTMLDivElement | null) => {
+			if (typeof ref === "function") {
+				ref(element);
+			} else if (ref) {
+				(ref as React.MutableRefObject<HTMLDivElement | null>).current =
+					element;
+			}
+		};
+
+		return (
+			<ScrollAreaPrimitive.Root
+				ref={setRootRef}
+				className={cn("relative overflow-hidden", className)}
+				{...props}
+			>
+				<ScrollAreaPrimitive.Viewport
+					ref={finalViewportRef}
+					className="h-full w-full rounded-[inherit]"
+				>
+					{children}
+				</ScrollAreaPrimitive.Viewport>
+				<ScrollBar />
+				<ScrollAreaPrimitive.Corner />
+			</ScrollAreaPrimitive.Root>
+		);
+	},
+);
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
 const ScrollBar = React.forwardRef<

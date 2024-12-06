@@ -13,13 +13,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useTaskStore } from "@/store";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
 	const { isLoading, error, subtasks } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
+	const scrollRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		console.log("scrollRef top scroll", scrollRef.current?.scrollTop);
+	}, [scrollRef.current]);
 
 	useEffect(() => {
 		if (error) {
@@ -45,12 +50,15 @@ const TaskPage = () => {
 							</div>
 							<MobileTaskSettings />
 							<div className="flex w-full relative">
-								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
+								<ScrollArea
+									viewportRef={scrollRef}
+									className="h-[calc(100vh-5rem)] w-full"
+								>
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm />
 										{subtasks.length > 0 && <Subtasks />}
 										<NewTaskCollapsible parentId={currentTask.id} />
-										<EventTabs />
+										<EventTabs scrollRef={scrollRef} />
 									</div>
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">

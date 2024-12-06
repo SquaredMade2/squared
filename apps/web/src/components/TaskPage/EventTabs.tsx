@@ -2,11 +2,14 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCommentStore, useTaskStore } from "@/store";
+import type { RefObject } from "react";
 import { CreatedByInformation } from ".";
 import TextEditor from "../TextEditor";
 import CommentCard from "./CommentCard";
 
-export const EventTabs = () => {
+export const EventTabs = ({
+	scrollRef,
+}: { scrollRef: RefObject<HTMLDivElement | null> }) => {
 	const comments = useCommentStore((state) => state.comments);
 	const currentTask = useTaskStore((state) => state.currentTask);
 
@@ -21,11 +24,11 @@ export const EventTabs = () => {
 					<CreatedByInformation />
 				</div>
 			</TabsContent>
-			<TabsContent value="comments">
+			<TabsContent value="comments" className="mb-40">
 				{comments.map((comment) => {
 					return <CommentCard key={comment.id} comment={comment} />;
 				})}
-				{currentTask && <TextEditor task={currentTask} />}
+				{currentTask && <TextEditor task={currentTask} scrollRef={scrollRef} />}
 			</TabsContent>
 		</Tabs>
 	);

@@ -2,8 +2,22 @@ import { commentService } from "@/lib/services";
 import { useCommentStore, useModalStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
+import {
+	clearCurrentLeafContent,
+	getCharacterBefore,
+	isValidCommandBlock,
+	// Will use below for better slash command toggler
+	// getCharactersInSelection,
+} from "@/utils/textEditorSelection";
 import { TODO } from "@squared/context";
-import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { isYesterday } from "date-fns";
+import {
+	type KeyboardEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -14,6 +28,8 @@ import type {
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
+import CommandContext from "./Menus/TextEditorCommand";
+import TextEditorCommand from "./Menus/TextEditorCommand";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
@@ -41,7 +57,7 @@ const initialValue: CustomDescendant[] = [
 	},
 ];
 
-const TextEditor = ({ task }: TextEditorProps) => {
+const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 	// State
 
 	const { setShowLinkForm } = useModalStore((state) => state);
@@ -51,6 +67,10 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
+	// Will use below for better slash command toggler
+	const [toggleCommand, setToggleCommand] = useState(false);
+	const [position, setPosition] = useState({ x: 0, y: 0 });
+	const editorRef = useRef<Range | null>(null);
 
 	// Functions
 
@@ -126,6 +146,70 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		return editorContent.length === 0;
 	};
 
+	const handleKeyUp = (event: KeyboardEvent) => {
+		// if (event.key === "/") {
+		// 	const selection = window.getSelection();
+
+		// 	if (!selection || selection.rangeCount === 0) {
+		// 		return;
+		// 	}
+
+		// 	const range = selection.getRangeAt(0);
+		// 	const rect = range.getBoundingClientRect();
+
+		// 	if (editorRef.current === null) {
+		// 		return;
+		// 	}
+
+		// 	// Calculate the position relative to the editor container
+		// 	const editorRect = editorRef.current.getBoundingClientRect();
+
+		// 	setPosition({
+		// 		x: rect.left - editorRect.left, // Below the caret
+		// 		y: rect.bottom - editorRect.top, // Align with caret
+		// 	});
+		// }
+
+		if (event.key === "/") {
+			const selection = window.getSelection();
+
+			if (!selection || selection.rangeCount === 0) {
+				return;
+			}
+
+			// Get the range of the current selection
+			const range = selection.getRangeAt(0);
+
+			// Get the bounding rectangle of the range
+			const rect = range.getBoundingClientRect();
+
+			// Reference to the scrollable editor container
+			const editorElement = editorRef.current;
+
+			if (editorElement) {
+				// Get the bounding rectangle of the editor
+				const editorRect = editorElement.getBoundingClientRect();
+
+				// Get the scroll position of the editor container
+
+				// Calculate the position relative to the editor
+				if (!scrollRef.current) {
+					return {
+						x: rect.left - editorRect.left,
+						y: rect.bottom - editorRect.top,
+					};
+				}
+				console.log(scrollRef.current.scrollTop);
+				const x = rect.left - editorRect.left;
+				const y = rect.bottom - editorRect.top + scrollRef.current.scrollTop;
+
+				// Set the position of the command palette
+				setPosition({ x, y });
+				setToggleCommand(true);
+			}
+		}
+	};
+
 	const isHeaderBlock = () => {
 		// return if the block exists in the highlighted area
 		const [match] = Editor.nodes(editor, {
@@ -159,6 +243,8 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				return "isCodeActive";
 			case "url":
 				return "isLinkActive";
+			case "command":
+				return "isCommandActive";
 		}
 	};
 
@@ -173,14 +259,14 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		isItalicActive: () => isMarkActive("italic"),
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
+		isCommandActive: () => isMarkActive("command"),
 	});
 
-	const createLeaf = (markType: MarkTypes) => {
-		Editor.addMark(
-			editor,
-			markType,
-			!useEditorMarks()[useLeafActive(markType)](),
-		);
+	const createLeaf = (
+		markType: MarkTypes,
+		markState = !useEditorMarks()[useLeafActive(markType)](),
+	) => {
+		Editor.addMark(editor, markType, markState);
 	};
 
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -234,6 +320,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				}
 				break;
 			}
+			case "/": {
+				createLeaf("command", true);
+			}
 		}
 	};
 
@@ -264,13 +353,32 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		};
 	}, []);
 
+	// will prob delete this:
+	useEffect(() => {
+		const currentCharacter = getCharacterBefore(editor);
+		currentCharacter[currentCharacter.length - 1] === "/"
+			? setToggleCommand(true)
+			: setToggleCommand(false);
+	}, [editor.selection]);
+
+	useEffect(() => {
+		const deleteEntireLeaf = () => {
+			useEditorMarks().isCommandActive() && clearCurrentLeafContent(editor);
+			createLeaf("command", false);
+		};
+		// check if first char of command leaf is a /, if isnt /, delete leaf.
+		isValidCommandBlock(editor)
+			? createLeaf("command", true)
+			: deleteEntireLeaf();
+	}, [editor.selection]);
+
 	return (
 		<Slate
 			editor={editor}
 			initialValue={initialValue}
 			onChange={(newValue) => setEditorContent(newValue)}
 		>
-			<div className="markdown-content">
+			<div onKeyUp={handleKeyUp} ref={editorRef} className="markdown-content">
 				<div
 					className={cn(
 						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
@@ -296,6 +404,10 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					/>
 				</div>
 			</div>
+
+			{useEditorMarks().isCommandActive() && (
+				<TextEditorCommand cursorPosition={position} />
+			)}
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
 				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) && "bg-muted hover:bg-muted text-muted-foreground"}`}
