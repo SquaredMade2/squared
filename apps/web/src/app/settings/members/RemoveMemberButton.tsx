@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
+import { TODO } from "@squared/context";
 import { Ellipsis } from "lucide-react";
 
 const RemoveMemberButton = ({ userId }: { userId: string }) => {
@@ -15,7 +16,10 @@ const RemoveMemberButton = ({ userId }: { userId: string }) => {
 
 	const handleClick = async () => {
 		if (workspaceId) {
-			await workspaceService.removeUserFromWorkspace(userId, workspaceId);
+			await workspaceService.removeUserFromWorkspace(TODO, {
+				userId,
+				workspaceId,
+			});
 		}
 	};
 
