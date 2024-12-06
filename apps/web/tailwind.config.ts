@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import {withUt} from "uploadthing/tw"
 
 const config = {
 	darkMode: ["class"],
@@ -139,4 +140,5 @@ const config = {
   ],
 } satisfies Config;
 
-export default config;
+// allows use of custom tailwind variants for uploadthing, such as ut-button: and ut-label:
+export default withUt(config);

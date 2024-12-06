@@ -59,7 +59,9 @@ export type UpdateTaskRequest = {
 	effortEstimate?: number;
 	id: string;
 	labels?: string[];
+	parentId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId?: string | null;
 	status?:
 		| "backlog"
 		| "todo"

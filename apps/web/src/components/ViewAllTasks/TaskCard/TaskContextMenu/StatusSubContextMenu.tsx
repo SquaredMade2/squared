@@ -45,8 +45,7 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 				Status
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{/* Need to get rid of the last item (Duplicate) because its not used yet */}
-				{statusOptions.slice(0, -1).map((status) => {
+				{statusOptions.map((status) => {
 					return (
 						<ContextMenuItem
 							key={status}

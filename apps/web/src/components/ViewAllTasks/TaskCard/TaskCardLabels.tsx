@@ -1,4 +1,5 @@
 import LabelBadge from "@/components/LabelBadges";
+import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import type { Label } from "@squared/db";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ export const LabelColor = ({ label }: { label: Label }) => {
 export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [minWidth, setMinWidth] = useState<number>(0);
+	const { view } = useViewStore((state) => state);
 
 	useEffect(() => {
 		if (containerRef.current) {
@@ -35,17 +37,29 @@ export default function TaskCardLabels({ labels }: TaskCardLabelsProps) {
 	}, [labels]);
 
 	return (
-		<div
-			ref={containerRef}
-			className={cn(
-				`flex flex-wrap items-center justify-end text-muted-foreground gap-1 w-fit max-w-full min-w-[${minWidth}px] `,
-			)}
-		>
-			{labels.map((label) => (
-				<div key={label.id} className="label-badge flex-shrink">
-					<LabelBadge label={label} />
+		<>
+			{view === "list" ? (
+				<div
+					ref={containerRef}
+					className={cn(
+						`flex flex-wrap items-center justify-end text-muted-foreground gap-1 w-fit max-w-full min-w-[${minWidth}px] `,
+					)}
+				>
+					{labels.map((label) => (
+						<div key={label.id} className="label-badge flex-shrink">
+							<LabelBadge label={label} />
+						</div>
+					))}
 				</div>
-			))}
-		</div>
+			) : (
+				<>
+					{labels.map((label) => (
+						<div key={label.id} className="label-badge flex-shrink mb-1">
+							<LabelBadge label={label} />
+						</div>
+					))}
+				</>
+			)}
+		</>
 	);
 }
