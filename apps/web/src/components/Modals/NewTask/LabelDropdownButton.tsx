@@ -1,4 +1,5 @@
 import LabelBadge from "@/components/LabelBadges";
+import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -17,17 +18,6 @@ import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
 import { Check, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
-
-const LabelColor = ({ label }: { label: Label }) => {
-	const { color } = label;
-	const validatedColor = color.startsWith("#") ? color : `#${color}`;
-	return (
-		<div
-			className="w-3 h-3 rounded-lg"
-			style={{ backgroundColor: validatedColor }}
-		/>
-	);
-};
 
 export const LabelDropdownButton = () => {
 	const [open, setOpen] = useState(false);
