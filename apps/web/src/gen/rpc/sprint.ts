@@ -82,7 +82,6 @@ export type GetSprintTasksRequest = {
 
 export type GetSprintTasksResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -136,6 +135,7 @@ export type AddRetrospectiveItemResponse = {
 	content: string;
 	id: string;
 	type: "toImprove" | "wentWell" | "actionItems";
+	upvotes: number;
 };
 
 export type UpdateRetrospectiveItemRequest = {
@@ -149,6 +149,18 @@ export type UpdateRetrospectiveItemResponse = {
 	content: string;
 	id: string;
 	type: "toImprove" | "wentWell" | "actionItems";
+	upvotes: number;
+};
+
+export type IncrementRetrospectiveItemUpvotesRequest = {
+	itemId: string;
+};
+
+export type IncrementRetrospectiveItemUpvotesResponse = {
+	content: string;
+	id: string;
+	type: "toImprove" | "wentWell" | "actionItems";
+	upvotes: number;
 };
 
 export type GetRetrospectiveItemsRequest = {
@@ -160,16 +172,19 @@ export type GetRetrospectiveItemsResponse = {
 		content: string;
 		id: string;
 		type: "toImprove" | "wentWell" | "actionItems";
+		upvotes: number;
 	}[];
 	toImprove: {
 		content: string;
 		id: string;
 		type: "toImprove" | "wentWell" | "actionItems";
+		upvotes: number;
 	}[];
 	wentWell: {
 		content: string;
 		id: string;
 		type: "toImprove" | "wentWell" | "actionItems";
+		upvotes: number;
 	}[];
 };
 
@@ -256,6 +271,16 @@ export class SprintService extends RPCContextClient {
 		req: UpdateRetrospectiveItemRequest,
 	): Promise<UpdateRetrospectiveItemResponse> {
 		return this.request(ctx, "updateRetrospectiveItem", req);
+	}
+
+	/**
+	 * incrementRetrospectiveItemUpvotes method
+	 */
+	incrementRetrospectiveItemUpvotes(
+		ctx: Context,
+		req: IncrementRetrospectiveItemUpvotesRequest,
+	): Promise<IncrementRetrospectiveItemUpvotesResponse> {
+		return this.request(ctx, "incrementRetrospectiveItemUpvotes", req);
 	}
 
 	/**

@@ -7,7 +7,7 @@ import { ThumbsUp } from "lucide-react";
 import { Button } from "../ui/button";
 import AddRetroItemModal from "./AddRetroItemModal";
 
-type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
+type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type" | "upvotes">;
 
 interface RetroColumnProps {
 	title: string;
@@ -25,7 +25,7 @@ export const RetroColumn = ({
 	const handleUpvoteRetroItem = (itemId: string) => {
 		console.log(itemId);
 	};
-
+	console.log(items);
 	return (
 		<Card className="h-full flex flex-col bg-background">
 			<CardHeader>
@@ -52,9 +52,11 @@ export const RetroColumn = ({
 													<span className="self-center">{item.content}</span>
 													<Button
 														variant="ghost"
+														className="gap-2 items-center"
 														onClick={() => handleUpvoteRetroItem(item.id)}
 													>
 														<ThumbsUp className="h-4 w-4" />
+														{item.upvotes}
 													</Button>
 												</CardContent>
 											</Card>

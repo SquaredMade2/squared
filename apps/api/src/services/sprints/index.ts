@@ -22,6 +22,7 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 		id: z.string(),
 		content: z.string(),
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
+		upvotes: z.number(),
 	}),
 );
 
@@ -105,6 +106,10 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		),
 		output: retrospectiveItemReturnSchema,
 	},
+	incrementRetrospectiveItemUpvotes: {
+		input: z.object({ itemId: z.string() }),
+		output: retrospectiveItemReturnSchema,
+	},
 	getRetrospectiveItems: {
 		input: z.object({ sprintId: z.string() }),
 		output: createSchema<RetrospectiveData>()(
@@ -130,6 +135,8 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 		addRetrospectiveItem: (input) => sprintService.addRetrospectiveItem(input),
 		updateRetrospectiveItem: (input) =>
 			sprintService.updateRetrospectiveItem(input),
+		incrementRetrospectiveItemUpvotes: (input) =>
+			sprintService.incrementRetrospectiveItemUpvotes(input),
 		getRetrospectiveItems: (input) =>
 			sprintService.getRetrospectiveItems(input),
 	});

@@ -153,7 +153,7 @@ export class SprintService implements SprintRpc {
 				type,
 				...sprintRelationField,
 			},
-			select: { id: true, content: true, type: true },
+			select: { id: true, content: true, type: true, upvotes: true },
 		});
 	}
 
@@ -176,7 +176,19 @@ export class SprintService implements SprintRpc {
 				type,
 				...sprintRelationField,
 			},
-			select: { id: true, content: true, type: true },
+			select: { id: true, content: true, type: true, upvotes: true },
+		});
+	}
+
+	async incrementRetrospectiveItemUpvotes({
+		itemId,
+	}: { itemId: string }): Promise<RetroItemReturn> {
+		this.logger.info("Incrementing retrospective item upvotes", { itemId });
+
+		return this.db.retrospectiveItem.update({
+			where: { id: itemId },
+			data: { upvotes: { increment: 1 } },
+			select: { id: true, upvotes: true, type: true, content: true },
 		});
 	}
 

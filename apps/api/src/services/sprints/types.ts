@@ -24,6 +24,7 @@ export type RetroItemReturn = {
 	id: string;
 	content: string;
 	type: RetrospectiveItemType;
+	upvotes: number;
 };
 
 export type RetrospectiveData = {
@@ -73,6 +74,9 @@ export interface SprintRpc {
 		content,
 		sprintId,
 	}: UpdateRetrospectiveItemPayload) => Promise<RetroItemReturn>;
+	incrementRetrospectiveItemUpvotes: ({
+		itemId,
+	}: { itemId: string }) => Promise<RetroItemReturn>;
 	getRetrospectiveItems: ({
 		sprintId,
 	}: { sprintId: string }) => Promise<RetrospectiveData>;
