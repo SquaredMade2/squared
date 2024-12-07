@@ -353,6 +353,7 @@ model RetrospectiveItem {
   id      String                @id @default(uuid())
   content String
   type    RetrospectiveItemType @default(toImprove)
+  upvotes Int?                  @default(0)
 
   wentWellSprint      Sprint? @relation("WentWell", fields: [wentWellSprintId], references: [id])
   wentWellSprintId    String?
