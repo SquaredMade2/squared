@@ -36,10 +36,11 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	},
 	{
 		accessorKey: "manage",
-		cell: async ({ row }) => {
+		cell: ({ row }) => {
 			const userId: string = row.original.id;
+			const userRole: string = row.original.role;
 
-			return <RemoveMemberButton userId={userId} />;
+			return <RemoveMemberButton userId={userId} userRole={userRole} />;
 		},
 	},
 ];
