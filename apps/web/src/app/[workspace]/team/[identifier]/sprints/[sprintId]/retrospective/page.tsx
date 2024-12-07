@@ -118,7 +118,9 @@ export default function SprintRetrospectivePage() {
 					socket?.emit("upvoteItem", { sprintId, ...updatedItem });
 					setData((prevData) => ({
 						...prevData,
-						[type]: [...prevData[type], updatedItem],
+						[type]: prevData[type].map((item) =>
+							item.id === updatedItem.id ? updatedItem : item,
+						),
 					}));
 				}
 			} catch (error) {
