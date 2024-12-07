@@ -14,9 +14,9 @@ export interface UserRpc {
 		username?: string;
 	}) => Promise<User>;
 	updateUserAvatar: (args: {
-		userId: string,
-		avatarUrl: string
-	}) => Promise<User>,
+		userId: string;
+		avatarUrl: string;
+	}) => Promise<User>;
 	updateUserNotifications: (args: {
 		userId: string;
 		notificationIds: string[];

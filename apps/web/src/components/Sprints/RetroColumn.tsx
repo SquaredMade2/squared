@@ -3,6 +3,8 @@ import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
+import { ThumbsUp } from "lucide-react";
+import { Button } from "../ui/button";
 import AddRetroItemModal from "./AddRetroItemModal";
 
 type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
@@ -20,6 +22,10 @@ export const RetroColumn = ({
 	items,
 	onAddItem,
 }: RetroColumnProps) => {
+	const handleUpvoteRetroItem = (itemId: string) => {
+		console.log(itemId);
+	};
+
 	return (
 		<Card className="h-full flex flex-col bg-background">
 			<CardHeader>
@@ -42,8 +48,14 @@ export const RetroColumn = ({
 											{...provided.dragHandleProps}
 										>
 											<Card>
-												<CardContent className="p-2">
-													{item.content}
+												<CardContent className="p-2 flex justify-between">
+													<span className="self-center">{item.content}</span>
+													<Button
+														variant="ghost"
+														onClick={() => handleUpvoteRetroItem(item.id)}
+													>
+														<ThumbsUp className="h-4 w-4" />
+													</Button>
 												</CardContent>
 											</Card>
 										</div>
