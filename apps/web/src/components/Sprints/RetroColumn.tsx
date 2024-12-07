@@ -14,6 +14,7 @@ interface RetroColumnProps {
 	type: RetrospectiveItemType;
 	items: RetroItem[];
 	onAddItem: (type: RetrospectiveItemType, content: string) => void;
+	onUpvoteItem: (itemId: string, type: RetrospectiveItemType) => void;
 }
 
 export const RetroColumn = ({
@@ -21,10 +22,8 @@ export const RetroColumn = ({
 	type,
 	items,
 	onAddItem,
+	onUpvoteItem,
 }: RetroColumnProps) => {
-	const handleUpvoteRetroItem = (itemId: string) => {
-		console.log(itemId);
-	};
 	console.log(items);
 	return (
 		<Card className="h-full flex flex-col bg-background">
@@ -53,7 +52,7 @@ export const RetroColumn = ({
 													<Button
 														variant="ghost"
 														className="gap-2 items-center"
-														onClick={() => handleUpvoteRetroItem(item.id)}
+														onClick={() => onUpvoteItem(item.id, item.type)}
 													>
 														<ThumbsUp className="h-4 w-4" />
 														{item.upvotes}

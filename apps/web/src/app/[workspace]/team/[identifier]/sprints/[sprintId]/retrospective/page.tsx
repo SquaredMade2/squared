@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { type Socket, io } from "socket.io-client";
 
-type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
+type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type" | "upvotes">;
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
@@ -107,6 +107,28 @@ export default function SprintRetrospectivePage() {
 		[sprintId, socket, sprintService],
 	);
 
+	const handleUpvoteItem = useCallback(
+		async (itemId: string, type: RetrospectiveItemType) => {
+			try {
+				const updatedItem =
+					await sprintService.incrementRetrospectiveItemUpvotes(TODO, {
+						itemId,
+					});
+				if (updatedItem) {
+					socket?.emit("upvoteItem", { sprintId, ...updatedItem });
+					setData((prevData) => ({
+						...prevData,
+						[type]: [...prevData[type], updatedItem],
+					}));
+				}
+			} catch (error) {
+				console.error("Error upvoting item:", error);
+				toast({ title: "Failed to upvote item", variant: "destructive" });
+			}
+		},
+		[sprintId, socket, sprintService],
+	);
+
 	const onDragEnd = useCallback(
 		async (result: DropResult) => {
 			if (!result.destination) return;
@@ -178,18 +200,21 @@ export default function SprintRetrospectivePage() {
 							type="wentWell"
 							items={data.wentWell}
 							onAddItem={handleAddItem}
+							onUpvoteItem={handleUpvoteItem}
 						/>
 						<RetroColumn
 							title="To Improve"
 							type="toImprove"
 							items={data.toImprove}
 							onAddItem={handleAddItem}
+							onUpvoteItem={handleUpvoteItem}
 						/>
 						<RetroColumn
 							title="Action Items"
 							type="actionItems"
 							items={data.actionItems}
 							onAddItem={handleAddItem}
+							onUpvoteItem={handleUpvoteItem}
 						/>
 					</div>
 				</div>

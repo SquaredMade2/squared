@@ -128,6 +128,7 @@ export const STANDARD_RETROSPECTIVE_ITEM: RetrospectiveItem = {
 	id: "retro-item-1",
 	content: "Improved team communication",
 	type: "wentWell",
+	upvotes: 0,
 	wentWellSprintId: "sprint-1",
 	toImproveSprintId: null,
 	actionItemsSprintId: null,
