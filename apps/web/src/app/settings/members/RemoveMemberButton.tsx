@@ -10,16 +10,20 @@ import { workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { Ellipsis } from "lucide-react";
-import { useRouter } from "next/navigation";
+import type { MemberWithRole } from "./data-table";
 
 const RemoveMemberButton = ({
 	userId,
-	userRole,
-}: { userId: string; userRole: string }) => {
+	membersWithRoles,
+	setWorkspaceUsers,
+}: {
+	userId: string;
+	membersWithRoles: MemberWithRole[] | undefined;
+	setWorkspaceUsers: ((users: MemberWithRole[]) => void) | undefined;
+}) => {
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	const currentUser = useUserStore((state) => state.user);
 	const workspaceId = currentWorkspace ? currentWorkspace.id : undefined;
-	const router = useRouter();
 	const { toast } = useToast();
 
 	const handleClick = async () => {
@@ -31,7 +35,13 @@ const RemoveMemberButton = ({
 				workspaceId,
 			});
 			toast({ title: "Member removed" });
-			router.refresh();
+			membersWithRoles &&
+				setWorkspaceUsers &&
+				setWorkspaceUsers(
+					membersWithRoles.filter(
+						(workspaceUser) => workspaceUser.id !== userId,
+					),
+				);
 		} catch (error) {
 			console.error(error);
 			toast({ title: "Member could not be removed" });

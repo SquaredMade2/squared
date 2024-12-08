@@ -3,6 +3,7 @@ import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Separator } from "@/components/ui/separator";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import { columns } from "./columns";
 import { DataTable, type MemberWithRole } from "./data-table";
@@ -10,13 +11,22 @@ import { DataTable, type MemberWithRole } from "./data-table";
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
+	const [workspaceUsers, setWorkspaceUsers] = useState(users);
 
 	const membersWithRoles: MemberWithRole[] = workspace
-		? users.map((user) => ({
+		? workspaceUsers.map((user) => ({
 				...user,
 				role: workspace.admins.includes(user.id) ? "admin" : "member",
 			}))
 		: [];
+
+	const enhancedColumns = columns.map((col) => ({
+		...col,
+		meta: {
+			membersWithRoles,
+			setWorkspaceUsers,
+		},
+	}));
 
 	if (workspaceLoading || userLoading) {
 		return (
@@ -32,7 +42,7 @@ export default function WorkspaceMembersPage() {
 		<MembersSettingsWrapper>
 			{workspace && (
 				<DataTable
-					columns={columns}
+					columns={enhancedColumns}
 					data={membersWithRoles}
 					workspace={workspace}
 				/>

@@ -23,6 +23,7 @@ import { CSVLink } from "react-csv";
 export type MemberWithRole = User & {
 	role: "admin" | "member";
 };
+
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
