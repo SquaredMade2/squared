@@ -71,9 +71,9 @@ const PriorityDropdown = () => {
 				{priorityOptions.map((priority) => (
 					<SelectItem key={priority} value={priority}>
 						<div className="flex items-center justify-between w-full">
-							<div className="flex items-center">
+							<div className="flex items-center gap-2">
 								<PriorityIcon priority={priority} />
-								<span className="ml-2">{formatPriority(priority)}</span>
+								<span>{formatPriority(priority)}</span>
 							</div>
 						</div>
 					</SelectItem>
