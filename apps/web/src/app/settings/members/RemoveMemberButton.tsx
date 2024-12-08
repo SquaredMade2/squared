@@ -54,7 +54,6 @@ const RemoveMemberButton = ({
 				<Button
 					variant="ghost"
 					className="items-center"
-					// disabled={userRole !== "admin" || userId === currentUser?.id}
 					disabled={userId === currentUser?.id}
 				>
 					<Ellipsis className="size-4" />
