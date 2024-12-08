@@ -1,6 +1,12 @@
 import { cn } from "@/utils/cn";
 import type { Label } from "@squared/db";
 import { useTheme } from "next-themes";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
 
 function hexToRGB(hex: string): [number, number, number] {
 	const rgb = Number.parseInt(hex.slice(1), 16);
@@ -55,19 +61,28 @@ export default function LabelBadge({ label }: { label: Label }) {
 	const paleColor = generatePaleColor(adjustedColor);
 
 	return (
-		<span
-			className={cn(
-				"inline-flex items-center px-1.5 py-0 text-[10px] font-medium rounded-full",
-				"border dark:border-opacity-30",
-				"transition-colors duration-200",
-			)}
-			style={{
-				backgroundColor: paleColor,
-				borderColor: adjustedColor,
-				color: adjustedColor,
-			}}
-		>
-			{label.name}
-		</span>
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<span
+						className={cn(
+							"inline-flex items-center px-1.5 py-0 text-[10px] font-medium rounded-full cursor-default",
+							"border dark:border-opacity-30",
+							"transition-colors duration-200",
+						)}
+						style={{
+							backgroundColor: paleColor,
+							borderColor: adjustedColor,
+							color: adjustedColor,
+						}}
+					>
+						{label.name}
+					</span>
+				</TooltipTrigger>
+				<TooltipContent className="cursor-default">
+					{label.description}
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 }
