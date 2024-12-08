@@ -144,6 +144,29 @@ export type GetWorkspaceUsersResponse = {
 	verified: boolean;
 }[];
 
+export type GetTeamUsersRequest = {
+	teamId: string;
+};
+
+export type GetTeamUsersResponse = {
+	avatarUrl: string | null;
+	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	githubId: string | null;
+	githubUsername: string | null;
+	googleId: string | null;
+	id: string;
+	lastLogin: Date;
+	name: string;
+	onBoarding: boolean;
+	password: string | null;
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+	verified: boolean;
+}[];
+
 export type GetUserAvatarsRequest = {
 	workspaceId: string;
 };
@@ -240,6 +263,16 @@ export class UserService extends RPCContextClient {
 		req: GetWorkspaceUsersRequest,
 	): Promise<GetWorkspaceUsersResponse> {
 		return this.request(ctx, "getWorkspaceUsers", req);
+	}
+
+	/**
+	 * getTeamUsers method
+	 */
+	getTeamUsers(
+		ctx: Context,
+		req: GetTeamUsersRequest,
+	): Promise<GetTeamUsersResponse> {
+		return this.request(ctx, "getTeamUsers", req);
 	}
 
 	/**
