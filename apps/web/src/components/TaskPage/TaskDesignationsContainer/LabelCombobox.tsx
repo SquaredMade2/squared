@@ -104,7 +104,7 @@ const LabelCombobox = () => {
 	return (
 		<div className="md:w-full">
 			<div className="hidden md:block w-full">
-				<div className="mb-2 space-x-1 space-y-1">
+				<div className="mb-5 space-x-2 space-y-1">
 					<TooltipProvider>
 						{taskLabels.map((label: Label) => (
 							<Tooltip key={label.id}>
