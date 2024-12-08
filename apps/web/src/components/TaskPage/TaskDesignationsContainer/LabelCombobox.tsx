@@ -16,7 +16,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { taskService } from "@/lib/services";
-import { useTaskStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
 import { Check, Plus, Tag } from "lucide-react";
@@ -26,6 +26,7 @@ import LabelBadge from "../../LabelBadges";
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const workspace = useWorkspaceStore((state) => state.workspace);
+	const user = useUserStore((store) => store.user);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
@@ -52,7 +53,11 @@ const LabelCombobox = () => {
 
 		const labelIds = updatedLabels.map((label) => label.id);
 		updateTask(
-			await taskService.updateTask(TODO, { id: taskId, labels: labelIds }),
+			await taskService.updateTask(TODO, {
+				id: taskId,
+				updaterId: user.id,
+				labels: labelIds,
+			}),
 		);
 		setCurrentTask({ ...currentTask, labels: labelIds });
 		setOpen(false);

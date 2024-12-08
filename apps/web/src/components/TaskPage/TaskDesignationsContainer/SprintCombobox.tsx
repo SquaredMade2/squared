@@ -1,5 +1,10 @@
 import { sprintService, taskService } from "@/lib/services";
-import { useSprintStore, useTaskStore, useTeamStore } from "@/store";
+import {
+	useSprintStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+} from "@/store";
 import { TODO } from "@squared/context";
 import type { Sprint } from "@squared/db";
 import { useEffect, useState } from "react";
@@ -12,6 +17,7 @@ const SprintCombobox = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const user = useUserStore((state) => state.user);
 	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
 
 	const taskId = currentTask?.id ?? "";
@@ -36,6 +42,7 @@ const SprintCombobox = () => {
 	const handleAssignToSprint = async (sprintId: string | null) => {
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
+			updaterId: user.id,
 			sprintId: sprintId,
 		});
 		updateTask(updatedTask);

@@ -1,5 +1,5 @@
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ const ParentTaskCombobox = () => {
 	const { tasks, currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const user = useUserStore((state) => state.user);
 	const [parentTask, setParentTask] = useState<Task | null>(null);
 
 	const taskId = currentTask?.id ?? "";
@@ -24,6 +25,7 @@ const ParentTaskCombobox = () => {
 	const handleAssignParentTask = async (parentId: string | null) => {
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
+			updaterId: user.id,
 			parentId,
 		});
 		updateTask(updatedTask);

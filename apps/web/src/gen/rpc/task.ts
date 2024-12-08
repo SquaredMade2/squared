@@ -53,6 +53,7 @@ export type CreateTaskResponse = {
 };
 
 export type UpdateTaskRequest = {
+	updaterId: string | null;
 	assigneeId?: string | null;
 	description?: string;
 	dueDate?: Date;

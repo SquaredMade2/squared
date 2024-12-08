@@ -131,18 +131,19 @@ export class TaskService implements TaskRpc {
 	}
 
 	async updateTask(args: UpdateTaskParams): Promise<Task> {
-		this.logger.info("Updating task with ID: %s", args.id);
+		const { updaterId, ...taskData } = args;
+		this.logger.info("Updating task with ID: %s", taskData.id);
 
 		const previousTask = await this.db.task.findUnique({
-			where: { id: args.id },
+			where: { id: taskData.id },
 		});
 
 		if (!previousTask) {
 			this.throwError("Task not found");
 		}
 
-		if (args.effortEstimate) {
-			const effort = Number(args.effortEstimate);
+		if (taskData.effortEstimate) {
+			const effort = Number(taskData.effortEstimate);
 			if (
 				effort < 0 ||
 				Number.isNaN(effort) ||
@@ -154,8 +155,8 @@ export class TaskService implements TaskRpc {
 		}
 
 		const task = await this.db.task.update({
-			where: { id: args.id },
-			data: args,
+			where: { id: taskData.id },
+			data: taskData,
 		});
 
 		if (!task) {
@@ -164,8 +165,8 @@ export class TaskService implements TaskRpc {
 
 		this.eventService.createLogEvent({
 			taskId: task.id,
-			authorId: task.authorId,
-			changes: args,
+			authorId: updaterId,
+			changes: taskData,
 			previousTask,
 		});
 
