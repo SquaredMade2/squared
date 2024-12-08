@@ -25,7 +25,7 @@ export function TaskDesignationsContainer() {
 	];
 
 	return (
-		<div className="flex flex-col relative w-full z-1 rounded-lg p-5 gap-5 bg-card">
+		<div className="flex flex-col relative w-full z-1 rounded-xl p-5 gap-5 bg-card">
 			{Designations.map((designation) => (
 				<div
 					key={designation.name}
