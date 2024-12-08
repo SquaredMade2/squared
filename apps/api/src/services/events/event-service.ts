@@ -1,4 +1,5 @@
 import type {
+	Commit,
 	Notification,
 	NotificationType,
 	PrismaClient,
@@ -7,12 +8,7 @@ import type {
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
-import type {
-	EventRpc,
-	FullNotification,
-	TaskEventsReturn,
-	TaskValue,
-} from "./types";
+import type { EventRpc, FullNotification, TaskValue } from "./types";
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
@@ -30,7 +26,9 @@ export class EventService implements EventRpc {
 		this.labelRepository = db.label;
 		this.userRepository = db.user;
 	}
-	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
+	async getTaskEvents({
+		taskId,
+	}: { taskId: string }): Promise<(TaskEvent | Commit)[]> {
 		this.logger.info(
 			`Fetching TaskEvents and Commits for Task ID ${taskId}...`,
 		);
@@ -51,7 +49,7 @@ export class EventService implements EventRpc {
 			`Successfully fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
 		);
 
-		return Promise.resolve([...taskEvents, ...commits]) as TaskEventsReturn;
+		return [...taskEvents, ...commits];
 	}
 	async getNotifications({
 		userId,
