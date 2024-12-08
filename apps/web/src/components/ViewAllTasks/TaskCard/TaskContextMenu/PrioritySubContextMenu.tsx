@@ -8,7 +8,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { priorityOptions } from "@/lib/constants";
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
@@ -17,12 +17,14 @@ import type { ContextMenuProps } from "./interfaces";
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const updateItem = async (priority: Priority) => {
 		if (task.id !== undefined) {
 			try {
 				updateTask(
 					await taskService.updateTask(TODO, {
 						id: task.id,
+						updaterId: user?.id || "",
 						priority,
 					}),
 				);

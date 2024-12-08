@@ -15,9 +15,8 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const TaskPageForm = () => {
-	const { users } = useUserStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const user = useUserStore((state) => state.user);
 	const { updateTask, currentTask: task } = useTaskStore((state) => state);
 	const { toast } = useToast();
 
