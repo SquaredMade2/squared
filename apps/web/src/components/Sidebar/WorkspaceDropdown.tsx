@@ -55,7 +55,6 @@ export function WorkspaceDropdown() {
 						key={workspace.id}
 						onSelect={() => {
 							setWorkspace(workspace);
-							console.log(workspace);
 							router.push(`/${workspace?.url}`);
 						}}
 					>
