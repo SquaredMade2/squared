@@ -52,7 +52,7 @@ const EffortEstimateDropdown = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: user?.id || "",
 					effortEstimate: newEffortEstimate.value as number,
 				}),
 			);

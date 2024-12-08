@@ -42,7 +42,7 @@ export const RenameModal = () => {
 					updateTask(
 						await taskService.updateTask(TODO, {
 							id: task.id,
-							updaterId: user.id,
+							updaterId: user?.id || "",
 							title: inputValue.trim(),
 						}),
 					);

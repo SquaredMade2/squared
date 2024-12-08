@@ -55,7 +55,7 @@ const LabelCombobox = () => {
 		updateTask(
 			await taskService.updateTask(TODO, {
 				id: taskId,
-				updaterId: user.id,
+				updaterId: user?.id || "",
 				labels: labelIds,
 			}),
 		);

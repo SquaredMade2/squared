@@ -42,7 +42,7 @@ const SprintCombobox = () => {
 	const handleAssignToSprint = async (sprintId: string | null) => {
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
-			updaterId: user.id,
+			updaterId: user?.id || "",
 			sprintId: sprintId,
 		});
 		updateTask(updatedTask);

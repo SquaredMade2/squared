@@ -53,7 +53,7 @@ const AssigneeCombobox = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: user?.id || "",
 					assigneeId: null,
 				}),
 			);
@@ -66,7 +66,7 @@ const AssigneeCombobox = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: user?.id || "",
 					assigneeId: selectedUser.id,
 				}),
 			);

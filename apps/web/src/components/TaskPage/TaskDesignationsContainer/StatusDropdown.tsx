@@ -36,7 +36,7 @@ const StatusDropdown = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: user?.id || "",
 					status: newStatus,
 				}),
 			);

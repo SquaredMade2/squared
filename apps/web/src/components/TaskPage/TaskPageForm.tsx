@@ -54,7 +54,7 @@ export const TaskPageForm = () => {
 					updateTask(
 						await taskService.updateTask(TODO, {
 							id: task.id,
-							updaterId: user.id,
+							updaterId: user?.id || "",
 							title: transformedTitleInput,
 							description: transformedDescriptionInput,
 						}),

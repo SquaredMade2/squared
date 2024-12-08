@@ -25,7 +25,7 @@ const ParentTaskCombobox = () => {
 	const handleAssignParentTask = async (parentId: string | null) => {
 		const updatedTask = await taskService.updateTask(TODO, {
 			id: taskId,
-			updaterId: user.id,
+			updaterId: user?.id || "",
 			parentId,
 		});
 		updateTask(updatedTask);

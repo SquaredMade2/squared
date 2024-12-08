@@ -37,7 +37,7 @@ const PriorityDropdown = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId: user.id,
+					updaterId: user?.id || "",
 					priority: newPriority,
 				}),
 			);
