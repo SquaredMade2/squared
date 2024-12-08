@@ -12,6 +12,7 @@ import {
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
+import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
 import {
 	Accordion,
 	AccordionContent,
@@ -29,10 +30,9 @@ import {
 	SidebarTrigger,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import type { Team } from "@squared/db";
-import { WorkspaceDropdown } from "../Sidebar/WorkspaceDropdown";
-import { TooltipProvider } from "../ui/tooltip";
 
 function SettingsNavbarContent() {
 	const router = useRouter();
@@ -137,6 +137,13 @@ function SettingsNavbarContent() {
 													onClick={() => handleTeamClick(team)}
 												>
 													Overview
+												</Button>
+												<Button
+													variant="ghost"
+													className="w-full justify-start"
+													onClick={() => handleTeamClick(team, "members")}
+												>
+													Members
 												</Button>
 												<Button
 													variant="ghost"
