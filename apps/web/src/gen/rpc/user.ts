@@ -200,6 +200,16 @@ export type GetUserTeamsResponse = {
 	workspaceId: string;
 }[];
 
+export type SetLastViewedTaskRequest = {
+	userId: string;
+	taskId: string; 
+};
+  
+export type SetLastViewedTaskResponse = {
+	success: boolean;
+	message: string;
+};
+
 /**
  * user service
  */
@@ -304,4 +314,14 @@ export class UserService extends RPCContextClient {
 	): Promise<GetUserTeamsResponse> {
 		return this.request(ctx, "getUserTeams", req);
 	}
+
+    /**
+   	 * setLastViewedTask method
+   	 */
+	  setLastViewedTask(
+		ctx: Context,
+		req: SetLastViewedTaskRequest
+	  ): Promise<SetLastViewedTaskResponse> {
+		return this.request(ctx, "setLastViewedTask", req);
+	  }
 }

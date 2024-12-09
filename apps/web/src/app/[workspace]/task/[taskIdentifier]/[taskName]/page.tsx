@@ -11,6 +11,10 @@ import {
 import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { userService } from "@/lib/services";
+import { TODO } from "@squared/context";
+import { useUserStore } from "@/store";
+
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useTaskStore } from "@/store";
 import { useEffect } from "react";
@@ -20,6 +24,26 @@ const TaskPage = () => {
 	const { isLoading, error, subtasks } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
+	const user = useUserStore((state) => state.user);
+	
+
+	useEffect(() => {
+		const fetchLastViewedTask = async () => {
+			if (currentTask && user?.id) {
+				try {
+					const response = await userService.setLastViewedTask(TODO, {
+						userId: user.id,
+						taskId: currentTask.id
+					});
+					console.log(response);
+				} catch (error) {
+					console.error('Error setting last viewed task:', error);
+				}
+			}
+		};
+	
+		fetchLastViewedTask();
+	}, [currentTask, user]);
 
 	useEffect(() => {
 		if (error) {
