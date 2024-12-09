@@ -119,6 +119,7 @@ export type GetUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 } | null;
 
 export type GetWorkspaceUsersRequest = {
