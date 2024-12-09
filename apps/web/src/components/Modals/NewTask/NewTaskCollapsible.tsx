@@ -106,6 +106,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				parentId: parentId,
 			};
 			const createdTask = await taskService.createTask(TODO, newTask);
+			createdTask.order = subtasks.length + 1
 			createTask(createdTask);
 			setWorkspace({
 				...workspace,
