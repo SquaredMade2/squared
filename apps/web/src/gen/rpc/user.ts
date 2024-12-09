@@ -49,6 +49,7 @@ export type UpdateUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null
 };
 
 export type UpdateUserAvatarRequest = {
@@ -73,6 +74,7 @@ export type UpdateUserAvatarResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null
 };
 
 export type UpdateUserNotificationsRequest = {
@@ -97,6 +99,7 @@ export type UpdateUserNotificationsResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null
 };
 
 export type GetUserRequest = {
@@ -144,6 +147,7 @@ export type GetWorkspaceUsersResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 }[];
 
 export type GetTeamUsersRequest = {
@@ -167,6 +171,7 @@ export type GetTeamUsersResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 }[];
 
 export type GetUserAvatarsRequest = {

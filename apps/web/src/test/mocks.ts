@@ -30,6 +30,7 @@ export const STANDARD_USER: User = {
 	googleId: null,
 	githubUsername: null,
 	githubId: null,
+	lastViewedTaskId: null,
 };
 
 export const STANDARD_WORKSPACE: Workspace = {
