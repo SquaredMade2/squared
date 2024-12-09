@@ -21,7 +21,7 @@ export const RetroColumn = ({
 	onAddItem,
 }: RetroColumnProps) => {
 	const { users } = useUserStore((state) => state);
-	console.log(items);
+
 	return (
 		<Card className="h-full flex flex-col bg-background">
 			<CardHeader>
