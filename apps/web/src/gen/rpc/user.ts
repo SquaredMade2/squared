@@ -23,6 +23,7 @@ export type OnBoardUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserRequest = {
