@@ -30,7 +30,7 @@ const DesignationsDatePicker = () => {
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					updaterId: user?.id || "",
-					dueDate: selectedDate,
+					dueDate: selectedDate === undefined ? null : selectedDate,
 				}),
 			);
 			setCurrentTask({ ...currentTask, dueDate: selectedDate ?? null });
@@ -49,7 +49,7 @@ const DesignationsDatePicker = () => {
 
 	return (
 		<DatePicker
-			date={selectedDate}
+			date={selectedDate ? selectedDate : undefined}
 			setDate={setSelectedDate}
 			handleSubmit={handleSave}
 		/>

@@ -56,7 +56,7 @@ export type UpdateTaskRequest = {
 	updaterId: string | null;
 	assigneeId?: string | null;
 	description?: string;
-	dueDate?: Date;
+	dueDate?: Date | null;
 	effortEstimate?: number;
 	id: string;
 	labels?: string[];
