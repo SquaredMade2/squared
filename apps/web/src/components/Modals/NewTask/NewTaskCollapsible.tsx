@@ -44,7 +44,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const { team } = useTeamStore((state) => state);
-	const { tasks, createTask } = useTaskStore((state) => state);
+	const { tasks, subtasks,createTask } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
