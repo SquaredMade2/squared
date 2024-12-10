@@ -137,6 +137,7 @@ export class SprintService implements SprintRpc {
 
 	async addRetrospectiveItem({
 		sprintId,
+		authorId,
 		type,
 		content,
 	}: AddRetrospectivePayload): Promise<RetroItemReturn> {
@@ -151,9 +152,10 @@ export class SprintService implements SprintRpc {
 			data: {
 				content,
 				type,
+				authorId,
 				...sprintRelationField,
 			},
-			select: { id: true, content: true, type: true },
+			select: { id: true, content: true, type: true, authorId: true },
 		});
 	}
 
@@ -176,7 +178,7 @@ export class SprintService implements SprintRpc {
 				type,
 				...sprintRelationField,
 			},
-			select: { id: true, content: true, type: true },
+			select: { id: true, content: true, type: true, authorId: true },
 		});
 	}
 
