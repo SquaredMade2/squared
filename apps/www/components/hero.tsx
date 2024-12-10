@@ -10,10 +10,17 @@ import { Button } from "./button";
 import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const Hero = () => {
 	const { resolvedTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
 	const router = useRouter();
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	return (
 		<div className="flex flex-col min-h-screen pt-20 md:pt-40 relative overflow-hidden">
 			<motion.div
@@ -108,7 +115,7 @@ export const Hero = () => {
 			</motion.div>
 			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative">
 				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background dark:to-background scale-[1.1] pointer-events-none" />
-				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
+				{mounted && (
 					<Image
 						src={
 							resolvedTheme === "dark"
@@ -120,7 +127,7 @@ export const Hero = () => {
 						height={1644}
 						className="rounded-[20px]"
 					/>
-				</div>
+				)}
 			</div>
 		</div>
 	);
