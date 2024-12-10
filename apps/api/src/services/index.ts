@@ -29,7 +29,7 @@ const event = new EventService(prisma);
 const filter = new FilterService(prisma);
 const sprint = new SprintService(prisma);
 const team = new TeamService(prisma);
-const task = new TaskService(prisma);
+const task = new TaskService(prisma, event);
 const user = new UserService(prisma);
 const workspace = new WorkspaceService(prisma, secret);
 

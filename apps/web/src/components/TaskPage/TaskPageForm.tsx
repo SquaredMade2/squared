@@ -15,7 +15,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const TaskPageForm = () => {
-	const { users } = useUserStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { updateTask, currentTask: task } = useTaskStore((state) => state);
 	const { toast } = useToast();
@@ -53,6 +53,7 @@ export const TaskPageForm = () => {
 					updateTask(
 						await taskService.updateTask(TODO, {
 							id: task.id,
+							updaterId: user?.id || "",
 							title: transformedTitleInput,
 							description: transformedDescriptionInput,
 						}),
