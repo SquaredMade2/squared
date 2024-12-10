@@ -14,6 +14,12 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { taskService } from "@/lib/services";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
@@ -21,12 +27,6 @@ import type { Label } from "@squared/db";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "../../ui/tooltip";
 
 const LabelColor = ({ label }: { label: Label }) => {
 	const { color } = label;
