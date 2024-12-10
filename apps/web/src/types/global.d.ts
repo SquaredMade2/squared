@@ -24,7 +24,8 @@ declare global {
 declare module "@tanstack/react-table" {
 	// biome-ignore lint/correctness/noUnusedVariables: According to Tanstack Table docs, this is the proper way to extend typing for ColumnMeta.
 	interface ColumnMeta<TData extends RowData, TValue> {
-		setWorkspaceUsers?: (users: MemberWithRole[]) => void;
+		page: string;
+		setPageUsers?: (users: MemberWithRole[]) => void;
 		membersWithRoles?: MemberWithRole[];
 	}
 }

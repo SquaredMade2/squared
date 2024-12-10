@@ -1,13 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import { RemoveMemberButton } from "./RemoveMemberButton";
 import type { MemberWithRole } from "./data-table";
 
 export const columns: ColumnDef<MemberWithRole>[] = [
@@ -43,19 +36,18 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	},
 	{
 		accessorKey: "manage",
-		cell: () => {
+		cell: ({ row, column }) => {
+			const userId: string = row.original.id;
+			const { page, membersWithRoles, setPageUsers } =
+				column.columnDef.meta || {};
+
 			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="items-center">
-							<Ellipsis className="size-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent>
-						{/* TODO: dynamically render team or workspace */}
-						<DropdownMenuItem>Remove from Workspace or Team</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<RemoveMemberButton
+					userId={userId}
+					page={page}
+					membersWithRoles={membersWithRoles}
+					setPageUsers={setPageUsers}
+				/>
 			);
 		},
 	},

@@ -14,12 +14,14 @@ import type { MemberWithRole } from "./data-table";
 
 const RemoveMemberButton = ({
 	userId,
+	page,
 	membersWithRoles,
-	setWorkspaceUsers,
+	setPageUsers,
 }: {
 	userId: string;
+	page: string;
 	membersWithRoles: MemberWithRole[] | undefined;
-	setWorkspaceUsers: ((users: MemberWithRole[]) => void) | undefined;
+	setPageUsers: ((users: MemberWithRole[]) => void) | undefined;
 }) => {
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	const currentUser = useUserStore((state) => state.user);
@@ -36,8 +38,8 @@ const RemoveMemberButton = ({
 			});
 			toast({ title: "Member removed" });
 			membersWithRoles &&
-				setWorkspaceUsers &&
-				setWorkspaceUsers(
+				setPageUsers &&
+				setPageUsers(
 					membersWithRoles.filter(
 						(workspaceUser) => workspaceUser.id !== userId,
 					),
@@ -62,7 +64,7 @@ const RemoveMemberButton = ({
 			<DropdownMenuContent>
 				<DropdownMenuItem>
 					<Button variant="ghost" onClick={handleClick}>
-						Remove from Workspace
+						Remove from {page === "workspace" ? "Workspace" : "Team"}
 					</Button>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
