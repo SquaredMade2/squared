@@ -1,5 +1,5 @@
 "use client";
-import SettingsNavBar from "@/components/SettingsNavBar";
+import SettingsNavBar from "@/components/Settings/SettingsNavBar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 

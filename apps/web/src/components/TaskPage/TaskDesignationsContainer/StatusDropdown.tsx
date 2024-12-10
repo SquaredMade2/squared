@@ -11,7 +11,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { statusOptions } from "@/lib/constants";
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status } from "@squared/db";
@@ -21,6 +21,7 @@ const StatusDropdown = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const user = useUserStore((state) => state.user);
 
 	if (!currentTask) return null;
 	const { id: taskId, status: sidebarStatus } = currentTask;
@@ -33,7 +34,11 @@ const StatusDropdown = () => {
 	const updateItem = async (newStatus: Status) => {
 		try {
 			updateTask(
-				await taskService.updateTask(TODO, { id: taskId, status: newStatus }),
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					updaterId: user?.id || "",
+					status: newStatus,
+				}),
 			);
 			setCurrentTask({ ...currentTask, status: newStatus });
 		} catch {

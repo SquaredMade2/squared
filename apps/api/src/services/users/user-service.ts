@@ -30,6 +30,21 @@ export class UserService implements UserRpc {
 		});
 	}
 
+	async updateUserAvatar({
+		userId,
+		avatarUrl,
+	}: { userId: string; avatarUrl: string }) {
+		this.logger.info(
+			"Updating user avatar with\n\tuserId:  %s\n\turl:     %s",
+			userId,
+			avatarUrl,
+		);
+		return await this.db.user.update({
+			where: { id: userId },
+			data: { avatarUrl },
+		});
+	}
+
 	async updateUserNotifications({
 		userId,
 		notificationIds: savedNotificationIds,
@@ -63,6 +78,18 @@ export class UserService implements UserRpc {
 				},
 			})
 			.then((uw) => uw.map((u) => u.user));
+	}
+
+	async getTeamUsers({ teamId }: { teamId: string }) {
+		this.logger.info("Fetching team users with id: %s", teamId);
+		return await this.db.userTeam
+			.findMany({
+				where: { teamId },
+				include: {
+					user: true,
+				},
+			})
+			.then((ut) => ut.map((u) => u.user));
 	}
 
 	async getUserAvatars({ workspaceId }: { workspaceId: string }) {
