@@ -6,7 +6,7 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { taskService } from "@/lib/services";
-import { useTaskStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
 import { Tag } from "lucide-react";
@@ -16,6 +16,7 @@ import type { ContextMenuProps } from "./interfaces";
 
 const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
+	const user = useUserStore((state) => state.user);
 	const { updateTask } = useTaskStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
@@ -32,6 +33,7 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 		updateTask(
 			await taskService.updateTask(TODO, {
 				id: task.id,
+				updaterId: user?.id || "",
 				labels: updatedLabels.map((l) => l.id),
 			}),
 		);
