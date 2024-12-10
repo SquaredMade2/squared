@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const [assignee, setAssignee] = useState<User | null>(null);
+	const user = useUserStore((state) => state.user);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
@@ -52,6 +53,7 @@ const AssigneeCombobox = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					assigneeId: null,
 				}),
 			);
@@ -64,6 +66,7 @@ const AssigneeCombobox = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					assigneeId: selectedUser.id,
 				}),
 			);
