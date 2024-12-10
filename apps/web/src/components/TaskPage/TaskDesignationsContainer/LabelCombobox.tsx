@@ -29,17 +29,6 @@ import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
 
-const LabelColor = ({ label }: { label: Label }) => {
-	const { color } = label;
-	const validatedColor = color.startsWith("#") ? color : `#${color}`;
-	return (
-		<div
-			className="w-3 h-3 rounded-lg"
-			style={{ backgroundColor: validatedColor }}
-		/>
-	);
-};
-
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const workspace = useWorkspaceStore((state) => state.workspace);
