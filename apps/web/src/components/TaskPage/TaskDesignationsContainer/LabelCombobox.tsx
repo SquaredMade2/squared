@@ -1,5 +1,6 @@
 "use client";
 
+import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -15,33 +16,17 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { taskService } from "@/lib/services";
-import { useTaskStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "../../ui/tooltip";
-
-const LabelColor = ({ label }: { label: Label }) => {
-	const { color } = label;
-	const validatedColor = color.startsWith("#") ? color : `#${color}`;
-	return (
-		<div
-			className="w-3 h-3 rounded-lg"
-			style={{ backgroundColor: validatedColor }}
-		/>
-	);
-};
 
 const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const workspace = useWorkspaceStore((state) => state.workspace);
+	const user = useUserStore((store) => store.user);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
@@ -68,7 +53,11 @@ const LabelCombobox = () => {
 
 		const labelIds = updatedLabels.map((label) => label.id);
 		updateTask(
-			await taskService.updateTask(TODO, { id: taskId, labels: labelIds }),
+			await taskService.updateTask(TODO, {
+				id: taskId,
+				updaterId: user?.id || "",
+				labels: labelIds,
+			}),
 		);
 		setCurrentTask({ ...currentTask, labels: labelIds });
 		setOpen(false);
@@ -104,7 +93,7 @@ const LabelCombobox = () => {
 	return (
 		<div className="md:w-full">
 			<div className="hidden md:block w-full">
-				<div className="mb-5 space-x-2 space-y-1">
+        <div className="mb-5 space-x-2 space-y-1">
 					<TooltipProvider>
 						{taskLabels.map((label: Label) => (
 							<Tooltip key={label.id}>
@@ -117,7 +106,7 @@ const LabelCombobox = () => {
 							</Tooltip>
 						))}
 					</TooltipProvider>
-				</div>
+        </div>
 			</div>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>

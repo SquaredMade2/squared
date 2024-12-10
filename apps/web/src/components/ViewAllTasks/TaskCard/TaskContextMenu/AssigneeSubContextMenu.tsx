@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users } = useUserStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
@@ -31,6 +31,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 			return updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					assigneeId: null,
 				}),
 			);
@@ -42,6 +43,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 				updateTask(
 					await taskService.updateTask(TODO, {
 						id: taskId,
+						updaterId: user?.id || "",
 						assigneeId: selectedUser.id,
 					}),
 				);

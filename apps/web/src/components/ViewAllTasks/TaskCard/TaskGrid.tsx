@@ -1,5 +1,4 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import LabelBadge from "@/components/LabelBadges";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useViewStore } from "@/store";
@@ -7,6 +6,7 @@ import { formatUrl, getInitials, truncateString } from "@/utils/formatting";
 import { formatDate } from "date-fns";
 import { Calendar, UserSearch } from "lucide-react";
 import Link from "next/link";
+import TaskCardLabels from "./TaskCardLabels";
 import type { TaskGridProps } from "./interfaces";
 
 const TaskGrid = ({
@@ -71,12 +71,7 @@ const TaskGrid = ({
 							</div>
 						)}
 
-						{showLabels &&
-							taskLabels.map((label) => (
-								<div key={label.id} className="label-badge flex-shrink mb-1">
-									<LabelBadge label={label} />
-								</div>
-							))}
+						{showLabels && <TaskCardLabels labels={taskLabels} />}
 					</div>
 				</CardContent>
 			</Card>
