@@ -1,43 +1,55 @@
 import type {
+	Commit,
 	Notification,
 	NotificationType,
 	PrismaClient,
 	Task,
 	TaskEvent,
 } from "@squared/db";
-import type {
-	EventRpc,
-	FullNotification,
-	TaskEventsReturn,
-	TaskValue,
-} from "./types";
+import type { Logger } from "@squared/logger";
+import createCustomLogger from "@squared/logger";
+import type { EventRpc, FullNotification, TaskValue } from "./types";
 
 export class EventService implements EventRpc {
-	private taskEventRepository: PrismaClient["taskEvent"];
-	private commitRepository: PrismaClient["commit"];
-	private notificationRepository: PrismaClient["notification"];
-	private taskRepository: PrismaClient["task"];
+	private readonly logger: Logger;
+	private readonly taskEventRepository: PrismaClient["taskEvent"];
+	private readonly commitRepository: PrismaClient["commit"];
+	private readonly notificationRepository: PrismaClient["notification"];
+	private readonly labelRepository: PrismaClient["label"];
+	private readonly userRepository: PrismaClient["user"];
 
 	constructor(db: PrismaClient) {
+		this.logger = createCustomLogger("tasks");
 		this.taskEventRepository = db.taskEvent;
 		this.commitRepository = db.commit;
 		this.notificationRepository = db.notification;
-		this.taskRepository = db.task;
+		this.labelRepository = db.label;
+		this.userRepository = db.user;
 	}
-	async getTaskEvents({ taskId }: { taskId: string }): TaskEventsReturn {
+	async getTaskEvents({
+		taskId,
+	}: { taskId: string }): Promise<(TaskEvent | Commit)[]> {
+		this.logger.info(
+			`Fetching TaskEvents and Commits for Task ID ${taskId}...`,
+		);
+
 		const [taskEvents, commits] = await Promise.all([
-			this.taskEventRepository.findMany({ where: { taskId } }),
-			this.commitRepository.findMany({ where: { taskId } }),
+			this.taskEventRepository.findMany({
+				where: { taskId },
+				include: { Task: true, Author: true },
+				orderBy: { createdAt: "asc" },
+			}),
+			this.commitRepository.findMany({
+				where: { taskId },
+				orderBy: { timestamp: "asc" },
+			}),
 		]);
-		return [...taskEvents, ...commits]
-			.sort((a, b) => {
-				const aTime =
-					"createdAt" in a ? a.createdAt.getTime() : a.timestamp.getTime();
-				const bTime =
-					"createdAt" in b ? b.createdAt.getTime() : b.timestamp.getTime();
-				return aTime - bTime;
-			})
-			.map((e) => ("createdAt" in e ? this.deserializeLogEvent(e) : e));
+
+		this.logger.info(
+			`Successfully fetched ${taskEvents.length} TaskEvents and ${commits.length} Commits for Task ID ${taskId}.`,
+		);
+
+		return [...taskEvents, ...commits];
 	}
 	async getNotifications({
 		userId,
@@ -51,21 +63,23 @@ export class EventService implements EventRpc {
 		taskId,
 		authorId,
 		changes,
+		previousTask,
 	}: {
 		taskId: string;
 		authorId: string;
 		changes: Partial<Task>;
-	}): Promise<TaskEvent> {
-		const task = await this.taskRepository.findUnique({
-			where: { id: taskId },
-			include: { Author: true, Workspace: true },
-		});
+		previousTask: Task;
+	}): Promise<TaskEvent | null> {
+		this.logger.info(`Checking for changes on Task ${taskId}`);
 
-		if (!task) {
-			throw new Error(`Task with id ${taskId} not found`);
+		const diff = await this.getTaskDiff(previousTask, changes);
+
+		if (diff === "No changes") {
+			this.logger.info(
+				`No changes detected for Task ${taskId}. No TaskEvent created.`,
+			);
+			return null;
 		}
-
-		const diff = await this.getTaskDiff(taskId, changes);
 
 		const taskEvent = await this.taskEventRepository.create({
 			data: {
@@ -76,31 +90,34 @@ export class EventService implements EventRpc {
 		});
 
 		// Generate notification
-		if (changes.assigneeId && changes.assigneeId !== task.assigneeId) {
+		if (changes.assigneeId && changes.assigneeId !== previousTask.assigneeId) {
 			await this.createNotification({
 				userId: changes.assigneeId,
 				taskId,
-				workspaceId: task.workspaceId,
-				description: `You have been assigned to task "${task.title}"`,
+				workspaceId: previousTask.workspaceId,
+				description: `You have been assigned to task "${previousTask.title}"`,
 				type: "ASSIGNED",
 			});
 		}
 
 		if (changes.status) {
-			const statusChangeMessage = `Task "${task.title}" status changed to ${changes.status}`;
+			const statusChangeMessage = `Task "${previousTask.title}" status changed to ${changes.status}`;
 			await this.createNotification({
-				userId: task.authorId,
+				userId: previousTask.authorId,
 				taskId,
-				workspaceId: task.workspaceId,
+				workspaceId: previousTask.workspaceId,
 				description: statusChangeMessage,
 				type: "PARTICIPATING",
 			});
 
-			if (task.assigneeId && task.assigneeId !== task.authorId) {
+			if (
+				previousTask.assigneeId &&
+				previousTask.assigneeId !== previousTask.authorId
+			) {
 				await this.createNotification({
-					userId: task.assigneeId,
+					userId: previousTask.assigneeId,
 					taskId,
-					workspaceId: task.workspaceId,
+					workspaceId: previousTask.workspaceId,
 					description: statusChangeMessage,
 					type: "PARTICIPATING",
 				});
@@ -162,52 +179,81 @@ export class EventService implements EventRpc {
 		});
 	}
 	private async getTaskDiff(
-		taskId: string,
+		previousTask: Task,
 		changes: Partial<Task>,
 	): Promise<string> {
-		const task = await this.taskRepository.findUnique({
-			where: { id: taskId },
-		});
+		const diff = await Promise.all(
+			Object.entries(changes).map(async ([key, newValue]) => {
+				if (key === "id" || key === "updatedAt") return null;
+				if (newValue === undefined) return null;
 
-		if (!task) {
-			throw new Error(`Task with id ${taskId} not found`);
-		}
+				const oldValue = previousTask[key as keyof Task];
+				const [formattedOldValue, formattedNewValue] = await Promise.all([
+					this.formatValue(oldValue, key),
+					this.formatValue(newValue, key),
+				]);
 
-		const diff = Object.entries(changes)
-			.map(([key, newValue]) => {
-				const oldValue = task[key as keyof Task];
-
-				if (oldValue instanceof Date && newValue instanceof Date) {
-					if (oldValue.getTime() !== newValue.getTime()) {
-						return `${key}: ${oldValue.toISOString()} -> ${newValue.toISOString()}`;
-					}
-				} else if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-					if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-						return `${key}: ${JSON.stringify(oldValue)} -> ${JSON.stringify(newValue)}`;
-					}
-				} else if (oldValue !== newValue) {
-					return `${key}: ${this.formatValue(oldValue)} -> ${this.formatValue(newValue)}`;
+				if (formattedOldValue !== formattedNewValue) {
+					const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
+					return diffString;
 				}
-
 				return null;
-			})
-			.filter(Boolean)
-			.join(", ");
+			}),
+		);
 
-		return diff.length > 0 ? diff : "No changes";
-	}
-	private formatValue(value: Task[keyof Task]): string {
-		if (value === null || value === undefined) {
-			return "null";
+		const filteredDiff = diff.filter(Boolean).join(", ");
+
+		if (filteredDiff.length > 0) {
+			return filteredDiff;
 		}
-		if (typeof value === "string") {
-			return `"${value}"`;
+
+		return "No changes";
+	}
+	private async formatValue(
+		value: Task[keyof Task],
+		key: string,
+	): Promise<string> {
+		if (value === null || value === undefined) {
+			switch (key) {
+				case "labels":
+					return "No labels";
+				case "effortEstimate":
+					return "No estimate";
+				case "assigneeId":
+					return "Unassigned";
+				default:
+					return "None";
+			}
+		}
+
+		// Handle assigneeId
+		if (key === "assigneeId" && typeof value === "string") {
+			const user = await this.userRepository.findUnique({
+				where: { id: value },
+				select: { name: true },
+			});
+			return user?.name ?? "Unknown User";
+		}
+
+		// Handle labels array
+		if (Array.isArray(value) && key === "labels") {
+			const labelIds = value as string[];
+			if (labelIds.length === 0) {
+				return "No labels";
+			}
+			const labels = await this.labelRepository.findMany({
+				where: { id: { in: labelIds } },
+				select: { name: true },
+			});
+			return labels.map((l) => l.name).join(", ");
+		}
+
+		// Handle effort estimate
+		if (key === "effortEstimate") {
+			return String(value);
 		}
 		if (value instanceof Date) {
 			return value.toISOString();
-		}
-		if (Array.isArray(value)) {
-			return JSON.stringify(value);
 		}
 		return String(value);
 	}
