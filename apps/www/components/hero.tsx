@@ -115,19 +115,21 @@ export const Hero = () => {
 			</motion.div>
 			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] mt-20 relative">
 				<div className="absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-b from-transparent via-white to-white dark:via-background dark:to-background scale-[1.1] pointer-events-none" />
-				{mounted && (
-					<Image
-						src={
-							resolvedTheme === "dark"
-								? "/squared-grid-dark.png"
-								: "/squared-grid-light.png"
-						}
-						alt="header"
-						width={3022}
-						height={1644}
-						className="rounded-[20px]"
-					/>
-				)}
+				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px]">
+					{mounted && (
+						<Image
+							src={
+								resolvedTheme === "dark"
+									? "/squared-grid-dark.png"
+									: "/squared-grid-light.png"
+							}
+							alt="header"
+							width={3022}
+							height={1644}
+							className="rounded-[20px]"
+						/>
+					)}
+				</div>
 			</div>
 		</div>
 	);
