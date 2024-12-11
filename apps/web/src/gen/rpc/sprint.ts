@@ -82,7 +82,6 @@ export type GetSprintTasksRequest = {
 
 export type GetSprintTasksResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -127,12 +126,14 @@ export type EndSprintResponse = {
 };
 
 export type AddRetrospectiveItemRequest = {
+	authorId: string;
 	content: string;
 	sprintId: string;
 	type: "wentWell" | "toImprove" | "actionItems";
 };
 
 export type AddRetrospectiveItemResponse = {
+	authorId: string;
 	content: string;
 	id: string;
 	type: "toImprove" | "wentWell" | "actionItems";
@@ -146,6 +147,7 @@ export type UpdateRetrospectiveItemRequest = {
 };
 
 export type UpdateRetrospectiveItemResponse = {
+	authorId: string;
 	content: string;
 	id: string;
 	type: "toImprove" | "wentWell" | "actionItems";
@@ -157,16 +159,19 @@ export type GetRetrospectiveItemsRequest = {
 
 export type GetRetrospectiveItemsResponse = {
 	actionItems: {
+		authorId: string;
 		content: string;
 		id: string;
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	toImprove: {
+		authorId: string;
 		content: string;
 		id: string;
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	wentWell: {
+		authorId: string;
 		content: string;
 		id: string;
 		type: "toImprove" | "wentWell" | "actionItems";

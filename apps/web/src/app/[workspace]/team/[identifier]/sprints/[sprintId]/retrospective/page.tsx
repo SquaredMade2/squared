@@ -2,6 +2,7 @@
 
 import { RetroColumn } from "@/components/Sprints";
 import { toast } from "@/components/ui/use-toast";
+import { useAuthUser } from "@/hooks/useAuthUser";
 import { sprintService } from "@/lib/services";
 import { parseParams } from "@/utils/parseParams";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
@@ -11,11 +12,15 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { type Socket, io } from "socket.io-client";
 
-type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
+export type RetroItem = Pick<
+	RetrospectiveItem,
+	"id" | "content" | "type" | "authorId"
+>;
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
 	const sprintId = parseParams(params.sprintId);
+	const { user } = useAuthUser();
 	const [data, setData] = useState<Record<RetrospectiveItemType, RetroItem[]>>({
 		wentWell: [],
 		toImprove: [],
@@ -86,19 +91,22 @@ export default function SprintRetrospectivePage() {
 	const handleAddItem = useCallback(
 		async (type: RetrospectiveItemType, content: string) => {
 			try {
-				const response = await sprintService.addRetrospectiveItem(TODO, {
-					sprintId,
-					type,
-					content,
-				});
-				if (response) {
-					socket?.emit("addItem", { sprintId, ...response });
-					setData((prevData) => ({
-						...prevData,
-						[type]: [...prevData[type], response],
-					}));
+				if (user) {
+					const response = await sprintService.addRetrospectiveItem(TODO, {
+						sprintId,
+						authorId: user?.id,
+						type,
+						content,
+					});
+					if (response) {
+						socket?.emit("addItem", { sprintId, ...response });
+						setData((prevData) => ({
+							...prevData,
+							[type]: [...prevData[type], response],
+						}));
+					}
+					toast({ title: "Item added successfully" });
 				}
-				toast({ title: "Item added successfully" });
 			} catch (error) {
 				console.error("Error adding item:", error);
 				toast({ title: "Failed to add item", variant: "destructive" });
