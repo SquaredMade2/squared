@@ -20,7 +20,7 @@ const RemoveMemberButton = ({
 	setPageUsers,
 }: {
 	userId: string;
-	page: string;
+	page: string | undefined;
 	pageId: string | undefined;
 	membersWithRoles: MemberWithRole[] | undefined;
 	setPageUsers: ((users: MemberWithRole[]) => void) | undefined;
