@@ -53,13 +53,16 @@ export type CreateTaskResponse = {
 };
 
 export type UpdateTaskRequest = {
+	updaterId: string | null;
 	assigneeId?: string | null;
 	description?: string;
-	dueDate?: Date;
+	dueDate?: Date | null;
 	effortEstimate?: number;
 	id: string;
 	labels?: string[];
+	parentId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
+	sprintId?: string | null;
 	status?:
 		| "backlog"
 		| "todo"

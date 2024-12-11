@@ -19,6 +19,13 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: userSchema,
 	},
+	updateUserAvatar: {
+		input: z.object({
+			userId: z.string(),
+			avatarUrl: z.string(),
+		}),
+		output: userSchema,
+	},
 	updateUserNotifications: {
 		input: z.object({
 			userId: z.string(),
@@ -76,6 +83,7 @@ export const createUserRpcHandler = (userService: UserService) =>
 	createRpcHandler("user", userRpcSchema, {
 		onBoardUser: (input) => userService.onBoardUser(input),
 		updateUser: (input) => userService.updateUser(input),
+		updateUserAvatar: (input) => userService.updateUserAvatar(input),
 		updateUserNotifications: (input) =>
 			userService.updateUserNotifications(input),
 		getUser: (input) => userService.getUser(input),

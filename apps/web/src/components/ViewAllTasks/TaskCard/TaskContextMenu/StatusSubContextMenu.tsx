@@ -8,7 +8,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { statusOptions } from "@/lib/constants";
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status } from "@squared/db";
@@ -17,6 +17,7 @@ import type { ContextMenuProps } from "./interfaces";
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
+	const user = useUserStore((state) => state.user);
 
 	const handleSetStatus: (status: Status) => void = async (status) => {
 		if (task.id !== undefined) {
@@ -24,6 +25,7 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 				updateTask(
 					await taskService.updateTask(TODO, {
 						id: task.id,
+						updaterId: user?.id || "",
 						status,
 					}),
 				);
@@ -45,8 +47,7 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 				Status
 			</ContextMenuSubTrigger>
 			<ContextMenuSubContent>
-				{/* Need to get rid of the last item (Duplicate) because its not used yet */}
-				{statusOptions.slice(0, -1).map((status) => {
+				{statusOptions.map((status) => {
 					return (
 						<ContextMenuItem
 							key={status}

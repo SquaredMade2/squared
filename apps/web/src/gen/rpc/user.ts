@@ -60,6 +60,30 @@ export type UpdateUserResponse = {
 	verified: boolean;
 };
 
+export type UpdateUserAvatarRequest = {
+	avatarUrl: string;
+	userId: string;
+};
+
+export type UpdateUserAvatarResponse = {
+	avatarUrl: string | null;
+	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	githubId: string | null;
+	githubUsername: string | null;
+	googleId: string | null;
+	id: string;
+	lastLogin: Date;
+	name: string;
+	onBoarding: boolean;
+	password: string | null;
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+	verified: boolean;
+};
+
 
 
 
@@ -145,14 +169,9 @@ export type GetWorkspaceUsersResponse = {
 	verified: boolean;
 }[];
 
-
-
-
 export type GetTeamUsersRequest = {
 	teamId: string;
 };
-
-
 
 export type GetTeamUsersResponse = {
 	avatarUrl: string | null;
@@ -246,6 +265,16 @@ export class UserService extends RPCContextClient {
     return this.request(ctx, "updateUser", req);
   }
   
+  	/**
+	 * updateUserAvatar method
+	 */
+	updateUserAvatar(
+		ctx: Context,
+		req: UpdateUserAvatarRequest,
+	): Promise<UpdateUserAvatarResponse> {
+		return this.request(ctx, "updateUserAvatar", req);
+	}
+  
   /**
    * updateUserNotifications method
    */
@@ -294,5 +323,4 @@ export class UserService extends RPCContextClient {
   getUserTeams(ctx: Context, req: GetUserTeamsRequest): Promise<GetUserTeamsResponse> {
     return this.request(ctx, "getUserTeams", req);
   }
-  
 }

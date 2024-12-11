@@ -38,6 +38,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 const updateTaskParams = createSchema<UpdateTaskParams>()(
 	z.object({
 		id: z.string(),
+		updaterId: z.string(),
 		title: z.string().optional(),
 		description: z.string().optional(),
 		dueDate: z.date().optional(),
@@ -58,6 +59,8 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 			.optional(),
 		assigneeId: z.string().nullable().optional(),
 		labels: z.array(z.string()).optional(),
+		parentId: z.string().nullable().optional(),
+		sprintId: z.string().nullable().optional(),
 	}),
 );
 

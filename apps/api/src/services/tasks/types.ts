@@ -16,6 +16,7 @@ export type CreateTaskParams = {
 
 export type UpdateTaskParams = {
 	id: string;
+	updaterId: string;
 	title?: string;
 	description?: string;
 	dueDate?: Date;
@@ -24,6 +25,8 @@ export type UpdateTaskParams = {
 	status?: Status;
 	assigneeId?: string | null;
 	labels?: string[];
+	parentId?: string | null;
+	sprintId?: string | null;
 };
 
 export interface TaskRpc {

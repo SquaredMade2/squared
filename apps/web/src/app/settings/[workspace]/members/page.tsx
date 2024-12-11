@@ -30,7 +30,7 @@ export default function WorkspaceMembersPage() {
 			setPageUsers,
 		},
 	}));
-
+    
 	if (workspaceLoading || userLoading) {
 		return (
 			<MemberSettingsWrapper page="workspace">
