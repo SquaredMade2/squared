@@ -6,8 +6,8 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { workspaceService } from "@/lib/services";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { teamService, workspaceService } from "@/lib/services";
+import { useUserStore } from "@/store";
 import { TODO } from "@squared/context";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
@@ -15,38 +15,54 @@ import type { MemberWithRole } from "./data-table";
 const RemoveMemberButton = ({
 	userId,
 	page,
+	pageId,
 	membersWithRoles,
 	setPageUsers,
 }: {
 	userId: string;
 	page: string;
+	pageId: string | undefined;
 	membersWithRoles: MemberWithRole[] | undefined;
 	setPageUsers: ((users: MemberWithRole[]) => void) | undefined;
 }) => {
-	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	const currentUser = useUserStore((state) => state.user);
-	const workspaceId = currentWorkspace ? currentWorkspace.id : undefined;
 	const { toast } = useToast();
 
 	const handleClick = async () => {
-		if (!workspaceId) return;
+		if (!pageId) return;
 
-		try {
-			await workspaceService.removeUserFromWorkspace(TODO, {
-				userId,
-				workspaceId,
-			});
-			toast({ title: "Member removed" });
-			membersWithRoles &&
-				setPageUsers &&
-				setPageUsers(
-					membersWithRoles.filter(
-						(workspaceUser) => workspaceUser.id !== userId,
-					),
-				);
-		} catch (error) {
-			console.error(error);
-			toast({ title: "Member could not be removed" });
+		if (page === "workspace") {
+			try {
+				await workspaceService.removeUserFromWorkspace(TODO, {
+					userId,
+					workspaceId: pageId,
+				});
+				toast({ title: "Member removed" });
+				membersWithRoles &&
+					setPageUsers &&
+					setPageUsers(
+						membersWithRoles.filter((pageUser) => pageUser.id !== userId),
+					);
+			} catch (error) {
+				console.error(error);
+				toast({ title: "Member could not be removed" });
+			}
+		} else {
+			try {
+				await teamService.removeUserFromTeam(TODO, {
+					userId,
+					teamId: pageId,
+				});
+				toast({ title: "Member removed" });
+				membersWithRoles &&
+					setPageUsers &&
+					setPageUsers(
+						membersWithRoles.filter((pageUser) => pageUser.id !== userId),
+					);
+			} catch (error) {
+				console.error(error);
+				toast({ title: "Member could not be removed" });
+			}
 		}
 	};
 

@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ColumnDef } from "@tanstack/react-table";
-import { RemoveMemberButton } from "./RemoveMemberButton";
+import RemoveMemberButton from "./RemoveMemberButton";
 import type { MemberWithRole } from "./data-table";
 
 export const columns: ColumnDef<MemberWithRole>[] = [
@@ -38,13 +38,14 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 		accessorKey: "manage",
 		cell: ({ row, column }) => {
 			const userId: string = row.original.id;
-			const { page, membersWithRoles, setPageUsers } =
+			const { page, pageId, membersWithRoles, setPageUsers } =
 				column.columnDef.meta || {};
 
 			return (
 				<RemoveMemberButton
 					userId={userId}
 					page={page}
+					pageId={pageId}
 					membersWithRoles={membersWithRoles}
 					setPageUsers={setPageUsers}
 				/>

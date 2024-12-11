@@ -25,6 +25,7 @@ export default function WorkspaceMembersPage() {
 		...col,
 		meta: {
 			page: "workspace",
+			pageId: workspace?.id,
 			membersWithRoles,
 			setPageUsers,
 		},
