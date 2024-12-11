@@ -31,8 +31,8 @@ import {
 } from "@/components/ui/sidebar";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import type { Team } from "@squared/db";
-import { WorkspaceDropdown } from "../Sidebar/WorkspaceDropdown";
-import { TooltipProvider } from "../ui/tooltip";
+import { WorkspaceDropdown } from "../../Sidebar/WorkspaceDropdown";
+import { TooltipProvider } from "../../ui/tooltip";
 
 function SettingsNavbarContent() {
 	const router = useRouter();
