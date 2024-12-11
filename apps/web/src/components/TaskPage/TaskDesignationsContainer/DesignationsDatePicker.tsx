@@ -3,7 +3,7 @@
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/components/ui/use-toast";
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { TODO } from "@squared/context";
 import { useEffect, useState } from "react";
 
@@ -12,6 +12,7 @@ const DesignationsDatePicker = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const user = useUserStore((state) => state.user);
 	if (!currentTask) return null;
 	const { id: taskId } = currentTask;
 
@@ -28,6 +29,7 @@ const DesignationsDatePicker = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					dueDate: selectedDate === undefined ? null : selectedDate,
 				}),
 			);

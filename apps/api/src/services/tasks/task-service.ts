@@ -2,14 +2,18 @@ import { subscribeUser } from "@/utils/taskUpdate";
 import type { PrismaClient, Task } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
+import type { EventService } from "../events/event-service";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
 export class TaskService implements TaskRpc {
 	private readonly db: PrismaClient;
 	private readonly logger: Logger;
-	constructor(db: PrismaClient) {
+	private readonly eventService: EventService;
+
+	constructor(db: PrismaClient, eventService: EventService) {
 		this.db = db;
 		this.logger = createCustomLogger("tasks");
+		this.eventService = eventService;
 	}
 
 	async createTask({
@@ -123,15 +127,23 @@ export class TaskService implements TaskRpc {
 
 		subscribeUser(author, newTask, this.db);
 
-		// Return the new task
 		return newTask;
 	}
 
 	async updateTask(args: UpdateTaskParams): Promise<Task> {
-		this.logger.info("Updating task with ID: %s", args.id);
-		if (args.effortEstimate) {
-			// check if effort estimate is valid
-			const effort = Number(args.effortEstimate);
+		const { updaterId, ...taskData } = args;
+		this.logger.info("Updating task with ID: %s", taskData.id);
+
+		const previousTask = await this.db.task.findUnique({
+			where: { id: taskData.id },
+		});
+
+		if (!previousTask) {
+			this.throwError("Task not found");
+		}
+
+		if (taskData.effortEstimate) {
+			const effort = Number(taskData.effortEstimate);
 			if (
 				effort < 0 ||
 				Number.isNaN(effort) ||
@@ -143,15 +155,21 @@ export class TaskService implements TaskRpc {
 		}
 
 		const task = await this.db.task.update({
-			where: { id: args.id },
-			data: args,
+			where: { id: taskData.id },
+			data: taskData,
 		});
 
 		if (!task) {
 			this.throwError("There was an issue creating the task");
 		}
 
-		// Return the updated task with labels
+		this.eventService.createLogEvent({
+			taskId: task.id,
+			authorId: updaterId,
+			changes: taskData,
+			previousTask,
+		});
+
 		return task;
 	}
 
