@@ -119,6 +119,11 @@ export type GetUserTeamsResponse = {
 	workspaceId: string;
 }[];
 
+export type RemoveUserFromTeamRequest = {
+	teamId: string;
+	userId: string;
+};
+
 /**
  * team service
  */
@@ -189,5 +194,15 @@ export class TeamService extends RPCContextClient {
 		req: GetUserTeamsRequest,
 	): Promise<GetUserTeamsResponse> {
 		return this.request(ctx, "getUserTeams", req);
+	}
+
+	/**
+	 * removeUserFromTeam method
+	 */
+	removeUserFromTeam(
+		ctx: Context,
+		req: RemoveUserFromTeamRequest,
+	): Promise<void> {
+		return this.request(ctx, "removeUserFromTeam", req);
 	}
 }
