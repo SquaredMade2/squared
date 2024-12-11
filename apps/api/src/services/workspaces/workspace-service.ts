@@ -211,9 +211,14 @@ export class WorkspaceService implements WorkspaceRpc {
 		if (workspaceTeams.length > 0) {
 			await Promise.all(
 				workspaceTeams.map(async (team) => {
-					await this.db.userTeam.delete({
+					const userTeam = await this.db.userTeam.findUnique({
 						where: { userId_teamId: { userId, teamId: team.id } },
 					});
+					if (userTeam) {
+						await this.db.userTeam.delete({
+							where: { userId_teamId: { userId, teamId: team.id } },
+						});
+					}
 				}),
 			);
 		}
