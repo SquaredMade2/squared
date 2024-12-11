@@ -9,6 +9,7 @@ export type NextSprintPayload = {
 };
 export type AddRetrospectivePayload = {
 	sprintId: string;
+	authorId: string;
 	type: RetrospectiveItemType;
 	content: string;
 };
@@ -22,6 +23,7 @@ export type UpdateRetrospectiveItemPayload = {
 
 export type RetroItemReturn = {
 	id: string;
+	authorId: string;
 	content: string;
 	type: RetrospectiveItemType;
 };

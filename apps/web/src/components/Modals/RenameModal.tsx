@@ -1,7 +1,7 @@
 "use client";
 
 import { taskService } from "@/lib/services";
-import { useModalStore, useTaskStore } from "@/store";
+import { useModalStore, useTaskStore, useUserStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 import { TODO } from "@squared/context";
 import { Pencil } from "lucide-react";
@@ -27,6 +27,8 @@ export const RenameModal = () => {
 	} = useModalStore((state) => state);
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
+	const user = useUserStore((state) => state.user);
+
 	const handleChange = (e: InputChangeEvent): void => {
 		setInputValue(e.target.value);
 	};
@@ -40,6 +42,7 @@ export const RenameModal = () => {
 					updateTask(
 						await taskService.updateTask(TODO, {
 							id: task.id,
+							updaterId: user?.id || "",
 							title: inputValue.trim(),
 						}),
 					);

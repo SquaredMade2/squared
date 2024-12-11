@@ -20,6 +20,7 @@ import type {
 const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 	z.object({
 		id: z.string(),
+		authorId: z.string(),
 		content: z.string(),
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
 	}),
@@ -88,6 +89,7 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		input: createSchema<AddRetrospectivePayload>()(
 			z.object({
 				sprintId: z.string(),
+				authorId: z.string(),
 				type: z.enum(["wentWell", "toImprove", "actionItems"]),
 				content: z.string(),
 			}),

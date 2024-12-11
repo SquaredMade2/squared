@@ -1,5 +1,3 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +22,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 			return (
 				<div className="flex gap-2">
 					<Avatar>
-						<AvatarImage src={user.avatarUrl ?? undefined} />
+						<AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
 						<AvatarFallback>{placeholder}</AvatarFallback>
 					</Avatar>
 					<div className="flex items-start flex-col">
@@ -54,7 +52,8 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
-						<DropdownMenuItem>Remove from Workspace</DropdownMenuItem>
+						{/* TODO: dynamically render team or workspace */}
+						<DropdownMenuItem>Remove from Workspace or Team</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);

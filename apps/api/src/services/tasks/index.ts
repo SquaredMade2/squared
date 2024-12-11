@@ -38,6 +38,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 const updateTaskParams = createSchema<UpdateTaskParams>()(
 	z.object({
 		id: z.string(),
+		updaterId: z.string(),
 		title: z.string().optional(),
 		description: z.string().optional(),
 		dueDate: z.date().optional(),

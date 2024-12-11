@@ -42,20 +42,12 @@ const taskValueSchema = z.union([
 	z.null(),
 ]);
 
-const taskEventReturnSchema = z.union([
-	z.record(
-		z.object({
-			oldValue: taskValueSchema,
-			newValue: taskValueSchema,
-		}).strict(),
-	),
-	commitSchema,
-]);
+const taskEventReturnSchema = z.array(z.union([taskEventSchema, commitSchema]));
 
 export const eventRpcSchema = createServiceSchema<EventRpc>()({
 	getTaskEvents: {
-		input: z.object({ taskId: z.string() }).strict(),
-		output: z.array(taskEventReturnSchema),
+		input: z.object({ taskId: z.string() }),
+		output: taskEventReturnSchema,
 	},
 	getNotifications: {
 		input: z.object({ userId: z.string() }).strict(),
@@ -66,8 +58,9 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			taskId: z.string(),
 			authorId: z.string(),
 			changes: z.record(taskValueSchema),
-		}).strict(),
-		output: taskEventSchema.strict(),
+			previousTask: taskSchema,
+		}),
+		output: taskEventSchema.nullable(),
 	},
 	createNotification: {
 		input: z.object({
