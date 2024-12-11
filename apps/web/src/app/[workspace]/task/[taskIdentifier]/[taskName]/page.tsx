@@ -26,25 +26,19 @@ const TaskPage = () => {
 	const { toast } = useToast();
 	const user = useUserStore((state) => state.user);
 	
-
 	useEffect(() => {
-		const fetchLastViewedTask = async () => {
-			if (currentTask && user?.id) {
-				try {
-					const response = await userService.setLastViewedTask(TODO, {
-						userId: user.id,
-						taskId: currentTask.id
-					});
-					console.log(response);
-				} catch (error) {
+		if (currentTask && user?.id) {
+			userService
+				.setLastViewedTask(TODO, {
+					userId: user.id,
+					taskId: currentTask.id,
+				})
+				.catch((error) => {
 					console.error('Error setting last viewed task:', error);
-				}
-			}
-		};
-	
-		fetchLastViewedTask();
+				});
+		}
 	}, [currentTask, user]);
-
+	
 	useEffect(() => {
 		if (error) {
 			toast({

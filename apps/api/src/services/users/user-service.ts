@@ -149,12 +149,11 @@ export class UserService implements UserRpc {
 	}) {
 		this.logger.info("Setting last viewed task for userId: %s, taskId: %s", userId, taskId);
 		try {
-			const updatedUser = await this.db.user.update({
+			return await this.db.user.update({
 				where: { id: userId },
 				data: { lastViewedTaskId: taskId },
 				include: { lastViewedTask: true },
 			});
-			return updatedUser;
 		} catch (error) {
 			if (error instanceof Error) {
 				this.logger.error(
