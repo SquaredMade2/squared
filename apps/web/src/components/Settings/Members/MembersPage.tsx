@@ -1,13 +1,15 @@
 import type { Team, User, Workspace } from "@squared/db";
-import { columns } from "./columns";
+import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable, type MemberWithRole } from "./data-table";
 
 export function MembersPage({
+	columns,
 	members,
 	workspace,
 	team,
 	admins,
 }: {
+	columns: ColumnDef<MemberWithRole, unknown>[];
 	members: User[];
 	workspace?: Workspace | null;
 	team?: Team | null;
