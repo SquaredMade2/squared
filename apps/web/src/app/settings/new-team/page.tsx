@@ -100,12 +100,12 @@ export default function CreateTeam() {
 	};
 
 	useEffect(() => {
-		if (!authorized && workspace) {
+		if (!authorized && !teamLoading && workspace) {
 			router.push(`/${workspace.url}`);
-		} else if (!workspace) {
+		} else if (!workspace && !workspaceLoading) {
 			router.push("/");
 		}
-	}, []);
+	}, [authorized, workspace, teamLoading, workspaceLoading]);
 
 	if (workspaceLoading || teamLoading)
 		return (

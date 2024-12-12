@@ -1,5 +1,5 @@
 "use client";
-import SettingsTopNavBar from "@/components/SettingsTopNavBar";
+import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
 import {
 	Card,
