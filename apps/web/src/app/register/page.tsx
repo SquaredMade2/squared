@@ -84,9 +84,9 @@ function RegisterForm() {
 					title: message,
 					variant,
 				});
+			} else {
+				setIsShowRegisteredModal(true);
 			}
-
-			setIsShowRegisteredModal(true);
 		} catch (error) {
 			console.error("Registration error:", error);
 			toast({
