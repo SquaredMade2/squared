@@ -49,7 +49,7 @@ function RegisterForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
-	const inviteToken = searchParams.get("token");
+	const inviteToken = searchParams.get("token") || undefined;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -64,14 +64,13 @@ function RegisterForm() {
 		setIsLoading(true);
 		try {
 			// First, register the user using your custom register function
-			const user = await authService.register(TODO, {
+			const { user, message, variant } = await authService.register(TODO, {
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
 				email: values.email,
 				password: values.password,
+				inviteToken,
 			});
-
-			setIsShowRegisteredModal(true);
 
 			if (user?.verified && inviteToken) {
 				await signIn("credentials", {
@@ -81,7 +80,13 @@ function RegisterForm() {
 				});
 				router.refresh();
 				router.prefetch("/");
+				toast({
+					title: message,
+					variant,
+				});
 			}
+
+			setIsShowRegisteredModal(true);
 		} catch (error) {
 			console.error("Registration error:", error);
 			toast({
