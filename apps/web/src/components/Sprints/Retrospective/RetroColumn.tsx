@@ -12,6 +12,7 @@ interface RetroColumnProps {
 	type: RetrospectiveItemType;
 	items: RetroItem[];
 	onAddItem: (type: RetrospectiveItemType, content: string) => void;
+	onLikeItem: (itemId: string, userId: string) => void;
 }
 
 export const RetroColumn = ({
@@ -19,6 +20,7 @@ export const RetroColumn = ({
 	type,
 	items,
 	onAddItem,
+	onLikeItem,
 }: RetroColumnProps) => {
 	return (
 		<Card className="h-full flex flex-col bg-background">
@@ -35,7 +37,12 @@ export const RetroColumn = ({
 						>
 							{items.map((item, index) => {
 								return (
-									<RetroItemCard key={item.id} item={item} index={index} />
+									<RetroItemCard
+										key={item.id}
+										item={item}
+										index={index}
+										onLikeItem={onLikeItem}
+									/>
 								);
 							})}
 							{provided.placeholder}

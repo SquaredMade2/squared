@@ -23,6 +23,7 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 		authorId: z.string(),
 		content: z.string(),
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
+		likes: z.array(z.string()),
 	}),
 );
 
@@ -107,6 +108,18 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		),
 		output: retrospectiveItemReturnSchema,
 	},
+	likeRetrospectiveItem: {
+		input: createSchema<{
+			retrospectiveItemId: string;
+			userId: string;
+		}>()(
+			z.object({
+				retrospectiveItemId: z.string(),
+				userId: z.string(),
+			}),
+		),
+		output: retrospectiveItemReturnSchema,
+	},
 	getRetrospectiveItems: {
 		input: z.object({ sprintId: z.string() }),
 		output: createSchema<RetrospectiveData>()(
@@ -132,6 +145,8 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 		addRetrospectiveItem: (input) => sprintService.addRetrospectiveItem(input),
 		updateRetrospectiveItem: (input) =>
 			sprintService.updateRetrospectiveItem(input),
+		likeRetrospectiveItem: (input) =>
+			sprintService.likeRetrospectiveItem(input),
 		getRetrospectiveItems: (input) =>
 			sprintService.getRetrospectiveItems(input),
 	});

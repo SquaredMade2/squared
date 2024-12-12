@@ -14,7 +14,7 @@ import { type Socket, io } from "socket.io-client";
 
 export type RetroItem = Pick<
 	RetrospectiveItem,
-	"id" | "content" | "type" | "authorId"
+	"id" | "content" | "type" | "authorId" | "likes"
 >;
 
 export default function SprintRetrospectivePage() {
@@ -115,6 +115,34 @@ export default function SprintRetrospectivePage() {
 		[sprintId, socket, sprintService],
 	);
 
+	const handleLikeItem = useCallback(
+		async (itemId: string, userId: string) => {
+			try {
+				const response = await sprintService.likeRetrospectiveItem(TODO, {
+					retrospectiveItemId: itemId,
+					userId,
+				});
+
+				if (response) {
+					socket?.emit("likeItem", { sprintId, itemId, userId });
+					setData((prevData) => {
+						const updatedData = Object.fromEntries(
+							Object.entries(prevData).map(([key, items]) => [
+								key as RetrospectiveItemType,
+								items.map((item) => (item.id === itemId ? response : item)),
+							]),
+						) as Record<RetrospectiveItemType, RetroItem[]>;
+						return updatedData;
+					});
+				}
+			} catch (error) {
+				console.error("Error liking item:", error);
+				toast({ title: "Failed to like item", variant: "destructive" });
+			}
+		},
+		[sprintId, socket, sprintService],
+	);
+
 	const onDragEnd = useCallback(
 		async (result: DropResult) => {
 			if (!result.destination) return;
@@ -186,18 +214,21 @@ export default function SprintRetrospectivePage() {
 							type="wentWell"
 							items={data.wentWell}
 							onAddItem={handleAddItem}
+							onLikeItem={handleLikeItem}
 						/>
 						<RetroColumn
 							title="To Improve"
 							type="toImprove"
 							items={data.toImprove}
 							onAddItem={handleAddItem}
+							onLikeItem={handleLikeItem}
 						/>
 						<RetroColumn
 							title="Action Items"
 							type="actionItems"
 							items={data.actionItems}
 							onAddItem={handleAddItem}
+							onLikeItem={handleLikeItem}
 						/>
 					</div>
 				</div>

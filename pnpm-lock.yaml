@@ -318,7 +318,7 @@ importers:
         version: 18.3.1
       '@types/react-mentions':
         specifier: ^4.4.0
-        version: 4.4.0
+        version: 4.4.1
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
@@ -2788,8 +2788,8 @@ packages:
   '@types/react-dom@18.3.1':
     resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
 
-  '@types/react-mentions@4.4.0':
-    resolution: {integrity: sha512-dKnY1h42GPUO/QAyei6HxEsFUbEcqK/t1k60ZbLJstB9RAs8OCT69mj9AnUbeNdbzYVISE88OC2IYkkthAAn2g==}
+  '@types/react-mentions@4.4.1':
+    resolution: {integrity: sha512-65QdcZYkGe2I4GnOLY2OhlXCGz/Csd8NhytwE5r59CoFeYafMltAE/WqFB/Y6SoPU8LvF7EyUrq6Rxrf0Kzxkg==}
 
   '@types/react@18.3.12':
     resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
@@ -10061,7 +10061,7 @@ snapshots:
     dependencies:
       '@types/react': 18.3.12
 
-  '@types/react-mentions@4.4.0':
+  '@types/react-mentions@4.4.1':
     dependencies:
       '@types/react': 18.3.12
 

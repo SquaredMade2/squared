@@ -12,6 +12,7 @@ import type {
 	Login,
 	OauthLogin,
 	Register,
+	RegisterReturn,
 	UserToken,
 } from "./types";
 
@@ -104,7 +105,7 @@ export class AuthService implements AuthRpc {
 		username,
 		password,
 		inviteToken,
-	}: Register): Promise<User | null> {
+	}: Register): Promise<RegisterReturn> {
 		this.logger.info("Registering user %s", email);
 		const existingUser = await this.db.user.findUnique({
 			where: { email },
@@ -123,16 +124,21 @@ export class AuthService implements AuthRpc {
 				password: hashedPassword,
 			},
 		});
+
 		if (inviteToken && user) {
 			this.logger.info("Joining workspace with invite token %s", inviteToken);
-			const { status } = await joinWorkspace(inviteToken, user.id, this.db);
+			const { message, variant, status } = await joinWorkspace(
+				inviteToken,
+				user.id,
+				this.db,
+			);
 			if (status === 200) {
 				const newUser = await this.db.user.findUnique({
 					where: { id: user.id },
 				});
-				return newUser;
+				return { user: newUser, message, variant };
 			}
-			return user;
+			return { user, message, variant };
 		}
 
 		// Send a verification email
@@ -153,7 +159,7 @@ export class AuthService implements AuthRpc {
 				`Error sending email: ${error instanceof Error && error.message}`,
 			);
 		}
-		return user;
+		return { user, message: "Whot", variant: "default" };
 	}
 	async verifyUser({ token }: { token: string }): Promise<User | null> {
 		this.logger.info("Verifying user with token %s", token);

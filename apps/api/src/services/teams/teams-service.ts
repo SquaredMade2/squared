@@ -93,4 +93,15 @@ export class TeamService implements TeamRpc {
 			where: { workspaceId, id: { in: teamIds } },
 		});
 	}
+
+	async removeUserFromTeam({
+		userId,
+		teamId,
+	}: { userId: string; teamId: string }): Promise<void> {
+		this.logger.info("Removing user from team");
+
+		await this.db.userTeam.delete({
+			where: { userId_teamId: { userId, teamId } },
+		});
+	}
 }
