@@ -355,6 +355,7 @@ model RetrospectiveItem {
   content String
   type    RetrospectiveItemType @default(toImprove)
   authorId String
+  likes   String[]              @default([])
 
   wentWellSprint      Sprint? @relation("WentWell", fields: [wentWellSprintId], references: [id])
   wentWellSprintId    String?
