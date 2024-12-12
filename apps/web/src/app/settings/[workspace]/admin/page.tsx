@@ -3,7 +3,7 @@
 import { LabelCustomizer } from "@/components/Settings/LabelCustomizer";
 import { Separator } from "@/components/ui/separator";
 
-export default function AdminSettings() {
+export default function AdminTools() {
 	return (
 		<>
 			<div className="md:w-3/4 w-full flex flex-col py-8 container gap-4">
