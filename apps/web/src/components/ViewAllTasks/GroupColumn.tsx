@@ -7,6 +7,7 @@ import {
 import { Droppable } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { useState } from "react";
+
 import { GridColumnNewTaskButton } from "../Modals";
 import { ScrollArea } from "../ui/scroll-area";
 import TaskCard from "./TaskCard";
@@ -31,7 +32,12 @@ const statusOrder = [
 	Status.archived,
 ];
 
-const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
+const GroupColumn = ({
+	group,
+	tasks,
+	currentView: view,
+	sprintId,
+}: GroupColumnProps) => {
 	const [showTasks, setShowTasks] = useState(true);
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
@@ -208,8 +214,17 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				.filter((task): task is Task => task !== undefined),
 		);
 
+		if (sprintId) {
+			// todo add sprintId filter here
+
+			console.log("sortedItems is", sortedItems);
+			console.log("allItems is", allItems);
+		}
+
 		return sortedItems.map((sortedTask, index) => {
+			// sortedItems is used to find the correct item in allItems and then this is rendered in the return statement
 			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+
 			return item?.render(index);
 		});
 	};

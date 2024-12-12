@@ -47,6 +47,7 @@ export function checkCondition(
 							item.toString() === val.toString()),
 				),
 			);
+
 		case "arrayIncludesAny":
 			if (Array.isArray(taskValue)) {
 				return (

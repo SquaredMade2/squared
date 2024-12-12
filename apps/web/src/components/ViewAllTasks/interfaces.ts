@@ -14,6 +14,7 @@ export interface GroupColumnProps {
 	group: string;
 	tasks: Task[];
 	currentView: "list" | "grid";
+	sprintId?: string;
 }
 
 export type TaskColumnTitleProps = {

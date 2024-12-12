@@ -157,6 +157,8 @@ export function SaveFilterForm({
 						filter: newFilters,
 						authorId: user.id,
 						teamId: team.id,
+
+						// todo add sprint id here
 					});
 					saveFilter(savedFilter);
 					handleUrl(savedFilter);

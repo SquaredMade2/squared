@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import GroupColumn from "./GroupColumn";
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
-const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
+const ViewAllTasks = ({ getGroupedColumns, sprintId }: ViewAllTasksProps) => {
 	const { view, displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const pathname = usePathname();
@@ -50,6 +50,7 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 						group={column.group}
 						tasks={column.tasks}
 						currentView={view}
+						sprintId={sprintId}
 					/>
 				))}
 			</div>
