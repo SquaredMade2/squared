@@ -6,8 +6,6 @@ import {
 	clearCurrentLeafContent,
 	getCommandFromLeaf,
 	isValidCommandBlock,
-	// Will use below for better slash command toggler
-	// getCharactersInSelection,
 } from "@/utils/textEditorSelection";
 import { TODO } from "@squared/context";
 import {
@@ -172,7 +170,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	};
 
 	const executeCommand = (command: string) => {
-		console.log(command);
 		switch (command) {
 			case "Bold": {
 				clearCurrentLeafContent(editor);

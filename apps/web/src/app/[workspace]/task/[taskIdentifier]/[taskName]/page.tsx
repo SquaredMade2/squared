@@ -23,10 +23,6 @@ const TaskPage = () => {
 	const scrollRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		console.log("scrollRef top scroll", scrollRef.current?.scrollTop);
-	}, [scrollRef.current]);
-
-	useEffect(() => {
 		if (error) {
 			toast({
 				title: error,
