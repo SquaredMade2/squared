@@ -58,7 +58,7 @@ const TaskPage = () => {
 										<TaskPageForm />
 										{subtasks.length > 0 && <Subtasks />}
 										<NewTaskCollapsible parentId={currentTask.id} />
-										<EventTabs scrollRef={scrollRef} />
+										<EventTabs />
 									</div>
 								</ScrollArea>
 								<div className="md:flex hidden flex-col gap-4">

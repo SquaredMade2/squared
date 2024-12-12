@@ -13,7 +13,7 @@ type ScrollAreaProps = React.ComponentPropsWithoutRef<
 const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
 	({ className, children, viewportRef, ...props }, ref) => {
 		// This all basically allows for an optional ref to access the Viewport component ref (for scroll access)
-		// while allowing default ref top still be root
+		// while allowing default ref top still be root.
 		const internalViewportRef = React.useRef<HTMLDivElement>(null);
 		const finalViewportRef = viewportRef || internalViewportRef;
 		const setRootRef = (element: HTMLDivElement | null) => {

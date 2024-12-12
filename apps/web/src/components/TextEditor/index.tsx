@@ -4,13 +4,12 @@ import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import {
 	clearCurrentLeafContent,
-	getCharacterBefore,
+	getCommandFromLeaf,
 	isValidCommandBlock,
 	// Will use below for better slash command toggler
 	// getCharactersInSelection,
 } from "@/utils/textEditorSelection";
 import { TODO } from "@squared/context";
-import { isYesterday } from "date-fns";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -28,7 +27,6 @@ import type {
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
-import CommandContext from "./Menus/TextEditorCommand";
 import TextEditorCommand from "./Menus/TextEditorCommand";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
@@ -57,7 +55,7 @@ const initialValue: CustomDescendant[] = [
 	},
 ];
 
-const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
+const TextEditor = ({ task }: TextEditorProps) => {
 	// State
 
 	const { setShowLinkForm } = useModalStore((state) => state);
@@ -70,7 +68,9 @@ const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 	// Will use below for better slash command toggler
 	const [toggleCommand, setToggleCommand] = useState(false);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
-	const editorRef = useRef<Range | null>(null);
+	// command search filter
+	const [commandFilter, setCommandFilter] = useState("");
+	const editorRef = useRef<HTMLDivElement | null>(null);
 
 	// Functions
 
@@ -146,66 +146,60 @@ const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 		return editorContent.length === 0;
 	};
 
-	const handleKeyUp = (event: KeyboardEvent) => {
-		// if (event.key === "/") {
-		// 	const selection = window.getSelection();
-
-		// 	if (!selection || selection.rangeCount === 0) {
-		// 		return;
-		// 	}
-
-		// 	const range = selection.getRangeAt(0);
-		// 	const rect = range.getBoundingClientRect();
-
-		// 	if (editorRef.current === null) {
-		// 		return;
-		// 	}
-
-		// 	// Calculate the position relative to the editor container
-		// 	const editorRect = editorRef.current.getBoundingClientRect();
-
-		// 	setPosition({
-		// 		x: rect.left - editorRect.left, // Below the caret
-		// 		y: rect.bottom - editorRect.top, // Align with caret
-		// 	});
-		// }
-
+	const handleCommandKeyUp = (event: KeyboardEvent) => {
 		if (event.key === "/") {
 			const selection = window.getSelection();
-
-			if (!selection || selection.rangeCount === 0) {
+			if (!selection) {
+				setPosition({ x: 0, y: 0 });
+				return;
+			}
+			if (!selection.rangeCount) {
+				setPosition({ x: 0, y: 0 });
 				return;
 			}
 
-			// Get the range of the current selection
-			const range = selection.getRangeAt(0);
+			const { left } = editorRef.current
+				? editorRef.current.getBoundingClientRect()
+				: { left: 0 };
 
-			// Get the bounding rectangle of the range
+			const range = selection.getRangeAt(0).cloneRange();
 			const rect = range.getBoundingClientRect();
+			setPosition({
+				y: rect.top,
+				x: rect.left - left,
+			});
+		}
+	};
 
-			// Reference to the scrollable editor container
-			const editorElement = editorRef.current;
-
-			if (editorElement) {
-				// Get the bounding rectangle of the editor
-				const editorRect = editorElement.getBoundingClientRect();
-
-				// Get the scroll position of the editor container
-
-				// Calculate the position relative to the editor
-				if (!scrollRef.current) {
-					return {
-						x: rect.left - editorRect.left,
-						y: rect.bottom - editorRect.top,
-					};
-				}
-				console.log(scrollRef.current.scrollTop);
-				const x = rect.left - editorRect.left;
-				const y = rect.bottom - editorRect.top + scrollRef.current.scrollTop;
-
-				// Set the position of the command palette
-				setPosition({ x, y });
-				setToggleCommand(true);
+	const executeCommand = (command: string) => {
+		console.log(command);
+		switch (command) {
+			case "Bold": {
+				clearCurrentLeafContent(editor);
+				createLeaf("bold", true);
+				break;
+			}
+			case "Italic": {
+				clearCurrentLeafContent(editor);
+				createLeaf("italic", true);
+				break;
+			}
+			case "Code": {
+				clearCurrentLeafContent(editor);
+				createLeaf("code", true);
+				break;
+			}
+			case "Header": {
+				clearCurrentLeafContent(editor);
+				createHeaderBlock();
+				break;
+			}
+			default: {
+				toast({
+					title: "Invalid Command",
+					description: "The inputted command is invalid",
+					variant: "destructive",
+				});
 			}
 		}
 	};
@@ -278,7 +272,19 @@ const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 		if (isMarkActive("url")) {
 			Editor.removeMark(editor, "url");
 		}
+
 		switch (e.key) {
+			// Submit Command
+
+			case "Enter": {
+				if (toggleCommand) {
+					e.preventDefault();
+					const currentCommand = getCommandFromLeaf(editor);
+					executeCommand(currentCommand.slice(1));
+				}
+				break;
+			}
+
 			// Element Blocks
 
 			case "`": {
@@ -353,23 +359,23 @@ const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 		};
 	}, []);
 
-	// will prob delete this:
-	useEffect(() => {
-		const currentCharacter = getCharacterBefore(editor);
-		currentCharacter[currentCharacter.length - 1] === "/"
-			? setToggleCommand(true)
-			: setToggleCommand(false);
-	}, [editor.selection]);
-
 	useEffect(() => {
 		const deleteEntireLeaf = () => {
-			useEditorMarks().isCommandActive() && clearCurrentLeafContent(editor);
-			createLeaf("command", false);
+			if (useEditorMarks().isCommandActive()) {
+				clearCurrentLeafContent(editor);
+				createLeaf("command", false);
+				setToggleCommand(false);
+			}
+		};
+		const allowEntireLeaf = () => {
+			createLeaf("command", true);
+			setToggleCommand(true);
 		};
 		// check if first char of command leaf is a /, if isnt /, delete leaf.
-		isValidCommandBlock(editor)
-			? createLeaf("command", true)
-			: deleteEntireLeaf();
+		isValidCommandBlock(editor) ? allowEntireLeaf() : deleteEntireLeaf();
+		if (toggleCommand) {
+			setCommandFilter(getCommandFromLeaf(editor));
+		}
 	}, [editor.selection]);
 
 	return (
@@ -378,7 +384,7 @@ const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 			initialValue={initialValue}
 			onChange={(newValue) => setEditorContent(newValue)}
 		>
-			<div onKeyUp={handleKeyUp} ref={editorRef} className="markdown-content">
+			<div onKeyUp={handleCommandKeyUp} className="markdown-content">
 				<div
 					className={cn(
 						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
@@ -396,17 +402,25 @@ const TextEditor = ({ task, scrollRef }: TextEditorProps) => {
 						// Others
 						selection={editor.selection}
 					/>
-					<Editable
-						onKeyDown={handleSetEditorContent}
-						renderLeaf={renderLeaf}
-						renderElement={renderElement}
-						className="min-h-[160px] w-full py-4 px-3"
-					/>
+					<div ref={editorRef}>
+						<Editable
+							onKeyDown={handleSetEditorContent}
+							renderLeaf={renderLeaf}
+							renderElement={renderElement}
+							className="min-h-[160px] w-full py-4 px-3"
+						/>
+					</div>
 				</div>
 			</div>
 
-			{useEditorMarks().isCommandActive() && (
-				<TextEditorCommand cursorPosition={position} />
+			{toggleCommand && (
+				<TextEditorCommand
+					cursorPosition={position}
+					commandFilter={commandFilter}
+					editor={editor}
+					executeCommand={executeCommand}
+					setToggleCommand={setToggleCommand}
+				/>
 			)}
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
