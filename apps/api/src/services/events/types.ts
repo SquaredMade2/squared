@@ -14,14 +14,7 @@ export type FullNotification = Notification & {
 	Task: Task;
 };
 
-export type TaskEventsReturn = Promise<
-	(
-		| {
-				[key: string]: { oldValue: TaskValue; newValue: TaskValue };
-		  }
-		| Commit
-	)[]
->;
+export type TaskEventsReturn = Promise<(TaskEvent | Commit)[]>;
 
 export interface EventRpc {
 	getTaskEvents: ({ taskId }: { taskId: string }) => TaskEventsReturn;
@@ -32,11 +25,13 @@ export interface EventRpc {
 		taskId,
 		authorId,
 		changes,
+		previousTask,
 	}: {
 		taskId: string;
 		authorId: string;
-		changes: Partial<TaskEvent>;
-	}) => Promise<TaskEvent>;
+		changes: Partial<Task>;
+		previousTask: Task;
+	}) => Promise<TaskEvent | null>;
 	createNotification: ({
 		userId,
 		description,

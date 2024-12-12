@@ -1,5 +1,10 @@
-"use client";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { userService } from "@/lib/services";
+import { useModalStore } from "@/store";
+import { TODO } from "@squared/context";
+import type { Team, User, Workspace } from "@squared/db";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -8,49 +13,43 @@ import {
 	getFilteredRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { userService } from "@/lib/services";
-import { useModalStore } from "@/store";
-import { TODO } from "@squared/context";
-import type { User, Workspace } from "@squared/db";
 import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 
 export type MemberWithRole = User & {
 	role: "admin" | "member";
 };
+
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
 	workspace: Workspace | null;
+	team: Team | null;
 }
 
 interface CsvType {
 	name: string;
 	email: string;
 	role: "admin" | "member";
-	teams: string;
+	teams?: string;
 	active: string;
 	lastLogin: Date;
 }
+
 export function DataTable({ columns, data }: DataTableProps) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [searchTerm, setSearchTerm] = useState<string>("");
-	const { setShowWorkspaceInvite } = useModalStore((state) => state);
+	const [searchTerm, setSearchTerm] = useState("");
 	const [membersCsv, setMembersCsv] = useState<CsvType[] | null>(null);
+	const { setShowWorkspaceInvite } = useModalStore((state) => state);
 
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
 		setSearchTerm(value);
-
 		// Set filter for both name and email columns
 		table.getColumn("name")?.setFilterValue(value);
 		table.getColumn("email")?.setFilterValue(value);
 	};
+
 	const table = useReactTable({
 		data,
 		columns,
