@@ -96,6 +96,14 @@ function SettingsNavbarContent() {
 									>
 										Integrations
 									</Button>
+									{/* add auth check for admins */}
+									<Button
+										variant="ghost"
+										className="w-full justify-start"
+										onClick={() => navigateTo(`${workspace?.url}/admin`)}
+									>
+										Admin Tools
+									</Button>
 								</div>
 							</div>
 
