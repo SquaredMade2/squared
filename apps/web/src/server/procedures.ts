@@ -18,9 +18,14 @@ import { j } from "./__internals/j";
  * You can remove this if you don't like it, but caching can massively speed up your database queries.
  */
 
-const extendedContextMiddleware = j.middleware(async ({ next }) => {
+const extendedContextMiddleware = j.middleware(async ({ c, next }) => {
+	const variables = env(c);
+	const serverUrl = variables.NEXT_PUBLIC_SERVER;
+
+	const authService = new AuthService(serverUrl);
+
 	// Whatever you put inside of `next` is accessible to all following middlewares
-	return await next({});
+	return await next({ authService });
 });
 
 const authMiddleware = j.middleware(async ({ c, next }) => {
