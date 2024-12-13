@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { priorityOptions } from "@/lib/constants";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import { TODO } from "@squared/context";
-import type { Priority } from "@squared/db";
+import type { Priority, TaskEvent } from "@squared/db";
 
 const PriorityDropdown = () => {
 	const { toast } = useToast();
@@ -22,6 +22,7 @@ const PriorityDropdown = () => {
 		(state) => state,
 	);
 	const user = useUserStore((state) => state.user);
+	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
 
@@ -42,6 +43,12 @@ const PriorityDropdown = () => {
 				}),
 			);
 			setCurrentTask({ ...currentTask, priority: newPriority });
+
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: taskId,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
 		} catch {
 			toast({
 				title: "Error updating priority",
