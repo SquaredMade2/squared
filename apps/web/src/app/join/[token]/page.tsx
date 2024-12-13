@@ -2,21 +2,18 @@
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { useToast } from "@/components/ui/use-toast";
-import { userService, workspaceService } from "@/lib/services";
-import { useUserStore } from "@/store";
+import { workspaceService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function TokenVerificationPage({
 	params,
 }: { params: { token: string } }) {
 	const router = useRouter();
-	const { setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
 	const { toast } = useToast();
-	const [isVerifying, setIsVerifying] = useState(true);
 
 	useEffect(() => {
 		const verifyToken = async () => {
@@ -27,9 +24,10 @@ export default function TokenVerificationPage({
 						userId: session.user.id,
 					});
 					if (workspace) {
-						setUser(
-							await userService.getUser(TODO, { userId: session.user.id }),
-						);
+						toast({
+							title: "Joining Workspace",
+							variant: "default",
+						});
 						router.push(`/${workspace.url}`);
 					} else {
 						router.push("/");
@@ -45,20 +43,15 @@ export default function TokenVerificationPage({
 			} else if (status === "unauthenticated") {
 				router.push(`/login?token=${params.token}`);
 			}
-			setIsVerifying(false);
 		};
 
 		verifyToken();
-	}, [status, session, params.token, router, toast]);
+	}, []);
 
-	if (isVerifying) {
-		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<SquaredLoader />
-				<span className="ml-2">Verifying invitation...</span>
-			</div>
-		);
-	}
-
-	return null;
+	return (
+		<div className="w-full flex flex-col items-center justify-center gap-4 min-h-screen">
+			<SquaredLoader />
+			<p className="text-lg">Verifying invitation...</p>
+		</div>
+	);
 }
