@@ -34,7 +34,10 @@ const TaskPage = () => {
 					taskId: currentTask.id,
 				})
 				.catch((error) => {
-					console.error('Error setting last viewed task:', error);
+					toast({
+						title: error,
+						variant: "destructive"
+					});
 				});
 		}
 	}, [currentTask, user]);
