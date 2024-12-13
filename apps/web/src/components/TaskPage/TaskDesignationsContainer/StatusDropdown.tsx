@@ -10,17 +10,18 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { statusOptions } from "@/lib/constants";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
-import type { Status } from "@squared/db";
+import type { Status, TaskEvent } from "@squared/db";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const { setEvents } = useEventStore((state) => state);
 	const user = useUserStore((state) => state.user);
 
 	if (!currentTask) return null;
@@ -41,6 +42,12 @@ const StatusDropdown = () => {
 				}),
 			);
 			setCurrentTask({ ...currentTask, status: newStatus });
+
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: taskId,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
 		} catch {
 			toast({
 				title: "Error updating status",

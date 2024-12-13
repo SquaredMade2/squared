@@ -1,12 +1,13 @@
-import { sprintService, taskService } from "@/lib/services";
+import { eventService, sprintService, taskService } from "@/lib/services";
 import {
+	useEventStore,
 	useSprintStore,
 	useTaskStore,
 	useTeamStore,
 	useUserStore,
 } from "@/store";
 import { TODO } from "@squared/context";
-import type { Sprint } from "@squared/db";
+import type { Sprint, TaskEvent } from "@squared/db";
 import { useEffect, useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
@@ -18,6 +19,7 @@ const SprintCombobox = () => {
 		(state) => state,
 	);
 	const user = useUserStore((state) => state.user);
+	const { setEvents } = useEventStore((state) => state);
 	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
 
 	const taskId = currentTask?.id ?? "";
@@ -47,6 +49,11 @@ const SprintCombobox = () => {
 		});
 		updateTask(updatedTask);
 		setCurrentTask(updatedTask);
+		const updatedEvents = await eventService.getTaskEvents(TODO, {
+			taskId: taskId,
+		});
+		// TODO: Will remove type coercion once commits are implemented
+		setEvents(updatedEvents as TaskEvent[]);
 		setOpen(false);
 	};
 
