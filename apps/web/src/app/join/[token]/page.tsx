@@ -6,7 +6,7 @@ import { workspaceService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function TokenVerificationPage({
 	params,
@@ -14,6 +14,7 @@ export default function TokenVerificationPage({
 	const router = useRouter();
 	const { data: session, status } = useSession();
 	const { toast } = useToast();
+	const hasRunRef = useRef(false);
 
 	useEffect(() => {
 		const verifyToken = async () => {
@@ -44,8 +45,10 @@ export default function TokenVerificationPage({
 				router.push(`/login?token=${params.token}`);
 			}
 		};
-
-		verifyToken();
+		if (!hasRunRef.current) {
+			verifyToken();
+			hasRunRef.current = true;
+		}
 	}, []);
 
 	return (
