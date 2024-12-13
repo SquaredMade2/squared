@@ -1,7 +1,7 @@
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { TODO } from "@squared/context";
-import type { Task } from "@squared/db";
+import type { Task, TaskEvent } from "@squared/db";
 import { useEffect, useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
@@ -11,6 +11,7 @@ const ParentTaskCombobox = () => {
 		(state) => state,
 	);
 	const user = useUserStore((state) => state.user);
+	const { setEvents } = useEventStore((event) => event);
 	const [parentTask, setParentTask] = useState<Task | null>(null);
 
 	const taskId = currentTask?.id ?? "";
@@ -30,6 +31,12 @@ const ParentTaskCombobox = () => {
 		});
 		updateTask(updatedTask);
 		setCurrentTask(updatedTask);
+
+		const updatedEvents = await eventService.getTaskEvents(TODO, {
+			taskId: taskId,
+		});
+		// TODO: Will remove type coercion once commits are implemented
+		setEvents(updatedEvents as TaskEvent[]);
 		setOpen(false);
 	};
 

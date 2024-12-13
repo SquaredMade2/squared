@@ -136,6 +136,7 @@ export type AddRetrospectiveItemResponse = {
 	authorId: string;
 	content: string;
 	id: string;
+	likes: string[];
 	type: "toImprove" | "wentWell" | "actionItems";
 };
 
@@ -150,6 +151,20 @@ export type UpdateRetrospectiveItemResponse = {
 	authorId: string;
 	content: string;
 	id: string;
+	likes: string[];
+	type: "toImprove" | "wentWell" | "actionItems";
+};
+
+export type LikeRetrospectiveItemRequest = {
+	retrospectiveItemId: string;
+	userId: string;
+};
+
+export type LikeRetrospectiveItemResponse = {
+	authorId: string;
+	content: string;
+	id: string;
+	likes: string[];
 	type: "toImprove" | "wentWell" | "actionItems";
 };
 
@@ -162,18 +177,21 @@ export type GetRetrospectiveItemsResponse = {
 		authorId: string;
 		content: string;
 		id: string;
+		likes: string[];
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	toImprove: {
 		authorId: string;
 		content: string;
 		id: string;
+		likes: string[];
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	wentWell: {
 		authorId: string;
 		content: string;
 		id: string;
+		likes: string[];
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 };
@@ -261,6 +279,16 @@ export class SprintService extends RPCContextClient {
 		req: UpdateRetrospectiveItemRequest,
 	): Promise<UpdateRetrospectiveItemResponse> {
 		return this.request(ctx, "updateRetrospectiveItem", req);
+	}
+
+	/**
+	 * likeRetrospectiveItem method
+	 */
+	likeRetrospectiveItem(
+		ctx: Context,
+		req: LikeRetrospectiveItemRequest,
+	): Promise<LikeRetrospectiveItemResponse> {
+		return this.request(ctx, "likeRetrospectiveItem", req);
 	}
 
 	/**
