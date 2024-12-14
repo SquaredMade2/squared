@@ -61,7 +61,7 @@ const StatusDropdown = () => {
 			onValueChange={(value) => handleSelectStatus(value as Status)}
 			value={sidebarStatus}
 		>
-			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
+			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10 px-4 py-2">
 				<SelectValue placeholder="Select status">
 					<div className="w-full flex items-center justify-between">
 						<StatusIcon status={sidebarStatus || "todo"} />
