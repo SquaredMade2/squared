@@ -10,7 +10,7 @@ export const createModalStore = (
 		showRename: false,
 		renameData: null,
 		showLabelModal: false,
-		labelData: null,
+		labelData: {},
 		showCommand: false,
 		showWorkspaceInvite: false,
 		showSwitchWorkspace: false,

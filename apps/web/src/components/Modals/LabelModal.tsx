@@ -1,5 +1,6 @@
 import { useModalStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -15,18 +16,33 @@ const formSchema = z.object({
 });
 
 export const LabelModal = () => {
-	const { showLabelModal, setShowLabelModal } = useModalStore((state) => state);
+	const { showLabelModal, setShowLabelModal, labelData } = useModalStore(
+		(state) => state,
+	);
+
+	useEffect(() => {
+		if (labelData.name) {
+			form.setValue("name", labelData.name);
+		}
+		if (labelData.description) {
+			form.setValue("description", labelData.description);
+		}
+	}, [showLabelModal]);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: { name: "", description: "" },
 	});
 
+	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
+		console.log(values);
+	};
+
 	return (
 		<Dialog open={showLabelModal} onOpenChange={setShowLabelModal}>
 			<DialogContent>
 				<Form {...form}>
-					<form>
+					<form onSubmit={form.handleSubmit(handleLabelSubmit)}>
 						<FormField
 							control={form.control}
 							name="name"

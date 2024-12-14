@@ -6,7 +6,7 @@ export type ModalState = {
 	showRename: boolean;
 	renameData: Task | null;
 	showLabelModal: boolean;
-	labelData: Label | null;
+	labelData: Partial<Label>;
 	showCommand: boolean;
 	showWorkspaceInvite: boolean;
 	showSwitchWorkspace: boolean;
@@ -20,7 +20,7 @@ type ModalActions = {
 	setShowRename: (input: boolean) => void;
 	setRenameData: (input: Task) => void;
 	setShowLabelModal: (input: boolean) => void;
-	setLabelData: (input: Label) => void;
+	setLabelData: (input: Partial<Label>) => void;
 	setShowCommand: (input: boolean) => void;
 	setShowWorkspaceInvite: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;
