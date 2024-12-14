@@ -10,6 +10,7 @@ export type ModalState = {
 	showSwitchWorkspace: boolean;
 	showLinkForm: boolean;
 	showTaskSelector: boolean;
+	showLabelModal: boolean;
 };
 
 type ModalActions = {
@@ -22,6 +23,7 @@ type ModalActions = {
 	setShowSwitchWorkspace: (input: boolean) => void;
 	setShowTaskSelector: (input: boolean) => void;
 	setShowLinkForm: (input: boolean) => void;
+	setShowLabelModal: (input: boolean) => void;
 };
 
 export type ModalStore = ModalState & ModalActions;

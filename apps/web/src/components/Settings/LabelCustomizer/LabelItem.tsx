@@ -11,7 +11,6 @@ import type { Label } from "@squared/db";
 import { Ellipsis } from "lucide-react";
 
 export const LabelItem = ({ label }: { label: Label }) => {
-	console.log(label);
 	return (
 		<Card className="py-1 px-4 my-2">
 			<div className="p-4 flex items-center justify-between">
