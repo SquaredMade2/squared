@@ -43,6 +43,11 @@ afterAll(async () => {
 	try {
 		await prisma.$disconnect();
 
+		// Reset the database
+		execSync("pnpm run --filter=@squared/db db:reset", {
+			stdio: "inherit",
+		});
+
 		// Stop the test database
 		execSync("pnpm run --filter=@squared/seed docker:db:down", {
 			stdio: "inherit",
@@ -52,7 +57,7 @@ afterAll(async () => {
 	}
 }, 30000); // Add a timeout for afterAll
 
-beforeEach(async () => {
+afterEach(async () => {
 	// Clean up the database before each test
 	const tables =
 		await prisma.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
