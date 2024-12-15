@@ -57,7 +57,7 @@ afterAll(async () => {
 	}
 }, 30000); // Add a timeout for afterAll
 
-afterEach(async () => {
+beforeEach(async () => {
 	// Clean up the database before each test
 	const tables =
 		await prisma.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public'`;

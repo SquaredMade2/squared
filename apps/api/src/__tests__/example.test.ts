@@ -8,7 +8,5 @@ describe("API Tests", () => {
 		expect(response.text).toBe("ok");
 	});
 
-	it("should be true", () => expect(true).toBe(true));
-
 	// Add more tests here
 });
