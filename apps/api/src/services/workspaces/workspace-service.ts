@@ -286,6 +286,21 @@ export class WorkspaceService implements WorkspaceRpc {
 			});
 		}
 	}
+	async deleteWorkspaceLabel({
+		workspaceId,
+		labelId,
+	}: { workspaceId: string; labelId: string }) {
+		this.logger.info("Deleting workspace label");
+		const workspace = await this.db.workspace.findUnique({
+			where: { id: workspaceId },
+			include: { Labels: true },
+		});
+		if (!workspace) this.throwError("Workspace not found.");
+		const labelExists = workspace.Labels.some((label) => label.id === labelId);
+		if (!labelExists) this.throwError("Label not found.");
+
+		await this.db.label.delete({ where: { id: labelId } });
+	}
 	private verifyToken(token: string): string | null {
 		try {
 			const decoded = jwt.verify(token, this.JWT_SECRET) as {

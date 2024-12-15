@@ -40,4 +40,8 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}) => Promise<void>;
+	deleteWorkspaceLabel: (args: {
+		workspaceId: string;
+		labelId: string;
+	}) => Promise<void>;
 }

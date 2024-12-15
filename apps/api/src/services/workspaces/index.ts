@@ -74,6 +74,13 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.void(),
 	},
+	deleteWorkspaceLabel: {
+		input: z.object({
+			workspaceId: z.string(),
+			labelId: z.string(),
+		}),
+		output: z.void(),
+	},
 });
 
 export type WorkspaceRpcSchema = typeof workspaceRpcSchema;
@@ -90,6 +97,8 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
+		deleteWorkspaceLabel: (input) =>
+			workspaceService.deleteWorkspaceLabel(input),
 	});
 
 export { WorkspaceService } from "./workspace-service";
