@@ -16,9 +16,8 @@ const formSchema = z.object({
 });
 
 export const LabelModal = () => {
-	const { showLabelModal, setShowLabelModal, labelData } = useModalStore(
-		(state) => state,
-	);
+	const { showLabelModal, setShowLabelModal, labelData, setLabelData } =
+		useModalStore((state) => state);
 
 	useEffect(() => {
 		if (labelData.name) {
@@ -34,8 +33,15 @@ export const LabelModal = () => {
 		defaultValues: { name: "", description: "" },
 	});
 
+	const handleDiscard = () => {
+		setLabelData({});
+		form.reset();
+		setShowLabelModal(false);
+	};
+
 	const handleLabelSubmit = async (values: z.infer<typeof formSchema>) => {
 		console.log(values);
+		// try{}
 	};
 
 	return (
@@ -68,8 +74,16 @@ export const LabelModal = () => {
 							)}
 						/>
 						<DialogFooter>
-							<Button>Discard</Button>
-							<Button>Create Label</Button>
+							<Button
+								onClick={handleDiscard}
+								className="hover:cursor-pointer bg-transparent text-foreground"
+								variant="destructive"
+							>
+								Discard
+							</Button>
+							<Button type="submit" className="hover:cursor-pointer">
+								Create Label
+							</Button>
 						</DialogFooter>
 					</form>
 				</Form>
