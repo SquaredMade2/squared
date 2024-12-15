@@ -5,6 +5,14 @@ export type WorkspaceParams = {
 	name: string;
 };
 
+export type LabelParams = {
+	name: string;
+	description: string | null;
+	color: string;
+	workspaceId: string;
+	id: string;
+};
+
 export type WorkspaceLabels = Workspace & {
 	Labels: Label[];
 };
@@ -40,6 +48,11 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		email: string | string[];
 	}) => Promise<void>;
+	updateWorkspaceLabel: (args: {
+		workspaceId: string;
+		labelId: string;
+		data: LabelParams;
+	}) => Promise<Label>;
 	deleteWorkspaceLabel: (args: {
 		workspaceId: string;
 		labelId: string;
