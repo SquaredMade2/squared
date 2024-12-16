@@ -238,7 +238,6 @@ model SavedFilter {
   workspaceId String?
   teamId      String?
   authorId    String
-  sprintId    String?
 
   type SavedFilterType
 

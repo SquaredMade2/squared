@@ -217,16 +217,20 @@ const GroupColumn = ({
 		if (sprintId) {
 			// todo add sprintId filter here
 
-			console.log("sortedItems is", sortedItems);
-			console.log("allItems is", allItems);
+			// console.log("sortedItems is", sortedItems); //todo delete
+			// console.log("allItems is", allItems); //todo delete
+		} else{
+			return sortedItems.map((sortedTask, index) => {
+				// sortedItems is used to find the correct item in allItems and then this is rendered in the return statement
+				const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+	
+				return item?.render(index);
+			});
 		}
 
-		return sortedItems.map((sortedTask, index) => {
-			// sortedItems is used to find the correct item in allItems and then this is rendered in the return statement
-			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
 
-			return item?.render(index);
-		});
+
+	
 	};
 
 	return (
