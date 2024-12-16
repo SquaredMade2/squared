@@ -155,6 +155,7 @@ export const userSchema = createSchema<User>()(
 		googleId: z.string().nullable(),
 		githubUsername: z.string().nullable(),
 		githubId: z.string().nullable(),
+		lastViewedTaskId: z.string().nullable()
 	}),
 );
 
