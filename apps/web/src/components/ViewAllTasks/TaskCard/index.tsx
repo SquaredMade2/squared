@@ -2,6 +2,7 @@
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
+import type { DraggableProvided } from "@hello-pangea/dnd";
 import type { Task, User } from "@squared/db";
 import { useEffect, useState } from "react";
 import TaskContextMenu from "./TaskContextMenu";
@@ -46,11 +47,11 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 
 	return (
 		<Draggable draggableId={task.id} index={index}>
-			{(provided) => (
+			{(dragProvided: DraggableProvided) => (
 				<div
-					{...provided.draggableProps}
-					{...provided.dragHandleProps}
-					ref={provided.innerRef}
+					ref={(ref) => dragProvided.innerRef(ref)}
+					{...dragProvided.draggableProps}
+					{...dragProvided.dragHandleProps}
 				>
 					<ContextMenu>
 						<ContextMenuTrigger>
