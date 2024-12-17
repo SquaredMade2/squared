@@ -1,9 +1,7 @@
 import request from "supertest";
-import { createApp } from "../api/app";
+import { app } from "../api/app";
 
 describe("API Tests", () => {
-	const app = createApp();
-
 	it("should respond with 200 OK for the root path", async () => {
 		const response = await request(app).get("/");
 		expect(response.status).toBe(200);

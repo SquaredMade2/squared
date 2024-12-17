@@ -10,6 +10,7 @@
     "db:gen": "prisma generate",
     "db:deploy": "prisma migrate deploy",
     "db:push": "prisma db push --skip-generate",
+    "db:reset": "npx prisma migrate reset --force",
     "postinstall": "pnpm run db:gen",
     "studio": "prisma studio"
   },
