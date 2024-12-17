@@ -103,21 +103,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		});
 	};
 
-	const renderTask = (
-		task: Task,
-		index: number,
-		dropProvided: DroppableProvided,
-	) => (
+	const renderTask = (task: Task, index: number) => (
 		<div
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard
-				task={task}
-				index={index}
-				location={"dashboard"}
-				dropProvided={dropProvided}
-			/>
+			<TaskCard task={task} index={index} location={"dashboard"} />
 		</div>
 	);
 
@@ -125,18 +116,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		task: Task,
 		index: number,
 		subtasks: Task[],
-		dropProvided: DroppableProvided,
 	) => (
 		<div
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard
-				task={task}
-				index={index}
-				location={"dashboard"}
-				dropProvided={dropProvided}
-			/>
+			<TaskCard task={task} index={index} location={"dashboard"} />
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
 					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
@@ -181,7 +166,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		</div>
 	);
 
-	const renderGroup = (tasks: Task[], dropProvided: DroppableProvided) => {
+	const renderGroup = (tasks: Task[]) => {
 		const parentIdsForGroup = getParentTaskIds();
 		const subtaskParentIds = new Set(
 			tasks.filter((t) => t.parentId).map((t) => t.parentId),
@@ -196,12 +181,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						return {
 							task,
 							render: (index: number) =>
-								renderTaskWithSubtasks(task, index, subtasks, dropProvided),
+								renderTaskWithSubtasks(task, index, subtasks),
 						};
 					}
 					return {
 						task,
-						render: (index: number) => renderTask(task, index, dropProvided),
+						render: (index: number) => renderTask(task, index),
 					};
 				}
 				return null;
@@ -277,7 +262,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 									ref={dropProvided.innerRef}
 									className="flex items-start min-w-[200px] min-h-[60px]"
 								>
-									{showTasks && renderGroup(tasks, dropProvided)}
+									{showTasks && renderGroup(tasks)}
+									{dropProvided.placeholder}
 								</div>
 							</div>
 						</div>

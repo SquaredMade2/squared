@@ -2,10 +2,7 @@
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
-import type {
-	DraggableProvided,
-	DraggableStateSnapshot,
-} from "@hello-pangea/dnd";
+import type { DraggableProvided } from "@hello-pangea/dnd";
 import type { Task, User } from "@squared/db";
 import { useEffect, useState } from "react";
 import TaskContextMenu from "./TaskContextMenu";
@@ -13,13 +10,7 @@ import TaskGrid from "./TaskGrid";
 import TaskList from "./TaskList";
 import type { TaskCardProps } from "./interfaces";
 
-const TaskCard = ({
-	task,
-	index,
-	highlightText,
-	location,
-	dropProvided,
-}: TaskCardProps) => {
+const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const [assignee, setAssignee] = useState<User | null>(null);
 	const { view } = useViewStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
@@ -56,11 +47,12 @@ const TaskCard = ({
 
 	return (
 		<Draggable draggableId={task.id} index={index}>
-			{(
-				dragProvided: DraggableProvided,
-				dragSnapshot: DraggableStateSnapshot,
-			) => (
-				<div {...provided.draggableProps} {...provided.dragHandleProps}>
+			{(dragProvided: DraggableProvided) => (
+				<div
+					ref={(ref) => dragProvided.innerRef(ref)}
+					{...dragProvided.draggableProps}
+					{...dragProvided.dragHandleProps}
+				>
 					<ContextMenu>
 						<ContextMenuTrigger>
 							<TaskContextMenu task={task} />

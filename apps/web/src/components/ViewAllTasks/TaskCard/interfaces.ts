@@ -1,4 +1,3 @@
-import type { DroppableProvided } from "@hello-pangea/dnd";
 import type { Label, Task, User } from "@squared/db";
 
 export interface TaskGridProps {
@@ -23,7 +22,6 @@ export interface TaskCardProps {
 	index: number;
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
-	dropProvided?: DroppableProvided;
 	isSubtask?: boolean;
 }
 
