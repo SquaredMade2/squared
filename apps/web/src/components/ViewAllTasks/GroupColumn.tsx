@@ -5,10 +5,14 @@ import {
 	compareNullableStrings,
 } from "@/utils/compareSorting";
 import { Droppable } from "@hello-pangea/dnd";
+import type {
+	DroppableProvided,
+	DroppableStateSnapshot,
+} from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
-import { ScrollArea } from "../ui/scroll-area";
+// import { ScrollArea } from "../ui/scroll-area";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
@@ -99,12 +103,21 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		});
 	};
 
-	const renderTask = (task: Task, index: number) => (
+	const renderTask = (
+		task: Task,
+		index: number,
+		dropProvided: DroppableProvided,
+	) => (
 		<div
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard task={task} index={index} location={"dashboard"} />
+			<TaskCard
+				task={task}
+				index={index}
+				location={"dashboard"}
+				dropProvided={dropProvided}
+			/>
 		</div>
 	);
 
@@ -112,12 +125,18 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		task: Task,
 		index: number,
 		subtasks: Task[],
+		dropProvided: DroppableProvided,
 	) => (
 		<div
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard task={task} index={index} location={"dashboard"} />
+			<TaskCard
+				task={task}
+				index={index}
+				location={"dashboard"}
+				dropProvided={dropProvided}
+			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
 					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
@@ -162,7 +181,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		</div>
 	);
 
-	const renderGroup = (tasks: Task[]) => {
+	const renderGroup = (tasks: Task[], dropProvided: DroppableProvided) => {
 		const parentIdsForGroup = getParentTaskIds();
 		const subtaskParentIds = new Set(
 			tasks.filter((t) => t.parentId).map((t) => t.parentId),
@@ -177,12 +196,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						return {
 							task,
 							render: (index: number) =>
-								renderTaskWithSubtasks(task, index, subtasks),
+								renderTaskWithSubtasks(task, index, subtasks, dropProvided),
 						};
 					}
 					return {
 						task,
-						render: (index: number) => renderTask(task, index),
+						render: (index: number) => renderTask(task, index, dropProvided),
 					};
 				}
 				return null;
@@ -228,6 +247,44 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				isListView={isListView}
 			/>
 			<Droppable droppableId={group}>
+				{(
+					dropProvided: DroppableProvided,
+					dropSnapshot: DroppableStateSnapshot,
+				) => (
+					<div
+						className={`
+              ${dropSnapshot.isDraggingOver ? "h-full" : ""}
+              ${
+								dropSnapshot.isDraggingOver && view === "grid"
+									? ""
+									: `${
+											view === "grid"
+												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
+												: "overflow-y-auto"
+										}`
+							}
+            `}
+					>
+						<div
+							className={
+								isListView
+									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full overflow-auto"
+									: "flex flex-col z-30 w-full gap-2 items-center overflow-auto"
+							}
+						>
+							<div className="grow inline-flex">
+								<div
+									ref={dropProvided.innerRef}
+									className="flex items-start min-w-[200px] min-h-[60px]"
+								>
+									{showTasks && renderGroup(tasks, dropProvided)}
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+			</Droppable>
+			{/* <Droppable droppableId={group}>
 				{(provided, snapshot) => (
 					<ScrollArea
 						ref={provided.innerRef}
@@ -257,7 +314,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						{provided.placeholder}
 					</ScrollArea>
 				)}
-			</Droppable>
+			</Droppable> */}
 			{!isListView && <GridColumnNewTaskButton group={group} />}
 		</div>
 	);
