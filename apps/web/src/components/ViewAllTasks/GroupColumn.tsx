@@ -240,7 +240,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			>
 				{(
 					dropProvided: DroppableProvided,
-					// dropSnapshot: DroppableStateSnapshot,
+					dropSnapshot: DroppableStateSnapshot,
 				) => (
 					<div
 						className={`
@@ -249,18 +249,14 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
 									: "flex flex-col z-30 w-full gap-2 items-center h-full"
 							}
+							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
 							`}
-						// ${
-						// 	dropSnapshot.isDraggingOver && view === "grid"
-						// 		? "h-[calc(100vh-250px)]"
-						// 		: "h-full"
-						// }
 					>
-						<div className="overflow-auto">
-							<div className="grow inline-flex">
+						<div className="w-full overflow-auto">
+							<div className="w-full grow inline-flex">
 								<div
 									ref={dropProvided.innerRef}
-									className="flex flex-col items-start min-w-[200px] min-h-[60px]"
+									className="flex flex-col items-start w-full min-w-[200px] min-h-[60px]"
 								>
 									{showTasks && renderGroup(tasks)}
 									{dropProvided.placeholder}
