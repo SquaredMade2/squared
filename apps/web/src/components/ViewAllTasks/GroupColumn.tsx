@@ -12,7 +12,6 @@ import type {
 import { Priority, Status, type Task } from "@squared/db";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
-// import { ScrollArea } from "../ui/scroll-area";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
@@ -266,37 +265,6 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 					</div>
 				)}
 			</Droppable>
-			{/* <Droppable droppableId={group}>
-				{(provided, snapshot) => (
-					<ScrollArea
-						ref={provided.innerRef}
-						{...provided.droppableProps}
-						className={`
-              ${snapshot.isDraggingOver ? "h-full" : ""}
-              ${
-								snapshot.isDraggingOver && view === "grid"
-									? ""
-									: `${
-											view === "grid"
-												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
-												: "overflow-y-auto"
-										}`
-							} 
-            `}
-					>
-						<div
-							className={
-								isListView
-									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full gap-2 items-center"
-							}
-						>
-							{showTasks && renderGroup(tasks)}
-						</div>
-						{provided.placeholder}
-					</ScrollArea>
-				)}
-			</Droppable> */}
 			{!isListView && <GridColumnNewTaskButton group={group} />}
 		</div>
 	);
