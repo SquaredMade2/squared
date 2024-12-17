@@ -231,36 +231,36 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				numberOfTasks={tasks.length}
 				isListView={isListView}
 			/>
-			<Droppable droppableId={group}>
+			<Droppable
+				droppableId={group}
+				type="TASK"
+				direction="vertical"
+				isCombineEnabled={true}
+				ignoreContainerClipping={true}
+			>
 				{(
 					dropProvided: DroppableProvided,
-					dropSnapshot: DroppableStateSnapshot,
+					// dropSnapshot: DroppableStateSnapshot,
 				) => (
 					<div
 						className={`
-              ${dropSnapshot.isDraggingOver ? "h-full" : ""}
-              ${
-								dropSnapshot.isDraggingOver && view === "grid"
-									? ""
-									: `${
-											view === "grid"
-												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
-												: "overflow-y-auto"
-										}`
+							${
+								view === "grid"
+									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
+									: "flex flex-col z-30 w-full gap-2 items-center h-full"
 							}
-            `}
+							`}
+						// ${
+						// 	dropSnapshot.isDraggingOver && view === "grid"
+						// 		? "h-[calc(100vh-250px)]"
+						// 		: "h-full"
+						// }
 					>
-						<div
-							className={
-								isListView
-									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full overflow-auto"
-									: "flex flex-col z-30 w-full gap-2 items-center overflow-auto"
-							}
-						>
+						<div className="overflow-auto">
 							<div className="grow inline-flex">
 								<div
 									ref={dropProvided.innerRef}
-									className="flex items-start min-w-[200px] min-h-[60px]"
+									className="flex flex-col items-start min-w-[200px] min-h-[60px]"
 								>
 									{showTasks && renderGroup(tasks)}
 									{dropProvided.placeholder}
