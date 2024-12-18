@@ -27,6 +27,7 @@ export type CreateFilterParams = {
 	filter: FilterCondition[];
 	teamId: string;
 	authorId: string;
+	sprintId? :string | null
 };
 
 export type SavedFilter = Omit<SavedFilterType, "filter"> & {
