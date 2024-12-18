@@ -67,6 +67,7 @@ const savedFilterSchema = createSchema<SavedFilter>()(
 		workspaceId: z.string().nullable(),
 		teamId: z.string().nullable(),
 		authorId: z.string(),
+		sprintId: z.string().nullable(),
 	}),
 );
 

@@ -7,7 +7,7 @@ import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
 import ViewsDetailSidebar from "@/components/ViewsDetailSidebar";
 import { useGroups } from "@/hooks/useGroups";
 import { useTaskDashboard } from "@/hooks/useTaskDashboard";
-import { useSprintStore } from "@/store";
+// import { useSprintStore } from "@/store";
 import { useTeams } from "@/hooks/useTeams";
 import { filterService } from "@/lib/services";
 import { useFilterStore, useViewStore } from "@/store";
@@ -29,6 +29,9 @@ export default function FilterViewPage() {
 
 	const [filter, setFilter] = useState<SavedFilter | null>(null);
 	// todo get sprintId from filter
+
+	console.log(filter); //todo delete
+
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
@@ -90,7 +93,7 @@ export default function FilterViewPage() {
 			pageTitle={filter.name}
 		>
 			<div className={`flex flex-grow ${view === "grid" && "mr-4"}`}>
-			{/* todo add ViewAllTasks here */}
+				{/* todo add ViewAllTasks here */}
 				<ViewAllTasks getGroupedColumns={getGroupedColumns} />
 				{view === "grid" &&
 					!getGridOptions().showEmptyGroups &&

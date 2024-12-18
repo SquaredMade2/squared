@@ -100,6 +100,7 @@ export type GetFiltersRequest = {
 export type GetFiltersResponse = {
 	authorId: string;
 	description: string | null;
+	sprintId: string | null;
 	filter: {
 		field:
 			| "id"
