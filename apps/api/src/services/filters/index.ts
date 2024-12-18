@@ -67,6 +67,7 @@ const savedFilterSchema = createSchema<SavedFilter>()(
 		workspaceId: z.string().nullable(),
 		teamId: z.string().nullable(),
 		authorId: z.string(),
+		sprintId: z.string().nullable()
 	}),
 );
 
@@ -78,6 +79,7 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 			filter: z.array(filterConditionSchema),
 			teamId: z.string(),
 			authorId: z.string(),
+			sprintId:z.string().nullable()
 		}),
 		output: savedFilterSchema,
 	},
