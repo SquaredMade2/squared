@@ -6,6 +6,7 @@ import type { Team } from "@squared/db";
 import { LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import AddTeamButton from "../Buttons/AddTeamButton";
 import {
 	Accordion,
 	AccordionContent,
@@ -50,35 +51,42 @@ export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 	};
 
 	return (
-		<ScrollArea className="h-[calc(100vh-16rem)]">
-			<Accordion
-				type="multiple"
-				value={openItems}
-				onValueChange={handleAccordionChange}
-			>
-				{teams?.map((team: Team) => (
-					<AccordionItem value={team.id} key={team.id} className="pb-2">
-						<AccordionTrigger
-							className={cn(
-								buttonVariants({ variant: "ghost" }),
-								"justify-between",
-							)}
-						>
-							<div className="flex items-center gap-2">
-								<LayoutGrid className="text-primary h-4 w-4" />
-								<span className="text-sm font-medium">{team.name}</span>
-							</div>
-						</AccordionTrigger>
-						<AccordionContent className="pl-6 pt-1">
-							<NavBarTeams
-								teamIdentifier={team.identifier}
-								currentPage={currentPage}
-								active={currentTeam?.id === team.id}
-							/>
-						</AccordionContent>
-					</AccordionItem>
-				))}
-			</Accordion>
-		</ScrollArea>
+		<>
+			<ScrollArea className="h-[calc(100vh-16rem)]">
+				<Accordion
+					type="multiple"
+					value={openItems}
+					onValueChange={handleAccordionChange}
+				>
+					{teams?.map((team: Team) => (
+						<AccordionItem value={team.id} key={team.id} className="pb-2">
+							<AccordionTrigger
+								className={cn(
+									buttonVariants({ variant: "ghost" }),
+									"justify-between",
+								)}
+							>
+								<div className="flex items-center gap-2">
+									<LayoutGrid className="text-primary h-4 w-4" />
+									<span className="text-sm font-medium">{team.name}</span>
+								</div>
+							</AccordionTrigger>
+							<AccordionContent className="pl-6 pt-1">
+								<NavBarTeams
+									teamIdentifier={team.identifier}
+									currentPage={currentPage}
+									active={currentTeam?.id === team.id}
+								/>
+							</AccordionContent>
+						</AccordionItem>
+					))}
+				</Accordion>
+				{/* NOTE
+				Add in check to show button only if user is an Admin of the workspace once Admin privileges are implemented
+				isUserAdmin && <AddTeamButton />
+				*/}
+				<AddTeamButton />
+			</ScrollArea>
+		</>
 	);
 }
