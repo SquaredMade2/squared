@@ -231,6 +231,7 @@ export type UpdateFilterResponse = {
 			| string[];
 	}[];
 	id: string;
+	sprintId: string | null;
 	name: string;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
