@@ -23,7 +23,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		input: z.object({
 			userId: z.string(),
 			avatarUrl: z.string(),
-		}),
+		}).strict(),
 		output: userSchema,
 	},
 	updateUserNotifications: {
@@ -48,7 +48,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 	getTeamUsers: {
 		input: z.object({
 			teamId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(userSchema),
 	},
 	getUserAvatars: {
@@ -72,14 +72,14 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 	getUserTeams: {
 		input: z.object({
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(teamSchema),
 	},
 	setLastViewedTask: {
 		input: z.object({
 		  userId: z.string(),
 		  taskId: z.string(),
-		}),
+		}).strict(),
 		output: userSchema,  
 	  },
 });
