@@ -74,54 +74,70 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		output: taskSchema,
 	},
 	deleteTask: {
-		input: z.object({
-			taskId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				taskId: z.string(),
+			})
+			.strict(),
 		output: z.void(),
 	},
 	getTask: {
-		input: z.object({
-			taskId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				taskId: z.string(),
+			})
+			.strict(),
 		output: taskSchema,
 	},
 	getTaskByIdentifier: {
-		input: z.object({
-			identifier: z.string(),
-			workspaceId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				identifier: z.string(),
+				workspaceId: z.string(),
+			})
+			.strict(),
 		output: taskSchema,
 	},
 	getTeamTasks: {
-		input: z.object({
-			teamId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				teamId: z.string(),
+			})
+			.strict(),
 		output: z.array(taskSchema),
 	},
 	addActiveSprintTasks: {
-		input: z.object({
-			sprintId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				sprintId: z.string(),
+			})
+			.strict(),
 		output: z.number(),
 	},
 	addSprintTasks: {
-		input: z.object({
-			sprintId: z.string(),
-			taskIds: z.array(z.string()),
-		}).strict(),
+		input: z
+			.object({
+				sprintId: z.string(),
+				taskIds: z.array(z.string()),
+			})
+			.strict(),
 		output: z.number(),
 	},
 	reorderSubtasks: {
-		input: z.object({
-			parentId: z.string(),
-			newOrder: z.array(z.string()),
-		}).strict(),
+		input: z
+			.object({
+				parentId: z.string(),
+				newOrder: z.array(z.string()),
+			})
+			.strict(),
 		output: z.array(taskSchema),
 	},
 	getSubtasks: {
-		input: z.object({
-			parentId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				parentId: z.string(),
+			})
+			.strict(),
 		output: z.array(taskSchema),
 	},
 });
@@ -134,12 +150,14 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 		updateTask: async (input) => taskService.updateTask(input),
 		deleteTask: async (input) => taskService.deleteTask(input),
 		getTask: async (input) => taskService.getTask(input),
-		getTaskByIdentifier: async (input) => taskService.getTaskByIdentifier(input),
+		getTaskByIdentifier: async (input) =>
+			taskService.getTaskByIdentifier(input),
 		getTeamTasks: async (input) => taskService.getTeamTasks(input),
-		addActiveSprintTasks: async (input) => taskService.addActiveSprintTasks(input),
+		addActiveSprintTasks: async (input) =>
+			taskService.addActiveSprintTasks(input),
 		addSprintTasks: async (input) => taskService.addSprintTasks(input),
 		reorderSubtasks: async (input) => taskService.reorderSubtasks(input),
-		getSubtasks: async (input) => taskService.getSubtasks(input)
+		getSubtasks: async (input) => taskService.getSubtasks(input),
 	});
 
 export { TaskService } from "./task-service";

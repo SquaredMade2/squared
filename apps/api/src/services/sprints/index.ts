@@ -66,16 +66,20 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 			}),
 		).strict(),
 		output: z.union([
-			z.object({
-				status: z.number(),
-				message: z.string(),
-				variant: z.literal("destructive"),
-			}).strict(),
-			z.object({
-				data: sprintSchema,
-				message: z.string(),
-				variant: z.literal("default"),
-			}).strict(),
+			z
+				.object({
+					status: z.number(),
+					message: z.string(),
+					variant: z.literal("destructive"),
+				})
+				.strict(),
+			z
+				.object({
+					data: sprintSchema,
+					message: z.string(),
+					variant: z.literal("default"),
+				})
+				.strict(),
 		]),
 	},
 	getSprintTasks: {
@@ -99,12 +103,14 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	},
 	updateRetrospectiveItem: {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
-			z.object({
-				retrospectiveItemId: z.string(),
-				type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
-				content: z.string().optional(),
-				sprintId: z.string(),
-			}).strict(),
+			z
+				.object({
+					retrospectiveItemId: z.string(),
+					type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
+					content: z.string().optional(),
+					sprintId: z.string(),
+				})
+				.strict(),
 		),
 		output: retrospectiveItemReturnSchema.strict(),
 	},

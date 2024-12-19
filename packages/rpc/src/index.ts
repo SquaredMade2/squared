@@ -5,6 +5,7 @@ import type { ErrorRequestHandler, RequestHandler } from "express";
 import { z } from "zod";
 
 import type { Logger } from "@squared/logger";
+import createCustomLogger from "@squared/logger";
 import {
 	type Method,
 	type MethodDetails,
@@ -16,7 +17,6 @@ import {
 	requestContexts,
 	serviceWithSchema,
 } from "./rpc-types";
-import createCustomLogger from "@squared/logger";
 
 export * from "./rpc-types";
 
@@ -241,21 +241,27 @@ export function createRpcHandler<
 			responseSchema: output,
 		}),
 	);
-	const logger = createCustomLogger("api")
+	const logger = createCustomLogger("api");
 
-	const {interfaces} = getExposedMeta({expose, service: serviceName});
-	const serviceMethods = interfaces.reduce((init, curr) => {
-		return {
-			// biome-ignore lint/performance/noAccumulatingSpread: <Needed to create data structure required for serviceWithSchema functions>
-			...init,
-			[curr.methodName]: curr
-		}
-	}, {} as {[K in keyof T]: MethodDetails})
-	const {implementation: zodImplementation, meta} = serviceWithSchema(implementation, {
-		name: serviceName,
-		methods: serviceMethods,
-		logger
-	})
+	const { interfaces } = getExposedMeta({ expose, service: serviceName });
+	const serviceMethods = interfaces.reduce(
+		(init, curr) => {
+			return {
+				// biome-ignore lint/performance/noAccumulatingSpread: <Needed to create data structure required for serviceWithSchema functions>
+				...init,
+				[curr.methodName]: curr,
+			};
+		},
+		{} as { [K in keyof T]: MethodDetails },
+	);
+	const { implementation: zodImplementation, meta } = serviceWithSchema(
+		implementation,
+		{
+			name: serviceName,
+			methods: serviceMethods,
+			logger,
+		},
+	);
 
 	// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
 	const methods: Record<string, Method<any, any>> = {};

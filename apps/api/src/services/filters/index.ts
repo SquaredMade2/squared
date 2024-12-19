@@ -58,27 +58,31 @@ const filterConditionSchema = createSchema<FilterCondition>()(
 );
 
 const savedFilterSchema = createSchema<SavedFilter>()(
-	z.object({
-		id: z.string(),
-		name: z.string(),
-		description: z.string().nullable(),
-		type: z.enum(["TEAM", "WORKSPACE"]),
-		filter: z.array(filterConditionSchema),
-		workspaceId: z.string().nullable(),
-		teamId: z.string().nullable(),
-		authorId: z.string(),
-	}).strict(),
+	z
+		.object({
+			id: z.string(),
+			name: z.string(),
+			description: z.string().nullable(),
+			type: z.enum(["TEAM", "WORKSPACE"]),
+			filter: z.array(filterConditionSchema),
+			workspaceId: z.string().nullable(),
+			teamId: z.string().nullable(),
+			authorId: z.string(),
+		})
+		.strict(),
 );
 
 export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 	createFilter: {
-		input: z.object({
-			name: z.string(),
-			description: z.string().nullable(),
-			filter: z.array(filterConditionSchema),
-			teamId: z.string(),
-			authorId: z.string(),
-		}).strict(),
+		input: z
+			.object({
+				name: z.string(),
+				description: z.string().nullable(),
+				filter: z.array(filterConditionSchema),
+				teamId: z.string(),
+				authorId: z.string(),
+			})
+			.strict(),
 		output: savedFilterSchema,
 	},
 	getFilters: {
@@ -86,14 +90,16 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 		output: z.array(savedFilterSchema),
 	},
 	updateFilter: {
-		input: z.object({
-			filterId: z.string(),
-			filters: z.object({
-				name: z.string().optional(),
-				description: z.string().nullable(),
-				filter: z.array(filterConditionSchema),
-			}),
-		}).strict(),
+		input: z
+			.object({
+				filterId: z.string(),
+				filters: z.object({
+					name: z.string().optional(),
+					description: z.string().nullable(),
+					filter: z.array(filterConditionSchema),
+				}),
+			})
+			.strict(),
 		output: savedFilterSchema.strict(),
 	},
 	deleteFilter: {

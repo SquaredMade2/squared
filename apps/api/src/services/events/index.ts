@@ -16,21 +16,25 @@ import type { EventRpc, FullNotification } from "./types";
 // Define type-safe Zod schemas
 
 const fullNotificationSchema = createSchema<FullNotification>()(
-	z.object({
-		...notificationSchema.shape,
-		Workspace: workspaceSchema,
-		Task: taskSchema,
-	}).strict(),
+	z
+		.object({
+			...notificationSchema.shape,
+			Workspace: workspaceSchema,
+			Task: taskSchema,
+		})
+		.strict(),
 );
 
 const taskEventSchema = createSchema<TaskEvent>()(
-	z.object({
-		id: z.string(),
-		authorId: z.string(),
-		createdAt: z.date(),
-		taskId: z.string(),
-		message: z.string(),
-	}).strict(),
+	z
+		.object({
+			id: z.string(),
+			authorId: z.string(),
+			createdAt: z.date(),
+			taskId: z.string(),
+			message: z.string(),
+		})
+		.strict(),
 );
 
 const taskValueSchema = z.union([
@@ -54,30 +58,36 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 		output: z.array(fullNotificationSchema.strict()),
 	},
 	createLogEvent: {
-		input: z.object({
-			taskId: z.string(),
-			authorId: z.string(),
-			changes: z.record(taskValueSchema),
-			previousTask: taskSchema,
-		}).strict(),
+		input: z
+			.object({
+				taskId: z.string(),
+				authorId: z.string(),
+				changes: z.record(taskValueSchema),
+				previousTask: taskSchema,
+			})
+			.strict(),
 		output: taskEventSchema.nullable(),
 	},
 	createNotification: {
-		input: z.object({
-			userId: z.string(),
-			workspaceId: z.string(),
-			taskId: z.string(),
-			description: z.string(),
-			type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
-		}).strict(),
+		input: z
+			.object({
+				userId: z.string(),
+				workspaceId: z.string(),
+				taskId: z.string(),
+				description: z.string(),
+				type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
+			})
+			.strict(),
 		output: notificationSchema,
 	},
 	toggleNotification: {
-		input: z.object({
-			notificationIds: z.array(z.string()),
-			read: z.boolean().optional(),
-			dismissed: z.boolean().optional(),
-		}).strict(),
+		input: z
+			.object({
+				notificationIds: z.array(z.string()),
+				read: z.boolean().optional(),
+				dismissed: z.boolean().optional(),
+			})
+			.strict(),
 		output: z.array(notificationSchema),
 	},
 	deleteNotification: {
