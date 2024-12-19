@@ -52,7 +52,11 @@ export const authRpcSchema = createServiceSchema<AuthRpc>()({
 	},
 	register: {
 		input: registerSchema,
-		output: userSchema.nullable(),
+		output: z.object({
+			user: userSchema.nullable(),
+			message: z.string().optional(),
+			variant: z.enum(["default", "destructive"]).nullable().optional(),
+		}),
 	},
 	verifyUser: {
 		input: z.object({ token: z.string() }).strict(),

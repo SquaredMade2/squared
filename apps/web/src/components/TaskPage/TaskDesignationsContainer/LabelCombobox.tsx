@@ -15,10 +15,15 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import {
+	useEventStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { TODO } from "@squared/context";
-import type { Label } from "@squared/db";
+import type { Label, TaskEvent } from "@squared/db";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
@@ -30,6 +35,7 @@ const LabelCombobox = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const { setEvents } = useEventStore((event) => event);
 
 	if (!currentTask) return null;
 
@@ -60,6 +66,11 @@ const LabelCombobox = () => {
 			}),
 		);
 		setCurrentTask({ ...currentTask, labels: labelIds });
+		const updatedEvents = await eventService.getTaskEvents(TODO, {
+			taskId: taskId,
+		});
+		// TODO: Will remove type coercion once commits are implemented
+		setEvents(updatedEvents as TaskEvent[]);
 		setOpen(false);
 	};
 
@@ -93,9 +104,9 @@ const LabelCombobox = () => {
 	return (
 		<div className="md:w-full">
 			<div className="hidden md:block w-full">
-				<div className="mb-2 space-x-1 space-y-1">
-					{taskLabels.map((label: Label) => (
-						<span key={label.id}>
+			<div className="mb-2 flex flex-wrap space-x-1 space-y-2 items-center ">
+					{taskLabels.map((label: Label, index: number) => (
+						<span key={label.id} className={index === 0 ? 'mt-2' : ''}>
 							<LabelBadge label={label} />
 						</span>
 					))}
@@ -108,9 +119,9 @@ const LabelCombobox = () => {
 						className="md:w-full justify-start w-fit h-8 md:h-10"
 					>
 						<>
-							<div className="hidden md:flex">
+							<div className="hidden md:flex item">
 								<Plus className="size-4 mr-2" />
-								<span className="ml-1.5">Add label</span>
+								<span>Add label</span>
 							</div>
 							<div className="md:hidden">{renderLabelButton()}</div>
 						</>

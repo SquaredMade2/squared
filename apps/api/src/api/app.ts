@@ -17,7 +17,7 @@ export const prisma = new PrismaClient({
 
 const logger = createCustomLogger("api");
 
-export function createApp() {
+function createApp() {
 	const app = express();
 
 	const productionDomain = "https://app.squaredmade.com";
@@ -75,3 +75,5 @@ export function createApp() {
 
 	return app;
 }
+
+export const app = createApp();
