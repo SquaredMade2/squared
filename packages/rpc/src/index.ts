@@ -14,7 +14,9 @@ import {
 	type ServiceSet,
 	ValidationError,
 	requestContexts,
+	serviceWithSchema,
 } from "./rpc-types";
+import createCustomLogger from "@squared/logger";
 
 export * from "./rpc-types";
 
@@ -235,14 +237,30 @@ export function createRpcHandler<
 	const expose: MethodDetails[] = Object.entries(schema).map(
 		([methodName, { input, output }]) => ({
 			methodName,
-			requestSchema: serializeZodSchema(input),
-			responseSchema: serializeZodSchema(output),
+			requestSchema: input,
+			responseSchema: output,
 		}),
 	);
+	const logger = createCustomLogger("api")
+
+	const {interfaces} = getExposedMeta({expose, service: serviceName});
+	const serviceMethods = interfaces.reduce((init, curr) => {
+		return {
+			// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+			...init,
+			[curr.methodName]: curr
+		}
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	}, {} as {[K in keyof T]: MethodDetails<any, any>})
+	const {implementation: zodImplementation, meta} = serviceWithSchema(implementation, {
+		name: serviceName,
+		methods: serviceMethods,
+		logger
+	})
 
 	// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
 	const methods: Record<string, Method<any, any>> = {};
-	for (const [key, func] of Object.entries(implementation)) {
+	for (const [key, func] of Object.entries(zodImplementation)) {
 		// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
 		methods[key] = func as Method<any, any>;
 	}
@@ -250,7 +268,7 @@ export function createRpcHandler<
 	return {
 		meta: {
 			service: serviceName,
-			expose,
+			expose: meta.expose,
 		},
 		implementation: methods,
 	};
