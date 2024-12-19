@@ -82,7 +82,6 @@ export type GetSprintTasksRequest = {
 
 export type GetSprintTasksResponse = {
 	assigneeId: string | null;
-	assigneeName: string | null;
 	authorId: string;
 	dateCreated: Date;
 	deleted: boolean;
@@ -127,14 +126,17 @@ export type EndSprintResponse = {
 };
 
 export type AddRetrospectiveItemRequest = {
+	authorId: string;
 	content: string;
 	sprintId: string;
 	type: "wentWell" | "toImprove" | "actionItems";
 };
 
 export type AddRetrospectiveItemResponse = {
+	authorId: string;
 	content: string;
 	id: string;
+	likes: string[];
 	type: "toImprove" | "wentWell" | "actionItems";
 };
 
@@ -146,8 +148,23 @@ export type UpdateRetrospectiveItemRequest = {
 };
 
 export type UpdateRetrospectiveItemResponse = {
+	authorId: string;
 	content: string;
 	id: string;
+	likes: string[];
+	type: "toImprove" | "wentWell" | "actionItems";
+};
+
+export type LikeRetrospectiveItemRequest = {
+	retrospectiveItemId: string;
+	userId: string;
+};
+
+export type LikeRetrospectiveItemResponse = {
+	authorId: string;
+	content: string;
+	id: string;
+	likes: string[];
 	type: "toImprove" | "wentWell" | "actionItems";
 };
 
@@ -157,18 +174,24 @@ export type GetRetrospectiveItemsRequest = {
 
 export type GetRetrospectiveItemsResponse = {
 	actionItems: {
+		authorId: string;
 		content: string;
 		id: string;
+		likes: string[];
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	toImprove: {
+		authorId: string;
 		content: string;
 		id: string;
+		likes: string[];
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 	wentWell: {
+		authorId: string;
 		content: string;
 		id: string;
+		likes: string[];
 		type: "toImprove" | "wentWell" | "actionItems";
 	}[];
 };
@@ -256,6 +279,16 @@ export class SprintService extends RPCContextClient {
 		req: UpdateRetrospectiveItemRequest,
 	): Promise<UpdateRetrospectiveItemResponse> {
 		return this.request(ctx, "updateRetrospectiveItem", req);
+	}
+
+	/**
+	 * likeRetrospectiveItem method
+	 */
+	likeRetrospectiveItem(
+		ctx: Context,
+		req: LikeRetrospectiveItemRequest,
+	): Promise<LikeRetrospectiveItemResponse> {
+		return this.request(ctx, "likeRetrospectiveItem", req);
 	}
 
 	/**

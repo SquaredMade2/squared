@@ -1,17 +1,18 @@
-import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
+import type { RetroItem } from "@/app/[workspace]/team/[identifier]/sprints/[sprintId]/retrospective/page";
+import type { RetrospectiveItemType } from "@squared/db";
 import AddRetroItemModal from "./AddRetroItemModal";
-
-type RetroItem = Pick<RetrospectiveItem, "id" | "content" | "type">;
+import { RetroItemCard } from "./RetroItemCard";
 
 interface RetroColumnProps {
 	title: string;
 	type: RetrospectiveItemType;
 	items: RetroItem[];
 	onAddItem: (type: RetrospectiveItemType, content: string) => void;
+	onLikeItem: (itemId: string, userId: string) => void;
 }
 
 export const RetroColumn = ({
@@ -19,6 +20,7 @@ export const RetroColumn = ({
 	type,
 	items,
 	onAddItem,
+	onLikeItem,
 }: RetroColumnProps) => {
 	return (
 		<Card className="h-full flex flex-col bg-background">
@@ -33,23 +35,16 @@ export const RetroColumn = ({
 							ref={provided.innerRef}
 							className="flex-grow mb-4 space-y-2 min-h-[200px]"
 						>
-							{items.map((item, index) => (
-								<Draggable key={item.id} draggableId={item.id} index={index}>
-									{(provided) => (
-										<div
-											ref={provided.innerRef}
-											{...provided.draggableProps}
-											{...provided.dragHandleProps}
-										>
-											<Card>
-												<CardContent className="p-2">
-													{item.content}
-												</CardContent>
-											</Card>
-										</div>
-									)}
-								</Draggable>
-							))}
+							{items.map((item, index) => {
+								return (
+									<RetroItemCard
+										key={item.id}
+										item={item}
+										index={index}
+										onLikeItem={onLikeItem}
+									/>
+								);
+							})}
 							{provided.placeholder}
 						</div>
 					)}

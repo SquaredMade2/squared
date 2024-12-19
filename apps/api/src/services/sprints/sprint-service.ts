@@ -137,6 +137,7 @@ export class SprintService implements SprintRpc {
 
 	async addRetrospectiveItem({
 		sprintId,
+		authorId,
 		type,
 		content,
 	}: AddRetrospectivePayload): Promise<RetroItemReturn> {
@@ -151,9 +152,16 @@ export class SprintService implements SprintRpc {
 			data: {
 				content,
 				type,
+				authorId,
 				...sprintRelationField,
 			},
-			select: { id: true, content: true, type: true },
+			select: {
+				id: true,
+				content: true,
+				type: true,
+				authorId: true,
+				likes: true,
+			},
 		});
 	}
 
@@ -176,7 +184,49 @@ export class SprintService implements SprintRpc {
 				type,
 				...sprintRelationField,
 			},
-			select: { id: true, content: true, type: true },
+			select: {
+				id: true,
+				content: true,
+				type: true,
+				authorId: true,
+				likes: true,
+			},
+		});
+	}
+
+	async likeRetrospectiveItem({
+		retrospectiveItemId,
+		userId,
+	}: {
+		retrospectiveItemId: string;
+		userId: string;
+	}): Promise<RetroItemReturn> {
+		this.logger.info("Upvoting retrospective item", {
+			retrospectiveItemId,
+			userId,
+		});
+		const retroItem = await this.db.retrospectiveItem.findUnique({
+			where: { id: retrospectiveItemId },
+		});
+
+		if (!retroItem) {
+			throw new Error("Retrospective item not found");
+		}
+
+		const updatedLikes = retroItem.likes.includes(userId)
+			? retroItem.likes.filter((id) => id !== userId)
+			: [...retroItem.likes, userId];
+
+		return this.db.retrospectiveItem.update({
+			where: { id: retrospectiveItemId },
+			data: { likes: updatedLikes },
+			select: {
+				id: true,
+				content: true,
+				type: true,
+				authorId: true,
+				likes: true,
+			},
 		});
 	}
 

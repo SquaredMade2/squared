@@ -60,6 +60,13 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: workspaceLabelSchema.nullable(),
 	},
+	removeUserFromWorkspace: {
+		input: z.object({
+			workspaceId: z.string(),
+			userId: z.string(),
+		}),
+		output: z.void(),
+	},
 	inviteToWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
@@ -80,6 +87,8 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		deleteWorkspace: (input) => workspaceService.deleteWorkspace(input),
 		getUserWorkspaces: (input) => workspaceService.getUserWorkspaces(input),
 		joinWorkspace: (input) => workspaceService.joinWorkspace(input),
+		removeUserFromWorkspace: (input) =>
+			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
 	});
 
