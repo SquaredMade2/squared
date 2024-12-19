@@ -15,12 +15,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
@@ -100,18 +95,11 @@ const LabelCombobox = () => {
 		<div className="md:w-full">
 			<div className="hidden md:block w-full">
 				<div className="mb-5 space-x-2 space-y-1">
-					<TooltipProvider>
-						{taskLabels.map((label: Label) => (
-							<Tooltip key={label.id}>
-								<TooltipTrigger asChild>
-									<span>
-										<LabelBadge label={label} />
-									</span>
-								</TooltipTrigger>
-								<TooltipContent>{label.description}</TooltipContent>
-							</Tooltip>
-						))}
-					</TooltipProvider>
+					{taskLabels.map((label: Label) => (
+						<span key={label.id}>
+							<LabelBadge label={label} />
+						</span>
+					))}
 				</div>
 			</div>
 			<Popover open={open} onOpenChange={setOpen}>
