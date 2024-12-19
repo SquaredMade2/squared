@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { priorityOptions } from "@/lib/constants";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import { TODO } from "@squared/context";
-import type { Priority } from "@squared/db";
+import type { Priority, TaskEvent } from "@squared/db";
 
 const PriorityDropdown = () => {
 	const { toast } = useToast();
@@ -22,6 +22,7 @@ const PriorityDropdown = () => {
 		(state) => state,
 	);
 	const user = useUserStore((state) => state.user);
+	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
 
@@ -40,8 +41,14 @@ const PriorityDropdown = () => {
 					updaterId: user?.id || "",
 					priority: newPriority,
 				}),
-			);
+			); 
 			setCurrentTask({ ...currentTask, priority: newPriority });
+
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: taskId,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
 		} catch {
 			toast({
 				title: "Error updating priority",
@@ -55,7 +62,7 @@ const PriorityDropdown = () => {
 			onValueChange={(value) => handleSelectPriority(value as Priority)}
 			value={sidebarPriority}
 		>
-			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10">
+			<SelectTrigger className="md:grow flex flex-row items-center border-[0.8px] border-border text-card-foreground hover:cursor-pointer bg-transparent w-fit h-8 md:h-10 px-4 py-2">
 				<SelectValue placeholder="Select priority">
 					<div className="w-full flex items-center justify-between">
 						<div className="w-4 h-4 mr-2">
