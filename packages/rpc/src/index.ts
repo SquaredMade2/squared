@@ -246,12 +246,11 @@ export function createRpcHandler<
 	const {interfaces} = getExposedMeta({expose, service: serviceName});
 	const serviceMethods = interfaces.reduce((init, curr) => {
 		return {
-			// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+			// biome-ignore lint/performance/noAccumulatingSpread: <Needed to create data structure required for serviceWithSchema functions>
 			...init,
 			[curr.methodName]: curr
 		}
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	}, {} as {[K in keyof T]: MethodDetails<any, any>})
+	}, {} as {[K in keyof T]: MethodDetails})
 	const {implementation: zodImplementation, meta} = serviceWithSchema(implementation, {
 		name: serviceName,
 		methods: serviceMethods,

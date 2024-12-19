@@ -25,7 +25,7 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
 		likes: z.array(z.string()),
 	}),
-);
+).strict();
 
 export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	getSprints: {
@@ -117,7 +117,7 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 				retrospectiveItemId: z.string(),
 				userId: z.string(),
 			}),
-		),
+		).strict(),
 		output: retrospectiveItemReturnSchema,
 	},
 	getRetrospectiveItems: {

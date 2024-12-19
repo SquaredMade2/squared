@@ -20,7 +20,7 @@ const fullNotificationSchema = createSchema<FullNotification>()(
 		...notificationSchema.shape,
 		Workspace: workspaceSchema,
 		Task: taskSchema,
-	}),
+	}).strict(),
 );
 
 const taskEventSchema = createSchema<TaskEvent>()(
@@ -30,7 +30,7 @@ const taskEventSchema = createSchema<TaskEvent>()(
 		createdAt: z.date(),
 		taskId: z.string(),
 		message: z.string(),
-	}),
+	}).strict(),
 );
 
 const taskValueSchema = z.union([
@@ -46,7 +46,7 @@ const taskEventReturnSchema = z.array(z.union([taskEventSchema, commitSchema]));
 
 export const eventRpcSchema = createServiceSchema<EventRpc>()({
 	getTaskEvents: {
-		input: z.object({ taskId: z.string() }),
+		input: z.object({ taskId: z.string() }).strict(),
 		output: taskEventReturnSchema,
 	},
 	getNotifications: {
@@ -59,7 +59,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 			authorId: z.string(),
 			changes: z.record(taskValueSchema),
 			previousTask: taskSchema,
-		}),
+		}).strict(),
 		output: taskEventSchema.nullable(),
 	},
 	createNotification: {

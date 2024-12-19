@@ -25,53 +25,53 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	getWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
-		}),
+		}).strict(),
 		output: workspaceLabelSchema.nullable(),
 	},
 	getWorkspaceByUrl: {
 		input: z.object({
 			url: z.string(),
-		}),
+		}).strict(),
 		output: workspaceLabelSchema.nullable(),
 	},
 	updateWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
 			workspace: workspaceParamsSchema,
-		}),
+		}).strict(),
 		output: workspaceLabelSchema,
 	},
 	deleteWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
-		}),
+		}).strict(),
 		output: z.void(),
 	},
 	getUserWorkspaces: {
 		input: z.object({
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: z.array(workspaceLabelSchema),
 	},
 	joinWorkspace: {
 		input: z.object({
 			token: z.string(),
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: workspaceLabelSchema.nullable(),
 	},
 	removeUserFromWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
 			userId: z.string(),
-		}),
+		}).strict(),
 		output: z.void(),
 	},
 	inviteToWorkspace: {
 		input: z.object({
 			workspaceId: z.string(),
 			email: z.union([z.string(), z.array(z.string())]),
-		}),
+		}).strict(),
 		output: z.void(),
 	},
 });
