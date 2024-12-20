@@ -28,6 +28,23 @@ export const metadata: Metadata = {
 	},
 	description:
 		"Squared is a platform to help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squared",
+	openGraph: {
+		title: "Squared",
+		description:
+			"An invitation to join Squared. Help organize software development projects. Create new tasks, plan product goals, and setup milestones using Squred!",
+		url: "https://www.squared.com",
+		siteName: "Squared",
+		images: [
+			{
+				url: "https://nextjs.org/logo.png", // Must be an absolute URL
+				width: 800,
+				height: 600,
+				alt: "Squared logo",
+			},
+		],
+		locale: "en_US",
+		type: "website",
+	},
 };
 
 export default function RootLayout({
