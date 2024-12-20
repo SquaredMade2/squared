@@ -5,12 +5,15 @@ import FilterDropDown from "@/components/FilterDropdowns";
 import { SaveFilterForm } from "@/components/FilterDropdowns/SaveFilterForm";
 import { Button } from "@/components/ui/button";
 import { useFilterStore } from "@/store";
+
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // todo have to find a way to add sprintId to SavedFilterForm component when a filter is made on the sprints page
 
-const TopNavBar = ({ pageTitle }: { pageTitle?: string }) => {
+const TopNavBar = ({
+	pageTitle,
+}: { pageTitle?: string; sprintId?: string }) => {
 	const { currentFilters, clearFilter, showSaveForm, setShowSaveForm } =
 		useFilterStore((state) => state);
 	const pathname = usePathname();
@@ -21,6 +24,7 @@ const TopNavBar = ({ pageTitle }: { pageTitle?: string }) => {
 			setShowSaveForm(false);
 		}
 	}, [currentFilters]);
+
 	return (
 		<div className="flex flex-col flex-none justify-start items-start">
 			<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">

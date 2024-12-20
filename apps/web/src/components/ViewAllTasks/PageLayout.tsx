@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
 import { NoTasksNewTaskButton } from "../Modals";
 
+// todo add sprintId prop here?
 interface TaskPageLayoutProps {
 	loading: boolean;
 	authorized: boolean;

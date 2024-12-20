@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { filterService } from "@/lib/services";
 import {
 	useFilterStore,
+	useSprintStore,
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
@@ -114,6 +115,16 @@ export function SaveFilterForm({
 			? router.push(`${filterName}-${filterId}`)
 			: router.push(`views/${filterName}-${filterId}`);
 	};
+
+
+
+
+	const sprint = useSprintStore((state) => state.sprint);
+
+
+	console.log(sprint);
+
+	// todo in this onSubmit function add sprintId if the user is in the sprint page
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
