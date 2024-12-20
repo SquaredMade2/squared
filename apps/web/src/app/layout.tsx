@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 		siteName: "Squared",
 		images: [
 			{
-				url: "https://nextjs.org/logo.png",
+				url: "https://www.squared.com/logo.png",
 				width: 800,
 				height: 600,
 				alt: "Squared logo",

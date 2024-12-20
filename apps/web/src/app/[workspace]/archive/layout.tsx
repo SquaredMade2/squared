@@ -8,11 +8,11 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "workspace name",
 		description: "An invitation to join a workspace",
-		url: "https://nextjs.org",
+		url: "https://www.squared.com",
 		siteName: "Squared",
 		images: [
 			{
-				url: "https://nextjs.org/logo.png",
+				url: "https://www.squared.com/logo.png",
 				width: 800,
 				height: 600,
 				alt: "Squared logo",
