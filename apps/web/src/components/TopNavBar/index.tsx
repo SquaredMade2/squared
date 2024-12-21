@@ -9,8 +9,6 @@ import { useFilterStore } from "@/store";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// todo have to find a way to add sprintId to SavedFilterForm component when a filter is made on the sprints page
-
 const TopNavBar = ({
 	pageTitle,
 }: { pageTitle?: string; sprintId?: string }) => {
