@@ -1,5 +1,5 @@
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useUserStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
 import { TODO } from "@squared/context";
@@ -14,6 +14,7 @@ export function useTaskDashboard() {
 	const { loading: workspaceLoading, workspace } = useWorkspaces();
 	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
 	const [loading, setLoading] = useState(true);
+	const user = useUserStore((state) => state.user);
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
@@ -47,6 +48,7 @@ export function useTaskDashboard() {
 		};
 		await taskService.updateTask(TODO, {
 			id: updatedTask.id,
+			updaterId: user?.id || "",
 			status: updatedTask.status,
 		});
 		updateTask(updatedTask);

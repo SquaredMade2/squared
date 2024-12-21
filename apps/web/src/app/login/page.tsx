@@ -33,6 +33,7 @@ function LoginForm() {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
+			inviteToken && router.prefetch("/");
 			const response = await signIn("credentials", {
 				redirect: false,
 				email: data.email,
@@ -48,7 +49,6 @@ function LoginForm() {
 				});
 			}
 			router.refresh();
-			router.prefetch(inviteToken ? `/join/${inviteToken}` : "/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({

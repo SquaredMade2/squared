@@ -12,8 +12,10 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function WorkspaceDropdown() {
+	const router = useRouter();
 	const { workspace, workspaces, setWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
@@ -51,7 +53,10 @@ export function WorkspaceDropdown() {
 				{workspaces.map((workspace) => (
 					<DropdownMenuItem
 						key={workspace.id}
-						onSelect={() => setWorkspace(workspace)}
+						onSelect={() => {
+							setWorkspace(workspace);
+							router.push(`/${workspace?.url}`);
+						}}
 					>
 						<Avatar className="h-6 w-6 mr-2">
 							<AvatarFallback>{getInitials(workspace.name)}</AvatarFallback>

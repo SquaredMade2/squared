@@ -10,10 +10,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { effortEstimateOptions } from "@/lib/constants";
-import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { useTeamStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import {
+	useEventStore,
+	useTaskStore,
+	useTeamStore,
+	useUserStore,
+} from "@/store";
 import { TODO } from "@squared/context";
+import type { TaskEvent } from "@squared/db";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -22,9 +27,11 @@ const EffortEstimateDropdown = () => {
 	const { toast } = useToast();
 
 	const { team } = useTeamStore((state) => state);
+	const user = useUserStore((state) => state.user);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
 
@@ -52,6 +59,7 @@ const EffortEstimateDropdown = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					effortEstimate: newEffortEstimate.value as number,
 				}),
 			);
@@ -59,6 +67,11 @@ const EffortEstimateDropdown = () => {
 				...currentTask,
 				effortEstimate: newEffortEstimate.value as number,
 			});
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: taskId,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
 		} catch {
 			toast({
 				title: "Error updating effort estimate",

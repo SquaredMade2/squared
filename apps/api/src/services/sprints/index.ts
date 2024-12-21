@@ -20,8 +20,10 @@ import type {
 const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 	z.object({
 		id: z.string(),
+		authorId: z.string(),
 		content: z.string(),
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
+		likes: z.array(z.string()),
 	}),
 );
 
@@ -88,6 +90,7 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		input: createSchema<AddRetrospectivePayload>()(
 			z.object({
 				sprintId: z.string(),
+				authorId: z.string(),
 				type: z.enum(["wentWell", "toImprove", "actionItems"]),
 				content: z.string(),
 			}),
@@ -101,6 +104,18 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 				type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
 				content: z.string().optional(),
 				sprintId: z.string(),
+			}),
+		),
+		output: retrospectiveItemReturnSchema,
+	},
+	likeRetrospectiveItem: {
+		input: createSchema<{
+			retrospectiveItemId: string;
+			userId: string;
+		}>()(
+			z.object({
+				retrospectiveItemId: z.string(),
+				userId: z.string(),
 			}),
 		),
 		output: retrospectiveItemReturnSchema,
@@ -130,6 +145,8 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 		addRetrospectiveItem: (input) => sprintService.addRetrospectiveItem(input),
 		updateRetrospectiveItem: (input) =>
 			sprintService.updateRetrospectiveItem(input),
+		likeRetrospectiveItem: (input) =>
+			sprintService.likeRetrospectiveItem(input),
 		getRetrospectiveItems: (input) =>
 			sprintService.getRetrospectiveItems(input),
 	});

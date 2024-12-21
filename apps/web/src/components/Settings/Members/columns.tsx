@@ -1,15 +1,6 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import RemoveMemberButton from "./RemoveMemberButton";
 import type { MemberWithRole } from "./data-table";
 
 export const columns: ColumnDef<MemberWithRole>[] = [
@@ -24,7 +15,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 			return (
 				<div className="flex gap-2">
 					<Avatar>
-						<AvatarImage src={user.avatarUrl ?? undefined} />
+						<AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
 						<AvatarFallback>{placeholder}</AvatarFallback>
 					</Avatar>
 					<div className="flex items-start flex-col">
@@ -45,18 +36,19 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	},
 	{
 		accessorKey: "manage",
-		cell: () => {
+		cell: ({ row, column }) => {
+			const userId: string = row.original.id;
+			const { page, pageId, membersWithRoles, setPageUsers } =
+				column.columnDef.meta || {};
+
 			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="items-center">
-							<Ellipsis className="size-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent>
-						<DropdownMenuItem>Remove from Workspace</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<RemoveMemberButton
+					userId={userId}
+					page={page}
+					pageId={pageId}
+					membersWithRoles={membersWithRoles}
+					setPageUsers={setPageUsers}
+				/>
 			);
 		},
 	},

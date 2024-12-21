@@ -185,18 +185,47 @@ export class WorkspaceService implements WorkspaceRpc {
 		}
 
 		const [existingUserWorkspace, workspace, user, teams] =
-			await this.fetchJoinWorkspaceData(workspaceId, userId);
+			await this.fetchWorkspaceData(workspaceId, userId);
 
 		if (!user) this.throwError("User not found.");
 		if (existingUserWorkspace) return workspace;
 
-		this.validateJoinWorkspaceData(workspace, teams, user);
+		await this.validateJoinWorkspaceData(workspace, teams, user);
 
 		await this.createUserWorkspaceConnections(userId, workspaceId, teams);
 
 		await this.updateUserOnboarding(user);
 
 		return workspace;
+	}
+	async removeUserFromWorkspace({
+		workspaceId,
+		userId,
+	}: { workspaceId: string; userId: string }): Promise<void> {
+		this.logger.info("Removing user from workspace");
+
+		const workspaceTeams = await this.db.team.findMany({
+			where: { workspaceId },
+		});
+
+		if (workspaceTeams.length > 0) {
+			await Promise.all(
+				workspaceTeams.map(async (team) => {
+					const userTeam = await this.db.userTeam.findUnique({
+						where: { userId_teamId: { userId, teamId: team.id } },
+					});
+					if (userTeam) {
+						await this.db.userTeam.delete({
+							where: { userId_teamId: { userId, teamId: team.id } },
+						});
+					}
+				}),
+			);
+		}
+
+		await this.db.userWorkspace.delete({
+			where: { userId_workspaceId: { userId, workspaceId } },
+		});
 	}
 	async inviteToWorkspace({
 		workspaceId,
@@ -272,7 +301,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		this.logger.error(message);
 		throw new Error(message);
 	}
-	private async fetchJoinWorkspaceData(workspaceId: string, userId: string) {
+	private async fetchWorkspaceData(workspaceId: string, userId: string) {
 		return await Promise.all([
 			this.db.userWorkspace.findFirst({ where: { userId, workspaceId } }),
 			this.db.workspace.findUnique({

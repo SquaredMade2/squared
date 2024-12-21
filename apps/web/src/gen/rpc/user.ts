@@ -8,6 +8,7 @@ export type OnBoardUserRequest = {
 
 export type OnBoardUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -15,7 +16,6 @@ export type OnBoardUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -23,6 +23,7 @@ export type OnBoardUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserRequest = {
@@ -33,6 +34,7 @@ export type UpdateUserRequest = {
 
 export type UpdateUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -40,7 +42,6 @@ export type UpdateUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -48,6 +49,32 @@ export type UpdateUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
+};
+
+export type UpdateUserAvatarRequest = {
+	avatarUrl: string;
+	userId: string;
+};
+
+export type UpdateUserAvatarResponse = {
+	avatarUrl: string | null;
+	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	githubId: string | null;
+	githubUsername: string | null;
+	googleId: string | null;
+	id: string;
+	lastLogin: Date;
+	name: string;
+	onBoarding: boolean;
+	password: string | null;
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserNotificationsRequest = {
@@ -57,6 +84,7 @@ export type UpdateUserNotificationsRequest = {
 
 export type UpdateUserNotificationsResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -64,7 +92,6 @@ export type UpdateUserNotificationsResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -72,6 +99,7 @@ export type UpdateUserNotificationsResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type GetUserRequest = {
@@ -80,6 +108,7 @@ export type GetUserRequest = {
 
 export type GetUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -87,7 +116,6 @@ export type GetUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -95,6 +123,7 @@ export type GetUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 } | null;
 
 export type GetWorkspaceUsersRequest = {
@@ -103,6 +132,7 @@ export type GetWorkspaceUsersRequest = {
 
 export type GetWorkspaceUsersResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;
@@ -110,7 +140,6 @@ export type GetWorkspaceUsersResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	createdAt: Date;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -118,6 +147,31 @@ export type GetWorkspaceUsersResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
+}[];
+
+export type GetTeamUsersRequest = {
+	teamId: string;
+};
+
+export type GetTeamUsersResponse = {
+	avatarUrl: string | null;
+	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	githubId: string | null;
+	githubUsername: string | null;
+	googleId: string | null;
+	id: string;
+	lastLogin: Date;
+	name: string;
+	onBoarding: boolean;
+	password: string | null;
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+	verified: boolean;
+	lastViewedTaskId: string | null;
 }[];
 
 export type GetUserAvatarsRequest = {
@@ -153,6 +207,16 @@ export type GetUserTeamsResponse = {
 	workspaceId: string;
 }[];
 
+export type SetLastViewedTaskRequest = {
+	userId: string;
+	taskId: string;
+};
+
+export type SetLastViewedTaskResponse = {
+	success: boolean;
+	message: string;
+};
+
 /**
  * user service
  */
@@ -179,6 +243,16 @@ export class UserService extends RPCContextClient {
 		req: UpdateUserRequest,
 	): Promise<UpdateUserResponse> {
 		return this.request(ctx, "updateUser", req);
+	}
+
+	/**
+	 * updateUserAvatar method
+	 */
+	updateUserAvatar(
+		ctx: Context,
+		req: UpdateUserAvatarRequest,
+	): Promise<UpdateUserAvatarResponse> {
+		return this.request(ctx, "updateUserAvatar", req);
 	}
 
 	/**
@@ -209,6 +283,16 @@ export class UserService extends RPCContextClient {
 	}
 
 	/**
+	 * getTeamUsers method
+	 */
+	getTeamUsers(
+		ctx: Context,
+		req: GetTeamUsersRequest,
+	): Promise<GetTeamUsersResponse> {
+		return this.request(ctx, "getTeamUsers", req);
+	}
+
+	/**
 	 * getUserAvatars method
 	 */
 	getUserAvatars(
@@ -236,5 +320,15 @@ export class UserService extends RPCContextClient {
 		req: GetUserTeamsRequest,
 	): Promise<GetUserTeamsResponse> {
 		return this.request(ctx, "getUserTeams", req);
+	}
+
+	/**
+	 * setLastViewedTask method
+	 */
+	setLastViewedTask(
+		ctx: Context,
+		req: SetLastViewedTaskRequest,
+	): Promise<SetLastViewedTaskResponse> {
+		return this.request(ctx, "setLastViewedTask", req);
 	}
 }

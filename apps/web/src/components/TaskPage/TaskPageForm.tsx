@@ -1,12 +1,17 @@
 import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import {
+	useEventStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
-import type { Task } from "@squared/db";
+import type { Task, TaskEvent } from "@squared/db";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import type { OnChangeHandlerFunc } from "react-mentions";
@@ -15,9 +20,10 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const TaskPageForm = () => {
-	const { users } = useUserStore((state) => state);
+	const { users, user } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { updateTask, currentTask: task } = useTaskStore((state) => state);
+	const { setEvents } = useEventStore((state) => state);
 	const { toast } = useToast();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
@@ -44,23 +50,42 @@ export const TaskPageForm = () => {
 		setIsDescriptionFocused(false);
 		const changeMade: boolean =
 			updatedTitle !== task?.title || updatedDescription !== task?.description;
-		const titleOnlyChanged: boolean = updatedTitle !== task?.title;
+		const titleChanged: boolean = updatedTitle !== task?.title;
+		const descriptionChanged: boolean =
+			updatedDescription !== task?.description;
 		if (changeMade && task?.id !== undefined) {
 			if (task) {
 				try {
-					updateTask(
-						await taskService.updateTask(TODO, {
-							id: task.id,
-							title: transformedTitleInput,
-							description: transformedDescriptionInput,
-						}),
-					);
+					const updatedTask = await taskService.updateTask(TODO, {
+						id: task.id,
+						updaterId: user?.id || "",
+						title: transformedTitleInput,
+						description: transformedDescriptionInput,
+					});
+
+					updateTask(updatedTask);
+
+					const updatedEvents = await eventService.getTaskEvents(TODO, {
+						taskId: task.id,
+					});
+
+					// TODO: Will remove type coercion once commits are implemented
+					setEvents(updatedEvents as TaskEvent[]);
+
 					if (
-						titleOnlyChanged &&
+						titleChanged &&
 						e.target instanceof HTMLInputElement &&
 						e.target.name === "title"
 					) {
-						toast({ title: "Title Updated Successfully" });
+						toast({ title: "Title updated successfully" });
+					}
+
+					if (
+						descriptionChanged &&
+						e.target instanceof HTMLTextAreaElement &&
+						e.target.name === "editDescription"
+					) {
+						toast({ title: "Description updated successfully" });
 					}
 				} catch (error) {
 					toast({

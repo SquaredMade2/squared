@@ -16,21 +16,23 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { taskService } from "@/lib/services";
-import { useTaskStore, useUserStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
-import type { User } from "@squared/db";
+import type { TaskEvent, User } from "@squared/db";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const [assignee, setAssignee] = useState<User | null>(null);
+	const user = useUserStore((state) => state.user);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const { setEvents } = useEventStore((state) => state);
 
 	const users = useUserStore((state) => state.users);
 	useEffect(() => {
@@ -52,10 +54,16 @@ const AssigneeCombobox = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					assigneeId: null,
 				}),
 			);
 			setCurrentTask({ ...currentTask, assigneeId: null });
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: taskId,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
 			return;
 		}
 		const selectedUser = users.find((user) => user.id === userId);
@@ -64,6 +72,7 @@ const AssigneeCombobox = () => {
 			updateTask(
 				await taskService.updateTask(TODO, {
 					id: taskId,
+					updaterId: user?.id || "",
 					assigneeId: selectedUser.id,
 				}),
 			);

@@ -30,6 +30,7 @@ export const STANDARD_USER: User = {
 	googleId: null,
 	githubUsername: null,
 	githubId: null,
+	lastViewedTaskId: null,
 };
 
 export const STANDARD_WORKSPACE: Workspace = {
@@ -126,6 +127,8 @@ export const STANDARD_SPRINT: Sprint = {
 
 export const STANDARD_RETROSPECTIVE_ITEM: RetrospectiveItem = {
 	id: "retro-item-1",
+	authorId: "user-1",
+	likes: [],
 	content: "Improved team communication",
 	type: "wentWell",
 	wentWellSprintId: "sprint-1",

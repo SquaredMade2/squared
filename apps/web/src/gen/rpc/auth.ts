@@ -11,6 +11,7 @@ export type LoginResponse = {
 	token: string;
 	user: {
 		avatarUrl: string | null;
+		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
 		githubId: string | null;
@@ -40,6 +41,7 @@ export type GoogleLoginResponse = {
 	token: string;
 	user: {
 		avatarUrl: string | null;
+		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
 		githubId: string | null;
@@ -66,22 +68,27 @@ export type RegisterRequest = {
 };
 
 export type RegisterResponse = {
-	avatarUrl: string | null;
-	defaultWorkspaceId: string | null;
-	email: string;
-	githubId: string | null;
-	githubUsername: string | null;
-	googleId: string | null;
-	id: string;
-	lastLogin: Date;
-	name: string;
-	onBoarding: boolean;
-	password: string | null;
-	savedNotificationIds: string[];
-	subscribedTasks: string[];
-	username: string | null;
-	verified: boolean;
-} | null;
+	message?: string;
+	user: {
+		avatarUrl: string | null;
+		createdAt: Date;
+		defaultWorkspaceId: string | null;
+		email: string;
+		githubId: string | null;
+		githubUsername: string | null;
+		googleId: string | null;
+		id: string;
+		lastLogin: Date;
+		name: string;
+		onBoarding: boolean;
+		password: string | null;
+		savedNotificationIds: string[];
+		subscribedTasks: string[];
+		username: string | null;
+		verified: boolean;
+	} | null;
+	variant?: "default" | "destructive" | null;
+};
 
 export type VerifyUserRequest = {
 	token: string;
@@ -89,6 +96,7 @@ export type VerifyUserRequest = {
 
 export type VerifyUserResponse = {
 	avatarUrl: string | null;
+	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
 	githubId: string | null;

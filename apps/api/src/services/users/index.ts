@@ -19,6 +19,13 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: userSchema,
 	},
+	updateUserAvatar: {
+		input: z.object({
+			userId: z.string(),
+			avatarUrl: z.string(),
+		}),
+		output: userSchema,
+	},
 	updateUserNotifications: {
 		input: z.object({
 			userId: z.string(),
@@ -35,6 +42,12 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 	getWorkspaceUsers: {
 		input: z.object({
 			workspaceId: z.string(),
+		}),
+		output: z.array(userSchema),
+	},
+	getTeamUsers: {
+		input: z.object({
+			teamId: z.string(),
 		}),
 		output: z.array(userSchema),
 	},
@@ -62,6 +75,13 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.array(teamSchema),
 	},
+	setLastViewedTask: {
+		input: z.object({
+			userId: z.string(),
+			taskId: z.string(),
+		}),
+		output: userSchema,
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -70,11 +90,14 @@ export const createUserRpcHandler = (userService: UserService) =>
 	createRpcHandler("user", userRpcSchema, {
 		onBoardUser: (input) => userService.onBoardUser(input),
 		updateUser: (input) => userService.updateUser(input),
+		updateUserAvatar: (input) => userService.updateUserAvatar(input),
 		updateUserNotifications: (input) =>
 			userService.updateUserNotifications(input),
 		getUser: (input) => userService.getUser(input),
 		getWorkspaceUsers: (input) => userService.getWorkspaceUsers(input),
+		getTeamUsers: (input) => userService.getTeamUsers(input),
 		getUserAvatars: (input) => userService.getUserAvatars(input),
 		getUserRepositories: (input) => userService.getUserRepositories(input),
 		getUserTeams: (input) => userService.getUserTeams(input),
+		setLastViewedTask: (input) => userService.setLastViewedTask(input),
 	});
