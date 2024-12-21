@@ -14,7 +14,7 @@ import type {
 	SprintRpc,
 	UpdateRetrospectiveItemPayload,
 } from "./types";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 // Define type-safe Zod schemas
 

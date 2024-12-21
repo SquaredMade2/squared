@@ -6,7 +6,7 @@ import {
 import { z } from "zod";
 import { workspaceLabelSchema } from "../schema";
 import type { WorkspaceParams, WorkspaceRpc } from "./types";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 	z.object({

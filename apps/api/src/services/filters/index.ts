@@ -5,7 +5,7 @@ import {
 } from "@squared/rpc";
 import z from "zod";
 import type { FilterCondition, FilterRpc, SavedFilter } from "./types";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 const FilterValueSchema = z.union([
 	z.string(),

@@ -6,7 +6,7 @@ import {
 import z from "zod";
 import { taskSchema } from "../schema";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 const createTaskParams = createSchema<CreateTaskParams>()(
 	z.object({

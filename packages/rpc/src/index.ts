@@ -5,7 +5,6 @@ import type { ErrorRequestHandler, RequestHandler } from "express";
 import type { z } from "zod";
 
 import type { Logger } from "@squared/logger";
-import createCustomLogger from "@squared/logger";
 import {
 	type Method,
 	type MethodDetails,

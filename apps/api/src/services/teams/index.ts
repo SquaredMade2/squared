@@ -11,7 +11,7 @@ import type {
 	UpdateTeamParams,
 	UpdateTeamSprintsParams,
 } from "./types";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 const createTeamParams = createSchema<CreateTeamParams>()(
 	z.object({

@@ -12,7 +12,7 @@ import {
 	workspaceSchema,
 } from "../schema";
 import type { EventRpc, FullNotification } from "./types";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 // Define type-safe Zod schemas
 

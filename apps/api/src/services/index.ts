@@ -12,6 +12,7 @@ import { TeamService, createTeamRpcHandler } from "./teams";
 import { createUserRpcHandler } from "./users";
 import { UserService } from "./users/user-service";
 import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
+import createCustomLogger from "@squared/logger";
 
 const prisma = new PrismaClient({
 	datasources: {
@@ -21,6 +22,7 @@ const prisma = new PrismaClient({
 	},
 });
 
+export const logger = createCustomLogger("api");
 const secret = process.env.JWT_SECRET;
 
 const auth = new AuthService(prisma, secret);

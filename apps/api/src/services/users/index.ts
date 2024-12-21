@@ -3,7 +3,7 @@ import z from "zod";
 import { teamSchema, userSchema } from "../schema";
 import type { UserRpc } from "./types";
 import type { UserService } from "./user-service";
-import { logger } from "@/api";
+import { logger } from "../index";
 
 export const userRpcSchema = createServiceSchema<UserRpc>()({
 	onBoardUser: {
