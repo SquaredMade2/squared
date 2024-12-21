@@ -77,11 +77,11 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 	},
 	setLastViewedTask: {
 		input: z.object({
-		  userId: z.string(),
-		  taskId: z.string(),
+			userId: z.string(),
+			taskId: z.string(),
 		}),
-		output: userSchema,  
-	  },
+		output: userSchema,
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;

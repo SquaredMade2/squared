@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:23-alpine AS base
 
 FROM base AS builder
 RUN apk update
@@ -60,6 +60,7 @@ RUN pnpm turbo build --filter=api...
 
 FROM base AS runner
 WORKDIR /app
+RUN apk add --no-cache openssl openssl-dev libc6-compat
 COPY --from=installer /app .
 WORKDIR /app/apps/api
 
