@@ -14,6 +14,7 @@ import type {
 	SprintRpc,
 	UpdateRetrospectiveItemPayload,
 } from "./types";
+import { logger } from "@/api";
 
 // Define type-safe Zod schemas
 
@@ -155,6 +156,6 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 			sprintService.likeRetrospectiveItem(input),
 		getRetrospectiveItems: (input) =>
 			sprintService.getRetrospectiveItems(input),
-	});
+	}, logger);
 
 export { SprintService } from "./sprint-service";

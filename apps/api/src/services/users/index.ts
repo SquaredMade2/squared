@@ -3,6 +3,7 @@ import z from "zod";
 import { teamSchema, userSchema } from "../schema";
 import type { UserRpc } from "./types";
 import type { UserService } from "./user-service";
+import { logger } from "@/api";
 
 export const userRpcSchema = createServiceSchema<UserRpc>()({
 	onBoardUser: {
@@ -124,4 +125,4 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getUserRepositories: (input) => userService.getUserRepositories(input),
 		getUserTeams: (input) => userService.getUserTeams(input),
 		setLastViewedTask: (input) => userService.setLastViewedTask(input),
-	});
+	}, logger);

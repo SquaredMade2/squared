@@ -6,6 +6,7 @@ import {
 import z from "zod";
 import { taskSchema } from "../schema";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
+import { logger } from "@/api";
 
 const createTaskParams = createSchema<CreateTaskParams>()(
 	z.object({
@@ -158,6 +159,6 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 		addSprintTasks: async (input) => taskService.addSprintTasks(input),
 		reorderSubtasks: async (input) => taskService.reorderSubtasks(input),
 		getSubtasks: async (input) => taskService.getSubtasks(input),
-	});
+	}, logger);
 
 export { TaskService } from "./task-service";

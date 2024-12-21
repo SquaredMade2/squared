@@ -6,6 +6,7 @@ import {
 import z from "zod";
 import { userSchema } from "../schema";
 import type { AuthRpc, Login, OauthLogin, Register, UserToken } from "./types";
+import { logger } from "@/api";
 
 const loginSchema = createSchema<Login>()(
 	z.object({
@@ -95,4 +96,4 @@ export const createAuthRpcHandler = (authService: AuthRpc) =>
 		resetPasswordEmail: (input) => authService.resetPasswordEmail(input),
 		resetPassword: (input) => authService.resetPassword(input),
 		checkTokenValid: (input) => authService.checkTokenValid(input),
-	});
+	}, logger);

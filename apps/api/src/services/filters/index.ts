@@ -5,6 +5,7 @@ import {
 } from "@squared/rpc";
 import z from "zod";
 import type { FilterCondition, FilterRpc, SavedFilter } from "./types";
+import { logger } from "@/api";
 
 const FilterValueSchema = z.union([
 	z.string(),
@@ -116,6 +117,6 @@ export const createFilterRpcHandler = (filterService: FilterRpc) =>
 		getFilters: (input) => filterService.getFilters(input),
 		updateFilter: (input) => filterService.updateFilter(input),
 		deleteFilter: (input) => filterService.deleteFilter(input),
-	});
+	}, logger);
 
 export { FilterService } from "./filter-service";

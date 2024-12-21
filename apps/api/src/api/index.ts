@@ -19,7 +19,7 @@ export const prisma = new PrismaClient({
 	},
 });
 
-const logger = createCustomLogger("api");
+export const logger = createCustomLogger("api");
 
 const app = express();
 const server = http.createServer(app);

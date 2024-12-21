@@ -2,7 +2,7 @@ import "tslib";
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
 import type { ErrorRequestHandler, RequestHandler } from "express";
-import { z } from "zod";
+import type { z } from "zod";
 
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
@@ -233,6 +233,7 @@ export function createRpcHandler<
 			input: z.infer<T[K]["input"]>,
 		) => Promise<z.infer<T[K]["output"]>>;
 	},
+	logger: Logger
 ): ServiceSet<Service> {
 	const expose: MethodDetails[] = Object.entries(schema).map(
 		([methodName, { input, output }]) => ({
@@ -241,7 +242,6 @@ export function createRpcHandler<
 			responseSchema: output,
 		}),
 	);
-	const logger = createCustomLogger("api");
 
 	const { interfaces } = getExposedMeta({ expose, service: serviceName });
 	const serviceMethods = interfaces.reduce(
@@ -279,83 +279,82 @@ export function createRpcHandler<
 	};
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
-function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
-	if (schema instanceof z.ZodObject) {
-		const shape = schema.shape as Record<
-			string,
-			// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
-			z.ZodType<any, z.ZodTypeDef, any>
-		>;
-		return {
-			type: "object",
-			properties: Object.fromEntries(
-				Object.entries(shape).map(([key, value]) => [
-					key,
-					serializeZodSchema(value),
-				]),
-			),
-		};
-	}
-	if (schema instanceof z.ZodOptional) {
-		return {
-			type: "optional",
-			inner: serializeZodSchema(schema.unwrap()),
-		};
-	}
-	if (schema instanceof z.ZodArray) {
-		return {
-			type: "array",
-			items: serializeZodSchema(schema.element),
-		};
-	}
-	if (schema instanceof z.ZodString) {
-		return { type: "string" };
-	}
-	if (schema instanceof z.ZodNumber) {
-		return { type: "number" };
-	}
-	if (schema instanceof z.ZodBoolean) {
-		return { type: "boolean" };
-	}
-	if (schema instanceof z.ZodEnum) {
-		return {
-			type: "enum",
-			values: schema.options,
-		};
-	}
-	if (schema instanceof z.ZodUnion) {
-		return {
-			type: "union",
-			options: schema.options.map(serializeZodSchema),
-		};
-	}
-	if (schema instanceof z.ZodLiteral) {
-		return {
-			type: "literal",
-			value: schema.value,
-		};
-	}
-	if (schema instanceof z.ZodNullable) {
-		return {
-			type: "nullable",
-			inner: serializeZodSchema(schema.unwrap()),
-		};
-	}
-	if (schema instanceof z.ZodOptional) {
-		return {
-			type: "optional",
-			inner: serializeZodSchema(schema.unwrap()),
-		};
-	}
-	if (schema instanceof z.ZodDate) {
-		return { type: "date" };
-	}
-	if (schema instanceof z.ZodVoid) {
-		return { type: "void" };
-	}
-	if (schema instanceof z.ZodNull) {
-		return { type: "null" };
-	}
-	return { type: "unknown" };
-}
+// function serializeZodSchema(schema: z.ZodType<any, z.ZodTypeDef, any>): any {
+// 	if (schema instanceof z.ZodObject) {
+// 		const shape = schema.shape as Record<
+// 			string,
+// 			// biome-ignore lint/suspicious/noExplicitAny: Methods are defined by the user
+// 			z.ZodType<any, z.ZodTypeDef, any>
+// 		>;
+// 		return {
+// 			type: "object",
+// 			properties: Object.fromEntries(
+// 				Object.entries(shape).map(([key, value]) => [
+// 					key,
+// 					serializeZodSchema(value),
+// 				]),
+// 			),
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodOptional) {
+// 		return {
+// 			type: "optional",
+// 			inner: serializeZodSchema(schema.unwrap()),
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodArray) {
+// 		return {
+// 			type: "array",
+// 			items: serializeZodSchema(schema.element),
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodString) {
+// 		return { type: "string" };
+// 	}
+// 	if (schema instanceof z.ZodNumber) {
+// 		return { type: "number" };
+// 	}
+// 	if (schema instanceof z.ZodBoolean) {
+// 		return { type: "boolean" };
+// 	}
+// 	if (schema instanceof z.ZodEnum) {
+// 		return {
+// 			type: "enum",
+// 			values: schema.options,
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodUnion) {
+// 		return {
+// 			type: "union",
+// 			options: schema.options.map(serializeZodSchema),
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodLiteral) {
+// 		return {
+// 			type: "literal",
+// 			value: schema.value,
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodNullable) {
+// 		return {
+// 			type: "nullable",
+// 			inner: serializeZodSchema(schema.unwrap()),
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodOptional) {
+// 		return {
+// 			type: "optional",
+// 			inner: serializeZodSchema(schema.unwrap()),
+// 		};
+// 	}
+// 	if (schema instanceof z.ZodDate) {
+// 		return { type: "date" };
+// 	}
+// 	if (schema instanceof z.ZodVoid) {
+// 		return { type: "void" };
+// 	}
+// 	if (schema instanceof z.ZodNull) {
+// 		return { type: "null" };
+// 	}
+// 	return { type: "unknown" };
+// }

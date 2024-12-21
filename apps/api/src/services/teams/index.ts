@@ -11,6 +11,7 @@ import type {
 	UpdateTeamParams,
 	UpdateTeamSprintsParams,
 } from "./types";
+import { logger } from "@/api";
 
 const createTeamParams = createSchema<CreateTeamParams>()(
 	z.object({
@@ -79,6 +80,6 @@ export const createTeamRpcHandler = (teamService: TeamRpc) =>
 		getTeamByIdentifier: (input) => teamService.getTeamByIdentifier(input),
 		getUserTeams: (input) => teamService.getUserTeams(input),
 		removeUserFromTeam: (input) => teamService.removeUserFromTeam(input),
-	});
+	}, logger);
 
 export { TeamService } from "./teams-service";

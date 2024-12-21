@@ -12,6 +12,7 @@ import {
 	workspaceSchema,
 } from "../schema";
 import type { EventRpc, FullNotification } from "./types";
+import { logger } from "@/api";
 
 // Define type-safe Zod schemas
 
@@ -106,6 +107,6 @@ export const createEventRpcHandler = (eventService: EventRpc) =>
 		createNotification: (input) => eventService.createNotification(input),
 		toggleNotification: (input) => eventService.toggleNotification(input),
 		deleteNotification: (input) => eventService.deleteNotification(input),
-	});
+	}, logger);
 
 export { EventService } from "./event-service";

@@ -6,6 +6,7 @@ import {
 import { z } from "zod";
 import { workspaceLabelSchema } from "../schema";
 import type { WorkspaceParams, WorkspaceRpc } from "./types";
+import { logger } from "@/api";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 	z.object({
@@ -108,6 +109,6 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
-	});
+	}, logger);
 
 export { WorkspaceService } from "./workspace-service";
