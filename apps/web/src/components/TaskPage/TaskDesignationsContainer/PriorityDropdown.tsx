@@ -41,7 +41,7 @@ const PriorityDropdown = () => {
 					updaterId: user?.id || "",
 					priority: newPriority,
 				}),
-			); 
+			);
 			setCurrentTask({ ...currentTask, priority: newPriority });
 
 			const updatedEvents = await eventService.getTaskEvents(TODO, {

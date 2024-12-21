@@ -82,6 +82,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}).strict(),
 		output: userSchema,  
 	  },
+
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
