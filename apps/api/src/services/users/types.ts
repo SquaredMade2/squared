@@ -30,5 +30,5 @@ export interface UserRpc {
 	setLastViewedTask: (args: {
 		userId: string;
 		taskId: string;
-	  }) => Promise<User>;
+	}) => Promise<User>;
 }
