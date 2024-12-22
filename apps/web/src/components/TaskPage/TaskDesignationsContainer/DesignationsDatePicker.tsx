@@ -2,10 +2,9 @@
 
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/components/ui/use-toast";
-import { eventService, taskService } from "@/lib/services";
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
-import { TODO } from "@squared/context";
-import type { TaskEvent } from "@squared/db";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 const DesignationsDatePicker = () => {
@@ -13,8 +12,9 @@ const DesignationsDatePicker = () => {
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
-	const { setEvents } = useEventStore((state) => state);
 	const user = useUserStore((state) => state.user);
+	const queryClient = useQueryClient();
+
 	if (!currentTask) return null;
 	const { id: taskId } = currentTask;
 
@@ -26,39 +26,40 @@ const DesignationsDatePicker = () => {
 		);
 	}, [currentTask]);
 
-	const handleSave = async () => {
-		try {
-			updateTask(
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					updaterId: user?.id || "",
-					dueDate: selectedDate === undefined ? null : selectedDate,
-				}),
-			);
-			setCurrentTask({ ...currentTask, dueDate: selectedDate ?? null });
-			const updatedEvents = await eventService.getTaskEvents(TODO, {
+	const updateTaskMutation = useMutation({
+		mutationFn: async (date: Date | null) => {
+			if (!user) throw new Error("User not found");
+			const res = await client.task.updateDueDate.$post({
 				taskId: taskId,
+				userId: user.id,
+				dueDate: date,
 			});
-			// TODO: Will remove type coercion once commits are implemented
-			setEvents(updatedEvents as TaskEvent[]);
+			return res.json();
+		},
+		onSuccess: (updatedTask) => {
+			updateTask(updatedTask);
+			setCurrentTask(updatedTask);
+			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
 			toast({
 				title: "Success",
 				description: "Due date updated successfully",
 			});
-		} catch {
+		},
+		onError: (error) => {
 			toast({
 				title: "Error",
-				description: "Failed to update due date",
+				description:
+					error instanceof Error ? error.message : "Failed to update due date",
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
 
 	return (
 		<DatePicker
-			date={selectedDate ? selectedDate : undefined}
+			date={selectedDate}
 			setDate={setSelectedDate}
-			handleSubmit={handleSave}
+			handleSubmit={() => updateTaskMutation.mutate(selectedDate ?? null)}
 		/>
 	);
 };

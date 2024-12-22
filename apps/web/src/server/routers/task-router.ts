@@ -110,4 +110,61 @@ export const taskRouter = router({
 
 			return c.superjson(task);
 		}),
+	updateParent: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				parentId: z.string().nullable(),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, parentId } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					parentId,
+					updaterId: input.userId,
+				}),
+			);
+		}),
+	updateDueDate: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				dueDate: z.date().nullable(),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, dueDate } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					dueDate,
+					updaterId: input.userId,
+				}),
+			);
+		}),
+	updateAssignee: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				assigneeId: z.string().nullable(),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, assigneeId } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					assigneeId,
+					updaterId: input.userId,
+				}),
+			);
+		}),
 });
