@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
 import { signIn } from "next-auth/react";
@@ -33,6 +33,7 @@ function LoginForm() {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
+			inviteToken && router.prefetch("/");
 			const response = await signIn("credentials", {
 				redirect: false,
 				email: data.email,
@@ -48,7 +49,6 @@ function LoginForm() {
 				});
 			}
 			router.refresh();
-			router.prefetch(inviteToken ? `/join/${inviteToken}` : "/");
 		} catch (error) {
 			console.error("Login error:", error);
 			toast({
@@ -148,14 +148,14 @@ function LoginForm() {
 						</Button>
 					</form>
 					<div className="relative">
-						<div className="absolute inset-0 flex items-center">
+						{/* <div className="absolute inset-0 flex items-center">
 							<Separator />
-						</div>
-						<div className="relative flex justify-center text-xs uppercase">
+						</div> */}
+						{/* <div className="relative flex justify-center text-xs uppercase">
 							<span className="bg-card px-2 text-muted-foreground">
 								Or continue with
 							</span>
-						</div>
+						</div> */}
 					</div>
 					{process.env.NODE_ENV === "production" && (
 						<Button

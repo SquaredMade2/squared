@@ -443,7 +443,7 @@ const DialogContentImpl = React.forwardRef<
 			<FocusScope
 				asChild
 				loop
-				trapped={trapFocus}
+				trapped={false}
 				onMountAutoFocus={onOpenAutoFocus}
 				onUnmountAutoFocus={onCloseAutoFocus}
 			>

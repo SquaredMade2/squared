@@ -139,4 +139,41 @@ export class UserService implements UserRpc {
 			})
 			.then((userTeams) => userTeams.map((ut) => ut.team));
 	}
+
+	async setLastViewedTask({
+		userId,
+		taskId,
+	}: {
+		userId: string;
+		taskId: string;
+	}) {
+		this.logger.info(
+			"Setting last viewed task for userId: %s, taskId: %s",
+			userId,
+			taskId,
+		);
+		try {
+			return await this.db.user.update({
+				where: { id: userId },
+				data: { lastViewedTaskId: taskId },
+				include: { lastViewedTask: true },
+			});
+		} catch (error) {
+			if (error instanceof Error) {
+				this.logger.error(
+					"Failed to set last viewed task for userId: %s, taskId: %s. Error: %s",
+					userId,
+					taskId,
+					error.message,
+				);
+			} else {
+				this.logger.error(
+					"Failed to set last viewed task for userId: %s, taskId: %s. Unknown error occurred.",
+					userId,
+					taskId,
+				);
+			}
+			throw error;
+		}
+	}
 }
