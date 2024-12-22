@@ -103,7 +103,7 @@ const LabelCombobox = () => {
 
 	return (
 		<div className="md:w-full">
-			<Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
 						variant="outline"

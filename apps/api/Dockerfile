@@ -13,7 +13,8 @@ RUN turbo prune api --docker
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
 RUN apk update
-RUN apk add --no-cache libc6-compat python3 make g++
+RUN apk add --no-cache libc6-compat python3 make g++ openssl
+
 WORKDIR /app
 
 # Copy Prisma schema files separately to ensure they are available
@@ -30,6 +31,11 @@ COPY --from=builder /app/out/json/ .
 RUN npm install -g turbo pnpm ts-node tsconfig-paths
 
 RUN pnpm install
+
+# Generate Prisma client
+RUN apk add --no-cache openssl
+ENV PRISMA_BINARY_TARGET="linux-musl-openssl-3.0.x"
+RUN cd packages/db && pnpm run db:gen
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
@@ -60,6 +66,7 @@ RUN pnpm turbo build --filter=api...
 
 FROM base AS runner
 WORKDIR /app
+RUN apk add --no-cache openssl
 COPY --from=installer /app .
 WORKDIR /app/apps/api
 
@@ -69,6 +76,5 @@ RUN npm install -g turbo pnpm ts-node tsconfig-paths
 RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
-
 
 CMD ["ts-node", "src/api/index.ts"]
