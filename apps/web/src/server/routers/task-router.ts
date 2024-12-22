@@ -167,4 +167,25 @@ export const taskRouter = router({
 				}),
 			);
 		}),
+	updateMetadata: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				title: z.string().optional(),
+				description: z.string().optional(),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, title, description, userId } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					title,
+					description,
+					updaterId: userId,
+				}),
+			);
+		}),
 });
