@@ -1,6 +1,5 @@
 import { TODO } from "@squared/context";
 import { HTTPException } from "hono/http-exception";
-import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 import { router } from "../__internals/router";
 import { privateProcedure, publicProcedure } from "../procedures";
