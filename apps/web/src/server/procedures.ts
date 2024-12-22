@@ -8,8 +8,7 @@ import { TeamService } from "@/gen/rpc/team";
 import { UserService } from "@/gen/rpc/user";
 import { WorkspaceService } from "@/gen/rpc/workspace";
 import { env } from "hono/adapter";
-import { HTTPException } from "hono/http-exception";
-import { getServerSession } from "next-auth";
+// import { HTTPException } from "hono/http-exception";
 import { j } from "./__internals/j";
 
 /**
@@ -29,8 +28,9 @@ const extendedContextMiddleware = j.middleware(async ({ c, next }) => {
 });
 
 const authMiddleware = j.middleware(async ({ c, next }) => {
-	const session = await getServerSession();
-	if (!session) throw new HTTPException(401, { message: "Unauthorized" });
+	// TODO: When we get rid of next auth, we can check authorization here
+	// const token = await getToken({ req: c.req });
+	// if (!token) throw new HTTPException(401, { message: "Unauthorized" });
 	const variables = env(c);
 	const serverUrl = variables.NEXT_PUBLIC_SERVER;
 
