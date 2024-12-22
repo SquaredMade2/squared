@@ -11,4 +11,13 @@ export const workspaceRouter = router({
 			const { userId } = input;
 			return c.json(await workspaceService.getUserWorkspaces(TODO, { userId }));
 		}),
+	getWorkspaceByUrl: privateProcedure
+		.input(z.object({ workspaceUrl: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { workspaceUrl } = input;
+			return c.json(
+				await workspaceService.getWorkspaceByUrl(TODO, { url: workspaceUrl }),
+			);
+		}),
 });

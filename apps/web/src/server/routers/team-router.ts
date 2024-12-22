@@ -13,4 +13,16 @@ export const teamRouter = router({
 				await teamService.getUserTeams(TODO, { userId, workspaceId }),
 			);
 		}),
+	getTeamByIdentifier: privateProcedure
+		.input(z.object({ identifier: z.string(), workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { teamService } = ctx;
+			const { identifier, workspaceId } = input;
+			return c.superjson(
+				await teamService.getTeamByIdentifier(TODO, {
+					identifier,
+					workspaceId,
+				}),
+			);
+		}),
 });

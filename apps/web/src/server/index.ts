@@ -4,6 +4,7 @@ import { handle } from "hono/vercel";
 import { authRouter } from "./routers/auth-router";
 import { commentRouter } from "./routers/comment-router";
 import { eventRouter } from "./routers/event-router";
+import { sprintRouter } from "./routers/sprint-router";
 import { taskRouter } from "./routers/task-router";
 import { teamRouter } from "./routers/team-router";
 import { userRouter } from "./routers/user-router";
@@ -23,7 +24,8 @@ const appRouter = app
 	.route("/team", teamRouter)
 	.route("/task", taskRouter)
 	.route("/comment", commentRouter)
-	.route("/event", eventRouter);
+	.route("/event", eventRouter)
+	.route("/sprint", sprintRouter);
 
 // The handler Next.js uses to answer API requests
 export const httpHandler = handle(app);
