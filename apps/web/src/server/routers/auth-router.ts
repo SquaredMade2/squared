@@ -81,4 +81,20 @@ export const authRouter = router({
 
 			return c.json({ verified: user.verified, title: message });
 		}),
+	verifyUser: publicProcedure
+		.input(z.object({ token: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { authService } = ctx;
+			const { token } = input;
+
+			try {
+				const user = await authService.verifyUser(TODO, { token });
+				if (!user) {
+					throw new Error("Could not find user to verify");
+				}
+				return c.superjson(user);
+			} catch {
+				throw new Error("User verification failed");
+			}
+		}),
 });
