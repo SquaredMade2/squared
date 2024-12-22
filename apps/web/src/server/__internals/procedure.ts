@@ -20,7 +20,6 @@ export type SuperJSONTypedResponse<
 	U extends StatusCode = StatusCode,
 > = TypedResponse<SuperJSONParsedType<T>, U, "json">;
 
-// biome-ignore lint/complexity/noBannedTypes: This is a helper function
 export class Procedure<ctx = {}> {
 	private readonly middlewares: Middleware<ctx>[] = [];
 
@@ -63,7 +62,6 @@ export class Procedure<ctx = {}> {
 			c: Context<{ Bindings: Bindings }>;
 		}) => Promise<Return>,
 	): Procedure<ctx & T & Return> {
-		// biome-ignore lint/suspicious/noExplicitAny: This is a helper function
 		return new Procedure<ctx & T & Return>([...this.middlewares, fn as any]);
 	}
 
@@ -83,7 +81,7 @@ export class Procedure<ctx = {}> {
 		): QueryOperation<Schema, Output> => ({
 			type: "query",
 			schema,
-			// biome-ignore lint/suspicious/noExplicitAny: This is a helper function
+
 			handler: fn as any,
 			middlewares: this.middlewares,
 		}),
@@ -101,7 +99,6 @@ export class Procedure<ctx = {}> {
 		): MutationOperation<Schema, Output> => ({
 			type: "mutation",
 			schema,
-			// biome-ignore lint/suspicious/noExplicitAny: This is a helper function
 			handler: fn as any,
 			middlewares: this.middlewares,
 		}),
@@ -119,11 +116,10 @@ export class Procedure<ctx = {}> {
 		}) =>
 			| SuperJSONTypedResponse<Output>
 			| Promise<SuperJSONTypedResponse<Output>>,
-		// biome-ignore lint/complexity/noBannedTypes: This is a helper function
 	): QueryOperation<{}, Output> {
 		return {
 			type: "query",
-			// biome-ignore lint/suspicious/noExplicitAny: This is a helper function
+
 			handler: fn as any,
 			middlewares: this.middlewares,
 		};
@@ -139,11 +135,10 @@ export class Procedure<ctx = {}> {
 			ctx: ctx;
 			c: Context<{ Bindings: Bindings }>;
 		}) => TypedResponse<Output> | Promise<TypedResponse<Output>>,
-		// biome-ignore lint/complexity/noBannedTypes: This is a helper function
 	): MutationOperation<{}, Output> {
 		return {
 			type: "mutation",
-			// biome-ignore lint/suspicious/noExplicitAny: This is a helper function
+
 			handler: fn as any,
 			middlewares: this.middlewares,
 		};

@@ -54,7 +54,7 @@ export const baseClient = hc<AppType>(getBaseUrl(), {
 
 		return response;
 	},
-})["api"];
+}).api;
 
 // biome-ignore lint/complexity/noBannedTypes: <explanation>
 function getHandler(obj: Object, ...keys: string[]) {

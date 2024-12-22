@@ -4,7 +4,6 @@ import { Procedure } from "./procedure";
 
 const baseProcedure = new Procedure();
 
-// biome-ignore lint/complexity/noBannedTypes: This is a helper function
 type MiddlewareFunction<T = {}, R = void> = (params: {
 	ctx: T;
 	next: <B>(args: B) => Promise<B & T>;
@@ -16,7 +15,6 @@ type MiddlewareFunction<T = {}, R = void> = (params: {
  */
 
 export const j = {
-	// biome-ignore lint/complexity/noBannedTypes: This is a helper function
 	middleware: <T = {}, R = void>(
 		fn: MiddlewareFunction<T, R>,
 	): MiddlewareFunction<T, R> => {

@@ -11,7 +11,11 @@
 			"cypress",
 			"*.stories.tsx"
 		],
-		"include": ["src", "api", "www"]
+		"include": [
+			"src",
+			"api",
+			"www"
+		]
 	},
 	"organizeImports": {
 		"enabled": true
@@ -32,7 +36,9 @@
 	},
 	"overrides": [
 		{
-			"include": ["packages/ui/**"],
+			"include": [
+				"packages/ui/**"
+			],
 			"linter": {
 				"enabled": true,
 				"rules": {
@@ -66,11 +72,28 @@
 			}
 		},
 		{
-			"include": ["apps/api/src/api/generated-routes.ts"],
+			"include": [
+				"apps/api/src/api/generated-routes.ts"
+			],
 			"linter": {
 				"rules": {
 					"complexity": {
 						"noBannedTypes": "off"
+					}
+				}
+			}
+		},
+		{
+			"include": [
+				"apps/web/src/server/__internals"
+			],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noBannedTypes": "off"
+					},
+					"suspicious": {
+						"noExplicitAny": "off"
 					}
 				}
 			}
