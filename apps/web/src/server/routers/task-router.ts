@@ -1,3 +1,4 @@
+import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
 import { z } from "zod";
 import { router } from "../__internals/router";
@@ -12,6 +13,8 @@ const statusEnum = z.enum([
 	"canceled",
 	"archived",
 ]);
+
+const priorityEnum = z.enum(["noPriority", "low", "medium", "high", "urgent"]);
 
 export const taskRouter = router({
 	getTaskByIdentifier: privateProcedure
@@ -62,5 +65,49 @@ export const taskRouter = router({
 					status,
 				}),
 			);
+		}),
+	createTask: privateProcedure
+		.input(
+			z.object({
+				userId: z.string(),
+				title: z.string(),
+				description: z.string().optional(),
+				status: statusEnum.optional(),
+				priority: priorityEnum.optional(),
+				labels: z.array(z.string()).optional(),
+				dueDate: z.date().nullable().optional(),
+				effortEstimate: z.number().nullable().optional(),
+				teamId: z.string(),
+				workspaceId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+
+			const { transformedInput: transformedTitle } = transformingMentionInputs(
+				input.title,
+			);
+			const { transformedInput: transformedDescription } =
+				transformingMentionInputs(input.description || "");
+
+			const newTask = {
+				...input,
+				authorId: input.userId,
+				title: transformedTitle,
+				description: transformedDescription,
+				status: input.status || "backlog",
+				priority: input.priority || "noPriority",
+				labels: input.labels || [],
+				dueDate: input.dueDate || null,
+				effortEstimate: input.effortEstimate || null,
+			};
+
+			const task = await taskService.createTask(TODO, newTask);
+
+			if (!task) {
+				throw new Error("Failed to create task");
+			}
+
+			return c.superjson(task);
 		}),
 });
