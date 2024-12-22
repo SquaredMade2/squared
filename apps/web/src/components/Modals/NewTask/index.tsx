@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { useEffect } from "react";
@@ -47,7 +48,7 @@ export const NewTaskModal = () => {
 	const { toast } = useToast();
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
-	const { createTask, isLoading, error } = useCreateTask();
+	const { createTask, isLoading } = useCreateTask();
 	const { team } = useTeamStore((state) => state);
 	const { workspace } = useWorkspaceStore((state) => state);
 
@@ -80,7 +81,7 @@ export const NewTaskModal = () => {
 		setShowNewTask(false);
 	};
 
-	const handleCreateTask = async (values: FormValues) => {
+	const handleCreateTask = (values: FormValues) => {
 		if (!team || !workspace) {
 			toast({
 				title: "Error",
@@ -90,36 +91,35 @@ export const NewTaskModal = () => {
 			return;
 		}
 
-		try {
-			const createTaskParams = {
-				title: values.title,
-				description: values.description,
-				status: status || "backlog",
-				priority: priority || "noPriority",
-				labels: labels || [],
-				dueDate: dueDate || null,
-				effortEstimate: effortEstimate || null,
-				teamId: team.id,
-				workspaceId: workspace.id,
-			};
+		const createTaskParams = {
+			title: values.title,
+			description: values.description,
+			status: status || "backlog",
+			priority: priority || "noPriority",
+			labels: labels || [],
+			dueDate: dueDate || null,
+			effortEstimate: effortEstimate || null,
+			teamId: team.id,
+			workspaceId: workspace.id,
+		};
 
-			createTask(createTaskParams);
-
-			toast({
-				title: "Task Created Successfully",
-			});
-
-			setShowNewTask(false);
-			setNewTaskData({});
-			form.reset();
-		} catch {
-			toast({
-				title: "Error creating task",
-				description:
-					error instanceof Error ? error.message : "An unknown error occurred",
-				variant: "destructive",
-			});
-		}
+		createTask(createTaskParams, {
+			onSuccess: () => {
+				toast({
+					title: "Task Created Successfully",
+				});
+				setShowNewTask(false);
+				setNewTaskData({});
+				form.reset();
+			},
+			onError: (error) => {
+				toast({
+					title: "Error creating task",
+					description: parseError(error),
+					variant: "destructive",
+				});
+			},
+		});
 	};
 
 	return (
