@@ -2,6 +2,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { handle } from "hono/vercel";
 import { authRouter } from "./routers/auth-router";
+import { commentRouter } from "./routers/comment-router";
+import { eventRouter } from "./routers/event-router";
+import { taskRouter } from "./routers/task-router";
 import { teamRouter } from "./routers/team-router";
 import { userRouter } from "./routers/user-router";
 import { workspaceRouter } from "./routers/workspace-router";
@@ -17,7 +20,10 @@ const appRouter = app
 	.route("/auth", authRouter)
 	.route("/workspace", workspaceRouter)
 	.route("/user", userRouter)
-	.route("/team", teamRouter);
+	.route("/team", teamRouter)
+	.route("/task", taskRouter)
+	.route("/comment", commentRouter)
+	.route("/event", eventRouter);
 
 // The handler Next.js uses to answer API requests
 export const httpHandler = handle(app);
