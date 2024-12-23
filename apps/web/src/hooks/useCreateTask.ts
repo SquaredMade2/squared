@@ -49,7 +49,6 @@ export const useCreateTask = () => {
 				dueDate: input.dueDate ?? null,
 				effortEstimate: input.effortEstimate ?? null,
 				teamId: team.id,
-				workspaceId: workspace.id,
 			};
 
 			const task = await taskService.createTask(TODO, newTask);
