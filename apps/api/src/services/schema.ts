@@ -42,7 +42,7 @@ export const taskSchema = createSchema<Task>()(
 		deleted: z.boolean(),
 		order: z.number(),
 	}),
-).strict();
+);
 
 export const sprintSchema = createSchema<Sprint>()(
 	z.object({
@@ -56,7 +56,7 @@ export const sprintSchema = createSchema<Sprint>()(
 		createdAt: z.date(),
 		updatedAt: z.date(),
 	}),
-).strict();
+);
 
 export const notificationSchema = createSchema<Notification>()(
 	z.object({
@@ -72,7 +72,7 @@ export const notificationSchema = createSchema<Notification>()(
 		dismissed: z.boolean(),
 		type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
 	}),
-).strict();
+);
 
 export const commitSchema = createSchema<Commit>()(
 	z.object({
@@ -86,7 +86,7 @@ export const commitSchema = createSchema<Commit>()(
 		owner: z.string().nullable(),
 		taskId: z.string().nullable(),
 	}),
-).strict();
+);
 
 export const workspaceSchema = createSchema<Workspace>()(
 	z.object({
@@ -99,7 +99,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 	}),
-).strict();
+);
 
 export const commentSchema = createSchema<Comment>()(
 	z.object({
@@ -109,7 +109,7 @@ export const commentSchema = createSchema<Comment>()(
 		taskId: z.string(),
 		date: z.date(),
 	}),
-).strict();
+);
 
 export const labelSchema = createSchema<Label>()(
 	z.object({
@@ -119,7 +119,7 @@ export const labelSchema = createSchema<Label>()(
 		color: z.string(),
 		workspaceId: z.string(),
 	}),
-).strict();
+);
 
 export const workspaceLabelSchema = createSchema<
 	Workspace & { Labels: Label[] }
@@ -135,7 +135,7 @@ export const workspaceLabelSchema = createSchema<
 		admins: z.array(z.string()),
 		Labels: z.array(labelSchema),
 	}),
-).strict();
+);
 
 export const userSchema = createSchema<User>()(
 	z.object({
@@ -157,7 +157,7 @@ export const userSchema = createSchema<User>()(
 		githubId: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
 	}),
-).strict();
+);
 
 export const teamSchema = createSchema<Team>()(
 	z.object({
@@ -172,4 +172,4 @@ export const teamSchema = createSchema<Team>()(
 		tasksPerSprint: z.number(),
 		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
 	}),
-).strict();
+);

@@ -2,7 +2,7 @@ import "tslib";
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
 import type { ErrorRequestHandler, RequestHandler } from "express";
-import type { z } from "zod";
+import { z } from "zod";
 
 import type { Logger } from "@squared/logger";
 import {

@@ -69,8 +69,7 @@ const savedFilterSchema = createSchema<SavedFilter>()(
 			workspaceId: z.string().nullable(),
 			teamId: z.string().nullable(),
 			authorId: z.string(),
-		})
-		.strict(),
+		}),
 );
 
 export const filterRpcSchema = createServiceSchema<FilterRpc>()({
@@ -82,12 +81,11 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 				filter: z.array(filterConditionSchema),
 				teamId: z.string(),
 				authorId: z.string(),
-			})
-			.strict(),
+			}),
 		output: savedFilterSchema,
 	},
 	getFilters: {
-		input: z.object({ teamId: z.string() }).strict(),
+		input: z.object({ teamId: z.string() }),
 		output: z.array(savedFilterSchema),
 	},
 	updateFilter: {
@@ -99,12 +97,11 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 					description: z.string().nullable(),
 					filter: z.array(filterConditionSchema),
 				}),
-			})
-			.strict(),
-		output: savedFilterSchema.strict(),
+			}),
+		output: savedFilterSchema,
 	},
 	deleteFilter: {
-		input: z.object({ filterId: z.string() }).strict(),
+		input: z.object({ filterId: z.string() }),
 		output: z.void(),
 	},
 });

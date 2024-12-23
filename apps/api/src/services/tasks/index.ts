@@ -34,7 +34,7 @@ const createTaskParams = createSchema<CreateTaskParams>()(
 		parentId: z.string().nullable().optional(),
 		sprintId: z.string().nullable().optional(),
 	}),
-).strict();
+);
 
 const updateTaskParams = createSchema<UpdateTaskParams>()(
 	z.object({
@@ -63,7 +63,7 @@ const updateTaskParams = createSchema<UpdateTaskParams>()(
 		parentId: z.string().nullable().optional(),
 		sprintId: z.string().nullable().optional(),
 	}),
-).strict();
+);
 
 export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 	createTask: {
@@ -78,16 +78,14 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		input: z
 			.object({
 				taskId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.void(),
 	},
 	getTask: {
 		input: z
 			.object({
 				taskId: z.string(),
-			})
-			.strict(),
+			}),
 		output: taskSchema,
 	},
 	getTaskByIdentifier: {
@@ -95,24 +93,21 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 			.object({
 				identifier: z.string(),
 				workspaceId: z.string(),
-			})
-			.strict(),
+			}),
 		output: taskSchema,
 	},
 	getTeamTasks: {
 		input: z
 			.object({
 				teamId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.array(taskSchema),
 	},
 	addActiveSprintTasks: {
 		input: z
 			.object({
 				sprintId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.number(),
 	},
 	addSprintTasks: {
@@ -120,8 +115,7 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 			.object({
 				sprintId: z.string(),
 				taskIds: z.array(z.string()),
-			})
-			.strict(),
+			}),
 		output: z.number(),
 	},
 	reorderSubtasks: {
@@ -129,16 +123,14 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 			.object({
 				parentId: z.string(),
 				newOrder: z.array(z.string()),
-			})
-			.strict(),
+			}),
 		output: z.array(taskSchema),
 	},
 	getSubtasks: {
 		input: z
 			.object({
 				parentId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.array(taskSchema),
 	},
 });

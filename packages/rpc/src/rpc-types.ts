@@ -132,8 +132,8 @@ export function serviceWithSchema<S extends Service>(
 			methodTimeout: methodMeta.methodTimeout,
 			help: methodMeta.help,
 			paramNames: methodMeta.paramNames,
-			requestSchema: methodMeta.requestSchema,
-			responseSchema: methodMeta.responseSchema,
+			requestSchema: methodMeta.requestSchema instanceof z.Schema ? methodMeta.requestSchema.strict() : methodMeta.requestSchema,
+			responseSchema: methodMeta.responseSchema instanceof z.Schema ? methodMeta.responseSchema.strict() : methodMeta.responseSchema,
 		});
 
 		const endpoint = service[methodName].bind(service);

@@ -22,8 +22,7 @@ const fullNotificationSchema = createSchema<FullNotification>()(
 			...notificationSchema.shape,
 			Workspace: workspaceSchema,
 			Task: taskSchema,
-		})
-		.strict(),
+		}),
 );
 
 const taskEventSchema = createSchema<TaskEvent>()(
@@ -34,8 +33,7 @@ const taskEventSchema = createSchema<TaskEvent>()(
 			createdAt: z.date(),
 			taskId: z.string(),
 			message: z.string(),
-		})
-		.strict(),
+		}),
 );
 
 const taskValueSchema = z.union([
@@ -51,12 +49,12 @@ const taskEventReturnSchema = z.array(z.union([taskEventSchema, commitSchema]));
 
 export const eventRpcSchema = createServiceSchema<EventRpc>()({
 	getTaskEvents: {
-		input: z.object({ taskId: z.string() }).strict(),
+		input: z.object({ taskId: z.string() }),
 		output: taskEventReturnSchema,
 	},
 	getNotifications: {
-		input: z.object({ userId: z.string() }).strict(),
-		output: z.array(fullNotificationSchema.strict()),
+		input: z.object({ userId: z.string() }),
+		output: z.array(fullNotificationSchema),
 	},
 	createLogEvent: {
 		input: z
@@ -65,8 +63,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 				authorId: z.string(),
 				changes: z.record(taskValueSchema),
 				previousTask: taskSchema,
-			})
-			.strict(),
+			}),
 		output: taskEventSchema.nullable(),
 	},
 	createNotification: {
@@ -77,8 +74,7 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 				taskId: z.string(),
 				description: z.string(),
 				type: z.enum(["ASSIGNED", "PARTICIPATING", "MENTIONED", "CREATED"]),
-			})
-			.strict(),
+			}),
 		output: notificationSchema,
 	},
 	toggleNotification: {
@@ -87,12 +83,11 @@ export const eventRpcSchema = createServiceSchema<EventRpc>()({
 				notificationIds: z.array(z.string()),
 				read: z.boolean().optional(),
 				dismissed: z.boolean().optional(),
-			})
-			.strict(),
+			}),
 		output: z.array(notificationSchema),
 	},
 	deleteNotification: {
-		input: z.object({ notificationIds: z.array(z.string()) }).strict(),
+		input: z.object({ notificationIds: z.array(z.string()) }),
 		output: z.void(),
 	},
 });

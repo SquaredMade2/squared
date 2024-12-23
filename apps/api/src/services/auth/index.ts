@@ -13,7 +13,7 @@ const loginSchema = createSchema<Login>()(
 		email: z.string(),
 		password: z.string(),
 	}),
-).strict();
+);
 
 const registerSchema = createSchema<Register>()(
 	z.object({
@@ -23,7 +23,7 @@ const registerSchema = createSchema<Register>()(
 		username: z.string(),
 		inviteToken: z.string().optional(),
 	}),
-).strict();
+);
 
 const oAuthLoginSchema = createSchema<OauthLogin>()(
 	z.object({
@@ -33,14 +33,14 @@ const oAuthLoginSchema = createSchema<OauthLogin>()(
 		username: z.string().optional(),
 		avatarUrl: z.string().nullable().optional(),
 	}),
-).strict();
+);
 
 const userTokenSchema = createSchema<UserToken>()(
 	z.object({
 		user: userSchema,
 		token: z.string(),
 	}),
-).strict();
+);
 
 export const authRpcSchema = createServiceSchema<AuthRpc>()({
 	login: {

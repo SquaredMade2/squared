@@ -26,11 +26,11 @@ const retrospectiveItemReturnSchema = createSchema<RetroItemReturn>()(
 		type: z.enum(["toImprove", "wentWell", "actionItems"]),
 		likes: z.array(z.string()),
 	}),
-).strict();
+);
 
 export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	getSprints: {
-		input: z.object({ teamId: z.string() }).strict(),
+		input: z.object({ teamId: z.string() }),
 		output: z.array(sprintSchema),
 	},
 	updateSprint: {
@@ -50,11 +50,11 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 					description: true,
 				}),
 			}),
-		).strict(),
+		),
 		output: sprintSchema,
 	},
 	initializeSprints: {
-		input: z.object({ teamId: z.string() }).strict(),
+		input: z.object({ teamId: z.string() }),
 		output: z.number(),
 	},
 	startNextSprint: {
@@ -65,7 +65,7 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 					.object({ description: z.string().optional(), name: z.string() })
 					.optional(),
 			}),
-		).strict(),
+		),
 		output: z.union([
 			z
 				.object({
@@ -79,16 +79,15 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 					data: sprintSchema,
 					message: z.string(),
 					variant: z.literal("default"),
-				})
-				.strict(),
+				}),
 		]),
 	},
 	getSprintTasks: {
-		input: z.object({ sprintId: z.string() }).strict(),
-		output: z.array(taskSchema.strict()),
+		input: z.object({ sprintId: z.string() }),
+		output: z.array(taskSchema),
 	},
 	endSprint: {
-		input: z.object({ sprintId: z.string() }).strict(),
+		input: z.object({ sprintId: z.string() }),
 		output: sprintSchema,
 	},
 	addRetrospectiveItem: {
@@ -99,8 +98,8 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 				type: z.enum(["wentWell", "toImprove", "actionItems"]),
 				content: z.string(),
 			}),
-		).strict(),
-		output: retrospectiveItemReturnSchema.strict(),
+		),
+		output: retrospectiveItemReturnSchema,
 	},
 	updateRetrospectiveItem: {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
@@ -110,10 +109,9 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 					type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
 					content: z.string().optional(),
 					sprintId: z.string(),
-				})
-				.strict(),
+				}),
 		),
-		output: retrospectiveItemReturnSchema.strict(),
+		output: retrospectiveItemReturnSchema,
 	},
 	likeRetrospectiveItem: {
 		input: createSchema<{
@@ -124,18 +122,18 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 				retrospectiveItemId: z.string(),
 				userId: z.string(),
 			}),
-		).strict(),
+		),
 		output: retrospectiveItemReturnSchema,
 	},
 	getRetrospectiveItems: {
-		input: z.object({ sprintId: z.string() }).strict(),
+		input: z.object({ sprintId: z.string() }),
 		output: createSchema<RetrospectiveData>()(
 			z.object({
 				wentWell: z.array(retrospectiveItemReturnSchema),
 				toImprove: z.array(retrospectiveItemReturnSchema),
 				actionItems: z.array(retrospectiveItemReturnSchema),
 			}),
-		).strict(),
+		),
 	},
 });
 

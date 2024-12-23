@@ -13,7 +13,7 @@ const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 		url: z.string(),
 		name: z.string(),
 	}),
-).strict();
+);
 
 export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	createWorkspace: {
@@ -21,24 +21,21 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			.object({
 				userId: z.string(),
 				workspace: workspaceParamsSchema,
-			})
-			.strict(),
+			}),
 		output: workspaceLabelSchema,
 	},
 	getWorkspace: {
 		input: z
 			.object({
 				workspaceId: z.string(),
-			})
-			.strict(),
+			}),
 		output: workspaceLabelSchema.nullable(),
 	},
 	getWorkspaceByUrl: {
 		input: z
 			.object({
 				url: z.string(),
-			})
-			.strict(),
+			}),
 		output: workspaceLabelSchema.nullable(),
 	},
 	updateWorkspace: {
@@ -46,24 +43,21 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			.object({
 				workspaceId: z.string(),
 				workspace: workspaceParamsSchema,
-			})
-			.strict(),
+			}),
 		output: workspaceLabelSchema,
 	},
 	deleteWorkspace: {
 		input: z
 			.object({
 				workspaceId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.void(),
 	},
 	getUserWorkspaces: {
 		input: z
 			.object({
 				userId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.array(workspaceLabelSchema),
 	},
 	joinWorkspace: {
@@ -71,8 +65,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			.object({
 				token: z.string(),
 				userId: z.string(),
-			})
-			.strict(),
+			}),
 		output: workspaceLabelSchema.nullable(),
 	},
 	removeUserFromWorkspace: {
@@ -80,8 +73,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			.object({
 				workspaceId: z.string(),
 				userId: z.string(),
-			})
-			.strict(),
+			}),
 		output: z.void(),
 	},
 	inviteToWorkspace: {
@@ -89,8 +81,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			.object({
 				workspaceId: z.string(),
 				email: z.union([z.string(), z.array(z.string())]),
-			})
-			.strict(),
+			}),
 		output: z.void(),
 	},
 });

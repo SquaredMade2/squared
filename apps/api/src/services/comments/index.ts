@@ -6,15 +6,15 @@ import { logger } from "../index";
 
 export const commentRpcSchema = createServiceSchema<CommentRpc>()({
 	addComment: {
-		input: z.object({ comment: commentSchema.omit({ id: true }) }).strict(),
+		input: z.object({ comment: commentSchema.omit({ id: true }) }),
 		output: z.array(commentSchema),
 	},
 	deleteComment: {
-		input: z.object({ commentId: z.string() }).strict(),
+		input: z.object({ commentId: z.string() }),
 		output: z.void(),
 	},
 	getTaskComments: {
-		input: z.object({ taskId: z.string() }).strict(),
+		input: z.object({ taskId: z.string() }),
 		output: z.array(commentSchema),
 	},
 });
