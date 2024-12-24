@@ -156,7 +156,9 @@ function SettingsNavbarContent() {
 										</AccordionItem>
 									))}
 								</Accordion>
-								<AddTeamButton />
+								<div className="ml-6">
+									<AddTeamButton />
+								</div>
 							</div>
 						</div>
 					</div>

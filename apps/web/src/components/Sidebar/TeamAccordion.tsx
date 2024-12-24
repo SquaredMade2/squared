@@ -85,7 +85,9 @@ export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 				Add in check to show button only if user is an Admin of the workspace once Admin privileges are implemented
 				isUserAdmin && <AddTeamButton />
 				*/}
-				<AddTeamButton />
+				<div className="ml-6">
+					<AddTeamButton />
+				</div>
 			</ScrollArea>
 		</>
 	);
