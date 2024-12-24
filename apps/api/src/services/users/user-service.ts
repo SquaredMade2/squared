@@ -147,7 +147,11 @@ export class UserService implements UserRpc {
 		userId: string;
 		taskId: string;
 	}) {
-		this.logger.info("Setting last viewed task for userId: %s, taskId: %s", userId, taskId);
+		this.logger.info(
+			"Setting last viewed task for userId: %s, taskId: %s",
+			userId,
+			taskId,
+		);
 		try {
 			return await this.db.user.update({
 				where: { id: userId },
@@ -171,5 +175,5 @@ export class UserService implements UserRpc {
 			}
 			throw error;
 		}
-	}	
+	}
 }

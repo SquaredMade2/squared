@@ -49,7 +49,7 @@ export type UpdateUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
-	lastViewedTaskId: string | null
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserAvatarRequest = {
@@ -74,7 +74,7 @@ export type UpdateUserAvatarResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
-	lastViewedTaskId: string | null
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserNotificationsRequest = {
@@ -99,7 +99,7 @@ export type UpdateUserNotificationsResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
-	lastViewedTaskId: string | null
+	lastViewedTaskId: string | null;
 };
 
 export type GetUserRequest = {
@@ -209,9 +209,9 @@ export type GetUserTeamsResponse = {
 
 export type SetLastViewedTaskRequest = {
 	userId: string;
-	taskId: string; 
+	taskId: string;
 };
-  
+
 export type SetLastViewedTaskResponse = {
 	success: boolean;
 	message: string;
@@ -322,13 +322,13 @@ export class UserService extends RPCContextClient {
 		return this.request(ctx, "getUserTeams", req);
 	}
 
-    /**
-   	 * setLastViewedTask method
-   	 */
-	  setLastViewedTask(
+	/**
+	 * setLastViewedTask method
+	 */
+	setLastViewedTask(
 		ctx: Context,
-		req: SetLastViewedTaskRequest
-	  ): Promise<SetLastViewedTaskResponse> {
+		req: SetLastViewedTaskRequest,
+	): Promise<SetLastViewedTaskResponse> {
 		return this.request(ctx, "setLastViewedTask", req);
-	  }
+	}
 }
