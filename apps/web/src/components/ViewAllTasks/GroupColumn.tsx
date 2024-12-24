@@ -210,6 +210,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				.map((item) => item?.task)
 				.filter((task): task is Task => task !== undefined),
 		);
+		// todo have to get the sprintId of the filter
 
 		return sortedItems.map((sortedTask, index) => {
 			const item = allItems.find((item) => item?.task?.id === sortedTask.id);

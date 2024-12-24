@@ -110,28 +110,18 @@ export function SaveFilterForm({
 	}, [currentFilters]);
 
 	const handleUrl = (filter: SavedFilter) => {
-		console.log("handling URL");
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
 
 		const filterId = filter.id.split("-")[0];
 
-		// todo get workspaceName
-
 		const currentWorkSpaceName = workspace?.name;
-		// todo get teamName
-		const currentTeamName = team?.name;
 
-		// pathname.includes("/views")
-		// 	? router.push(`${filterName}-${filterId}`)
-		// 	: router.push(`views/${filterName}-${filterId}`);
+		const currentTeamName = team?.name;
 
 		const filterURL = `/${currentWorkSpaceName}/team/${currentTeamName}/views/${filterName}-${filterId}`;
 
 		router.push(filterURL);
 	};
-
-	// todo in this onSubmit function add sprintId if the user is in the sprint page
-	// baseUrl/[workspace]/team/[team]/views/
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		setIsSaving(true);
@@ -182,6 +172,10 @@ export function SaveFilterForm({
 				}
 				//create new view
 			} else if (team && user) {
+				// todo need to figure out why sprintId is not being added
+
+				console.log(sprint?.id); //todo delete
+
 				const savedFilter = await filterService.createFilter(TODO, {
 					name: values.title,
 					description: values.description ?? null,
@@ -195,7 +189,7 @@ export function SaveFilterForm({
 
 				saveFilter(savedFilter);
 
-				handleUrl(savedFilter); //todo: need to check why this is erroring out
+				handleUrl(savedFilter);
 			} else {
 				toast({
 					title: "Team not found",

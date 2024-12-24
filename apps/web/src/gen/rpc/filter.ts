@@ -4,7 +4,6 @@ import { RPCContextClient } from "@squared/rpc-client";
 
 export type CreateFilterRequest = {
 	authorId: string;
-	sprintId: string | null;
 	description: string | null;
 	filter: {
 		field:
@@ -44,13 +43,13 @@ export type CreateFilterRequest = {
 			| string[];
 	}[];
 	name: string;
+	sprintId: string | null;
 	teamId: string;
 };
 
 export type CreateFilterResponse = {
 	authorId: string;
 	description: string | null;
-	sprintId: string | null;
 	filter: {
 		field:
 			| "id"
@@ -90,6 +89,7 @@ export type CreateFilterResponse = {
 	}[];
 	id: string;
 	name: string;
+	sprintId: string | null;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
 	workspaceId: string | null;
@@ -102,7 +102,6 @@ export type GetFiltersRequest = {
 export type GetFiltersResponse = {
 	authorId: string;
 	description: string | null;
-	sprintId: string | null;
 	filter: {
 		field:
 			| "id"
@@ -142,6 +141,7 @@ export type GetFiltersResponse = {
 	}[];
 	id: string;
 	name: string;
+	sprintId: string | null;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
 	workspaceId: string | null;
@@ -195,7 +195,6 @@ export type UpdateFilterRequest = {
 export type UpdateFilterResponse = {
 	authorId: string;
 	description: string | null;
-	sprintId: string | null;
 	filter: {
 		field:
 			| "id"
@@ -235,6 +234,7 @@ export type UpdateFilterResponse = {
 	}[];
 	id: string;
 	name: string;
+	sprintId: string | null;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
 	workspaceId: string | null;
@@ -259,6 +259,7 @@ export class FilterService extends RPCContextClient {
 		ctx: Context,
 		req: CreateFilterRequest,
 	): Promise<CreateFilterResponse> {
+		console.log(req); //todo delete
 		return this.request(ctx, "createFilter", req);
 	}
 
