@@ -8,10 +8,12 @@ import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {
 	const { user, loading: userLoading, error: userError } = useAuthUser();
-	const { setWorkspace, setWorkspaces } = useWorkspaceStore((state) => state);
+	const { setWorkspace, setWorkspaces, workspace } = useWorkspaceStore(
+		(state) => state,
+	);
 
 	const params = useParams();
-	const workspaceUrl = parseParams(params.workspace);
+	const workspaceUrl = parseParams(params.workspace) || workspace?.url;
 
 	const {
 		data,

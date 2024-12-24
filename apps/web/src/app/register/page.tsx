@@ -1,7 +1,7 @@
 "use client";
 
 import RegistrationModal from "@/components/Modals/RegistrationModal";
-import { GoogleIcon } from "@/components/Svg";
+// import { GoogleIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -19,7 +19,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { passwordSchema } from "@/utils/formatting";
@@ -94,24 +94,24 @@ function RegisterForm() {
 		},
 	});
 
-	const { mutate: handleGoogleRegister, isPending: isGoogleLoading } =
-		useMutation({
-			mutationKey: ["googleLogin", window.location.href],
-			mutationFn: async () => {
-				await signIn("google", {
-					callbackUrl: window.location.href,
-				});
-			},
-			onError: (error) => {
-				toast({
-					title:
-						error instanceof Error
-							? error.message
-							: "Google registration failed",
-					variant: "destructive",
-				});
-			},
-		});
+	// const { mutate: handleGoogleRegister, isPending: isGoogleLoading } =
+	// 	useMutation({
+	// 		mutationKey: ["googleLogin", window.location.href],
+	// 		mutationFn: async () => {
+	// 			await signIn("google", {
+	// 				callbackUrl: window.location.href,
+	// 			});
+	// 		},
+	// 		onError: (error) => {
+	// 			toast({
+	// 				title:
+	// 					error instanceof Error
+	// 						? error.message
+	// 						: "Google registration failed",
+	// 				variant: "destructive",
+	// 			});
+	// 		},
+	// 	});
 
 	const handleLoginPush = () => {
 		router.push(inviteToken ? `/login?token=${inviteToken}` : "/login");
@@ -231,7 +231,8 @@ function RegisterForm() {
 							<Button
 								type="submit"
 								className="w-full"
-								disabled={isPending || isGoogleLoading}
+								// disabled={isPending || isGoogleLoading}
+								disabled={isPending}
 							>
 								{isPending ? (
 									<Loader2 className="mr-2 size-4 animate-spin" />
@@ -240,7 +241,7 @@ function RegisterForm() {
 							</Button>
 						</form>
 					</Form>
-					<div className="relative mt-4">
+					{/* <div className="relative mt-4">
 						<div className="absolute inset-0 flex items-center">
 							<Separator />
 						</div>
@@ -250,6 +251,7 @@ function RegisterForm() {
 							</span>
 						</div>
 					</div>
+
 					<Button
 						onClick={() => handleGoogleRegister()}
 						className="w-full mt-4"
@@ -262,7 +264,7 @@ function RegisterForm() {
 							<GoogleIcon />
 						)}
 						Sign up with Google
-					</Button>
+					</Button> */}
 				</CardContent>
 				<CardFooter className="flex justify-center">
 					<p className="text-sm text-muted-foreground">
