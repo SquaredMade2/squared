@@ -1,4 +1,10 @@
-import { useTaskStore, useUserStore, useViewStore } from "@/store";
+import {
+	useSprintStore,
+	useTaskStore,
+	useUserStore,
+	useViewStore,
+} from "@/store";
+import { useFilterStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -9,13 +15,13 @@ import type {
 	DroppableProvided,
 	DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
-import { Priority, Status, type Task } from "@squared/db";
+import { Priority, type SavedFilter, Status, type Task } from "@squared/db";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
-
 const priorityOrder = [
 	Priority.noPriority,
 	Priority.low,
@@ -41,6 +47,21 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { tasks: allTasks } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
+	const pathname = usePathname();
+
+	const { savedFilters } = useFilterStore((state) => state);
+
+	// currentSavedFilterArray is being used to filter tasks for views created for specific sprints
+	const currentSavedFilter = pathname.split("/").includes("views")
+		? savedFilters.filter((filter) => {
+				const filterSlugArray = filter.id.split("-");
+				const filterSlug = filterSlugArray[0];
+
+				const pathNameSlug = pathname.split("-").pop();
+
+				return filterSlug === pathNameSlug;
+			})[0]
+		: null;
 
 	const getParentTaskIds = () => {
 		const taskIdsForGroup = tasks.map((t) => t.id);
@@ -210,10 +231,24 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				.map((item) => item?.task)
 				.filter((task): task is Task => task !== undefined),
 		);
-		// todo have to get the sprintId of the filter
+
+		if (currentSavedFilter) {
+			const sprintId = currentSavedFilter.sprintId;
+
+			return sortedItems.map((sortedTask, index) => {
+				const item = allItems.find((item) => {
+					return (
+						item?.task?.id === sortedTask.id && item?.task.sprintId === sprintId
+					);
+				});
+				return item?.render(index);
+			});
+		}
 
 		return sortedItems.map((sortedTask, index) => {
-			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+			const item = allItems.find((item) => {
+				return item?.task?.id === sortedTask.id;
+			});
 			return item?.render(index);
 		});
 	};
