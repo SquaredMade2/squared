@@ -25,14 +25,15 @@ export function TaskDesignationsContainer() {
 	];
 
 	return (
-		<div className="flex flex-col relative w-full z-1 rounded-lg p-5 gap-5 bg-card">
+		<div className="flex flex-col relative w-full z-1 rounded-xl p-5 gap-5 bg-card">
 			{Designations.map((designation) => (
-				<div
-					key={designation.name}
-					className="flex flex-row items-center w-full"
-				>
+				<div key={designation.name} className="flex flex-row w-full">
 					<div className="flex items-center shrink-0 text-muted-foreground text-sm font-semibold my-1 w-[95px]">
-						<span>{designation.name}</span>
+						<span
+							className={`${designation.name === "Labels" && "self-start"}`}
+						>
+							{designation.name}
+						</span>
 						{designation.extraComponent && (
 							<div className="ml-1.5 flex items-center">
 								{designation.extraComponent}
