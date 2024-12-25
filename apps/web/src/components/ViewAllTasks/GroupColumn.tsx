@@ -51,7 +51,6 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	const { savedFilters } = useFilterStore((state) => state);
 
-	// currentSavedFilterArray is being used to filter tasks for views created for specific sprints
 	const currentSavedFilter = pathname.split("/").includes("views")
 		? savedFilters.filter((filter) => {
 				const filterSlugArray = filter.id.split("-");

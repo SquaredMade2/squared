@@ -78,7 +78,6 @@ export default function FilterViewPage() {
 	if (!filter) return null;
 
 	return (
-		// todo add sprintid here maybe
 		<TaskPageLayout
 			loading={loading}
 			authorized={authorized}

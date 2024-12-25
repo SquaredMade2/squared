@@ -259,7 +259,6 @@ export class FilterService extends RPCContextClient {
 		ctx: Context,
 		req: CreateFilterRequest,
 	): Promise<CreateFilterResponse> {
-		console.log(req); //todo delete
 		return this.request(ctx, "createFilter", req);
 	}
 

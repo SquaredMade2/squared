@@ -172,10 +172,6 @@ export function SaveFilterForm({
 				}
 				//create new view
 			} else if (team && user) {
-				// todo need to figure out why sprintId is not being added
-
-				console.log(sprint?.id); //todo delete
-
 				const savedFilter = await filterService.createFilter(TODO, {
 					name: values.title,
 					description: values.description ?? null,
