@@ -1,9 +1,4 @@
-import {
-	useSprintStore,
-	useTaskStore,
-	useUserStore,
-	useViewStore,
-} from "@/store";
+import { useTaskStore, useUserStore, useViewStore } from "@/store";
 import { useFilterStore } from "@/store";
 import {
 	compareNullableDates,
@@ -15,7 +10,7 @@ import type {
 	DroppableProvided,
 	DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
-import { Priority, type SavedFilter, Status, type Task } from "@squared/db";
+import { Priority, Status, type Task } from "@squared/db";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
@@ -234,6 +229,16 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		if (currentSavedFilter) {
 			const sprintId = currentSavedFilter.sprintId;
 
+			// if no sprintId then render all items
+			if (!sprintId) {
+				return sortedItems.map((sortedTask, index) => {
+					const item = allItems.find((item) => {
+						return item?.task?.id === sortedTask.id;
+					});
+					return item?.render(index);
+				});
+			}
+			// else render items with matching sprintId
 			return sortedItems.map((sortedTask, index) => {
 				const item = allItems.find((item) => {
 					return (
