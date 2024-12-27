@@ -229,7 +229,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 		if (currentSavedFilter) {
 			const sprintId = currentSavedFilter.sprintId;
 
-			// if no sprintId then render all items
+			// if no sprintId then render all tasks
 			if (!sprintId) {
 				return sortedItems.map((sortedTask, index) => {
 					const item = allItems.find((item) => {
