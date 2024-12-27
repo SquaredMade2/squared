@@ -5,10 +5,13 @@ import {
 	compareNullableStrings,
 } from "@/utils/compareSorting";
 import { Droppable } from "@hello-pangea/dnd";
+import type {
+	DroppableProvided,
+	DroppableStateSnapshot,
+} from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
-import { ScrollArea } from "../ui/scroll-area";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
@@ -227,35 +230,39 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				numberOfTasks={tasks.length}
 				isListView={isListView}
 			/>
-			<Droppable droppableId={group}>
-				{(provided, snapshot) => (
-					<ScrollArea
-						ref={provided.innerRef}
-						{...provided.droppableProps}
+			<Droppable
+				droppableId={group}
+				type="TASK"
+				direction="vertical"
+				isCombineEnabled={true}
+				ignoreContainerClipping={true}
+			>
+				{(
+					dropProvided: DroppableProvided,
+					dropSnapshot: DroppableStateSnapshot,
+				) => (
+					<div
 						className={`
-              ${snapshot.isDraggingOver ? "h-full" : ""}
-              ${
-								snapshot.isDraggingOver && view === "grid"
-									? ""
-									: `${
-											view === "grid"
-												? "h-[calc(100vh-250px)] mb-2 flex-grow overflow-y-auto rounded transition-all duration-500 ease-in-out"
-												: "overflow-y-auto"
-										}`
-							} 
-            `}
-					>
-						<div
-							className={
-								isListView
-									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full"
-									: "flex flex-col z-30 w-full gap-2 items-center"
+							${
+								view === "grid"
+									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
+									: "flex flex-col z-30 w-full gap-2 items-center h-full"
 							}
-						>
-							{showTasks && renderGroup(tasks)}
+							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
+							`}
+					>
+						<div className="w-full overflow-auto">
+							<div className="w-full grow inline-flex">
+								<div
+									ref={dropProvided.innerRef}
+									className="flex flex-col items-start w-full min-w-[200px] min-h-[60px]"
+								>
+									{showTasks && renderGroup(tasks)}
+									{dropProvided.placeholder}
+								</div>
+							</div>
 						</div>
-						{provided.placeholder}
-					</ScrollArea>
+					</div>
 				)}
 			</Droppable>
 			{!isListView && <GridColumnNewTaskButton group={group} />}

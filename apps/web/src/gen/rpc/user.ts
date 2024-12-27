@@ -23,6 +23,7 @@ export type OnBoardUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserRequest = {
@@ -48,6 +49,7 @@ export type UpdateUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserAvatarRequest = {
@@ -72,6 +74,7 @@ export type UpdateUserAvatarResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserNotificationsRequest = {
@@ -96,6 +99,7 @@ export type UpdateUserNotificationsResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 };
 
 export type GetUserRequest = {
@@ -119,6 +123,7 @@ export type GetUserResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 } | null;
 
 export type GetWorkspaceUsersRequest = {
@@ -142,6 +147,7 @@ export type GetWorkspaceUsersResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 }[];
 
 export type GetTeamUsersRequest = {
@@ -165,6 +171,7 @@ export type GetTeamUsersResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
+	lastViewedTaskId: string | null;
 }[];
 
 export type GetUserAvatarsRequest = {
@@ -199,6 +206,16 @@ export type GetUserTeamsResponse = {
 	tasksPerSprint: number;
 	workspaceId: string;
 }[];
+
+export type SetLastViewedTaskRequest = {
+	userId: string;
+	taskId: string;
+};
+
+export type SetLastViewedTaskResponse = {
+	success: boolean;
+	message: string;
+};
 
 /**
  * user service
@@ -303,5 +320,15 @@ export class UserService extends RPCContextClient {
 		req: GetUserTeamsRequest,
 	): Promise<GetUserTeamsResponse> {
 		return this.request(ctx, "getUserTeams", req);
+	}
+
+	/**
+	 * setLastViewedTask method
+	 */
+	setLastViewedTask(
+		ctx: Context,
+		req: SetLastViewedTaskRequest,
+	): Promise<SetLastViewedTaskResponse> {
+		return this.request(ctx, "setLastViewedTask", req);
 	}
 }

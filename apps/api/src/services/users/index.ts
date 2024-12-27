@@ -75,6 +75,13 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.array(teamSchema),
 	},
+	setLastViewedTask: {
+		input: z.object({
+			userId: z.string(),
+			taskId: z.string(),
+		}),
+		output: userSchema,
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -92,4 +99,5 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getUserAvatars: (input) => userService.getUserAvatars(input),
 		getUserRepositories: (input) => userService.getUserRepositories(input),
 		getUserTeams: (input) => userService.getUserTeams(input),
+		setLastViewedTask: (input) => userService.setLastViewedTask(input),
 	});

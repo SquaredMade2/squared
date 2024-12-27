@@ -103,25 +103,16 @@ const LabelCombobox = () => {
 
 	return (
 		<div className="md:w-full">
-			<div className="hidden md:block w-full">
-				<div className="mb-2 space-x-1 space-y-1">
-					{taskLabels.map((label: Label) => (
-						<span key={label.id}>
-							<LabelBadge label={label} />
-						</span>
-					))}
-				</div>
-			</div>
-			<Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
 						variant="outline"
 						className="md:w-full justify-start w-fit h-8 md:h-10"
 					>
 						<>
-							<div className="hidden md:flex">
+							<div className="hidden md:flex item">
 								<Plus className="size-4 mr-2" />
-								<span className="ml-1.5">Add label</span>
+								<span>Add label</span>
 							</div>
 							<div className="md:hidden">{renderLabelButton()}</div>
 						</>
@@ -159,6 +150,15 @@ const LabelCombobox = () => {
 					</Command>
 				</PopoverContent>
 			</Popover>
+			<div className="hidden md:block w-full mt-2">
+				<div className="mb-2 flex flex-wrap space-x-1 space-y-2 items-center ">
+					{taskLabels.map((label: Label, index: number) => (
+						<span key={label.id} className={index === 0 ? "mt-2" : ""}>
+							<LabelBadge label={label} />
+						</span>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 };

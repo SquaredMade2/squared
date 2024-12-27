@@ -43,6 +43,11 @@ afterAll(async () => {
 	try {
 		await prisma.$disconnect();
 
+		// Reset the database
+		execSync("pnpm run --filter=@squared/db db:reset", {
+			stdio: "inherit",
+		});
+
 		// Stop the test database
 		execSync("pnpm run --filter=@squared/seed docker:db:down", {
 			stdio: "inherit",
