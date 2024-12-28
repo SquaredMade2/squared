@@ -8,7 +8,7 @@ const AddTeamButton = () => {
 	return (
 		<Button
 			variant="ghost"
-			className="w-full justify-start mt-2 ml-6"
+			className="w-full justify-start mt-2"
 			onClick={() => router.replace("/settings/new-team")}
 		>
 			<Plus className="mr-2 h-4 w-4" />
