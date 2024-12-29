@@ -120,8 +120,8 @@ const EffortEstimateDropdown = () => {
 							onSelect={() => handleSelectEffortEstimate(effortEstimate)}
 							className="flex justify-between items-center"
 						>
-							<div className="flex items-center">
-								<span className="w-4 h-4 mr-2">{showIcon(estimateNumber)}</span>
+							<div className="flex items-center gap-2">
+								<span className="w-4 h-4">{showIcon(estimateNumber)}</span>
 								<span>{estimateNumber}</span>
 							</div>
 						</DropdownMenuItem>
