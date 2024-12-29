@@ -49,7 +49,7 @@ function ForgotPasswordForm() {
 		mutationKey: ["resetPassword", form.getValues("email")],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
 			if (!values.email) return;
-			const res = await client.auth.resetPasswordEmail.$post({
+			const res = await client.authentication.resetPasswordEmail.$post({
 				email: values.email,
 			});
 

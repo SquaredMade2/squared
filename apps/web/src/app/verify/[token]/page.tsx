@@ -14,7 +14,7 @@ export default function VerifyUserToken() {
 
 	const verifyUserMutation = useMutation({
 		mutationFn: async (token: string) => {
-			const res = await client.auth.verifyUser.$post({ token });
+			const res = await client.authentication.verifyUser.$post({ token });
 			return res.json();
 		},
 		onSuccess: () => {

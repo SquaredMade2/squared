@@ -61,7 +61,7 @@ function RegisterForm() {
 	const { mutate: handleRegister, isPending } = useMutation({
 		mutationKey: ["register"],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			const res = await client.auth.register.$post({
+			const res = await client.authentication.register.$post({
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
 				email: values.email,

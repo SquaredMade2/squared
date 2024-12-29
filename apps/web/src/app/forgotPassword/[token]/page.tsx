@@ -49,7 +49,9 @@ function ResetPasswordForm() {
 	const { data: tokenData } = useQuery({
 		queryKey: ["token", token],
 		queryFn: async () => {
-			const response = await client.auth.checkValidToken.$get({ token });
+			const response = await client.authentication.checkValidToken.$get({
+				token,
+			});
 			const { message, email, tokenExpired } = await response.json();
 			toast({
 				title: message,
@@ -66,7 +68,7 @@ function ResetPasswordForm() {
 	const { mutate: onSubmit } = useMutation({
 		mutationKey: ["resetPassword", token],
 		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			const res = await client.auth.resetPassword.$post({
+			const res = await client.authentication.resetPassword.$post({
 				token,
 				...values,
 			});
@@ -86,7 +88,7 @@ function ResetPasswordForm() {
 		mutationKey: ["resetPassword", token],
 		mutationFn: async () => {
 			if (!tokenData) return;
-			const res = await client.auth.resetPasswordEmail.$post({
+			const res = await client.authentication.resetPasswordEmail.$post({
 				email: tokenData.email,
 			});
 
