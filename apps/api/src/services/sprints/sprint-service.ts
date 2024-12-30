@@ -29,6 +29,25 @@ export class SprintService implements SprintRpc {
 		return this.db.sprint.findMany({ where: { teamId } });
 	}
 
+	async getCurrentSprint({
+		teamId,
+	}: { teamId: string }): Promise<Sprint | undefined | null> {
+		this.logger.info("Getting current sprint");
+
+		const teamWithSprint = this.db.sprint.findFirst({
+			where: {
+				teamId,
+				status: "ACTIVE",
+			},
+		});
+
+		if (!teamWithSprint || teamWithSprint === null) {
+			return;
+		}
+
+		return teamWithSprint;
+	}
+
 	async updateSprint({
 		sprintId,
 		sprintData,

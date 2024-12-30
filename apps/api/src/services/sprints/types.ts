@@ -51,6 +51,9 @@ export type SprintServiceResponse<T> = ErrorResponse | SuccessResponse<T>;
 
 export interface SprintRpc {
 	getSprints: ({ teamId }: { teamId: string }) => Promise<Sprint[]>;
+	getCurrentSprint: ({
+		teamId,
+	}: { teamId: string }) => Promise<Sprint | undefined | null>;
 	updateSprint: ({
 		sprintId,
 		sprintData,

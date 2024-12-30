@@ -263,7 +263,6 @@ model Workspace {
   universalTokenLinkId String?
   avatarUrl            String?
   admins               String[]
-  defaultView          String
 
   workspaceViews        SavedFilter[]
   Labels                Label[]

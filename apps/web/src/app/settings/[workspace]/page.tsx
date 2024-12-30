@@ -24,6 +24,15 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
@@ -48,6 +57,7 @@ const formSchema = z.object({
 		.regex(/^[a-zA-Z0-9-]+$/, {
 			message: "URL can only contain letters, numbers, and hyphens.",
 		}),
+	"default-view": z.string().trim(),
 });
 
 export default function WorkspaceSettings() {
@@ -60,6 +70,8 @@ export default function WorkspaceSettings() {
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
+
+	console.log(workspace);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -189,6 +201,48 @@ export default function WorkspaceSettings() {
 										This is your workspace's unique URL on our platform.
 									</FormDescription>
 									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="default-view"
+							render={() => (
+								<FormItem>
+									<FormLabel>Set Workspace View</FormLabel>
+									<FormControl>
+										{/* <Select>
+											<SelectTrigger className="w-[180px]">
+												<SelectValue placeholder="Select a team" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>Teams</SelectLabel>
+													{workspace.teams.map((team) => <SelectItem>{team}</SelectItem>)}
+													<SelectItem value="apple">Apple</SelectItem>
+													<SelectItem value="banana">Banana</SelectItem>
+													<SelectItem value="blueberry">Blueberry</SelectItem>
+													<SelectItem value="grapes">Grapes</SelectItem>
+													<SelectItem value="pineapple">Pineapple</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select> */}
+										<Select>
+											<SelectTrigger className="w-[180px]">
+												<SelectValue placeholder="Select a page" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>Pages</SelectLabel>
+													<SelectItem value="apple">Apple</SelectItem>
+													<SelectItem value="banana">Banana</SelectItem>
+													<SelectItem value="blueberry">Blueberry</SelectItem>
+													<SelectItem value="grapes">Grapes</SelectItem>
+													<SelectItem value="pineapple">Pineapple</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									</FormControl>
 								</FormItem>
 							)}
 						/>
