@@ -119,6 +119,23 @@ export type GetUserTeamsResponse = {
 	workspaceId: string;
 }[];
 
+export type GetWorkspaceTeamsRequest = {
+	workspaceId: string;
+};
+
+export type GetWorkspaceTeamsResponse = {
+	cooldownDuration: number;
+	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
+	id: string;
+	identifier: string;
+	name: string | null;
+	sprintDuration: number;
+	sprintStartDate: Date;
+	sprintsEnabled: boolean;
+	tasksPerSprint: number;
+	workspaceId: string;
+}[];
+
 export type RemoveUserFromTeamRequest = {
 	teamId: string;
 	userId: string;
@@ -194,6 +211,16 @@ export class TeamService extends RPCContextClient {
 		req: GetUserTeamsRequest,
 	): Promise<GetUserTeamsResponse> {
 		return this.request(ctx, "getUserTeams", req);
+	}
+
+	/**
+	 * getWorkspaceTeams method
+	 */
+	getWorkspaceTeams(
+		ctx: Context,
+		req: GetWorkspaceTeamsRequest,
+	): Promise<GetWorkspaceTeamsResponse> {
+		return this.request(ctx, "getWorkspaceTeams", req);
 	}
 
 	/**

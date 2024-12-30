@@ -18,6 +18,22 @@ export type GetSprintsResponse = {
 	updatedAt: Date;
 }[];
 
+export type GetCurrentSprintRequest = {
+	teamId: string;
+};
+
+export type GetCurrentSprintResponse = {
+	createdAt: Date;
+	description: string | null;
+	endDate: Date;
+	id: string;
+	name: string;
+	startDate: Date;
+	status: "PLANNED" | "ACTIVE" | "COMPLETED";
+	teamId: string;
+	updatedAt: Date;
+} | null;
+
 export type UpdateSprintRequest = {
 	sprintData: {
 		description: string | null;
@@ -212,6 +228,16 @@ export class SprintService extends RPCContextClient {
 		req: GetSprintsRequest,
 	): Promise<GetSprintsResponse> {
 		return this.request(ctx, "getSprints", req);
+	}
+
+	/**
+	 * getCurrentSprint method
+	 */
+	getCurrentSprint(
+		ctx: Context,
+		req: GetCurrentSprintRequest,
+	): Promise<GetCurrentSprintResponse> {
+		return this.request(ctx, "getCurrentSprint", req);
 	}
 
 	/**
