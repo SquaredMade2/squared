@@ -58,8 +58,11 @@ const formSchema = z.object({
 		.regex(/^[a-zA-Z0-9-]+$/, {
 			message: "URL can only contain letters, numbers, and hyphens.",
 		}),
-	"default-view": z.string().trim(),
+	viewTeam: z.string().trim(),
+	viewPage: z.string().trim(),
 });
+
+type Sprints = [Sprint | null];
 
 export default function WorkspaceSettings() {
 	const { deleteWorkspace, updateWorkspace } = useWorkspaceStore(
@@ -70,7 +73,7 @@ export default function WorkspaceSettings() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const [workspaceTeams, setWorkspaceTeams] = useState<Team[]>([]);
-	const [teamSprints, setTeamSprints] = useState<Sprint[]>([]);
+	const [teamSprints, setTeamSprints] = useState<Sprints[]>([]);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -81,6 +84,10 @@ export default function WorkspaceSettings() {
 			url: workspace?.url.replace("https://app.squaredmade.com/", "") || "",
 		},
 	});
+
+	const { register, watch } = form;
+
+	const watchTeamSelect = watch("viewTeam");
 
 	useEffect(() => {
 		if (!workspace) return;
@@ -124,9 +131,9 @@ export default function WorkspaceSettings() {
 							const teamSprint = await sprintService.getCurrentSprint(TODO, {
 								teamId: team.id,
 							});
-							return { [team.name || team.id]: teamSprint };
+							return teamSprint;
 						}
-						return { [team.name || team.id]: null };
+						return null;
 					});
 
 					setTeamSprints(teamSprints);
@@ -243,48 +250,92 @@ export default function WorkspaceSettings() {
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={form.control}
-							name="default-view"
-							render={() => (
-								<FormItem>
-									<FormLabel>Set Workspace View</FormLabel>
-									<FormControl>
-										{/* <Select>
-											<SelectTrigger className="w-[180px]">
-												<SelectValue placeholder="Select a team" />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectGroup>
-													<SelectLabel>Teams</SelectLabel>
-													{workspace.teams.map((team) => <SelectItem>{team}</SelectItem>)}
-													<SelectItem value="apple">Apple</SelectItem>
-													<SelectItem value="banana">Banana</SelectItem>
-													<SelectItem value="blueberry">Blueberry</SelectItem>
-													<SelectItem value="grapes">Grapes</SelectItem>
-													<SelectItem value="pineapple">Pineapple</SelectItem>
-												</SelectGroup>
-											</SelectContent>
-										</Select> */}
-										<Select>
-											<SelectTrigger className="w-[180px]">
-												<SelectValue placeholder="Select a page" />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectGroup>
-													<SelectLabel>Pages</SelectLabel>
-													<SelectItem value="apple">Apple</SelectItem>
-													<SelectItem value="banana">Banana</SelectItem>
-													<SelectItem value="blueberry">Blueberry</SelectItem>
-													<SelectItem value="grapes">Grapes</SelectItem>
-													<SelectItem value="pineapple">Pineapple</SelectItem>
-												</SelectGroup>
-											</SelectContent>
-										</Select>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
+						<div>
+							<FormField
+								control={form.control}
+								// name="default-view-team"
+								{...register("viewTeam")}
+								render={() => (
+									<FormItem className="col-span-1">
+										<FormLabel>Set Workspace View</FormLabel>
+										<FormControl>
+											<Select>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a team" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														<SelectLabel>Teams</SelectLabel>
+														{workspaceTeams.length > 0 &&
+															workspaceTeams.map((team: Team) => {
+																return (
+																	<SelectItem key={team.id} value={team.id}>
+																		{team.name}
+																	</SelectItem>
+																);
+															})}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="viewPage"
+								render={() => (
+									<FormItem className="col-span-1">
+										<FormLabel> </FormLabel>
+										<FormControl>
+											<Select>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a page" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														<SelectLabel>Pages</SelectLabel>
+														<SelectItem value="all">All</SelectItem>
+														<SelectItem value="active">Active</SelectItem>
+														{teamSprints.length > 0 &&
+															teamSprints
+																.filter(
+																	(teamSprint) =>
+																		teamSprint !== null &&
+																		teamSprint?.teamId === watchTeamSelect,
+																)
+																.map((teamSprint) => {
+																	return (
+																		<>
+																			<SelectItem
+																				key="1"
+																				value="sprint-dashboard"
+																			>
+																				Sprint Dashboard
+																			</SelectItem>
+																			<SelectItem
+																				key="2"
+																				value="current-sprint-dashboard"
+																			>
+																				Current Sprint Dashboard
+																			</SelectItem>
+																			<SelectItem
+																				key="3"
+																				value="current-sprint-tasks"
+																			>
+																				Current Sprint Tasks
+																			</SelectItem>
+																		</>
+																	);
+																})}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
 					</div>
 					<Button type="submit" disabled={!isFormChanged}>
 						Update
