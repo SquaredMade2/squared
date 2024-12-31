@@ -73,7 +73,7 @@ export default function WorkspaceSettings() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const [workspaceTeams, setWorkspaceTeams] = useState<Team[]>([]);
-	const [teamSprints, setTeamSprints] = useState<Sprints[]>([]);
+	const [teamSprints, setTeamSprints] = useState<Sprints>([]);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -125,21 +125,26 @@ export default function WorkspaceSettings() {
 			}
 
 			if (workspaceTeams) {
-				try {
-					const teamSprints = workspaceTeams?.map(async (team: Team) => {
-						if (team.sprintsEnabled) {
-							const teamSprint = await sprintService.getCurrentSprint(TODO, {
-								teamId: team.id,
-							});
-							return teamSprint;
+				const teamSprints = await Promise.all(
+					workspaceTeams.map(async (team: Team) => {
+						try {
+							if (team.sprintsEnabled) {
+								return await sprintService.getCurrentSprint(TODO, {
+									teamId: team.id,
+								});
+							}
+							return null;
+						} catch (error) {
+							console.error(
+								`Error fetching sprint for team ${team.id}:`,
+								error,
+							);
+							return null;
 						}
-						return null;
-					});
+					}),
+				);
 
-					setTeamSprints(teamSprints);
-				} catch (error) {
-					console.error("getCurrentSprint Error: ", error);
-				}
+				setTeamSprints(teamSprints);
 			}
 		};
 
