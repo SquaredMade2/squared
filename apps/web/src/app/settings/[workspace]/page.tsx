@@ -36,10 +36,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { workspaceService } from "@/lib/services";
+import { sprintService, teamService, workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
+import type { Sprint, Team } from "@squared/db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -68,10 +69,10 @@ export default function WorkspaceSettings() {
 	const { user } = useUserStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
+	const [workspaceTeams, setWorkspaceTeams] = useState<Team[]>([]);
+	const [teamSprints, setTeamSprints] = useState<Sprint[]>([]);
 	const { toast } = useToast();
 	const router = useRouter();
-
-	console.log(workspace);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -99,6 +100,44 @@ export default function WorkspaceSettings() {
 	}, [form, workspace]);
 
 	if (!workspace) return null;
+
+	useEffect(() => {
+		const fetchWorkspaceData = async () => {
+			if (workspace) {
+				try {
+					const workspaceTeams = await teamService.getWorkspaceTeams(TODO, {
+						workspaceId: workspace.id,
+					});
+
+					if (workspaceTeams.length > 0) {
+						setWorkspaceTeams(workspaceTeams);
+					}
+				} catch (error) {
+					console.error("getWorkspaceTeams Error: ", error);
+				}
+			}
+
+			if (workspaceTeams) {
+				try {
+					const teamSprints = workspaceTeams?.map(async (team: Team) => {
+						if (team.sprintsEnabled) {
+							const teamSprint = await sprintService.getCurrentSprint(TODO, {
+								teamId: team.id,
+							});
+							return { [team.name || team.id]: teamSprint };
+						}
+						return { [team.name || team.id]: null };
+					});
+
+					setTeamSprints(teamSprints);
+				} catch (error) {
+					console.error("getCurrentSprint Error: ", error);
+				}
+			}
+		};
+
+		fetchWorkspaceData();
+	});
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
