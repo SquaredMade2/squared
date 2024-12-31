@@ -29,7 +29,6 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -82,26 +81,25 @@ export default function WorkspaceSettings() {
 		},
 	});
 
-	const { register, watch } = form;
+	const { watch } = form;
 
 	const watchTeamSelect = watch("viewTeam");
+
+	console.log(watchTeamSelect);
 
 	useEffect(() => {
 		if (!workspace) return;
 
-		const subscription = form.watch((value) => {
-			if (
+		const subscription = watch((value) => {
+			const isChanged =
 				value.name !== workspace.name ||
-				value.url !== workspace.url.replace("https://app.squaredmade.com/", "")
-			) {
-				setIsFormChanged(true);
-			} else {
-				setIsFormChanged(false);
-			}
+				value.url !== workspace.url.replace("https://app.squaredmade.com/", "");
+
+			setIsFormChanged(isChanged);
 		});
 
 		return () => subscription.unsubscribe();
-	}, [form, workspace]);
+	}, [workspace, watch]);
 
 	if (!workspace) return null;
 
@@ -123,7 +121,7 @@ export default function WorkspaceSettings() {
 		};
 
 		fetchWorkspaceData();
-	});
+	}, [workspace]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
@@ -232,19 +230,22 @@ export default function WorkspaceSettings() {
 						<div>
 							<FormField
 								control={form.control}
-								// name="default-view-team"
-								{...register("viewTeam")}
-								render={() => (
+								name="viewTeam"
+								render={({ field }) => (
 									<FormItem className="col-span-1">
 										<FormLabel>Set Workspace View</FormLabel>
 										<FormControl>
-											<Select>
+											<Select
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												value={field.value}
+											>
 												<SelectTrigger className="w-[180px]">
 													<SelectValue placeholder="Select a team" />
 												</SelectTrigger>
 												<SelectContent>
 													<SelectGroup>
-														<SelectLabel>Teams</SelectLabel>
 														{workspaceTeams.length > 0 &&
 															workspaceTeams.map((team: Team) => {
 																return (
@@ -263,21 +264,30 @@ export default function WorkspaceSettings() {
 							<FormField
 								control={form.control}
 								name="viewPage"
-								render={() => (
+								render={({ field }) => (
 									<FormItem className="col-span-1">
 										<FormLabel> </FormLabel>
 										<FormControl>
-											<Select>
+											<Select
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												value={field.value}
+											>
 												<SelectTrigger className="w-[180px]">
 													<SelectValue placeholder="Select a page" />
 												</SelectTrigger>
 												<SelectContent>
 													<SelectGroup>
-														<SelectLabel>Pages</SelectLabel>
 														<SelectItem value="all">All Tasks</SelectItem>
 														<SelectItem value="active">Active Tasks</SelectItem>
-														{}
-														<SelectItem value="active">Active Tasks</SelectItem>
+														{workspaceTeams.length > 0}
+														{/* workspaceTeam.sprintsEnabled */}
+														{/* return (
+															<SelectItem value="sprint-tasks">
+																Sprint Tasks
+															</SelectItem>
+														); */}
 													</SelectGroup>
 												</SelectContent>
 											</Select>
