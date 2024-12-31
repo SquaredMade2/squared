@@ -36,11 +36,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { sprintService, teamService, workspaceService } from "@/lib/services";
+import { teamService, workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
-import type { Sprint, Team } from "@squared/db";
+import type { Team } from "@squared/db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -62,8 +62,6 @@ const formSchema = z.object({
 	viewPage: z.string().trim(),
 });
 
-type Sprints = [Sprint | null];
-
 export default function WorkspaceSettings() {
 	const { deleteWorkspace, updateWorkspace } = useWorkspaceStore(
 		(state) => state,
@@ -73,7 +71,6 @@ export default function WorkspaceSettings() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
 	const [workspaceTeams, setWorkspaceTeams] = useState<Team[]>([]);
-	const [teamSprints, setTeamSprints] = useState<Sprints>([]);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -122,29 +119,6 @@ export default function WorkspaceSettings() {
 				} catch (error) {
 					console.error("getWorkspaceTeams Error: ", error);
 				}
-			}
-
-			if (workspaceTeams) {
-				const teamSprints = await Promise.all(
-					workspaceTeams.map(async (team: Team) => {
-						try {
-							if (team.sprintsEnabled) {
-								return await sprintService.getCurrentSprint(TODO, {
-									teamId: team.id,
-								});
-							}
-							return null;
-						} catch (error) {
-							console.error(
-								`Error fetching sprint for team ${team.id}:`,
-								error,
-							);
-							return null;
-						}
-					}),
-				);
-
-				setTeamSprints(teamSprints);
 			}
 		};
 
@@ -300,39 +274,10 @@ export default function WorkspaceSettings() {
 												<SelectContent>
 													<SelectGroup>
 														<SelectLabel>Pages</SelectLabel>
-														<SelectItem value="all">All</SelectItem>
-														<SelectItem value="active">Active</SelectItem>
-														{teamSprints.length > 0 &&
-															teamSprints
-																.filter(
-																	(teamSprint) =>
-																		teamSprint !== null &&
-																		teamSprint?.teamId === watchTeamSelect,
-																)
-																.map((teamSprint) => {
-																	return (
-																		<>
-																			<SelectItem
-																				key="1"
-																				value="sprint-dashboard"
-																			>
-																				Sprint Dashboard
-																			</SelectItem>
-																			<SelectItem
-																				key="2"
-																				value="current-sprint-dashboard"
-																			>
-																				Current Sprint Dashboard
-																			</SelectItem>
-																			<SelectItem
-																				key="3"
-																				value="current-sprint-tasks"
-																			>
-																				Current Sprint Tasks
-																			</SelectItem>
-																		</>
-																	);
-																})}
+														<SelectItem value="all">All Tasks</SelectItem>
+														<SelectItem value="active">Active Tasks</SelectItem>
+														{}
+														<SelectItem value="active">Active Tasks</SelectItem>
 													</SelectGroup>
 												</SelectContent>
 											</Select>
