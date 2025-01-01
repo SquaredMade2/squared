@@ -94,6 +94,20 @@ export class TeamService implements TeamRpc {
 		});
 	}
 
+	async addUserToTeam({
+		userId,
+		teamId,
+	}: { userId: string; teamId: string }): Promise<void> {
+		this.logger.info("Adding user to team");
+
+		await this.db.userTeam.create({
+			data: {
+				userId,
+				teamId,
+			},
+		});
+	}
+
 	async removeUserFromTeam({
 		userId,
 		teamId,

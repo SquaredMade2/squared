@@ -119,6 +119,11 @@ export type GetUserTeamsResponse = {
 	workspaceId: string;
 }[];
 
+export type AddUserToTeamRequest = { 
+	userId: string; 
+	teamId: string; 
+}
+
 export type RemoveUserFromTeamRequest = {
 	teamId: string;
 	userId: string;
@@ -194,6 +199,16 @@ export class TeamService extends RPCContextClient {
 		req: GetUserTeamsRequest,
 	): Promise<GetUserTeamsResponse> {
 		return this.request(ctx, "getUserTeams", req);
+	}
+
+	/**
+	 * addUserToTeam method
+	 */
+	addUserToTeam(
+		ctx: Context,
+		req: AddUserToTeamRequest,
+	): Promise<void> {
+		return this.request(ctx, "addUserToTeam", req);
 	}
 
 	/**

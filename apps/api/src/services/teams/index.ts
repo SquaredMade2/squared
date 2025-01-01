@@ -56,6 +56,10 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 		input: z.object({ userId: z.string(), workspaceId: z.string() }),
 		output: z.array(teamSchema),
 	},
+	addUserToTeam: {
+		input: z.object({ userId: z.string(), teamId: z.string() }),
+		output: z.void(),
+	},
 	removeUserFromTeam: {
 		input: z.object({ userId: z.string(), teamId: z.string() }),
 		output: z.void(),
@@ -73,6 +77,7 @@ export const createTeamRpcHandler = (teamService: TeamRpc) =>
 		getTeam: (input) => teamService.getTeam(input),
 		getTeamByIdentifier: (input) => teamService.getTeamByIdentifier(input),
 		getUserTeams: (input) => teamService.getUserTeams(input),
+		addUserToTeam: (input) => teamService.addUserToTeam(input),
 		removeUserFromTeam: (input) => teamService.removeUserFromTeam(input),
 	});
 
