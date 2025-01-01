@@ -21,18 +21,8 @@ export const CreatedByInformation = () => {
 
 	return (
 		<div>
-			{/* Created by information */}
-			<div className="flex items-center px-8">
-				<div className="mr-4 text-muted-foreground">{displayDate()}</div>
-				<Avatar className="size-6 text-xxs">
-					<AvatarImage src={foundUser?.avatarUrl ?? ""} />
-					<AvatarFallback>{getInitials(foundUser?.name)}</AvatarFallback>
-				</Avatar>
-				<p className="text-foreground ml-2 mr-4">{foundUser?.name}</p>
-				<p className="text-sm text-muted-foreground">created the task</p>
-			</div>
 			{/* Events */}
-			{events.map((event) => {
+			{[...events].sort((a,b) =>  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((event) => {
 				const eventAuthor = users.find((user) => user.id === event.authorId);
 				return (
 					<div key={event.id} className="flex items-center px-8">
@@ -50,6 +40,16 @@ export const CreatedByInformation = () => {
 					</div>
 				);
 			})}
+			{/* Created by information */}
+			<div className="flex items-center px-8">
+				<div className="mr-4 text-muted-foreground">{displayDate()}</div>
+				<Avatar className="size-6 text-xxs">
+					<AvatarImage src={foundUser?.avatarUrl ?? ""} />
+					<AvatarFallback>{getInitials(foundUser?.name)}</AvatarFallback>
+				</Avatar>
+				<p className="text-foreground ml-2 mr-4">{foundUser?.name}</p>
+				<p className="text-sm text-muted-foreground">created the task</p>
+			</div>
 		</div>
 	);
 };
