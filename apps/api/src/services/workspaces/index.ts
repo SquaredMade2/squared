@@ -11,6 +11,7 @@ const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 	z.object({
 		url: z.string(),
 		name: z.string(),
+		defaultView: z.string().nullable(),
 	}),
 );
 

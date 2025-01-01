@@ -33,7 +33,11 @@ const HomePage = () => {
 					});
 					setWorkspaces(workspaces);
 					if (workspaces.length) {
-						router.push(`/${workspaces[0].url}`);
+						if (workspaces[0].defaultView) {
+							router.push(`/${workspaces[0].defaultView}`);
+						} else {
+							router.push(`/${workspaces[0].url}`);
+						}
 						return;
 					}
 

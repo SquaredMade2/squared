@@ -3,6 +3,7 @@ import type { Label, Workspace } from "@squared/db";
 export type WorkspaceParams = {
 	url: string;
 	name: string;
+	defaultView: string | null;
 };
 
 export type WorkspaceLabels = Workspace & {

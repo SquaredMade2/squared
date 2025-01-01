@@ -89,14 +89,20 @@ export default function WorkspaceSettings() {
 		if (!workspace) return;
 
 		const subscription = watch((value) => {
-			const isChanged =
+			if (
 				value.name !== workspace.name ||
-				value.url !== workspace.url.replace("https://app.squaredmade.com/", "");
-			setIsFormChanged(isChanged);
+				value.url !==
+					workspace.url.replace("https://app.squaredmade.com/", "") ||
+				(value.viewTeam && value.viewPage)
+			) {
+				setIsFormChanged(true);
+			} else {
+				setIsFormChanged(false);
+			}
 		});
 
 		return () => subscription.unsubscribe();
-	}, [workspace, watch]);
+	}, [watch, workspace]);
 
 	if (!workspace) return null;
 
@@ -121,10 +127,18 @@ export default function WorkspaceSettings() {
 	}, [workspace]);
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		let defaultView: string | null = null;
+		if (values.viewTeam && values.viewPage) {
+			const teamIdentifier = workspaceTeams.filter(
+				(team: Team) => team.id === values.viewTeam,
+			)[0].identifier;
+
+			defaultView = `${values.url}/team/${teamIdentifier}/${values.viewPage !== "sprint-tasks" ? values.viewPage : "sprints/current"}`;
+		}
 		try {
 			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
 				workspaceId: workspace.id,
-				workspace: { name: values.name, url: values.url },
+				workspace: { name: values.name, url: values.url, defaultView },
 			});
 			updateWorkspace(updatedWorkspace);
 
@@ -271,6 +285,7 @@ export default function WorkspaceSettings() {
 														field.onChange(value);
 													}}
 													value={field.value}
+													disabled={!watchTeamSelect}
 												>
 													<SelectTrigger className="w-[180px]">
 														<SelectValue placeholder="Select a page" />
