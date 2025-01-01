@@ -238,6 +238,7 @@ export default function WorkspaceSettings() {
 								</FormItem>
 							)}
 						/>
+						{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
 						<div className="col-span-2">
 							<div className="col-span-2 flex gap-4 mb-2">
 								<FormField
