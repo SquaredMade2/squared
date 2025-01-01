@@ -460,7 +460,7 @@ export default function SprintDashboardPage() {
 			<NewSprintModal
 				isOpen={showNextSprint}
 				onClose={() => setShowNextSprint(false)}
-				team={team}
+				team={team || null}
 				initialSprintName={newSprintName}
 				redirectUrl={`/${workspace?.url}/team/${team?.identifier}/sprints`}
 			/>
