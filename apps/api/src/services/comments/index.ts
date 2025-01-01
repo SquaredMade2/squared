@@ -1,8 +1,8 @@
 import { createRpcHandler, createServiceSchema } from "@squared/rpc";
 import z from "zod";
+import { logger } from "../index";
 import { commentSchema } from "../schema";
 import type { CommentRpc } from "./types";
-import { logger } from "../index";
 
 export const commentRpcSchema = createServiceSchema<CommentRpc>()({
 	addComment: {
@@ -22,10 +22,15 @@ export const commentRpcSchema = createServiceSchema<CommentRpc>()({
 export type CommentRpcSchema = typeof commentRpcSchema;
 
 export const createCommentRpcHandler = (commentService: CommentRpc) =>
-	createRpcHandler("comment", commentRpcSchema, {
-		addComment: (input) => commentService.addComment(input),
-		deleteComment: (input) => commentService.deleteComment(input),
-		getTaskComments: (input) => commentService.getTaskComments(input),
-	}, logger);
+	createRpcHandler(
+		"comment",
+		commentRpcSchema,
+		{
+			addComment: (input) => commentService.addComment(input),
+			deleteComment: (input) => commentService.deleteComment(input),
+			getTaskComments: (input) => commentService.getTaskComments(input),
+		},
+		logger,
+	);
 
 export { CommentService } from "./comment-service";

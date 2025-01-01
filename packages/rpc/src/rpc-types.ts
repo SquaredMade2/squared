@@ -1,6 +1,6 @@
 import type { Context } from "@squared/context";
 import type { Logger } from "@squared/logger";
-import { ZodObject, z } from "zod";
+import { z } from "zod";
 
 export const requestContexts = new WeakMap<object, Context>();
 
@@ -140,9 +140,9 @@ export function serviceWithSchema<S extends Service>(
 
 		implementation[methodName as keyof S] = (async (args: unknown) => {
 			try {
-				const validatedArgs = methodMeta.requestSchema instanceof ZodObject ? methodMeta.requestSchema.strict().parse(args) : methodMeta.requestSchema.parse(args);
+				const validatedArgs = methodMeta.requestSchema.parse(args);
 				const result = await endpoint(validatedArgs);
-				const validatedResult = methodMeta.responseSchema instanceof ZodObject ? methodMeta.responseSchema.strict().parse(result) : methodMeta.responseSchema.parse(result);
+				const validatedResult = methodMeta.responseSchema.parse(result);
 				return validatedResult;
 			} catch (error) {
 				if (error instanceof z.ZodError) {

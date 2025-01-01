@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaClient } from "@squared/db";
+import createCustomLogger from "@squared/logger";
 import { createAuthRpcHandler } from "./auth";
 import { AuthService } from "./auth/auth-service";
 import { createCommentRpcHandler } from "./comments";
@@ -12,7 +13,6 @@ import { TeamService, createTeamRpcHandler } from "./teams";
 import { createUserRpcHandler } from "./users";
 import { UserService } from "./users/user-service";
 import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
-import createCustomLogger from "@squared/logger";
 
 const prisma = new PrismaClient({
 	datasources: {

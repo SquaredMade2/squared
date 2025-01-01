@@ -5,6 +5,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import { z } from "zod";
+import { logger } from "../index";
 import { sprintSchema, taskSchema } from "../schema";
 import type {
 	AddRetrospectivePayload,
@@ -14,7 +15,6 @@ import type {
 	SprintRpc,
 	UpdateRetrospectiveItemPayload,
 } from "./types";
-import { logger } from "../index";
 
 // Define type-safe Zod schemas
 
@@ -67,19 +67,16 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 			}),
 		),
 		output: z.union([
-			z
-				.object({
-					status: z.number(),
-					message: z.string(),
-					variant: z.literal("destructive"),
-				})
-				.strict(),
-			z
-				.object({
-					data: sprintSchema,
-					message: z.string(),
-					variant: z.literal("default"),
-				}),
+			z.object({
+				status: z.number(),
+				message: z.string(),
+				variant: z.literal("destructive"),
+			}),
+			z.object({
+				data: sprintSchema,
+				message: z.string(),
+				variant: z.literal("default"),
+			}),
 		]),
 	},
 	getSprintTasks: {
@@ -103,13 +100,12 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 	},
 	updateRetrospectiveItem: {
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
-			z
-				.object({
-					retrospectiveItemId: z.string(),
-					type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
-					content: z.string().optional(),
-					sprintId: z.string(),
-				}),
+			z.object({
+				retrospectiveItemId: z.string(),
+				type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
+				content: z.string().optional(),
+				sprintId: z.string(),
+			}),
 		),
 		output: retrospectiveItemReturnSchema,
 	},
@@ -140,20 +136,26 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 export type SprintRpcSchema = typeof sprintRpcSchema;
 
 export const createSprintRpcHandler = (sprintService: SprintRpc) =>
-	createRpcHandler("sprint", sprintRpcSchema, {
-		getSprints: (input) => sprintService.getSprints(input),
-		updateSprint: (input) => sprintService.updateSprint(input),
-		initializeSprints: (input) => sprintService.initializeSprints(input),
-		startNextSprint: (input) => sprintService.startNextSprint(input),
-		getSprintTasks: (input) => sprintService.getSprintTasks(input),
-		endSprint: (input) => sprintService.endSprint(input),
-		addRetrospectiveItem: (input) => sprintService.addRetrospectiveItem(input),
-		updateRetrospectiveItem: (input) =>
-			sprintService.updateRetrospectiveItem(input),
-		likeRetrospectiveItem: (input) =>
-			sprintService.likeRetrospectiveItem(input),
-		getRetrospectiveItems: (input) =>
-			sprintService.getRetrospectiveItems(input),
-	}, logger);
+	createRpcHandler(
+		"sprint",
+		sprintRpcSchema,
+		{
+			getSprints: (input) => sprintService.getSprints(input),
+			updateSprint: (input) => sprintService.updateSprint(input),
+			initializeSprints: (input) => sprintService.initializeSprints(input),
+			startNextSprint: (input) => sprintService.startNextSprint(input),
+			getSprintTasks: (input) => sprintService.getSprintTasks(input),
+			endSprint: (input) => sprintService.endSprint(input),
+			addRetrospectiveItem: (input) =>
+				sprintService.addRetrospectiveItem(input),
+			updateRetrospectiveItem: (input) =>
+				sprintService.updateRetrospectiveItem(input),
+			likeRetrospectiveItem: (input) =>
+				sprintService.likeRetrospectiveItem(input),
+			getRetrospectiveItems: (input) =>
+				sprintService.getRetrospectiveItems(input),
+		},
+		logger,
+	);
 
 export { SprintService } from "./sprint-service";

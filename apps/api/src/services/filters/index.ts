@@ -4,8 +4,8 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
-import type { FilterCondition, FilterRpc, SavedFilter } from "./types";
 import { logger } from "../index";
+import type { FilterCondition, FilterRpc, SavedFilter } from "./types";
 
 const FilterValueSchema = z.union([
 	z.string(),
@@ -59,29 +59,27 @@ const filterConditionSchema = createSchema<FilterCondition>()(
 );
 
 const savedFilterSchema = createSchema<SavedFilter>()(
-	z
-		.object({
-			id: z.string(),
-			name: z.string(),
-			description: z.string().nullable(),
-			type: z.enum(["TEAM", "WORKSPACE"]),
-			filter: z.array(filterConditionSchema),
-			workspaceId: z.string().nullable(),
-			teamId: z.string().nullable(),
-			authorId: z.string(),
-		}),
+	z.object({
+		id: z.string(),
+		name: z.string(),
+		description: z.string().nullable(),
+		type: z.enum(["TEAM", "WORKSPACE"]),
+		filter: z.array(filterConditionSchema),
+		workspaceId: z.string().nullable(),
+		teamId: z.string().nullable(),
+		authorId: z.string(),
+	}),
 );
 
 export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 	createFilter: {
-		input: z
-			.object({
-				name: z.string(),
-				description: z.string().nullable(),
-				filter: z.array(filterConditionSchema),
-				teamId: z.string(),
-				authorId: z.string(),
-			}),
+		input: z.object({
+			name: z.string(),
+			description: z.string().nullable(),
+			filter: z.array(filterConditionSchema),
+			teamId: z.string(),
+			authorId: z.string(),
+		}),
 		output: savedFilterSchema,
 	},
 	getFilters: {
@@ -89,15 +87,14 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 		output: z.array(savedFilterSchema),
 	},
 	updateFilter: {
-		input: z
-			.object({
-				filterId: z.string(),
-				filters: z.object({
-					name: z.string().optional(),
-					description: z.string().nullable(),
-					filter: z.array(filterConditionSchema),
-				}),
+		input: z.object({
+			filterId: z.string(),
+			filters: z.object({
+				name: z.string().optional(),
+				description: z.string().nullable(),
+				filter: z.array(filterConditionSchema),
 			}),
+		}),
 		output: savedFilterSchema,
 	},
 	deleteFilter: {
@@ -109,11 +106,16 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 export const FilterRpcSchema = typeof filterRpcSchema;
 
 export const createFilterRpcHandler = (filterService: FilterRpc) =>
-	createRpcHandler("filter", filterRpcSchema, {
-		createFilter: (input) => filterService.createFilter(input),
-		getFilters: (input) => filterService.getFilters(input),
-		updateFilter: (input) => filterService.updateFilter(input),
-		deleteFilter: (input) => filterService.deleteFilter(input),
-	}, logger);
+	createRpcHandler(
+		"filter",
+		filterRpcSchema,
+		{
+			createFilter: (input) => filterService.createFilter(input),
+			getFilters: (input) => filterService.getFilters(input),
+			updateFilter: (input) => filterService.updateFilter(input),
+			deleteFilter: (input) => filterService.deleteFilter(input),
+		},
+		logger,
+	);
 
 export { FilterService } from "./filter-service";

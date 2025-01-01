@@ -4,6 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
+import { logger } from "../index";
 import { teamSchema } from "../schema";
 import type {
 	CreateTeamParams,
@@ -11,7 +12,6 @@ import type {
 	UpdateTeamParams,
 	UpdateTeamSprintsParams,
 } from "./types";
-import { logger } from "../index";
 
 const createTeamParams = createSchema<CreateTeamParams>()(
 	z.object({
@@ -53,8 +53,7 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 		output: teamSchema.nullable(),
 	},
 	getTeamByIdentifier: {
-		input: z
-			.object({ identifier: z.string(), workspaceId: z.string() }),
+		input: z.object({ identifier: z.string(), workspaceId: z.string() }),
 		output: teamSchema.nullable(),
 	},
 	getUserTeams: {
@@ -70,15 +69,20 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 export type TeamRpcSchema = typeof teamRpcSchema;
 
 export const createTeamRpcHandler = (teamService: TeamRpc) =>
-	createRpcHandler("team", teamRpcSchema, {
-		createTeam: (input) => teamService.createTeam(input),
-		updateTeam: (input) => teamService.updateTeam(input),
-		updateTeamSprints: (input) => teamService.updateTeamSprints(input),
-		deleteTeam: (input) => teamService.deleteTeam(input),
-		getTeam: (input) => teamService.getTeam(input),
-		getTeamByIdentifier: (input) => teamService.getTeamByIdentifier(input),
-		getUserTeams: (input) => teamService.getUserTeams(input),
-		removeUserFromTeam: (input) => teamService.removeUserFromTeam(input),
-	}, logger);
+	createRpcHandler(
+		"team",
+		teamRpcSchema,
+		{
+			createTeam: (input) => teamService.createTeam(input),
+			updateTeam: (input) => teamService.updateTeam(input),
+			updateTeamSprints: (input) => teamService.updateTeamSprints(input),
+			deleteTeam: (input) => teamService.deleteTeam(input),
+			getTeam: (input) => teamService.getTeam(input),
+			getTeamByIdentifier: (input) => teamService.getTeamByIdentifier(input),
+			getUserTeams: (input) => teamService.getUserTeams(input),
+			removeUserFromTeam: (input) => teamService.removeUserFromTeam(input),
+		},
+		logger,
+	);
 
 export { TeamService } from "./teams-service";

@@ -2,7 +2,7 @@ import "tslib";
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
 import type { ErrorRequestHandler, RequestHandler } from "express";
-import type { z } from "zod";
+import { z } from "zod";
 
 import type { Logger } from "@squared/logger";
 import {
@@ -211,7 +211,29 @@ export function createServiceSchema<T>() {
 	};
 
 	// Accept the schema argument and enforce the structure with ServiceDefinition
-	return <S extends ServiceDefinition>(schema: S): S => schema;
+	return <S extends ServiceDefinition>(schema: S): S => {
+		{
+			const strictSchema = Object.fromEntries(
+				(Object.entries(schema) as [keyof S, S[keyof S]][]).map(
+					([key, value]) => [
+						key,
+						{
+							input:
+								value.input instanceof z.ZodObject
+									? value.input.strict()
+									: value.input,
+							output:
+								value.output instanceof z.ZodObject
+									? value.output.strict()
+									: value.output,
+						},
+					],
+				),
+			) as S;
+	
+			return strictSchema;
+		}
+	};
 }
 
 export function createRpcHandler<
@@ -232,7 +254,7 @@ export function createRpcHandler<
 			input: z.infer<T[K]["input"]>,
 		) => Promise<z.infer<T[K]["output"]>>;
 	},
-	logger: Logger
+	logger: Logger,
 ): ServiceSet<Service> {
 	const expose: MethodDetails[] = Object.entries(schema).map(
 		([methodName, { input, output }]) => ({

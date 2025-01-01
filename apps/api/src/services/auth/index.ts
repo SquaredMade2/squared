@@ -4,9 +4,9 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
+import { logger } from "../index";
 import { userSchema } from "../schema";
 import type { AuthRpc, Login, OauthLogin, Register, UserToken } from "./types";
-import { logger } from "../index";
 
 const loginSchema = createSchema<Login>()(
 	z.object({
@@ -53,34 +53,31 @@ export const authRpcSchema = createServiceSchema<AuthRpc>()({
 	},
 	register: {
 		input: registerSchema,
-		output: z
-			.object({
-				user: userSchema.nullable(),
-				message: z.string().optional(),
-				variant: z.enum(["default", "destructive"]).nullable().optional(),
-			})
-			.strict(),
+		output: z.object({
+			user: userSchema.nullable(),
+			message: z.string().optional(),
+			variant: z.enum(["default", "destructive"]).nullable().optional(),
+		}),
 	},
 	verifyUser: {
-		input: z.object({ token: z.string() }).strict(),
+		input: z.object({ token: z.string() }),
 		output: userSchema.nullable(),
 	},
 	resetPasswordEmail: {
-		input: z.object({ email: z.string() }).strict(),
+		input: z.object({ email: z.string() }),
 		output: z.void(),
 	},
 	resetPassword: {
-		input: z.object({ token: z.string(), newPassword: z.string() }).strict(),
+		input: z.object({ token: z.string(), newPassword: z.string() }),
 		output: z.void(),
 	},
 	checkTokenValid: {
-		input: z.object({ token: z.string() }).strict(),
+		input: z.object({ token: z.string() }),
 		output: z
 			.object({
 				email: z.string(),
 				message: z.string(),
 			})
-			.strict()
 			.nullable(),
 	},
 });
@@ -88,12 +85,17 @@ export const authRpcSchema = createServiceSchema<AuthRpc>()({
 export type AuthRpcSchema = typeof authRpcSchema;
 
 export const createAuthRpcHandler = (authService: AuthRpc) =>
-	createRpcHandler("auth", authRpcSchema, {
-		login: (input) => authService.login(input),
-		googleLogin: (input) => authService.googleLogin(input),
-		register: (input) => authService.register(input),
-		verifyUser: (input) => authService.verifyUser(input),
-		resetPasswordEmail: (input) => authService.resetPasswordEmail(input),
-		resetPassword: (input) => authService.resetPassword(input),
-		checkTokenValid: (input) => authService.checkTokenValid(input),
-	}, logger);
+	createRpcHandler(
+		"auth",
+		authRpcSchema,
+		{
+			login: (input) => authService.login(input),
+			googleLogin: (input) => authService.googleLogin(input),
+			register: (input) => authService.register(input),
+			verifyUser: (input) => authService.verifyUser(input),
+			resetPasswordEmail: (input) => authService.resetPasswordEmail(input),
+			resetPassword: (input) => authService.resetPassword(input),
+			checkTokenValid: (input) => authService.checkTokenValid(input),
+		},
+		logger,
+	);
