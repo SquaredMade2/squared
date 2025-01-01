@@ -8,7 +8,6 @@ import type { Context } from "@squared/context";
 export type CreateWorkspaceRequest = {
 	userId: string;
 	workspace: {
-	defaultView: string | null;
 	name: string;
 	url: string;
 };
