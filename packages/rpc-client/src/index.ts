@@ -1,5 +1,4 @@
 import * as context from "@squared/context";
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
 export interface RequestOptions {
 	timeout?: number;
@@ -8,12 +7,10 @@ export interface RequestOptions {
 class BaseClient {
 	private baseURL: string;
 	private serviceName: string;
-	private axiosInstance: AxiosInstance;
 
 	constructor(baseURL: string, serviceName: string) {
 		this.baseURL = baseURL.endsWith("/") ? `${baseURL}/rpc` : `${baseURL}/rpc`;
 		this.serviceName = serviceName;
-		this.axiosInstance = axios.create({ baseURL: this.baseURL });
 	}
 
 	protected async doRequest(
@@ -47,23 +44,25 @@ class BaseClient {
 			});
 		}
 
-		const config: AxiosRequestConfig = {
-			method: "POST",
-			url,
-			data: params,
-			headers,
-			signal: contextWithSignal.signal,
-		};
-
 		try {
-			const response = await this.axiosInstance(config);
-			return response.data;
-		} catch (error) {
-			if (axios.isAxiosError(error) && error.response) {
-				const { data, status } = error.response;
-				mapError(this.serviceName, methodName, data, status);
+			const response = await fetch(url, {
+				method: "POST",
+				headers,
+				body: JSON.stringify(params),
+				signal: contextWithSignal.signal,
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				mapError(this.serviceName, methodName, errorData, response.status);
 			}
-			throw error;
+
+			return await response.json();
+		} catch (error) {
+			if (error instanceof Error) {
+				throw error;
+			}
+			throw new Error("Unknown error occurred");
 		} finally {
 			if (abortController) {
 				abortController.abort();
