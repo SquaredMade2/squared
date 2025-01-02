@@ -22,9 +22,10 @@ type VercelLog struct {
 	Message      string    `json:"message"`
 }
 
+const vercelVerificationHeader = "X-Vercel-Verify-Request"
+
 func main() {
-	http.HandleFunc("/.well-known/vercel-ownership-verification.txt", verifyHandler)
-	http.HandleFunc("/", handleLogs)
+	http.HandleFunc("/", handleRequest)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3131"
@@ -33,22 +34,25 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
+func handleRequest(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get(vercelVerificationHeader) != "" {
+		verifyHandler(w, r)
+		return
+	}
+	handleLogs(w, r)
+}
+
 func verifyHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("x-vercel-verify", os.Getenv("VERCEL_OWNERSHIP_TOKEN"))
-	w.WriteHeader(http.StatusOK)
+	verifyToken := r.Header.Get(vercelVerificationHeader)
+	if verifyToken == os.Getenv("VERCEL_OWNERSHIP_TOKEN") {
+		w.Header().Set("x-vercel-verify", verifyToken)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		http.Error(w, "Invalid verification token", http.StatusUnauthorized)
+	}
 }
 
 func handleLogs(w http.ResponseWriter, r *http.Request) {
-	// Log request method, URL path, and protocol
-	log.Printf("Received request: %s %s %s", r.Method, r.URL.Path, r.Proto)
-
-	// Log all headers
-	log.Println("Headers:")
-	for name, values := range r.Header {
-		for _, value := range values {
-			log.Printf("%s: %s", name, value)
-		}
-	}
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
