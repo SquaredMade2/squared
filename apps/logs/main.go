@@ -13,37 +13,23 @@ import (
 )
 
 type VercelLog struct {
-	ID           string    `json:"id"`
-	Timestamp    int64     `json:"timestamp"`
-	RequestID    string    `json:"requestId"`
-	Message      string    `json:"message"`
-	Proxy        ProxyInfo `json:"proxy"`
-	ProjectID    string    `json:"projectId"`
-	DeploymentID string    `json:"deploymentId"`
-	Source       string    `json:"source"`
-	Host         string    `json:"host"`
-	Path         string    `json:"path"`
-	Ja4Digest    string    `json:"ja4Digest"`
+	ID        string    `json:"id"`
+	Timestamp int64     `json:"timestamp"`
+	ProjectID string    `json:"projectId"`
+	Message   string    `json:"message"`
+	Proxy     ProxyInfo `json:"proxy"`
 }
 
 type ProxyInfo struct {
-	Timestamp  int64    `json:"timestamp"`
-	Region     string   `json:"region"`
-	Method     string   `json:"method"`
-	StatusCode int      `json:"statusCode"`
-	Referer    string   `json:"referer"`
-	Path       string   `json:"path"`
-	Host       string   `json:"host"`
-	Scheme     string   `json:"scheme"`
-	ClientIP   string   `json:"clientIp"`
-	UserAgent  []string `json:"userAgent"`
-	WafAction  string   `json:"wafAction"`
-	WafRuleID  string   `json:"wafRuleId"`
+	StatusCode int `json:"statusCode"`
 }
 
 const (
 	vercelVerificationHeader = "X-Vercel-Verify-Request"
 	stagingPath              = "/staging"
+	infoColor                = "\x1b[38;2;99;101;12m"
+	errorColor               = "\x1b[38;2;220;50;47m"
+	resetColor               = "\x1b[0m"
 )
 
 func main() {
@@ -133,7 +119,30 @@ func getPapertrailAddr(isStaging bool) string {
 
 func formatLog(log VercelLog) string {
 	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
-	return fmt.Sprintf("[%s] %s - %s - %s - %s", timestamp.Format(time.RFC3339), log.ProjectID, log.Source, log.Path, log.Message)
+	appName := "my-app" // You might want to make this configurable
+	logLevel := getLogLevel(log.Proxy.StatusCode)
+	coloredLogLevel := colorize(logLevel, log.Proxy.StatusCode)
+
+	return fmt.Sprintf("%s %s %s [%s] %s",
+		appName,
+		timestamp.Format("Jan 02 15:04:05"),
+		coloredLogLevel,
+		appName,
+		log.Message)
+}
+
+func getLogLevel(statusCode int) string {
+	if statusCode >= 400 {
+		return "error:"
+	}
+	return "info:"
+}
+
+func colorize(logLevel string, statusCode int) string {
+	if statusCode >= 400 {
+		return fmt.Sprintf("%s%s%s", errorColor, logLevel, resetColor)
+	}
+	return fmt.Sprintf("%s%s%s", infoColor, logLevel, resetColor)
 }
 
 func sendToPapertrail(addr string, message string) error {
