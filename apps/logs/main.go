@@ -34,11 +34,21 @@ func main() {
 }
 
 func verifyHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("x-vercel-verify", "e87ed97ce15cb5d4348beae3e0b55c055868572a")
+	w.Header().Set("x-vercel-verify", os.Getenv("VERCEL_OWNERSHIP_TOKEN"))
 	w.WriteHeader(http.StatusOK)
 }
 
 func handleLogs(w http.ResponseWriter, r *http.Request) {
+	// Log request method, URL path, and protocol
+	log.Printf("Received request: %s %s %s", r.Method, r.URL.Path, r.Proto)
+
+	// Log all headers
+	log.Println("Headers:")
+	for name, values := range r.Header {
+		for _, value := range values {
+			log.Printf("%s: %s", name, value)
+		}
+	}
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
