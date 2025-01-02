@@ -19,14 +19,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { client } from "@/lib/client";
+import { authService } from "@/lib/services";
 import { passwordSchema } from "@/utils/formatting";
 import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
 import { Eye, EyeOff } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -41,64 +41,37 @@ const formSchema = z.object({
 function ResetPasswordForm() {
 	const [hideNewPassword, setHideNewPassword] = useState(true);
 	const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
+	const [isTokenExpired, setIsTokenExpired] = useState(false);
+	const [isSuccess, setIsSuccess] = useState(false);
+	const [userEmail, setUserEmail] = useState("");
 	const router = useRouter();
 	const params = useParams();
 	const token = params.token as string;
 	const { toast } = useToast();
 
-	const { data: tokenData } = useQuery({
-		queryKey: ["token", token],
-		queryFn: async () => {
-			const response = await client.authentication.checkValidToken.$get({
-				token,
-			});
-			const { message, email, tokenExpired } = await response.json();
-			toast({
-				title: message,
-				variant: tokenExpired ? "destructive" : "default",
-			});
-			return {
-				email,
-				tokenExpired,
-			};
-		},
-		enabled: Boolean(token),
-	});
-
-	const { mutate: onSubmit } = useMutation({
-		mutationKey: ["resetPassword", token],
-		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			const res = await client.authentication.resetPassword.$post({
-				token,
-				...values,
-			});
-
-			toast(await res.json());
-			router.push("/login");
-		},
-		onError: (error) => {
-			toast({
-				title: parseError(error, "Failed to reset password. Please try again."),
-				variant: "destructive",
-			});
-		},
-	});
-
-	const { mutate: handleSendReset, data: success } = useMutation({
-		mutationKey: ["resetPassword", token],
-		mutationFn: async () => {
-			if (!tokenData) return;
-			const res = await client.authentication.resetPasswordEmail.$post({
-				email: tokenData.email,
-			});
-
-			toast(await res.json());
-			return true;
-		},
-		onError: (error) => {
-			toast({ title: error.message, variant: "destructive" });
-		},
-	});
+	useEffect(() => {
+		const checkingTokenValid = async (): Promise<void> => {
+			try {
+				const response = await authService.checkTokenValid(TODO, { token });
+				if (response && response.message === "Token is expired or invalid") {
+					setUserEmail(response.email ?? "");
+					setIsTokenExpired(true);
+					toast({
+						title: response.message,
+						variant: "destructive",
+					});
+				}
+			} catch (error) {
+				console.error(error);
+				toast({
+					title: "Could not verify token",
+					variant: "destructive",
+				});
+				throw error;
+			}
+		};
+		checkingTokenValid();
+	}, []);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -108,14 +81,54 @@ function ResetPasswordForm() {
 		},
 	});
 
-	if (tokenData?.tokenExpired) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
+		if (values.newPassword !== values.confirmPassword) {
+			toast({
+				title: "Passwords don't match.",
+				variant: "destructive",
+			});
+			return;
+		}
+
+		try {
+			await authService.resetPassword(TODO, {
+				token,
+				newPassword: values.newPassword,
+			});
+			toast({ title: "Password Reset Successfully" });
+			router.push("/login");
+		} catch (error) {
+			toast({
+				title: parseError(error, "Failed to reset password. Please try again."),
+				variant: "destructive",
+			});
+			console.error("Failed to reset password:", error);
+		}
+	}
+
+	async function handleSendReset() {
+		try {
+			await authService.resetPasswordEmail(TODO, { email: userEmail });
+			toast({
+				title: "Email Sent",
+				description:
+					"An email has been sent to your email to reset your password",
+			});
+			setIsSuccess(true);
+		} catch (error) {
+			if (error instanceof Error)
+				toast({ title: error.message, variant: "destructive" });
+		}
+	}
+
+	if (isTokenExpired) {
 		return (
 			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
 				<CardHeader className="text-center">
 					<CardTitle className="mb-8">Password Reset Link Expired</CardTitle>
 					<CardContent>
-						{!success ? (
-							<Button className="w-full" onClick={() => handleSendReset()}>
+						{!isSuccess ? (
+							<Button className="w-full" onClick={handleSendReset}>
 								Resend Reset Link
 							</Button>
 						) : (
@@ -145,7 +158,7 @@ function ResetPasswordForm() {
 				<CardDescription>Enter your new password</CardDescription>
 			</CardHeader>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
+				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<CardContent>
 						<FormField
 							control={form.control}

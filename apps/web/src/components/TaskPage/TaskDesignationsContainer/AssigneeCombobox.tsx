@@ -16,61 +16,71 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
-import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
+import type { TaskEvent, User } from "@squared/db";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const { toast } = useToast();
-	const queryClient = useQueryClient();
-	const { users, user } = useUserStore((state) => state);
+	const [assignee, setAssignee] = useState<User | null>(null);
+	const user = useUserStore((state) => state.user);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
+	const { setEvents } = useEventStore((state) => state);
 
-	const assignee = users.find((u) => u.id === currentTask?.assigneeId);
+	const users = useUserStore((state) => state.users);
+	useEffect(() => {
+		const foundUser = users.find((user) => user.id === currentTask?.assigneeId);
+		setAssignee(foundUser ?? null);
+	}, [currentTask, users]);
 
-	const updateAssigneeMutation = useMutation({
-		mutationFn: async (assigneeId: string | null) => {
-			if (!currentTask || !user) throw new Error("Task or user not found");
-			const res = await client.task.updateAssignee.$post({
-				taskId: currentTask.id,
-				userId: user.id,
-				assigneeId,
-			});
-			return res.json();
-		},
-		onSuccess: (updatedTask) => {
-			updateTask(updatedTask);
-			setCurrentTask(updatedTask);
-			queryClient.invalidateQueries({
-				queryKey: ["taskEvents", currentTask?.id],
-			});
-			toast({
-				title: "Success",
-				description: "Assignee updated successfully",
-			});
-		},
-		onError: (error) => {
-			toast({
-				title: "Error",
-				description:
-					error instanceof Error ? error.message : "Failed to update assignee",
-				variant: "destructive",
-			});
-		},
-	});
-
+	// Move these to a custom hook or memoize if needed
 	if (!currentTask) return null;
 
-	const handleSelectAssignee = (userId: string | null) => {
-		updateAssigneeMutation.mutate(userId);
+	// Derive values from props instead of state
+	const taskId = currentTask?.id ?? "";
+	const assigneeName = assignee?.name ?? "";
+	const assigneeId = currentTask?.assigneeId ?? "";
+	const assigneeAvatar = users.find(({ id }) => id === assigneeId)?.avatarUrl;
+
+	const handleSelectAssignee = async (userId: string | null) => {
+		if (!userId) {
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					updaterId: user?.id || "",
+					assigneeId: null,
+				}),
+			);
+			setCurrentTask({ ...currentTask, assigneeId: null });
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: taskId,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
+			return;
+		}
+		const selectedUser = users.find((user) => user.id === userId);
+
+		if (selectedUser) {
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					updaterId: user?.id || "",
+					assigneeId: selectedUser.id,
+				}),
+			);
+			setCurrentTask({
+				...currentTask,
+				assigneeId: selectedUser.id,
+			});
+		}
 		setOpen(false);
 	};
 
@@ -82,14 +92,14 @@ const AssigneeCombobox = () => {
 					aria-expanded={open}
 					className="justify-between md:w-full h-8 md:h-10"
 				>
-					{assignee ? (
+					{assigneeName ? (
 						<div className="flex items-center w-28">
 							<Avatar className="size-6 text-xxs">
-								<AvatarImage src={assignee.avatarUrl ?? ""} />
-								<AvatarFallback>{getInitials(assignee.name)}</AvatarFallback>
+								<AvatarImage src={assigneeAvatar ?? ""} />
+								<AvatarFallback>{getInitials(assigneeName)}</AvatarFallback>
 							</Avatar>
 							<span className="ml-2 w-1/2 truncate text-xs">
-								{assignee.name}
+								{assigneeName}
 							</span>
 						</div>
 					) : (
@@ -114,7 +124,7 @@ const AssigneeCombobox = () => {
 									<Check
 										className={cn(
 											"ml-auto h-4 w-4",
-											!currentTask.assigneeId ? "opacity-100" : "opacity-0",
+											assigneeId === "" ? "opacity-100" : "opacity-0",
 										)}
 									/>
 								</CommandItem>
@@ -136,9 +146,7 @@ const AssigneeCombobox = () => {
 											<Check
 												className={cn(
 													"ml-auto h-4 w-4",
-													currentTask.assigneeId === user.id
-														? "opacity-100"
-														: "opacity-0",
+													assigneeId === user.id ? "opacity-100" : "opacity-0",
 												)}
 											/>
 										</CommandItem>

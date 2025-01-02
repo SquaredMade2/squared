@@ -1,45 +1,61 @@
-import { client } from "@/lib/client";
+import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
-import { useQuery } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {
 	const { user, loading: userLoading, error: userError } = useAuthUser();
-	const { setWorkspace, setWorkspaces, workspace } = useWorkspaceStore(
-		(state) => state,
-	);
+	const { workspace, workspaces, setWorkspace, setWorkspaces } =
+		useWorkspaceStore((state) => state);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	const params = useParams();
-	const workspaceUrl = parseParams(params.workspace) || workspace?.url;
+	const workspaceUrl = parseParams(params.workspace);
 
-	const {
-		data,
-		isPending: loading,
-		error,
-	} = useQuery({
-		queryKey: ["workspaces", user?.id],
-		queryFn: async () => {
-			if (!user) return;
-			const res = await client.workspace.getAllWorkspaces.$get({
-				userId: user.id,
-			});
-			const awaitedRes = await res.json();
-			const workspace = awaitedRes.find((ws) => ws.url === workspaceUrl);
-			setWorkspaces(awaitedRes);
-			setWorkspace(workspace || null);
-			return { workspace, workspaces: awaitedRes };
-		},
-		enabled: !!user && !userLoading,
-	});
+	useEffect(() => {
+		const initiateStore = async () => {
+			if (userLoading) return;
+
+			setLoading(true);
+			setError(null);
+
+			try {
+				if (user && !workspace) {
+					const allWorkspaces = await workspaceService.getUserWorkspaces(TODO, {
+						userId: user.id,
+					});
+					setWorkspaces(allWorkspaces);
+					setWorkspace(
+						allWorkspaces?.find((ws) => ws.url === workspaceUrl) ?? null,
+					);
+					if (workspaceUrl && !workspace) {
+						setError(`Workspace with URL "${workspaceUrl}" not found`);
+					}
+				} else if (userError) {
+					setError(userError);
+				}
+				setLoading(false);
+			} catch (err) {
+				setError(
+					err instanceof Error
+						? err.message
+						: "An error occurred while fetching workspaces",
+				);
+			}
+		};
+
+		initiateStore();
+	}, [user, userLoading, userError, workspaceUrl]);
 
 	return {
 		user,
 		loading: userLoading || loading,
-		error: userError || parseError(error, "Failed to fetch workspaces"),
-		workspace: data?.workspace,
-		workspaces: data?.workspaces,
+		error: userError || error,
+		workspace,
+		workspaces,
 	};
 }

@@ -1,60 +1,51 @@
-import { client } from "@/lib/client";
+import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
-import { useQuery } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTeams() {
-	const { workspace, user, loading: workspaceLoading } = useWorkspaces();
+	const { loading: workspaceLoading, workspace, user } = useWorkspaces();
 	const { team, teams, setTeam, setTeams } = useTeamStore((state) => state);
 	const { users, loading: userLoading } = useUsers();
+	const [loading, setLoading] = useState(true);
+	const [authorized, setAuthorized] = useState(false);
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
-	const { data: authData, isLoading: authLoading } = useQuery({
-		queryKey: ["teamAuthorization", user?.id, workspace?.id],
-		queryFn: () => {
-			if (!user || !workspace || !users.length) return { authorized: false };
-			const authorized = users.some((u) => u.id === user.id);
-			return { authorized };
-		},
-		enabled: !!user && !!workspace && !userLoading,
-	});
+	useEffect(() => {
+		const initiateStore = async () => {
+			if (workspaceLoading) return;
+			setLoading(true);
 
-	const {
-		data: teamsData,
-		isLoading: teamsLoading,
-		error,
-	} = useQuery({
-		queryKey: ["teams", user?.id, workspace?.id, teamIdentifier],
-		queryFn: async () => {
-			if (!user || !workspace) return { teams: [], team: null };
-			const res = await client.team.getUserTeams.$get({
-				userId: user.id,
-				workspaceId: workspace.id,
-			});
-			const allTeams = await res.json();
-			setTeams(allTeams);
-			const currentTeam = allTeams.find((t) => t.identifier === teamIdentifier);
-			if (currentTeam) setTeam(currentTeam);
-			return { teams: allTeams, team: currentTeam || null };
-		},
-		enabled:
-			!!authData?.authorized &&
-			!!user &&
-			!!workspace &&
-			team?.identifier !== teamIdentifier,
-	});
+			if (user && workspace) {
+				const userHasAccess = users.some((u) => u.id === user.id);
+				setAuthorized(userHasAccess);
+				if (userHasAccess && team?.identifier !== teamIdentifier) {
+					const allTeams = await teamService.getUserTeams(TODO, {
+						userId: user.id,
+						workspaceId: workspace.id,
+					});
+					setTeams(allTeams);
+					const team = allTeams.find((t) => t.identifier === teamIdentifier);
+					team && setTeam(team);
+				}
+			}
+
+			setLoading(false);
+		};
+
+		initiateStore();
+	}, [workspace, teamIdentifier, workspaceLoading, userLoading]);
 
 	return {
-		loading: workspaceLoading || userLoading || authLoading || teamsLoading,
-		team: teamsData?.team || team,
-		authorized: authData?.authorized || false,
-		teams: teamsData?.teams || teams,
-		error: parseError(error, "Failed to fetch teams"),
+		loading,
+		team,
+		authorized,
+		teams,
 	};
 }

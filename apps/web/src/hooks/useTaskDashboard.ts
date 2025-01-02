@@ -1,71 +1,36 @@
-import { client } from "@/lib/client";
+import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import type { Status, Task } from "@squared/db";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
+import type { Status } from "@squared/db";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskDashboard() {
-	const {
-		loading: teamLoading,
-		team,
-		authorized,
-		error: teamError,
-	} = useTeams();
-	const {
-		loading: workspaceLoading,
-		workspace,
-		error: workspaceError,
-	} = useWorkspaces();
+	const { loading: teamLoading, team, authorized } = useTeams();
+	const { loading: workspaceLoading, workspace } = useWorkspaces();
 	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
+	const [loading, setLoading] = useState(true);
 	const user = useUserStore((state) => state.user);
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
-	const queryClient = useQueryClient();
+	useEffect(() => {
+		const initiateStore = async () => {
+			if (teamLoading || workspaceLoading) return;
+			setLoading(true);
+			if (team) {
+				setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
+			}
+			setLoading(false);
+		};
 
-	const {
-		data: fetchedTasks,
-		isLoading,
-		error: tasksError,
-	} = useQuery<Task[], Error>({
-		queryKey: ["tasks", team?.id],
-		queryFn: async () => {
-			if (!team) throw new Error("Team not found");
-			const res = await client.task.getAllTasks.$get({
-				teamId: team.id,
-			});
-			const teamTasks = await res.json();
-			setTasks(teamTasks);
-			return teamTasks;
-		},
-		enabled: !!team && !teamLoading && !workspaceLoading,
-	});
-
-	const updateTaskMutation = useMutation({
-		mutationFn: async ({
-			taskId,
-			status,
-		}: { taskId: string; status: Status }) => {
-			if (!user) throw new Error("User not found");
-			const res = await client.task.updateStatus.$post({
-				taskId,
-				status,
-				updaterId: user.id,
-			});
-			const updatedTask = await res.json();
-			updateTask(updatedTask);
-			return updatedTask;
-		},
-		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ["tasks", team?.id] });
-		},
-	});
+		initiateStore();
+	}, [teamLoading, team, workspaceLoading]);
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -77,14 +42,17 @@ export function useTaskDashboard() {
 		const draggedTask = tasks.find((task) => task.id === draggableId);
 		if (!draggedTask) return;
 
-		updateTaskMutation.mutate({
-			taskId: draggedTask.id,
+		const updatedTask = {
+			...draggedTask,
 			status: destination.droppableId as Status,
+		};
+		await taskService.updateTask(TODO, {
+			id: updatedTask.id,
+			updaterId: user?.id || "",
+			status: updatedTask.status,
 		});
+		updateTask(updatedTask);
 	};
-
-	const loading = teamLoading || workspaceLoading || isLoading;
-	const error = teamError || workspaceError || parseError(tasksError);
 
 	return {
 		loading,
@@ -92,7 +60,5 @@ export function useTaskDashboard() {
 		workspace,
 		teamIdentifier,
 		handleDragEnd,
-		tasks: fetchedTasks || tasks,
-		error: error || null,
 	};
 }

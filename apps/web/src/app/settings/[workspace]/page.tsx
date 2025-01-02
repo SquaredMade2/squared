@@ -86,7 +86,7 @@ export default function WorkspaceSettings() {
 		return () => subscription.unsubscribe();
 	}, [form, workspace]);
 
-	if (!workspace || !workspaces) return null;
+	if (!workspace) return null;
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
@@ -109,7 +109,7 @@ export default function WorkspaceSettings() {
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		deleteWorkspace(workspace.id);
+		await deleteWorkspace(workspace.id);
 		if (user) {
 			if (workspaces.length > 0) {
 				router.replace(`/${workspaces[0].id}`);

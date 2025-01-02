@@ -9,65 +9,37 @@ import {
 import SearchCommand from "@/components/SearchCommand";
 import { Toaster } from "@/components/ui/toaster";
 import { SquaredStoreProvider } from "@/store";
-import {
-	QueryCache,
-	QueryClient,
-	QueryClientProvider,
-} from "@tanstack/react-query";
-import { HTTPException } from "hono/http-exception";
 import { SessionProvider } from "next-auth/react";
-import type { ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { useState } from "react";
+import type { ThemeProviderProps } from "next-themes";
 
 export default function ClientLayoutWrapper({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				queryCache: new QueryCache({
-					onError: (err) => {
-						let errorMessage: string;
-						if (err instanceof HTTPException) {
-							errorMessage = err.message;
-						} else if (err instanceof Error) {
-							errorMessage = err.message;
-						} else {
-							errorMessage = "An unknown error occurred.";
-						}
-						// toast notify user, log as an example
-						console.log(errorMessage);
-					},
-				}),
-			}),
-	);
 	return (
-		<QueryClientProvider client={queryClient}>
-			<SessionProvider>
-				<ErrorBoundary>
-					<SquaredStoreProvider>
-						<ThemeProvider
-							attribute="class"
-							defaultTheme="system"
-							enableSystem
-							disableTransitionOnChange
-						>
-							<WorkspaceInviteModal />
-							<SearchCommand />
-							<WorkspaceSwitcher />
-							<TaskSelector />
-							<div className="h-full flex flex-row overflow-hidden">
-								{children}
-							</div>
-						</ThemeProvider>
-						<Toaster />
-					</SquaredStoreProvider>
-				</ErrorBoundary>
-			</SessionProvider>
-		</QueryClientProvider>
+		<SessionProvider>
+			<ErrorBoundary>
+				<SquaredStoreProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<WorkspaceInviteModal />
+						<SearchCommand />
+						<WorkspaceSwitcher />
+						<TaskSelector />
+						<div className="h-full flex flex-row overflow-hidden">
+							{children}
+						</div>
+					</ThemeProvider>
+					<Toaster />
+				</SquaredStoreProvider>
+			</ErrorBoundary>
+		</SessionProvider>
 	);
 }
 

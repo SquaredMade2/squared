@@ -1,3 +1,4 @@
+import { AuthService } from "@/gen/rpc/auth";
 import { CommentService } from "@/gen/rpc/comment";
 import { EventService } from "@/gen/rpc/event";
 import { FilterService } from "@/gen/rpc/filter";
@@ -9,6 +10,7 @@ import { WorkspaceService } from "@/gen/rpc/workspace";
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER ?? "http://localhost:5173";
 
+export const authService = new AuthService(serverUrl);
 export const commentService = new CommentService(serverUrl);
 export const eventService = new EventService(serverUrl);
 export const filterService = new FilterService(serverUrl);

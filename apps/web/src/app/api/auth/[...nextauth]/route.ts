@@ -1,4 +1,4 @@
-import { AuthService } from "@/gen/rpc/auth";
+import { authService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -6,9 +6,6 @@ import GoogleProvider from "next-auth/providers/google";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? "";
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET ?? "";
-const serverUrl = process.env.NEXT_PUBLIC_SERVER ?? "http://localhost:5173";
-
-const authService = new AuthService(serverUrl);
 
 const handler = NextAuth({
 	providers: [

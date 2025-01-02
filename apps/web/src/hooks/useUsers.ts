@@ -1,34 +1,33 @@
-import { client } from "@/lib/client";
+import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { useQuery } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
+import { useEffect, useState } from "react";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useUsers() {
-	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { setUsers } = useUserStore((state) => state);
+	const { loading: workspaceLoading, workspace } = useWorkspaces();
+	const { users, setUsers } = useUserStore((state) => state);
+	const [loading, setLoading] = useState(true);
 
-	const {
-		data: users,
-		isLoading,
-		error,
-	} = useQuery({
-		queryKey: ["users", workspace?.id],
-		queryFn: async () => {
-			if (!workspace) return [];
-			const res = await client.user.getAllUsers.$get({
-				workspaceId: workspace.id,
-			});
-			const workspaceUsers = await res.json();
-			setUsers(workspaceUsers);
-			return workspaceUsers;
-		},
-		enabled: !!workspace && !workspaceLoading,
-	});
+	useEffect(() => {
+		const initiateStore = async () => {
+			if (workspaceLoading) return;
+			setLoading(true);
+			if (workspace) {
+				setUsers(
+					await userService.getWorkspaceUsers(TODO, {
+						workspaceId: workspace.id,
+					}),
+				);
+			}
+			setLoading(false);
+		};
+
+		initiateStore();
+	}, [workspace, workspaceLoading]);
 
 	return {
-		loading: isLoading || workspaceLoading,
-		users: users || [],
-		error: parseError(error, "Failed to fetch users"),
+		loading,
+		users,
 	};
 }

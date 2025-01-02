@@ -350,7 +350,7 @@ export default function SprintDashboard() {
 					<h2 className="text-2xl font-semibold">Task Assignment</h2>
 					<div className="space-x-2">
 						<AssignTasksDialog
-							activeSprint={sprint || null}
+							activeSprint={sprint}
 							handleBulkAssign={handleBulkAssign}
 							selectedTasks={selectedTasks}
 							setSelectedTasks={setSelectedTasks}
@@ -434,7 +434,7 @@ export default function SprintDashboard() {
 				<SprintTabs
 					upcomingSprints={upcomingSprints}
 					completedSprints={completedSprints}
-					activeSprint={sprint || null}
+					activeSprint={sprint}
 					tasks={tasks}
 					calculateProgress={calculateProgress}
 				/>

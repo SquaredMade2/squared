@@ -20,11 +20,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { client } from "@/lib/client";
+import { authService } from "@/lib/services";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -35,6 +35,7 @@ const formSchema = z.object({
 });
 
 function ForgotPasswordForm() {
+	const [isSuccess, setIsSuccess] = useState(false);
 	const { toast } = useToast();
 	const router = useRouter();
 
@@ -45,36 +46,31 @@ function ForgotPasswordForm() {
 		},
 	});
 
-	const { mutate: onSubmit, data: success } = useMutation({
-		mutationKey: ["resetPassword", form.getValues("email")],
-		mutationFn: async (values: z.infer<typeof formSchema>) => {
-			if (!values.email) return;
-			const res = await client.authentication.resetPasswordEmail.$post({
-				email: values.email,
-			});
-
-			toast(await res.json());
-			return true;
-		},
-		onError: (error) => {
-			toast({ title: error.message, variant: "destructive" });
-		},
-	});
+	async function onSubmit(values: z.infer<typeof formSchema>) {
+		try {
+			await authService.resetPasswordEmail(TODO, { email: values.email });
+			toast({ title: "Password reset email sent successfully" });
+			setIsSuccess(true);
+		} catch (error) {
+			if (error instanceof Error)
+				toast({ title: error.message, variant: "destructive" });
+		}
+	}
 
 	return (
 		<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
 			<CardHeader>
 				<CardTitle>Forgot Password</CardTitle>
-				{!success && (
+				{!isSuccess && (
 					<CardDescription>
 						Enter your email to reset your password
 					</CardDescription>
 				)}
 			</CardHeader>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
+				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<CardContent>
-						{success ? (
+						{isSuccess ? (
 							<div className="text-center">
 								<h2 className="mb-4 text-3xl">Success!</h2>
 								<p className="mb-2">
@@ -102,7 +98,7 @@ function ForgotPasswordForm() {
 							/>
 						)}
 					</CardContent>
-					{!success && (
+					{!isSuccess && (
 						<CardFooter>
 							<Button
 								className="w-full"
