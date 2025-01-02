@@ -104,7 +104,7 @@ export default function WorkspaceSettings() {
 		return () => subscription.unsubscribe();
 	}, [watch, workspace]);
 
-	if (!workspace) return null;
+	if (!workspace || !workspaces) return null;
 
 	useEffect(() => {
 		const fetchWorkspaceData = async () => {
@@ -155,7 +155,7 @@ export default function WorkspaceSettings() {
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
-		await deleteWorkspace(workspace.id);
+		deleteWorkspace(workspace.id);
 		if (user) {
 			if (workspaces.length > 0) {
 				router.replace(`/${workspaces[0].id}`);

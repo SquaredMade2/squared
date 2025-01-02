@@ -1,56 +1,42 @@
-import { useToast } from "@/components/ui/use-toast";
 import { logout } from "@/lib/auth";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 
 export function useAuthUser() {
 	const { user, setUser } = useUserStore((state) => state);
 	const { data: session, status } = useSession();
-	const { toast } = useToast();
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		const handleGetUser = async () => {
-			setLoading(true);
-			setError(null);
-
-			try {
-				if (status === "authenticated" && session?.user) {
-					const loggedUser = await userService.getUser(TODO, {
-						userId: session.user.id,
-					});
-					if (loggedUser) {
-						setUser(loggedUser);
-					} else {
-						// User not found in the database
-						await logout();
-					}
-				} else if (status === "unauthenticated") {
-					await logout();
-				}
-			} catch (error) {
-				console.error("Auth Error: ", error);
-				setError(error instanceof Error ? error.message : "An error occurred");
-				toast({
-					title: "An error occurred",
-					description:
-						error instanceof Error ? error.message : "An error occurred",
+	const { data, isLoading, error } = useQuery({
+		queryKey: ["authUser", session?.user?.id, status],
+		queryFn: async () => {
+			if (status === "authenticated" && session?.user) {
+				const loggedUser = await userService.getUser(TODO, {
+					userId: session.user.id,
 				});
-			} finally {
-				setLoading(false);
+				if (loggedUser) {
+					setUser(loggedUser);
+					return loggedUser;
+				}
+				// User not found in the database
+				await logout();
+				return null;
 			}
-		};
-
-		handleGetUser();
-	}, [status]);
+			if (status === "unauthenticated") {
+				await logout();
+				return null;
+			}
+			return null;
+		},
+		retry: false,
+	});
 
 	return {
-		user,
-		loading,
-		error,
+		user: data || user,
+		loading: isLoading,
+		error: parseError(error, "Failed to fetch user"),
 	};
 }
