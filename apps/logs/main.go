@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"strings"
@@ -51,14 +52,14 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, logEntry := range logs {
-		papertrailURL := getPapertrailURL(logEntry.Type)
-		if papertrailURL == "" {
-			log.Printf("No Papertrail URL found for environment: %s", logEntry.Type)
+		papertrailAddr := getPapertrailAddr(logEntry.Type)
+		if papertrailAddr == "" {
+			log.Printf("No Papertrail address found for environment: %s", logEntry.Type)
 			continue
 		}
 
 		formattedLog := formatLog(logEntry)
-		err = sendToPapertrail(papertrailURL, formattedLog)
+		err = sendToPapertrail(papertrailAddr, formattedLog)
 		if err != nil {
 			log.Printf("Error sending log to Papertrail: %v", err)
 		}
@@ -67,7 +68,7 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func getPapertrailURL(logType string) string {
+func getPapertrailAddr(logType string) string {
 	if strings.HasPrefix(logType, "production") {
 		return os.Getenv("PROD_PAPERTRAIL_URL")
 	} else if strings.HasPrefix(logType, "preview") {
@@ -80,15 +81,16 @@ func formatLog(log VercelLog) string {
 	return fmt.Sprintf("[%s] %s - %s - %s", log.Timestamp.Format(time.RFC3339), log.ProjectID, log.Source, log.Message)
 }
 
-func sendToPapertrail(url string, message string) error {
-	resp, err := http.Post(url, "text/plain", strings.NewReader(message))
+func sendToPapertrail(addr string, message string) error {
+	conn, err := net.Dial("udp", addr)
 	if err != nil {
-		return err
+		return fmt.Errorf("error connecting to Papertrail: %v", err)
 	}
-	defer resp.Body.Close()
+	defer conn.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	_, err = fmt.Fprintf(conn, "%s", message)
+	if err != nil {
+		return fmt.Errorf("error sending log to Papertrail: %v", err)
 	}
 
 	return nil
