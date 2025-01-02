@@ -45,6 +45,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 	contentType := r.Header.Get("Content-Type")
 
+	log.Printf("Received request with Content-Type: %s", contentType)
 	if strings.HasPrefix(contentType, "text/plain") {
 		handleVerification(w)
 	} else if strings.HasPrefix(contentType, "application/json") {
@@ -60,6 +61,8 @@ func handleVerification(w http.ResponseWriter) {
 }
 
 func handleLogs(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Received request: %s %s", r.Method, r.URL.Path)
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
@@ -68,24 +71,31 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		log.Printf("Error reading request body: %v", err)
 		return
 	}
+	log.Printf("Request body: %s", string(body))
 
 	var logs []VercelLog
 	err = json.Unmarshal(body, &logs)
 	if err != nil {
 		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
+		log.Printf("Error parsing JSON: %v", err)
 		return
 	}
+	log.Printf("Parsed logs: %+v", logs)
 
 	for _, logEntry := range logs {
+		log.Printf("Processing log entry: %+v", logEntry)
 		papertrailAddr := getPapertrailAddr(logEntry.Type)
 		if papertrailAddr == "" {
 			log.Printf("No Papertrail address found for environment: %s", logEntry.Type)
 			continue
 		}
+		log.Printf("Papertrail address for type %s: %s", logEntry.Type, papertrailAddr)
 
 		formattedLog := formatLog(logEntry)
+		log.Printf("Formatted log: %s", formattedLog)
 		err = sendToPapertrail(papertrailAddr, formattedLog)
 		if err != nil {
 			log.Printf("Error sending log to Papertrail: %v", err)
@@ -93,6 +103,7 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	log.Printf("Response sent with status: %d", http.StatusOK)
 }
 
 func getPapertrailAddr(logType string) string {
