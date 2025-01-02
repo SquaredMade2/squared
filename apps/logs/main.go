@@ -41,7 +41,10 @@ type ProxyInfo struct {
 	WafRuleID  string   `json:"wafRuleId"`
 }
 
-const vercelVerificationHeader = "X-Vercel-Verify-Request"
+const (
+	vercelVerificationHeader = "X-Vercel-Verify-Request"
+	stagingPath              = "/staging"
+)
 
 func main() {
 	http.HandleFunc("/", handleRequest)
@@ -69,7 +72,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(contentType, "text/plain") {
 		handleVerification(w)
 	} else if strings.HasPrefix(contentType, "application/json") {
-		handleLogs(w, r)
+		isStaging := r.URL.Path == stagingPath
+		handleLogs(w, r, isStaging)
 	} else {
 		http.Error(w, "Unsupported Content-Type", http.StatusUnsupportedMediaType)
 	}
@@ -80,7 +84,7 @@ func handleVerification(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func handleLogs(w http.ResponseWriter, r *http.Request) {
+func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
@@ -88,7 +92,6 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error reading request body: %v", err)
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
@@ -103,13 +106,14 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, logEntry := range logs {
-		papertrailAddr := getPapertrailAddr(logEntry.Source)
-		if papertrailAddr == "" {
-			log.Printf("No Papertrail address found for source: %s", logEntry.Source)
-			continue
-		}
+	papertrailAddr := getPapertrailAddr(isStaging)
+	if papertrailAddr == "" {
+		log.Printf("No Papertrail address found")
+		http.Error(w, "No Papertrail address configured", http.StatusInternalServerError)
+		return
+	}
 
+	for _, logEntry := range logs {
 		formattedLog := formatLog(logEntry)
 		err = sendToPapertrail(papertrailAddr, formattedLog)
 		if err != nil {
@@ -120,13 +124,11 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func getPapertrailAddr(source string) string {
-	if source == "production" {
-		return os.Getenv("PROD_PAPERTRAIL_URL")
-	} else if source == "preview" {
+func getPapertrailAddr(isStaging bool) string {
+	if isStaging {
 		return os.Getenv("STAGING_PAPERTRAIL_URL")
 	}
-	return ""
+	return os.Getenv("PROD_PAPERTRAIL_URL")
 }
 
 func formatLog(log VercelLog) string {
