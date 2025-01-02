@@ -26,7 +26,6 @@ type ProxyInfo struct {
 
 const (
 	vercelVerificationHeader = "X-Vercel-Verify-Request"
-	stagingPath              = "/staging"
 	infoColor                = "\x1b[38;2;99;101;12m"
 	errorColor               = "\x1b[38;2;220;50;47m"
 	resetColor               = "\x1b[0m"
@@ -52,13 +51,13 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	contentType := r.Header.Get("Content-Type")
-	log.Printf("Received request with Content-Type: %s", contentType)
-	log.Printf("Received request: %s %s", r.Method, r.URL.Path)
+
+	host := r.Host
+	isStaging := strings.Contains(host, "dev") || strings.Contains(host, "stag")
 
 	if strings.HasPrefix(contentType, "text/plain") {
 		handleVerification(w)
 	} else if strings.HasPrefix(contentType, "application/json") {
-		isStaging := r.URL.Path == stagingPath
 		handleLogs(w, r, isStaging)
 	} else {
 		http.Error(w, "Unsupported Content-Type", http.StatusUnsupportedMediaType)
