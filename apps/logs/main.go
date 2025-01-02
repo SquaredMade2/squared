@@ -43,6 +43,16 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func verifyHandler(w http.ResponseWriter, r *http.Request) {
+	// Log request method, URL path, and protocol
+	log.Printf("Received request: %s %s %s", r.Method, r.URL.Path, r.Proto)
+
+	// Log all headers
+	log.Println("Headers:")
+	for name, values := range r.Header {
+		for _, value := range values {
+			log.Printf("%s: %s", name, value)
+		}
+	}
 	verifyToken := r.Header.Get(vercelVerificationHeader)
 	if verifyToken == os.Getenv("VERCEL_OWNERSHIP_TOKEN") {
 		w.Header().Set("x-vercel-verify", verifyToken)
