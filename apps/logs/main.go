@@ -14,12 +14,31 @@ import (
 
 type VercelLog struct {
 	ID           string    `json:"id"`
-	Timestamp    time.Time `json:"timestamp"`
+	Timestamp    int64     `json:"timestamp"`
+	RequestID    string    `json:"requestId"`
+	Message      string    `json:"message"`
+	Proxy        ProxyInfo `json:"proxy"`
 	ProjectID    string    `json:"projectId"`
 	DeploymentID string    `json:"deploymentId"`
 	Source       string    `json:"source"`
-	Type         string    `json:"type"`
-	Message      string    `json:"message"`
+	Host         string    `json:"host"`
+	Path         string    `json:"path"`
+	Ja4Digest    string    `json:"ja4Digest"`
+}
+
+type ProxyInfo struct {
+	Timestamp  int64    `json:"timestamp"`
+	Region     string   `json:"region"`
+	Method     string   `json:"method"`
+	StatusCode int      `json:"statusCode"`
+	Referer    string   `json:"referer"`
+	Path       string   `json:"path"`
+	Host       string   `json:"host"`
+	Scheme     string   `json:"scheme"`
+	ClientIP   string   `json:"clientIp"`
+	UserAgent  []string `json:"userAgent"`
+	WafAction  string   `json:"wafAction"`
+	WafRuleID  string   `json:"wafRuleId"`
 }
 
 const vercelVerificationHeader = "X-Vercel-Verify-Request"
@@ -44,8 +63,9 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	contentType := r.Header.Get("Content-Type")
-
 	log.Printf("Received request with Content-Type: %s", contentType)
+	log.Printf("Received request: %s %s", r.Method, r.URL.Path)
+
 	if strings.HasPrefix(contentType, "text/plain") {
 		handleVerification(w)
 	} else if strings.HasPrefix(contentType, "application/json") {
@@ -61,8 +81,6 @@ func handleVerification(w http.ResponseWriter) {
 }
 
 func handleLogs(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Received request: %s %s", r.Method, r.URL.Path)
-
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
@@ -70,32 +88,29 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		log.Printf("Error reading request body: %v", err)
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
+
 	log.Printf("Request body: %s", string(body))
 
 	var logs []VercelLog
 	err = json.Unmarshal(body, &logs)
 	if err != nil {
-		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
 		log.Printf("Error parsing JSON: %v", err)
+		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
 		return
 	}
-	log.Printf("Parsed logs: %+v", logs)
 
 	for _, logEntry := range logs {
-		log.Printf("Processing log entry: %+v", logEntry)
-		papertrailAddr := getPapertrailAddr(logEntry.Type)
+		papertrailAddr := getPapertrailAddr(logEntry.Source)
 		if papertrailAddr == "" {
-			log.Printf("No Papertrail address found for environment: %s", logEntry.Type)
+			log.Printf("No Papertrail address found for source: %s", logEntry.Source)
 			continue
 		}
-		log.Printf("Papertrail address for type %s: %s", logEntry.Type, papertrailAddr)
 
 		formattedLog := formatLog(logEntry)
-		log.Printf("Formatted log: %s", formattedLog)
 		err = sendToPapertrail(papertrailAddr, formattedLog)
 		if err != nil {
 			log.Printf("Error sending log to Papertrail: %v", err)
@@ -103,20 +118,20 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	log.Printf("Response sent with status: %d", http.StatusOK)
 }
 
-func getPapertrailAddr(logType string) string {
-	if strings.HasPrefix(logType, "production") {
+func getPapertrailAddr(source string) string {
+	if source == "production" {
 		return os.Getenv("PROD_PAPERTRAIL_URL")
-	} else if strings.HasPrefix(logType, "preview") {
+	} else if source == "preview" {
 		return os.Getenv("STAGING_PAPERTRAIL_URL")
 	}
 	return ""
 }
 
 func formatLog(log VercelLog) string {
-	return fmt.Sprintf("[%s] %s - %s - %s", log.Timestamp.Format(time.RFC3339), log.ProjectID, log.Source, log.Message)
+	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
+	return fmt.Sprintf("[%s] %s - %s - %s - %s", timestamp.Format(time.RFC3339), log.ProjectID, log.Source, log.Path, log.Message)
 }
 
 func sendToPapertrail(addr string, message string) error {
