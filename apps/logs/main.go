@@ -23,6 +23,7 @@ type VercelLog struct {
 }
 
 func main() {
+	http.HandleFunc("/.well-known/vercel-ownership-verification.txt", verifyHandler)
 	http.HandleFunc("/", handleLogs)
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -30,6 +31,11 @@ func main() {
 	}
 	log.Printf("Server starting on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func verifyHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("x-vercel-verify", "e87ed97ce15cb5d4348beae3e0b55c055868572a")
+	w.WriteHeader(http.StatusOK)
 }
 
 func handleLogs(w http.ResponseWriter, r *http.Request) {
