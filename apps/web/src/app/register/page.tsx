@@ -1,7 +1,7 @@
 "use client";
 
 import RegistrationModal from "@/components/Modals/RegistrationModal";
-import { GoogleIcon } from "@/components/Svg";
+// import { GoogleIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -19,12 +19,12 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { authService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { passwordSchema } from "@/utils/formatting";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, Loader2, Mail, User } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -43,9 +43,7 @@ const formSchema = z.object({
 
 function RegisterForm() {
 	const [hidePassword, setHidePassword] = useState(true);
-	const [isLoading, setIsLoading] = useState(false);
 	const [isShowRegisteredModal, setIsShowRegisteredModal] = useState(false);
-	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
@@ -60,11 +58,10 @@ function RegisterForm() {
 		},
 	});
 
-	const handleRegister = async (values: z.infer<typeof formSchema>) => {
-		setIsLoading(true);
-		try {
-			// First, register the user using your custom register function
-			const { user, message, variant } = await authService.register(TODO, {
+	const { mutate: handleRegister, isPending } = useMutation({
+		mutationKey: ["register"],
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			const res = await client.authentication.register.$post({
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
 				email: values.email,
@@ -72,7 +69,9 @@ function RegisterForm() {
 				inviteToken,
 			});
 
-			if (user?.verified && inviteToken) {
+			const { verified, title } = await res.json();
+
+			if (verified && inviteToken) {
 				await signIn("credentials", {
 					redirect: false,
 					email: values.email,
@@ -81,35 +80,38 @@ function RegisterForm() {
 				router.refresh();
 				router.prefetch("/");
 				toast({
-					title: message,
-					variant,
+					title,
 				});
 			} else {
 				setIsShowRegisteredModal(true);
 			}
-		} catch (error) {
-			console.error("Registration error:", error);
+		},
+		onError: (error) => {
 			toast({
 				title: error instanceof Error ? error.message : "Registration failed",
 				variant: "destructive",
 			});
-		} finally {
-			setIsLoading(false);
-		}
-	};
+		},
+	});
 
-	const handleGoogleRegister = async () => {
-		setIsGoogleLoading(true);
-		try {
-			await signIn("google", {
-				callbackUrl: window.location.href,
-			});
-		} catch (error) {
-			toast({ title: "Google registration failed", variant: "destructive" });
-			console.error("Google registration error:", error);
-			setIsGoogleLoading(false);
-		}
-	};
+	// const { mutate: handleGoogleRegister, isPending: isGoogleLoading } =
+	// 	useMutation({
+	// 		mutationKey: ["googleLogin", window.location.href],
+	// 		mutationFn: async () => {
+	// 			await signIn("google", {
+	// 				callbackUrl: window.location.href,
+	// 			});
+	// 		},
+	// 		onError: (error) => {
+	// 			toast({
+	// 				title:
+	// 					error instanceof Error
+	// 						? error.message
+	// 						: "Google registration failed",
+	// 				variant: "destructive",
+	// 			});
+	// 		},
+	// 	});
 
 	const handleLoginPush = () => {
 		router.push(inviteToken ? `/login?token=${inviteToken}` : "/login");
@@ -135,7 +137,7 @@ function RegisterForm() {
 				<CardContent>
 					<Form {...form}>
 						<form
-							onSubmit={form.handleSubmit(handleRegister)}
+							onSubmit={form.handleSubmit((values) => handleRegister(values))}
 							className="space-y-4"
 						>
 							<div className="space-y-2">
@@ -229,16 +231,17 @@ function RegisterForm() {
 							<Button
 								type="submit"
 								className="w-full"
-								disabled={isLoading || isGoogleLoading}
+								// disabled={isPending || isGoogleLoading}
+								disabled={isPending}
 							>
-								{isLoading ? (
+								{isPending ? (
 									<Loader2 className="mr-2 size-4 animate-spin" />
 								) : null}
 								Register
 							</Button>
 						</form>
 					</Form>
-					<div className="relative mt-4">
+					{/* <div className="relative mt-4">
 						<div className="absolute inset-0 flex items-center">
 							<Separator />
 						</div>
@@ -248,11 +251,12 @@ function RegisterForm() {
 							</span>
 						</div>
 					</div>
+
 					<Button
-						onClick={handleGoogleRegister}
+						onClick={() => handleGoogleRegister()}
 						className="w-full mt-4"
 						variant="outline"
-						disabled={isGoogleLoading || isLoading}
+						disabled={isGoogleLoading || isPending}
 					>
 						{isGoogleLoading ? (
 							<Loader2 className="mr-2 size-4 animate-spin" />
@@ -260,7 +264,7 @@ function RegisterForm() {
 							<GoogleIcon />
 						)}
 						Sign up with Google
-					</Button>
+					</Button> */}
 				</CardContent>
 				<CardFooter className="flex justify-center">
 					<p className="text-sm text-muted-foreground">

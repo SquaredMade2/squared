@@ -1,78 +1,58 @@
-import { taskService } from "@/lib/services";
-import {
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
-import { TODO } from "@squared/context";
-import type { Task } from "@squared/db";
-import { useState } from "react";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import type { Priority, Status } from "@squared/db";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+type CreateTaskInput = {
+	title: string;
+	description?: string;
+	status?: Status;
+	priority?: Priority;
+	labels?: string[];
+	dueDate?: Date | null;
+	effortEstimate?: number | null;
+	teamId: string;
+	workspaceId: string;
+};
 
 export const useCreateTask = () => {
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 	const user = useUserStore((state) => state.user);
-	const { team } = useTeamStore((state) => state);
 	const { createTask: addTask } = useTaskStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+	const queryClient = useQueryClient();
 
-	const createTask = async (input: Partial<Task>) => {
-		setIsLoading(true);
-		setError(null);
-
-		try {
-			if (!workspace) {
-				throw new Error("Error authenticating workspace");
-			}
-			if (!team) {
-				throw new Error("Error authenticating team");
-			}
-
-			const { transformedInput: transformedTitle } = transformingMentionInputs(
-				input.title ?? "",
-			);
-			const { transformedInput: transformedDescriptionInput } =
-				transformingMentionInputs(input.description ?? "");
-
-			if (!user) throw new Error("No user found");
-
-			const newTask = {
-				...input,
-				authorId: user.id,
-				title: transformedTitle,
-				description: transformedDescriptionInput,
-				status: input.status ?? "backlog",
-				priority: input.priority ?? "noPriority",
-				labels: input.labels || [],
-				dueDate: input.dueDate ?? null,
-				effortEstimate: input.effortEstimate ?? null,
-				teamId: team.id,
-			};
-
-			const task = await taskService.createTask(TODO, newTask);
-
-			if (!task) {
-				throw new Error("Failed to create task");
-			}
-			addTask(task);
-
-			setWorkspace({
-				...workspace,
-				tasksCreated: workspace.tasksCreated + 1,
+	const createTaskMutation = useMutation({
+		mutationFn: async (input: CreateTaskInput) => {
+			if (!user) throw new Error("User not found");
+			const res = await client.task.createTask.$post({
+				userId: user.id,
+				title: input.title,
+				description: input.description,
+				status: input.status,
+				priority: input.priority,
+				labels: input.labels,
+				dueDate: input.dueDate,
+				effortEstimate: input.effortEstimate,
+				teamId: input.teamId,
+				workspaceId: input.workspaceId,
 			});
+			return await res.json();
+		},
+		onSuccess: (newTask) => {
+			addTask(newTask);
+			if (workspace) {
+				setWorkspace({
+					...workspace,
+					tasksCreated: workspace.tasksCreated + 1,
+				});
+			}
+			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+		},
+	});
 
-			return task;
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unknown error occurred",
-			);
-			throw err;
-		} finally {
-			setIsLoading(false);
-		}
+	return {
+		createTask: createTaskMutation.mutate,
+		isLoading: createTaskMutation.isPending,
+		error: createTaskMutation.error,
 	};
-
-	return { createTask, isLoading, error };
 };
