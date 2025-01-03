@@ -182,7 +182,7 @@ importers:
         version: 3.1.0(@types/react@18.3.12)(react@18.3.1)
       '@next/mdx':
         specifier: ^14.2.3
-        version: 14.2.18(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
+        version: 14.2.18(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -201,6 +201,9 @@ importers:
       '@squared/rpc-client':
         specifier: workspace:*
         version: link:../../packages/rpc-client
+      '@tanstack/react-query':
+        specifier: ^5.62.7
+        version: 5.62.7(react@18.3.1)
       '@tanstack/react-table':
         specifier: ^8.20.5
         version: 8.20.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -213,9 +216,6 @@ importers:
       '@uploadthing/react':
         specifier: ^7.1.1
         version: 7.1.1(next@14.2.18(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(uploadthing@7.3.0(express@4.21.1)(next@14.2.18(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.15(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.10.1)(typescript@5.7.2))))
-      axios:
-        specifier: ^1.7.5
-        version: 1.7.8
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -228,6 +228,9 @@ importers:
       date-fns:
         specifier: ^4.0.0
         version: 4.1.0
+      hono:
+        specifier: ^4.6.13
+        version: 4.6.13
       lucide-react:
         specifier: ^0.462.0
         version: 0.462.0(react@18.3.1)
@@ -270,6 +273,9 @@ importers:
       socket.io-client:
         specifier: ^4.8.0
         version: 4.8.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      superjson:
+        specifier: ^2.2.2
+        version: 2.2.2
       tailwind-merge:
         specifier: ^2.5.4
         version: 2.5.5
@@ -372,7 +378,7 @@ importers:
         version: 3.1.0(@types/react@18.3.12)(react@18.3.1)
       '@next/mdx':
         specifier: ^14.2.3
-        version: 14.2.18(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
+        version: 14.2.18(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.1.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -614,9 +620,6 @@ importers:
       '@squared/context':
         specifier: workspace:*
         version: link:../context
-      axios:
-        specifier: ^1.7.5
-        version: 1.7.8
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -2542,6 +2545,14 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
+  '@tanstack/query-core@5.62.7':
+    resolution: {integrity: sha512-fgpfmwatsrUal6V+8EC2cxZIQVl9xvL7qYa03gsdsCy985UTUlS4N+/3hCzwR0PclYDqisca2AqR1BVgJGpUDA==}
+
+  '@tanstack/react-query@5.62.7':
+    resolution: {integrity: sha512-+xCtP4UAFDTlRTYyEjLx0sRtWyr5GIk7TZjZwBu4YaNahi3Rt2oMyRqfpfVrtwsqY2sayP4iXVCwmC+ZqqFmuw==}
+    peerDependencies:
+      react: ^18 || ^19
+
   '@tanstack/react-table@8.20.5':
     resolution: {integrity: sha512-WEHopKw3znbUZ61s9i0+i9g8drmDo6asTWbrQh8Us63DAk/M0FkmIqERew6P71HI75ksZ2Pxyuf4vvKh9rAkiA==}
     engines: {node: '>=12'}
@@ -3613,6 +3624,10 @@ packages:
   cookiejar@2.1.4:
     resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
 
+  copy-anything@3.0.5:
+    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
+    engines: {node: '>=12.13'}
+
   core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
 
@@ -4526,6 +4541,10 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
+  hono@4.6.13:
+    resolution: {integrity: sha512-haV0gaMdSjy9URCRN9hxBPlqHa7fMm/T72kAImIxvw4eQLbNz1rgjN4hHElLJSieDiNuiIAXC//cC6YGz2KCbg==}
+    engines: {node: '>=16.9.0'}
+
   html-encoding-sniffer@3.0.0:
     resolution: {integrity: sha512-oWv4T4yJ52iKrufjnyZPkrN0CH3QnrUqdB6In1g5Fe1mia8GmF36gnfNySxoZtxD5+NmYw1EElVXiBk93UeskA==}
     engines: {node: '>=12'}
@@ -4797,6 +4816,10 @@ packages:
   is-unicode-supported@0.1.0:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
     engines: {node: '>=10'}
+
+  is-what@4.1.16:
+    resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
+    engines: {node: '>=12.13'}
 
   is-wsl@2.2.0:
     resolution: {integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==}
@@ -6810,6 +6833,10 @@ packages:
     resolution: {integrity: sha512-xuW7dzkUpcJq7QnhOsnNUgtYp3xRwpt2F7abdRYIpCsAt0hhUqia0EdxyXZQQpNmGtsCzYHryaKSV3q3GJnq7w==}
     engines: {node: '>=14.18.0'}
 
+  superjson@2.2.2:
+    resolution: {integrity: sha512-5JRxVqC8I8NuOUjzBbvVJAKNM8qoVuH0O77h4WInc/qC2q5IreqKxYwgkga3PfA22OayK2ikceb/B26dztPl+Q==}
+    engines: {node: '>=16'}
+
   supertest@7.0.0:
     resolution: {integrity: sha512-qlsr7fIC0lSddmA3tzojvzubYxvlGtzumcdHgPwbFWMISQwL22MhM2Y3LNt+6w9Yyx7559VW5ab70dgphm8qQA==}
     engines: {node: '>=14.18.0'}
@@ -8595,7 +8622,7 @@ snapshots:
 
   '@next/env@14.2.18': {}
 
-  '@next/mdx@14.2.18(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))':
+  '@next/mdx@14.2.18(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))':
     dependencies:
       source-map: 0.7.4
     optionalDependencies:
@@ -9780,6 +9807,13 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.15(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.10.1)(typescript@5.7.2))
 
+  '@tanstack/query-core@5.62.7': {}
+
+  '@tanstack/react-query@5.62.7(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.62.7
+      react: 18.3.1
+
   '@tanstack/react-table@8.20.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/table-core': 8.20.5
@@ -10932,6 +10966,10 @@ snapshots:
 
   cookiejar@2.1.4: {}
 
+  copy-anything@3.0.5:
+    dependencies:
+      is-what: 4.1.16
+
   core-util-is@1.0.2: {}
 
   cors@2.8.5:
@@ -12054,6 +12092,8 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
+  hono@4.6.13: {}
+
   html-encoding-sniffer@3.0.0:
     dependencies:
       whatwg-encoding: 2.0.0
@@ -12289,6 +12329,8 @@ snapshots:
   is-typedarray@1.0.0: {}
 
   is-unicode-supported@0.1.0: {}
+
+  is-what@4.1.16: {}
 
   is-wsl@2.2.0:
     dependencies:
@@ -15063,6 +15105,10 @@ snapshots:
       qs: 6.13.1
     transitivePeerDependencies:
       - supports-color
+
+  superjson@2.2.2:
+    dependencies:
+      copy-anything: 3.0.5
 
   supertest@7.0.0:
     dependencies:

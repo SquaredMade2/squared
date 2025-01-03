@@ -20,7 +20,8 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateTask } from "@/hooks/useCreateTask";
-import { useModalStore } from "@/store";
+import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { useEffect } from "react";
@@ -34,11 +35,22 @@ import { StatusDropdownButton } from "./StatusDropdownButton";
 export * from "./NewTaskButton";
 export * from "./NewTaskCollapsible";
 
+const formSchema = z.object({
+	title: z.string().min(2, {
+		message: "Title must be at least 2 characters.",
+	}),
+	description: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export const NewTaskModal = () => {
 	const { toast } = useToast();
 	const { showNewTask, newTaskData, setNewTaskData, setShowNewTask } =
 		useModalStore((state) => state);
-	const { createTask, isLoading, error } = useCreateTask();
+	const { createTask, isLoading } = useCreateTask();
+	const { team } = useTeamStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	const {
 		status,
@@ -50,20 +62,7 @@ export const NewTaskModal = () => {
 		description,
 	} = newTaskData;
 
-	// pre-populate title and description fields if duplicating
-	useEffect(() => {
-		if (title) form.setValue("title", title);
-		if (description) form.setValue("description", description);
-	}, [showNewTask]);
-
-	const formSchema = z.object({
-		title: z.string().min(2, {
-			message: "Title must be at least 2 characters.",
-		}),
-		description: z.string().optional(),
-	});
-
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm<FormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			title: "",
@@ -71,39 +70,56 @@ export const NewTaskModal = () => {
 		},
 	});
 
+	useEffect(() => {
+		if (title) form.setValue("title", title);
+		if (description) form.setValue("description", description);
+	}, [showNewTask, title, description, form]);
+
 	const handleDiscard = () => {
 		setNewTaskData({});
 		form.reset();
 		setShowNewTask(false);
 	};
 
-	const handleCreateTask = async (values: z.infer<typeof formSchema>) => {
-		try {
-			const createTaskParams = {
-				...newTaskData,
-				...values,
-				status,
-				priority,
-				labels,
-				dueDate,
-				effortEstimate,
-				description: values.description || undefined,
-			};
-			await createTask(createTaskParams);
-
+	const handleCreateTask = (values: FormValues) => {
+		if (!team || !workspace) {
 			toast({
-				title: "Task Created Succesfully",
-			});
-
-			setShowNewTask(false);
-			setNewTaskData({});
-			form.reset();
-		} catch {
-			toast({
-				title: error || "Error creating task",
+				title: "Error",
+				description: "Team or workspace not found",
 				variant: "destructive",
 			});
+			return;
 		}
+
+		const createTaskParams = {
+			title: values.title,
+			description: values.description,
+			status: status || "backlog",
+			priority: priority || "noPriority",
+			labels: labels || [],
+			dueDate: dueDate || null,
+			effortEstimate: effortEstimate || null,
+			teamId: team.id,
+			workspaceId: workspace.id,
+		};
+
+		createTask(createTaskParams, {
+			onSuccess: () => {
+				toast({
+					title: "Task Created Successfully",
+				});
+				setShowNewTask(false);
+				setNewTaskData({});
+				form.reset();
+			},
+			onError: (error) => {
+				toast({
+					title: "Error creating task",
+					description: parseError(error),
+					variant: "destructive",
+				});
+			},
+		});
 	};
 
 	return (
