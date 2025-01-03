@@ -34,11 +34,9 @@ const HomePage = () => {
 					setWorkspaces(workspaces);
 					if (workspaces.length) {
 						if (workspaces[0].defaultView) {
-							router.push(`/${workspaces[0].defaultView}`);
-						} else {
-							router.push(`/${workspaces[0].url}`);
+							return router.push(`/${workspaces[0].defaultView}`);
 						}
-						return;
+						return router.push(`/${workspaces[0].url}`);
 					}
 
 					router.push("/join");
