@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { filterService } from "@/lib/services";
 import {
 	useFilterStore,
+	useSprintStore,
 	useTeamStore,
 	useUserStore,
 	useWorkspaceStore,
@@ -62,6 +63,7 @@ export function SaveFilterForm({
 	const params = useParams();
 	const pathname = usePathname();
 	const router = useRouter();
+	const sprint = useSprintStore((state) => state.sprint);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -109,10 +111,16 @@ export function SaveFilterForm({
 
 	const handleUrl = (filter: SavedFilter) => {
 		const filterName = filter.name.toLowerCase().replace(/\s+/g, "-");
+
 		const filterId = filter.id.split("-")[0];
-		pathname.includes("/views")
-			? router.push(`${filterName}-${filterId}`)
-			: router.push(`views/${filterName}-${filterId}`);
+
+		const currentWorkSpaceName = workspace?.name;
+
+		const currentTeamName = team?.name;
+
+		const filterURL = `/${currentWorkSpaceName}/team/${currentTeamName}/views/${filterName}-${filterId}`;
+
+		router.push(filterURL);
 	};
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -157,6 +165,7 @@ export function SaveFilterForm({
 						filter: newFilters,
 						authorId: user.id,
 						teamId: team.id,
+						sprintId: null,
 					});
 					saveFilter(savedFilter);
 					handleUrl(savedFilter);
@@ -169,8 +178,13 @@ export function SaveFilterForm({
 					filter: currentFilters,
 					teamId: team.id,
 					authorId: user.id,
+					sprintId: pathname.split("/").includes("sprints")
+						? (sprint?.id as string)
+						: null,
 				});
+
 				saveFilter(savedFilter);
+
 				handleUrl(savedFilter);
 			} else {
 				toast({
