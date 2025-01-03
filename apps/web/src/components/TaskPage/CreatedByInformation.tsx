@@ -22,7 +22,7 @@ export const CreatedByInformation = () => {
 	return (
 		<div>
 			{/* Events */}
-			{[...events]
+			{events
 				.sort(
 					(a, b) =>
 						new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
