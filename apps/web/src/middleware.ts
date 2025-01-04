@@ -1,54 +1,28 @@
-import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export async function middleware(request: NextRequest) {
-	const { pathname } = request.nextUrl;
-
-	// Allow all requests to /_next/, /api/, and public files like favicon.ico, etc.
-	if (
-		pathname.startsWith("/_next") ||
-		pathname.startsWith("/api") ||
-		pathname === "/favicon.ico"
-	) {
-		return NextResponse.next();
+export default clerkMiddleware(async (auth, request) => {
+	if (!isPublicRoute(request)) {
+		await auth.protect();
 	}
-
-	// Check if the user is logged in using next-auth
-	const token = await getToken({ req: request });
-	const userLoggedIn = Boolean(token);
-
-	// Redirect logged-in users trying to access login or register to the homepage
-	if (userLoggedIn && isAuthRoute(pathname)) {
-		const token = request.nextUrl.searchParams.get("token");
-		const redirectTo = token ? `/join/${token}` : "/";
-		return NextResponse.redirect(new URL(redirectTo, request.url));
-	}
-
-	// Redirect non-logged-in users to login for protected routes
-	if (!userLoggedIn && !isPublicRoute(pathname)) {
-		const token = request.nextUrl.searchParams.get("token");
-		const redirectTo = token ? `/login?token=${token}` : "/login";
-		return NextResponse.redirect(new URL(redirectTo, request.url));
-	}
-
-	// Allow the request to proceed
-	return NextResponse.next();
-}
+});
 
 // Check if the current route is public (accessible without authentication)
-function isPublicRoute(pathname: string) {
-	const PUBLIC_ROUTES = ["/login", "/register", "/verify", "/forgotPassword"];
-	const workspaceJoinRegex = /^\/[^\/]+\/join\/[^\/]+$/;
+const isPublicRoute = createRouteMatcher([
+	"/login(.*)",
+	"/register(.*)",
+	"/verify(.*)",
+	"/forgotPassword(.*)",
+	"/api(.*)",
+	"/login(.*)",
+	"/register(.*)",
+	"/verify(.*)",
+]);
 
-	return (
-		PUBLIC_ROUTES.some((route) => pathname.startsWith(route)) ||
-		workspaceJoinRegex.test(pathname)
-	);
-}
-
-// Check if the current route is an authentication route (login or register)
-function isAuthRoute(pathname: string) {
-	const AUTH_ROUTES = ["/login", "/register", "/verify"];
-	return AUTH_ROUTES.includes(pathname);
-}
+export const config = {
+	matcher: [
+		// Skip Next.js internals and all static files, unless found in search params
+		"/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+		// Always run for API routes
+		"/(api|trpc)(.*)",
+	],
+};
