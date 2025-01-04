@@ -24,7 +24,7 @@ const MovingGrid = () => {
 		<div className="flex space-x-4 flex-shrink-0 mb-4 relative z-40 p-2">
 			<span
 				className={cn(
-					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-2 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
+					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-3 text-sm rounded-xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
 			>
 				<svg
@@ -45,7 +45,7 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-2 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
+					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-3 text-sm rounded-xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
 			>
 				<svg
@@ -119,7 +119,7 @@ const MovingGrid = () => {
 			</span> */}
 			<span
 				className={cn(
-					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-2 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
+					" space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-3 text-sm rounded-xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
 			>
 				<svg
@@ -183,21 +183,21 @@ const MovingGrid = () => {
 			</span>
 			<span
 				className={cn(
-					" space-x-1 min-w-24 px-2 py-1 p-2 bg-white dark:bg-background-darkSecondary  text-sm rounded-md flex justify-center items-center  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
+					" space-x-1 min-w-24 px-2 py-1 p-3 bg-white dark:bg-background-darkSecondary  text-sm rounded-xl flex justify-center items-center  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
 			>
 				<VercelLogo /> <span>Vercel</span>
 			</span>
 			<span
 				className={cn(
-					"min-w-24 flex justify-center bg-white dark:bg-background-darkSecondary  items-center px-2 py-1 p-2 space-x-1 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
+					"min-w-24 flex justify-center bg-white dark:bg-background-darkSecondary  items-center px-2 py-1 p-3 space-x-1 text-sm rounded-xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
 			>
 				<AWSLogo /> <span>AWS</span>
 			</span>
 			<span
 				className={cn(
-					"space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-2 text-sm rounded-md  shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
+					"space-x-1 min-w-24 flex justify-center items-center bg-white dark:bg-background-darkSecondary  px-2 py-1 p-3 text-sm rounded-xl shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
 				)}
 			>
 				<GitHubLogo /> <span>GitHub</span>
