@@ -74,6 +74,19 @@
 					}
 				}
 			}
+		},
+		{
+			"include": ["apps/web/src/server/__internals"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noBannedTypes": "off"
+					},
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
 		}
 	],
 	"javascript": {

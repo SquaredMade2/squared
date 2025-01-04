@@ -1,4 +1,5 @@
 import { useTaskStore, useUserStore, useViewStore } from "@/store";
+import { useFilterStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -10,12 +11,12 @@ import type {
 	DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
-
 const priorityOrder = [
 	Priority.noPriority,
 	Priority.low,
@@ -41,6 +42,20 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { tasks: allTasks } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
+	const pathname = usePathname();
+
+	const { savedFilters } = useFilterStore((state) => state);
+
+	const currentSavedFilter = pathname.split("/").includes("views")
+		? savedFilters.filter((filter) => {
+				const filterSlugArray = filter.id.split("-");
+				const filterSlug = filterSlugArray[0];
+
+				const pathNameSlug = pathname.split("-").pop();
+
+				return filterSlug === pathNameSlug;
+			})[0]
+		: null;
 
 	const getParentTaskIds = () => {
 		const taskIdsForGroup = tasks.map((t) => t.id);
@@ -211,8 +226,33 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				.filter((task): task is Task => task !== undefined),
 		);
 
+		if (currentSavedFilter) {
+			const sprintId = currentSavedFilter.sprintId;
+
+			// if no sprintId then render all tasks
+			if (!sprintId) {
+				return sortedItems.map((sortedTask, index) => {
+					const item = allItems.find((item) => {
+						return item?.task?.id === sortedTask.id;
+					});
+					return item?.render(index);
+				});
+			}
+			// else render items with matching sprintId
+			return sortedItems.map((sortedTask, index) => {
+				const item = allItems.find((item) => {
+					return (
+						item?.task?.id === sortedTask.id && item?.task.sprintId === sprintId
+					);
+				});
+				return item?.render(index);
+			});
+		}
+
 		return sortedItems.map((sortedTask, index) => {
-			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+			const item = allItems.find((item) => {
+				return item?.task?.id === sortedTask.id;
+			});
 			return item?.render(index);
 		});
 	};
