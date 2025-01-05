@@ -165,7 +165,7 @@ export const STANDARD_SAVED_FILTER: SavedFilter = {
 	teamId: "team-1",
 	workspaceId: STANDARD_WORKSPACE.id,
 	type: "WORKSPACE",
-	sprintId:null
+	sprintId: null,
 };
 
 export const STANDARD_SAVED_FILTER_2: SavedFilter = {
@@ -177,7 +177,7 @@ export const STANDARD_SAVED_FILTER_2: SavedFilter = {
 	teamId: "team-1",
 	workspaceId: STANDARD_WORKSPACE.id,
 	type: "WORKSPACE",
-	sprintId:'new-sprint-id-123'
+	sprintId: "new-sprint-id-123",
 };
 
 export const STANDARD_COMMENT: Comment = {

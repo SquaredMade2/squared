@@ -13,15 +13,32 @@ import (
 )
 
 type VercelLog struct {
-	ID        string    `json:"id"`
-	Timestamp int64     `json:"timestamp"`
-	ProjectID string    `json:"projectId"`
-	Message   string    `json:"message"`
-	Proxy     ProxyInfo `json:"proxy"`
+	ID           string    `json:"id"`
+	Timestamp    int64     `json:"timestamp"`
+	RequestID    string    `json:"requestId"`
+	Message      string    `json:"message"`
+	Proxy        ProxyInfo `json:"proxy"`
+	ProjectID    string    `json:"projectId"`
+	DeploymentID string    `json:"deploymentId"`
+	Source       string    `json:"source"`
+	Host         string    `json:"host"`
+	Path         string    `json:"path"`
+	JA4Digest    string    `json:"ja4Digest"`
 }
 
 type ProxyInfo struct {
-	StatusCode int `json:"statusCode"`
+	Timestamp  int64    `json:"timestamp"`
+	Region     string   `json:"region"`
+	Method     string   `json:"method"`
+	StatusCode int      `json:"statusCode"`
+	Referer    string   `json:"referer"`
+	Path       string   `json:"path"`
+	Host       string   `json:"host"`
+	Scheme     string   `json:"scheme"`
+	ClientIP   string   `json:"clientIp"`
+	UserAgent  []string `json:"userAgent"`
+	WAFAction  string   `json:"wafAction"`
+	WAFRuleID  string   `json:"wafRuleId"`
 }
 
 const (
@@ -118,7 +135,8 @@ func getPapertrailAddr(isStaging bool) string {
 
 func formatLog(log VercelLog) string {
 	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
-	appName := "my-app" // You might want to make this configurable
+	domain := os.Getenv("DOMAIN")
+	appName := strings.Split(log.Host, "."+domain)[0]
 	logLevel := getLogLevel(log.Proxy.StatusCode)
 	coloredLogLevel := colorize(logLevel, log.Proxy.StatusCode)
 
