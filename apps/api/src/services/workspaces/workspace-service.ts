@@ -6,7 +6,6 @@ import createCustomLogger from "@squared/logger";
 import jwt from "jsonwebtoken";
 import type {
 	CreateWorkspaceParams,
-	LabelParams,
 	WorkspaceLabels,
 	WorkspaceParams,
 	WorkspaceRpc,
@@ -286,21 +285,6 @@ export class WorkspaceService implements WorkspaceRpc {
 				}),
 			});
 		}
-	}
-	async updateWorkspaceLabel({
-		workspaceId,
-		labelId,
-		data,
-	}: { workspaceId: string; labelId: string; data: LabelParams }) {
-		this.logger.info("Updating workspace label");
-		const workspace = await this.db.workspace.findUnique({
-			where: { id: workspaceId },
-			include: { Labels: true },
-		});
-		if (!workspace) this.throwError("Workspace not found.");
-		const labelExists = workspace.Labels.some((label) => label.id === labelId);
-		if (!labelExists) this.throwError("Label not found in workspace.");
-		return await this.db.label.update({ where: { id: labelId }, data });
 	}
 	async deleteWorkspaceLabel({
 		workspaceId,
