@@ -139,10 +139,18 @@ func formatLog(log VercelLog) string {
 	logLevel := getLogLevel(log.Proxy.StatusCode)
 	coloredLogLevel := colorize(logLevel, log.Proxy.StatusCode)
 
+	// Extract message between START and END
+	message := log.Message
+	startIndex := strings.Index(message, "START")
+	endIndex := strings.LastIndex(message, "END")
+	if startIndex != -1 && endIndex != -1 && startIndex < endIndex {
+		message = message[startIndex:endIndex]
+	}
+
 	return fmt.Sprintf("%s %s %s",
 		timestamp.Format("Jan 02 15:04:05"),
 		coloredLogLevel,
-		log.Message)
+		message)
 }
 
 func getLogLevel(statusCode int) string {
