@@ -13,21 +13,38 @@ import (
 )
 
 type VercelLog struct {
-	ID        string    `json:"id"`
-	Timestamp int64     `json:"timestamp"`
-	ProjectID string    `json:"projectId"`
-	Message   string    `json:"message"`
-	Proxy     ProxyInfo `json:"proxy"`
+	ID           string    `json:"id"`
+	Timestamp    int64     `json:"timestamp"`
+	RequestID    string    `json:"requestId"`
+	Message      string    `json:"message"`
+	Proxy        ProxyInfo `json:"proxy"`
+	ProjectID    string    `json:"projectId"`
+	DeploymentID string    `json:"deploymentId"`
+	Source       string    `json:"source"`
+	Host         string    `json:"host"`
+	Path         string    `json:"path"`
+	JA4Digest    string    `json:"ja4Digest"`
 }
 
 type ProxyInfo struct {
-	StatusCode int `json:"statusCode"`
+	Timestamp  int64    `json:"timestamp"`
+	Region     string   `json:"region"`
+	Method     string   `json:"method"`
+	StatusCode int      `json:"statusCode"`
+	Referer    string   `json:"referer"`
+	Path       string   `json:"path"`
+	Host       string   `json:"host"`
+	Scheme     string   `json:"scheme"`
+	ClientIP   string   `json:"clientIp"`
+	UserAgent  []string `json:"userAgent"`
+	WAFAction  string   `json:"wafAction"`
+	WAFRuleID  string   `json:"wafRuleId"`
 }
 
 const (
 	vercelVerificationHeader = "X-Vercel-Verify-Request"
-	infoColor                = "\x1b[38;2;99;101;12m"
-	errorColor               = "\x1b[38;2;220;50;47m"
+	infoColor                = "\x1b[32m" // Green
+	errorColor               = "\x1b[31m" // Red
 	resetColor               = "\x1b[0m"
 )
 
@@ -81,8 +98,6 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 		return
 	}
 
-	log.Printf("Request body: %s", string(body))
-
 	var logs []VercelLog
 	err = json.Unmarshal(body, &logs)
 	if err != nil {
@@ -100,7 +115,9 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 
 	for _, logEntry := range logs {
 		formattedLog := formatLog(logEntry)
-		err = sendToPapertrail(papertrailAddr, formattedLog)
+		domain := os.Getenv("DOMAIN")
+		appName := strings.Split(logEntry.Host, "."+domain)[0]
+		err = sendToPapertrail(papertrailAddr, formattedLog, appName)
 		if err != nil {
 			log.Printf("Error sending log to Papertrail: %v", err)
 		}
@@ -118,16 +135,21 @@ func getPapertrailAddr(isStaging bool) string {
 
 func formatLog(log VercelLog) string {
 	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
-	appName := "my-app" // You might want to make this configurable
 	logLevel := getLogLevel(log.Proxy.StatusCode)
 	coloredLogLevel := colorize(logLevel, log.Proxy.StatusCode)
 
-	return fmt.Sprintf("%s %s %s [%s] %s",
-		appName,
+	// Extract message between START and END
+	message := log.Message
+	startIndex := strings.Index(message, "START")
+	endIndex := strings.LastIndex(message, "END")
+	if startIndex != -1 && endIndex != -1 && startIndex < endIndex {
+		message = message[startIndex:endIndex]
+	}
+
+	return fmt.Sprintf("%s %s %s",
 		timestamp.Format("Jan 02 15:04:05"),
 		coloredLogLevel,
-		appName,
-		log.Message)
+		message)
 }
 
 func getLogLevel(statusCode int) string {
@@ -144,14 +166,23 @@ func colorize(logLevel string, statusCode int) string {
 	return fmt.Sprintf("%s%s%s", infoColor, logLevel, resetColor)
 }
 
-func sendToPapertrail(addr string, message string) error {
+func sendToPapertrail(addr string, message string, program string) error {
 	conn, err := net.Dial("udp", addr)
 	if err != nil {
 		return fmt.Errorf("error connecting to Papertrail: %v", err)
 	}
 	defer conn.Close()
 
-	_, err = fmt.Fprintf(conn, "%s", message)
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "unknown"
+	}
+
+	timestamp := time.Now().Format(time.RFC3339)
+
+	syslogMessage := fmt.Sprintf("<%d>%s %s %s: %s", 22, timestamp, hostname, program, message)
+
+	_, err = fmt.Fprintf(conn, "%s", syslogMessage)
 	if err != nil {
 		return fmt.Errorf("error sending log to Papertrail: %v", err)
 	}
