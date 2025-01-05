@@ -11,7 +11,7 @@ export const LabelCustomizer = () => {
 	const { toast } = useToast();
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const { setShowLabelModal } = useModalStore((state) => state); // where did i put LabelModal?? and why???
-	console.log(workspace?.Labels);
+
 	const handleDelete = async (label: Label) => {
 		try {
 			const updatedWorkspace = await workspaceService.deleteWorkspaceLabel(

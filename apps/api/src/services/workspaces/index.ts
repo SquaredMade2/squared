@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import { z } from "zod";
-import { workspaceLabelSchema } from "../schema";
+import { labelSchema, workspaceLabelSchema } from "../schema";
 import type { WorkspaceParams, WorkspaceRpc } from "./types";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
@@ -74,6 +74,14 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		}),
 		output: z.void(),
 	},
+	updateWorkspaceLabel: {
+		input: z.object({
+			workspaceId: z.string(),
+			labelId: z.string(),
+			data: labelSchema,
+		}),
+		output: labelSchema,
+	},
 	deleteWorkspaceLabel: {
 		input: z.object({
 			workspaceId: z.string(),
@@ -97,6 +105,8 @@ export const createWorkspaceRpcHandler = (workspaceService: WorkspaceRpc) =>
 		removeUserFromWorkspace: (input) =>
 			workspaceService.removeUserFromWorkspace(input),
 		inviteToWorkspace: (input) => workspaceService.inviteToWorkspace(input),
+		updateWorkspaceLabel: (input) =>
+			workspaceService.updateWorkspaceLabel(input),
 		deleteWorkspaceLabel: (input) =>
 			workspaceService.deleteWorkspaceLabel(input),
 	});

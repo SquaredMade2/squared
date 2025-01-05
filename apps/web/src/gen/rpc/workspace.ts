@@ -157,6 +157,26 @@ export type InviteToWorkspaceRequest = {
 	workspaceId: string;
 };
 
+export type UpdateWorkspaceLabelRequest = {
+	data: {
+		color: string;
+		description: string | null;
+		id: string;
+		name: string;
+		workspaceId: string;
+	};
+	labelId: string;
+	workspaceId: string;
+};
+
+export type UpdateWorkspaceLabelResponse = {
+	color: string;
+	description: string | null;
+	id: string;
+	name: string;
+	workspaceId: string;
+};
+
 export type DeleteWorkspaceLabelRequest = {
 	labelId: string;
 	workspaceId: string;
@@ -273,6 +293,16 @@ export class WorkspaceService extends RPCContextClient {
 		req: InviteToWorkspaceRequest,
 	): Promise<void> {
 		return this.request(ctx, "inviteToWorkspace", req);
+	}
+
+	/**
+	 * updateWorkspaceLabel method
+	 */
+	updateWorkspaceLabel(
+		ctx: Context,
+		req: UpdateWorkspaceLabelRequest,
+	): Promise<UpdateWorkspaceLabelResponse> {
+		return this.request(ctx, "updateWorkspaceLabel", req);
 	}
 
 	/**
