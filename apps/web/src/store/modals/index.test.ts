@@ -13,23 +13,27 @@ describe("ModalStore", () => {
 		const state = store.getState();
 		expect(state).toEqual({
 			showNewTask: false,
-			showCommand: false,
+			newTaskData: {},
 			showRename: false,
 			renameData: null,
+			showLabelModal: false,
+			labelData: {},
+			showCommand: false,
 			showWorkspaceInvite: false,
 			showSwitchWorkspace: false,
 			showTaskSelector: false,
 			showLinkForm: false,
-			newTaskData: {},
-			setShowLinkForm: expect.any(Function),
 			setShowNewTask: expect.any(Function),
+			setNewTaskData: expect.any(Function),
 			setShowRename: expect.any(Function),
 			setRenameData: expect.any(Function),
-			setNewTaskData: expect.any(Function),
+			setShowLabelModal: expect.any(Function),
+			setLabelData: expect.any(Function),
 			setShowCommand: expect.any(Function),
 			setShowWorkspaceInvite: expect.any(Function),
 			setShowSwitchWorkspace: expect.any(Function),
 			setShowTaskSelector: expect.any(Function),
+			setShowLinkForm: expect.any(Function),
 		});
 	});
 
