@@ -100,9 +100,9 @@ function SettingsNavbarContent() {
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo(`${workspace?.url}/admin`)}
+										onClick={() => navigateTo(`${workspace?.url}/labels`)}
 									>
-										Admin Tools
+										Labels
 									</Button>
 								</div>
 							</div>
