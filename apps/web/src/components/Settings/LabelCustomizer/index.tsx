@@ -14,7 +14,6 @@ export const LabelCustomizer = () => {
 	console.log(workspace?.Labels);
 	const handleDelete = async (label: Label) => {
 		try {
-			console.log("deleting label");
 			const updatedWorkspace = await workspaceService.deleteWorkspaceLabel(
 				TODO,
 				{
@@ -23,7 +22,6 @@ export const LabelCustomizer = () => {
 				},
 			);
 			setWorkspace(updatedWorkspace);
-			console.log("success");
 			toast({
 				title: "Label deleted",
 				description: `${label.name} has been successfully deleted.`,

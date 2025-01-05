@@ -315,7 +315,7 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		const labelExists = workspace.Labels.some((label) => label.id === labelId);
 		if (!labelExists) this.throwError("Label not found.");
-
+		await this.deleteLabelFromTasks(labelId, workspaceId);
 		await this.db.label.delete({ where: { id: labelId } });
 
 		const updatedWorkspace = await this.db.workspace.findUnique({
@@ -383,6 +383,19 @@ export class WorkspaceService implements WorkspaceRpc {
 			await this.db.user.update({
 				where: { id: user.id },
 				data: { onBoarding: false, verified: true },
+			});
+		}
+	}
+	private async deleteLabelFromTasks(labelId: string, workspaceId: string) {
+		const tasks = await this.db.task.findMany({
+			where: { workspaceId, labels: { has: labelId } },
+		});
+
+		for (const task of tasks) {
+			const updatedLabels = task.labels.filter((id) => id !== labelId);
+			await this.db.task.update({
+				where: { id: task.id },
+				data: { labels: { set: updatedLabels } },
 			});
 		}
 	}
