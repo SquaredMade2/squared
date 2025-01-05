@@ -43,8 +43,8 @@ type ProxyInfo struct {
 
 const (
 	vercelVerificationHeader = "X-Vercel-Verify-Request"
-	infoColor                = "\x1b[38;2;99;101;12m"
-	errorColor               = "\x1b[38;2;220;50;47m"
+	infoColor                = "\x1b[32m" // Green
+	errorColor               = "\x1b[31m" // Red
 	resetColor               = "\x1b[0m"
 )
 
@@ -106,7 +106,7 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 		return
 	}
 
-	papertrailAddr := "logs.papertrailapp.com:35736"
+	papertrailAddr := getPapertrailAddr(isStaging)
 	if papertrailAddr == "" {
 		log.Printf("No Papertrail address found")
 		http.Error(w, "No Papertrail address configured", http.StatusInternalServerError)
