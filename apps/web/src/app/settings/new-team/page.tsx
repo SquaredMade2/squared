@@ -1,5 +1,4 @@
 "use client";
-import { useUserStore } from "@/store";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +23,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { teamService } from "@/lib/services";
+import { useUserStore } from "@/store";
 import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
@@ -85,10 +85,6 @@ export default function CreateTeam() {
 				name: values.teamName.trim(),
 				identifier: values.teamIdentifier.toUpperCase(),
 				workspaceId: workspace.id,
-			});
-
-			await teamService.addUserToTeam(TODO, {
-				teamId: createdTeamService.id,
 				userId: user.id,
 			});
 

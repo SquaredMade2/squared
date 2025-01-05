@@ -1,4 +1,4 @@
-import type { PrismaClient, Team } from "@squared/db";
+import type { PrismaClient, Team, UserTeam } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type {
@@ -21,7 +21,11 @@ export class TeamService implements TeamRpc {
 		name,
 		identifier,
 		workspaceId,
-	}: CreateTeamParams): Promise<Team> {
+		userId,
+	}: CreateTeamParams): Promise<{
+		createdTeam: Team;
+		userTeam: UserTeam;
+	}> {
 		this.logger.info("Creating team: %0", { name, identifier, workspaceId });
 		const existingTeam = await this.db.team.findFirst({
 			where: { identifier },
@@ -31,13 +35,22 @@ export class TeamService implements TeamRpc {
 			throw new Error("Team already exists");
 		}
 
-		return await this.db.team.create({
+		const createdTeam = await this.db.team.create({
 			data: {
 				name,
 				identifier,
 				workspaceId,
 			},
 		});
+
+		const userTeam = await this.db.userTeam.create({
+			data: {
+				userId,
+				teamId: createdTeam.id,
+			},
+		});
+
+		return { createdTeam, userTeam };
 	}
 
 	async updateTeam({ id, ...args }: UpdateTeamParams): Promise<Team> {
@@ -91,20 +104,6 @@ export class TeamService implements TeamRpc {
 
 		return await this.db.team.findMany({
 			where: { workspaceId, id: { in: teamIds } },
-		});
-	}
-
-	async addUserToTeam({
-		userId,
-		teamId,
-	}: { userId: string; teamId: string }): Promise<void> {
-		this.logger.info("Adding user to team");
-
-		await this.db.userTeam.create({
-			data: {
-				userId,
-				teamId,
-			},
 		});
 	}
 

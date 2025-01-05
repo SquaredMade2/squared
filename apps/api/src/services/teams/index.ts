@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
-import { teamSchema } from "../schema";
+import { teamSchema, userTeamSchema } from "../schema";
 import type {
 	CreateTeamParams,
 	TeamRpc,
@@ -17,6 +17,7 @@ const createTeamParams = createSchema<CreateTeamParams>()(
 		name: z.string(),
 		identifier: z.string(),
 		workspaceId: z.string(),
+		userId: z.string(),
 	}),
 );
 
@@ -40,7 +41,10 @@ const updateTeamSprintsParams = createSchema<UpdateTeamSprintsParams>()(
 );
 
 export const teamRpcSchema = createServiceSchema<TeamRpc>()({
-	createTeam: { input: createTeamParams, output: teamSchema },
+	createTeam: {
+		input: createTeamParams,
+		output: z.object({ createdTeam: teamSchema, userTeam: userTeamSchema }),
+	},
 	updateTeam: { input: updateTeamParams, output: teamSchema },
 	updateTeamSprints: { input: updateTeamSprintsParams, output: teamSchema },
 	deleteTeam: { input: z.object({ teamId: z.string() }), output: z.void() },
@@ -55,10 +59,6 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 	getUserTeams: {
 		input: z.object({ userId: z.string(), workspaceId: z.string() }),
 		output: z.array(teamSchema),
-	},
-	addUserToTeam: {
-		input: z.object({ userId: z.string(), teamId: z.string() }),
-		output: z.void(),
 	},
 	removeUserFromTeam: {
 		input: z.object({ userId: z.string(), teamId: z.string() }),
@@ -77,7 +77,6 @@ export const createTeamRpcHandler = (teamService: TeamRpc) =>
 		getTeam: (input) => teamService.getTeam(input),
 		getTeamByIdentifier: (input) => teamService.getTeamByIdentifier(input),
 		getUserTeams: (input) => teamService.getUserTeams(input),
-		addUserToTeam: (input) => teamService.addUserToTeam(input),
 		removeUserFromTeam: (input) => teamService.removeUserFromTeam(input),
 	});
 
