@@ -27,10 +27,17 @@ import { useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
+import { ChevronDown } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
@@ -145,6 +152,9 @@ export function AssignTasksDialog({
 			});
 	}, [unassignedTasks, searchQuery, filterPriority, filterStatus, filterLabel]);
 
+	// todo add sorting options here
+
+	// add ordering and sorting and ascending/descending
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
@@ -160,12 +170,12 @@ export function AssignTasksDialog({
 				<div className="flex flex-col gap-4 px-6 flex-grow overflow-hidden">
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
 						<div className="flex items-center gap-2 w-full mt-2">
-							<Label
+							{/* <Label
 								htmlFor="sprint"
 								className="whitespace-nowrap ml-auto hidden sm:block"
 							>
 								Sprint
-							</Label>
+							</Label> */}
 							<Select
 								onValueChange={setTargetSprint}
 								defaultValue={selectedSprintId}
@@ -184,17 +194,46 @@ export function AssignTasksDialog({
 									)}
 								</SelectContent>
 							</Select>
+							<Input
+								placeholder="Search tasks..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								className="flex-grow"
+							/>
 						</div>
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-						<Input
-							placeholder="Search tasks..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="flex-grow"
-						/>
-
 						<div className="flex items-center gap-2 w-full sm:w-auto">
+							<span className="text-xs text-foreground">Ordering</span>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant="outline"
+										size="sm"
+										className="w-[120px] justify-between"
+									>
+										<span className="text-xs">{taskOrder.orderBy}</span>
+										<ChevronDown className="size-4" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent className="w-[120px]">
+									{orderByOptions
+										.filter((option) => option !== groupTasksBy)
+										.map((option) => (
+											<DropdownMenuItem
+												key={option}
+												className="text-xs"
+												onSelect={() =>
+													setOptions({
+														taskOrder: { ...taskOrder, orderBy: option },
+													})
+												}
+											>
+												{option}
+											</DropdownMenuItem>
+										))}
+								</DropdownMenuContent>
+							</DropdownMenu>
 							<Select
 								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}
