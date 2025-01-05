@@ -5,13 +5,13 @@ import {
 	ChevronLeft,
 	CircleUser,
 	Moon,
-	Plus,
 	Sun,
 	Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
+import AddTeamButton from "@/components/Buttons/AddTeamButton";
 import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
 import {
 	Accordion,
@@ -164,14 +164,9 @@ function SettingsNavbarContent() {
 										</AccordionItem>
 									))}
 								</Accordion>
-								<Button
-									variant="ghost"
-									className="w-full justify-start mt-2 ml-6"
-									onClick={() => navigateTo("new-team")}
-								>
-									<Plus className="mr-2 h-4 w-4" />
-									Add team
-								</Button>
+								<div className="ml-6">
+									<AddTeamButton />
+								</div>
 							</div>
 						</div>
 					</div>
