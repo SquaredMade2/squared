@@ -14,7 +14,7 @@ export const passwordResetTemplate = (path: string) => {
         .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
         .header { background-color: #174EFF; padding: 20px; text-align: center; }
         .content { padding: 30px; color: #333333; }
-        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff !important; text-decoration: none; border-radius: 4px; font-weight: bold; }
         .footer { background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
       </style>
     </head>
@@ -66,7 +66,7 @@ export const joinWorkspaceTemplate = ({
         .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
         .header { background-color: #174EFF; padding: 20px; text-align: center; }
         .content { padding: 30px; color: #333333; }
-        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff !important; text-decoration: none; border-radius: 4px; font-weight: bold; }
         .footer { background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
       </style>
     </head>
@@ -109,7 +109,7 @@ export const verifyEmailTemplate = (path: string) => {
         .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
         .header { background-color: #174EFF; padding: 20px; text-align: center; }
         .content { padding: 30px; color: #333333; }
-        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #174EFF; color: #ffffff !important; text-decoration: none; border-radius: 4px; font-weight: bold; }
         .footer { background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
       </style>
     </head>
