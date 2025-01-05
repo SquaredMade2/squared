@@ -293,20 +293,29 @@ export class WorkspaceService implements WorkspaceRpc {
 		data,
 	}: { workspaceId: string; labelId: string; data: LabelParams }) {
 		this.logger.info("Updating workspace label");
+
 		const workspace = await this.db.workspace.findUnique({
 			where: { id: workspaceId },
 			include: { Labels: true },
 		});
 		if (!workspace) this.throwError("Workspace not found.");
+
 		const labelExists = workspace.Labels.some((label) => label.id === labelId);
 		if (!labelExists) this.throwError("Label not found in workspace.");
-		return await this.db.label.update({ where: { id: labelId }, data });
+
+		await this.db.label.update({ where: { id: labelId }, data });
+
+		const updatedWorkspace = await this.getWorkspace({ workspaceId });
+		if (!updatedWorkspace) this.throwError("Workspace not found.");
+
+		return updatedWorkspace;
 	}
 	async deleteWorkspaceLabel({
 		workspaceId,
 		labelId,
 	}: { workspaceId: string; labelId: string }) {
 		this.logger.info("Deleting workspace label");
+
 		const workspace = await this.db.workspace.findUnique({
 			where: { id: workspaceId },
 			include: { Labels: true },
@@ -315,13 +324,15 @@ export class WorkspaceService implements WorkspaceRpc {
 
 		const labelExists = workspace.Labels.some((label) => label.id === labelId);
 		if (!labelExists) this.throwError("Label not found.");
+
 		await this.deleteLabelFromTasks(labelId, workspaceId);
 		await this.db.label.delete({ where: { id: labelId } });
 
 		const updatedWorkspace = await this.getWorkspace({
-			workspaceId: workspaceId,
+			workspaceId,
 		});
 		if (!updatedWorkspace) this.throwError("Workspace not found.");
+
 		return updatedWorkspace;
 	}
 	private verifyToken(token: string): string | null {

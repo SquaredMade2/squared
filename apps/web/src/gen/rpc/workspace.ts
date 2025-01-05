@@ -170,11 +170,21 @@ export type UpdateWorkspaceLabelRequest = {
 };
 
 export type UpdateWorkspaceLabelResponse = {
-	color: string;
-	description: string | null;
+	Labels: {
+		color: string;
+		description: string | null;
+		id: string;
+		name: string;
+		workspaceId: string;
+	}[];
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
 	id: string;
 	name: string;
-	workspaceId: string;
+	tasksCreated: number;
+	universalTokenLinkId: string | null;
+	url: string;
 };
 
 export type DeleteWorkspaceLabelRequest = {

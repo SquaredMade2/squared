@@ -52,7 +52,7 @@ export interface WorkspaceRpc {
 		workspaceId: string;
 		labelId: string;
 		data: LabelParams;
-	}) => Promise<Label>;
+	}) => Promise<WorkspaceLabels>;
 	deleteWorkspaceLabel: (args: {
 		workspaceId: string;
 		labelId: string;
