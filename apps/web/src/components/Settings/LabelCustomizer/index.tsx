@@ -24,7 +24,7 @@ export const LabelCustomizer = () => {
 			setWorkspace(updatedWorkspace);
 			toast({
 				title: "Label deleted",
-				description: `${label.name} has been successfully deleted.`,
+				description: `"${label.name}" label has been successfully deleted.`,
 			});
 		} catch (error) {
 			toast({
