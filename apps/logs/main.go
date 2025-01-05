@@ -98,8 +98,6 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 		return
 	}
 
-	log.Printf("Request body: %s", string(body))
-
 	var logs []VercelLog
 	err = json.Unmarshal(body, &logs)
 	if err != nil {
@@ -108,7 +106,7 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 		return
 	}
 
-	papertrailAddr := getPapertrailAddr(isStaging)
+	papertrailAddr := "logs.papertrailapp.com:35736"
 	if papertrailAddr == "" {
 		log.Printf("No Papertrail address found")
 		http.Error(w, "No Papertrail address configured", http.StatusInternalServerError)
@@ -117,7 +115,9 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 
 	for _, logEntry := range logs {
 		formattedLog := formatLog(logEntry)
-		err = sendToPapertrail(papertrailAddr, formattedLog)
+		domain := os.Getenv("DOMAIN")
+		appName := strings.Split(logEntry.Host, "."+domain)[0]
+		err = sendToPapertrail(papertrailAddr, formattedLog, appName)
 		if err != nil {
 			log.Printf("Error sending log to Papertrail: %v", err)
 		}
@@ -127,6 +127,7 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 }
 
 func getPapertrailAddr(isStaging bool) string {
+	fmt.Printf("isStaging: %v\n", isStaging)
 	if isStaging {
 		return os.Getenv("STAGING_PAPERTRAIL_URL")
 	}
@@ -135,16 +136,12 @@ func getPapertrailAddr(isStaging bool) string {
 
 func formatLog(log VercelLog) string {
 	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
-	domain := os.Getenv("DOMAIN")
-	appName := strings.Split(log.Host, "."+domain)[0]
 	logLevel := getLogLevel(log.Proxy.StatusCode)
 	coloredLogLevel := colorize(logLevel, log.Proxy.StatusCode)
 
-	return fmt.Sprintf("%s %s %s [%s] %s",
-		appName,
+	return fmt.Sprintf("%s %s %s",
 		timestamp.Format("Jan 02 15:04:05"),
 		coloredLogLevel,
-		appName,
 		log.Message)
 }
 
@@ -162,14 +159,23 @@ func colorize(logLevel string, statusCode int) string {
 	return fmt.Sprintf("%s%s%s", infoColor, logLevel, resetColor)
 }
 
-func sendToPapertrail(addr string, message string) error {
+func sendToPapertrail(addr string, message string, program string) error {
 	conn, err := net.Dial("udp", addr)
 	if err != nil {
 		return fmt.Errorf("error connecting to Papertrail: %v", err)
 	}
 	defer conn.Close()
 
-	_, err = fmt.Fprintf(conn, "%s", message)
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "unknown"
+	}
+
+	timestamp := time.Now().Format(time.RFC3339)
+
+	syslogMessage := fmt.Sprintf("<%d>%s %s %s: %s", 22, timestamp, hostname, program, message)
+
+	_, err = fmt.Fprintf(conn, "%s", syslogMessage)
 	if err != nil {
 		return fmt.Errorf("error sending log to Papertrail: %v", err)
 	}
