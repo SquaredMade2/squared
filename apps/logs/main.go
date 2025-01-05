@@ -127,7 +127,6 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 }
 
 func getPapertrailAddr(isStaging bool) string {
-	fmt.Printf("isStaging: %v\n", isStaging)
 	if isStaging {
 		return os.Getenv("STAGING_PAPERTRAIL_URL")
 	}
