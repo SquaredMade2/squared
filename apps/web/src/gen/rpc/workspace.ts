@@ -182,6 +182,24 @@ export type DeleteWorkspaceLabelRequest = {
 	workspaceId: string;
 };
 
+export type DeleteWorkspaceLabelResponse = {
+	Labels: {
+		color: string;
+		description: string | null;
+		id: string;
+		name: string;
+		workspaceId: string;
+	}[];
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	id: string;
+	name: string;
+	tasksCreated: number;
+	universalTokenLinkId: string | null;
+	url: string;
+};
+
 /**
  * workspace service
  */
@@ -293,7 +311,7 @@ export class WorkspaceService extends RPCContextClient {
 	deleteWorkspaceLabel(
 		ctx: Context,
 		req: DeleteWorkspaceLabelRequest,
-	): Promise<void> {
+	): Promise<DeleteWorkspaceLabelResponse> {
 		return this.request(ctx, "deleteWorkspaceLabel", req);
 	}
 }

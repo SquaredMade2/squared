@@ -56,5 +56,5 @@ export interface WorkspaceRpc {
 	deleteWorkspaceLabel: (args: {
 		workspaceId: string;
 		labelId: string;
-	}) => Promise<void>;
+	}) => Promise<WorkspaceLabels>;
 }

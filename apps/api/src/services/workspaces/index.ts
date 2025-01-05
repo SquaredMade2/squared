@@ -87,7 +87,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 			workspaceId: z.string(),
 			labelId: z.string(),
 		}),
-		output: z.void(),
+		output: workspaceLabelSchema,
 	},
 });
 

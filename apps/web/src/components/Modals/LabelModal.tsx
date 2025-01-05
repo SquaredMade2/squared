@@ -49,30 +49,32 @@ export const LabelModal = () => {
 			<DialogContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleLabelSubmit)}>
-						<FormField
-							control={form.control}
-							name="name"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Label Name</FormLabel>
-									<FormControl>
-										<Input {...field} placeholder="Label Name" />
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="description"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Label Description</FormLabel>
-									<FormControl>
-										<Input {...field} placeholder="Label Description" />
-									</FormControl>
-								</FormItem>
-							)}
-						/>
+						<div className="flex">
+							<FormField
+								control={form.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Label Name</FormLabel>
+										<FormControl>
+											<Input {...field} placeholder="Label Name" />
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="description"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Label Description</FormLabel>
+										<FormControl>
+											<Input {...field} placeholder="Label Description" />
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
 						<DialogFooter>
 							<Button
 								onClick={handleDiscard}

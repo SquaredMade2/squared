@@ -22,13 +22,12 @@ import type { Label } from "@squared/db";
 import { Ellipsis } from "lucide-react";
 import { useState } from "react";
 
-export const LabelItem = ({ label }: { label: Label }) => {
+export const LabelItem = ({
+	label,
+	handleDelete,
+}: { label: Label; handleDelete: (label: Label) => Promise<void> }) => {
 	const { setShowLabelModal, setLabelData } = useModalStore((state) => state);
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-
-	const handleDelete = () => {
-		console.log(label);
-	};
 
 	const handleEdit = () => {
 		setLabelData(label);
@@ -77,9 +76,9 @@ export const LabelItem = ({ label }: { label: Label }) => {
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							className={buttonVariants({ variant: "destructive" })}
-							onClick={handleDelete}
+							onClick={() => handleDelete(label)}
 						>
-							Delete Task
+							Delete Label
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

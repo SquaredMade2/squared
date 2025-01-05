@@ -312,10 +312,18 @@ export class WorkspaceService implements WorkspaceRpc {
 			include: { Labels: true },
 		});
 		if (!workspace) this.throwError("Workspace not found.");
+
 		const labelExists = workspace.Labels.some((label) => label.id === labelId);
 		if (!labelExists) this.throwError("Label not found.");
 
 		await this.db.label.delete({ where: { id: labelId } });
+
+		const updatedWorkspace = await this.db.workspace.findUnique({
+			where: { id: workspaceId },
+			include: { Labels: true },
+		});
+		if (!updatedWorkspace) this.throwError("Workspace not found.");
+		return updatedWorkspace;
 	}
 	private verifyToken(token: string): string | null {
 		try {
