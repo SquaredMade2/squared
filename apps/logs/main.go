@@ -143,7 +143,8 @@ func formatLog(log VercelLog) string {
 	startIndex := strings.Index(message, "START")
 	endIndex := strings.LastIndex(message, "END")
 	if startIndex != -1 && endIndex != -1 && startIndex < endIndex {
-		message = message[startIndex:endIndex]
+		startIndex = startIndex + len("START")
+		message = strings.TrimSpace(message[startIndex:endIndex])
 	}
 
 	return fmt.Sprintf("%s %s %s",
