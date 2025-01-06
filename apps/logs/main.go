@@ -55,7 +55,7 @@ type LogLevel string
 
 const (
 	LogLevelError LogLevel = "error"
-	LogLevelWarn  LogLevel = "warn"
+	LogLevelWarn  LogLevel = "warning"
 	LogLevelInfo  LogLevel = "info"
 )
 
@@ -156,6 +156,9 @@ func formatLog(log VercelLog) string {
 		startIndex = startIndex + len("START")
 		message = strings.TrimSpace(message[startIndex:endIndex])
 	}
+
+	parts := strings.Split(message, "\n")
+	message = strings.Join(parts[1:], "\n")
 
 	return fmt.Sprintf("%s %s %s",
 		timestamp.Format("Jan 02 15:04:05"),
