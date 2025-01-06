@@ -40,7 +40,7 @@ export class TeamService implements TeamRpc {
 			},
 		});
 
-		await this.db.userTeam.create({
+		this.db.userTeam.create({
 			data: {
 				userId,
 				teamId: createdTeam.id,
