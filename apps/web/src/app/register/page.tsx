@@ -68,7 +68,7 @@ function RegisterForm() {
 				password: values.password,
 				inviteToken,
 			});
-
+ 
 			const { verified, title } = await res.json();
 
 			if (verified && inviteToken) {
