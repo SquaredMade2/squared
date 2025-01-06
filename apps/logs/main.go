@@ -157,8 +157,12 @@ func formatLog(log VercelLog) string {
 		message = strings.TrimSpace(message[startIndex:endIndex])
 	}
 
-	parts := strings.Split(message, "\n")
-	message = strings.Join(parts[1:], "\n")
+	if log.Level == "info" {
+		parts := strings.Split(message, "\n")
+		if len(parts) > 1 {
+			message = strings.Join(parts[1:], "\n")
+		}
+	}
 
 	return fmt.Sprintf("%s %s %s",
 		timestamp.Format("Jan 02 15:04:05"),
