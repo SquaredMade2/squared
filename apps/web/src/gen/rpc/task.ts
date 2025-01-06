@@ -37,6 +37,7 @@ export type CreateTaskResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -88,6 +89,7 @@ export type UpdateTaskResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -125,6 +127,7 @@ export type GetTaskResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -159,6 +162,7 @@ export type GetTaskByIdentifierResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -240,6 +244,7 @@ export type ReorderSubtasksResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -296,7 +301,7 @@ export type AddPrerequisiteTaskRequest = {
 
 export type GetPrerequisiteTasksRequest = {
 	parentPrereqId: string;
- }
+};
 
 /**
  * task service
@@ -379,17 +384,20 @@ export class TaskService extends RPCContextClient {
 	): Promise<AddSprintTasksResponse> {
 		return this.request(ctx, "addSprintTasks", req);
 	}
-  /** 
+	/**
 	 * addPrerequisiteTask method
-	*/
+	 */
 	addPrerequisiteTask(
 		ctx: Context,
 		req: AddPrerequisiteTaskRequest,
-	): Promise<Task>{
+	): Promise<Task> {
 		return this.request(ctx, "addPrerequisiteTask", req);
 	}
 
-	getPrerequisiteTasks(ctx: Context, req: GetPrerequisiteTasksRequest): Promise<Task[]>{
+	getPrerequisiteTasks(
+		ctx: Context,
+		req: GetPrerequisiteTasksRequest,
+	): Promise<Task[]> {
 		return this.request(ctx, "getPrerequisiteTasks", req);
 	}
 
