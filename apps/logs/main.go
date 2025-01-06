@@ -55,7 +55,7 @@ type LogLevel string
 
 const (
 	LogLevelError LogLevel = "error"
-	LogLevelWarn  LogLevel = "warn"
+	LogLevelWarn  LogLevel = "warning"
 	LogLevelInfo  LogLevel = "info"
 )
 
