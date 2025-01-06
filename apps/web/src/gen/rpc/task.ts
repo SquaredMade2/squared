@@ -10,6 +10,7 @@ export type CreateTaskRequest = {
 	effortEstimate: number | null;
 	labels?: string[];
 	parentId?: string | null;
+	parentPrereqId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId?: string | null;
 	status?:
@@ -63,6 +64,7 @@ export type UpdateTaskRequest = {
 	id: string;
 	labels?: string[];
 	parentId?: string | null;
+	parentPrereqId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId?: string | null;
 	status?:
@@ -278,6 +280,7 @@ export type GetSubtasksResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:

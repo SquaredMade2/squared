@@ -93,6 +93,7 @@ export type GetSprintTasksResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
+	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
