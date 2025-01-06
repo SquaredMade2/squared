@@ -133,7 +133,7 @@ describe("FilterStore", () => {
 				teamId: "team-1",
 				workspaceId: "workspace-1",
 				type: "WORKSPACE",
-				sprintId:'new-sprint-id-123'
+				sprintId: "new-sprint-id-123",
 			};
 			store.setState({ savedFilters: [savedFilter] });
 			const newFilters: FilterCondition[] = [
