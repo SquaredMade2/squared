@@ -15,25 +15,6 @@ import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-// type ws = {
-// 	url: string;
-// 	id: string;
-// 	name: string;
-// 	companySize: number | null;
-// 	tasksCreated: number;
-// 	universalTokenLinkId: string | null;
-// 	avatarUrl: string | null;
-// 	admins: string[];
-// 	Labels: { 
-// 	  name: string; 
-// 	  id: string; 
-// 	  description: string | null; 
-// 	  color: string; 
-// 	  workspaceId: string; 
-// 	}[];
-//   };
-
-
 export function WorkspaceDropdown() {
 	const pathName = usePathname();
 	const router = useRouter();
