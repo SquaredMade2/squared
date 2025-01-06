@@ -321,6 +321,26 @@ export class TaskService implements TaskRpc {
 		});
 	}
 
+	async addPrerequisiteTask({parentPrereqId, taskId}: {parentPrereqId: string, taskId: string}): Promise<Task> {
+		// First, update all tasks to the prerequisite
+		const ParentPrerequisiteTask = await this.db.task.update({
+			where: {
+				id: taskId,
+			},
+			data: {
+				parentPrereqId,
+			},
+		});
+		return ParentPrerequisiteTask
+	}
+	
+	async getPrerequisiteTasks({ parentPrereqId }: { parentPrereqId: string }): Promise<Task[]> {
+		return await this.db.task.findMany({
+			where: { parentPrereqId },
+			orderBy: { order: "asc" },
+		});
+	}
+
 	private throwError(message: string): never {
 		this.logger.error(message);
 		throw new Error(message);
