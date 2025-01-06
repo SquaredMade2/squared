@@ -1,5 +1,6 @@
 import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { eventService, taskService } from "@/lib/services";
 import {
 	useEventStore,
@@ -11,9 +12,10 @@ import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { TODO } from "@squared/context";
-import type { Task, TaskEvent } from "@squared/db";
+import type { TaskEvent } from "@squared/db";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
@@ -22,117 +24,96 @@ import { Input } from "../ui/input";
 export const TaskPageForm = () => {
 	const { users, user } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const { updateTask, currentTask: task } = useTaskStore((state) => state);
+	const {
+		updateTask,
+		currentTask: task,
+		tasks,
+		setCurrentTask,
+	} = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 	const { toast } = useToast();
+	const queryClient = useQueryClient();
 
 	const [updatedTitle, setUpdatedTitle] = useState(task?.title ?? "");
 	const [updatedDescription, setUpdatedDescription] = useState(
 		task?.description ?? null,
 	);
 	const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
-	const [parentTask, setParentTask] = useState<Task | null>(null);
 
-	const { transformedInput: transformedTitleInput } = transformingMentionInputs(
-		updatedTitle ?? "",
-	);
-	const { transformedInput: transformedDescriptionInput } =
-		transformingMentionInputs(updatedDescription ?? "");
+	const parentTask = tasks.find((t) => t.id === task?.parentId);
+
+	const updateTaskMutation = useMutation({
+		mutationFn: async (data: { title?: string; description?: string }) => {
+			if (!task || !user) throw new Error("Task or user not found");
+			const res = await client.task.updateMetadata.$post({
+				taskId: task.id,
+				userId: user.id,
+				...data,
+			});
+			return res.json();
+		},
+		onSuccess: async (updatedTask) => {
+			const taskKey = updatedTitle ? "title" : "description";
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: updatedTask.id,
+					updaterId: user?.id || "",
+					[taskKey]: taskKey === "title" ? updatedTitle : updatedDescription,
+				}),
+			);
+			setCurrentTask(updatedTask);
+
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: updatedTask.id,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
+			queryClient.invalidateQueries({ queryKey: ["taskEvents", task?.id] });
+			toast({ title: "Task updated successfully" });
+		},
+		onError: (error) => {
+			toast({
+				title: "Error updating task",
+				description:
+					error instanceof Error ? error.message : "An unknown error occurred",
+				variant: "destructive",
+			});
+		},
+	});
 
 	const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setUpdatedTitle(e.target.value);
 	};
+
 	const handleDescriptionChange: OnChangeHandlerFunc = (e) => {
 		setUpdatedDescription(e.target.value);
 	};
 
 	const handleSubmit = async (e: FormEvent) => {
+		e.preventDefault();
 		setIsDescriptionFocused(false);
-		const changeMade: boolean =
+		const { transformedInput: transformedTitleInput } =
+			transformingMentionInputs(updatedTitle);
+		const { transformedInput: transformedDescriptionInput } =
+			transformingMentionInputs(updatedDescription ?? "");
+
+		const changeMade =
 			updatedTitle !== task?.title || updatedDescription !== task?.description;
-		const titleChanged: boolean = updatedTitle !== task?.title;
-		const descriptionChanged: boolean =
-			updatedDescription !== task?.description;
-		if (changeMade && task?.id !== undefined) {
-			if (task) {
-				try {
-					const updatedTask = await taskService.updateTask(TODO, {
-						id: task.id,
-						updaterId: user?.id || "",
-						title: transformedTitleInput,
-						description: transformedDescriptionInput,
-					});
-
-					updateTask(updatedTask);
-
-					const updatedEvents = await eventService.getTaskEvents(TODO, {
-						taskId: task.id,
-					});
-
-					// TODO: Will remove type coercion once commits are implemented
-					setEvents(updatedEvents as TaskEvent[]);
-
-					if (
-						titleChanged &&
-						e.target instanceof HTMLInputElement &&
-						e.target.name === "title"
-					) {
-						toast({ title: "Title updated successfully" });
-					}
-
-					if (
-						descriptionChanged &&
-						e.target instanceof HTMLTextAreaElement &&
-						e.target.name === "editDescription"
-					) {
-						toast({ title: "Description updated successfully" });
-					}
-				} catch (error) {
-					toast({
-						title: "Error updating task",
-						description: error instanceof Error && error.message,
-					});
-				}
-			}
+		if (changeMade && task?.id) {
+			updateTaskMutation.mutate({
+				title: transformedTitleInput,
+				description: transformedDescriptionInput,
+			});
 		}
 	};
-
-	useEffect(() => {
-		if (task) {
-			setUpdatedTitle(task.title);
-			setUpdatedDescription(task.description);
-		}
-	}, [task]);
-
-	useEffect(() => {
-		const fetchParentTask = async () => {
-			if (task?.parentId) {
-				try {
-					const parentTaskData = await taskService.getTask(TODO, {
-						taskId: task.parentId,
-					});
-					setParentTask(parentTaskData);
-				} catch (error) {
-					toast({
-						title: "Error retrieving task",
-						description: error instanceof Error && error.message,
-					});
-				}
-			} else {
-				setParentTask(null);
-			}
-		};
-
-		fetchParentTask();
-	}, [task?.parentId]);
 
 	return (
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
 			<div className="space-y-2">
 				<Input
 					className="mt-2 text-foreground text-3xl font-bold bg-background rounded-lg focus:outline-none"
-					value={updatedTitle ?? ""}
-					onChange={(e) => handleTitleChange(e)}
+					value={updatedTitle}
+					onChange={handleTitleChange}
 					onBlur={handleSubmit}
 					placeholder="Title"
 					name="title"

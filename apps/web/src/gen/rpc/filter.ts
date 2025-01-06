@@ -44,6 +44,7 @@ export type CreateFilterRequest = {
 			| string[];
 	}[];
 	name: string;
+	sprintId: string | null;
 	teamId: string;
 };
 
@@ -90,6 +91,7 @@ export type CreateFilterResponse = {
 	}[];
 	id: string;
 	name: string;
+	sprintId: string | null;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
 	workspaceId: string | null;
@@ -142,6 +144,7 @@ export type GetFiltersResponse = {
 	}[];
 	id: string;
 	name: string;
+	sprintId: string | null;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
 	workspaceId: string | null;
@@ -236,6 +239,7 @@ export type UpdateFilterResponse = {
 	}[];
 	id: string;
 	name: string;
+	sprintId: string | null;
 	teamId: string | null;
 	type: "TEAM" | "WORKSPACE";
 	workspaceId: string | null;
