@@ -1,4 +1,4 @@
-import type { PrismaClient, Team, UserTeam } from "@squared/db";
+import type { PrismaClient, Team } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type {
@@ -22,10 +22,7 @@ export class TeamService implements TeamRpc {
 		identifier,
 		workspaceId,
 		userId,
-	}: CreateTeamParams): Promise<{
-		createdTeam: Team;
-		userTeam: UserTeam;
-	}> {
+	}: CreateTeamParams): Promise<Team> {
 		this.logger.info("Creating team: %0", { name, identifier, workspaceId });
 		const existingTeam = await this.db.team.findFirst({
 			where: { identifier },
@@ -43,14 +40,14 @@ export class TeamService implements TeamRpc {
 			},
 		});
 
-		const userTeam = await this.db.userTeam.create({
+		await this.db.userTeam.create({
 			data: {
 				userId,
 				teamId: createdTeam.id,
 			},
 		});
 
-		return { createdTeam, userTeam };
+		return createdTeam;
 	}
 
 	async updateTeam({ id, ...args }: UpdateTeamParams): Promise<Team> {

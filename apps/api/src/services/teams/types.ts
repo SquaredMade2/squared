@@ -1,4 +1,4 @@
-import type { Effort, Team, UserTeam } from "@squared/db";
+import type { Effort, Team } from "@squared/db";
 
 export type CreateTeamParams = {
 	name: string;
@@ -23,10 +23,7 @@ export type UpdateTeamSprintsParams = {
 };
 
 export interface TeamRpc {
-	createTeam: (args: CreateTeamParams) => Promise<{
-		createdTeam: Team;
-		userTeam: UserTeam;
-	}>;
+	createTeam: (args: CreateTeamParams) => Promise<Team>;
 	updateTeam: (args: UpdateTeamParams) => Promise<Team>;
 	updateTeamSprints: (args: UpdateTeamSprintsParams) => Promise<Team>;
 	deleteTeam: (args: { teamId: string }) => Promise<void>;

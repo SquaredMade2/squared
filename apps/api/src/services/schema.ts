@@ -7,7 +7,6 @@ import type {
 	Task,
 	Team,
 	User,
-	UserTeam,
 	Workspace,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
@@ -172,12 +171,5 @@ export const teamSchema = createSchema<Team>()(
 		sprintStartDate: z.date(),
 		tasksPerSprint: z.number(),
 		effort: z.enum(["LINEAR", "FIBONACCI", "EXPONENTIAL"]),
-	}),
-);
-
-export const userTeamSchema = createSchema<UserTeam>()(
-	z.object({
-		userId: z.string(),
-		teamId: z.string(),
 	}),
 );

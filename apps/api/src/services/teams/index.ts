@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import z from "zod";
-import { teamSchema, userTeamSchema } from "../schema";
+import { teamSchema } from "../schema";
 import type {
 	CreateTeamParams,
 	TeamRpc,
@@ -43,7 +43,7 @@ const updateTeamSprintsParams = createSchema<UpdateTeamSprintsParams>()(
 export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 	createTeam: {
 		input: createTeamParams,
-		output: z.object({ createdTeam: teamSchema, userTeam: userTeamSchema }),
+		output: teamSchema,
 	},
 	updateTeam: { input: updateTeamParams, output: teamSchema },
 	updateTeamSprints: { input: updateTeamSprintsParams, output: teamSchema },
