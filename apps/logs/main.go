@@ -24,6 +24,8 @@ type VercelLog struct {
 	Host         string    `json:"host"`
 	Path         string    `json:"path"`
 	JA4Digest    string    `json:"ja4Digest"`
+	Level        LogLevel  `json:"level"`
+	StatusCode   int       `json:"statusCode"`
 }
 
 type ProxyInfo struct {
@@ -45,7 +47,16 @@ const (
 	vercelVerificationHeader = "X-Vercel-Verify-Request"
 	infoColor                = "\x1b[32m" // Green
 	errorColor               = "\x1b[31m" // Red
+	warnColor                = "\x1b[33m" // Yellow
 	resetColor               = "\x1b[0m"
+)
+
+type LogLevel string
+
+const (
+	LogLevelError LogLevel = "error"
+	LogLevelWarn  LogLevel = "warn"
+	LogLevelInfo  LogLevel = "info"
 )
 
 func main() {
@@ -135,8 +146,7 @@ func getPapertrailAddr(isStaging bool) string {
 
 func formatLog(log VercelLog) string {
 	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
-	logLevel := getLogLevel(log.Proxy.StatusCode)
-	coloredLogLevel := colorize(logLevel, log.Proxy.StatusCode)
+	coloredLogLevel := colorize(log.Level)
 
 	// Extract message between START and END
 	message := log.Message
@@ -153,18 +163,19 @@ func formatLog(log VercelLog) string {
 		message)
 }
 
-func getLogLevel(statusCode int) string {
-	if statusCode >= 400 {
-		return "error:"
+func getColorForLevel(level LogLevel) string {
+	switch level {
+	case LogLevelError:
+		return errorColor
+	case LogLevelWarn:
+		return warnColor
+	default:
+		return infoColor
 	}
-	return "info:"
 }
 
-func colorize(logLevel string, statusCode int) string {
-	if statusCode >= 400 {
-		return fmt.Sprintf("%s%s%s", errorColor, logLevel, resetColor)
-	}
-	return fmt.Sprintf("%s%s%s", infoColor, logLevel, resetColor)
+func colorize(level LogLevel) string {
+	return fmt.Sprintf("%s%s:%s", getColorForLevel(level), level, resetColor)
 }
 
 func sendToPapertrail(addr string, message string, program string) error {
