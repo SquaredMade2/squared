@@ -173,7 +173,9 @@ export class TaskService implements TaskRpc {
 		return task;
 	}
 
-	async deleteTask({ taskId }: { taskId: string }): Promise<void> {
+	async deleteTask({
+		taskId,
+	}: { taskId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Deleting task by ID: %s", taskId);
 		const task = await this.db.task.delete({
 			where: { id: taskId },
@@ -181,7 +183,7 @@ export class TaskService implements TaskRpc {
 		if (!task) {
 			this.throwError("There was an issue deleting the task");
 		}
-		return;
+		return { success: true };
 	}
 
 	async getTask({ taskId }: { taskId: string }): Promise<Task> {
