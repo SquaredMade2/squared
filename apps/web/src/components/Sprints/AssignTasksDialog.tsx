@@ -24,6 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
+import { type TaskOrder, TaskOrderOptions, useViewStore } from "@/store/views";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
@@ -68,9 +69,16 @@ export function AssignTasksDialog({
 	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
 		activeSprint?.id,
 	);
+	const { view, setGridViewOptions, setListViewOptions, displayOptions } =
+		useViewStore((state) => state);
+	const { taskOrder, groupTasksBy } = displayOptions;
+	const orderByOptions: TaskOrder[] = TaskOrderOptions;
+
 	const params = useParams();
 	const workspaceUrl = parseParams(params.workspace);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+
+	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	useEffect(() => {
 		if (activeSprint) {
@@ -204,8 +212,7 @@ export function AssignTasksDialog({
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
 						<div className="flex items-center gap-2 w-full sm:w-auto">
-							<span className="text-xs text-foreground">Ordering</span>
-							<DropdownMenu>
+							{/* <DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button
 										variant="outline"
@@ -233,7 +240,39 @@ export function AssignTasksDialog({
 											</DropdownMenuItem>
 										))}
 								</DropdownMenuContent>
-							</DropdownMenu>
+							</DropdownMenu> */}
+							{/*  */}
+
+							<Select
+								value={filterPriority}
+								onValueChange={(value) => setFilterPriority(value as Priority)}
+							>
+								<SelectTrigger className="w-full sm:w-[150px]">
+									<SelectValue placeholder="Ordering Options" />
+								</SelectTrigger>
+								<SelectContent>
+									{orderByOptions
+										.filter((option) => option !== groupTasksBy)
+										.map((option) => {
+											return (
+												<SelectItem
+													key={option}
+													value={option}
+													className="text-xs"
+													onSelect={() =>
+														setOptions({
+															taskOrder: { ...taskOrder, orderBy: option },
+														})
+													}
+												>
+													{option}
+												</SelectItem>
+											);
+										})}
+								</SelectContent>
+							</Select>
+							{/*  */}
+
 							<Select
 								value={filterPriority}
 								onValueChange={(value) => setFilterPriority(value as Priority)}

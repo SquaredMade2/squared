@@ -34,7 +34,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
 import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
+import { useTaskStore, useViewStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Task } from "@squared/db";
 import { differenceInDays, format } from "date-fns";
@@ -71,6 +71,8 @@ export default function SprintDashboard() {
 			ideal: number;
 		}[]
 	>([]);
+
+	const { view } = useViewStore((state) => state);
 
 	useEffect(() => {
 		setTargetSprint(sprint?.id);
@@ -357,6 +359,7 @@ export default function SprintDashboard() {
 							setTargetSprint={setTargetSprint}
 							unassignedTasks={unassignedTasks}
 							upcomingSprints={upcomingSprints}
+							view={view}
 						/>
 						<Button variant="outline" onClick={prepareAutoAssign}>
 							Auto-Assign Tasks
