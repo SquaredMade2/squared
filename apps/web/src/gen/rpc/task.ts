@@ -293,7 +293,7 @@ export type UpdateBlockedTaskRequest = {
 	taskId: string;
 };
 
-export type GetBlockingTasksRequest = {
+export type GetBlockedByTasksRequest = {
 	taskId: string;
 };
 
@@ -388,11 +388,11 @@ export class TaskService extends RPCContextClient {
 		return this.request(ctx, "updateBlockedTasks", req);
 	}
 
-	getBlockingTasks(
+	getBlockedByTasks(
 		ctx: Context,
-		req: GetBlockingTasksRequest,
+		req: GetBlockedByTasksRequest,
 	): Promise<Task[]> {
-		return this.request(ctx, "getBlockingTasks", req);
+		return this.request(ctx, "getBlockedByTasks", req);
 	}
 
 	/**
