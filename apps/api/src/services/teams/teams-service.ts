@@ -21,6 +21,7 @@ export class TeamService implements TeamRpc {
 		name,
 		identifier,
 		workspaceId,
+		userId,
 	}: CreateTeamParams): Promise<Team> {
 		this.logger.info("Creating team: %0", { name, identifier, workspaceId });
 		const existingTeam = await this.db.team.findFirst({
@@ -31,13 +32,22 @@ export class TeamService implements TeamRpc {
 			throw new Error("Team already exists");
 		}
 
-		return await this.db.team.create({
+		const createdTeam = await this.db.team.create({
 			data: {
 				name,
 				identifier,
 				workspaceId,
 			},
 		});
+
+		this.db.userTeam.create({
+			data: {
+				userId,
+				teamId: createdTeam.id,
+			},
+		});
+
+		return createdTeam;
 	}
 
 	async updateTeam({ id, ...args }: UpdateTeamParams): Promise<Team> {

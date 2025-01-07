@@ -6,6 +6,7 @@ export type CreateTeamRequest = {
 	identifier: string;
 	name: string;
 	workspaceId: string;
+	userId: string;
 };
 
 export type CreateTeamResponse = {

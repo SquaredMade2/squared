@@ -17,6 +17,7 @@ const createTeamParams = createSchema<CreateTeamParams>()(
 		name: z.string(),
 		identifier: z.string(),
 		workspaceId: z.string(),
+		userId: z.string(),
 	}),
 );
 
@@ -40,7 +41,10 @@ const updateTeamSprintsParams = createSchema<UpdateTeamSprintsParams>()(
 );
 
 export const teamRpcSchema = createServiceSchema<TeamRpc>()({
-	createTeam: { input: createTeamParams, output: teamSchema },
+	createTeam: {
+		input: createTeamParams,
+		output: teamSchema,
+	},
 	updateTeam: { input: updateTeamParams, output: teamSchema },
 	updateTeamSprints: { input: updateTeamSprintsParams, output: teamSchema },
 	deleteTeam: { input: z.object({ teamId: z.string() }), output: z.void() },

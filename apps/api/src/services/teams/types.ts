@@ -4,6 +4,7 @@ export type CreateTeamParams = {
 	name: string;
 	identifier: string;
 	workspaceId: string;
+	userId: string;
 };
 
 export type UpdateTeamParams = {
