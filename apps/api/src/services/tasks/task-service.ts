@@ -373,9 +373,7 @@ export class TaskService implements TaskRpc {
 			});
 		});
 
-		await this.db.$transaction(updates);
-
-		return blockedTask;
+		return (await this.db.$transaction(updates))[0];
 	}
 
 	async getBlockingTasks({ taskId }: { taskId: string }): Promise<Task[]> {
