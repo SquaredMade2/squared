@@ -28,6 +28,7 @@ export class FilterService implements FilterRpc {
 					filter: params.filter,
 					teamId: params.teamId,
 					authorId: params.authorId,
+					sprintId: params.sprintId,
 				},
 			})
 			.then(({ filter, ...rest }: SavedFilterType) => ({
