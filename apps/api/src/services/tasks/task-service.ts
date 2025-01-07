@@ -1,5 +1,5 @@
 import { subscribeUser } from "@/utils/taskUpdate";
-import type { PrismaClient, Task } from "@squared/db";
+import { Prisma, type PrismaClient, type Task } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { EventService } from "../events/event-service";
@@ -137,7 +137,7 @@ export class TaskService implements TaskRpc {
 		const previousTask = await this.db.task.findUnique({
 			where: { id: taskData.id },
 			include: {
-				blockedBy: true,
+				blockedBy: { select: { id: true } },
 			},
 		});
 
@@ -331,60 +331,40 @@ export class TaskService implements TaskRpc {
 		});
 	}
 
-	async updateBlockedTask({
+	async updateBlockingTasks({
 		blockingTaskIds,
 		taskId,
 	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task> {
-		const blockedTask = await this.db.task.findUnique({
-			where: {
-				id: taskId,
-			},
-			include: {
-				blockedBy: true,
-			},
-		});
-
-		if (!blockedTask) {
-			this.throwError("Task not found");
-		}
-
-		const updates = blockingTaskIds.map((id) => {
-			if (blockedTask.blockedBy.find((task) => task.id === id)) {
-				return this.db.task.update({
-					where: { id: taskId },
-					data: {
-						blockedBy: {
-							disconnect: {
-								id,
-							},
-						},
-					},
-				});
-			}
-			return this.db.task.update({
+		try {
+			const updatedTask = await this.db.task.update({
 				where: { id: taskId },
 				data: {
 					blockedBy: {
-						connect: {
-							id,
-						},
+						set: blockingTaskIds.map((id) => ({ id })),
 					},
 				},
+				include: { blockedBy: true },
 			});
-		});
-
-		return (await this.db.$transaction(updates))[0];
+			return updatedTask;
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === "P2025") {
+					this.throwError("Task not found");
+				}
+			}
+			throw error;
+		}
 	}
 
-	async getBlockingTasks({ taskId }: { taskId: string }): Promise<Task[]> {
+	async getBlockingTasks({ taskId }: { taskId: string }): Promise<string[]> {
 		const task = await this.db.task.findUnique({
 			where: { id: taskId },
-			include: { blockedBy: true },
+			include: { blockedBy: { select: { id: true } } },
 		});
 		if (!task) {
 			this.throwError("Task not found");
 		}
-		return task.blockedBy;
+		return task.blockedBy.map((t) => t.id);
 	}
 
 	private throwError(message: string): never {
