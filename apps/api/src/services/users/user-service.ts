@@ -1,4 +1,4 @@
-import type { PrismaClient, Team } from "@squared/db";
+import type { PrismaClient, Team, Workspace } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { UserRpc } from "./types";
@@ -175,5 +175,30 @@ export class UserService implements UserRpc {
 			}
 			throw error;
 		}
+	}
+
+	async getDefaultWorkspace({
+		userId,
+	}: { userId: string }): Promise<Workspace> {
+		this.logger.info("Fetching default workspace for userId: %s", userId);
+		const user = await this.db.user.findUnique({
+			where: { id: userId },
+			include: {
+				Workspaces: {
+					include: {
+						workspace: true,
+					},
+				},
+			},
+		});
+		if (!user) {
+			throw new Error("User not found");
+		}
+
+		const defaultWorkspace = user.Workspaces.find(
+			(w) => w.workspaceId === user.defaultWorkspaceId,
+		)?.workspace;
+
+		return defaultWorkspace || user.Workspaces[0].workspace;
 	}
 }

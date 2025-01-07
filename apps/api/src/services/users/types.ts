@@ -1,4 +1,4 @@
-import type { Team, User } from "@squared/db";
+import type { Team, User, Workspace } from "@squared/db";
 
 export type UserAvatar = {
 	id: string;
@@ -31,4 +31,5 @@ export interface UserRpc {
 		userId: string;
 		taskId: string;
 	}) => Promise<User>;
+	getDefaultWorkspace: (args: { userId: string }) => Promise<Workspace>;
 }

@@ -13,10 +13,10 @@ const isPublicRoute = createRouteMatcher([
 	"/verify(.*)",
 	"/forgotPassword(.*)",
 	"/api(.*)",
-	"/login(.*)",
-	"/register(.*)",
-	"/verify(.*)",
+	"/",
 ]);
+
+// export default clerkMiddleware();
 
 export const config = {
 	matcher: [

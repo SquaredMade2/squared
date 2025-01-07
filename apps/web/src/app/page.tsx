@@ -1,45 +1,55 @@
 "use client";
+
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useAuthUser } from "@/hooks/useAuthUser";
 import { workspaceService } from "@/lib/services";
-import { useWorkspaceStore } from "@/store";
-import { TODO } from "@squared/context";
+import { useAuth } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const HomePage = () => {
 	const router = useRouter();
-	const { user, loading, error } = useAuthUser();
-	const { setWorkspaces } = useWorkspaceStore((state) => state);
+	const { isLoaded, userId } = useAuth();
+
+	const {
+		data: workspaces,
+		isLoading: workspacesLoading,
+		error: workspacesError,
+	} = useQuery({
+		queryKey: ["workspaces", userId],
+		queryFn: () => workspaceService.getUserWorkspaces(userId),
+		enabled: !!userId,
+	});
+
+	const {
+		data: defaultWorkspace,
+		isLoading: defaultWorkspaceLoading,
+		error: defaultWorkspaceError,
+	} = useQuery({
+		queryKey: ["defaultWorkspace", userId],
+		queryFn: () => workspaceService.getDefaultWorkspace(userId),
+		enabled: !!userId,
+	});
 
 	useEffect(() => {
 		const handleRedirection = async () => {
-			if (loading) return;
+			if (!isLoaded) return;
 
 			try {
-				if (user) {
-					if (user.defaultWorkspaceId) {
-						const workspace = await workspaceService.getWorkspace(TODO, {
-							workspaceId: user.defaultWorkspaceId,
-						});
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
-							return;
-						}
+				if (userId) {
+					if (defaultWorkspace?.url) {
+						router.push(`/${defaultWorkspace.url}`);
+						return;
 					}
 
-					const workspaces = await workspaceService.getUserWorkspaces(TODO, {
-						userId: user.id,
-					});
-					setWorkspaces(workspaces);
-					if (workspaces.length) {
+					if (workspaces?.length) {
 						router.push(`/${workspaces[0].url}`);
 						return;
 					}
 
 					router.push("/join");
 				} else {
-					router.push("/login");
+					router.push("/sign-in");
 				}
 			} catch (error) {
 				console.error("Redirection Error: ", error);
@@ -47,9 +57,9 @@ const HomePage = () => {
 		};
 
 		handleRedirection();
-	}, [user, loading, router]);
+	}, [isLoaded, userId, defaultWorkspace, workspaces, router]);
 
-	if (loading) {
+	if (!isLoaded || workspacesLoading || defaultWorkspaceLoading) {
 		return (
 			<div className="h-screen w-full">
 				<div className="flex h-full justify-center items-center">
@@ -62,8 +72,10 @@ const HomePage = () => {
 		);
 	}
 
-	if (error) {
-		return <div>Error: {error}</div>;
+	if (workspacesError || defaultWorkspaceError) {
+		return (
+			<div>Error: {(workspacesError || defaultWorkspaceError)?.message}</div>
+		);
 	}
 
 	return null;

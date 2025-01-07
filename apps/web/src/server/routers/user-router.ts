@@ -20,4 +20,11 @@ export const userRouter = router({
 			const { userId } = input;
 			return c.superjson(await userService.getUser(TODO, { userId }));
 		}),
+	getDefaultWorkpace: privateProcedure
+		.input(z.object({ userId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { userService } = ctx;
+			const { userId } = input;
+			return c.json(await userService.getDefaultWorkspace(TODO, { userId }));
+		}),
 });
