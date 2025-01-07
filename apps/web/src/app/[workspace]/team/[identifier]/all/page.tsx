@@ -1,6 +1,5 @@
 // all/page.tsx
 "use client";
-
 import ViewAllTasks from "@/components/ViewAllTasks";
 import HiddenColumns from "@/components/ViewAllTasks/HiddenColumns";
 import { TaskPageLayout } from "@/components/ViewAllTasks/PageLayout";
