@@ -39,7 +39,6 @@ export const taskSchema = createSchema<Task>()(
 		labels: z.array(z.string()),
 		workspaceId: z.string(),
 		parentId: z.string().nullable(),
-		parentPrereqId: z.string().nullable(),
 		deleted: z.boolean(),
 		order: z.number(),
 	}),

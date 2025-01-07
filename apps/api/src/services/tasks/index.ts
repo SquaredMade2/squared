@@ -118,15 +118,15 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		}),
 		output: z.array(taskSchema),
 	},
-	addPrerequisiteTask: {
+	updateBlockedTask: {
 		input: z.object({
-			parentPrereqId: z.string(),
+			blockingTaskIds: z.array(z.string()),
 			taskId: z.string(),
 		}),
 		output: taskSchema,
 	},
-	getPrerequisiteTasks: {
-		input: z.object({ parentPrereqId: z.string() }),
+	getBlockingTasks: {
+		input: z.object({ taskId: z.string() }),
 		output: z.array(taskSchema),
 	},
 	getSubtasks: {
@@ -150,8 +150,8 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 		addActiveSprintTasks: (input) => taskService.addActiveSprintTasks(input),
 		addSprintTasks: (input) => taskService.addSprintTasks(input),
 		reorderSubtasks: (input) => taskService.reorderSubtasks(input),
-		addPrerequisiteTask: (input) => taskService.addPrerequisiteTask(input),
-		getPrerequisiteTasks: (input) => taskService.getPrerequisiteTasks(input),
+		updateBlockedTask: (input) => taskService.updateBlockedTask(input),
+		getBlockingTasks: (input) => taskService.getBlockingTasks(input),
 		getSubtasks: (input) => taskService.getSubtasks(input),
 	});
 

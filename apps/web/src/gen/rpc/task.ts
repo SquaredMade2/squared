@@ -10,7 +10,6 @@ export type CreateTaskRequest = {
 	effortEstimate: number | null;
 	labels?: string[];
 	parentId?: string | null;
-	parentPrereqId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId?: string | null;
 	status?:
@@ -38,7 +37,6 @@ export type CreateTaskResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -64,7 +62,6 @@ export type UpdateTaskRequest = {
 	id: string;
 	labels?: string[];
 	parentId?: string | null;
-	parentPrereqId?: string | null;
 	priority?: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId?: string | null;
 	status?:
@@ -91,7 +88,6 @@ export type UpdateTaskResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -129,7 +125,6 @@ export type GetTaskResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -164,7 +159,6 @@ export type GetTaskByIdentifierResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -198,7 +192,6 @@ export type GetTeamTasksResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -246,7 +239,6 @@ export type ReorderSubtasksResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -280,7 +272,6 @@ export type GetSubtasksResponse = {
 	labels: string[];
 	order: number;
 	parentId: string | null;
-	parentPrereqId: string | null;
 	priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 	sprintId: string | null;
 	status:
@@ -297,13 +288,13 @@ export type GetSubtasksResponse = {
 	workspaceId: string;
 }[];
 
-export type AddPrerequisiteTaskRequest = {
-	parentPrereqId: string;
+export type UpdateBlockedTaskRequest = {
+	blockingTaskIds: string[];
 	taskId: string;
 };
 
-export type GetPrerequisiteTasksRequest = {
-	parentPrereqId: string;
+export type GetBlockingTasksRequest = {
+	taskId: string;
 };
 
 /**
@@ -388,20 +379,20 @@ export class TaskService extends RPCContextClient {
 		return this.request(ctx, "addSprintTasks", req);
 	}
 	/**
-	 * addPrerequisiteTask method
+	 * updateBlockedTask method
 	 */
-	addPrerequisiteTask(
+	updateBlockedTask(
 		ctx: Context,
-		req: AddPrerequisiteTaskRequest,
+		req: UpdateBlockedTaskRequest,
 	): Promise<Task> {
-		return this.request(ctx, "addPrerequisiteTask", req);
+		return this.request(ctx, "updateBlockedTask", req);
 	}
 
-	getPrerequisiteTasks(
+	getBlockingTasks(
 		ctx: Context,
-		req: GetPrerequisiteTasksRequest,
+		req: GetBlockingTasksRequest,
 	): Promise<Task[]> {
-		return this.request(ctx, "getPrerequisiteTasks", req);
+		return this.request(ctx, "getBlockingTasks", req);
 	}
 
 	/**

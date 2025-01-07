@@ -24,7 +24,6 @@ export type CreateFilterRequest = {
 			| "labels"
 			| "workspaceId"
 			| "parentId"
-			| "parentPrereqId"
 			| "deleted"
 			| "order";
 		operator:
@@ -69,7 +68,6 @@ export type CreateFilterResponse = {
 			| "labels"
 			| "workspaceId"
 			| "parentId"
-			| "parentPrereqId"
 			| "deleted"
 			| "order";
 		operator:
@@ -121,7 +119,6 @@ export type GetFiltersResponse = {
 			| "labels"
 			| "workspaceId"
 			| "parentId"
-			| "parentPrereqId"
 			| "deleted"
 			| "order";
 		operator:
@@ -170,7 +167,6 @@ export type UpdateFilterRequest = {
 				| "labels"
 				| "workspaceId"
 				| "parentId"
-				| "parentPrereqId"
 				| "deleted"
 				| "order";
 			operator:
@@ -215,7 +211,6 @@ export type UpdateFilterResponse = {
 			| "labels"
 			| "workspaceId"
 			| "parentId"
-			| "parentPrereqId"
 			| "deleted"
 			| "order";
 		operator:

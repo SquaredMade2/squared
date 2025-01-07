@@ -144,13 +144,12 @@ model Task {
   workspaceId    String
   updatedAt      DateTime  @default(now()) @updatedAt
   deleted        Boolean   @default(false)
-  parentPrereqId String?   
   parentId       String?
   sprintId       String?
   order          Int       @default(0)
 
-  parentPrereq  Task?       @relation("PrerequisiteChild", fields: [parentPrereqId], references: [id], onDelete: SetNull)
-  prerequisites Task[]      @relation("PrerequisiteChild")
+  blockedBy    Task[]      @relation("BlockedTasks")
+  blocking     Task[]      @relation("BlockedTasks")
   parent       Task?       @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
   children     Task[]      @relation("ParentChild")
   status       Status      @default(backlog)

@@ -39,7 +39,6 @@ export type GetNotificationsResponse = {
 		labels: string[];
 		order: number;
 		parentId: string | null;
-		parentPrereqId: string | null;
 		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
 		sprintId: string | null;
 		status:

@@ -48,7 +48,7 @@ export interface TaskRpc {
 		parentId: string;
 		newOrder: string[];
 	}) => Promise<Task[]>;
-	addPrerequisiteTask({parentPrereqId, taskId}: {parentPrereqId: string, taskId: string}): Promise<Task>;
-	getPrerequisiteTasks: (args: { parentPrereqId: string }) => Promise<Task[]>;
+	updateBlockedTask({blockingTaskIds, taskId}: {blockingTaskIds: string[], taskId: string}): Promise<Task>;
+	getBlockingTasks: (args: { taskId: string }) => Promise<Task[]>;
 	getSubtasks: (args: { parentId: string }) => Promise<Task[]>;
 }

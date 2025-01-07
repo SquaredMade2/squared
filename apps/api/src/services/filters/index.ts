@@ -34,7 +34,6 @@ const TaskFields = [
 	"labels",
 	"workspaceId",
 	"parentId",
-	"parentPrereqId",
 	"deleted",
 	"order",
 ] as const;

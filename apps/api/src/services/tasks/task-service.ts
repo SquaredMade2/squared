@@ -136,6 +136,9 @@ export class TaskService implements TaskRpc {
 
 		const previousTask = await this.db.task.findUnique({
 			where: { id: taskData.id },
+			include: {
+				blockedBy: true,
+			},
 		});
 
 		if (!previousTask) {
@@ -153,6 +156,13 @@ export class TaskService implements TaskRpc {
 				this.throwError("Invalid Effort Estimate");
 			}
 		}
+
+		if (
+			taskData.status !== "backlog" &&
+			taskData.status !== "todo" &&
+			previousTask.blockedBy.length > 0
+		)
+			taskData.status = "todo";
 
 		const task = await this.db.task.update({
 			where: { id: taskData.id },
@@ -321,24 +331,62 @@ export class TaskService implements TaskRpc {
 		});
 	}
 
-	async addPrerequisiteTask({parentPrereqId, taskId}: {parentPrereqId: string, taskId: string}): Promise<Task> {
-		// First, update all tasks to the prerequisite
-		const ParentPrerequisiteTask = await this.db.task.update({
+	async updateBlockedTask({
+		blockingTaskIds,
+		taskId,
+	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task> {
+		const blockedTask = await this.db.task.findUnique({
 			where: {
 				id: taskId,
 			},
-			data: {
-				parentPrereqId,
+			include: {
+				blockedBy: true,
 			},
 		});
-		return ParentPrerequisiteTask
-	}
-	
-	async getPrerequisiteTasks({ parentPrereqId }: { parentPrereqId: string }): Promise<Task[]> {
-		return await this.db.task.findMany({
-			where: { parentPrereqId },
-			orderBy: { order: "asc" },
+
+		if (!blockedTask) {
+			this.throwError("Task not found");
+		}
+
+		const updates = blockingTaskIds.map((id) => {
+			if (blockedTask.blockedBy.find((task) => task.id === id)) {
+				return this.db.task.update({
+					where: { id: taskId },
+					data: {
+						blockedBy: {
+							disconnect: {
+								id,
+							},
+						},
+					},
+				});
+			}
+			return this.db.task.update({
+				where: { id: taskId },
+				data: {
+					blockedBy: {
+						connect: {
+							id,
+						},
+					},
+				},
+			});
 		});
+
+		await this.db.$transaction(updates);
+
+		return blockedTask;
+	}
+
+	async getBlockingTasks({ taskId }: { taskId: string }): Promise<Task[]> {
+		const task = await this.db.task.findUnique({
+			where: { id: taskId },
+			include: { blockedBy: true },
+		});
+		if (!task) {
+			this.throwError("Task not found");
+		}
+		return task.blockedBy;
 	}
 
 	private throwError(message: string): never {
