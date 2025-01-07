@@ -17,11 +17,8 @@ export default function TokenVerificationPage({
 	const hasRunRef = useRef(false);
 
 	useEffect(() => {
-		console.log(status, session, "inside UE");
 		const verifyToken = async () => {
-			console.log("verifyToken");
 			if (status === "authenticated" && session?.user) {
-				console.log("autheticated and user");
 				try {
 					const workspace = await workspaceService.joinWorkspace(TODO, {
 						token: params.token,
