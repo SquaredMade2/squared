@@ -118,7 +118,7 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		}),
 		output: z.array(taskSchema),
 	},
-	updateBlockingTasks: {
+	updateBlockedTasks: {
 		input: z.object({
 			blockingTaskIds: z.array(z.string()),
 			taskId: z.string(),
@@ -150,7 +150,7 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 		addActiveSprintTasks: (input) => taskService.addActiveSprintTasks(input),
 		addSprintTasks: (input) => taskService.addSprintTasks(input),
 		reorderSubtasks: (input) => taskService.reorderSubtasks(input),
-		updateBlockingTasks: (input) => taskService.updateBlockingTasks(input),
+		updateBlockedTasks: (input) => taskService.updateBlockedTasks(input),
 		getBlockingTasks: (input) => taskService.getBlockingTasks(input),
 		getSubtasks: (input) => taskService.getSubtasks(input),
 	});

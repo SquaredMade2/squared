@@ -331,7 +331,7 @@ export class TaskService implements TaskRpc {
 		});
 	}
 
-	async updateBlockingTasks({
+	async updateBlockedTasks({
 		blockingTaskIds,
 		taskId,
 	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task> {
