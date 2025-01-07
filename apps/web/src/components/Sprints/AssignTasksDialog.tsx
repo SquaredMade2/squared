@@ -241,37 +241,26 @@ export function AssignTasksDialog({
 										))}
 								</DropdownMenuContent>
 							</DropdownMenu> */}
-							{/*  */}
 
 							<Select
-								value={filterPriority}
-								onValueChange={(value) => setFilterPriority(value as Priority)}
+							// value={filterPriority}
+							// onValueChange={(value) => setFilterPriority(value as Priority)}
 							>
 								<SelectTrigger className="w-full sm:w-[150px]">
-									<SelectValue placeholder="Ordering Options" />
+									<SelectValue placeholder="Sorting Options" />
 								</SelectTrigger>
 								<SelectContent>
 									{orderByOptions
-										.filter((option) => option !== groupTasksBy)
+										.filter((option: string) => option !== groupTasksBy)
 										.map((option) => {
 											return (
-												<SelectItem
-													key={option}
-													value={option}
-													className="text-xs"
-													onSelect={() =>
-														setOptions({
-															taskOrder: { ...taskOrder, orderBy: option },
-														})
-													}
-												>
+												<SelectItem key={option} value={option}>
 													{option}
 												</SelectItem>
 											);
 										})}
 								</SelectContent>
 							</Select>
-							{/*  */}
 
 							<Select
 								value={filterPriority}
