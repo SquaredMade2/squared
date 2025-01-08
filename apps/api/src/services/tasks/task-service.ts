@@ -339,15 +339,14 @@ export class TaskService implements TaskRpc {
 	}
 
 	async getBlockedByTasks({ taskId }: { taskId: string }): Promise<Task[]> {
-		const task = await this.db.task
-			.findUnique({
-				where: { id: taskId },
-				include: { blockedBy: true },
-			})
-			if (!task) {
-				this.throwError("Task not found");
-			}
-			return task.blockedBy;
+		const task = await this.db.task.findUnique({
+			where: { id: taskId },
+			include: { blockedBy: true },
+		});
+		if (!task) {
+			this.throwError("Task not found");
+		}
+		return task.blockedBy;
 	}
 
 	private throwError(message: string): never {
