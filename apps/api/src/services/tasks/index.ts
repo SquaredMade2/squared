@@ -77,7 +77,7 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		input: z.object({
 			taskId: z.string(),
 		}),
-		output: z.void(),
+		output: z.object({ success: z.boolean() }),
 	},
 	getTask: {
 		input: z.object({

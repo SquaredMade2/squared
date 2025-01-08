@@ -54,7 +54,6 @@ export type CreateTaskResponse = {
 };
 
 export type UpdateTaskRequest = {
-	updaterId: string | null;
 	assigneeId?: string | null;
 	description?: string;
 	dueDate?: Date | null;
@@ -73,6 +72,7 @@ export type UpdateTaskRequest = {
 		| "canceled"
 		| "archived";
 	title?: string;
+	updaterId: string;
 };
 
 export type UpdateTaskResponse = {
@@ -106,6 +106,10 @@ export type UpdateTaskResponse = {
 
 export type DeleteTaskRequest = {
 	taskId: string;
+};
+
+export type DeleteTaskResponse = {
+	success: boolean;
 };
 
 export type GetTaskRequest = {
@@ -328,7 +332,10 @@ export class TaskService extends RPCContextClient {
 	/**
 	 * deleteTask method
 	 */
-	deleteTask(ctx: Context, req: DeleteTaskRequest): Promise<void> {
+	deleteTask(
+		ctx: Context,
+		req: DeleteTaskRequest,
+	): Promise<DeleteTaskResponse> {
 		return this.request(ctx, "deleteTask", req);
 	}
 
