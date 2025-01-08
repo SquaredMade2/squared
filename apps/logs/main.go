@@ -98,14 +98,6 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	// Compute the HMAC
-	signature := r.Header.Get(vercelSignature)
-	if !verifyHMAC(body, signature, integrationSecret) {
-		log.Println("Signature verification failed")
-		http.Error(w, "Invalid signature", http.StatusUnauthorized)
-		return
-	}
-
 	contentType := r.Header.Get("Content-Type")
 	verificationToken := r.Header.Get(vercelVerificationHeader)
 
@@ -113,6 +105,13 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("x-vercel-verify", verificationToken)
 		w.WriteHeader(http.StatusOK)
 	} else if strings.HasPrefix(contentType, "application/json") {
+		// Compute the HMAC
+		signature := r.Header.Get(vercelSignature)
+		if !verifyHMAC(body, signature, integrationSecret) {
+			log.Println("Signature verification failed")
+			http.Error(w, "Invalid signature", http.StatusUnauthorized)
+			return
+		}
 		if r.Method != http.MethodPost {
 			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 			return
