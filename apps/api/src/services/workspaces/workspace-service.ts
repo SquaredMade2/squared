@@ -340,10 +340,10 @@ export class WorkspaceService implements WorkspaceRpc {
 		]);
 	}
 	private async updateUserOnboarding(user: User) {
-		if (user.onBoarding || !user.verified) {
+		if (user.onBoarding) {
 			await this.db.user.update({
 				where: { id: user.id },
-				data: { onBoarding: false, verified: true },
+				data: { onBoarding: false },
 			});
 		}
 	}
