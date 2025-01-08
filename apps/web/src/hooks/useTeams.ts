@@ -55,6 +55,6 @@ export function useTeams() {
 		team: teamsData?.team || team,
 		authorized: authData?.authorized || false,
 		teams: teamsData?.teams || teams,
-		error: parseError(error, "Failed to fetch teams"),
+		error: error ? parseError(error, "Failed to fetch teams") : null,
 	};
 }
