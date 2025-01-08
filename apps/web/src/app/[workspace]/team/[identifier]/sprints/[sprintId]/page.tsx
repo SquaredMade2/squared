@@ -50,6 +50,7 @@ import { useSprints } from "@/hooks/useSprints";
 import { sprintService, taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
+import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Sprint, Status, Task } from "@squared/db";
@@ -200,10 +201,11 @@ export default function SprintDashboardPage() {
 	if (loading) {
 		return <SprintLoading />;
 	}
+
 	if (error) {
 		return (
 			<SprintError
-				error={error}
+				error={parseError(error, "Failed to fetch sprint data")}
 				workspaceUrl={workspace?.url}
 				teamIdentifier={team?.identifier}
 			/>
