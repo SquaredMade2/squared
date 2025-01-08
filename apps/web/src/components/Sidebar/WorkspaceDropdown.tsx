@@ -28,7 +28,7 @@ export function WorkspaceDropdown() {
 		
 		// validation for 'inbox' page or any other page that doesn't have workspace url
 		if (workspace && pathNameParts.includes(workspace.url)) {
-			if (pathNameParts[1] === 'settings') {
+			if (pathNameParts[1] === 'settings' || pathNameParts[2] === 'inbox') {
 				pathNameParts[2] = newWorkspace?.url;
 				router.push(pathNameParts.join('/'))
 			} else {
@@ -71,7 +71,7 @@ export function WorkspaceDropdown() {
 						key={workspace.id}
 						onSelect={() => {
 							setWorkspace(workspace);
-							updatePathWithWorkspace(workspace); // Обновляем путь с новым workspace
+							updatePathWithWorkspace(workspace);
 						}}
 					>
 						<Avatar className="h-6 w-6 mr-2">
