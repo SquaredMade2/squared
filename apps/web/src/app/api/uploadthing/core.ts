@@ -1,9 +1,8 @@
 import { userService } from "@/lib/services";
+import { currentUser } from "@clerk/nextjs/server";
 import { TODO } from "@squared/context";
-import { getServerSession } from "next-auth";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
-import { UTApi } from "uploadthing/server";
+import { UTApi, UploadThingError } from "uploadthing/server";
 import { z } from "zod";
 
 const f = createUploadthing();
@@ -32,10 +31,14 @@ export const uploadThingRouter = {
 	})
 		.input(z.object({ userId: z.string() }))
 		.middleware(async ({ input: { userId } }) => {
-			const session = await getServerSession();
+			const auth = await currentUser();
 			const user = await userService.getUser(TODO, { userId });
 
-			if (!session || !user || session.user.email !== user.email) {
+			if (
+				!auth ||
+				!user ||
+				auth?.primaryEmailAddress?.emailAddress !== user.email
+			) {
 				throw new UploadThingError("Failed to authenticate");
 			}
 

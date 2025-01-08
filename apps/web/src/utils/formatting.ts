@@ -48,7 +48,7 @@ export const handleWorkspaceNameOverflow = (workspaceName: string | null) => {
 		: workspaceName;
 };
 
-export const getInitials = (name?: string): string => {
+export const getInitials = (name?: string | null): string => {
 	if (!name || typeof name !== "string") return "";
 
 	const words = name.trim().split(/\s+/);

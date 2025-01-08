@@ -64,7 +64,7 @@ export class UserService implements UserRpc {
 	async getUser({ userId }: { userId: string }) {
 		this.logger.info("Fetching user with id: %s", userId);
 		return await this.db.user.findUnique({
-			where: { id: userId },
+			where: { externalId: userId },
 		});
 	}
 

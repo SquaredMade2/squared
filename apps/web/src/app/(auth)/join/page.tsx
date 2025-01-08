@@ -7,9 +7,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { userService, workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { ChevronLeft } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -19,9 +19,10 @@ const Join = () => {
 	const { setWorkspaces, workspaces, createWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { updateUser, user, setUser } = useUserStore((state) => state);
+	const { updateUser, setUser, user } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
+	const { signOut } = useClerk();
 
 	// List of restricted routes (initial set)
 	const restrictedRoutes = [
@@ -33,29 +34,27 @@ const Join = () => {
 		"register",
 		"settings",
 	];
-	const { data, status } = useSession();
+	const { isLoaded, isSignedIn, user: clerkUser } = useUser();
 
 	useEffect(() => {
+		if (!isLoaded || !isSignedIn) return;
+
 		const initStore = async () => {
-			if (user) {
-				setWorkspaces(
-					await workspaceService.getUserWorkspaces(TODO, { userId: user.id }),
-				);
-			} else if (data?.user) {
+			if (clerkUser) {
 				const newUser = await userService.getUser(TODO, {
-					userId: data.user.id,
+					userId: clerkUser.id,
 				});
 				if (!newUser) await signOut();
 				setUser(newUser);
 				setWorkspaces(
 					await workspaceService.getUserWorkspaces(TODO, {
-						userId: data.user.id,
+						userId: clerkUser.id,
 					}),
 				);
 			}
 		};
 		initStore();
-	}, [status]);
+	}, [isLoaded, isSignedIn]);
 
 	useEffect(() => {
 		const formattedUrlInput = inputValue
@@ -77,7 +76,7 @@ const Join = () => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!user) return;
+		if (!user || !clerkUser) return;
 
 		if (inputValue.length === 0) {
 			alert("Please enter a workspace name");
@@ -106,14 +105,14 @@ const Join = () => {
 		try {
 			const workspace = await workspaceService.createWorkspace(TODO, {
 				workspace: newWorkspaceInput,
-				userId: user.id,
+				userId: clerkUser.id,
 			});
 			createWorkspace(workspace);
 			toast({ title: "Workspace created successfully" });
 			if (workspace) {
 				if (user.onBoarding) {
 					const updatedUser = await userService.onBoardUser(TODO, {
-						userId: user.id,
+						userId: clerkUser.id,
 					});
 					updateUser(updatedUser);
 					setUser(updatedUser);

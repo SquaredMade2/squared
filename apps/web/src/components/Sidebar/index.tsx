@@ -17,7 +17,6 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { logout } from "@/lib/auth";
 import { eventService, teamService } from "@/lib/services";
 import {
 	useModalStore,
@@ -25,6 +24,7 @@ import {
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
+import { useClerk } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { Workspace } from "@squared/db";
 import {
@@ -54,6 +54,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const { resolvedTheme: theme, setTheme } = useTheme();
 	const [notifications, setNotifications] = React.useState(0);
 	const { state } = useSidebar();
+	const { signOut } = useClerk();
 
 	React.useEffect(() => {
 		if (!user || !workspace) return;
@@ -83,7 +84,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 
 	const handleLogout = async (): Promise<void> => {
 		try {
-			await logout();
+			await signOut();
 			router.replace("/login");
 			toast({ title: "Logged out successfully." });
 		} catch (error) {

@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { workspaceService } from "@/lib/services";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
-import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function JoinWorkspace() {
-	const { data: session, status } = useSession();
+	const { isLoaded, isSignedIn, user } = useUser();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [isLoading, setIsLoading] = useState(false);
@@ -19,13 +19,13 @@ export default function JoinWorkspace() {
 	const token = searchParams.get("token");
 
 	useEffect(() => {
-		if (status === "unauthenticated") {
+		if (isLoaded && !isSignedIn) {
 			router.push(`/login?token=${token}`);
 		}
-	}, [status, router, token]);
+	}, [isLoaded, router, token]);
 
 	const handleJoin = async () => {
-		if (!session?.user) return;
+		if (!isLoaded || !isSignedIn) return;
 
 		setIsLoading(true);
 		try {
@@ -34,7 +34,7 @@ export default function JoinWorkspace() {
 			}
 			const workspace = await workspaceService.joinWorkspace(TODO, {
 				token,
-				userId: session.user.id,
+				userId: user.id,
 			});
 			toast({ title: "Workspace joined successfully" });
 			if (workspace?.url) {

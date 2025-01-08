@@ -190,11 +190,12 @@ export class WorkspaceService implements WorkspaceRpc {
 		if (!user) this.throwError("User not found.");
 		if (existingUserWorkspace) return workspace;
 
-		await this.validateJoinWorkspaceData(workspace, teams, user);
+		this.validateJoinWorkspaceData(workspace, teams, user);
 
-		await this.createUserWorkspaceConnections(userId, workspaceId, teams);
-
-		await this.updateUserOnboarding(user);
+		Promise.all([
+			this.createUserWorkspaceConnections(userId, workspaceId, teams),
+			this.updateUserOnboarding(user),
+		]);
 
 		return workspace;
 	}

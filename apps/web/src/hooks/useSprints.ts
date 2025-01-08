@@ -7,10 +7,10 @@ import {
 } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
+import { useUser } from "@clerk/nextjs";
 import type { Sprint } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useAuthUser } from "./useAuthUser";
 
 export function useSprints(sprintId?: string) {
 	const { workspace: workspaceUrl, identifier: teamIdentifier } = useParams();
@@ -18,7 +18,7 @@ export function useSprints(sprintId?: string) {
 	const { setWorkspace } = useWorkspaceStore((state) => state);
 	const { setSprint } = useSprintStore((state) => state);
 	const { setTeam } = useTeamStore((state) => state);
-	const { loading: userLoading } = useAuthUser();
+	const { isLoaded } = useUser();
 
 	const workspaceQuery = useQuery({
 		queryKey: ["workspace", workspaceUrl],
@@ -31,7 +31,7 @@ export function useSprints(sprintId?: string) {
 			setWorkspace(workspace);
 			return workspace;
 		},
-		enabled: !userLoading && !!workspaceUrl,
+		enabled: isLoaded && !!workspaceUrl,
 	});
 
 	const teamQuery = useQuery({
@@ -103,7 +103,7 @@ export function useSprints(sprintId?: string) {
 	});
 
 	const isLoading =
-		userLoading ||
+		!isLoaded ||
 		workspaceQuery.isLoading ||
 		teamQuery.isLoading ||
 		sprintsQuery.isLoading ||

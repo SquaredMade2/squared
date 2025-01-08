@@ -7,7 +7,6 @@ import {
 } from "@/components/Inbox";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { useAuthUser } from "@/hooks/useAuthUser";
 import { eventService, userService } from "@/lib/services";
 import {
 	useEventStore,
@@ -15,6 +14,7 @@ import {
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
 import { usePathname } from "next/navigation";
@@ -35,22 +35,26 @@ export default function InboxPage() {
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
-	const { setUserAvatars } = useUserStore((state) => state);
+	const { setUserAvatars, user, setUser } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
-	const { user } = useAuthUser();
+	const { user: clerkUser } = useUser();
 	const pathname = usePathname();
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
-			if (user) {
-				const notifications = await eventService.getNotifications(TODO, {
-					userId: user.id,
-				});
+			if (clerkUser) {
+				const [notifications, userResponse] = await Promise.all([
+					eventService.getNotifications(TODO, {
+						userId: clerkUser.id,
+					}),
+					userService.getUser(TODO, { userId: clerkUser.id }),
+				]);
 				setNotifications(notifications);
+				setUser(userResponse);
 			}
 		};
 		fetchNotifications();
-	}, [user, setNotifications]);
+	}, [clerkUser, setNotifications]);
 
 	useEffect(() => {
 		switch (filterType) {

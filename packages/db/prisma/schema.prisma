@@ -125,7 +125,7 @@ model Notification {
   type NotificationType
 
   Task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User      User      @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
@@ -278,7 +278,7 @@ model UserWorkspace {
   userId      String
   workspaceId String
 
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User      @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, workspaceId])
@@ -288,7 +288,7 @@ model UserTeam {
   userId String
   teamId String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user User @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, teamId])

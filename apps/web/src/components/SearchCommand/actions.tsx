@@ -1,6 +1,6 @@
-import { logout } from "@/lib/auth";
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import type { Workspace } from "@/store/workspaces";
+import { useClerk } from "@clerk/nextjs";
 import type { Team } from "@squared/db";
 import {
 	ArrowLeftRight,
@@ -379,8 +379,9 @@ export class CommandSchema {
 					icon: <LogOut className="mr-2 h-4 w-4" />,
 					text: "Log out",
 					function: async () => {
+						const { signOut } = useClerk();
 						try {
-							await logout();
+							await signOut();
 							this.showToast("Logged out successfully", "default");
 						} catch {
 							this.showToast("Failed to log out", "destructive");

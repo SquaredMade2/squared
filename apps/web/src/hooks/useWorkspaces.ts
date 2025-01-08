@@ -2,12 +2,12 @@ import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useAuthUser } from "./useAuthUser";
 
 export function useWorkspaces() {
-	const { user, loading: userLoading, error: userError } = useAuthUser();
+	const { user, isLoaded, isSignedIn } = useUser();
 	const { setWorkspace, setWorkspaces, workspace } = useWorkspaceStore(
 		(state) => state,
 	);
@@ -22,7 +22,7 @@ export function useWorkspaces() {
 	} = useQuery({
 		queryKey: ["workspaces", user?.id],
 		queryFn: async () => {
-			if (!user) return;
+			if (!user || !isSignedIn) return;
 			const res = await client.workspace.getAllWorkspaces.$get({
 				userId: user.id,
 			});
@@ -32,13 +32,13 @@ export function useWorkspaces() {
 			setWorkspace(workspace || null);
 			return { workspace, workspaces: awaitedRes };
 		},
-		enabled: !!user && !userLoading,
+		enabled: !!user && isLoaded,
 	});
 
 	return {
 		user,
-		loading: userLoading || loading,
-		error: userError || parseError(error, "Failed to fetch workspaces"),
+		loading: isLoaded || loading,
+		error: parseError(error, "Failed to fetch workspaces"),
 		workspace: data?.workspace,
 		workspaces: data?.workspaces,
 	};
