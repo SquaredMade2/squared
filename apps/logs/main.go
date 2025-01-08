@@ -1,11 +1,13 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
-	"net"
+	"log/syslog"
 	"net/http"
 	"os"
 	"strings"
@@ -13,19 +15,21 @@ import (
 )
 
 type VercelLog struct {
-	ID           string    `json:"id"`
-	Timestamp    int64     `json:"timestamp"`
-	RequestID    string    `json:"requestId"`
-	Message      string    `json:"message"`
-	Proxy        ProxyInfo `json:"proxy"`
-	ProjectID    string    `json:"projectId"`
-	DeploymentID string    `json:"deploymentId"`
-	Source       string    `json:"source"`
-	Host         string    `json:"host"`
-	Path         string    `json:"path"`
-	JA4Digest    string    `json:"ja4Digest"`
-	Level        LogLevel  `json:"level"`
-	StatusCode   int       `json:"statusCode"`
+	ID              string    `json:"id"`
+	Timestamp       int64     `json:"timestamp"`
+	RequestID       string    `json:"requestId"`
+	Message         string    `json:"message"`
+	Proxy           ProxyInfo `json:"proxy"`
+	ProjectID       string    `json:"projectId"`
+	DeploymentID    string    `json:"deploymentId"`
+	Source          string    `json:"source"`
+	Host            string    `json:"host"`
+	Path            string    `json:"path"`
+	Level           LogLevel  `json:"level"`
+	StatusCode      int       `json:"statusCode"`
+	ProjectName     string    `json:"projectName"`
+	ExecutionRegion string    `json:"executionRegion"`
+	Branch          string    `json:"branch"`
 }
 
 type ProxyInfo struct {
@@ -45,6 +49,7 @@ type ProxyInfo struct {
 
 const (
 	vercelVerificationHeader = "X-Vercel-Verify-Request"
+	vercelSignature          = "X-Vercel-Signature"
 	infoColor                = "\x1b[32m" // Green
 	errorColor               = "\x1b[31m" // Red
 	warnColor                = "\x1b[33m" // Yellow
@@ -57,7 +62,14 @@ const (
 	LogLevelError LogLevel = "error"
 	LogLevelWarn  LogLevel = "warning"
 	LogLevelInfo  LogLevel = "info"
+	defaultLevel           = LogLevelInfo
 )
+
+var logLevelToPriority = map[LogLevel]syslog.Priority{
+	LogLevelError: syslog.LOG_ERR,
+	LogLevelWarn:  syslog.LOG_WARNING,
+	LogLevelInfo:  syslog.LOG_INFO,
+}
 
 func main() {
 	http.HandleFunc("/", handleRequest)
@@ -70,54 +82,68 @@ func main() {
 }
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
-	verifyToken := r.Header.Get(vercelVerificationHeader)
-	expectedToken := os.Getenv("VERCEL_OWNERSHIP_TOKEN")
+	integrationSecret := os.Getenv("VERCEL_SIGNATURE")
+	if integrationSecret == "" {
+		log.Println("Missing integration secret")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	if verifyToken != expectedToken {
-		http.Error(w, "Invalid verification token", http.StatusUnauthorized)
+	// Read the raw request body
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error reading request body: %v", err)
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
+
+	// Compute the HMAC
+	signature := r.Header.Get(vercelSignature)
+	if !verifyHMAC(body, signature, integrationSecret) {
+		log.Println("Signature verification failed")
+		http.Error(w, "Invalid signature", http.StatusUnauthorized)
 		return
 	}
 
 	contentType := r.Header.Get("Content-Type")
-
-	host := r.Host
-	isStaging := strings.Contains(host, "dev") || strings.Contains(host, "stag")
+	verificationToken := r.Header.Get(vercelVerificationHeader)
 
 	if strings.HasPrefix(contentType, "text/plain") {
-		handleVerification(w)
+		w.Header().Set("x-vercel-verify", verificationToken)
+		w.WriteHeader(http.StatusOK)
 	} else if strings.HasPrefix(contentType, "application/json") {
-		handleLogs(w, r, isStaging)
+		if r.Method != http.MethodPost {
+			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		handleLogs(w, body)
 	} else {
 		http.Error(w, "Unsupported Content-Type", http.StatusUnsupportedMediaType)
 	}
 }
 
-func handleVerification(w http.ResponseWriter) {
-	w.Header().Set("x-vercel-verify", os.Getenv("VERCEL_OWNERSHIP_TOKEN"))
-	w.WriteHeader(http.StatusOK)
+func verifyHMAC(body []byte, providedSignature, secret string) bool {
+	h := hmac.New(sha1.New, []byte(secret))
+	h.Write(body)
+	expectedSignature := fmt.Sprintf("%x", h.Sum(nil))
+	return hmac.Equal([]byte(providedSignature), []byte(expectedSignature))
 }
 
-func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-		return
-	}
+func isStaging(branch string) bool {
+	return !(branch == "main")
+}
 
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Error reading request body", http.StatusInternalServerError)
-		return
-	}
-
+func handleLogs(w http.ResponseWriter, body []byte) {
 	var logs []VercelLog
-	err = json.Unmarshal(body, &logs)
+	err := json.Unmarshal(body, &logs)
 	if err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 		http.Error(w, "Error parsing JSON", http.StatusBadRequest)
 		return
 	}
 
-	papertrailAddr := getPapertrailAddr(isStaging)
+	papertrailAddr := getPapertrailAddr(isStaging(logs[0].Branch))
 	if papertrailAddr == "" {
 		log.Printf("No Papertrail address found")
 		http.Error(w, "No Papertrail address configured", http.StatusInternalServerError)
@@ -126,9 +152,18 @@ func handleLogs(w http.ResponseWriter, r *http.Request, isStaging bool) {
 
 	for _, logEntry := range logs {
 		formattedLog := formatLog(logEntry)
-		domain := os.Getenv("DOMAIN")
-		appName := strings.Split(logEntry.Host, "."+domain)[0]
-		err = sendToPapertrail(papertrailAddr, formattedLog, appName)
+		priority, ok := logLevelToPriority[logEntry.Level]
+		if !ok {
+			priority = logLevelToPriority[defaultLevel]
+		}
+
+		writer, err := syslog.Dial("udp", papertrailAddr, priority|syslog.LOG_USER, logEntry.ProjectName)
+		if err != nil {
+			log.Printf("Error connecting to Papertrail: %v", err)
+			continue
+		}
+		defer writer.Close()
+		err = sendToPapertrail(writer, logEntry, formattedLog)
 		if err != nil {
 			log.Printf("Error sending log to Papertrail: %v", err)
 		}
@@ -185,26 +220,25 @@ func colorize(level LogLevel) string {
 	return fmt.Sprintf("%s%s:%s", getColorForLevel(level), level, resetColor)
 }
 
-func sendToPapertrail(addr string, message string, program string) error {
-	conn, err := net.Dial("udp", addr)
-	if err != nil {
-		return fmt.Errorf("error connecting to Papertrail: %v", err)
-	}
-	defer conn.Close()
+func sendToPapertrail(writer *syslog.Writer, log VercelLog, message string) error {
+	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format(time.RFC3339)
+	logMessage := fmt.Sprintf("%s: %s", timestamp, message)
 
-	hostname, err := os.Hostname()
-	if err != nil {
-		hostname = "unknown"
-	}
-
-	timestamp := time.Now().Format(time.RFC3339)
-
-	syslogMessage := fmt.Sprintf("<%d>%s %s %s: %s", 22, timestamp, hostname, program, message)
-
-	_, err = fmt.Fprintf(conn, "%s", syslogMessage)
-	if err != nil {
-		return fmt.Errorf("error sending log to Papertrail: %v", err)
+	logFunc := getLogFunc(writer, log.Level)
+	if err := logFunc(logMessage); err != nil {
+		return fmt.Errorf("error sending log to Papertrail: %w", err)
 	}
 
 	return nil
+}
+
+func getLogFunc(writer *syslog.Writer, level LogLevel) func(string) error {
+	switch level {
+	case LogLevelError:
+		return writer.Err
+	case LogLevelWarn:
+		return writer.Warning
+	default:
+		return writer.Info
+	}
 }
