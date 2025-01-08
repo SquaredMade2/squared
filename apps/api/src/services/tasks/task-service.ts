@@ -321,6 +321,33 @@ export class TaskService implements TaskRpc {
 		});
 	}
 
+	async updateBlockedTasks({
+		blockingTaskIds,
+		taskId,
+	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task> {
+		return await this.db.task.update({
+			where: { id: taskId },
+			data: {
+				blockedBy: {
+					set: blockingTaskIds.map((id) => ({ id })),
+				},
+			},
+			include: { blockedBy: true },
+		});
+	}
+
+	async getBlockedByTasks({ taskId }: { taskId: string }): Promise<Task[]> {
+		const task = await this.db.task
+			.findUnique({
+				where: { id: taskId },
+				include: { blockedBy: true },
+			})
+			if (!task) {
+				this.throwError("Task not found");
+			}
+			return task.blockedBy;
+	}
+
 	private throwError(message: string): never {
 		this.logger.error(message);
 		throw new Error(message);
