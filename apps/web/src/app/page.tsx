@@ -1,65 +1,29 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { workspaceService } from "@/lib/services";
-import { useAuth } from "@clerk/nextjs";
+import { client } from "@/lib/client";
+import { auth } from "@clerk/nextjs/server";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
-const HomePage = () => {
+const HomePage = async () => {
 	const router = useRouter();
-	const { isLoaded, userId } = useAuth();
+	const { userId } = await auth();
 
-	const {
-		data: workspaces,
-		isLoading: workspacesLoading,
-		error: workspacesError,
-	} = useQuery({
-		queryKey: ["workspaces", userId],
-		queryFn: () => workspaceService.getUserWorkspaces(userId),
-		enabled: !!userId,
-	});
-
-	const {
-		data: defaultWorkspace,
-		isLoading: defaultWorkspaceLoading,
-		error: defaultWorkspaceError,
-	} = useQuery({
+	const { isLoading: workspaceLoading, error: workspaceError } = useQuery({
 		queryKey: ["defaultWorkspace", userId],
-		queryFn: () => workspaceService.getDefaultWorkspace(userId),
+		queryFn: async () => {
+			if (userId) {
+				const res = await client.user.getDefaultWorkpace
+					.$get({ userId })
+					.then((res) => res.json());
+				router.push(`/${res.url}`);
+			}
+		},
 		enabled: !!userId,
 	});
 
-	useEffect(() => {
-		const handleRedirection = async () => {
-			if (!isLoaded) return;
-
-			try {
-				if (userId) {
-					if (defaultWorkspace?.url) {
-						router.push(`/${defaultWorkspace.url}`);
-						return;
-					}
-
-					if (workspaces?.length) {
-						router.push(`/${workspaces[0].url}`);
-						return;
-					}
-
-					router.push("/join");
-				} else {
-					router.push("/sign-in");
-				}
-			} catch (error) {
-				console.error("Redirection Error: ", error);
-			}
-		};
-
-		handleRedirection();
-	}, [isLoaded, userId, defaultWorkspace, workspaces, router]);
-
-	if (!isLoaded || workspacesLoading || defaultWorkspaceLoading) {
+	if (workspaceLoading) {
 		return (
 			<div className="h-screen w-full">
 				<div className="flex h-full justify-center items-center">
@@ -72,10 +36,8 @@ const HomePage = () => {
 		);
 	}
 
-	if (workspacesError || defaultWorkspaceError) {
-		return (
-			<div>Error: {(workspacesError || defaultWorkspaceError)?.message}</div>
-		);
+	if (workspaceError) {
+		return <div>Error: {workspaceError?.message}</div>;
 	}
 
 	return null;

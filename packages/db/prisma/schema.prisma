@@ -197,8 +197,7 @@ model User {
   name                 String
   username             String?
   email                String   @unique
-  password             String?
-  verified             Boolean  @default(false)
+  externalId           String   @unique
   lastLogin            DateTime @default(now())
   createdAt            DateTime @default(now())
   onBoarding           Boolean  @default(true)
@@ -206,9 +205,7 @@ model User {
   avatarUrl            String?
   savedNotificationIds String[] @default([])
   subscribedTasks      String[] @default([])
-  googleId             String?
   githubUsername       String?
-  githubId             String?
   lastViewedTaskId     String?
   lastViewedTask       Task?    @relation("UserLastViewedTask", fields: [lastViewedTaskId], references: [id])
 

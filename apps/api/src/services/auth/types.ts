@@ -7,7 +7,7 @@ export type Login = {
 
 export type Register = {
 	email: string;
-	password: string;
+	externalId: string;
 	name: string;
 	username: string;
 	inviteToken?: string;
@@ -38,16 +38,5 @@ export type CheckTokenValidReturn = {
 } | null;
 
 export interface AuthRpc {
-	login: (login: Login) => Promise<UserToken | null>;
-	googleLogin: (login: OauthLogin) => Promise<UserToken | null>;
 	register: (login: Register) => Promise<RegisterReturn>;
-	verifyUser: ({ token }: { token: string }) => Promise<User | null>;
-	resetPasswordEmail: ({ email }: { email: string }) => Promise<void>;
-	resetPassword: ({
-		token,
-		newPassword,
-	}: { token: string; newPassword: string }) => Promise<void>;
-	checkTokenValid: ({
-		token,
-	}: { token: string }) => Promise<CheckTokenValidReturn>;
 }
