@@ -36,7 +36,7 @@ function LoginForm() {
 			inviteToken && router.prefetch("/");
 			const response = await signIn("credentials", {
 				redirect: false,
-				email: data.email.toLowerCase(),
+				email: data.email,
 				password: data.password,
 				callbackUrl: inviteToken
 					? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
