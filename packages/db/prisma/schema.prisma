@@ -148,6 +148,8 @@ model Task {
   sprintId       String?
   order          Int       @default(0)
 
+  blockedBy    Task[]      @relation("BlockedTasks")
+  blocking     Task[]      @relation("BlockedTasks")
   parent       Task?       @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
   children     Task[]      @relation("ParentChild")
   status       Status      @default(backlog)
