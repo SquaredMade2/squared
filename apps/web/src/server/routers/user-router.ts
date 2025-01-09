@@ -27,4 +27,11 @@ export const userRouter = router({
 			const { userId } = input;
 			return c.json(await userService.getDefaultWorkspace(TODO, { userId }));
 		}),
+	onBoardUser: privateProcedure
+		.input(z.object({ userId: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { userService } = ctx;
+			const { userId } = input;
+			return c.superjson(await userService.onBoardUser(TODO, { userId }));
+		}),
 });

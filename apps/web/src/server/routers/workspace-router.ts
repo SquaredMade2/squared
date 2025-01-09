@@ -20,4 +20,16 @@ export const workspaceRouter = router({
 				await workspaceService.getWorkspaceByUrl(TODO, { url: workspaceUrl }),
 			);
 		}),
+	createWorkspace: privateProcedure
+		.input(z.object({ name: z.string(), url: z.string() }))
+		.mutation(async ({ c, ctx, input }) => {
+			const { workspaceService } = ctx;
+			const { name, url } = input;
+			return c.json(
+				await workspaceService.createWorkspace(TODO, {
+					userId: ctx.user.id,
+					workspace: { name, url },
+				}),
+			);
+		}),
 });

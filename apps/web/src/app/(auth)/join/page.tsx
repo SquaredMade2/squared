@@ -5,10 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { userService, workspaceService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,13 +16,12 @@ import { useEffect, useState } from "react";
 const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
-	const { setWorkspaces, workspaces, createWorkspace } = useWorkspaceStore(
-		(state) => state,
-	);
-	const { updateUser, setUser, user } = useUserStore((state) => state);
+	const { createWorkspace } = useWorkspaceStore((state) => state);
+	const { updateUser, setUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 	const { signOut } = useClerk();
+	const queryClient = useQueryClient();
 
 	// List of restricted routes (initial set)
 	const restrictedRoutes = [
@@ -36,25 +35,81 @@ const Join = () => {
 	];
 	const { isLoaded, isSignedIn, user: clerkUser } = useUser();
 
+	const { data: user, isLoading: isUserLoading } = useQuery({
+		queryKey: ["user", clerkUser?.id],
+		queryFn: () => {
+			if (!clerkUser?.id) return;
+			const res = client.user.getUser
+				.$get({ userId: clerkUser?.id })
+				.then((res) => res.json());
+			return res;
+		},
+		enabled: !!clerkUser?.id,
+	});
+
+	const { data: workspaces, isLoading: isWorkspacesLoading } = useQuery({
+		queryKey: ["workspaces", clerkUser?.id],
+		queryFn: () => {
+			if (!clerkUser?.id) return;
+			const res = client.workspace.getAllWorkspaces
+				.$get({ userId: clerkUser?.id })
+				.then((res) => res.json());
+			return res;
+		},
+		enabled: !!clerkUser?.id,
+	});
+
+	const createWorkspaceMutation = useMutation({
+		mutationFn: async (newWorkspace: { name: string; url: string }) => {
+			if (!clerkUser?.id) return;
+			return await client.workspace.createWorkspace
+				.$post(newWorkspace)
+				.then((res) => res.json());
+		},
+		onSuccess: (data) => {
+			if (!data) return;
+			createWorkspace(data);
+			toast({ title: "Workspace created successfully" });
+			if (data) {
+				if (user?.onBoarding) {
+					onBoardUserMutation.mutate();
+				}
+				router.refresh();
+				router.push(`/${data.url}`);
+			}
+		},
+		onError: (error) => {
+			console.error(error);
+			toast({ title: "Failed to create workspace", variant: "destructive" });
+		},
+	});
+
+	const onBoardUserMutation = useMutation({
+		mutationFn: async () => {
+			if (!clerkUser?.id) return;
+			return await client.user.onBoardUser
+				.$post({ userId: clerkUser?.id })
+				.then((res) => res.json());
+		},
+		onSuccess: (data) => {
+			if (!data) return;
+			updateUser(data);
+			setUser(data);
+			queryClient.invalidateQueries({ queryKey: ["user", clerkUser?.id] });
+		},
+		onError: (error) => {
+			console.error(error);
+			toast({ title: "Failed to onboard user", variant: "destructive" });
+		},
+	});
+
 	useEffect(() => {
 		if (!isLoaded || !isSignedIn) return;
 
-		const initStore = async () => {
-			if (clerkUser) {
-				const newUser = await userService.getUser(TODO, {
-					userId: clerkUser.id,
-				});
-				if (!newUser) await signOut();
-				setUser(newUser);
-				setWorkspaces(
-					await workspaceService.getUserWorkspaces(TODO, {
-						userId: clerkUser.id,
-					}),
-				);
-			}
-		};
-		initStore();
-	}, [isLoaded, isSignedIn]);
+		if (!user && !isUserLoading) {
+			signOut();
+		}
+	}, [isLoaded, isSignedIn, user, isUserLoading]);
 
 	useEffect(() => {
 		const formattedUrlInput = inputValue
@@ -70,7 +125,10 @@ const Join = () => {
 
 	const isUrlTaken = (url: string) => {
 		// Check against both restricted routes and existing workspaces
-		const takenUrls = [...restrictedRoutes, ...workspaces.map((ws) => ws.url)];
+		const takenUrls = [
+			...restrictedRoutes,
+			...(workspaces?.map((ws) => ws.url) || []),
+		];
 		return takenUrls.includes(url);
 	};
 
@@ -102,33 +160,17 @@ const Join = () => {
 			name: inputValue,
 			url: urlInputValue,
 		};
-		try {
-			const workspace = await workspaceService.createWorkspace(TODO, {
-				workspace: newWorkspaceInput,
-				userId: clerkUser.id,
-			});
-			createWorkspace(workspace);
-			toast({ title: "Workspace created successfully" });
-			if (workspace) {
-				if (user.onBoarding) {
-					const updatedUser = await userService.onBoardUser(TODO, {
-						userId: clerkUser.id,
-					});
-					updateUser(updatedUser);
-					setUser(updatedUser);
-				}
-				router.refresh();
-				router.push(`/${workspace.url}`);
-			}
-		} catch (error) {
-			console.error(error);
-		}
+
+		createWorkspaceMutation.mutate(newWorkspaceInput);
 	};
 
+	if (isUserLoading || isWorkspacesLoading) {
+		return <div>Loading...</div>;
+	}
+
 	return (
-		// testing purpose this is css is not here to stay
 		<div className="w-screen h-screen">
-			{!user?.onBoarding && workspaces.length > 0 && (
+			{!user?.onBoarding && workspaces && workspaces.length > 0 && (
 				<div className="w-screen absolute top-0 p-10 flex justify-between">
 					<div className="flex flex-col text-sm">
 						<span className="text-xs text-muted-foreground">Logged in as:</span>
@@ -184,7 +226,11 @@ const Join = () => {
 							</div>
 						</div>
 					</div>
-					<Button type="submit">Create workspace</Button>
+					<Button type="submit" disabled={createWorkspaceMutation.isPending}>
+						{createWorkspaceMutation.isPending
+							? "Creating..."
+							: "Create workspace"}
+					</Button>
 				</form>
 			</Card>
 		</div>
