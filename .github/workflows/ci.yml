@@ -212,7 +212,10 @@ jobs:
       - name: Run Web tests
         run: pnpm --filter=web test
       - name: Build Web
-        run: pnpm --filter=web build 
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+        run: pnpm --filter=web build
 
   test-www:
     name: Test WWW
