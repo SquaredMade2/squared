@@ -107,11 +107,13 @@ export class TeamService implements TeamRpc {
 	async removeUserFromTeam({
 		userId,
 		teamId,
-	}: { userId: string; teamId: string }): Promise<void> {
+	}: { userId: string; teamId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Removing user from team");
 
 		await this.db.userTeam.delete({
 			where: { userId_teamId: { userId, teamId } },
 		});
+
+		return { success: true };
 	}
 }

@@ -44,8 +44,8 @@ export default function TokenVerificationPage({
 			} else if (status === "unauthenticated") {
 				router.push(`/login?token=${params.token}`);
 			} else {
-        router.push("/");
-      }
+				router.push("/");
+			}
 		};
 
 		if (!hasRunRef.current) {

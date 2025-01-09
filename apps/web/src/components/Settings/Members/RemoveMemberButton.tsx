@@ -45,7 +45,7 @@ const RemoveMemberButton = ({
 					);
 			} catch (error) {
 				console.error(error);
-				toast({ title: "Member could not be removed" });
+				toast({ title: "Member could not be removed", variant: "destructive" });
 			}
 		} else {
 			try {
@@ -61,7 +61,7 @@ const RemoveMemberButton = ({
 					);
 			} catch (error) {
 				console.error(error);
-				toast({ title: "Member could not be removed" });
+				toast({ title: "Member could not be removed", variant: "destructive" });
 			}
 		}
 	};

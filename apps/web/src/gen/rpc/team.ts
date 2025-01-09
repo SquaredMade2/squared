@@ -5,8 +5,8 @@ import { RPCContextClient } from "@squared/rpc-client";
 export type CreateTeamRequest = {
 	identifier: string;
 	name: string;
-	workspaceId: string;
 	userId: string;
+	workspaceId: string;
 };
 
 export type CreateTeamResponse = {
@@ -125,6 +125,10 @@ export type RemoveUserFromTeamRequest = {
 	userId: string;
 };
 
+export type RemoveUserFromTeamResponse = {
+	success: boolean;
+};
+
 /**
  * team service
  */
@@ -203,7 +207,7 @@ export class TeamService extends RPCContextClient {
 	removeUserFromTeam(
 		ctx: Context,
 		req: RemoveUserFromTeamRequest,
-	): Promise<void> {
+	): Promise<RemoveUserFromTeamResponse> {
 		return this.request(ctx, "removeUserFromTeam", req);
 	}
 }

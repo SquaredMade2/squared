@@ -201,7 +201,7 @@ export class WorkspaceService implements WorkspaceRpc {
 	async removeUserFromWorkspace({
 		workspaceId,
 		userId,
-	}: { workspaceId: string; userId: string }): Promise<void> {
+	}: { workspaceId: string; userId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Removing user from workspace");
 
 		const workspaceTeams = await this.db.team.findMany({
@@ -226,6 +226,8 @@ export class WorkspaceService implements WorkspaceRpc {
 		await this.db.userWorkspace.delete({
 			where: { userId_workspaceId: { userId, workspaceId } },
 		});
+
+		return { success: true };
 	}
 	async inviteToWorkspace({
 		workspaceId,

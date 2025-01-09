@@ -152,6 +152,10 @@ export type RemoveUserFromWorkspaceRequest = {
 	workspaceId: string;
 };
 
+export type RemoveUserFromWorkspaceResponse = {
+	success: boolean;
+};
+
 export type InviteToWorkspaceRequest = {
 	email: string | string[];
 	workspaceId: string;
@@ -238,7 +242,7 @@ export class WorkspaceService extends RPCContextClient {
 	removeUserFromWorkspace(
 		ctx: Context,
 		req: RemoveUserFromWorkspaceRequest,
-	): Promise<void> {
+	): Promise<RemoveUserFromWorkspaceResponse> {
 		return this.request(ctx, "removeUserFromWorkspace", req);
 	}
 
