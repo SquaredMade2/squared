@@ -8,10 +8,8 @@ export default clerkMiddleware(async (auth, request) => {
 
 // Check if the current route is public (accessible without authentication)
 const isPublicRoute = createRouteMatcher([
-	"/login(.*)",
-	"/register(.*)",
-	"/verify(.*)",
-	"/forgotPassword(.*)",
+	"/sign-in(.*)",
+	"/sign-up(.*)",
 	"/api(.*)",
 	"/",
 ]);
