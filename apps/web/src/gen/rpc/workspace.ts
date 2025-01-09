@@ -161,6 +161,10 @@ export type InviteToWorkspaceRequest = {
 	workspaceId: string;
 };
 
+export type InviteToWorkspaceResponse = {
+	success: boolean;
+};
+
 /**
  * workspace service
  */
@@ -252,7 +256,7 @@ export class WorkspaceService extends RPCContextClient {
 	inviteToWorkspace(
 		ctx: Context,
 		req: InviteToWorkspaceRequest,
-	): Promise<void> {
+	): Promise<InviteToWorkspaceResponse> {
 		return this.request(ctx, "inviteToWorkspace", req);
 	}
 }

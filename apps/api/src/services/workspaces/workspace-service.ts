@@ -235,7 +235,7 @@ export class WorkspaceService implements WorkspaceRpc {
 	}: {
 		workspaceId: string;
 		email: string | string[];
-	}): Promise<void> {
+	}): Promise<{ success: boolean }> {
 		this.logger.info("Inviting user to workspace: %0", {
 			email,
 			workspaceId,
@@ -287,6 +287,8 @@ export class WorkspaceService implements WorkspaceRpc {
 				}),
 			});
 		}
+
+		return { success: true };
 	}
 	private verifyToken(token: string): string | null {
 		try {

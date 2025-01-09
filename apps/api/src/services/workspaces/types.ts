@@ -39,5 +39,5 @@ export interface WorkspaceRpc {
 	inviteToWorkspace: (args: {
 		workspaceId: string;
 		email: string | string[];
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 }
