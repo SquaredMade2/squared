@@ -64,11 +64,11 @@ export const authRpcSchema = createServiceSchema<AuthRpc>()({
 	},
 	resetPasswordEmail: {
 		input: z.object({ email: z.string() }),
-		output: z.void(),
+		output: z.object({ success: z.boolean() }),
 	},
 	resetPassword: {
 		input: z.object({ token: z.string(), newPassword: z.string() }),
-		output: z.void(),
+		output: z.object({ success: z.boolean() }),
 	},
 	checkTokenValid: {
 		input: z.object({ token: z.string() }),
