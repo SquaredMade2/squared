@@ -28,6 +28,13 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
 import { Separator } from "../ui/separator";
 import { Switch } from "../ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
@@ -165,33 +172,30 @@ const TopNavBarDisplay = () => {
 							<Separator className="my-4" />
 							<div className="flex items-center justify-between mb-3">
 								<span className="text-xs text-foreground mr-4">Grouping</span>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button
-											variant="outline"
-											size="sm"
-											className="flex-grow justify-between"
-										>
-											<span className="text-xs">{groupTasksBy}</span>
-											<Layers className="size-4" />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent>
+								<Select
+									onValueChange={(value) => setOptions({ groupTasksBy: value })}
+									value={groupTasksBy}
+								>
+									<SelectTrigger>
+										<SelectValue>
+											<div className="w-full flex items-center justify-between">
+												<Layers className="size-4" />
+												<span className="mx-2 text-xs">{groupTasksBy}</span>
+											</div>
+										</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
 										{groupByOptions.map((option) => (
-											<DropdownMenuItem
+											<SelectItem
 												key={option}
+												value={option}
 												className="text-xs"
-												onSelect={() =>
-													setOptions({
-														groupTasksBy: option,
-													})
-												}
 											>
 												{option}
-											</DropdownMenuItem>
+											</SelectItem>
 										))}
-									</DropdownMenuContent>
-								</DropdownMenu>
+									</SelectContent>
+								</Select>
 							</div>
 							<div className="flex items-center justify-between">
 								<span className="text-xs text-foreground">Ordering</span>

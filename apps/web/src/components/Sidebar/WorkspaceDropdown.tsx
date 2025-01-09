@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { usePathname } from 'next/navigation'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,6 +12,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export function WorkspaceDropdown() {
@@ -23,20 +23,20 @@ export function WorkspaceDropdown() {
 	);
 	const { state } = useSidebar();
 
-	const updatePathWithWorkspace = (newWorkspace: {url: string}) => {
-		const pathNameParts = pathName.split('/');
-		
+	const updatePathWithWorkspace = (newWorkspace: { url: string }) => {
+		const pathNameParts = pathName.split("/");
+
 		// validation for 'inbox' page or any other page that doesn't have workspace url
 		if (workspace && pathNameParts.includes(workspace.url)) {
-			if (pathNameParts[1] === 'settings' || pathNameParts[2] === 'inbox') {
+			if (pathNameParts[1] === "settings" || pathNameParts[2] === "inbox") {
 				pathNameParts[2] = newWorkspace?.url;
-				router.push(pathNameParts.join('/'))
+				router.push(pathNameParts.join("/"));
 			} else {
-				router.push(`/${newWorkspace?.url}`)
+				router.push(`/${newWorkspace?.url}`);
 			}
 		}
 	};
-	
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
