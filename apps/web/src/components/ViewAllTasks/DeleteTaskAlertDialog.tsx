@@ -42,23 +42,23 @@ export const DeleteTaskAlertDialog = ({
 	const handleDelete = async () => {
 		try {
 			await taskService.deleteTask(TODO, { taskId: task.id });
-			deleteTask(task.id);
 
 			toast({
 				title: "Task Deleted",
 				description: `${task.title} has been successfully deleted.`,
 			});
-		} catch (error) {
-			toast({
-				title: "Error deleting task",
-				description: parseError(error),
-			});
-		} finally {
+			deleteTask(task.id);
 			if (redirectTask) {
 				router.push(
 					`${lastVisitedPage === "inbox" ? "/inbox" : `/${workspace?.url}/team/${team?.identifier}/${lastVisitedPage}`}`,
 				);
 			}
+		} catch (error) {
+			toast({
+				title: "Error deleting task",
+				description: parseError(error),
+				variant: "destructive",
+			});
 		}
 	};
 

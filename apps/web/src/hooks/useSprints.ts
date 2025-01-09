@@ -5,7 +5,6 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";
 import type { Sprint } from "@squared/db";
@@ -125,6 +124,6 @@ export function useSprints(sprintId?: string) {
 		sprintTasks: tasksQuery.data?.sprintTasks || [],
 		setSprint,
 		loading: isLoading,
-		error: parseError(error, "Failed to fetch sprint data"),
+		error: error,
 	};
 }

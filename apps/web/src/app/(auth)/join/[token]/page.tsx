@@ -47,6 +47,7 @@ export default function TokenVerificationPage({
 				}
 			}
 		};
+
 		if (!hasRunRef.current) {
 			verifyToken();
 			hasRunRef.current = true;
