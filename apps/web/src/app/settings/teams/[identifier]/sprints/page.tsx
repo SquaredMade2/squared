@@ -53,6 +53,9 @@ export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);
 	const { team, loading: teamLoading } = useTeams();
 	const [isSprintInfoExpanded, setIsSprintInfoExpanded] = useState(false);
+	const [sprintEnabled, setSprintEnabled] = useState(
+		team?.sprintsEnabled || false,
+	);
 	const [sprintStartDate, setSprintStartDate] = useState<Date | null>(
 		team?.sprintStartDate || null,
 	);
@@ -90,6 +93,7 @@ export default function SprintSettings() {
 			});
 			setTeam(updatedTeam);
 			updateTeam(updatedTeam);
+			setSprintEnabled(updatedTeam.sprintsEnabled);
 			if (updatedTeam.sprintsEnabled) {
 				const newSprintCount = await sprintService.initializeSprints(TODO, {
 					teamId: team.id,
@@ -150,7 +154,7 @@ export default function SprintSettings() {
 			</div>
 		);
 	if (!team) return null;
-	const { sprintsEnabled, sprintDuration } = team;
+	const { sprintDuration } = team;
 
 	return (
 		<div className="container mx-auto p-4 w-2/3 space-y-6 mb-16">
@@ -224,7 +228,7 @@ export default function SprintSettings() {
 					</p>
 				</div>
 				<Switch
-					checked={team.sprintsEnabled}
+					checked={sprintEnabled}
 					onCheckedChange={(checked) =>
 						handleUpdateTeam({
 							sprintsEnabled: checked,
@@ -240,7 +244,7 @@ export default function SprintSettings() {
 				/>
 			</div>
 
-			{sprintsEnabled && (
+			{sprintEnabled && (
 				<>
 					<Card className="py-6">
 						<CardContent className="space-y-4">
