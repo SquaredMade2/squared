@@ -199,35 +199,35 @@ const TopNavBarDisplay = () => {
 							</div>
 							<div className="flex items-center justify-between">
 								<span className="text-xs text-foreground">Ordering</span>
-								<DropdownMenu>
-									<DropdownMenuTrigger asChild>
-										<Button
-											variant="outline"
-											size="sm"
-											className="w-[120px] justify-between"
-										>
-											<span className="text-xs">{taskOrder.orderBy}</span>
-											<ChevronDown className="size-4" />
-										</Button>
-									</DropdownMenuTrigger>
-									<DropdownMenuContent className="w-[120px]">
-										{orderByOptions
-											.filter((option) => option !== groupTasksBy)
-											.map((option) => (
-												<DropdownMenuItem
-													key={option}
-													className="text-xs"
-													onSelect={() =>
-														setOptions({
-															taskOrder: { ...taskOrder, orderBy: option },
-														})
-													}
-												>
-													{option}
-												</DropdownMenuItem>
-											))}
-									</DropdownMenuContent>
-								</DropdownMenu>
+								<div className="w-[120px]">
+									<Select
+										onValueChange={(value) =>
+											setOptions({
+												taskOrder: { ...taskOrder, orderBy: value },
+											})
+										}
+										value={taskOrder.orderBy}
+									>
+										<SelectTrigger>
+											<SelectValue className=" justify-between">
+												<span className="text-xs">{taskOrder.orderBy}</span>
+											</SelectValue>
+										</SelectTrigger>
+										<SelectContent className="w-[120px]">
+											{orderByOptions
+												.filter((option) => option !== groupTasksBy)
+												.map((option) => (
+													<SelectItem
+														key={option}
+														value={option}
+														className="text-xs"
+													>
+														{option}
+													</SelectItem>
+												))}
+										</SelectContent>
+									</Select>
+								</div>
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
