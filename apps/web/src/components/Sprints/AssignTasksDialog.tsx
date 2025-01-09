@@ -212,11 +212,11 @@ export function AssignTasksDialog({
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
 						<div className="flex items-center gap-2 w-full sm:w-auto">
-							{/* <DropdownMenu>
+							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button
 										variant="outline"
-										size="sm"
+										size="lg"
 										className="w-[120px] justify-between"
 									>
 										<span className="text-xs">{taskOrder.orderBy}</span>
@@ -240,11 +240,14 @@ export function AssignTasksDialog({
 											</DropdownMenuItem>
 										))}
 								</DropdownMenuContent>
-							</DropdownMenu> */}
+							</DropdownMenu>
 
-							<Select
+							{/* <Select
 							// value={filterPriority}
-							// onValueChange={(value) => setFilterPriority(value as Priority)}
+							onValueChange={() =>
+								setOptions({
+									taskOrder: { ...taskOrder, orderBy: option },
+								})}
 							>
 								<SelectTrigger className="w-full sm:w-[150px]">
 									<SelectValue placeholder="Sorting Options" />
@@ -259,6 +262,23 @@ export function AssignTasksDialog({
 												</SelectItem>
 											);
 										})}
+								</SelectContent>
+							</Select> */}
+
+							<Select
+								value={filterPriority}
+								onValueChange={(value) => setFilterPriority(value as Priority)}
+							>
+								<SelectTrigger className="w-full sm:w-[150px]">
+									<SelectValue placeholder="Priority" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All Priorities</SelectItem>
+									<SelectItem value="noPriority">No Priority</SelectItem>
+									<SelectItem value="low">Low</SelectItem>
+									<SelectItem value="medium">Medium</SelectItem>
+									<SelectItem value="high">High</SelectItem>
+									<SelectItem value="urgent">Urgent</SelectItem>
 								</SelectContent>
 							</Select>
 
