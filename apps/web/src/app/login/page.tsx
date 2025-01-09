@@ -1,6 +1,6 @@
 "use client";
 
-import { GoogleIcon } from "@/components/Svg";
+// import { GoogleIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -22,7 +22,7 @@ function LoginForm() {
 	const [data, setData] = useState({ email: "", password: "" });
 	const [hidePassword, setHidePassword] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+	// const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { toast } = useToast();
@@ -60,22 +60,22 @@ function LoginForm() {
 		}
 	};
 
-	const handleGoogleLogin = async () => {
-		setIsGoogleLoading(true);
-		try {
-			await signIn("google", {
-				callbackUrl: inviteToken
-					? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
-					: process.env.NEXT_PUBLIC_URL,
-			});
-			router.refresh();
-			router.prefetch("/");
-		} catch (error) {
-			toast({ title: "Google login failed", variant: "destructive" });
-			console.error("Google login error:", error);
-			setIsGoogleLoading(false);
-		}
-	};
+	// const handleGoogleLogin = async () => {
+	// 	setIsGoogleLoading(true);
+	// 	try {
+	// 		await signIn("google", {
+	// 			callbackUrl: inviteToken
+	// 				? `${process.env.NEXT_PUBLIC_URL}/join/${inviteToken}`
+	// 				: process.env.NEXT_PUBLIC_URL,
+	// 		});
+	// 		router.refresh();
+	// 		router.prefetch("/");
+	// 	} catch (error) {
+	// 		toast({ title: "Google login failed", variant: "destructive" });
+	// 		console.error("Google login error:", error);
+	// 		setIsGoogleLoading(false);
+	// 	}
+	// };
 
 	const handleRegisterPush = () => {
 		router.push(inviteToken ? `/register?token=${inviteToken}` : "/register");
@@ -136,11 +136,7 @@ function LoginForm() {
 								</Button>
 							</div>
 						</div>
-						<Button
-							type="submit"
-							className="w-full"
-							disabled={isLoading || isGoogleLoading}
-						>
+						<Button type="submit" className="w-full" disabled={isLoading}>
 							{isLoading ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							) : null}
@@ -157,7 +153,7 @@ function LoginForm() {
 							</span>
 						</div> */}
 					</div>
-					{process.env.NODE_ENV === "production" && (
+					{/* process.env.NODE_ENV === "production" && (
 						<Button
 							onClick={handleGoogleLogin}
 							className="w-full"
@@ -171,7 +167,7 @@ function LoginForm() {
 							)}
 							Sign in with Google
 						</Button>
-					)}
+					) */}
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-px">
 					<p className="text-sm text-muted-foreground">
