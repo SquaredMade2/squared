@@ -16,7 +16,7 @@ const BlockedByCombobox = () => {
 	const user = useUserStore((state) => state.user);
 	const queryClient = useQueryClient();
 
-	const taskId = currentTask?.id ?? "";
+	const taskId = currentTask?.id;
 
 	const updateTaskMutation = useMutation({
 		mutationFn: async (blockingId: string) => {
