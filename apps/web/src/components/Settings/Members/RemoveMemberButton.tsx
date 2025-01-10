@@ -47,7 +47,8 @@ const RemoveMemberButton = ({
 			} catch (error) {
 				console.error(error);
 				toast({
-					title: `Member could not be removed \n ${parseError(error)}`,
+					title: "Member could not be removed",
+					description: parseError(error, "unknown error"),
 					variant: "destructive",
 				});
 			}
@@ -66,7 +67,8 @@ const RemoveMemberButton = ({
 			} catch (error) {
 				console.error(error);
 				toast({
-					title: `Member could not be removed \n ${parseError(error)}`,
+					title: "Member could not be removed",
+					description: parseError(error, "unknown error"),
 					variant: "destructive",
 				});
 			}
