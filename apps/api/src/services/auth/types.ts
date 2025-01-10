@@ -42,11 +42,13 @@ export interface AuthRpc {
 	googleLogin: (login: OauthLogin) => Promise<UserToken | null>;
 	register: (login: Register) => Promise<RegisterReturn>;
 	verifyUser: ({ token }: { token: string }) => Promise<User | null>;
-	resetPasswordEmail: ({ email }: { email: string }) => Promise<void>;
+	resetPasswordEmail: ({
+		email,
+	}: { email: string }) => Promise<{ success: boolean }>;
 	resetPassword: ({
 		token,
 		newPassword,
-	}: { token: string; newPassword: string }) => Promise<void>;
+	}: { token: string; newPassword: string }) => Promise<{ success: boolean }>;
 	checkTokenValid: ({
 		token,
 	}: { token: string }) => Promise<CheckTokenValidReturn>;
