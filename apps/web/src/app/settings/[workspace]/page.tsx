@@ -35,15 +35,15 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { teamService, workspaceService } from "@/lib/services";
+import { workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
-import type { Team } from "@squared/db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+// import { useMutation } from "@tanstack/react-query";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -69,9 +69,10 @@ export default function WorkspaceSettings() {
 	const { user } = useUserStore((state) => state);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isFormChanged, setIsFormChanged] = useState(false);
-	const [workspaceTeams, setWorkspaceTeams] = useState<Team[]>([]);
 	const { toast } = useToast();
 	const router = useRouter();
+
+	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -82,8 +83,6 @@ export default function WorkspaceSettings() {
 	});
 
 	const { watch } = form;
-
-	const watchTeamSelect = watch("viewTeam");
 
 	useEffect(() => {
 		if (!workspace) return;
@@ -106,34 +105,10 @@ export default function WorkspaceSettings() {
 
 	if (!workspace || !workspaces) return null;
 
-	useEffect(() => {
-		const fetchWorkspaceData = async () => {
-			if (workspace) {
-				try {
-					const workspaceTeams = await teamService.getWorkspaceTeams(TODO, {
-						workspaceId: workspace.id,
-					});
-
-					if (workspaceTeams.length > 0) {
-						setWorkspaceTeams(workspaceTeams);
-					}
-				} catch (error) {
-					console.error("getWorkspaceTeams Error: ", error);
-				}
-			}
-		};
-
-		fetchWorkspaceData();
-	}, [workspace]);
-
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		let defaultView: string | null = null;
-		if (values.viewTeam && values.viewPage) {
-			const teamIdentifier = workspaceTeams.filter(
-				(team: Team) => team.id === values.viewTeam,
-			)[0].identifier;
-
-			defaultView = `${values.url}/team/${teamIdentifier}/${values.viewPage !== "sprint-tasks" ? values.viewPage : "sprints/current"}`;
+		if (values.viewPage) {
+			defaultView = `${values.viewPage !== "sprint-tasks" ? values.viewPage : "sprints/current"}`;
 		}
 		try {
 			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
@@ -240,90 +215,45 @@ export default function WorkspaceSettings() {
 						/>
 						{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
 						<div className="col-span-2">
-							<div className="col-span-2 flex gap-4 mb-2">
-								<FormField
-									control={form.control}
-									name="viewTeam"
-									render={({ field }) => (
-										<FormItem className="col-span-1">
-											<FormLabel>Set Workspace View</FormLabel>
-											<FormControl>
-												<Select
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-													value={field.value}
-												>
-													<SelectTrigger className="w-[180px]">
-														<SelectValue placeholder="Select a team" />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectGroup>
-															{workspaceTeams.length > 0 &&
-																workspaceTeams.map((team: Team) => {
-																	return (
-																		<SelectItem key={team.id} value={team.id}>
-																			{team.name}
-																		</SelectItem>
-																	);
-																})}
-														</SelectGroup>
-													</SelectContent>
-												</Select>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="viewPage"
-									render={({ field }) => (
-										<FormItem className="col-span-1">
-											<FormLabel className="text-transparent">.</FormLabel>
-											<FormControl>
-												<Select
-													onValueChange={(value) => {
-														field.onChange(value);
-													}}
-													value={field.value}
-													disabled={!watchTeamSelect}
-												>
-													<SelectTrigger className="w-[180px]">
-														<SelectValue placeholder="Select a page" />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectGroup>
-															<SelectItem value="all">All Tasks</SelectItem>
-															<SelectItem value="active">
-																Active Tasks
-															</SelectItem>
-															{workspaceTeams.length > 0 &&
-																workspaceTeams.map((team: Team) => {
-																	if (
-																		team.id === watchTeamSelect &&
-																		team.sprintsEnabled
-																	) {
-																		return (
-																			<SelectItem
-																				key={team.id}
-																				value="sprint-tasks"
-																			>
-																				Sprint Tasks
-																			</SelectItem>
-																		);
-																	}
-																	return;
-																})}
-														</SelectGroup>
-													</SelectContent>
-												</Select>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
+							<FormField
+								control={form.control}
+								name="viewPage"
+								render={({ field }) => (
+									<FormItem className="col-span-1 mb-2">
+										<FormLabel>Set Workspace View</FormLabel>
+										<FormControl>
+											<Select
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												value={field.value}
+											>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a page" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{defaultPages.map((page: string) => {
+															return (
+																<SelectItem
+																	key={page}
+																	value={page}
+																>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+															);
+														})}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 							<FormDescription>
-								Set the default page users of a workspace will load into
+								Set the default page users of a workspace will load into <br />
+								<small className="text-[12px] text-red-600">
+									<sup>*</sup>If Sprints is disabled, default view will fall
+									back to <strong>All Tasks</strong>
+								</small>
 							</FormDescription>
 						</div>
 					</div>
