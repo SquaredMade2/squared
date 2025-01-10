@@ -71,6 +71,7 @@ export function useTaskPage() {
 			setBlockedByTasks(blockedByTasks);
 			return blockedByTasks;
 		},
+		enabled: !!taskQuery.data
 	});
 
 	const commentsQuery = useQuery({
