@@ -104,6 +104,16 @@ export class TeamService implements TeamRpc {
 		});
 	}
 
+	async getWorkspaceTeams({
+		workspaceId,
+	}: { workspaceId: string }): Promise<Team[]> {
+		this.logger.info("Finding workspace teams");
+
+		return await this.db.team.findMany({
+			where: { workspaceId },
+		});
+	}
+
 	async removeUserFromTeam({
 		userId,
 		teamId,

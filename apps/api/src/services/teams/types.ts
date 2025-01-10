@@ -35,6 +35,7 @@ export interface TeamRpc {
 	getUserTeams: (args: { userId: string; workspaceId: string }) => Promise<
 		Team[]
 	>;
+	getWorkspaceTeams: (args: { workspaceId: string }) => Promise<Team[]>;
 	removeUserFromTeam: (args: {
 		userId: string;
 		teamId: string;

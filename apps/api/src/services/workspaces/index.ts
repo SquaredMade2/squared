@@ -11,6 +11,7 @@ const workspaceParamsSchema = createSchema<WorkspaceParams>()(
 	z.object({
 		url: z.string(),
 		name: z.string(),
+		defaultView: z.string().nullable(),
 	}),
 );
 
@@ -18,7 +19,10 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 	createWorkspace: {
 		input: z.object({
 			userId: z.string(),
-			workspace: workspaceParamsSchema,
+			workspace: z.object({
+				url: z.string(),
+				name: z.string(),
+			}),
 		}),
 		output: workspaceLabelSchema,
 	},

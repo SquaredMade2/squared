@@ -21,6 +21,7 @@ export type CreateWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -43,6 +44,7 @@ export type GetWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -65,6 +67,7 @@ export type GetWorkspaceByUrlResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -74,6 +77,7 @@ export type GetWorkspaceByUrlResponse = {
 
 export type UpdateWorkspaceRequest = {
 	workspace: {
+		defaultView: string | null;
 		name: string;
 		url: string;
 	};
@@ -91,6 +95,7 @@ export type UpdateWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -117,6 +122,7 @@ export type GetUserWorkspacesResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -140,6 +146,7 @@ export type JoinWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;

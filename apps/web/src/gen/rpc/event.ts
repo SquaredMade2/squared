@@ -6,8 +6,14 @@ export type GetTaskEventsRequest = {
 	taskId: string;
 };
 
-export type GetTaskEventsResponse =
-	| unknown
+export type GetTaskEventsResponse = (
+	| {
+			authorId: string;
+			createdAt: Date;
+			id: string;
+			message: string;
+			taskId: string;
+	  }
 	| {
 			authorName: string | null;
 			branchId: string;
@@ -18,7 +24,8 @@ export type GetTaskEventsResponse =
 			taskId: string | null;
 			timestamp: Date;
 			url: string;
-	  }[];
+	  }
+)[];
 
 export type GetNotificationsRequest = {
 	userId: string;
@@ -27,7 +34,6 @@ export type GetNotificationsRequest = {
 export type GetNotificationsResponse = {
 	Task: {
 		assigneeId: string | null;
-		assigneeName: string | null;
 		authorId: string;
 		dateCreated: Date;
 		deleted: boolean;
@@ -58,6 +64,7 @@ export type GetNotificationsResponse = {
 		admins: string[];
 		avatarUrl: string | null;
 		companySize: number | null;
+		defaultView: string | null;
 		id: string;
 		name: string;
 		tasksCreated: number;
@@ -80,6 +87,34 @@ export type GetNotificationsResponse = {
 export type CreateLogEventRequest = {
 	authorId: string;
 	changes: unknown;
+	previousTask: {
+		assigneeId: string | null;
+		authorId: string;
+		dateCreated: Date;
+		deleted: boolean;
+		description: string | null;
+		dueDate: Date | null;
+		effortEstimate: number | null;
+		id: string;
+		identifier: string;
+		labels: string[];
+		order: number;
+		parentId: string | null;
+		priority: "noPriority" | "urgent" | "high" | "medium" | "low";
+		sprintId: string | null;
+		status:
+			| "backlog"
+			| "todo"
+			| "inProgress"
+			| "inReview"
+			| "done"
+			| "canceled"
+			| "archived";
+		teamId: string;
+		title: string;
+		updatedAt: Date;
+		workspaceId: string;
+	};
 	taskId: string;
 };
 
@@ -89,7 +124,7 @@ export type CreateLogEventResponse = {
 	id: string;
 	message: string;
 	taskId: string;
-};
+} | null;
 
 export type CreateNotificationRequest = {
 	description: string;
