@@ -39,6 +39,7 @@ export const STANDARD_WORKSPACE: Workspace = {
 	tasksCreated: 1,
 	universalTokenLinkId: null,
 	admins: [],
+	defaultView: null,
 };
 
 export const STANDARD_TEAM: Team = {
