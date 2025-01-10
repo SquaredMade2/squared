@@ -18,13 +18,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { eventService, teamService } from "@/lib/services";
-import {
-	useModalStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import { useClerk } from "@clerk/nextjs";
+import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { Workspace } from "@squared/db";
 import {
@@ -47,7 +42,7 @@ import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
 function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const { teams, setTeams, team } = useTeamStore((state) => state);
-	const user = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const { setShowCommand } = useModalStore((state) => state);
 	const router = useRouter();
 	const { toast } = useToast();
@@ -139,7 +134,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					}
 					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
 				/>
-				<UserProfile user={user} onLogout={handleLogout} />
+				<UserProfile onLogout={handleLogout} />
 			</SidebarFooter>
 		</>
 	);
