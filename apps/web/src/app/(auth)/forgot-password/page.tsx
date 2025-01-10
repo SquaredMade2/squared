@@ -185,7 +185,7 @@ const ForgotPasswordPage = () => {
 						<Button
 							variant="link"
 							className="p-0"
-							onClick={() => router.push("/login")}
+							onClick={() => router.push("/sign-in")}
 						>
 							Back to login
 						</Button>

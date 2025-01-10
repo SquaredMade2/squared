@@ -32,9 +32,11 @@ const RegisterPage = () => {
 								header: "hidden",
 								footer: "hidden",
 								formFieldLabel: "text-muted-foreground",
-								socialButtonsIconButton: "bg-primary/20",
+								socialButtonsBlockButton: "bg-primary/20",
+								socialButtonsBlockButtonText: "text-foreground/80",
 							},
 						}}
+						forceRedirectUrl={"/welcome"}
 					/>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-2">

@@ -20,7 +20,7 @@ export default function JoinWorkspace() {
 
 	useEffect(() => {
 		if (isLoaded && !isSignedIn) {
-			router.push(`/login?token=${token}`);
+			router.push(`/sign-in?token=${token}`);
 		}
 	}, [isLoaded, router, token]);
 

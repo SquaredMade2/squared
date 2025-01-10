@@ -85,7 +85,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 	const handleLogout = async (): Promise<void> => {
 		try {
 			await signOut();
-			router.replace("/login");
+			router.replace("/sign-in");
 			toast({ title: "Logged out successfully." });
 		} catch (error) {
 			console.error("Logout failed", error);

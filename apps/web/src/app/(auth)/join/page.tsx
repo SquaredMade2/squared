@@ -28,9 +28,10 @@ const Join = () => {
 		"verify",
 		"inbox",
 		"join",
-		"login",
+		"sign-in",
 		"password",
-		"register",
+		"sign-up",
+		"welcome",
 		"settings",
 	];
 	const { isLoaded, isSignedIn, user: clerkUser } = useUser();

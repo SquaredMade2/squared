@@ -19,7 +19,7 @@ export default function TokenVerificationPage({
 	useEffect(() => {
 		if (!isLoaded) return;
 		if (!isSignedIn) {
-			return router.push(`/login?token=${params.token}`);
+			return router.push(`/sign-in?token=${params.token}`);
 		}
 		const verifyToken = async () => {
 			if (user) {

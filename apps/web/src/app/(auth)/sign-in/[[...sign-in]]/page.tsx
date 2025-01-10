@@ -32,7 +32,8 @@ const LoginPage = () => {
 								header: "hidden",
 								footer: "hidden",
 								formFieldLabel: "text-muted-foreground",
-								socialButtonsIconButton: "bg-primary/20",
+								socialButtonsBlockButton: "bg-primary/20",
+								socialButtonsBlockButtonText: "text-foreground/80",
 							},
 						}}
 					/>

@@ -12,7 +12,6 @@ const isPublicRoute = createRouteMatcher([
 	"/sign-up(.*)",
 	"/forgot-password(.*)",
 	"/api(.*)",
-	"/",
 ]);
 
 // export default clerkMiddleware();

@@ -26,7 +26,7 @@ export default function Home() {
 		const fetchWorkspace = async () => {
 			setLoading(true);
 			if (!user) {
-				router.push("/login");
+				router.push("/sign-in");
 				return;
 			}
 			if (user?.onBoarding) {
