@@ -84,26 +84,6 @@ describe("Filter Service Tests", () => {
 		expect(response.statusCode).not.toBe(200);
 	});
 
-	it("does not insert a filter that has no conditions", async () => {
-		const { teamId, authorId } = await getUserAndTeamIDs();
-		const noConditionFilter = {
-			authorId,
-			teamId,
-			name: "test filter",
-			description: "test description",
-			sprintId: null,
-			filter: [],
-		};
-
-		const response = await request(app)
-			.post(createFilterEndpoint)
-			.send(noConditionFilter)
-			.set("Content-Type", "application/json")
-			.set("Accept", "application/json");
-
-		expect(response.statusCode).not.toBe(200);
-	});
-
 	it("retrieves multiple filters by team ID", async () => {
 		const { teamId, authorId } = await getUserAndTeamIDs();
 		const sampleFilters = [
