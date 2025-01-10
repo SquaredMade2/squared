@@ -61,7 +61,7 @@ export class AuthService implements AuthRpc {
 	}
 
 	private async checkExistingUser(email: string) {
-		const user = await this.db.user.findFirst({
+		const user = await this.db.user.findUnique({
 			where: { email },
 		});
 		if (user) {

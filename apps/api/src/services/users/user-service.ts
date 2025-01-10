@@ -14,7 +14,7 @@ export class UserService implements UserRpc {
 	async onBoardUser({ userId }: { userId: string }) {
 		this.logger.info("Onboarding user with id: %s", userId);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: { onBoarding: false },
 		});
 	}
@@ -25,7 +25,7 @@ export class UserService implements UserRpc {
 	}: { userId: string; name: string; username?: string }) {
 		this.logger.info("Updating user with id: %s", userId);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: args,
 		});
 	}
@@ -40,7 +40,7 @@ export class UserService implements UserRpc {
 			avatarUrl,
 		);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: { avatarUrl },
 		});
 	}
@@ -54,7 +54,7 @@ export class UserService implements UserRpc {
 	}) {
 		this.logger.info("Updating user notifications with id: %s", userId);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: {
 				savedNotificationIds,
 			},
@@ -113,7 +113,7 @@ export class UserService implements UserRpc {
 	async getUserRepositories({ userId }: { userId: string }) {
 		this.logger.info("Fetching user repositories with id: %s", userId);
 		const user = await this.db.user.findUnique({
-			where: { id: userId },
+			where: { externalId: userId },
 			select: { githubUsername: true },
 		});
 
@@ -154,7 +154,7 @@ export class UserService implements UserRpc {
 		);
 		try {
 			return await this.db.user.update({
-				where: { id: userId },
+				where: { externalId: userId },
 				data: { lastViewedTaskId: taskId },
 				include: { lastViewedTask: true },
 			});
