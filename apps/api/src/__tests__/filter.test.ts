@@ -59,7 +59,9 @@ describe("Filter Service Tests", () => {
 		const filter = newBasicFilter({ authorId, teamId: randomUUID() });
 		const response = await request(app).post(createFilterEndpoint).send(filter);
 
-		expect(response.statusCode).not.toBe(200);
+		// this is a client error so the response code should be in the 400s
+		expect(response.statusCode).toBeGreaterThanOrEqual(400);
+		expect(response.statusCode).toBeLessThan(500);
 	});
 
 	it("does not insert a filter if the author doesn't exist", async () => {
@@ -67,7 +69,8 @@ describe("Filter Service Tests", () => {
 		const filter = newBasicFilter({ authorId: randomUUID(), teamId });
 		const response = await request(app).post(createFilterEndpoint).send(filter);
 
-		expect(response.statusCode).not.toBe(200);
+		expect(response.statusCode).toBeGreaterThanOrEqual(400);
+		expect(response.statusCode).toBeLessThan(500);
 	});
 
 	it("retrieves multiple filters by team ID", async () => {
@@ -112,9 +115,7 @@ describe("Filter Service Tests", () => {
 		// equate names first in case filters are returned from rpc service
 		// in a different order than in the sampleFilters object
 		for (const retrieved of retrievedFilters) {
-			const original = sampleFilters.find(
-				(f) => f.name === retrieved.name,
-			);
+			const original = sampleFilters.find((f) => f.name === retrieved.name);
 			if (!original) {
 				throw new Error("failed to match filters");
 			}
