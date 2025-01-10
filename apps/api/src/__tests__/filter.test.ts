@@ -1,51 +1,51 @@
 import { randomUUID } from "node:crypto";
 import { app, prisma } from "@/api/app";
 import type { CreateFilterParams } from "@/services/filters/types";
-import { type SavedFilter, SavedFilterType } from "@squared/db";
+import type { Prisma, SavedFilter } from "@squared/db";
 import request from "supertest";
-
-function newBasicFilter(ids: {
-	authorId: string;
-	teamId: string;
-}): CreateFilterParams {
-	return {
-		authorId: ids.authorId,
-		teamId: ids.teamId,
-		name: "test filter",
-		description: "test description",
-		sprintId: null,
-		filter: [
-			{ field: "effortEstimate", value: 5, operator: "lessThan" },
-			{ field: "priority", value: "high", operator: "equals" },
-		],
-	};
-}
-
-// uses the seeded database to retrieve a team/user combo
-async function getUserAndTeamIDs() {
-	const teams = await prisma.team.findMany({
-		include: {
-			Users: true,
-		},
-	});
-	if (teams.length === 0) {
-		throw new Error("no teams detected");
-	}
-
-	const { Users: users, id: teamId } = teams[0];
-	if (users.length === 0) {
-		throw new Error("no users detected");
-	}
-
-	const sampleUser = users[0];
-	return { teamId, authorId: sampleUser.userId };
-}
 
 describe("Filter Service Tests", () => {
 	const createFilterEndpoint = "/rpc/filter/createFilter";
 	const getFilterEndpoint = "/rpc/filter/getFilters";
 	const updateFilterEndpoint = "/rpc/filter/updateFilter";
 	const deleteFilterEndpoint = "/rpc/filter/deleteFilter";
+
+	function newBasicFilter(ids: {
+		authorId: string;
+		teamId: string;
+	}): CreateFilterParams {
+		return {
+			authorId: ids.authorId,
+			teamId: ids.teamId,
+			name: "test filter",
+			description: "test description",
+			sprintId: null,
+			filter: [
+				{ field: "effortEstimate", value: 5, operator: "lessThan" },
+				{ field: "priority", value: "high", operator: "equals" },
+			],
+		};
+	}
+
+	// query the seeded database to retrieve a useable team/user combo
+	async function getUserAndTeamIDs() {
+		const teams = await prisma.team.findMany({
+			include: {
+				Users: true,
+			},
+		});
+		if (teams.length === 0) {
+			throw new Error("no teams detected");
+		}
+
+		const { Users: users, id: teamId } = teams[0];
+		if (users.length === 0) {
+			throw new Error("no users detected");
+		}
+
+		const sampleUser = users[0];
+		return { teamId, authorId: sampleUser.userId };
+	}
 
 	it("inserts a valid filter", async () => {
 		const filter = newBasicFilter(await getUserAndTeamIDs());
@@ -72,11 +72,11 @@ describe("Filter Service Tests", () => {
 
 	it("retrieves multiple filters by team ID", async () => {
 		const { teamId, authorId } = await getUserAndTeamIDs();
-		const sampleFilters = [
+		const sampleFilters: Prisma.SavedFilterCreateManyInput[] = [
 			{
 				authorId,
 				teamId,
-				type: SavedFilterType.TEAM,
+				type: "TEAM",
 				name: "test filter",
 				description: "test description",
 				sprintId: null,
@@ -88,7 +88,7 @@ describe("Filter Service Tests", () => {
 			{
 				authorId,
 				teamId,
-				type: SavedFilterType.TEAM,
+				type: "TEAM",
 				name: "test filter two",
 				description: "test description two",
 				sprintId: null,
@@ -108,28 +108,28 @@ describe("Filter Service Tests", () => {
 			.post(getFilterEndpoint)
 			.send({ teamId });
 		const retrievedFilters: SavedFilter[] = response.body;
-		
+
 		// equate names first in case filters are returned from rpc service
 		// in a different order than in the sampleFilters object
 		for (const retrieved of retrievedFilters) {
-			const correspondingBase = sampleFilters.find(
+			const original = sampleFilters.find(
 				(f) => f.name === retrieved.name,
 			);
-			if (!correspondingBase) {
+			if (!original) {
 				throw new Error("failed to match filters");
 			}
 
-			expect(retrieved).toMatchObject(correspondingBase);
+			expect(retrieved).toMatchObject(original);
 		}
 	});
 
 	it("updates a valid filter", async () => {
 		const filter = newBasicFilter(await getUserAndTeamIDs());
 		const insertedFilter = await prisma.savedFilter.create({
-			data: { ...filter, type: SavedFilterType.TEAM },
+			data: { ...filter, type: "TEAM" },
 		});
 
-		const updatedFilterParams: Partial<CreateFilterParams> = {
+		const updateFilterParams: Partial<CreateFilterParams> = {
 			name: "updated test filter",
 			description: "updated test filter description",
 			filter: [
@@ -140,16 +140,16 @@ describe("Filter Service Tests", () => {
 
 		const response = await request(app).post(updateFilterEndpoint).send({
 			filterId: insertedFilter.id,
-			filters: updatedFilterParams,
+			filters: updateFilterParams,
 		});
 
-		expect(response.body).toMatchObject(updatedFilterParams);
+		expect(response.body).toMatchObject(updateFilterParams);
 	});
 
 	it("deletes a valid filter", async () => {
 		const filter = newBasicFilter(await getUserAndTeamIDs());
 		const insertedFilter = await prisma.savedFilter.create({
-			data: { ...filter, type: SavedFilterType.TEAM },
+			data: { ...filter, type: "TEAM" },
 		});
 
 		await request(app)
