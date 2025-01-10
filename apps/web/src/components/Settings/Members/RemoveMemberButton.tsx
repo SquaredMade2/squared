@@ -8,6 +8,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { teamService, workspaceService } from "@/lib/services";
 import { useUserStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
@@ -45,7 +46,10 @@ const RemoveMemberButton = ({
 					);
 			} catch (error) {
 				console.error(error);
-				toast({ title: "Member could not be removed", variant: "destructive" });
+				toast({
+					title: `Member could not be removed \n ${parseError(error)}`,
+					variant: "destructive",
+				});
 			}
 		} else {
 			try {
@@ -61,7 +65,10 @@ const RemoveMemberButton = ({
 					);
 			} catch (error) {
 				console.error(error);
-				toast({ title: "Member could not be removed", variant: "destructive" });
+				toast({
+					title: `Member could not be removed \n ${parseError(error)}`,
+					variant: "destructive",
+				});
 			}
 		}
 	};
