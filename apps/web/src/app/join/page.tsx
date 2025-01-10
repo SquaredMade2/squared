@@ -75,6 +75,12 @@ const Join = () => {
 		return takenUrls.includes(url);
 	};
 
+  const isWorkspaceNameTaken = (name: string) => {
+    // Check against both restricted routes and existing workspaces
+    const takenNames = [...workspaces.map((ws) => ws.name)];
+    return takenNames.includes(name);
+  }
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (!user) return;
@@ -95,9 +101,17 @@ const Join = () => {
 			return;
 		}
 
+    if(isWorkspaceNameTaken(inputValue)) {
+      toast({
+				title: "Workspace name already exists. Please choose a different name.",
+				variant: "destructive",
+			});
+			return;
+    }
+
 		if (isUrlTaken(urlInputValue)) {
 			toast({
-				title: "Workspace already exists. Please choose a different name.",
+				title: "Workspace URL already exists. Please choose a different name.",
 				variant: "destructive",
 			});
 			return;
