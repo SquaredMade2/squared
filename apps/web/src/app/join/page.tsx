@@ -80,22 +80,34 @@ const Join = () => {
 		if (!user) return;
 
 		if (inputValue.length === 0) {
-			alert("Please enter a workspace name");
+			toast({
+				title: "Please enter a workspace name.",
+				variant: "destructive",
+			});
 			return;
 		}
 
 		if (urlInputValue.length === 0) {
-			alert("Please enter a workspace URL");
+			toast({
+				title: "Please enter a workspace URL.",
+				variant: "destructive",
+			});
 			return;
 		}
 
 		if (isUrlTaken(urlInputValue)) {
-			alert("Workspace URL is already taken");
+			toast({
+				title: "Workspace already exists. Please choose a different name.",
+				variant: "destructive",
+			});
 			return;
 		}
 
 		if (urlInputValue.includes("/")) {
-			alert("Workspace URL cannot contain '/'");
+      toast({
+				title: "Workplace URL cannot contain '/'",
+				variant: "destructive",
+			});
 			return;
 		}
 
