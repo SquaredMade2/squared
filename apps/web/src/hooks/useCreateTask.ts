@@ -36,6 +36,7 @@ export const useCreateTask = () => {
 				effortEstimate: input.effortEstimate,
 				teamId: input.teamId,
 				workspaceId: input.workspaceId,
+				sprintId: input.sprintId,
 			});
 			return await res.json();
 		},
