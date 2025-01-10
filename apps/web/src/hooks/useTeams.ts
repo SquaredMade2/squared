@@ -16,10 +16,10 @@ export function useTeams() {
 	const teamIdentifier = parseParams(params.identifier);
 
 	const { data: authData, isLoading: authLoading } = useQuery({
-		queryKey: ["teamAuthorization", user?.id, workspace?.id],
+		queryKey: ["teamAuthorization", user?.externalId, workspace?.id],
 		queryFn: () => {
 			if (!user || !workspace || !users.length) return { authorized: false };
-			const authorized = users.some((u) => u.id === user.id);
+			const authorized = users.some((u) => u.externalId === user.id);
 			return { authorized };
 		},
 		enabled: !!user && !!workspace && !userLoading,
@@ -34,7 +34,6 @@ export function useTeams() {
 		queryFn: async () => {
 			if (!user || !workspace) return { teams: [], team: null };
 			const res = await client.team.getUserTeams.$get({
-				userId: user.id,
 				workspaceId: workspace.id,
 			});
 			const allTeams = await res.json();

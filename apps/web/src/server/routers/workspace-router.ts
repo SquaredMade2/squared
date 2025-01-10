@@ -27,7 +27,7 @@ export const workspaceRouter = router({
 			const { name, url } = input;
 			return c.json(
 				await workspaceService.createWorkspace(TODO, {
-					userId: ctx.user.id,
+					userId: ctx.user.externalId,
 					workspace: { name, url },
 				}),
 			);

@@ -5,12 +5,15 @@ import { privateProcedure } from "../procedures";
 
 export const teamRouter = router({
 	getUserTeams: privateProcedure
-		.input(z.object({ userId: z.string(), workspaceId: z.string() }))
+		.input(z.object({ workspaceId: z.string() }))
 		.query(async ({ c, ctx, input }) => {
 			const { teamService } = ctx;
-			const { userId, workspaceId } = input;
+			const { workspaceId } = input;
 			return c.superjson(
-				await teamService.getUserTeams(TODO, { userId, workspaceId }),
+				await teamService.getUserTeams(TODO, {
+					userId: ctx.user.externalId,
+					workspaceId,
+				}),
 			);
 		}),
 	getTeamByIdentifier: privateProcedure

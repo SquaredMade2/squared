@@ -37,7 +37,7 @@ export function useWorkspaces() {
 
 	return {
 		user,
-		loading: isLoaded || loading,
+		loading: !isLoaded || loading,
 		error: parseError(error, "Failed to fetch workspaces"),
 		workspace: data?.workspace,
 		workspaces: data?.workspaces,

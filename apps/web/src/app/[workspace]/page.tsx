@@ -1,9 +1,9 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { workspaceService } from "@/lib/services";
-import { teamService } from "@/lib/services";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { teamService, workspaceService } from "@/lib/services";
+import { useWorkspaceStore } from "@/store";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ export default function Home() {
 	const router = useRouter();
 	const params = useParams();
 
-	const user = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const setWorkspace = useWorkspaceStore((state) => state.setWorkspace);
 	let workspaceUrl = params.workspace;
 	if (Array.isArray(workspaceUrl)) {
@@ -27,10 +27,6 @@ export default function Home() {
 			setLoading(true);
 			if (!user) {
 				router.push("/sign-in");
-				return;
-			}
-			if (user?.onBoarding) {
-				router.push("/join");
 				return;
 			}
 
