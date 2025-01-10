@@ -31,6 +31,7 @@ const BlockedByCombobox = () => {
       setBlockedByTasks(blockedTasks);
 			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
 		},
+		enabled: !!taskId
 	});
 
 	const handleUpdateBlockedByTasks = (taskId: string) => {
