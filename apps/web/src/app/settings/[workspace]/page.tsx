@@ -79,8 +79,8 @@ export default function WorkspaceSettings() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: workspace?.name || "",
-			url: workspace?.url.replace("https://app.squaredmade.com/", "") || "",
+			name: workspace?.name,
+			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
 	});
 
@@ -253,9 +253,9 @@ export default function WorkspaceSettings() {
 							/>
 							<FormDescription>
 								Set the default page users of a workspace will load into <br />
-								<small className="text-[12px] text-red-600">
-									<sup>*</sup>If Sprints is disabled, default view will fall
-									back to <strong>All Tasks</strong>
+								<small className="text-xs">
+									*If Sprints is disabled, default view will fall back to{" "}
+									<strong>All Tasks</strong>
 								</small>
 							</FormDescription>
 						</div>
