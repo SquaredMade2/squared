@@ -21,6 +21,7 @@ export class TeamService implements TeamRpc {
 		name,
 		identifier,
 		workspaceId,
+		userId,
 	}: CreateTeamParams): Promise<Team> {
 		this.logger.info("Creating team: %0", { name, identifier, workspaceId });
 		const existingTeam = await this.db.team.findFirst({
@@ -31,13 +32,22 @@ export class TeamService implements TeamRpc {
 			throw new Error("Team already exists");
 		}
 
-		return await this.db.team.create({
+		const createdTeam = await this.db.team.create({
 			data: {
 				name,
 				identifier,
 				workspaceId,
 			},
 		});
+
+		this.db.userTeam.create({
+			data: {
+				userId,
+				teamId: createdTeam.id,
+			},
+		});
+
+		return createdTeam;
 	}
 
 	async updateTeam({ id, ...args }: UpdateTeamParams): Promise<Team> {
@@ -94,14 +104,26 @@ export class TeamService implements TeamRpc {
 		});
 	}
 
+	async getWorkspaceTeams({
+		workspaceId,
+	}: { workspaceId: string }): Promise<Team[]> {
+		this.logger.info("Finding workspace teams");
+
+		return await this.db.team.findMany({
+			where: { workspaceId },
+		});
+	}
+
 	async removeUserFromTeam({
 		userId,
 		teamId,
-	}: { userId: string; teamId: string }): Promise<void> {
+	}: { userId: string; teamId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Removing user from team");
 
 		await this.db.userTeam.delete({
 			where: { userId_teamId: { userId, teamId } },
 		});
+
+		return { success: true };
 	}
 }

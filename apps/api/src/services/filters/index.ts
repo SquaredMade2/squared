@@ -63,11 +63,11 @@ const savedFilterSchema = createSchema<SavedFilter>()(
 		name: z.string(),
 		description: z.string().nullable(),
 		type: z.enum(["TEAM", "WORKSPACE"]),
-		filter: z.array(filterConditionSchema),
+		filter: z.array(filterConditionSchema).min(1),
 		workspaceId: z.string().nullable(),
 		teamId: z.string().nullable(),
 		authorId: z.string(),
-		sprintId: z.string().nullable()
+		sprintId: z.string().nullable(),
 	}),
 );
 
@@ -76,10 +76,10 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 		input: z.object({
 			name: z.string(),
 			description: z.string().nullable(),
-			filter: z.array(filterConditionSchema),
+			filter: z.array(filterConditionSchema).min(1),
 			teamId: z.string(),
 			authorId: z.string(),
-			sprintId:z.string().nullable()
+			sprintId: z.string().nullable(),
 		}),
 		output: savedFilterSchema,
 	},
@@ -93,7 +93,7 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 			filters: z.object({
 				name: z.string().optional(),
 				description: z.string().nullable(),
-				filter: z.array(filterConditionSchema),
+				filter: z.array(filterConditionSchema).min(1),
 			}),
 		}),
 		output: savedFilterSchema,

@@ -64,7 +64,7 @@ function RegisterForm() {
 			const res = await client.authentication.register.$post({
 				name: values.name,
 				username: values.name.split(" ").join(".").toLowerCase(),
-				email: values.email,
+				email: values.email.toLowerCase(),
 				password: values.password,
 				inviteToken,
 			});

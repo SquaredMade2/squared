@@ -1,10 +1,18 @@
 import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { eventService, taskService } from "@/lib/services";
+import {
+	useEventStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { TODO } from "@squared/context";
+import type { TaskEvent } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
@@ -20,7 +28,9 @@ export const TaskPageForm = () => {
 		updateTask,
 		currentTask: task,
 		tasks,
+		setCurrentTask,
 	} = useTaskStore((state) => state);
+	const { setEvents } = useEventStore((state) => state);
 	const { toast } = useToast();
 	const queryClient = useQueryClient();
 
@@ -42,8 +52,22 @@ export const TaskPageForm = () => {
 			});
 			return res.json();
 		},
-		onSuccess: (updatedTask) => {
-			updateTask(updatedTask);
+		onSuccess: async (updatedTask) => {
+			const taskKey = updatedTitle ? "title" : "description";
+			updateTask(
+				await taskService.updateTask(TODO, {
+					id: updatedTask.id,
+					updaterId: user?.id || "",
+					[taskKey]: taskKey === "title" ? updatedTitle : updatedDescription,
+				}),
+			);
+			setCurrentTask(updatedTask);
+
+			const updatedEvents = await eventService.getTaskEvents(TODO, {
+				taskId: updatedTask.id,
+			});
+			// TODO: Will remove type coercion once commits are implemented
+			setEvents(updatedEvents as TaskEvent[]);
 			queryClient.invalidateQueries({ queryKey: ["taskEvents", task?.id] });
 			toast({ title: "Task updated successfully" });
 		},

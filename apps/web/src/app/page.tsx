@@ -1,9 +1,11 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import type { GetWorkspaceResponse } from "@/gen/rpc/workspace";
 import { useAuthUser } from "@/hooks/useAuthUser";
-import { workspaceService } from "@/lib/services";
+import { teamService, workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
+import type { Team, User } from "@squared/db";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -16,16 +18,42 @@ const HomePage = () => {
 		const handleRedirection = async () => {
 			if (loading) return;
 
+			const userWorkspaceTeams = async (
+				userId: string,
+				workspaceId: string,
+			): Promise<Team> => {
+				const userTeams = await teamService.getUserTeams(TODO, {
+					userId,
+					workspaceId,
+				});
+
+				return userTeams[0];
+			};
+
+			const workspaceRoute = async (
+				workspace: GetWorkspaceResponse,
+				user: User,
+			) => {
+				if (workspace?.defaultView) {
+					if (workspace.defaultView === "my") {
+						return router.push(`/${workspace.url}/my-tasks/assigned`);
+					}
+					const userTeam = await userWorkspaceTeams(user.id, workspace.id);
+
+					return router.push(
+						`/${workspace.url}/team/${userTeam.identifier}/${workspace.defaultView === "sprint" && !userTeam.sprintsEnabled ? "all" : workspace.defaultView}`,
+					);
+				}
+				return router.push(`/${workspace?.url}`);
+			};
+
 			try {
 				if (user) {
 					if (user.defaultWorkspaceId) {
 						const workspace = await workspaceService.getWorkspace(TODO, {
 							workspaceId: user.defaultWorkspaceId,
 						});
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
-							return;
-						}
+						return workspaceRoute(workspace, user);
 					}
 
 					const workspaces = await workspaceService.getUserWorkspaces(TODO, {
@@ -33,8 +61,7 @@ const HomePage = () => {
 					});
 					setWorkspaces(workspaces);
 					if (workspaces.length) {
-						router.push(`/${workspaces[0].url}`);
-						return;
+						return workspaceRoute(workspaces[0], user);
 					}
 
 					router.push("/join");

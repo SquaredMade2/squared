@@ -194,7 +194,10 @@ export class EventService implements EventRpc {
 				]);
 
 				if (formattedOldValue !== formattedNewValue) {
-					const diffString = `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
+					const diffString =
+						key === "title" || key === "description" || key === "labels"
+							? `${key} has been updated`
+							: `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
 					return diffString;
 				}
 				return null;

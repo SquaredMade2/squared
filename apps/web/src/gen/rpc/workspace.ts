@@ -21,6 +21,7 @@ export type CreateWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -43,6 +44,7 @@ export type GetWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -65,6 +67,7 @@ export type GetWorkspaceByUrlResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -74,6 +77,7 @@ export type GetWorkspaceByUrlResponse = {
 
 export type UpdateWorkspaceRequest = {
 	workspace: {
+		defaultView: string | null;
 		name: string;
 		url: string;
 	};
@@ -91,6 +95,7 @@ export type UpdateWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -117,6 +122,7 @@ export type GetUserWorkspacesResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -140,6 +146,7 @@ export type JoinWorkspaceResponse = {
 	admins: string[];
 	avatarUrl: string | null;
 	companySize: number | null;
+	defaultView: string | null;
 	id: string;
 	name: string;
 	tasksCreated: number;
@@ -150,6 +157,10 @@ export type JoinWorkspaceResponse = {
 export type RemoveUserFromWorkspaceRequest = {
 	userId: string;
 	workspaceId: string;
+};
+
+export type SuccessFromWorkspaceResponse = {
+	success: boolean;
 };
 
 export type InviteToWorkspaceRequest = {
@@ -238,7 +249,7 @@ export class WorkspaceService extends RPCContextClient {
 	removeUserFromWorkspace(
 		ctx: Context,
 		req: RemoveUserFromWorkspaceRequest,
-	): Promise<void> {
+	): Promise<SuccessFromWorkspaceResponse> {
 		return this.request(ctx, "removeUserFromWorkspace", req);
 	}
 
@@ -248,7 +259,7 @@ export class WorkspaceService extends RPCContextClient {
 	inviteToWorkspace(
 		ctx: Context,
 		req: InviteToWorkspaceRequest,
-	): Promise<void> {
+	): Promise<SuccessFromWorkspaceResponse> {
 		return this.request(ctx, "inviteToWorkspace", req);
 	}
 }
