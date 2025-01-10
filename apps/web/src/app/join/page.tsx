@@ -76,7 +76,7 @@ const Join = () => {
 	};
 
   const isWorkspaceNameTaken = (name: string) => {
-    // Check against both restricted routes and existing workspaces
+    // Check for an existing workspace with the same name
     const takenNames = [...workspaces.map((ws) => ws.name)];
     return takenNames.includes(name);
   }
