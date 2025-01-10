@@ -63,7 +63,7 @@ export function useTaskPage() {
 	const blockedByQuery = useQuery({
 		queryKey: ["blockedBy", taskQuery.data?.id],
 		queryFn: async () => {
-			if (!taskQuery.data) throw new Error("Task not found");
+			if (!taskQuery.data) return;
 			const res = await client.task.getBlockedByTasks.$get({
 				taskId: taskQuery.data.id,
 			});
