@@ -11,7 +11,7 @@ export const authRouter = router({
 				name: z.string(),
 				email: z.string(),
 				externalId: z.string(),
-				username: z.string(),
+				username: z.string().nullable(),
 				inviteToken: z.string().optional(),
 			}),
 		)
@@ -22,7 +22,7 @@ export const authRouter = router({
 				name,
 				email,
 				externalId,
-				username,
+				username: username || name.split(" ").join(".").toLowerCase(),
 				inviteToken,
 			});
 
@@ -30,6 +30,6 @@ export const authRouter = router({
 				throw new HTTPException(400, { message });
 			}
 
-			return c.json({ title: message });
+			return c.json({ user, message });
 		}),
 });

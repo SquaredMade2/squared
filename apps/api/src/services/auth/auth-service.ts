@@ -22,6 +22,15 @@ export class AuthService implements AuthRpc {
 		inviteToken,
 	}: Register): Promise<RegisterReturn> {
 		this.logger.info("Registering user %s", email);
+
+		const existingUser = await this.checkExistingUser(email);
+		if (existingUser) {
+			return {
+				user: existingUser,
+				message: "User already exists",
+			};
+		}
+
 		// Creating the user
 		const user = await this.db.user.create({
 			data: {
@@ -49,5 +58,16 @@ export class AuthService implements AuthRpc {
 		}
 
 		return { user, message: "Registered Successfully", variant: "default" };
+	}
+
+	private async checkExistingUser(email: string) {
+		const user = await this.db.user.findFirst({
+			where: { email },
+		});
+		if (user) {
+			this.logger.info("User %s already exists", email);
+			return user;
+		}
+		return null;
 	}
 }

@@ -17,6 +17,10 @@ const HomePage = () => {
 				const res = await client.user.getDefaultWorkpace
 					.$get({ userId: user.id })
 					.then((res) => res.json());
+				if (!res) {
+					router.push("/join");
+					return;
+				}
 				router.push(`/${res.url}`);
 			} else {
 				router.push("/sign-in");

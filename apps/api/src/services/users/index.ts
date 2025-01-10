@@ -86,7 +86,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		input: z.object({
 			userId: z.string(),
 		}),
-		output: workspaceSchema,
+		output: workspaceSchema.nullable(),
 	},
 });
 

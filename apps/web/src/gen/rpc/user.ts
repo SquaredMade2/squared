@@ -221,7 +221,7 @@ export type GetDefaultWorkspaceResponse = {
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
 	url: string;
-};
+} | null;
 
 /**
  * user service

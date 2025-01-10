@@ -179,10 +179,10 @@ export class UserService implements UserRpc {
 
 	async getDefaultWorkspace({
 		userId,
-	}: { userId: string }): Promise<Workspace> {
+	}: { userId: string }): Promise<Workspace | null> {
 		this.logger.info("Fetching default workspace for userId: %s", userId);
 		const user = await this.db.user.findUnique({
-			where: { id: userId },
+			where: { externalId: userId },
 			include: {
 				Workspaces: {
 					include: {
@@ -193,6 +193,10 @@ export class UserService implements UserRpc {
 		});
 		if (!user) {
 			throw new Error("User not found");
+		}
+
+		if (user.Workspaces.length === 0) {
+			return null;
 		}
 
 		const defaultWorkspace = user.Workspaces.find(

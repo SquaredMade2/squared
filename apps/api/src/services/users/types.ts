@@ -31,5 +31,5 @@ export interface UserRpc {
 		userId: string;
 		taskId: string;
 	}) => Promise<User>;
-	getDefaultWorkspace: (args: { userId: string }) => Promise<Workspace>;
+	getDefaultWorkspace: (args: { userId: string }) => Promise<Workspace | null>;
 }
