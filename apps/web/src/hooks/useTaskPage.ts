@@ -17,9 +17,14 @@ export function useTaskPage() {
 		error: workspaceError,
 	} = useWorkspaces();
 	const { loading: teamLoading, error: teamError } = useTeams();
-	const { tasks, setCurrentTask, subtasks, setSubtasks } = useTaskStore(
-		(state) => state,
-	);
+	const {
+		tasks,
+		setCurrentTask,
+		subtasks,
+		setSubtasks,
+		blockedByTasks,
+		setBlockedByTasks,
+	} = useTaskStore((state) => state);
 	const { users, loading: userLoading, error: userError } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
@@ -53,6 +58,19 @@ export function useTaskPage() {
 			return subtasks;
 		},
 		enabled: !!taskQuery.data,
+	});
+
+	const blockedByQuery = useQuery({
+		queryKey: ["blockedBy", taskQuery.data?.id],
+		queryFn: async () => {
+			if (!taskQuery.data) throw new Error("Task not found");
+			const res = await client.task.getBlockedByTasks.$get({
+				taskId: taskQuery.data.id,
+			});
+			const blockedByTasks = await res.json();
+			setBlockedByTasks(blockedByTasks);
+			return blockedByTasks;
+		},
 	});
 
 	const commentsQuery = useQuery({
@@ -90,6 +108,7 @@ export function useTaskPage() {
 		taskQuery.isLoading ||
 		subtasksQuery.isLoading ||
 		commentsQuery.isLoading ||
+		blockedByQuery.isLoading ||
 		eventsQuery.isLoading;
 
 	const error =
@@ -99,6 +118,7 @@ export function useTaskPage() {
 		taskQuery.error ||
 		subtasksQuery.error ||
 		commentsQuery.error ||
+		blockedByQuery.error ||
 		eventsQuery.error;
 
 	return {
@@ -111,5 +131,6 @@ export function useTaskPage() {
 		isLoading,
 		error: error ? parseError(error, "Failed to fetch task") : null,
 		subtasks,
+		blockedByTasks,
 	};
 }

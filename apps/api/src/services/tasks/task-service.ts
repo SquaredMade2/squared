@@ -324,8 +324,8 @@ export class TaskService implements TaskRpc {
 	async updateBlockedTasks({
 		blockingTaskIds,
 		taskId,
-	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task> {
-		return await this.db.task.update({
+	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task[]> {
+		const updatedTask =  await this.db.task.update({
 			where: { id: taskId },
 			data: {
 				blockedBy: {
@@ -334,6 +334,7 @@ export class TaskService implements TaskRpc {
 			},
 			include: { blockedBy: true },
 		});
+		return updatedTask.blockedBy;
 	}
 
 	async getBlockedByTasks({ taskId }: { taskId: string }): Promise<Task[]> {

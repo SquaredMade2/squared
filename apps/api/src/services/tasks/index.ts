@@ -123,7 +123,7 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 			blockingTaskIds: z.array(z.string()),
 			taskId: z.string(),
 		}),
-		output: taskSchema,
+		output: z.array(taskSchema),
 	},
 	getBlockedByTasks: {
 		input: z.object({ taskId: z.string() }),

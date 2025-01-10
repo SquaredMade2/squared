@@ -4,6 +4,7 @@ export type TaskState = {
 	tasks: Task[];
 	currentTask: Task | null;
 	subtasks: Task[];
+	blockedByTasks: Task[];
 };
 
 export interface TaskResponse {
@@ -16,6 +17,7 @@ type TaskActions = {
 	setCurrentTask: (task: Task) => void;
 	setTasks: (tasks: Task[]) => void;
 	setSubtasks: (subtasks: Task[]) => void;
+	setBlockedByTasks: (tasks: Task[]) => void;
 	updateTask: (task: Task) => void;
 	createTask: (task: Task) => void;
 	deleteTask: (taskId: string) => void;

@@ -6,6 +6,7 @@ export interface TaskGridProps {
 	taskLabels: Label[];
 	currentWorkspaceUrl?: string;
 	isSubtask?: boolean;
+	isDisabled?: boolean;
 }
 
 export interface TaskListProps {

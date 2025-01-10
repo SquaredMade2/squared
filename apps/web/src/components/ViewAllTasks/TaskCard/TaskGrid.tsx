@@ -15,6 +15,7 @@ const TaskGrid = ({
 	taskLabels,
 	currentWorkspaceUrl,
 	isSubtask = false,
+	isDisabled = false,
 }: TaskGridProps) => {
 	const { getGridOptions } = useViewStore((state) => state);
 
@@ -51,6 +52,7 @@ const TaskGrid = ({
 								<UserSearch className="size-6 text-[#9597AD]" />
 							))}
 					</div>
+					{isDisabled && (<span className="text-destructive">blocked</span>)}
 					<div className="text-sm pr-8 w-full flex items-center gap-2">
 						<StatusIcon status={task.status} />
 						{truncateString(task.title, 70)}

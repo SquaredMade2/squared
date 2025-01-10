@@ -47,6 +47,24 @@ export const taskRouter = router({
 			const { teamId } = input;
 			return c.superjson(await taskService.getTeamTasks(TODO, { teamId }));
 		}),
+	getBlockedByTasks: privateProcedure
+		.input(z.object({ taskId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId } = input;
+			return c.superjson(await taskService.getBlockedByTasks(TODO, { taskId }));
+		}),
+	updateBlockedTasks: privateProcedure
+		.input(
+			z.object({ taskId: z.string(), blockingTaskIds: z.array(z.string()) }),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, blockingTaskIds } = input;
+			return c.superjson(
+				await taskService.updateBlockedTasks(TODO, { taskId, blockingTaskIds }),
+			);
+		}),
 	updateStatus: privateProcedure
 		.input(
 			z.object({

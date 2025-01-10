@@ -384,7 +384,7 @@ export class TaskService extends RPCContextClient {
 	updateBlockedTasks(
 		ctx: Context,
 		req: UpdateBlockedTaskRequest,
-	): Promise<Task> {
+	): Promise<Task[]> {
 		return this.request(ctx, "updateBlockedTasks", req);
 	}
 

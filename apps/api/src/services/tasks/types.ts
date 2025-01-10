@@ -51,7 +51,7 @@ export interface TaskRpc {
 	updateBlockedTasks({
 		blockingTaskIds,
 		taskId,
-	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task>;
+	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task[]>;
 	getBlockedByTasks: (args: { taskId: string }) => Promise<Task[]>;
 	getSubtasks: (args: { parentId: string }) => Promise<Task[]>;
 }
