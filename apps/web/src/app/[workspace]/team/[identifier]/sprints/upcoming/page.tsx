@@ -5,6 +5,7 @@ import { SprintCard } from "@/components/Sprints/SprintCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
 import { useTaskStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 
 export default function UpcomingSprints() {
 	const { workspace, team, sprints, loading, error } = useSprints();
@@ -17,7 +18,7 @@ export default function UpcomingSprints() {
 	if (error) {
 		return (
 			<SprintError
-				error={error}
+				error={parseError(error, "Failed to fetch sprint data")}
 				teamIdentifier={team?.identifier}
 				workspaceUrl={workspace?.url}
 			/>

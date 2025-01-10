@@ -3,6 +3,7 @@ import type { Label, Workspace } from "@squared/db";
 export type WorkspaceParams = {
 	url: string;
 	name: string;
+	defaultView?: string | null;
 };
 
 export type WorkspaceLabels = Workspace & {
@@ -11,7 +12,10 @@ export type WorkspaceLabels = Workspace & {
 
 export type CreateWorkspaceParams = {
 	userId: string;
-	workspace: WorkspaceParams;
+	workspace: {
+		url: string;
+		name: string;
+	};
 };
 
 export interface WorkspaceRpc {
@@ -35,9 +39,9 @@ export interface WorkspaceRpc {
 	removeUserFromWorkspace: (args: {
 		workspaceId: string;
 		userId: string;
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 	inviteToWorkspace: (args: {
 		workspaceId: string;
 		email: string | string[];
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 }

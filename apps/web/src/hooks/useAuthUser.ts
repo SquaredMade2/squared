@@ -37,6 +37,6 @@ export function useAuthUser() {
 	return {
 		user: data || user,
 		loading: isLoading,
-		error: parseError(error, "Failed to fetch user"),
+		error: error ? parseError(error, "Failed to fetch user") : null,
 	};
 }
