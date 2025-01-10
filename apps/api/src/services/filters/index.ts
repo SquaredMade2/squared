@@ -76,7 +76,7 @@ export const filterRpcSchema = createServiceSchema<FilterRpc>()({
 		input: z.object({
 			name: z.string(),
 			description: z.string().nullable(),
-			filter: z.array(filterConditionSchema),
+			filter: z.array(filterConditionSchema).min(1),
 			teamId: z.string(),
 			authorId: z.string(),
 			sprintId:z.string().nullable()

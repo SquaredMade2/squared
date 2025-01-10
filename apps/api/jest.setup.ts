@@ -30,9 +30,6 @@ beforeAll(async () => {
 
 		// Run migrations
 		execSync("pnpm run --filter=@squared/db db:push", { stdio: "inherit" });
-
-		// Seed the database
-		execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
 	} catch (error) {
 		console.error("Error setting up test environment:", error);
 		throw error;
@@ -67,4 +64,7 @@ beforeEach(async () => {
 			await prisma.$executeRawUnsafe(`TRUNCATE TABLE "${tablename}" CASCADE;`);
 		}
 	}
+
+	// Seed the database
+	execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
 });

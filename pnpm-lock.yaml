@@ -163,6 +163,8 @@ importers:
         specifier: ^5.5.4
         version: 5.7.2
 
+  apps/logs: {}
+
   apps/web:
     dependencies:
       '@hello-pangea/dnd':
