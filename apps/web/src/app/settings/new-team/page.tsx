@@ -77,7 +77,6 @@ export default function CreateTeam() {
 		const doesTeamExist = teams.find((team) => team.name === values.teamName);
 
 		if (!doesTeamExist && user) {
-			console.log("test");
 			const createdTeamService = await teamService.createTeam(TODO, {
 				name: values.teamName.trim(),
 				identifier: values.teamIdentifier.toUpperCase(),
