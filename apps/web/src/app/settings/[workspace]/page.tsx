@@ -57,7 +57,6 @@ const formSchema = z.object({
 		.regex(/^[a-zA-Z0-9-]+$/, {
 			message: "URL can only contain letters, numbers, and hyphens.",
 		}),
-	viewTeam: z.string().trim().optional(),
 	viewPage: z.string().trim().optional(),
 });
 
@@ -73,6 +72,10 @@ export default function WorkspaceSettings() {
 	const router = useRouter();
 
 	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
+	const defaultSelect =
+		workspace?.defaultView === "sprints/current"
+			? "sprint"
+			: workspace?.defaultView;
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -92,7 +95,7 @@ export default function WorkspaceSettings() {
 				value.name !== workspace.name ||
 				value.url !==
 					workspace.url.replace("https://app.squaredmade.com/", "") ||
-				(value.viewTeam && value.viewPage)
+				value.viewPage
 			) {
 				setIsFormChanged(true);
 			} else {
@@ -108,7 +111,7 @@ export default function WorkspaceSettings() {
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		let defaultView: string | null = null;
 		if (values.viewPage) {
-			defaultView = `${values.viewPage !== "sprint-tasks" ? values.viewPage : "sprints/current"}`;
+			defaultView = `${values.viewPage !== "sprint" ? values.viewPage : "sprints/current"}`;
 		}
 		try {
 			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
@@ -227,6 +230,7 @@ export default function WorkspaceSettings() {
 													field.onChange(value);
 												}}
 												value={field.value}
+												defaultValue={defaultSelect ? defaultSelect : ""}
 											>
 												<SelectTrigger className="w-[180px]">
 													<SelectValue placeholder="Select a page" />
