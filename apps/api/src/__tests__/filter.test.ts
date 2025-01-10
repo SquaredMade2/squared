@@ -44,16 +44,12 @@ async function getUserAndTeamIDs() {
 describe("Filter Service Tests", () => {
 	const createFilterEndpoint = "/rpc/filter/createFilter";
 	const getFilterEndpoint = "/rpc/filter/getFilters";
+	const updateFilterEndpoint = "/rpc/filter/updateFilter";
+	const deleteFilterEndpoint = "/rpc/filter/deleteFilter";
 
 	it("inserts a valid filter", async () => {
-		const { teamId, authorId } = await getUserAndTeamIDs();
-		const filter = newBasicFilter({ authorId, teamId });
-
-		const response = await request(app)
-			.post(createFilterEndpoint)
-			.send(filter)
-			.set("Content-Type", "application/json")
-			.set("Accept", "application/json");
+		const filter = newBasicFilter(await getUserAndTeamIDs());
+		const response = await request(app).post(createFilterEndpoint).send(filter);
 
 		expect(response.body).toMatchObject(filter);
 	});
@@ -61,12 +57,7 @@ describe("Filter Service Tests", () => {
 	it("does not insert a filter if the team doesn't exist", async () => {
 		const { authorId } = await getUserAndTeamIDs();
 		const filter = newBasicFilter({ authorId, teamId: randomUUID() });
-
-		const response = await request(app)
-			.post(createFilterEndpoint)
-			.send(filter)
-			.set("Content-Type", "application/json")
-			.set("Accept", "application/json");
+		const response = await request(app).post(createFilterEndpoint).send(filter);
 
 		expect(response.statusCode).not.toBe(200);
 	});
@@ -74,12 +65,7 @@ describe("Filter Service Tests", () => {
 	it("does not insert a filter if the author doesn't exist", async () => {
 		const { teamId } = await getUserAndTeamIDs();
 		const filter = newBasicFilter({ authorId: randomUUID(), teamId });
-
-		const response = await request(app)
-			.post(createFilterEndpoint)
-			.send(filter)
-			.set("Content-Type", "application/json")
-			.set("Accept", "application/json");
+		const response = await request(app).post(createFilterEndpoint).send(filter);
 
 		expect(response.statusCode).not.toBe(200);
 	});
@@ -120,11 +106,11 @@ describe("Filter Service Tests", () => {
 		await prisma.savedFilter.createMany({ data: sampleFilters });
 		const response = await request(app)
 			.post(getFilterEndpoint)
-			.send({ teamId })
-			.set("Content-Type", "application/json")
-			.set("Accept", "application/json");
-
+			.send({ teamId });
 		const retrievedFilters: SavedFilter[] = response.body;
+		
+		// equate names first in case filters are returned from rpc service
+		// in a different order than in the sampleFilters object
 		for (const retrieved of retrievedFilters) {
 			const correspondingBase = sampleFilters.find(
 				(f) => f.name === retrieved.name,
@@ -137,6 +123,41 @@ describe("Filter Service Tests", () => {
 		}
 	});
 
-	it("updates a filter correctly", async () => {});
-	it("deletes a filter correctly", async () => {});
+	it("updates a valid filter", async () => {
+		const filter = newBasicFilter(await getUserAndTeamIDs());
+		const insertedFilter = await prisma.savedFilter.create({
+			data: { ...filter, type: SavedFilterType.TEAM },
+		});
+
+		const updatedFilterParams: Partial<CreateFilterParams> = {
+			name: "updated test filter",
+			description: "updated test filter description",
+			filter: [
+				{ field: "effortEstimate", value: 1, operator: "greaterThan" },
+				{ field: "priority", value: "low", operator: "equals" },
+			],
+		};
+
+		const response = await request(app).post(updateFilterEndpoint).send({
+			filterId: insertedFilter.id,
+			filters: updatedFilterParams,
+		});
+
+		expect(response.body).toMatchObject(updatedFilterParams);
+	});
+
+	it("deletes a valid filter", async () => {
+		const filter = newBasicFilter(await getUserAndTeamIDs());
+		const insertedFilter = await prisma.savedFilter.create({
+			data: { ...filter, type: SavedFilterType.TEAM },
+		});
+
+		await request(app)
+			.post(deleteFilterEndpoint)
+			.send({ filterId: insertedFilter.id });
+
+		expect(
+			await prisma.savedFilter.findUnique({ where: { id: insertedFilter.id } }),
+		).toBe(null);
+	});
 });
