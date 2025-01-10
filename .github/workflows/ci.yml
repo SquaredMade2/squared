@@ -15,6 +15,7 @@ jobs:
       api-changed: ${{ steps.check-changes.outputs.api }}
       web-changed: ${{ steps.check-changes.outputs.web }}
       www-changed: ${{ steps.check-changes.outputs.www }}
+      logs-changed: ${{ steps.check-changes.outputs.logs }}
       run-all: ${{ steps.check-label.outputs.run-all }}
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +29,7 @@ jobs:
           echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "logs=$(git diff --name-only origin/develop HEAD | grep -q '^apps/logs/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
       - name: Check for Updates label
         id: check-label
@@ -213,6 +215,29 @@ jobs:
         run: pnpm --filter=web test
       - name: Build Web
         run: pnpm --filter=web build 
+
+  test-logs:
+    name: Test Logs
+    needs: [detect-changes, setup]
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect-changes.outputs.logs-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23"
+
+      - name: Enter the logs directory
+        run: cd apps/logs
+
+      - name: Get dependencies
+        run: go mod download
+
+      - name: Run tests
+        run: go test -v ./...
 
   test-www:
     name: Test WWW
