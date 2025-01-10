@@ -23,19 +23,22 @@ jobs:
         # Define the map_github_to_discord function
         map_github_to_discord() {
           case "$1" in
+            "agreen254") echo "152861183026790402" ;;
+            "BBruington") echo "255762796162187264" ;;
+            "bret-miller2010") echo "317823605218213898" ;;
             "Chase-T-White") echo "414567565843759105" ;;
             "duncanwhyte") echo "223870029660160001" ;;
             "edchrepo") echo "300515474322489344" ;;
             "ellischung") echo "273201608685387786" ;;
+            "harpreetsingh100") echo "1014779425637814312" ;;
             "jamhdev") echo "1220824900365844522" ;;
             "napqueenkaila") echo "1074750793128882247" ;;
             "NateCummens") echo "447548944122380309" ;;
             "npinak") echo "748245605587091577" ;;
-            "oerkperl") echo "1084769574098047059" ;;
             "SerhiiDer") echo "791023762124308500" ;;
             "Smerly") echo "277576312686641153" ;;
             "THEjacob1000") echo "213438742315139073" ;;
-            "agreen254") echo "152861183026790402" ;;
+            "velinakennedy") echo "669209137376264221" ;;
             "yachi98") echo "1218179333953421374" ;;
             *) echo "" ;;
           esac
