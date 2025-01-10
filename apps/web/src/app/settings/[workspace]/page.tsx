@@ -43,7 +43,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-// import { useMutation } from "@tanstack/react-query";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
