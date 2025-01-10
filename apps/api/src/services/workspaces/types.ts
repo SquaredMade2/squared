@@ -39,9 +39,9 @@ export interface WorkspaceRpc {
 	removeUserFromWorkspace: (args: {
 		workspaceId: string;
 		userId: string;
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 	inviteToWorkspace: (args: {
 		workspaceId: string;
 		email: string | string[];
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 }

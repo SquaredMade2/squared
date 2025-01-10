@@ -39,5 +39,5 @@ export interface TeamRpc {
 	removeUserFromTeam: (args: {
 		userId: string;
 		teamId: string;
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 }

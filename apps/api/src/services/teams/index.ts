@@ -66,7 +66,7 @@ export const teamRpcSchema = createServiceSchema<TeamRpc>()({
 	},
 	removeUserFromTeam: {
 		input: z.object({ userId: z.string(), teamId: z.string() }),
-		output: z.void(),
+		output: z.object({ success: z.boolean() }),
 	},
 });
 
