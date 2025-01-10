@@ -14,7 +14,7 @@ export const createWorkspaceStore = (
 		persist(
 			(set) => ({
 				...initState,
-				setWorkspace: (workspace) => set({ workspace: workspace }),
+				setWorkspace: (workspace) => set({ workspace }),
 				setWorkspaces: (workspaces) => set({ workspaces }),
 				createWorkspace: (workspace) =>
 					set((state) => ({
