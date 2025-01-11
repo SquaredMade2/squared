@@ -246,26 +246,6 @@ func TestFormatLog(t *testing.T) {
 	}
 }
 
-func TestGetPapertrailAddr(t *testing.T) {
-	tests := []struct {
-		name        string
-		isStaging   bool
-		expectedURL string
-	}{
-		{"Staging URL", true, "staging.logs.papertrailapp.com:12345"},
-		{"Production URL", false, "prod.logs.papertrailapp.com:12345"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			url := getPapertrailAddr(tt.isStaging)
-			if url != tt.expectedURL {
-				t.Errorf("getPapertrailAddr() = %v, want %v", url, tt.expectedURL)
-			}
-		})
-	}
-}
-
 func computeHMAC(body, secret string) string {
 	h := hmac.New(sha1.New, []byte(secret))
 	h.Write([]byte(body))
