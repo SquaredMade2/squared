@@ -195,7 +195,7 @@ func formatLog(log VercelLog) string {
 	if log.Level == "error" {
 		// For error logs, extract statusCode from the message and add the full error message
 		status = extractStatusCodeFromErrorMessage(log.Message)
-		builder.WriteString(fmt.Sprintf("status=%d path=%s error_message=%s", status, log.Host, log.Path, sanitizeErrorMessage(log.Message)))
+		builder.WriteString(fmt.Sprintf("status=%d path=%s error_message=%s", status, log.Path, sanitizeErrorMessage(log.Message)))
 	} else {
 		// For non-error logs, use the statusCode from the log struct
 		status = log.StatusCode
@@ -205,7 +205,7 @@ func formatLog(log VercelLog) string {
 		if duration != "" && log.Level == LogLevelInfo {
 			builder.WriteString(fmt.Sprintf("time=%s ", duration))
 		}
-		builder.WriteString(fmt.Sprintf("path=%s", log.Host, log.Path))
+		builder.WriteString(fmt.Sprintf("path=%s", log.Path))
 	}
 
 	// Remove trailing space and return the final string
