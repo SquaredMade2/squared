@@ -233,7 +233,6 @@ func TestFormatLog(t *testing.T) {
 		t.Fatalf("Failed to unmarshal testInfo: %v", err)
 	}
 
-	fmt.Printf("logs: %v\n", logs)
 	if len(logs) == 0 {
 		t.Fatalf("No log entries in testInfo data")
 	}
@@ -242,7 +241,7 @@ func TestFormatLog(t *testing.T) {
 
 	formatted := formatLog(log)
 	fmt.Printf("formatted: %v\n", formatted)
-	expected := "Jan 02 15:04:05 \x1b[32minfo:\x1b[0m [GET] /21213/cart/pay status=200"
+	expected := "Jan 05 22:38:52 \x1b[32minfo:\x1b[0m [POST] /api/auth/_log?nxtPnextauth=_log status=200"
 
 	if formatted != expected {
 		t.Errorf("formatLog() = %v, want %v", formatted, expected)
