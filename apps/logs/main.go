@@ -188,8 +188,8 @@ func formatLog(log VercelLog) string {
 
 	// Common parts for all log levels
 	builder.WriteString(fmt.Sprintf(
-		"%s %s region=%s req_id=%s",
-		timestamp, coloredLogLevel, log.Proxy.Region, log.RequestID,
+		"%s %s ",
+		timestamp, coloredLogLevel,
 	))
 
 	if log.Level == "error" {
