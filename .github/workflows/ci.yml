@@ -218,7 +218,7 @@ jobs:
 
   test-logs:
     name: Test Logs
-    needs: [detect-changes, setup]
+    needs: [detect-changes]
     runs-on: ubuntu-latest
     if: ${{ needs.detect-changes.outputs.logs-changed == 'true' || needs.detect-changes.outputs.run-all == 'true' }}
     steps:
