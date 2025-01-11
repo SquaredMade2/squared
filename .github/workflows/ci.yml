@@ -230,13 +230,12 @@ jobs:
         with:
           go-version: "1.23"
 
-      - name: Enter the logs directory
-        run: cd apps/logs
-
       - name: Get dependencies
+        working-directory: apps/logs
         run: pwd && go mod download
 
       - name: Run tests
+        working-directory: apps/logs
         run: go test -v ./...
 
   test-www:
