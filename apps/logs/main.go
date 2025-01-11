@@ -205,7 +205,7 @@ func formatLog(log VercelLog) string {
 		if duration != "" && log.Level == LogLevelInfo {
 			builder.WriteString(fmt.Sprintf("time=%s ", duration))
 		}
-		builder.WriteString(fmt.Sprintf("path=%s", log.Path))
+		builder.WriteString(fmt.Sprintf("[%s] path=%s", log.Proxy.Method, log.Proxy.Path))
 	}
 
 	// Remove trailing space and return the final string
