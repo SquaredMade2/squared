@@ -119,8 +119,8 @@ func TestMain(m *testing.M) {
 	// Setup
 	os.Setenv("PORT", "3131")
 	os.Setenv("VERCEL_SIGNATURE", "test-signature")
-	os.Setenv("STAGING_PAPERTRAIL_URL", "staging.logs.papertrailapp.com:12345")
-	os.Setenv("PROD_PAPERTRAIL_URL", "prod.logs.papertrailapp.com:12345")
+	os.Setenv("STAGING_PAPERTRAIL_URL", "logs.papertrailapp.com:12345")
+	os.Setenv("PROD_PAPERTRAIL_URL", "logs.papertrailapp.com:12345")
 
 	// Run tests
 	code := m.Run()
@@ -166,6 +166,7 @@ func TestHandleRequest(t *testing.T) {
 
 			req.Header.Set("Content-Type", tt.contentType)
 
+			// Compute and set a valid HMAC signature
 			if tt.body != "" {
 				req.Header.Set(vercelSignature, computeHMAC(tt.body, "test-signature"))
 			} else {
