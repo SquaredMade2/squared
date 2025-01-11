@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -226,23 +227,46 @@ func TestHandleLogs(t *testing.T) {
 }
 
 func TestFormatLog(t *testing.T) {
-	var logs []VercelLog
-	err := json.Unmarshal([]byte(testInfo), &logs)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal testInfo: %v", err)
+	logsToTest := []struct {
+		name     string
+		logData  string
+		expected string
+	}{
+		{
+			name:     "Info Log",
+			logData:  testInfo,
+			expected: "Jan 05 22:38:52 \x1b[32minfo:\x1b[0m status=200 time=10ms [POST] path=/api/auth/_log",
+		},
+		{
+			name:     "Warning Log",
+			logData:  testWarning,
+			expected: "Jan 05 22:38:52 \x1b[33mwarning:\x1b[0m status=403 [GET] path=/api/auth/link",
+		},
+		{
+			name:     "Error Log",
+			logData:  testError,
+			expected: "Jan 05 22:38:52 \x1b[31merror:\x1b[0m status=400 [GET] path=/api/auth/callback",
+		},
 	}
+	for _, tt := range logsToTest {
+		t.Run(tt.name, func(t *testing.T) {
+			var logs []VercelLog
+			err := json.Unmarshal([]byte(tt.logData), &logs)
+			if err != nil {
+				t.Fatalf("Failed to unmarshal %s: %v", tt.name, err)
+			}
 
-	if len(logs) == 0 {
-		t.Fatalf("No log entries in testInfo data")
-	}
+			if len(logs) == 0 {
+				t.Fatalf("No log entries in %s data", tt.name)
+			}
 
-	log := logs[0]
-
-	formatted := formatLog(log)
-	expected := "Jan 05 22:38:52 \x1b[32minfo:\x1b[0m status=200 time=10ms [POST] path=/api/auth/_log"
-
-	if formatted != expected {
-		t.Errorf("formatLog() = %v, want %v", formatted, expected)
+			log := logs[0]
+			formatted := formatLog(log)
+			fmt.Printf("formatted: %s\n", formatted)
+			if formatted != tt.expected {
+				t.Errorf("formatLog() = %v, want %v", formatted, tt.expected)
+			}
+		})
 	}
 }
 
