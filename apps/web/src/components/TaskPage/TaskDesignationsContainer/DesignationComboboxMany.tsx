@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/utils/cn";
-// import type { Sprint, Task } from "@squared/db";
 import { Check, ChevronsUpDown } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 

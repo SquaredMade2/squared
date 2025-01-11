@@ -18,11 +18,13 @@ const BlockedByCombobox = () => {
 
 	const taskId = currentTask?.id;
 
+	if (!currentTask || !taskId) return null;
+
 	const updateTaskMutation = useMutation({
 		mutationFn: async (blockingId: string) => {
 			if (!user) throw new Error("User not found");
 			const res = await client.task.updateBlockedTasks.$post({
-				taskId: taskId,
+				taskId,
 				blockingTaskIds: blockedByTasks.find(t => t.id === blockingId) ? [...blockedByTasks.filter(t => t.id !== blockingId).map(t => t.id)] : [...blockedByTasks.map(t => t.id), blockingId],
 			});
 			return res.json();
@@ -31,15 +33,13 @@ const BlockedByCombobox = () => {
       setBlockedByTasks(blockedTasks);
 			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
 		},
-		enabled: !!taskId
 	});
 
 	const handleUpdateBlockedByTasks = (taskId: string) => {
 		updateTaskMutation.mutate(taskId);
-		// setOpen(false);
 	};
 
-	if (!currentTask) return null;
+	
 
 	return (
 		<DesignationComboboxMany
