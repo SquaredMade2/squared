@@ -17,6 +17,8 @@ jobs:
       www-changed: ${{ steps.check-changes.outputs.www }}
       logs-changed: ${{ steps.check-changes.outputs.logs }}
       run-all: ${{ steps.check-label.outputs.run-all }}
+      packages-changed: ${{ steps.check-changes.outputs.packages }}
+      only-go-changed: ${{ steps.check-changes.outputs.only-go-changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,7 +31,23 @@ jobs:
           echo "api=$(git diff --name-only origin/develop HEAD | grep -q '^apps/api/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "web=$(git diff --name-only origin/develop HEAD | grep -q '^apps/web/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
           echo "www=$(git diff --name-only origin/develop HEAD | grep -q '^apps/www/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "logs=$(git diff --name-only origin/develop HEAD | grep -q '^apps/logs/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "logs=$(git diff --name-only origin/develop HEAD | grep -q '^apps/logs/' && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT      
+
+      - name: Check if only Go-related changes were made
+        run: |
+          if [[ $(git diff --name-only origin/develop HEAD | grep -E '^(apps/logs|packages/cli)/' | wc -l) -gt 0 ]] && [[ $(git diff --name-only origin/develop HEAD | grep -vE '^(apps/logs|packages/cli)/' | wc -l) -eq 0 ]]; then
+            echo "only-go-changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "only-go-changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if packages were updated
+        run: |
+          if [[ $(git diff --name-only origin/develop HEAD | grep -q '^packages/' && echo 'true' || echo 'false') == true ]]; then
+            echo "packages=true" >> $GITHUB_OUTPUT
+          else
+            echo "packages=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Check for Updates label
         id: check-label
@@ -69,8 +87,9 @@ jobs:
 
   lint-and-type-check:
     name: Lint and Type Check
-    needs: setup
+    needs: [setup, detect-changes]
     runs-on: ubuntu-latest
+    if: ${{ needs.detect-changes.outputs.only-go-changed == 'false' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -100,8 +119,9 @@ jobs:
 
   test-packages:
     name: Test Packages
-    needs: setup
+    needs: [setup, detect-changes]
     runs-on: ubuntu-latest
+    if: ${{ !needs.detect-changes.outputs.only-go-changed == 'false' && needs.detect-changes.outputs.packages-changed == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
