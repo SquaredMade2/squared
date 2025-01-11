@@ -16,7 +16,7 @@ import (
 var testInfo = `[
   {
     "id": "14200428160173611673229830100000",
-    "message": "START RequestId: ea90391d-17db-4dd7-80b3-a96ae1f2c5d9\n[GET] /21213/cart/pay status=200\nEND RequestId: ea90391d-17db-4dd7-80b3-a96ae1f2c5d9\nREPORT RequestId: ea90391d-17db-4dd7-80b3-a96ae1f2c5d9 Duration: 10 ms Billed Duration: 11 ms Memory Size: 1769 MB Max Memory Used: 105 MB",
+    "message": "START RequestId: ea90391d-17db-4dd7-80b3-a96ae1f2c5d9\n[POST] /api/auth/_log?nxtPnextauth=_log status=200\nEND RequestId: ea90391d-17db-4dd7-80b3-a96ae1f2c5d9\nREPORT RequestId: ea90391d-17db-4dd7-80b3-a96ae1f2c5d9 Duration: 10 ms Billed Duration: 11 ms Memory Size: 1769 MB Max Memory Used: 105 MB",
     "timestamp": 1736116732298,
     "type": "stdout",
     "requestId": "5ls5b-1736116732233-c4964b146b0d",
@@ -25,15 +25,15 @@ var testInfo = `[
     "level": "info",
     "proxy": {
       "timestamp": 1736116732233,
-      "method": "GET",
-      "host": "staging.loke.app",
-      "path": "/21213/cart/pay",
+      "method": "POST",
+      "host": "app-develop.squaredmade.com",
+      "path": "/api/auth/_log",
       "statusCode": 200,
       "scheme": "https",
       "userAgent": [
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Mobile/15E148 Safari/604.1"
       ],
-      "referer": "https://staging.loke.app/21213/cart/pay/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VJZCI6IjNmMTAyYTA2LTkxNjMtNDIxNy04N2E3LWQ4N2NiYmFmN2FlMyIsImVtYWlsIjpbIkJyZXQubWlsbGVyMjAxMEBnbWFpbC5jb20iXSwiaWF0IjoxNzM1Nzc1NjUwLCJleHAiOjE3MzU3NzkyNTB9.UxZMWYXg1S71LBhPj1rY0aghqcNvDZSVWs8h6FVDZl8",
+      "referer": "https://app-develop.squaredmade.com/join/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VJZCI6IjNmMTAyYTA2LTkxNjMtNDIxNy04N2E3LWQ4N2NiYmFmN2FlMyIsImVtYWlsIjpbIkJyZXQubWlsbGVyMjAxMEBnbWFpbC5jb20iXSwiaWF0IjoxNzM1Nzc1NjUwLCJleHAiOjE3MzU3NzkyNTB9.UxZMWYXg1S71LBhPj1rY0aghqcNvDZSVWs8h6FVDZl8",
       "clientIp": "98.215.224.111",
       "region": "cle1",
       "lambdaRegion": "iad1",
@@ -41,13 +41,13 @@ var testInfo = `[
       "pathType": "streaming_func"
     },
     "projectId": "prj_HZL7X5W1EBoQXDU1Hvt7DRUiOybn",
-    "projectName": "web-ordering",
+    "projectName": "web",
     "deploymentId": "dpl_DCYJDwZqh3YN7TxSPpZpC3QoWcTB",
     "source": "lambda",
-    "host": "staging.loke.app",
-    "path": "/21213/cart/pay",
+    "host": "app-develop.squaredmade.com",
+    "path": "/api/auth/[...nextauth]",
     "environment": "preview",
-    "branch": "main"
+    "branch": "develop"
   }
 ]`
 

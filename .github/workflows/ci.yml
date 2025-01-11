@@ -234,7 +234,7 @@ jobs:
         run: cd apps/logs
 
       - name: Get dependencies
-        run: go mod download
+        run: pwd && go mod download
 
       - name: Run tests
         run: go test -v ./...
