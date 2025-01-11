@@ -183,7 +183,7 @@ func getPapertrailAddr(isStaging bool) string {
 func formatLog(log VercelLog) string {
 	var status int
 	var builder strings.Builder
-	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
+	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format("Jan 02 15:04:05")
 	coloredLogLevel := colorize(log.Level)
 
 	// Common parts for all log levels
