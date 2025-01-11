@@ -10,6 +10,8 @@ import (
 	"log/syslog"
 	"net/http"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -179,29 +181,71 @@ func getPapertrailAddr(isStaging bool) string {
 }
 
 func formatLog(log VercelLog) string {
+	var status int
+	var builder strings.Builder
 	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond))
 	coloredLogLevel := colorize(log.Level)
 
-	// Extract message between START and END
-	message := log.Message
-	startIndex := strings.Index(message, "START")
-	endIndex := strings.LastIndex(message, "END")
-	if startIndex != -1 && endIndex != -1 && startIndex < endIndex {
-		startIndex = startIndex + len("START")
-		message = strings.TrimSpace(message[startIndex:endIndex])
+	// Common parts for all log levels
+	builder.WriteString(fmt.Sprintf(
+		"%s %s region=%s req_id=%s",
+		timestamp, coloredLogLevel, log.Proxy.Region, log.RequestID,
+	))
+
+	if log.Level == "error" {
+		// For error logs, extract statusCode from the message and add the full error message
+		status = extractStatusCodeFromErrorMessage(log.Message)
+		builder.WriteString(fmt.Sprintf("status=%d path=%s error_message=%s", status, log.Host, log.Path, sanitizeErrorMessage(log.Message)))
+	} else {
+		// For non-error logs, use the statusCode from the log struct
+		status = log.StatusCode
+		builder.WriteString(fmt.Sprintf("status=%d ", status))
+		// Add duration for non-error logs
+		duration := extractDuration(log.Message)
+		if duration != "" && log.Level == LogLevelInfo {
+			builder.WriteString(fmt.Sprintf("time=%s ", duration))
+		}
+		builder.WriteString(fmt.Sprintf("path=%s", log.Host, log.Path))
 	}
 
-	if log.Level == "info" {
-		parts := strings.Split(message, "\n")
-		if len(parts) > 1 {
-			message = strings.Join(parts[1:], "\n")
+	// Remove trailing space and return the final string
+	return strings.TrimSpace(builder.String())
+}
+
+var durationRegex = regexp.MustCompile(`Duration:\s*(\d+(\.\d+)?)\s*(ms|s|m|h)`)
+var statusCodeValueRegex = regexp.MustCompile(`statusCode:\s*(\d+)`)
+var statusCodeRemoveRegex = regexp.MustCompile(`\{\s*statusCode\s*:\s*\d+\s*\}$`)
+
+func extractDuration(log string) string {
+	// Use regex to find the first match for duration
+	match := durationRegex.FindStringSubmatch(log)
+	if len(match) > 2 {
+		return fmt.Sprintf("%s%s", match[1], match[3])
+	}
+	return "-1ms"
+}
+
+func sanitizeErrorMessage(message string) string {
+	// Replace newlines with spaces and remove trailing statusCode
+	message = strings.ReplaceAll(message, "\n", " ")
+	message = statusCodeRemoveRegex.ReplaceAllString(message, "")
+
+	// Trim leading/trailing whitespace and normalize multiple spaces
+	message = strings.TrimSpace(message)
+	message = strings.Join(strings.Fields(message), " ")
+
+	return message
+}
+
+func extractStatusCodeFromErrorMessage(message string) int {
+	matches := statusCodeValueRegex.FindStringSubmatch(message)
+	if len(matches) > 1 {
+		statusCode, err := strconv.Atoi(matches[1])
+		if err == nil {
+			return statusCode
 		}
 	}
-
-	return fmt.Sprintf("%s %s %s",
-		timestamp.Format("Jan 02 15:04:05"),
-		coloredLogLevel,
-		message)
+	return 0
 }
 
 func getColorForLevel(level LogLevel) string {
