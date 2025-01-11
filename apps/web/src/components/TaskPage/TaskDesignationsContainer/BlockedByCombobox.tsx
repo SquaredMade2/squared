@@ -33,7 +33,6 @@ const BlockedByCombobox = () => {
       setBlockedByTasks(blockedTasks);
 			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
 		},
-		retry: !!taskId
 	});
 
 	const handleUpdateBlockedByTasks = (taskId: string) => {
