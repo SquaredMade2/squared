@@ -245,7 +245,7 @@ func TestFormatLog(t *testing.T) {
 		{
 			name:     "Error Log",
 			logData:  testError,
-			expected: "Jan 05 22:38:52 \x1b[31merror:\x1b[0m status=400 [GET] path=/api/auth/callback",
+			expected: "Jan 05 22:38:52 \x1b[31merror:\x1b[0m status=400 path=/api/auth/callback error_message=Authentication error: Error: Invalid state parameter at t_ (.next/server/app/api/auth/callback/route.js:1:31378)",
 		},
 	}
 	for _, tt := range logsToTest {
