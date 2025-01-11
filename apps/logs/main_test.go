@@ -5,7 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -240,7 +239,6 @@ func TestFormatLog(t *testing.T) {
 	log := logs[0]
 
 	formatted := formatLog(log)
-	fmt.Printf("formatted: %v\n", formatted)
 	expected := "Jan 05 22:38:52 \x1b[32minfo:\x1b[0m status=200 time=10ms [POST] path=/api/auth/_log"
 
 	if formatted != expected {
