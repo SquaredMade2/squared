@@ -25,11 +25,19 @@ beforeAll(async () => {
 		// Start the test database
 		execSync("pnpm run --filter=@squared/seed docker:db", { stdio: "inherit" });
 
+		// Reset the database
+		execSync("pnpm run --filter=@squared/db db:reset", {
+			stdio: "inherit",
+		});
+
 		// Wait for the database to be ready
 		await waitForDatabase();
 
 		// Run migrations
 		execSync("pnpm run --filter=@squared/db db:push", { stdio: "inherit" });
+
+		// Seed the database
+		execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
 	} catch (error) {
 		console.error("Error setting up test environment:", error);
 		throw error;
@@ -40,11 +48,6 @@ afterAll(async () => {
 	try {
 		await prisma.$disconnect();
 
-		// Reset the database
-		execSync("pnpm run --filter=@squared/db db:reset", {
-			stdio: "inherit",
-		});
-
 		// Stop the test database
 		execSync("pnpm run --filter=@squared/seed docker:db:down", {
 			stdio: "inherit",
@@ -53,18 +56,3 @@ afterAll(async () => {
 		console.error("Error tearing down test environment:", error);
 	}
 }, 30000); // Add a timeout for afterAll
-
-beforeEach(async () => {
-	// Clean up the database before each test
-	const tables =
-		await prisma.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	for (const { tablename } of tables as any[]) {
-		if (tablename !== "_prisma_migrations") {
-			await prisma.$executeRawUnsafe(`TRUNCATE TABLE "${tablename}" CASCADE;`);
-		}
-	}
-
-	// Seed the database
-	execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
-});
