@@ -1,10 +1,10 @@
 import {
-	Priority,
-	Status,
 	type Commit,
 	type Notification,
 	type NotificationType,
+	Priority,
 	type PrismaClient,
+	Status,
 	type Task,
 	type TaskEvent,
 } from "@squared/db";
@@ -234,20 +234,20 @@ export class EventService implements EventRpc {
 		if (key === "status" && typeof value === "string") {
 			switch (value) {
 				case Status.backlog:
-					return "Backlog"
+					return "Backlog";
 				case Status.todo:
-					return "To Do"
+					return "To Do";
 				case Status.inProgress:
-					return "In Progress"
+					return "In Progress";
 				case Status.inReview:
-					return "In Review"
+					return "In Review";
 				case Status.done:
-					return "Done"
+					return "Done";
 				case Status.canceled:
-					return "Canceled"
+					return "Canceled";
 			}
 		}
-		/// Handle Priority 
+		/// Handle Priority
 		if (key === "priority" && typeof value === "string") {
 			switch (value) {
 				case Priority.low:
