@@ -1,10 +1,11 @@
-import type {
-	Commit,
-	Notification,
-	NotificationType,
-	PrismaClient,
-	Task,
-	TaskEvent,
+import {
+	Priority,
+	type Commit,
+	type Notification,
+	type NotificationType,
+	type PrismaClient,
+	type Task,
+	type TaskEvent,
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
@@ -226,6 +227,21 @@ export class EventService implements EventRpc {
 					return "Unassigned";
 				default:
 					return "None";
+			}
+		}
+		/// Handle Priority 
+		if (key === "priority" && typeof value === "string") {
+			switch (value) {
+				case Priority.low:
+					return "Low";
+				case Priority.medium:
+					return "Medium";
+				case Priority.high:
+					return "High";
+				case Priority.urgent:
+					return "Urgent";
+				case Priority.noPriority:
+					return "No Priority";
 			}
 		}
 
