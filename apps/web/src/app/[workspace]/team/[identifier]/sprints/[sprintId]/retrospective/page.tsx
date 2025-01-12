@@ -163,7 +163,6 @@ export default function SprintRetrospectivePage() {
 					sprintId,
 					retrospectiveItemId: itemId,
 					type: destinationType,
-					content: "",
 				});
 				if (!response) {
 					toast({
