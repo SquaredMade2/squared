@@ -19,7 +19,7 @@ const RegisterPage = () => {
 			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-2xl font-bold text-center">
-						Sign in to your account
+						Sign up for an account
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
