@@ -1,5 +1,6 @@
 import {
 	Priority,
+	Status,
 	type Commit,
 	type Notification,
 	type NotificationType,
@@ -227,6 +228,23 @@ export class EventService implements EventRpc {
 					return "Unassigned";
 				default:
 					return "None";
+			}
+		}
+		/// Handle Status
+		if (key === "status" && typeof value === "string") {
+			switch (value) {
+				case Status.backlog:
+					return "Backlog"
+				case Status.todo:
+					return "To Do"
+				case Status.inProgress:
+					return "In Progress"
+				case Status.inReview:
+					return "In Review"
+				case Status.done:
+					return "Done"
+				case Status.canceled:
+					return "Canceled"
 			}
 		}
 		/// Handle Priority 
