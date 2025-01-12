@@ -197,6 +197,10 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 	background-image: none;
 }
 
+.cl-otpCodeFieldInput {
+	border-width: 1px !important;
+}
+
 /* HTML: <div class="loader"></div> */
 .loader {
 	width: 60px;

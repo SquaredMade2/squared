@@ -19,12 +19,11 @@ const HomePage = () => {
 					.then((res) => res.json());
 				if (!res) {
 					router.push("/join");
-					return;
+					return res;
 				}
-				router.push(`/${res.url}`);
-			} else {
-				router.push("/sign-in");
+				return router.push(`/${res.url}`);
 			}
+			return router.push("/sign-in");
 		},
 		enabled: !!user || isLoaded,
 	});
