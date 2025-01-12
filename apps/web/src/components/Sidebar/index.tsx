@@ -177,7 +177,7 @@ interface IconButtonProps {
 	notificationCount?: number;
 }
 
-export function IconButton({
+function IconButton({
 	icon: Icon,
 	label,
 	onClick,
