@@ -35,8 +35,8 @@ export function createApiRouter(router: Router, deps: AllRouteDeps) {
     router.delete("/api/integration/github/oauth", toQueryHandler(r.DELETE));
   }
 
-  // Setup Swagger documentation
-   if (process.env.NODE_ENV !== 'test') {
-    setupSwagger(router);
-  }
+	// Setup Swagger documentation
+	if (process.env.NODE_ENV === "test") {
+		setupSwagger(router);
+	}
 }

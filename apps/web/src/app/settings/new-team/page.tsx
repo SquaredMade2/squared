@@ -1,5 +1,4 @@
 "use client";
-
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +23,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { teamService } from "@/lib/services";
+import { useUserStore } from "@/store";
 import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
@@ -55,6 +55,7 @@ export default function CreateTeam() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { teams, loading: teamLoading, authorized } = useTeams();
 	const { createTeam: addTeam } = useTeamStore((state) => state);
+	const user = useUserStore((state) => state.user);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -79,14 +80,15 @@ export default function CreateTeam() {
 				team.identifier === values.teamIdentifier.toUpperCase(),
 		);
 
-		if (!doesTeamExist) {
-			addTeam(
-				await teamService.createTeam(TODO, {
-					name: values.teamName.trim(),
-					identifier: values.teamIdentifier.toUpperCase(),
-					workspaceId: workspace.id,
-				}),
-			);
+		if (!doesTeamExist && user) {
+			const createdTeamService = await teamService.createTeam(TODO, {
+				name: values.teamName.trim(),
+				identifier: values.teamIdentifier.toUpperCase(),
+				workspaceId: workspace.id,
+				userId: user.id,
+			});
+
+			addTeam(createdTeamService);
 			router.push(
 				`/${workspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
 			);
