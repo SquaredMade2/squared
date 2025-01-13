@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.20-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -11,10 +11,10 @@ COPY go.mod ./
 COPY main.go .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -o main .
 
 # Final stage
-FROM alpine:latest  
+FROM gcr.io/distroless/static-debian12:latest-amd64
 
 # Set the working directory
 WORKDIR /root/
