@@ -9,16 +9,16 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
-import { eventService, taskService } from "@/lib/services";
 import {
 	useEventStore,
 	useTaskStore,
 	useTeamStore,
 	useUserStore,
 } from "@/store";
-import { TODO } from "@squared/context";
 import type { TaskEvent } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -28,9 +28,7 @@ const EffortEstimateDropdown = () => {
 
 	const { team } = useTeamStore((state) => state);
 	const user = useUserStore((state) => state.user);
-	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
@@ -52,33 +50,42 @@ const EffortEstimateDropdown = () => {
 	const extractNumber = (str: string): number =>
 		Number.parseInt(str.substring(0, 2).trim(), 10);
 
-	const handleSelectEffortEstimate = async (
-		newEffortEstimate: Record<string, string | number>,
-	) => {
-		try {
-			updateTask(
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					updaterId: user?.id || "",
-					effortEstimate: newEffortEstimate.value as number,
-				}),
-			);
+	const { mutate: updateEffortEstimate } = useMutation({
+		mutationKey: ["updateTaskEffortEstimate", taskId],
+		mutationFn: async (newEffortEstimate: number) => {
+			const res = await client.task.updateEffort.$post({
+				taskId,
+				effortEstimate: newEffortEstimate,
+				updaterId: user?.id || "",
+			});
+			const updatedTask = await res.json();
 			setCurrentTask({
 				...currentTask,
-				effortEstimate: newEffortEstimate.value as number,
+				effortEstimate: newEffortEstimate,
 			});
-			const updatedEvents = await eventService.getTaskEvents(TODO, {
-				taskId: taskId,
+
+			const eventsRes = await client.event.getEvents.$get({
+				taskId,
 			});
-			// TODO: Will remove type coercion once commits are implemented
+			const updatedEvents = await eventsRes.json();
 			setEvents(updatedEvents as TaskEvent[]);
-		} catch {
+
+			return updatedTask;
+		},
+		onError: (error) => {
 			toast({
 				title: "Error updating effort estimate",
+				description: error.message,
 				variant: "destructive",
 			});
-		}
-		setOpen(false);
+		},
+		onSettled: () => setOpen(false),
+	});
+
+	const handleSelectEffortEstimate = (
+		newEffortEstimate: Record<string, string | number>,
+	) => {
+		updateEffortEstimate(newEffortEstimate.value as number);
 	};
 
 	const showIcon = (estimate: number): JSX.Element => {
