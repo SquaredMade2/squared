@@ -36,6 +36,7 @@ const LoginPage = () => {
 								socialButtonsBlockButtonText: "text-foreground/80",
 							},
 						}}
+						signUpForceRedirectUrl={"/welcome"}
 					/>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-2">

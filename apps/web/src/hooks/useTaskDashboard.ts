@@ -56,7 +56,6 @@ export function useTaskDashboard() {
 			const res = await client.task.updateStatus.$post({
 				taskId,
 				status,
-				updaterId: user.id,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);

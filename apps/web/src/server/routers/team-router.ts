@@ -11,7 +11,7 @@ export const teamRouter = router({
 			const { workspaceId } = input;
 			return c.superjson(
 				await teamService.getUserTeams(TODO, {
-					userId: ctx.user.externalId,
+					userId: ctx.user.id,
 					workspaceId,
 				}),
 			);

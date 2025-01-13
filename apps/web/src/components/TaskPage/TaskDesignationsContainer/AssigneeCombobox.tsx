@@ -41,7 +41,6 @@ const AssigneeCombobox = () => {
 			if (!currentTask || !user) throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId: currentTask.id,
-				userId: user.id,
 				assigneeId,
 			});
 			return res.json();
