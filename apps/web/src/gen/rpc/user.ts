@@ -24,6 +24,7 @@ export type OnBoardUserResponse = {
 	username: string | null;
 	verified: boolean;
 	lastViewedTaskId: string | null;
+  subTeam: string | null;
 };
 
 export type UpdateUserRequest = {
@@ -51,6 +52,7 @@ export type UpdateUserResponse = {
 	username: string | null;
 	verified: boolean;
 	lastViewedTaskId: string | null;
+  subTeam: string | null;
 };
 
 export type UpdateUserAvatarRequest = {
@@ -101,6 +103,7 @@ export type UpdateUserNotificationsResponse = {
 	username: string | null;
 	verified: boolean;
 	lastViewedTaskId: string | null;
+  subTeam: string | null;
 };
 
 export type GetUserRequest = {
