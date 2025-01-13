@@ -168,21 +168,27 @@ export class SprintService implements SprintRpc {
 	async updateRetrospectiveItem({
 		retrospectiveItemId,
 		type,
-		content,
 		sprintId,
 	}: UpdateRetrospectiveItemPayload): Promise<RetroItemReturn> {
 		this.logger.info("Updating retrospective item", { retrospectiveItemId });
-		const sprintRelationField = type
-			? this.mapTypeToSprintRelationField(type, sprintId)
-			: {};
 
+		const sprintRelationField = this.mapTypeToSprintRelationField(
+			type,
+			sprintId,
+		);
+
+		const resetFields = {
+			wentWellSprintId: null,
+			toImproveSprintId: null,
+			actionItemsSprintId: null,
+			...sprintRelationField,
+		};
 		// Update the retrospective item with the appropriate relation and content
 		return await this.db.retrospectiveItem.update({
 			where: { id: retrospectiveItemId },
 			data: {
-				content,
 				type,
-				...sprintRelationField,
+				...resetFields,
 			},
 			select: {
 				id: true,

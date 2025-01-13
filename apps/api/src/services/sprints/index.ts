@@ -101,8 +101,7 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		input: createSchema<UpdateRetrospectiveItemPayload>()(
 			z.object({
 				retrospectiveItemId: z.string(),
-				type: z.enum(["wentWell", "toImprove", "actionItems"]).optional(),
-				content: z.string().optional(),
+				type: z.enum(["wentWell", "toImprove", "actionItems"]),
 				sprintId: z.string(),
 			}),
 		),

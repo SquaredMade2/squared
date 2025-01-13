@@ -141,10 +141,9 @@ export type AddRetrospectiveItemResponse = {
 };
 
 export type UpdateRetrospectiveItemRequest = {
-	content?: string;
 	retrospectiveItemId: string;
 	sprintId: string;
-	type?: "wentWell" | "toImprove" | "actionItems";
+	type: "wentWell" | "toImprove" | "actionItems";
 };
 
 export type UpdateRetrospectiveItemResponse = {
