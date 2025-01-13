@@ -125,6 +125,7 @@ export type GetUserResponse = {
 	username: string | null;
 	verified: boolean;
 	lastViewedTaskId: string | null;
+  subTeam: string | null;
 } | null;
 
 export type GetWorkspaceUsersRequest = {
