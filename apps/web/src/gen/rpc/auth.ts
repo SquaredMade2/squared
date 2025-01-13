@@ -14,6 +14,7 @@ export type LoginResponse = {
 		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
+		externalId: string | null;
 		githubId: string | null;
 		githubUsername: string | null;
 		googleId: string | null;
@@ -45,6 +46,7 @@ export type GoogleLoginResponse = {
 		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
+		externalId: string | null;
 		githubId: string | null;
 		githubUsername: string | null;
 		googleId: string | null;
@@ -76,6 +78,7 @@ export type RegisterResponse = {
 		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
+		externalId: string | null;
 		githubId: string | null;
 		githubUsername: string | null;
 		googleId: string | null;
@@ -102,6 +105,7 @@ export type VerifyUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
