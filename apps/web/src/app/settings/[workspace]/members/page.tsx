@@ -6,30 +6,38 @@ import { columns } from "@/components/Settings/Members/columns";
 import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { useState } from "react";
+import { userService } from "@/lib/services";
+import { TODO } from "@squared/context";
+import { useEffect, useState } from "react";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { users, loading: userLoading } = useUsers();
-	const [pageUsers, setPageUsers] = useState(users);
-
-	const membersWithRoles: MemberWithRole[] = workspace
-		? pageUsers.map((user) => ({
-				...user,
-				role: workspace.admins.includes(user.id) ? "admin" : "member",
-			}))
-		: [];
+	const [pageUsers, setPageUsers] = useState<MemberWithRole[]>(users);
 
 	const enhancedColumns = columns.map((col) => ({
 		...col,
 		meta: {
 			page: "workspace",
 			pageId: workspace?.id,
-			membersWithRoles,
+			pageUsers,
 			setPageUsers,
 		},
 	}));
+
+	const fetchTeamUsers = async () => {
+		if (!workspace) return;
+		const users = await userService.getWorkspaceUsersWithRoles(TODO, {
+			workspaceId: workspace?.id,
+		});
+		console.log("users", users);
+		setPageUsers(users);
+	};
+
+	useEffect(() => {
+		fetchTeamUsers();
+	}, []);
 
 	if (workspaceLoading || userLoading) {
 		return (
@@ -43,9 +51,16 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="workspace">
+			<button
+				onClick={fetchTeamUsers}
+				className="p-2 border rounded"
+				type="button"
+			>
+				FETCH TEAM USERS
+			</button>
 			<MembersPage
 				columns={enhancedColumns}
-				members={membersWithRoles}
+				members={pageUsers}
 				workspace={workspace}
 				admins={workspace?.admins || []}
 			/>

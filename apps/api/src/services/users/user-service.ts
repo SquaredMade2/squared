@@ -68,6 +68,35 @@ export class UserService implements UserRpc {
 		});
 	}
 
+	async getUserWorkspaceRole({
+		userId,
+		workspaceId,
+	}: {
+		userId: string;
+		workspaceId: string;
+	}) {
+		this.logger.info(
+			"Fetching user role for userId: %s in workspaceId: %s",
+			userId,
+			workspaceId,
+		);
+		const userWorkspace = await this.db.userWorkspace.findUnique({
+			where: {
+				userId_workspaceId: {
+					userId: userId,
+					workspaceId: workspaceId,
+				},
+			},
+			select: {
+				role: true,
+			},
+		});
+		if (!userWorkspace?.role) {
+			return "member" as const;
+		}
+		return userWorkspace.role as "owner" | "admin" | "member";
+	}
+
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
 		this.logger.info("Fetching workspace users with id: %s", workspaceId);
 		return await this.db.userWorkspace
@@ -78,6 +107,25 @@ export class UserService implements UserRpc {
 				},
 			})
 			.then((uw) => uw.map((u) => u.user));
+	}
+
+	async getWorkspaceUsersWithRoles({ workspaceId }: { workspaceId: string }) {
+		this.logger.info("Fetching workspace users with id: %s", workspaceId);
+		this.logger.info("RUNNING getWorkspaceUsersWithRoles: %s", workspaceId);
+		return await this.db.userWorkspace
+			.findMany({
+				where: { workspaceId },
+				select: {
+					user: true,
+					role: true,
+				},
+			})
+			.then((uw) =>
+				uw.map((u) => ({
+					...u.user,
+					role: u.role.toLowerCase() as "owner" | "admin" | "member",
+				})),
+			);
 	}
 
 	async getTeamUsers({ teamId }: { teamId: string }) {

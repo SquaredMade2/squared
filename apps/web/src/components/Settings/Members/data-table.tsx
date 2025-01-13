@@ -16,10 +16,10 @@ import {
 import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 
-export type MemberWithRole = User & {
-	role: "admin" | "member";
-};
-
+export type MemberWithRole = User & Role;
+interface Role {
+	role: "owner" | "admin" | "member";
+}
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
@@ -30,7 +30,7 @@ interface DataTableProps {
 interface CsvType {
 	name: string;
 	email: string;
-	role: "admin" | "member";
+	role: string;
 	teams?: string;
 	active: string;
 	lastLogin: Date;
@@ -75,7 +75,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 				return {
 					name: member.name,
 					email: member.email,
-					role: member.role,
+					role: member?.role,
 					teams: teamNames,
 					active: "active",
 					lastLogin: member.lastLogin,

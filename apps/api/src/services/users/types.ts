@@ -31,4 +31,11 @@ export interface UserRpc {
 		userId: string;
 		taskId: string;
 	}) => Promise<User>;
+	getUserWorkspaceRole: (args: {
+		userId: string;
+		workspaceId: string;
+	}) => Promise<"member" | "admin" | "owner">;
+	getWorkspaceUsersWithRoles: (args: { workspaceId: string }) => Promise<
+		(User & { role: "member" | "admin" | "owner" })[]
+	>;
 }

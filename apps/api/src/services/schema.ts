@@ -7,6 +7,7 @@ import type {
 	Task,
 	Team,
 	User,
+	UserWorkspace,
 	Workspace,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
@@ -102,6 +103,15 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
+export const roleEnum = z.enum(["OWNER", "ADMIN", "MEMBER"]);
+export const userWorkspaceSchema = createSchema<UserWorkspace>()(
+	z.object({
+		userId: z.string(),
+		workspaceId: z.string(),
+		role: roleEnum,
+	}),
+);
+
 export const commentSchema = createSchema<Comment>()(
 	z.object({
 		id: z.string(),
@@ -158,6 +168,12 @@ export const userSchema = createSchema<User>()(
 		githubUsername: z.string().nullable(),
 		githubId: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
+	}),
+);
+
+export const userWithRoleSchema = userSchema.merge(
+	z.object({
+		role: z.enum(["owner", "admin", "member"]),
 	}),
 );
 

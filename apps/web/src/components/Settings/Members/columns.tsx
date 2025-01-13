@@ -31,7 +31,10 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "role",
 		cell: ({ row }) => {
-			return row.original.role;
+			return (
+				row.original?.role?.charAt(0).toUpperCase() +
+				row.original?.role?.slice(1)
+			);
 		},
 	},
 	{
