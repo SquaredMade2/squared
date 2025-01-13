@@ -19,10 +19,10 @@ import {
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccordionTrigger } from "@repo/ui/accordion";
 import { TODO } from "@squared/context";
@@ -42,7 +42,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const { toast } = useToast();
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
-	const user = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const { team } = useTeamStore((state) => state);
 	const { tasks, subtasks, createTask } = useTaskStore((state) => state);
 

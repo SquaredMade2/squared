@@ -20,18 +20,29 @@ export const userRouter = router({
 			const { userId } = input;
 			return c.superjson(await userService.getUser(TODO, { userId }));
 		}),
-	getDefaultWorkpace: privateProcedure
-		.input(z.object({ userId: z.string() }))
-		.query(async ({ c, ctx, input }) => {
-			const { userService } = ctx;
-			const { userId } = input;
-			return c.json(await userService.getDefaultWorkspace(TODO, { userId }));
-		}),
+	getDefaultWorkpace: privateProcedure.query(async ({ c, ctx }) => {
+		const { userService, user } = ctx;
+		return c.json(
+			await userService.getDefaultWorkspace(TODO, { userId: user.id }),
+		);
+	}),
 	onBoardUser: privateProcedure
 		.input(z.object({ userId: z.string() }))
 		.mutation(async ({ c, ctx, input }) => {
 			const { userService } = ctx;
 			const { userId } = input;
 			return c.superjson(await userService.onBoardUser(TODO, { userId }));
+		}),
+	isUserAuthorized: privateProcedure
+		.input(z.object({ teamIdentifier: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { userService, user } = ctx;
+			const { teamIdentifier } = input;
+			return c.json(
+				await userService.isUserAuthorized(TODO, {
+					userId: user.id,
+					teamIdentifier,
+				}),
+			);
 		}),
 });

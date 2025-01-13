@@ -205,4 +205,28 @@ export class UserService implements UserRpc {
 
 		return defaultWorkspace || user.Workspaces[0].workspace;
 	}
+
+	async isUserAuthorized({
+		userId,
+		teamIdentifier,
+	}: {
+		userId: string;
+		teamIdentifier: string;
+	}): Promise<boolean> {
+		this.logger.info(
+			"Checking if user with id: %s is authorized for team with identifier: %s",
+			userId,
+			teamIdentifier,
+		);
+		const userTeam = await this.db.userTeam.findFirst({
+			where: {
+				userId,
+				team: {
+					identifier: teamIdentifier,
+				},
+			},
+		});
+
+		return !!userTeam;
+	}
 }

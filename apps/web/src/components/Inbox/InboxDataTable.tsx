@@ -57,7 +57,7 @@ export function InboxDataTable({
 	const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 	const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 	const [selectAllInInbox, setSelectAllInInbox] = useState(false);
-	const { updateUser, user, setUser } = useUserStore((state) => state);
+	const { user } = useUserStore((state) => state);
 	const { notifications, setNotifications } = useEventStore((state) => state);
 	const table = useReactTable({
 		data,
@@ -158,7 +158,7 @@ export function InboxDataTable({
 		});
 		if (user) {
 			const updatedNotifications = await eventService.getNotifications(TODO, {
-				userId: user.id,
+				userId: user.externalId,
 			});
 			setNotifications(updatedNotifications);
 		}
@@ -174,7 +174,7 @@ export function InboxDataTable({
 		updateRowSelection();
 		if (user) {
 			const updatedNotifications = await eventService.getNotifications(TODO, {
-				userId: user.id,
+				userId: user.externalId,
 			});
 			setNotifications(updatedNotifications);
 		}
@@ -201,14 +201,10 @@ export function InboxDataTable({
 				...selectedNotificationIds,
 			]),
 		];
-		const response = await userService.updateUserNotifications(TODO, {
-			userId: user.id,
+		await userService.updateUserNotifications(TODO, {
+			userId: user.externalId,
 			notificationIds: newSavedNotificationIds,
 		});
-		if (response) {
-			setUser(response);
-			updateUser(response);
-		}
 		updateRowSelection();
 	};
 

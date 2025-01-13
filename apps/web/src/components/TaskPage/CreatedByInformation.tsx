@@ -8,7 +8,7 @@ export const CreatedByInformation = () => {
 	const events = useEventStore((state) => state.events);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const authorId = currentTask?.authorId;
-	const foundUser = users.find((user) => user.id === authorId);
+	const foundUser = users.find((user) => user.externalId === authorId);
 
 	const displayDate = () => {
 		if (currentTask) {

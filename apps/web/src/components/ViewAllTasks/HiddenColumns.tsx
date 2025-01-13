@@ -33,7 +33,7 @@ const HiddenColumns = ({
 			case "Status":
 				return formatStatus(title as Status);
 			case "Assignee": {
-				const user = users.find((user) => user.id === title);
+				const user = users.find((user) => user.externalId === title);
 				return user ? user.name : "Unassigned";
 			}
 			case "Priority":

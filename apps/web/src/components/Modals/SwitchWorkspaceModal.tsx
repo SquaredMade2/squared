@@ -17,8 +17,9 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { teamService } from "@/lib/services";
-import { useModalStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useModalStore, useWorkspaceStore } from "@/store";
 import { cn } from "@/utils/cn";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { Check, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ export function WorkspaceSwitcher() {
 	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const user = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const [selectedWorkspace, setSelectedWorkspace] = useState(workspace);
 	const router = useRouter();
 

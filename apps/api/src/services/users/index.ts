@@ -88,6 +88,13 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: workspaceSchema.nullable(),
 	},
+	isUserAuthorized: {
+		input: z.object({
+			userId: z.string(),
+			teamIdentifier: z.string(),
+		}),
+		output: z.boolean(),
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -107,4 +114,5 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getUserTeams: (input) => userService.getUserTeams(input),
 		setLastViewedTask: (input) => userService.setLastViewedTask(input),
 		getDefaultWorkspace: (input) => userService.getDefaultWorkspace(input),
+		isUserAuthorized: (input) => userService.isUserAuthorized(input),
 	});

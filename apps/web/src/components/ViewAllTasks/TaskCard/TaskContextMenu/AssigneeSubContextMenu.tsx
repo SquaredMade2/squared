@@ -9,6 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
 import { Check, UserSearch } from "lucide-react";
@@ -16,10 +17,11 @@ import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users, user } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
+	const { user } = useUser();
 
 	useEffect(() => {
 		const foundUser = users.find((user) => user.id === task.assigneeId);

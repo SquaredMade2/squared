@@ -4,25 +4,25 @@ import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useUsers } from "./useUsers";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTeams() {
-	const { workspace, user, loading: workspaceLoading } = useWorkspaces();
+	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { team, teams, setTeam, setTeams } = useTeamStore((state) => state);
-	const { users, loading: userLoading } = useUsers();
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
 	const { data: authData, isLoading: authLoading } = useQuery({
-		queryKey: ["teamAuthorization", user?.externalId, workspace?.id],
-		queryFn: () => {
-			if (!user || !workspace || !users.length) return { authorized: false };
-			const authorized = users.some((u) => u.externalId === user.id);
+		queryKey: ["teamAuthorization", teamIdentifier],
+		queryFn: async () => {
+			if (!workspace || !teamIdentifier) return { authorized: false };
+			const authorized = await client.user.isUserAuthorized.$get({
+				teamIdentifier,
+			});
 			return { authorized };
 		},
-		enabled: !!user && !!workspace && !userLoading,
+		enabled: !!teamIdentifier,
 	});
 
 	const {
@@ -30,9 +30,9 @@ export function useTeams() {
 		isLoading: teamsLoading,
 		error,
 	} = useQuery({
-		queryKey: ["teams", user?.id, workspace?.id, teamIdentifier],
+		queryKey: ["teams", workspace?.id, teamIdentifier],
 		queryFn: async () => {
-			if (!user || !workspace) return { teams: [], team: null };
+			if (!workspace) return { teams: [], team: null };
 			const res = await client.team.getUserTeams.$get({
 				workspaceId: workspace.id,
 			});
@@ -44,13 +44,12 @@ export function useTeams() {
 		},
 		enabled:
 			!!authData?.authorized &&
-			!!user &&
 			!!workspace &&
 			team?.identifier !== teamIdentifier,
 	});
 
 	return {
-		loading: workspaceLoading || userLoading || authLoading || teamsLoading,
+		loading: workspaceLoading || authLoading || teamsLoading,
 		team: teamsData?.team || team,
 		authorized: authData?.authorized || false,
 		teams: teamsData?.teams || teams,
