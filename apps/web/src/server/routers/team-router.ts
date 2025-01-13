@@ -28,4 +28,24 @@ export const teamRouter = router({
 				}),
 			);
 		}),
+	createTeam: privateProcedure
+		.input(
+			z.object({
+				name: z.string(),
+				identifier: z.string(),
+				workspaceId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { teamService, user } = ctx;
+			const { name, identifier, workspaceId } = input;
+			return c.superjson(
+				await teamService.createTeam(TODO, {
+					name,
+					identifier,
+					workspaceId,
+					userId: user.id,
+				}),
+			);
+		}),
 });

@@ -13,6 +13,13 @@ export const userRouter = router({
 				await userService.getWorkspaceUsers(TODO, { workspaceId }),
 			);
 		}),
+	getTeamUsers: privateProcedure
+		.input(z.object({ teamId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { userService } = ctx;
+			const { teamId } = input;
+			return c.superjson(await userService.getTeamUsers(TODO, { teamId }));
+		}),
 	getUser: privateProcedure
 		.input(z.object({ userId: z.string() }))
 		.query(async ({ c, ctx, input }) => {

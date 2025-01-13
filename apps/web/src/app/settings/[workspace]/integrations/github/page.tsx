@@ -15,8 +15,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const GithubSettings: React.FC = () => {
-	const { connectedRepos, user } = useUserStore((state) => state);
-	const setConnectedRepos = useUserStore((state) => state.setConnectedRepos);
+	const { connectedRepos, user, setConnectedRepos } = useUserStore(
+		(state) => state,
+	);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -24,7 +25,7 @@ const GithubSettings: React.FC = () => {
 			if (user?.id) {
 				setConnectedRepos(
 					await userService.getUserRepositories(TODO, {
-						userId: user.id,
+						userId: user.externalId,
 					}),
 				);
 			}

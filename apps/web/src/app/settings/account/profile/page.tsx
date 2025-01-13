@@ -16,11 +16,11 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { userService } from "@/lib/services";
 import { UploadButton } from "@/lib/ut";
-import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -32,8 +32,8 @@ const formSchema = z.object({
 
 export default function Profile() {
 	const { toast } = useToast();
-	const { updateUser } = useUserStore((state) => state);
 	const { user } = useUser();
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -65,18 +65,17 @@ export default function Profile() {
 				description: "Your profile information remains the same.",
 			});
 		}
-		updateUser(
-			await userService.updateUser(TODO, {
-				name: fullName.trim(),
-				username: username?.trim(),
-				userId: user.id,
-			}),
-		);
+		await userService.updateUser(TODO, {
+			name: fullName.trim(),
+			username: username?.trim(),
+			userId: user.id,
+		});
 
 		toast({
 			title: "Profile updated",
 			description: "Your profile information has been successfully updated.",
 		});
+		router.refresh();
 	};
 
 	if (!user) return null;

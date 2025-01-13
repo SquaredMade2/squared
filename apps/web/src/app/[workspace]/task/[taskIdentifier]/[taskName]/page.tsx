@@ -30,7 +30,7 @@ const TaskPage = () => {
 		if (currentTask && user?.id) {
 			userService
 				.setLastViewedTask(TODO, {
-					userId: user.id,
+					userId: user.externalId,
 					taskId: currentTask.id,
 				})
 				.catch((error) => {

@@ -22,11 +22,11 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { teamService } from "@/lib/services";
-import { useUserStore } from "@/store";
+import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -53,9 +53,8 @@ export default function CreateTeam() {
 	const { toast } = useToast();
 	const router = useRouter();
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { teams, loading: teamLoading, authorized } = useTeams();
+	const { loading: teamLoading, authorized } = useTeams();
 	const { createTeam: addTeam } = useTeamStore((state) => state);
-	const user = useUserStore((state) => state.user);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -65,37 +64,39 @@ export default function CreateTeam() {
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (!workspace) {
-			toast({
-				title: "No workspace selected",
-				variant: "destructive",
-			});
-			return;
-		}
+	const { mutate: onSubmit } = useMutation({
+		mutationKey: ["createTeam", workspace?.id],
+		mutationFn: async (values: z.infer<typeof formSchema>) => {
+			if (!workspace) {
+				throw new Error("Workspace not found");
+			}
+			const res = await client.team.createTeam
+				.$post({
+					name: values.teamName.trim(),
+					identifier: values.teamIdentifier.toUpperCase(),
+					workspaceId: workspace.id,
+				})
+				.then((res) => res.json());
 
-		const doesTeamExist = teams.find((team) => team.name === values.teamName);
-
-		if (!doesTeamExist && user) {
-			const createdTeamService = await teamService.createTeam(TODO, {
-				name: values.teamName.trim(),
-				identifier: values.teamIdentifier.toUpperCase(),
-				workspaceId: workspace.id,
-				userId: user.id,
-			});
-
-			addTeam(createdTeamService);
+			if (!res) throw new Error("Failed to create team");
+			return res;
+		},
+		onSuccess: (data) => {
+			if (!data) return;
+			addTeam(data);
 			router.push(
-				`/${workspace.url}/team/${values.teamIdentifier.toUpperCase()}/all`,
+				`/${workspace?.url}/team/${data?.identifier?.toUpperCase()}/all`,
 			);
 			toast({ title: "Team created" });
-		} else {
+		},
+		onError: (error) => {
 			toast({
-				title: "Team already exists",
+				title: "Failed to create team",
+				description: parseError(error),
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
 
 	useEffect(() => {
 		if (!authorized && !teamLoading && workspace) {
@@ -130,7 +131,7 @@ export default function CreateTeam() {
 						<Separator />
 						<Form {...form}>
 							<form
-								onSubmit={form.handleSubmit(onSubmit)}
+								onSubmit={form.handleSubmit((values) => onSubmit(values))}
 								className="space-y-6 mt-4"
 							>
 								<FormField
