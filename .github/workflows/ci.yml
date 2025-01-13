@@ -179,6 +179,7 @@ jobs:
           EMAIL_PASSWORD: H=3x=_uhQa
           POSTGRES_PORT: 5434
           NODE_ENV: test
+          RUNNING_TESTS: true
       - name: Build API
         run: pnpm --filter=api build
 
