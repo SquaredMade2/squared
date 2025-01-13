@@ -126,7 +126,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					/>
 					<IconButton
 						icon={ClipboardList}
-						label="MyTasks"
+						label="My Tasks"
 						onClick={() => navigateTo(`${workspace?.url}/my-tasks/assigned`)}
 					/>
 				</div>
