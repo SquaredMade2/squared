@@ -75,11 +75,11 @@ const Join = () => {
 		return takenUrls.includes(url);
 	};
 
-  const isWorkspaceNameTaken = (name: string) => {
-    // Check for an existing workspace with the same name
-    const takenNames = [...workspaces.map((ws) => ws.name)];
-    return takenNames.includes(name);
-  }
+	const isWorkspaceNameTaken = (name: string) => {
+		// Check for an existing workspace with the same name
+		const takenNames = [...workspaces.map((ws) => ws.name)];
+		return takenNames.includes(name);
+	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -101,13 +101,13 @@ const Join = () => {
 			return;
 		}
 
-    if(isWorkspaceNameTaken(inputValue)) {
-      toast({
+		if (isWorkspaceNameTaken(inputValue)) {
+			toast({
 				title: "Workspace name already exists. Please choose a different name.",
 				variant: "destructive",
 			});
 			return;
-    }
+		}
 
 		if (isUrlTaken(urlInputValue)) {
 			toast({
@@ -118,7 +118,7 @@ const Join = () => {
 		}
 
 		if (urlInputValue.includes("/")) {
-      toast({
+			toast({
 				title: "Workplace URL cannot contain '/'",
 				variant: "destructive",
 			});
