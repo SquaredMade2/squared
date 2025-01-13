@@ -178,6 +178,7 @@ export type GetTeamUsersResponse = {
 	username: string | null;
 	verified: boolean;
 	lastViewedTaskId: string | null;
+  subTeam: string | null;
 }[];
 
 export type GetUserAvatarsRequest = {
