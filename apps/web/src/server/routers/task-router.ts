@@ -77,6 +77,7 @@ export const taskRouter = router({
 				effortEstimate: z.number().nullable().optional(),
 				teamId: z.string(),
 				workspaceId: z.string(),
+				sprintId: z.string().optional().nullable(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
