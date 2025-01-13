@@ -273,12 +273,13 @@ export function AssignTasksDialog({
 									<SelectValue placeholder="Priority" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="all">All Priorities</SelectItem>
-									<SelectItem value="noPriority">No Priority</SelectItem>
-									<SelectItem value="low">Low</SelectItem>
-									<SelectItem value="medium">Medium</SelectItem>
-									<SelectItem value="high">High</SelectItem>
-									<SelectItem value="urgent">Urgent</SelectItem>
+									<SelectItem value="title">Title</SelectItem>
+									<SelectItem value="priority">Priority</SelectItem>
+									<SelectItem value="assignee">Assignee</SelectItem>
+									<SelectItem value="effort">Effort</SelectItem>
+									<SelectItem value="due date">Due Date</SelectItem>
+									<SelectItem value="updated">Updated</SelectItem>
+									<SelectItem value="created">Created</SelectItem>
 								</SelectContent>
 							</Select>
 
