@@ -30,6 +30,7 @@ export type UpdateUserRequest = {
 	name: string;
 	userId: string;
 	username?: string;
+  subTeam?: string;
 };
 
 export type UpdateUserResponse = {
@@ -148,6 +149,7 @@ export type GetWorkspaceUsersResponse = {
 	username: string | null;
 	verified: boolean;
 	lastViewedTaskId: string | null;
+  subTeam: string | null;
 }[];
 
 export type GetTeamUsersRequest = {

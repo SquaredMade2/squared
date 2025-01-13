@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ColumnDef } from "@tanstack/react-table";
 import RemoveMemberButton from "./RemoveMemberButton";
+import UpdateSubTeamDropdown from "./UpdateSubTeamDropdown";
 import type { MemberWithRole } from "./data-table";
 
 export const columns: ColumnDef<MemberWithRole>[] = [
@@ -32,6 +33,16 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 		accessorKey: "role",
 		cell: ({ row }) => {
 			return row.original.role;
+		},
+	},
+	{
+		accessorKey: "subTeam",
+		cell: ({ row }) => {
+			const userId = row.original.id;
+      const name = row.original.name;
+      const subTeam = row.original.subTeam;
+
+			return <UpdateSubTeamDropdown userId={userId} name = {name} subTeam = {subTeam} />;
 		},
 	},
 	{

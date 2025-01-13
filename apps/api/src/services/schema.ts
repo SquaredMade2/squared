@@ -158,6 +158,7 @@ export const userSchema = createSchema<User>()(
 		githubUsername: z.string().nullable(),
 		githubId: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
+    subTeam: z.string().nullable(),
 	}),
 );
 

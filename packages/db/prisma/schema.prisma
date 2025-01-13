@@ -212,6 +212,7 @@ model User {
   githubUsername       String?
   githubId             String?
   lastViewedTaskId     String?
+  subTeam              String?
   lastViewedTask       Task?    @relation("UserLastViewedTask", fields: [lastViewedTaskId], references: [id])
 
   Workspaces         UserWorkspace[]

@@ -16,6 +16,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 			userId: z.string(),
 			name: z.string(),
 			username: z.string().optional(),
+      subTeam: z.string().optional(),
 		}),
 		output: userSchema,
 	},
