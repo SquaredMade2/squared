@@ -192,7 +192,6 @@ export class EventService implements EventRpc {
 				if (newValue === undefined) return null;
 
 				const oldValue = previousTask[key as keyof Task];
-				console.log(typeof oldValue);
 				const [formattedOldValue, formattedNewValue] = await Promise.all([
 					this.formatValue(oldValue, key),
 					this.formatValue(newValue, key),
