@@ -118,3 +118,19 @@ DELETE FROM "SavedFilter" WHERE "authorId" IS NULL;
 DELETE FROM "UserWorkspace" WHERE "userId" IS NULL;
 DELETE FROM "UserTeam" WHERE "userId" IS NULL;
 DELETE FROM "RetrospectiveItem" WHERE "authorId" IS NULL;
+
+-- Step 8: Drop old columns
+ALTER TABLE "Comment" ALTER COLUMN "authorId" SET NOT NULL;
+ALTER TABLE "Notification" ALTER COLUMN "userId" SET NOT NULL;
+ALTER TABLE "RetrospectiveItem" ALTER COLUMN "authorId" SET NOT NULL;
+ALTER TABLE "SavedFilter" ALTER COLUMN "authorId" SET NOT NULL;
+ALTER TABLE "Task" ALTER COLUMN "authorId" SET NOT NULL;
+ALTER TABLE "TaskEvent" ALTER COLUMN "authorId" SET NOT NULL;
+ALTER TABLE "User" DROP COLUMN "githubId",
+DROP COLUMN "googleId",
+DROP COLUMN "password",
+DROP COLUMN "verified";
+ALTER TABLE "UserTeam" ALTER COLUMN "userId" SET NOT NULL,
+ADD CONSTRAINT "UserTeam_pkey" PRIMARY KEY ("userId", "teamId");
+ALTER TABLE "UserWorkspace" ALTER COLUMN "userId" SET NOT NULL,
+ADD CONSTRAINT "UserWorkspace_pkey" PRIMARY KEY ("userId", "workspaceId");
