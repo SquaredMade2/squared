@@ -323,15 +323,20 @@ export class TaskService implements TaskRpc {
 		});
 	}
 
-	async updateBlockedTasks({
-		blockingTaskIds,
+	async updateBlockedOrBlockingTasks({
+		updatingIds,
 		taskId,
-	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task[]> {
-		const updatedTask =  await this.db.task.update({
+		key,
+	}: {
+		updatingIds: string[];
+		taskId: string;
+		key: "blocking" | "blockedBy";
+	}): Promise<Task[]> {
+		const updatedTask = await this.db.task.update({
 			where: { id: taskId },
 			data: {
-				blockedBy: {
-					set: blockingTaskIds.map((id) => ({ id })),
+				[key]: {
+					set: updatingIds.map((id) => ({ id })),
 				},
 			},
 			include: { blockedBy: true },
@@ -339,16 +344,41 @@ export class TaskService implements TaskRpc {
 		return updatedTask.blockedBy;
 	}
 
-	async getBlockedByTasks({ taskId }: { taskId: string }): Promise<Task[]> {
-		const task = await this.db.task
-			.findUnique({
-				where: { id: taskId },
-				include: { blockedBy: true },
-			})
-			if (!task) {
-				this.throwError("Task not found");
-			}
-			return task.blockedBy;
+	async getTaskBlockedByAndBlocking({
+		taskId,
+	}: { taskId: string }): Promise<{
+		blockedBy: Task[];
+		blockingIds: string[];
+	}> {
+		const task = await this.db.task.findUnique({
+			where: { id: taskId },
+			include: { blockedBy: true, blocking: { select: { id: true } } },
+		});
+		if (!task) {
+			this.throwError("Task not found");
+		}
+		return {
+			blockedBy: task.blockedBy,
+			blockingIds: task.blocking.map((t) => t.id),
+		};
+	}
+
+	async getAllBlockedTaskIds({
+		teamId
+	}: {teamId: string}): Promise<string[]> {
+		const blockedTaskIds = await this.db.task.findMany({
+			where: {
+				teamId,
+				blockedBy: {
+					some: {}
+				}
+			},
+			select: {
+				id: true
+			},
+			distinct: ['id']
+		});
+		return blockedTaskIds.map(task => task.id);
 	}
 
 	private throwError(message: string): never {

@@ -22,7 +22,7 @@ import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
-	const { isLoading, error, subtasks, blockedByTasks } = useTaskPage();
+	const { isLoading, error, subtasks, currentTaskBlockedBy } = useTaskPage();
 	const { currentTask } = useTaskStore((state) => state);
 	const { toast } = useToast();
 	const user = useUserStore((state) => state.user);
@@ -69,7 +69,7 @@ const TaskPage = () => {
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm />
-										{blockedByTasks.length > 0 && <BlockedByTasks />}
+										{currentTaskBlockedBy.length > 0 && <BlockedByTasks />}
 										{subtasks.length > 0 && <Subtasks />}
 										<NewTaskCollapsible parentId={currentTask.id} />
 										<EventTabs />

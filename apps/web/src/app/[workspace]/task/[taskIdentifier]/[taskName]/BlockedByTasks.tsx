@@ -17,41 +17,41 @@ import Link from "next/link";
 import { useState } from "react";
 
 const BlockedByTasks = () => {
-	const [isSubtasksExpanded, setIsSubtasksExpanded] = useState(true);
-	const { blockedByTasks } = useTaskStore((state) => state);
+	const [isBlockedByExpanded, setIsBlockedByExpanded] = useState(true);
+	const { currentTaskBlockedBy } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
 
 	return (
 		<Collapsible
-			open={isSubtasksExpanded}
-			onOpenChange={setIsSubtasksExpanded}
+			open={isBlockedByExpanded}
+			onOpenChange={setIsBlockedByExpanded}
 			className="mt-6 bg-background rounded-lg p-4 shadow-sm"
 		>
 			<CollapsibleTrigger asChild>
 				<div className="flex items-center cursor-pointer mb-2">
-					{isSubtasksExpanded ? (
+					{isBlockedByExpanded ? (
 						<ChevronDown className="w-4 h-4 mr-2 transition-transform duration-200" />
 					) : (
 						<ChevronRight className="w-4 h-4 mr-2 transition-transform duration-200" />
 					)}
 					<h3 className="text-lg font-semibold">
-						Blocked By ({blockedByTasks.length})
+						Blocked By ({currentTaskBlockedBy.length})
 					</h3>
 				</div>
 			</CollapsibleTrigger>
 			<CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out">
 				<ul className="space-y-2 my-4">
-					{blockedByTasks.map((blockedByTask) => (
+					{currentTaskBlockedBy.map((task) => (
 						<li
-							key={blockedByTask.id}
+							key={task.id}
 							className={"transition-all duration-200 ease-in-out"}
 						>
 							<ContextMenu>
 								<ContextMenuTrigger>
-									<TaskContextMenu task={blockedByTask} />
+									<TaskContextMenu task={task} />
 									<SubtaskList
-										task={blockedByTask}
-										user={users.find((u) => u.id === blockedByTask.assigneeId)}
+										task={task}
+										user={users.find((u) => u.id === task.assigneeId)}
 									/>
 								</ContextMenuTrigger>
 							</ContextMenu>

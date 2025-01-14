@@ -118,16 +118,24 @@ export const taskRpcSchema = createServiceSchema<TaskRpc>()({
 		}),
 		output: z.array(taskSchema),
 	},
-	updateBlockedTasks: {
+	updateBlockedOrBlockingTasks: {
 		input: z.object({
-			blockingTaskIds: z.array(z.string()),
+			updatingIds: z.array(z.string()),
 			taskId: z.string(),
+			key: z.enum(["blockedBy", "blocking"]),
 		}),
 		output: z.array(taskSchema),
 	},
-	getBlockedByTasks: {
+	getTaskBlockedByAndBlocking: {
 		input: z.object({ taskId: z.string() }),
-		output: z.array(taskSchema),
+		output: z.object({
+			blockedBy: z.array(taskSchema),
+			blockingIds: z.array(z.string()),
+		}),
+	},
+	getAllBlockedTaskIds: {
+		input: z.object({ teamId: z.string() }),
+		output: z.array(z.string()),
 	},
 	getSubtasks: {
 		input: z.object({
@@ -150,8 +158,11 @@ export const createTaskRpcHandler = (taskService: TaskRpc) =>
 		addActiveSprintTasks: (input) => taskService.addActiveSprintTasks(input),
 		addSprintTasks: (input) => taskService.addSprintTasks(input),
 		reorderSubtasks: (input) => taskService.reorderSubtasks(input),
-		updateBlockedTasks: (input) => taskService.updateBlockedTasks(input),
-		getBlockedByTasks: (input) => taskService.getBlockedByTasks(input),
+		updateBlockedOrBlockingTasks: (input) =>
+			taskService.updateBlockedOrBlockingTasks(input),
+		getTaskBlockedByAndBlocking: (input) =>
+			taskService.getTaskBlockedByAndBlocking(input),
+		getAllBlockedTaskIds: (input) => taskService.getAllBlockedTaskIds(input),
 		getSubtasks: (input) => taskService.getSubtasks(input),
 	});
 

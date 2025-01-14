@@ -22,8 +22,10 @@ export function useTaskPage() {
 		setCurrentTask,
 		subtasks,
 		setSubtasks,
-		blockedByTasks,
-		setBlockedByTasks,
+		currentTaskBlockingIds,
+		setCurrentTaskBlockingIds,
+		currentTaskBlockedBy,
+		setCurrentTaskBlockedBy,
 	} = useTaskStore((state) => state);
 	const { users, loading: userLoading, error: userError } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
@@ -64,14 +66,15 @@ export function useTaskPage() {
 		queryKey: ["blockedBy", taskQuery.data?.id],
 		queryFn: async () => {
 			if (!taskQuery.data) return;
-			const res = await client.task.getBlockedByTasks.$get({
+			const res = await client.task.getTaskBlockedByAndBlocking.$get({
 				taskId: taskQuery.data.id,
 			});
 			const blockedByTasks = await res.json();
-			setBlockedByTasks(blockedByTasks);
+			setCurrentTaskBlockedBy(blockedByTasks.blockedBy);
+			setCurrentTaskBlockingIds(blockedByTasks.blockingIds);
 			return blockedByTasks;
 		},
-		enabled: !!taskQuery.data
+		enabled: !!taskQuery.data,
 	});
 
 	const commentsQuery = useQuery({
@@ -132,6 +135,7 @@ export function useTaskPage() {
 		isLoading,
 		error: error ? parseError(error, "Failed to fetch task") : null,
 		subtasks,
-		blockedByTasks,
+		currentTaskBlockedBy,
+		currentTaskBlockingIds,
 	};
 }

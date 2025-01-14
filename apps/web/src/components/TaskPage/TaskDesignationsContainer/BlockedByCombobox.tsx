@@ -4,15 +4,12 @@ import type { Task } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationComboboxMany } from "./DesignationComboboxMany";
+import { toast } from "@/components/ui/use-toast";
 
 const BlockedByCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const {
-		tasks,
-		currentTask,
-		blockedByTasks,
-		setBlockedByTasks,
-	} = useTaskStore((state) => state);
+	const { tasks, currentTask, currentTaskBlockedBy, currentTaskBlockingIds, setCurrentTaskBlockedBy } =
+		useTaskStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const queryClient = useQueryClient();
 
@@ -23,14 +20,25 @@ const BlockedByCombobox = () => {
 	const updateTaskMutation = useMutation({
 		mutationFn: async (blockingId: string) => {
 			if (!user) throw new Error("User not found");
-			const res = await client.task.updateBlockedTasks.$post({
+			if(currentTaskBlockingIds.includes(blockingId)) {
+				toast({title: "You can't have two tasks blocking each other", variant: "destructive"});
+				return currentTaskBlockedBy;
+			}
+			const res = await client.task.updateBlockedOrBlockingTasks.$post({
 				taskId,
-				blockingTaskIds: blockedByTasks.find(t => t.id === blockingId) ? [...blockedByTasks.filter(t => t.id !== blockingId).map(t => t.id)] : [...blockedByTasks.map(t => t.id), blockingId],
+				key: "blockedBy",
+				updatingIds: currentTaskBlockedBy.find((t) => t.id === blockingId)
+					? [
+							...currentTaskBlockedBy
+								.filter((t) => t.id !== blockingId)
+								.map((t) => t.id),
+						]
+					: [...currentTaskBlockedBy.map((t) => t.id), blockingId],
 			});
 			return res.json();
 		},
 		onSuccess: (blockedTasks) => {
-      setBlockedByTasks(blockedTasks);
+			setCurrentTaskBlockedBy(blockedTasks);
 			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
 		},
 	});
@@ -39,8 +47,6 @@ const BlockedByCombobox = () => {
 		updateTaskMutation.mutate(taskId);
 	};
 
-	
-
 	return (
 		<DesignationComboboxMany
 			open={open}
@@ -48,7 +54,7 @@ const BlockedByCombobox = () => {
 			triggerText={"Add / Remove"}
 			emptyText="No tasks found."
 			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
-			selectedItemIds={blockedByTasks.map((task) => task.id)}
+			selectedItemIds={currentTaskBlockedBy.map((task) => task.id)}
 			itemLabel={(task: Task) => task.title}
 			itemId={(task: Task) => task.id}
 			onItemSelect={handleUpdateBlockedByTasks}

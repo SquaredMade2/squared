@@ -81,6 +81,13 @@ export function useTaskDashboard() {
 			taskId: draggedTask.id,
 			status: destination.droppableId as Status,
 		});
+		if(destination.droppableId === "done" || destination.droppableId === "canceled" || destination.droppableId === "archived") {
+			await client.task.updateBlockedOrBlockingTasks.$post({
+				taskId: draggedTask.id,
+				updatingIds: [],
+				key: "blocking"
+			})
+		}
 	};
 
 	const loading = teamLoading || workspaceLoading || isLoading;
