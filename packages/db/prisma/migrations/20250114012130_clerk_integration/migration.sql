@@ -132,9 +132,9 @@ ALTER TABLE "RetrospectiveItem" ALTER COLUMN "authorId" SET NOT NULL;
 ALTER TABLE "SavedFilter" ALTER COLUMN "authorId" SET NOT NULL;
 ALTER TABLE "Task" ALTER COLUMN "authorId" SET NOT NULL;
 ALTER TABLE "TaskEvent" ALTER COLUMN "authorId" SET NOT NULL;
-ALTER TABLE "UserTeam" ALTER COLUMN "userId" SET NOT NULL,
-ALTER TABLE "UserWorkspace" ALTER COLUMN "userId" SET NOT NULL,
+ALTER TABLE "UserTeam" ALTER COLUMN "userId" SET NOT NULL;
+ALTER TABLE "UserWorkspace" ALTER COLUMN "userId" SET NOT NULL;
 
 -- Step 10: Add primary key constraints
-ADD CONSTRAINT "UserTeam_pkey" PRIMARY KEY ("userId", "teamId");
-ADD CONSTRAINT "UserWorkspace_pkey" PRIMARY KEY ("userId", "workspaceId");
+ALTER TABLE "UserTeam" ADD CONSTRAINT "UserTeam_pkey" PRIMARY KEY ("userId", "teamId");
+ALTER TABLE "UserWorkspace" ADD CONSTRAINT "UserWorkspace_pkey" PRIMARY KEY ("userId", "workspaceId");

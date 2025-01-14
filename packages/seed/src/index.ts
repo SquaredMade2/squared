@@ -66,7 +66,7 @@ async function seedDB() {
 				for (let c = 0; c < numComments; c++) {
 					const author =
 						users[faker.number.int({ min: 0, max: users.length - 1 })];
-					await addComment(author.id, task.id);
+					await addComment(author.externalId, task.id);
 				}
 			}
 		}
@@ -123,7 +123,7 @@ async function addUserToWorkspace(user: User, workspace: Workspace) {
 		data: {
 			Users: {
 				create: {
-					userId: user.id,
+					userId: user.externalId,
 				},
 			},
 		},
@@ -136,7 +136,7 @@ async function addUserToTeam(user: User, team: Team) {
 		data: {
 			Users: {
 				create: {
-					userId: user.id,
+					userId: user.externalId,
 				},
 			},
 		},
@@ -186,7 +186,7 @@ async function addTeam(workspace: Workspace, user: User) {
 			workspaceId: workspace.id,
 			Users: {
 				create: {
-					userId: user.id,
+					userId: user.externalId,
 				},
 			},
 		},
@@ -238,7 +238,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 
 	const task = await prisma.task.create({
 		data: {
-			authorId: user.id,
+			authorId: user.externalId,
 			title: taskTitle,
 			description: taskDescription,
 			status: taskStatus,
@@ -247,13 +247,13 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			effortEstimate: taskEffortEstimate,
 			identifier: identifier,
 			teamId: team.id,
-			assigneeId: user.id,
+			assigneeId: user.externalId,
 			labels: randomLabelIds,
 			workspaceId: workspace.id,
 		},
 	});
 
-	await addNotification(user.id, task.id, workspace.id);
+	await addNotification(user.externalId, task.id, workspace.id);
 
 	return task;
 }
