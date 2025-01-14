@@ -17,6 +17,8 @@ export class EventService implements EventRpc {
 	private readonly notificationRepository: PrismaClient["notification"];
 	private readonly labelRepository: PrismaClient["label"];
 	private readonly userRepository: PrismaClient["user"];
+	private readonly sprintsRepository: PrismaClient["sprint"];
+	private readonly tasksRepository: PrismaClient["task"];
 
 	constructor(db: PrismaClient) {
 		this.logger = createCustomLogger("tasks");
@@ -25,6 +27,8 @@ export class EventService implements EventRpc {
 		this.notificationRepository = db.notification;
 		this.labelRepository = db.label;
 		this.userRepository = db.user;
+		this.sprintsRepository = db.sprint;
+		this.tasksRepository = db.task;
 	}
 	async getTaskEvents({
 		taskId,
@@ -188,16 +192,20 @@ export class EventService implements EventRpc {
 				if (newValue === undefined) return null;
 
 				const oldValue = previousTask[key as keyof Task];
+				console.log(typeof oldValue);
 				const [formattedOldValue, formattedNewValue] = await Promise.all([
 					this.formatValue(oldValue, key),
 					this.formatValue(newValue, key),
 				]);
 
 				if (formattedOldValue !== formattedNewValue) {
+					const formattedKey = `${key[0].toUpperCase()}${key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}`;
 					const diffString =
-						key === "title" || key === "description" || key === "labels"
-							? `${key} has been updated`
-							: `${key} changed from ${formattedOldValue} to ${formattedNewValue}`;
+						formattedKey === "Title" ||
+						formattedKey === "Description" ||
+						formattedKey === "Labels"
+							? `${formattedKey} ${formattedKey === "Labels" ? "have" : "has"} been updated`
+							: `${formattedKey} changed from ${formattedOldValue} to ${formattedNewValue}`;
 					return diffString;
 				}
 				return null;
@@ -227,6 +235,45 @@ export class EventService implements EventRpc {
 				default:
 					return "None";
 			}
+		}
+
+		// Handle parentId
+		if (key === "parentId" && typeof value === "string") {
+			const task = await this.tasksRepository.findUnique({
+				where: { id: value },
+				select: { identifier: true },
+			});
+			return task?.identifier ?? "Unknown Task";
+		}
+
+		// Handle due date
+		if (
+			key === "dueDate" &&
+			(typeof value === "string" || value instanceof Date)
+		) {
+			const formattedDate = new Date(value).toLocaleDateString("en-us", {
+				year: "numeric",
+				month: "short",
+				day: "numeric",
+			});
+			return formattedDate;
+		}
+
+		// Handle status and priority
+		if ((key === "status" || key === "priority") && typeof value === "string") {
+			if (value === "todo") {
+				return "To Do";
+			}
+			return `${value[0].toUpperCase()}${value.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}`;
+		}
+
+		// Handle sprintId
+		if (key === "sprintId" && typeof value === "string") {
+			const sprint = await this.sprintsRepository.findUnique({
+				where: { id: value },
+				select: { name: true },
+			});
+			return sprint?.name ?? "Unknown Sprint";
 		}
 
 		// Handle assigneeId
@@ -260,6 +307,7 @@ export class EventService implements EventRpc {
 		}
 		return String(value);
 	}
+
 	private deserializeLogEvent(taskEvent: TaskEvent): {
 		[key: string]: { oldValue: TaskValue; newValue: TaskValue };
 	} {
