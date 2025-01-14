@@ -17,7 +17,6 @@ export type OnBoardUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -47,7 +46,6 @@ export type UpdateUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -101,7 +99,6 @@ export type UpdateUserNotificationsResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -128,7 +125,6 @@ export type GetUserResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -155,7 +151,6 @@ export type GetWorkspaceUsersResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -182,7 +177,6 @@ export type GetTeamUsersResponse = {
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
-	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
