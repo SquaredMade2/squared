@@ -11,7 +11,7 @@ import {
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { EventRpc, FullNotification, TaskValue } from "./types";
-import { formatStatus } from "@/utils/eventFormats";
+import { formatPriority, formatStatus } from "@/utils/eventFormats";
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
@@ -237,18 +237,7 @@ export class EventService implements EventRpc {
 		}
 		/// Handle Priority
 		if (key === "priority" && typeof value === "string") {
-			switch (value) {
-				case Priority.low:
-					return "Low";
-				case Priority.medium:
-					return "Medium";
-				case Priority.high:
-					return "High";
-				case Priority.urgent:
-					return "Urgent";
-				case Priority.noPriority:
-					return "No Priority";
-			}
+			return formatPriority(value)
 		}
 
 		// Handle assigneeId

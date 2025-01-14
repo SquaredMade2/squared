@@ -1,4 +1,4 @@
-import { Status } from "@squared/db";
+import { Status, Priority } from "@squared/db";
 export function formatStatus(value: string) {
         switch (value) {
             case Status.backlog:
@@ -16,4 +16,20 @@ export function formatStatus(value: string) {
             default: 
             return value;
         }
+}
+export function formatPriority(value: string) {
+    switch (value) {
+        case Priority.low:
+            return "Low";
+        case Priority.medium:
+            return "Medium";
+        case Priority.high:
+            return "High";
+        case Priority.urgent:
+            return "Urgent";
+        case Priority.noPriority:
+            return "No Priority";
+        default:
+            return value
+    }
 }
