@@ -1,3 +1,5 @@
+"use client";
+
 import { PriorityIcon } from "@/components/Icons";
 import {
 	ContextMenuItem,
@@ -6,36 +8,40 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
-import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import type { Priority } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
 	const user = useUserStore((state) => state.user);
-	const updateItem = async (priority: Priority) => {
-		if (task.id !== undefined) {
-			try {
-				updateTask(
-					await taskService.updateTask(TODO, {
-						id: task.id,
-						updaterId: user?.id || "",
-						priority,
-					}),
-				);
-			} catch (error) {
-				toast({
-					title: "Error updating task",
-					description: error instanceof Error && error.message,
-				});
-			}
-		}
-	};
+
+	const { mutate: updatePriority } = useMutation({
+		mutationKey: ["updateTaskPriority", task.id],
+		mutationFn: async (priority: Priority) => {
+			const res = await client.task.updatePriority.$post({
+				taskId: task.id,
+				priority,
+				updaterId: user?.id || "",
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+		onError: (error) => {
+			toast({
+				title: "Error updating task",
+				description:
+					error instanceof Error ? error.message : "An error occurred",
+				variant: "destructive",
+			});
+		},
+	});
 
 	return (
 		<ContextMenuSub>
@@ -50,7 +56,7 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 					return (
 						<ContextMenuItem
 							key={priority}
-							onClick={() => updateItem(priority)}
+							onClick={() => updatePriority(priority)}
 						>
 							<div className="mr-2">
 								<PriorityIcon priority={priority} />
