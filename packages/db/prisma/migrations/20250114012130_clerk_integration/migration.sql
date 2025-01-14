@@ -8,6 +8,75 @@
   - Made the column `externalId` on table `User` required. This step will fail if there are existing NULL values in that column.
 
 */
+
+-- Start a transaction
+BEGIN;
+
+-- 1. Update all users with a temporary externalId if it's null
+UPDATE "User"
+SET "externalId" = gen_random_uuid()::text
+WHERE "externalId" IS NULL;
+
+-- 2. Update all related tables to use externalId instead of id
+
+-- Update TaskEvent
+UPDATE "TaskEvent" te
+SET "authorId" = u."externalId"
+FROM "User" u
+WHERE te."authorId" = u.id;
+
+-- Update Comment
+UPDATE "Comment" c
+SET "authorId" = u."externalId"
+FROM "User" u
+WHERE c."authorId" = u.id;
+
+-- Update Notification
+UPDATE "Notification" n
+SET "userId" = u."externalId"
+FROM "User" u
+WHERE n."userId" = u.id;
+
+-- Update Task (authorId)
+UPDATE "Task" t
+SET "authorId" = u."externalId"
+FROM "User" u
+WHERE t."authorId" = u.id;
+
+-- Update Task (assigneeId)
+UPDATE "Task" t
+SET "assigneeId" = u."externalId"
+FROM "User" u
+WHERE t."assigneeId" = u.id;
+
+-- Update SavedFilter
+UPDATE "SavedFilter" sf
+SET "authorId" = u."externalId"
+FROM "User" u
+WHERE sf."authorId" = u.id;
+
+-- Update UserWorkspace
+UPDATE "UserWorkspace" uw
+SET "userId" = u."externalId"
+FROM "User" u
+WHERE uw."userId" = u.id;
+
+-- Update UserTeam
+UPDATE "UserTeam" ut
+SET "userId" = u."externalId"
+FROM "User" u
+WHERE ut."userId" = u.id;
+
+-- Update RetrospectiveItem
+UPDATE "RetrospectiveItem" ri
+SET "authorId" = u."externalId"
+FROM "User" u
+WHERE ri."authorId" = u.id;
+
+-- Commit the transaction
+COMMIT;
+
+
 -- DropForeignKey
 ALTER TABLE "Comment" DROP CONSTRAINT "Comment_authorId_fkey";
 
