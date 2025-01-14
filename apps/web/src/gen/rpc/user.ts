@@ -11,11 +11,13 @@ export type OnBoardUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -39,11 +41,13 @@ export type UpdateUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -65,11 +69,13 @@ export type UpdateUserAvatarResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -77,7 +83,6 @@ export type UpdateUserAvatarResponse = {
 	subscribedTasks: string[];
 	username: string | null;
 	verified: boolean;
-	lastViewedTaskId: string | null;
 };
 
 export type UpdateUserNotificationsRequest = {
@@ -90,11 +95,13 @@ export type UpdateUserNotificationsResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -115,11 +122,13 @@ export type GetUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -140,11 +149,13 @@ export type GetWorkspaceUsersResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -165,11 +176,13 @@ export type GetTeamUsersResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -215,13 +228,29 @@ export type GetUserTeamsResponse = {
 }[];
 
 export type SetLastViewedTaskRequest = {
-	userId: string;
 	taskId: string;
+	userId: string;
 };
 
 export type SetLastViewedTaskResponse = {
-	success: boolean;
-	message: string;
+	avatarUrl: string | null;
+	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	externalId: string | null;
+	githubId: string | null;
+	githubUsername: string | null;
+	googleId: string | null;
+	id: string;
+	lastLogin: Date;
+	lastViewedTaskId: string | null;
+	name: string;
+	onBoarding: boolean;
+	password: string | null;
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+	verified: boolean;
 };
 
 /**

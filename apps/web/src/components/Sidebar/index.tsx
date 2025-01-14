@@ -28,6 +28,7 @@ import {
 import { TODO } from "@squared/context";
 import type { Workspace } from "@squared/db";
 import {
+	ClipboardList,
 	Home,
 	Inbox,
 	type LucideIcon,
@@ -122,6 +123,11 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 						label="Inbox"
 						onClick={() => navigateTo("inbox")}
 						notificationCount={notifications}
+					/>
+					<IconButton
+						icon={ClipboardList}
+						label="My Tasks"
+						onClick={() => navigateTo(`${workspace?.url}/my-tasks/assigned`)}
 					/>
 				</div>
 			</SidebarHeader>

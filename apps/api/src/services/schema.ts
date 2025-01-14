@@ -145,6 +145,7 @@ export const userSchema = createSchema<User>()(
 		name: z.string(),
 		username: z.string().nullable(),
 		email: z.string().email(),
+		externalId: z.string().nullable(),
 		password: z.string().nullable(),
 		verified: z.boolean(),
 		lastLogin: z.date(),
