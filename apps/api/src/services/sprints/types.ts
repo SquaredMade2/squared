@@ -14,9 +14,10 @@ export type AddRetrospectivePayload = {
 	content: string;
 };
 
-export type UpdateRetrospectiveTypePayload = {
+export type UpdateRetrospectiveItemPayload = {
 	retrospectiveItemId: string;
-	type: RetrospectiveItemType;
+	type?: RetrospectiveItemType;
+	content?: string;
 	sprintId: string;
 };
 
@@ -69,11 +70,12 @@ export interface SprintRpc {
 		type,
 		content,
 	}: AddRetrospectivePayload) => Promise<RetroItemReturn>;
-	updateRetrospectiveType: ({
+	updateRetrospectiveItem: ({
 		retrospectiveItemId,
 		type,
+		content,
 		sprintId,
-	}: UpdateRetrospectiveTypePayload) => Promise<RetroItemReturn>;
+	}: UpdateRetrospectiveItemPayload) => Promise<RetroItemReturn>;
 	likeRetrospectiveItem: ({
 		retrospectiveItemId,
 		userId,

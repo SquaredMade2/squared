@@ -15,7 +15,7 @@ import type {
 	RetrospectiveData,
 	SprintRpc,
 	SprintServiceResponse,
-	UpdateRetrospectiveTypePayload,
+	UpdateRetrospectiveItemPayload,
 } from "./types";
 
 export class SprintService implements SprintRpc {
@@ -165,17 +165,17 @@ export class SprintService implements SprintRpc {
 		});
 	}
 
-	async updateRetrospectiveType({
+	async updateRetrospectiveItem({
 		retrospectiveItemId,
 		type,
+		content,
 		sprintId,
-	}: UpdateRetrospectiveTypePayload): Promise<RetroItemReturn> {
+	}: UpdateRetrospectiveItemPayload): Promise<RetroItemReturn> {
 		this.logger.info("Updating retrospective item", { retrospectiveItemId });
 
-		const sprintRelationField = this.mapTypeToSprintRelationField(
-			type,
-			sprintId,
-		);
+		const sprintRelationField = type
+			? this.mapTypeToSprintRelationField(type, sprintId)
+			: {};
 
 		const resetFields = {
 			wentWellSprintId: null,
@@ -188,6 +188,7 @@ export class SprintService implements SprintRpc {
 			where: { id: retrospectiveItemId },
 			data: {
 				type,
+				content,
 				...resetFields,
 			},
 			select: {

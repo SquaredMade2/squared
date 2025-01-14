@@ -140,13 +140,14 @@ export type AddRetrospectiveItemResponse = {
 	type: "toImprove" | "wentWell" | "actionItems";
 };
 
-export type UpdateRetrospectiveTypeRequest = {
+export type UpdateRetrospectiveItemRequest = {
+	content?: string;
 	retrospectiveItemId: string;
 	sprintId: string;
-	type: "wentWell" | "toImprove" | "actionItems";
+	type?: "wentWell" | "toImprove" | "actionItems";
 };
 
-export type UpdateRetrospectiveTypeResponse = {
+export type UpdateRetrospectiveItemResponse = {
 	authorId: string;
 	content: string;
 	id: string;
@@ -271,13 +272,13 @@ export class SprintService extends RPCContextClient {
 	}
 
 	/**
-	 * updateRetrospectiveType method
+	 * updateRetrospectiveItem method
 	 */
-	updateRetrospectiveType(
+	updateRetrospectiveItem(
 		ctx: Context,
-		req: UpdateRetrospectiveTypeRequest,
-	): Promise<UpdateRetrospectiveTypeResponse> {
-		return this.request(ctx, "updateRetrospectiveType", req);
+		req: UpdateRetrospectiveItemRequest,
+	): Promise<UpdateRetrospectiveItemResponse> {
+		return this.request(ctx, "updateRetrospectiveItem", req);
 	}
 
 	/**
