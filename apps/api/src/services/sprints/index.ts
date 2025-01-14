@@ -12,7 +12,7 @@ import type {
 	RetroItemReturn,
 	RetrospectiveData,
 	SprintRpc,
-	UpdateRetrospectiveItemPayload,
+	UpdateRetrospectiveTypePayload,
 } from "./types";
 
 // Define type-safe Zod schemas
@@ -97,8 +97,8 @@ export const sprintRpcSchema = createServiceSchema<SprintRpc>()({
 		),
 		output: retrospectiveItemReturnSchema,
 	},
-	updateRetrospectiveItem: {
-		input: createSchema<UpdateRetrospectiveItemPayload>()(
+	updateRetrospectiveType: {
+		input: createSchema<UpdateRetrospectiveTypePayload>()(
 			z.object({
 				retrospectiveItemId: z.string(),
 				type: z.enum(["wentWell", "toImprove", "actionItems"]),
@@ -142,8 +142,8 @@ export const createSprintRpcHandler = (sprintService: SprintRpc) =>
 		getSprintTasks: (input) => sprintService.getSprintTasks(input),
 		endSprint: (input) => sprintService.endSprint(input),
 		addRetrospectiveItem: (input) => sprintService.addRetrospectiveItem(input),
-		updateRetrospectiveItem: (input) =>
-			sprintService.updateRetrospectiveItem(input),
+		updateRetrospectiveType: (input) =>
+			sprintService.updateRetrospectiveType(input),
 		likeRetrospectiveItem: (input) =>
 			sprintService.likeRetrospectiveItem(input),
 		getRetrospectiveItems: (input) =>
