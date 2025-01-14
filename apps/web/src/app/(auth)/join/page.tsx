@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useUserStore, useWorkspaceStore } from "@/store";
+import { useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
@@ -17,7 +17,6 @@ const Join = () => {
 	const [inputValue, setInputValue] = useState("");
 	const [urlInputValue, setUrlInputValue] = useState("");
 	const { createWorkspace } = useWorkspaceStore((state) => state);
-	const { updateUser, setUser } = useUserStore((state) => state);
 	const { toast } = useToast();
 	const router = useRouter();
 	const { signOut } = useClerk();
@@ -48,7 +47,7 @@ const Join = () => {
 		enabled: !!clerkUser?.id,
 	});
 
-	const { data: workspaces, isLoading: isWorkspacesLoading } = useQuery({
+	const { data: workspaces = [], isLoading: isWorkspacesLoading } = useQuery({
 		queryKey: ["workspaces", clerkUser?.id],
 		queryFn: () => {
 			if (!clerkUser?.id) return;
@@ -94,8 +93,6 @@ const Join = () => {
 		},
 		onSuccess: (data) => {
 			if (!data) return;
-			updateUser(data);
-			setUser(data);
 			queryClient.invalidateQueries({ queryKey: ["user", clerkUser?.id] });
 		},
 		onError: (error) => {

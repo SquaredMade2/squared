@@ -35,7 +35,7 @@ export default function InboxPage() {
 		useState<GetNotificationsResponse>(notifications);
 	const [filterRead, setFilterRead] = useState(false);
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
-	const { setUserAvatars, user, setUser } = useUserStore((state) => state);
+	const { setUserAvatars, user } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
 	const { user: clerkUser } = useUser();
 	const pathname = usePathname();
@@ -43,14 +43,10 @@ export default function InboxPage() {
 	useEffect(() => {
 		const fetchNotifications = async () => {
 			if (clerkUser) {
-				const [notifications, userResponse] = await Promise.all([
-					eventService.getNotifications(TODO, {
-						userId: clerkUser.id,
-					}),
-					userService.getUser(TODO, { userId: clerkUser.id }),
-				]);
+				const notifications = await eventService.getNotifications(TODO, {
+					userId: clerkUser.id,
+				});
 				setNotifications(notifications);
-				setUser(userResponse);
 			}
 		};
 		fetchNotifications();

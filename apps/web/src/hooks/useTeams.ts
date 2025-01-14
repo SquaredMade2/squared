@@ -13,14 +13,16 @@ export function useTeams() {
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
-	const { data: authData, isLoading: authLoading } = useQuery({
+	const { data: authorized = false, isLoading: authLoading } = useQuery({
 		queryKey: ["teamAuthorization", teamIdentifier],
 		queryFn: async () => {
-			if (!workspace || !teamIdentifier) return { authorized: false };
-			const authorized = await client.user.isUserAuthorized.$get({
-				teamIdentifier,
-			});
-			return { authorized };
+			if (!workspace || !teamIdentifier) return false;
+			const authorized = await client.user.isUserAuthorized
+				.$get({
+					teamIdentifier,
+				})
+				.then((res) => res.json());
+			return authorized;
 		},
 		enabled: !!teamIdentifier,
 	});
@@ -42,16 +44,13 @@ export function useTeams() {
 			if (currentTeam) setTeam(currentTeam);
 			return { teams: allTeams, team: currentTeam || null };
 		},
-		enabled:
-			!!authData?.authorized &&
-			!!workspace &&
-			team?.identifier !== teamIdentifier,
+		enabled: authorized && !!workspace && team?.identifier !== teamIdentifier,
 	});
 
 	return {
 		loading: workspaceLoading || authLoading || teamsLoading,
 		team: teamsData?.team || team,
-		authorized: authData?.authorized || false,
+		authorized,
 		teams: teamsData?.teams || teams,
 		error: error ? parseError(error, "Failed to fetch teams") : null,
 	};
