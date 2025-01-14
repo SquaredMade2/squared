@@ -38,11 +38,11 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "subTeam",
 		cell: ({ row }) => {
-			const userId = row.original.id;
-      const name = row.original.name;
-      const subTeam = row.original.subTeam;
+			const { id: userId, name, subTeam } = row.original;
 
-			return <UpdateSubTeamDropdown userId={userId} name = {name} subTeam = {subTeam} />;
+			return (
+				<UpdateSubTeamDropdown userId={userId} name={name} subTeam={subTeam} />
+			);
 		},
 	},
 	{

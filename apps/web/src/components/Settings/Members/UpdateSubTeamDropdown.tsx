@@ -40,12 +40,8 @@ const UpdateSubTeamDropdown = ({
 		<div>
 			<select value={subteam} onChange={handleChange} name="" id="">
 				<option value="default">Assigned Subteam</option>
-				<option value="1">Backend Developer</option>
-				<option value="2">Data Scientist</option>
-				<option value="3">DevOps Engineer</option>
-				<option value="4">Fullstack Engineer</option>
-				<option value="5">Frontend Developer</option>
-				<option value="6">QA Specialist</option>
+				<option value="1">Admin</option>
+				<option value="2">Member</option>
 			</select>
 		</div>
 	);
