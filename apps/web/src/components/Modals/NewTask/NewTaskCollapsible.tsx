@@ -75,9 +75,25 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			return;
 		}
 
-		if (!workspace || !team || !user) {
+		if (!workspace) {
 			toast({
-				title: "Error authenticating user",
+				title: "Workspace not found",
+				variant: "destructive",
+			});
+			return;
+		}
+
+		if (!team) {
+			toast({
+				title: "Team not found",
+				variant: "destructive",
+			});
+			return;
+		}
+
+		if (!user) {
+			toast({
+				title: "User not authenticated",
 				variant: "destructive",
 			});
 			return;
