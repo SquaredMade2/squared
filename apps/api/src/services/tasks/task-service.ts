@@ -153,10 +153,19 @@ export class TaskService implements TaskRpc {
 				this.throwError("Invalid Effort Estimate");
 			}
 		}
+		
+		const isBlocking = !!(
+			taskData.status === "done" ||
+			taskData.status === "archived" ||
+			taskData.status === "canceled"
+		);
 
 		const task = await this.db.task.update({
 			where: { id: taskData.id },
-			data: taskData,
+			data: {
+				...taskData,
+				blocking: { set: isBlocking ? [] : undefined },
+			},
 		});
 
 		if (!task) {
@@ -346,9 +355,7 @@ export class TaskService implements TaskRpc {
 		return updatedTask.blockedBy;
 	}
 
-	async getTaskBlockedByAndBlocking({
-		taskId,
-	}: { taskId: string }): Promise<{
+	async getTaskBlockedByAndBlocking({ taskId }: { taskId: string }): Promise<{
 		blockedBy: Task[];
 		blockingIds: string[];
 	}> {
@@ -368,21 +375,24 @@ export class TaskService implements TaskRpc {
 	}
 
 	async getAllBlockedTaskIds({
-		teamId
-	}: {teamId: string}): Promise<string[]> {
-		this.logger.info("Getting all blocking taskIds for team with id: %s", teamId);
+		teamId,
+	}: { teamId: string }): Promise<string[]> {
+		this.logger.info(
+			"Getting all blocking taskIds for team with id: %s",
+			teamId,
+		);
 		const blockedTaskIds = await this.db.task.findMany({
 			where: {
 				teamId,
 				blockedBy: {
-					some: {}
-				}
+					some: {},
+				},
 			},
 			select: {
-				id: true
+				id: true,
 			},
 		});
-		return blockedTaskIds.map(task => task.id);
+		return blockedTaskIds.map((task) => task.id);
 	}
 
 	private throwError(message: string): never {

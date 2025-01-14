@@ -1,15 +1,20 @@
+import { toast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import type { Task } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationComboboxMany } from "./DesignationComboboxMany";
-import { toast } from "@/components/ui/use-toast";
 
 const BlockedByCombobox = () => {
 	const [open, setOpen] = useState(false);
-	const { tasks, currentTask, currentTaskBlockedBy, currentTaskBlockingIds, setCurrentTaskBlockedBy } =
-		useTaskStore((state) => state);
+	const {
+		tasks,
+		currentTask,
+		currentTaskBlockedBy,
+		currentTaskBlockingIds,
+		setCurrentTaskBlockedBy,
+	} = useTaskStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const queryClient = useQueryClient();
 
@@ -17,11 +22,14 @@ const BlockedByCombobox = () => {
 
 	if (!currentTask || !taskId) return null;
 
-	const updateTaskMutation = useMutation({
+	const { mutate: mutateUpdateBlockedByTasks } = useMutation({
 		mutationFn: async (blockingId: string) => {
 			if (!user) throw new Error("User not found");
-			if(currentTaskBlockingIds.includes(blockingId)) {
-				toast({title: "You can't have two tasks blocking each other", variant: "destructive"});
+			if (currentTaskBlockingIds.includes(blockingId)) {
+				toast({
+					title: "You can't have two tasks blocking each other",
+					variant: "destructive",
+				});
 				return currentTaskBlockedBy;
 			}
 			const res = await client.task.updateBlockedOrBlockingTasks.$post({
@@ -44,7 +52,7 @@ const BlockedByCombobox = () => {
 	});
 
 	const handleUpdateBlockedByTasks = (taskId: string) => {
-		updateTaskMutation.mutate(taskId);
+		mutateUpdateBlockedByTasks(taskId);
 	};
 
 	return (

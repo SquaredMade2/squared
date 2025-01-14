@@ -18,13 +18,8 @@ import type { Status, TaskEvent } from "@squared/db";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const {
-		currentTask,
-		currentTaskBlockedBy,
-		currentTaskBlockingIds,
-		setCurrentTask,
-		updateTask,
-	} = useTaskStore((state) => state);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 	const user = useUserStore((state) => state.user);
 
@@ -52,18 +47,6 @@ const StatusDropdown = () => {
 			});
 			// TODO: Will remove type coercion once commits are implemented
 			setEvents(updatedEvents as TaskEvent[]);
-			if (
-				currentTaskBlockingIds.length &&
-				(newStatus === "done" ||
-					newStatus === "canceled" ||
-					newStatus === "archived")
-			) {
-				taskService.updateBlockedOrBlockingTasks(TODO, {
-					taskId,
-					updatingIds: [],
-					key: "blocking",
-				});
-			}
 		} catch {
 			toast({
 				title: "Error updating status",
@@ -76,7 +59,6 @@ const StatusDropdown = () => {
 		<Select
 			onValueChange={(value) => handleSelectStatus(value as Status)}
 			value={sidebarStatus}
-			disabled={!!currentTaskBlockedBy.length}
 		>
 			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10 px-4 py-2">
 				<SelectValue placeholder="Select status">
@@ -90,7 +72,14 @@ const StatusDropdown = () => {
 			</SelectTrigger>
 			<SelectContent>
 				{statusOptions.map((status) => (
-					<SelectItem key={status} value={status}>
+					<SelectItem
+						key={status}
+						value={status}
+						disabled={
+							!!currentTaskBlockedBy.length &&
+							(status === "done" || status === "inReview")
+						}
+					>
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
 								<StatusIcon status={status} />
