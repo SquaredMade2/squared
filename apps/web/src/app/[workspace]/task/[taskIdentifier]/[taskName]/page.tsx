@@ -18,7 +18,7 @@ import { TODO } from "@squared/context";
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useTaskStore } from "@/store";
 import { useEffect } from "react";
-import BlockedByTasks from "../BlockedByTasks";
+import BlockedByTasks from "./BlockedByTasks";
 import Subtasks from "./Subtasks";
 
 const TaskPage = () => {
@@ -69,7 +69,7 @@ const TaskPage = () => {
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm />
-										{blockedByTasks.find(task => task.status !== "done" && task.status !== "canceled") && <BlockedByTasks />}
+										{blockedByTasks.length > 0 && <BlockedByTasks />}
 										{subtasks.length > 0 && <Subtasks />}
 										<NewTaskCollapsible parentId={currentTask.id} />
 										<EventTabs />

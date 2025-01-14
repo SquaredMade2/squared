@@ -60,7 +60,7 @@ const StatusDropdown = () => {
 		<Select
 			onValueChange={(value) => handleSelectStatus(value as Status)}
 			value={sidebarStatus}
-			disabled={!!blockedByTasks.find((task) => task.status !== "done" && task.status !== "canceled")}
+			disabled={!!blockedByTasks.length}
 		>
 			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10 px-4 py-2">
 				<SelectValue placeholder="Select status">
