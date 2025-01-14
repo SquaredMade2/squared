@@ -11,6 +11,7 @@ import {
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { EventRpc, FullNotification, TaskValue } from "./types";
+import { formatStatus } from "@/utils/eventFormats";
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
@@ -232,20 +233,7 @@ export class EventService implements EventRpc {
 		}
 		/// Handle Status
 		if (key === "status" && typeof value === "string") {
-			switch (value) {
-				case Status.backlog:
-					return "Backlog";
-				case Status.todo:
-					return "To Do";
-				case Status.inProgress:
-					return "In Progress";
-				case Status.inReview:
-					return "In Review";
-				case Status.done:
-					return "Done";
-				case Status.canceled:
-					return "Canceled";
-			}
+			return formatStatus(value)
 		}
 		/// Handle Priority
 		if (key === "priority" && typeof value === "string") {
