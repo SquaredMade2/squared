@@ -332,6 +332,8 @@ export class TaskService implements TaskRpc {
 		taskId: string;
 		key: "blocking" | "blockedBy";
 	}): Promise<Task[]> {
+		this.logger.info(`updating task ${key} to`, updatingIds);
+
 		const updatedTask = await this.db.task.update({
 			where: { id: taskId },
 			data: {
@@ -350,6 +352,8 @@ export class TaskService implements TaskRpc {
 		blockedBy: Task[];
 		blockingIds: string[];
 	}> {
+		this.logger.info("getting tasks blocking and blocked by task id", taskId);
+
 		const task = await this.db.task.findUnique({
 			where: { id: taskId },
 			include: { blockedBy: true, blocking: { select: { id: true } } },
@@ -377,7 +381,6 @@ export class TaskService implements TaskRpc {
 			select: {
 				id: true
 			},
-			distinct: ['id']
 		});
 		return blockedTaskIds.map(task => task.id);
 	}
