@@ -159,7 +159,7 @@ export default function SprintRetrospectivePage() {
 			const itemId = result.draggableId;
 
 			try {
-				const response = await sprintService.updateRetrospectiveItem(TODO, {
+				const response = await sprintService.updateRetrospectiveType(TODO, {
 					sprintId,
 					retrospectiveItemId: itemId,
 					type: destinationType,
