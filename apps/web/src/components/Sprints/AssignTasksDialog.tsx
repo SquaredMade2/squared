@@ -41,6 +41,8 @@ import {
 } from "../ui/dropdown-menu";
 import { toast } from "../ui/use-toast";
 
+// todo add ascending/descending
+
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;
 	upcomingSprints: Sprint[];
@@ -69,8 +71,10 @@ export function AssignTasksDialog({
 	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
 		activeSprint?.id,
 	);
+
 	const { view, setGridViewOptions, setListViewOptions, displayOptions } =
 		useViewStore((state) => state);
+	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { taskOrder, groupTasksBy } = displayOptions;
 	const orderByOptions: TaskOrder[] = TaskOrderOptions;
 
@@ -160,9 +164,57 @@ export function AssignTasksDialog({
 			});
 	}, [unassignedTasks, searchQuery, filterPriority, filterStatus, filterLabel]);
 
-	// todo add sorting options here
+	const orderTasks = (tasks: Task[]): Task[] => {
+		return tasks.sort((a, b) => {
+			let comparison = 0;
 
-	// add ordering and sorting and ascending/descending
+			switch (orderBy) {
+				case "Title":
+					comparison = a.title.localeCompare(b.title);
+					break;
+				case "Status":
+					comparison =
+						statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+					break;
+				case "Priority":
+					comparison =
+						priorityOrder.indexOf(a.priority) -
+						priorityOrder.indexOf(b.priority);
+					break;
+				case "Assignee": {
+					const aAssignee =
+						users.find((u) => u.id === a.assigneeId)?.name ?? null;
+					const bAssignee =
+						users.find((u) => u.id === b.assigneeId)?.name ?? null;
+					comparison = compareNullableStrings(aAssignee, bAssignee);
+					break;
+				}
+				case "Effort":
+					comparison = compareNullableNumbers(
+						a.effortEstimate,
+						b.effortEstimate,
+					);
+					break;
+				case "Due Date":
+					comparison = compareNullableDates(a.dueDate, b.dueDate);
+					break;
+				case "Updated":
+					comparison =
+						new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+					break;
+				case "Created":
+					comparison =
+						new Date(a.dateCreated).getTime() -
+						new Date(b.dateCreated).getTime();
+					break;
+				default:
+					break;
+			}
+
+			return orderAscending ? comparison : -comparison;
+		});
+	};
+
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
@@ -212,7 +264,7 @@ export function AssignTasksDialog({
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
 						<div className="flex items-center gap-2 w-full sm:w-auto">
-							<DropdownMenu>
+							{/* <DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button
 										variant="outline"
@@ -240,14 +292,13 @@ export function AssignTasksDialog({
 											</DropdownMenuItem>
 										))}
 								</DropdownMenuContent>
-							</DropdownMenu>
+							</DropdownMenu> */}
 
-							{/* <Select
-							// value={filterPriority}
-							onValueChange={() =>
-								setOptions({
-									taskOrder: { ...taskOrder, orderBy: option },
-								})}
+							<Select
+								// value={filterPriority}
+								onValueChange={(value) => {
+									setOptions({ taskOrder: { ...taskOrder, orderBy: value } });
+								}}
 							>
 								<SelectTrigger className="w-full sm:w-[150px]">
 									<SelectValue placeholder="Sorting Options" />
@@ -263,14 +314,14 @@ export function AssignTasksDialog({
 											);
 										})}
 								</SelectContent>
-							</Select> */}
+							</Select>
 
-							<Select
-								value={filterPriority}
-								onValueChange={(value) => setFilterPriority(value as Priority)}
+							{/* <Select
+								value={"Priority"}
+								// onValueChange={(value) => setFilterPriority(value as Priority)}
 							>
 								<SelectTrigger className="w-full sm:w-[150px]">
-									<SelectValue placeholder="Priority" />
+									<SelectValue placeholder="priority" />
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="title">Title</SelectItem>
@@ -281,7 +332,7 @@ export function AssignTasksDialog({
 									<SelectItem value="updated">Updated</SelectItem>
 									<SelectItem value="created">Created</SelectItem>
 								</SelectContent>
-							</Select>
+							</Select> */}
 
 							<Select
 								value={filterPriority}
