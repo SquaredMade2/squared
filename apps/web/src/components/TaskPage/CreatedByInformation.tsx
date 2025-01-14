@@ -20,7 +20,7 @@ export const CreatedByInformation = () => {
 	};
 
 	return (
-		<div>
+		<div className="flex flex-col gap-2">
 			{/* Events */}
 			{events
 				.sort(

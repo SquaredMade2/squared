@@ -203,7 +203,7 @@ export class EventService implements EventRpc {
 						formattedKey === "Title" ||
 						formattedKey === "Description" ||
 						formattedKey === "Labels"
-							? `${formattedKey} ${formattedKey === "Labels" ? "have" : "has"} been updated`
+							? `Updated the ${key}`
 							: `${formattedKey} changed from ${formattedOldValue} to ${formattedNewValue}`;
 					return diffString;
 				}
