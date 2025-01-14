@@ -6,6 +6,7 @@ export type TaskState = {
 	subtasks: Task[];
 	currentTaskBlockedBy: Task[];
 	currentTaskBlockingIds: string[];
+	allBlockedTaskIds: string[];
 };
 
 export interface TaskResponse {
@@ -20,6 +21,7 @@ type TaskActions = {
 	setSubtasks: (subtasks: Task[]) => void;
 	setCurrentTaskBlockedBy: (tasks: Task[]) => void;
 	setCurrentTaskBlockingIds: (ids: string[]) => void;
+	setAllBlockedTaskIds: (ids: string[]) => void;
 	updateTask: (task: Task) => void;
 	createTask: (task: Task) => void;
 	deleteTask: (taskId: string) => void;

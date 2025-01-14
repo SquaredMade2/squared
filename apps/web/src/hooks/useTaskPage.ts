@@ -26,6 +26,7 @@ export function useTaskPage() {
 		setCurrentTaskBlockingIds,
 		currentTaskBlockedBy,
 		setCurrentTaskBlockedBy,
+		allBlockedTaskIds
 	} = useTaskStore((state) => state);
 	const { users, loading: userLoading, error: userError } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
@@ -65,7 +66,7 @@ export function useTaskPage() {
 	const blockedByQuery = useQuery({
 		queryKey: ["blockedBy", taskQuery.data?.id],
 		queryFn: async () => {
-			if (!taskQuery.data) return;
+			if (!taskQuery.data) throw new Error("Task not found");
 			const res = await client.task.getTaskBlockedByAndBlocking.$get({
 				taskId: taskQuery.data.id,
 			});
@@ -76,6 +77,7 @@ export function useTaskPage() {
 		},
 		enabled: !!taskQuery.data,
 	});
+
 
 	const commentsQuery = useQuery({
 		queryKey: ["comments", taskQuery.data?.id],
@@ -137,5 +139,6 @@ export function useTaskPage() {
 		subtasks,
 		currentTaskBlockedBy,
 		currentTaskBlockingIds,
+		allBlockedTaskIds
 	};
 }

@@ -404,6 +404,16 @@ export class TaskService extends RPCContextClient {
 	}
 
 	/**
+	 * getAllBlockedTaskIds method
+	 */
+	getAllBlockedTaskIds(
+		ctx: Context,
+		req: { teamId: string },
+	): Promise<string[]> {
+		return this.request(ctx, "getAllBlockedTaskIds", req);
+	}
+
+	/**
 	 * reorderSubtasks method
 	 */
 	reorderSubtasks(

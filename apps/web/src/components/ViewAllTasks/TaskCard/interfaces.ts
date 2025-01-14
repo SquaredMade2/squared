@@ -24,6 +24,7 @@ export interface TaskCardProps {
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
 	isSubtask?: boolean;
+	isDisabled?: boolean;
 }
 
 export interface TaskCardLabelsProps {

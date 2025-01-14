@@ -366,6 +366,7 @@ export class TaskService implements TaskRpc {
 	async getAllBlockedTaskIds({
 		teamId
 	}: {teamId: string}): Promise<string[]> {
+		this.logger.info("Getting all blocking taskIds for team with id: %s", teamId);
 		const blockedTaskIds = await this.db.task.findMany({
 			where: {
 				teamId,

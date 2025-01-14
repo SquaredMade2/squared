@@ -56,6 +56,15 @@ export const taskRouter = router({
 				await taskService.getTaskBlockedByAndBlocking(TODO, { taskId }),
 			);
 		}),
+	getAllBlockedTaskIds: privateProcedure
+		.input(z.object({ teamId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { teamId } = input;
+			return c.superjson(
+				await taskService.getAllBlockedTaskIds(TODO, { teamId }),
+			);
+		}),
 	updateBlockedOrBlockingTasks: privateProcedure
 		.input(
 			z.object({

@@ -4,7 +4,14 @@ export * from "./interfaces";
 export * from "./store";
 
 export const createTaskStore = (
-	initState: TaskState = { tasks: [], subtasks: [], currentTaskBlockedBy: [], currentTaskBlockingIds: [], currentTask: null },
+	initState: TaskState = {
+		tasks: [],
+		subtasks: [],
+		currentTaskBlockedBy: [],
+		currentTaskBlockingIds: [],
+		allBlockedTaskIds: [],
+		currentTask: null,
+	},
 ) => {
 	return createStore<TaskStore>()((set) => ({
 		...initState,
@@ -13,6 +20,7 @@ export const createTaskStore = (
 		setSubtasks: (subtasks) => set({ subtasks }),
 		setCurrentTaskBlockedBy: (tasks) => set({ currentTaskBlockedBy: tasks }),
 		setCurrentTaskBlockingIds: (ids) => set({ currentTaskBlockingIds: ids }),
+		setAllBlockedTaskIds: (ids) => set({ allBlockedTaskIds: ids }),
 		createTask: (task) =>
 			set((state) => ({
 				tasks: [...state.tasks, task],
