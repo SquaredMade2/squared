@@ -102,7 +102,7 @@ export const NewTaskModal = () => {
 			effortEstimate: effortEstimate || null,
 			teamId: team.id,
 			workspaceId: workspace.id,
-			sprintId
+			sprintId,
 		};
 
 		createTask(createTaskParams, {

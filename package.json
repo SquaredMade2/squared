@@ -9,6 +9,7 @@
     "db:backup": "cd ./packages/db && dotenv -e .env -- sh -c 'echo $POSTGRES_PRISMA_URL && pg_dump --file=../../database/$(date +%d-%m-%Y).bak --dbname=$(echo $POSTGRES_PRISMA_URL | sed \"s/[?&]pgbouncer=true//\")'",
     "db:gen": "turbo run db:gen",
     "db:deploy": "pnpm --filter=@squared/db db:deploy",
+    "db:migrate": "pnpm --filter=@squared/db migrate",
     "db:push": "pnpm --filter=@squared/db db:push",
     "docker:build": "docker compose build",
     "docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
