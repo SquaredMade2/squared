@@ -1,3 +1,4 @@
+import { formatPriority, formatStatus } from "@/utils/eventFormats";
 import {
 	type Commit,
 	type Notification,
@@ -11,7 +12,6 @@ import {
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { EventRpc, FullNotification, TaskValue } from "./types";
-import { formatPriority, formatStatus } from "@/utils/eventFormats";
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
@@ -233,11 +233,11 @@ export class EventService implements EventRpc {
 		}
 		/// Handle Status
 		if (key === "status" && typeof value === "string") {
-			return formatStatus(value)
+			return formatStatus(value);
 		}
 		/// Handle Priority
 		if (key === "priority" && typeof value === "string") {
-			return formatPriority(value)
+			return formatPriority(value);
 		}
 
 		// Handle assigneeId
