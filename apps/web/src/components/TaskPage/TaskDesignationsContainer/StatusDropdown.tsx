@@ -77,7 +77,7 @@ const StatusDropdown = () => {
 						value={status}
 						disabled={
 							!!currentTaskBlockedBy.length &&
-							(status === "done" || status === "inReview")
+							(status === "done" || status === "inReview" || status === "inProgress")
 						}
 					>
 						<div className="flex items-center justify-between w-full">
