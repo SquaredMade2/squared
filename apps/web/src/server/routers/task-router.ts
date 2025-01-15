@@ -66,6 +66,44 @@ export const taskRouter = router({
 				}),
 			);
 		}),
+	updatePriority: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				priority: priorityEnum,
+				updaterId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, priority, updaterId } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					updaterId,
+					priority,
+				}),
+			);
+		}),
+	updateEffort: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				effortEstimate: z.number().min(1).max(5),
+				updaterId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, effortEstimate, updaterId } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					updaterId,
+					effortEstimate,
+				}),
+			);
+		}),
 	createTask: privateProcedure
 		.input(
 			z.object({
@@ -79,6 +117,7 @@ export const taskRouter = router({
 				effortEstimate: z.number().nullable().optional(),
 				teamId: z.string(),
 				workspaceId: z.string(),
+				sprintId: z.string().optional().nullable(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
@@ -129,6 +168,26 @@ export const taskRouter = router({
 				}),
 			);
 		}),
+	updateSprint: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				sprintId: z.string().nullable(),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, sprintId } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					sprintId,
+					updaterId: input.userId,
+				}),
+			);
+		}),
+
 	updateDueDate: privateProcedure
 		.input(
 			z.object({
@@ -163,6 +222,25 @@ export const taskRouter = router({
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					assigneeId,
+					updaterId: input.userId,
+				}),
+			);
+		}),
+	updateLabels: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				labelIds: z.array(z.string()),
+				userId: z.string(),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, labelIds } = input;
+			return c.superjson(
+				await taskService.updateTask(TODO, {
+					id: taskId,
+					labels: labelIds,
 					updaterId: input.userId,
 				}),
 			);

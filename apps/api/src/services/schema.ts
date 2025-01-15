@@ -98,6 +98,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
+		defaultView: z.string().nullable(),
 	}),
 );
 
@@ -133,6 +134,7 @@ export const workspaceLabelSchema = createSchema<
 		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
+		defaultView: z.string().nullable(),
 		Labels: z.array(labelSchema),
 	}),
 );
@@ -143,6 +145,7 @@ export const userSchema = createSchema<User>()(
 		name: z.string(),
 		username: z.string().nullable(),
 		email: z.string().email(),
+		externalId: z.string().nullable(),
 		password: z.string().nullable(),
 		verified: z.boolean(),
 		lastLogin: z.date(),

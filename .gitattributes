@@ -1,0 +1,5 @@
+# Mark all files in "gen" folders as binary (no diff)
+**/gen/** -diff
+
+# Mark the specific file as binary (no diff)
+apps/api/src/api/generated-routes.ts -diff

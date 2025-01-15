@@ -12,14 +12,30 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export function WorkspaceDropdown() {
+	const pathName = usePathname();
 	const router = useRouter();
 	const { workspace, workspaces, setWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
 	const { state } = useSidebar();
+
+	const updatePathWithWorkspace = (newWorkspace: { url: string }) => {
+		const pathNameParts = pathName.split("/");
+
+		// validation for 'inbox' page or any other page that doesn't have workspace url
+		if (workspace && pathNameParts.includes(workspace.url)) {
+			if (pathNameParts[1] === "settings" || pathNameParts[2] === "inbox") {
+				pathNameParts[2] = newWorkspace?.url;
+				router.push(pathNameParts.join("/"));
+			} else {
+				router.push(`/${newWorkspace?.url}`);
+			}
+		}
+	};
 
 	return (
 		<DropdownMenu>
@@ -55,7 +71,7 @@ export function WorkspaceDropdown() {
 						key={workspace.id}
 						onSelect={() => {
 							setWorkspace(workspace);
-							router.push(`/${workspace?.url}`);
+							updatePathWithWorkspace(workspace);
 						}}
 					>
 						<Avatar className="h-6 w-6 mr-2">

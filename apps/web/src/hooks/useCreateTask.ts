@@ -13,6 +13,7 @@ type CreateTaskInput = {
 	effortEstimate?: number | null;
 	teamId: string;
 	workspaceId: string;
+	sprintId?: string | null;
 };
 
 export const useCreateTask = () => {
@@ -35,6 +36,7 @@ export const useCreateTask = () => {
 				effortEstimate: input.effortEstimate,
 				teamId: input.teamId,
 				workspaceId: input.workspaceId,
+				sprintId: input.sprintId,
 			});
 			return await res.json();
 		},
