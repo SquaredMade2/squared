@@ -22,7 +22,7 @@ const GithubSettings: React.FC = () => {
 
 	useEffect(() => {
 		const getUserRepositories = async () => {
-			if (user?.id) {
+			if (user) {
 				setConnectedRepos(
 					await userService.getUserRepositories(TODO, {
 						userId: user.externalId,
@@ -31,7 +31,7 @@ const GithubSettings: React.FC = () => {
 			}
 		};
 		getUserRepositories();
-	}, [user?.id]);
+	}, [user]);
 
 	const handleClick = (): void => {
 		if (!user?.id) return;

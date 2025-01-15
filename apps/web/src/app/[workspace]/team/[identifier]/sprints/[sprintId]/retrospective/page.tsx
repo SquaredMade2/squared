@@ -94,7 +94,7 @@ export default function SprintRetrospectivePage() {
 				if (user) {
 					const response = await sprintService.addRetrospectiveItem(TODO, {
 						sprintId,
-						authorId: user?.id,
+						authorId: user.id,
 						type,
 						content,
 					});

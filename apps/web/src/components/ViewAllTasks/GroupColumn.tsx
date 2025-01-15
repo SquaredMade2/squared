@@ -85,9 +85,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 					break;
 				case "Assignee": {
 					const aAssignee =
-						users.find((u) => u.id === a.assigneeId)?.name ?? null;
+						users.find((u) => u.externalId === a.assigneeId)?.name ?? null;
 					const bAssignee =
-						users.find((u) => u.id === b.assigneeId)?.name ?? null;
+						users.find((u) => u.externalId === b.assigneeId)?.name ?? null;
 					comparison = compareNullableStrings(aAssignee, bAssignee);
 					break;
 				}

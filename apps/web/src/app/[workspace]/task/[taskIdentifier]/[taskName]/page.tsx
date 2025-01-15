@@ -27,7 +27,7 @@ const TaskPage = () => {
 	const { toast } = useToast();
 	const user = useUserStore((state) => state.user);
 	useEffect(() => {
-		if (currentTask && user?.id) {
+		if (currentTask && user?.externalId) {
 			userService
 				.setLastViewedTask(TODO, {
 					userId: user.externalId,

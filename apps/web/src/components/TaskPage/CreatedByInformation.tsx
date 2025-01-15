@@ -28,7 +28,9 @@ export const CreatedByInformation = () => {
 						new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 				)
 				.map((event) => {
-					const eventAuthor = users.find((user) => user.id === event.authorId);
+					const eventAuthor = users.find(
+						(user) => user.externalId === event.authorId,
+					);
 					return (
 						<div key={event.id} className="flex items-center px-8">
 							<div className="mr-4 text-muted-foreground">

@@ -27,7 +27,7 @@ export default function TeamMembersPage() {
 
 	const membersWithRoles: MemberWithRole[] = users.map((user) => ({
 		...user,
-		role: workspace?.admins.includes(user.id) ? "admin" : "member",
+		role: workspace?.admins.includes(user.externalId) ? "admin" : "member",
 	}));
 
 	const enhancedColumns = columns.map((col) => ({

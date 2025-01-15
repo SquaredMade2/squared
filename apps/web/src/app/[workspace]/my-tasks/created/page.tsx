@@ -14,7 +14,7 @@ export default function MyCreatedTasksPage() {
 		useTaskDashboard();
 
 	const { getGroupedColumns } = useGroups((tasks) =>
-		filterTasks(tasks.filter((t) => t.authorId === user?.id)),
+		filterTasks(tasks.filter((t) => t.authorId === user?.externalId)),
 	);
 
 	if (!workspace) return null;
