@@ -1,5 +1,5 @@
 import { client } from "@/lib/client";
-import { useTeamStore } from "@/store";
+import { useTeamStore, useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import { useQuery } from "@tanstack/react-query";
@@ -9,11 +9,12 @@ import { useWorkspaces } from "./useWorkspaces";
 export function useTeams() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
 	const { team, teams, setTeam, setTeams } = useTeamStore((state) => state);
+	const { setUsers } = useUserStore((state) => state);
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
-	const { data: authorized = false, isLoading: authLoading } = useQuery({
+	const { data: authorized = true, isLoading: authLoading } = useQuery({
 		queryKey: ["teamAuthorization", teamIdentifier],
 		queryFn: async () => {
 			if (!workspace || !teamIdentifier) return false;
@@ -22,9 +23,10 @@ export function useTeams() {
 					teamIdentifier,
 				})
 				.then((res) => res.json());
+
 			return authorized;
 		},
-		enabled: !!teamIdentifier,
+		enabled: !!teamIdentifier && !workspaceLoading,
 	});
 
 	const {
@@ -41,7 +43,15 @@ export function useTeams() {
 			const allTeams = await res.json();
 			setTeams(allTeams);
 			const currentTeam = allTeams.find((t) => t.identifier === teamIdentifier);
-			if (currentTeam) setTeam(currentTeam);
+			if (currentTeam) {
+				setTeam(currentTeam);
+				const users = await client.user.getTeamUsers
+					.$get({
+						teamId: currentTeam.id,
+					})
+					.then((res) => res.json());
+				setUsers(users);
+			}
 			return { teams: allTeams, team: currentTeam || null };
 		},
 		enabled: authorized && !!workspace && team?.identifier !== teamIdentifier,

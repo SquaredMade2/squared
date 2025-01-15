@@ -69,8 +69,6 @@ const ForgotPasswordPage = () => {
 					setActive({ session: result.createdSessionId });
 					setError("");
 					router.push("/");
-				} else {
-					console.log(result);
 				}
 			})
 			.catch((err) => {
@@ -91,8 +89,6 @@ const ForgotPasswordPage = () => {
 					setActive({ session: result.createdSessionId });
 					setError("");
 					router.push("/");
-				} else {
-					console.log(result);
 				}
 			})
 			.catch((err) => {

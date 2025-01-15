@@ -22,8 +22,7 @@ export function useTaskDashboard() {
 		error: workspaceError,
 	} = useWorkspaces();
 	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
-	const user = useUserStore((state) => state.user);
-
+	const { user } = useUserStore((state) => state);
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
