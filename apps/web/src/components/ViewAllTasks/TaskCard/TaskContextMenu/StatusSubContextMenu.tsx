@@ -1,3 +1,5 @@
+"use client";
+
 import { StatusIcon } from "@/components/Icons";
 import {
 	ContextMenuItem,
@@ -6,12 +8,12 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
-import { taskService } from "@/lib/services";
 import { useTaskStore, useUserStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import type { Status } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
@@ -19,24 +21,27 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { updateTask } = useTaskStore((state) => state);
 	const user = useUserStore((state) => state.user);
 
-	const handleSetStatus: (status: Status) => void = async (status) => {
-		if (task.id !== undefined) {
-			try {
-				updateTask(
-					await taskService.updateTask(TODO, {
-						id: task.id,
-						updaterId: user?.id || "",
-						status,
-					}),
-				);
-			} catch (err) {
-				toast({
-					title: "Error updating task",
-					description: err instanceof Error && err.message,
-				});
-			}
-		}
-	};
+	const { mutate: updateStatus } = useMutation({
+		mutationKey: ["updateTaskStatus", task.id],
+		mutationFn: async (status: Status) => {
+			const res = await client.task.updateStatus.$post({
+				taskId: task.id,
+				status,
+				updaterId: user?.id || "",
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+		onError: (error) => {
+			toast({
+				title: "Error updating task",
+				description:
+					error instanceof Error ? error.message : "An error occurred",
+				variant: "destructive",
+			});
+		},
+	});
 
 	return (
 		<ContextMenuSub>
@@ -49,10 +54,7 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 			<ContextMenuSubContent>
 				{statusOptions.map((status) => {
 					return (
-						<ContextMenuItem
-							key={status}
-							onClick={() => handleSetStatus(status)}
-						>
+						<ContextMenuItem key={status} onClick={() => updateStatus(status)}>
 							<div className="mr-2">
 								<StatusIcon status={status} />
 							</div>

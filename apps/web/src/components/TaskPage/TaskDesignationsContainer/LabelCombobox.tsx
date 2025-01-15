@@ -15,15 +15,15 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { eventService, taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import {
 	useEventStore,
 	useTaskStore,
 	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
-import { TODO } from "@squared/context";
 import type { Label, TaskEvent } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 import LabelBadge from "../../LabelBadges";
@@ -32,9 +32,7 @@ const LabelCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const user = useUserStore((store) => store.user);
-	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((event) => event);
 
 	if (!currentTask) return null;
@@ -48,7 +46,28 @@ const LabelCombobox = () => {
 		[allLabels, labels],
 	);
 
-	const handleSelectLabels = async (selectedLabel: Label) => {
+	const { mutate: updateLabels } = useMutation({
+		mutationKey: ["updateTaskLabels", taskId],
+		mutationFn: async (labelIds: string[]) => {
+			const res = await client.task.updateLabels.$post({
+				taskId,
+				labelIds,
+				userId: user?.id || "",
+			});
+			const updatedTask = await res.json();
+			setCurrentTask({ ...currentTask, labels: labelIds });
+
+			const eventsRes = await client.event.getEvents.$get({
+				taskId,
+			});
+			const updatedEvents = await eventsRes.json();
+			setEvents(updatedEvents as TaskEvent[]);
+
+			return updatedTask;
+		},
+	});
+
+	const handleSelectLabels = (selectedLabel: Label) => {
 		if (!taskId) return;
 
 		const updatedLabels = taskLabels.some(
@@ -58,19 +77,7 @@ const LabelCombobox = () => {
 			: [...taskLabels, selectedLabel];
 
 		const labelIds = updatedLabels.map((label) => label.id);
-		updateTask(
-			await taskService.updateTask(TODO, {
-				id: taskId,
-				updaterId: user?.id || "",
-				labels: labelIds,
-			}),
-		);
-		setCurrentTask({ ...currentTask, labels: labelIds });
-		const updatedEvents = await eventService.getTaskEvents(TODO, {
-			taskId: taskId,
-		});
-		// TODO: Will remove type coercion once commits are implemented
-		setEvents(updatedEvents as TaskEvent[]);
+		updateLabels(labelIds);
 		setOpen(false);
 	};
 
