@@ -4,26 +4,28 @@ import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
+	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { SignIn, useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const LoginPage = () => {
 	const router = useRouter();
 	const { user, isLoaded } = useUser();
 	const { toast } = useToast();
+	const pathname = usePathname();
+	const incorrectPassword = pathname.includes("factor-one");
 
 	useEffect(() => {
 		if (isLoaded && user) {
 			return router.push("/");
 		}
-		if (window.location.pathname.includes("factor")) {
-			router.push("/sign-in");
+		if (incorrectPassword) {
 			toast({
 				title: "Error",
 				description: "Incorrect Password",
@@ -41,6 +43,12 @@ const LoginPage = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
+					{incorrectPassword && (
+						<CardDescription className="text-center text-destructive/60">
+							Incorrect Password, please try again or choose another
+							authentication method
+						</CardDescription>
+					)}
 					<SignIn
 						appearance={{
 							elements: {
