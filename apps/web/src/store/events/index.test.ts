@@ -27,7 +27,6 @@ describe("Event Store", () => {
 				type: "ASSIGNED",
 				Task: {
 					assigneeId: null,
-					assigneeName: null,
 					authorId: "",
 					dateCreated: new Date(),
 					deleted: false,
@@ -56,6 +55,7 @@ describe("Event Store", () => {
 					tasksCreated: 0,
 					universalTokenLinkId: null,
 					url: "",
+					defaultView: null,
 				},
 				createdAt: new Date(),
 				description: null,
@@ -72,7 +72,6 @@ describe("Event Store", () => {
 				type: "PARTICIPATING",
 				Task: {
 					assigneeId: null,
-					assigneeName: null,
 					authorId: "",
 					dateCreated: new Date(),
 					deleted: false,
@@ -101,6 +100,7 @@ describe("Event Store", () => {
 					tasksCreated: 0,
 					universalTokenLinkId: null,
 					url: "",
+					defaultView: null,
 				},
 				createdAt: new Date(),
 				description: null,
@@ -173,7 +173,6 @@ describe("Event Store", () => {
 				type: "ASSIGNED",
 				Task: {
 					assigneeId: null,
-					assigneeName: null,
 					authorId: "",
 					dateCreated: new Date(),
 					deleted: false,
@@ -202,6 +201,7 @@ describe("Event Store", () => {
 					tasksCreated: 0,
 					universalTokenLinkId: null,
 					url: "",
+					defaultView: null,
 				},
 				createdAt: new Date(),
 				description: null,
@@ -238,7 +238,6 @@ describe("Event Store", () => {
 				type: "ASSIGNED",
 				Task: {
 					assigneeId: null,
-					assigneeName: null,
 					authorId: "",
 					dateCreated: new Date(),
 					deleted: false,
@@ -267,6 +266,7 @@ describe("Event Store", () => {
 					tasksCreated: 0,
 					universalTokenLinkId: null,
 					url: "",
+					defaultView: null,
 				},
 				createdAt: new Date(),
 				description: null,

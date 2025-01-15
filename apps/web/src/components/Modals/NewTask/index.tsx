@@ -60,6 +60,7 @@ export const NewTaskModal = () => {
 		labels,
 		title,
 		description,
+		sprintId,
 	} = newTaskData;
 
 	const form = useForm<FormValues>({
@@ -101,6 +102,7 @@ export const NewTaskModal = () => {
 			effortEstimate: effortEstimate || null,
 			teamId: team.id,
 			workspaceId: workspace.id,
+			sprintId,
 		};
 
 		createTask(createTaskParams, {

@@ -64,11 +64,13 @@ function ForgotPasswordForm() {
 	return (
 		<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background">
 			<CardHeader>
-				<CardTitle>Forgot Password</CardTitle>
 				{!success && (
-					<CardDescription>
-						Enter your email to reset your password
-					</CardDescription>
+					<>
+						<CardTitle>Forgot Password</CardTitle>
+						<CardDescription>
+							Enter your email to reset your password
+						</CardDescription>
+					</>
 				)}
 			</CardHeader>
 			<Form {...form}>

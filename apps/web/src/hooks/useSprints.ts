@@ -5,7 +5,6 @@ import {
 	useTeamStore,
 	useWorkspaceStore,
 } from "@/store";
-import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { Sprint } from "@squared/db";
 import { useQuery } from "@tanstack/react-query";
@@ -125,6 +124,6 @@ export function useSprints(sprintId?: string) {
 		sprintTasks: tasksQuery.data?.sprintTasks || [],
 		setSprint,
 		loading: isLoading,
-		error: parseError(error, "Failed to fetch sprint data"),
+		error: error,
 	};
 }

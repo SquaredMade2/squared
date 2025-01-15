@@ -33,6 +33,7 @@ function createCustomLogger(prefix: string): Logger {
 	if (process.env.NODE_ENV !== "production") {
 		logger.add(
 			new transports.Console({
+				silent: process.env.RUNNING_TESTS === "true",
 				format: format.combine(
 					format.colorize(),
 					format.simple(),

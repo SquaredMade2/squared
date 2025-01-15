@@ -14,11 +14,13 @@ export type LoginResponse = {
 		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
+		externalId: string | null;
 		githubId: string | null;
 		githubUsername: string | null;
 		googleId: string | null;
 		id: string;
 		lastLogin: Date;
+		lastViewedTaskId: string | null;
 		name: string;
 		onBoarding: boolean;
 		password: string | null;
@@ -44,11 +46,13 @@ export type GoogleLoginResponse = {
 		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
+		externalId: string | null;
 		githubId: string | null;
 		githubUsername: string | null;
 		googleId: string | null;
 		id: string;
 		lastLogin: Date;
+		lastViewedTaskId: string | null;
 		name: string;
 		onBoarding: boolean;
 		password: string | null;
@@ -74,11 +78,13 @@ export type RegisterResponse = {
 		createdAt: Date;
 		defaultWorkspaceId: string | null;
 		email: string;
+		externalId: string | null;
 		githubId: string | null;
 		githubUsername: string | null;
 		googleId: string | null;
 		id: string;
 		lastLogin: Date;
+		lastViewedTaskId: string | null;
 		name: string;
 		onBoarding: boolean;
 		password: string | null;
@@ -99,11 +105,13 @@ export type VerifyUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
+	externalId: string | null;
 	githubId: string | null;
 	githubUsername: string | null;
 	googleId: string | null;
 	id: string;
 	lastLogin: Date;
+	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
 	password: string | null;
@@ -117,9 +125,17 @@ export type ResetPasswordEmailRequest = {
 	email: string;
 };
 
+export type ResetPasswordEmailResponse = {
+	success: boolean;
+};
+
 export type ResetPasswordRequest = {
 	newPassword: string;
 	token: string;
+};
+
+export type ResetPasswordResponse = {
+	success: boolean;
 };
 
 export type CheckTokenValidRequest = {
@@ -179,14 +195,17 @@ export class AuthService extends RPCContextClient {
 	resetPasswordEmail(
 		ctx: Context,
 		req: ResetPasswordEmailRequest,
-	): Promise<void> {
+	): Promise<ResetPasswordEmailResponse> {
 		return this.request(ctx, "resetPasswordEmail", req);
 	}
 
 	/**
 	 * resetPassword method
 	 */
-	resetPassword(ctx: Context, req: ResetPasswordRequest): Promise<void> {
+	resetPassword(
+		ctx: Context,
+		req: ResetPasswordRequest,
+	): Promise<ResetPasswordResponse> {
 		return this.request(ctx, "resetPassword", req);
 	}
 

@@ -173,7 +173,9 @@ export class AuthService implements AuthRpc {
 		});
 		return user;
 	}
-	async resetPasswordEmail({ email }: { email: string }): Promise<void> {
+	async resetPasswordEmail({
+		email,
+	}: { email: string }): Promise<{ success: boolean }> {
 		this.logger.info("Resetting password for %s", email);
 		const user = await this.db.user.findUnique({
 			where: { email },
@@ -190,7 +192,7 @@ export class AuthService implements AuthRpc {
 					html: passwordResetTemplate(`forgotPassword/${emailToken}`),
 					subject: "Reset your password",
 				});
-				return;
+				return { success: true };
 			} catch (error) {
 				this.throwError(
 					`Error sending email: ${error instanceof Error && error.message}`,
@@ -202,7 +204,7 @@ export class AuthService implements AuthRpc {
 	async resetPassword({
 		token,
 		newPassword,
-	}: { token: string; newPassword: string }): Promise<void> {
+	}: { token: string; newPassword: string }): Promise<{ success: boolean }> {
 		this.logger.info("Resetting password with token %s", token);
 		if (token) {
 			const decoded: JwtPayload = jwt.verify(
@@ -216,7 +218,7 @@ export class AuthService implements AuthRpc {
 				where: { id: decoded.user },
 				data: { password: hashedPassword },
 			});
-			return;
+			return { success: true };
 		}
 		this.throwError("Invalid token");
 	}

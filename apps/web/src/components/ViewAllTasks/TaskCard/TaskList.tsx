@@ -42,7 +42,7 @@ const TaskList = ({
 						<div className="flex items-center gap-2 text-base min-w-0">
 							{showPriority && <PriorityIcon priority={task.priority} />}
 							{showIdentifier && (
-								<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0 min-w-20">
+								<span className="text-muted-foreground xs:hidden sm:hidden md:flex cursor-pointer flex-shrink-0 min-w-28">
 									{task.identifier}
 								</span>
 							)}

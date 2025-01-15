@@ -24,6 +24,14 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
@@ -48,6 +56,7 @@ const formSchema = z.object({
 		.regex(/^[a-zA-Z0-9-]+$/, {
 			message: "URL can only contain letters, numbers, and hyphens.",
 		}),
+	viewPage: z.string().trim().optional(),
 });
 
 export default function WorkspaceSettings() {
@@ -61,21 +70,31 @@ export default function WorkspaceSettings() {
 	const { toast } = useToast();
 	const router = useRouter();
 
+	const defaultPages = ["all", "active", "my", "backlog", "sprint"];
+	const defaultSelect =
+		workspace?.defaultView === "sprints/current"
+			? "sprint"
+			: workspace?.defaultView;
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			name: workspace?.name || "",
-			url: workspace?.url.replace("https://app.squaredmade.com/", "") || "",
+			name: workspace?.name,
+			url: workspace?.url.replace("https://app.squaredmade.com/", ""),
 		},
 	});
+
+	const { watch } = form;
 
 	useEffect(() => {
 		if (!workspace) return;
 
-		const subscription = form.watch((value) => {
+		const subscription = watch((value) => {
 			if (
 				value.name !== workspace.name ||
-				value.url !== workspace.url.replace("https://app.squaredmade.com/", "")
+				value.url !==
+					workspace.url.replace("https://app.squaredmade.com/", "") ||
+				value.viewPage
 			) {
 				setIsFormChanged(true);
 			} else {
@@ -84,15 +103,19 @@ export default function WorkspaceSettings() {
 		});
 
 		return () => subscription.unsubscribe();
-	}, [form, workspace]);
+	}, [watch, workspace]);
 
 	if (!workspace || !workspaces) return null;
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		let defaultView: string | null = null;
+		if (values.viewPage) {
+			defaultView = `${values.viewPage !== "sprint" ? values.viewPage : "sprints/current"}`;
+		}
 		try {
 			const updatedWorkspace = await workspaceService.updateWorkspace(TODO, {
 				workspaceId: workspace.id,
-				workspace: { name: values.name, url: values.url },
+				workspace: { name: values.name, url: values.url, defaultView },
 			});
 			updateWorkspace(updatedWorkspace);
 
@@ -192,6 +215,50 @@ export default function WorkspaceSettings() {
 								</FormItem>
 							)}
 						/>
+						{/* NOTE: The following select fields should only be accessable to workspace admins. This section needs to be updated as soon as admin roles are implemented. */}
+						<div className="col-span-2">
+							<FormField
+								control={form.control}
+								name="viewPage"
+								render={({ field }) => (
+									<FormItem className="col-span-1 mb-2">
+										<FormLabel>Set Workspace View</FormLabel>
+										<FormControl>
+											<Select
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												value={field.value}
+												defaultValue={defaultSelect ? defaultSelect : ""}
+											>
+												<SelectTrigger className="w-[180px]">
+													<SelectValue placeholder="Select a page" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{defaultPages.map((page: string) => {
+															return (
+																<SelectItem
+																	key={page}
+																	value={page}
+																>{`${page.replace(/^./, (char) => char.toUpperCase())} Tasks`}</SelectItem>
+															);
+														})}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormDescription>
+								Set the default page users of a workspace will load into <br />
+								<small className="text-xs">
+									*If Sprints is disabled, default view will fall back to{" "}
+									<strong>All Tasks</strong>
+								</small>
+							</FormDescription>
+						</div>
 					</div>
 					<Button type="submit" disabled={!isFormChanged}>
 						Update
