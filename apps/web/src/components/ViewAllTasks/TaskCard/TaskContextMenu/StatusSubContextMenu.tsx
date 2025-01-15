@@ -10,7 +10,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
@@ -19,7 +19,6 @@ import type { ContextMenuProps } from "./interfaces";
 const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
-	const user = useUserStore((state) => state.user);
 
 	const { mutate: updateStatus } = useMutation({
 		mutationKey: ["updateTaskStatus", task.id],
@@ -27,7 +26,6 @@ const StatusSubContextMenu = ({ task }: ContextMenuProps) => {
 			const res = await client.task.updateStatus.$post({
 				taskId: task.id,
 				status,
-				updaterId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);

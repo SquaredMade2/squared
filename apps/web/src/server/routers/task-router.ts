@@ -70,16 +70,15 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				priority: priorityEnum,
-				updaterId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { taskId, priority, updaterId } = input;
+			const { taskService, user } = ctx;
+			const { taskId, priority } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId,
+					updaterId: user.id,
 					priority,
 				}),
 			);
@@ -89,16 +88,15 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				effortEstimate: z.number().min(1).max(5),
-				updaterId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { taskId, effortEstimate, updaterId } = input;
+			const { taskService, user } = ctx;
+			const { taskId, effortEstimate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId,
+					updaterId: user.id,
 					effortEstimate,
 				}),
 			);
@@ -170,17 +168,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				sprintId: z.string().nullable(),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, sprintId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					sprintId,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),
@@ -226,17 +223,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				labelIds: z.array(z.string()),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, labelIds } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					labels: labelIds,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),

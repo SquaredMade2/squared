@@ -7,7 +7,7 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { Tag } from "lucide-react";
@@ -17,7 +17,6 @@ import type { ContextMenuProps } from "./interfaces";
 
 const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
-	const user = useUserStore((state) => state.user);
 	const { updateTask } = useTaskStore((state) => state);
 
 	const [labels, setLabels] = useState<Label[]>(
@@ -30,7 +29,6 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 			const res = await client.task.updateLabels.$post({
 				taskId: task.id,
 				labelIds: updatedLabels.map((l) => l.id),
-				userId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
