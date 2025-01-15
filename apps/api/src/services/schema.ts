@@ -103,7 +103,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
-export const roleEnum = z.enum(["OWNER", "ADMIN", "MEMBER"]);
+export const roleEnum = z.enum(["owner", "admin", "member"]);
 export const userWorkspaceSchema = createSchema<UserWorkspace>()(
 	z.object({
 		userId: z.string(),

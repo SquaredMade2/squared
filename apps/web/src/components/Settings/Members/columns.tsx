@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ColumnDef } from "@tanstack/react-table";
+import ManageMembersRoleButton from "./ManageMembersRoleButton";
 import RemoveMemberButton from "./RemoveMemberButton";
 import type { MemberWithRole } from "./data-table";
 
@@ -31,9 +32,34 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 	{
 		accessorKey: "role",
 		cell: ({ row }) => {
+			if (
+				row.original.role?.toLowerCase() !== "member" &&
+				row.original.role?.toLowerCase() !== "admin" &&
+				row.original.role?.toLowerCase() !== "owner"
+			) {
+				return "loading...";
+			}
 			return (
 				row.original?.role?.charAt(0).toUpperCase() +
 				row.original?.role?.slice(1)
+			);
+		},
+	},
+	{
+		accessorKey: "manage-role",
+		cell: ({ row, column }) => {
+			const userId: string = row.original.id;
+			const { page, pageId, membersWithRoles, setPageUsers } =
+				column.columnDef.meta || {};
+
+			return (
+				<ManageMembersRoleButton
+					userId={userId}
+					page={page}
+					pageId={pageId}
+					membersWithRoles={membersWithRoles}
+					setPageUsers={setPageUsers}
+				/>
 			);
 		},
 	},

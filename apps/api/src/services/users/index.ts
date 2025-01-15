@@ -95,6 +95,18 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 		}),
 		output: z.array(userWithRoleSchema),
 	},
+	updateUsersRole: {
+		input: z.object({
+			userId: z.string(),
+			workspaceId: z.string(),
+			newRole: z.enum(["owner", "admin", "member"]),
+		}),
+		output: z.object({
+			userId: z.string(),
+			workspaceId: z.string(),
+			role: z.enum(["owner", "admin", "member"]),
+		}),
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -116,4 +128,5 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getUserWorkspaceRole: (input) => userService.getUserWorkspaceRole(input),
 		getWorkspaceUsersWithRoles: (input) =>
 			userService.getWorkspaceUsersWithRoles(input),
+		updateUsersRole: (input) => userService.updateUsersRole(input),
 	});

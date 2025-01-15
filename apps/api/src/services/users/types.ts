@@ -38,4 +38,13 @@ export interface UserRpc {
 	getWorkspaceUsersWithRoles: (args: { workspaceId: string }) => Promise<
 		(User & { role: "member" | "admin" | "owner" })[]
 	>;
+	updateUsersRole: (args: {
+		userId: string;
+		workspaceId: string;
+		newRole: "owner" | "admin" | "member";
+	}) => Promise<{
+		userId: string;
+		workspaceId: string;
+		role: "owner" | "admin" | "member";
+	}>;
 }

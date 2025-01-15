@@ -13,16 +13,16 @@ import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { users, loading: userLoading } = useUsers();
-	const [pageUsers, setPageUsers] = useState<MemberWithRole[]>(users);
+	const { loading: userLoading } = useUsers();
+	const [pageUsers, setPageUsers] = useState<MemberWithRole[]>([]);
 
 	const enhancedColumns = columns.map((col) => ({
 		...col,
 		meta: {
 			page: "workspace",
 			pageId: workspace?.id,
-			pageUsers,
 			setPageUsers,
+			membersWithRoles: pageUsers,
 		},
 	}));
 
@@ -51,18 +51,17 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="workspace">
-			<button
+			{/* <button
 				onClick={fetchTeamUsers}
 				className="p-2 border rounded"
 				type="button"
 			>
-				FETCH TEAM USERS
-			</button>
+				FETCH WORKSPACE USERS
+			</button> */}
 			<MembersPage
 				columns={enhancedColumns}
 				members={pageUsers}
 				workspace={workspace}
-				admins={workspace?.admins || []}
 			/>
 		</MemberSettingsWrapper>
 	);

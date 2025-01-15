@@ -128,6 +128,35 @@ export class UserService implements UserRpc {
 			);
 	}
 
+	async updateUsersRole({
+		userId,
+		workspaceId,
+		newRole,
+	}: {
+		userId: string;
+		workspaceId: string;
+		newRole: "owner" | "admin" | "member";
+	}) {
+		this.logger.info(
+			"Updating user role for userId: %s to %s in workspace: %s",
+			userId,
+			newRole,
+			workspaceId,
+		);
+
+		return await this.db.userWorkspace.update({
+			where: {
+				userId_workspaceId: {
+					userId: userId,
+					workspaceId: workspaceId,
+				},
+			},
+			data: {
+				role: newRole.toLowerCase() as "owner" | "admin" | "member",
+			},
+		});
+	}
+
 	async getTeamUsers({ teamId }: { teamId: string }) {
 		this.logger.info("Fetching team users with id: %s", teamId);
 		return await this.db.userTeam
