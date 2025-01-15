@@ -8,11 +8,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const LoginPage = () => {
 	const router = useRouter();
+	const { user, isLoaded } = useUser();
+
+	useEffect(() => {
+		if (isLoaded && user) {
+			router.push("/");
+		}
+	}, [isLoaded, user, router]);
 
 	return (
 		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">

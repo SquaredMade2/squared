@@ -11,17 +11,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth, useSignIn } from "@clerk/nextjs";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
 const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
 	const [code, setCode] = useState("");
 	const [secondFactorCode, setSecondFactorCode] = useState("");
 	const [successfulCreation, setSuccessfulCreation] = useState(false);
 	const [secondFactor, setSecondFactor] = useState(false);
 	const [error, setError] = useState("");
+	const [hidePassword, setHidePassword] = useState(true);
+	const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
 
 	const router = useRouter();
 	const { isSignedIn } = useAuth();
@@ -55,6 +59,10 @@ const ForgotPasswordPage = () => {
 
 	async function reset(e: FormEvent) {
 		e.preventDefault();
+		if (password !== confirmPassword) {
+			setError("Passwords do not match");
+			return;
+		}
 		await signIn
 			?.attemptFirstFactor({
 				strategy: "reset_password_email_code",
@@ -147,26 +155,82 @@ const ForgotPasswordPage = () => {
 					) : (
 						<form onSubmit={reset} className="space-y-4">
 							<div className="space-y-2">
-								<Label htmlFor="code">Reset Code</Label>
-								<Input
-									id="code"
-									type="text"
-									placeholder="Enter the reset code"
-									value={code}
-									onChange={(e) => setCode(e.target.value)}
-									required
-								/>
+								<div className="w-full flex justify-between mt-2">
+									<Label htmlFor="code">Reset Code</Label>
+									<Button
+										variant="link"
+										className="p-0 m-0 h-fit"
+										type="button"
+										onClick={() => setSuccessfulCreation(false)}
+									>
+										Resend code
+									</Button>
+								</div>
+								<div className="relative">
+									<Input
+										id="code"
+										type="text"
+										placeholder="Enter the reset code"
+										value={code}
+										onChange={(e) => setCode(e.target.value)}
+										required
+									/>
+								</div>
 							</div>
+
 							<div className="space-y-2">
 								<Label htmlFor="password">New Password</Label>
-								<Input
-									id="password"
-									type="password"
-									placeholder="Enter your new password"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									required
-								/>
+								<div className="relative">
+									<Input
+										id="password"
+										type={hidePassword ? "password" : "text"}
+										placeholder="Enter your new password"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										required
+									/>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon"
+										aria-label="Toggle Password"
+										className="absolute right-0 top-0 text-muted-foreground"
+										onClick={() => setHidePassword(!hidePassword)}
+									>
+										{hidePassword ? (
+											<EyeIcon className="w-6 h-6" />
+										) : (
+											<EyeOffIcon className="w-6 h-6" />
+										)}
+									</Button>
+								</div>
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="password">Confirm Password</Label>
+								<div className="relative">
+									<Input
+										id="confirm-password"
+										type={hideConfirmPassword ? "password" : "text"}
+										placeholder="Password confirmation"
+										value={confirmPassword}
+										onChange={(e) => setConfirmPassword(e.target.value)}
+										required
+									/>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon"
+										aria-label="Toggle Password"
+										className="absolute right-0 top-0 text-muted-foreground"
+										onClick={() => setHideConfirmPassword(!hideConfirmPassword)}
+									>
+										{hideConfirmPassword ? (
+											<EyeIcon className="w-6 h-6" />
+										) : (
+											<EyeOffIcon className="w-6 h-6" />
+										)}
+									</Button>
+								</div>
 							</div>
 							<Button type="submit" className="w-full">
 								Reset Password
