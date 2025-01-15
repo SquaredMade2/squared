@@ -1,9 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { Priority, PrismaClient, Status } from "@squared/db";
 import type { Team, User, Workspace } from "@squared/db";
-import bcrypt from "bcryptjs";
-import "dotenv/config";
+import { Priority, PrismaClient, Status } from "@squared/db";
 import createCustomLogger from "@squared/logger";
+import "dotenv/config";
 
 const prisma = new PrismaClient({
 	datasources: {
@@ -14,22 +13,6 @@ const prisma = new PrismaClient({
 });
 
 const logger = createCustomLogger("seed");
-
-const hashPassword = (password: string): Promise<string> => {
-	return new Promise((resolve, reject) => {
-		bcrypt.genSalt(10, (error, salt) => {
-			if (error) {
-				reject(error);
-			}
-			bcrypt.hash(password, salt, (error, hash) => {
-				if (error) {
-					reject(error);
-				}
-				resolve(hash);
-			});
-		});
-	});
-};
 
 async function seedDB() {
 	const workspaces = await Promise.all([
@@ -77,17 +60,15 @@ async function seedDB() {
 async function addMainUser() {
 	const name = process.env.SEED_NAME || faker.person.fullName();
 	const email = process.env.SEED_EMAIL || faker.internet.email();
-	const password = process.env.SEED_PASSWORD || faker.internet.password();
+	const externalId = process.env.CLERK_EXTERNAL_ID || faker.internet.password();
 	const username = name.replace(" ", "");
-
-	const hashedPassword = await hashPassword(password);
 
 	const user = await prisma.user.create({
 		data: {
 			name: name,
 			username,
 			email,
-			externalId: hashedPassword,
+			externalId,
 			onBoarding: false,
 			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
@@ -101,15 +82,14 @@ async function addUser() {
 	const fullName = `${firstName} ${lastName}`;
 	const username = faker.internet.username({ firstName, lastName });
 	const email = faker.internet.email({ firstName, lastName });
-	const password = process.env.SEED_PASSWORD || faker.internet.password();
-	const hashedPassword = await hashPassword(password);
+	const externalId = `user_${faker.internet.password()}`;
 
 	const user = await prisma.user.create({
 		data: {
 			name: fullName,
 			username,
 			email,
-			externalId: hashedPassword,
+			externalId,
 			onBoarding: false,
 			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
