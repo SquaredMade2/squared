@@ -40,7 +40,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
-	const { tasks: allTasks } = useTaskStore((state) => state);
+	const { tasks: allTasks, allBlockedTaskIds } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
 	const pathname = usePathname();
 
@@ -122,7 +122,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard task={task} index={index} location={"dashboard"} />
+			<TaskCard
+				task={task}
+				index={index}
+				location={"dashboard"}
+				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
+			/>
 		</div>
 	);
 
@@ -135,7 +140,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard task={task} index={index} location={"dashboard"} />
+			<TaskCard
+				task={task}
+				index={index}
+				location={"dashboard"}
+				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
+			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
 					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
@@ -149,6 +159,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 							index={subIndex}
 							location={"dashboard"}
 							isSubtask={true}
+							isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
 						/>
 					))}
 				</div>
@@ -175,6 +186,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 					index={index}
 					location={"dashboard"}
 					isSubtask={true}
+					isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
 				/>
 			))}
 		</div>

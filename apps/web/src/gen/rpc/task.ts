@@ -292,12 +292,13 @@ export type GetSubtasksResponse = {
 	workspaceId: string;
 }[];
 
-export type UpdateBlockedTaskRequest = {
-	blockingTaskIds: string[];
+export type UpdateBlockedOrBlockingTasksRequest = {
+	updatingIds: string[];
 	taskId: string;
+	key: "blockedBy" | "blocking";
 };
 
-export type GetBlockedByTasksRequest = {
+export type GetBlockedAndBlockingTasksRequest = {
 	taskId: string;
 };
 
@@ -386,20 +387,30 @@ export class TaskService extends RPCContextClient {
 		return this.request(ctx, "addSprintTasks", req);
 	}
 	/**
-	 * updateBlockedTask method
+	 * updateBlockedOrBlockingTasks method
 	 */
-	updateBlockedTasks(
+	updateBlockedOrBlockingTasks(
 		ctx: Context,
-		req: UpdateBlockedTaskRequest,
-	): Promise<Task> {
-		return this.request(ctx, "updateBlockedTasks", req);
+		req: UpdateBlockedOrBlockingTasksRequest,
+	): Promise<Task[]> {
+		return this.request(ctx, "updateBlockedOrBlockingTasks", req);
 	}
 
-	getBlockedByTasks(
+	getTaskBlockedByAndBlocking(
 		ctx: Context,
-		req: GetBlockedByTasksRequest,
-	): Promise<Task[]> {
-		return this.request(ctx, "getBlockedByTasks", req);
+		req: GetBlockedAndBlockingTasksRequest,
+	): Promise<{ blockedBy: Task[]; blockingIds: string[] }> {
+		return this.request(ctx, "getTaskBlockedByAndBlocking", req);
+	}
+
+	/**
+	 * getAllBlockedTaskIds method
+	 */
+	getAllBlockedTaskIds(
+		ctx: Context,
+		req: { teamId: string },
+	): Promise<string[]> {
+		return this.request(ctx, "getAllBlockedTaskIds", req);
 	}
 
 	/**

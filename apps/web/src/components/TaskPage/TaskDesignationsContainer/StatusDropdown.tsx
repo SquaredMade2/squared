@@ -20,7 +20,8 @@ import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
@@ -74,7 +75,16 @@ const StatusDropdown = () => {
 			</SelectTrigger>
 			<SelectContent>
 				{statusOptions.map((status) => (
-					<SelectItem key={status} value={status}>
+					<SelectItem
+						key={status}
+						value={status}
+						disabled={
+							!!currentTaskBlockedBy.length &&
+							(status === "done" ||
+								status === "inReview" ||
+								status === "inProgress")
+						}
+					>
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
 								<StatusIcon status={status} />
