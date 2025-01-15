@@ -29,16 +29,16 @@ const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 	const queryClient = useQueryClient();
-	const { users, user } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
 		(state) => state,
 	);
 
-	const assignee = users.find((u) => u.id === currentTask?.assigneeId);
+	const assignee = users.find((u) => u.externalId === currentTask?.assigneeId);
 
 	const updateAssigneeMutation = useMutation({
 		mutationFn: async (assigneeId: string | null) => {
-			if (!currentTask || !user) throw new Error("Task or user not found");
+			if (!currentTask) throw new Error("Task or user not found");
 			const res = await client.task.updateAssignee.$post({
 				taskId: currentTask.id,
 				assigneeId,
@@ -121,8 +121,8 @@ const AssigneeCombobox = () => {
 									.sort((a, b) => a.name.localeCompare(b.name))
 									.map((user) => (
 										<CommandItem
-											key={user.id}
-											onSelect={() => handleSelectAssignee(user.id)}
+											key={user.externalId}
+											onSelect={() => handleSelectAssignee(user.externalId)}
 											className="w-full"
 										>
 											<Avatar className="size-6 text-xxs">
@@ -135,7 +135,7 @@ const AssigneeCombobox = () => {
 											<Check
 												className={cn(
 													"ml-auto h-4 w-4",
-													currentTask.assigneeId === user.id
+													currentTask.assigneeId === user.externalId
 														? "opacity-100"
 														: "opacity-0",
 												)}

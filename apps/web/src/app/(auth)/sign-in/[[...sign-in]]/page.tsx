@@ -42,6 +42,11 @@ const LoginPage = () => {
 								formFieldLabel: "text-muted-foreground",
 								socialButtonsBlockButton: "bg-primary/20",
 								socialButtonsBlockButtonText: "text-foreground/80",
+								formFieldAction: "text-primary/60",
+								footerActionLink: "text-muted-foreground",
+								alternativeMethodsBlockButton:
+									"bg-primary/20 text-foreground/80",
+								backLink: "text-muted-foreground",
 							},
 						}}
 						signUpForceRedirectUrl={"/welcome"}

@@ -24,7 +24,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	const taskId = task.id;
 
 	useEffect(() => {
-		const foundUser = users.find((user) => user.id === task.assigneeId);
+		const foundUser = users.find((user) => user.externalId === task.assigneeId);
 		setCurrentUser(foundUser ?? null);
 	}, [users, task.assigneeId]);
 
@@ -77,8 +77,8 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						.map((user) => {
 							return (
 								<ContextMenuItem
-									key={user.id}
-									onClick={() => handleSelectAssignee(user.id)}
+									key={user.externalId}
+									onClick={() => handleSelectAssignee(user.externalId)}
 									className="flex justify-between"
 								>
 									<div className="flex">
@@ -88,7 +88,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 										</Avatar>
 										{user.name}
 									</div>
-									{task.assigneeId === user.id && (
+									{task.assigneeId === user.externalId && (
 										<Check className="w-4 h-4 ml-2" />
 									)}
 								</ContextMenuItem>

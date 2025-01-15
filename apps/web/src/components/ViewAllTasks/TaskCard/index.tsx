@@ -16,7 +16,7 @@ const TaskCard = ({ task, index, highlightText, location }: TaskCardProps) => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { users } = useUserStore((state) => state);
 	useEffect(() => {
-		const foundUser = users.find((user) => user.id === task.assigneeId);
+		const foundUser = users.find((user) => user.externalId === task.assigneeId);
 		setAssignee(foundUser ?? null);
 	}, [task.assigneeId, users]);
 
