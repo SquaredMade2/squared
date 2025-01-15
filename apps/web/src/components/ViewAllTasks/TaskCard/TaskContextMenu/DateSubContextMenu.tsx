@@ -1,14 +1,15 @@
 "use client";
+
 import { Calendar } from "@/components/ui/calendar";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
-import { TODO } from "@squared/context";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
@@ -16,14 +17,23 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const user = useUserStore((state) => state.user);
 	const { updateTask } = useTaskStore((state) => state);
-	const handleUpdate = async (date?: Date) => {
-		updateTask(
-			await taskService.updateTask(TODO, {
-				id: task.id,
-				updaterId: user?.id || "",
-				dueDate: date,
-			}),
-		);
+
+	const { mutate: updateDueDate } = useMutation({
+		mutationKey: ["updateTaskDueDate", task.id],
+		mutationFn: async (date?: Date) => {
+			const res = await client.task.updateDueDate.$post({
+				taskId: task.id,
+				dueDate: date ?? null,
+				userId: user?.id || "",
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+	});
+
+	const handleUpdate = (date?: Date) => {
+		updateDueDate(date);
 	};
 
 	return (

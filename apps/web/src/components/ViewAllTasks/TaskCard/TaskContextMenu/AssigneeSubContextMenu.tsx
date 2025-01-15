@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	ContextMenuItem,
@@ -6,11 +8,11 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { Check, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
@@ -24,32 +26,24 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 	useEffect(() => {
 		const foundUser = users.find((user) => user.id === task.assigneeId);
 		setCurrentUser(foundUser ?? null);
-	}, []);
+	}, [users, task.assigneeId]);
 
-	const handleSelectAssignee = async (userId: string | null) => {
-		if (!userId) {
-			return updateTask(
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					updaterId: user?.id || "",
-					assigneeId: null,
-				}),
-			);
-		}
-		const selectedUser = users.find((user) => user.id === userId);
+	const { mutate: updateAssignee } = useMutation({
+		mutationKey: ["updateTaskAssignee", taskId],
+		mutationFn: async (userId: string | null) => {
+			const res = await client.task.updateAssignee.$post({
+				taskId,
+				assigneeId: userId,
+				userId: user?.id || "",
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+	});
 
-		if (selectedUser) {
-			if (task) {
-				updateTask(
-					await taskService.updateTask(TODO, {
-						id: taskId,
-						updaterId: user?.id || "",
-						assigneeId: selectedUser.id,
-					}),
-				);
-			}
-			// await getTaskEvents(taskId);
-		}
+	const handleSelectAssignee = (userId: string | null) => {
+		updateAssignee(userId);
 	};
 
 	return (

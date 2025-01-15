@@ -1,14 +1,15 @@
 "use client";
+
 import {
 	ContextMenuCheckboxItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import { TODO } from "@squared/context";
 import type { Label } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { Tag } from "lucide-react";
 import { useState } from "react";
 import { LabelColor } from "../TaskCardLabels";
@@ -23,20 +24,27 @@ const LabelSubContextMenu = ({ task }: ContextMenuProps) => {
 		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [],
 	);
 
-	const handleLabelChange = async (label: Label, checked: boolean) => {
-		// Calculate the updated labels before setting the state
+	const { mutate: updateLabels } = useMutation({
+		mutationKey: ["updateTaskLabels", task.id],
+		mutationFn: async (updatedLabels: Label[]) => {
+			const res = await client.task.updateLabels.$post({
+				taskId: task.id,
+				labelIds: updatedLabels.map((l) => l.id),
+				userId: user?.id || "",
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+	});
+
+	const handleLabelChange = (label: Label, checked: boolean) => {
 		const updatedLabels = checked
 			? [...labels, label]
 			: labels.filter((l) => l.id !== label.id);
 
-		setLabels(updatedLabels); // Update the state
-		updateTask(
-			await taskService.updateTask(TODO, {
-				id: task.id,
-				updaterId: user?.id || "",
-				labels: updatedLabels.map((l) => l.id),
-			}),
-		);
+		setLabels(updatedLabels);
+		updateLabels(updatedLabels);
 	};
 
 	return (

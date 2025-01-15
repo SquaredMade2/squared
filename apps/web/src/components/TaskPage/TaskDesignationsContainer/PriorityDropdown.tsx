@@ -9,18 +9,16 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
-import { eventService, taskService } from "@/lib/services";
 import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import type { Priority, TaskEvent } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 
 const PriorityDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const user = useUserStore((state) => state.user);
 	const { setEvents } = useEventStore((state) => state);
 
@@ -28,33 +26,37 @@ const PriorityDropdown = () => {
 
 	const { priority: sidebarPriority, id: taskId } = currentTask;
 
-	const handleSelectPriority = (newPriority: Priority) => {
-		if (newPriority === sidebarPriority || !taskId) return;
-		updateItem(newPriority);
-	};
-
-	const updateItem = async (newPriority: Priority) => {
-		try {
-			updateTask(
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					updaterId: user?.id || "",
-					priority: newPriority,
-				}),
-			);
+	const { mutate: updatePriority } = useMutation({
+		mutationKey: ["updateTaskPriority", taskId],
+		mutationFn: async (newPriority: Priority) => {
+			const res = await client.task.updatePriority.$post({
+				taskId,
+				priority: newPriority,
+				updaterId: user?.id || "",
+			});
+			const updatedTask = await res.json();
 			setCurrentTask({ ...currentTask, priority: newPriority });
 
-			const updatedEvents = await eventService.getTaskEvents(TODO, {
-				taskId: taskId,
+			const eventsRes = await client.event.getEvents.$get({
+				taskId,
 			});
-			// TODO: Will remove type coercion once commits are implemented
+			const updatedEvents = await eventsRes.json();
 			setEvents(updatedEvents as TaskEvent[]);
-		} catch {
+
+			return updatedTask;
+		},
+		onError: (error) => {
 			toast({
 				title: "Error updating priority",
+				description: error.message,
 				variant: "destructive",
 			});
-		}
+		},
+	});
+
+	const handleSelectPriority = (newPriority: Priority) => {
+		if (newPriority === sidebarPriority || !taskId) return;
+		updatePriority(newPriority);
 	};
 
 	return (
