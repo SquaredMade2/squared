@@ -1,5 +1,13 @@
 import type { APIResponse } from "@/api/route";
-import type { PrismaClient, Workspace } from "@squared/db";
+import {
+	type DBClient,
+	type Workspace,
+	and,
+	eq,
+	labelsTable,
+	userWorkspacesTable,
+	workspacesTable,
+} from "@squared/db";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -7,7 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export const joinWorkspace = async (
 	token: string,
 	userId: string,
-	prisma: PrismaClient,
+	db: DBClient,
 ): Promise<APIResponse<Workspace> & { status: number }> => {
 	if (!JWT_SECRET) {
 		return {
@@ -23,19 +31,23 @@ export const joinWorkspace = async (
 		workspaceId: string;
 	};
 
-	const existingUserWorkspace = await prisma.userWorkspace.findFirst({
-		where: {
-			userId,
-			workspaceId: decoded.workspaceId,
-		},
-	});
-
-	const workspace = await prisma.workspace.findUnique({
-		where: { id: decoded.workspaceId },
-		include: {
-			Labels: true,
-		},
-	});
+	const [[existingUserWorkspace], [workspace]] = await Promise.all([
+		db
+			.select()
+			.from(userWorkspacesTable)
+			.where(
+				and(
+					eq(userWorkspacesTable.userId, userId),
+					eq(userWorkspacesTable.workspaceId, decoded.workspaceId),
+				),
+			),
+		db
+			.select()
+			.from(workspacesTable)
+			.leftJoin(labelsTable, eq(workspacesTable.id, labelsTable.workspaceId))
+			.where(eq(workspacesTable.id, decoded.workspaceId))
+			.limit(1),
+	]);
 
 	if (existingUserWorkspace) {
 		return {

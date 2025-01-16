@@ -60,7 +60,7 @@ export const teamsTable = pgTable(
 		sprintsEnabled: boolean().default(false).notNull(),
 		sprintDuration: integer().default(2).notNull(),
 		cooldownDuration: integer().default(1).notNull(),
-		sprintStartDate: timestamp({ precision: 3, mode: "string" })
+		sprintStartDate: timestamp({ precision: 3 })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
 		tasksPerSprint: integer().default(10).notNull(),
@@ -100,14 +100,14 @@ export const githubRepoInfoTable = pgTable(
 export const sprintsTable = pgTable("Sprint", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
-	startDate: timestamp({ precision: 3, mode: "string" }).notNull(),
-	endDate: timestamp({ precision: 3, mode: "string" }).notNull(),
+	startDate: timestamp({ precision: 3 }).notNull(),
+	endDate: timestamp({ precision: 3 }).notNull(),
 	status: sprintStatus().notNull(),
 	teamId: text().notNull(),
-	createdAt: timestamp({ precision: 3, mode: "string" })
+	createdAt: timestamp({ precision: 3 })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
-	updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	updatedAt: timestamp({ precision: 3 }).notNull(),
 	description: text(),
 });
 
@@ -117,10 +117,10 @@ export const notificationsTable = pgTable("Notification", {
 	read: boolean().default(false).notNull(),
 	saved: boolean().default(false).notNull(),
 	description: text(),
-	createdAt: timestamp({ precision: 3, mode: "string" })
+	createdAt: timestamp({ precision: 3 })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
-	updatedAt: timestamp({ precision: 3, mode: "string" })
+	updatedAt: timestamp({ precision: 3 })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
 	workspaceId: text().notNull(),
@@ -139,7 +139,7 @@ export const workspacesTable = pgTable(
 		tasksCreated: integer().default(0).notNull(),
 		universalTokenLinkId: text(),
 		avatarUrl: text(),
-		admins: text().array(),
+		admins: text().array().default([]).notNull(),
 		defaultView: text(),
 	},
 	(table) => [
@@ -157,16 +157,16 @@ export const usersTable = pgTable(
 		name: text().notNull(),
 		username: text(),
 		email: text().notNull(),
-		lastLogin: timestamp({ precision: 3, mode: "string" })
+		lastLogin: timestamp({ precision: 3 })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
 		onBoarding: boolean().default(true).notNull(),
 		defaultWorkspaceId: text(),
 		avatarUrl: text(),
-		savedNotificationIds: text().array().default(["RAY"]),
-		subscribedTasks: text().array().default(["RAY"]),
+		savedNotificationIds: text().array().default([]).notNull(),
+		subscribedTasks: text().array().default([]).notNull(),
 		githubUsername: text(),
-		createdAt: timestamp({ precision: 3, mode: "string" })
+		createdAt: timestamp({ precision: 3 })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
 		lastViewedTaskId: text(),
@@ -184,9 +184,7 @@ export const usersTable = pgTable(
 export const commentsTable = pgTable("Comment", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	comment: text().notNull(),
-	date: timestamp({ precision: 3, mode: "string" })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+	date: timestamp({ precision: 3 }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	taskId: text().notNull(),
 	authorId: text().notNull(),
 });
@@ -204,7 +202,7 @@ export const tasksTable = pgTable(
 		teamId: text("team_id").notNull(),
 		dateCreated: timestamp("date_created").defaultNow().notNull(),
 		assigneeId: text("assignee_id"),
-		labels: text("labels").array(),
+		labels: text("labels").array().default([]).notNull(),
 		workspaceId: text("workspace_id").notNull(),
 		updatedAt: timestamp("updated_at").defaultNow().notNull(),
 		deleted: boolean("deleted").default(false).notNull(),
@@ -279,12 +277,12 @@ export const commitsTable = pgTable("Commit", {
 	owner: text(),
 	branchId: text().notNull(),
 	taskId: text(),
-	timestamp: timestamp({ precision: 3, mode: "string" }).notNull(),
+	timestamp: timestamp({ precision: 3 }).notNull(),
 });
 
 export const taskEventsTable = pgTable("TaskEvent", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
-	createdAt: timestamp({ precision: 3, mode: "string" })
+	createdAt: timestamp({ precision: 3 })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
 	taskId: text().notNull(),
@@ -323,12 +321,12 @@ export const retrospectiveItemsTable = pgTable("RetrospectiveItem", {
 	wentWellSprintId: text(),
 	toImproveSprintId: text(),
 	actionItemsSprintId: text(),
-	createdAt: timestamp({ precision: 3, mode: "string" })
+	createdAt: timestamp({ precision: 3 })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
-	updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	updatedAt: timestamp({ precision: 3 }).notNull(),
 	type: retrospectiveItemType().default("toImprove").notNull(),
-	likes: text().array().default(["RAY"]),
+	likes: text().array().default([]),
 	authorId: text().notNull(),
 });
 
@@ -381,13 +379,22 @@ function objEnum<T extends string>(enumValues: readonly T[]) {
 }
 
 export const Activity = objEnum(activityType.enumValues);
+export type Activity = (typeof activityType.enumValues)[number];
 export const Effort = objEnum(effort.enumValues);
+export type Effort = (typeof effort.enumValues)[number];
 export const NotificationType = objEnum(notificationType.enumValues);
+export type NotificationType = (typeof notificationType.enumValues)[number];
 export const Priority = objEnum(priority.enumValues);
+export type Priority = (typeof priority.enumValues)[number];
 export const RetrospectiveItemType = objEnum(retrospectiveItemType.enumValues);
+export type RetrospectiveItemType =
+	(typeof retrospectiveItemType.enumValues)[number];
 export const SavedFilterType = objEnum(savedFilterType.enumValues);
+export type SavedFilterType = (typeof savedFilterType.enumValues)[number];
 export const SprintStatus = objEnum(sprintStatus.enumValues);
+export type SprintStatus = (typeof sprintStatus.enumValues)[number];
 export const Status = objEnum(status.enumValues);
+export type Status = (typeof status.enumValues)[number];
 export type Team = typeof teamsTable.$inferSelect;
 export type Branch = typeof branchesTable.$inferSelect;
 export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;

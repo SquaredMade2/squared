@@ -18,6 +18,7 @@ declare global {
 }
 
 let db: ReturnType<typeof drizzle<typeof schema>>;
+export type DBClient = typeof db;
 
 if (config.localDb) {
 	neonConfig.fetchEndpoint = (host) => {

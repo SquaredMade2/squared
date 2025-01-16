@@ -1,18 +1,18 @@
-import type { PrismaClient, Task, User } from "@squared/db";
+import {
+	type DBClient,
+	type Task,
+	type User,
+	eq,
+	usersTable,
+} from "@squared/db";
 
-export async function subscribeUser(
-	user: User,
-	task: Task,
-	prisma: PrismaClient,
-) {
-	if (!user.subscribedTasks.includes(task.id)) {
-		await prisma.user.update({
-			where: { id: user.id },
-			data: {
-				subscribedTasks: {
-					push: task.id,
-				},
-			},
-		});
+export async function subscribeUser(user: User, task: Task, db: DBClient) {
+	if (user.subscribedTasks && !user.subscribedTasks?.includes(task.id)) {
+		await db
+			.update(usersTable)
+			.set({
+				subscribedTasks: [...user.subscribedTasks, task.id],
+			})
+			.where(eq(usersTable.id, user.id));
 	}
 }

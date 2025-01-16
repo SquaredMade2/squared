@@ -264,8 +264,6 @@ async function addNotification(
 		read: faker.datatype.boolean(),
 		saved: faker.datatype.boolean(),
 		description: faker.lorem.sentence(),
-		createdAt: faker.date.past().toISOString(),
-		updatedAt: faker.date.recent().toISOString(),
 		dismissed: faker.datatype.boolean(),
 		type: faker.helpers.arrayElement([
 			"ASSIGNED",
