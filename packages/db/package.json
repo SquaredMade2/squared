@@ -16,10 +16,16 @@
     "studio": "prisma studio"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.0"
+    "@neondatabase/serverless": "^0.10.4",
+    "@prisma/client": "^6.0.0",
+    "drizzle-orm": "^0.38.3",
+    "pg": "^8.13.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@types/ws": "^8.5.13",
+    "drizzle-kit": "^0.30.1",
     "prisma": "^6.0.0"
   }
 }
