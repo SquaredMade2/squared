@@ -58,7 +58,7 @@ export class TaskService implements TaskRpc {
 		}
 
 		const author = await this.db.user.findFirst({
-			where: { id: authorId },
+			where: { externalId: authorId },
 		});
 
 		if (!author) {
@@ -153,7 +153,7 @@ export class TaskService implements TaskRpc {
 				this.throwError("Invalid Effort Estimate");
 			}
 		}
-		
+
 		const isBlocking = !!(
 			taskData.status === "done" ||
 			taskData.status === "archived" ||

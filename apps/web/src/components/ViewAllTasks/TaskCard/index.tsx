@@ -10,13 +10,19 @@ import TaskGrid from "./TaskGrid";
 import TaskList from "./TaskList";
 import type { TaskCardProps } from "./interfaces";
 
-const TaskCard = ({ task, index, highlightText, location, isDisabled }: TaskCardProps) => {
+const TaskCard = ({
+	task,
+	index,
+	highlightText,
+	location,
+	isDisabled,
+}: TaskCardProps) => {
 	const [assignee, setAssignee] = useState<User | null>(null);
 	const { view } = useViewStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { users } = useUserStore((state) => state);
 	useEffect(() => {
-		const foundUser = users.find((user) => user.id === task.assigneeId);
+		const foundUser = users.find((user) => user.externalId === task.assigneeId);
 		setAssignee(foundUser ?? null);
 	}, [task.assigneeId, users]);
 
@@ -47,8 +53,10 @@ const TaskCard = ({ task, index, highlightText, location, isDisabled }: TaskCard
 	);
 
 	return (
-		<Draggable draggableId={task.id} index={index} 
-		isDragDisabled={!!isDisabled}
+		<Draggable
+			draggableId={task.id}
+			index={index}
+			isDragDisabled={!!isDisabled}
 		>
 			{(dragProvided: DraggableProvided) => (
 				<div

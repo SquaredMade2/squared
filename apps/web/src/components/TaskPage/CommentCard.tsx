@@ -91,7 +91,7 @@ const CommentCard = ({ comment }: { comment: Comment }) => {
 	useEffect(() => {
 		const handleGetUser = async () => {
 			try {
-				const user = users.find((u) => u.id === comment.authorId);
+				const user = users.find((u) => u.externalId === comment.authorId);
 				// Needs user !== null despite using hasUserAvatar here for some reason to pass checks
 				if (hasUserAvatarData(user) && user !== null) {
 					setAuthorName(user?.name ?? "");

@@ -1,8 +1,9 @@
 "use client";
 
 import { taskService } from "@/lib/services";
-import { useModalStore, useTaskStore, useUserStore } from "@/store";
+import { useModalStore, useTaskStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,7 +28,7 @@ export const RenameModal = () => {
 	} = useModalStore((state) => state);
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
-	const user = useUserStore((state) => state.user);
+	const { user } = useUser();
 
 	const handleChange = (e: InputChangeEvent): void => {
 		setInputValue(e.target.value);
@@ -35,6 +36,7 @@ export const RenameModal = () => {
 
 	const handleSubmit = async (e: FormSubmitEvent): Promise<void> => {
 		e.preventDefault();
+		if (!user) return;
 		setHasSubmitted(true);
 		if (task && inputValue.length > 2) {
 			if (inputValue !== task.title) {
@@ -42,7 +44,7 @@ export const RenameModal = () => {
 					updateTask(
 						await taskService.updateTask(TODO, {
 							id: task.id,
-							updaterId: user?.id || "",
+							updaterId: user.id,
 							title: inputValue.trim(),
 						}),
 					);

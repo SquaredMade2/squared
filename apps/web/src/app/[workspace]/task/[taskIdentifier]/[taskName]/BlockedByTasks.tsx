@@ -51,7 +51,7 @@ const BlockedByTasks = () => {
 									<TaskContextMenu task={task} />
 									<SubtaskList
 										task={task}
-										user={users.find((u) => u.id === task.assigneeId)}
+										user={users.find((u) => u.externalId === task.assigneeId)}
 									/>
 								</ContextMenuTrigger>
 							</ContextMenu>

@@ -26,7 +26,7 @@ export function useTaskPage() {
 		setCurrentTaskBlockingIds,
 		currentTaskBlockedBy,
 		setCurrentTaskBlockedBy,
-		allBlockedTaskIds
+		allBlockedTaskIds,
 	} = useTaskStore((state) => state);
 	const { users, loading: userLoading, error: userError } = useUsers();
 	const { setComments } = useCommentStore((state) => state);
@@ -77,7 +77,6 @@ export function useTaskPage() {
 		},
 		enabled: !!taskQuery.data,
 	});
-
 
 	const commentsQuery = useQuery({
 		queryKey: ["comments", taskQuery.data?.id],
@@ -139,6 +138,6 @@ export function useTaskPage() {
 		subtasks,
 		currentTaskBlockedBy,
 		currentTaskBlockingIds,
-		allBlockedTaskIds
+		allBlockedTaskIds,
 	};
 }

@@ -65,7 +65,7 @@ export function DesignationComboboxMany<T>({
 										<Check
 											className={cn(
 												"ml-auto h-4 w-4",
-												selectedItemIds?.find(t => t === itemId(item))
+												selectedItemIds?.find((t) => t === itemId(item))
 													? "opacity-100"
 													: "opacity-0",
 											)}

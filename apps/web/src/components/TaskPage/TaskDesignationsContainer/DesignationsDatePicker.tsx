@@ -31,7 +31,6 @@ const DesignationsDatePicker = () => {
 			if (!user) throw new Error("User not found");
 			const res = await client.task.updateDueDate.$post({
 				taskId: taskId,
-				userId: user.id,
 				dueDate: date,
 			});
 			return res.json();

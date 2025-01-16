@@ -113,10 +113,10 @@ export const joinWorkspace = async (
 		},
 	});
 
-	if (user.onBoarding || !user.verified) {
+	if (user.onBoarding) {
 		await prisma.user.update({
 			where: { id: userId },
-			data: { onBoarding: false, verified: true },
+			data: { onBoarding: false },
 		});
 	}
 	return {

@@ -57,7 +57,7 @@ const TaskList = ({
 							)}
 							<span className="truncate min-w-0">
 								{location === "search" && highlightText
-									? highlightText(task.title) 
+									? highlightText(task.title)
 									: task.title}
 							</span>
 						</div>

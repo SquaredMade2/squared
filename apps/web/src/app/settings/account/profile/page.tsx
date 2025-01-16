@@ -14,13 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuthUser } from "@/hooks/useAuthUser";
 import { userService } from "@/lib/services";
 import { UploadButton } from "@/lib/ut";
-import { useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -32,13 +32,13 @@ const formSchema = z.object({
 
 export default function Profile() {
 	const { toast } = useToast();
-	const { updateUser } = useUserStore((state) => state);
-	const { user } = useAuthUser();
+	const { user } = useUser();
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			fullName: user?.name || "",
+			fullName: user?.fullName || "",
 			username: user?.username || "",
 		},
 	});
@@ -46,7 +46,7 @@ export default function Profile() {
 	useEffect(() => {
 		if (user) {
 			form.reset({
-				fullName: user.name,
+				fullName: user.fullName ?? "",
 				username: user.username ?? "",
 			});
 		}
@@ -56,24 +56,26 @@ export default function Profile() {
 		if (!user) return;
 
 		const { fullName, username } = values;
-		if (fullName.trim() === user.name && username?.trim() === user.username) {
+		if (
+			fullName.trim() === user.fullName &&
+			username?.trim() === user.username
+		) {
 			return toast({
 				title: "No changes detected",
 				description: "Your profile information remains the same.",
 			});
 		}
-		updateUser(
-			await userService.updateUser(TODO, {
-				name: fullName.trim(),
-				username: username?.trim(),
-				userId: user.id,
-			}),
-		);
+		await userService.updateUser(TODO, {
+			name: fullName.trim(),
+			username: username?.trim(),
+			userId: user.id,
+		});
 
 		toast({
 			title: "Profile updated",
 			description: "Your profile information has been successfully updated.",
 		});
+		router.refresh();
 	};
 
 	if (!user) return null;
@@ -94,9 +96,9 @@ export default function Profile() {
 							<FormItem className="flex flex-col items-start justify-center gap-2">
 								<FormLabel>Profile picture</FormLabel>
 								<Avatar className="size-32">
-									<AvatarImage src={user.avatarUrl ?? undefined} />
+									<AvatarImage src={user.imageUrl ?? undefined} />
 									<AvatarFallback className="text-3xl">
-										{getInitials(user.name)}
+										{getInitials(user.fullName)}
 									</AvatarFallback>
 								</Avatar>
 								<UploadButton
@@ -124,7 +126,9 @@ export default function Profile() {
 						</div>
 						<FormItem>
 							<FormLabel>Email</FormLabel>
-							<FormDescription>{user.email}</FormDescription>
+							<FormDescription>
+								{user.primaryEmailAddress?.emailAddress}
+							</FormDescription>
 						</FormItem>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 							<FormField

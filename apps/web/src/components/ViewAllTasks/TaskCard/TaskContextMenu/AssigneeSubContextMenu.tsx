@@ -18,13 +18,13 @@ import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users, user } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
 	useEffect(() => {
-		const foundUser = users.find((user) => user.id === task.assigneeId);
+		const foundUser = users.find((user) => user.externalId === task.assigneeId);
 		setCurrentUser(foundUser ?? null);
 	}, [users, task.assigneeId]);
 
@@ -34,7 +34,6 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 			const res = await client.task.updateAssignee.$post({
 				taskId,
 				assigneeId: userId,
-				userId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
@@ -78,8 +77,8 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						.map((user) => {
 							return (
 								<ContextMenuItem
-									key={user.id}
-									onClick={() => handleSelectAssignee(user.id)}
+									key={user.externalId}
+									onClick={() => handleSelectAssignee(user.externalId)}
 									className="flex justify-between"
 								>
 									<div className="flex">
@@ -89,7 +88,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 										</Avatar>
 										{user.name}
 									</div>
-									{task.assigneeId === user.id && (
+									{task.assigneeId === user.externalId && (
 										<Check className="w-4 h-4 ml-2" />
 									)}
 								</ContextMenuItem>

@@ -43,3 +43,6 @@ error.log*
 .vercel
 .elasticbeanstalk
 generated
+
+# squared
+.squared

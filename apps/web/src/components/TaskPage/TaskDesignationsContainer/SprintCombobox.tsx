@@ -2,12 +2,7 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import {
-	useEventStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-} from "@/store";
+import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squared/db";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -18,7 +13,6 @@ const SprintCombobox = () => {
 	const { toast } = useToast();
 	const { team } = useTeamStore((state) => state);
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
-	const user = useUserStore((state) => state.user);
 	const { setEvents } = useEventStore((state) => state);
 	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
 
@@ -49,7 +43,6 @@ const SprintCombobox = () => {
 			const res = await client.task.updateSprint.$post({
 				taskId,
 				sprintId,
-				userId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			setCurrentTask(updatedTask);
