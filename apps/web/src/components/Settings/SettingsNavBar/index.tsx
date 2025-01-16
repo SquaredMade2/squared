@@ -114,6 +114,13 @@ function SettingsNavbarContent() {
 									>
 										Profile
 									</Button>
+									<Button
+										variant="ghost"
+										className="w-full justify-start"
+										onClick={() => navigateTo("connections")}
+									>
+										Connections
+									</Button>
 								</div>
 							</div>
 
