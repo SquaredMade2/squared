@@ -78,14 +78,14 @@ function SettingsNavbarContent() {
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo(`${workspace?.url}`)}
+										onClick={() => navigateTo(`/${workspace?.url}/settings`)}
 									>
 										General
 									</Button>
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo(`${workspace?.url}/members`)}
+										onClick={() => navigateTo(`/${workspace?.url}/members`)}
 									>
 										Members
 									</Button>
