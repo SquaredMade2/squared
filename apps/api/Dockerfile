@@ -64,7 +64,6 @@ ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 ENV POSTGRES_PRISMA_URL=${POSTGRES_PRISMA_URL}
 
 RUN pnpm turbo build --filter=api...
-RUN pnpm prune --prod
 
 FROM base AS runner
 WORKDIR /app
