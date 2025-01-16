@@ -97,7 +97,7 @@ importers:
         version: 4.2.0
       uuid:
         specifier: ^11.0.0
-        version: 11.0.3
+        version: 11.0.5
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -283,7 +283,7 @@ importers:
         version: 7.3.0(express@4.21.1)(next@14.2.18(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(tailwindcss@3.4.15(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.10.7)(typescript@5.7.2)))
       uuid:
         specifier: ^11.0.0
-        version: 11.0.3
+        version: 11.0.5
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -7346,8 +7346,8 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@11.0.3:
-    resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
+  uuid@11.0.5:
+    resolution: {integrity: sha512-508e6IcKLrhxKdBbcA2b4KQZlLVp2+J5UwQ6F7Drckkc5N9ZJwFa4TgWtsww9UG8fGHbm6gbV19TdM5pQ4GaIA==}
     hasBin: true
 
   uuid@8.3.2:
@@ -15579,7 +15579,7 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@11.0.3: {}
+  uuid@11.0.5: {}
 
   uuid@8.3.2: {}
 
