@@ -126,7 +126,11 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 			</SidebarHeader>
 			{state === "expanded" && (
 				<SidebarContainer className="px-2">
-					<TeamAccordion teams={teams} currentTeam={team} />
+					<TeamAccordion
+						teams={teams}
+						currentTeam={team}
+						workspaceUrl={workspace?.url}
+					/>
 				</SidebarContainer>
 			)}
 			<SidebarFooter className="space-y-2 px-2 mt-auto">
