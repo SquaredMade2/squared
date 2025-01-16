@@ -166,7 +166,7 @@ importers:
         version: 17.0.0(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@hookform/resolvers':
         specifier: ^3.9.0
-        version: 3.10.0(react-hook-form@7.53.2(react@18.3.1))
+        version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
       '@mdx-js/loader':
         specifier: ^3.0.1
         version: 3.1.0(acorn@8.14.0)(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5)))
@@ -250,7 +250,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-hook-form:
         specifier: ^7.53.0
-        version: 7.53.2(react@18.3.1)
+        version: 7.54.2(react@18.3.1)
       react-mentions:
         specifier: ^4.4.10
         version: 4.4.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -359,7 +359,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: ^3.4.2
-        version: 3.10.0(react-hook-form@7.53.2(react@18.3.1))
+        version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
       '@mapbox/rehype-prism':
         specifier: ^0.9.0
         version: 0.9.0
@@ -434,7 +434,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-hook-form:
         specifier: ^7.51.5
-        version: 7.53.2(react@18.3.1)
+        version: 7.54.2(react@18.3.1)
       react-icons:
         specifier: ^5.2.1
         version: 5.4.0(react@18.3.1)
@@ -6332,8 +6332,8 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-hook-form@7.53.2:
-    resolution: {integrity: sha512-YVel6fW5sOeedd1524pltpHX+jgU2u3DSDtXEaBORNdqiNrsX/nUI/iGXONegttg0mJVnfrIkiV0cmTU6Oo2xw==}
+  react-hook-form@7.54.2:
+    resolution: {integrity: sha512-eHpAUgUjWbZocoQYUHposymRb4ZP6d0uwUnooL2uOybA9/3tPUvoAKqEWK1WaSiTxxOfTpffNZP7QwlnM3/gEg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -8474,9 +8474,9 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@hookform/resolvers@3.10.0(react-hook-form@7.53.2(react@18.3.1))':
+  '@hookform/resolvers@3.10.0(react-hook-form@7.54.2(react@18.3.1))':
     dependencies:
-      react-hook-form: 7.53.2(react@18.3.1)
+      react-hook-form: 7.54.2(react@18.3.1)
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -14593,7 +14593,7 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-hook-form@7.53.2(react@18.3.1):
+  react-hook-form@7.54.2(react@18.3.1):
     dependencies:
       react: 18.3.1
 
