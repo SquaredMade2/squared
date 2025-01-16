@@ -178,7 +178,7 @@ importers:
         version: 3.1.0(@types/react@18.3.12)(react@18.3.1)
       '@next/mdx':
         specifier: ^14.2.3
-        version: 14.2.18(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
+        version: 14.2.23(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -371,7 +371,7 @@ importers:
         version: 3.1.0(@types/react@18.3.12)(react@18.3.1)
       '@next/mdx':
         specifier: ^14.2.3
-        version: 14.2.18(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
+        version: 14.2.23(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))
       '@radix-ui/react-label':
         specifier: ^2.0.2
         version: 2.1.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1530,8 +1530,8 @@ packages:
   '@next/env@14.2.18':
     resolution: {integrity: sha512-2vWLOUwIPgoqMJKG6dt35fVXVhgM09tw4tK3/Q34GFXDrfiHlG7iS33VA4ggnjWxjiz9KV5xzfsQzJX6vGAekA==}
 
-  '@next/mdx@14.2.18':
-    resolution: {integrity: sha512-dAsPh0ek4H6ifW1D5zk3QLDeUYb6Q+UsQVt2mhPXzGD2MLxViT6LpsS0CnIB5op6oVGrnFwqeRjYFV8vZwEQ+g==}
+  '@next/mdx@14.2.23':
+    resolution: {integrity: sha512-4JVc67Gaj4Tr8w0WO+F5TAjS1JszagcqT06NLQ7CE6lNCyxfYRavo4LRYSdc3enp06aPiZLW6kklE3Xqf3p5rg==}
     peerDependencies:
       '@mdx-js/loader': '>=0.15.0'
       '@mdx-js/react': '>=0.15.0'
@@ -8683,7 +8683,7 @@ snapshots:
 
   '@next/env@14.2.18': {}
 
-  '@next/mdx@14.2.18(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))':
+  '@next/mdx@14.2.23(@mdx-js/loader@3.1.0(webpack@5.96.1(@swc/core@1.7.6(@swc/helpers@0.5.5))))(@mdx-js/react@3.1.0(@types/react@18.3.12)(react@18.3.1))':
     dependencies:
       source-map: 0.7.4
     optionalDependencies:
