@@ -1,5 +1,6 @@
 "use client";
 
+import { GoogleIcon } from "@/components/Svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Github } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -275,23 +277,43 @@ export default function Profile() {
 							{user.externalAccounts.some(
 								(account) => account.provider === "google",
 							) ? (
-								<Button onClick={() => handleDisconnectAccount("google")}>
-									Disconnect Google
+								<Button
+									variant="outline"
+									className="flex items-center gap-2"
+									onClick={() => handleDisconnectAccount("google")}
+								>
+									<GoogleIcon />
+									<span>Disconnect Google</span>
 								</Button>
 							) : (
-								<Button onClick={() => handleConnectAccount("oauth_google")}>
-									Connect Google
+								<Button
+									variant="outline"
+									className="flex items-center gap-2"
+									onClick={() => handleConnectAccount("oauth_google")}
+								>
+									<GoogleIcon />
+									<span>Connect Google</span>
 								</Button>
 							)}
 							{user.externalAccounts.some(
 								(account) => account.provider === "github",
 							) ? (
-								<Button onClick={() => handleDisconnectAccount("github")}>
-									Disconnect GitHub
+								<Button
+									variant="outline"
+									className="flex items-center gap-2"
+									onClick={() => handleDisconnectAccount("github")}
+								>
+									<Github className="w-4 h-4" />
+									<span>Disconnect GitHub</span>
 								</Button>
 							) : (
-								<Button onClick={() => handleConnectAccount("oauth_github")}>
-									Connect GitHub
+								<Button
+									variant="outline"
+									className="flex items-center gap-2"
+									onClick={() => handleConnectAccount("oauth_github")}
+								>
+									<Github className="w-4 h-4" />
+									<span>Connect GitHub</span>
 								</Button>
 							)}
 						</div>
