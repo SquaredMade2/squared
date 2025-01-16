@@ -1,5 +1,5 @@
 import type { Route } from "@/api/route";
-import type { PrismaClient } from "@squared/db";
+import type { DBClient } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { v4 as uuidv4 } from "uuid";
 
@@ -50,9 +50,7 @@ type Params = Record<string, never>;
 
 const logger = createCustomLogger("integrations");
 
-export function createRoute({
-	prisma,
-}: { prisma: PrismaClient }): Route<Params> {
+export function createRoute({ db }: { db: DBClient }): Route<Params> {
 	return {
 		POST: async (res, _, body): Promise<void> => {
 			logger.info("Received GitHub webhook");
@@ -88,7 +86,7 @@ export function createRoute({
 // Handle repository addition and removal
 async function handleRepositoryChanges(
 	payload: GitHubWebhookPayload,
-	prisma: PrismaClient,
+	prisma: DBClient,
 ) {
 	const repositoriesAdded = payload.repositories_added || [];
 	const repositoriesRemoved = payload.repositories_removed || [];
@@ -180,7 +178,7 @@ async function handleRepositoryChanges(
 async function handleBranchAndCommitEvents(
 	payload: GitHubWebhookPayload,
 	eventType: string,
-	prisma: PrismaClient,
+	prisma: DBClient,
 ) {
 	const branchName = payload.ref?.split("/").pop();
 	const repoFullName = payload.repository?.full_name || "";

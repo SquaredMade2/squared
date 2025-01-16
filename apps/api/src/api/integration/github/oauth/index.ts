@@ -1,5 +1,5 @@
 import type { Route } from "@/api/route";
-import type { PrismaClient } from "@squared/db";
+import { type DBClient, eq, usersTable } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import axios from "axios";
 
@@ -16,7 +16,7 @@ if (!clientId || !clientSecret) {
 
 const logger = createCustomLogger("integrations");
 
-export function createRoute({ prisma }: { prisma: PrismaClient }): Route {
+export function createRoute({ db }: { db: DBClient }): Route {
 	return {
 		GET: async (res, _, query): Promise<void> => {
 			logger.info("Received OAuth callback request");
@@ -57,12 +57,10 @@ export function createRoute({ prisma }: { prisma: PrismaClient }): Route {
 					return;
 				}
 
-				await prisma.user.update({
-					where: { id: userId },
-					data: {
-						githubUsername: currentUserLogin,
-					},
-				});
+				await db
+					.update(usersTable)
+					.set({ githubUsername: currentUserLogin })
+					.where(eq(usersTable.id, userId));
 
 				// Redirect to GitHub's App installation page
 				res.redirect(

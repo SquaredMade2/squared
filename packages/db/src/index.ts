@@ -5,45 +5,48 @@ export * from "./schema";
 export * from "drizzle-orm";
 import ws from "ws";
 
-const config = {
-	databaseUrl:
-		process.env.DATABASE_URL ||
-		"postgres://squared:squared@localhost:5432/store-manager?sslmode=disable",
-	localDb: process.env.LOCAL_DB || "true",
-	nodeEnv: process.env.NODE_ENV || "test",
-};
+export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
 declare global {
-	// eslint-disable-next-line no-var -- `var` is used for `cachedDb` to ensure it's properly added to the global scope, allowing it to be accessed and modified across different parts of the application.
-	var cachedDb: ReturnType<typeof drizzle<typeof schema>>;
+	var cachedDb: DBClient;
 }
 
-let db: ReturnType<typeof drizzle<typeof schema>>;
-export type DBClient = typeof db;
-
-if (config.localDb) {
-	neonConfig.fetchEndpoint = (host) => {
-		const [protocol, port] = ["http", 4444];
-		return `${protocol}://${host}:${port}/sql`;
+// Function to create the database connection
+export const createDb = ({ databaseUrl }: { databaseUrl?: string }) => {
+	const config = {
+		databaseUrl:
+			databaseUrl ||
+			process.env.DATABASE_URL ||
+			"postgres://squared:squared@localhost:5432/store-manager?sslmode=disable",
+		localDb: process.env.LOCAL_DB || "true",
+		nodeEnv: process.env.NODE_ENV || "test",
 	};
-	neonConfig.useSecureWebSocket = false;
-	neonConfig.wsProxy = (host) => `${host}:4444/v1`;
-	neonConfig.webSocketConstructor = ws;
-	const parsedDatabaseURL = new URL(config.databaseUrl);
-	parsedDatabaseURL.host = "db.localtest.me"; // Magic string here 🤷
-	config.databaseUrl = parsedDatabaseURL.toString();
-}
+	let db: DBClient;
 
-if (config.nodeEnv === "production") {
-	// In production, create a new connection for each request
-	const sql = neon(config.databaseUrl);
-	db = drizzle(sql, { schema });
-} else {
-	// In development, reuse the connection
-	if (!global.cachedDb) {
-		const sql = neon(config.databaseUrl);
-		global.cachedDb = drizzle(sql, { schema });
+	if (config.localDb) {
+		neonConfig.fetchEndpoint = (host) => {
+			const [protocol, port] = ["http", 4444];
+			return `${protocol}://${host}:${port}/sql`;
+		};
+		neonConfig.useSecureWebSocket = false;
+		neonConfig.wsProxy = (host) => `${host}:4444/v1`;
+		neonConfig.webSocketConstructor = ws;
+		const parsedDatabaseURL = new URL(config.databaseUrl);
+		parsedDatabaseURL.host = "db.localtest.me"; // Magic string here 🤷
+		config.databaseUrl = parsedDatabaseURL.toString();
 	}
-	db = global.cachedDb;
-}
 
-export { db };
+	if (config.nodeEnv === "production") {
+		// In production, create a new connection for each request
+		const sql = neon(config.databaseUrl);
+		db = drizzle(sql, { schema });
+	} else {
+		// In development, reuse the connection
+		if (!global.cachedDb) {
+			const sql = neon(config.databaseUrl);
+			global.cachedDb = drizzle(sql, { schema });
+		}
+		db = global.cachedDb;
+	}
+
+	return db;
+};

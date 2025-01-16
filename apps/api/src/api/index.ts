@@ -2,7 +2,7 @@
 
 import http from "node:http";
 import { rpcHandlers } from "@/services";
-import { PrismaClient } from "@squared/db";
+import { createDb } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { createErrorHandler, createRequestHandler } from "@squared/rpc";
 import cors from "cors";
@@ -11,13 +11,7 @@ import { Server } from "socket.io";
 import "dotenv/config";
 import { createApiRouter } from "./generated-routes";
 
-export const prisma = new PrismaClient({
-	datasources: {
-		db: {
-			url: process.env.POSTGRES_PRISMA_URL,
-		},
-	},
-});
+export const db = createDb({ databaseUrl: process.env.DATABASE_URL });
 
 const logger = createCustomLogger("api");
 
@@ -72,7 +66,7 @@ app.use(createErrorHandler({ log: logger }));
 const router = express.Router();
 
 // Create the API router
-createApiRouter(router, { prisma });
+createApiRouter(router, { db });
 
 // Use the router
 app.use(router);
