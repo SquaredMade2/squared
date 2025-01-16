@@ -11,4 +11,10 @@ export const eventRouter = router({
 			const { taskId } = input;
 			return c.superjson(await eventService.getTaskEvents(TODO, { taskId }));
 		}),
+	getNotifications: privateProcedure.query(async ({ c, ctx }) => {
+		const { eventService, user } = ctx;
+		return c.superjson(
+			await eventService.getNotifications(TODO, { userId: user.id }),
+		);
+	}),
 });

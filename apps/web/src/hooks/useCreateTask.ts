@@ -26,7 +26,6 @@ export const useCreateTask = () => {
 		mutationFn: async (input: CreateTaskInput) => {
 			if (!user) throw new Error("User not found");
 			const res = await client.task.createTask.$post({
-				userId: user.id,
 				title: input.title,
 				description: input.description,
 				status: input.status,

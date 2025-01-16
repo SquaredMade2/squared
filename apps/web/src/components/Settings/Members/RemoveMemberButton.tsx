@@ -18,13 +18,13 @@ const RemoveMemberButton = ({
 	page,
 	pageId,
 	membersWithRoles,
-	setPageUsers,
+	refetch,
 }: {
 	userId: string;
 	page: string | undefined;
 	pageId: string | undefined;
 	membersWithRoles: MemberWithRole[] | undefined;
-	setPageUsers: ((users: MemberWithRole[]) => void) | undefined;
+	refetch: () => void;
 }) => {
 	const currentUser = useUserStore((state) => state.user);
 	const { toast } = useToast();
@@ -39,11 +39,7 @@ const RemoveMemberButton = ({
 					workspaceId: pageId,
 				});
 				toast({ title: "Member removed" });
-				membersWithRoles &&
-					setPageUsers &&
-					setPageUsers(
-						membersWithRoles.filter((pageUser) => pageUser.id !== userId),
-					);
+				membersWithRoles && refetch();
 			} catch (error) {
 				console.error(error);
 				toast({
@@ -59,11 +55,7 @@ const RemoveMemberButton = ({
 					teamId: pageId,
 				});
 				toast({ title: "Member removed" });
-				membersWithRoles &&
-					setPageUsers &&
-					setPageUsers(
-						membersWithRoles.filter((pageUser) => pageUser.id !== userId),
-					);
+				membersWithRoles && refetch();
 			} catch (error) {
 				console.error(error);
 				toast({

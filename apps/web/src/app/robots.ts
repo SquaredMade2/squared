@@ -9,8 +9,8 @@ export default function robots(): MetadataRoute.Robots {
 				disallow: [
 					"/private/",
 					"/forgotPassword/",
-					"/login/",
-					"/register/",
+					"/sign-in/",
+					"/sign-up/",
 					"/settings/",
 					"/verify/",
 				],

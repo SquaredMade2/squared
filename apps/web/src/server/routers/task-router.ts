@@ -47,21 +47,57 @@ export const taskRouter = router({
 			const { teamId } = input;
 			return c.superjson(await taskService.getTeamTasks(TODO, { teamId }));
 		}),
+	getTaskBlockedByAndBlocking: privateProcedure
+		.input(z.object({ taskId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId } = input;
+			return c.superjson(
+				await taskService.getTaskBlockedByAndBlocking(TODO, { taskId }),
+			);
+		}),
+	getAllBlockedTaskIds: privateProcedure
+		.input(z.object({ teamId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { teamId } = input;
+			return c.superjson(
+				await taskService.getAllBlockedTaskIds(TODO, { teamId }),
+			);
+		}),
+	updateBlockedOrBlockingTasks: privateProcedure
+		.input(
+			z.object({
+				taskId: z.string(),
+				updatingIds: z.array(z.string()),
+				key: z.enum(["blockedBy", "blocking"]),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { taskService } = ctx;
+			const { taskId, updatingIds, key } = input;
+			return c.superjson(
+				await taskService.updateBlockedOrBlockingTasks(TODO, {
+					taskId,
+					updatingIds,
+					key,
+				}),
+			);
+		}),
 	updateStatus: privateProcedure
 		.input(
 			z.object({
 				taskId: z.string(),
 				status: statusEnum,
-				updaterId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { taskId, status, updaterId } = input;
+			const { taskService, user } = ctx;
+			const { taskId, status } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId,
+					updaterId: user.id,
 					status,
 				}),
 			);
@@ -71,16 +107,15 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				priority: priorityEnum,
-				updaterId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { taskId, priority, updaterId } = input;
+			const { taskService, user } = ctx;
+			const { taskId, priority } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId,
+					updaterId: user.id,
 					priority,
 				}),
 			);
@@ -90,16 +125,15 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				effortEstimate: z.number().min(1).max(5),
-				updaterId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { taskId, effortEstimate, updaterId } = input;
+			const { taskService, user } = ctx;
+			const { taskId, effortEstimate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
-					updaterId,
+					updaterId: user.id,
 					effortEstimate,
 				}),
 			);
@@ -107,7 +141,6 @@ export const taskRouter = router({
 	createTask: privateProcedure
 		.input(
 			z.object({
-				userId: z.string(),
 				title: z.string(),
 				description: z.string().optional(),
 				status: statusEnum.optional(),
@@ -121,7 +154,7 @@ export const taskRouter = router({
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 
 			const { transformedInput: transformedTitle } = transformingMentionInputs(
 				input.title,
@@ -131,7 +164,7 @@ export const taskRouter = router({
 
 			const newTask = {
 				...input,
-				authorId: input.userId,
+				authorId: user.id,
 				title: transformedTitle,
 				description: transformedDescription,
 				status: input.status || "backlog",
@@ -154,17 +187,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				parentId: z.string().nullable(),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, parentId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					parentId,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),
@@ -173,17 +205,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				sprintId: z.string().nullable(),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, sprintId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					sprintId,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),
@@ -193,17 +224,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				dueDate: z.date().nullable(),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, dueDate } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					dueDate,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),
@@ -212,17 +242,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				assigneeId: z.string().nullable(),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, assigneeId } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					assigneeId,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),
@@ -231,17 +260,16 @@ export const taskRouter = router({
 			z.object({
 				taskId: z.string(),
 				labelIds: z.array(z.string()),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
+			const { taskService, user } = ctx;
 			const { taskId, labelIds } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					labels: labelIds,
-					updaterId: input.userId,
+					updaterId: user.id,
 				}),
 			);
 		}),
@@ -251,18 +279,17 @@ export const taskRouter = router({
 				taskId: z.string(),
 				title: z.string().optional(),
 				description: z.string().optional(),
-				userId: z.string(),
 			}),
 		)
 		.mutation(async ({ c, ctx, input }) => {
-			const { taskService } = ctx;
-			const { taskId, title, description, userId } = input;
+			const { taskService, user } = ctx;
+			const { taskId, title, description } = input;
 			return c.superjson(
 				await taskService.updateTask(TODO, {
 					id: taskId,
 					title,
 					description,
-					updaterId: userId,
+					updaterId: user.id,
 				}),
 			);
 		}),

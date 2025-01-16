@@ -2,9 +2,9 @@
 
 import { RetroColumn } from "@/components/Sprints";
 import { toast } from "@/components/ui/use-toast";
-import { useAuthUser } from "@/hooks/useAuthUser";
 import { sprintService } from "@/lib/services";
 import { parseParams } from "@/utils/parseParams";
+import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type DropResult } from "@hello-pangea/dnd";
 import { TODO } from "@squared/context";
 import type { RetrospectiveItem, RetrospectiveItemType } from "@squared/db";
@@ -20,7 +20,7 @@ export type RetroItem = Pick<
 export default function SprintRetrospectivePage() {
 	const params = useParams();
 	const sprintId = parseParams(params.sprintId);
-	const { user } = useAuthUser();
+	const { user } = useUser();
 	const [data, setData] = useState<Record<RetrospectiveItemType, RetroItem[]>>({
 		wentWell: [],
 		toImprove: [],
@@ -94,7 +94,7 @@ export default function SprintRetrospectivePage() {
 				if (user) {
 					const response = await sprintService.addRetrospectiveItem(TODO, {
 						sprintId,
-						authorId: user?.id,
+						authorId: user.id,
 						type,
 						content,
 					});

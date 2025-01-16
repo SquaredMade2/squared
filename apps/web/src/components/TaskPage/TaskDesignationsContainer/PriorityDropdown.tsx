@@ -11,7 +11,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
+import { useEventStore, useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority, TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
@@ -19,7 +19,6 @@ import { useMutation } from "@tanstack/react-query";
 const PriorityDropdown = () => {
 	const { toast } = useToast();
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
-	const user = useUserStore((state) => state.user);
 	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
@@ -32,7 +31,6 @@ const PriorityDropdown = () => {
 			const res = await client.task.updatePriority.$post({
 				taskId,
 				priority: newPriority,
-				updaterId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			setCurrentTask({ ...currentTask, priority: newPriority });

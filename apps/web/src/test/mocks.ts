@@ -18,8 +18,6 @@ export const STANDARD_USER: User = {
 	name: "Test User",
 	email: "test@example.com",
 	username: "testuser",
-	password: null,
-	verified: false,
 	lastLogin: new Date(),
 	createdAt: new Date(),
 	onBoarding: false,
@@ -27,11 +25,9 @@ export const STANDARD_USER: User = {
 	avatarUrl: null,
 	savedNotificationIds: [],
 	subscribedTasks: [],
-	googleId: null,
 	githubUsername: null,
-	githubId: null,
 	lastViewedTaskId: null,
-	externalId: null,
+	externalId: "123456",
 };
 
 export const STANDARD_WORKSPACE: Workspace = {

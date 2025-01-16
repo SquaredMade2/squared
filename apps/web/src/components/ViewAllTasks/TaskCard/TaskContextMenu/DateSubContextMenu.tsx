@@ -7,7 +7,7 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
@@ -15,7 +15,6 @@ import type { ContextMenuProps } from "./interfaces";
 
 const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const user = useUserStore((state) => state.user);
 	const { updateTask } = useTaskStore((state) => state);
 
 	const { mutate: updateDueDate } = useMutation({
@@ -24,7 +23,6 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 			const res = await client.task.updateDueDate.$post({
 				taskId: task.id,
 				dueDate: date ?? null,
-				userId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);

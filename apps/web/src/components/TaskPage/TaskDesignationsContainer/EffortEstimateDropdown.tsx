@@ -11,12 +11,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
-import {
-	useEventStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-} from "@/store";
+import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
@@ -27,7 +22,6 @@ const EffortEstimateDropdown = () => {
 	const { toast } = useToast();
 
 	const { team } = useTeamStore((state) => state);
-	const user = useUserStore((state) => state.user);
 	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
@@ -56,7 +50,6 @@ const EffortEstimateDropdown = () => {
 			const res = await client.task.updateEffort.$post({
 				taskId,
 				effortEstimate: newEffortEstimate,
-				updaterId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			setCurrentTask({
