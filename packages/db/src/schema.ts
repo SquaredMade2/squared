@@ -1,8 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
-	type AnyPgColumn,
 	boolean,
-	foreignKey,
 	index,
 	integer,
 	jsonb,
@@ -90,41 +88,15 @@ export const team = pgTable(
 			table.workspaceId.asc().nullsLast().op("text_ops"),
 			table.identifier.asc().nullsLast().op("text_ops"),
 		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "Team_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
-export const branch = pgTable(
-	"Branch",
-	{
-		id: text().primaryKey().notNull(),
-		name: text().notNull(),
-		taskId: text().notNull(),
-		githubRepoInfoId: text().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [task.id],
-			name: "Branch_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.githubRepoInfoId],
-			foreignColumns: [githubRepoInfo.id],
-			name: "Branch_githubRepoInfoId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const branch = pgTable("Branch", {
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	taskId: text().notNull(),
+	githubRepoInfoId: text().notNull(),
+});
 
 export const githubRepoInfo = pgTable(
 	"GithubRepoInfo",
@@ -141,75 +113,37 @@ export const githubRepoInfo = pgTable(
 	],
 );
 
-export const sprint = pgTable(
-	"Sprint",
-	{
-		id: text().primaryKey().notNull(),
-		name: text().notNull(),
-		startDate: timestamp({ precision: 3, mode: "string" }).notNull(),
-		endDate: timestamp({ precision: 3, mode: "string" }).notNull(),
-		status: sprintStatus().notNull(),
-		teamId: text().notNull(),
-		createdAt: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
-		description: text(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.teamId],
-			foreignColumns: [team.id],
-			name: "Sprint_teamId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const sprint = pgTable("Sprint", {
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	startDate: timestamp({ precision: 3, mode: "string" }).notNull(),
+	endDate: timestamp({ precision: 3, mode: "string" }).notNull(),
+	status: sprintStatus().notNull(),
+	teamId: text().notNull(),
+	createdAt: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	description: text(),
+});
 
-export const notification = pgTable(
-	"Notification",
-	{
-		id: text().primaryKey().notNull(),
-		taskId: text().notNull(),
-		read: boolean().default(false).notNull(),
-		saved: boolean().default(false).notNull(),
-		description: text(),
-		createdAt: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		workspaceId: text().notNull(),
-		dismissed: boolean().default(false).notNull(),
-		type: notificationType().notNull(),
-		userId: text().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [task.id],
-			name: "Notification_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "Notification_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.externalId],
-			name: "Notification_userId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const notification = pgTable("Notification", {
+	id: text().primaryKey().notNull(),
+	taskId: text().notNull(),
+	read: boolean().default(false).notNull(),
+	saved: boolean().default(false).notNull(),
+	description: text(),
+	createdAt: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	updatedAt: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	workspaceId: text().notNull(),
+	dismissed: boolean().default(false).notNull(),
+	type: notificationType().notNull(),
+	userId: text().notNull(),
+});
 
 export const workspace = pgTable(
 	"Workspace",
@@ -259,155 +193,60 @@ export const user = pgTable(
 			"btree",
 			table.email.asc().nullsLast().op("text_ops"),
 		),
-		foreignKey({
-			columns: [table.defaultWorkspaceId],
-			foreignColumns: [workspace.id],
-			name: "User_defaultWorkspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.lastViewedTaskId],
-			foreignColumns: [task.id],
-			name: "User_lastViewedTaskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
 		unique("User_externalId_unique").on(table.externalId),
 	],
 );
 
-export const comment = pgTable(
-	"Comment",
-	{
-		id: text().primaryKey().notNull(),
-		comment: text().notNull(),
-		date: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		taskId: text().notNull(),
-		authorId: text().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [task.id],
-			name: "Comment_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.authorId],
-			foreignColumns: [user.externalId],
-			name: "Comment_authorId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const comment = pgTable("Comment", {
+	id: text().primaryKey().notNull(),
+	comment: text().notNull(),
+	date: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	taskId: text().notNull(),
+	authorId: text().notNull(),
+});
 
 export const task = pgTable(
-	"Task",
+	"tasks",
 	{
-		id: text().primaryKey().notNull(),
-		title: text().notNull(),
-		description: text(),
-		identifier: text().notNull(),
-		dueDate: timestamp({ precision: 3, mode: "string" }),
-		effortEstimate: integer(),
-		teamId: text().notNull(),
-		dateCreated: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		labels: text().array(),
-		workspaceId: text().notNull(),
-		updatedAt: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		deleted: boolean().default(false).notNull(),
-		parentId: text(),
-		sprintId: text(),
-		status: status().default("backlog").notNull(),
-		priority: priority().default("noPriority").notNull(),
-		order: integer().default(0).notNull(),
-		authorId: text().notNull(),
-		assigneeId: text(),
+		id: text("id").primaryKey(),
+		authorId: text("author_id").notNull(),
+		title: text("title").notNull(),
+		description: text("description"),
+		identifier: text("identifier").notNull(),
+		dueDate: timestamp("due_date"),
+		effortEstimate: integer("effort_estimate"),
+		teamId: text("team_id").notNull(),
+		dateCreated: timestamp("date_created").defaultNow().notNull(),
+		assigneeId: text("assignee_id"),
+		labels: text("labels").array(),
+		workspaceId: text("workspace_id").notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		deleted: boolean("deleted").default(false).notNull(),
+		parentId: text("parent_id"),
+		sprintId: text("sprint_id"),
+		order: integer("order").default(0).notNull(),
 	},
-	(table) => [
-		uniqueIndex("Task_teamId_identifier_key").using(
-			"btree",
-			table.teamId.asc().nullsLast().op("text_ops"),
-			table.identifier.asc().nullsLast().op("text_ops"),
+	(table) => ({
+		workspaceIdentifierIdx: uniqueIndex("workspace_identifier_idx").on(
+			table.workspaceId,
+			table.identifier,
 		),
-		uniqueIndex("Task_workspaceId_identifier_key").using(
-			"btree",
-			table.workspaceId.asc().nullsLast().op("text_ops"),
-			table.identifier.asc().nullsLast().op("text_ops"),
+		teamIdentifierIdx: uniqueIndex("team_identifier_idx").on(
+			table.teamId,
+			table.identifier,
 		),
-		foreignKey({
-			columns: [table.parentId],
-			foreignColumns: [table.id],
-			name: "Task_parentId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.teamId],
-			foreignColumns: [team.id],
-			name: "Task_teamId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "Task_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.sprintId],
-			foreignColumns: [sprint.id],
-			name: "Task_sprintId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.authorId],
-			foreignColumns: [user.externalId],
-			name: "Task_authorId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.assigneeId],
-			foreignColumns: [user.externalId],
-			name: "Task_assigneeId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-	],
+	}),
 );
 
-export const label = pgTable(
-	"Label",
-	{
-		id: text().primaryKey().notNull(),
-		name: text().notNull(),
-		description: text(),
-		color: text().notNull(),
-		workspaceId: text().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "Label_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const label = pgTable("Label", {
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text(),
+	color: text().notNull(),
+	workspaceId: text().notNull(),
+});
 
 export const universalTokenLink = pgTable(
 	"UniversalTokenLink",
@@ -422,13 +261,6 @@ export const universalTokenLink = pgTable(
 			"btree",
 			table.workspaceId.asc().nullsLast().op("text_ops"),
 		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "UniversalTokenLink_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
@@ -445,108 +277,37 @@ export const workspaceRepositories = pgTable(
 			table.workspaceId.asc().nullsLast().op("text_ops"),
 			table.repoId.asc().nullsLast().op("text_ops"),
 		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "WorkspaceRepositories_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.repoId],
-			foreignColumns: [githubRepoInfo.id],
-			name: "WorkspaceRepositories_repoId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
-export const project = pgTable(
-	"Project",
-	{
-		id: text().primaryKey().notNull(),
-		name: text().notNull(),
-		teamId: text(),
-		workspaceId: text(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.teamId],
-			foreignColumns: [team.id],
-			name: "Project_teamId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "Project_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const project = pgTable("Project", {
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	teamId: text(),
+	workspaceId: text(),
+});
 
-export const commit = pgTable(
-	"Commit",
-	{
-		id: text().primaryKey().notNull(),
-		message: text().notNull(),
-		url: text().notNull(),
-		authorName: text(),
-		repoName: text(),
-		owner: text(),
-		branchId: text().notNull(),
-		taskId: text(),
-		timestamp: timestamp({ precision: 3, mode: "string" }).notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.branchId],
-			foreignColumns: [branch.id],
-			name: "Commit_branchId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [task.id],
-			name: "Commit_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-	],
-);
+export const commit = pgTable("Commit", {
+	id: text().primaryKey().notNull(),
+	message: text().notNull(),
+	url: text().notNull(),
+	authorName: text(),
+	repoName: text(),
+	owner: text(),
+	branchId: text().notNull(),
+	taskId: text(),
+	timestamp: timestamp({ precision: 3, mode: "string" }).notNull(),
+});
 
-export const taskEvent = pgTable(
-	"TaskEvent",
-	{
-		id: text().primaryKey().notNull(),
-		createdAt: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		taskId: text().notNull(),
-		message: text().notNull(),
-		authorId: text().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [task.id],
-			name: "TaskEvent_taskId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.authorId],
-			foreignColumns: [user.externalId],
-			name: "TaskEvent_authorId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const taskEvent = pgTable("TaskEvent", {
+	id: text().primaryKey().notNull(),
+	createdAt: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	taskId: text().notNull(),
+	message: text().notNull(),
+	authorId: text().notNull(),
+});
 
 export const savedFilter = pgTable(
 	"SavedFilter",
@@ -570,77 +331,23 @@ export const savedFilter = pgTable(
 			"btree",
 			table.workspaceId.asc().nullsLast().op("text_ops"),
 		),
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "SavedFilter_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.teamId],
-			foreignColumns: [team.id],
-			name: "SavedFilter_teamId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.authorId],
-			foreignColumns: [user.externalId],
-			name: "SavedFilter_authorId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 	],
 );
 
-export const retrospectiveItem = pgTable(
-	"RetrospectiveItem",
-	{
-		id: text().primaryKey().notNull(),
-		content: text().notNull(),
-		wentWellSprintId: text(),
-		toImproveSprintId: text(),
-		actionItemsSprintId: text(),
-		createdAt: timestamp({ precision: 3, mode: "string" })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
-		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
-		type: retrospectiveItemType().default("toImprove").notNull(),
-		likes: text().array().default(["RAY"]),
-		authorId: text().notNull(),
-	},
-	(table) => [
-		foreignKey({
-			columns: [table.wentWellSprintId],
-			foreignColumns: [sprint.id],
-			name: "RetrospectiveItem_wentWellSprintId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.toImproveSprintId],
-			foreignColumns: [sprint.id],
-			name: "RetrospectiveItem_toImproveSprintId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.actionItemsSprintId],
-			foreignColumns: [sprint.id],
-			name: "RetrospectiveItem_actionItemsSprintId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("set null"),
-		foreignKey({
-			columns: [table.authorId],
-			foreignColumns: [user.externalId],
-			name: "RetrospectiveItem_authorId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
+export const retrospectiveItem = pgTable("RetrospectiveItem", {
+	id: text().primaryKey().notNull(),
+	content: text().notNull(),
+	wentWellSprintId: text(),
+	toImproveSprintId: text(),
+	actionItemsSprintId: text(),
+	createdAt: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	type: retrospectiveItemType().default("toImprove").notNull(),
+	likes: text().array().default(["RAY"]),
+	authorId: text().notNull(),
+});
 
 export const blockedTasks = pgTable(
 	"_BlockedTasks",
@@ -650,20 +357,6 @@ export const blockedTasks = pgTable(
 	},
 	(table) => [
 		index().using("btree", table.b.asc().nullsLast().op("text_ops")),
-		foreignKey({
-			columns: [table.a],
-			foreignColumns: [task.id],
-			name: "_BlockedTasks_A_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.b],
-			foreignColumns: [task.id],
-			name: "_BlockedTasks_B_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 		primaryKey({ columns: [table.a, table.b], name: "_BlockedTasks_AB_pkey" }),
 	],
 );
@@ -675,20 +368,6 @@ export const userWorkspace = pgTable(
 		userId: text().notNull(),
 	},
 	(table) => [
-		foreignKey({
-			columns: [table.workspaceId],
-			foreignColumns: [workspace.id],
-			name: "UserWorkspace_workspaceId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.externalId],
-			name: "UserWorkspace_userId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 		primaryKey({
 			columns: [table.workspaceId, table.userId],
 			name: "UserWorkspace_pkey",
@@ -703,20 +382,6 @@ export const userTeam = pgTable(
 		userId: text().notNull(),
 	},
 	(table) => [
-		foreignKey({
-			columns: [table.teamId],
-			foreignColumns: [team.id],
-			name: "UserTeam_teamId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.userId],
-			foreignColumns: [user.externalId],
-			name: "UserTeam_userId_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
 		primaryKey({
 			columns: [table.teamId, table.userId],
 			name: "UserTeam_pkey",
