@@ -87,6 +87,9 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 				<ContextMenuItem onClick={copyTaskIdentifier}>
 					Copy Task ID
 				</ContextMenuItem>
+				<ContextMenuItem>
+					Copy Task Url
+				</ContextMenuItem>
 
 				<ContextMenuItem>
 					<Link
