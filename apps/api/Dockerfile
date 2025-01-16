@@ -9,6 +9,8 @@ WORKDIR /app
 RUN npm install -g turbo pnpm ts-node tsconfig-paths
 COPY . .
 RUN turbo prune api --docker
+# RUN pnpm install --frozen-lockfile --filter=!api
+# RUN pnpm turbo run build --filter=!api...
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -29,8 +31,7 @@ COPY --from=builder /app/packages/typescript-config /app/packages/typescript-con
 # First install dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
 RUN npm install -g turbo pnpm ts-node tsconfig-paths
-
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Generate Prisma client
 RUN apk add --no-cache openssl
@@ -63,6 +64,7 @@ ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 ENV POSTGRES_PRISMA_URL=${POSTGRES_PRISMA_URL}
 
 RUN pnpm turbo build --filter=api...
+RUN pnpm prune --prod
 
 FROM base AS runner
 WORKDIR /app

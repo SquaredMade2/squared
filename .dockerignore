@@ -14,6 +14,18 @@ build
 # other
 dist
 
+#packages
+/packages/cli
+/packages/fonts
+/packages/jest-presets
+/packages/seed
+/packages/test-db
+/packages/ui
+
+#apps
+/apps/web
+/apps/www
+
 # misc
 .DS_Store
 *.pem
