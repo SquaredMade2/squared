@@ -32,7 +32,7 @@ export type UpdateTaskParams = {
 export interface TaskRpc {
 	createTask: (args: CreateTaskParams) => Promise<Task>;
 	updateTask: (args: UpdateTaskParams) => Promise<Task>;
-	deleteTask: (args: { taskId: string }) => Promise<void>;
+	deleteTask: (args: { taskId: string }) => Promise<{ success: boolean }>;
 	getTask: (args: { taskId: string }) => Promise<Task>;
 	getTaskByIdentifier: (args: {
 		identifier: string;
@@ -48,5 +48,19 @@ export interface TaskRpc {
 		parentId: string;
 		newOrder: string[];
 	}) => Promise<Task[]>;
+	updateBlockedOrBlockingTasks({
+		updatingIds,
+		taskId,
+		key,
+	}: {
+		updatingIds: string[];
+		taskId: string;
+		key: "blockedBy" | "blocking";
+	}): Promise<Task[]>;
+	getTaskBlockedByAndBlocking: (args: { taskId: string }) => Promise<{
+		blockedBy: Task[];
+		blockingIds: string[];
+	}>;
+	getAllBlockedTaskIds: (args: { teamId: string }) => Promise<string[]>;
 	getSubtasks: (args: { parentId: string }) => Promise<Task[]>;
 }

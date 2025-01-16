@@ -7,28 +7,27 @@ import { columns } from "@/components/Settings/Members/columns";
 import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { userService } from "@/lib/services";
-import { TODO } from "@squared/context";
-import type { User } from "@squared/db";
-import { useEffect, useState } from "react";
+import { client } from "@/lib/client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function TeamMembersPage() {
 	const { team, loading: teamLoading } = useTeams();
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const [pageUsers, setPageUsers] = useState<User[]>([]);
 
-	useEffect(() => {
-		const fetchTeamUsers = async () => {
+	const { data: users = [], refetch } = useQuery({
+		queryKey: ["team", team?.id],
+		queryFn: async () => {
 			if (!team) return;
-			const users = await userService.getTeamUsers(TODO, { teamId: team.id });
-			setPageUsers(users);
-		};
-		fetchTeamUsers();
-	}, [team]);
+			return await client.user.getTeamUsers
+				.$get({ teamId: team.id })
+				.then((res) => res.json());
+		},
+		enabled: !!team,
+	});
 
-	const membersWithRoles: MemberWithRole[] = pageUsers.map((user) => ({
+	const membersWithRoles: MemberWithRole[] = users.map((user) => ({
 		...user,
-		role: workspace?.admins.includes(user.id) ? "admin" : "member",
+		role: workspace?.admins.includes(user.externalId) ? "admin" : "member",
 	}));
 
 	const enhancedColumns = columns.map((col) => ({
@@ -37,7 +36,7 @@ export default function TeamMembersPage() {
 			page: "team",
 			pageId: team?.id,
 			membersWithRoles,
-			setPageUsers,
+			refetch,
 		},
 	}));
 

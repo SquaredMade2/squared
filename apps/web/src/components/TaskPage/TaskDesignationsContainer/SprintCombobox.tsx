@@ -1,24 +1,18 @@
-import { eventService, sprintService, taskService } from "@/lib/services";
-import {
-	useEventStore,
-	useSprintStore,
-	useTaskStore,
-	useTeamStore,
-	useUserStore,
-} from "@/store";
-import { TODO } from "@squared/context";
+"use client";
+
+import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squared/db";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const SprintCombobox = () => {
 	const [open, setOpen] = useState(false);
+	const { toast } = useToast();
 	const { team } = useTeamStore((state) => state);
-	const { sprints, setSprints } = useSprintStore((state) => state);
-	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
-		(state) => state,
-	);
-	const user = useUserStore((state) => state.user);
+	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 	const [assignedSprintId, setAssignedSprintId] = useState<Sprint | null>(null);
 
@@ -26,54 +20,70 @@ const SprintCombobox = () => {
 	const sprintId = assignedSprintId?.id ?? "";
 	const sprintName = assignedSprintId?.name ?? "";
 
-	useEffect(() => {
-		const fetchSprints = async () => {
+	const { data: sprints = [] } = useQuery({
+		queryKey: ["sprints", team?.id],
+		queryFn: async () => {
 			if (team) {
-				const fetchedSprints = await sprintService.getSprints(TODO, {
-					teamId: team.id,
-				});
-				setSprints(fetchedSprints);
+				const res = await client.sprint.getSprints
+					.$get({ teamId: team.id })
+					.then((res) => res.json());
+				setAssignedSprintId(
+					res.find((s: Sprint) => s.id === currentTask?.sprintId) ?? null,
+				);
+				return res;
 			}
-		};
-		fetchSprints();
+			return [];
+		},
+		enabled: !!team,
+	});
 
-		const foundSprint = sprints.find((s) => s.id === currentTask?.sprintId);
-		setAssignedSprintId(foundSprint ?? null);
-	}, [team, currentTask]);
+	const { mutate: updateSprint } = useMutation({
+		mutationKey: ["updateTaskSprint", taskId],
+		mutationFn: async (sprintId: string | null) => {
+			const res = await client.task.updateSprint.$post({
+				taskId,
+				sprintId,
+			});
+			const updatedTask = await res.json();
+			setCurrentTask(updatedTask);
 
-	const handleAssignToSprint = async (sprintId: string | null) => {
-		const updatedTask = await taskService.updateTask(TODO, {
-			id: taskId,
-			updaterId: user?.id || "",
-			sprintId: sprintId,
-		});
-		updateTask(updatedTask);
-		setCurrentTask(updatedTask);
-		const updatedEvents = await eventService.getTaskEvents(TODO, {
-			taskId: taskId,
-		});
-		// TODO: Will remove type coercion once commits are implemented
-		setEvents(updatedEvents as TaskEvent[]);
-		setOpen(false);
+			const eventsRes = await client.event.getEvents.$get({
+				taskId,
+			});
+			const updatedEvents = await eventsRes.json();
+			setEvents(updatedEvents as TaskEvent[]);
+
+			return updatedTask;
+		},
+		onError: (error) => {
+			toast({
+				title: "Error updating sprint",
+				description: error.message,
+				variant: "destructive",
+			});
+		},
+		onSettled: () => setOpen(false),
+	});
+
+	const handleAssignToSprint = (sprintId: string | null) => {
+		updateSprint(sprintId);
 	};
 
 	if (!currentTask) return null;
 
 	return (
-		<>
-			<DesignationCombobox
-				open={open}
-				setOpen={setOpen}
-				triggerText={sprintName ? sprintName : "No sprint assigned"}
-				emptyText="No sprints found."
-				listItems={sprints}
-				selectedItemId={sprintId}
-				selectedItemLabel={sprintName}
-				itemLabel={(sprint: Sprint) => sprint.name}
-				itemId={(sprint: Sprint) => sprint.id}
-				onItemSelect={handleAssignToSprint}
-			/>
-		</>
+		<DesignationCombobox
+			open={open}
+			setOpen={setOpen}
+			triggerText={sprintName ? sprintName : "No sprint assigned"}
+			emptyText="No sprints found."
+			listItems={sprints || []}
+			selectedItemId={sprintId}
+			selectedItemLabel={sprintName}
+			itemLabel={(sprint: Sprint) => sprint.name}
+			itemId={(sprint: Sprint) => sprint.id}
+			onItemSelect={handleAssignToSprint}
+		/>
 	);
 };
 

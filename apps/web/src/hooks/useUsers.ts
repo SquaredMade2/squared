@@ -29,6 +29,6 @@ export function useUsers() {
 	return {
 		loading: isLoading || workspaceLoading,
 		users: users || [],
-		error: parseError(error, "Failed to fetch users"),
+		error: error ? parseError(error, "Failed to fetch users") : null,
 	};
 }

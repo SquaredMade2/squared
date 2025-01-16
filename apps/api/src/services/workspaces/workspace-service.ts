@@ -190,18 +190,19 @@ export class WorkspaceService implements WorkspaceRpc {
 		if (!user) this.throwError("User not found.");
 		if (existingUserWorkspace) return workspace;
 
-		await this.validateJoinWorkspaceData(workspace, teams, user);
+		this.validateJoinWorkspaceData(workspace, teams, user);
 
-		await this.createUserWorkspaceConnections(userId, workspaceId, teams);
-
-		await this.updateUserOnboarding(user);
+		Promise.all([
+			this.createUserWorkspaceConnections(userId, workspaceId, teams),
+			this.updateUserOnboarding(user),
+		]);
 
 		return workspace;
 	}
 	async removeUserFromWorkspace({
 		workspaceId,
 		userId,
-	}: { workspaceId: string; userId: string }): Promise<void> {
+	}: { workspaceId: string; userId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Removing user from workspace");
 
 		const workspaceTeams = await this.db.team.findMany({
@@ -226,6 +227,8 @@ export class WorkspaceService implements WorkspaceRpc {
 		await this.db.userWorkspace.delete({
 			where: { userId_workspaceId: { userId, workspaceId } },
 		});
+
+		return { success: true };
 	}
 	async inviteToWorkspace({
 		workspaceId,
@@ -233,7 +236,7 @@ export class WorkspaceService implements WorkspaceRpc {
 	}: {
 		workspaceId: string;
 		email: string | string[];
-	}): Promise<void> {
+	}): Promise<{ success: boolean }> {
 		this.logger.info("Inviting user to workspace: %0", {
 			email,
 			workspaceId,
@@ -285,6 +288,8 @@ export class WorkspaceService implements WorkspaceRpc {
 				}),
 			});
 		}
+
+		return { success: true };
 	}
 	private verifyToken(token: string): string | null {
 		try {
@@ -340,10 +345,10 @@ export class WorkspaceService implements WorkspaceRpc {
 		]);
 	}
 	private async updateUserOnboarding(user: User) {
-		if (user.onBoarding || !user.verified) {
+		if (user.onBoarding) {
 			await this.db.user.update({
 				where: { id: user.id },
-				data: { onBoarding: false, verified: true },
+				data: { onBoarding: false },
 			});
 		}
 	}

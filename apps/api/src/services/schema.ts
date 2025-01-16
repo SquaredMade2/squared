@@ -98,6 +98,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
+		defaultView: z.string().nullable(),
 	}),
 );
 
@@ -133,6 +134,7 @@ export const workspaceLabelSchema = createSchema<
 		universalTokenLinkId: z.string().nullable(),
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
+		defaultView: z.string().nullable(),
 		Labels: z.array(labelSchema),
 	}),
 );
@@ -143,8 +145,7 @@ export const userSchema = createSchema<User>()(
 		name: z.string(),
 		username: z.string().nullable(),
 		email: z.string().email(),
-		password: z.string().nullable(),
-		verified: z.boolean(),
+		externalId: z.string(),
 		lastLogin: z.date(),
 		createdAt: z.date(),
 		onBoarding: z.boolean(),
@@ -152,9 +153,7 @@ export const userSchema = createSchema<User>()(
 		avatarUrl: z.string().nullable(),
 		savedNotificationIds: z.array(z.string()),
 		subscribedTasks: z.array(z.string()),
-		googleId: z.string().nullable(),
 		githubUsername: z.string().nullable(),
-		githubId: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
 	}),
 );

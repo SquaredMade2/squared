@@ -6,6 +6,7 @@ export interface TaskGridProps {
 	taskLabels: Label[];
 	currentWorkspaceUrl?: string;
 	isSubtask?: boolean;
+	isDisabled?: boolean;
 }
 
 export interface TaskListProps {
@@ -23,6 +24,7 @@ export interface TaskCardProps {
 	highlightText?: (text: string) => React.ReactNode;
 	location: string;
 	isSubtask?: boolean;
+	isDisabled?: boolean;
 }
 
 export interface TaskCardLabelsProps {

@@ -17,7 +17,7 @@ export default function WorkspaceMembersPage() {
 	const membersWithRoles: MemberWithRole[] = workspace
 		? pageUsers.map((user) => ({
 				...user,
-				role: workspace.admins.includes(user.id) ? "admin" : "member",
+				role: workspace.admins.includes(user.externalId) ? "admin" : "member",
 			}))
 		: [];
 

@@ -4,6 +4,7 @@ export type CreateTeamParams = {
 	name: string;
 	identifier: string;
 	workspaceId: string;
+	userId: string;
 };
 
 export type UpdateTeamParams = {
@@ -34,8 +35,9 @@ export interface TeamRpc {
 	getUserTeams: (args: { userId: string; workspaceId: string }) => Promise<
 		Team[]
 	>;
+	getWorkspaceTeams: (args: { workspaceId: string }) => Promise<Team[]>;
 	removeUserFromTeam: (args: {
 		userId: string;
 		teamId: string;
-	}) => Promise<void>;
+	}) => Promise<{ success: boolean }>;
 }

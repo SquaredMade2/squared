@@ -96,7 +96,7 @@ const Subtasks = () => {
 															<SubtaskList
 																task={subtask}
 																user={users.find(
-																	(u) => u.id === subtask.assigneeId,
+																	(u) => u.externalId === subtask.assigneeId,
 																)}
 															/>
 														</ContextMenuTrigger>
