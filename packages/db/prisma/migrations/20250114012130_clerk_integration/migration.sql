@@ -1,4 +1,5 @@
 -- Step 1: Ensure externalId is not nullable and unique
+DELETE FROM "User" WHERE "externalId" IS NULL;
 ALTER TABLE "User" ALTER COLUMN "externalId" SET NOT NULL;
 ALTER TABLE "User" ADD CONSTRAINT "User_externalId_unique" UNIQUE ("externalId");
 
