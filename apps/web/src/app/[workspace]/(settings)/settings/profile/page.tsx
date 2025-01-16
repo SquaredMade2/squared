@@ -104,7 +104,10 @@ export default function Profile() {
 	) => {
 		if (!user) return;
 		try {
-			await user.createExternalAccount({ strategy });
+			await user.createExternalAccount({
+				strategy,
+				redirectUrl: window.location.href,
+			});
 			toast({
 				title: "Account connected",
 				description: `Successfully connected your ${
@@ -122,13 +125,11 @@ export default function Profile() {
 		}
 	};
 
-	const handleDisconnectAccount = async (
-		strategy: "oauth_google" | "oauth_github",
-	) => {
+	const handleDisconnectAccount = async (strategy: "google" | "github") => {
 		if (!user) return;
 
 		const externalAccount = user.externalAccounts.find(
-			(account) => account.provider.split("_")[1] === strategy,
+			(account) => account.provider === strategy,
 		);
 
 		if (!externalAccount) {
@@ -136,7 +137,7 @@ export default function Profile() {
 				variant: "destructive",
 				title: "Error",
 				description: `No ${
-					strategy === "oauth_google" ? "Google" : "GitHub"
+					strategy === "google" ? "Google" : "GitHub"
 				} account found.`,
 			});
 			return;
@@ -147,7 +148,7 @@ export default function Profile() {
 			toast({
 				title: "Account disconnected",
 				description: `Successfully disconnected your ${
-					strategy === "oauth_google" ? "Google" : "GitHub"
+					strategy === "google" ? "Google" : "GitHub"
 				} account.`,
 			});
 		} catch {
@@ -155,7 +156,7 @@ export default function Profile() {
 				variant: "destructive",
 				title: "Error",
 				description: `Failed to disconnect ${
-					strategy === "oauth_google" ? "Google" : "GitHub"
+					strategy === "google" ? "Google" : "GitHub"
 				} account. Please try again.`,
 			});
 		}
@@ -274,8 +275,8 @@ export default function Profile() {
 							{user.externalAccounts.some(
 								(account) => account.provider === "google",
 							) ? (
-								<Button onClick={() => handleDisconnectAccount("oauth_google")}>
-									Reauthorize Google
+								<Button onClick={() => handleDisconnectAccount("google")}>
+									Disconnect Google
 								</Button>
 							) : (
 								<Button onClick={() => handleConnectAccount("oauth_google")}>
@@ -285,8 +286,8 @@ export default function Profile() {
 							{user.externalAccounts.some(
 								(account) => account.provider === "github",
 							) ? (
-								<Button onClick={() => handleDisconnectAccount("oauth_github")}>
-									Reauthorize GitHub
+								<Button onClick={() => handleDisconnectAccount("github")}>
+									Disconnect GitHub
 								</Button>
 							) : (
 								<Button onClick={() => handleConnectAccount("oauth_github")}>
