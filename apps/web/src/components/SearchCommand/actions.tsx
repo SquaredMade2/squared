@@ -10,7 +10,7 @@ import {
 	Circle,
 	ClipboardCopy,
 	Copy,
-	Layers3,
+	Layers,
 	LogOut,
 	MoveDiagonal,
 	PanelLeft,
@@ -109,7 +109,7 @@ export class CommandSchema {
 			},
 			View: {
 				createNewView: {
-					icon: <Layers3 className="size-4 mr-2" />,
+					icon: <Layers className="size-4 mr-2" />,
 					text: "Create new view",
 					function: () => {
 						this.clearFilter();
