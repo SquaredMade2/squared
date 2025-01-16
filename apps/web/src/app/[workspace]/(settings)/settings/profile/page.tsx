@@ -99,6 +99,60 @@ export default function Profile() {
 		}
 	};
 
+	const handleConnectAccount = async (
+		strategy: "oauth_google" | "oauth_github",
+	) => {
+		if (!user) return;
+		try {
+			await user.createExternalAccount({ strategy });
+			toast({
+				title: "Account connected",
+				description: `Successfully connected your ${strategy === "oauth_google" ? "Google" : "GitHub"} account.`,
+			});
+		} catch {
+			toast({
+				variant: "destructive",
+				title: "Error",
+				description: `Failed to connect ${strategy === "oauth_google" ? "Google" : "GitHub"} account. Please try again.`,
+			});
+		}
+	};
+
+	const handleDisconnectAccount = async (
+		strategy: "oauth_google" | "oauth_github",
+	) => {
+		if (!user) return;
+
+		// Find the external account for the given strategy
+		const externalAccount = user.externalAccounts.find(
+			(account) => account.provider.split("_")[1] === strategy,
+		);
+
+		if (!externalAccount) {
+			toast({
+				variant: "destructive",
+				title: "Error",
+				description: `No ${strategy === "oauth_google" ? "Google" : "GitHub"} account found.`,
+			});
+			return;
+		}
+
+		try {
+			// Call the destroy method on the specific external account to disconnect it
+			await externalAccount.destroy();
+			toast({
+				title: "Account disconnected",
+				description: `Successfully disconnected your ${strategy === "oauth_google" ? "Google" : "GitHub"} account.`,
+			});
+		} catch {
+			toast({
+				variant: "destructive",
+				title: "Error",
+				description: `Failed to disconnect ${strategy === "oauth_google" ? "Google" : "GitHub"} account. Please try again.`,
+			});
+		}
+	};
+
 	if (!isLoaded || !user) return null;
 
 	return (
@@ -195,37 +249,30 @@ export default function Profile() {
 						{user.createdAt && new Date(user.createdAt).toLocaleDateString()}
 					</p>
 
-					<h3 className="text-lg">Password</h3>
-					<Button onClick={() => user.createPasswordResetFlow()}>
-						Change Password
-					</Button>
-
 					<h3 className="text-lg mt-4">Connected Accounts</h3>
 					<div className="flex gap-4">
-						<Button
-							onClick={() => user.connectAccount("oauth_google")}
-							disabled={user.externalAccounts.some(
-								(account) => account.provider === "google",
-							)}
-						>
-							{user.externalAccounts.some(
-								(account) => account.provider === "google",
-							)
-								? "Google Connected"
-								: "Connect Google"}
-						</Button>
-						<Button
-							onClick={() => user.connectAccount("oauth_github")}
-							disabled={user.externalAccounts.some(
-								(account) => account.provider === "github",
-							)}
-						>
-							{user.externalAccounts.some(
-								(account) => account.provider === "github",
-							)
-								? "GitHub Connected"
-								: "Connect GitHub"}
-						</Button>
+						{user.externalAccounts.some(
+							(account) => account.provider === "google",
+						) ? (
+							<Button onClick={() => handleDisconnectAccount("oauth_google")}>
+								Reauthorize Google
+							</Button>
+						) : (
+							<Button onClick={() => handleConnectAccount("oauth_google")}>
+								Connect Google
+							</Button>
+						)}
+						{user.externalAccounts.some(
+							(account) => account.provider === "github",
+						) ? (
+							<Button onClick={() => handleDisconnectAccount("oauth_github")}>
+								Reauthorize GitHub
+							</Button>
+						) : (
+							<Button onClick={() => handleConnectAccount("oauth_github")}>
+								Connect GitHub
+							</Button>
+						)}
 					</div>
 				</div>
 			</div>
