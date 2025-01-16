@@ -88,7 +88,6 @@ const Page = () => {
 	};
 
 	const getAccountDetails = (provider: "google" | "github"): string => {
-		console.log("User Accounts: ", user.externalAccounts);
 		const account = user.externalAccounts.find(
 			(account) => account.provider === provider,
 		);
