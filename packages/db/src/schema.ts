@@ -11,7 +11,7 @@ import {
 	timestamp,
 	unique,
 	uniqueIndex,
-	varchar,
+	uuid,
 } from "drizzle-orm/pg-core";
 
 export const activityType = pgEnum("ActivityType", ["TASK_EVENT", "COMMIT"]);
@@ -50,26 +50,10 @@ export const status = pgEnum("Status", [
 	"archived",
 ]);
 
-export const prismaMigrations = pgTable("_prisma_migrations", {
-	id: varchar({ length: 36 }).primaryKey().notNull(),
-	checksum: varchar({ length: 64 }).notNull(),
-	finishedAt: timestamp("finished_at", { withTimezone: true, mode: "string" }),
-	migrationName: varchar("migration_name", { length: 255 }).notNull(),
-	logs: text(),
-	rolledBackAt: timestamp("rolled_back_at", {
-		withTimezone: true,
-		mode: "string",
-	}),
-	startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
-		.defaultNow()
-		.notNull(),
-	appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
-});
-
-export const team = pgTable(
+export const teamsTable = pgTable(
 	"Team",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		name: text(),
 		identifier: text().notNull(),
 		workspaceId: text().notNull(),
@@ -91,17 +75,17 @@ export const team = pgTable(
 	],
 );
 
-export const branch = pgTable("Branch", {
-	id: text().primaryKey().notNull(),
+export const branchesTable = pgTable("Branch", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
 	taskId: text().notNull(),
 	githubRepoInfoId: text().notNull(),
 });
 
-export const githubRepoInfo = pgTable(
+export const githubRepoInfoTable = pgTable(
 	"GithubRepoInfo",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		repoName: text().notNull(),
 		owner: text().notNull(),
 	},
@@ -113,8 +97,8 @@ export const githubRepoInfo = pgTable(
 	],
 );
 
-export const sprint = pgTable("Sprint", {
-	id: text().primaryKey().notNull(),
+export const sprintsTable = pgTable("Sprint", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
 	startDate: timestamp({ precision: 3, mode: "string" }).notNull(),
 	endDate: timestamp({ precision: 3, mode: "string" }).notNull(),
@@ -127,8 +111,8 @@ export const sprint = pgTable("Sprint", {
 	description: text(),
 });
 
-export const notification = pgTable("Notification", {
-	id: text().primaryKey().notNull(),
+export const notificationsTable = pgTable("Notification", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	taskId: text().notNull(),
 	read: boolean().default(false).notNull(),
 	saved: boolean().default(false).notNull(),
@@ -145,10 +129,10 @@ export const notification = pgTable("Notification", {
 	userId: text().notNull(),
 });
 
-export const workspace = pgTable(
+export const workspacesTable = pgTable(
 	"Workspace",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
@@ -166,10 +150,10 @@ export const workspace = pgTable(
 	],
 );
 
-export const user = pgTable(
+export const usersTable = pgTable(
 	"User",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		username: text(),
 		email: text().notNull(),
@@ -197,8 +181,8 @@ export const user = pgTable(
 	],
 );
 
-export const comment = pgTable("Comment", {
-	id: text().primaryKey().notNull(),
+export const commentsTable = pgTable("Comment", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	comment: text().notNull(),
 	date: timestamp({ precision: 3, mode: "string" })
 		.default(sql`CURRENT_TIMESTAMP`)
@@ -207,10 +191,10 @@ export const comment = pgTable("Comment", {
 	authorId: text().notNull(),
 });
 
-export const task = pgTable(
+export const tasksTable = pgTable(
 	"tasks",
 	{
-		id: text("id").primaryKey(),
+		id: uuid("id").defaultRandom().primaryKey(),
 		authorId: text("author_id").notNull(),
 		title: text("title").notNull(),
 		description: text("description"),
@@ -227,31 +211,30 @@ export const task = pgTable(
 		parentId: text("parent_id"),
 		sprintId: text("sprint_id"),
 		order: integer("order").default(0).notNull(),
+		status: status("status").default("backlog").notNull(),
+		priority: priority("priority").default("noPriority").notNull(),
 	},
-	(table) => ({
-		workspaceIdentifierIdx: uniqueIndex("workspace_identifier_idx").on(
+	(table) => [
+		uniqueIndex("workspace_identifier_idx").on(
 			table.workspaceId,
 			table.identifier,
 		),
-		teamIdentifierIdx: uniqueIndex("team_identifier_idx").on(
-			table.teamId,
-			table.identifier,
-		),
-	}),
+		uniqueIndex("team_identifier_idx").on(table.teamId, table.identifier),
+	],
 );
 
-export const label = pgTable("Label", {
-	id: text().primaryKey().notNull(),
+export const labelsTable = pgTable("Label", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
 	description: text(),
 	color: text().notNull(),
 	workspaceId: text().notNull(),
 });
 
-export const universalTokenLink = pgTable(
+export const universalTokenLinksTable = pgTable(
 	"UniversalTokenLink",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		token: text().default("").notNull(),
 		isEnabled: boolean().default(true).notNull(),
 		workspaceId: text().notNull(),
@@ -264,10 +247,10 @@ export const universalTokenLink = pgTable(
 	],
 );
 
-export const workspaceRepositories = pgTable(
+export const workspaceRepositoriesTable = pgTable(
 	"WorkspaceRepositories",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		workspaceId: text().notNull(),
 		repoId: text().notNull(),
 	},
@@ -280,15 +263,15 @@ export const workspaceRepositories = pgTable(
 	],
 );
 
-export const project = pgTable("Project", {
-	id: text().primaryKey().notNull(),
+export const projectsTable = pgTable("Project", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
 	teamId: text(),
 	workspaceId: text(),
 });
 
-export const commit = pgTable("Commit", {
-	id: text().primaryKey().notNull(),
+export const commitsTable = pgTable("Commit", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	message: text().notNull(),
 	url: text().notNull(),
 	authorName: text(),
@@ -299,8 +282,8 @@ export const commit = pgTable("Commit", {
 	timestamp: timestamp({ precision: 3, mode: "string" }).notNull(),
 });
 
-export const taskEvent = pgTable("TaskEvent", {
-	id: text().primaryKey().notNull(),
+export const taskEventsTable = pgTable("TaskEvent", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp({ precision: 3, mode: "string" })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
@@ -309,10 +292,10 @@ export const taskEvent = pgTable("TaskEvent", {
 	authorId: text().notNull(),
 });
 
-export const savedFilter = pgTable(
+export const savedFiltersTable = pgTable(
 	"SavedFilter",
 	{
-		id: text().primaryKey().notNull(),
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		description: text().default(""),
 		filter: jsonb().array(),
@@ -334,8 +317,8 @@ export const savedFilter = pgTable(
 	],
 );
 
-export const retrospectiveItem = pgTable("RetrospectiveItem", {
-	id: text().primaryKey().notNull(),
+export const retrospectiveItemsTable = pgTable("RetrospectiveItem", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	content: text().notNull(),
 	wentWellSprintId: text(),
 	toImproveSprintId: text(),
@@ -349,7 +332,7 @@ export const retrospectiveItem = pgTable("RetrospectiveItem", {
 	authorId: text().notNull(),
 });
 
-export const blockedTasks = pgTable(
+export const blockedTasksTable = pgTable(
 	"_BlockedTasks",
 	{
 		a: text("A").notNull(),
@@ -361,7 +344,7 @@ export const blockedTasks = pgTable(
 	],
 );
 
-export const userWorkspace = pgTable(
+export const userWorkspacesTable = pgTable(
 	"UserWorkspace",
 	{
 		workspaceId: text().notNull(),
@@ -375,7 +358,7 @@ export const userWorkspace = pgTable(
 	],
 );
 
-export const userTeam = pgTable(
+export const userTeamsTable = pgTable(
 	"UserTeam",
 	{
 		teamId: text().notNull(),
@@ -388,3 +371,41 @@ export const userTeam = pgTable(
 		}),
 	],
 );
+
+function objEnum<T extends string>(enumValues: readonly T[]) {
+	const enumObject = {} as { [K in T]: K };
+	for (const enumValue of enumValues) {
+		enumObject[enumValue] = enumValue;
+	}
+	return enumObject;
+}
+
+export const Activity = objEnum(activityType.enumValues);
+export const Effort = objEnum(effort.enumValues);
+export const NotificationType = objEnum(notificationType.enumValues);
+export const Priority = objEnum(priority.enumValues);
+export const RetrospectiveItemType = objEnum(retrospectiveItemType.enumValues);
+export const SavedFilterType = objEnum(savedFilterType.enumValues);
+export const SprintStatus = objEnum(sprintStatus.enumValues);
+export const Status = objEnum(status.enumValues);
+export type Team = typeof teamsTable.$inferSelect;
+export type Branch = typeof branchesTable.$inferSelect;
+export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;
+export type Sprint = typeof sprintsTable.$inferSelect;
+export type Notification = typeof notificationsTable.$inferSelect;
+export type Workspace = typeof workspacesTable.$inferSelect;
+export type User = typeof usersTable.$inferSelect;
+export type Comment = typeof commentsTable.$inferSelect;
+export type Task = typeof tasksTable.$inferSelect;
+export type Label = typeof labelsTable.$inferSelect;
+export type UniversalTokenLink = typeof universalTokenLinksTable.$inferSelect;
+export type WorkspaceRepositories =
+	typeof workspaceRepositoriesTable.$inferSelect;
+export type Project = typeof projectsTable.$inferSelect;
+export type Commit = typeof commitsTable.$inferSelect;
+export type TaskEvent = typeof taskEventsTable.$inferSelect;
+export type SavedFilter = typeof savedFiltersTable.$inferSelect;
+export type RetrospectiveItem = typeof retrospectiveItemsTable.$inferSelect;
+export type BlockedTasks = typeof blockedTasksTable.$inferSelect;
+export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;
+export type UserTeam = typeof userTeamsTable.$inferSelect;

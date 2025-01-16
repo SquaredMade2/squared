@@ -1,16 +1,23 @@
 import { faker } from "@faker-js/faker";
 import type { Team, User, Workspace } from "@squared/db";
-import { Priority, PrismaClient, Status } from "@squared/db";
+import {
+	Priority,
+	Status,
+	commentsTable,
+	db,
+	eq,
+	labelsTable,
+	notificationsTable,
+	sql,
+	tasksTable,
+	teamsTable,
+	userTeamsTable,
+	userWorkspacesTable,
+	usersTable,
+	workspacesTable,
+} from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import "dotenv/config";
-
-const prisma = new PrismaClient({
-	datasources: {
-		db: {
-			url: process.env.POSTGRES_PRISMA_URL,
-		},
-	},
-});
 
 const logger = createCustomLogger("seed");
 
@@ -63,16 +70,17 @@ async function addMainUser() {
 	const externalId = process.env.CLERK_EXTERNAL_ID || faker.internet.password();
 	const username = name.replace(" ", "");
 
-	const user = await prisma.user.create({
-		data: {
+	const [user] = await db
+		.insert(usersTable)
+		.values({
 			name: name,
 			username,
 			email,
 			externalId,
 			onBoarding: false,
 			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
-		},
-	});
+		})
+		.returning();
 	return user;
 }
 
@@ -84,42 +92,32 @@ async function addUser() {
 	const email = faker.internet.email({ firstName, lastName });
 	const externalId = `user_${faker.internet.password()}`;
 
-	const user = await prisma.user.create({
-		data: {
+	const [user] = await db
+		.insert(usersTable)
+		.values({
 			name: fullName,
 			username,
 			email,
 			externalId,
 			onBoarding: false,
 			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
-		},
-	});
+		})
+		.returning();
+
 	return user;
 }
 
 async function addUserToWorkspace(user: User, workspace: Workspace) {
-	await prisma.workspace.update({
-		where: { id: workspace.id },
-		data: {
-			Users: {
-				create: {
-					userId: user.externalId,
-				},
-			},
-		},
+	await db.insert(userWorkspacesTable).values({
+		userId: user.externalId,
+		workspaceId: workspace.id,
 	});
 }
 
 async function addUserToTeam(user: User, team: Team) {
-	await prisma.team.update({
-		where: { id: team.id },
-		data: {
-			Users: {
-				create: {
-					userId: user.externalId,
-				},
-			},
-		},
+	await db.insert(userTeamsTable).values({
+		userId: user.externalId,
+		teamId: team.id,
 	});
 }
 
@@ -127,13 +125,14 @@ async function addWorkspace() {
 	const workspaceName = faker.internet.domainWord();
 	const workspaceCompanySize = faker.number.int({ max: 1000 });
 
-	const workspace = await prisma.workspace.create({
-		data: {
+	const [workspace] = await db
+		.insert(workspacesTable)
+		.values({
 			name: workspaceName,
 			companySize: workspaceCompanySize,
 			url: workspaceName.split(" ").join("-").toLowerCase(),
-		},
-	});
+		})
+		.returning();
 
 	const defaultLabels = [
 		{ name: "Feature", description: "New feature", color: "#FF5733" },
@@ -145,12 +144,12 @@ async function addWorkspace() {
 		{ name: "Design", description: "Design related task", color: "#33FFBD" },
 	];
 
-	await prisma.label.createMany({
-		data: defaultLabels.map((label) => ({
+	await db.insert(labelsTable).values(
+		defaultLabels.map((label) => ({
 			...label,
 			workspaceId: workspace.id,
 		})),
-	});
+	);
 
 	return workspace;
 }
@@ -159,17 +158,20 @@ async function addTeam(workspace: Workspace, user: User) {
 	const teamName = faker.internet.domainWord();
 	const teamIdentifier = faker.string.alpha({ length: 3, casing: "upper" });
 
-	const team = await prisma.team.create({
-		data: {
+	// Insert the team
+	const [team] = await db
+		.insert(teamsTable)
+		.values({
 			name: teamName,
 			identifier: teamIdentifier,
 			workspaceId: workspace.id,
-			Users: {
-				create: {
-					userId: user.externalId,
-				},
-			},
-		},
+		})
+		.returning();
+
+	// Insert the user-team relationship
+	await db.insert(userTeamsTable).values({
+		userId: user.externalId,
+		teamId: team.id,
 	});
 
 	return team;
@@ -201,23 +203,26 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Priority.low,
 	]);
 
-	const taskLabels = await prisma.label.findMany({
-		where: { workspaceId: workspace.id },
-	});
+	const taskLabels = await db
+		.select()
+		.from(labelsTable)
+		.where(eq(workspacesTable.id, workspace.id));
 
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);
 
-	const updatedWorkspace = await prisma.workspace.update({
-		where: { id: workspace.id },
-		data: { tasksCreated: { increment: 1 } },
-	});
+	const [updatedWorkspace] = await db
+		.update(workspacesTable)
+		.set({ tasksCreated: sql`${workspacesTable.tasksCreated} + 1` })
+		.where(eq(workspacesTable.id, workspace.id))
+		.returning();
 
 	const identifier = `${team.identifier}-${updatedWorkspace.tasksCreated + 1}`;
 	const randomLabelIds = getRandomLabels(taskLabels);
 
-	const task = await prisma.task.create({
-		data: {
+	const [task] = await db
+		.insert(tasksTable)
+		.values({
 			authorId: user.externalId,
 			title: taskTitle,
 			description: taskDescription,
@@ -230,8 +235,8 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			assigneeId: user.externalId,
 			labels: randomLabelIds,
 			workspaceId: workspace.id,
-		},
-	});
+		})
+		.returning();
 
 	await addNotification(user.externalId, task.id, workspace.id);
 
@@ -240,12 +245,10 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 
 async function addComment(userId: string, taskId: string) {
 	const commentContent = faker.lorem.words({ min: 3, max: 5 });
-	await prisma.comment.create({
-		data: {
-			comment: commentContent,
-			authorId: userId,
-			taskId: taskId,
-		},
+	await db.insert(commentsTable).values({
+		comment: commentContent,
+		authorId: userId,
+		taskId: taskId,
 	});
 }
 
@@ -254,32 +257,25 @@ async function addNotification(
 	taskId: string,
 	workspaceId: string,
 ) {
-	await prisma.notification.create({
-		data: {
-			userId,
-			taskId,
-			workspaceId,
-			read: faker.datatype.boolean(),
-			saved: faker.datatype.boolean(),
-			description: faker.lorem.sentence(),
-			createdAt: faker.date.past(),
-			updatedAt: faker.date.recent(),
-			type: faker.helpers.arrayElement([
-				"ASSIGNED",
-				"PARTICIPATING",
-				"MENTIONED",
-				"CREATED",
-			]),
-		},
+	await db.insert(notificationsTable).values({
+		userId,
+		taskId,
+		workspaceId,
+		read: faker.datatype.boolean(),
+		saved: faker.datatype.boolean(),
+		description: faker.lorem.sentence(),
+		createdAt: faker.date.past().toISOString(),
+		updatedAt: faker.date.recent().toISOString(),
+		dismissed: faker.datatype.boolean(),
+		type: faker.helpers.arrayElement([
+			"ASSIGNED",
+			"PARTICIPATING",
+			"MENTIONED",
+			"CREATED",
+		]),
 	});
 }
 
-seedDB()
-	.then(() => {
-		logger.info("Seed completed");
-		return prisma.$disconnect();
-	})
-	.catch((e) => {
-		logger.error("Error seeding database: %0", e);
-		return prisma.$disconnect();
-	});
+seedDB().catch((e) => {
+	logger.error("Error seeding database: %0", e);
+});

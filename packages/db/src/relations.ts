@@ -1,322 +1,331 @@
 import { relations } from "drizzle-orm/relations";
 import {
-	blockedTasks,
-	branch,
-	comment,
-	commit,
-	githubRepoInfo,
-	label,
-	notification,
-	project,
-	retrospectiveItem,
-	savedFilter,
-	sprint,
-	task,
-	taskEvent,
-	team,
-	universalTokenLink,
-	user,
-	userTeam,
-	userWorkspace,
-	workspace,
-	workspaceRepositories,
+	blockedTasksTable,
+	branchesTable,
+	commentsTable,
+	commitsTable,
+	githubRepoInfoTable,
+	labelsTable,
+	notificationsTable,
+	projectsTable,
+	retrospectiveItemsTable,
+	savedFiltersTable,
+	sprintsTable,
+	taskEventsTable,
+	tasksTable,
+	teamsTable,
+	universalTokenLinksTable,
+	userTeamsTable,
+	userWorkspacesTable,
+	usersTable,
+	workspaceRepositoriesTable,
+	workspacesTable,
 } from "./schema";
 
-export const teamRelations = relations(team, ({ one, many }) => ({
-	workspace: one(workspace, {
-		fields: [team.workspaceId],
-		references: [workspace.id],
+export const teamRelations = relations(teamsTable, ({ one, many }) => ({
+	workspace: one(workspacesTable, {
+		fields: [teamsTable.workspaceId],
+		references: [workspacesTable.id],
 	}),
-	sprints: many(sprint),
-	tasks: many(task),
-	projects: many(project),
-	savedFilters: many(savedFilter),
-	userTeams: many(userTeam),
+	sprints: many(sprintsTable),
+	tasks: many(tasksTable),
+	projects: many(projectsTable),
+	savedFilters: many(savedFiltersTable),
+	userTeams: many(userTeamsTable),
 }));
 
-export const workspaceRelations = relations(workspace, ({ many }) => ({
-	teams: many(team),
-	notifications: many(notification),
-	users: many(user),
-	tasks: many(task),
-	labels: many(label),
-	universalTokenLinks: many(universalTokenLink),
-	workspaceRepositories: many(workspaceRepositories),
-	projects: many(project),
-	savedFilters: many(savedFilter),
-	userWorkspaces: many(userWorkspace),
+export const workspaceRelations = relations(workspacesTable, ({ many }) => ({
+	teams: many(teamsTable),
+	notifications: many(notificationsTable),
+	users: many(usersTable),
+	tasks: many(tasksTable),
+	labels: many(labelsTable),
+	universalTokenLinks: many(universalTokenLinksTable),
+	workspaceRepositories: many(workspaceRepositoriesTable),
+	projects: many(projectsTable),
+	savedFilters: many(savedFiltersTable),
+	userWorkspaces: many(userWorkspacesTable),
 }));
 
-export const branchRelations = relations(branch, ({ one, many }) => ({
-	task: one(task, {
-		fields: [branch.taskId],
-		references: [task.id],
+export const branchRelations = relations(branchesTable, ({ one, many }) => ({
+	task: one(tasksTable, {
+		fields: [branchesTable.taskId],
+		references: [tasksTable.id],
 	}),
-	githubRepoInfo: one(githubRepoInfo, {
-		fields: [branch.githubRepoInfoId],
-		references: [githubRepoInfo.id],
+	githubRepoInfo: one(githubRepoInfoTable, {
+		fields: [branchesTable.githubRepoInfoId],
+		references: [githubRepoInfoTable.id],
 	}),
-	commits: many(commit),
+	commits: many(commitsTable),
 }));
 
-export const taskRelations = relations(task, ({ one, many }) => ({
-	branches: many(branch),
-	notifications: many(notification),
-	users: many(user, {
+export const taskRelations = relations(tasksTable, ({ one, many }) => ({
+	branches: many(branchesTable),
+	notifications: many(notificationsTable),
+	users: many(usersTable, {
 		relationName: "user_lastViewedTaskId_task_id",
 	}),
-	comments: many(comment),
-	task: one(task, {
-		fields: [task.parentId],
-		references: [task.id],
+	comments: many(commentsTable),
+	task: one(tasksTable, {
+		fields: [tasksTable.parentId],
+		references: [tasksTable.id],
 		relationName: "task_parentId_task_id",
 	}),
-	tasks: many(task, {
+	tasks: many(tasksTable, {
 		relationName: "task_parentId_task_id",
 	}),
-	team: one(team, {
-		fields: [task.teamId],
-		references: [team.id],
+	team: one(teamsTable, {
+		fields: [tasksTable.teamId],
+		references: [teamsTable.id],
 	}),
-	workspace: one(workspace, {
-		fields: [task.workspaceId],
-		references: [workspace.id],
+	workspace: one(workspacesTable, {
+		fields: [tasksTable.workspaceId],
+		references: [workspacesTable.id],
 	}),
-	sprint: one(sprint, {
-		fields: [task.sprintId],
-		references: [sprint.id],
+	sprint: one(sprintsTable, {
+		fields: [tasksTable.sprintId],
+		references: [sprintsTable.id],
 	}),
-	user_authorId: one(user, {
-		fields: [task.authorId],
-		references: [user.externalId],
+	user_authorId: one(usersTable, {
+		fields: [tasksTable.authorId],
+		references: [usersTable.externalId],
 		relationName: "task_authorId_user_externalId",
 	}),
-	user_assigneeId: one(user, {
-		fields: [task.assigneeId],
-		references: [user.externalId],
+	user_assigneeId: one(usersTable, {
+		fields: [tasksTable.assigneeId],
+		references: [usersTable.externalId],
 		relationName: "task_assigneeId_user_externalId",
 	}),
-	commits: many(commit),
-	taskEvents: many(taskEvent),
-	blockedTasks_a: many(blockedTasks, {
+	commits: many(commitsTable),
+	taskEvents: many(taskEventsTable),
+	blockedTasks_a: many(blockedTasksTable, {
 		relationName: "blockedTasks_a_task_id",
 	}),
-	blockedTasks_b: many(blockedTasks, {
+	blockedTasks_b: many(blockedTasksTable, {
 		relationName: "blockedTasks_b_task_id",
 	}),
 }));
 
 export const githubRepoInfoRelations = relations(
-	githubRepoInfo,
+	githubRepoInfoTable,
 	({ many }) => ({
-		branches: many(branch),
-		workspaceRepositories: many(workspaceRepositories),
+		branches: many(branchesTable),
+		workspaceRepositories: many(workspaceRepositoriesTable),
 	}),
 );
 
-export const sprintRelations = relations(sprint, ({ one, many }) => ({
-	team: one(team, {
-		fields: [sprint.teamId],
-		references: [team.id],
+export const sprintRelations = relations(sprintsTable, ({ one, many }) => ({
+	team: one(teamsTable, {
+		fields: [sprintsTable.teamId],
+		references: [teamsTable.id],
 	}),
-	tasks: many(task),
-	retrospectiveItems_wentWellSprintId: many(retrospectiveItem, {
+	tasks: many(tasksTable),
+	retrospectiveItems_wentWellSprintId: many(retrospectiveItemsTable, {
 		relationName: "retrospectiveItem_wentWellSprintId_sprint_id",
 	}),
-	retrospectiveItems_toImproveSprintId: many(retrospectiveItem, {
+	retrospectiveItems_toImproveSprintId: many(retrospectiveItemsTable, {
 		relationName: "retrospectiveItem_toImproveSprintId_sprint_id",
 	}),
-	retrospectiveItems_actionItemsSprintId: many(retrospectiveItem, {
+	retrospectiveItems_actionItemsSprintId: many(retrospectiveItemsTable, {
 		relationName: "retrospectiveItem_actionItemsSprintId_sprint_id",
 	}),
 }));
 
-export const notificationRelations = relations(notification, ({ one }) => ({
-	task: one(task, {
-		fields: [notification.taskId],
-		references: [task.id],
+export const notificationRelations = relations(
+	notificationsTable,
+	({ one }) => ({
+		task: one(tasksTable, {
+			fields: [notificationsTable.taskId],
+			references: [tasksTable.id],
+		}),
+		workspace: one(workspacesTable, {
+			fields: [notificationsTable.workspaceId],
+			references: [workspacesTable.id],
+		}),
+		user: one(usersTable, {
+			fields: [notificationsTable.userId],
+			references: [usersTable.externalId],
+		}),
 	}),
-	workspace: one(workspace, {
-		fields: [notification.workspaceId],
-		references: [workspace.id],
-	}),
-	user: one(user, {
-		fields: [notification.userId],
-		references: [user.externalId],
-	}),
-}));
+);
 
-export const userRelations = relations(user, ({ one, many }) => ({
-	notifications: many(notification),
-	workspace: one(workspace, {
-		fields: [user.defaultWorkspaceId],
-		references: [workspace.id],
+export const userRelations = relations(usersTable, ({ one, many }) => ({
+	notifications: many(notificationsTable),
+	workspace: one(workspacesTable, {
+		fields: [usersTable.defaultWorkspaceId],
+		references: [workspacesTable.id],
 	}),
-	task: one(task, {
-		fields: [user.lastViewedTaskId],
-		references: [task.id],
+	task: one(tasksTable, {
+		fields: [usersTable.lastViewedTaskId],
+		references: [tasksTable.id],
 		relationName: "user_lastViewedTaskId_task_id",
 	}),
-	comments: many(comment),
-	tasks_authorId: many(task, {
+	comments: many(commentsTable),
+	tasks_authorId: many(tasksTable, {
 		relationName: "task_authorId_user_externalId",
 	}),
-	tasks_assigneeId: many(task, {
+	tasks_assigneeId: many(tasksTable, {
 		relationName: "task_assigneeId_user_externalId",
 	}),
-	taskEvents: many(taskEvent),
-	savedFilters: many(savedFilter),
-	retrospectiveItems: many(retrospectiveItem),
-	userWorkspaces: many(userWorkspace),
-	userTeams: many(userTeam),
+	taskEvents: many(taskEventsTable),
+	savedFilters: many(savedFiltersTable),
+	retrospectiveItems: many(retrospectiveItemsTable),
+	userWorkspaces: many(userWorkspacesTable),
+	userTeams: many(userTeamsTable),
 }));
 
-export const commentRelations = relations(comment, ({ one }) => ({
-	task: one(task, {
-		fields: [comment.taskId],
-		references: [task.id],
+export const commentRelations = relations(commentsTable, ({ one }) => ({
+	task: one(tasksTable, {
+		fields: [commentsTable.taskId],
+		references: [tasksTable.id],
 	}),
-	user: one(user, {
-		fields: [comment.authorId],
-		references: [user.externalId],
+	user: one(usersTable, {
+		fields: [commentsTable.authorId],
+		references: [usersTable.externalId],
 	}),
 }));
 
-export const labelRelations = relations(label, ({ one }) => ({
-	workspace: one(workspace, {
-		fields: [label.workspaceId],
-		references: [workspace.id],
+export const labelRelations = relations(labelsTable, ({ one }) => ({
+	workspace: one(workspacesTable, {
+		fields: [labelsTable.workspaceId],
+		references: [workspacesTable.id],
 	}),
 }));
 
 export const universalTokenLinkRelations = relations(
-	universalTokenLink,
+	universalTokenLinksTable,
 	({ one }) => ({
-		workspace: one(workspace, {
-			fields: [universalTokenLink.workspaceId],
-			references: [workspace.id],
+		workspace: one(workspacesTable, {
+			fields: [universalTokenLinksTable.workspaceId],
+			references: [workspacesTable.id],
 		}),
 	}),
 );
 
 export const workspaceRepositoriesRelations = relations(
-	workspaceRepositories,
+	workspaceRepositoriesTable,
 	({ one }) => ({
-		workspace: one(workspace, {
-			fields: [workspaceRepositories.workspaceId],
-			references: [workspace.id],
+		workspace: one(workspacesTable, {
+			fields: [workspaceRepositoriesTable.workspaceId],
+			references: [workspacesTable.id],
 		}),
-		githubRepoInfo: one(githubRepoInfo, {
-			fields: [workspaceRepositories.repoId],
-			references: [githubRepoInfo.id],
+		githubRepoInfo: one(githubRepoInfoTable, {
+			fields: [workspaceRepositoriesTable.repoId],
+			references: [githubRepoInfoTable.id],
 		}),
 	}),
 );
 
-export const projectRelations = relations(project, ({ one }) => ({
-	team: one(team, {
-		fields: [project.teamId],
-		references: [team.id],
+export const projectRelations = relations(projectsTable, ({ one }) => ({
+	team: one(teamsTable, {
+		fields: [projectsTable.teamId],
+		references: [teamsTable.id],
 	}),
-	workspace: one(workspace, {
-		fields: [project.workspaceId],
-		references: [workspace.id],
-	}),
-}));
-
-export const commitRelations = relations(commit, ({ one }) => ({
-	branch: one(branch, {
-		fields: [commit.branchId],
-		references: [branch.id],
-	}),
-	task: one(task, {
-		fields: [commit.taskId],
-		references: [task.id],
+	workspace: one(workspacesTable, {
+		fields: [projectsTable.workspaceId],
+		references: [workspacesTable.id],
 	}),
 }));
 
-export const taskEventRelations = relations(taskEvent, ({ one }) => ({
-	task: one(task, {
-		fields: [taskEvent.taskId],
-		references: [task.id],
+export const commitRelations = relations(commitsTable, ({ one }) => ({
+	branch: one(branchesTable, {
+		fields: [commitsTable.branchId],
+		references: [branchesTable.id],
 	}),
-	user: one(user, {
-		fields: [taskEvent.authorId],
-		references: [user.externalId],
+	task: one(tasksTable, {
+		fields: [commitsTable.taskId],
+		references: [tasksTable.id],
 	}),
 }));
 
-export const savedFilterRelations = relations(savedFilter, ({ one }) => ({
-	workspace: one(workspace, {
-		fields: [savedFilter.workspaceId],
-		references: [workspace.id],
+export const taskEventRelations = relations(taskEventsTable, ({ one }) => ({
+	task: one(tasksTable, {
+		fields: [taskEventsTable.taskId],
+		references: [tasksTable.id],
 	}),
-	team: one(team, {
-		fields: [savedFilter.teamId],
-		references: [team.id],
+	user: one(usersTable, {
+		fields: [taskEventsTable.authorId],
+		references: [usersTable.externalId],
 	}),
-	user: one(user, {
-		fields: [savedFilter.authorId],
-		references: [user.externalId],
+}));
+
+export const savedFilterRelations = relations(savedFiltersTable, ({ one }) => ({
+	workspace: one(workspacesTable, {
+		fields: [savedFiltersTable.workspaceId],
+		references: [workspacesTable.id],
+	}),
+	team: one(teamsTable, {
+		fields: [savedFiltersTable.teamId],
+		references: [teamsTable.id],
+	}),
+	user: one(usersTable, {
+		fields: [savedFiltersTable.authorId],
+		references: [usersTable.externalId],
 	}),
 }));
 
 export const retrospectiveItemRelations = relations(
-	retrospectiveItem,
+	retrospectiveItemsTable,
 	({ one }) => ({
-		sprint_wentWellSprintId: one(sprint, {
-			fields: [retrospectiveItem.wentWellSprintId],
-			references: [sprint.id],
+		sprint_wentWellSprintId: one(sprintsTable, {
+			fields: [retrospectiveItemsTable.wentWellSprintId],
+			references: [sprintsTable.id],
 			relationName: "retrospectiveItem_wentWellSprintId_sprint_id",
 		}),
-		sprint_toImproveSprintId: one(sprint, {
-			fields: [retrospectiveItem.toImproveSprintId],
-			references: [sprint.id],
+		sprint_toImproveSprintId: one(sprintsTable, {
+			fields: [retrospectiveItemsTable.toImproveSprintId],
+			references: [sprintsTable.id],
 			relationName: "retrospectiveItem_toImproveSprintId_sprint_id",
 		}),
-		sprint_actionItemsSprintId: one(sprint, {
-			fields: [retrospectiveItem.actionItemsSprintId],
-			references: [sprint.id],
+		sprint_actionItemsSprintId: one(sprintsTable, {
+			fields: [retrospectiveItemsTable.actionItemsSprintId],
+			references: [sprintsTable.id],
 			relationName: "retrospectiveItem_actionItemsSprintId_sprint_id",
 		}),
-		user: one(user, {
-			fields: [retrospectiveItem.authorId],
-			references: [user.externalId],
+		user: one(usersTable, {
+			fields: [retrospectiveItemsTable.authorId],
+			references: [usersTable.externalId],
 		}),
 	}),
 );
 
-export const blockedTasksRelations = relations(blockedTasks, ({ one }) => ({
-	task_a: one(task, {
-		fields: [blockedTasks.a],
-		references: [task.id],
-		relationName: "blockedTasks_a_task_id",
+export const blockedTasksRelations = relations(
+	blockedTasksTable,
+	({ one }) => ({
+		task_a: one(tasksTable, {
+			fields: [blockedTasksTable.a],
+			references: [tasksTable.id],
+			relationName: "blockedTasks_a_task_id",
+		}),
+		task_b: one(tasksTable, {
+			fields: [blockedTasksTable.b],
+			references: [tasksTable.id],
+			relationName: "blockedTasks_b_task_id",
+		}),
 	}),
-	task_b: one(task, {
-		fields: [blockedTasks.b],
-		references: [task.id],
-		relationName: "blockedTasks_b_task_id",
-	}),
-}));
+);
 
-export const userWorkspaceRelations = relations(userWorkspace, ({ one }) => ({
-	workspace: one(workspace, {
-		fields: [userWorkspace.workspaceId],
-		references: [workspace.id],
+export const userWorkspaceRelations = relations(
+	userWorkspacesTable,
+	({ one }) => ({
+		workspace: one(workspacesTable, {
+			fields: [userWorkspacesTable.workspaceId],
+			references: [workspacesTable.id],
+		}),
+		user: one(usersTable, {
+			fields: [userWorkspacesTable.userId],
+			references: [usersTable.externalId],
+		}),
 	}),
-	user: one(user, {
-		fields: [userWorkspace.userId],
-		references: [user.externalId],
-	}),
-}));
+);
 
-export const userTeamRelations = relations(userTeam, ({ one }) => ({
-	team: one(team, {
-		fields: [userTeam.teamId],
-		references: [team.id],
+export const userTeamRelations = relations(userTeamsTable, ({ one }) => ({
+	team: one(teamsTable, {
+		fields: [userTeamsTable.teamId],
+		references: [teamsTable.id],
 	}),
-	user: one(user, {
-		fields: [userTeam.userId],
-		references: [user.externalId],
+	user: one(usersTable, {
+		fields: [userTeamsTable.userId],
+		references: [usersTable.externalId],
 	}),
 }));
