@@ -38,6 +38,9 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const copyTaskIdentifier = () => {
 		navigator.clipboard.writeText(identifier);
 	};
+	const copyTaskUrl = () => {
+		navigator.clipboard.writeText(`${currentWindowOrigin}/${workspace?.url}/task/${task.identifier}/${formatUrl(task.title)}`)
+	}
 
 	const handleDuplicate = () => {
 		setNewTaskData(task);
@@ -88,7 +91,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 				<ContextMenuItem onClick={copyTaskIdentifier}>
 					Copy Task ID
 				</ContextMenuItem>
-				<ContextMenuItem>
+				<ContextMenuItem onClick={copyTaskUrl}>
 					Copy Task Url
 				</ContextMenuItem>
 
