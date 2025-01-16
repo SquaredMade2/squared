@@ -24,6 +24,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
 		useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
+	const currentWindowOrigin = window.location.origin;
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
