@@ -86,6 +86,27 @@ const Page = () => {
 			});
 		}
 	};
+
+	const getAccountDetails = (provider: "google" | "github"): string => {
+		console.log("User Accounts: ", user.externalAccounts);
+		const account = user.externalAccounts.find(
+			(account) => account.provider === provider,
+		);
+		let returnValue: string | undefined = "";
+		if (account) {
+			returnValue =
+				provider === "google" ? account.emailAddress : account.username;
+		}
+		return returnValue ?? "";
+	};
+
+	const hasGoogle = user.externalAccounts.some(
+		(account) => account.provider === "google",
+	);
+	const hasGithub = user.externalAccounts.some(
+		(account) => account.provider === "github",
+	);
+
 	return (
 		<div className="container py-10">
 			<div className="max-w-4xl mx-auto space-y-8">
@@ -108,11 +129,14 @@ const Page = () => {
 										Connect your Google account for easier sign-in and access to
 										Google services
 									</p>
+									{hasGoogle && (
+										<p className="text-sm font-medium mt-1 text-foreground/80">
+											Connected: {getAccountDetails("google")}
+										</p>
+									)}
 								</div>
 							</div>
-							{user.externalAccounts.some(
-								(account) => account.provider === "google",
-							) ? (
+							{hasGoogle ? (
 								<Button
 									variant="outline"
 									onClick={() => handleDisconnectAccount("google")}
@@ -131,18 +155,21 @@ const Page = () => {
 						<Separator />
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-4">
-								<Github className="size-8" />
+								<Github className="size-8 mr-2" />
 								<div>
 									<h3 className="text-lg font-medium">GitHub</h3>
 									<p className="text-sm text-muted-foreground">
 										Connect your GitHub account to access repositories and
 										collaborate on projects
 									</p>
+									{hasGithub && (
+										<p className="text-sm font-medium mt-1 text-foreground/80">
+											Connected: {getAccountDetails("github")}
+										</p>
+									)}
 								</div>
 							</div>
-							{user.externalAccounts.some(
-								(account) => account.provider === "github",
-							) ? (
+							{hasGithub ? (
 								<Button
 									variant="outline"
 									onClick={() => handleDisconnectAccount("github")}
