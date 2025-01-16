@@ -203,7 +203,8 @@ export class EventService implements EventRpc {
 						formattedKey === "Title" ||
 						formattedKey === "Description" ||
 						formattedKey === "Labels"
-							? `Updated the ${key}`
+							? // Note update labels to show difference after Drizzle update
+								`Updated the ${key}`
 							: `${formattedKey} changed from ${formattedOldValue} to ${formattedNewValue}`;
 					return diffString;
 				}
