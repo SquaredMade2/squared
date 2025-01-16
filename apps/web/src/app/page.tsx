@@ -18,7 +18,8 @@ const HomePage = () => {
 				router.push("/join");
 				return res;
 			}
-			return router.push(`/${res.url}`);
+			router.push(`/${res.url}`);
+			return null;
 		},
 	});
 
