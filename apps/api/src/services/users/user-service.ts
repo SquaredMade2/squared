@@ -100,14 +100,19 @@ export class UserService implements UserRpc {
 				include: {
 					user: {
 						select: {
-							id: true,
+							externalId: true,
 							name: true,
 							avatarUrl: true,
 						},
 					},
 				},
 			})
-			.then((uw) => uw.map((u) => u.user));
+			.then((uw) =>
+				uw.map((u) => {
+					const { externalId, name, avatarUrl } = u.user;
+					return { id: externalId, name, avatarUrl };
+				}),
+			);
 	}
 
 	async getUserRepositories({ userId }: { userId: string }) {

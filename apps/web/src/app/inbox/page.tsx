@@ -110,7 +110,7 @@ export default function InboxPage() {
 			}
 		};
 		fetchAvatars();
-	}, [user]);
+	}, [user, workspace]);
 
 	useEffect(() => {
 		if (pathname === "/inbox") {
