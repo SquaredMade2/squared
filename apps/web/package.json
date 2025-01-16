@@ -70,6 +70,7 @@
 		"zustand": "^5.0.0"
 	},
 	"devDependencies": {
+		"@clerk/types": "^4.40.3",
 		"@jest/globals": "^29.7.0",
 		"@repo/typescript-config": "workspace:*",
 		"@squared/db": "workspace:*",

@@ -4,12 +4,15 @@ import { GoogleIcon } from "@/components/Svg";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { Github } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
 	const { user, isLoaded } = useUser();
 	const { toast } = useToast();
+	const router = useRouter();
 
 	if (!isLoaded || !user) return null;
 
@@ -18,23 +21,31 @@ const Page = () => {
 	) => {
 		if (!user) return;
 		try {
-			await user.createExternalAccount({
+			const externalAccount = await user.createExternalAccount({
 				strategy,
 				redirectUrl: window.location.href,
 			});
+			const externalVerificationUrl =
+				externalAccount.verification?.externalVerificationRedirectURL;
+			if (externalVerificationUrl) {
+				router.push(externalVerificationUrl.href);
+			} else {
+				throw new Error("External verification URL not found");
+			}
+
 			toast({
 				title: "Account connected",
 				description: `Successfully connected your ${
 					strategy === "oauth_google" ? "Google" : "GitHub"
 				} account.`,
 			});
-		} catch {
+		} catch (error) {
 			toast({
 				variant: "destructive",
 				title: "Error",
 				description: `Failed to connect ${
 					strategy === "oauth_google" ? "Google" : "GitHub"
-				} account. Please try again.`,
+				} account. ${parseError(error, "Please try again.")}`,
 			});
 		}
 	};
