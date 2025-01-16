@@ -164,7 +164,7 @@ function SettingsNavbarContent() {
 									))}
 								</Accordion>
 								<div className="ml-6">
-									<AddTeamButton />
+									<AddTeamButton workspaceUrl={workspace?.url ?? ""} />
 								</div>
 							</div>
 						</div>

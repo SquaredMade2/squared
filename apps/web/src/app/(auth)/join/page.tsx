@@ -31,7 +31,6 @@ const Join = () => {
 		"password",
 		"sign-up",
 		"welcome",
-		"settings",
 	];
 	const { isLoaded, isSignedIn, user: clerkUser } = useUser();
 
