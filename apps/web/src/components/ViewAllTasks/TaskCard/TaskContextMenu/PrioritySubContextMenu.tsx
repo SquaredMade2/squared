@@ -10,7 +10,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
-import { useTaskStore, useUserStore } from "@/store";
+import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
@@ -19,7 +19,6 @@ import type { ContextMenuProps } from "./interfaces";
 const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 	const { toast } = useToast();
 	const { updateTask } = useTaskStore((state) => state);
-	const user = useUserStore((state) => state.user);
 
 	const { mutate: updatePriority } = useMutation({
 		mutationKey: ["updateTaskPriority", task.id],
@@ -27,7 +26,6 @@ const PrioritySubContextMenu = ({ task }: ContextMenuProps) => {
 			const res = await client.task.updatePriority.$post({
 				taskId: task.id,
 				priority,
-				updaterId: user?.id || "",
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);

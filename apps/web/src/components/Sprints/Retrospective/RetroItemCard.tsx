@@ -21,10 +21,10 @@ export const RetroItemCard = ({
 	onLikeItem: (itemId: string, userId: string) => void;
 }) => {
 	const { users } = useUserStore((state) => state);
-	const author = users.find((u) => u.id === item.authorId);
+	const author = users.find((u) => u.externalId === item.authorId);
 
 	const likedByUsers = item.likes
-		.map((id) => users.find((u) => u.id === id))
+		.map((id) => users.find((u) => u.externalId === id))
 		.map((u) => u?.name)
 		.join(", ");
 

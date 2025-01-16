@@ -61,7 +61,9 @@
   },
   "ignore": [
     "**/node_modules/**",
-    "**/dist/**"
+    "**/dist/**",
+    "**/gen/**",
+    "**/ui/**"
   ],
   "ignoreDependencies": [
     "turbo-ignore",

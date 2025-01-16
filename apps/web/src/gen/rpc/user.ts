@@ -11,20 +11,16 @@ export type OnBoardUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 };
 
 export type UpdateUserRequest = {
@@ -38,20 +34,16 @@ export type UpdateUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 };
 
 export type UpdateUserAvatarRequest = {
@@ -64,20 +56,16 @@ export type UpdateUserAvatarResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 };
 
 export type UpdateUserNotificationsRequest = {
@@ -90,20 +78,16 @@ export type UpdateUserNotificationsResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 };
 
 export type GetUserRequest = {
@@ -115,20 +99,16 @@ export type GetUserResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 } | null;
 
 export type GetWorkspaceUsersRequest = {
@@ -140,20 +120,16 @@ export type GetWorkspaceUsersResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 }[];
 
 export type GetTeamUsersRequest = {
@@ -165,20 +141,16 @@ export type GetTeamUsersResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 }[];
 
 export type GetUserAvatarsRequest = {
@@ -224,21 +196,40 @@ export type SetLastViewedTaskResponse = {
 	createdAt: Date;
 	defaultWorkspaceId: string | null;
 	email: string;
-	externalId: string | null;
-	githubId: string | null;
+	externalId: string;
 	githubUsername: string | null;
-	googleId: string | null;
 	id: string;
 	lastLogin: Date;
 	lastViewedTaskId: string | null;
 	name: string;
 	onBoarding: boolean;
-	password: string | null;
 	savedNotificationIds: string[];
 	subscribedTasks: string[];
 	username: string | null;
-	verified: boolean;
 };
+
+export type GetDefaultWorkspaceRequest = {
+	userId: string;
+};
+
+export type GetDefaultWorkspaceResponse = {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	defaultView: string | null;
+	id: string;
+	name: string;
+	tasksCreated: number;
+	universalTokenLinkId: string | null;
+	url: string;
+} | null;
+
+export type IsUserAuthorizedRequest = {
+	teamIdentifier: string;
+	userId: string;
+};
+
+export type IsUserAuthorizedResponse = boolean;
 
 /**
  * user service
@@ -353,5 +344,25 @@ export class UserService extends RPCContextClient {
 		req: SetLastViewedTaskRequest,
 	): Promise<SetLastViewedTaskResponse> {
 		return this.request(ctx, "setLastViewedTask", req);
+	}
+
+	/**
+	 * getDefaultWorkspace method
+	 */
+	getDefaultWorkspace(
+		ctx: Context,
+		req: GetDefaultWorkspaceRequest,
+	): Promise<GetDefaultWorkspaceResponse> {
+		return this.request(ctx, "getDefaultWorkspace", req);
+	}
+
+	/**
+	 * isUserAuthorized method
+	 */
+	isUserAuthorized(
+		ctx: Context,
+		req: IsUserAuthorizedRequest,
+	): Promise<IsUserAuthorizedResponse> {
+		return this.request(ctx, "isUserAuthorized", req);
 	}
 }

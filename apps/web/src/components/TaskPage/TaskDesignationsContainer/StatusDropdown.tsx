@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { eventService } from "@/lib/services";
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
+import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status, TaskEvent } from "@squared/db";
@@ -20,9 +20,9 @@ import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask } = useTaskStore((state) => state);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
-	const user = useUserStore((state) => state.user);
 
 	if (!currentTask) return null;
 	const { id: taskId, status: sidebarStatus } = currentTask;
@@ -39,7 +39,6 @@ const StatusDropdown = () => {
 				.$post({
 					taskId,
 					status: newStatus,
-					updaterId: user?.id || "",
 				})
 				.then((res) => res.json());
 			setCurrentTask({ ...currentTask, status: newStatus });
@@ -76,7 +75,16 @@ const StatusDropdown = () => {
 			</SelectTrigger>
 			<SelectContent>
 				{statusOptions.map((status) => (
-					<SelectItem key={status} value={status}>
+					<SelectItem
+						key={status}
+						value={status}
+						disabled={
+							!!currentTaskBlockedBy.length &&
+							(status === "done" ||
+								status === "inReview" ||
+								status === "inProgress")
+						}
+					>
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
 								<StatusIcon status={status} />

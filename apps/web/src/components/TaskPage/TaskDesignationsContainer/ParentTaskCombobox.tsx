@@ -29,7 +29,6 @@ const ParentTaskCombobox = () => {
 			if (!user) throw new Error("User not found");
 			const res = await client.task.updateParent.$post({
 				taskId: taskId,
-				userId: user.id,
 				parentId,
 			});
 			return res.json();

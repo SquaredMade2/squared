@@ -1,5 +1,5 @@
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Priority, Status } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -17,16 +17,13 @@ type CreateTaskInput = {
 };
 
 export const useCreateTask = () => {
-	const user = useUserStore((state) => state.user);
 	const { createTask: addTask } = useTaskStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const queryClient = useQueryClient();
 
 	const createTaskMutation = useMutation({
 		mutationFn: async (input: CreateTaskInput) => {
-			if (!user) throw new Error("User not found");
 			const res = await client.task.createTask.$post({
-				userId: user.id,
 				title: input.title,
 				description: input.description,
 				status: input.status,

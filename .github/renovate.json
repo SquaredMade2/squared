@@ -6,11 +6,10 @@
     "schedule": [
         "on the first day of the month"
     ],
-    "prConcurrentLimit": 20,
+    "prConcurrentLimit": 50,
     "labels": [
         "Updates"
     ],
-    "commitMessagePrefix": "[skip vercel]",
     "packageRules": [
         {
             "matchManagers": [

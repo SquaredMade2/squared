@@ -19,10 +19,10 @@ import {
 	useModalStore,
 	useTaskStore,
 	useTeamStore,
-	useUserStore,
 	useWorkspaceStore,
 } from "@/store";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccordionTrigger } from "@repo/ui/accordion";
 import { TODO } from "@squared/context";
@@ -42,11 +42,10 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const { toast } = useToast();
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
-	const user = useUserStore((state) => state.user);
+	const { user } = useUser();
 	const { team } = useTeamStore((state) => state);
-	const { tasks, subtasks, createTask, setSubtasks } = useTaskStore(
-		(state) => state,
-	);
+	const { tasks, subtasks, createTask, setSubtasks } = useTaskStore((state) => state);
+
 	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
 	const formSchema = z.object({
@@ -99,7 +98,6 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			});
 			return;
 		}
-
 		try {
 			const { transformedInput: transformedTitle } =
 				transformingMentionInputs(title);
@@ -123,13 +121,10 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 				updatedAt: new Date(),
 				parentId: parentId,
 			};
-
 			const createdTask = await taskService.createTask(TODO, newTask);
 			createdTask.order = subtasks.length + 1;
 			createTask(createdTask);
-
-			setSubtasks([...subtasks, createdTask]);
-
+      setSubtasks([...subtasks, createdTask]);
 			setWorkspace({
 				...workspace,
 				tasksCreated: workspace.tasksCreated + 1,

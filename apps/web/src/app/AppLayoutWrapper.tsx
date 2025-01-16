@@ -9,13 +9,13 @@ import {
 import SearchCommand from "@/components/SearchCommand";
 import { Toaster } from "@/components/ui/toaster";
 import { SquaredStoreProvider } from "@/store";
+import { ClerkProvider } from "@clerk/nextjs";
 import {
 	QueryCache,
 	QueryClient,
 	QueryClientProvider,
 } from "@tanstack/react-query";
 import { HTTPException } from "hono/http-exception";
-import { SessionProvider } from "next-auth/react";
 import type { ThemeProviderProps } from "next-themes";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useState } from "react";
@@ -46,7 +46,7 @@ export default function ClientLayoutWrapper({
 	);
 	return (
 		<QueryClientProvider client={queryClient}>
-			<SessionProvider>
+			<ClerkProvider>
 				<ErrorBoundary>
 					<SquaredStoreProvider>
 						<ThemeProvider
@@ -66,7 +66,7 @@ export default function ClientLayoutWrapper({
 						<Toaster />
 					</SquaredStoreProvider>
 				</ErrorBoundary>
-			</SessionProvider>
+			</ClerkProvider>
 		</QueryClientProvider>
 	);
 }

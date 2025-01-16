@@ -47,7 +47,7 @@ const ViewsDetailSidebar = ({
 	const allLabels = workspace?.Labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-	const author = users.find((u) => u.id === filter.authorId);
+	const author = users.find((u) => u.externalId === filter.authorId);
 
 	const getAssigneeCount = () => {
 		const assigneeCount: Record<string, number> = {};

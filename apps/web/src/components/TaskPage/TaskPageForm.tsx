@@ -47,7 +47,6 @@ export const TaskPageForm = () => {
 			if (!task || !user) throw new Error("Task or user not found");
 			const res = await client.task.updateMetadata.$post({
 				taskId: task.id,
-				userId: user.id,
 				...data,
 			});
 			return res.json();

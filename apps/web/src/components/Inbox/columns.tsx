@@ -133,7 +133,7 @@ export const columns: ColumnDef<
 				(table.options.meta as { hoveredRowId: string | null })
 					?.hoveredRowId === row.id;
 
-			const { updateUser, user, setUser } = useUserStore((state) => state);
+			const { user } = useUserStore((state) => state);
 			const saved = !!user?.savedNotificationIds?.includes(row.original.id);
 			const { setNotifications } = useEventStore((state) => state);
 
@@ -165,22 +165,15 @@ export const columns: ColumnDef<
 			};
 
 			const handleSave = async () => {
-				const currentUser = user;
-				let response = user;
-				if (currentUser) {
-					setUser(currentUser);
-					response = await userService.updateUserNotifications(TODO, {
-						userId: currentUser.id,
+				if (user) {
+					await userService.updateUserNotifications(TODO, {
+						userId: user.externalId,
 						notificationIds: saved
 							? user.savedNotificationIds?.filter(
 									(id) => id !== row.original.id,
 								)
 							: [...(user.savedNotificationIds || []), row.original.id],
 					});
-				}
-				if (response) {
-					setUser(response);
-					updateUser(response);
 				}
 			};
 
