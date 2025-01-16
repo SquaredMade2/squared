@@ -333,6 +333,7 @@ export type GetWorkspaceUsersWithRolesResponse = {
 
 
 export type UpdateUsersRoleRequest = {
+	callerId: string;
 	newRole: "owner" | "admin" | "member";
 	userId: string;
 	workspaceId: string;

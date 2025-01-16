@@ -97,6 +97,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 	},
 	updateUsersRole: {
 		input: z.object({
+			callerId: z.string(),
 			userId: z.string(),
 			workspaceId: z.string(),
 			newRole: z.enum(["owner", "admin", "member"]),

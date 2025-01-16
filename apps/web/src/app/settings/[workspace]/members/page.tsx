@@ -16,6 +16,14 @@ export default function WorkspaceMembersPage() {
 	const { loading: userLoading } = useUsers();
 	const [pageUsers, setPageUsers] = useState<MemberWithRole[]>([]);
 
+	const fetchWorkspaceUsersWithRoles = async () => {
+		if (!workspace) return;
+		const users = await userService.getWorkspaceUsersWithRoles(TODO, {
+			workspaceId: workspace?.id,
+		});
+		setPageUsers(users);
+	};
+
 	const enhancedColumns = columns.map((col) => ({
 		...col,
 		meta: {
@@ -23,21 +31,13 @@ export default function WorkspaceMembersPage() {
 			pageId: workspace?.id,
 			setPageUsers,
 			membersWithRoles: pageUsers,
+			fetchWorkspaceUsersWithRoles: fetchWorkspaceUsersWithRoles,
 		},
 	}));
 
-	const fetchTeamUsers = async () => {
-		if (!workspace) return;
-		const users = await userService.getWorkspaceUsersWithRoles(TODO, {
-			workspaceId: workspace?.id,
-		});
-		console.log("users", users);
-		setPageUsers(users);
-	};
-
 	useEffect(() => {
-		fetchTeamUsers();
-	}, []);
+		fetchWorkspaceUsersWithRoles();
+	}, [workspace]);
 
 	if (workspaceLoading || userLoading) {
 		return (
@@ -51,13 +51,6 @@ export default function WorkspaceMembersPage() {
 
 	return (
 		<MemberSettingsWrapper page="workspace">
-			{/* <button
-				onClick={fetchTeamUsers}
-				className="p-2 border rounded"
-				type="button"
-			>
-				FETCH WORKSPACE USERS
-			</button> */}
 			<MembersPage
 				columns={enhancedColumns}
 				members={pageUsers}

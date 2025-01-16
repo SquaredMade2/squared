@@ -39,6 +39,7 @@ export interface UserRpc {
 		(User & { role: "member" | "admin" | "owner" })[]
 	>;
 	updateUsersRole: (args: {
+		callerId: string;
 		userId: string;
 		workspaceId: string;
 		newRole: "owner" | "admin" | "member";
