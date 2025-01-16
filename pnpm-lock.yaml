@@ -100,7 +100,7 @@ importers:
         version: 11.0.5
       zod:
         specifier: ^3.23.8
-        version: 3.23.8
+        version: 3.24.1
     devDependencies:
       '@jest/globals':
         specifier: ^29.7.0
@@ -286,7 +286,7 @@ importers:
         version: 11.0.5
       zod:
         specifier: ^3.23.8
-        version: 3.23.8
+        version: 3.24.1
       zustand:
         specifier: ^5.0.0
         version: 5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.4.0(react@18.3.1))
@@ -449,7 +449,7 @@ importers:
         version: 2.5.5
       zod:
         specifier: ^3.23.8
-        version: 3.23.8
+        version: 3.24.1
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -578,7 +578,7 @@ importers:
         version: 4.21.0
       zod:
         specifier: ^3.23.8
-        version: 3.23.8
+        version: 3.24.1
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -7618,8 +7618,8 @@ packages:
     peerDependencies:
       zod: ^3.18.0
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+  zod@3.24.1:
+    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
 
   zustand@5.0.1:
     resolution: {integrity: sha512-pRET7Lao2z+n5R/HduXMio35TncTlSW68WsYBq2Lg1ASspsNGjpwLAsij3RpouyV6+kHMwwwzP0bZPD70/Jx/w==}
@@ -13076,8 +13076,8 @@ snapshots:
       strip-json-comments: 5.0.1
       summary: 2.1.0
       typescript: 5.7.2
-      zod: 3.23.8
-      zod-validation-error: 3.4.0(zod@3.23.8)
+      zod: 3.24.1
+      zod-validation-error: 3.4.0(zod@3.24.1)
 
   kuler@2.0.0: {}
 
@@ -16098,11 +16098,11 @@ snapshots:
     optionalDependencies:
       commander: 9.5.0
 
-  zod-validation-error@3.4.0(zod@3.23.8):
+  zod-validation-error@3.4.0(zod@3.24.1):
     dependencies:
-      zod: 3.23.8
+      zod: 3.24.1
 
-  zod@3.23.8: {}
+  zod@3.24.1: {}
 
   zustand@5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1)(use-sync-external-store@1.4.0(react@18.3.1)):
     optionalDependencies:
