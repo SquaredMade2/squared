@@ -331,7 +331,7 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Create new team...",
 					function: () => {
-						this.router.push("/settings/new-team");
+						this.router.push(`${this.workspace?.url}/settings/new-team`);
 					},
 					shortcut: [],
 				},
@@ -341,7 +341,7 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Workspace Settings",
 					function: () => {
-						this.router.push("/settings/workspace");
+						this.router.push(`${this.workspace?.url}/settings`);
 					},
 					shortcut: [],
 				},
@@ -349,7 +349,7 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Account Settings",
 					function: () => {
-						this.router.push("/settings/profile");
+						this.router.push(`${this.workspace?.url}/settings/profile`);
 					},
 					shortcut: [],
 				},
@@ -358,7 +358,9 @@ export class CommandSchema {
 					text: "Team Settings",
 					function: () => {
 						if (this.workspace && this.team) {
-							this.router.push(`/settings/teams/${this.team.identifier}`);
+							this.router.push(
+								`${this.workspace?.url}/settings/teams/${this.team.identifier}`,
+							);
 						} else {
 							console.error("Current workspace or team is null null");
 						}
@@ -369,7 +371,7 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Integration Settings",
 					function: () => {
-						this.router.push("/settings/integrations");
+						this.router.push(`${this.workspace?.url}/settings/integrations`);
 					},
 					shortcut: [],
 				},

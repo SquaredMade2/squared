@@ -1,6 +1,6 @@
 "use client";
 
-import MemberSettingsWrapper from "@/app/settings/MemberSettingsWrapper";
+import MemberSettingsWrapper from "@/app/[workspace]/(settings)/settings/MemberSettingsWrapper";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { columns } from "@/components/Settings/Members/columns";
