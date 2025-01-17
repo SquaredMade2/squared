@@ -1,7 +1,7 @@
 import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { eventService, taskService } from "@/lib/services";
+import { eventService } from "@/lib/services";
 import {
 	useEventStore,
 	useTaskStore,
@@ -22,7 +22,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const TaskPageForm = () => {
-	const { users, user } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const {
 		updateTask,
@@ -44,7 +44,7 @@ export const TaskPageForm = () => {
 
 	const updateTaskMutation = useMutation({
 		mutationFn: async (data: { title?: string; description?: string }) => {
-			if (!task || !user) throw new Error("Task or user not found");
+			if (!task) throw new Error("Task not found");
 			const res = await client.task.updateMetadata.$post({
 				taskId: task.id,
 				...data,
@@ -52,14 +52,7 @@ export const TaskPageForm = () => {
 			return res.json();
 		},
 		onSuccess: async (updatedTask) => {
-			const taskKey = updatedTitle ? "title" : "description";
-			updateTask(
-				await taskService.updateTask(TODO, {
-					id: updatedTask.id,
-					updaterId: user?.id || "",
-					[taskKey]: taskKey === "title" ? updatedTitle : updatedDescription,
-				}),
-			);
+			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
 
 			const updatedEvents = await eventService.getTaskEvents(TODO, {
