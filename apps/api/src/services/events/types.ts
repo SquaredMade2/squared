@@ -10,8 +10,8 @@ import type {
 export type TaskValue = string | number | boolean | Date | string[] | null;
 
 export type FullNotification = Notification & {
-	Workspace: Workspace;
-	Task: Task;
+	Workspace: Workspace | null;
+	Task: Task | null;
 };
 
 export type TaskEventsReturn = Promise<(TaskEvent | Commit)[]>;

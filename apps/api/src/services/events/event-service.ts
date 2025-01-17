@@ -1,10 +1,21 @@
-import type {
-	Commit,
-	Notification,
-	NotificationType,
-	PrismaClient,
-	Task,
-	TaskEvent,
+import {
+	type Commit,
+	type DBClient,
+	type Notification,
+	type NotificationType,
+	type Task,
+	type TaskEvent,
+	asc,
+	commitsTable,
+	eq,
+	inArray,
+	labelsTable,
+	notificationsTable,
+	sprintsTable,
+	taskEventsTable,
+	tasksTable,
+	usersTable,
+	workspacesTable,
 } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
@@ -12,23 +23,11 @@ import type { EventRpc, FullNotification, TaskValue } from "./types";
 
 export class EventService implements EventRpc {
 	private readonly logger: Logger;
-	private readonly taskEventRepository: PrismaClient["taskEvent"];
-	private readonly commitRepository: PrismaClient["commit"];
-	private readonly notificationRepository: PrismaClient["notification"];
-	private readonly labelRepository: PrismaClient["label"];
-	private readonly userRepository: PrismaClient["user"];
-	private readonly sprintsRepository: PrismaClient["sprint"];
-	private readonly tasksRepository: PrismaClient["task"];
+	private readonly db: DBClient;
 
-	constructor(db: PrismaClient) {
+	constructor(db: DBClient) {
 		this.logger = createCustomLogger("tasks");
-		this.taskEventRepository = db.taskEvent;
-		this.commitRepository = db.commit;
-		this.notificationRepository = db.notification;
-		this.labelRepository = db.label;
-		this.userRepository = db.user;
-		this.sprintsRepository = db.sprint;
-		this.tasksRepository = db.task;
+		this.db = db;
 	}
 	async getTaskEvents({
 		taskId,
@@ -38,15 +37,16 @@ export class EventService implements EventRpc {
 		);
 
 		const [taskEvents, commits] = await Promise.all([
-			this.taskEventRepository.findMany({
-				where: { taskId },
-				include: { Task: true, Author: true },
-				orderBy: { createdAt: "asc" },
-			}),
-			this.commitRepository.findMany({
-				where: { taskId },
-				orderBy: { timestamp: "asc" },
-			}),
+			this.db
+				.select()
+				.from(taskEventsTable)
+				.where(eq(taskEventsTable.taskId, taskId))
+				.orderBy(asc(taskEventsTable.createdAt)),
+			this.db
+				.select()
+				.from(commitsTable)
+				.where(eq(commitsTable.taskId, taskId))
+				.orderBy(asc(commitsTable.timestamp)),
 		]);
 
 		this.logger.info(
@@ -58,9 +58,28 @@ export class EventService implements EventRpc {
 	async getNotifications({
 		userId,
 	}: { userId: string }): Promise<FullNotification[]> {
-		return this.notificationRepository.findMany({
-			where: { userId },
-			include: { Task: true, Workspace: true },
+		this.logger.info(`Fetching Notifications for User ID ${userId}...`);
+		const notifications = await this.db
+			.select({
+				notification: notificationsTable,
+				task: tasksTable,
+				workspace: workspacesTable,
+			})
+			.from(notificationsTable)
+			.leftJoin(tasksTable, eq(notificationsTable.taskId, tasksTable.id))
+			.leftJoin(
+				workspacesTable,
+				eq(notificationsTable.workspaceId, workspacesTable.id),
+			)
+			.where(eq(notificationsTable.userId, userId));
+
+		return notifications.map((noti) => {
+			const { notification, task, workspace } = noti;
+			return {
+				...notification,
+				Task: task,
+				Workspace: workspace,
+			};
 		});
 	}
 	async createLogEvent({
@@ -85,13 +104,14 @@ export class EventService implements EventRpc {
 			return null;
 		}
 
-		const taskEvent = await this.taskEventRepository.create({
-			data: {
+		const [taskEvent] = await this.db
+			.insert(taskEventsTable)
+			.values({
 				taskId,
 				authorId,
 				message: diff,
-			},
-		});
+			})
+			.returning();
 
 		// Generate notification
 		if (changes.assigneeId && changes.assigneeId !== previousTask.assigneeId) {
@@ -143,15 +163,17 @@ export class EventService implements EventRpc {
 		description?: string;
 		type: NotificationType;
 	}): Promise<Notification> {
-		return this.notificationRepository.create({
-			data: {
+		return this.db
+			.insert(notificationsTable)
+			.values({
 				userId,
 				taskId,
 				description,
 				workspaceId,
 				type,
-			},
-		});
+			})
+			.returning()
+			.then((res) => res[0]);
 	}
 	async toggleNotification({
 		notificationIds,
@@ -162,25 +184,26 @@ export class EventService implements EventRpc {
 		read?: boolean;
 		dismissed?: boolean;
 	}): Promise<Notification[]> {
-		// First, update the notifications
-		await this.notificationRepository.updateMany({
-			where: { id: { in: notificationIds } },
-			data: { read, dismissed },
-		});
+		return await this.db.transaction(async (tx) => {
+			// Update the notifications
+			await tx
+				.update(notificationsTable)
+				.set({ read, dismissed })
+				.where(inArray(notificationsTable.id, notificationIds));
 
-		// Then, fetch and return the updated notifications
-		const updatedNotifications = await this.notificationRepository.findMany({
-			where: { id: { in: notificationIds } },
+			// Fetch and return the updated notifications
+			return tx
+				.select()
+				.from(notificationsTable)
+				.where(inArray(notificationsTable.id, notificationIds));
 		});
-
-		return updatedNotifications;
 	}
 	async deleteNotification({
 		notificationIds,
 	}: { notificationIds: string[] }): Promise<void> {
-		await this.notificationRepository.deleteMany({
-			where: { id: { in: notificationIds } },
-		});
+		await this.db
+			.delete(notificationsTable)
+			.where(inArray(notificationsTable.id, notificationIds));
 	}
 	private async getTaskDiff(
 		previousTask: Task,
@@ -238,10 +261,11 @@ export class EventService implements EventRpc {
 
 		// Handle parentId
 		if (key === "parentId" && typeof value === "string") {
-			const task = await this.tasksRepository.findUnique({
-				where: { id: value },
-				select: { identifier: true },
-			});
+			const [task] = await this.db
+				.select({ identifier: tasksTable.identifier })
+				.from(tasksTable)
+				.where(eq(tasksTable.id, value))
+				.limit(1);
 			return task?.identifier ?? "Unknown Task";
 		}
 
@@ -268,20 +292,24 @@ export class EventService implements EventRpc {
 
 		// Handle sprintId
 		if (key === "sprintId" && typeof value === "string") {
-			const sprint = await this.sprintsRepository.findUnique({
-				where: { id: value },
-				select: { name: true },
-			});
-			return sprint?.name ?? "Unknown Sprint";
+			const sprint = await this.db
+				.select({ name: sprintsTable.name })
+				.from(sprintsTable)
+				.where(eq(sprintsTable.id, value))
+				.limit(1);
+
+			return sprint[0]?.name ?? "Unknown Sprint";
 		}
 
-		// Handle assigneeId
 		if (key === "assigneeId" && typeof value === "string") {
-			const user = await this.userRepository.findUnique({
-				where: { id: value },
-				select: { name: true },
-			});
-			return user?.name ?? "Unknown User";
+			// Handle assigneeId
+			const user = await this.db
+				.select({ name: usersTable.name })
+				.from(usersTable)
+				.where(eq(usersTable.id, value))
+				.limit(1);
+
+			return user[0]?.name ?? "Unknown User";
 		}
 
 		// Handle labels array
@@ -290,10 +318,10 @@ export class EventService implements EventRpc {
 			if (labelIds.length === 0) {
 				return "No labels";
 			}
-			const labels = await this.labelRepository.findMany({
-				where: { id: { in: labelIds } },
-				select: { name: true },
-			});
+			const labels = await this.db
+				.select({ name: labelsTable.name })
+				.from(labelsTable)
+				.where(inArray(labelsTable.id, labelIds));
 			return labels.map((l) => l.name).join(", ");
 		}
 
