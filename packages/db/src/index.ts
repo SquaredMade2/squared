@@ -1,11 +1,18 @@
 import { neon, neonConfig } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { type NeonHttpQueryResultHKT, drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 export * from "./schema";
 export * from "drizzle-orm";
+import type { ExtractTablesWithRelations } from "drizzle-orm";
+import type { PgTransaction } from "drizzle-orm/pg-core";
 import ws from "ws";
 
 export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
+export type TransactionClient = PgTransaction<
+	NeonHttpQueryResultHKT,
+	typeof schema,
+	ExtractTablesWithRelations<typeof schema>
+>;
 declare global {
 	var cachedDb: DBClient;
 }
