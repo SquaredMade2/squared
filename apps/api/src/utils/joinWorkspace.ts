@@ -1,6 +1,6 @@
-import type { APIResponse } from "@/api/route";
 import {
 	type DBClient,
+	type User,
 	type WorkspaceLabel,
 	and,
 	eq,
@@ -41,11 +41,17 @@ async function getWorkspaceWithLabels(
 	return workspaceWithLabels;
 }
 
+type APIResponse<Type> = {
+	data: Type | null;
+	message?: string;
+	variant: "default" | "destructive";
+};
+
 export const joinWorkspace = async (
 	token: string,
 	userId: string,
 	db: DBClient,
-): Promise<APIResponse<WorkspaceLabel> & { status: number }> => {
+): Promise<APIResponse<User> & { status: number }> => {
 	if (!JWT_SECRET) {
 		return {
 			data: null,
@@ -82,7 +88,7 @@ export const joinWorkspace = async (
 
 	if (existingUserWorkspace) {
 		return {
-			data: workspace,
+			data: user,
 			message: "You're already a member of this workspace!",
 			variant: "default",
 			status: 200,
@@ -137,19 +143,13 @@ export const joinWorkspace = async (
 		};
 	}
 
-	// Fetch the updated workspace with user info
-	const updatedWorkspace = await getWorkspaceWithLabels(
-		db,
-		decoded.workspaceId,
-	);
-
 	if (user.onBoarding) {
 		db.update(usersTable)
 			.set({ onBoarding: false })
 			.where(eq(usersTable.id, userId));
 	}
 	return {
-		data: updatedWorkspace,
+		data: user,
 		message: "User successfully joined the workspace.",
 		variant: "default",
 		status: 200,
