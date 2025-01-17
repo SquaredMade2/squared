@@ -63,6 +63,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				Users: {
 					create: {
 						userId: userId,
+						role: "owner",
 					},
 				},
 				Labels: {
