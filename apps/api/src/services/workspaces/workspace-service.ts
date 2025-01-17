@@ -1,12 +1,27 @@
 import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
-import type { PrismaClient, Team, User, Workspace } from "@squared/db";
+import {
+	type DBClient,
+	type SQL,
+	type Team,
+	type User,
+	type Workspace,
+	type WorkspaceLabel,
+	and,
+	eq,
+	inArray,
+	labelsTable,
+	teamsTable,
+	userTeamsTable,
+	userWorkspacesTable,
+	usersTable,
+	workspacesTable,
+} from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import jwt from "jsonwebtoken";
 import type {
 	CreateWorkspaceParams,
-	WorkspaceLabels,
 	WorkspaceParams,
 	WorkspaceRpc,
 } from "./types";
@@ -26,11 +41,11 @@ const DEFAULT_LABELS = [
 ];
 
 export class WorkspaceService implements WorkspaceRpc {
-	private readonly db: PrismaClient;
+	private readonly db: DBClient;
 	private readonly logger: Logger;
 	private readonly JWT_SECRET: string;
 
-	constructor(db: PrismaClient, JWT_SECRET?: string) {
+	constructor(db: DBClient, JWT_SECRET?: string) {
 		this.db = db;
 		if (!JWT_SECRET) this.throwError("JWT_SECRET is not defined.");
 		this.JWT_SECRET = JWT_SECRET;
@@ -40,143 +55,161 @@ export class WorkspaceService implements WorkspaceRpc {
 	async createWorkspace({
 		userId,
 		workspace,
-	}: CreateWorkspaceParams): Promise<WorkspaceLabels> {
-		this.logger.info(
+	}: CreateWorkspaceParams): Promise<WorkspaceLabel> {
+		console.info(
 			"Creating workspace for user %s and payload %o",
 			userId,
 			workspace,
 		);
-		const existingWorkspace = await this.db.workspace.findFirst({
-			where: {
-				url: workspace.url,
-			},
-		});
 
-		if (existingWorkspace) {
-			this.throwError("Workspace already exists");
-		}
+		return await this.db.transaction(async (tx) => {
+			const existingWorkspace = await tx
+				.select()
+				.from(workspacesTable)
+				.where(eq(workspacesTable.url, workspace.url))
+				.limit(1);
 
-		const newWorkspace = await this.db.workspace.create({
-			data: {
-				...workspace,
-				admins: [userId],
-				Users: {
-					create: {
-						userId: userId,
-					},
-				},
-				Labels: {
-					create: DEFAULT_LABELS.map((label) => ({
+			if (existingWorkspace.length > 0) {
+				throw new Error("Workspace already exists");
+			}
+
+			const [newWorkspace] = await tx
+				.insert(workspacesTable)
+				.values({
+					...workspace,
+					admins: [userId],
+				})
+				.returning();
+
+			if (!newWorkspace) {
+				throw new Error("Workspace not created");
+			}
+
+			await tx.insert(userWorkspacesTable).values({
+				userId: userId,
+				workspaceId: newWorkspace.id,
+			});
+
+			const newLabels = await tx
+				.insert(labelsTable)
+				.values(
+					DEFAULT_LABELS.map((label) => ({
 						name: label.name,
 						description: label.description,
 						color: label.color,
+						workspaceId: newWorkspace.id,
 					})),
-				},
-			},
-			include: {
-				Labels: true,
-			},
-		});
+				)
+				.returning();
 
-		if (!newWorkspace) {
-			this.throwError("Workspace not created");
-		}
-
-		await this.db.team.create({
-			data: {
+			await tx.insert(teamsTable).values({
 				workspaceId: newWorkspace.id,
 				name: newWorkspace.name,
 				identifier: newWorkspace.url.slice(0, 3).toUpperCase(),
-				Users: {
-					create: {
-						userId,
-					},
-				},
-			},
-		});
+			});
 
-		// Return the new workspace
-		return newWorkspace;
+			await tx.insert(userTeamsTable).values({
+				userId: userId,
+				teamId: newWorkspace.id,
+			});
+
+			return {
+				...newWorkspace,
+				labels: newLabels,
+			};
+		});
 	}
 	async getWorkspace({
 		workspaceId,
-	}: { workspaceId: string }): Promise<WorkspaceLabels | null> {
-		this.logger.info("Getting workspace with id %s", workspaceId);
-		return await this.db.workspace.findUnique({
-			where: {
-				id: workspaceId,
-			},
-			include: {
-				Labels: true,
-			},
-		});
+	}: { workspaceId: string }): Promise<WorkspaceLabel | null> {
+		console.info("Getting workspace with id %s", workspaceId);
+		return await this.getWorkspaceWithLabels(eq(workspacesTable, workspaceId));
 	}
+
 	async getWorkspaceByUrl({
 		url,
-	}: { url: string }): Promise<WorkspaceLabels | null> {
-		this.logger.info("Getting workspace with url %s", url);
-		return await this.db.workspace.findUnique({
-			where: {
-				url,
-			},
-			include: {
-				Labels: true,
-			},
-		});
+	}: { url: string }): Promise<WorkspaceLabel | null> {
+		console.info("Getting workspace with url %s", url);
+		return await this.getWorkspaceWithLabels(eq(workspacesTable.url, url));
 	}
+
 	async updateWorkspace({
 		workspaceId,
 		workspace,
 	}: {
 		workspaceId: string;
 		workspace: WorkspaceParams;
-	}): Promise<WorkspaceLabels> {
-		this.logger.info(
+	}): Promise<WorkspaceLabel> {
+		console.info(
 			"Updating workspace with id %s and payload %o",
 			workspaceId,
 			workspace,
 		);
-		return await this.db.workspace.update({
-			where: {
-				id: workspaceId,
-			},
-			data: workspace,
-			include: {
-				Labels: true,
-			},
+
+		return await this.db.transaction(async (tx) => {
+			const [updatedWorkspace] = await tx
+				.update(workspacesTable)
+				.set(workspace)
+				.where(eq(workspacesTable.id, workspaceId))
+				.returning();
+
+			if (!updatedWorkspace) {
+				throw new Error("Workspace not found");
+			}
+
+			const workspaceLabels = await tx
+				.select()
+				.from(labelsTable)
+				.where(eq(labelsTable.workspaceId, workspaceId));
+
+			return { ...updatedWorkspace, labels: workspaceLabels };
 		});
 	}
+
 	async deleteWorkspace({
 		workspaceId,
 	}: { workspaceId: string }): Promise<void> {
-		this.logger.info("Deleting workspace with id %s", workspaceId);
-		await this.db.workspace.delete({
-			where: {
-				id: workspaceId,
-			},
+		console.info("Deleting workspace with id %s", workspaceId);
+
+		await this.db.transaction(async (tx) => {
+			// Delete associated labels first
+			await tx
+				.delete(labelsTable)
+				.where(eq(labelsTable.workspaceId, workspaceId));
+
+			// Then delete the workspace
+			await tx
+				.delete(workspacesTable)
+				.where(eq(workspacesTable.id, workspaceId));
 		});
 	}
 	async getUserWorkspaces({
 		userId,
-	}: { userId: string }): Promise<WorkspaceLabels[]> {
+	}: { userId: string }): Promise<WorkspaceLabel[]> {
 		this.logger.info("Getting workspaces for user %s", userId);
-		return await this.db.workspace.findMany({
-			where: {
-				Users: {
-					some: {
-						userId,
-					},
-				},
-			},
-			include: {
-				Labels: true,
-			},
-		});
+		const workspaces = await this.db
+			.select({
+				workspace: workspacesTable,
+				labels: labelsTable,
+			})
+			.from(workspacesTable)
+			.leftJoin(labelsTable, eq(labelsTable.workspaceId, workspacesTable.id))
+			.innerJoin(
+				userWorkspacesTable,
+				eq(userWorkspacesTable.workspaceId, workspacesTable.id),
+			)
+			.where(eq(userWorkspacesTable.userId, userId))
+			.groupBy(workspacesTable.id);
+
+		return workspaces.map((workspace) => ({
+			...workspace.workspace,
+			labels: workspace.labels ? [workspace.labels] : [],
+		}));
 	}
 	async joinWorkspace({
 		token,
 		userId,
-	}: { token: string; userId: string }): Promise<WorkspaceLabels | null> {
+	}: { token: string; userId: string }): Promise<WorkspaceLabel | null> {
 		this.logger.info(`User ${userId} attempting to join workspace with token`);
 
 		const workspaceId = this.verifyToken(token);
@@ -184,11 +217,11 @@ export class WorkspaceService implements WorkspaceRpc {
 			this.throwError("Invalid token");
 		}
 
-		const [existingUserWorkspace, workspace, user, teams] =
+		const { userWorkspace, workspace, user, teams } =
 			await this.fetchWorkspaceData(workspaceId, userId);
 
 		if (!user) this.throwError("User not found.");
-		if (existingUserWorkspace) return workspace;
+		if (userWorkspace) return workspace;
 
 		this.validateJoinWorkspaceData(workspace, teams, user);
 
@@ -202,33 +235,58 @@ export class WorkspaceService implements WorkspaceRpc {
 	async removeUserFromWorkspace({
 		workspaceId,
 		userId,
-	}: { workspaceId: string; userId: string }): Promise<{ success: boolean }> {
+	}: {
+		workspaceId: string;
+		userId: string;
+	}): Promise<{ success: boolean }> {
 		this.logger.info("Removing user from workspace");
 
-		const workspaceTeams = await this.db.team.findMany({
-			where: { workspaceId },
-		});
+		return await this.db.transaction(async (tx) => {
+			// Find workspace teams
+			const workspaceTeams = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.workspaceId, workspaceId));
 
-		if (workspaceTeams.length > 0) {
-			await Promise.all(
-				workspaceTeams.map(async (team) => {
-					const userTeam = await this.db.userTeam.findUnique({
-						where: { userId_teamId: { userId, teamId: team.id } },
-					});
-					if (userTeam) {
-						await this.db.userTeam.delete({
-							where: { userId_teamId: { userId, teamId: team.id } },
-						});
+			// Remove user from teams
+			if (workspaceTeams.length > 0) {
+				for (const team of workspaceTeams) {
+					const userTeam = await tx
+						.select()
+						.from(userTeamsTable)
+						.where(
+							and(
+								eq(userTeamsTable.userId, userId),
+								eq(userTeamsTable.teamId, team.id),
+							),
+						)
+						.limit(1);
+
+					if (userTeam.length > 0) {
+						await tx
+							.delete(userTeamsTable)
+							.where(
+								and(
+									eq(userTeamsTable.userId, userId),
+									eq(userTeamsTable.teamId, team.id),
+								),
+							);
 					}
-				}),
-			);
-		}
+				}
+			}
 
-		await this.db.userWorkspace.delete({
-			where: { userId_workspaceId: { userId, workspaceId } },
+			// Remove user from workspace
+			await tx
+				.delete(userWorkspacesTable)
+				.where(
+					and(
+						eq(userWorkspacesTable.userId, userId),
+						eq(userWorkspacesTable.workspaceId, workspaceId),
+					),
+				);
+
+			return { success: true };
 		});
-
-		return { success: true };
 	}
 	async inviteToWorkspace({
 		workspaceId,
@@ -242,54 +300,60 @@ export class WorkspaceService implements WorkspaceRpc {
 			workspaceId,
 		});
 
-		// Check if the workspace exists
-		const workspace = await this.db.workspace.findUnique({
-			where: { id: workspaceId },
-			include: {
-				Users: {
-					include: {
-						user: true,
-					},
-				},
-			},
-		});
+		return await this.db.transaction(async (tx) => {
+			// Check if the workspace exists
+			const workspaceWithUsers = await tx
+				.select({
+					workspace: workspacesTable,
+					user: usersTable,
+				})
+				.from(workspacesTable)
+				.leftJoin(
+					userWorkspacesTable,
+					eq(userWorkspacesTable.workspaceId, workspacesTable.id),
+				)
+				.leftJoin(usersTable, eq(userWorkspacesTable.userId, usersTable.id))
+				.where(eq(workspacesTable.id, workspaceId));
 
-		const workspaceEmails = workspace?.Users.map((u) => u.user.email) ?? [];
+			if (workspaceWithUsers.length === 0) {
+				this.throwError("Workspace not found.");
+			}
 
-		if (!workspace) this.throwError("Workspace not found.");
+			const workspace = workspaceWithUsers[0].workspace;
+			const workspaceEmails = workspaceWithUsers
+				.map((row) => row.user?.email)
+				.filter((email): email is string => email !== undefined);
 
-		// Generate token
-		const token = jwt.sign({ workspaceId, email }, this.JWT_SECRET, {
-			expiresIn: "1h",
-		});
-
-		const emailsToSend = Array.isArray(email) ? email : [email];
-		const existingUsers = await this.db.user.findMany({
-			where: {
-				email: {
-					in: emailsToSend,
-				},
-			},
-		});
-
-		// Send email with the token
-		for (const email of emailsToSend.filter(
-			(email) => !workspaceEmails.includes(email),
-		)) {
-			const newUser = !existingUsers.some((u) => u.email === email);
-			await sendMail({
-				logger: this.logger,
-				email,
-				subject: "Workspace Invitation",
-				html: joinWorkspaceTemplate({
-					username: existingUsers.find((u) => u.email === email)?.name,
-					path: newUser ? `register?token=${token}` : `login?token=${token}`,
-					workspaceName: workspace.name,
-				}),
+			// Generate token
+			const token = jwt.sign({ workspaceId, email }, this.JWT_SECRET, {
+				expiresIn: "1h",
 			});
-		}
 
-		return { success: true };
+			const emailsToSend = Array.isArray(email) ? email : [email];
+			const existingUsers = await tx
+				.select()
+				.from(usersTable)
+				.where(inArray(usersTable.email, emailsToSend));
+
+			// Send email with the token
+			for (const email of emailsToSend.filter(
+				(email) => !workspaceEmails.includes(email),
+			)) {
+				const newUser = !existingUsers.some((u) => u.email === email);
+				await sendMail({
+					logger: this.logger,
+					email,
+					subject: "Workspace Invitation",
+					html: joinWorkspaceTemplate({
+						username: existingUsers.find((u) => u.email === email)?.name,
+						path: newUser ? `register?token=${token}` : `login?token=${token}`,
+						workspaceName: workspace.name,
+					}),
+				});
+			}
+
+			return { success: true };
+		});
 	}
 	private verifyToken(token: string): string | null {
 		try {
@@ -307,15 +371,40 @@ export class WorkspaceService implements WorkspaceRpc {
 		throw new Error(message);
 	}
 	private async fetchWorkspaceData(workspaceId: string, userId: string) {
-		return await Promise.all([
-			this.db.userWorkspace.findFirst({ where: { userId, workspaceId } }),
-			this.db.workspace.findUnique({
-				where: { id: workspaceId },
-				include: { Labels: true },
-			}),
-			this.db.user.findUnique({ where: { id: userId } }),
-			this.db.team.findMany({ where: { workspaceId } }),
-		]);
+		return await this.db.transaction(async (tx) => {
+			const [userWorkspace, workspace, user, teams] = await Promise.all([
+				// Query 1: Find user workspace
+				tx
+					.select()
+					.from(userWorkspacesTable)
+					.where(
+						and(
+							eq(userWorkspacesTable.userId, userId),
+							eq(userWorkspacesTable.workspaceId, workspaceId),
+						),
+					)
+					.limit(1)
+					.then((results) => results[0]),
+
+				// Query 2: Find workspace with labels
+				this.getWorkspaceWithLabels(eq(workspacesTable.id, workspaceId)),
+
+				// Query 3: Find user
+				tx
+					.select()
+					.from(usersTable)
+					.where(eq(usersTable.id, userId))
+					.limit(1)
+					.then((results) => results[0]),
+
+				// Query 4: Find teams
+				tx
+					.select()
+					.from(teamsTable)
+					.where(eq(teamsTable.workspaceId, workspaceId)),
+			]);
+			return { userWorkspace, workspace, user, teams };
+		});
 	}
 	private validateJoinWorkspaceData(
 		workspace: Workspace | null,
@@ -330,26 +419,59 @@ export class WorkspaceService implements WorkspaceRpc {
 	private async createUserWorkspaceConnections(
 		userId: string,
 		workspaceId: string,
-		teams: Team[],
+		teams: { id: string }[],
 	) {
-		await Promise.all([
-			this.db.userWorkspace.create({
-				data: {
-					user: { connect: { id: userId } },
-					workspace: { connect: { id: workspaceId } },
-				},
-			}),
-			this.db.userTeam.createMany({
-				data: teams.map((team) => ({ userId, teamId: team.id })),
-			}),
-		]);
+		await this.db.transaction(async (tx) => {
+			await Promise.all([
+				// Create user-workspace connection
+				tx
+					.insert(userWorkspacesTable)
+					.values({
+						userId,
+						workspaceId,
+					}),
+
+				// Create user-team connections
+				tx
+					.insert(userTeamsTable)
+					.values(teams.map((team) => ({ userId, teamId: team.id }))),
+			]);
+		});
 	}
-	private async updateUserOnboarding(user: User) {
+
+	private async updateUserOnboarding(user: {
+		id: string;
+		onBoarding: boolean;
+	}) {
 		if (user.onBoarding) {
-			await this.db.user.update({
-				where: { id: user.id },
-				data: { onBoarding: false },
-			});
+			await this.db
+				.update(usersTable)
+				.set({ onBoarding: false })
+				.where(eq(usersTable.id, user.id));
 		}
+	}
+	private async getWorkspaceWithLabels(
+		where: SQL<unknown>,
+	): Promise<WorkspaceLabel | null> {
+		const results = await this.db
+			.select()
+			.from(workspacesTable)
+			.leftJoin(labelsTable, eq(workspacesTable.id, labelsTable.workspaceId))
+			.where(where);
+
+		const workspaceWithLabels = results.reduce(
+			(acc, row) => {
+				if (!acc.workspace) {
+					acc.workspace = { ...row.Workspace, labels: [] };
+				}
+				if (row.Label) {
+					acc.workspace.labels.push(row.Label);
+				}
+				return acc;
+			},
+			{ workspace: null as WorkspaceLabel | null },
+		).workspace;
+
+		return workspaceWithLabels;
 	}
 }
