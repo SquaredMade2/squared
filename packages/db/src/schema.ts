@@ -401,6 +401,7 @@ export type GithubRepoInfo = typeof githubRepoInfoTable.$inferSelect;
 export type Sprint = typeof sprintsTable.$inferSelect;
 export type Notification = typeof notificationsTable.$inferSelect;
 export type Workspace = typeof workspacesTable.$inferSelect;
+export type WorkspaceLabel = Workspace & { labels: Label[] };
 export type User = typeof usersTable.$inferSelect;
 export type Comment = typeof commentsTable.$inferSelect;
 export type Task = typeof tasksTable.$inferSelect;

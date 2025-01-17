@@ -22,7 +22,7 @@ CREATE TABLE "Branch" (
 CREATE TABLE "Comment" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"comment" text NOT NULL,
-	"date" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"date" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"taskId" text NOT NULL,
 	"authorId" text NOT NULL
 );
@@ -36,7 +36,7 @@ CREATE TABLE "Commit" (
 	"owner" text,
 	"branchId" text NOT NULL,
 	"taskId" text,
-	"timestamp" timestamp(3) NOT NULL
+	"timestamp" timestamp (3) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "GithubRepoInfo" (
@@ -59,8 +59,8 @@ CREATE TABLE "Notification" (
 	"read" boolean DEFAULT false NOT NULL,
 	"saved" boolean DEFAULT false NOT NULL,
 	"description" text,
-	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"createdAt" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"workspaceId" text NOT NULL,
 	"dismissed" boolean DEFAULT false NOT NULL,
 	"type" "NotificationType" NOT NULL,
@@ -80,10 +80,10 @@ CREATE TABLE "RetrospectiveItem" (
 	"wentWellSprintId" text,
 	"toImproveSprintId" text,
 	"actionItemsSprintId" text,
-	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp(3) NOT NULL,
+	"createdAt" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL,
 	"type" "RetrospectiveItemType" DEFAULT 'toImprove' NOT NULL,
-	"likes" text[] DEFAULT '{"RAY"}',
+	"likes" text[] DEFAULT '{}',
 	"authorId" text NOT NULL
 );
 --> statement-breakpoint
@@ -102,18 +102,18 @@ CREATE TABLE "SavedFilter" (
 CREATE TABLE "Sprint" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"startDate" timestamp(3) NOT NULL,
-	"endDate" timestamp(3) NOT NULL,
+	"startDate" timestamp (3) NOT NULL,
+	"endDate" timestamp (3) NOT NULL,
 	"status" "SprintStatus" NOT NULL,
 	"teamId" text NOT NULL,
-	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp(3) NOT NULL,
+	"createdAt" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp (3) NOT NULL,
 	"description" text
 );
 --> statement-breakpoint
 CREATE TABLE "TaskEvent" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"createdAt" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"taskId" text NOT NULL,
 	"message" text NOT NULL,
 	"authorId" text NOT NULL
@@ -130,7 +130,7 @@ CREATE TABLE "tasks" (
 	"team_id" text NOT NULL,
 	"date_created" timestamp DEFAULT now() NOT NULL,
 	"assignee_id" text,
-	"labels" text[],
+	"labels" text[] DEFAULT '{}' NOT NULL,
 	"workspace_id" text NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted" boolean DEFAULT false NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE "Team" (
 	"sprintsEnabled" boolean DEFAULT false NOT NULL,
 	"sprintDuration" integer DEFAULT 2 NOT NULL,
 	"cooldownDuration" integer DEFAULT 1 NOT NULL,
-	"sprintStartDate" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"sprintStartDate" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"tasksPerSprint" integer DEFAULT 10 NOT NULL,
 	"effort" "Effort" DEFAULT 'LINEAR' NOT NULL
 );
@@ -178,14 +178,14 @@ CREATE TABLE "User" (
 	"name" text NOT NULL,
 	"username" text,
 	"email" text NOT NULL,
-	"lastLogin" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"lastLogin" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"onBoarding" boolean DEFAULT true NOT NULL,
 	"defaultWorkspaceId" text,
 	"avatarUrl" text,
-	"savedNotificationIds" text[] DEFAULT '{"RAY"}',
-	"subscribedTasks" text[] DEFAULT '{"RAY"}',
+	"savedNotificationIds" text[] DEFAULT '{}' NOT NULL,
+	"subscribedTasks" text[] DEFAULT '{}' NOT NULL,
 	"githubUsername" text,
-	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"createdAt" timestamp (3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"lastViewedTaskId" text,
 	"externalId" text NOT NULL,
 	CONSTRAINT "User_externalId_unique" UNIQUE("externalId")
@@ -205,7 +205,7 @@ CREATE TABLE "Workspace" (
 	"tasksCreated" integer DEFAULT 0 NOT NULL,
 	"universalTokenLinkId" text,
 	"avatarUrl" text,
-	"admins" text[],
+	"admins" text[] DEFAULT '{}' NOT NULL,
 	"defaultView" text
 );
 --> statement-breakpoint

@@ -4,7 +4,7 @@ import {
 	Priority,
 	Status,
 	commentsTable,
-	db,
+	createDb,
 	eq,
 	labelsTable,
 	notificationsTable,
@@ -20,6 +20,8 @@ import createCustomLogger from "@squared/logger";
 import "dotenv/config";
 
 const logger = createCustomLogger("seed");
+
+const db = createDb({ databaseUrl: process.env.TEST_DATABASE_URL });
 
 async function seedDB() {
 	const workspaces = await Promise.all([

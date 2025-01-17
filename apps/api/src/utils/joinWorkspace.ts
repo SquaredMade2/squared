@@ -1,22 +1,51 @@
 import type { APIResponse } from "@/api/route";
 import {
 	type DBClient,
-	type Workspace,
+	type WorkspaceLabel,
 	and,
 	eq,
 	labelsTable,
+	teamsTable,
+	userTeamsTable,
 	userWorkspacesTable,
+	usersTable,
 	workspacesTable,
 } from "@squared/db";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+async function getWorkspaceWithLabels(
+	db: DBClient,
+	workspaceId: string,
+): Promise<WorkspaceLabel | null> {
+	const results = await db
+		.select()
+		.from(workspacesTable)
+		.leftJoin(labelsTable, eq(workspacesTable.id, labelsTable.workspaceId))
+		.where(eq(workspacesTable.id, workspaceId));
+
+	const workspaceWithLabels = results.reduce(
+		(acc, row) => {
+			if (!acc.workspace) {
+				acc.workspace = { ...row.Workspace, labels: [] };
+			}
+			if (row.Label) {
+				acc.workspace.labels.push(row.Label);
+			}
+			return acc;
+		},
+		{ workspace: null as WorkspaceLabel | null },
+	).workspace;
+
+	return workspaceWithLabels;
+}
+
 export const joinWorkspace = async (
 	token: string,
 	userId: string,
 	db: DBClient,
-): Promise<APIResponse<Workspace> & { status: number }> => {
+): Promise<APIResponse<WorkspaceLabel> & { status: number }> => {
 	if (!JWT_SECRET) {
 		return {
 			data: null,
@@ -31,23 +60,25 @@ export const joinWorkspace = async (
 		workspaceId: string;
 	};
 
-	const [[existingUserWorkspace], [workspace]] = await Promise.all([
-		db
-			.select()
-			.from(userWorkspacesTable)
-			.where(
-				and(
-					eq(userWorkspacesTable.userId, userId),
-					eq(userWorkspacesTable.workspaceId, decoded.workspaceId),
+	const [[existingUserWorkspace], workspace, [user], teams] = await Promise.all(
+		[
+			db
+				.select()
+				.from(userWorkspacesTable)
+				.where(
+					and(
+						eq(userWorkspacesTable.userId, userId),
+						eq(userWorkspacesTable.workspaceId, decoded.workspaceId),
+					),
 				),
-			),
-		db
-			.select()
-			.from(workspacesTable)
-			.leftJoin(labelsTable, eq(workspacesTable.id, labelsTable.workspaceId))
-			.where(eq(workspacesTable.id, decoded.workspaceId))
-			.limit(1),
-	]);
+			getWorkspaceWithLabels(db, decoded.workspaceId),
+			db.select().from(usersTable).where(eq(usersTable.id, userId)),
+			db
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.workspaceId, decoded.workspaceId)),
+		],
+	);
 
 	if (existingUserWorkspace) {
 		return {
@@ -57,15 +88,6 @@ export const joinWorkspace = async (
 			status: 200,
 		};
 	}
-
-	const user = await prisma.user.findUnique({
-		where: { id: userId },
-	});
-	const teams = await prisma.team.findMany({
-		where: {
-			workspaceId: decoded.workspaceId,
-		},
-	});
 
 	if (!workspace) {
 		return {
@@ -94,18 +116,16 @@ export const joinWorkspace = async (
 
 	try {
 		await Promise.all([
-			prisma.userWorkspace.create({
-				data: {
-					user: { connect: { id: userId } },
-					workspace: { connect: { id: decoded.workspaceId } },
-				},
+			db.insert(userWorkspacesTable).values({
+				userId,
+				workspaceId: decoded.workspaceId,
 			}),
-			prisma.userTeam.createMany({
-				data: teams.map((team) => ({
+			db.insert(userTeamsTable).values(
+				teams.map((team) => ({
 					userId,
 					teamId: team.id,
 				})),
-			}),
+			),
 		]);
 	} catch (error) {
 		return {
@@ -118,18 +138,15 @@ export const joinWorkspace = async (
 	}
 
 	// Fetch the updated workspace with user info
-	const updatedWorkspace = await prisma.workspace.findUnique({
-		where: { id: decoded.workspaceId },
-		include: {
-			Labels: true,
-		},
-	});
+	const updatedWorkspace = await getWorkspaceWithLabels(
+		db,
+		decoded.workspaceId,
+	);
 
 	if (user.onBoarding) {
-		await prisma.user.update({
-			where: { id: userId },
-			data: { onBoarding: false },
-		});
+		db.update(usersTable)
+			.set({ onBoarding: false })
+			.where(eq(usersTable.id, userId));
 	}
 	return {
 		data: updatedWorkspace,

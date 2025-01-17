@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "@squared/db";
+import { createDb } from "@squared/db";
 import { createAuthRpcHandler } from "./auth";
 import { AuthService } from "./auth/auth-service";
 import { createCommentRpcHandler } from "./comments";
@@ -13,12 +13,8 @@ import { createUserRpcHandler } from "./users";
 import { UserService } from "./users/user-service";
 import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
 
-const prisma = new PrismaClient({
-	datasources: {
-		db: {
-			url: process.env.POSTGRES_PRISMA_URL,
-		},
-	},
+const prisma = createDb({
+	databaseUrl: process.env.DATABASE_URL,
 });
 
 const secret = process.env.JWT_SECRET;
