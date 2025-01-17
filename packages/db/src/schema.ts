@@ -50,6 +50,27 @@ export const status = pgEnum("Status", [
 	"archived",
 ]);
 
+export type FilterValue =
+	| string
+	| number
+	| Date
+	| boolean
+	| null
+	| (string | null)[]
+	| string[];
+
+export type FilterCondition = {
+	field: keyof Task;
+	value: FilterValue;
+	operator:
+		| "equals"
+		| "contains"
+		| "greaterThan"
+		| "lessThan"
+		| "arrayIncludesAll"
+		| "arrayIncludesAny";
+};
+
 export const teamsTable = pgTable(
 	"Team",
 	{
@@ -100,14 +121,14 @@ export const githubRepoInfoTable = pgTable(
 export const sprintsTable = pgTable("Sprint", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
-	startDate: timestamp({ precision: 3 }).notNull(),
+	startDate: timestamp({ precision: 3 }).defaultNow().notNull(),
 	endDate: timestamp({ precision: 3 }).notNull(),
 	status: sprintStatus().notNull(),
 	teamId: text().notNull(),
 	createdAt: timestamp({ precision: 3 })
 		.default(sql`CURRENT_TIMESTAMP`)
 		.notNull(),
-	updatedAt: timestamp({ precision: 3 }).notNull(),
+	updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	description: text(),
 });
 
@@ -296,7 +317,7 @@ export const savedFiltersTable = pgTable(
 		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		name: text().notNull(),
 		description: text().default(""),
-		filter: jsonb().array(),
+		filter: jsonb().$type<FilterCondition[]>().notNull(),
 		workspaceId: text(),
 		teamId: text(),
 		type: savedFilterType().notNull(),

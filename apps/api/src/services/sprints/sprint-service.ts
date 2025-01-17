@@ -1,9 +1,12 @@
-import type {
-	PrismaClient,
-	RetrospectiveItemType,
-	Sprint,
-	Task,
-	Team,
+import {
+	type DBClient,
+	type RetrospectiveItemType,
+	type Sprint,
+	type Task,
+	type Team,
+	eq,
+	sprintsTable,
+	teamsTable,
 } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { addWeeks } from "date-fns";
@@ -20,13 +23,16 @@ import type {
 
 export class SprintService implements SprintRpc {
 	private logger;
-	constructor(private readonly db: PrismaClient) {
+	constructor(private readonly db: DBClient) {
 		this.logger = createCustomLogger("sprint-service");
 	}
 
 	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
 		this.logger.info("Getting sprints for team", { teamId });
-		return this.db.sprint.findMany({ where: { teamId } });
+		return this.db
+			.select()
+			.from(sprintsTable)
+			.where(eq(sprintsTable.teamId, teamId));
 	}
 
 	async updateSprint({
@@ -36,46 +42,57 @@ export class SprintService implements SprintRpc {
 		sprintId: string;
 		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
 	}): Promise<Sprint> {
-		return this.db.sprint.update({
-			where: { id: sprintId },
-			data: sprintData,
-		});
+		this.logger.info("Updating sprint", { sprintId });
+		const [updatedSprint] = await this.db
+			.update(sprintsTable)
+			.set(sprintData)
+			.where(eq(sprintsTable.id, sprintId))
+			.returning();
+
+		return updatedSprint;
 	}
 
 	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
 		this.logger.info("Initializing sprints for team", { teamId });
-		const team = await this.db.team.findUnique({ where: { id: teamId } });
+		return await this.db.transaction(async (tx) => {
+			const team = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.id, teamId))
+				.limit(1);
 
-		if (!team) {
-			return 0;
-		}
+			if (team.length === 0) {
+				return 0;
+			}
 
-		const sprints = await this.db.sprint.findMany({ where: { teamId } });
-		const pendingSprints = sprints.filter((s) => s.status === "PLANNED");
+			const allSprints = await tx
+				.select()
+				.from(sprintsTable)
+				.where(eq(sprintsTable.teamId, teamId));
 
-		if (pendingSprints.length > 0) {
-			await this.db.sprint.update({
-				where: { id: pendingSprints[0].id },
-				data: { status: "ACTIVE" },
-			});
-			return pendingSprints.length;
-		}
+			const pendingSprints = allSprints.filter((s) => s.status === "PLANNED");
 
-		const sprintDuration = team.sprintDuration;
+			if (pendingSprints.length > 0) {
+				await tx
+					.update(sprintsTable)
+					.set({ status: "ACTIVE" })
+					.where(eq(sprintsTable.id, pendingSprints[0].id));
+				return pendingSprints.length;
+			}
 
-		await this.db.sprint.create({
-			data: {
-				name: `Sprint ${sprints.length + 1}`,
+			const sprintDuration = team[0].sprintDuration;
+
+			await tx.insert(sprintsTable).values({
+				name: `Sprint ${allSprints.length + 1}`,
 				status: "ACTIVE",
-				startDate: new Date(), // Start from today
+				startDate: new Date(),
 				endDate: addWeeks(new Date(), sprintDuration),
 				teamId,
-			},
+			});
+
+			return 1;
 		});
-
-		return 1;
 	}
-
 	async startNextSprint({
 		teamId,
 		sprintData,
