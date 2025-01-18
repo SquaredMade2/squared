@@ -5,6 +5,7 @@ import {
 	type FilterCondition,
 	type SavedFilter,
 	eq,
+	inArray,
 	savedFiltersTable,
 	teamsTable,
 	userTeamsTable,
@@ -33,11 +34,11 @@ describe("API Tests", () => {
 		});
 
 		// clear any filters that have been created during the tests
-		// afterEach(async () => {
-		// 	await db
-		// 		.delete(savedFiltersTable)
-		// 		.where(inArray(savedFiltersTable.id, insertedIds));
-		// });
+		afterEach(async () => {
+			await db
+				.delete(savedFiltersTable)
+				.where(inArray(savedFiltersTable.id, insertedIds));
+		});
 
 		// if a new filter is created successfully using an rpc endpoint,
 		// its id needs to be added to the insertedIds array for cleanup.
