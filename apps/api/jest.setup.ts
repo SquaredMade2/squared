@@ -43,13 +43,13 @@ beforeAll(async () => {
 	}
 }, 120000); // Increase timeout to 120 seconds
 
-afterAll(async () => {
-	try {
-		// Stop the test database
-		execSync("pnpm run --filter=@squared/seed docker:db:down", {
-			stdio: "inherit",
-		});
-	} catch (error) {
-		console.error("Error tearing down test environment:", error);
-	}
-}, 30000); // Add a timeout for afterAll
+// afterAll(async () => {
+// 	try {
+// 		// Stop the test database
+// 		execSync("pnpm run --filter=@squared/seed docker:db:down", {
+// 			stdio: "inherit",
+// 		});
+// 	} catch (error) {
+// 		console.error("Error tearing down test environment:", error);
+// 	}
+// }, 30000); // Add a timeout for afterAll
