@@ -308,7 +308,7 @@ export class EventService implements EventRpc {
 			const user = await this.db
 				.select({ name: usersTable.name })
 				.from(usersTable)
-				.where(eq(usersTable.id, value))
+				.where(eq(usersTable.externalId, value))
 				.limit(1);
 
 			return user[0]?.name ?? "Unknown User";

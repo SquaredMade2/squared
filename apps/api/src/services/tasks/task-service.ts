@@ -159,7 +159,6 @@ export class TaskService implements TaskRpc {
 				this.throwError("There was an issue creating your task");
 			}
 
-			// Subscribe user to task (assuming this function is adapted for Drizzle)
 			await subscribeUser(author, newTask, tx);
 
 			return newTask;

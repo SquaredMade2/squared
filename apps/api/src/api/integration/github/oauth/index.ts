@@ -60,7 +60,7 @@ export function createRoute({ db }: { db: DBClient }): Route {
 				await db
 					.update(usersTable)
 					.set({ githubUsername: currentUserLogin })
-					.where(eq(usersTable.id, userId));
+					.where(eq(usersTable.externalId, userId));
 
 				// Redirect to GitHub's App installation page
 				res.redirect(

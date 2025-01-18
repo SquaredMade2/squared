@@ -2,6 +2,7 @@ import { sendMail } from "@/utils/mail";
 import { joinWorkspaceTemplate } from "@/utils/templates";
 import {
 	type DBClient,
+	type Label,
 	type SQL,
 	type Team,
 	type User,
@@ -11,6 +12,7 @@ import {
 	eq,
 	inArray,
 	labelsTable,
+	sql,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -190,7 +192,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		const workspaces = await this.db
 			.select({
 				workspace: workspacesTable,
-				labels: labelsTable,
+				labels: sql<Label[] | null>`json_agg(${labelsTable.name})`.as("labels"),
 			})
 			.from(workspacesTable)
 			.leftJoin(labelsTable, eq(labelsTable.workspaceId, workspacesTable.id))
@@ -201,9 +203,9 @@ export class WorkspaceService implements WorkspaceRpc {
 			.where(eq(userWorkspacesTable.userId, userId))
 			.groupBy(workspacesTable.id);
 
-		return workspaces.map((workspace) => ({
-			...workspace.workspace,
-			labels: workspace.labels ? [workspace.labels] : [],
+		return workspaces.map((result) => ({
+			...result.workspace,
+			labels: result.labels || [],
 		}));
 	}
 	async joinWorkspace({
@@ -312,7 +314,10 @@ export class WorkspaceService implements WorkspaceRpc {
 					userWorkspacesTable,
 					eq(userWorkspacesTable.workspaceId, workspacesTable.id),
 				)
-				.leftJoin(usersTable, eq(userWorkspacesTable.userId, usersTable.id))
+				.leftJoin(
+					usersTable,
+					eq(userWorkspacesTable.userId, usersTable.externalId),
+				)
 				.where(eq(workspacesTable.id, workspaceId));
 
 			if (workspaceWithUsers.length === 0) {
@@ -393,7 +398,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				tx
 					.select()
 					.from(usersTable)
-					.where(eq(usersTable.id, userId))
+					.where(eq(usersTable.externalId, userId))
 					.limit(1)
 					.then((results) => results[0]),
 
@@ -447,7 +452,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			await this.db
 				.update(usersTable)
 				.set({ onBoarding: false })
-				.where(eq(usersTable.id, user.id));
+				.where(eq(usersTable.externalId, user.id));
 		}
 	}
 	private async getWorkspaceWithLabels(

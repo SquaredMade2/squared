@@ -94,7 +94,10 @@ export class UserService implements UserRpc {
 		return await this.db
 			.select()
 			.from(userWorkspacesTable)
-			.leftJoin(usersTable, eq(usersTable.id, userWorkspacesTable.userId))
+			.leftJoin(
+				usersTable,
+				eq(usersTable.externalId, userWorkspacesTable.userId),
+			)
 			.where(eq(userWorkspacesTable.workspaceId, workspaceId))
 			.then((users) => users.map((u) => u.User).filter((u) => !!u));
 	}
@@ -104,7 +107,7 @@ export class UserService implements UserRpc {
 		return await this.db
 			.select()
 			.from(userTeamsTable)
-			.leftJoin(usersTable, eq(usersTable.id, userTeamsTable.userId))
+			.leftJoin(usersTable, eq(usersTable.externalId, userTeamsTable.userId))
 			.where(eq(userTeamsTable.teamId, teamId))
 			.then((users) => users.map((u) => u.User).filter((u) => !!u));
 	}
@@ -120,7 +123,7 @@ export class UserService implements UserRpc {
 			.from(usersTable)
 			.leftJoin(
 				userWorkspacesTable,
-				eq(usersTable.id, userWorkspacesTable.userId),
+				eq(usersTable.externalId, userWorkspacesTable.userId),
 			)
 			.where(eq(userWorkspacesTable.workspaceId, workspaceId));
 	}
@@ -192,7 +195,7 @@ export class UserService implements UserRpc {
 					workspacesTable,
 					eq(usersTable.defaultWorkspaceId, workspacesTable.id),
 				)
-				.where(eq(usersTable.id, userId))
+				.where(eq(usersTable.externalId, userId))
 				.then((results) => results[0]?.workspace);
 
 			if (defaultWorkspace) {

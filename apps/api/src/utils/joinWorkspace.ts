@@ -78,7 +78,7 @@ export const joinWorkspace = async (
 					),
 				),
 			getWorkspaceWithLabels(db, decoded.workspaceId),
-			db.select().from(usersTable).where(eq(usersTable.id, userId)),
+			db.select().from(usersTable).where(eq(usersTable.externalId, userId)),
 			db
 				.select()
 				.from(teamsTable)
@@ -146,7 +146,7 @@ export const joinWorkspace = async (
 	if (user.onBoarding) {
 		db.update(usersTable)
 			.set({ onBoarding: false })
-			.where(eq(usersTable.id, userId));
+			.where(eq(usersTable.externalId, userId));
 	}
 	return {
 		data: user,
