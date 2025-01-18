@@ -5,19 +5,19 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.test" });
 const db = createDb({ databaseUrl: process.env.TEST_DATABASE_URL });
 
-const waitForDatabase = async (retries = 5, delay = 2000) => {
-	for (let i = 0; i < retries; i++) {
-		try {
-			await db.execute(sql`SELECT 1`);
-			console.log("Database is ready");
-			return;
-		} catch {
-			console.log(`Attempt ${i + 1}: Database not ready, retrying...`);
-			await new Promise((resolve) => setTimeout(resolve, delay));
-		}
-	}
-	throw new Error("Database connection failed after multiple attempts");
-};
+// const waitForDatabase = async (retries = 5, delay = 2000) => {
+// 	for (let i = 0; i < retries; i++) {
+// 		try {
+// 			await db.execute(sql`SELECT 1`);
+// 			console.log("Database is ready");
+// 			return;
+// 		} catch {
+// 			console.log(`Attempt ${i + 1}: Database not ready, retrying...`);
+// 			await new Promise((resolve) => setTimeout(resolve, delay));
+// 		}
+// 	}
+// 	throw new Error("Database connection failed after multiple attempts");
+// };
 
 beforeAll(async () => {
 	try {
@@ -30,10 +30,10 @@ beforeAll(async () => {
 		});
 
 		// Wait for the database to be ready
-		await waitForDatabase();
+		// await waitForDatabase();
 
 		// Run migrations
-		execSync("pnpm run --filter=@squared/db db:push", { stdio: "inherit" });
+		execSync("pnpm run --filter=@squared/db db:migrate", { stdio: "inherit" });
 
 		// Seed the database
 		execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });

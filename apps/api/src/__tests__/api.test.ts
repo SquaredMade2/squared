@@ -102,6 +102,8 @@ describe("API Tests", () => {
 				.send(filter);
 			addResponseId(response);
 
+			console.log("response", response.body);
+
 			// this is a client error so the response code should be in the 400s
 			expect(response.statusCode).toBeGreaterThanOrEqual(400);
 			expect(response.statusCode).toBeLessThan(500);

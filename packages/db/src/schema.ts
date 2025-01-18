@@ -8,7 +8,6 @@ import {
 	primaryKey,
 	text,
 	timestamp,
-	unique,
 	uniqueIndex,
 	uuid,
 } from "drizzle-orm/pg-core";
@@ -76,7 +75,7 @@ export const teamsTable = pgTable(
 		id: uuid("id").defaultRandom().primaryKey().notNull(),
 		name: text(),
 		identifier: text().notNull(),
-		workspaceId: text().notNull(),
+		workspaceId: uuid().notNull(),
 		sprintsEnabled: boolean().default(false).notNull(),
 		sprintDuration: integer().default(2).notNull(),
 		cooldownDuration: integer().default(1).notNull(),
@@ -87,7 +86,7 @@ export const teamsTable = pgTable(
 	(table) => [
 		uniqueIndex("Team_workspaceId_identifier_key").using(
 			"btree",
-			table.workspaceId.asc().nullsLast().op("text_ops"),
+			table.workspaceId.asc().nullsLast().op("uuid_ops"),
 			table.identifier.asc().nullsLast().op("text_ops"),
 		),
 	],
@@ -96,24 +95,15 @@ export const teamsTable = pgTable(
 export const branchesTable = pgTable("Branch", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
-	taskId: text().notNull(),
-	githubRepoInfoId: text().notNull(),
+	taskId: uuid().notNull(),
+	githubRepoInfoId: uuid().notNull(),
 });
 
-export const githubRepoInfoTable = pgTable(
-	"GithubRepoInfo",
-	{
-		id: uuid("id").defaultRandom().primaryKey().notNull(),
-		repoName: text().notNull(),
-		owner: text().notNull(),
-	},
-	(table) => [
-		uniqueIndex("GithubRepoInfo_repoName_key").using(
-			"btree",
-			table.repoName.asc().nullsLast().op("text_ops"),
-		),
-	],
-);
+export const githubRepoInfoTable = pgTable("GithubRepoInfo", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
+	repoName: text().unique().notNull(),
+	owner: text().notNull(),
+});
 
 export const sprintsTable = pgTable("Sprint", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
@@ -121,7 +111,7 @@ export const sprintsTable = pgTable("Sprint", {
 	startDate: timestamp({ precision: 3 }).defaultNow().notNull(),
 	endDate: timestamp({ precision: 3 }).notNull(),
 	status: sprintStatus().notNull(),
-	teamId: text().notNull(),
+	teamId: uuid().notNull(),
 	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	updatedAt: timestamp({ precision: 3 })
 		.$onUpdate(() => new Date())
@@ -132,7 +122,7 @@ export const sprintsTable = pgTable("Sprint", {
 
 export const notificationsTable = pgTable("Notification", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
-	taskId: text().notNull(),
+	taskId: uuid().notNull(),
 	read: boolean().default(false).notNull(),
 	saved: boolean().default(false).notNull(),
 	description: text(),
@@ -141,66 +131,47 @@ export const notificationsTable = pgTable("Notification", {
 		.defaultNow()
 		.$onUpdate(() => new Date())
 		.notNull(),
-	workspaceId: text().notNull(),
+	workspaceId: uuid().notNull(),
 	dismissed: boolean().default(false).notNull(),
 	type: notificationType().notNull(),
 	userId: text().notNull(),
 });
 
-export const workspacesTable = pgTable(
-	"Workspace",
-	{
-		id: uuid("id").defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		url: text().notNull(),
-		companySize: integer(),
-		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		tasksCreated: integer().default(0).notNull(),
-		universalTokenLinkId: text(),
-		avatarUrl: text(),
-		admins: text().array().default([]).notNull(),
-		defaultView: text(),
-	},
-	(table) => [
-		uniqueIndex("Workspace_url_key").using(
-			"btree",
-			table.url.asc().nullsLast().op("text_ops"),
-		),
-	],
-);
+export const workspacesTable = pgTable("Workspace", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
+	url: text().unique().notNull(),
+	companySize: integer(),
+	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+	tasksCreated: integer().default(0).notNull(),
+	universalTokenLinkId: uuid(),
+	avatarUrl: text(),
+	admins: text().array().default([]).notNull(),
+	defaultView: text(),
+});
 
-export const usersTable = pgTable(
-	"User",
-	{
-		id: uuid("id").defaultRandom().primaryKey().notNull(),
-		name: text().notNull(),
-		username: text(),
-		email: text().notNull(),
-		lastLogin: timestamp({ precision: 3 }).defaultNow().notNull(),
-		onBoarding: boolean().default(true).notNull(),
-		defaultWorkspaceId: text(),
-		avatarUrl: text(),
-		savedNotificationIds: text().array().default([]).notNull(),
-		subscribedTasks: text().array().default([]).notNull(),
-		githubUsername: text(),
-		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-		lastViewedTaskId: text(),
-		externalId: text().notNull(),
-	},
-	(table) => [
-		uniqueIndex("User_email_key").using(
-			"btree",
-			table.email.asc().nullsLast().op("text_ops"),
-		),
-		unique("User_externalId_unique").on(table.externalId),
-	],
-);
+export const usersTable = pgTable("User", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
+	externalId: text().unique().notNull(),
+	name: text().notNull(),
+	username: text(),
+	email: text().unique().notNull(),
+	lastLogin: timestamp({ precision: 3 }).defaultNow().notNull(),
+	onBoarding: boolean().default(true).notNull(),
+	defaultWorkspaceId: uuid(),
+	avatarUrl: text(),
+	savedNotificationIds: text().array().default([]).notNull(),
+	subscribedTasks: text().array().default([]).notNull(),
+	githubUsername: text(),
+	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+	lastViewedTaskId: uuid(),
+});
 
 export const commentsTable = pgTable("Comment", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	comment: text().notNull(),
 	date: timestamp({ precision: 3 }).defaultNow().notNull(),
-	taskId: text().notNull(),
+	taskId: uuid().notNull(),
 	authorId: text().notNull(),
 });
 
@@ -214,18 +185,18 @@ export const tasksTable = pgTable(
 		identifier: text("identifier").notNull(),
 		dueDate: timestamp("due_date"),
 		effortEstimate: integer("effort_estimate"),
-		teamId: text("team_id").notNull(),
+		teamId: uuid("team_id").notNull(),
 		dateCreated: timestamp("date_created").defaultNow().notNull(),
 		assigneeId: text("assignee_id"),
 		labels: text("labels").array().default([]).notNull(),
-		workspaceId: text("workspace_id").notNull(),
+		workspaceId: uuid("workspace_id").notNull(),
 		updatedAt: timestamp("updated_at")
 			.defaultNow()
 			.$onUpdate(() => new Date())
 			.notNull(),
 		deleted: boolean("deleted").default(false).notNull(),
-		parentId: text("parent_id"),
-		sprintId: text("sprint_id"),
+		parentId: uuid("parent_id"),
+		sprintId: uuid("sprint_id"),
 		order: integer("order").default(0).notNull(),
 		status: status("status").default("backlog").notNull(),
 		priority: priority("priority").default("noPriority").notNull(),
@@ -244,37 +215,28 @@ export const labelsTable = pgTable("Label", {
 	name: text().notNull(),
 	description: text(),
 	color: text().notNull(),
-	workspaceId: text().notNull(),
+	workspaceId: uuid().notNull(),
 });
 
-export const universalTokenLinksTable = pgTable(
-	"UniversalTokenLink",
-	{
-		id: uuid("id").defaultRandom().primaryKey().notNull(),
-		token: text().default("").notNull(),
-		isEnabled: boolean().default(true).notNull(),
-		workspaceId: text().notNull(),
-	},
-	(table) => [
-		uniqueIndex("UniversalTokenLink_workspaceId_key").using(
-			"btree",
-			table.workspaceId.asc().nullsLast().op("text_ops"),
-		),
-	],
-);
+export const universalTokenLinksTable = pgTable("UniversalTokenLink", {
+	id: uuid("id").defaultRandom().primaryKey().notNull(),
+	token: text().default("").notNull(),
+	isEnabled: boolean().default(true).notNull(),
+	workspaceId: uuid().unique().notNull(),
+});
 
 export const workspaceRepositoriesTable = pgTable(
 	"WorkspaceRepositories",
 	{
 		id: uuid("id").defaultRandom().primaryKey().notNull(),
-		workspaceId: text().notNull(),
-		repoId: text().notNull(),
+		workspaceId: uuid().notNull(),
+		repoId: uuid().notNull(),
 	},
 	(table) => [
 		uniqueIndex("WorkspaceRepositories_workspaceId_repoId_key").using(
 			"btree",
-			table.workspaceId.asc().nullsLast().op("text_ops"),
-			table.repoId.asc().nullsLast().op("text_ops"),
+			table.workspaceId.asc().nullsLast().op("uuid_ops"),
+			table.repoId.asc().nullsLast().op("uuid_ops"),
 		),
 	],
 );
@@ -282,8 +244,8 @@ export const workspaceRepositoriesTable = pgTable(
 export const projectsTable = pgTable("Project", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
-	teamId: text(),
-	workspaceId: text(),
+	teamId: uuid(),
+	workspaceId: uuid(),
 });
 
 export const commitsTable = pgTable("Commit", {
@@ -293,15 +255,15 @@ export const commitsTable = pgTable("Commit", {
 	authorName: text(),
 	repoName: text(),
 	owner: text(),
-	branchId: text().notNull(),
-	taskId: text(),
+	branchId: uuid().notNull(),
+	taskId: uuid(),
 	timestamp: timestamp({ precision: 3 }).notNull(),
 });
 
 export const taskEventsTable = pgTable("TaskEvent", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
-	taskId: text().notNull(),
+	taskId: uuid().notNull(),
 	message: text().notNull(),
 	authorId: text().notNull(),
 });
@@ -313,20 +275,20 @@ export const savedFiltersTable = pgTable(
 		name: text().notNull(),
 		description: text().default(""),
 		filter: jsonb().$type<FilterCondition[]>().notNull(),
-		workspaceId: text(),
-		teamId: text(),
+		workspaceId: uuid(),
+		teamId: uuid(),
 		type: savedFilterType().notNull(),
-		sprintId: text(),
+		sprintId: uuid(),
 		authorId: text().notNull(),
 	},
 	(table) => [
 		index("teamIdx").using(
 			"btree",
-			table.teamId.asc().nullsLast().op("text_ops"),
+			table.teamId.asc().nullsLast().op("uuid_ops"),
 		),
 		index("workspaceIdx").using(
 			"btree",
-			table.workspaceId.asc().nullsLast().op("text_ops"),
+			table.workspaceId.asc().nullsLast().op("uuid_ops"),
 		),
 	],
 );
@@ -334,9 +296,9 @@ export const savedFiltersTable = pgTable(
 export const retrospectiveItemsTable = pgTable("RetrospectiveItem", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	content: text().notNull(),
-	wentWellSprintId: text(),
-	toImproveSprintId: text(),
-	actionItemsSprintId: text(),
+	wentWellSprintId: uuid(),
+	toImproveSprintId: uuid(),
+	actionItemsSprintId: uuid(),
 	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	updatedAt: timestamp({ precision: 3 })
 		.$onUpdate(() => new Date())
@@ -361,7 +323,7 @@ export const blockedTasksTable = pgTable(
 export const userWorkspacesTable = pgTable(
 	"UserWorkspace",
 	{
-		workspaceId: text().notNull(),
+		workspaceId: uuid().notNull(),
 		userId: text().notNull(),
 	},
 	(table) => [
@@ -375,7 +337,7 @@ export const userWorkspacesTable = pgTable(
 export const userTeamsTable = pgTable(
 	"UserTeam",
 	{
-		teamId: text().notNull(),
+		teamId: uuid().notNull(),
 		userId: text().notNull(),
 	},
 	(table) => [

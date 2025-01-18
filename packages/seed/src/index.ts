@@ -301,6 +301,7 @@ async function addNotification(
 
 seedDB().catch((e) => {
 	logger.error("Error seeding database: %0", e);
+	console.error("Error seeding database: ", e);
 });
 
 console.log("Seed script executed. Check the logs for results.");
