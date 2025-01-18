@@ -5,7 +5,6 @@ import {
 	type FilterCondition,
 	type SavedFilter,
 	eq,
-	inArray,
 	savedFiltersTable,
 	teamsTable,
 	userTeamsTable,

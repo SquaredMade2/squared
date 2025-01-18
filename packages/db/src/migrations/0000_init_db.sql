@@ -7,8 +7,8 @@ CREATE TYPE "public"."SavedFilterType" AS ENUM('TEAM', 'WORKSPACE');--> statemen
 CREATE TYPE "public"."SprintStatus" AS ENUM('PLANNED', 'ACTIVE', 'COMPLETED');--> statement-breakpoint
 CREATE TYPE "public"."Status" AS ENUM('backlog', 'todo', 'inProgress', 'inReview', 'done', 'canceled', 'archived');--> statement-breakpoint
 CREATE TABLE "_BlockedTasks" (
-	"A" text NOT NULL,
-	"B" text NOT NULL,
+	"A" uuid NOT NULL,
+	"B" uuid NOT NULL,
 	CONSTRAINT "_BlockedTasks_AB_pkey" PRIMARY KEY("A","B")
 );
 --> statement-breakpoint
@@ -41,9 +41,8 @@ CREATE TABLE "Commit" (
 --> statement-breakpoint
 CREATE TABLE "GithubRepoInfo" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"repoName" text NOT NULL,
-	"owner" text NOT NULL,
-	CONSTRAINT "GithubRepoInfo_repoName_unique" UNIQUE("repoName")
+	"repoName" text DEFAULT '' NOT NULL,
+	"owner" text DEFAULT '' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "Label" (
@@ -82,7 +81,7 @@ CREATE TABLE "RetrospectiveItem" (
 	"toImproveSprintId" uuid,
 	"actionItemsSprintId" uuid,
 	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
-	"updatedAt" timestamp (3) NOT NULL,
+	"updatedAt" timestamp (3) DEFAULT now() NOT NULL,
 	"type" "RetrospectiveItemType" DEFAULT 'toImprove' NOT NULL,
 	"likes" text[] DEFAULT '{}' NOT NULL,
 	"authorId" text NOT NULL
@@ -103,7 +102,7 @@ CREATE TABLE "SavedFilter" (
 CREATE TABLE "Sprint" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"startDate" timestamp (3) DEFAULT now() NOT NULL,
+	"startDate" timestamp (3) NOT NULL,
 	"endDate" timestamp (3) NOT NULL,
 	"status" "SprintStatus" NOT NULL,
 	"teamId" uuid NOT NULL,
@@ -120,26 +119,26 @@ CREATE TABLE "TaskEvent" (
 	"authorId" text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "tasks" (
+CREATE TABLE "Task" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"author_id" text NOT NULL,
 	"title" text NOT NULL,
 	"description" text,
 	"identifier" text NOT NULL,
-	"due_date" timestamp,
-	"effort_estimate" integer,
-	"team_id" uuid NOT NULL,
-	"date_created" timestamp DEFAULT now() NOT NULL,
-	"assignee_id" text,
-	"labels" text[] DEFAULT '{}' NOT NULL,
-	"workspace_id" uuid NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"dueDate" timestamp (3),
+	"effortEstimate" integer,
+	"teamId" uuid NOT NULL,
+	"dateCreated" timestamp (3) DEFAULT now() NOT NULL,
+	"labels" uuid[] DEFAULT '{}' NOT NULL,
+	"workspaceId" uuid NOT NULL,
+	"updatedAt" timestamp (3) DEFAULT now() NOT NULL,
 	"deleted" boolean DEFAULT false NOT NULL,
-	"parent_id" uuid,
-	"sprint_id" uuid,
-	"order" integer DEFAULT 0 NOT NULL,
+	"parentId" uuid,
+	"sprintId" uuid,
 	"status" "Status" DEFAULT 'backlog' NOT NULL,
-	"priority" "Priority" DEFAULT 'noPriority' NOT NULL
+	"priority" "Priority" DEFAULT 'noPriority' NOT NULL,
+	"order" integer DEFAULT 0 NOT NULL,
+	"authorId" text NOT NULL,
+	"assigneeId" text
 );
 --> statement-breakpoint
 CREATE TABLE "Team" (
@@ -156,11 +155,10 @@ CREATE TABLE "Team" (
 );
 --> statement-breakpoint
 CREATE TABLE "UniversalTokenLink" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"token" text DEFAULT '' NOT NULL,
+	"id" uuid PRIMARY KEY NOT NULL,
+	"token" text NOT NULL,
 	"isEnabled" boolean DEFAULT true NOT NULL,
-	"workspaceId" uuid NOT NULL,
-	CONSTRAINT "UniversalTokenLink_workspaceId_unique" UNIQUE("workspaceId")
+	"workspaceId" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "UserTeam" (
@@ -177,7 +175,6 @@ CREATE TABLE "UserWorkspace" (
 --> statement-breakpoint
 CREATE TABLE "User" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"externalId" text NOT NULL,
 	"name" text NOT NULL,
 	"username" text,
 	"email" text NOT NULL,
@@ -185,13 +182,13 @@ CREATE TABLE "User" (
 	"onBoarding" boolean DEFAULT true NOT NULL,
 	"defaultWorkspaceId" uuid,
 	"avatarUrl" text,
-	"savedNotificationIds" text[] DEFAULT '{}' NOT NULL,
+	"savedNotificationIds" uuid[] DEFAULT '{}' NOT NULL,
 	"subscribedTasks" text[] DEFAULT '{}' NOT NULL,
 	"githubUsername" text,
 	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
 	"lastViewedTaskId" uuid,
-	CONSTRAINT "User_externalId_unique" UNIQUE("externalId"),
-	CONSTRAINT "User_email_unique" UNIQUE("email")
+	"externalId" text NOT NULL,
+	CONSTRAINT "User_externalId_unique" UNIQUE("externalId")
 );
 --> statement-breakpoint
 CREATE TABLE "WorkspaceRepositories" (
@@ -205,19 +202,61 @@ CREATE TABLE "Workspace" (
 	"name" text NOT NULL,
 	"url" text NOT NULL,
 	"companySize" integer,
-	"createdAt" timestamp (3) DEFAULT now() NOT NULL,
 	"tasksCreated" integer DEFAULT 0 NOT NULL,
-	"universalTokenLinkId" uuid,
+	"universalTokenLinkId" text,
 	"avatarUrl" text,
 	"admins" text[] DEFAULT '{}' NOT NULL,
 	"defaultView" text,
-	CONSTRAINT "Workspace_url_unique" UNIQUE("url")
+	"createdAt" timestamp (3) DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE INDEX "_BlockedTasks_B_index" ON "_BlockedTasks" USING btree ("B" text_ops);--> statement-breakpoint
+ALTER TABLE "_BlockedTasks" ADD CONSTRAINT "_BlockedTasks_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "_BlockedTasks" ADD CONSTRAINT "_BlockedTasks_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Branch" ADD CONSTRAINT "Branch_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Branch" ADD CONSTRAINT "Branch_githubRepoInfoId_fkey" FOREIGN KEY ("githubRepoInfoId") REFERENCES "public"."GithubRepoInfo"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Comment" ADD CONSTRAINT "Comment_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Comment" ADD CONSTRAINT "Comment_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Commit" ADD CONSTRAINT "Commit_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "public"."Branch"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Commit" ADD CONSTRAINT "Commit_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Label" ADD CONSTRAINT "Label_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Project" ADD CONSTRAINT "Project_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "public"."Team"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Project" ADD CONSTRAINT "Project_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "RetrospectiveItem" ADD CONSTRAINT "RetrospectiveItem_wentWellSprintId_fkey" FOREIGN KEY ("wentWellSprintId") REFERENCES "public"."Sprint"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "RetrospectiveItem" ADD CONSTRAINT "RetrospectiveItem_toImproveSprintId_fkey" FOREIGN KEY ("toImproveSprintId") REFERENCES "public"."Sprint"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "RetrospectiveItem" ADD CONSTRAINT "RetrospectiveItem_actionItemsSprintId_fkey" FOREIGN KEY ("actionItemsSprintId") REFERENCES "public"."Sprint"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "RetrospectiveItem" ADD CONSTRAINT "RetrospectiveItem_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "SavedFilter" ADD CONSTRAINT "SavedFilter_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "SavedFilter" ADD CONSTRAINT "SavedFilter_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "public"."Team"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "SavedFilter" ADD CONSTRAINT "SavedFilter_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Sprint" ADD CONSTRAINT "Sprint_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "public"."Team"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "TaskEvent" ADD CONSTRAINT "TaskEvent_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "public"."Task"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "TaskEvent" ADD CONSTRAINT "TaskEvent_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Task" ADD CONSTRAINT "Task_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "public"."Task"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Task" ADD CONSTRAINT "Task_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "public"."Team"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Task" ADD CONSTRAINT "Task_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Task" ADD CONSTRAINT "Task_sprintId_fkey" FOREIGN KEY ("sprintId") REFERENCES "public"."Sprint"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Task" ADD CONSTRAINT "Task_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Task" ADD CONSTRAINT "Task_assigneeId_fkey" FOREIGN KEY ("assigneeId") REFERENCES "public"."User"("externalId") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "Team" ADD CONSTRAINT "Team_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "UniversalTokenLink" ADD CONSTRAINT "UniversalTokenLink_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "UserTeam" ADD CONSTRAINT "UserTeam_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "public"."Team"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "UserTeam" ADD CONSTRAINT "UserTeam_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "UserWorkspace" ADD CONSTRAINT "UserWorkspace_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "UserWorkspace" ADD CONSTRAINT "UserWorkspace_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("externalId") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "User" ADD CONSTRAINT "User_defaultWorkspaceId_fkey" FOREIGN KEY ("defaultWorkspaceId") REFERENCES "public"."Workspace"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "WorkspaceRepositories" ADD CONSTRAINT "WorkspaceRepositories_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "public"."Workspace"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "WorkspaceRepositories" ADD CONSTRAINT "WorkspaceRepositories_repoId_fkey" FOREIGN KEY ("repoId") REFERENCES "public"."GithubRepoInfo"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+CREATE INDEX "_BlockedTasks_B_index" ON "_BlockedTasks" USING btree ("B" uuid_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "GithubRepoInfo_repoName_key" ON "GithubRepoInfo" USING btree ("repoName" text_ops);--> statement-breakpoint
 CREATE INDEX "teamIdx" ON "SavedFilter" USING btree ("teamId" uuid_ops);--> statement-breakpoint
 CREATE INDEX "workspaceIdx" ON "SavedFilter" USING btree ("workspaceId" uuid_ops);--> statement-breakpoint
-CREATE UNIQUE INDEX "workspace_identifier_idx" ON "tasks" USING btree ("workspace_id","identifier");--> statement-breakpoint
-CREATE UNIQUE INDEX "team_identifier_idx" ON "tasks" USING btree ("team_id","identifier");--> statement-breakpoint
+CREATE UNIQUE INDEX "Task_teamId_identifier_key" ON "Task" USING btree ("teamId" uuid_ops,"identifier" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "Task_workspaceId_identifier_key" ON "Task" USING btree ("workspaceId" uuid_ops,"identifier" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "Team_workspaceId_identifier_key" ON "Team" USING btree ("workspaceId" uuid_ops,"identifier" text_ops);--> statement-breakpoint
-CREATE UNIQUE INDEX "WorkspaceRepositories_workspaceId_repoId_key" ON "WorkspaceRepositories" USING btree ("workspaceId" uuid_ops,"repoId" uuid_ops);
+CREATE UNIQUE INDEX "UniversalTokenLink_workspaceId_key" ON "UniversalTokenLink" USING btree ("workspaceId" uuid_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "User_email_key" ON "User" USING btree ("email" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "WorkspaceRepositories_workspaceId_repoId_key" ON "WorkspaceRepositories" USING btree ("workspaceId" uuid_ops,"repoId" uuid_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "Workspace_url_key" ON "Workspace" USING btree ("url" text_ops);

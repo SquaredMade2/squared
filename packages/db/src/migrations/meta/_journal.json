@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1737181776743,
+      "when": 1737189753151,
       "tag": "0000_init_db",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1737187528081,
-      "tag": "0001_safe_bloodstrike",
       "breakpoints": true
     }
   ]

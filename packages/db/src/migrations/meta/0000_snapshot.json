@@ -1,5 +1,5 @@
 {
-  "id": "6b1292c5-a23b-4b55-8422-d2a2b8ca0a1f",
+  "id": "f1c6d863-1e07-40bc-92e7-b746c9a675a9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,13 +10,13 @@
       "columns": {
         "A": {
           "name": "A",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "B": {
           "name": "B",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         }
@@ -30,7 +30,7 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "text_ops"
+              "opclass": "uuid_ops"
             }
           ],
           "isUnique": false,
@@ -39,7 +39,34 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "_BlockedTasks_A_fkey": {
+          "name": "_BlockedTasks_A_fkey",
+          "tableFrom": "_BlockedTasks",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "A"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "_BlockedTasks_B_fkey": {
+          "name": "_BlockedTasks_B_fkey",
+          "tableFrom": "_BlockedTasks",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "B"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {
         "_BlockedTasks_AB_pkey": {
           "name": "_BlockedTasks_AB_pkey",
@@ -85,7 +112,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Branch_taskId_fkey": {
+          "name": "Branch_taskId_fkey",
+          "tableFrom": "Branch",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Branch_githubRepoInfoId_fkey": {
+          "name": "Branch_githubRepoInfoId_fkey",
+          "tableFrom": "Branch",
+          "tableTo": "GithubRepoInfo",
+          "columnsFrom": [
+            "githubRepoInfoId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -130,7 +184,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Comment_taskId_fkey": {
+          "name": "Comment_taskId_fkey",
+          "tableFrom": "Comment",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Comment_authorId_fkey": {
+          "name": "Comment_authorId_fkey",
+          "tableFrom": "Comment",
+          "tableTo": "User",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -198,7 +279,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Commit_branchId_fkey": {
+          "name": "Commit_branchId_fkey",
+          "tableFrom": "Commit",
+          "tableTo": "Branch",
+          "columnsFrom": [
+            "branchId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Commit_taskId_fkey": {
+          "name": "Commit_taskId_fkey",
+          "tableFrom": "Commit",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -220,27 +328,38 @@
           "name": "repoName",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "''"
         },
         "owner": {
           "name": "owner",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "''"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "GithubRepoInfo_repoName_key": {
+          "name": "GithubRepoInfo_repoName_key",
+          "columns": [
+            {
+              "expression": "repoName",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "GithubRepoInfo_repoName_unique": {
-          "name": "GithubRepoInfo_repoName_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "repoName"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -282,7 +401,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Label_workspaceId_fkey": {
+          "name": "Label_workspaceId_fkey",
+          "tableFrom": "Label",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -368,7 +501,47 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Notification_taskId_fkey": {
+          "name": "Notification_taskId_fkey",
+          "tableFrom": "Notification",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Notification_workspaceId_fkey": {
+          "name": "Notification_workspaceId_fkey",
+          "tableFrom": "Notification",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Notification_userId_fkey": {
+          "name": "Notification_userId_fkey",
+          "tableFrom": "Notification",
+          "tableTo": "User",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -406,7 +579,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Project_teamId_fkey": {
+          "name": "Project_teamId_fkey",
+          "tableFrom": "Project",
+          "tableTo": "Team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "Project_workspaceId_fkey": {
+          "name": "Project_workspaceId_fkey",
+          "tableFrom": "Project",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -459,7 +659,8 @@
           "name": "updatedAt",
           "type": "timestamp (3)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "now()"
         },
         "type": {
           "name": "type",
@@ -484,7 +685,60 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "RetrospectiveItem_wentWellSprintId_fkey": {
+          "name": "RetrospectiveItem_wentWellSprintId_fkey",
+          "tableFrom": "RetrospectiveItem",
+          "tableTo": "Sprint",
+          "columnsFrom": [
+            "wentWellSprintId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "RetrospectiveItem_toImproveSprintId_fkey": {
+          "name": "RetrospectiveItem_toImproveSprintId_fkey",
+          "tableFrom": "RetrospectiveItem",
+          "tableTo": "Sprint",
+          "columnsFrom": [
+            "toImproveSprintId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "RetrospectiveItem_actionItemsSprintId_fkey": {
+          "name": "RetrospectiveItem_actionItemsSprintId_fkey",
+          "tableFrom": "RetrospectiveItem",
+          "tableTo": "Sprint",
+          "columnsFrom": [
+            "actionItemsSprintId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "RetrospectiveItem_authorId_fkey": {
+          "name": "RetrospectiveItem_authorId_fkey",
+          "tableFrom": "RetrospectiveItem",
+          "tableTo": "User",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -587,7 +841,47 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "SavedFilter_workspaceId_fkey": {
+          "name": "SavedFilter_workspaceId_fkey",
+          "tableFrom": "SavedFilter",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "SavedFilter_teamId_fkey": {
+          "name": "SavedFilter_teamId_fkey",
+          "tableFrom": "SavedFilter",
+          "tableTo": "Team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "SavedFilter_authorId_fkey": {
+          "name": "SavedFilter_authorId_fkey",
+          "tableFrom": "SavedFilter",
+          "tableTo": "User",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -615,8 +909,7 @@
           "name": "startDate",
           "type": "timestamp (3)",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         },
         "endDate": {
           "name": "endDate",
@@ -659,7 +952,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Sprint_teamId_fkey": {
+          "name": "Sprint_teamId_fkey",
+          "tableFrom": "Sprint",
+          "tableTo": "Team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -704,15 +1011,42 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "TaskEvent_taskId_fkey": {
+          "name": "TaskEvent_taskId_fkey",
+          "tableFrom": "TaskEvent",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "TaskEvent_authorId_fkey": {
+          "name": "TaskEvent_authorId_fkey",
+          "tableFrom": "TaskEvent",
+          "tableTo": "User",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.tasks": {
-      "name": "tasks",
+    "public.Task": {
+      "name": "Task",
       "schema": "",
       "columns": {
         "id": {
@@ -721,12 +1055,6 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
-        },
-        "author_id": {
-          "name": "author_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         },
         "title": {
           "name": "title",
@@ -746,53 +1074,47 @@
           "primaryKey": false,
           "notNull": true
         },
-        "due_date": {
-          "name": "due_date",
-          "type": "timestamp",
+        "dueDate": {
+          "name": "dueDate",
+          "type": "timestamp (3)",
           "primaryKey": false,
           "notNull": false
         },
-        "effort_estimate": {
-          "name": "effort_estimate",
+        "effortEstimate": {
+          "name": "effortEstimate",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "team_id": {
-          "name": "team_id",
+        "teamId": {
+          "name": "teamId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "date_created": {
-          "name": "date_created",
-          "type": "timestamp",
+        "dateCreated": {
+          "name": "dateCreated",
+          "type": "timestamp (3)",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "assignee_id": {
-          "name": "assignee_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "labels": {
           "name": "labels",
-          "type": "text[]",
+          "type": "uuid[]",
           "primaryKey": false,
           "notNull": true,
           "default": "'{}'"
         },
-        "workspace_id": {
-          "name": "workspace_id",
+        "workspaceId": {
+          "name": "workspaceId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp (3)",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -804,24 +1126,17 @@
           "notNull": true,
           "default": false
         },
-        "parent_id": {
-          "name": "parent_id",
+        "parentId": {
+          "name": "parentId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "sprint_id": {
-          "name": "sprint_id",
+        "sprintId": {
+          "name": "sprintId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
-        },
-        "order": {
-          "name": "order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
         },
         "status": {
           "name": "status",
@@ -838,23 +1153,44 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'noPriority'"
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "authorId": {
+          "name": "authorId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assigneeId": {
+          "name": "assigneeId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
-        "workspace_identifier_idx": {
-          "name": "workspace_identifier_idx",
+        "Task_teamId_identifier_key": {
+          "name": "Task_teamId_identifier_key",
           "columns": [
             {
-              "expression": "workspace_id",
+              "expression": "teamId",
               "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "uuid_ops"
             },
             {
               "expression": "identifier",
               "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops"
             }
           ],
           "isUnique": true,
@@ -862,20 +1198,22 @@
           "method": "btree",
           "with": {}
         },
-        "team_identifier_idx": {
-          "name": "team_identifier_idx",
+        "Task_workspaceId_identifier_key": {
+          "name": "Task_workspaceId_identifier_key",
           "columns": [
             {
-              "expression": "team_id",
+              "expression": "workspaceId",
               "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "uuid_ops"
             },
             {
               "expression": "identifier",
               "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops"
             }
           ],
           "isUnique": true,
@@ -884,7 +1222,86 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Task_parentId_fkey": {
+          "name": "Task_parentId_fkey",
+          "tableFrom": "Task",
+          "tableTo": "Task",
+          "columnsFrom": [
+            "parentId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "Task_teamId_fkey": {
+          "name": "Task_teamId_fkey",
+          "tableFrom": "Task",
+          "tableTo": "Team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Task_workspaceId_fkey": {
+          "name": "Task_workspaceId_fkey",
+          "tableFrom": "Task",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Task_sprintId_fkey": {
+          "name": "Task_sprintId_fkey",
+          "tableFrom": "Task",
+          "tableTo": "Sprint",
+          "columnsFrom": [
+            "sprintId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        },
+        "Task_authorId_fkey": {
+          "name": "Task_authorId_fkey",
+          "tableFrom": "Task",
+          "tableTo": "User",
+          "columnsFrom": [
+            "authorId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "Task_assigneeId_fkey": {
+          "name": "Task_assigneeId_fkey",
+          "tableFrom": "Task",
+          "tableTo": "User",
+          "columnsFrom": [
+            "assigneeId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -989,7 +1406,21 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Team_workspaceId_fkey": {
+          "name": "Team_workspaceId_fkey",
+          "tableFrom": "Team",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -1004,15 +1435,13 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "token": {
           "name": "token",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "''"
+          "notNull": true
         },
         "isEnabled": {
           "name": "isEnabled",
@@ -1028,18 +1457,41 @@
           "notNull": true
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "UniversalTokenLink_workspaceId_unique": {
-          "name": "UniversalTokenLink_workspaceId_unique",
-          "nullsNotDistinct": false,
+      "indexes": {
+        "UniversalTokenLink_workspaceId_key": {
+          "name": "UniversalTokenLink_workspaceId_key",
           "columns": [
-            "workspaceId"
-          ]
+            {
+              "expression": "workspaceId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "uuid_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {
+        "UniversalTokenLink_workspaceId_fkey": {
+          "name": "UniversalTokenLink_workspaceId_fkey",
+          "tableFrom": "UniversalTokenLink",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1062,7 +1514,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "UserTeam_teamId_fkey": {
+          "name": "UserTeam_teamId_fkey",
+          "tableFrom": "UserTeam",
+          "tableTo": "Team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "UserTeam_userId_fkey": {
+          "name": "UserTeam_userId_fkey",
+          "tableFrom": "UserTeam",
+          "tableTo": "User",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {
         "UserTeam_pkey": {
           "name": "UserTeam_pkey",
@@ -1095,7 +1574,34 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "UserWorkspace_workspaceId_fkey": {
+          "name": "UserWorkspace_workspaceId_fkey",
+          "tableFrom": "UserWorkspace",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "UserWorkspace_userId_fkey": {
+          "name": "UserWorkspace_userId_fkey",
+          "tableFrom": "UserWorkspace",
+          "tableTo": "User",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "externalId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {
         "UserWorkspace_pkey": {
           "name": "UserWorkspace_pkey",
@@ -1120,12 +1626,6 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
-        },
-        "externalId": {
-          "name": "externalId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         },
         "name": {
           "name": "name",
@@ -1173,7 +1673,7 @@
         },
         "savedNotificationIds": {
           "name": "savedNotificationIds",
-          "type": "text[]",
+          "type": "uuid[]",
           "primaryKey": false,
           "notNull": true,
           "default": "'{}'"
@@ -1203,10 +1703,47 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "externalId": {
+          "name": "externalId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
+      "indexes": {
+        "User_email_key": {
+          "name": "User_email_key",
+          "columns": [
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "User_defaultWorkspaceId_fkey": {
+          "name": "User_defaultWorkspaceId_fkey",
+          "tableFrom": "User",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "defaultWorkspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "User_externalId_unique": {
@@ -1214,13 +1751,6 @@
           "nullsNotDistinct": false,
           "columns": [
             "externalId"
-          ]
-        },
-        "User_email_unique": {
-          "name": "User_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
           ]
         }
       },
@@ -1277,7 +1807,34 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "WorkspaceRepositories_workspaceId_fkey": {
+          "name": "WorkspaceRepositories_workspaceId_fkey",
+          "tableFrom": "WorkspaceRepositories",
+          "tableTo": "Workspace",
+          "columnsFrom": [
+            "workspaceId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "WorkspaceRepositories_repoId_fkey": {
+          "name": "WorkspaceRepositories_repoId_fkey",
+          "tableFrom": "WorkspaceRepositories",
+          "tableTo": "GithubRepoInfo",
+          "columnsFrom": [
+            "repoId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -1313,13 +1870,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp (3)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
         "tasksCreated": {
           "name": "tasksCreated",
           "type": "integer",
@@ -1329,7 +1879,7 @@
         },
         "universalTokenLinkId": {
           "name": "universalTokenLinkId",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -1351,20 +1901,36 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp (3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Workspace_url_key": {
+          "name": "Workspace_url_key",
+          "columns": [
+            {
+              "expression": "url",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "Workspace_url_unique": {
-          "name": "Workspace_url_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "url"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

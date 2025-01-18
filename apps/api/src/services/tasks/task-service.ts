@@ -456,7 +456,7 @@ export class TaskService implements TaskRpc {
 				.innerJoin(blockedTasksTable, eq(blockedTasksTable.a, tasksTable.id))
 				.where(eq(blockedTasksTable.b, taskId));
 
-			return blockedByTasks.map(({ tasks }) => tasks);
+			return blockedByTasks.map(({ Task }) => Task);
 		});
 	}
 
@@ -483,7 +483,7 @@ export class TaskService implements TaskRpc {
 			}
 
 			return {
-				blockedBy: blockedByTasks.map(({ tasks }) => tasks),
+				blockedBy: blockedByTasks.map(({ Task }) => Task),
 				blockingIds: blockingTasks.map(({ id }) => id),
 			};
 		});

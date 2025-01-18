@@ -240,21 +240,25 @@ async function addTask(
 	const identifier = `${team.identifier}-${updatedWorkspace.tasksCreated + 1}`;
 	const randomLabelIds = getRandomLabels(taskLabels);
 
+	const data = {
+		authorId: user.externalId,
+		title: taskTitle,
+		description: taskDescription,
+		status: taskStatus,
+		priority: taskPriority,
+		dueDate: taskDueDate,
+		effortEstimate: taskEffortEstimate,
+		identifier: identifier,
+		teamId: team.id,
+		assigneeId: user.externalId,
+		labels: randomLabelIds,
+		workspaceId: workspace.id,
+	};
+
 	const [task] = await tx
 		.insert(tasksTable)
 		.values({
-			authorId: user.externalId,
-			title: taskTitle,
-			description: taskDescription,
-			status: taskStatus,
-			priority: taskPriority,
-			dueDate: taskDueDate,
-			effortEstimate: taskEffortEstimate,
-			identifier: identifier,
-			teamId: team.id,
-			assigneeId: user.externalId,
-			labels: randomLabelIds,
-			workspaceId: workspace.id,
+			...data,
 		})
 		.returning();
 

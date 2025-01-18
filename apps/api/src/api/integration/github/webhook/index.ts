@@ -211,7 +211,7 @@ async function handleBranchAndCommitEvents(
 		.where(eq(tasksTable.identifier, identifier))
 		.limit(1);
 
-	if (!task || !task.tasks.workspaceId) {
+	if (!task || !task.Task.workspaceId) {
 		throw new Error(`Task ${identifier} not found or has no workspace`);
 	}
 
@@ -234,7 +234,7 @@ async function handleBranchAndCommitEvents(
 	await db
 		.insert(workspaceRepositoriesTable)
 		.values({
-			workspaceId: task.tasks.workspaceId,
+			workspaceId: task.Task.workspaceId,
 			repoId: githubRepoInfo.id,
 		})
 		.onConflictDoNothing();
@@ -245,7 +245,7 @@ async function handleBranchAndCommitEvents(
 		.where(
 			and(
 				eq(branchesTable.name, branchName),
-				eq(branchesTable.taskId, task.tasks.id),
+				eq(branchesTable.taskId, task.Task.id),
 			),
 		)
 		.limit(1);
@@ -257,7 +257,7 @@ async function handleBranchAndCommitEvents(
 			.insert(branchesTable)
 			.values({
 				name: branchName || "",
-				taskId: task.tasks.id,
+				taskId: task.Task.id,
 				githubRepoInfoId: githubRepoInfo.id,
 			})
 			.returning()
@@ -278,7 +278,7 @@ async function handleBranchAndCommitEvents(
 					branchId: branch.id,
 					repoName: repoFullName,
 					owner: repoOwner,
-					taskId: task.tasks.id,
+					taskId: task.Task.id,
 				})
 				.onConflictDoUpdate({
 					target: commitsTable.id,
