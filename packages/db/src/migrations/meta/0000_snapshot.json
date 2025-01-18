@@ -1,5 +1,5 @@
 {
-	"id": "ada56f4e-b9f9-480e-b6a8-4e31404f7aea",
+	"id": "90e1dd74-163f-4bf1-915f-c00b78ba09b1",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
@@ -111,7 +111,7 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"taskId": {
 					"name": "taskId",
@@ -337,14 +337,14 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"updatedAt": {
 					"name": "updatedAt",
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"workspaceId": {
 					"name": "workspaceId",
@@ -459,7 +459,7 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"updatedAt": {
 					"name": "updatedAt",
@@ -479,7 +479,7 @@
 					"name": "likes",
 					"type": "text[]",
 					"primaryKey": false,
-					"notNull": false,
+					"notNull": true,
 					"default": "'{}'"
 				},
 				"authorId": {
@@ -523,9 +523,9 @@
 				},
 				"filter": {
 					"name": "filter",
-					"type": "jsonb[]",
+					"type": "jsonb",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
 				},
 				"workspaceId": {
 					"name": "workspaceId",
@@ -621,7 +621,8 @@
 					"name": "startDate",
 					"type": "timestamp (3)",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"default": "now()"
 				},
 				"endDate": {
 					"name": "endDate",
@@ -647,13 +648,14 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"updatedAt": {
 					"name": "updatedAt",
 					"type": "timestamp (3)",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"default": "now()"
 				},
 				"description": {
 					"name": "description",
@@ -686,7 +688,7 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"taskId": {
 					"name": "taskId",
@@ -950,7 +952,7 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"tasksPerSprint": {
 					"name": "tasksPerSprint",
@@ -1151,7 +1153,7 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"onBoarding": {
 					"name": "onBoarding",
@@ -1197,7 +1199,7 @@
 					"type": "timestamp (3)",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "CURRENT_TIMESTAMP"
+					"default": "now()"
 				},
 				"lastViewedTaskId": {
 					"name": "lastViewedTaskId",
@@ -1327,6 +1329,13 @@
 					"type": "integer",
 					"primaryKey": false,
 					"notNull": false
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp (3)",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
 				},
 				"tasksCreated": {
 					"name": "tasksCreated",

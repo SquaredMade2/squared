@@ -5,15 +5,8 @@
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1737074998676,
+			"when": 1737171403193,
 			"tag": "0000_init_db",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1737166966446,
-			"tag": "0001_square_rachel_grey",
 			"breakpoints": true
 		}
 	]
