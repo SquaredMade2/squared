@@ -96,13 +96,10 @@ describe("API Tests", () => {
 		it("does not insert a filter if the team doesn't exist", async () => {
 			const { authorId } = await getUserAndTeamIDs();
 			const filter = newBasicFilter({ authorId, teamId: randomUUID() });
-			console.log("Filter Request: ", filter);
 			const response = await request(app)
 				.post(createFilterEndpoint)
 				.send(filter);
 			addResponseId(response);
-
-			console.log("Filter Response: ", response.body);
 
 			// this is a client error so the response code should be in the 400s
 			expect(response.statusCode).toBeGreaterThanOrEqual(400);

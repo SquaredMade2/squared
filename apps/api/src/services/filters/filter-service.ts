@@ -48,7 +48,7 @@ export class FilterService implements FilterRpc {
 		return this.db
 			.select()
 			.from(savedFiltersTable)
-			.where(eq(savedFiltersTable, teamId))
+			.where(eq(savedFiltersTable.teamId, teamId))
 			.then((f) =>
 				f.map(({ filter, ...rest }: SavedFilterType) => ({
 					...rest,
