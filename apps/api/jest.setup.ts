@@ -1,15 +1,14 @@
 import { execSync } from "node:child_process";
-import { PrismaClient } from "@squared/db";
+import { createDb, sql } from "@squared/db";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.test" });
-
-const prisma = new PrismaClient();
+const db = createDb({ databaseUrl: process.env.TEST_DATABASE_URL });
 
 const waitForDatabase = async (retries = 5, delay = 2000) => {
 	for (let i = 0; i < retries; i++) {
 		try {
-			await prisma.$queryRaw`SELECT 1`;
+			await db.execute(sql`SELECT 1`);
 			console.log("Database is ready");
 			return;
 		} catch {
@@ -46,8 +45,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
 	try {
-		await prisma.$disconnect();
-
 		// Stop the test database
 		execSync("pnpm run --filter=@squared/seed docker:db:down", {
 			stdio: "inherit",
