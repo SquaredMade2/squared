@@ -84,7 +84,7 @@ export function createRoute({ db }: { db: DBClient }): Route<Params> {
 
 				res.status(204).json({ message: "No relevant event type" });
 			} catch (error) {
-				logger.error("Error handling webhook: %0", error);
+				logger.error("Error handling webhook: %s", error);
 				res.status(500).json({
 					message: `Error during webhook: ${error instanceof Error && `: ${error.message}`}`,
 				});
