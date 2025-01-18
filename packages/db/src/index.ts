@@ -1,15 +1,15 @@
-import { neon, neonConfig } from "@neondatabase/serverless";
-import { type NeonHttpQueryResultHKT, drizzle } from "drizzle-orm/neon-http";
-import * as schema from "./schema";
-export * from "./schema";
-export * from "drizzle-orm";
+import { Pool, neonConfig } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
+import { type NeonQueryResultHKT, drizzle } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import ws from "ws";
+import * as schema from "./schema";
+export * from "drizzle-orm";
+export * from "./schema";
 
 export type DBClient = ReturnType<typeof drizzle<typeof schema>>;
 export type TransactionClient = PgTransaction<
-	NeonHttpQueryResultHKT,
+	NeonQueryResultHKT,
 	typeof schema,
 	ExtractTablesWithRelations<typeof schema>
 >;
@@ -17,8 +17,8 @@ declare global {
 	var cachedDb: DBClient;
 }
 
-// Function to create the database connection
 export const createDb = ({ databaseUrl }: { databaseUrl?: string }) => {
+	// Function to create the database connection
 	const config = {
 		databaseUrl:
 			databaseUrl ||
@@ -27,7 +27,6 @@ export const createDb = ({ databaseUrl }: { databaseUrl?: string }) => {
 		localDb: process.env.LOCAL_DB || "true",
 		nodeEnv: process.env.NODE_ENV || "test",
 	};
-	let db: DBClient;
 
 	if (config.localDb) {
 		neonConfig.fetchEndpoint = (host) => {
@@ -42,18 +41,6 @@ export const createDb = ({ databaseUrl }: { databaseUrl?: string }) => {
 		config.databaseUrl = parsedDatabaseURL.toString();
 	}
 
-	if (config.nodeEnv === "production") {
-		// In production, create a new connection for each request
-		const sql = neon(config.databaseUrl);
-		db = drizzle(sql, { schema });
-	} else {
-		// In development, reuse the connection
-		if (!global.cachedDb) {
-			const sql = neon(config.databaseUrl);
-			global.cachedDb = drizzle(sql, { schema });
-		}
-		db = global.cachedDb;
-	}
-
-	return db;
+	const pool = new Pool({ connectionString: config.databaseUrl });
+	return drizzle({ client: pool, schema });
 };

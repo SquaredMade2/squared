@@ -1,8 +1,12 @@
 import { faker } from "@faker-js/faker";
-import type { Team, User, Workspace } from "@squared/db";
 import {
+	type Label,
 	Priority,
 	Status,
+	type Team,
+	type TransactionClient,
+	type User,
+	type Workspace,
 	commentsTable,
 	createDb,
 	eq,
@@ -21,58 +25,61 @@ import "dotenv/config";
 
 const logger = createCustomLogger("seed");
 
-const db = createDb({ databaseUrl: process.env.TEST_DATABASE_URL });
+const db = createDb({ databaseUrl: process.env.DATABASE_URL });
 
 async function seedDB() {
-	const workspaces = await Promise.all([
-		addWorkspace(),
-		addWorkspace(),
-		addWorkspace(),
-	]);
+	await db.transaction(async (tx) => {
+		const workspaces = await Promise.all([
+			addWorkspace(tx),
+			addWorkspace(tx),
+			addWorkspace(tx),
+		]);
 
-	const user = await addMainUser();
+		const user = await addMainUser(tx);
 
-	for (const workspace of workspaces) {
-		await addUserToWorkspace(user, workspace);
+		for (const workspace of workspaces) {
+			await addUserToWorkspace(tx, user, workspace);
 
-		const numTeams = faker.number.int({ min: 1, max: 2 });
+			const numTeams = faker.number.int({ min: 1, max: 2 });
 
-		for (let j = 0; j < numTeams; j++) {
-			const team = await addTeam(workspace, user);
-			const numUsers = faker.number.int({ min: 3, max: 6 });
-			const numTasks = faker.number.int({ min: 30, max: 50 });
-			const users = [user];
-			for (let i = 0; i < numUsers; i++) {
-				const newUser = await addUser();
-				await addUserToWorkspace(newUser, workspace);
-				await addUserToTeam(newUser, team);
-				users.push(newUser);
-			}
+			for (let j = 0; j < numTeams; j++) {
+				const team = await addTeam(tx, workspace, user);
+				const numUsers = faker.number.int({ min: 3, max: 6 });
+				const numTasks = faker.number.int({ min: 30, max: 50 });
+				const users = [user];
+				for (let i = 0; i < numUsers; i++) {
+					const newUser = await addUser(tx);
+					await addUserToWorkspace(tx, newUser, workspace);
+					await addUserToTeam(tx, newUser, team);
+					users.push(newUser);
+				}
 
-			for (let l = 0; l < numTasks; l++) {
-				const author =
-					users[faker.number.int({ min: 0, max: users.length - 1 })];
-				const task = await addTask(team, workspace, author);
-				const numComments = faker.number.int({ min: 0, max: 3 });
-
-				for (let c = 0; c < numComments; c++) {
+				for (let l = 0; l < numTasks; l++) {
 					const author =
 						users[faker.number.int({ min: 0, max: users.length - 1 })];
-					await addComment(author.externalId, task.id);
+					const task = await addTask(tx, team, workspace, author);
+					const numComments = faker.number.int({ min: 0, max: 3 });
+
+					for (let c = 0; c < numComments; c++) {
+						const author =
+							users[faker.number.int({ min: 0, max: users.length - 1 })];
+						await addComment(tx, author.externalId, task.id);
+					}
 				}
 			}
 		}
-	}
+	});
+
 	logger.info("Database seeding completed");
 }
 
-async function addMainUser() {
+async function addMainUser(tx: TransactionClient) {
 	const name = process.env.SEED_NAME || faker.person.fullName();
 	const email = process.env.SEED_EMAIL || faker.internet.email();
 	const externalId = process.env.CLERK_EXTERNAL_ID || faker.internet.password();
 	const username = name.replace(" ", "");
 
-	const [user] = await db
+	const [user] = await tx
 		.insert(usersTable)
 		.values({
 			name: name,
@@ -86,7 +93,7 @@ async function addMainUser() {
 	return user;
 }
 
-async function addUser() {
+async function addUser(tx: TransactionClient) {
 	const firstName = faker.person.firstName();
 	const lastName = faker.person.lastName();
 	const fullName = `${firstName} ${lastName}`;
@@ -94,7 +101,7 @@ async function addUser() {
 	const email = faker.internet.email({ firstName, lastName });
 	const externalId = `user_${faker.internet.password()}`;
 
-	const [user] = await db
+	const [user] = await tx
 		.insert(usersTable)
 		.values({
 			name: fullName,
@@ -109,25 +116,29 @@ async function addUser() {
 	return user;
 }
 
-async function addUserToWorkspace(user: User, workspace: Workspace) {
-	await db.insert(userWorkspacesTable).values({
+async function addUserToWorkspace(
+	tx: TransactionClient,
+	user: User,
+	workspace: Workspace,
+) {
+	await tx.insert(userWorkspacesTable).values({
 		userId: user.externalId,
 		workspaceId: workspace.id,
 	});
 }
 
-async function addUserToTeam(user: User, team: Team) {
-	await db.insert(userTeamsTable).values({
+async function addUserToTeam(tx: TransactionClient, user: User, team: Team) {
+	await tx.insert(userTeamsTable).values({
 		userId: user.externalId,
 		teamId: team.id,
 	});
 }
 
-async function addWorkspace() {
+async function addWorkspace(tx: TransactionClient) {
 	const workspaceName = faker.internet.domainWord();
 	const workspaceCompanySize = faker.number.int({ max: 1000 });
 
-	const [workspace] = await db
+	const [workspace] = await tx
 		.insert(workspacesTable)
 		.values({
 			name: workspaceName,
@@ -146,7 +157,7 @@ async function addWorkspace() {
 		{ name: "Design", description: "Design related task", color: "#33FFBD" },
 	];
 
-	await db.insert(labelsTable).values(
+	await tx.insert(labelsTable).values(
 		defaultLabels.map((label) => ({
 			...label,
 			workspaceId: workspace.id,
@@ -156,12 +167,15 @@ async function addWorkspace() {
 	return workspace;
 }
 
-async function addTeam(workspace: Workspace, user: User) {
+async function addTeam(
+	tx: TransactionClient,
+	workspace: Workspace,
+	user: User,
+) {
 	const teamName = faker.internet.domainWord();
 	const teamIdentifier = faker.string.alpha({ length: 3, casing: "upper" });
 
-	// Insert the team
-	const [team] = await db
+	const [team] = await tx
 		.insert(teamsTable)
 		.values({
 			name: teamName,
@@ -170,8 +184,7 @@ async function addTeam(workspace: Workspace, user: User) {
 		})
 		.returning();
 
-	// Insert the user-team relationship
-	await db.insert(userTeamsTable).values({
+	await tx.insert(userTeamsTable).values({
 		userId: user.externalId,
 		teamId: team.id,
 	});
@@ -179,7 +192,7 @@ async function addTeam(workspace: Workspace, user: User) {
 	return team;
 }
 
-const getRandomLabels = (labels: { id: string }[]) => {
+const getRandomLabels = (labels: Label[]) => {
 	const numLabels = faker.number.int({ min: 1, max: labels.length });
 	return faker.helpers
 		.shuffle(labels)
@@ -187,7 +200,12 @@ const getRandomLabels = (labels: { id: string }[]) => {
 		.map((label) => label.id);
 };
 
-async function addTask(team: Team, workspace: Workspace, user: User) {
+async function addTask(
+	tx: TransactionClient,
+	team: Team,
+	workspace: Workspace,
+	user: User,
+) {
 	const taskTitle = faker.lorem.words({ min: 1, max: 3 });
 	const taskDescription = faker.lorem.words({ min: 3, max: 5 });
 	const taskStatus = faker.helpers.arrayElement([
@@ -205,7 +223,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		Priority.low,
 	]);
 
-	const taskLabels = await db
+	const taskLabels = await tx
 		.select()
 		.from(labelsTable)
 		.where(eq(labelsTable.workspaceId, workspace.id));
@@ -213,7 +231,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);
 
-	const [updatedWorkspace] = await db
+	const [updatedWorkspace] = await tx
 		.update(workspacesTable)
 		.set({ tasksCreated: sql`${workspacesTable.tasksCreated} + 1` })
 		.where(eq(workspacesTable.id, workspace.id))
@@ -222,7 +240,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 	const identifier = `${team.identifier}-${updatedWorkspace.tasksCreated + 1}`;
 	const randomLabelIds = getRandomLabels(taskLabels);
 
-	const [task] = await db
+	const [task] = await tx
 		.insert(tasksTable)
 		.values({
 			authorId: user.externalId,
@@ -240,14 +258,18 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 		})
 		.returning();
 
-	await addNotification(user.externalId, task.id, workspace.id);
+	await addNotification(tx, user.externalId, task.id, workspace.id);
 
 	return task;
 }
 
-async function addComment(userId: string, taskId: string) {
+async function addComment(
+	tx: TransactionClient,
+	userId: string,
+	taskId: string,
+) {
 	const commentContent = faker.lorem.words({ min: 3, max: 5 });
-	await db.insert(commentsTable).values({
+	await tx.insert(commentsTable).values({
 		comment: commentContent,
 		authorId: userId,
 		taskId: taskId,
@@ -255,11 +277,12 @@ async function addComment(userId: string, taskId: string) {
 }
 
 async function addNotification(
+	tx: TransactionClient,
 	userId: string,
 	taskId: string,
 	workspaceId: string,
 ) {
-	await db.insert(notificationsTable).values({
+	await tx.insert(notificationsTable).values({
 		userId,
 		taskId,
 		workspaceId,
@@ -279,3 +302,5 @@ async function addNotification(
 seedDB().catch((e) => {
 	logger.error("Error seeding database: %0", e);
 });
+
+console.log("Seed script executed. Check the logs for results.");
