@@ -208,7 +208,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 	const taskLabels = await db
 		.select()
 		.from(labelsTable)
-		.where(eq(workspacesTable.id, workspace.id));
+		.where(eq(labelsTable.workspaceId, workspace.id));
 
 	const taskDueDate = faker.date.future();
 	const taskEffortEstimate = faker.helpers.arrayElement([1, 2, 3, 4, 5]);

@@ -6,7 +6,7 @@ export default defineConfig({
   out: './src/migrations',
   schema: './src/schema.ts',
   dbCredentials: {
-        url: process.env.POSTGRES_PRISMA_URL!,
+        url: process.env.DATABASE_URL!,
   },
   // Print all statements
   verbose: true,
