@@ -463,21 +463,35 @@ export class TaskService implements TaskRpc {
 		blockedBy: Task[];
 		blockingIds: string[];
 	}> {
-		this.logger.info("getting tasks blocking and blocked by task id", taskId);
+		this.logger.info(
+			"getting tasks blocking and blocked by task id: %s",
+			taskId,
+		);
 
 		return await this.db.transaction(async (tx) => {
-			const blockedByTasks = await tx
+			const blockedByTasksQuery = tx
 				.select()
 				.from(tasksTable)
 				.innerJoin(blockedTasksTable, eq(blockedTasksTable.a, tasksTable.id))
 				.where(eq(blockedTasksTable.b, taskId));
 
-			const blockingTasks = await tx
+			const blockingTasksQuery = tx
 				.select({ id: blockedTasksTable.b })
 				.from(blockedTasksTable)
 				.where(eq(blockedTasksTable.a, taskId));
 
-			if (blockedByTasks.length === 0 && blockingTasks.length === 0) {
+			const taskQuery = tx
+				.select({ id: tasksTable.id })
+				.from(tasksTable)
+				.where(eq(tasksTable.id, taskId));
+
+			const [blockedByTasks, blockingTasks, task] = await Promise.all([
+				blockedByTasksQuery,
+				blockingTasksQuery,
+				taskQuery,
+			]);
+
+			if (!task) {
 				this.throwError("Task not found");
 			}
 

@@ -193,7 +193,7 @@ jobs:
       - name: Run tests
         run: pnpm run --filter=api test:ci
         env:
-          POSTGRES_PRISMA_URL: postgres://postgres:postgres@localhost:5432/squared-test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/squared-test
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
