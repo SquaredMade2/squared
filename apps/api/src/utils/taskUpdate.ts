@@ -1,14 +1,18 @@
 import {
-	type DBClient,
 	type Task,
+	type TransactionClient,
 	type User,
 	eq,
 	usersTable,
 } from "@squared/db";
 
-export async function subscribeUser(user: User, task: Task, db: DBClient) {
+export async function subscribeUser(
+	user: User,
+	task: Task,
+	tx: TransactionClient,
+) {
 	if (user.subscribedTasks && !user.subscribedTasks?.includes(task.id)) {
-		await db
+		await tx
 			.update(usersTable)
 			.set({
 				subscribedTasks: [...user.subscribedTasks, task.id],

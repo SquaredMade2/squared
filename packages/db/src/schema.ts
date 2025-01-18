@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
 	boolean,
 	index,
@@ -81,9 +80,7 @@ export const teamsTable = pgTable(
 		sprintsEnabled: boolean().default(false).notNull(),
 		sprintDuration: integer().default(2).notNull(),
 		cooldownDuration: integer().default(1).notNull(),
-		sprintStartDate: timestamp({ precision: 3 })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
+		sprintStartDate: timestamp({ precision: 3 }).defaultNow().notNull(),
 		tasksPerSprint: integer().default(10).notNull(),
 		effort: effort().default("LINEAR").notNull(),
 	},
@@ -125,10 +122,11 @@ export const sprintsTable = pgTable("Sprint", {
 	endDate: timestamp({ precision: 3 }).notNull(),
 	status: sprintStatus().notNull(),
 	teamId: text().notNull(),
-	createdAt: timestamp({ precision: 3 })
-		.default(sql`CURRENT_TIMESTAMP`)
+	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+	updatedAt: timestamp({ precision: 3 })
+		.$onUpdate(() => new Date())
+		.defaultNow()
 		.notNull(),
-	updatedAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	description: text(),
 });
 
@@ -138,11 +136,10 @@ export const notificationsTable = pgTable("Notification", {
 	read: boolean().default(false).notNull(),
 	saved: boolean().default(false).notNull(),
 	description: text(),
-	createdAt: timestamp({ precision: 3 })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	updatedAt: timestamp({ precision: 3 })
-		.default(sql`CURRENT_TIMESTAMP`)
+		.defaultNow()
+		.$onUpdate(() => new Date())
 		.notNull(),
 	workspaceId: text().notNull(),
 	dismissed: boolean().default(false).notNull(),
@@ -157,9 +154,7 @@ export const workspacesTable = pgTable(
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
-		createdAt: timestamp({ precision: 3 })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		tasksCreated: integer().default(0).notNull(),
 		universalTokenLinkId: text(),
 		avatarUrl: text(),
@@ -181,18 +176,14 @@ export const usersTable = pgTable(
 		name: text().notNull(),
 		username: text(),
 		email: text().notNull(),
-		lastLogin: timestamp({ precision: 3 })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
+		lastLogin: timestamp({ precision: 3 }).defaultNow().notNull(),
 		onBoarding: boolean().default(true).notNull(),
 		defaultWorkspaceId: text(),
 		avatarUrl: text(),
 		savedNotificationIds: text().array().default([]).notNull(),
 		subscribedTasks: text().array().default([]).notNull(),
 		githubUsername: text(),
-		createdAt: timestamp({ precision: 3 })
-			.default(sql`CURRENT_TIMESTAMP`)
-			.notNull(),
+		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		lastViewedTaskId: text(),
 		externalId: text().notNull(),
 	},
@@ -208,7 +199,7 @@ export const usersTable = pgTable(
 export const commentsTable = pgTable("Comment", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
 	comment: text().notNull(),
-	date: timestamp({ precision: 3 }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	date: timestamp({ precision: 3 }).defaultNow().notNull(),
 	taskId: text().notNull(),
 	authorId: text().notNull(),
 });
@@ -228,7 +219,10 @@ export const tasksTable = pgTable(
 		assigneeId: text("assignee_id"),
 		labels: text("labels").array().default([]).notNull(),
 		workspaceId: text("workspace_id").notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at")
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
 		deleted: boolean("deleted").default(false).notNull(),
 		parentId: text("parent_id"),
 		sprintId: text("sprint_id"),
@@ -306,9 +300,7 @@ export const commitsTable = pgTable("Commit", {
 
 export const taskEventsTable = pgTable("TaskEvent", {
 	id: uuid("id").defaultRandom().primaryKey().notNull(),
-	createdAt: timestamp({ precision: 3 })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 	taskId: text().notNull(),
 	message: text().notNull(),
 	authorId: text().notNull(),
@@ -345,12 +337,12 @@ export const retrospectiveItemsTable = pgTable("RetrospectiveItem", {
 	wentWellSprintId: text(),
 	toImproveSprintId: text(),
 	actionItemsSprintId: text(),
-	createdAt: timestamp({ precision: 3 })
-		.default(sql`CURRENT_TIMESTAMP`)
+	createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
+	updatedAt: timestamp({ precision: 3 })
+		.$onUpdate(() => new Date())
 		.notNull(),
-	updatedAt: timestamp({ precision: 3 }).notNull(),
 	type: retrospectiveItemType().default("toImprove").notNull(),
-	likes: text().array().default([]),
+	likes: text().array().default([]).notNull(),
 	authorId: text().notNull(),
 });
 

@@ -9,6 +9,7 @@ import {
 	desc,
 	eq,
 	ne,
+	retrospectiveItemsTable,
 	sprintsTable,
 	tasksTable,
 	teamsTable,
@@ -189,22 +190,23 @@ export class SprintService implements SprintRpc {
 			sprintId,
 		);
 
-		// Create retrospective item with the appropriate relation
-		return await this.db.retrospectiveItem.create({
-			data: {
+		const [newItem] = await this.db
+			.insert(retrospectiveItemsTable)
+			.values({
 				content,
 				type,
 				authorId,
 				...sprintRelationField,
-			},
-			select: {
-				id: true,
-				content: true,
-				type: true,
-				authorId: true,
-				likes: true,
-			},
-		});
+			})
+			.returning({
+				id: retrospectiveItemsTable.id,
+				content: retrospectiveItemsTable.content,
+				type: retrospectiveItemsTable.type,
+				authorId: retrospectiveItemsTable.authorId,
+				likes: retrospectiveItemsTable.likes,
+			});
+
+		return newItem;
 	}
 
 	async updateRetrospectiveItem({
@@ -225,22 +227,24 @@ export class SprintService implements SprintRpc {
 			actionItemsSprintId: null,
 			...sprintRelationField,
 		};
-		// Update the retrospective item with the appropriate relation and content
-		return await this.db.retrospectiveItem.update({
-			where: { id: retrospectiveItemId },
-			data: {
+
+		const [updatedItem] = await this.db
+			.update(retrospectiveItemsTable)
+			.set({
 				type,
 				content,
 				...resetFields,
-			},
-			select: {
-				id: true,
-				content: true,
-				type: true,
-				authorId: true,
-				likes: true,
-			},
-		});
+			})
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.returning({
+				id: retrospectiveItemsTable.id,
+				content: retrospectiveItemsTable.content,
+				type: retrospectiveItemsTable.type,
+				authorId: retrospectiveItemsTable.authorId,
+				likes: retrospectiveItemsTable.likes,
+			});
+
+		return updatedItem;
 	}
 
 	async likeRetrospectiveItem({
@@ -254,9 +258,12 @@ export class SprintService implements SprintRpc {
 			retrospectiveItemId,
 			userId,
 		});
-		const retroItem = await this.db.retrospectiveItem.findUnique({
-			where: { id: retrospectiveItemId },
-		});
+
+		const [retroItem] = await this.db
+			.select()
+			.from(retrospectiveItemsTable)
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.limit(1);
 
 		if (!retroItem) {
 			throw new Error("Retrospective item not found");
@@ -266,17 +273,19 @@ export class SprintService implements SprintRpc {
 			? retroItem.likes.filter((id) => id !== userId)
 			: [...retroItem.likes, userId];
 
-		return this.db.retrospectiveItem.update({
-			where: { id: retrospectiveItemId },
-			data: { likes: updatedLikes },
-			select: {
-				id: true,
-				content: true,
-				type: true,
-				authorId: true,
-				likes: true,
-			},
-		});
+		const [updatedItem] = await this.db
+			.update(retrospectiveItemsTable)
+			.set({ likes: updatedLikes })
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.returning({
+				id: retrospectiveItemsTable.id,
+				content: retrospectiveItemsTable.content,
+				type: retrospectiveItemsTable.type,
+				authorId: retrospectiveItemsTable.authorId,
+				likes: retrospectiveItemsTable.likes,
+			});
+
+		return updatedItem;
 	}
 
 	async getRetrospectiveItems({
@@ -284,15 +293,18 @@ export class SprintService implements SprintRpc {
 	}: { sprintId: string }): Promise<RetrospectiveData> {
 		this.logger.info("Getting retrospective items for sprint", { sprintId });
 		const [wentWell, toImprove, actionItems] = await Promise.all([
-			this.db.retrospectiveItem.findMany({
-				where: { wentWellSprintId: sprintId },
-			}),
-			this.db.retrospectiveItem.findMany({
-				where: { toImproveSprintId: sprintId },
-			}),
-			this.db.retrospectiveItem.findMany({
-				where: { actionItemsSprintId: sprintId },
-			}),
+			this.db
+				.select()
+				.from(retrospectiveItemsTable)
+				.where(eq(retrospectiveItemsTable.wentWellSprintId, sprintId)),
+			this.db
+				.select()
+				.from(retrospectiveItemsTable)
+				.where(eq(retrospectiveItemsTable.toImproveSprintId, sprintId)),
+			this.db
+				.select()
+				.from(retrospectiveItemsTable)
+				.where(eq(retrospectiveItemsTable.actionItemsSprintId, sprintId)),
 		]);
 
 		return { wentWell, toImprove, actionItems };

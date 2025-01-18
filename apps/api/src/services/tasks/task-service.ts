@@ -1,16 +1,32 @@
 import { subscribeUser } from "@/utils/taskUpdate";
-import type { PrismaClient, Task } from "@squared/db";
+import {
+	type DBClient,
+	type Task,
+	and,
+	asc,
+	blockedTasksTable,
+	eq,
+	inArray,
+	isNull,
+	max,
+	sprintsTable,
+	sql,
+	tasksTable,
+	teamsTable,
+	usersTable,
+	workspacesTable,
+} from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { EventService } from "../events/event-service";
 import type { CreateTaskParams, TaskRpc, UpdateTaskParams } from "./types";
 
 export class TaskService implements TaskRpc {
-	private readonly db: PrismaClient;
+	private readonly db: DBClient;
 	private readonly logger: Logger;
 	private readonly eventService: EventService;
 
-	constructor(db: PrismaClient, eventService: EventService) {
+	constructor(db: DBClient, eventService: EventService) {
 		this.db = db;
 		this.logger = createCustomLogger("tasks");
 		this.eventService = eventService;
@@ -42,191 +58,256 @@ export class TaskService implements TaskRpc {
 			parentId,
 		});
 
-		const team = await this.db.team.findUnique({
-			where: { id: teamId },
-			include: {
-				Workspace: true,
-			},
-		});
-		if (!team) {
-			this.throwError("Team not found");
-		}
+		return await this.db.transaction(async (tx) => {
+			// Find team and associated workspace
+			const teamWithWorkspace = await tx
+				.select({
+					team: teamsTable,
+					workspace: workspacesTable,
+				})
+				.from(teamsTable)
+				.leftJoin(
+					workspacesTable,
+					eq(teamsTable.workspaceId, workspacesTable.id),
+				)
+				.where(eq(teamsTable.id, teamId))
+				.limit(1)
+				.then((results) => results[0]);
 
-		const workspace = team.Workspace;
-		if (!workspace) {
-			this.throwError("Workspace not found");
-		}
-
-		const author = await this.db.user.findFirst({
-			where: { externalId: authorId },
-		});
-
-		if (!author) {
-			this.throwError("Author not found");
-		}
-
-		if (effortEstimate) {
-			// check if effort estimate is valid
-			const effort = Number(effortEstimate);
-			if (
-				effort < 0 ||
-				Number.isNaN(effort) ||
-				!Number.isInteger(effort) ||
-				effort > 5
-			) {
-				this.throwError("Invalid Effort Estimate supplied");
+			if (!teamWithWorkspace) {
+				this.throwError("Team not found");
 			}
-		}
 
-		// Get all tasks for the team
-		const teamTasks = await this.db.task.findMany({
-			where: { teamId },
-			select: { identifier: true },
+			const { team, workspace } = teamWithWorkspace;
+
+			if (!workspace) {
+				this.throwError("Workspace not found");
+			}
+
+			// Find author
+			const author = await tx
+				.select()
+				.from(usersTable)
+				.where(eq(usersTable.externalId, authorId))
+				.limit(1)
+				.then((results) => results[0]);
+
+			if (!author) {
+				this.throwError("Author not found");
+			}
+
+			// Validate effort estimate
+			if (effortEstimate) {
+				const effort = Number(effortEstimate);
+				if (
+					effort < 0 ||
+					Number.isNaN(effort) ||
+					!Number.isInteger(effort) ||
+					effort > 5
+				) {
+					this.throwError("Invalid Effort Estimate supplied");
+				}
+			}
+
+			// Get highest task number for the team
+			const highestTaskNumber = await tx
+				.select({
+					maxNumber: max(
+						sql`CAST(SUBSTRING_INDEX(${tasksTable.identifier}, '-', -1) AS UNSIGNED)`,
+					),
+				})
+				.from(tasksTable)
+				.where(eq(tasksTable.teamId, teamId))
+				.then((result) => result[0]?.maxNumber || 0);
+
+			// Generate new task identifier
+			const newTaskNumber = Number(highestTaskNumber) + 1;
+			const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
+
+			// Update workspace task count
+			const [updatedWorkspace] = await tx
+				.update(workspacesTable)
+				.set({ tasksCreated: sql`${workspacesTable.tasksCreated} + 1` })
+				.where(eq(workspacesTable.id, workspace.id))
+				.returning();
+
+			if (!updatedWorkspace) {
+				this.throwError("Failed to update workspace task count");
+			}
+
+			// Create new task
+			const [newTask] = await tx
+				.insert(tasksTable)
+				.values({
+					authorId,
+					title,
+					description,
+					dueDate,
+					effortEstimate,
+					teamId,
+					labels,
+					parentId,
+					status,
+					priority,
+					sprintId,
+					workspaceId: workspace.id,
+					identifier: newTaskIdentifier,
+				})
+				.returning();
+
+			if (!newTask) {
+				this.throwError("There was an issue creating your task");
+			}
+
+			// Subscribe user to task (assuming this function is adapted for Drizzle)
+			await subscribeUser(author, newTask, tx);
+
+			return newTask;
 		});
-
-		// Extract the task numbers and find the highest one
-		const taskNumbers = teamTasks.map((task) => {
-			const [_, number] = task.identifier.split("-");
-			return Number.parseInt(number, 10);
-		});
-
-		const highestTaskNumber = Math.max(0, ...taskNumbers);
-
-		// Generate the new task identifier
-		const newTaskNumber = highestTaskNumber + 1;
-		const newTaskIdentifier = `${team.identifier}-${newTaskNumber.toString()}`;
-
-		const newTaskCount = workspace.tasksCreated + 1;
-
-		await this.db.workspace.update({
-			where: { id: workspace.id },
-			data: { tasksCreated: newTaskCount },
-		});
-
-		const newTask = await this.db.task.create({
-			data: {
-				authorId,
-				title,
-				description,
-				dueDate,
-				effortEstimate,
-				teamId,
-				labels,
-				parentId,
-				status,
-				priority,
-				sprintId,
-				workspaceId: workspace.id,
-				identifier: newTaskIdentifier,
-			},
-		});
-
-		if (!newTask) {
-			this.throwError("There was an issue creating your task");
-		}
-
-		subscribeUser(author, newTask, this.db);
-
-		return newTask;
 	}
 
 	async updateTask(args: UpdateTaskParams): Promise<Task> {
 		const { updaterId, ...taskData } = args;
 		this.logger.info("Updating task with ID: %s", taskData.id);
 
-		const previousTask = await this.db.task.findUnique({
-			where: { id: taskData.id },
-		});
+		return await this.db.transaction(async (tx) => {
+			// Find the previous task
+			const previousTask = await tx
+				.select()
+				.from(tasksTable)
+				.where(eq(tasksTable.id, taskData.id))
+				.limit(1)
+				.then((results) => results[0]);
 
-		if (!previousTask) {
-			this.throwError("Task not found");
-		}
-
-		if (taskData.effortEstimate) {
-			const effort = Number(taskData.effortEstimate);
-			if (
-				effort < 0 ||
-				Number.isNaN(effort) ||
-				!Number.isInteger(effort) ||
-				effort > 5
-			) {
-				this.throwError("Invalid Effort Estimate");
+			if (!previousTask) {
+				this.throwError("Task not found");
 			}
-		}
 
-		const isBlocking = !!(
-			taskData.status === "done" ||
-			taskData.status === "archived" ||
-			taskData.status === "canceled"
-		);
+			// Validate effort estimate
+			if (taskData.effortEstimate) {
+				const effort = Number(taskData.effortEstimate);
+				if (
+					effort < 0 ||
+					Number.isNaN(effort) ||
+					!Number.isInteger(effort) ||
+					effort > 5
+				) {
+					this.throwError("Invalid Effort Estimate");
+				}
+			}
 
-		const task = await this.db.task.update({
-			where: { id: taskData.id },
-			data: {
+			// Determine if the task is blocking
+			const isBlocking = !!(
+				taskData.status === "done" ||
+				taskData.status === "archived" ||
+				taskData.status === "canceled"
+			);
+
+			// Prepare update data
+			const updateData = {
 				...taskData,
-				blocking: { set: isBlocking ? [] : undefined },
-			},
+				blocking: isBlocking ? [] : undefined,
+			};
+
+			// Update the task
+			const [updatedTask] = await tx
+				.update(tasksTable)
+				.set(updateData)
+				.where(eq(tasksTable.id, taskData.id))
+				.returning();
+
+			if (!updatedTask) {
+				this.throwError("There was an issue updating the task");
+			}
+
+			// Create log event
+			await this.eventService.createLogEvent({
+				taskId: updatedTask.id,
+				authorId: updaterId,
+				changes: taskData,
+				previousTask,
+			});
+
+			return updatedTask;
 		});
-
-		if (!task) {
-			this.throwError("There was an issue creating the task");
-		}
-
-		this.eventService.createLogEvent({
-			taskId: task.id,
-			authorId: updaterId,
-			changes: taskData,
-			previousTask,
-		});
-
-		return task;
 	}
 
 	async deleteTask({
 		taskId,
 	}: { taskId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Deleting task by ID: %s", taskId);
-		const task = await this.db.task.delete({
-			where: { id: taskId },
+
+		return await this.db.transaction(async (tx) => {
+			const result = await tx
+				.delete(tasksTable)
+				.where(eq(tasksTable.id, taskId))
+				.returning();
+
+			if (result.length === 0) {
+				this.throwError("There was an issue deleting the task");
+			}
+
+			return { success: true };
 		});
-		if (!task) {
-			this.throwError("There was an issue deleting the task");
-		}
-		return { success: true };
 	}
 
 	async getTask({ taskId }: { taskId: string }): Promise<Task> {
 		this.logger.info("Finding task by ID: %s", taskId);
-		const task = await this.db.task.findUnique({
-			where: { id: taskId },
+
+		return await this.db.transaction(async (tx) => {
+			const task = await tx
+				.select()
+				.from(tasksTable)
+				.where(eq(tasksTable.id, taskId))
+				.limit(1)
+				.then((results) => results[0]);
+
+			if (!task) {
+				this.throwError("Task Not Found");
+			}
+
+			return task;
 		});
-
-		if (!task) {
-			this.throwError("Task Not Found");
-		}
-
-		// Return the found task with labels
-		return task;
 	}
 
 	async getTaskByIdentifier({
 		identifier,
 		workspaceId,
-	}: { identifier: string; workspaceId: string }): Promise<Task> {
-		const task = await this.db.task.findFirst({
-			where: { identifier, workspaceId },
-		});
+	}: {
+		identifier: string;
+		workspaceId: string;
+	}): Promise<Task> {
+		return await this.db.transaction(async (tx) => {
+			const task = await tx
+				.select()
+				.from(tasksTable)
+				.where(
+					and(
+						eq(tasksTable.identifier, identifier),
+						eq(tasksTable.workspaceId, workspaceId),
+					),
+				)
+				.limit(1)
+				.then((results) => results[0]);
 
-		if (!task) {
-			this.throwError("Task Not Found");
-		}
-		return task;
+			if (!task) {
+				this.throwError("Task Not Found");
+			}
+
+			return task;
+		});
 	}
 
 	async getTeamTasks({ teamId }: { teamId: string }): Promise<Task[]> {
 		this.logger.info("Getting tasks for team with id: %s", teamId);
-		return await this.db.task.findMany({
-			where: { teamId },
+
+		return await this.db.transaction(async (tx) => {
+			const tasks = await tx
+				.select()
+				.from(tasksTable)
+				.where(eq(tasksTable.teamId, teamId));
+
+			return tasks;
 		});
 	}
 
@@ -234,37 +315,41 @@ export class TaskService implements TaskRpc {
 		sprintId,
 	}: { sprintId: string }): Promise<number> {
 		this.logger.info("Adding active sprints to sprint with id: %s", sprintId);
-		const sprint = await this.db.sprint.findUnique({
-			where: { id: sprintId },
-			include: {
-				Team: true,
-			},
+
+		return await this.db.transaction(async (tx) => {
+			const sprint = await tx
+				.select({
+					sprint: sprintsTable,
+					team: teamsTable,
+				})
+				.from(sprintsTable)
+				.leftJoin(teamsTable, eq(sprintsTable.teamId, teamsTable.id))
+				.where(eq(sprintsTable.id, sprintId))
+				.limit(1)
+				.then((results) => results[0]);
+
+			if (!sprint) {
+				this.throwError("Sprint not found");
+			}
+
+			if (!sprint.team) {
+				this.throwError("Team not found");
+			}
+
+			const result = await tx
+				.update(tasksTable)
+				.set({ sprintId })
+				.where(
+					and(
+						eq(tasksTable.teamId, sprint.team.id),
+						isNull(tasksTable.sprintId),
+						inArray(tasksTable.status, ["inProgress", "todo", "inReview"]),
+					),
+				)
+				.returning();
+
+			return result.length;
 		});
-
-		if (!sprint) {
-			this.throwError("Sprint not found");
-		}
-
-		const team = sprint.Team;
-
-		if (!team) {
-			this.throwError("Team not found");
-		}
-
-		return await this.db.task
-			.updateMany({
-				where: {
-					teamId: team.id,
-					sprintId: null,
-					status: {
-						in: ["inProgress", "todo", "inReview"],
-					},
-				},
-				data: {
-					sprintId,
-				},
-			})
-			.then((t) => t.count);
 	}
 
 	async addSprintTasks({
@@ -276,33 +361,26 @@ export class TaskService implements TaskRpc {
 	}): Promise<number> {
 		this.logger.info("Adding tasks to sprint with id %s", sprintId);
 
-		return await this.db.$transaction(async (tx) => {
+		return await this.db.transaction(async (tx) => {
 			// First, update all tasks to the sprint
-			const updateResult = await tx.task.updateMany({
-				where: {
-					id: {
-						in: taskIds,
-					},
-				},
-				data: {
-					sprintId,
-				},
-			});
+			const updateResult = await tx
+				.update(tasksTable)
+				.set({ sprintId })
+				.where(inArray(tasksTable.id, taskIds))
+				.returning();
 
 			// Then, update the status of backlog tasks to todo
-			await tx.task.updateMany({
-				where: {
-					id: {
-						in: taskIds,
-					},
-					status: "backlog",
-				},
-				data: {
-					status: "todo",
-				},
-			});
+			await tx
+				.update(tasksTable)
+				.set({ status: "todo" })
+				.where(
+					and(
+						inArray(tasksTable.id, taskIds),
+						eq(tasksTable.status, "backlog"),
+					),
+				);
 
-			return updateResult.count;
+			return updateResult.length;
 		});
 	}
 
@@ -310,25 +388,35 @@ export class TaskService implements TaskRpc {
 		parentId: string;
 		newOrder: string[];
 	}): Promise<Task[]> {
-		const updates = args.newOrder.map((id, index) =>
-			this.db.task.update({
-				where: { id },
-				data: { order: index },
-			}),
-		);
+		return await this.db.transaction(async (tx) => {
+			// Update the order of tasks
+			for (let index = 0; index < args.newOrder.length; index++) {
+				await tx
+					.update(tasksTable)
+					.set({ order: index })
+					.where(eq(tasksTable.id, args.newOrder[index]));
+			}
 
-		await this.db.$transaction(updates);
+			// Fetch and return the reordered subtasks
+			const reorderedTasks = await tx
+				.select()
+				.from(tasksTable)
+				.where(eq(tasksTable.parentId, args.parentId))
+				.orderBy(asc(tasksTable.order));
 
-		return await this.db.task.findMany({
-			where: { parentId: args.parentId },
-			orderBy: { order: "asc" },
+			return reorderedTasks;
 		});
 	}
 
 	async getSubtasks({ parentId }: { parentId: string }): Promise<Task[]> {
-		return await this.db.task.findMany({
-			where: { parentId },
-			orderBy: { order: "asc" },
+		return await this.db.transaction(async (tx) => {
+			const subtasks = await tx
+				.select()
+				.from(tasksTable)
+				.where(eq(tasksTable.parentId, parentId))
+				.orderBy(asc(tasksTable.order));
+
+			return subtasks;
 		});
 	}
 
@@ -343,16 +431,33 @@ export class TaskService implements TaskRpc {
 	}): Promise<Task[]> {
 		this.logger.info(`updating task ${key} to`, updatingIds);
 
-		const updatedTask = await this.db.task.update({
-			where: { id: taskId },
-			data: {
-				[key]: {
-					set: updatingIds.map((id) => ({ id })),
-				},
-			},
-			include: { blockedBy: true },
+		return await this.db.transaction(async (tx) => {
+			// Delete existing relationships
+			await tx
+				.delete(blockedTasksTable)
+				.where(
+					key === "blocking"
+						? eq(blockedTasksTable.a, taskId)
+						: eq(blockedTasksTable.b, taskId),
+				);
+
+			// Add new relationships
+			await tx.insert(blockedTasksTable).values(
+				updatingIds.map((id) => ({
+					a: key === "blocking" ? taskId : id,
+					b: key === "blocking" ? id : taskId,
+				})),
+			);
+
+			// Fetch and return the updated blocked by tasks
+			const blockedByTasks = await tx
+				.select()
+				.from(tasksTable)
+				.innerJoin(blockedTasksTable, eq(blockedTasksTable.a, tasksTable.id))
+				.where(eq(blockedTasksTable.b, taskId));
+
+			return blockedByTasks.map(({ tasks }) => tasks);
 		});
-		return updatedTask.blockedBy;
 	}
 
 	async getTaskBlockedByAndBlocking({ taskId }: { taskId: string }): Promise<{
@@ -361,17 +466,27 @@ export class TaskService implements TaskRpc {
 	}> {
 		this.logger.info("getting tasks blocking and blocked by task id", taskId);
 
-		const task = await this.db.task.findUnique({
-			where: { id: taskId },
-			include: { blockedBy: true, blocking: { select: { id: true } } },
+		return await this.db.transaction(async (tx) => {
+			const blockedByTasks = await tx
+				.select()
+				.from(tasksTable)
+				.innerJoin(blockedTasksTable, eq(blockedTasksTable.a, tasksTable.id))
+				.where(eq(blockedTasksTable.b, taskId));
+
+			const blockingTasks = await tx
+				.select({ id: blockedTasksTable.b })
+				.from(blockedTasksTable)
+				.where(eq(blockedTasksTable.a, taskId));
+
+			if (blockedByTasks.length === 0 && blockingTasks.length === 0) {
+				this.throwError("Task not found");
+			}
+
+			return {
+				blockedBy: blockedByTasks.map(({ tasks }) => tasks),
+				blockingIds: blockingTasks.map(({ id }) => id),
+			};
 		});
-		if (!task) {
-			this.throwError("Task not found");
-		}
-		return {
-			blockedBy: task.blockedBy,
-			blockingIds: task.blocking.map((t) => t.id),
-		};
 	}
 
 	async getAllBlockedTaskIds({
@@ -381,18 +496,17 @@ export class TaskService implements TaskRpc {
 			"Getting all blocking taskIds for team with id: %s",
 			teamId,
 		);
-		const blockedTaskIds = await this.db.task.findMany({
-			where: {
-				teamId,
-				blockedBy: {
-					some: {},
-				},
-			},
-			select: {
-				id: true,
-			},
+
+		return await this.db.transaction(async (tx) => {
+			const blockedTasks = await tx
+				.select({ id: tasksTable.id })
+				.from(tasksTable)
+				.innerJoin(blockedTasksTable, eq(blockedTasksTable.b, tasksTable.id))
+				.where(eq(tasksTable.teamId, teamId))
+				.groupBy(tasksTable.id);
+
+			return blockedTasks.map((task) => task.id);
 		});
-		return blockedTaskIds.map((task) => task.id);
 	}
 
 	private throwError(message: string): never {
