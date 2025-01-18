@@ -6,7 +6,7 @@ import { columns } from "@/components/Settings/Members/columns";
 import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
 export default function WorkspaceMembersPage() {
@@ -30,6 +30,10 @@ export default function WorkspaceMembersPage() {
 			setPageUsers,
 		},
 	}));
+
+	useEffect(() => {
+		setPageUsers(users);
+	}, [users]);
 
 	if (workspaceLoading || userLoading) {
 		return (
