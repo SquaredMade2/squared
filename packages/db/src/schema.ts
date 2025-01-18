@@ -157,6 +157,9 @@ export const workspacesTable = pgTable(
 		name: text().notNull(),
 		url: text().notNull(),
 		companySize: integer(),
+		createdAt: timestamp({ precision: 3 })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
 		tasksCreated: integer().default(0).notNull(),
 		universalTokenLinkId: text(),
 		avatarUrl: text(),
