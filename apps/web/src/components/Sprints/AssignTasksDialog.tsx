@@ -235,7 +235,7 @@ export function AssignTasksDialog({
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="all">All Labels</SelectItem>
-									{workspace?.Labels.map((label) => (
+									{workspace?.labels.map((label) => (
 										<SelectItem key={label.id} value={label.id}>
 											{label.name}
 										</SelectItem>
@@ -270,7 +270,7 @@ export function AssignTasksDialog({
 										</Label>
 									</div>
 									{filteredTasks.map((task) => {
-										const taskLabels = workspace?.Labels.filter((label) =>
+										const taskLabels = workspace?.labels.filter((label) =>
 											task.labels.includes(label.id),
 										);
 										return (
@@ -335,7 +335,7 @@ export function AssignTasksDialog({
 									</div>
 									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 										{filteredTasks.map((task) => {
-											const taskLabels = workspace?.Labels.filter((label) =>
+											const taskLabels = workspace?.labels.filter((label) =>
 												task.labels.includes(label.id),
 											);
 											return (

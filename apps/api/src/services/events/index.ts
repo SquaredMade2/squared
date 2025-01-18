@@ -18,8 +18,8 @@ import type { EventRpc, FullNotification } from "./types";
 const fullNotificationSchema = createSchema<FullNotification>()(
 	z.object({
 		...notificationSchema.shape,
-		Workspace: workspaceSchema.nullable(),
-		Task: taskSchema.nullable(),
+		Workspace: workspaceSchema,
+		Task: taskSchema,
 	}),
 );
 

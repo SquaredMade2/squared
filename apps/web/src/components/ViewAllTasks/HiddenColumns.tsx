@@ -39,7 +39,7 @@ const HiddenColumns = ({
 			case "Priority":
 				return formatPriority(title as Priority);
 			case "Label": {
-				const labelName = workspace?.Labels.find((label) => label.id === title);
+				const labelName = workspace?.labels.find((label) => label.id === title);
 				return labelName ? labelName.name : "No label";
 			}
 			case "Parent Task": {

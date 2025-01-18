@@ -75,6 +75,7 @@ export class EventService implements EventRpc {
 
 		return notifications.map((noti) => {
 			const { notification, task, workspace } = noti;
+			if (!task || !workspace) throw new Error("Task or Workspace not found");
 			return {
 				...notification,
 				Task: task,
