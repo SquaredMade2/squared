@@ -17,7 +17,7 @@ export const EventTabs = () => {
 				<TabsTrigger value="comments">Comments</TabsTrigger>
 			</TabsList>
 			<TabsContent value="activity">
-				<div className="flex flex-col bg-card rounded-md text-sm">
+				<div className="flex flex-col bg-card rounded-md text-sm py-2">
 					<CreatedByInformation />
 				</div>
 			</TabsContent>

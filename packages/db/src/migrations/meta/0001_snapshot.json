@@ -1,6 +1,6 @@
 {
-	"id": "ada56f4e-b9f9-480e-b6a8-4e31404f7aea",
-	"prevId": "00000000-0000-0000-0000-000000000000",
+	"id": "31d66129-6403-4e2d-b3b8-b97696d9c724",
+	"prevId": "ada56f4e-b9f9-480e-b6a8-4e31404f7aea",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
@@ -523,9 +523,9 @@
 				},
 				"filter": {
 					"name": "filter",
-					"type": "jsonb[]",
+					"type": "jsonb",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
 				},
 				"workspaceId": {
 					"name": "workspaceId",
@@ -621,7 +621,8 @@
 					"name": "startDate",
 					"type": "timestamp (3)",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"default": "now()"
 				},
 				"endDate": {
 					"name": "endDate",
@@ -653,7 +654,8 @@
 					"name": "updatedAt",
 					"type": "timestamp (3)",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"default": "now()"
 				},
 				"description": {
 					"name": "description",

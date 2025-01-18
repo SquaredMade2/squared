@@ -7,7 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import WorkspaceNotFoundPage from "../[workspace]/WorkspaceNotFoundPage";
+import WorkspaceNotFoundPage from "./WorkspaceNotFoundPage";
 
 export default function Home() {
 	const [loading, setLoading] = useState(true);
