@@ -1,22 +1,32 @@
-import type { PrismaClient, Team, Workspace } from "@squared/db";
+import {
+	type DBClient,
+	type Team,
+	type Workspace,
+	eq,
+	userTeamsTable,
+	userWorkspacesTable,
+	usersTable,
+} from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { UserRpc } from "./types";
 
 export class UserService implements UserRpc {
-	private readonly db: PrismaClient;
+	private readonly db: DBClient;
 	private readonly logger: Logger;
-	constructor(db: PrismaClient) {
+	constructor(db: DBClient) {
 		this.db = db;
 		this.logger = createCustomLogger("users");
 	}
 
 	async onBoardUser({ userId }: { userId: string }) {
 		this.logger.info("Onboarding user with id: %s", userId);
-		return await this.db.user.update({
-			where: { externalId: userId },
-			data: { onBoarding: false },
-		});
+		return await this.db
+			.update(usersTable)
+			.set({ onBoarding: false })
+			.where(eq(usersTable.externalId, userId))
+			.returning()
+			.then((user) => user[0]);
 	}
 
 	async updateUser({
@@ -24,10 +34,12 @@ export class UserService implements UserRpc {
 		...args
 	}: { userId: string; name: string; username?: string }) {
 		this.logger.info("Updating user with id: %s", userId);
-		return await this.db.user.update({
-			where: { externalId: userId },
-			data: args,
-		});
+		return await this.db
+			.update(usersTable)
+			.set(args)
+			.where(eq(usersTable.externalId, userId))
+			.returning()
+			.then((user) => user[0]);
 	}
 
 	async updateUserAvatar({
@@ -39,10 +51,12 @@ export class UserService implements UserRpc {
 			userId,
 			avatarUrl,
 		);
-		return await this.db.user.update({
-			where: { externalId: userId },
-			data: { avatarUrl },
-		});
+		return await this.db
+			.update(usersTable)
+			.set({ avatarUrl })
+			.where(eq(usersTable.externalId, userId))
+			.returning()
+			.then((user) => user[0]);
 	}
 
 	async updateUserNotifications({
@@ -53,43 +67,41 @@ export class UserService implements UserRpc {
 		notificationIds: string[];
 	}) {
 		this.logger.info("Updating user notifications with id: %s", userId);
-		return await this.db.user.update({
-			where: { externalId: userId },
-			data: {
-				savedNotificationIds,
-			},
-		});
+		return await this.db
+			.update(usersTable)
+			.set({ savedNotificationIds })
+			.where(eq(usersTable.externalId, userId))
+			.returning()
+			.then((user) => user[0]);
 	}
 
 	async getUser({ userId }: { userId: string }) {
 		this.logger.info("Fetching user with id: %s", userId);
-		return await this.db.user.findUnique({
-			where: { externalId: userId },
-		});
+		return await this.db
+			.select()
+			.from(usersTable)
+			.where(eq(usersTable.externalId, userId))
+			.then((user) => user[0]);
 	}
 
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
 		this.logger.info("Fetching workspace users with id: %s", workspaceId);
-		return await this.db.userWorkspace
-			.findMany({
-				where: { workspaceId },
-				include: {
-					user: true,
-				},
-			})
-			.then((uw) => uw.map((u) => u.user));
+		return await this.db
+			.select()
+			.from(userWorkspacesTable)
+			.leftJoin(usersTable, eq(usersTable.id, userWorkspacesTable.userId))
+			.where(eq(userWorkspacesTable.workspaceId, workspaceId))
+			.then((users) => users.map((u) => u.User).filter((u) => !!u));
 	}
 
 	async getTeamUsers({ teamId }: { teamId: string }) {
 		this.logger.info("Fetching team users with id: %s", teamId);
-		return await this.db.userTeam
-			.findMany({
-				where: { teamId },
-				include: {
-					user: true,
-				},
-			})
-			.then((ut) => ut.map((u) => u.user));
+		return await this.db
+			.select()
+			.from(userTeamsTable)
+			.leftJoin(usersTable, eq(usersTable.id, userTeamsTable.userId))
+			.where(eq(userTeamsTable.teamId, teamId))
+			.then((users) => users.map((u) => u.User).filter((u) => !!u));
 	}
 
 	async getUserAvatars({ workspaceId }: { workspaceId: string }) {
