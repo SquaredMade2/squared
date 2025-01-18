@@ -280,6 +280,6 @@ seedDB()
 		return prisma.$disconnect();
 	})
 	.catch((e) => {
-		logger.error("Error seeding database: %0", e);
+		logger.error("Error seeding database: %s", e);
 		return prisma.$disconnect();
 	});
