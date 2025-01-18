@@ -3,6 +3,7 @@ import {
 	ContextMenuItem,
 	ContextMenuSeparator,
 } from "@/components/ui/context-menu";
+import { useToast } from "@/components/ui/use-toast";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import {
@@ -24,6 +25,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 	const { setShowRename, setRenameData, setShowNewTask, setNewTaskData } =
 		useModalStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
+	const { toast } = useToast();
 
 	const title = task !== undefined ? task.title : "";
 	const identifier = task?.identifier;
@@ -36,6 +38,15 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 
 	const copyTaskIdentifier = () => {
 		navigator.clipboard.writeText(identifier);
+	};
+	const copyTaskUrl = async () => {
+		await navigator.clipboard.writeText(
+			`${process.env.NEXT_PUBLIC_URL}/${workspace?.url}/task/${task.identifier}/${formatUrl(task.title)}`,
+		);
+		toast({
+			title: "Task link copied to clipboard",
+			description: "Paste it wherever you like",
+		});
 	};
 
 	const handleDuplicate = () => {
@@ -87,6 +98,7 @@ const TaskContextMenu = ({ task }: ContextMenuProps) => {
 				<ContextMenuItem onClick={copyTaskIdentifier}>
 					Copy Task ID
 				</ContextMenuItem>
+				<ContextMenuItem onClick={copyTaskUrl}>Copy Task Url</ContextMenuItem>
 
 				<ContextMenuItem>
 					<Link
