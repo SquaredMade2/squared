@@ -1,8 +1,7 @@
-import { CreateNotificationRequest } from "@/gen/rpc/event";
+import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { commentService, eventService } from "@/lib/services";
 import {
 	useCommentStore,
-	useEventStore,
 	useModalStore,
 	useTaskStore,
 	useUserStore,
@@ -73,7 +72,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const currentTask: Task = useTaskStore((state) => state.currentTask);
 	const users = useUserStore((state) => state.users);
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
-	const setNotifications = useEventStore((state) => state.setNotifications);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor

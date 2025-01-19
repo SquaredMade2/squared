@@ -3,13 +3,9 @@ import {
 	CommandEmpty,
 	CommandGroup,
 	CommandList,
-	// CommandSeparator,
 } from "@/components/ui/command";
 import { useUserStore } from "@/store/users";
-import {
-	injectMentionConfirm,
-	replaceTextOfCurrentNode,
-} from "@/utils/textEditorSelection";
+import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { CommandItem } from "cmdk";
 import { useEffect, useRef } from "react";
 import type { TextEditorMentionsProps } from "../interfaces";
@@ -74,8 +70,9 @@ const TextEditorMentions = ({
 									key={user.id}
 									className="m-2"
 									ref={(e) => {
-										if (!usersRef.current) return;
-										usersRef.current[index] = e;
+										if (e) {
+											usersRef.current[index] = e;
+										}
 									}}
 								>
 									<button
