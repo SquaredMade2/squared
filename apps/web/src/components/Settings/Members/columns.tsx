@@ -33,9 +33,9 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 		accessorKey: "role",
 		cell: ({ row }) => {
 			if (
-				row.original.role?.toLowerCase() !== "member" &&
-				row.original.role?.toLowerCase() !== "admin" &&
-				row.original.role?.toLowerCase() !== "owner"
+				!["member", "admin", "owner"].includes(
+					row.original.role?.toLowerCase() || "",
+				)
 			) {
 				return "loading...";
 			}

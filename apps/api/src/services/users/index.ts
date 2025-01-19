@@ -1,6 +1,11 @@
 import { createRpcHandler, createServiceSchema } from "@squared/rpc";
 import z from "zod";
-import { teamSchema, userSchema, userWithRoleSchema } from "../schema";
+import {
+	teamSchema,
+	userSchema,
+	userWithRoleSchema,
+	workspaceRoleEnum,
+} from "../schema";
 import type { UserRpc } from "./types";
 import type { UserService } from "./user-service";
 
@@ -87,7 +92,7 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 			userId: z.string(),
 			workspaceId: z.string(),
 		}),
-		output: z.enum(["owner", "admin", "member"]),
+		output: workspaceRoleEnum,
 	},
 	getWorkspaceUsersWithRoles: {
 		input: z.object({
@@ -100,12 +105,12 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 			callerId: z.string(),
 			userId: z.string(),
 			workspaceId: z.string(),
-			newRole: z.enum(["owner", "admin", "member"]),
+			newRole: workspaceRoleEnum,
 		}),
 		output: z.object({
 			userId: z.string(),
 			workspaceId: z.string(),
-			role: z.enum(["owner", "admin", "member"]),
+			role: workspaceRoleEnum,
 		}),
 	},
 });

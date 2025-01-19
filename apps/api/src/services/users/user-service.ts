@@ -1,4 +1,4 @@
-import type { PrismaClient, Role, Team } from "@squared/db";
+import type { PrismaClient, Team, WorkspaceRole } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { UserRpc } from "./types";
@@ -94,7 +94,7 @@ export class UserService implements UserRpc {
 		if (!userWorkspace?.role) {
 			return "member" as const;
 		}
-		return userWorkspace.role as "owner" | "admin" | "member";
+		return userWorkspace.role;
 	}
 
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
@@ -136,7 +136,7 @@ export class UserService implements UserRpc {
 		callerId: string;
 		userId: string;
 		workspaceId: string;
-		newRole: Role;
+		newRole: WorkspaceRole;
 	}) {
 		//Get both users current roles
 		const [callerRole, targetRole] = await Promise.all([
@@ -168,10 +168,11 @@ export class UserService implements UserRpc {
 			throw new Error("Members cannot modify roles");
 		}
 
-		if (callerRole.role === "admin") {
-			if (targetRole.role === "owner" || targetRole.role === "admin") {
-				throw new Error("Admins cannot modify owner or other admin roles");
-			}
+		if (
+			callerRole.role === "admin" &&
+			(targetRole.role === "owner" || targetRole.role === "admin")
+		) {
+			throw new Error("Admins cannot modify owner or other admin roles");
 		}
 
 		this.logger.info(

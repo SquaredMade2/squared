@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { userService } from "@/lib/services";
 import { useModalStore } from "@/store";
 import { TODO } from "@squared/context";
-import type { Team, User, Workspace } from "@squared/db";
+import type { Team, User, Workspace, WorkspaceRole } from "@squared/db";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -16,10 +16,10 @@ import {
 import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 
-export type MemberWithRole = User & Role;
-interface Role {
-	role: "owner" | "admin" | "member";
-}
+export type MemberWithRole = User & {
+	role: WorkspaceRole;
+};
+
 interface DataTableProps {
 	columns: ColumnDef<MemberWithRole, unknown>[];
 	data: MemberWithRole[];
@@ -30,7 +30,7 @@ interface DataTableProps {
 interface CsvType {
 	name: string;
 	email: string;
-	role: string;
+	role: WorkspaceRole;
 	teams?: string;
 	active: string;
 	lastLogin: Date;
@@ -75,7 +75,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 				return {
 					name: member.name,
 					email: member.email,
-					role: member?.role,
+					role: member.role,
 					teams: teamNames,
 					active: "active",
 					lastLogin: member.lastLogin,

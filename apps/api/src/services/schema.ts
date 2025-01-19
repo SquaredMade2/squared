@@ -9,6 +9,7 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
+	WorkspaceRole,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
 import z from "zod";
@@ -103,12 +104,15 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
-export const roleEnum = z.enum(["owner", "admin", "member"]);
+export const workspaceRoleEnum = createSchema<WorkspaceRole>()(
+	z.enum(["owner", "admin", "member"]),
+);
+
 export const userWorkspaceSchema = createSchema<UserWorkspace>()(
 	z.object({
 		userId: z.string(),
 		workspaceId: z.string(),
-		role: roleEnum,
+		role: workspaceRoleEnum,
 	}),
 );
 
@@ -173,7 +177,7 @@ export const userSchema = createSchema<User>()(
 
 export const userWithRoleSchema = userSchema.merge(
 	z.object({
-		role: z.enum(["owner", "admin", "member"]),
+		role: workspaceRoleEnum,
 	}),
 );
 

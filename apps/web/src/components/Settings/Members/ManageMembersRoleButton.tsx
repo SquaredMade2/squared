@@ -11,16 +11,15 @@ import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { DropdownMenuGroup } from "@repo/ui/dropdown-menu";
 import { TODO } from "@squared/context";
-import type { Role } from "@squared/db";
+import type { WorkspaceRole } from "@squared/db";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserCog } from "lucide-react";
-import { useEffect, useState } from "react";
 import type { MemberWithRole } from "./data-table";
 
 const ManageMembersRoleButton = ({
 	userId,
 	pageId,
 	membersWithRoles,
-	fetchWorkspaceUsersWithRoles,
 }: {
 	userId: string;
 	page: string | undefined;
@@ -28,53 +27,56 @@ const ManageMembersRoleButton = ({
 	membersWithRoles: MemberWithRole[] | undefined;
 	fetchWorkspaceUsersWithRoles: () => void;
 }) => {
-	const [loggedInUserRole, setLoggedInUserRole] = useState<Role | null>(null);
+	const queryClient = useQueryClient();
 	const loggedInUser = useUserStore((state) => state.user);
 	const { toast } = useToast();
 	const selectedUserRole = membersWithRoles?.find(
 		(user) => user.id === userId,
 	)?.role;
 
-	const fetchLoggedInUserRole = async () => {
-		if (!loggedInUser || !pageId) return;
-		try {
-			const role = await userService.getUserWorkspaceRole(TODO, {
+	const { data: loggedInUserRole } = useQuery({
+		queryKey: ["userRole", loggedInUser?.id, pageId],
+		queryFn: async () => {
+			if (!loggedInUser || !pageId) return null;
+			return userService.getUserWorkspaceRole(TODO, {
 				userId: loggedInUser.id,
 				workspaceId: pageId,
 			});
-			setLoggedInUserRole(role);
-		} catch (error) {
-			console.error("Error fetching role:", error);
-		}
-	};
+		},
+		enabled: !!loggedInUser && !!pageId,
+	});
 
-	const handleClick = async (newRole: Role) => {
-		if (!pageId || !loggedInUser) return;
-
-		try {
-			await userService.updateUsersRole(TODO, {
-				callerId: loggedInUser?.id,
+	const updateRoleMutation = useMutation({
+		mutationFn: async (newRole: WorkspaceRole) => {
+			if (!pageId || !loggedInUser) throw new Error("Missing required data");
+			return userService.updateUsersRole(TODO, {
+				callerId: loggedInUser.id,
 				userId,
 				workspaceId: pageId,
 				newRole,
 			});
-			fetchWorkspaceUsersWithRoles();
-			fetchLoggedInUserRole();
-
+		},
+		onSuccess: (_, newRole) => {
+			queryClient.invalidateQueries({
+				queryKey: ["workspaceUsers", pageId],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["userRole", loggedInUser?.id, pageId],
+			});
 			toast({ title: `Member role updated to ${newRole}` });
-		} catch (error) {
-			console.error(error);
+		},
+		onError: (error) => {
 			toast({
 				title: "Member role could not be updated",
 				description: parseError(error, "unknown error"),
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
 
-	useEffect(() => {
-		fetchLoggedInUserRole();
-	}, [loggedInUser, pageId, membersWithRoles]);
+	const handleClick = (newRole: WorkspaceRole) => {
+		updateRoleMutation.mutate(newRole);
+	};
 
 	if (loggedInUserRole !== "admin" && loggedInUserRole !== "owner") {
 		return null;

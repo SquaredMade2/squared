@@ -1,4 +1,4 @@
-import type { Team, User } from "@squared/db";
+import type { Team, User, WorkspaceRole } from "@squared/db";
 
 export type UserAvatar = {
 	id: string;
@@ -34,18 +34,18 @@ export interface UserRpc {
 	getUserWorkspaceRole: (args: {
 		userId: string;
 		workspaceId: string;
-	}) => Promise<"member" | "admin" | "owner">;
+	}) => Promise<WorkspaceRole>;
 	getWorkspaceUsersWithRoles: (args: { workspaceId: string }) => Promise<
-		(User & { role: "member" | "admin" | "owner" })[]
+		(User & { role: WorkspaceRole })[]
 	>;
 	updateUsersRole: (args: {
 		callerId: string;
 		userId: string;
 		workspaceId: string;
-		newRole: "owner" | "admin" | "member";
+		newRole: WorkspaceRole;
 	}) => Promise<{
 		userId: string;
 		workspaceId: string;
-		role: "owner" | "admin" | "member";
+		role: WorkspaceRole;
 	}>;
 }
