@@ -14,11 +14,9 @@ export type UserState = {
 };
 
 type UserActions = {
-	setUser: (user: User | null) => void;
 	setUsers: (users: User[]) => void;
 	setUserAvatars: (avatars: UserAvatar[]) => void;
 	setConnectedRepos: (repos: string[]) => void;
-	updateUser: (user: User) => void;
 };
 
 export type UserStore = UserState & UserActions;

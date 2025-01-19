@@ -18,8 +18,6 @@ export const STANDARD_USER: User = {
 	name: "Test User",
 	email: "test@example.com",
 	username: "testuser",
-	password: null,
-	verified: false,
 	lastLogin: new Date(),
 	createdAt: new Date(),
 	onBoarding: false,
@@ -27,10 +25,9 @@ export const STANDARD_USER: User = {
 	avatarUrl: null,
 	savedNotificationIds: [],
 	subscribedTasks: [],
-	googleId: null,
 	githubUsername: null,
-	githubId: null,
 	lastViewedTaskId: null,
+	externalId: "123456",
 };
 
 export const STANDARD_WORKSPACE: Workspace = {
@@ -42,6 +39,7 @@ export const STANDARD_WORKSPACE: Workspace = {
 	tasksCreated: 1,
 	universalTokenLinkId: null,
 	admins: [],
+	defaultView: null,
 };
 
 export const STANDARD_TEAM: Team = {
@@ -165,6 +163,7 @@ export const STANDARD_SAVED_FILTER: SavedFilter = {
 	teamId: "team-1",
 	workspaceId: STANDARD_WORKSPACE.id,
 	type: "WORKSPACE",
+	sprintId: null,
 };
 
 export const STANDARD_SAVED_FILTER_2: SavedFilter = {
@@ -176,6 +175,7 @@ export const STANDARD_SAVED_FILTER_2: SavedFilter = {
 	teamId: "team-1",
 	workspaceId: STANDARD_WORKSPACE.id,
 	type: "WORKSPACE",
+	sprintId: "new-sprint-id-123",
 };
 
 export const STANDARD_COMMENT: Comment = {

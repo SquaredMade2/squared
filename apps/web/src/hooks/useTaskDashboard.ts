@@ -1,36 +1,86 @@
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { parseParams } from "@/utils/parseParams";
 import type { OnDragEndResponder } from "@hello-pangea/dnd";
-import { TODO } from "@squared/context";
-import type { Status } from "@squared/db";
+import type { Status, Task } from "@squared/db";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useTeams } from "./useTeams";
 import { useWorkspaces } from "./useWorkspaces";
 
 export function useTaskDashboard() {
-	const { loading: teamLoading, team, authorized } = useTeams();
-	const { loading: workspaceLoading, workspace } = useWorkspaces();
-	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
-	const [loading, setLoading] = useState(true);
+	const {
+		loading: teamLoading,
+		team,
+		authorized,
+		error: teamError,
+	} = useTeams();
+	const {
+		loading: workspaceLoading,
+		workspace,
+		error: workspaceError,
+	} = useWorkspaces();
+	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
+		(state) => state,
+	);
 	const user = useUserStore((state) => state.user);
 
 	const params = useParams();
 	const teamIdentifier = parseParams(params.identifier);
 
-	useEffect(() => {
-		const initiateStore = async () => {
-			if (teamLoading || workspaceLoading) return;
-			setLoading(true);
-			if (team) {
-				setTasks(await taskService.getTeamTasks(TODO, { teamId: team.id }));
-			}
-			setLoading(false);
-		};
+	const queryClient = useQueryClient();
 
-		initiateStore();
-	}, [teamLoading, team, workspaceLoading]);
+	const {
+		data: fetchedTasks,
+		isLoading,
+		error: tasksError,
+	} = useQuery<Task[], Error>({
+		queryKey: ["tasks", team?.id],
+		queryFn: async () => {
+			if (!team) throw new Error("Team not found");
+			const res = await client.task.getAllTasks.$get({
+				teamId: team.id,
+			});
+			const teamTasks = await res.json();
+			setTasks(teamTasks);
+			return teamTasks;
+		},
+		enabled: !!team && !teamLoading && !workspaceLoading,
+	});
+
+	const allBlockedTaskIdsQuery = useQuery({
+		queryKey: ["allBlockedTasksIds", team?.id],
+		queryFn: async () => {
+			if (!team) throw new Error("Team not found");
+			const res = await client.task.getAllBlockedTaskIds.$get({
+				teamId: team.id,
+			});
+			const allIds = await res.json();
+			setAllBlockedTaskIds(allIds);
+			return allIds;
+		},
+		enabled: !!team?.id,
+	});
+
+	const updateTaskMutation = useMutation({
+		mutationFn: async ({
+			taskId,
+			status,
+		}: { taskId: string; status: Status }) => {
+			if (!user) throw new Error("User not found");
+			const res = await client.task.updateStatus.$post({
+				taskId,
+				status,
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({ queryKey: ["tasks", team?.id] });
+		},
+	});
 
 	const handleDragEnd: OnDragEndResponder = async ({
 		destination,
@@ -42,17 +92,25 @@ export function useTaskDashboard() {
 		const draggedTask = tasks.find((task) => task.id === draggableId);
 		if (!draggedTask) return;
 
-		const updatedTask = {
-			...draggedTask,
+		updateTaskMutation.mutate({
+			taskId: draggedTask.id,
 			status: destination.droppableId as Status,
-		};
-		await taskService.updateTask(TODO, {
-			id: updatedTask.id,
-			updaterId: user?.id || "",
-			status: updatedTask.status,
 		});
-		updateTask(updatedTask);
+		await queryClient.invalidateQueries({
+			queryKey: ["allBlockedTasksIds", team?.id],
+		});
 	};
+
+	const loading =
+		teamLoading ||
+		workspaceLoading ||
+		allBlockedTaskIdsQuery.isLoading ||
+		isLoading;
+	const error =
+		teamError ||
+		workspaceError ||
+		allBlockedTaskIdsQuery.error ||
+		parseError(tasksError);
 
 	return {
 		loading,
@@ -60,5 +118,7 @@ export function useTaskDashboard() {
 		workspace,
 		teamIdentifier,
 		handleDragEnd,
+		tasks: fetchedTasks || tasks,
+		error: error || null,
 	};
 }

@@ -143,8 +143,10 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				if (a.group === "Unassigned") return 1;
 				if (b.group === "Unassigned") return -1;
 
-				const aUsername = users.find((u) => u.id === a.group)?.username ?? "";
-				const bUsername = users.find((u) => u.id === b.group)?.username ?? "";
+				const aUsername =
+					users.find((u) => u.externalId === a.group)?.username ?? "";
+				const bUsername =
+					users.find((u) => u.externalId === b.group)?.username ?? "";
 
 				// Compare by the first letter of the username
 				return aUsername[0].localeCompare(bUsername[0]);

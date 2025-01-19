@@ -1,8 +1,8 @@
-import { eventService, taskService } from "@/lib/services";
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
-import { TODO } from "@squared/context";
-import type { Task, TaskEvent } from "@squared/db";
-import { useEffect, useState } from "react";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
+import type { Task } from "@squared/db";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";
 
 const ParentTaskCombobox = () => {
@@ -11,52 +11,58 @@ const ParentTaskCombobox = () => {
 		(state) => state,
 	);
 	const user = useUserStore((state) => state.user);
-	const { setEvents } = useEventStore((event) => event);
-	const [parentTask, setParentTask] = useState<Task | null>(null);
+	const queryClient = useQueryClient();
 
 	const taskId = currentTask?.id ?? "";
-	const parentTaskTitle = parentTask?.title ?? "";
-	const parentTaskId = parentTask?.id ?? "";
 
-	useEffect(() => {
-		const foundParent = tasks.find((t) => t.id === currentTask?.parentId);
-		setParentTask(foundParent ?? null);
-	}, [currentTask]);
+	const { data: parentTask } = useQuery({
+		queryKey: ["parentTask", currentTask?.parentId],
+		queryFn: async () => {
+			if (!currentTask?.parentId) return null;
+			return tasks.find((t) => t.id === currentTask?.parentId);
+		},
+		enabled: !!currentTask?.parentId,
+	});
 
-	const handleAssignParentTask = async (parentId: string | null) => {
-		const updatedTask = await taskService.updateTask(TODO, {
-			id: taskId,
-			updaterId: user?.id || "",
-			parentId,
-		});
-		updateTask(updatedTask);
-		setCurrentTask(updatedTask);
+	const updateTaskMutation = useMutation({
+		mutationFn: async (parentId: string | null) => {
+			if (!user) throw new Error("User not found");
+			const res = await client.task.updateParent.$post({
+				taskId: taskId,
+				parentId,
+			});
+			return res.json();
+		},
+		onSuccess: (updatedTask) => {
+			updateTask(updatedTask);
+			setCurrentTask(updatedTask);
+			queryClient.invalidateQueries({
+				queryKey: ["parentTask", updatedTask.parentId],
+			});
+			queryClient.invalidateQueries({ queryKey: ["taskEvents", taskId] });
+		},
+	});
 
-		const updatedEvents = await eventService.getTaskEvents(TODO, {
-			taskId: taskId,
-		});
-		// TODO: Will remove type coercion once commits are implemented
-		setEvents(updatedEvents as TaskEvent[]);
+	const handleAssignParentTask = (parentId: string | null) => {
+		updateTaskMutation.mutate(parentId);
 		setOpen(false);
 	};
 
 	if (!currentTask) return null;
 
 	return (
-		<>
-			<DesignationCombobox
-				open={open}
-				setOpen={setOpen}
-				triggerText={parentTaskTitle ? parentTaskTitle : "No parent assigned"}
-				emptyText="No tasks found."
-				listItems={tasks.filter((t) => t.id !== taskId)}
-				selectedItemId={parentTaskId}
-				selectedItemLabel={parentTaskTitle}
-				itemLabel={(task: Task) => task.title}
-				itemId={(task: Task) => task.id}
-				onItemSelect={handleAssignParentTask}
-			/>
-		</>
+		<DesignationCombobox
+			open={open}
+			setOpen={setOpen}
+			triggerText={parentTask?.title ?? "No parent assigned"}
+			emptyText="No tasks found."
+			listItems={tasks?.filter((t: Task) => t.id !== taskId) ?? []}
+			selectedItemId={parentTask?.id ?? ""}
+			selectedItemLabel={parentTask?.title ?? ""}
+			itemLabel={(task: Task) => task.title}
+			itemId={(task: Task) => task.id}
+			onItemSelect={handleAssignParentTask}
+		/>
 	);
 };
 

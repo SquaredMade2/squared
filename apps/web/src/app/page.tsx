@@ -1,55 +1,29 @@
 "use client";
+
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useAuthUser } from "@/hooks/useAuthUser";
-import { workspaceService } from "@/lib/services";
-import { useWorkspaceStore } from "@/store";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const HomePage = () => {
 	const router = useRouter();
-	const { user, loading, error } = useAuthUser();
-	const { setWorkspaces } = useWorkspaceStore((state) => state);
 
-	useEffect(() => {
-		const handleRedirection = async () => {
-			if (loading) return;
-
-			try {
-				if (user) {
-					if (user.defaultWorkspaceId) {
-						const workspace = await workspaceService.getWorkspace(TODO, {
-							workspaceId: user.defaultWorkspaceId,
-						});
-						if (workspace?.url) {
-							router.push(`/${workspace.url}`);
-							return;
-						}
-					}
-
-					const workspaces = await workspaceService.getUserWorkspaces(TODO, {
-						userId: user.id,
-					});
-					setWorkspaces(workspaces);
-					if (workspaces.length) {
-						router.push(`/${workspaces[0].url}`);
-						return;
-					}
-
-					router.push("/join");
-				} else {
-					router.push("/login");
-				}
-			} catch (error) {
-				console.error("Redirection Error: ", error);
+	const { isLoading: workspaceLoading, error: workspaceError } = useQuery({
+		queryKey: ["defaultWorkspace"],
+		queryFn: async () => {
+			const res = await client.user.getDefaultWorkpace
+				.$get()
+				.then((res) => res.json());
+			if (!res) {
+				router.push("/join");
+				return res;
 			}
-		};
+			router.push(`/${res.url}`);
+			return null;
+		},
+	});
 
-		handleRedirection();
-	}, [user, loading, router]);
-
-	if (loading) {
+	if (workspaceLoading) {
 		return (
 			<div className="h-screen w-full">
 				<div className="flex h-full justify-center items-center">
@@ -62,8 +36,8 @@ const HomePage = () => {
 		);
 	}
 
-	if (error) {
-		return <div>Error: {error}</div>;
+	if (workspaceError) {
+		return <div>Error: {workspaceError?.message}</div>;
 	}
 
 	return null;

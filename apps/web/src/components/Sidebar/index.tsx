@@ -17,17 +17,13 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { logout } from "@/lib/auth";
-import { eventService, teamService } from "@/lib/services";
-import {
-	useModalStore,
-	useTeamStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
+import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useClerk, useUser } from "@clerk/nextjs";
 import type { Workspace } from "@squared/db";
+import { useQuery } from "@tanstack/react-query";
 import {
+	ClipboardList,
 	Home,
 	Inbox,
 	type LucideIcon,
@@ -38,7 +34,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { NewTaskButton } from "../Modals";
 import { TeamAccordion } from "./TeamAccordion";
@@ -46,45 +41,44 @@ import { UserProfile } from "./UserProfile";
 import { WorkspaceDropdown } from "./WorkspaceDropdown";
 
 function SidebarContent({ workspace }: { workspace: Workspace | null }) {
-	const { teams, setTeams, team } = useTeamStore((state) => state);
-	const user = useUserStore((state) => state.user);
+	const { setTeams, team } = useTeamStore((state) => state);
+	const { user } = useUser();
 	const { setShowCommand } = useModalStore((state) => state);
 	const router = useRouter();
 	const { toast } = useToast();
 	const { resolvedTheme: theme, setTheme } = useTheme();
-	const [notifications, setNotifications] = React.useState(0);
 	const { state } = useSidebar();
+	const { signOut } = useClerk();
 
-	React.useEffect(() => {
-		if (!user || !workspace) return;
+	const { data: notifications = [] } = useQuery({
+		queryKey: ["notifications", user?.id],
+		queryFn: async () => {
+			const notifications = await client.event.getNotifications
+				.$get()
+				.then((res) => res.json());
+			return notifications;
+		},
+	});
 
-		const setAllTeams = async () => {
-			setTeams(
-				await teamService.getUserTeams(TODO, {
-					userId: user.id,
-					workspaceId: workspace.id,
-				}),
-			);
-		};
-
-		const fetchNotifications = async () => {
-			const notifications = await eventService.getNotifications(TODO, {
-				userId: user.id,
-			});
-			setNotifications(notifications?.filter((n) => !n.read).length || 0);
-		};
-
-		const fetchData = async () => {
-			await Promise.all([setAllTeams(), fetchNotifications()]);
-		};
-
-		fetchData();
-	}, [user, setTeams, workspace]);
+	const { data: teams = [] } = useQuery({
+		queryKey: ["teams", user?.id, workspace?.id],
+		queryFn: async () => {
+			if (!workspace) return [];
+			const teams = await client.team.getUserTeams
+				.$get({
+					workspaceId: workspace?.id,
+				})
+				.then((res) => res.json());
+			setTeams(teams);
+			return teams;
+		},
+		enabled: !!workspace,
+	});
 
 	const handleLogout = async (): Promise<void> => {
 		try {
-			await logout();
-			router.replace("/login");
+			await signOut();
+			router.replace("/sign-in");
 			toast({ title: "Logged out successfully." });
 		} catch (error) {
 			console.error("Logout failed", error);
@@ -115,19 +109,28 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					<IconButton
 						icon={Settings}
 						label="Settings"
-						onClick={() => navigateTo(`settings/${workspace?.url}`)}
+						onClick={() => navigateTo(`${workspace?.url}/settings`)}
 					/>
 					<IconButton
 						icon={Inbox}
 						label="Inbox"
 						onClick={() => navigateTo("inbox")}
-						notificationCount={notifications}
+						notificationCount={notifications.length}
+					/>
+					<IconButton
+						icon={ClipboardList}
+						label="My Tasks"
+						onClick={() => navigateTo(`${workspace?.url}/my-tasks/assigned`)}
 					/>
 				</div>
 			</SidebarHeader>
 			{state === "expanded" && (
 				<SidebarContainer className="px-2">
-					<TeamAccordion teams={teams} currentTeam={team} />
+					<TeamAccordion
+						teams={teams}
+						currentTeam={team}
+						workspaceUrl={workspace?.url}
+					/>
 				</SidebarContainer>
 			)}
 			<SidebarFooter className="space-y-2 px-2 mt-auto">
@@ -138,7 +141,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					}
 					onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
 				/>
-				<UserProfile user={user} onLogout={handleLogout} />
+				<UserProfile onLogout={handleLogout} />
 			</SidebarFooter>
 		</>
 	);
@@ -181,7 +184,7 @@ interface IconButtonProps {
 	notificationCount?: number;
 }
 
-export function IconButton({
+function IconButton({
 	icon: Icon,
 	label,
 	onClick,

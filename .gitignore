@@ -34,6 +34,7 @@ error.log*
 
 # local env files
 .env.*
+!.env.example
 .env
 .secrets
 
@@ -42,3 +43,6 @@ error.log*
 .vercel
 .elasticbeanstalk
 generated
+
+# squared
+.squared

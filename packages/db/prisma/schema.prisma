@@ -96,7 +96,7 @@ model TaskEvent {
   message   String
 
   Task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author User @relation(fields: [authorId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Comment {
@@ -107,7 +107,7 @@ model Comment {
   taskId   String
 
   Task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author User @relation(fields: [authorId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Notification {
@@ -125,7 +125,7 @@ model Notification {
   type NotificationType
 
   Task      Task      @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User      User      @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   Workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
@@ -148,6 +148,8 @@ model Task {
   sprintId       String?
   order          Int       @default(0)
 
+  blockedBy    Task[]      @relation("BlockedTasks")
+  blocking     Task[]      @relation("BlockedTasks")
   parent       Task?       @relation("ParentChild", fields: [parentId], references: [id], onDelete: SetNull)
   children     Task[]      @relation("ParentChild")
   status       Status      @default(backlog)
@@ -158,8 +160,8 @@ model Task {
   Branch       Branch[]
   lastViewedBy User[]      @relation("UserLastViewedTask")
 
-  Author       User           @relation("AuthoredTasks", fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Assignee     User?          @relation("AssignedTasks", fields: [assigneeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Author       User           @relation("AuthoredTasks", fields: [authorId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
+  Assignee     User?          @relation("AssignedTasks", fields: [assigneeId], references: [externalId], onDelete: SetNull, onUpdate: Cascade)
   Team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Sprint       Sprint?        @relation(fields: [sprintId], references: [id], onDelete: SetNull, onUpdate: Cascade)
@@ -197,8 +199,7 @@ model User {
   name                 String
   username             String?
   email                String   @unique
-  password             String?
-  verified             Boolean  @default(false)
+  externalId           String   @unique
   lastLogin            DateTime @default(now())
   createdAt            DateTime @default(now())
   onBoarding           Boolean  @default(true)
@@ -206,9 +207,7 @@ model User {
   avatarUrl            String?
   savedNotificationIds String[] @default([])
   subscribedTasks      String[] @default([])
-  googleId             String?
   githubUsername       String?
-  githubId             String?
   lastViewedTaskId     String?
   lastViewedTask       Task?    @relation("UserLastViewedTask", fields: [lastViewedTaskId], references: [id])
 
@@ -243,12 +242,13 @@ model SavedFilter {
   workspaceId String?
   teamId      String?
   authorId    String
+  sprintId    String?
 
   type SavedFilterType
 
   Workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Team      Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author    User       @relation(fields: [authorId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([workspaceId], name: "workspaceIdx")
   @@index([teamId], name: "teamIdx")
@@ -263,6 +263,7 @@ model Workspace {
   universalTokenLinkId String?
   avatarUrl            String?
   admins               String[]
+  defaultView          String?
 
   workspaceViews        SavedFilter[]
   Labels                Label[]
@@ -280,7 +281,7 @@ model UserWorkspace {
   userId      String
   workspaceId String
 
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User      @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, workspaceId])
@@ -290,7 +291,7 @@ model UserTeam {
   userId String
   teamId String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user User @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, teamId])
@@ -371,5 +372,5 @@ model RetrospectiveItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Author User @relation(fields: [authorId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
 }

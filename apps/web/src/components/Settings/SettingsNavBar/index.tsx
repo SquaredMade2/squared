@@ -5,13 +5,13 @@ import {
 	ChevronLeft,
 	CircleUser,
 	Moon,
-	Plus,
 	Sun,
 	Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
+import AddTeamButton from "@/components/Buttons/AddTeamButton";
 import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
 import {
 	Accordion,
@@ -41,7 +41,7 @@ function SettingsNavbarContent() {
 	const { workspace } = useWorkspaceStore((state) => state);
 
 	const navigateTo = (targetRoute: string) => {
-		router.replace(`/settings/${targetRoute}`);
+		router.replace(`/${workspace?.url}/settings/${targetRoute}`);
 	};
 	const handleTeamClick = (team: Team, path?: string) => {
 		setTeam(team);
@@ -78,21 +78,21 @@ function SettingsNavbarContent() {
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo(`${workspace?.url}`)}
+										onClick={() => navigateTo("")}
 									>
 										General
 									</Button>
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo(`${workspace?.url}/members`)}
+										onClick={() => navigateTo("members")}
 									>
 										Members
 									</Button>
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo(`${workspace?.url}/integrations`)}
+										onClick={() => navigateTo("integrations")}
 									>
 										Integrations
 									</Button>
@@ -110,9 +110,16 @@ function SettingsNavbarContent() {
 									<Button
 										variant="ghost"
 										className="w-full justify-start"
-										onClick={() => navigateTo("account/profile")}
+										onClick={() => navigateTo("profile")}
 									>
 										Profile
+									</Button>
+									<Button
+										variant="ghost"
+										className="w-full justify-start"
+										onClick={() => navigateTo("connections")}
+									>
+										Connections
 									</Button>
 								</div>
 							</div>
@@ -156,14 +163,9 @@ function SettingsNavbarContent() {
 										</AccordionItem>
 									))}
 								</Accordion>
-								<Button
-									variant="ghost"
-									className="w-full justify-start mt-2 ml-6"
-									onClick={() => navigateTo("new-team")}
-								>
-									<Plus className="mr-2 h-4 w-4" />
-									Add team
-								</Button>
+								<div className="ml-6">
+									<AddTeamButton workspaceUrl={workspace?.url ?? ""} />
+								</div>
 							</div>
 						</div>
 					</div>

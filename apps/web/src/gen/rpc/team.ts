@@ -5,6 +5,7 @@ import { RPCContextClient } from "@squared/rpc-client";
 export type CreateTeamRequest = {
 	identifier: string;
 	name: string;
+	userId: string;
 	workspaceId: string;
 };
 
@@ -119,9 +120,30 @@ export type GetUserTeamsResponse = {
 	workspaceId: string;
 }[];
 
+export type GetWorkspaceTeamsRequest = {
+	workspaceId: string;
+};
+
+export type GetWorkspaceTeamsResponse = {
+	cooldownDuration: number;
+	effort: "LINEAR" | "FIBONACCI" | "EXPONENTIAL";
+	id: string;
+	identifier: string;
+	name: string | null;
+	sprintDuration: number;
+	sprintStartDate: Date;
+	sprintsEnabled: boolean;
+	tasksPerSprint: number;
+	workspaceId: string;
+}[];
+
 export type RemoveUserFromTeamRequest = {
 	teamId: string;
 	userId: string;
+};
+
+export type RemoveUserFromTeamResponse = {
+	success: boolean;
 };
 
 /**
@@ -197,12 +219,22 @@ export class TeamService extends RPCContextClient {
 	}
 
 	/**
+	 * getWorkspaceTeams method
+	 */
+	getWorkspaceTeams(
+		ctx: Context,
+		req: GetWorkspaceTeamsRequest,
+	): Promise<GetWorkspaceTeamsResponse> {
+		return this.request(ctx, "getWorkspaceTeams", req);
+	}
+
+	/**
 	 * removeUserFromTeam method
 	 */
 	removeUserFromTeam(
 		ctx: Context,
 		req: RemoveUserFromTeamRequest,
-	): Promise<void> {
+	): Promise<RemoveUserFromTeamResponse> {
 		return this.request(ctx, "removeUserFromTeam", req);
 	}
 }

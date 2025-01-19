@@ -36,8 +36,8 @@ export default function AssigneeFilterDropDown({
 
 	const handleAssigneeChange = (label: User | null) => {
 		setSelectedAssignees((prev) =>
-			prev.some((l) => l?.id === label?.id)
-				? prev.filter((l) => l?.id !== label?.id)
+			prev.some((l) => l?.externalId === label?.externalId)
+				? prev.filter((l) => l?.externalId !== label?.externalId)
 				: [...prev, label],
 		);
 	};
@@ -47,7 +47,7 @@ export default function AssigneeFilterDropDown({
 		if (selectedAssignees.length > 0) {
 			addFilter({
 				field: "assigneeId",
-				value: selectedAssignees.map((u) => u?.id || null),
+				value: selectedAssignees.map((u) => u?.externalId || null),
 				operator: "arrayIncludesAny",
 			});
 		}
@@ -107,12 +107,14 @@ export default function AssigneeFilterDropDown({
 									.sort((a, b) => a.name.localeCompare(b.name))
 									.map((user) => (
 										<CommandItem
-											key={user.id}
+											key={user.externalId}
 											onSelect={() => handleAssigneeChange(user)}
 											className="flex items-center space-x-2 cursor-pointer h-8"
 										>
 											<div className="flex items-center flex-1 space-x-2">
-												{selectedAssignees.some((l) => l?.id === user.id) ? (
+												{selectedAssignees.some(
+													(l) => l?.id === user.externalId,
+												) ? (
 													<Check className="w-4 h-4" />
 												) : (
 													<div className="w-4 h-4" />

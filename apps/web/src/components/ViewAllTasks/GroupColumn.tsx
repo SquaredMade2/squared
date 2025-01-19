@@ -1,4 +1,5 @@
 import { useTaskStore, useUserStore, useViewStore } from "@/store";
+import { useFilterStore } from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -10,12 +11,12 @@ import type {
 	DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
 import TaskCard from "./TaskCard";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
-
 const priorityOrder = [
 	Priority.noPriority,
 	Priority.low,
@@ -39,8 +40,22 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
-	const { tasks: allTasks } = useTaskStore((state) => state);
+	const { tasks: allTasks, allBlockedTaskIds } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
+	const pathname = usePathname();
+
+	const { savedFilters } = useFilterStore((state) => state);
+
+	const currentSavedFilter = pathname.split("/").includes("views")
+		? savedFilters.filter((filter) => {
+				const filterSlugArray = filter.id.split("-");
+				const filterSlug = filterSlugArray[0];
+
+				const pathNameSlug = pathname.split("-").pop();
+
+				return filterSlug === pathNameSlug;
+			})[0]
+		: null;
 
 	const getParentTaskIds = () => {
 		const taskIdsForGroup = tasks.map((t) => t.id);
@@ -70,9 +85,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 					break;
 				case "Assignee": {
 					const aAssignee =
-						users.find((u) => u.id === a.assigneeId)?.name ?? null;
+						users.find((u) => u.externalId === a.assigneeId)?.name ?? null;
 					const bAssignee =
-						users.find((u) => u.id === b.assigneeId)?.name ?? null;
+						users.find((u) => u.externalId === b.assigneeId)?.name ?? null;
 					comparison = compareNullableStrings(aAssignee, bAssignee);
 					break;
 				}
@@ -107,7 +122,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard task={task} index={index} location={"dashboard"} />
+			<TaskCard
+				task={task}
+				index={index}
+				location={"dashboard"}
+				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
+			/>
 		</div>
 	);
 
@@ -120,7 +140,12 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			key={task.id}
 			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
 		>
-			<TaskCard task={task} index={index} location={"dashboard"} />
+			<TaskCard
+				task={task}
+				index={index}
+				location={"dashboard"}
+				isDisabled={!!allBlockedTaskIds.find((id) => id === task.id)}
+			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
 					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
@@ -134,6 +159,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 							index={subIndex}
 							location={"dashboard"}
 							isSubtask={true}
+							isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
 						/>
 					))}
 				</div>
@@ -160,6 +186,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 					index={index}
 					location={"dashboard"}
 					isSubtask={true}
+					isDisabled={!!allBlockedTaskIds.find((id) => id === subtask.id)}
 				/>
 			))}
 		</div>
@@ -211,8 +238,33 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				.filter((task): task is Task => task !== undefined),
 		);
 
+		if (currentSavedFilter) {
+			const sprintId = currentSavedFilter.sprintId;
+
+			// if no sprintId then render all tasks
+			if (!sprintId) {
+				return sortedItems.map((sortedTask, index) => {
+					const item = allItems.find((item) => {
+						return item?.task?.id === sortedTask.id;
+					});
+					return item?.render(index);
+				});
+			}
+			// else render items with matching sprintId
+			return sortedItems.map((sortedTask, index) => {
+				const item = allItems.find((item) => {
+					return (
+						item?.task?.id === sortedTask.id && item?.task.sprintId === sprintId
+					);
+				});
+				return item?.render(index);
+			});
+		}
+
 		return sortedItems.map((sortedTask, index) => {
-			const item = allItems.find((item) => item?.task?.id === sortedTask.id);
+			const item = allItems.find((item) => {
+				return item?.task?.id === sortedTask.id;
+			});
 			return item?.render(index);
 		});
 	};

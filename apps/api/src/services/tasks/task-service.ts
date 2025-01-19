@@ -58,7 +58,7 @@ export class TaskService implements TaskRpc {
 		}
 
 		const author = await this.db.user.findFirst({
-			where: { id: authorId },
+			where: { externalId: authorId },
 		});
 
 		if (!author) {
@@ -154,9 +154,18 @@ export class TaskService implements TaskRpc {
 			}
 		}
 
+		const isBlocking = !!(
+			taskData.status === "done" ||
+			taskData.status === "archived" ||
+			taskData.status === "canceled"
+		);
+
 		const task = await this.db.task.update({
 			where: { id: taskData.id },
-			data: taskData,
+			data: {
+				...taskData,
+				blocking: { set: isBlocking ? [] : undefined },
+			},
 		});
 
 		if (!task) {
@@ -173,7 +182,9 @@ export class TaskService implements TaskRpc {
 		return task;
 	}
 
-	async deleteTask({ taskId }: { taskId: string }): Promise<void> {
+	async deleteTask({
+		taskId,
+	}: { taskId: string }): Promise<{ success: boolean }> {
 		this.logger.info("Deleting task by ID: %s", taskId);
 		const task = await this.db.task.delete({
 			where: { id: taskId },
@@ -181,7 +192,7 @@ export class TaskService implements TaskRpc {
 		if (!task) {
 			this.throwError("There was an issue deleting the task");
 		}
-		return;
+		return { success: true };
 	}
 
 	async getTask({ taskId }: { taskId: string }): Promise<Task> {
@@ -319,6 +330,69 @@ export class TaskService implements TaskRpc {
 			where: { parentId },
 			orderBy: { order: "asc" },
 		});
+	}
+
+	async updateBlockedOrBlockingTasks({
+		updatingIds,
+		taskId,
+		key,
+	}: {
+		updatingIds: string[];
+		taskId: string;
+		key: "blocking" | "blockedBy";
+	}): Promise<Task[]> {
+		this.logger.info(`updating task ${key} to`, updatingIds);
+
+		const updatedTask = await this.db.task.update({
+			where: { id: taskId },
+			data: {
+				[key]: {
+					set: updatingIds.map((id) => ({ id })),
+				},
+			},
+			include: { blockedBy: true },
+		});
+		return updatedTask.blockedBy;
+	}
+
+	async getTaskBlockedByAndBlocking({ taskId }: { taskId: string }): Promise<{
+		blockedBy: Task[];
+		blockingIds: string[];
+	}> {
+		this.logger.info("getting tasks blocking and blocked by task id", taskId);
+
+		const task = await this.db.task.findUnique({
+			where: { id: taskId },
+			include: { blockedBy: true, blocking: { select: { id: true } } },
+		});
+		if (!task) {
+			this.throwError("Task not found");
+		}
+		return {
+			blockedBy: task.blockedBy,
+			blockingIds: task.blocking.map((t) => t.id),
+		};
+	}
+
+	async getAllBlockedTaskIds({
+		teamId,
+	}: { teamId: string }): Promise<string[]> {
+		this.logger.info(
+			"Getting all blocking taskIds for team with id: %s",
+			teamId,
+		);
+		const blockedTaskIds = await this.db.task.findMany({
+			where: {
+				teamId,
+				blockedBy: {
+					some: {},
+				},
+			},
+			select: {
+				id: true,
+			},
+		});
+		return blockedTaskIds.map((task) => task.id);
 	}
 
 	private throwError(message: string): never {

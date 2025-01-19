@@ -2,7 +2,7 @@ import { Droppable } from "@hello-pangea/dnd";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import type { RetroItem } from "@/app/[workspace]/team/[identifier]/sprints/[sprintId]/retrospective/page";
+import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
 import type { RetrospectiveItemType } from "@squared/db";
 import AddRetroItemModal from "./AddRetroItemModal";
 import { RetroItemCard } from "./RetroItemCard";

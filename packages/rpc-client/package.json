@@ -22,8 +22,7 @@
     "postinstall": "pnpm run build"
   },
   "dependencies": {
-    "@squared/context": "workspace:*",
-    "axios": "^1.7.5"
+    "@squared/context": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

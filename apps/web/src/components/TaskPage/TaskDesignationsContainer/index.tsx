@@ -1,4 +1,5 @@
 import AssigneeCombobox from "./AssigneeCombobox";
+import BlockedByCombobox from "./BlockedByCombobox";
 import DatePicker from "./DesignationsDatePicker";
 import EffortEstimateDropdown from "./EffortEstimateDropdown";
 import EffortModal from "./EffortModal";
@@ -22,6 +23,7 @@ export function TaskDesignationsContainer() {
 		{ name: "Assignee", component: <AssigneeCombobox /> },
 		{ name: "Parent Task", component: <ParentTaskCombobox /> },
 		{ name: "Sprint", component: <SprintCombobox /> },
+		{ name: "Blocked By", component: <BlockedByCombobox /> },
 	];
 
 	return (
