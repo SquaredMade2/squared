@@ -91,7 +91,8 @@ export class UserService implements UserRpc {
 				role: true,
 			},
 		});
-		if (!userWorkspace?.role) {
+
+		if (!userWorkspace) {
 			return "member" as const;
 		}
 		return userWorkspace.role;
@@ -122,7 +123,7 @@ export class UserService implements UserRpc {
 			.then((uw) =>
 				uw.map((u) => ({
 					...u.user,
-					role: u.role.toLowerCase() as "owner" | "admin" | "member",
+					role: u.role.toLowerCase(),
 				})),
 			);
 	}
