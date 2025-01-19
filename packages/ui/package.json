@@ -1,5 +1,5 @@
 {
-  "name": "@repo/ui",
+  "name": "@squared/ui",
   "version": "0.0.0",
   "exports": {
     "./accordion": {
