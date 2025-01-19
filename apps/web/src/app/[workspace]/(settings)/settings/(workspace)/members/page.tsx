@@ -3,10 +3,10 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { columns } from "@/components/Settings/Members/columns";
+import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { userService } from "@/lib/services";
-import { TODO } from "@squared/context";
+import { client } from "@/lib/client";
 import { useQuery } from "@tanstack/react-query";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
@@ -18,9 +18,14 @@ export default function WorkspaceMembersPage() {
 		queryKey: ["workspaceUsers", workspace?.id],
 		queryFn: async () => {
 			if (!workspace) return [];
-			return userService.getWorkspaceUsersWithRoles(TODO, {
+			const response = await client.user.getWorkspaceUsersWithRoles.$get({
 				workspaceId: workspace.id,
 			});
+			const users = await response.json();
+			return users.map((user) => ({
+				...user,
+				externalId: user.id,
+			})) as MemberWithRole[];
 		},
 		enabled: !!workspace,
 	});

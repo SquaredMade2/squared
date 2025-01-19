@@ -84,4 +84,15 @@ export const userRouter = router({
 				}),
 			);
 		}),
+	getWorkspaceUsersWithRoles: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { userService } = ctx;
+			const { workspaceId } = input;
+			return c.superjson(
+				await userService.getWorkspaceUsersWithRoles(TODO, {
+					workspaceId,
+				}),
+			);
+		}),
 });
