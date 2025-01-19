@@ -16,6 +16,7 @@ import {
 	injectMentionConfirm,
 	isValidMentionBlock,
 } from "@/utils/textEditorSelection";
+import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
 import {
@@ -68,9 +69,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentUser = useUserStore((state) => state.user);
 	const currentTask: Task = useTaskStore((state) => state.currentTask);
 	const users = useUserStore((state) => state.users);
+	const currentUser = useUser().user;
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
@@ -116,7 +117,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						description: "Task Comment Mention",
 						taskId: currentTask.id ?? "",
 						type: "MENTIONED",
-						userId: mentionedUser.id ?? "",
+						userId: mentionedUser.externalId ?? "",
 						workspaceId: currentWorkspace.id ?? "",
 					};
 
