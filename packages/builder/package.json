@@ -23,7 +23,7 @@
     "prebuild": "rimraf ./dist"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@squared/typescript-config": "workspace:*",
     "@squared/logger": "workspace:*",
     "esbuild": "^0.24.0",
     "glob": "^11.0.0",
