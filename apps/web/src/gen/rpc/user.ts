@@ -229,6 +229,8 @@ export type IsUserAuthorizedRequest = {
 	userId: string;
 };
 
+export type IsUserAuthorizedResponse = boolean;
+
 export type GetUserWorkspaceRoleRequest = {
 	userId: string;
 	workspaceId: string;
