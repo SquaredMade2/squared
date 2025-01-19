@@ -84,7 +84,7 @@ export default function WorkspaceSettings() {
 		},
 	});
 
-	const { watch } = form;
+	const { watch, register } = form;
 
 	useEffect(() => {
 		if (!workspace) return;
@@ -104,6 +104,16 @@ export default function WorkspaceSettings() {
 
 		return () => subscription.unsubscribe();
 	}, [watch, workspace]);
+
+	useEffect(() => {
+		if (workspace) {
+			form.setValue("name", workspace.name);
+			form.setValue(
+				"url",
+				workspace.url.replace("https://app.squaredmade.com/", ""),
+			);
+		}
+	}, [workspace]);
 
 	if (!workspace || !workspaces) return null;
 
@@ -181,11 +191,11 @@ export default function WorkspaceSettings() {
 						<FormField
 							control={form.control}
 							name="name"
-							render={({ field }) => (
+							render={() => (
 								<FormItem className="col-span-1">
 									<FormLabel>Workspace Name</FormLabel>
 									<FormControl>
-										<Input {...field} />
+										<Input {...register("name")} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -194,7 +204,7 @@ export default function WorkspaceSettings() {
 						<FormField
 							control={form.control}
 							name="url"
-							render={({ field }) => (
+							render={() => (
 								<FormItem className="col-span-1">
 									<FormLabel>Workspace URL</FormLabel>
 									<FormControl>
@@ -203,7 +213,7 @@ export default function WorkspaceSettings() {
 												https://app.squaredmade.com/
 											</span>
 											<Input
-												{...field}
+												{...register("url")}
 												className="rounded-l-none border-l-0 ml-0 pl-0 focus-visible:ring-offset-0 focus-visible:ring-0"
 											/>
 										</div>
