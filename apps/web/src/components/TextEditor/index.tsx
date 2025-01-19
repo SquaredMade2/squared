@@ -86,7 +86,6 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const debounceRef = useRef(false);
 	const editorRef = useRef<HTMLDivElement | null>(null);
-
 	// Functions
 
 	const addCommentToTask = async () => {

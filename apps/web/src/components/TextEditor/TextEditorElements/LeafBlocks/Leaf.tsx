@@ -30,6 +30,7 @@ const Leaf = (props: RenderLeafProps) => {
 		fontWeight: props.leaf.bold ? "bold" : "normal",
 		fontStyle: props.leaf.italic ? "italic" : "",
 		backgroundColor: props.leaf.mentionConfirm ? "gray" : "",
+		borderRadius: props.leaf.mentionConfirm ? "4px" : "",
 	};
 	return renderLeafType();
 };
