@@ -1,5 +1,7 @@
 import type { Task } from "@squared/db";
+import type { Dispatch, MutableRefObject, SetStateAction } from "react";
 import type { BaseSelection, Node, NodeEntry } from "slate";
+import type { Editor } from "slate";
 
 export interface TextEditorProps {
 	task: Task;
@@ -26,11 +28,21 @@ export interface LinkModalProps {
 	selection: BaseSelection;
 }
 
+export interface TextEditorMentionsProps {
+	cursorPosition: { x: number; y: number } | null;
+	mentionsFilter: string;
+	editor: Editor;
+	setCurrentEnterUser: Dispatch<SetStateAction<string>>;
+	setToggleMentions: Dispatch<SetStateAction<boolean>>;
+	debounceRef: MutableRefObject<boolean>;
+}
+
 export type MarkActives = {
 	isBoldActive: () => boolean;
 	isItalicActive: () => boolean;
 	isCodeActive: () => boolean;
 	isLinkActive: () => boolean;
+	isMentionActive: () => boolean;
 };
 
 export type CustomElementAttributes = Omit<
@@ -53,6 +65,8 @@ export type CustomText = {
 	italic?: boolean;
 	code?: boolean;
 	url?: string;
+	mention?: boolean;
+	mentionConfirm?: boolean;
 };
 
 export type MarkTypes = keyof Omit<CustomText, "text">;

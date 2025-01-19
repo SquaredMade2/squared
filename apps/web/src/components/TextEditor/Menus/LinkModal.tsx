@@ -11,7 +11,7 @@ import { useModalStore } from "@/store";
 import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "lucide-react";
 import { useState } from "react";
-import type { LinkModalProps } from "./interfaces";
+import type { LinkModalProps } from "../interfaces";
 
 const LinkModal = ({ injectLinkContent, selection }: LinkModalProps) => {
 	// State

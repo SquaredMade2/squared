@@ -1,9 +1,31 @@
-import { commentService } from "@/lib/services";
-import { useCommentStore, useModalStore, useUserStore } from "@/store";
+import { CreateNotificationRequest } from "@/gen/rpc/event";
+import { commentService, eventService } from "@/lib/services";
+import {
+	useCommentStore,
+	useEventStore,
+	useModalStore,
+	useTaskStore,
+	useUserStore,
+	useWorkspaceStore,
+} from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
+import {
+	clearCurrentLeafContent,
+	getMentionFromLeaf,
+	getMentionsFromSlate,
+	injectMentionConfirm,
+	isValidMentionBlock,
+} from "@/utils/textEditorSelection";
 import { TODO } from "@squared/context";
-import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
+import type { Task } from "@squared/db";
+import {
+	type KeyboardEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
 import type {
@@ -14,6 +36,7 @@ import type {
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
+import TextEditorMentions from "./Menus/TextEditorMentions";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";
@@ -47,10 +70,23 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
 	const currentUser = useUserStore((state) => state.user);
+	const currentTask: Task = useTaskStore((state) => state.currentTask);
+	const users = useUserStore((state) => state.users);
+	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
+	const setNotifications = useEventStore((state) => state.setNotifications);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
 	// Initialize Slate text editor
 	const [editor] = useState(() => withReact(createEditor()));
+
+	const [toggleMentions, setToggleMentions] = useState(false);
+	const [position, setPosition] = useState({ x: 0, y: 0 });
+	// Mention search filter
+	const [mentionsFilter, setMentionsFilter] = useState("");
+	const [currentEnterUser, setCurrentEnterUser] = useState("");
+
+	const debounceRef = useRef(false);
+	const editorRef = useRef<HTMLDivElement | null>(null);
 
 	// Functions
 
@@ -69,6 +105,26 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				setComments(
 					await commentService.addComment(TODO, { comment: newComment }),
 				);
+				const mentions = getMentionsFromSlate(editorContent);
+
+				for (let i = 0; i < mentions.length; i++) {
+					const currentMentionUser = mentions[i];
+
+					const mentionedUser = users.find(
+						(user) => user.name === currentMentionUser,
+					);
+
+					const mentionEvent: CreateNotificationRequest = {
+						description: "Task Comment Mention",
+						taskId: currentTask.id ?? "",
+						type: "MENTIONED",
+						userId: mentionedUser.id ?? "",
+						workspaceId: currentWorkspace.id ?? "",
+					};
+
+					await eventService.createNotification(TODO, mentionEvent);
+				}
+
 				setEditorContent([]);
 				editor.children = [
 					{
@@ -89,6 +145,31 @@ const TextEditor = ({ task }: TextEditorProps) => {
 			}
 		} catch (err) {
 			throw new Error(`Could not find user data and current task: ${err}`);
+		}
+	};
+
+	const handleMentionKeyUp = (event: KeyboardEvent) => {
+		if (event.key === "@") {
+			const selection = window.getSelection();
+			if (!selection) {
+				setPosition({ x: 0, y: 0 });
+				return;
+			}
+			if (!selection.rangeCount) {
+				setPosition({ x: 0, y: 0 });
+				return;
+			}
+
+			const { left } = editorRef.current
+				? editorRef.current.getBoundingClientRect()
+				: { left: 0 };
+
+			const range = selection.getRangeAt(0).cloneRange();
+			const rect = range.getBoundingClientRect();
+			setPosition({
+				y: rect.top,
+				x: rect.left - left,
+			});
 		}
 	};
 
@@ -157,6 +238,10 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				return "isItalicActive";
 			case "code":
 				return "isCodeActive";
+			case "mention":
+				return "isMentionActive";
+			case "mentionConfirm":
+				return "isMentionConfirmActive";
 			case "url":
 				return "isLinkActive";
 		}
@@ -173,14 +258,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		isItalicActive: () => isMarkActive("italic"),
 		isCodeActive: () => isMarkActive("code"),
 		isLinkActive: () => isMarkActive("url"),
+		isMentionActive: () => isMarkActive("mention"),
+		isMentionConfirmActive: () => isMarkActive("mentionConfirm"),
 	});
 
-	const createLeaf = (markType: MarkTypes) => {
-		Editor.addMark(
-			editor,
-			markType,
-			!useEditorMarks()[useLeafActive(markType)](),
-		);
+	const createLeaf = (
+		markType: MarkTypes,
+		markState = !useEditorMarks()[useLeafActive(markType)](),
+	) => {
+		Editor.addMark(editor, markType, markState);
 	};
 
 	const handleSetEditorContent = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -192,8 +278,35 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		if (isMarkActive("url")) {
 			Editor.removeMark(editor, "url");
 		}
+		if (isMarkActive("mentionConfirm") && e.key !== "Backspace") {
+			Editor.removeMark(editor, "mentionConfirm");
+		}
 		switch (e.key) {
 			// Element Blocks
+
+			// Submit Mention
+
+			case "Enter": {
+				if (toggleMentions) {
+					e.preventDefault();
+					debounceRef.current = true;
+					injectMentionConfirm(editor, currentEnterUser);
+					setToggleMentions(false);
+				}
+				break;
+			}
+
+			case "Backspace": {
+				if (isMarkActive("mentionConfirm")) {
+					clearCurrentLeafContent(editor);
+				}
+				break;
+			}
+
+			case "@": {
+				createLeaf("mention", true);
+				break;
+			}
 
 			case "`": {
 				if (e[universalHotKey]) {
@@ -264,13 +377,35 @@ const TextEditor = ({ task }: TextEditorProps) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		const deleteEntireMention = () => {
+			if (useEditorMarks().isMentionActive()) {
+				clearCurrentLeafContent(editor);
+				createLeaf("mention", false);
+				setToggleMentions(false);
+			}
+		};
+		const allowEntireMention = () => {
+			createLeaf("mention", true);
+			setToggleMentions(true);
+		};
+		if (debounceRef.current) {
+			debounceRef.current = false;
+			return;
+		}
+		isValidMentionBlock(editor) ? allowEntireMention() : deleteEntireMention();
+		if (toggleMentions) {
+			setMentionsFilter(getMentionFromLeaf(editor));
+		}
+	}, [editor.selection]);
+
 	return (
 		<Slate
 			editor={editor}
 			initialValue={initialValue}
 			onChange={(newValue) => setEditorContent(newValue)}
 		>
-			<div className="markdown-content">
+			<div className="markdown-content" onKeyUp={handleMentionKeyUp}>
 				<div
 					className={cn(
 						"min-h-[160px] w-full rounded-lg border border-input bg-transparent text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
@@ -288,14 +423,28 @@ const TextEditor = ({ task }: TextEditorProps) => {
 						// Others
 						selection={editor.selection}
 					/>
-					<Editable
-						onKeyDown={handleSetEditorContent}
-						renderLeaf={renderLeaf}
-						renderElement={renderElement}
-						className="min-h-[160px] w-full py-4 px-3"
-					/>
+					<div ref={editorRef}>
+						<Editable
+							onKeyDown={handleSetEditorContent}
+							renderLeaf={renderLeaf}
+							renderElement={renderElement}
+							className="min-h-[160px] w-full py-4 px-3"
+						/>
+					</div>
 				</div>
 			</div>
+
+			{toggleMentions && (
+				<TextEditorMentions
+					cursorPosition={position}
+					mentionsFilter={mentionsFilter}
+					editor={editor}
+					setCurrentEnterUser={setCurrentEnterUser}
+					setToggleMentions={setToggleMentions}
+					debounceRef={debounceRef}
+				/>
+			)}
+
 			<Button
 				onClick={() => !checkIfSlateEmpty(editor) && addCommentToTask()}
 				className={`ml-auto m-5 ${checkIfSlateEmpty(editor) && "bg-muted hover:bg-muted text-muted-foreground"}`}
