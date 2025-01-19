@@ -69,7 +69,7 @@ export function createRoute({ prisma }: { prisma: PrismaClient }): Route {
 					"https://github.com/apps/SquaredMadeApp/installations/new",
 				);
 			} catch (error) {
-				logger.error("Error processing OAuth: %0", error);
+				logger.error("Error processing OAuth: %s", error);
 				res.status(500).json({
 					message: `Error during OAuth: ${error instanceof Error && `: ${error.message}`}`,
 				});

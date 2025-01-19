@@ -163,7 +163,7 @@ export function SaveFilterForm({
 						name: values.title,
 						description: values.description ?? null,
 						filter: newFilters,
-						authorId: user.id,
+						authorId: user.externalId,
 						teamId: team.id,
 						sprintId: null,
 					});
@@ -177,7 +177,7 @@ export function SaveFilterForm({
 					description: values.description ?? null,
 					filter: currentFilters,
 					teamId: team.id,
-					authorId: user.id,
+					authorId: user.externalId,
 					sprintId: pathname.split("/").includes("sprints")
 						? (sprint?.id as string)
 						: null,

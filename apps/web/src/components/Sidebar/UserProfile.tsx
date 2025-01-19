@@ -11,18 +11,19 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
-import type { User } from "@squared/db";
+import { useWorkspaceStore } from "@/store";
+import { useUser } from "@clerk/nextjs";
 import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 
 interface UserProfileProps {
-	user: User | null;
 	onLogout: () => void;
 }
 
-export function UserProfile({ user, onLogout }: UserProfileProps) {
+export function UserProfile({ onLogout }: UserProfileProps) {
 	const { state } = useSidebar();
-
+	const { user } = useUser();
+	const { workspace } = useWorkspaceStore((state) => state);
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -31,16 +32,16 @@ export function UserProfile({ user, onLogout }: UserProfileProps) {
 					className={`w-full justify-start ${state === "collapsed" && "px-1"}`}
 				>
 					<Avatar className="h-6 w-6 mr-2">
-						<AvatarImage src={user?.avatarUrl ?? ""} />
-						<AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+						<AvatarImage src={user?.imageUrl ?? ""} />
+						<AvatarFallback>{user?.firstName?.charAt(0) || "U"}</AvatarFallback>
 					</Avatar>
 					{state === "expanded" && (
 						<div className="flex-1 text-left">
 							<p className="text-sm font-medium leading-none">
-								{user?.name || "User"}
+								{user?.fullName || "User"}
 							</p>
 							<p className="text-xs text-muted-foreground truncate">
-								{user?.email || "user@example.com"}
+								{user?.primaryEmailAddress?.emailAddress || "user@example.com"}
 							</p>
 						</div>
 					)}
@@ -50,7 +51,7 @@ export function UserProfile({ user, onLogout }: UserProfileProps) {
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
-					<Link href="/settings/profile">
+					<Link href={`/${workspace?.url}/settings/account/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>
 					</Link>

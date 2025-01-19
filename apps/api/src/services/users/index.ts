@@ -5,6 +5,7 @@ import {
 	userSchema,
 	userWithRoleSchema,
 	workspaceRoleEnum,
+	workspaceSchema,
 } from "../schema";
 import type { UserRpc } from "./types";
 import type { UserService } from "./user-service";
@@ -113,6 +114,19 @@ export const userRpcSchema = createServiceSchema<UserRpc>()({
 			role: workspaceRoleEnum,
 		}),
 	},
+	getDefaultWorkspace: {
+		input: z.object({
+			userId: z.string(),
+		}),
+		output: workspaceSchema.nullable(),
+	},
+	isUserAuthorized: {
+		input: z.object({
+			userId: z.string(),
+			teamIdentifier: z.string(),
+		}),
+		output: z.boolean(),
+	},
 });
 
 export type UserRpcSchema = typeof userRpcSchema;
@@ -135,4 +149,6 @@ export const createUserRpcHandler = (userService: UserService) =>
 		getWorkspaceUsersWithRoles: (input) =>
 			userService.getWorkspaceUsersWithRoles(input),
 		updateUsersRole: (input) => userService.updateUsersRole(input),
+		getDefaultWorkspace: (input) => userService.getDefaultWorkspace(input),
+		isUserAuthorized: (input) => userService.isUserAuthorized(input),
 	});

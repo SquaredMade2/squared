@@ -67,7 +67,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 		accessorKey: "manage",
 		cell: ({ row, column }) => {
 			const userId: string = row.original.id;
-			const { page, pageId, membersWithRoles, setPageUsers } =
+			const { page, pageId, membersWithRoles, refetch } =
 				column.columnDef.meta || {};
 
 			return (
@@ -76,7 +76,7 @@ export const columns: ColumnDef<MemberWithRole>[] = [
 					page={page}
 					pageId={pageId}
 					membersWithRoles={membersWithRoles}
-					setPageUsers={setPageUsers}
+					refetch={refetch}
 				/>
 			);
 		},

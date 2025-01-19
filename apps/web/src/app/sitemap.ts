@@ -79,11 +79,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			lastModified: new Date().toISOString(),
 		},
 		{
-			url: "https://app.squaredmade.com/login",
+			url: "https://app.squaredmade.com/sign-in",
 			lastModified: new Date().toISOString(),
 		},
 		{
-			url: "https://app.squaredmade.com/register",
+			url: "https://app.squaredmade.com/sign-up",
 			lastModified: new Date().toISOString(),
 		},
 		{

@@ -17,10 +17,7 @@ interface AddRetroItemModalProps {
 	onAddItem: (type: ColumnType, content: string) => void;
 }
 
-export const AddRetroItemModal = ({
-	type,
-	onAddItem,
-}: AddRetroItemModalProps) => {
+const AddRetroItemModal = ({ type, onAddItem }: AddRetroItemModalProps) => {
 	const [newItemContent, setNewItemContent] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
 

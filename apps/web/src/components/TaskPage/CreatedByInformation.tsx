@@ -8,7 +8,7 @@ export const CreatedByInformation = () => {
 	const events = useEventStore((state) => state.events);
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const authorId = currentTask?.authorId;
-	const foundUser = users.find((user) => user.id === authorId);
+	const foundUser = users.find((user) => user.externalId === authorId);
 
 	const displayDate = () => {
 		if (currentTask) {
@@ -20,7 +20,7 @@ export const CreatedByInformation = () => {
 	};
 
 	return (
-		<div>
+		<div className="flex flex-col gap-2">
 			{/* Events */}
 			{events
 				.sort(
@@ -28,7 +28,9 @@ export const CreatedByInformation = () => {
 						new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 				)
 				.map((event) => {
-					const eventAuthor = users.find((user) => user.id === event.authorId);
+					const eventAuthor = users.find(
+						(user) => user.externalId === event.authorId,
+					);
 					return (
 						<div key={event.id} className="flex items-center px-8">
 							<div className="mr-4 text-muted-foreground">

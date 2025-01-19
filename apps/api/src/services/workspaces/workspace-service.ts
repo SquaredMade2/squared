@@ -191,11 +191,12 @@ export class WorkspaceService implements WorkspaceRpc {
 		if (!user) this.throwError("User not found.");
 		if (existingUserWorkspace) return workspace;
 
-		await this.validateJoinWorkspaceData(workspace, teams, user);
+		this.validateJoinWorkspaceData(workspace, teams, user);
 
-		await this.createUserWorkspaceConnections(userId, workspaceId, teams);
-
-		await this.updateUserOnboarding(user);
+		Promise.all([
+			this.createUserWorkspaceConnections(userId, workspaceId, teams),
+			this.updateUserOnboarding(user),
+		]);
 
 		return workspace;
 	}
@@ -345,10 +346,10 @@ export class WorkspaceService implements WorkspaceRpc {
 		]);
 	}
 	private async updateUserOnboarding(user: User) {
-		if (user.onBoarding || !user.verified) {
+		if (user.onBoarding) {
 			await this.db.user.update({
 				where: { id: user.id },
-				data: { onBoarding: false, verified: true },
+				data: { onBoarding: false },
 			});
 		}
 	}

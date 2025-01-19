@@ -1,4 +1,4 @@
-import type { Team, User, WorkspaceRole } from "@squared/db";
+import type { Team, User, Workspace, WorkspaceRole } from "@squared/db";
 
 export type UserAvatar = {
 	id: string;
@@ -48,4 +48,11 @@ export interface UserRpc {
 		workspaceId: string;
 		role: WorkspaceRole;
 	}>;
+	getDefaultWorkspace: (args: {
+		userId: string;
+	}) => Promise<Workspace | null>;
+	isUserAuthorized: (args: {
+		userId: string;
+		teamIdentifier: string;
+	}) => Promise<boolean>;
 }

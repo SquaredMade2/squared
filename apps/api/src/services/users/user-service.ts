@@ -1,4 +1,4 @@
-import type { PrismaClient, Team, WorkspaceRole } from "@squared/db";
+import type { PrismaClient, Team, Workspace, WorkspaceRole } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { UserRpc } from "./types";
@@ -14,7 +14,7 @@ export class UserService implements UserRpc {
 	async onBoardUser({ userId }: { userId: string }) {
 		this.logger.info("Onboarding user with id: %s", userId);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: { onBoarding: false },
 		});
 	}
@@ -25,7 +25,7 @@ export class UserService implements UserRpc {
 	}: { userId: string; name: string; username?: string }) {
 		this.logger.info("Updating user with id: %s", userId);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: args,
 		});
 	}
@@ -40,7 +40,7 @@ export class UserService implements UserRpc {
 			avatarUrl,
 		);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: { avatarUrl },
 		});
 	}
@@ -54,7 +54,7 @@ export class UserService implements UserRpc {
 	}) {
 		this.logger.info("Updating user notifications with id: %s", userId);
 		return await this.db.user.update({
-			where: { id: userId },
+			where: { externalId: userId },
 			data: {
 				savedNotificationIds,
 			},
@@ -64,7 +64,7 @@ export class UserService implements UserRpc {
 	async getUser({ userId }: { userId: string }) {
 		this.logger.info("Fetching user with id: %s", userId);
 		return await this.db.user.findUnique({
-			where: { id: userId },
+			where: { externalId: userId },
 		});
 	}
 
@@ -231,20 +231,25 @@ export class UserService implements UserRpc {
 				include: {
 					user: {
 						select: {
-							id: true,
+							externalId: true,
 							name: true,
 							avatarUrl: true,
 						},
 					},
 				},
 			})
-			.then((uw) => uw.map((u) => u.user));
+			.then((uw) =>
+				uw.map((u) => {
+					const { externalId, name, avatarUrl } = u.user;
+					return { id: externalId, name, avatarUrl };
+				}),
+			);
 	}
 
 	async getUserRepositories({ userId }: { userId: string }) {
 		this.logger.info("Fetching user repositories with id: %s", userId);
 		const user = await this.db.user.findUnique({
-			where: { id: userId },
+			where: { externalId: userId },
 			select: { githubUsername: true },
 		});
 
@@ -285,7 +290,7 @@ export class UserService implements UserRpc {
 		);
 		try {
 			return await this.db.user.update({
-				where: { id: userId },
+				where: { externalId: userId },
 				data: { lastViewedTaskId: taskId },
 				include: { lastViewedTask: true },
 			});
@@ -306,5 +311,58 @@ export class UserService implements UserRpc {
 			}
 			throw error;
 		}
+	}
+
+	async getDefaultWorkspace({
+		userId,
+	}: { userId: string }): Promise<Workspace | null> {
+		this.logger.info("Fetching default workspace for userId: %s", userId);
+		const user = await this.db.user.findUnique({
+			where: { externalId: userId },
+			include: {
+				Workspaces: {
+					include: {
+						workspace: true,
+					},
+				},
+			},
+		});
+		if (!user) {
+			throw new Error("User not found");
+		}
+
+		if (user.Workspaces.length === 0) {
+			return null;
+		}
+
+		const defaultWorkspace = user.Workspaces.find(
+			(w) => w.workspaceId === user.defaultWorkspaceId,
+		)?.workspace;
+
+		return defaultWorkspace || user.Workspaces[0].workspace;
+	}
+
+	async isUserAuthorized({
+		userId,
+		teamIdentifier,
+	}: {
+		userId: string;
+		teamIdentifier: string;
+	}): Promise<boolean> {
+		this.logger.info(
+			"Checking if user with id: %s is authorized for team with identifier: %s",
+			userId,
+			teamIdentifier,
+		);
+		const userTeam = await this.db.userTeam.findFirst({
+			where: {
+				userId,
+				team: {
+					identifier: teamIdentifier,
+				},
+			},
+		});
+
+		return !!userTeam;
 	}
 }

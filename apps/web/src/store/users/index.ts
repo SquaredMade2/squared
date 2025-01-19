@@ -18,9 +18,5 @@ export const createUserStore = (
 		setUsers: (users: User[]) => set({ users }),
 		setUserAvatars: (userAvatars: UserAvatar[]) => set({ userAvatars }),
 		setConnectedRepos: (connectedRepos: string[]) => set({ connectedRepos }),
-		updateUser: (user) =>
-			set((state) => ({
-				users: state.users.map((u) => (u.id === user.id ? user : u)),
-			})),
 	}));
 };
