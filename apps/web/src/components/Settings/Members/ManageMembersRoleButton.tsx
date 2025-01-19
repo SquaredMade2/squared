@@ -6,11 +6,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { userService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { DropdownMenuGroup } from "@repo/ui/dropdown-menu";
-import { TODO } from "@squared/context";
 import type { WorkspaceRole } from "@squared/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserCog } from "lucide-react";
@@ -34,14 +33,14 @@ const ManageMembersRoleButton = ({
 		(user) => user.id === userId,
 	)?.role;
 
-	const { data: loggedInUserRole } = useQuery({
+	const { data: loggedInUserRole } = useQuery<WorkspaceRole | null>({
 		queryKey: ["userRole", loggedInUser?.id, pageId],
 		queryFn: async () => {
 			if (!loggedInUser || !pageId) return null;
-			return userService.getUserWorkspaceRole(TODO, {
-				userId: loggedInUser.id,
+			const response = await client.user.getUserWorkspaceRole.$get({
 				workspaceId: pageId,
 			});
+			return response.text() as Promise<WorkspaceRole>;
 		},
 		enabled: !!loggedInUser && !!pageId,
 	});
@@ -49,8 +48,7 @@ const ManageMembersRoleButton = ({
 	const updateRoleMutation = useMutation({
 		mutationFn: async (newRole: WorkspaceRole) => {
 			if (!pageId || !loggedInUser) throw new Error("Missing required data");
-			return userService.updateUsersRole(TODO, {
-				callerId: loggedInUser.id,
+			return await client.user.updateUsersRole.$post({
 				userId,
 				workspaceId: pageId,
 				newRole,

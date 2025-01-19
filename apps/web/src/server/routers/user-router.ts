@@ -52,4 +52,36 @@ export const userRouter = router({
 				}),
 			);
 		}),
+	getUserWorkspaceRole: privateProcedure
+		.input(z.object({ workspaceId: z.string() }))
+		.query(async ({ c, ctx, input }) => {
+			const { userService, user } = ctx;
+			const { workspaceId } = input;
+			const role = await userService.getUserWorkspaceRole(TODO, {
+				userId: user.id,
+				workspaceId,
+			});
+			return c.text(role);
+		}),
+	updateUsersRole: privateProcedure
+		.input(
+			z.object({
+				userId: z.string(),
+				workspaceId: z.string(),
+				newRole: z.enum(["owner", "admin", "member"]),
+			}),
+		)
+		.mutation(async ({ c, ctx, input }) => {
+			const { userService, user } = ctx;
+			const { userId, workspaceId, newRole } = input;
+
+			return c.json(
+				await userService.updateUsersRole(TODO, {
+					callerId: user.id,
+					userId,
+					workspaceId,
+					newRole,
+				}),
+			);
+		}),
 });
