@@ -123,7 +123,7 @@ export class UserService implements UserRpc {
 			.then((uw) =>
 				uw.map((u) => ({
 					...u.user,
-					role: u.role.toLowerCase(),
+					role: u.role,
 				})),
 			);
 	}
