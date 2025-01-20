@@ -1,6 +1,11 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Sprint, Task } from "@squared/db";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@squaredmade/ui/tabs";
 import { useState } from "react";
 import { SprintCard } from "./SprintCard";
 

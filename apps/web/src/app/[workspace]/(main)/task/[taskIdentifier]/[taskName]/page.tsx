@@ -9,11 +9,11 @@ import {
 	TaskSidebarTopRow,
 } from "@/components/TaskPage";
 import { LoadingTask } from "@/components/TaskPage/LoadingTask";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { TODO } from "@squared/context";
+import { useToast } from "@squaredmade/ui/hooks";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useTaskStore } from "@/store";

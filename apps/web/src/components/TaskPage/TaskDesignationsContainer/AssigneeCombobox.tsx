@@ -1,7 +1,11 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { getInitials } from "@/utils/formatting";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -9,18 +13,14 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
+} from "@squaredmade/ui/command";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
-import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { getInitials } from "@/utils/formatting";
+} from "@squaredmade/ui/popover";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";

@@ -5,7 +5,8 @@
   "scripts": {
     "api:gen": "pnpm run --filter=api gen",
     "build": "turbo run build",
-    "build:icons": "pnpm --filter=@repo/ui run build",
+    "build:icons": "pnpm --filter=icons run build",
+    "build:ui": "pnpm --filter=ui run build",
     "db:backup": "cd ./packages/db && dotenv -e .env -- sh -c 'echo $POSTGRES_PRISMA_URL && pg_dump --file=../../database/$(date +%d-%m-%Y).bak --dbname=$(echo $POSTGRES_PRISMA_URL | sed \"s/[?&]pgbouncer=true//\")'",
     "db:gen": "turbo run db:gen",
     "db:migrate": "pnpm --filter=@squared/db db:migrate",

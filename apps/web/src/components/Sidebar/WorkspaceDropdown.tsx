@@ -1,16 +1,16 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useWorkspaceStore } from "@/store";
+import { getInitials } from "@/utils/formatting";
+import { Avatar, AvatarFallback } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useSidebar } from "@/components/ui/sidebar";
-import { useWorkspaceStore } from "@/store";
-import { getInitials } from "@/utils/formatting";
+} from "@squaredmade/ui/dropdown-menu";
+import { useSidebar } from "@squaredmade/ui/sidebar";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
