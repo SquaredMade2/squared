@@ -114,7 +114,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 					const mentionEvent: CreateNotificationRequest = {
 						description: "Task Comment Mention",
-						taskId: currentTask.id ?? "",
+						taskId: currentTask ?? currentTask.id,
 						type: "MENTIONED",
 						userId: mentionedUser.externalId ?? "",
 						workspaceId: currentWorkspace.id ?? "",
