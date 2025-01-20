@@ -1,13 +1,13 @@
 import path from "node:path";
+import { type MDXFile, getMDXFiles } from "@/lib/mdx";
+import { cn } from "@/lib/utils";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { type MDXFile, getMDXFiles } from "@/lib/mdx";
-import { cn } from "@/lib/utils";
+} from "@squared/ui/accordion";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import Link from "next/link";
 
 interface DocsSidebarProps {

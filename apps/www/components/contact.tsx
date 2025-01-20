@@ -10,7 +10,7 @@ import {
 	FormField,
 	FormItem,
 	FormMessage,
-} from "@/components/ui/form";
+} from "@squared/ui/form";
 
 import { Button } from "./button";
 
