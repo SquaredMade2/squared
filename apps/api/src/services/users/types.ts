@@ -31,10 +31,10 @@ export interface UserRpc {
 		userId: string;
 		taskId: string;
 	}) => Promise<User>;
-	getUserWorkspaceRole: (args: {
+	getUserWorkspaceRole(args: {
 		userId: string;
 		workspaceId: string;
-	}) => Promise<WorkspaceRole>;
+	}): Promise<{ role: WorkspaceRole }>;
 	getWorkspaceUsersWithRoles: (args: { workspaceId: string }) => Promise<
 		(User & { role: WorkspaceRole })[]
 	>;

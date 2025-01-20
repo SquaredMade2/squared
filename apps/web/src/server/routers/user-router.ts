@@ -57,12 +57,13 @@ export const userRouter = router({
 		.query(async ({ c, ctx, input }) => {
 			const { userService, user } = ctx;
 			const { workspaceId } = input;
-			const role = await userService.getUserWorkspaceRole(TODO, {
+			const roleData = await userService.getUserWorkspaceRole(TODO, {
 				userId: user.id,
 				workspaceId,
 			});
-			return c.text(role);
+			return c.json(roleData);
 		}),
+
 	updateUsersRole: privateProcedure
 		.input(
 			z.object({

@@ -208,6 +208,50 @@ export type SetLastViewedTaskResponse = {
 	username: string | null;
 };
 
+export type GetUserWorkspaceRoleRequest = {
+	userId: string;
+	workspaceId: string;
+};
+
+export type GetUserWorkspaceRoleResponse = {
+	role: "owner" | "admin" | "member";
+};
+
+export type GetWorkspaceUsersWithRolesRequest = {
+	workspaceId: string;
+};
+
+export type GetWorkspaceUsersWithRolesResponse = {
+	avatarUrl: string | null;
+	createdAt: Date;
+	defaultWorkspaceId: string | null;
+	email: string;
+	externalId: string;
+	githubUsername: string | null;
+	id: string;
+	lastLogin: Date;
+	lastViewedTaskId: string | null;
+	name: string;
+	onBoarding: boolean;
+	role: "owner" | "admin" | "member";
+	savedNotificationIds: string[];
+	subscribedTasks: string[];
+	username: string | null;
+}[];
+
+export type UpdateUsersRoleRequest = {
+	callerId: string;
+	newRole: "owner" | "admin" | "member";
+	userId: string;
+	workspaceId: string;
+};
+
+export type UpdateUsersRoleResponse = {
+	role: "owner" | "admin" | "member";
+	userId: string;
+	workspaceId: string;
+};
+
 export type GetDefaultWorkspaceRequest = {
 	userId: string;
 };
@@ -230,51 +274,6 @@ export type IsUserAuthorizedRequest = {
 };
 
 export type IsUserAuthorizedResponse = boolean;
-
-export type GetUserWorkspaceRoleRequest = {
-	userId: string;
-	workspaceId: string;
-};
-
-export type GetUserWorkspaceRoleResponse = "owner" | "admin" | "member";
-
-export type GetWorkspaceUsersWithRolesRequest = {
-	workspaceId: string;
-};
-
-export type GetWorkspaceUsersWithRolesResponse = {
-	avatarUrl: string | null;
-	createdAt: Date;
-	defaultWorkspaceId: string | null;
-	email: string;
-	githubId: string | null;
-	githubUsername: string | null;
-	googleId: string | null;
-	id: string;
-	lastLogin: Date;
-	lastViewedTaskId: string | null;
-	name: string;
-	onBoarding: boolean;
-	password: string | null;
-	role: "owner" | "admin" | "member";
-	savedNotificationIds: string[];
-	subscribedTasks: string[];
-	username: string | null;
-	verified: boolean;
-}[];
-
-export type UpdateUsersRoleRequest = {
-	callerId: string;
-	newRole: "owner" | "admin" | "member";
-	userId: string;
-	workspaceId: string;
-};
-
-export type UpdateUsersRoleResponse = {
-	role: "owner" | "admin" | "member";
-	userId: string;
-	workspaceId: string;
-};
 
 /**
  * user service

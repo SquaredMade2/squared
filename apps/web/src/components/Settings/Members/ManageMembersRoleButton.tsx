@@ -33,14 +33,14 @@ const ManageMembersRoleButton = ({
 		(user) => user.id === userId,
 	)?.role;
 
-	const { data: loggedInUserRole } = useQuery<WorkspaceRole | null>({
+	const { data: loggedInUserRole, error } = useQuery({
 		queryKey: ["userRole", loggedInUser?.id, pageId],
 		queryFn: async () => {
-			if (!loggedInUser || !pageId) return null;
+			if (!loggedInUser || !pageId) throw new Error("User or Page not found");
 			const response = await client.user.getUserWorkspaceRole.$get({
 				workspaceId: pageId,
 			});
-			return response.text() as Promise<WorkspaceRole>;
+			return response.json();
 		},
 		enabled: !!loggedInUser && !!pageId,
 	});
@@ -76,7 +76,10 @@ const ManageMembersRoleButton = ({
 		updateRoleMutation.mutate(newRole);
 	};
 
-	if (loggedInUserRole !== "admin" && loggedInUserRole !== "owner") {
+	if (
+		error ||
+		(loggedInUserRole?.role !== "admin" && loggedInUserRole?.role !== "owner")
+	) {
 		return null;
 	}
 
@@ -97,7 +100,7 @@ const ManageMembersRoleButton = ({
 						onClick={() => handleClick("member")}
 						disabled={
 							selectedUserRole === "member" ||
-							(loggedInUserRole === "admin" &&
+							(loggedInUserRole.role === "admin" &&
 								(selectedUserRole === "admin" || selectedUserRole === "owner"))
 						}
 					>
@@ -107,7 +110,8 @@ const ManageMembersRoleButton = ({
 						onClick={() => handleClick("admin")}
 						disabled={
 							selectedUserRole === "admin" ||
-							(loggedInUserRole === "admin" && selectedUserRole === "owner")
+							(loggedInUserRole.role === "admin" &&
+								selectedUserRole === "owner")
 						}
 					>
 						Change user role to Admin
@@ -115,7 +119,7 @@ const ManageMembersRoleButton = ({
 					<DropdownMenuItem
 						onClick={() => handleClick("owner")}
 						disabled={
-							selectedUserRole === "owner" || loggedInUserRole !== "owner"
+							selectedUserRole === "owner" || loggedInUserRole.role !== "owner"
 						}
 					>
 						Change user role to Owner

@@ -74,7 +74,7 @@ export class UserService implements UserRpc {
 	}: {
 		userId: string;
 		workspaceId: string;
-	}) {
+	}): Promise<{ role: WorkspaceRole }> {
 		this.logger.info(
 			"Fetching user role for userId: %s in workspaceId: %s",
 			userId,
@@ -91,11 +91,8 @@ export class UserService implements UserRpc {
 				role: true,
 			},
 		});
-
-		if (!userWorkspace) {
-			return "member" as const;
-		}
-		return userWorkspace.role;
+		if (!userWorkspace) throw new Error("User-Workspace connection not found");
+		return { role: userWorkspace.role };
 	}
 
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
