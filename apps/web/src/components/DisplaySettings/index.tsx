@@ -10,6 +10,34 @@ import {
 	TaskOrderOptions,
 	type View,
 } from "@/store/views";
+import { Button } from "@squaredmade/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@squaredmade/ui/dropdown-menu";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@squaredmade/ui/toggle-group";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@squaredmade/ui/tooltip";
 import {
 	AlignJustify,
 	ArrowDownWideNarrow,
@@ -20,30 +48,6 @@ import {
 	SlidersVertical,
 } from "lucide-react";
 import { useEffect } from "react";
-import { Button } from "../ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { Switch } from "../ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "../ui/tooltip";
 
 const TopNavBarDisplay = () => {
 	const {

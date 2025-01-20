@@ -17,12 +17,12 @@
     }
   },
   "scripts": {
-    "postinstall": "pnpm run build",
+    "prepare": "pnpm run build",
     "prebuild": "rimraf ./dist",
     "build": "squared-build src/index.ts/index.ts"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@squared/typescript-config": "workspace:*",
     "@squared/builder": "workspace:*",
     "@types/node": "^22.8.1"
   }

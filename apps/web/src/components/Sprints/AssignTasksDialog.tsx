@@ -1,7 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { workspaceService } from "@/lib/services";
+import { useWorkspaceStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
+import { TODO } from "@squared/context";
+import type { Priority, Sprint, Status, Task } from "@squared/db";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -10,28 +15,28 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@squaredmade/ui/dialog";
+import { toast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { workspaceService } from "@/lib/services";
-import { useWorkspaceStore } from "@/store";
-import { parseParams } from "@/utils/parseParams";
-import { TODO } from "@squared/context";
-import type { Priority, Sprint, Status, Task } from "@squared/db";
+} from "@squaredmade/ui/select";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@squaredmade/ui/tabs";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
-import { toast } from "../ui/use-toast";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;

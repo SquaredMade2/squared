@@ -1,14 +1,14 @@
 "use client";
 
+import { client } from "@/lib/client";
+import { useTaskStore, useWorkspaceStore } from "@/store";
+import type { Label } from "@squared/db";
 import {
 	ContextMenuCheckboxItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
-import { client } from "@/lib/client";
-import { useTaskStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@squared/db";
+} from "@squaredmade/ui/context-menu";
 import { useMutation } from "@tanstack/react-query";
 import { Tag } from "lucide-react";
 import { useState } from "react";

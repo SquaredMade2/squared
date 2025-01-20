@@ -1,11 +1,11 @@
 "use client";
 
 import TopNavBar from "@/components/TopNavBar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTaskStore, useViewStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squared/db";
+import { ScrollArea, ScrollBar } from "@squaredmade/ui/scroll-area";
 import { Clipboard } from "lucide-react";
 import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";
