@@ -12,7 +12,7 @@
     "db:push": "prisma db push --skip-generate",
     "db:reset": "npx prisma migrate reset --force",
     "migrate": "prisma migrate dev --name",
-    "postinstall": "pnpm run db:gen",
+    "prepare": "pnpm run build",
     "studio": "prisma studio"
   },
   "dependencies": {

@@ -17,7 +17,7 @@
     "check-types": "tsc --noEmit",
     "clean": "rimraf dist",
     "lint": "biome lint --error-on-warnings ./src",
-    "postinstall": "tsup src/index.ts --format cjs,esm --dts"
+    "prepare": "pnpm run build"
   },
   "devDependencies": {
     "@squared/typescript-config": "workspace:*",
