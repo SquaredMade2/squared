@@ -3,11 +3,11 @@
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { Button } from "@squared/ui/button";
-import { Card } from "@squared/ui/card";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Label } from "@squared/ui/label";
+import { Button } from "@squaredmade/ui/button";
+import { Card } from "@squaredmade/ui/card";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";

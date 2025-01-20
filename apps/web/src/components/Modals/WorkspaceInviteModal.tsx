@@ -3,18 +3,18 @@
 import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
-} from "@squared/ui/dialog";
-import { useToast } from "@squared/ui/hooks";
-import { Label } from "@squared/ui/label";
-import { Separator } from "@squared/ui/separator";
-import { Textarea } from "@squared/ui/textarea";
+} from "@squaredmade/ui/dialog";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Label } from "@squaredmade/ui/label";
+import { Separator } from "@squaredmade/ui/separator";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 

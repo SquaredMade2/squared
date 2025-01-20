@@ -8,14 +8,14 @@ import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { Priority, Status } from "@squared/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { PriorityIcon, StatusIcon } from "../Icons";

@@ -5,7 +5,7 @@ import { sprintService, taskService, teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Sprint, Team } from "@squared/db";
-import { useToast } from "@squared/ui/hooks";
+import { useToast } from "@squaredmade/ui/hooks";
 import { addDays, format, startOfWeek } from "date-fns";
 import {
 	CalendarIcon,
@@ -29,21 +29,30 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@squared/ui/alert-dialog";
-import { Button } from "@squared/ui/button";
-import { Calendar } from "@squared/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@squared/ui/card";
-import { Label } from "@squared/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@squaredmade/ui/card";
+import { Label } from "@squaredmade/ui/label";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
-import { Separator } from "@squared/ui/separator";
-import { Switch } from "@squared/ui/switch";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
 
 export default function SprintSettings() {
 	const { updateTeam, setTeam } = useTeamStore((state) => state);

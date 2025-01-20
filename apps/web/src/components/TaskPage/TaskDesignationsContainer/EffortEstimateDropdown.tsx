@@ -5,14 +5,14 @@ import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { TaskEvent } from "@squared/db";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
-import { useToast } from "@squared/ui/hooks";
+} from "@squaredmade/ui/dropdown-menu";
+import { useToast } from "@squaredmade/ui/hooks";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";

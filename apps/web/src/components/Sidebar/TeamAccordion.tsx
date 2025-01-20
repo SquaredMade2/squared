@@ -7,9 +7,9 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@squared/ui/accordion";
-import { buttonVariants } from "@squared/ui/button";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/accordion";
+import { buttonVariants } from "@squaredmade/ui/button";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import { LayoutGrid } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

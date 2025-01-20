@@ -4,25 +4,25 @@ import { useCreateTask } from "@/hooks/useCreateTask";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@squared/ui/dialog";
+} from "@squaredmade/ui/dialog";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Separator } from "@squared/ui/separator";
-import { Textarea } from "@squared/ui/textarea";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";

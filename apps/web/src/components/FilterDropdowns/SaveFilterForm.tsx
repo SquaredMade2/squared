@@ -13,8 +13,8 @@ import { formatFilterName } from "@/utils/formatting";
 import { parseParams } from "@/utils/parseParams";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TODO } from "@squared/context";
-import { Badge } from "@squared/ui/badge";
-import { Button } from "@squared/ui/button";
+import { Badge } from "@squaredmade/ui/badge";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
@@ -23,10 +23,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Textarea } from "@squared/ui/textarea";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

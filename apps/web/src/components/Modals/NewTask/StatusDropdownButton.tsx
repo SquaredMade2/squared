@@ -3,14 +3,14 @@ import { statusOptions } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import type { Status } from "@squared/db";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import { Check } from "lucide-react";
 
 export const StatusDropdownButton = () => {

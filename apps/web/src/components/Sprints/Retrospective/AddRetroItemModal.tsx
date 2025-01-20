@@ -1,12 +1,12 @@
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@squared/ui/dialog";
-import { Input } from "@squared/ui/input";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
 import { PlusCircle } from "lucide-react";
 import { useCallback, useState } from "react";
 

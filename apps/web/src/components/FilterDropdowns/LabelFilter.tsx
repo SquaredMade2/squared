@@ -9,13 +9,13 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squared/ui/command";
+} from "@squaredmade/ui/command";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@squared/ui/dropdown-menu";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/dropdown-menu";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";

@@ -33,18 +33,23 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@squared/ui/alert-dialog";
-import { Button } from "@squared/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squared/ui/card";
-import { toast } from "@squared/ui/hooks";
-import { Progress } from "@squared/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
+} from "@squaredmade/ui/card";
+import { toast } from "@squaredmade/ui/hooks";
+import { Progress } from "@squaredmade/ui/progress";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@squaredmade/ui/tabs";
 
 import { useSprints } from "@/hooks/useSprints";
 import { sprintService, taskService } from "@/lib/services";

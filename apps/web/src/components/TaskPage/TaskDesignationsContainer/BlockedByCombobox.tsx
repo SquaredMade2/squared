@@ -1,7 +1,7 @@
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import type { Task } from "@squared/db";
-import { toast } from "@squared/ui/hooks";
+import { toast } from "@squaredmade/ui/hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationComboboxMany } from "./DesignationComboboxMany";

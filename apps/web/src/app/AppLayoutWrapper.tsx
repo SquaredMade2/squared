@@ -9,7 +9,7 @@ import {
 import SearchCommand from "@/components/SearchCommand";
 import { SquaredStoreProvider } from "@/store";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "@squared/ui/toast";
+import { Toaster } from "@squaredmade/ui/toast";
 import {
 	QueryCache,
 	QueryClient,

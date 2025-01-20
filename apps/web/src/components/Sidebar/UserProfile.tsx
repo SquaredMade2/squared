@@ -2,8 +2,8 @@
 
 import { useWorkspaceStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,8 +11,8 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
-import { useSidebar } from "@squared/ui/sidebar";
+} from "@squaredmade/ui/dropdown-menu";
+import { useSidebar } from "@squaredmade/ui/sidebar";
 import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 

@@ -4,8 +4,8 @@ import { client } from "@/lib/client";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
 import type { Workspace } from "@squared/db";
-import { Button } from "@squared/ui/button";
-import { useToast } from "@squared/ui/hooks";
+import { Button } from "@squaredmade/ui/button";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	Sidebar,
 	SidebarContent as SidebarContainer,
@@ -14,13 +14,13 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 	useSidebar,
-} from "@squared/ui/sidebar";
+} from "@squaredmade/ui/sidebar";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@squared/ui/tooltip";
+} from "@squaredmade/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import {
 	ClipboardList,

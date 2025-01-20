@@ -1,7 +1,7 @@
 "use client";
 
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -9,10 +9,14 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-} from "@squared/ui/command";
-import { DialogTitle } from "@squared/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+} from "@squaredmade/ui/command";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,

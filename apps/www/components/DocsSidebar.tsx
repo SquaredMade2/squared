@@ -6,8 +6,8 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@squared/ui/accordion";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/accordion";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import Link from "next/link";
 
 interface DocsSidebarProps {

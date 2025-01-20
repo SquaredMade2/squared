@@ -20,10 +20,10 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@squared/ui/accordion";
-import { Button } from "@squared/ui/button";
-import { ScrollArea } from "@squared/ui/scroll-area";
-import { Separator } from "@squared/ui/separator";
+} from "@squaredmade/ui/accordion";
+import { Button } from "@squaredmade/ui/button";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import { Separator } from "@squaredmade/ui/separator";
 import {
 	Sidebar,
 	SidebarContent,
@@ -31,8 +31,8 @@ import {
 	SidebarHeader,
 	SidebarTrigger,
 	useSidebar,
-} from "@squared/ui/sidebar";
-import { TooltipProvider } from "@squared/ui/tooltip";
+} from "@squaredmade/ui/sidebar";
+import { TooltipProvider } from "@squaredmade/ui/tooltip";
 
 function SettingsNavbarContent() {
 	const router = useRouter();

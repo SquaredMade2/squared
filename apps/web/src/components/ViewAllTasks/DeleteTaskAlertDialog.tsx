@@ -15,9 +15,9 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@squared/ui/alert-dialog";
-import { buttonVariants } from "@squared/ui/button";
-import { useToast } from "@squared/ui/hooks";
+} from "@squaredmade/ui/alert-dialog";
+import { buttonVariants } from "@squaredmade/ui/button";
+import { useToast } from "@squaredmade/ui/hooks";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 

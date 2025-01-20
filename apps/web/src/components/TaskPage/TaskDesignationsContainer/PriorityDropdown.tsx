@@ -6,14 +6,14 @@ import { priorityOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority, TaskEvent } from "@squared/db";
-import { useToast } from "@squared/ui/hooks";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
+} from "@squaredmade/ui/select";
 import { useMutation } from "@tanstack/react-query";
 
 const PriorityDropdown = () => {

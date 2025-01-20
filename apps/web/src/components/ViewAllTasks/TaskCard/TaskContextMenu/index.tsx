@@ -4,8 +4,8 @@ import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
-} from "@squared/ui/context-menu";
-import { useToast } from "@squared/ui/hooks";
+} from "@squaredmade/ui/context-menu";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,

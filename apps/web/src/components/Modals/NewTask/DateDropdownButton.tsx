@@ -6,9 +6,13 @@ import * as React from "react";
 
 import { useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
-import { Button } from "@squared/ui/button";
-import { Calendar } from "@squared/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+import { Button } from "@squaredmade/ui/button";
+import { Calendar } from "@squaredmade/ui/calendar";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import { useEffect } from "react";
 
 export function DateDropdownButton() {

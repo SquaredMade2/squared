@@ -1,14 +1,14 @@
 import { useModalStore } from "@/store";
 import { verifyUrlFormat } from "@/utils/formatting";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
 	DialogTrigger,
-} from "@squared/ui/dialog";
-import { DialogHeader } from "@squared/ui/dialog";
-import { toast } from "@squared/ui/hooks";
+} from "@squaredmade/ui/dialog";
+import { DialogHeader } from "@squaredmade/ui/dialog";
+import { toast } from "@squaredmade/ui/hooks";
 import { Link } from "lucide-react";
 import { useState } from "react";
 import type { LinkModalProps } from "./interfaces";

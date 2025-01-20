@@ -1,7 +1,7 @@
 "use client";
 
 import { useCommentStore, useTaskStore } from "@/store";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { CreatedByInformation } from ".";
 import TextEditor from "../TextEditor";
 import CommentCard from "./CommentCard";

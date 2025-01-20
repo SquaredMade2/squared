@@ -10,7 +10,7 @@ import {
 	FormField,
 	FormItem,
 	FormMessage,
-} from "@squared/ui/form";
+} from "@squaredmade/ui/form";
 
 import { cn } from "@/lib/utils";
 import { IconBrandGithub } from "@tabler/icons-react";

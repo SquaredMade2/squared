@@ -13,14 +13,14 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-} from "@squared/ui/command";
+} from "@squaredmade/ui/command";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@squared/ui/dialog";
+} from "@squaredmade/ui/dialog";
 import { Check, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

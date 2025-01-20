@@ -13,19 +13,19 @@ import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
-} from "@squared/ui/accordion";
-import { AccordionTrigger } from "@squared/ui/accordion";
-import { Button } from "@squared/ui/button";
+} from "@squaredmade/ui/accordion";
+import { AccordionTrigger } from "@squaredmade/ui/accordion";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Textarea } from "@squared/ui/textarea";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Textarea } from "@squaredmade/ui/textarea";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

@@ -7,7 +7,7 @@ import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@squared/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";

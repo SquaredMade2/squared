@@ -1,14 +1,14 @@
 import DeleteTaskPopOver from "@/components/DeleteTaskPopOver";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
-import { Button } from "@squared/ui/button";
-import { useToast } from "@squared/ui/hooks";
+import { Button } from "@squaredmade/ui/button";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@squared/ui/tooltip";
+} from "@squaredmade/ui/tooltip";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
 

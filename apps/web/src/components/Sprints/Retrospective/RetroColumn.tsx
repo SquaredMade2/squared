@@ -1,6 +1,6 @@
 import { Droppable } from "@hello-pangea/dnd";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@squared/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
 import type { RetrospectiveItemType } from "@squared/db";

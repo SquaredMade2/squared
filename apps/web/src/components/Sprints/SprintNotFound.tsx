@@ -1,4 +1,4 @@
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 

@@ -3,8 +3,8 @@
 import { getInitials } from "@/utils/formatting";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
@@ -13,10 +13,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Separator } from "@squared/ui/separator";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

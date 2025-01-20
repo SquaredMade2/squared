@@ -1,14 +1,14 @@
 import { high, low, medium } from "@/components/Svg";
 import { complexityScale, effortEstimateOptions } from "@/lib/constants";
 import { useTeamStore } from "@/store";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@squared/ui/dialog";
+} from "@squaredmade/ui/dialog";
 import { CircleHelp } from "lucide-react";
 
 const EffortModal = () => {

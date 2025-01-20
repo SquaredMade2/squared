@@ -12,7 +12,7 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@squared/ui/accordion";
+} from "@squaredmade/ui/accordion";
 import { PriorityIcon, StatusIcon } from "../Icons";
 
 const HiddenColumns = ({

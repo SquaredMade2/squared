@@ -1,4 +1,4 @@
-import { Skeleton } from "@squared/ui/skeleton";
+import { Skeleton } from "@squaredmade/ui/skeleton";
 import { ChevronRight } from "lucide-react";
 
 export const LoadingTask = () => {

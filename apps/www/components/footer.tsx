@@ -1,6 +1,6 @@
-import { Button } from "@squared/ui/button";
-import { Input } from "@squared/ui/input";
-import { Separator } from "@squared/ui/separator";
+import { Button } from "@squaredmade/ui/button";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "./Logo";

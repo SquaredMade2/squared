@@ -3,11 +3,15 @@ import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
-import { Checkbox } from "@squared/ui/checkbox";
-import { TooltipContent } from "@squared/ui/tooltip";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "@squared/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
+import {
+	Tooltip,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@squaredmade/ui/tooltip";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";

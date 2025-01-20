@@ -5,7 +5,7 @@ import {
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@squared/ui/tooltip";
+} from "@squaredmade/ui/tooltip";
 import { useTheme } from "next-themes";
 
 function hexToRGB(hex: string): [number, number, number] {

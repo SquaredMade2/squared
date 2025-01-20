@@ -11,7 +11,7 @@ import {
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
-} from "@squared/ui/breadcrumb";
+} from "@squaredmade/ui/breadcrumb";
 import Link from "next/link";
 
 export const TaskBreadcrumbs = () => {

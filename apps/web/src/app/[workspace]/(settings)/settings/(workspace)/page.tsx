@@ -16,9 +16,13 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@squared/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+} from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Form,
 	FormControl,
@@ -27,9 +31,9 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -37,8 +41,8 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
-import { Separator } from "@squared/ui/separator";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

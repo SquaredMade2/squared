@@ -1,4 +1,4 @@
-import { Separator } from "@squared/ui/separator";
+import { Separator } from "@squaredmade/ui/separator";
 import type { ReactNode } from "react";
 
 export default function MemberSettingsWrapper({

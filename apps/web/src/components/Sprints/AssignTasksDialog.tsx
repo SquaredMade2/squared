@@ -5,8 +5,8 @@ import { useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
-import { Button } from "@squared/ui/button";
-import { Checkbox } from "@squared/ui/checkbox";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -15,19 +15,24 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@squared/ui/dialog";
-import { toast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Label } from "@squared/ui/label";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/dialog";
+import { toast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
+} from "@squaredmade/ui/select";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@squaredmade/ui/tabs";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";

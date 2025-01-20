@@ -1,14 +1,14 @@
 "use client";
 
 import { SignUp, useUser } from "@clerk/nextjs";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@squared/ui/card";
+} from "@squaredmade/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

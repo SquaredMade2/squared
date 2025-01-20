@@ -1,6 +1,10 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import {
 	type ColumnFiltersState,
 	type SortingState,
@@ -19,9 +23,9 @@ import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService, userService } from "@/lib/services";
 import { useEventStore, useUserStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Button } from "@squared/ui/button";
-import { Checkbox } from "@squared/ui/checkbox";
-import { Input } from "@squared/ui/input";
+import { Button } from "@squaredmade/ui/button";
+import { Checkbox } from "@squaredmade/ui/checkbox";
+import { Input } from "@squaredmade/ui/input";
 import {
 	Table,
 	TableBody,
@@ -29,7 +33,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@squared/ui/table";
+} from "@squaredmade/ui/table";
 import {
 	BellOff,
 	Check,

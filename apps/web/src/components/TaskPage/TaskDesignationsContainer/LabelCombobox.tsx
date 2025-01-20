@@ -4,7 +4,7 @@ import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, TaskEvent } from "@squared/db";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -12,8 +12,12 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squared/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+} from "@squaredmade/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import { useMutation } from "@tanstack/react-query";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";

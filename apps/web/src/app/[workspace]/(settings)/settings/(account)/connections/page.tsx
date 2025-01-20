@@ -3,9 +3,9 @@
 import { GoogleIcon } from "@/components/Svg";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
-import { Button } from "@squared/ui/button";
-import { useToast } from "@squared/ui/hooks";
-import { Separator } from "@squared/ui/separator";
+import { Button } from "@squaredmade/ui/button";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Separator } from "@squaredmade/ui/separator";
 import { Github } from "lucide-react";
 import { useRouter } from "next/navigation";
 

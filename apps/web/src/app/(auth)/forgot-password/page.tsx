@@ -1,16 +1,16 @@
 "use client";
 
 import { useAuth, useSignIn } from "@clerk/nextjs";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@squared/ui/card";
-import { Input } from "@squared/ui/input";
-import { Label } from "@squared/ui/label";
+} from "@squaredmade/ui/card";
+import { Input } from "@squaredmade/ui/input";
+import { Label } from "@squaredmade/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";

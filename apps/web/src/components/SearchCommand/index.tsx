@@ -10,12 +10,12 @@ import {
 	CommandList,
 	CommandSeparator,
 	CommandShortcut,
-} from "@squared/ui/command";
-import { DialogTitle } from "@squared/ui/dialog";
-import { useToast } from "@squared/ui/hooks";
-import { useId } from "@squared/ui/hooks";
-import { ScrollArea } from "@squared/ui/scroll-area";
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+} from "@squaredmade/ui/command";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { useToast } from "@squaredmade/ui/hooks";
+import { useId } from "@squaredmade/ui/hooks";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";

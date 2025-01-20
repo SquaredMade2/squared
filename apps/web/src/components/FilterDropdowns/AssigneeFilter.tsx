@@ -4,7 +4,7 @@ import { useFilterStore, useUserStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import {
 	Command,
 	CommandEmpty,
@@ -12,13 +12,13 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squared/ui/command";
+} from "@squaredmade/ui/command";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@squared/ui/dropdown-menu";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/dropdown-menu";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import { Check, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";

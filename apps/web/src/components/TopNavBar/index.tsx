@@ -4,7 +4,7 @@ import TopNavBarDisplay from "@/components/DisplaySettings";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { SaveFilterForm } from "@/components/FilterDropdowns/SaveFilterForm";
 import { useFilterStore } from "@/store";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";

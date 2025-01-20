@@ -2,7 +2,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import { useEffect } from "react";
 
 export default function GlobalError({

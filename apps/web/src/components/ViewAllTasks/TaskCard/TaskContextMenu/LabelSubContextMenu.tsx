@@ -8,7 +8,7 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@squared/ui/context-menu";
+} from "@squaredmade/ui/context-menu";
 import { useMutation } from "@tanstack/react-query";
 import { Tag } from "lucide-react";
 import { useState } from "react";

@@ -1,5 +1,5 @@
 import type { Task } from "@squared/db";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { DeleteTaskAlertDialog } from "../ViewAllTasks/DeleteTaskAlertDialog";

@@ -7,7 +7,7 @@ import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";
 import { TODO } from "@squared/context";
 import type { Priority, Sprint, Task } from "@squared/db";
-import { Alert, AlertDescription, AlertTitle } from "@squared/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@squaredmade/ui/alert";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -17,15 +17,15 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@squared/ui/alert-dialog";
-import { Button } from "@squared/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squared/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -33,10 +33,10 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@squared/ui/dialog";
-import { Input } from "@squared/ui/input";
-import { Progress } from "@squared/ui/progress";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
+import { Progress } from "@squaredmade/ui/progress";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import { differenceInDays, format } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

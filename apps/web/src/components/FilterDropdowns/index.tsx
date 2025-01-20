@@ -9,12 +9,12 @@ import {
 } from "lucide-react";
 
 import { useFilterStore } from "@/store";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import { PriorityIcon } from "../Icons";
 import AssigneeFilterDropDown from "./AssigneeFilter";
 import DueDateFilterDropDown from "./DueDateFilter";

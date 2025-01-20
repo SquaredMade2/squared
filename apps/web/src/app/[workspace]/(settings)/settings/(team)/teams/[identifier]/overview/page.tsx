@@ -18,15 +18,15 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@squared/ui/alert-dialog";
-import { Button } from "@squared/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import {
 	Form,
 	FormControl,
@@ -35,10 +35,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Separator } from "@squared/ui/separator";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -5,7 +5,7 @@ import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@squared/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import { useEffect, useState } from "react";
 import { PriorityIcon } from "../Icons";
 import type { FilterOption } from "./interfaces";

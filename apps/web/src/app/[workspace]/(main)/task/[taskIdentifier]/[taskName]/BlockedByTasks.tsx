@@ -4,14 +4,17 @@ import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu"
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import type { Task, User } from "@squared/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from "@squared/ui/collapsible";
-import { ContextMenu, ContextMenuTrigger } from "@squared/ui/context-menu";
+} from "@squaredmade/ui/collapsible";
+import {
+	ContextMenu,
+	ContextMenuTrigger,
+} from "@squaredmade/ui/context-menu";
 import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

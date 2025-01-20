@@ -1,8 +1,8 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import { useViewStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
-import { Button } from "@squared/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import { formatDate } from "date-fns";
 import { UserSearch } from "lucide-react";
 import Link from "next/link";

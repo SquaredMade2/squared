@@ -1,5 +1,5 @@
 import { cn } from "@/utils/cn";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -7,9 +7,13 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squared/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
-import { ScrollArea } from "@squared/ui/scroll-area";
+} from "@squaredmade/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 // import type { Sprint, Task } from "@squared/db";
 import { Check, ChevronsUpDown } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";

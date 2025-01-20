@@ -10,30 +10,34 @@ import {
 	TaskOrderOptions,
 	type View,
 } from "@/store/views";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+} from "@squaredmade/ui/dropdown-menu";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
-import { Separator } from "@squared/ui/separator";
-import { Switch } from "@squared/ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "@squared/ui/toggle-group";
+} from "@squaredmade/ui/select";
+import { Separator } from "@squaredmade/ui/separator";
+import { Switch } from "@squaredmade/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@squaredmade/ui/toggle-group";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@squared/ui/tooltip";
+} from "@squaredmade/ui/tooltip";
 import {
 	AlignJustify,
 	ArrowDownWideNarrow,

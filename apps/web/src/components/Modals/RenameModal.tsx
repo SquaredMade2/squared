@@ -5,16 +5,16 @@ import { useModalStore, useTaskStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@squared/ui/dialog";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
+} from "@squaredmade/ui/dialog";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 

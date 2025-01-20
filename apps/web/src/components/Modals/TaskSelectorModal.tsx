@@ -9,10 +9,10 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squared/ui/command";
-import { DialogTitle } from "@squared/ui/dialog";
-import { ScrollArea } from "@squared/ui/scroll-area";
-import { VisuallyHidden } from "@squared/ui/visually-hidden";
+} from "@squaredmade/ui/command";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
 

@@ -8,14 +8,14 @@ import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status, TaskEvent } from "@squared/db";
-import { useToast } from "@squared/ui/hooks";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squared/ui/select";
+} from "@squaredmade/ui/select";
 import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {

@@ -3,9 +3,14 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { client } from "@/lib/client"; // Assuming this is where your API client is exported
 import { useUser } from "@clerk/nextjs";
-import { Button } from "@squared/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@squared/ui/card";
-import { useToast } from "@squared/ui/hooks";
+import { Button } from "@squaredmade/ui/button";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@squaredmade/ui/card";
+import { useToast } from "@squaredmade/ui/hooks";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

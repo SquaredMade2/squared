@@ -6,14 +6,14 @@ import { client } from "@/lib/client";
 import { useTeamStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squared/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Form,
 	FormControl,
@@ -22,10 +22,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squared/ui/form";
-import { useToast } from "@squared/ui/hooks";
-import { Input } from "@squared/ui/input";
-import { Separator } from "@squared/ui/separator";
+} from "@squaredmade/ui/form";
+import { useToast } from "@squaredmade/ui/hooks";
+import { Input } from "@squaredmade/ui/input";
+import { Separator } from "@squaredmade/ui/separator";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

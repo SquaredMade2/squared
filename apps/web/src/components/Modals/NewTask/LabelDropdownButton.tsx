@@ -2,7 +2,7 @@ import LabelBadge from "@/components/LabelBadges";
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -10,8 +10,12 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squared/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+} from "@squaredmade/ui/command";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@squaredmade/ui/popover";
 import { Check, Tag } from "lucide-react";
 import { useMemo, useState } from "react";
 

@@ -1,6 +1,6 @@
 import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { formatDate } from "date-fns";
 
 export const CreatedByInformation = () => {

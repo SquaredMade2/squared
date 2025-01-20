@@ -2,14 +2,14 @@ import { teamService, workspaceService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@squared/ui/dropdown-menu";
-import { useToast } from "@squared/ui/hooks";
+} from "@squaredmade/ui/dropdown-menu";
+import { useToast } from "@squaredmade/ui/hooks";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useWorkspaceStore } from "@/store";
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";

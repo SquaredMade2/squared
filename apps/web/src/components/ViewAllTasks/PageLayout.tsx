@@ -5,7 +5,7 @@ import { useTaskStore, useViewStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import type { Workspace } from "@squared/db";
-import { ScrollArea, ScrollBar } from "@squared/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@squaredmade/ui/scroll-area";
 import { Clipboard } from "lucide-react";
 import type { ReactNode } from "react";
 import SquaredLoader from "../Loaders/SquaredLoader";

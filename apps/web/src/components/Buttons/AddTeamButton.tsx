@@ -1,4 +1,4 @@
-import { Button } from "@squared/ui/button";
+import { Button } from "@squaredmade/ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 

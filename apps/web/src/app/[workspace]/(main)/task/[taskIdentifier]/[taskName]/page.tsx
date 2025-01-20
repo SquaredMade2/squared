@@ -12,8 +12,8 @@ import { LoadingTask } from "@/components/TaskPage/LoadingTask";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { TODO } from "@squared/context";
-import { useToast } from "@squared/ui/hooks";
-import { ScrollArea } from "@squared/ui/scroll-area";
+import { useToast } from "@squaredmade/ui/hooks";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 
 import { useTaskPage } from "@/hooks/useTaskPage";
 import { useTaskStore } from "@/store";

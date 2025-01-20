@@ -11,8 +11,8 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@squared/ui/context-menu";
-import { useToast } from "@squared/ui/hooks";
+} from "@squaredmade/ui/context-menu";
+import { useToast } from "@squaredmade/ui/hooks";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 
