@@ -4,8 +4,8 @@ import { TODO } from "@squared/context";
 import { Activity, Copy, Layers } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
-import { useToast } from "../ui/use-toast";
+import { Button } from "@squared/ui/button";
+import { useToast } from "@squared/ui/hooks";
 
 interface NavBarTeamProps {
 	teamIdentifier: string;

@@ -1,4 +1,4 @@
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import type { Task } from "@squared/db";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Card,
 	CardContent,
@@ -8,8 +8,8 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/card";
+import { useToast } from "@squared/ui/hooks";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";

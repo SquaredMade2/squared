@@ -12,8 +12,8 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
+import { Button } from "@squared/ui/button";
+import { toast } from "@squared/ui/hooks";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";

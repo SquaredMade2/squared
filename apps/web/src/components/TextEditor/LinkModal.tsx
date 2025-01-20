@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { DialogHeader } from "@/components/ui/dialog";
-import { toast } from "@/components/ui/use-toast";
+} from "@squared/ui/dialog";
+import { DialogHeader } from "@squared/ui/dialog";
+import { toast } from "@squared/ui/hooks";
 import { useModalStore } from "@/store";
 import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "lucide-react";

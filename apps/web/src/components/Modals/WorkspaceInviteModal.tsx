@@ -5,18 +5,18 @@ import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
-} from "../ui/dialog";
-import { Label } from "../ui/label";
-import { Separator } from "../ui/separator";
-import { Textarea } from "../ui/textarea";
-import { useToast } from "../ui/use-toast";
+} from "@squared/ui/dialog";
+import { Label } from "@squared/ui/label";
+import { Separator } from "@squared/ui/separator";
+import { Textarea } from "@squared/ui/textarea";
+import { useToast } from "@squared/ui/hooks";
 
 export const WorkspaceInviteModal = () => {
 	const { workspace } = useWorkspaceStore((state) => state);

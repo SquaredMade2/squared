@@ -1,6 +1,13 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
+import { useTeams } from "@/hooks/useTeams";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { teamService } from "@/lib/services";
+import { useTeamStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
+import type { Effort } from "@squared/db";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,8 +18,15 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@squared/ui/alert-dialog";
+import { Button } from "@squared/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from "@squared/ui/dropdown-menu";
 import {
 	Form,
 	FormControl,
@@ -21,24 +35,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { teamService } from "@/lib/services";
-import { useTeamStore } from "@/store";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuRadioGroup,
-	DropdownMenuRadioItem,
-	DropdownMenuTrigger,
-} from "@repo/ui/dropdown-menu";
-import { TODO } from "@squared/context";
-import type { Effort } from "@squared/db";
+} from "@squared/ui/form";
+import { useToast } from "@squared/ui/hooks";
+import { Input } from "@squared/ui/input";
+import { Separator } from "@squared/ui/separator";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -9,8 +9,8 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useSidebar } from "@/components/ui/sidebar";
+} from "@squared/ui/dropdown-menu";
+import { useSidebar } from "@squared/ui/sidebar";
 import { useWorkspaceStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
 import { LogOut, Settings } from "lucide-react";

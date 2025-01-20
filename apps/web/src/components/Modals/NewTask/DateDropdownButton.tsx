@@ -4,13 +4,13 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@squared/ui/button";
+import { Calendar } from "@squared/ui/calendar";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@squared/ui/popover";
 import { useModalStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { useEffect } from "react";

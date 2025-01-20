@@ -7,8 +7,8 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/select";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore } from "@/store";

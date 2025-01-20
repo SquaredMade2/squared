@@ -21,12 +21,12 @@ import {
 	AlertDialogContent,
 	AlertDialogFooter,
 	AlertDialogHeader,
-} from "../ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+} from "@squared/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Badge } from "@squared/ui/badge";
+import { Button } from "@squared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@squared/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;

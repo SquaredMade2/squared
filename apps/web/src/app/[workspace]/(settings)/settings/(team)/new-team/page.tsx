@@ -1,13 +1,13 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squared/ui/card";
 import {
 	Form,
 	FormControl,
@@ -16,10 +16,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/form";
+import { Input } from "@squared/ui/input";
+import { Separator } from "@squared/ui/separator";
+import { useToast } from "@squared/ui/hooks";
 import { useTeams } from "@/hooks/useTeams";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { client } from "@/lib/client";

@@ -1,11 +1,11 @@
 "use client";
 
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@squared/ui/calendar";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
+} from "@squared/ui/context-menu";
 import { client } from "@/lib/client";
 import { useTaskStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";

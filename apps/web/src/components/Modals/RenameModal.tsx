@@ -7,16 +7,16 @@ import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "../ui/dialog";
-import { Input } from "../ui/input";
-import { useToast } from "../ui/use-toast";
+} from "@squared/ui/dialog";
+import { Input } from "@squared/ui/input";
+import { useToast } from "@squared/ui/hooks";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");

@@ -391,6 +391,16 @@
         "types": "./dist/tooltip/index.d.ts",
         "default": "./dist/tooltip/index.js"
       }
+    },
+    "./visually-hidden": {
+      "import": {
+        "types": "./dist/visually-hidden/index.d.mts",
+        "default": "./dist/visually-hidden/index.mjs"
+      },
+      "require": {
+        "types": "./dist/visually-hidden/index.d.ts",
+        "default": "./dist/visually-hidden/index.js"
+      }
     }
   },
   "scripts": {
@@ -409,6 +419,7 @@
     "@radix-ui/react-hover-card": "^1.1.4",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.1.4",
+    "@radix-ui/react-primitive": "^2.0.1",
     "@radix-ui/react-progress": "^1.1.1",
     "@radix-ui/react-scroll-area": "^1.2.2",
     "@radix-ui/react-select": "^2.1.4",
@@ -421,6 +432,7 @@
     "@radix-ui/react-toggle": "^1.1.1",
     "@radix-ui/react-toggle-group": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.6",
+    "@radix-ui/react-use-layout-effect": "^1.1.0",
     "cmdk": "^1.0.0",
     "lucide-react": "^0.471.0",
     "react-day-picker": "8.10.1",

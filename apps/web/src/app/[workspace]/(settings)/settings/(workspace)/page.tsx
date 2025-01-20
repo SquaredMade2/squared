@@ -11,9 +11,9 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+} from "@squared/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import {
 	Form,
 	FormControl,
@@ -22,8 +22,8 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@squared/ui/form";
+import { Input } from "@squared/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -31,9 +31,9 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/select";
+import { Separator } from "@squared/ui/separator";
+import { useToast } from "@squared/ui/hooks";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { workspaceService } from "@/lib/services";
 import { useUserStore, useWorkspaceStore } from "@/store";

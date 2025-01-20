@@ -1,7 +1,7 @@
 "use client";
 
 import TopNavBar from "@/components/TopNavBar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@squared/ui/scroll-area";
 import { useTaskStore, useViewStore } from "@/store";
 import { useUser } from "@clerk/nextjs";
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";

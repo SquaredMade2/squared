@@ -1,18 +1,18 @@
 import { eventService, userService, workspaceService } from "@/lib/services";
 import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { TooltipContent } from "@repo/ui/tooltip";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
+import { Checkbox } from "@squared/ui/checkbox";
+import { TooltipContent } from "@squared/ui/tooltip";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "@squared/ui/tooltip";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { StatusIcon } from "../Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 export const columns: ColumnDef<
 	Notification & { Task: Task; Workspace: Workspace }

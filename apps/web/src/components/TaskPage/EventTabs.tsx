@@ -1,6 +1,6 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
 import { useCommentStore, useTaskStore } from "@/store";
 import { CreatedByInformation } from ".";
 import TextEditor from "../TextEditor";

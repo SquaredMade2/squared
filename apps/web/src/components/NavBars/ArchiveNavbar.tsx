@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import { useWorkspaceStore } from "@/store";
 import { ArrowLeft } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";

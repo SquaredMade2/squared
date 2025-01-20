@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import type { GetNotificationsResponse } from "@/gen/rpc/event";
+import { Button } from "@squared/ui/button";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -8,10 +9,10 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-} from "@/components/ui/command";
-import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { DialogTitle } from "@repo/ui/dialog";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+} from "@squared/ui/command";
+import { DialogTitle } from "@squared/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+import { VisuallyHidden } from "@squared/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,
@@ -23,7 +24,6 @@ import {
 	MessageCircleMore,
 } from "lucide-react";
 import { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type NotificationFilter =
 	| "INBOX"

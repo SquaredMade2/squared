@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import type { Task } from "@squared/db";
 import { Trash } from "lucide-react";
 import { useState } from "react";

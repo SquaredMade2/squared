@@ -5,7 +5,7 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squared/ui/card";
 import { useTeams } from "@/hooks/useTeams";
 import { filterService } from "@/lib/services";
 import { useFilterStore } from "@/store";

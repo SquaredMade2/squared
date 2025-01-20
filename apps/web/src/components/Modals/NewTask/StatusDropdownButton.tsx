@@ -1,12 +1,12 @@
 import { StatusIcon } from "@/components/Icons";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@squared/ui/dropdown-menu";
 import { statusOptions } from "@/lib/constants";
 import { useModalStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";

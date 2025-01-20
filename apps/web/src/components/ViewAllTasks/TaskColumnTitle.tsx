@@ -11,14 +11,14 @@ import type { Priority, Status } from "@squared/db";
 import { CirclePlus, EllipsisVertical } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { PriorityIcon, StatusIcon } from "../Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@squared/ui/dropdown-menu";
 import { LabelColor } from "./TaskCard/TaskCardLabels";
 import type { TaskColumnTitleProps } from "./interfaces";
 

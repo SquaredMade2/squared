@@ -17,9 +17,9 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { buttonVariants } from "../ui/button";
-import { useToast } from "../ui/use-toast";
+} from "@squared/ui/alert-dialog";
+import { buttonVariants } from "@squared/ui/button";
+import { useToast } from "@squared/ui/hooks";
 
 export const DeleteTaskAlertDialog = ({
 	task,

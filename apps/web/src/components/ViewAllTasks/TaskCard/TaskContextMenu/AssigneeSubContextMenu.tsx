@@ -1,13 +1,13 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+} from "@squared/ui/context-menu";
+import { ScrollArea, ScrollBar } from "@squared/ui/scroll-area";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";

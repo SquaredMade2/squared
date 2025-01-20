@@ -1,6 +1,6 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squared/db";

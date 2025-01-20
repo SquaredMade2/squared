@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@squared/ui/button";
+import { Checkbox } from "@squared/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -10,18 +10,18 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@squared/ui/dialog";
+import { Input } from "@squared/ui/input";
+import { Label } from "@squared/ui/label";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@squared/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
 import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
@@ -31,7 +31,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
-import { toast } from "../ui/use-toast";
+import { toast } from "@squared/ui/hooks";
 
 interface AssignTasksDialogProps {
 	activeSprint: Sprint | null;

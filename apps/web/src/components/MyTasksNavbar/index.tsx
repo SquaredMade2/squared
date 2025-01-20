@@ -4,7 +4,7 @@ import { useWorkspaceStore } from "@/store";
 import { ArrowLeft } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squared/ui/button";
 
 const tabs = [
 	{ id: "assigned", label: "Assigned" },

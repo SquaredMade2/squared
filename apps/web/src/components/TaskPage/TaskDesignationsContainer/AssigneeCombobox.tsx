@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -9,14 +9,14 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
+} from "@squared/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/popover";
+import { ScrollArea } from "@squared/ui/scroll-area";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";

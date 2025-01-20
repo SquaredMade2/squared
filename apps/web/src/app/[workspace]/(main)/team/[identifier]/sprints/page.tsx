@@ -2,7 +2,7 @@
 
 import { PriorityIcon } from "@/components/Icons";
 import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@squared/ui/alert";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,15 +12,15 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@squared/ui/alert-dialog";
+import { Button } from "@squared/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squared/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -28,10 +28,10 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@squared/ui/dialog";
+import { Input } from "@squared/ui/input";
+import { Progress } from "@squared/ui/progress";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
 import { taskService } from "@/lib/services";
 import { useTaskStore } from "@/store";

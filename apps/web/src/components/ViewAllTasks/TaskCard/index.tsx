@@ -1,5 +1,5 @@
 "use client";
-import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { ContextMenu, ContextMenuTrigger } from "@squared/ui/context-menu";
 import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
 import type { DraggableProvided } from "@hello-pangea/dnd";

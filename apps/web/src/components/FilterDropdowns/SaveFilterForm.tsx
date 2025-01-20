@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Form,
 	FormControl,
@@ -9,9 +9,9 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@squared/ui/form";
+import { Input } from "@squared/ui/input";
+import { Textarea } from "@squared/ui/textarea";
 import { filterService } from "@/lib/services";
 import {
 	useFilterStore,
@@ -29,8 +29,8 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Badge } from "../ui/badge";
-import { useToast } from "../ui/use-toast";
+import { Badge } from "@squared/ui/badge";
+import { useToast } from "@squared/ui/hooks";
 
 const formSchema = z.object({
 	title: z.string().min(1, "Title is required"),

@@ -2,8 +2,8 @@ import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
-} from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/context-menu";
+import { useToast } from "@squared/ui/hooks";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import {

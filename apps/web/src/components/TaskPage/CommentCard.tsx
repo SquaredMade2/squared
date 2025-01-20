@@ -7,8 +7,8 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { toast } from "../ui/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { toast } from "@squared/ui/hooks";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";

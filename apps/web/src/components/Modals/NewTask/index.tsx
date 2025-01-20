@@ -1,24 +1,24 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@squared/ui/dialog";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/form";
+import { Input } from "@squared/ui/input";
+import { Separator } from "@squared/ui/separator";
+import { Textarea } from "@squared/ui/textarea";
+import { useToast } from "@squared/ui/hooks";
 import { useCreateTask } from "@/hooks/useCreateTask";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";

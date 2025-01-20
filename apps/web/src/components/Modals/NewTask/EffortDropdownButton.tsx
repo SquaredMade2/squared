@@ -1,11 +1,11 @@
 import { high, low, medium } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@squared/ui/dropdown-menu";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useModalStore, useTeamStore } from "@/store";
 import { Check } from "lucide-react";

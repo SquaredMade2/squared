@@ -1,5 +1,5 @@
 import MentionInput from "@/components/MentionsInput";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { eventService } from "@/lib/services";
 import {
@@ -18,8 +18,8 @@ import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import type { OnChangeHandlerFunc } from "react-mentions";
 import { StatusIcon } from "../Icons";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "@squared/ui/button";
+import { Input } from "@squared/ui/input";
 
 export const TaskPageForm = () => {
 	const { users } = useUserStore((state) => state);

@@ -6,8 +6,8 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/context-menu";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";

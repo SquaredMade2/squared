@@ -8,14 +8,14 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-} from "@/components/ui/command";
+} from "@squared/ui/command";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@squared/ui/dialog";
 import { teamService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { cn } from "@/utils/cn";

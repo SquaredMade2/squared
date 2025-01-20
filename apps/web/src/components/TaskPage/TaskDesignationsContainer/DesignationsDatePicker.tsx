@@ -1,7 +1,7 @@
 "use client";
 
-import { DatePicker } from "@/components/ui/date-picker";
-import { useToast } from "@/components/ui/use-toast";
+import { DatePicker } from "@squared/ui/date-picker";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -1,14 +1,14 @@
 "use client";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+} from "@squared/ui/collapsible";
+import { ContextMenu, ContextMenuTrigger } from "@squared/ui/context-menu";
 import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import type { Task, User } from "@squared/db";

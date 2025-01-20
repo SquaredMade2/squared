@@ -1,9 +1,9 @@
 "use client";
 
 import { GoogleIcon } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@squared/ui/button";
+import { Separator } from "@squared/ui/separator";
+import { useToast } from "@squared/ui/hooks";
 import { parseError } from "@/utils/parseError";
 import { useUser } from "@clerk/nextjs";
 import { Github } from "lucide-react";

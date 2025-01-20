@@ -5,7 +5,7 @@ import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
+} from "@squared/ui/context-menu";
 import { client } from "@/lib/client";
 import { useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";

@@ -1,6 +1,6 @@
 import LabelBadge from "@/components/LabelBadges";
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -8,12 +8,12 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
+} from "@squared/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@squared/ui/popover";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import type { Label } from "@squared/db";
 import { Check, Tag } from "lucide-react";

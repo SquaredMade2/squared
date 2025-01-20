@@ -1,7 +1,7 @@
 "use client";
 
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -9,12 +9,12 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
+} from "@squared/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@squared/ui/popover";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import type { Label, TaskEvent } from "@squared/db";

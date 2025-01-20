@@ -3,7 +3,7 @@
 import TopNavBarDisplay from "@/components/DisplaySettings";
 import FilterDropDown from "@/components/FilterDropdowns";
 import { SaveFilterForm } from "@/components/FilterDropdowns/SaveFilterForm";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import { useFilterStore } from "@/store";
 
 import { usePathname } from "next/navigation";

@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Button } from "@squared/ui/button";
+import { Input } from "@squared/ui/input";
+import { Table, TableBody, TableCell, TableRow } from "@squared/ui/table";
 import { userService } from "@/lib/services";
 import { useModalStore } from "@/store";
 import { TODO } from "@squared/context";

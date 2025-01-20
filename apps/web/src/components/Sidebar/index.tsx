@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Sidebar,
 	SidebarContent as SidebarContainer,
@@ -9,14 +9,14 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 	useSidebar,
-} from "@/components/ui/sidebar";
+} from "@squared/ui/sidebar";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/tooltip";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";

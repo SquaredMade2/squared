@@ -20,30 +20,30 @@ import {
 	SlidersVertical,
 } from "lucide-react";
 import { useEffect } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@squared/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { Switch } from "../ui/switch";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+} from "@squared/ui/select";
+import { Separator } from "@squared/ui/separator";
+import { Switch } from "@squared/ui/switch";
+import { ToggleGroup, ToggleGroupItem } from "@squared/ui/toggle-group";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
+} from "@squared/ui/tooltip";
 
 const TopNavBarDisplay = () => {
 	const {

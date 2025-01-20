@@ -9,8 +9,8 @@ import {
 	TaskSidebarTopRow,
 } from "@/components/TaskPage";
 import { LoadingTask } from "@/components/TaskPage/LoadingTask";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
+import { ScrollArea } from "@squared/ui/scroll-area";
+import { useToast } from "@squared/ui/hooks";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { TODO } from "@squared/context";

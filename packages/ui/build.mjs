@@ -40,7 +40,8 @@ const elements = [
   'popover',
   'separator',
   'switch',
-  'toast'
+  'toast',
+  "visually-hidden"
 ]
 
 for (const element of elements) {

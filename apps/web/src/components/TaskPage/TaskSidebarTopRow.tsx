@@ -3,14 +3,14 @@ import { useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import { Copy, GitPullRequestArrow, Link } from "lucide-react";
 import { useCallback, useEffect } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
-import { useToast } from "../ui/use-toast";
+} from "@squared/ui/tooltip";
+import { useToast } from "@squared/ui/hooks";
 
 export const TaskSidebarTopRow = () => {
 	const { toast } = useToast();

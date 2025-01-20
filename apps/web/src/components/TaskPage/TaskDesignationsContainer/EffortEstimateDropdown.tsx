@@ -1,14 +1,14 @@
 "use client";
 
 import { high, low, medium } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/dropdown-menu";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { effortEstimateOptions } from "@/lib/constants";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";

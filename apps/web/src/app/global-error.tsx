@@ -1,7 +1,7 @@
 // app/global-error.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 

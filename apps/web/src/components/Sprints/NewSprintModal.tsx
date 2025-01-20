@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -6,11 +6,11 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+} from "@squared/ui/dialog";
+import { Input } from "@squared/ui/input";
+import { Label } from "@squared/ui/label";
+import { Textarea } from "@squared/ui/textarea";
+import { useToast } from "@squared/ui/hooks";
 import { sprintService } from "@/lib/services";
 import { TODO } from "@squared/context";
 import type { Team } from "@squared/db";

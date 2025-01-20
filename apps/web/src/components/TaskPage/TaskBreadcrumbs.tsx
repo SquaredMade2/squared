@@ -5,7 +5,7 @@ import {
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@squared/ui/breadcrumb";
 import {
 	useTaskStore,
 	useTeamStore,

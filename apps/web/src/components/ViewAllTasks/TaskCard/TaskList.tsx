@@ -1,6 +1,6 @@
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
+import { Button } from "@squared/ui/button";
 import { useViewStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";

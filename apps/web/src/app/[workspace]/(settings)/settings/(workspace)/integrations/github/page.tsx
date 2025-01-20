@@ -1,13 +1,13 @@
 "use client";
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squared/ui/card";
 import { userService } from "@/lib/services";
 import { useUserStore } from "@/store";
 import { TODO } from "@squared/context";

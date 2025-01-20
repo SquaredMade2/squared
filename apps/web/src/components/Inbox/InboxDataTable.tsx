@@ -12,11 +12,11 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
 
 import type { NotificationFilter } from "@/app/inbox/page";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@squared/ui/button";
+import { Input } from "@squared/ui/input";
 import {
 	Table,
 	TableBody,
@@ -24,7 +24,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@squared/ui/table";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
 import { eventService, userService } from "@/lib/services";
 import { useEventStore, useUserStore } from "@/store";
@@ -37,7 +37,7 @@ import {
 	MoveRight,
 	Trash2,
 } from "lucide-react";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "@squared/ui/checkbox";
 import { columns } from "./columns";
 
 export function InboxDataTable({

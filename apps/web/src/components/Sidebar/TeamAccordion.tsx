@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import { cn } from "@/utils/cn";
 import type { Team } from "@squared/db";
 import { LayoutGrid } from "lucide-react";
@@ -12,8 +12,8 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "../ui/accordion";
-import { buttonVariants } from "../ui/button";
+} from "@squared/ui/accordion";
+import { buttonVariants } from "@squared/ui/button";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {

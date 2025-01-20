@@ -1,7 +1,7 @@
 "use client";
 
 import { RetroColumn } from "@/components/Sprints";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@squared/ui/hooks";
 import { sprintService } from "@/lib/services";
 import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";

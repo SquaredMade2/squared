@@ -6,7 +6,7 @@ import {
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
+} from "@squared/ui/tooltip";
 
 function hexToRGB(hex: string): [number, number, number] {
 	const rgb = Number.parseInt(hex.slice(1), 16);

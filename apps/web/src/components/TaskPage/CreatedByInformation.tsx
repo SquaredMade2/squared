@@ -1,7 +1,7 @@
 import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
 import { formatDate } from "date-fns";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 
 export const CreatedByInformation = () => {
 	const { users } = useUserStore((state) => state);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@squared/ui/hooks";
 import { useTeams } from "@/hooks/useTeams";
 import { sprintService, taskService, teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
@@ -28,25 +28,25 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+} from "@squared/ui/alert-dialog";
+import { Button } from "@squared/ui/button";
+import { Calendar } from "@squared/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@squared/ui/card";
+import { Label } from "@squared/ui/label";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@squared/ui/popover";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+} from "@squared/ui/select";
+import { Separator } from "@squared/ui/separator";
+import { Switch } from "@squared/ui/switch";
 import { cn } from "@/utils/cn";
 
 export default function SprintSettings() {

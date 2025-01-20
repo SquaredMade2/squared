@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@squared/ui/button";
+import { Card } from "@squared/ui/card";
+import { Input } from "@squared/ui/input";
+import { Label } from "@squared/ui/label";
+import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";

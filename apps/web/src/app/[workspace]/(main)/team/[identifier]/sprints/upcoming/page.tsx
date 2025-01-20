@@ -2,7 +2,7 @@
 
 import { SprintError, SprintLoading } from "@/components/Sprints";
 import { SprintCard } from "@/components/Sprints/SprintCard";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";

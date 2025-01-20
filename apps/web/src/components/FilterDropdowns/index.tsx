@@ -10,12 +10,12 @@ import {
 
 import { useFilterStore } from "@/store";
 import { PriorityIcon } from "../Icons";
-import { Button } from "../ui/button";
+import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@squared/ui/dropdown-menu";
 import AssigneeFilterDropDown from "./AssigneeFilter";
 import DueDateFilterDropDown from "./DueDateFilter";
 import EffortFilterDropDown from "./EffortFilter";

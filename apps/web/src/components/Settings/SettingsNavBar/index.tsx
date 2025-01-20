@@ -18,10 +18,10 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+} from "@squared/ui/accordion";
+import { Button } from "@squared/ui/button";
+import { ScrollArea } from "@squared/ui/scroll-area";
+import { Separator } from "@squared/ui/separator";
 import {
 	Sidebar,
 	SidebarContent,
@@ -29,8 +29,8 @@ import {
 	SidebarHeader,
 	SidebarTrigger,
 	useSidebar,
-} from "@/components/ui/sidebar";
-import { TooltipProvider } from "@/components/ui/tooltip";
+} from "@squared/ui/sidebar";
+import { TooltipProvider } from "@squared/ui/tooltip";
 import { useTeamStore, useWorkspaceStore } from "@/store";
 import type { Team } from "@squared/db";
 

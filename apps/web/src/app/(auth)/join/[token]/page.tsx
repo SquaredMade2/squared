@@ -1,7 +1,7 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@squared/ui/hooks";
 import { workspaceService } from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";

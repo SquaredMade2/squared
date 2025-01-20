@@ -7,20 +7,20 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
+} from "@squared/ui/command";
 import { useFilterStore, useUserStore } from "@/store";
 import { getFilterAssignees } from "@/store/filters/helpers";
 import { getInitials } from "@/utils/formatting";
 import type { User } from "@squared/db";
 import { Check, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "../ui/dropdown-menu";
-import { ScrollArea } from "../ui/scroll-area";
+} from "@squared/ui/dropdown-menu";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import type { FilterOption } from "./interfaces";
 
 export default function AssigneeFilterDropDown({

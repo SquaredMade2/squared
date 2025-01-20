@@ -13,7 +13,7 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "../ui/accordion";
+} from "@squared/ui/accordion";
 
 const HiddenColumns = ({
 	getHiddenColumns,

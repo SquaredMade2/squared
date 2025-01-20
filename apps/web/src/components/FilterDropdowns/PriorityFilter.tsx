@@ -3,7 +3,7 @@ import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@squared/ui/dropdown-menu";
 import { useFilterStore } from "@/store";
 import { Priority } from "@squared/db";
 import { useEffect, useState } from "react";
