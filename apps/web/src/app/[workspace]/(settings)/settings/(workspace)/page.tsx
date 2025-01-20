@@ -88,8 +88,16 @@ export default function WorkspaceSettings() {
 
 	useEffect(() => {
 		if (!workspace) return;
-
+		if (
+			workspace.name !== form.getValues("name") ||
+			workspace.url.replace("https://app.squaredmade.com/", "") !==
+				form.getValues("url")
+		) {
+			form.setValue("name", workspace.name);
+      form.setValue("url", workspace.url.replace("https://app.squaredmade.com/", ""));
+		}
 		const subscription = watch((value) => {
+			console.log("test");
 			if (
 				value.name !== workspace.name ||
 				value.url !==
@@ -104,16 +112,6 @@ export default function WorkspaceSettings() {
 
 		return () => subscription.unsubscribe();
 	}, [watch, workspace]);
-
-	useEffect(() => {
-		if (workspace) {
-			form.setValue("name", workspace.name);
-			form.setValue(
-				"url",
-				workspace.url.replace("https://app.squaredmade.com/", ""),
-			);
-		}
-	}, [workspace]);
 
 	if (!workspace || !workspaces) return null;
 
