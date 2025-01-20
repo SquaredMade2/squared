@@ -1,16 +1,30 @@
 {
-	"extends": "@repo/typescript-config/nextjs.json",
-	"compilerOptions": {
-		"outDir": "dist/",
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["*"]
-		},
-		"moduleResolution": "Bundler",
-		"module": "ESNext",
-		"types": ["node"],
-		"typeRoots": ["./node_modules/@types"]
-	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-	"exclude": [".next"]
+  "extends": "@repo/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "outDir": "dist/",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    },
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "strictNullChecks": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    ".next"
+  ]
 }

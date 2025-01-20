@@ -1,0 +1,25 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"list_item": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Consectetur in reprehenderit do."
+						}
+					}
+				]
+			},
+			"header": {
+				"__TYPE__": "FieldContent",
+				"value": "bill",
+				"type": "Text"
+			}
+		},
+		"items": []
+	}
+]

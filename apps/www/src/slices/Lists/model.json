@@ -1,0 +1,35 @@
+{
+  "id": "bullet_points",
+  "type": "SharedSlice",
+  "name": "Lists",
+  "description": "BulletPoints",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "header": {
+          "type": "Text",
+          "config": {
+            "label": "header",
+            "placeholder": ""
+          }
+        },
+        "list_item": {
+          "type": "StructuredText",
+          "config": {
+            "label": "list_item",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "list-item,strong,em"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

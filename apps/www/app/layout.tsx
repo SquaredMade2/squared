@@ -3,6 +3,8 @@ import "./globals.css";
 import "@squared/fonts/src/styles.css";
 import { ThemeProvider } from "@/context/theme-provider";
 import { ViewTransitions } from "next-view-transitions";
+import { PrismicPreview } from "@prismicio/next";
+import { repositoryName } from "@/src/prismicio";
 
 export const metadata: Metadata = {
 	title: "Squared",
@@ -31,6 +33,7 @@ export default function RootLayout({
 						{children}
 					</ThemeProvider>
 				</body>
+				<PrismicPreview repositoryName={repositoryName} />
 			</html>
 		</ViewTransitions>
 	);

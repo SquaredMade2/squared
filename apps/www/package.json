@@ -7,7 +7,8 @@
 		"dev": "next dev -p 4000",
 		"build": "next build",
 		"start": "next start -p 4000",
-		"lint": "next lint"
+		"lint": "next lint",
+		"slicemachine": "start-slicemachine"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.4.2",
@@ -15,6 +16,9 @@
 		"@mdx-js/loader": "^3.0.1",
 		"@mdx-js/react": "^3.0.1",
 		"@next/mdx": "^14.2.3",
+		"@prismicio/client": "^7.15.1",
+		"@prismicio/next": "^1.7.1",
+		"@prismicio/react": "^2.9.1",
 		"@radix-ui/react-label": "^2.0.2",
 		"@radix-ui/react-slot": "^1.0.2",
 		"@repo/ui": "workspace:*",
@@ -44,10 +48,12 @@
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
+		"@slicemachine/adapter-next": "^0.3.64",
 		"@types/node": "^22.0.0",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
 		"postcss": "^8",
+		"slice-machine-ui": "^2.12.2",
 		"tailwindcss": "^3.4.1",
 		"typescript": "^5"
 	}
