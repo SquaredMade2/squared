@@ -522,7 +522,7 @@ importers:
         version: 0.10.4
       drizzle-orm:
         specifier: ^0.38.3
-        version: 0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.6)(@types/react@18.3.12)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1)
+        version: 0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.6)(@types/react@19.0.3)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1)
       pg:
         specifier: ^8.13.1
         version: 8.13.1
@@ -554,8 +554,6 @@ importers:
       typescript:
         specifier: ^4.5.0
         version: 4.9.5
-<<<<<<< HEAD
-=======
 
   packages/icons:
     dependencies:
@@ -596,7 +594,6 @@ importers:
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
->>>>>>> develop
 
   packages/logger:
     dependencies:
@@ -6475,15 +6472,9 @@ packages:
     resolution: {integrity: sha512-kDCGIbxkDSXE3euJZZXzc6to7fCrKHNI/hSRQnRuQ+BWjFNzZwiFF8fj/6o2t2G9/jTj8PSIYTfCLelLZEeRpA==}
     engines: {node: '>= 0.4'}
 
-<<<<<<< HEAD
-  objectorarray@1.0.5:
-    resolution: {integrity: sha512-eJJDYkhJFFbBBAxeh8xW+weHlkI28n2ZdQV/J/DNfWfSKlGEf2xcfAbZTv3riEXHAhL9SVOTs2pRmXiSTf78xg==}
-
   obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
 
-=======
->>>>>>> develop
   on-finished@2.4.1:
     resolution: {integrity: sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==}
     engines: {node: '>= 0.8'}
@@ -12419,13 +12410,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.6)(@types/react@18.3.12)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1):
+  drizzle-orm@0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.6)(@types/react@19.0.3)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1):
     optionalDependencies:
       '@neondatabase/serverless': 0.10.4
       '@opentelemetry/api': 1.9.0
       '@prisma/client': 6.2.1(prisma@6.2.1)
       '@types/pg': 8.11.6
-      '@types/react': 18.3.12
+      '@types/react': 19.0.3
       pg: 8.13.1
       prisma: 6.2.1
       react: 18.3.1
@@ -15059,13 +15050,8 @@ snapshots:
 
   object-inspect@1.13.3: {}
 
-<<<<<<< HEAD
-  objectorarray@1.0.5: {}
-
   obuf@1.1.2: {}
 
-=======
->>>>>>> develop
   on-finished@2.4.1:
     dependencies:
       ee-first: 1.1.1
@@ -15358,16 +15344,12 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-<<<<<<< HEAD
   postgres-interval@3.0.0: {}
 
   postgres-range@1.1.4: {}
 
-  prettier@3.4.2: {}
-=======
   prettier@3.4.2:
     optional: true
->>>>>>> develop
 
   pretty-bytes@5.6.0: {}
 
@@ -16298,13 +16280,10 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.17(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.10.7)(typescript@5.7.3))
 
-<<<<<<< HEAD
-=======
   tailwindcss-animate@1.0.7(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.8.7)(typescript@5.7.3))):
     dependencies:
       tailwindcss: 3.4.17(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.8.7)(typescript@5.7.3))
 
->>>>>>> develop
   tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.7.6(@swc/helpers@0.5.5))(@types/node@22.10.7)(typescript@4.9.5)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
