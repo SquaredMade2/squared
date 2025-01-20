@@ -69,7 +69,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 	const { setShowLinkForm } = useModalStore((state) => state);
 	const setComments = useCommentStore((state) => state.setComments);
-	const currentTask: Task = useTaskStore((state) => state.currentTask);
+	const currentTask = useTaskStore((state) => state.currentTask);
 	const users = useUserStore((state) => state.users);
 	const currentUser = useUser().user;
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
