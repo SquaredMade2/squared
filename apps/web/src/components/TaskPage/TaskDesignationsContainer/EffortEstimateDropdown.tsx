@@ -1,6 +1,10 @@
 "use client";
 
 import { high, low, medium } from "@/components/Svg";
+import { client } from "@/lib/client";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useEventStore, useTaskStore, useTeamStore } from "@/store";
+import type { TaskEvent } from "@squared/db";
 import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
@@ -9,10 +13,6 @@ import {
 	DropdownMenuTrigger,
 } from "@squared/ui/dropdown-menu";
 import { useToast } from "@squared/ui/hooks";
-import { client } from "@/lib/client";
-import { effortEstimateOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore, useTeamStore } from "@/store";
-import type { TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";

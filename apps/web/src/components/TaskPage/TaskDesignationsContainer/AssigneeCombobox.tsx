@@ -1,5 +1,9 @@
 "use client";
 
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { getInitials } from "@/utils/formatting";
 import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 import { Button } from "@squared/ui/button";
 import {
@@ -10,17 +14,9 @@ import {
 	CommandItem,
 	CommandList,
 } from "@squared/ui/command";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@squared/ui/popover";
-import { ScrollArea } from "@squared/ui/scroll-area";
 import { useToast } from "@squared/ui/hooks";
-import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { getInitials } from "@/utils/formatting";
+import { Popover, PopoverContent, PopoverTrigger } from "@squared/ui/popover";
+import { ScrollArea } from "@squared/ui/scroll-area";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";

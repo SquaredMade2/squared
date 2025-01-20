@@ -1,11 +1,11 @@
 import { taskService } from "@/lib/services";
 import { useTaskStore, useTeamStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
+import { Button } from "@squared/ui/button";
+import { useToast } from "@squared/ui/hooks";
 import { Activity, Copy, Layers } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@squared/ui/button";
-import { useToast } from "@squared/ui/hooks";
 
 interface NavBarTeamProps {
 	teamIdentifier: string;

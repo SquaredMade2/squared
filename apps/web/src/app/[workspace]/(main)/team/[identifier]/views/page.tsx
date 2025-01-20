@@ -1,4 +1,9 @@
 "use client";
+import { useTeams } from "@/hooks/useTeams";
+import { filterService } from "@/lib/services";
+import { useFilterStore } from "@/store";
+import type { SavedFilter } from "@/store/filters";
+import { TODO } from "@squared/context";
 import {
 	Card,
 	CardContent,
@@ -6,11 +11,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@squared/ui/card";
-import { useTeams } from "@/hooks/useTeams";
-import { filterService } from "@/lib/services";
-import { useFilterStore } from "@/store";
-import type { SavedFilter } from "@/store/filters";
-import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

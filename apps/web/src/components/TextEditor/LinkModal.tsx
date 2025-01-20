@@ -1,3 +1,5 @@
+import { useModalStore } from "@/store";
+import { verifyUrlFormat } from "@/utils/formatting";
 import { Button } from "@squared/ui/button";
 import {
 	Dialog,
@@ -7,8 +9,6 @@ import {
 } from "@squared/ui/dialog";
 import { DialogHeader } from "@squared/ui/dialog";
 import { toast } from "@squared/ui/hooks";
-import { useModalStore } from "@/store";
-import { verifyUrlFormat } from "@/utils/formatting";
 import { Link } from "lucide-react";
 import { useState } from "react";
 import type { LinkModalProps } from "./interfaces";

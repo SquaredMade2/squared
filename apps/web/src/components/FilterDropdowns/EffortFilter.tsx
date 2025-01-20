@@ -1,13 +1,13 @@
 "use client";
 
 import { high, low, medium } from "@/components/Svg";
+import { useFilterStore } from "@/store/filters";
 import {
 	DropdownMenuItem,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 } from "@squared/ui/dropdown-menu";
-import { useFilterStore } from "@/store/filters";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";

@@ -1,3 +1,6 @@
+import { sprintService } from "@/lib/services";
+import { TODO } from "@squared/context";
+import type { Team } from "@squared/db";
 import { Button } from "@squared/ui/button";
 import {
 	Dialog,
@@ -7,13 +10,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@squared/ui/dialog";
+import { useToast } from "@squared/ui/hooks";
 import { Input } from "@squared/ui/input";
 import { Label } from "@squared/ui/label";
 import { Textarea } from "@squared/ui/textarea";
-import { useToast } from "@squared/ui/hooks";
-import { sprintService } from "@/lib/services";
-import { TODO } from "@squared/context";
-import type { Team } from "@squared/db";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

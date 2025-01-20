@@ -1,4 +1,8 @@
 import { StatusIcon } from "@/components/Icons";
+import { statusOptions } from "@/lib/constants";
+import { useModalStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import type { Status } from "@squared/db";
 import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
@@ -7,10 +11,6 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuTrigger,
 } from "@squared/ui/dropdown-menu";
-import { statusOptions } from "@/lib/constants";
-import { useModalStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@squared/db";
 import { Check } from "lucide-react";
 
 export const StatusDropdownButton = () => {

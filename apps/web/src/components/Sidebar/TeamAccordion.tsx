@@ -1,12 +1,7 @@
 "use client";
 
-import { ScrollArea } from "@squared/ui/scroll-area";
 import { cn } from "@/utils/cn";
 import type { Team } from "@squared/db";
-import { LayoutGrid } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import AddTeamButton from "../Buttons/AddTeamButton";
 import {
 	Accordion,
 	AccordionContent,
@@ -14,6 +9,11 @@ import {
 	AccordionTrigger,
 } from "@squared/ui/accordion";
 import { buttonVariants } from "@squared/ui/button";
+import { ScrollArea } from "@squared/ui/scroll-area";
+import { LayoutGrid } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import AddTeamButton from "../Buttons/AddTeamButton";
 import NavBarTeams from "./NavBarTeams";
 
 interface TeamAccordionProps {

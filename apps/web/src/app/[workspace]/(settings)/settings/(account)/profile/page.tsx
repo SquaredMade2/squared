@@ -1,5 +1,8 @@
 "use client";
 
+import { getInitials } from "@/utils/formatting";
+import { useUser } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 import { Button } from "@squared/ui/button";
 import {
@@ -11,12 +14,9 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@squared/ui/form";
+import { useToast } from "@squared/ui/hooks";
 import { Input } from "@squared/ui/input";
 import { Separator } from "@squared/ui/separator";
-import { useToast } from "@squared/ui/hooks";
-import { getInitials } from "@/utils/formatting";
-import { useUser } from "@clerk/nextjs";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

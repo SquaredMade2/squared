@@ -1,6 +1,6 @@
+import { Button } from "@squared/ui/button";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@squared/ui/button";
 
 interface SprintNotFoundProps {
 	workspaceUrl?: string;

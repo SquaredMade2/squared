@@ -1,17 +1,17 @@
 "use client";
 import WorkspaceInitials from "@/components/WorkspaceImage";
 import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbList,
-	BreadcrumbSeparator,
-} from "@squared/ui/breadcrumb";
-import {
 	useTaskStore,
 	useTeamStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "@squared/ui/breadcrumb";
 import Link from "next/link";
 
 export const TaskBreadcrumbs = () => {

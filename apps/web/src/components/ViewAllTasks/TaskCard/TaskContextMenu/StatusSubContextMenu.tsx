@@ -1,6 +1,11 @@
 "use client";
 
 import { StatusIcon } from "@/components/Icons";
+import { client } from "@/lib/client";
+import { statusOptions } from "@/lib/constants";
+import { useTaskStore } from "@/store";
+import { formatStatus } from "@/utils/formatting";
+import type { Status } from "@squared/db";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
@@ -8,11 +13,6 @@ import {
 	ContextMenuSubTrigger,
 } from "@squared/ui/context-menu";
 import { useToast } from "@squared/ui/hooks";
-import { client } from "@/lib/client";
-import { statusOptions } from "@/lib/constants";
-import { useTaskStore } from "@/store";
-import { formatStatus } from "@/utils/formatting";
-import type { Status } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 

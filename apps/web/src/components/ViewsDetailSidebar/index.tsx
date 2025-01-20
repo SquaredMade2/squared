@@ -10,10 +10,6 @@ import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
-import { Info, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import LabelBadge from "../LabelBadges";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -27,6 +23,10 @@ import { Badge } from "@squared/ui/badge";
 import { Button } from "@squared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@squared/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
+import { Info, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import LabelBadge from "../LabelBadges";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;

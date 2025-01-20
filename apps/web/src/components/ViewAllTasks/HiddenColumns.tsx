@@ -7,13 +7,13 @@ import {
 import { formatPriority, formatStatus } from "@/utils/formatting";
 import { Droppable } from "@hello-pangea/dnd";
 import type { Priority, Status, Task } from "@squared/db";
-import { PriorityIcon, StatusIcon } from "../Icons";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@squared/ui/accordion";
+import { PriorityIcon, StatusIcon } from "../Icons";
 
 const HiddenColumns = ({
 	getHiddenColumns,

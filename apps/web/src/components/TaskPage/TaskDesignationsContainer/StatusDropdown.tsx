@@ -1,14 +1,6 @@
 "use client";
 
 import { StatusIcon } from "@/components/Icons";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@squared/ui/select";
-import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { eventService } from "@/lib/services";
@@ -16,12 +8,21 @@ import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status, TaskEvent } from "@squared/db";
+import { useToast } from "@squared/ui/hooks";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@squared/ui/select";
 import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
-		useTaskStore((state) => state);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask } = useTaskStore(
+		(state) => state,
+	);
 	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;

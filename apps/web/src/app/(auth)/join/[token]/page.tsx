@@ -1,10 +1,10 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useToast } from "@squared/ui/hooks";
 import { workspaceService } from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
+import { useToast } from "@squared/ui/hooks";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 

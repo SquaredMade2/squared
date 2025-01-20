@@ -2,6 +2,11 @@
 
 import { PriorityIcon } from "@/components/Icons";
 import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
+import { useSprints } from "@/hooks/useSprints";
+import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
+import { TODO } from "@squared/context";
+import type { Priority, Sprint, Task } from "@squared/db";
 import { Alert, AlertDescription, AlertTitle } from "@squared/ui/alert";
 import {
 	AlertDialog,
@@ -32,11 +37,6 @@ import {
 import { Input } from "@squared/ui/input";
 import { Progress } from "@squared/ui/progress";
 import { ScrollArea } from "@squared/ui/scroll-area";
-import { useSprints } from "@/hooks/useSprints";
-import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { TODO } from "@squared/context";
-import type { Priority, Sprint, Task } from "@squared/db";
 import { differenceInDays, format } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

@@ -6,8 +6,6 @@ import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
 import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
-import { useRouter } from "next/navigation";
-import type { Dispatch, SetStateAction } from "react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -20,6 +18,8 @@ import {
 } from "@squared/ui/alert-dialog";
 import { buttonVariants } from "@squared/ui/button";
 import { useToast } from "@squared/ui/hooks";
+import { useRouter } from "next/navigation";
+import type { Dispatch, SetStateAction } from "react";
 
 export const DeleteTaskAlertDialog = ({
 	task,

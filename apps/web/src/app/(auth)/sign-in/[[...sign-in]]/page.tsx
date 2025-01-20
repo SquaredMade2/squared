@@ -1,5 +1,6 @@
 "use client";
 
+import { SignIn, useUser } from "@clerk/nextjs";
 import { Button } from "@squared/ui/button";
 import {
 	Card,
@@ -10,7 +11,6 @@ import {
 	CardTitle,
 } from "@squared/ui/card";
 import { useToast } from "@squared/ui/hooks";
-import { SignIn, useUser } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 

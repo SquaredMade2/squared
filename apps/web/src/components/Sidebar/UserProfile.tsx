@@ -1,5 +1,7 @@
 "use client";
 
+import { useWorkspaceStore } from "@/store";
+import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 import { Button } from "@squared/ui/button";
 import {
@@ -11,8 +13,6 @@ import {
 	DropdownMenuTrigger,
 } from "@squared/ui/dropdown-menu";
 import { useSidebar } from "@squared/ui/sidebar";
-import { useWorkspaceStore } from "@/store";
-import { useUser } from "@clerk/nextjs";
 import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 

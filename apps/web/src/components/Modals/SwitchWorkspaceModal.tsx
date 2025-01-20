@@ -1,5 +1,10 @@
 "use client";
 
+import { teamService } from "@/lib/services";
+import { useModalStore, useWorkspaceStore } from "@/store";
+import { cn } from "@/utils/cn";
+import { useUser } from "@clerk/nextjs";
+import { TODO } from "@squared/context";
 import {
 	Command,
 	CommandEmpty,
@@ -16,11 +21,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@squared/ui/dialog";
-import { teamService } from "@/lib/services";
-import { useModalStore, useWorkspaceStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
 import { Check, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

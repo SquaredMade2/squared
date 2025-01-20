@@ -1,5 +1,6 @@
 "use client";
 
+import { SignUp, useUser } from "@clerk/nextjs";
 import { Button } from "@squared/ui/button";
 import {
 	Card,
@@ -8,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@squared/ui/card";
-import { SignUp, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

@@ -8,9 +8,6 @@ import { useViewStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { formatPriority, formatStatus, getInitials } from "@/utils/formatting";
 import type { Priority, Status } from "@squared/db";
-import { CirclePlus, EllipsisVertical } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { PriorityIcon, StatusIcon } from "../Icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@squared/ui/avatar";
 import { Button } from "@squared/ui/button";
 import {
@@ -19,6 +16,9 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@squared/ui/dropdown-menu";
+import { CirclePlus, EllipsisVertical } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { PriorityIcon, StatusIcon } from "../Icons";
 import { LabelColor } from "./TaskCard/TaskCardLabels";
 import type { TaskColumnTitleProps } from "./interfaces";
 

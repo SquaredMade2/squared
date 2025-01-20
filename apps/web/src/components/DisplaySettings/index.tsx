@@ -10,16 +10,6 @@ import {
 	TaskOrderOptions,
 	type View,
 } from "@/store/views";
-import {
-	AlignJustify,
-	ArrowDownWideNarrow,
-	ArrowUpWideNarrow,
-	ChevronDown,
-	Layers,
-	LayoutGrid,
-	SlidersVertical,
-} from "lucide-react";
-import { useEffect } from "react";
 import { Button } from "@squared/ui/button";
 import {
 	DropdownMenu,
@@ -44,6 +34,16 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@squared/ui/tooltip";
+import {
+	AlignJustify,
+	ArrowDownWideNarrow,
+	ArrowUpWideNarrow,
+	ChevronDown,
+	Layers,
+	LayoutGrid,
+	SlidersVertical,
+} from "lucide-react";
+import { useEffect } from "react";
 
 const TopNavBarDisplay = () => {
 	const {

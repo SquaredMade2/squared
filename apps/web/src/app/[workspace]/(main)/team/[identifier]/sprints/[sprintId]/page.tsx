@@ -42,9 +42,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@squared/ui/card";
+import { toast } from "@squared/ui/hooks";
 import { Progress } from "@squared/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squared/ui/tabs";
-import { toast } from "@squared/ui/hooks";
 
 import { useSprints } from "@/hooks/useSprints";
 import { sprintService, taskService } from "@/lib/services";

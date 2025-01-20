@@ -5,8 +5,6 @@ import { useModalStore, useTaskStore } from "@/store";
 import type { FormSubmitEvent, InputChangeEvent } from "@/types";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
-import { Pencil } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "@squared/ui/button";
 import {
 	Dialog,
@@ -15,8 +13,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@squared/ui/dialog";
-import { Input } from "@squared/ui/input";
 import { useToast } from "@squared/ui/hooks";
+import { Input } from "@squared/ui/input";
+import { Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const RenameModal = () => {
 	const [inputValue, setInputValue] = useState<string>("");

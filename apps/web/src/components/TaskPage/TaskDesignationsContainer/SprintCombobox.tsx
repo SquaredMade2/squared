@@ -1,9 +1,9 @@
 "use client";
 
-import { useToast } from "@squared/ui/hooks";
 import { client } from "@/lib/client";
 import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { Sprint, TaskEvent } from "@squared/db";
+import { useToast } from "@squared/ui/hooks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { DesignationCombobox } from "./DesignationCombobox";

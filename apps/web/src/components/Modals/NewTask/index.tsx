@@ -1,5 +1,9 @@
 "use client";
 
+import { useCreateTask } from "@/hooks/useCreateTask";
+import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@squared/ui/button";
 import {
 	Dialog,
@@ -15,14 +19,10 @@ import {
 	FormItem,
 	FormLabel,
 } from "@squared/ui/form";
+import { useToast } from "@squared/ui/hooks";
 import { Input } from "@squared/ui/input";
 import { Separator } from "@squared/ui/separator";
 import { Textarea } from "@squared/ui/textarea";
-import { useToast } from "@squared/ui/hooks";
-import { useCreateTask } from "@/hooks/useCreateTask";
-import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";

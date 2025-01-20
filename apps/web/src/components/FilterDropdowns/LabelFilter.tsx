@@ -1,5 +1,7 @@
 "use client";
 
+import { useFilterStore, useWorkspaceStore } from "@/store";
+import type { Label } from "@squared/db";
 import {
 	Command,
 	CommandEmpty,
@@ -8,16 +10,14 @@ import {
 	CommandItem,
 	CommandList,
 } from "@squared/ui/command";
-import { useFilterStore, useWorkspaceStore } from "@/store";
-import type { Label } from "@squared/db";
-import { Check } from "lucide-react";
-import { useEffect, useState } from "react";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 } from "@squared/ui/dropdown-menu";
 import { ScrollArea } from "@squared/ui/scroll-area";
+import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { FilterOption } from "./interfaces";
 
 export default function LabelFilterDropDown({

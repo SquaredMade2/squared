@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 
 import AddTeamButton from "@/components/Buttons/AddTeamButton";
 import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
+import { useTeamStore, useWorkspaceStore } from "@/store";
+import type { Team } from "@squared/db";
 import {
 	Accordion,
 	AccordionContent,
@@ -31,8 +33,6 @@ import {
 	useSidebar,
 } from "@squared/ui/sidebar";
 import { TooltipProvider } from "@squared/ui/tooltip";
-import { useTeamStore, useWorkspaceStore } from "@/store";
-import type { Team } from "@squared/db";
 
 function SettingsNavbarContent() {
 	const router = useRouter();

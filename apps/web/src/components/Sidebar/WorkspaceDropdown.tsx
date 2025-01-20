@@ -1,5 +1,7 @@
 "use client";
 
+import { useWorkspaceStore } from "@/store";
+import { getInitials } from "@/utils/formatting";
 import { Avatar, AvatarFallback } from "@squared/ui/avatar";
 import { Button } from "@squared/ui/button";
 import {
@@ -9,8 +11,6 @@ import {
 	DropdownMenuTrigger,
 } from "@squared/ui/dropdown-menu";
 import { useSidebar } from "@squared/ui/sidebar";
-import { useWorkspaceStore } from "@/store";
-import { getInitials } from "@/utils/formatting";
 import { ChevronDown } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";

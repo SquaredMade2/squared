@@ -1,6 +1,12 @@
 "use client";
 
 import { PriorityIcon } from "@/components/Icons";
+import { client } from "@/lib/client";
+import { priorityOptions } from "@/lib/constants";
+import { useEventStore, useTaskStore } from "@/store";
+import { formatPriority } from "@/utils/formatting";
+import type { Priority, TaskEvent } from "@squared/db";
+import { useToast } from "@squared/ui/hooks";
 import {
 	Select,
 	SelectContent,
@@ -8,12 +14,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@squared/ui/select";
-import { useToast } from "@squared/ui/hooks";
-import { client } from "@/lib/client";
-import { priorityOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore } from "@/store";
-import { formatPriority } from "@/utils/formatting";
-import type { Priority, TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 
 const PriorityDropdown = () => {
