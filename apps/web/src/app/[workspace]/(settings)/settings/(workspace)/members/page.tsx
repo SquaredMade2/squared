@@ -31,9 +31,9 @@ export default function WorkspaceMembersPage() {
 		},
 	}));
 
-	useEffect(() => {
-		setPageUsers(users);
-	}, [users]);
+	// useEffect(() => {
+	// 	setPageUsers(users);
+	// }, [users]);
 
 	if (workspaceLoading || userLoading) {
 		return (
