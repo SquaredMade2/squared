@@ -173,7 +173,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			onValueChange={setIsOpen}
 		>
 			<AccordionItem value="subtask-collapsible">
-				<AccordionTrigger asChild>
+				<AccordionTrigger>
 					<Button
 						type="button"
 						variant="outline"
