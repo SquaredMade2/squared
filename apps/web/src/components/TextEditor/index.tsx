@@ -3,6 +3,8 @@ import { useCommentStore, useModalStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
 import { TODO } from "@squared/context";
+import { Button } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/hooks";
 import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
@@ -12,8 +14,6 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";
 import Leaf from "./TextEditorElements/LeafBlocks/Leaf";

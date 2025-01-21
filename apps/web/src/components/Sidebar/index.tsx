@@ -1,6 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { useClerk, useUser } from "@clerk/nextjs";
+import type { Workspace } from "@squared/db";
+import { Button } from "@squaredmade/ui/button";
+import { useToast } from "@squaredmade/ui/hooks";
 import {
 	Sidebar,
 	SidebarContent as SidebarContainer,
@@ -9,18 +14,13 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 	useSidebar,
-} from "@/components/ui/sidebar";
+} from "@squaredmade/ui/sidebar";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
-import { client } from "@/lib/client";
-import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
-import { useClerk, useUser } from "@clerk/nextjs";
-import type { Workspace } from "@squared/db";
+} from "@squaredmade/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import {
 	ClipboardList,
@@ -149,13 +149,18 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 
 export function SidebarNav() {
 	const { workspace } = useWorkspaceStore((state) => state);
+	const [open, setOpen] = useState(false);
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<SidebarProvider className="relative">
+			<SidebarProvider
+				className={`relative ${open ? "w-64" : "w-16"} group/sidebar transition-all duration-300 ease-in-out`}
+				open={open}
+				onOpenChange={setOpen}
+			>
 				<Sidebar
 					collapsible="icon"
-					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
+					className={`group/sidebar transition-all duration-300 ease-in-out ${open ? "w-64" : "w-16"}`}
 				>
 					<SidebarContent workspace={workspace} />
 				</Sidebar>
@@ -206,14 +211,14 @@ function IconButton({
 			<TooltipTrigger asChild>
 				<Button
 					variant="ghost"
-					size="sm"
+					size={state === "collapsed" ? "icon" : "default"}
 					aria-label={label}
 					onClick={onClick}
 					className={`relative w-full justify-start ${
-						state === "collapsed" ? "px-2" : ""
+						state === "collapsed" ? "px-3" : ""
 					}`}
 				>
-					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+					<Icon className="size-5 shrink-0" aria-hidden="true" />
 					<span
 						className={`ml-2 transition-all duration-300 ${
 							state === "collapsed"
@@ -226,7 +231,7 @@ function IconButton({
 					{!!(notificationCount && notificationCount > 0) && (
 						<div
 							className={`absolute h-2 w-2 bg-primary rounded-full ${
-								state === "collapsed" ? "top-0.5 right-0.5" : "top-3 right-3"
+								state === "collapsed" ? "top-2 right-2" : "top-4 right-3"
 							}`}
 							aria-hidden="true"
 						/>

@@ -2,9 +2,6 @@
 
 import { useModalStore, useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
-import { useRouter } from "next/navigation";
-import { StatusIcon } from "../Icons";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -12,9 +9,12 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "../ui/command";
-import { DialogTitle } from "../ui/dialog";
-import { ScrollArea } from "../ui/scroll-area";
+} from "@squaredmade/ui/command";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
+import { useRouter } from "next/navigation";
+import { StatusIcon } from "../Icons";
 
 export function TaskSelector() {
 	const router = useRouter();

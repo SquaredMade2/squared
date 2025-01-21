@@ -1,18 +1,18 @@
 "use client";
 
 import { PriorityIcon } from "@/components/Icons";
-import {
-	ContextMenuItem,
-	ContextMenuSub,
-	ContextMenuSubContent,
-	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { priorityOptions } from "@/lib/constants";
 import { useTaskStore } from "@/store";
 import { formatPriority } from "@/utils/formatting";
 import type { Priority } from "@squared/db";
+import {
+	ContextMenuItem,
+	ContextMenuSub,
+	ContextMenuSubContent,
+	ContextMenuSubTrigger,
+} from "@squaredmade/ui/context-menu";
+import { useToast } from "@squaredmade/ui/hooks";
 import { useMutation } from "@tanstack/react-query";
 import type { ContextMenuProps } from "./interfaces";
 

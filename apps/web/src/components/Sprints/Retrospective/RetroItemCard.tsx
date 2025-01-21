@@ -1,14 +1,14 @@
 import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { useUserStore } from "@/store";
+import { Draggable } from "@hello-pangea/dnd";
+import { Button } from "@squaredmade/ui/button";
+import { Card, CardContent } from "@squaredmade/ui/card";
 import {
 	Tooltip,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useUserStore } from "@/store";
-import { Draggable } from "@hello-pangea/dnd";
-import { TooltipContent } from "@repo/ui/tooltip";
+} from "@squaredmade/ui/tooltip";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { ThumbsUp } from "lucide-react";
 
 export const RetroItemCard = ({

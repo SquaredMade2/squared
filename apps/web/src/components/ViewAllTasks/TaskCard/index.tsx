@@ -1,9 +1,9 @@
 "use client";
-import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { useUserStore, useViewStore, useWorkspaceStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
 import type { DraggableProvided } from "@hello-pangea/dnd";
 import type { Task, User } from "@squared/db";
+import { ContextMenu, ContextMenuTrigger } from "@squaredmade/ui/context-menu";
 import { useEffect, useState } from "react";
 import TaskContextMenu from "./TaskContextMenu";
 import TaskGrid from "./TaskGrid";
