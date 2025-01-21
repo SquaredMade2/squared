@@ -24,7 +24,7 @@ async function seedDB() {
 	const user = await addMainUser();
 
 	for (const workspace of workspaces) {
-		await addUserToWorkspace(user, workspace);
+		await addUserToWorkspace(user, workspace, true);
 
 		const numTeams = faker.number.int({ min: 1, max: 2 });
 
@@ -35,7 +35,7 @@ async function seedDB() {
 			const users = [user];
 			for (let i = 0; i < numUsers; i++) {
 				const newUser = await addUser();
-				await addUserToWorkspace(newUser, workspace);
+				await addUserToWorkspace(newUser, workspace, false);
 				await addUserToTeam(newUser, team);
 				users.push(newUser);
 			}
@@ -97,13 +97,18 @@ async function addUser() {
 	return user;
 }
 
-async function addUserToWorkspace(user: User, workspace: Workspace) {
+async function addUserToWorkspace(
+	user: User,
+	workspace: Workspace,
+	isFirstUser: boolean,
+) {
 	await prisma.workspace.update({
 		where: { id: workspace.id },
 		data: {
 			Users: {
 				create: {
 					userId: user.externalId,
+					role: isFirstUser ? "owner" : "member",
 				},
 			},
 		},

@@ -61,6 +61,12 @@ enum RetrospectiveItemType {
   actionItems
 }
 
+enum WorkspaceRole {
+  owner
+  admin
+  member
+}
+
 model Commit {
   id         String   @id
   branchId   String
@@ -280,6 +286,7 @@ model Workspace {
 model UserWorkspace {
   userId      String
   workspaceId String
+  role        WorkspaceRole @default(member)
 
   user      User      @relation(fields: [userId], references: [externalId], onDelete: Cascade, onUpdate: Cascade)
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
