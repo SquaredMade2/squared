@@ -5,19 +5,19 @@ import matter from "gray-matter";
 import { MDXRemote } from "next-mdx-remote/rsc";
 
 interface PageProps {
-	params: { slug?: string[] };
+	params: Promise<{ slug?: string[] }>;
 }
 
-export async function generateMetadata({
-	params,
-}: PageProps): Promise<MDXMetadata> {
+export async function generateMetadata(props: PageProps): Promise<MDXMetadata> {
+	const params = await props.params;
 	const slug = params.slug?.join("/") || "index";
 	const filePath = path.join(process.cwd(), "docs", `${slug}.mdx`);
 	const { metadata } = extractMetadata(filePath);
 	return metadata;
 }
 
-const Page = async ({ params }: PageProps) => {
+const Page = async (props: PageProps) => {
+	const params = await props.params;
 	const slug = params.slug?.join("/") || "index";
 	const filePath = path.join(process.cwd(), "docs", `${slug}.mdx`);
 

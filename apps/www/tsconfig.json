@@ -9,7 +9,8 @@
 		"moduleResolution": "Bundler",
 		"module": "ESNext",
 		"types": ["node"],
-		"typeRoots": ["./node_modules/@types"]
+		"typeRoots": ["./node_modules/@types"],
+		"jsx": "react-jsx"
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 	"exclude": [".next"]

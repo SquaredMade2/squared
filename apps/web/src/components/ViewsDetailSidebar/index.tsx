@@ -18,25 +18,11 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 } from "@squaredmade/ui/alert-dialog";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@squaredmade/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Badge } from "@squaredmade/ui/badge";
 import { Button } from "@squaredmade/ui/button";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@squaredmade/ui/card";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@squaredmade/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { Info, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

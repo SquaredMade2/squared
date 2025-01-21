@@ -11,10 +11,7 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@squaredmade/ui/collapsible";
-import {
-	ContextMenu,
-	ContextMenuTrigger,
-} from "@squaredmade/ui/context-menu";
+import { ContextMenu, ContextMenuTrigger } from "@squaredmade/ui/context-menu";
 import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

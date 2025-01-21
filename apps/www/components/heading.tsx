@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import type { AnimationProps, MotionProps } from "framer-motion";
-import type React from "react";
+import type { HTMLAttributes, JSX, ReactNode } from "react";
 import Balancer from "react-wrap-balancer";
 
 export const Heading = ({
@@ -11,10 +11,10 @@ export const Heading = ({
 }: {
 	className?: string;
 	as?: keyof JSX.IntrinsicElements;
-	children: React.ReactNode;
+	children: ReactNode;
 	size?: "sm" | "md" | "xl" | "2xl";
 } & MotionProps &
-	React.HTMLAttributes<HTMLHeadingElement | AnimationProps>) => {
+	HTMLAttributes<HTMLHeadingElement | AnimationProps>) => {
 	const sizeVariants = {
 		sm: "text-xl md:text-2xl md:leading-snug",
 		md: "text-3xl md:text-5xl md:leading-tight",

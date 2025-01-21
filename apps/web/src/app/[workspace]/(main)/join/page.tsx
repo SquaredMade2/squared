@@ -4,12 +4,7 @@ import { workspaceService } from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { Button } from "@squaredmade/ui/button";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@squaredmade/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { useToast } from "@squaredmade/ui/hooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";

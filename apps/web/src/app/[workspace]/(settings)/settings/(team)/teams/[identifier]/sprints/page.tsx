@@ -32,12 +32,7 @@ import {
 } from "@squaredmade/ui/alert-dialog";
 import { Button } from "@squaredmade/ui/button";
 import { Calendar } from "@squaredmade/ui/calendar";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@squaredmade/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@squaredmade/ui/card";
 import { Label } from "@squaredmade/ui/label";
 import {
 	Popover,

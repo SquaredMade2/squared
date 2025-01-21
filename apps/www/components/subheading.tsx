@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import type { AnimationProps, MotionProps } from "framer-motion";
-import type React from "react";
+import type { HTMLAttributes, JSX, ReactNode } from "react";
 import Balancer from "react-wrap-balancer";
 
 export const Subheading = ({
@@ -10,9 +10,9 @@ export const Subheading = ({
 }: {
 	className?: string;
 	as?: keyof JSX.IntrinsicElements;
-	children: React.ReactNode;
+	children: ReactNode;
 } & MotionProps &
-	React.HTMLAttributes<HTMLHeadingElement | AnimationProps>) => {
+	HTMLAttributes<HTMLHeadingElement | AnimationProps>) => {
 	return (
 		<Tag
 			className={cn(

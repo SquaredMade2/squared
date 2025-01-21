@@ -17,11 +17,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@squaredmade/ui/alert-dialog";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@squaredmade/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import { Button } from "@squaredmade/ui/button";
 import {
 	Form,

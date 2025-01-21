@@ -27,12 +27,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@squaredmade/ui/select";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@squaredmade/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";

@@ -4,12 +4,7 @@ import { TODO } from "@squared/context";
 import type { Team, User, Workspace } from "@squared/db";
 import { Button } from "@squaredmade/ui/button";
 import { Input } from "@squaredmade/ui/input";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableRow,
-} from "@squaredmade/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@squaredmade/ui/table";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,

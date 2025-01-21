@@ -44,12 +44,7 @@ import {
 } from "@squaredmade/ui/card";
 import { toast } from "@squaredmade/ui/hooks";
 import { Progress } from "@squaredmade/ui/progress";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@squaredmade/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@squaredmade/ui/tabs";
 
 import { useSprints } from "@/hooks/useSprints";
 import { sprintService, taskService } from "@/lib/services";
