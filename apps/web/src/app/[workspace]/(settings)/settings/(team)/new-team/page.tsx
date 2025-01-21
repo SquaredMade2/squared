@@ -1,19 +1,13 @@
 "use client";
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useTeams } from "@/hooks/useTeams";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { client } from "@/lib/client";
-import { useTeamStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squaredmade/ui/card";
+} from "@/components/ui/card";
 import {
 	Form,
 	FormControl,
@@ -22,10 +16,16 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squaredmade/ui/form";
-import { useToast } from "@squaredmade/ui/hooks";
-import { Input } from "@squaredmade/ui/input";
-import { Separator } from "@squaredmade/ui/separator";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { useTeams } from "@/hooks/useTeams";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { client } from "@/lib/client";
+import { useTeamStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

@@ -9,13 +9,13 @@ import {
 } from "lucide-react";
 
 import { useFilterStore } from "@/store";
-import { Button } from "@squaredmade/ui/button";
+import { PriorityIcon } from "../Icons";
+import { Button } from "../ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import { PriorityIcon } from "../Icons";
+} from "../ui/dropdown-menu";
 import AssigneeFilterDropDown from "./AssigneeFilter";
 import DueDateFilterDropDown from "./DueDateFilter";
 import EffortFilterDropDown from "./EffortFilter";

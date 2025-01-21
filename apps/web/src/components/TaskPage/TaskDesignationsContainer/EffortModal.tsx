@@ -1,15 +1,15 @@
 import { high, low, medium } from "@/components/Svg";
 import { complexityScale, effortEstimateOptions } from "@/lib/constants";
 import { useTeamStore } from "@/store";
-import { Button } from "@squaredmade/ui/button";
+import { CircleHelp } from "lucide-react";
+import { Button } from "../../ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@squaredmade/ui/dialog";
-import { CircleHelp } from "lucide-react";
+} from "../../ui/dialog";
 
 const EffortModal = () => {
 	const { team } = useTeamStore((state) => state);

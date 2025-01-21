@@ -1,10 +1,5 @@
 "use client";
 
-import { useFilterStore, useUserStore } from "@/store";
-import { getFilterAssignees } from "@/store/filters/helpers";
-import { getInitials } from "@/utils/formatting";
-import type { User } from "@squared/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import {
 	Command,
 	CommandEmpty,
@@ -12,15 +7,20 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squaredmade/ui/command";
+} from "@/components/ui/command";
+import { useFilterStore, useUserStore } from "@/store";
+import { getFilterAssignees } from "@/store/filters/helpers";
+import { getInitials } from "@/utils/formatting";
+import type { User } from "@squared/db";
+import { Check, UserSearch } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import { ScrollArea } from "@squaredmade/ui/scroll-area";
-import { Check, UserSearch } from "lucide-react";
-import { useEffect, useState } from "react";
+} from "../ui/dropdown-menu";
+import { ScrollArea } from "../ui/scroll-area";
 import type { FilterOption } from "./interfaces";
 
 export default function AssigneeFilterDropDown({

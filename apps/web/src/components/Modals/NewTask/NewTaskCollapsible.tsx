@@ -1,3 +1,19 @@
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import { taskService } from "@/lib/services";
 import {
 	useModalStore,
@@ -8,24 +24,8 @@ import {
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AccordionTrigger } from "@repo/ui/accordion";
 import { TODO } from "@squared/context";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-} from "@squaredmade/ui/accordion";
-import { AccordionTrigger } from "@squaredmade/ui/accordion";
-import { Button } from "@squaredmade/ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-} from "@squaredmade/ui/form";
-import { useToast } from "@squaredmade/ui/hooks";
-import { Input } from "@squaredmade/ui/input";
-import { Textarea } from "@squaredmade/ui/textarea";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,9 +44,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const { user } = useUser();
 	const { team } = useTeamStore((state) => state);
-	const { tasks, subtasks, createTask, setSubtasks } = useTaskStore(
-		(state) => state,
-	);
+	const { tasks, subtasks, createTask, setSubtasks } = useTaskStore((state) => state);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
@@ -126,7 +124,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			const createdTask = await taskService.createTask(TODO, newTask);
 			createdTask.order = subtasks.length + 1;
 			createTask(createdTask);
-			setSubtasks([...subtasks, createdTask]);
+      setSubtasks([...subtasks, createdTask]);
 			setWorkspace({
 				...workspace,
 				tasksCreated: workspace.tasksCreated + 1,
