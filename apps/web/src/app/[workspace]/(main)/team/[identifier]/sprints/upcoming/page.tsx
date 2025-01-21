@@ -2,10 +2,10 @@
 
 import { SprintError, SprintLoading } from "@/components/Sprints";
 import { SprintCard } from "@/components/Sprints/SprintCard";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSprints } from "@/hooks/useSprints";
 import { useTaskStore } from "@/store";
 import { parseError } from "@/utils/parseError";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 
 export default function UpcomingSprints() {
 	const { workspace, team, sprints, loading, error } = useSprints();

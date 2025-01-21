@@ -18,7 +18,8 @@ import {
 } from "@/utils/textEditorSelection";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
-import type { Task } from "@squared/db";
+import { Button } from "@squaredmade/ui/button";
+import { toast } from "@squaredmade/ui/hooks";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -34,8 +35,6 @@ import type {
 	RenderLeafProps,
 } from "slate-react";
 import { DefaultElement, Editable, Slate, withReact } from "slate-react";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 import TextEditorMentions from "./Menus/TextEditorMentions";
 import HeaderElement from "./TextEditorElements/ElementBlocks/HeaderElement";
 import CodeLeaf from "./TextEditorElements/LeafBlocks/CodeLeaf";

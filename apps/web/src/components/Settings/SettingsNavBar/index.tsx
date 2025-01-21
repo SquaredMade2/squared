@@ -13,15 +13,17 @@ import { useRouter } from "next/navigation";
 
 import AddTeamButton from "@/components/Buttons/AddTeamButton";
 import { WorkspaceDropdown } from "@/components/Sidebar/WorkspaceDropdown";
+import { useTeamStore, useWorkspaceStore } from "@/store";
+import type { Team } from "@squared/db";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+} from "@squaredmade/ui/accordion";
+import { Button } from "@squaredmade/ui/button";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import { Separator } from "@squaredmade/ui/separator";
 import {
 	Sidebar,
 	SidebarContent,
@@ -29,10 +31,8 @@ import {
 	SidebarHeader,
 	SidebarTrigger,
 	useSidebar,
-} from "@/components/ui/sidebar";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { useTeamStore, useWorkspaceStore } from "@/store";
-import type { Team } from "@squared/db";
+} from "@squaredmade/ui/sidebar";
+import { TooltipProvider } from "@squaredmade/ui/tooltip";
 
 function SettingsNavbarContent() {
 	const router = useRouter();

@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { useViewStore, useWorkspaceStore } from "@/store";
+import { Button } from "@squaredmade/ui/button";
 import { ChevronLeft, PanelLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 

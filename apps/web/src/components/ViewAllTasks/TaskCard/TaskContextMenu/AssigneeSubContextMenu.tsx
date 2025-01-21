@@ -1,17 +1,17 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { client } from "@/lib/client";
+import { useTaskStore, useUserStore } from "@/store";
+import { getInitials } from "@/utils/formatting";
+import type { User } from "@squared/db";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
 import {
 	ContextMenuItem,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@/components/ui/context-menu";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
-import { getInitials } from "@/utils/formatting";
-import type { User } from "@squared/db";
+} from "@squaredmade/ui/context-menu";
+import { ScrollArea, ScrollBar } from "@squaredmade/ui/scroll-area";
 import { useMutation } from "@tanstack/react-query";
 import { Check, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";

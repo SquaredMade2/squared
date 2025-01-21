@@ -1,13 +1,13 @@
 import { high, low, medium } from "@/components/Svg";
-import { Button } from "@/components/ui/button";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useModalStore, useTeamStore } from "@/store";
+import { Button } from "@squaredmade/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { effortEstimateOptions } from "@/lib/constants";
-import { useModalStore, useTeamStore } from "@/store";
+} from "@squaredmade/ui/dropdown-menu";
 import { Check } from "lucide-react";
 
 export const EffortDropdownButton = () => {

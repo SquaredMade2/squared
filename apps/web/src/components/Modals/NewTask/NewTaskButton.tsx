@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/components/ui/sidebar";
 import { useModalStore, useSprintStore, useViewStore } from "@/store";
 import type { Status } from "@squared/db";
+import { Button } from "@squaredmade/ui/button";
+import { useSidebar } from "@squaredmade/ui/sidebar";
 import { SquarePen } from "lucide-react";
 import { usePathname } from "next/navigation";
 

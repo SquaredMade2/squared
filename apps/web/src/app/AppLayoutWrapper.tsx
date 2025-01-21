@@ -7,9 +7,9 @@ import {
 	WorkspaceSwitcher,
 } from "@/components/Modals";
 import SearchCommand from "@/components/SearchCommand";
-import { Toaster } from "@/components/ui/toaster";
 import { SquaredStoreProvider } from "@/store";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@squaredmade/ui/toast";
 import {
 	QueryCache,
 	QueryClient,
