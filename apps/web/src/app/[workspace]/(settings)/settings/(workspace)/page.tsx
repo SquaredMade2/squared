@@ -105,7 +105,6 @@ export default function WorkspaceSettings() {
 			updateValues();
 		}
 		const subscription = watch((value) => {
-			console.log("test");
 			if (
 				value.name !== workspace.name ||
 				value.url !==
