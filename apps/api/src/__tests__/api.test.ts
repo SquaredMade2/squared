@@ -11,11 +11,33 @@ describe("API Tests", () => {
 		expect(response.text).toBe("ok");
 	});
 
+	// query the seeded database to retrieve a useable team/user combo
+	async function getUserAndTeamIDs() {
+		const teams = await prisma.team.findMany({
+			include: {
+				Users: true,
+			},
+		});
+		if (teams.length === 0) {
+			throw new Error("no teams detected");
+		}
+
+		const { Users: users, id: teamId } = teams[0];
+		if (users.length === 0) {
+			throw new Error("no users detected");
+		}
+
+		const sampleUser = users[0];
+		return { teamId, userId: sampleUser.userId };
+	}
+
 	describe("Filter Service Tests", () => {
-		const createFilterEndpoint = "/rpc/filter/createFilter";
-		const getFilterEndpoint = "/rpc/filter/getFilters";
-		const updateFilterEndpoint = "/rpc/filter/updateFilter";
-		const deleteFilterEndpoint = "/rpc/filter/deleteFilter";
+		const endpoints = {
+			createFilter: "/rpc/filter/createFilter",
+			getFilter: "/rpc/filter/getFilters",
+			updateFilter: "/rpc/filter/updateFilter",
+			deleteFilter: "/rpc/filter/deleteFilter",
+		};
 
 		// ids of any filter inserted during tests
 		let insertedIds: string[] = [];
@@ -42,11 +64,11 @@ describe("API Tests", () => {
 		}
 
 		function newBasicFilter(ids: {
-			authorId: string;
+			userId: string;
 			teamId: string;
 		}): CreateFilterParams {
 			return {
-				authorId: ids.authorId,
+				authorId: ids.userId,
 				teamId: ids.teamId,
 				name: "test filter",
 				description: "test description",
@@ -58,30 +80,10 @@ describe("API Tests", () => {
 			};
 		}
 
-		// query the seeded database to retrieve a useable team/user combo
-		async function getUserAndTeamIDs() {
-			const teams = await prisma.team.findMany({
-				include: {
-					Users: true,
-				},
-			});
-			if (teams.length === 0) {
-				throw new Error("no teams detected");
-			}
-
-			const { Users: users, id: teamId } = teams[0];
-			if (users.length === 0) {
-				throw new Error("no users detected");
-			}
-
-			const sampleUser = users[0];
-			return { teamId, authorId: sampleUser.userId };
-		}
-
 		it("inserts a valid filter", async () => {
 			const filter = newBasicFilter(await getUserAndTeamIDs());
 			const response = await request(app)
-				.post(createFilterEndpoint)
+				.post(endpoints.createFilter)
 				.send(filter);
 			addResponseId(response);
 
@@ -89,10 +91,10 @@ describe("API Tests", () => {
 		});
 
 		it("does not insert a filter if the team doesn't exist", async () => {
-			const { authorId } = await getUserAndTeamIDs();
-			const filter = newBasicFilter({ authorId, teamId: randomUUID() });
+			const { userId: authorId } = await getUserAndTeamIDs();
+			const filter = newBasicFilter({ userId: authorId, teamId: randomUUID() });
 			const response = await request(app)
-				.post(createFilterEndpoint)
+				.post(endpoints.createFilter)
 				.send(filter);
 			addResponseId(response);
 
@@ -103,9 +105,9 @@ describe("API Tests", () => {
 
 		it("does not insert a filter if the author doesn't exist", async () => {
 			const { teamId } = await getUserAndTeamIDs();
-			const filter = newBasicFilter({ authorId: randomUUID(), teamId });
+			const filter = newBasicFilter({ userId: randomUUID(), teamId });
 			const response = await request(app)
-				.post(createFilterEndpoint)
+				.post(endpoints.createFilter)
 				.send(filter);
 			addResponseId(response);
 
@@ -114,7 +116,7 @@ describe("API Tests", () => {
 		});
 
 		it("retrieves multiple filters by team ID", async () => {
-			const { teamId, authorId } = await getUserAndTeamIDs();
+			const { teamId, userId: authorId } = await getUserAndTeamIDs();
 			const sampleFilters: Prisma.SavedFilterCreateManyInput[] = [
 				{
 					authorId,
@@ -154,7 +156,7 @@ describe("API Tests", () => {
 			}
 
 			const response = await request(app)
-				.post(getFilterEndpoint)
+				.post(endpoints.getFilter)
 				.send({ teamId });
 			const retrievedFilters: SavedFilter[] = response.body;
 
@@ -186,7 +188,7 @@ describe("API Tests", () => {
 				],
 			};
 
-			const response = await request(app).post(updateFilterEndpoint).send({
+			const response = await request(app).post(endpoints.updateFilter).send({
 				filterId: insertedFilter.id,
 				filters: updateFilterParams,
 			});
@@ -202,7 +204,7 @@ describe("API Tests", () => {
 			insertedIds.push(insertedFilter.id);
 
 			await request(app)
-				.post(deleteFilterEndpoint)
+				.post(endpoints.deleteFilter)
 				.send({ filterId: insertedFilter.id });
 
 			expect(
@@ -210,6 +212,67 @@ describe("API Tests", () => {
 					where: { id: insertedFilter.id },
 				}),
 			).toBe(null);
+		});
+	});
+
+	describe("User Service Tests", () => {
+		const endpoints = {
+			onBoardUser: "/rpc/user/onBoardUser",
+			updateUser: "/rpc/user/updateUser",
+			updateUserAvatar: "/rpc/user/updateUserAvatar",
+		};
+
+		it("onboards a valid user", async () => {
+			const { userId } = await getUserAndTeamIDs();
+
+			// make sure user is onboarding
+			await prisma.user.update({
+				where: { externalId: userId },
+				data: {
+					onBoarding: true,
+				},
+			});
+
+			const response = await request(app)
+				.post(endpoints.onBoardUser)
+				.send({ userId });
+
+			expect(response.body).toMatchObject({
+				externalId: userId,
+				onBoarding: false,
+			});
+		});
+
+		it("updates a valid user", async () => {
+			const { userId } = await getUserAndTeamIDs();
+			const updatedUserArgs = {
+				name: "Updated User",
+				username: "updated-user-123",
+			};
+
+			const response = await request(app)
+				.post(endpoints.updateUser)
+				.send({
+					userId,
+					...updatedUserArgs,
+				});
+
+			expect(response.body).toMatchObject({
+				externalId: userId,
+				...updatedUserArgs,
+			});
+		});
+
+		it("updates a valid user avatar url", async () => {
+			const { userId } = await getUserAndTeamIDs();
+			const newAvatarUrl =
+				"https://api.dicebear.com/9.x/thumbs/svg?eyes=variant9W16";
+
+			const response = await request(app)
+				.post(endpoints.updateUserAvatar)
+				.send({ userId, avatarUrl: newAvatarUrl });
+
+			expect(response.body.avatarUrl).toBe(newAvatarUrl);
 		});
 	});
 });
