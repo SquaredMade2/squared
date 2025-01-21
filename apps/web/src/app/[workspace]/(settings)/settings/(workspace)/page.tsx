@@ -88,11 +88,22 @@ export default function WorkspaceSettings() {
 		},
 	});
 
-	const { watch } = form;
+	const { watch, setValue } = form;
+
+	const updateValues = () => {
+		if (workspace) {
+			setValue("name", workspace.name);
+      setValue("url", workspace.url.replace("https://app.squaredmade.com/", ""));
+		}
+	};
 
 	useEffect(() => {
 		if (!workspace) return;
 
+    //on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
+		if (form.getValues("name") !== workspace.name || form.getValues("url") !== workspace.url.replace("https://app.squaredmade.com/", "")) {
+			updateValues();
+		}
 		const subscription = watch((value) => {
 			if (
 				value.name !== workspace.name ||
@@ -184,6 +195,7 @@ export default function WorkspaceSettings() {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<FormField
 							control={form.control}
+              defaultValue = {""}
 							name="name"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
@@ -197,6 +209,7 @@ export default function WorkspaceSettings() {
 						/>
 						<FormField
 							control={form.control}
+              defaultValue = {""}
 							name="url"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
