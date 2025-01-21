@@ -1,5 +1,4 @@
-import { cn } from "@/utils/cn";
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -7,13 +6,14 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@squaredmade/ui/command";
+} from "@/components/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@squaredmade/ui/popover";
-import { ScrollArea } from "@squaredmade/ui/scroll-area";
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/utils/cn";
 import { Check, ChevronsUpDown } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
 

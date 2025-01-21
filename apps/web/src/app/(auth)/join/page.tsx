@@ -1,13 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useWorkspaceStore } from "@/store";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { Button } from "@squaredmade/ui/button";
-import { Card } from "@squaredmade/ui/card";
-import { useToast } from "@squaredmade/ui/hooks";
-import { Input } from "@squaredmade/ui/input";
-import { Label } from "@squaredmade/ui/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";

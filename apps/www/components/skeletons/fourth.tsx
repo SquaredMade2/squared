@@ -1,4 +1,4 @@
-import { InfiniteMovingCards } from "@/components/infinite-moving-cards";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { cn } from "@/lib/utils";
 import { Globe } from "../globe";
 export const SkeletonFour = () => {

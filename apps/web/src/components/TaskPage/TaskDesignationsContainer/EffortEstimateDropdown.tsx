@@ -1,18 +1,18 @@
 "use client";
 
 import { high, low, medium } from "@/components/Svg";
-import { client } from "@/lib/client";
-import { effortEstimateOptions } from "@/lib/constants";
-import { useEventStore, useTaskStore, useTeamStore } from "@/store";
-import type { TaskEvent } from "@squared/db";
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import { useToast } from "@squaredmade/ui/hooks";
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
+import { effortEstimateOptions } from "@/lib/constants";
+import { useEventStore, useTaskStore, useTeamStore } from "@/store";
+import type { TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";

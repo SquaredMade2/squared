@@ -10,7 +10,7 @@ import {
 	FormField,
 	FormItem,
 	FormMessage,
-} from "@squaredmade/ui/form";
+} from "@/components/ui/form";
 
 import { Button } from "./button";
 

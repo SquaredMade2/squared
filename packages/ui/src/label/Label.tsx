@@ -1,26 +1,49 @@
-"use client";
-
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
+import { Primitive } from "../react-primitive";
 
-import { cn } from "@/cn";
+/* -------------------------------------------------------------------------------------------------
+ * Label
+ * -----------------------------------------------------------------------------------------------*/
 
-const labelVariants = cva(
-	"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+const NAME = "Label";
+
+type LabelElement = React.ElementRef<typeof Primitive.label>;
+type PrimitiveLabelProps = React.ComponentPropsWithoutRef<
+	typeof Primitive.label
+>;
+interface LabelProps extends PrimitiveLabelProps {}
+
+const Label = React.forwardRef<LabelElement, LabelProps>(
+	(props, forwardedRef) => {
+		return (
+			// biome-ignore lint/a11y/noLabelWithoutControl: <explanation>
+			<Primitive.label
+				{...props}
+				ref={forwardedRef}
+				onMouseDown={(event) => {
+					// only prevent text selection if clicking inside the label itself
+					const target = event.target as HTMLElement;
+					if (target.closest("button, input, select, textarea")) return;
+
+					props.onMouseDown?.(event);
+					// prevent text selection when double clicking label
+					if (!event.defaultPrevented && event.detail > 1)
+						event.preventDefault();
+				}}
+			/>
+		);
+	},
 );
 
-const Label = React.forwardRef<
-	React.ElementRef<typeof LabelPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-		VariantProps<typeof labelVariants>
->(({ className, ...props }, ref) => (
-	<LabelPrimitive.Root
-		ref={ref}
-		className={cn(labelVariants(), className)}
-		{...props}
-	/>
-));
-Label.displayName = LabelPrimitive.Root.displayName;
+Label.displayName = NAME;
 
-export { Label };
+/* -----------------------------------------------------------------------------------------------*/
+
+const Root = Label;
+
+export {
+	Label,
+	//
+	Root,
+};
+export type { LabelProps };

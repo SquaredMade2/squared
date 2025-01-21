@@ -1,12 +1,12 @@
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "@squaredmade/ui/card";
-import { ScrollArea } from "@squaredmade/ui/scroll-area";
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertTriangle } from "lucide-react";
 import React, { type ErrorInfo, type ReactNode } from "react";
 

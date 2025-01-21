@@ -19,13 +19,13 @@
   "scripts": {
     "build": "node build.mjs",
     "prebuild": "rimraf dist",
-    "prepare": "pnpm run build"
+    "postinstall": "pnpm run build"
   },
   "dependencies": {
     "@squared/context": "workspace:*"
   },
   "devDependencies": {
-    "@squared/typescript-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@squared/builder": "workspace:*"
   }
 }

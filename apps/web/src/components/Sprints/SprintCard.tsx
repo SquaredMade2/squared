@@ -1,16 +1,16 @@
 import type { Sprint, Task } from "@squared/db";
-import { Button } from "@squaredmade/ui/button";
+import { format } from "date-fns";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "../ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squaredmade/ui/card";
-import { Progress } from "@squaredmade/ui/progress";
-import { format } from "date-fns";
-import { ChevronRight } from "lucide-react";
-import Link from "next/link";
+} from "../ui/card";
+import { Progress } from "../ui/progress";
 
 interface SprintCardProps {
 	sprint: Sprint;
