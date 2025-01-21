@@ -133,6 +133,7 @@ export class UserService implements UserRpc {
 
 		return connectedRepos.map((repo) => repo.repoName);
 	}
+
 	async getUserTeams({ userId }: { userId: string }): Promise<Team[]> {
 		this.logger.info("Fetching user teams with id: %s", userId);
 		return await this.db.userTeam

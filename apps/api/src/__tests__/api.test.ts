@@ -1,16 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { app, prisma } from "@/api/app";
 import type { CreateFilterParams } from "@/services/filters/types";
-import type { Prisma, SavedFilter } from "@squared/db";
+import type { Prisma, SavedFilter, User } from "@squared/db";
 import request from "supertest";
 
 describe("API Tests", () => {
-	it("should respond with 200 OK for the root path", async () => {
-		const response = await request(app).get("/");
-		expect(response.status).toBe(200);
-		expect(response.text).toBe("ok");
-	});
-
 	// query the seeded database to retrieve a useable team/user combo
 	async function getUserAndTeamIDs() {
 		const teams = await prisma.team.findMany({
@@ -22,14 +16,20 @@ describe("API Tests", () => {
 			throw new Error("no teams detected");
 		}
 
-		const { Users: users, id: teamId } = teams[0];
+		const { Users: users, id: teamId, identifier } = teams[0];
 		if (users.length === 0) {
 			throw new Error("no users detected");
 		}
 
 		const sampleUser = users[0];
-		return { teamId, userId: sampleUser.userId };
+		return { teamId, userId: sampleUser.userId, teamIdentifier: identifier };
 	}
+
+	it("should respond with 200 OK for the root path", async () => {
+		const response = await request(app).get("/");
+		expect(response.status).toBe(200);
+		expect(response.text).toBe("ok");
+	});
 
 	describe("Filter Service Tests", () => {
 		const endpoints = {
@@ -217,10 +217,25 @@ describe("API Tests", () => {
 
 	describe("User Service Tests", () => {
 		const endpoints = {
+			getUser: "/rpc/user/getUser",
+			getTeamUsers: "/rpc/user/getTeamUsers",
+			isUserAuthorized: "/rpc/user/isUserAuthorized",
 			onBoardUser: "/rpc/user/onBoardUser",
 			updateUser: "/rpc/user/updateUser",
 			updateUserAvatar: "/rpc/user/updateUserAvatar",
 		};
+
+		function serializeUserDates(u: User) {
+			return {
+				...u,
+				// The dates are sent as strings in the response object because a
+				// date class instance is not serializable.
+				// Using prisma, however, will instantiate a date instance so need to
+				// serialize those fields to strings if you want deep equality comparison.
+				createdAt: u.createdAt.toISOString(),
+				lastLogin: u.lastLogin.toISOString(),
+			};
+		}
 
 		it("onboards a valid user", async () => {
 			const { userId } = await getUserAndTeamIDs();
@@ -243,7 +258,7 @@ describe("API Tests", () => {
 			});
 		});
 
-		it("updates a valid user", async () => {
+		it("updates a valid user's name and username", async () => {
 			const { userId } = await getUserAndTeamIDs();
 			const updatedUserArgs = {
 				name: "Updated User",
@@ -273,6 +288,106 @@ describe("API Tests", () => {
 				.send({ userId, avatarUrl: newAvatarUrl });
 
 			expect(response.body.avatarUrl).toBe(newAvatarUrl);
+		});
+
+		it("fetches a user by id", async () => {
+			const { userId } = await getUserAndTeamIDs();
+			const user = await prisma.user.findUnique({
+				where: {
+					externalId: userId,
+				},
+			});
+			if (!user) {
+				throw new Error("failed to find user");
+			}
+
+			const response = await request(app)
+				.post(endpoints.getUser)
+				.send({ userId });
+			expect(response.body).toMatchObject(serializeUserDates(user));
+		});
+
+		it("gets all users in a team", async () => {
+			const { teamId } = await getUserAndTeamIDs();
+			const teamWithUsers = await prisma.team.findUnique({
+				where: {
+					id: teamId,
+				},
+				include: {
+					Users: true,
+				},
+			});
+			if (!teamWithUsers) {
+				throw new Error("failed to locate team");
+			}
+
+			const userIds = teamWithUsers.Users.map((u) => u.userId);
+			const response = await request(app)
+				.post(endpoints.getTeamUsers)
+				.send({ teamId });
+			const responseUsers: User[] = response.body;
+
+			expect(responseUsers.length).toBe(userIds.length);
+			for (const user of responseUsers) {
+				expect(userIds.includes(user.externalId)).toBe(true);
+			}
+		});
+
+		// it("gets all user avatars in a team", async () => {});
+		it("properly authorizes a user", async () => {
+			const { userId, teamId } = await getUserAndTeamIDs();
+			const team = await prisma.team.findUnique({
+				where: {
+					id: teamId,
+				},
+			});
+			if (!team) {
+				throw new Error("failed to find team");
+			}
+
+			const response = await request(app)
+				.post(endpoints.isUserAuthorized)
+				.send({ userId, teamIdentifier: team.identifier });
+			expect(response.body).toBe(true);
+		});
+
+		it("does not authorize a user for a team they are not a member of", async () => {
+			const teams = await prisma.team.findMany();
+			if (teams.length === 0) {
+				throw new Error("no teams in database");
+			}
+
+			const users = await prisma.user.findMany({
+				include: {
+					Teams: true,
+				},
+			});
+			if (!users) {
+				throw new Error("no users in database");
+			}
+
+			// find a user that isn't a part of every team
+			const user = users.find((u) => u.Teams.length < teams.length);
+			if (!user) {
+				throw new Error("failed to find user that is not part of all teams");
+			}
+
+			// isolate the team the user isn't a part of 
+			const invalidTeam = teams.find(
+				(team) =>
+					!user.Teams.map((userTeam) => userTeam.teamId).includes(team.id),
+			);
+			if (!invalidTeam) {
+				throw new Error("failed to isolate invalid team");
+			}
+
+			const response = await request(app)
+				.post(endpoints.isUserAuthorized)
+				.send({
+					userId: user.externalId,
+					teamIdentifier: invalidTeam.identifier,
+				});
+			expect(response.body).toBe(false);
 		});
 	});
 });
