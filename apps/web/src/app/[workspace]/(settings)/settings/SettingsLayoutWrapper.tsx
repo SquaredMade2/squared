@@ -1,7 +1,7 @@
 "use client";
 import SettingsNavBar from "@/components/Settings/SettingsNavBar";
-import { ScrollArea } from "@squaredmade/ui/scroll-area";
-import { SidebarInset, SidebarProvider } from "@squaredmade/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function SettingsLayoutWrapper({
 	children,

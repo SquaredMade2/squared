@@ -33,23 +33,18 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@squaredmade/ui/alert-dialog";
-import { Button } from "@squaredmade/ui/button";
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squaredmade/ui/card";
-import { toast } from "@squaredmade/ui/hooks";
-import { Progress } from "@squaredmade/ui/progress";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@squaredmade/ui/tabs";
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/components/ui/use-toast";
 
 import { useSprints } from "@/hooks/useSprints";
 import { sprintService, taskService } from "@/lib/services";

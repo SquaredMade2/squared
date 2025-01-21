@@ -12,14 +12,14 @@
     "db:push": "prisma db push --skip-generate",
     "db:reset": "npx prisma migrate reset --force",
     "migrate": "prisma migrate dev --name",
-    "prepare": "pnpm run build",
+    "postinstall": "pnpm run db:gen",
     "studio": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0"
   },
   "devDependencies": {
-    "@squared/typescript-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "prisma": "^6.0.0"
   }
 }

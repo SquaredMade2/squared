@@ -2,13 +2,13 @@ import { useUserStore } from "@/store";
 import type { UserAvatar } from "@/store/users";
 import { getInitials } from "@/utils/formatting";
 import type { Comment } from "@squared/db";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { toast } from "@squaredmade/ui/hooks";
 import { formatDate } from "date-fns/format";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import { useEffect, useState } from "react";
 import type React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { toast } from "../ui/use-toast";
 // !!! This is all part of the code below !!! line 37
 // import { Text, type Descendant } from "slate";
 // import type { RenderElementProps, RenderLeafProps } from "slate-react";

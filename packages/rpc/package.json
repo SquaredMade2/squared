@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "prepare": "pnpm run build",
+    "postinstall": "pnpm run build",
     "prebuild": "rimraf dist",
     "prepublishOnly": "pnpm run build"
   },
@@ -28,7 +28,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@squared/typescript-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@squared/builder": "workspace:*",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.6",

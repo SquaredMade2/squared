@@ -1,13 +1,13 @@
 "use client";
 
-import { client } from "@/lib/client";
-import { useTaskStore } from "@/store";
-import { Calendar } from "@squaredmade/ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-} from "@squaredmade/ui/context-menu";
+} from "@/components/ui/context-menu";
+import { client } from "@/lib/client";
+import { useTaskStore } from "@/store";
 import { useMutation } from "@tanstack/react-query";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";

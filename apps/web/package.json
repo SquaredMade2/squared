@@ -31,7 +31,7 @@
 		"@mdx-js/mdx": "^3.0.1",
 		"@mdx-js/react": "^3.0.1",
 		"@next/mdx": "^14.2.3",
-		"@squaredmade/ui": "2.0.0-rc.1",
+		"@repo/ui": "workspace:*",
 		"@sentry/nextjs": "^8.27.0",
 		"@squared/context": "workspace:*",
 		"@squared/fonts": "workspace:*",
@@ -72,7 +72,7 @@
 	"devDependencies": {
 		"@clerk/types": "^4.40.3",
 		"@jest/globals": "^29.7.0",
-		"@squared/typescript-config": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
 		"@squared/db": "workspace:*",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^16.0.0",

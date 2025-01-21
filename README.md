@@ -21,7 +21,7 @@ This Turborepo includes the following:
 - `@repo/ui`: a React component library
 - `@repo/logger`: Isomorphic logger (a small wrapper around console.log)
 - `@repo/eslint-config`: ESLint presets
-- `@squared/typescript-config`: tsconfig.json's used throughout the monorepo
+- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 

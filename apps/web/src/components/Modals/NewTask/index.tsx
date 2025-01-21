@@ -1,28 +1,28 @@
 "use client";
 
-import { useCreateTask } from "@/hooks/useCreateTask";
-import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
-import { parseError } from "@/utils/parseError";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@squaredmade/ui/dialog";
+} from "@/components/ui/dialog";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-} from "@squaredmade/ui/form";
-import { useToast } from "@squaredmade/ui/hooks";
-import { Input } from "@squaredmade/ui/input";
-import { Separator } from "@squaredmade/ui/separator";
-import { Textarea } from "@squaredmade/ui/textarea";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { useCreateTask } from "@/hooks/useCreateTask";
+import { useModalStore, useTeamStore, useWorkspaceStore } from "@/store";
+import { parseError } from "@/utils/parseError";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, LayoutGrid } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
