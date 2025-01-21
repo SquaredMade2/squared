@@ -116,8 +116,8 @@ const TextEditor = ({ task }: TextEditorProps) => {
 							description: "Task Comment Mention",
 							taskId: currentTask.id ?? currentTask.id,
 							type: "MENTIONED",
-							userId: mentionedUser.externalId ?? "",
-							workspaceId: currentWorkspace.id ?? "",
+							userId: mentionedUser ? mentionedUser.externalId : "",
+							workspaceId: currentWorkspace ? currentWorkspace.id : "",
 						};
 
 						await eventService.createNotification(TODO, mentionEvent);
