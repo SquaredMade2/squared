@@ -359,7 +359,10 @@ export class TaskService implements TaskRpc {
 		blockedBy: Task[];
 		blockingIds: string[];
 	}> {
-		this.logger.info("getting tasks blocking and blocked by task id", taskId);
+		this.logger.info(
+			"getting tasks blocking and blocked by task id: %s",
+			taskId,
+		);
 
 		const task = await this.db.task.findUnique({
 			where: { id: taskId },
