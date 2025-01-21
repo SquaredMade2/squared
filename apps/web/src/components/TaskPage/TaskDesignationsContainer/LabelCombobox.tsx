@@ -1,7 +1,10 @@
 "use client";
 
 import { LabelColor } from "@/components/ViewAllTasks/TaskCard/TaskCardLabels";
-import { Button } from "@/components/ui/button";
+import { client } from "@/lib/client";
+import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
+import type { Label, TaskEvent } from "@squared/db";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -9,15 +12,12 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
+} from "@squaredmade/ui/command";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
-import { client } from "@/lib/client";
-import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
-import type { Label, TaskEvent } from "@squared/db";
+} from "@squaredmade/ui/popover";
 import { useMutation } from "@tanstack/react-query";
 import { Check, Plus, Tag } from "lucide-react";
 import { useMemo, useState } from "react";

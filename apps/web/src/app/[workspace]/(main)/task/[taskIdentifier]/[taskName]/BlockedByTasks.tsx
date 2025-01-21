@@ -1,17 +1,20 @@
 "use client";
 import { PriorityIcon, StatusIcon } from "@/components/Icons";
 import TaskContextMenu from "@/components/ViewAllTasks/TaskCard/TaskContextMenu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
+import { formatUrl, getInitials } from "@/utils/formatting";
+import type { Task, User } from "@squared/db";
+import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { useTaskStore, useUserStore, useWorkspaceStore } from "@/store";
-import { formatUrl, getInitials } from "@/utils/formatting";
-import type { Task, User } from "@squared/db";
+} from "@squaredmade/ui/collapsible";
+import {
+	ContextMenu,
+	ContextMenuTrigger,
+} from "@squaredmade/ui/context-menu";
 import { ChevronDown, ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

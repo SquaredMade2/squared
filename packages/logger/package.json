@@ -17,10 +17,10 @@
     "check-types": "tsc --noEmit",
     "clean": "rimraf dist",
     "lint": "biome lint --error-on-warnings ./src",
-    "postinstall": "tsup src/index.ts --format cjs,esm --dts"
+    "prepare": "pnpm run build"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@squared/typescript-config": "workspace:*",
     "@biomejs/biome": "1.9.4",
     "@types/node": "^22.5.1",
     "@types/winston": "^2.4.4",

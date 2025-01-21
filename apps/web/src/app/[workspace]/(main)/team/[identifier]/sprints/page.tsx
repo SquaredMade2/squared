@@ -2,7 +2,12 @@
 
 import { PriorityIcon } from "@/components/Icons";
 import { AssignTasksDialog, SprintTabs } from "@/components/Sprints";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useSprints } from "@/hooks/useSprints";
+import { taskService } from "@/lib/services";
+import { useTaskStore } from "@/store";
+import { TODO } from "@squared/context";
+import type { Priority, Sprint, Task } from "@squared/db";
+import { Alert, AlertDescription, AlertTitle } from "@squaredmade/ui/alert";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,15 +17,15 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@squaredmade/ui/alert-dialog";
+import { Button } from "@squaredmade/ui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@squaredmade/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -28,15 +33,10 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSprints } from "@/hooks/useSprints";
-import { taskService } from "@/lib/services";
-import { useTaskStore } from "@/store";
-import { TODO } from "@squared/context";
-import type { Priority, Sprint, Task } from "@squared/db";
+} from "@squaredmade/ui/dialog";
+import { Input } from "@squaredmade/ui/input";
+import { Progress } from "@squaredmade/ui/progress";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
 import { differenceInDays, format } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

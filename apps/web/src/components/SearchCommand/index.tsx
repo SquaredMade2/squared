@@ -1,5 +1,6 @@
 "use client";
 
+import { useFilterStore, useModalStore, useViewStore } from "@/store";
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -9,13 +10,12 @@ import {
 	CommandList,
 	CommandSeparator,
 	CommandShortcut,
-} from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
-import { useFilterStore, useModalStore, useViewStore } from "@/store";
-import { useId } from "@repo/ui/id";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+} from "@squaredmade/ui/command";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { useToast } from "@squaredmade/ui/hooks";
+import { useId } from "@squaredmade/ui/hooks";
+import { ScrollArea } from "@squaredmade/ui/scroll-area";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import { useEffect } from "react";
 import { CommandSchema } from "./actions";
 import type { SearchbarItem, SearchbarStructure } from "./interfaces";

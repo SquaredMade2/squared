@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Primitive } from "../react-primitive";
+import { Primitive } from "@radix-ui/react-primitive";
 
 /* -------------------------------------------------------------------------------------------------
  * VisuallyHidden

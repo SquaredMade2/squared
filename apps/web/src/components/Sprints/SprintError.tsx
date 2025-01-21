@@ -1,6 +1,6 @@
+import { Button } from "@squaredmade/ui/button";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
 
 interface SprintErrorProps {
 	error: string;
