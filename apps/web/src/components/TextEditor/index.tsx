@@ -105,22 +105,24 @@ const TextEditor = ({ task }: TextEditorProps) => {
 				);
 				const mentions = getMentionsFromSlate(editorContent);
 
-				for (let i = 0; i < mentions.length; i++) {
-					const currentMentionUser = mentions[i];
+				if (currentTask) {
+					for (let i = 0; i < mentions.length; i++) {
+						const currentMentionUser = mentions[i];
 
-					const mentionedUser = users.find(
-						(user) => user.name === currentMentionUser,
-					);
+						const mentionedUser = users.find(
+							(user) => user.name === currentMentionUser,
+						);
 
-					const mentionEvent: CreateNotificationRequest = {
-						description: "Task Comment Mention",
-						taskId: "id" in currentTask ? currentTask.id : "",
-						type: "MENTIONED",
-						userId: mentionedUser.externalId ?? "",
-						workspaceId: currentWorkspace.id ?? "",
-					};
+						const mentionEvent: CreateNotificationRequest = {
+							description: "Task Comment Mention",
+							taskId: currentTask.id ?? currentTask.id,
+							type: "MENTIONED",
+							userId: mentionedUser.externalId ?? "",
+							workspaceId: currentWorkspace.id ?? "",
+						};
 
-					await eventService.createNotification(TODO, mentionEvent);
+						await eventService.createNotification(TODO, mentionEvent);
+					}
 				}
 
 				setEditorContent([]);
