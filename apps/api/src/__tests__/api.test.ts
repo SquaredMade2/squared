@@ -335,14 +335,21 @@ describe("API Tests", () => {
 		});
 
 		it("gets a specified default workspace", async () => {
-			const user = await prisma.user.findFirst({
+			const users = await prisma.user.findMany({
 				include: {
 					Workspaces: true,
 				},
 			});
-			if (!user) {
-				throw new Error("failed to find user");
+			if (!users) {
+				throw new Error("no users in database");
 			}
+
+			// find a user who is in multiple workspaces
+			const user = users.find((u) => u.Workspaces.length > 1);
+			if (!user) {
+				throw new Error("failed to find user who is in multiple workspaces");
+			}
+
 			const defaultId = user.Workspaces[user.Workspaces.length - 1].workspaceId;
 			const shouldBeDefault = await prisma.workspace.findUnique({
 				where: { id: defaultId },
@@ -359,6 +366,11 @@ describe("API Tests", () => {
 					defaultWorkspaceId: defaultId,
 				},
 			});
+
+			const response = await request(app)
+				.post(endpoints.getDefaultWorkspace)
+				.send({ userId: user.externalId });
+			expect(response.body).toMatchObject(shouldBeDefault);
 		});
 
 		it("falls back to the first workspace if there is no specified default workspace", async () => {
