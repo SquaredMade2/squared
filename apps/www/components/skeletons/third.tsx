@@ -1,69 +1,24 @@
 "use client";
-import BacklogIcon from "@/components/SVG/backlog-icon";
-import DoneIcon from "@/components/SVG/done-icon";
-import HighPriority from "@/components/SVG/high-priority";
-import LowEffort from "@/components/SVG/low-effort";
-import MediumPriority from "@/components/SVG/medium-priority";
-import TodoIcon from "@/components/SVG/todo-icon";
-import UrgentPriority from "@/components/SVG/urgent-priority";
-import { NewTaskDropDown } from "@/components/new-task-dropdown";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 export const SkeletonThree = () => {
+	const { resolvedTheme } = useTheme();
+	
 	return (
 		<div className="h-full w-full sm:w-[100%] mx-auto bg-white dark:bg-background-darkSecondary shadow-2xl dark:shadow-white/40 mt-10 group rounded-md">
 			<div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-background dark:via-background to-transparent w-full pointer-events-none z-[11]" />
-
-			<div className="flex flex-1 w-full h-full flex-col space-y-2 ">
-				<div className="flex justify-between border-b dark:border-neutral-700 pb-2 p-4">
-					<p className="text-muted text-sm font-bold dark:text-muted-dark">
-						LIV › New Task
-					</p>
-					{/* <p className="shadow-derek text-muted dark:text-muted-dark text-sm px-2 py-1 rounded-md flex-shrink-0 flex space-x-1 items-center dark:bg-neutral-700">
-            <IconPlus className="h-4 w-4 text-muted dark:text-muted-dark" />{" "}
-            <span>Add</span>
-          </p> */}
-				</div>
-				<div className="flex flex-col space-y-3 p-4">
-					<div>
-						<h3 className="mb-3">
-							Research target audience and competitor websites
-						</h3>
-						{/* todo add background */}
-						<input
-							placeholder="Add description..."
-							className="bg-transparent w-full focus:outline-none "
-							type="text"
-						/>
-					</div>
-
-					<div className="flex gap-7">
-						<NewTaskDropDown
-							options={[
-								{ value: "Todo", id: 0, icon: TodoIcon },
-								{ value: "Backlog", id: 1, icon: BacklogIcon },
-								{ value: "Done", id: 2, icon: DoneIcon },
-							]}
-						/>
-						{/* Priority */}
-						<NewTaskDropDown
-							options={[
-								{ value: "Urgent", id: 0, icon: UrgentPriority },
-								{ value: "High", id: 1, icon: HighPriority },
-								{ value: "Medium", id: 2, icon: MediumPriority },
-							]}
-						/>
-						{/* Effort */}
-						<NewTaskDropDown
-							options={[
-								{ value: "Effort: 1", id: 0, icon: LowEffort },
-								{ value: "Effort: 2", id: 1, icon: LowEffort },
-								{ value: "Effort: 3", id: 2, icon: LowEffort },
-								{ value: "Effort: 5", id: 3, icon: LowEffort },
-							]}
-						/>
-					</div>
-				</div>
-			</div>
+			<Image
+				src={
+					resolvedTheme === "dark"
+						? "/newTask-dark.png"
+						: "/newTask-light.png"
+					
+				}
+				width={559}
+				height={465}
+				alt='new-task'
+			/>
 		</div>
 	);
 };
