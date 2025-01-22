@@ -217,6 +217,7 @@ describe("API Tests", () => {
 
 	describe("User Service Tests", () => {
 		const endpoints = {
+			getDefaultWorkspace: "/rpc/user/getDefaultWorkspace",
 			getUser: "/rpc/user/getUser",
 			getTeamUsers: "/rpc/user/getTeamUsers",
 			isUserAuthorized: "/rpc/user/isUserAuthorized",
@@ -333,8 +334,73 @@ describe("API Tests", () => {
 			}
 		});
 
+		it("gets a specified default workspace", async () => {
+			const user = await prisma.user.findFirst({
+				include: {
+					Workspaces: true,
+				},
+			});
+			if (!user) {
+				throw new Error("failed to find user");
+			}
+			const defaultId = user.Workspaces[user.Workspaces.length - 1].workspaceId;
+			const shouldBeDefault = await prisma.workspace.findUnique({
+				where: { id: defaultId },
+			});
+			if (!shouldBeDefault) {
+				throw new Error("user is not part of any workspaces");
+			}
+
+			await prisma.user.update({
+				where: {
+					id: user.id,
+				},
+				data: {
+					defaultWorkspaceId: defaultId,
+				},
+			});
+		});
+
+		it("falls back to the first workspace if there is no specified default workspace", async () => {
+			const user = await prisma.user.findFirst({
+				include: {
+					Workspaces: true,
+				},
+			});
+			if (!user) {
+				throw new Error("no users in database");
+			}
+
+			const shouldBeDefault = await prisma.workspace.findUnique({
+				where: {
+					id: user.Workspaces[0].workspaceId,
+				},
+			});
+			if (!shouldBeDefault) {
+				throw new Error("failed to retrieve fallback default workspace");
+			}
+
+			// force remove default workspace if it exists
+			await prisma.user.update({
+				where: {
+					id: user.id,
+				},
+				data: {
+					DefaultWorkspace: undefined,
+					defaultWorkspaceId: null,
+				},
+			});
+
+			const response = await request(app)
+				.post(endpoints.getDefaultWorkspace)
+				.send({
+					userId: user.externalId,
+				});
+			expect(response.body).toMatchObject(shouldBeDefault);
+		});
+
 		// it("gets all user avatars in a team", async () => {});
-		it("properly authorizes a user", async () => {
+		it("authorizes a user for a team they are a member of", async () => {
 			const { userId, teamId } = await getUserAndTeamIDs();
 			const team = await prisma.team.findUnique({
 				where: {
@@ -372,7 +438,7 @@ describe("API Tests", () => {
 				throw new Error("failed to find user that is not part of all teams");
 			}
 
-			// isolate the team the user isn't a part of 
+			// isolate the team the user isn't a part of
 			const invalidTeam = teams.find(
 				(team) =>
 					!user.Teams.map((userTeam) => userTeam.teamId).includes(team.id),
