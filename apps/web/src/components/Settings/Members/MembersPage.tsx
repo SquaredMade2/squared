@@ -1,4 +1,4 @@
-import type { Team, User, Workspace } from "@squared/db";
+import type { Team, Workspace } from "@squared/db";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable, type MemberWithRole } from "./data-table";
 
@@ -7,25 +7,18 @@ export function MembersPage({
 	members,
 	workspace,
 	team,
-	admins,
 }: {
 	columns: ColumnDef<MemberWithRole, unknown>[];
-	members: User[];
+	members: MemberWithRole[];
 	workspace?: Workspace | null;
 	team?: Team | null;
-	admins: string[];
 }) {
-	const membersWithRoles: MemberWithRole[] = members.map((member) => ({
-		...member,
-		role: admins.includes(member.id) ? "admin" : "member",
-	}));
-
 	return (
 		<>
 			{members.length > 0 && workspace && (
 				<DataTable
 					columns={columns}
-					data={membersWithRoles}
+					data={members}
 					workspace={workspace}
 					team={team ? team : null}
 				/>

@@ -7,7 +7,9 @@ import type {
 	Task,
 	Team,
 	User,
+	UserWorkspace,
 	Workspace,
+	WorkspaceRole,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
 import z from "zod";
@@ -102,6 +104,18 @@ export const workspaceSchema = createSchema<Workspace>()(
 	}),
 );
 
+export const workspaceRoleEnum = createSchema<WorkspaceRole>()(
+	z.enum(["owner", "admin", "member"]),
+);
+
+export const userWorkspaceSchema = createSchema<UserWorkspace>()(
+	z.object({
+		userId: z.string(),
+		workspaceId: z.string(),
+		role: workspaceRoleEnum,
+	}),
+);
+
 export const commentSchema = createSchema<Comment>()(
 	z.object({
 		id: z.string(),
@@ -155,6 +169,12 @@ export const userSchema = createSchema<User>()(
 		subscribedTasks: z.array(z.string()),
 		githubUsername: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
+	}),
+);
+
+export const userWithRoleSchema = userSchema.merge(
+	z.object({
+		role: workspaceRoleEnum,
 	}),
 );
 

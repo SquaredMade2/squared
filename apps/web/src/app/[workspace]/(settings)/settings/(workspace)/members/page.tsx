@@ -3,37 +3,36 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { MembersPage } from "@/components/Settings/Members/MembersPage";
 import { columns } from "@/components/Settings/Members/columns";
-import type { MemberWithRole } from "@/components/Settings/Members/data-table";
 import { useUsers } from "@/hooks/useUsers";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { useEffect, useState } from "react";
+import { client } from "@/lib/client";
+import { useQuery } from "@tanstack/react-query";
 import MemberSettingsWrapper from "../../MemberSettingsWrapper";
 
 export default function WorkspaceMembersPage() {
 	const { workspace, loading: workspaceLoading } = useWorkspaces();
-	const { users, loading: userLoading } = useUsers();
-	const [pageUsers, setPageUsers] = useState(users);
+	const { loading: userLoading } = useUsers();
 
-	const membersWithRoles: MemberWithRole[] = workspace
-		? pageUsers.map((user) => ({
-				...user,
-				role: workspace.admins.includes(user.externalId) ? "admin" : "member",
-			}))
-		: [];
+	const { data: pageUsers = [] } = useQuery({
+		queryKey: ["workspaceUsers", workspace?.id],
+		queryFn: async () => {
+			if (!workspace) return [];
+			const users = await client.user.getWorkspaceUsersWithRoles
+				.$get({ workspaceId: workspace.id })
+				.then((res) => res.json());
+			return users;
+		},
+		enabled: !!workspace,
+	});
 
 	const enhancedColumns = columns.map((col) => ({
 		...col,
 		meta: {
 			page: "workspace",
 			pageId: workspace?.id,
-			membersWithRoles,
-			setPageUsers,
+			membersWithRoles: pageUsers,
 		},
 	}));
-
-	useEffect(() => {
-		setPageUsers(users);
-	}, [users]);
 
 	if (workspaceLoading || userLoading) {
 		return (
@@ -49,9 +48,8 @@ export default function WorkspaceMembersPage() {
 		<MemberSettingsWrapper page="workspace">
 			<MembersPage
 				columns={enhancedColumns}
-				members={membersWithRoles}
+				members={pageUsers}
 				workspace={workspace}
-				admins={workspace?.admins || []}
 			/>
 		</MemberSettingsWrapper>
 	);

@@ -1,4 +1,4 @@
-import type { PrismaClient, Team, Workspace } from "@squared/db";
+import type { PrismaClient, Team, Workspace, WorkspaceRole } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { UserRpc } from "./types";
@@ -68,6 +68,33 @@ export class UserService implements UserRpc {
 		});
 	}
 
+	async getUserWorkspaceRole({
+		userId,
+		workspaceId,
+	}: {
+		userId: string;
+		workspaceId: string;
+	}): Promise<{ role: WorkspaceRole }> {
+		this.logger.info(
+			"Fetching user role for userId: %s in workspaceId: %s",
+			userId,
+			workspaceId,
+		);
+		const userWorkspace = await this.db.userWorkspace.findUnique({
+			where: {
+				userId_workspaceId: {
+					userId: userId,
+					workspaceId: workspaceId,
+				},
+			},
+			select: {
+				role: true,
+			},
+		});
+		if (!userWorkspace) throw new Error("User-Workspace connection not found");
+		return { role: userWorkspace.role };
+	}
+
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
 		this.logger.info("Fetching workspace users with id: %s", workspaceId);
 		return await this.db.userWorkspace
@@ -78,6 +105,108 @@ export class UserService implements UserRpc {
 				},
 			})
 			.then((uw) => uw.map((u) => u.user));
+	}
+
+	async getWorkspaceUsersWithRoles({ workspaceId }: { workspaceId: string }) {
+		this.logger.info("Fetching workspace users with id: %s", workspaceId);
+		return await this.db.userWorkspace
+			.findMany({
+				where: { workspaceId },
+				select: {
+					user: true,
+					role: true,
+				},
+			})
+			.then((uw) =>
+				uw.map((u) => ({
+					...u.user,
+					role: u.role,
+				})),
+			);
+	}
+
+	async updateUsersRole({
+		callerId,
+		userId,
+		workspaceId,
+		newRole,
+	}: {
+		callerId: string;
+		userId: string;
+		workspaceId: string;
+		newRole: WorkspaceRole;
+	}) {
+		//Get both users current roles
+		const [callerRole, targetRole] = await Promise.all([
+			this.db.userWorkspace.findUnique({
+				where: {
+					userId_workspaceId: {
+						userId: callerId,
+						workspaceId,
+					},
+				},
+				select: { role: true },
+			}),
+			this.db.userWorkspace.findUnique({
+				where: {
+					userId_workspaceId: {
+						userId,
+						workspaceId,
+					},
+				},
+				select: { role: true },
+			}),
+		]);
+
+		if (!callerRole || !targetRole) {
+			throw new Error("One of the users was not found in workspace");
+		}
+
+		if (callerRole.role === "member") {
+			throw new Error("Members cannot modify roles");
+		}
+
+		if (
+			callerRole.role === "admin" &&
+			(targetRole.role === "owner" || targetRole.role === "admin")
+		) {
+			throw new Error("Admins cannot modify owner or other admin roles");
+		}
+
+		this.logger.info(
+			"User with id: %s is updating role for userId: %s to %s in workspace: %s",
+			callerId,
+			userId,
+			newRole,
+			workspaceId,
+		);
+
+		// Start a transaction to ensure both updates happen or neither happens
+		return await this.db.$transaction(async (tx) => {
+			//Making sure there can only ever be one owner
+			if (newRole === "owner") {
+				await tx.userWorkspace.updateMany({
+					where: {
+						workspaceId,
+						role: "owner",
+					},
+					data: {
+						role: "admin",
+					},
+				});
+			}
+			return await tx.userWorkspace.update({
+				where: {
+					userId_workspaceId: {
+						userId,
+						workspaceId,
+					},
+				},
+				data: {
+					role: newRole,
+				},
+			});
+		});
 	}
 
 	async getTeamUsers({ teamId }: { teamId: string }) {
