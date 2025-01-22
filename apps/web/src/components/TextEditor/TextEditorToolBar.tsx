@@ -1,4 +1,4 @@
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import { Bold, Heading, Italic } from "lucide-react";
 import LinkModal from "./Menus/LinkModal";
 import type { TextEditorToolBarProps } from "./interfaces";

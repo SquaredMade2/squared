@@ -1,11 +1,11 @@
-import { useUserStore } from "@/store/users";
-import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import {
 	Command,
 	CommandEmpty,
 	CommandGroup,
 	CommandList,
-} from "@squaredmade/ui/command";
+} from "@/components/ui/command";
+import { useUserStore } from "@/store/users";
+import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { CommandItem } from "cmdk";
 import { useEffect, useRef } from "react";
 import type { TextEditorMentionsProps } from "../interfaces";

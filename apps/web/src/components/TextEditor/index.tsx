@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import type { CreateNotificationRequest } from "@/gen/rpc/event";
 import { commentService, eventService } from "@/lib/services";
 import {
@@ -18,8 +20,6 @@ import {
 } from "@/utils/textEditorSelection";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
-import { Button } from "@squaredmade/ui/button";
-import { toast } from "@squaredmade/ui/hooks";
 import {
 	type KeyboardEvent,
 	useCallback,
@@ -71,6 +71,7 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const currentTask = useTaskStore((state) => state.currentTask);
 	const users = useUserStore((state) => state.users);
 	const currentUser = useUser().user;
+	const { toast } = useToast();
 	const currentWorkspace = useWorkspaceStore((state) => state.workspace);
 	// Holding current content in editor
 	const [editorContent, setEditorContent] = useState(initialValue);
