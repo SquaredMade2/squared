@@ -221,9 +221,9 @@ export default function SprintDashboardPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-4 space-y-8">
-			<h1 className="text-3xl font-bold ml-10">Sprint: {sprint.name}</h1>
-			<div className="grid gap-6 md:grid-cols-2">
+		<div className="space-y-8 mx-auto p-4 container">
+			<h1 className="ml-10 font-bold text-3xl">Sprint: {sprint.name}</h1>
+			<div className="gap-6 grid md:grid-cols-2">
 				<Card>
 					<CardHeader>
 						<CardTitle>Sprint Progress</CardTitle>
@@ -234,7 +234,7 @@ export default function SprintDashboardPage() {
 					</CardHeader>
 					<CardContent>
 						<Progress value={calculateProgress()} className="w-full" />
-						<p className="mt-2 text-sm text-muted-foreground">
+						<p className="mt-2 text-muted-foreground text-sm">
 							{Math.round(calculateProgress())}% Complete
 						</p>
 					</CardContent>
@@ -244,14 +244,14 @@ export default function SprintDashboardPage() {
 						<CardTitle>Sprint Summary</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<div className="grid grid-cols-2 gap-4">
+						<div className="gap-4 grid grid-cols-2">
 							<div>
-								<h3 className="text-lg font-semibold">Total Tasks</h3>
-								<p className="text-3xl font-bold">{sprintTasks.length}</p>
+								<h3 className="font-semibold text-lg">Total Tasks</h3>
+								<p className="font-bold text-3xl">{sprintTasks.length}</p>
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold">Completed Tasks</h3>
-								<p className="text-3xl font-bold">
+								<h3 className="font-semibold text-lg">Completed Tasks</h3>
+								<p className="font-bold text-3xl">
 									{
 										sprintTasks.filter(
 											(task) =>
@@ -261,8 +261,8 @@ export default function SprintDashboardPage() {
 								</p>
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold">In Progress</h3>
-								<p className="text-3xl font-bold">
+								<h3 className="font-semibold text-lg">In Progress</h3>
+								<p className="font-bold text-3xl">
 									{
 										sprintTasks.filter(
 											(task) =>
@@ -273,8 +273,8 @@ export default function SprintDashboardPage() {
 								</p>
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold">To Do</h3>
-								<p className="text-3xl font-bold">
+								<h3 className="font-semibold text-lg">To Do</h3>
+								<p className="font-bold text-3xl">
 									{sprintTasks.filter((task) => task.status === "todo").length}
 								</p>
 							</div>
@@ -282,7 +282,7 @@ export default function SprintDashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-			<div className="grid gap-6 md:grid-cols-2">
+			<div className="gap-6 grid md:grid-cols-2">
 				<Card>
 					<CardHeader>
 						<CardTitle>Burndown Chart</CardTitle>
@@ -387,7 +387,7 @@ export default function SprintDashboardPage() {
 				</Button>
 			</div>
 			<div className="flex justify-between items-center">
-				<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
+				<h2 className="font-semibold text-2xl">Sprint Tasks</h2>
 				<div className="space-x-4">
 					<AssignTasksDialog
 						activeSprint={sprint}
@@ -414,29 +414,31 @@ export default function SprintDashboardPage() {
 						Done
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="all">
-					<TaskList tasks={sprintTasks} />
-				</TabsContent>
-				<TabsContent value="todo">
-					<TaskList
-						tasks={sprintTasks.filter((task) => task.status === "todo")}
-					/>
-				</TabsContent>
-				<TabsContent value="inProgress">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) =>
-								task.status === "inProgress" || task.status === "inReview",
-						)}
-					/>
-				</TabsContent>
-				<TabsContent value="done">
-					<TaskList
-						tasks={sprintTasks.filter(
-							(task) => task.status === "done" || task.status === "canceled",
-						)}
-					/>
-				</TabsContent>
+				<div className="scrollbar-thumb-[hsl(var(--border))] scrollbar-thumb-rounded-lg h-[20rem] overflow-y-scroll scrollbar-thin scrollbar-track-transparent">
+					<TabsContent value="all">
+						<TaskList tasks={sprintTasks} />
+					</TabsContent>
+					<TabsContent value="todo">
+						<TaskList
+							tasks={sprintTasks.filter((task) => task.status === "todo")}
+						/>
+					</TabsContent>
+					<TabsContent value="inProgress">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) =>
+									task.status === "inProgress" || task.status === "inReview",
+							)}
+						/>
+					</TabsContent>
+					<TabsContent value="done">
+						<TaskList
+							tasks={sprintTasks.filter(
+								(task) => task.status === "done" || task.status === "canceled",
+							)}
+						/>
+					</TabsContent>
+				</div>
 			</Tabs>
 
 			<AlertDialog
@@ -472,20 +474,35 @@ export default function SprintDashboardPage() {
 
 function TaskList({ tasks }: { tasks: Task[] }) {
 	return (
-		<div className="space-y-2">
-			{tasks.map((task) => (
-				<Card key={task.id}>
-					<CardHeader>
-						<CardTitle>{task.title}</CardTitle>
-						<CardDescription>
-							Status: {formatStatus(task.status)}
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p>{task.description}</p>
-					</CardContent>
-				</Card>
-			))}
+		<div>
+			{tasks.length > 0 ? (
+				<div className="space-y-2">
+					{tasks.map((task) => (
+						<Card key={task.id}>
+							<CardHeader>
+								<CardTitle>{task.title}</CardTitle>
+								<CardDescription className="border-2 px-2 py-1 rounded-lg w-fit">
+									Status: {formatStatus(task.status)}
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<p>{task.description}</p>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+			) : (
+				<div className="space-y-2">
+					<Card className="text-center text-muted-foreground">
+						<CardHeader>
+							<CardTitle>No tasks</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<p>There are no tasks within this category for this sprint.</p>
+						</CardContent>
+					</Card>
+				</div>
+			)}
 		</div>
 	);
 }
