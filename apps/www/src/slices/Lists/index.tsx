@@ -1,5 +1,5 @@
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+import type { Content } from "@prismicio/client";
+import type { SliceComponentProps } from "@prismicio/react";
 
 /**
  * Props for `BulletPoints`.
@@ -11,12 +11,13 @@ export type BulletPointsProps = SliceComponentProps<Content.BulletPointsSlice>;
  */
 const BulletPoints = ({ slice }: BulletPointsProps): JSX.Element => {
   return (
-    <section
-      data-slice-type={slice.slice_type}
-      data-slice-variation={slice.variation}
-    >
-      Placeholder component for bullet_points (variation: {slice.variation})
-      Slices
+    <section>
+       {slice.primary.list.map((item, index )=> (
+        //  <div key={index}>
+        //   {item.text[0].text}
+        //  </div>
+        <div key={index}>test</div>
+       ))}
     </section>
   );
 };

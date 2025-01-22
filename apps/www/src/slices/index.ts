@@ -4,5 +4,6 @@ import dynamic from "next/dynamic";
 
 export const components = {
   bullet_points: dynamic(() => import("./Lists")),
+  header: dynamic(() => import("./Header")),
   hero: dynamic(() => import("./Hero")),
 };

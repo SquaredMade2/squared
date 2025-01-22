@@ -9,13 +9,9 @@ import { components } from "@/src/slices";
 
 export default async function Page() {
 	const client = createClient();
-	const page = await client.getAllByIDs(["documentation", "home"]);
+	const signup = await client.getByUID("documentation", "quick-start")
 
-	console.log("here")
-	console.log("here is the page: ", page)
-
-	// return <SliceZone slices={page[0].data.slices} components={components} />;
-	return <></>
+	return <SliceZone slices={signup.data.slices} components={components}/>
 }
 
 // export async function generateMetadata(): Promise<Metadata> {
