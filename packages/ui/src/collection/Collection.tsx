@@ -29,10 +29,10 @@ function createCollection<
 		createContextScope(PROVIDER_NAME);
 
 	type ContextValue = {
-		collectionRef: React.RefObject<CollectionElement>;
+		collectionRef: React.RefObject<CollectionElement | null>;
 		itemMap: Map<
-			React.RefObject<ItemElement>,
-			{ ref: React.RefObject<ItemElement> } & ItemData
+			React.RefObject<ItemElement | null>,
+			{ ref: React.RefObject<ItemElement | null> } & ItemData
 		>;
 	};
 

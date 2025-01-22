@@ -53,6 +53,7 @@ const Checkbox = React.forwardRef<CheckboxElement, CheckboxProps>(
 			disabled,
 			value = "on",
 			onCheckedChange,
+			form,
 			...checkboxProps
 		} = props;
 		const [button, setButton] = React.useState<HTMLButtonElement | null>(null);
@@ -61,7 +62,7 @@ const Checkbox = React.forwardRef<CheckboxElement, CheckboxProps>(
 		);
 		const hasConsumerStoppedPropagationRef = React.useRef(false);
 		// We set this to true by default so that events bubble to forms without JS (SSR)
-		const isFormControl = button ? Boolean(button.closest("form")) : true;
+		const isFormControl = button ? form || !!button.closest("form") : true;
 		const [checked = false, setChecked] = useControllableState({
 			prop: checkedProp,
 			defaultProp: defaultChecked,
@@ -122,10 +123,14 @@ const Checkbox = React.forwardRef<CheckboxElement, CheckboxProps>(
 						checked={checked}
 						required={required}
 						disabled={disabled}
+						form={form}
 						// We transform because the input is absolutely positioned but we have
 						// rendered it **after** the button. This pulls it back to sit on top
 						// of the button.
 						style={{ transform: "translateX(-100%)" }}
+						defaultChecked={
+							isIndeterminate(defaultChecked) ? false : defaultChecked
+						}
 					/>
 				)}
 			</CheckboxProvider>
@@ -186,7 +191,13 @@ interface BubbleInputProps extends Omit<InputProps, "checked"> {
 }
 
 const BubbleInput = (props: BubbleInputProps) => {
-	const { control, checked, bubbles = true, ...inputProps } = props;
+	const {
+		control,
+		checked,
+		bubbles = true,
+		defaultChecked,
+		...inputProps
+	} = props;
 	const ref = React.useRef<HTMLInputElement>(null);
 	const prevChecked = usePrevious(checked);
 	const controlSize = useSize(control);
@@ -209,11 +220,14 @@ const BubbleInput = (props: BubbleInputProps) => {
 		}
 	}, [prevChecked, checked, bubbles]);
 
+	const defaultCheckedRef = React.useRef(
+		isIndeterminate(checked) ? false : checked,
+	);
 	return (
 		<input
 			type="checkbox"
 			aria-hidden
-			defaultChecked={isIndeterminate(checked) ? false : checked}
+			defaultChecked={defaultChecked ?? defaultCheckedRef.current}
 			{...inputProps}
 			tabIndex={-1}
 			ref={ref}

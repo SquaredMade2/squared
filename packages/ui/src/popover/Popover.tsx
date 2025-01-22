@@ -33,7 +33,7 @@ const [createPopoverContext, createPopoverScope] = createContextScope(
 const usePopperScope = createPopperScope();
 
 type PopoverContextValue = {
-	triggerRef: React.RefObject<HTMLButtonElement>;
+	triggerRef: React.RefObject<HTMLButtonElement | null>;
 	contentId: string;
 	open: boolean;
 	onOpenChange(open: boolean): void;

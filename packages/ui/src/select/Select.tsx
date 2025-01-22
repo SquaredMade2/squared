@@ -95,6 +95,7 @@ interface SelectProps {
 	autoComplete?: string;
 	disabled?: boolean;
 	required?: boolean;
+	form?: string;
 }
 
 const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
@@ -112,6 +113,7 @@ const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
 		autoComplete,
 		disabled,
 		required,
+		form,
 	} = props;
 	const popperScope = usePopperScope(__scopeSelect);
 	const [trigger, setTrigger] = React.useState<SelectTriggerElement | null>(
@@ -138,7 +140,7 @@ const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
 	} | null>(null);
 
 	// We set this to true by default so that events bubble to forms without JS (SSR)
-	const isFormControl = trigger ? Boolean(trigger.closest("form")) : true;
+	const isFormControl = trigger ? form || !!trigger.closest("form") : true;
 	const [nativeOptionsSet, setNativeOptionsSet] = React.useState(
 		new Set<NativeOption>(),
 	);
@@ -202,6 +204,7 @@ const Select: React.FC<SelectProps> = (props: ScopedProps<SelectProps>) => {
 						// enable form autofill
 						onChange={(event) => setValue(event.target.value)}
 						disabled={disabled}
+						form={form}
 					>
 						{value === undefined ? <option value="" /> : null}
 						{Array.from(nativeOptionsSet)}
@@ -920,7 +923,12 @@ const SelectItemAlignedPosition = React.forwardRef<
 				const rightEdge = window.innerWidth - CONTENT_MARGIN;
 				const clampedLeft = clamp(left, [
 					CONTENT_MARGIN,
-					rightEdge - contentWidth,
+					// Prevents the content from going off the starting edge of the
+					// viewport. It may still go off the ending edge, but this can be
+					// controlled by the user since they may want to manage overflow in a
+					// specific way.
+					// https://github.com/radix-ui/primitives/issues/2049
+					Math.max(CONTENT_MARGIN, rightEdge - contentWidth),
 				]);
 
 				contentWrapper.style.minWidth = `${minContentWidth}px`;
@@ -934,7 +942,7 @@ const SelectItemAlignedPosition = React.forwardRef<
 				const leftEdge = window.innerWidth - CONTENT_MARGIN;
 				const clampedRight = clamp(right, [
 					CONTENT_MARGIN,
-					leftEdge - contentWidth,
+					Math.max(CONTENT_MARGIN, leftEdge - contentWidth),
 				]);
 
 				contentWrapper.style.minWidth = `${minContentWidth}px`;
@@ -1231,7 +1239,11 @@ const SelectViewport = React.forwardRef<
 						// (independent of the scrollUpButton).
 						position: "relative",
 						flex: 1,
-						overflow: "auto",
+						// Viewport should only be scrollable in the vertical direction.
+						// This won't work in vertical writing modes, so we'll need to
+						// revisit this if/when that is supported
+						// https://developer.chrome.com/blog/vertical-form-controls
+						overflow: "hidden auto",
 						...viewportProps.style,
 					}}
 					onScroll={composeEventHandlers(viewportProps.onScroll, (event) => {

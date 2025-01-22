@@ -163,7 +163,7 @@ const ScrollAreaViewport = React.forwardRef<
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{
 					__html:
-						"[data-squared-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-squared-scroll-area-viewport]::-webkit-scrollbar{display:none}",
+						"[data-loke-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-loke-scroll-area-viewport]::-webkit-scrollbar{display:none}",
 				}}
 				nonce={nonce}
 			/>
@@ -748,7 +748,7 @@ const ScrollAreaScrollbarImpl = React.forwardRef<
 	const composeRefs = useComposedRefs(forwardedRef, (node) =>
 		setScrollbar(node),
 	);
-	const rectRef = React.useRef<ClientRect | null>(null);
+	const rectRef = React.useRef<DOMRect | null>(null);
 	const prevWebkitUserSelectRef = React.useRef<string>("");
 	const maxScrollPos = sizes.content - sizes.viewport;
 	const handleWheelScroll = useCallbackRef(onWheelScroll);
@@ -884,7 +884,7 @@ const ScrollAreaThumbImpl = React.forwardRef<
 	const composedRef = useComposedRefs(forwardedRef, (node) =>
 		scrollbarContext.onThumbChange(node),
 	);
-	const removeUnlinkedScrollListenerRef = React.useRef<() => void>();
+	const removeUnlinkedScrollListenerRef = React.useRef<() => void>(undefined);
 	const debounceScrollEnd = useDebounceCallback(() => {
 		if (removeUnlinkedScrollListenerRef.current) {
 			removeUnlinkedScrollListenerRef.current();

@@ -3,7 +3,8 @@ import * as React from "react";
 import { useLayoutEffect } from "../use-layout-effect";
 
 // We `toString()` to prevent bundlers from trying to `import { useId } from 'react';`
-const useReactId = (React as any)["useId".toString()] || (() => undefined);
+const useReactId =
+	(React as any)[" useId ".trim().toString()] || (() => undefined);
 let count = 0;
 
 function useId(deterministicId?: string): string {
