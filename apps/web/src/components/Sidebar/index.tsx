@@ -109,7 +109,7 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 					<IconButton
 						icon={Settings}
 						label="Settings"
-						onClick={() => navigateTo(`settings/${workspace?.url}`)}
+						onClick={() => navigateTo(`${workspace?.url}/settings`)}
 					/>
 					<IconButton
 						icon={Inbox}
@@ -126,7 +126,11 @@ function SidebarContent({ workspace }: { workspace: Workspace | null }) {
 			</SidebarHeader>
 			{state === "expanded" && (
 				<SidebarContainer className="px-2">
-					<TeamAccordion teams={teams} currentTeam={team} />
+					<TeamAccordion
+						teams={teams}
+						currentTeam={team}
+						workspaceUrl={workspace?.url}
+					/>
 				</SidebarContainer>
 			)}
 			<SidebarFooter className="space-y-2 px-2 mt-auto">
@@ -148,7 +152,7 @@ export function SidebarNav() {
 
 	return (
 		<TooltipProvider delayDuration={0}>
-			<SidebarProvider className="relative">
+			<SidebarProvider className={"relative"}>
 				<Sidebar
 					collapsible="icon"
 					className="w-64 group/sidebar transition-all duration-300 ease-in-out data-[state=closed]:w-16"
@@ -206,7 +210,7 @@ function IconButton({
 					aria-label={label}
 					onClick={onClick}
 					className={`relative w-full justify-start ${
-						state === "collapsed" ? "px-2" : ""
+						state === "collapsed" ? "px-3" : ""
 					}`}
 				>
 					<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
