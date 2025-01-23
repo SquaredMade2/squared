@@ -1,5 +1,5 @@
 ;
-import * as Dialog from "@radix-ui/react-dialog";
+import * as Dialog from "../dialog";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
 import * as HoverCard from "../hover-card";
