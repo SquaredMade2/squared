@@ -30,7 +30,15 @@ const TextEditorMentions = ({
 		: { x: 10, y: 10 };
 
 	const handleMentionClick = (user: string) => {
+		debounceRef.current = true;
 		injectMentionConfirm(editor, user);
+		setToggleMentions(false);
+	};
+
+	const handleUsersRef = (e: HTMLDivElement, index: number) => {
+		if (e) {
+			usersRef.current[index] = e;
+		}
 	};
 
 	// Effects
@@ -45,7 +53,7 @@ const TextEditorMentions = ({
 				setCurrentEnterUser(firstName);
 			}
 		}
-	});
+	}, [mentionsFilter]);
 
 	return (
 		<Command
@@ -69,19 +77,11 @@ const TextEditorMentions = ({
 								<CommandItem
 									key={user.id}
 									className="m-2"
-									ref={(e) => {
-										if (e) {
-											usersRef.current[index] = e;
-										}
-									}}
+									ref={(e) => handleUsersRef(e, index)}
 								>
 									<button
 										type="submit"
-										onClick={() => {
-											debounceRef.current = true;
-											handleMentionClick(user.name);
-											setToggleMentions(false);
-										}}
+										onClick={() => handleMentionClick(user.name)}
 									>
 										{user.name}
 									</button>
