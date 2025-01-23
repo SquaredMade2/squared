@@ -3,8 +3,6 @@ import type { AnimationProps, MotionProps } from "framer-motion";
 import type React from "react";
 import Balancer from "react-wrap-balancer";
 
-import type { JSX } from "react";
-
 export const Subheading = ({
 	className,
 	as: Tag = "h2",

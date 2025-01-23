@@ -13,16 +13,13 @@ export const metadata: Metadata = {
 	},
 };
 
-export default async function Layout(
-	props: Readonly<{
-		children: React.ReactNode;
-		params: { slug?: string[] };
-	}>,
-) {
-	const params = await props.params;
-
-	const { children } = props;
-
+export default function Layout({
+	children,
+	params,
+}: Readonly<{
+	children: React.ReactNode;
+	params: { slug?: string[] };
+}>) {
 	const currentSlug = params.slug?.join("/") || "index";
 
 	return (
