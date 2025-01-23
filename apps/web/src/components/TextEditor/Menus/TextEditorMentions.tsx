@@ -35,7 +35,7 @@ const TextEditorMentions = ({
 		setToggleMentions(false);
 	};
 
-	const handleUsersRef = (e: HTMLDivElement, index: number) => {
+	const handleUsersRef = (e: HTMLDivElement | null, index: number) => {
 		if (e) {
 			usersRef.current[index] = e;
 		}
