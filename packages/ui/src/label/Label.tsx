@@ -1,4 +1,8 @@
-import * as React from "react";
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	forwardRef,
+} from "react";
 import { Primitive } from "../react-primitive";
 
 /* -------------------------------------------------------------------------------------------------
@@ -7,33 +11,28 @@ import { Primitive } from "../react-primitive";
 
 const NAME = "Label";
 
-type LabelElement = React.ElementRef<typeof Primitive.label>;
-type PrimitiveLabelProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.label
->;
+type LabelElement = ElementRef<typeof Primitive.label>;
+type PrimitiveLabelProps = ComponentPropsWithoutRef<typeof Primitive.label>;
 interface LabelProps extends PrimitiveLabelProps {}
 
-const Label = React.forwardRef<LabelElement, LabelProps>(
-	(props, forwardedRef) => {
-		return (
-			// biome-ignore lint/a11y/noLabelWithoutControl: <explanation>
-			<Primitive.label
-				{...props}
-				ref={forwardedRef}
-				onMouseDown={(event) => {
-					// only prevent text selection if clicking inside the label itself
-					const target = event.target as HTMLElement;
-					if (target.closest("button, input, select, textarea")) return;
+const Label = forwardRef<LabelElement, LabelProps>((props, forwardedRef) => {
+	return (
+		// biome-ignore lint/a11y/noLabelWithoutControl: <explanation>
+		<Primitive.label
+			{...props}
+			ref={forwardedRef}
+			onMouseDown={(event) => {
+				// only prevent text selection if clicking inside the label itself
+				const target = event.target as HTMLElement;
+				if (target.closest("button, input, select, textarea")) return;
 
-					props.onMouseDown?.(event);
-					// prevent text selection when double clicking label
-					if (!event.defaultPrevented && event.detail > 1)
-						event.preventDefault();
-				}}
-			/>
-		);
-	},
-);
+				props.onMouseDown?.(event);
+				// prevent text selection when double clicking label
+				if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
+			}}
+		/>
+	);
+});
 
 Label.displayName = NAME;
 

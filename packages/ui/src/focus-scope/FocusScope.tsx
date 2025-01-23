@@ -1,5 +1,13 @@
-import * as React from "react";
-
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type KeyboardEvent,
+	forwardRef,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useComposedRefs } from "../compose-refs";
 import { Primitive } from "../react-primitive";
 import { useCallbackRef } from "../use-callback-ref";
@@ -16,8 +24,8 @@ type FocusableTarget = HTMLElement | { focus(): void };
 
 const FOCUS_SCOPE_NAME = "FocusScope";
 
-type FocusScopeElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type FocusScopeElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface FocusScopeProps extends PrimitiveDivProps {
 	/**
 	 * When `true`, tabbing from last item will focus first tabbable
@@ -46,7 +54,7 @@ interface FocusScopeProps extends PrimitiveDivProps {
 	onUnmountAutoFocus?: (event: Event) => void;
 }
 
-const FocusScope = React.forwardRef<FocusScopeElement, FocusScopeProps>(
+const FocusScope = forwardRef<FocusScopeElement, FocusScopeProps>(
 	(props, forwardedRef) => {
 		const {
 			loop = false,
@@ -55,15 +63,15 @@ const FocusScope = React.forwardRef<FocusScopeElement, FocusScopeProps>(
 			onUnmountAutoFocus: onUnmountAutoFocusProp,
 			...scopeProps
 		} = props;
-		const [container, setContainer] = React.useState<HTMLElement | null>(null);
+		const [container, setContainer] = useState<HTMLElement | null>(null);
 		const onMountAutoFocus = useCallbackRef(onMountAutoFocusProp);
 		const onUnmountAutoFocus = useCallbackRef(onUnmountAutoFocusProp);
-		const lastFocusedElementRef = React.useRef<HTMLElement | null>(null);
+		const lastFocusedElementRef = useRef<HTMLElement | null>(null);
 		const composedRefs = useComposedRefs(forwardedRef, (node) =>
 			setContainer(node),
 		);
 
-		const focusScope = React.useRef({
+		const focusScope = useRef({
 			paused: false,
 			pause() {
 				this.paused = true;
@@ -74,7 +82,7 @@ const FocusScope = React.forwardRef<FocusScopeElement, FocusScopeProps>(
 		}).current;
 
 		// Takes care of trapping focus if focus is moved outside programmatically for example
-		React.useEffect(() => {
+		useEffect(() => {
 			if (trapped) {
 				function handleFocusIn(event: FocusEvent) {
 					if (focusScope.paused || !container) return;
@@ -137,7 +145,7 @@ const FocusScope = React.forwardRef<FocusScopeElement, FocusScopeProps>(
 			}
 		}, [trapped, container, focusScope.paused]);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			if (container) {
 				focusScopesStack.add(focusScope);
 				const previouslyFocusedElement =
@@ -194,8 +202,8 @@ const FocusScope = React.forwardRef<FocusScopeElement, FocusScopeProps>(
 		}, [container, onMountAutoFocus, onUnmountAutoFocus, focusScope]);
 
 		// Takes care of looping focus (when tabbing whilst at the edges)
-		const handleKeyDown = React.useCallback(
-			(event: React.KeyboardEvent) => {
+		const handleKeyDown = useCallback(
+			(event: KeyboardEvent) => {
 				if (!loop && !trapped) return;
 				if (focusScope.paused) return;
 

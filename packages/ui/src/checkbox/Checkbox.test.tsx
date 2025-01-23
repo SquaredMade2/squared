@@ -1,7 +1,7 @@
 import type { RenderResult } from "@testing-library/react";
 import { fireEvent, render } from "@testing-library/react";
 import { axe } from "jest-axe";
-import * as React from "react";
+import { type ComponentProps, useEffect, useRef } from "react";
 import { Checkbox, CheckboxIndicator } from "../checkbox";
 
 const CHECKBOX_ROLE = "checkbox";
@@ -124,9 +124,9 @@ describe("given a controlled `checked` Checkbox", () => {
 	});
 });
 
-function CheckboxTest(props: React.ComponentProps<typeof Checkbox>) {
-	const containerRef = React.useRef<HTMLDivElement>(null);
-	React.useEffect(() => {
+function CheckboxTest(props: ComponentProps<typeof Checkbox>) {
+	const containerRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
 		// We use the `hidden` attribute to hide the nested input from both sighted users and the
 		// accessibility tree. This is perfectly valid so long as users don't override the display of
 		// `hidden` in CSS. Unfortunately axe doesn't recognize this, so we get a violation because the

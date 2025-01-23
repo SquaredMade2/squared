@@ -1,8 +1,7 @@
-import type React from "react";
-
 import type { RenderResult } from "@testing-library/react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { axe } from "jest-axe";
+import type { ComponentProps } from "react";
 import * as DialogPrimitive from "../dialog";
 
 const OPEN_TEXT = "Open";
@@ -10,7 +9,7 @@ const CLOSE_TEXT = "Close";
 const TITLE_TEXT = "Title";
 
 const NoLabelDialogTest = (
-	props: React.ComponentProps<typeof DialogPrimitive.Root>,
+	props: ComponentProps<typeof DialogPrimitive.Root>,
 ) => (
 	<DialogPrimitive.Root {...props}>
 		<DialogPrimitive.Trigger>{OPEN_TEXT}</DialogPrimitive.Trigger>
@@ -22,7 +21,7 @@ const NoLabelDialogTest = (
 );
 
 const UndefinedDescribedByDialog = (
-	props: React.ComponentProps<typeof DialogPrimitive.Root>,
+	props: ComponentProps<typeof DialogPrimitive.Root>,
 ) => (
 	<DialogPrimitive.Root {...props}>
 		<DialogPrimitive.Trigger>{OPEN_TEXT}</DialogPrimitive.Trigger>
@@ -34,9 +33,7 @@ const UndefinedDescribedByDialog = (
 	</DialogPrimitive.Root>
 );
 
-const DialogTest = (
-	props: React.ComponentProps<typeof DialogPrimitive.Root>,
-) => (
+const DialogTest = (props: ComponentProps<typeof DialogPrimitive.Root>) => (
 	<DialogPrimitive.Root {...props}>
 		<DialogPrimitive.Trigger>{OPEN_TEXT}</DialogPrimitive.Trigger>
 		<DialogPrimitive.Overlay />

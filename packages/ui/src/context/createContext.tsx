@@ -1,3 +1,4 @@
+// Have to import entire library due to naming conflict with createContext from react
 import * as React from "react";
 
 function createContext<ContextValueType extends object | null>(
@@ -113,12 +114,9 @@ function createContextScope(
 			const contexts = scope?.[scopeName] || scopeContexts;
 			return React.useMemo(
 				() => ({
-					[`__scope${scopeName}`]: {
-						...scope,
-						[scopeName]: contexts,
-					},
+					[`__scope${scopeName}`]: { ...scope, [scopeName]: contexts },
 				}),
-				[scope, contexts, scopeName],
+				[scope, contexts],
 			);
 		};
 	};
@@ -152,7 +150,7 @@ function composeContextScopes(...scopes: CreateScope[]) {
 					// eslint-disable-next-line react-hooks/rules-of-hooks
 					const scopeProps = useScope(overrideScopes);
 					const currentScope = scopeProps[`__scope${scopeName}`];
-					return Object.assign(nextScopes, currentScope);
+					return { ...nextScopes, ...currentScope };
 				},
 				{},
 			);

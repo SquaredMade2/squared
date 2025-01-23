@@ -1,8 +1,8 @@
 import { globSync } from "glob";
 import createSquaredIcon from "./createSquaredIcon";
 import handleComponentName from "./handleComponentName";
-const fs = require("fs-extra");
-const path = require("node:path");
+import fs from "fs-extra";
+import path from "node:path";
 
 const inputDirectory = "./svgs";
 const outputDirectory = "./components";

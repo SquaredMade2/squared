@@ -1,8 +1,6 @@
 {
   "include": [
-    "packages",
-    "types",
-    "scripts"
+    "src"
   ],
   "compilerOptions": {
     "allowJs": false,

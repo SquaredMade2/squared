@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import type { RenderResult } from "@testing-library/react";
 import { fireEvent, render } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
+import type { ComponentProps } from "react";
 import * as AccordionPrimitive from "../accordion";
 expect.extend(toHaveNoViolations);
 
@@ -442,9 +443,7 @@ describe("given a multiple Accordion", () => {
 	});
 });
 
-function AccordionTest(
-	props: React.ComponentProps<typeof AccordionPrimitive.Root>,
-) {
+function AccordionTest(props: ComponentProps<typeof AccordionPrimitive.Root>) {
 	return (
 		<AccordionPrimitive.Root data-testid="container" {...props}>
 			{ITEMS.map((val) => (

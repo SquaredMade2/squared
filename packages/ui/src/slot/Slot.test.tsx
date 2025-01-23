@@ -1,6 +1,11 @@
-import React from "react";
-
 import { fireEvent, render, screen } from "@testing-library/react";
+import {
+	type ComponentProps,
+	type ElementRef,
+	type ElementType,
+	type ReactNode,
+	forwardRef,
+} from "react";
 import { Slot, Slottable } from "../slot";
 
 describe("given a slotted Trigger", () => {
@@ -141,20 +146,20 @@ describe("given a Button with Slottable", () => {
 	});
 });
 
-type TriggerProps = React.ComponentProps<"button"> & {
-	as: React.ElementType;
+type TriggerProps = ComponentProps<"button"> & {
+	as: ElementType;
 };
 
 const Trigger = ({ as: Comp = "button", ...props }: TriggerProps) => (
 	<Comp {...props} />
 );
 
-const Button = React.forwardRef<
-	React.ElementRef<"button">,
-	React.ComponentProps<"button"> & {
+const Button = forwardRef<
+	ElementRef<"button">,
+	ComponentProps<"button"> & {
 		asChild?: boolean;
-		iconLeft?: React.ReactNode;
-		iconRight?: React.ReactNode;
+		iconLeft?: ReactNode;
+		iconRight?: ReactNode;
 	}
 >(
 	(

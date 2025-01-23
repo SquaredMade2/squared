@@ -1,30 +1,36 @@
-import * as React from "react";
+import {
+	Children,
+	type FC,
+	type ReactElement,
+	type Ref,
+	cloneElement,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useComposedRefs } from "../compose-refs";
 import { useLayoutEffect } from "../use-layout-effect";
 import { useStateMachine } from "./useStateMachine";
 
 interface PresenceProps {
-	children:
-		| React.ReactElement
-		| ((props: { present: boolean }) => React.ReactElement);
+	children: ReactElement | ((props: { present: boolean }) => ReactElement);
 	present: boolean;
 }
 
-const Presence: React.FC<PresenceProps> = (props) => {
+const Presence: FC<PresenceProps> = (props) => {
 	const { present, children } = props;
 	const presence = usePresence(present);
 
 	const child = (
 		typeof children === "function"
 			? children({ present: presence.isPresent })
-			: React.Children.only(children)
-	) as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>;
+			: Children.only(children)
+	) as ReactElement<{ ref?: Ref<HTMLElement> }>;
 
 	const ref = useComposedRefs(presence.ref, getElementRef(child));
 	const forceMount = typeof children === "function";
-	return forceMount || presence.isPresent
-		? React.cloneElement(child, { ref })
-		: null;
+	return forceMount || presence.isPresent ? cloneElement(child, { ref }) : null;
 };
 
 Presence.displayName = "Presence";
@@ -34,10 +40,10 @@ Presence.displayName = "Presence";
  * -----------------------------------------------------------------------------------------------*/
 
 function usePresence(present: boolean) {
-	const [node, setNode] = React.useState<HTMLElement>();
-	const stylesRef = React.useRef<CSSStyleDeclaration>({} as any);
-	const prevPresentRef = React.useRef(present);
-	const prevAnimationNameRef = React.useRef<string>("none");
+	const [node, setNode] = useState<HTMLElement>();
+	const stylesRef = useRef<CSSStyleDeclaration>({} as any);
+	const prevPresentRef = useRef(present);
+	const prevAnimationNameRef = useRef<string>("none");
 	const initialState = present ? "mounted" : "unmounted";
 	const [state, send] = useStateMachine(initialState, {
 		mounted: {
@@ -53,7 +59,7 @@ function usePresence(present: boolean) {
 		},
 	});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const currentAnimationName = getAnimationName(stylesRef.current);
 		prevAnimationNameRef.current =
 			state === "mounted" ? currentAnimationName : "none";
@@ -161,7 +167,7 @@ function usePresence(present: boolean) {
 
 	return {
 		isPresent: ["mounted", "unmountSuspended"].includes(state),
-		ref: React.useCallback((node: HTMLElement) => {
+		ref: useCallback((node: HTMLElement) => {
 			if (node) stylesRef.current = getComputedStyle(node);
 			setNode(node);
 		}, []),
@@ -179,9 +185,7 @@ function getAnimationName(styles?: CSSStyleDeclaration) {
 // https://github.com/facebook/react/pull/28348
 //
 // Access the ref using the method that doesn't yield a warning.
-function getElementRef(
-	element: React.ReactElement<{ ref?: React.Ref<unknown> }>,
-) {
+function getElementRef(element: ReactElement<{ ref?: Ref<unknown> }>) {
 	// React <=18 in DEV
 	let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
 	let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;

@@ -1,5 +1,4 @@
 import React from "react";
-
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
 import { Slot } from "../slot";
@@ -15,11 +14,10 @@ interface CollectionProps extends SlotProps {
 // This is because we encountered issues with generic types that cannot be statically analysed
 // due to creating them dynamically via createCollection.
 
-function createCollection<
-	ItemElement extends HTMLElement,
-	// biome-ignore lint/complexity/noBannedTypes: <explanation>
-	ItemData = {},
->(name: string) {
+// biome-ignore lint/complexity/noBannedTypes: ItemData could be anything
+function createCollection<ItemElement extends HTMLElement, ItemData = {}>(
+	name: string,
+) {
 	/* -----------------------------------------------------------------------------------------------
 	 * CollectionProvider
 	 * ---------------------------------------------------------------------------------------------*/
@@ -101,10 +99,7 @@ function createCollection<
 		const context = useCollectionContext(ITEM_SLOT_NAME, scope);
 
 		React.useEffect(() => {
-			context.itemMap.set(ref, {
-				ref,
-				...(itemData as unknown as ItemData),
-			});
+			context.itemMap.set(ref, { ref, ...(itemData as unknown as ItemData) });
 			return () => void context.itemMap.delete(ref);
 		});
 

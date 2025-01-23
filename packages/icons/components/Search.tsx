@@ -1,15 +1,9 @@
-export default function createSquaredIcon(
-	name: string,
-	svgContent: { match: (arg0: RegExp) => any[] },
-) {
-	const svgElement = svgContent?.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)[1];
 
-	return `
     // biome-ignore lint/correctness/noUnusedImports: React is needed to be included 
     import * as React from 'react';
     import type {FC} from 'react';
 
-    interface ${name}Props {
+    interface SearchProps {
       className?: string;
       size?: number;
       color?: string;
@@ -17,7 +11,7 @@ export default function createSquaredIcon(
       absoluteStrokeWidth?: boolean;
     }
     
-  export const ${name}: FC<${name}Props> = ({
+  export const Search: FC<SearchProps> = ({
       className = "",
       size = 24,
       color = 'currentColor',
@@ -40,10 +34,12 @@ export default function createSquaredIcon(
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-        <title>${name}</title>
-          ${svgElement}
+        <title>Search</title>
+          
+  <circle cx="11" cy="11" r="8" />
+  <path d="m21 21-4.3-4.3" />
+
         </svg>
       );
     };
-    `;
-}
+    

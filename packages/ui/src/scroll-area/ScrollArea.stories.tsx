@@ -1,14 +1,15 @@
-import * as React from "react";
+;
 
 import { DirectionProvider } from "../direction";
 import * as ScrollAreaPrimitive from "../scroll-area";
 
 import { css, keyframes } from "../../stitches.config";
+import { useEffect, useState } from "react";
 
 export default { title: "Components/ScrollArea" };
 
 export const Basic = () => {
-	const [props, setProps] = React.useState({} as any);
+	const [props, setProps] = useState({} as any);
 	return (
 		<>
 			<div
@@ -87,8 +88,8 @@ export const Resizable = () => (
 );
 
 export const ContentChange = () => {
-	const [verticalCount, setVerticalCount] = React.useState(1);
-	const [horizontalCount, setHorizontalCount] = React.useState(1);
+	const [verticalCount, setVerticalCount] = useState(1);
+	const [horizontalCount, setHorizontalCount] = useState(1);
 	return (
 		<>
 			<button onClick={() => setVerticalCount((count) => count + 1)}>
@@ -323,9 +324,9 @@ Chromatic.parameters = { chromatic: { disable: false } };
 const DYNAMIC_CONTENT_DELAY = 2000;
 
 export const ChromaticDynamicContentBeforeLoaded = () => {
-	const [showContent, setShowContent] = React.useState(false);
+	const [showContent, setShowContent] = useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setTimeout(() => {
 			setShowContent(true);
 		}, DYNAMIC_CONTENT_DELAY);

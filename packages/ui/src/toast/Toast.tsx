@@ -1,8 +1,23 @@
-import * as React from "react";
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type FC,
+	type MutableRefObject,
+	type PointerEvent,
+	type ReactNode,
+	type SyntheticEvent,
+	forwardRef,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import * as ReactDOM from "react-dom";
 import { createCollection } from "../collection";
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
+import type { Scope } from "../context";
 import * as DismissableLayer from "../dismissable-layer";
 import { Portal } from "../portal";
 import { Presence } from "../presence";
@@ -12,8 +27,6 @@ import { useCallbackRef } from "../use-callback-ref";
 import { useControllableState } from "../use-controllable-state";
 import { useLayoutEffect } from "../use-layout-effect";
 import { VisuallyHidden } from "../visually-hidden";
-
-import type { Scope } from "../context";
 
 /* -------------------------------------------------------------------------------------------------
  * ToastProvider
@@ -35,8 +48,8 @@ type ToastProviderContextValue = {
 	onViewportChange(viewport: ToastViewportElement): void;
 	onToastAdd(): void;
 	onToastRemove(): void;
-	isFocusedToastEscapeKeyDownRef: React.MutableRefObject<boolean>;
-	isClosePausedRef: React.MutableRefObject<boolean>;
+	isFocusedToastEscapeKeyDownRef: MutableRefObject<boolean>;
+	isClosePausedRef: MutableRefObject<boolean>;
 };
 
 type ScopedProps<P> = P & { __scopeToast?: Scope };
@@ -47,7 +60,7 @@ const [ToastProviderProvider, useToastProviderContext] =
 	createToastContext<ToastProviderContextValue>(PROVIDER_NAME);
 
 interface ToastProviderProps {
-	children?: React.ReactNode;
+	children?: ReactNode;
 	/**
 	 * An author-localized label for each toast. Used to help screen reader users
 	 * associate the interruption with a toast.
@@ -71,7 +84,7 @@ interface ToastProviderProps {
 	swipeThreshold?: number;
 }
 
-const ToastProvider: React.FC<ToastProviderProps> = (
+const ToastProvider: FC<ToastProviderProps> = (
 	props: ScopedProps<ToastProviderProps>,
 ) => {
 	const {
@@ -82,12 +95,10 @@ const ToastProvider: React.FC<ToastProviderProps> = (
 		swipeThreshold = 50,
 		children,
 	} = props;
-	const [viewport, setViewport] = React.useState<ToastViewportElement | null>(
-		null,
-	);
-	const [toastCount, setToastCount] = React.useState(0);
-	const isFocusedToastEscapeKeyDownRef = React.useRef(false);
-	const isClosePausedRef = React.useRef(false);
+	const [viewport, setViewport] = useState<ToastViewportElement | null>(null);
+	const [toastCount, setToastCount] = useState(0);
+	const isFocusedToastEscapeKeyDownRef = useRef(false);
+	const isClosePausedRef = useRef(false);
 
 	if (!label.trim()) {
 		console.error(
@@ -106,11 +117,11 @@ const ToastProvider: React.FC<ToastProviderProps> = (
 				toastCount={toastCount}
 				viewport={viewport}
 				onViewportChange={setViewport}
-				onToastAdd={React.useCallback(
+				onToastAdd={useCallback(
 					() => setToastCount((prevCount) => prevCount + 1),
 					[],
 				)}
-				onToastRemove={React.useCallback(
+				onToastRemove={useCallback(
 					() => setToastCount((prevCount) => prevCount - 1),
 					[],
 				)}
@@ -134,10 +145,8 @@ const VIEWPORT_DEFAULT_HOTKEY = ["F8"];
 const VIEWPORT_PAUSE = "toast.viewportPause";
 const VIEWPORT_RESUME = "toast.viewportResume";
 
-type ToastViewportElement = React.ElementRef<typeof Primitive.ol>;
-type PrimitiveOrderedListProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.ol
->;
+type ToastViewportElement = ElementRef<typeof Primitive.ol>;
+type PrimitiveOrderedListProps = ComponentPropsWithoutRef<typeof Primitive.ol>;
 interface ToastViewportProps extends PrimitiveOrderedListProps {
 	/**
 	 * The keys to use as the keyboard shortcut that will move focus to the toast viewport.
@@ -152,216 +161,215 @@ interface ToastViewportProps extends PrimitiveOrderedListProps {
 	label?: string;
 }
 
-const ToastViewport = React.forwardRef<
-	ToastViewportElement,
-	ToastViewportProps
->((props: ScopedProps<ToastViewportProps>, forwardedRef) => {
-	const {
-		__scopeToast,
-		hotkey = VIEWPORT_DEFAULT_HOTKEY,
-		label = "Notifications ({hotkey})",
-		...viewportProps
-	} = props;
-	const context = useToastProviderContext(VIEWPORT_NAME, __scopeToast);
-	const getItems = useCollection(__scopeToast);
-	const wrapperRef = React.useRef<HTMLDivElement>(null);
-	const headFocusProxyRef = React.useRef<FocusProxyElement>(null);
-	const tailFocusProxyRef = React.useRef<FocusProxyElement>(null);
-	const ref = React.useRef<ToastViewportElement>(null);
-	const composedRefs = useComposedRefs(
-		forwardedRef,
-		ref,
-		context.onViewportChange,
-	);
-	const hotkeyLabel = hotkey
-		.join("+")
-		.replace(/Key/g, "")
-		.replace(/Digit/g, "");
-	const hasToasts = context.toastCount > 0;
+const ToastViewport = forwardRef<ToastViewportElement, ToastViewportProps>(
+	(props: ScopedProps<ToastViewportProps>, forwardedRef) => {
+		const {
+			__scopeToast,
+			hotkey = VIEWPORT_DEFAULT_HOTKEY,
+			label = "Notifications ({hotkey})",
+			...viewportProps
+		} = props;
+		const context = useToastProviderContext(VIEWPORT_NAME, __scopeToast);
+		const getItems = useCollection(__scopeToast);
+		const wrapperRef = useRef<HTMLDivElement>(null);
+		const headFocusProxyRef = useRef<FocusProxyElement>(null);
+		const tailFocusProxyRef = useRef<FocusProxyElement>(null);
+		const ref = useRef<ToastViewportElement>(null);
+		const composedRefs = useComposedRefs(
+			forwardedRef,
+			ref,
+			context.onViewportChange,
+		);
+		const hotkeyLabel = hotkey
+			.join("+")
+			.replace(/Key/g, "")
+			.replace(/Digit/g, "");
+		const hasToasts = context.toastCount > 0;
 
-	React.useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			// we use `event.code` as it is consistent regardless of meta keys that were pressed.
-			// for example, `event.key` for `Control+Alt+t` is `†` and `t !== †`
-			const isHotkeyPressed =
-				hotkey.length !== 0 &&
-				hotkey.every((key) => (event as any)[key] || event.code === key);
-			if (isHotkeyPressed) ref.current?.focus();
-		};
-		document.addEventListener("keydown", handleKeyDown);
-		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [hotkey]);
-
-	React.useEffect(() => {
-		const wrapper = wrapperRef.current;
-		const viewport = ref.current;
-		if (hasToasts && wrapper && viewport) {
-			const handlePause = () => {
-				if (!context.isClosePausedRef.current) {
-					const pauseEvent = new CustomEvent(VIEWPORT_PAUSE);
-					viewport.dispatchEvent(pauseEvent);
-					context.isClosePausedRef.current = true;
-				}
-			};
-
-			const handleResume = () => {
-				if (context.isClosePausedRef.current) {
-					const resumeEvent = new CustomEvent(VIEWPORT_RESUME);
-					viewport.dispatchEvent(resumeEvent);
-					context.isClosePausedRef.current = false;
-				}
-			};
-
-			const handleFocusOutResume = (event: FocusEvent) => {
-				const isFocusMovingOutside = !wrapper.contains(
-					event.relatedTarget as HTMLElement,
-				);
-				if (isFocusMovingOutside) handleResume();
-			};
-
-			const handlePointerLeaveResume = () => {
-				const isFocusInside = wrapper.contains(document.activeElement);
-				if (!isFocusInside) handleResume();
-			};
-
-			// Toasts are not in the viewport React tree so we need to bind DOM events
-			wrapper.addEventListener("focusin", handlePause);
-			wrapper.addEventListener("focusout", handleFocusOutResume);
-			wrapper.addEventListener("pointermove", handlePause);
-			wrapper.addEventListener("pointerleave", handlePointerLeaveResume);
-			window.addEventListener("blur", handlePause);
-			window.addEventListener("focus", handleResume);
-			return () => {
-				wrapper.removeEventListener("focusin", handlePause);
-				wrapper.removeEventListener("focusout", handleFocusOutResume);
-				wrapper.removeEventListener("pointermove", handlePause);
-				wrapper.removeEventListener("pointerleave", handlePointerLeaveResume);
-				window.removeEventListener("blur", handlePause);
-				window.removeEventListener("focus", handleResume);
-			};
-		}
-	}, [hasToasts, context.isClosePausedRef]);
-
-	const getSortedTabbableCandidates = React.useCallback(
-		({
-			tabbingDirection,
-		}: {
-			tabbingDirection: "forwards" | "backwards";
-		}) => {
-			const toastItems = getItems();
-			const tabbableCandidates = toastItems.map((toastItem) => {
-				const toastNode = toastItem.ref.current!;
-				const toastTabbableCandidates = [
-					toastNode,
-					...getTabbableCandidates(toastNode),
-				];
-				return tabbingDirection === "forwards"
-					? toastTabbableCandidates
-					: toastTabbableCandidates.reverse();
-			});
-			return (
-				tabbingDirection === "forwards"
-					? tabbableCandidates.reverse()
-					: tabbableCandidates
-			).flat();
-		},
-		[getItems],
-	);
-
-	React.useEffect(() => {
-		const viewport = ref.current;
-		// We programmatically manage tabbing as we are unable to influence
-		// the source order with portals, this allows us to reverse the
-		// tab order so that it runs from most recent toast to least
-		if (viewport) {
+		useEffect(() => {
 			const handleKeyDown = (event: KeyboardEvent) => {
-				const isMetaKey = event.altKey || event.ctrlKey || event.metaKey;
-				const isTabKey = event.key === "Tab" && !isMetaKey;
-
-				if (isTabKey) {
-					const focusedElement = document.activeElement;
-					const isTabbingBackwards = event.shiftKey;
-					const targetIsViewport = event.target === viewport;
-
-					// If we're back tabbing after jumping to the viewport then we simply
-					// proxy focus out to the preceding document
-					if (targetIsViewport && isTabbingBackwards) {
-						headFocusProxyRef.current?.focus();
-						return;
-					}
-
-					const tabbingDirection = isTabbingBackwards
-						? "backwards"
-						: "forwards";
-					const sortedCandidates = getSortedTabbableCandidates({
-						tabbingDirection,
-					});
-					const index = sortedCandidates.findIndex(
-						(candidate) => candidate === focusedElement,
-					);
-					if (focusFirst(sortedCandidates.slice(index + 1))) {
-						event.preventDefault();
-					} else {
-						// If we can't focus that means we're at the edges so we
-						// proxy to the corresponding exit point and let the browser handle
-						// tab/shift+tab keypress and implicitly pass focus to the next valid element in the document
-						isTabbingBackwards
-							? headFocusProxyRef.current?.focus()
-							: tailFocusProxyRef.current?.focus();
-					}
-				}
+				// we use `event.code` as it is consistent regardless of meta keys that were pressed.
+				// for example, `event.key` for `Control+Alt+t` is `†` and `t !== †`
+				const isHotkeyPressed =
+					hotkey.length !== 0 &&
+					hotkey.every((key) => (event as any)[key] || event.code === key);
+				if (isHotkeyPressed) ref.current?.focus();
 			};
+			document.addEventListener("keydown", handleKeyDown);
+			return () => document.removeEventListener("keydown", handleKeyDown);
+		}, [hotkey]);
 
-			// Toasts are not in the viewport React tree so we need to bind DOM events
-			viewport.addEventListener("keydown", handleKeyDown);
-			return () => viewport.removeEventListener("keydown", handleKeyDown);
-		}
-	}, [getSortedTabbableCandidates]);
+		useEffect(() => {
+			const wrapper = wrapperRef.current;
+			const viewport = ref.current;
+			if (hasToasts && wrapper && viewport) {
+				const handlePause = () => {
+					if (!context.isClosePausedRef.current) {
+						const pauseEvent = new CustomEvent(VIEWPORT_PAUSE);
+						viewport.dispatchEvent(pauseEvent);
+						context.isClosePausedRef.current = true;
+					}
+				};
 
-	return (
-		<DismissableLayer.Branch
-			ref={wrapperRef}
-			// biome-ignore lint/a11y/useSemanticElements: <explanation>
-			role="region"
-			aria-label={label.replace("{hotkey}", hotkeyLabel)}
-			// Ensure virtual cursor from landmarks menus triggers focus/blur for pause/resume
-			tabIndex={-1}
-			// incase list has size when empty (e.g. padding), we remove pointer events so
-			// it doesn't prevent interactions with page elements that it overlays
-			style={{ pointerEvents: hasToasts ? undefined : "none" }}
-		>
-			{hasToasts && (
-				<FocusProxy
-					ref={headFocusProxyRef}
-					onFocusFromOutsideViewport={() => {
-						const tabbableCandidates = getSortedTabbableCandidates({
-							tabbingDirection: "forwards",
+				const handleResume = () => {
+					if (context.isClosePausedRef.current) {
+						const resumeEvent = new CustomEvent(VIEWPORT_RESUME);
+						viewport.dispatchEvent(resumeEvent);
+						context.isClosePausedRef.current = false;
+					}
+				};
+
+				const handleFocusOutResume = (event: FocusEvent) => {
+					const isFocusMovingOutside = !wrapper.contains(
+						event.relatedTarget as HTMLElement,
+					);
+					if (isFocusMovingOutside) handleResume();
+				};
+
+				const handlePointerLeaveResume = () => {
+					const isFocusInside = wrapper.contains(document.activeElement);
+					if (!isFocusInside) handleResume();
+				};
+
+				// Toasts are not in the viewport React tree so we need to bind DOM events
+				wrapper.addEventListener("focusin", handlePause);
+				wrapper.addEventListener("focusout", handleFocusOutResume);
+				wrapper.addEventListener("pointermove", handlePause);
+				wrapper.addEventListener("pointerleave", handlePointerLeaveResume);
+				window.addEventListener("blur", handlePause);
+				window.addEventListener("focus", handleResume);
+				return () => {
+					wrapper.removeEventListener("focusin", handlePause);
+					wrapper.removeEventListener("focusout", handleFocusOutResume);
+					wrapper.removeEventListener("pointermove", handlePause);
+					wrapper.removeEventListener("pointerleave", handlePointerLeaveResume);
+					window.removeEventListener("blur", handlePause);
+					window.removeEventListener("focus", handleResume);
+				};
+			}
+		}, [hasToasts, context.isClosePausedRef]);
+
+		const getSortedTabbableCandidates = useCallback(
+			({
+				tabbingDirection,
+			}: {
+				tabbingDirection: "forwards" | "backwards";
+			}) => {
+				const toastItems = getItems();
+				const tabbableCandidates = toastItems.map((toastItem) => {
+					const toastNode = toastItem.ref.current!;
+					const toastTabbableCandidates = [
+						toastNode,
+						...getTabbableCandidates(toastNode),
+					];
+					return tabbingDirection === "forwards"
+						? toastTabbableCandidates
+						: toastTabbableCandidates.reverse();
+				});
+				return (
+					tabbingDirection === "forwards"
+						? tabbableCandidates.reverse()
+						: tabbableCandidates
+				).flat();
+			},
+			[getItems],
+		);
+
+		useEffect(() => {
+			const viewport = ref.current;
+			// We programmatically manage tabbing as we are unable to influence
+			// the source order with portals, this allows us to reverse the
+			// tab order so that it runs from most recent toast to least
+			if (viewport) {
+				const handleKeyDown = (event: KeyboardEvent) => {
+					const isMetaKey = event.altKey || event.ctrlKey || event.metaKey;
+					const isTabKey = event.key === "Tab" && !isMetaKey;
+
+					if (isTabKey) {
+						const focusedElement = document.activeElement;
+						const isTabbingBackwards = event.shiftKey;
+						const targetIsViewport = event.target === viewport;
+
+						// If we're back tabbing after jumping to the viewport then we simply
+						// proxy focus out to the preceding document
+						if (targetIsViewport && isTabbingBackwards) {
+							headFocusProxyRef.current?.focus();
+							return;
+						}
+
+						const tabbingDirection = isTabbingBackwards
+							? "backwards"
+							: "forwards";
+						const sortedCandidates = getSortedTabbableCandidates({
+							tabbingDirection,
 						});
-						focusFirst(tabbableCandidates);
-					}}
-				/>
-			)}
-			{/**
-			 * tabindex on the the list so that it can be focused when items are removed. we focus
-			 * the list instead of the viewport so it announces number of items remaining.
-			 */}
-			<Collection.Slot scope={__scopeToast}>
-				<Primitive.ol tabIndex={-1} {...viewportProps} ref={composedRefs} />
-			</Collection.Slot>
-			{hasToasts && (
-				<FocusProxy
-					ref={tailFocusProxyRef}
-					onFocusFromOutsideViewport={() => {
-						const tabbableCandidates = getSortedTabbableCandidates({
-							tabbingDirection: "backwards",
-						});
-						focusFirst(tabbableCandidates);
-					}}
-				/>
-			)}
-		</DismissableLayer.Branch>
-	);
-});
+						const index = sortedCandidates.findIndex(
+							(candidate) => candidate === focusedElement,
+						);
+						if (focusFirst(sortedCandidates.slice(index + 1))) {
+							event.preventDefault();
+						} else {
+							// If we can't focus that means we're at the edges so we
+							// proxy to the corresponding exit point and let the browser handle
+							// tab/shift+tab keypress and implicitly pass focus to the next valid element in the document
+							isTabbingBackwards
+								? headFocusProxyRef.current?.focus()
+								: tailFocusProxyRef.current?.focus();
+						}
+					}
+				};
+
+				// Toasts are not in the viewport React tree so we need to bind DOM events
+				viewport.addEventListener("keydown", handleKeyDown);
+				return () => viewport.removeEventListener("keydown", handleKeyDown);
+			}
+		}, [getSortedTabbableCandidates]);
+
+		return (
+			<DismissableLayer.Branch
+				ref={wrapperRef}
+				// biome-ignore lint/a11y/useSemanticElements: <explanation>
+				role="region"
+				aria-label={label.replace("{hotkey}", hotkeyLabel)}
+				// Ensure virtual cursor from landmarks menus triggers focus/blur for pause/resume
+				tabIndex={-1}
+				// incase list has size when empty (e.g. padding), we remove pointer events so
+				// it doesn't prevent interactions with page elements that it overlays
+				style={{ pointerEvents: hasToasts ? undefined : "none" }}
+			>
+				{hasToasts && (
+					<FocusProxy
+						ref={headFocusProxyRef}
+						onFocusFromOutsideViewport={() => {
+							const tabbableCandidates = getSortedTabbableCandidates({
+								tabbingDirection: "forwards",
+							});
+							focusFirst(tabbableCandidates);
+						}}
+					/>
+				)}
+				{/**
+				 * tabindex on the the list so that it can be focused when items are removed. we focus
+				 * the list instead of the viewport so it announces number of items remaining.
+				 */}
+				<Collection.Slot scope={__scopeToast}>
+					<Primitive.ol tabIndex={-1} {...viewportProps} ref={composedRefs} />
+				</Collection.Slot>
+				{hasToasts && (
+					<FocusProxy
+						ref={tailFocusProxyRef}
+						onFocusFromOutsideViewport={() => {
+							const tabbableCandidates = getSortedTabbableCandidates({
+								tabbingDirection: "backwards",
+							});
+							focusFirst(tabbableCandidates);
+						}}
+					/>
+				)}
+			</DismissableLayer.Branch>
+		);
+	},
+);
 
 ToastViewport.displayName = VIEWPORT_NAME;
 
@@ -369,38 +377,35 @@ ToastViewport.displayName = VIEWPORT_NAME;
 
 const FOCUS_PROXY_NAME = "ToastFocusProxy";
 
-type FocusProxyElement = React.ElementRef<typeof VisuallyHidden>;
-type VisuallyHiddenProps = React.ComponentPropsWithoutRef<
-	typeof VisuallyHidden
->;
+type FocusProxyElement = ElementRef<typeof VisuallyHidden>;
+type VisuallyHiddenProps = ComponentPropsWithoutRef<typeof VisuallyHidden>;
 interface FocusProxyProps extends VisuallyHiddenProps {
 	onFocusFromOutsideViewport(): void;
 }
 
-const FocusProxy = React.forwardRef<
-	FocusProxyElement,
-	ScopedProps<FocusProxyProps>
->((props, forwardedRef) => {
-	const { __scopeToast, onFocusFromOutsideViewport, ...proxyProps } = props;
-	const context = useToastProviderContext(FOCUS_PROXY_NAME, __scopeToast);
+const FocusProxy = forwardRef<FocusProxyElement, ScopedProps<FocusProxyProps>>(
+	(props, forwardedRef) => {
+		const { __scopeToast, onFocusFromOutsideViewport, ...proxyProps } = props;
+		const context = useToastProviderContext(FOCUS_PROXY_NAME, __scopeToast);
 
-	return (
-		<VisuallyHidden
-			aria-hidden
-			tabIndex={0}
-			{...proxyProps}
-			ref={forwardedRef}
-			// Avoid page scrolling when focus is on the focus proxy
-			style={{ position: "fixed" }}
-			onFocus={(event) => {
-				const prevFocusedElement = event.relatedTarget as HTMLElement | null;
-				const isFocusFromOutsideViewport =
-					!context.viewport?.contains(prevFocusedElement);
-				if (isFocusFromOutsideViewport) onFocusFromOutsideViewport();
-			}}
-		/>
-	);
-});
+		return (
+			<VisuallyHidden
+				aria-hidden
+				tabIndex={0}
+				{...proxyProps}
+				ref={forwardedRef}
+				// Avoid page scrolling when focus is on the focus proxy
+				style={{ position: "fixed" }}
+				onFocus={(event) => {
+					const prevFocusedElement = event.relatedTarget as HTMLElement | null;
+					const isFocusFromOutsideViewport =
+						!context.viewport?.contains(prevFocusedElement);
+					if (isFocusFromOutsideViewport) onFocusFromOutsideViewport();
+				}}
+			/>
+		);
+	},
+);
 
 FocusProxy.displayName = FOCUS_PROXY_NAME;
 
@@ -426,7 +431,7 @@ interface ToastProps extends Omit<ToastImplProps, keyof ToastImplPrivateProps> {
 	forceMount?: true;
 }
 
-const Toast = React.forwardRef<ToastElement, ToastProps>(
+const Toast = forwardRef<ToastElement, ToastProps>(
 	(props: ScopedProps<ToastProps>, forwardedRef) => {
 		const {
 			forceMount,
@@ -512,7 +517,7 @@ type SwipeEvent = {
 	currentTarget: EventTarget & ToastElement;
 } & Omit<
 	CustomEvent<{
-		originalEvent: React.PointerEvent;
+		originalEvent: PointerEvent;
 		delta: { x: number; y: number };
 	}>,
 	"currentTarget"
@@ -523,14 +528,12 @@ const [ToastInteractiveProvider, useToastInteractiveContext] =
 		onClose() {},
 	});
 
-type ToastImplElement = React.ElementRef<typeof Primitive.li>;
-type DismissableLayerProps = React.ComponentPropsWithoutRef<
+type ToastImplElement = ElementRef<typeof Primitive.li>;
+type DismissableLayerProps = ComponentPropsWithoutRef<
 	typeof DismissableLayer.Root
 >;
 type ToastImplPrivateProps = { open: boolean; onClose(): void };
-type PrimitiveListItemProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.li
->;
+type PrimitiveListItemProps = ComponentPropsWithoutRef<typeof Primitive.li>;
 interface ToastImplProps extends ToastImplPrivateProps, PrimitiveListItemProps {
 	type?: "foreground" | "background";
 	/**
@@ -547,7 +550,7 @@ interface ToastImplProps extends ToastImplPrivateProps, PrimitiveListItemProps {
 	onSwipeEnd?(event: SwipeEvent): void;
 }
 
-const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
+const ToastImpl = forwardRef<ToastImplElement, ToastImplProps>(
 	(props: ScopedProps<ToastImplProps>, forwardedRef) => {
 		const {
 			__scopeToast,
@@ -565,20 +568,20 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 			...toastProps
 		} = props;
 		const context = useToastProviderContext(TOAST_NAME, __scopeToast);
-		const [node, setNode] = React.useState<ToastImplElement | null>(null);
+		const [node, setNode] = useState<ToastImplElement | null>(null);
 		const composedRefs = useComposedRefs(forwardedRef, (node) => setNode(node));
-		const pointerStartRef = React.useRef<{
+		const pointerStartRef = useRef<{
 			x: number;
 			y: number;
 		} | null>(null);
-		const swipeDeltaRef = React.useRef<{
+		const swipeDeltaRef = useRef<{
 			x: number;
 			y: number;
 		} | null>(null);
 		const duration = durationProp || context.duration;
-		const closeTimerStartTimeRef = React.useRef(0);
-		const closeTimerRemainingTimeRef = React.useRef(duration);
-		const closeTimerRef = React.useRef(0);
+		const closeTimerStartTimeRef = useRef(0);
+		const closeTimerRemainingTimeRef = useRef(duration);
+		const closeTimerRef = useRef(0);
 		const { onToastAdd, onToastRemove } = context;
 		const handleClose = useCallbackRef(() => {
 			// focus viewport if focus is within toast to read the remaining toast
@@ -588,7 +591,7 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 			onClose();
 		});
 
-		const startTimer = React.useCallback(
+		const startTimer = useCallback(
 			(duration: number) => {
 				if (!duration || duration === Number.POSITIVE_INFINITY) return;
 				window.clearTimeout(closeTimerRef.current);
@@ -598,7 +601,7 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 			[handleClose],
 		);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			const viewport = context.viewport;
 			if (viewport) {
 				const handleResume = () => {
@@ -625,16 +628,16 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 		// start timer when toast opens or duration changes.
 		// we include `open` in deps because closed !== unmounted when animating
 		// so it could reopen before being completely unmounted
-		React.useEffect(() => {
+		useEffect(() => {
 			if (open && !context.isClosePausedRef.current) startTimer(duration);
 		}, [open, duration, context.isClosePausedRef, startTimer]);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			onToastAdd();
 			return () => onToastRemove();
 		}, [onToastAdd, onToastRemove]);
 
-		const announceTextContent = React.useMemo(() => {
+		const announceTextContent = useMemo(() => {
 			return node ? getAnnounceTextContent(node) : null;
 		}, [node]);
 
@@ -830,22 +833,22 @@ const ToastImpl = React.forwardRef<ToastImplElement, ToastImplProps>(
 /* -----------------------------------------------------------------------------------------------*/
 
 interface ToastAnnounceProps
-	extends Omit<React.ComponentPropsWithoutRef<"div">, "children">,
+	extends Omit<ComponentPropsWithoutRef<"div">, "children">,
 		ScopedProps<{ children: string[] }> {}
 
-const ToastAnnounce: React.FC<ToastAnnounceProps> = (
+const ToastAnnounce: FC<ToastAnnounceProps> = (
 	props: ScopedProps<ToastAnnounceProps>,
 ) => {
 	const { __scopeToast, children, ...announceProps } = props;
 	const context = useToastProviderContext(TOAST_NAME, __scopeToast);
-	const [renderAnnounceText, setRenderAnnounceText] = React.useState(false);
-	const [isAnnounced, setIsAnnounced] = React.useState(false);
+	const [renderAnnounceText, setRenderAnnounceText] = useState(false);
+	const [isAnnounced, setIsAnnounced] = useState(false);
 
 	// render text content in the next frame to ensure toast is announced in NVDA
 	useNextFrame(() => setRenderAnnounceText(true));
 
 	// cleanup after announcing
-	React.useEffect(() => {
+	useEffect(() => {
 		const timer = window.setTimeout(() => setIsAnnounced(true), 1000);
 		return () => window.clearTimeout(timer);
 	}, []);
@@ -869,11 +872,11 @@ const ToastAnnounce: React.FC<ToastAnnounceProps> = (
 
 const TITLE_NAME = "ToastTitle";
 
-type ToastTitleElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type ToastTitleElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface ToastTitleProps extends PrimitiveDivProps {}
 
-const ToastTitle = React.forwardRef<ToastTitleElement, ToastTitleProps>(
+const ToastTitle = forwardRef<ToastTitleElement, ToastTitleProps>(
 	(props: ScopedProps<ToastTitleProps>, forwardedRef) => {
 		const { __scopeToast, ...titleProps } = props;
 		return <Primitive.div {...titleProps} ref={forwardedRef} />;
@@ -888,10 +891,10 @@ ToastTitle.displayName = TITLE_NAME;
 
 const DESCRIPTION_NAME = "ToastDescription";
 
-type ToastDescriptionElement = React.ElementRef<typeof Primitive.div>;
+type ToastDescriptionElement = ElementRef<typeof Primitive.div>;
 interface ToastDescriptionProps extends PrimitiveDivProps {}
 
-const ToastDescription = React.forwardRef<
+const ToastDescription = forwardRef<
 	ToastDescriptionElement,
 	ToastDescriptionProps
 >((props: ScopedProps<ToastDescriptionProps>, forwardedRef) => {
@@ -918,7 +921,7 @@ interface ToastActionProps extends ToastCloseProps {
 	altText: string;
 }
 
-const ToastAction = React.forwardRef<ToastActionElement, ToastActionProps>(
+const ToastAction = forwardRef<ToastActionElement, ToastActionProps>(
 	(props: ScopedProps<ToastActionProps>, forwardedRef) => {
 		const { altText, ...actionProps } = props;
 
@@ -945,13 +948,11 @@ ToastAction.displayName = ACTION_NAME;
 
 const CLOSE_NAME = "ToastClose";
 
-type ToastCloseElement = React.ElementRef<typeof Primitive.button>;
-type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.button
->;
+type ToastCloseElement = ElementRef<typeof Primitive.button>;
+type PrimitiveButtonProps = ComponentPropsWithoutRef<typeof Primitive.button>;
 interface ToastCloseProps extends PrimitiveButtonProps {}
 
-const ToastClose = React.forwardRef<ToastCloseElement, ToastCloseProps>(
+const ToastClose = forwardRef<ToastCloseElement, ToastCloseProps>(
 	(props: ScopedProps<ToastCloseProps>, forwardedRef) => {
 		const { __scopeToast, ...closeProps } = props;
 		const interactiveContext = useToastInteractiveContext(
@@ -979,12 +980,12 @@ ToastClose.displayName = CLOSE_NAME;
 
 /* ---------------------------------------------------------------------------------------------- */
 
-type ToastAnnounceExcludeElement = React.ElementRef<typeof Primitive.div>;
+type ToastAnnounceExcludeElement = ElementRef<typeof Primitive.div>;
 interface ToastAnnounceExcludeProps extends PrimitiveDivProps {
 	altText?: string;
 }
 
-const ToastAnnounceExclude = React.forwardRef<
+const ToastAnnounceExclude = forwardRef<
 	ToastAnnounceExcludeElement,
 	ToastAnnounceExcludeProps
 >((props: ScopedProps<ToastAnnounceExcludeProps>, forwardedRef) => {
@@ -1032,7 +1033,7 @@ function getAnnounceTextContent(container: HTMLElement) {
 
 function handleAndDispatchCustomEvent<
 	E extends CustomEvent,
-	ReactEvent extends React.SyntheticEvent,
+	ReactEvent extends SyntheticEvent,
 >(
 	name: string,
 	handler: ((event: E) => void) | undefined,

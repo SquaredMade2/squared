@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useComposedRefs } from "../compose-refs";
 import { createContextScope } from "../context";
 import { composeEventHandlers } from "../primitive";
@@ -7,6 +6,14 @@ import { useControllableState } from "../use-controllable-state";
 import { usePrevious } from "../use-previous";
 import { useSize } from "../use-size";
 
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	forwardRef,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import type { Scope } from "../context";
 
 /* -------------------------------------------------------------------------------------------------
@@ -23,10 +30,8 @@ type SwitchContextValue = { checked: boolean; disabled?: boolean };
 const [SwitchProvider, useSwitchContext] =
 	createSwitchContext<SwitchContextValue>(SWITCH_NAME);
 
-type SwitchElement = React.ElementRef<typeof Primitive.button>;
-type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.button
->;
+type SwitchElement = ElementRef<typeof Primitive.button>;
+type PrimitiveButtonProps = ComponentPropsWithoutRef<typeof Primitive.button>;
 interface SwitchProps extends PrimitiveButtonProps {
 	checked?: boolean;
 	defaultChecked?: boolean;
@@ -34,7 +39,7 @@ interface SwitchProps extends PrimitiveButtonProps {
 	onCheckedChange?(checked: boolean): void;
 }
 
-const Switch = React.forwardRef<SwitchElement, SwitchProps>(
+const Switch = forwardRef<SwitchElement, SwitchProps>(
 	(props: ScopedProps<SwitchProps>, forwardedRef) => {
 		const {
 			__scopeSwitch,
@@ -48,11 +53,11 @@ const Switch = React.forwardRef<SwitchElement, SwitchProps>(
 			form,
 			...switchProps
 		} = props;
-		const [button, setButton] = React.useState<HTMLButtonElement | null>(null);
+		const [button, setButton] = useState<HTMLButtonElement | null>(null);
 		const composedRefs = useComposedRefs(forwardedRef, (node) =>
 			setButton(node),
 		);
-		const hasConsumerStoppedPropagationRef = React.useRef(false);
+		const hasConsumerStoppedPropagationRef = useRef(false);
 		// We set this to true by default so that events bubble to forms without JS (SSR)
 		const isFormControl = button ? form || !!button.closest("form") : true;
 		const [checked = false, setChecked] = useControllableState({
@@ -120,11 +125,11 @@ Switch.displayName = SWITCH_NAME;
 
 const THUMB_NAME = "SwitchThumb";
 
-type SwitchThumbElement = React.ElementRef<typeof Primitive.span>;
-type PrimitiveSpanProps = React.ComponentPropsWithoutRef<typeof Primitive.span>;
+type SwitchThumbElement = ElementRef<typeof Primitive.span>;
+type PrimitiveSpanProps = ComponentPropsWithoutRef<typeof Primitive.span>;
 interface SwitchThumbProps extends PrimitiveSpanProps {}
 
-const SwitchThumb = React.forwardRef<SwitchThumbElement, SwitchThumbProps>(
+const SwitchThumb = forwardRef<SwitchThumbElement, SwitchThumbProps>(
 	(props: ScopedProps<SwitchThumbProps>, forwardedRef) => {
 		const { __scopeSwitch, ...thumbProps } = props;
 		const context = useSwitchContext(THUMB_NAME, __scopeSwitch);
@@ -143,7 +148,7 @@ SwitchThumb.displayName = THUMB_NAME;
 
 /* ---------------------------------------------------------------------------------------------- */
 
-type InputProps = React.ComponentPropsWithoutRef<"input">;
+type InputProps = ComponentPropsWithoutRef<"input">;
 interface BubbleInputProps extends Omit<InputProps, "checked"> {
 	checked: boolean;
 	control: HTMLElement | null;
@@ -152,12 +157,12 @@ interface BubbleInputProps extends Omit<InputProps, "checked"> {
 
 const BubbleInput = (props: BubbleInputProps) => {
 	const { control, checked, bubbles = true, ...inputProps } = props;
-	const ref = React.useRef<HTMLInputElement>(null);
+	const ref = useRef<HTMLInputElement>(null);
 	const prevChecked = usePrevious(checked);
 	const controlSize = useSize(control);
 
 	// Bubble checked change to parents (e.g form change event)
-	React.useEffect(() => {
+	useEffect(() => {
 		const input = ref.current!;
 		const inputProto = window.HTMLInputElement.prototype;
 		const descriptor = Object.getOwnPropertyDescriptor(
