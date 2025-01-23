@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { app, prisma } from "@/api/app";
 import type { CreateFilterParams } from "@/services/filters/types";
-import type { Prisma, SavedFilter, User } from "@squared/db";
+import type { Prisma, SavedFilter, Task, Team, User } from "@squared/db";
 import request from "supertest";
 
 describe("API Tests", () => {
@@ -23,6 +23,34 @@ describe("API Tests", () => {
 
 		const sampleUser = users[0];
 		return { teamId, userId: sampleUser.userId, teamIdentifier: identifier };
+	}
+
+	function serializeUserDates(user: User) {
+		return {
+			...user,
+			// The dates are sent as strings in the response object because a
+			// date class instance is not serializable.
+			// Using prisma, however, will instantiate a date instance so need to
+			// serialize those fields to strings if you want equality comparison.
+			createdAt: user.createdAt.toISOString(),
+			lastLogin: user.lastLogin.toISOString(),
+		};
+	}
+
+	function serializeTeamDates(team: Team) {
+		return {
+			...team,
+			sprintStartDate: team.sprintStartDate.toISOString(),
+		};
+	}
+
+	function serializeTaskDates(task: Task) {
+		return {
+			...task,
+			dueDate: task.dueDate ? task.dueDate.toISOString() : null,
+			dateCreated: task.dateCreated.toISOString(),
+			updatedAt: task.updatedAt.toISOString(),
+		};
 	}
 
 	it("should respond with 200 OK for the root path", async () => {
@@ -219,24 +247,16 @@ describe("API Tests", () => {
 		const endpoints = {
 			getDefaultWorkspace: "/rpc/user/getDefaultWorkspace",
 			getUser: "/rpc/user/getUser",
+			getUserAvatars: "/rpc/user/getUserAvatars",
 			getTeamUsers: "/rpc/user/getTeamUsers",
+			getUserTeams: "/rpc/user/getUserTeams",
+			getWorkspaceUsers: "/rpc/user/getWorkspaceUsers",
 			isUserAuthorized: "/rpc/user/isUserAuthorized",
 			onBoardUser: "/rpc/user/onBoardUser",
+			setLastViewedTask: "/rpc/user/setLastViewedTask",
 			updateUser: "/rpc/user/updateUser",
 			updateUserAvatar: "/rpc/user/updateUserAvatar",
 		};
-
-		function serializeUserDates(u: User) {
-			return {
-				...u,
-				// The dates are sent as strings in the response object because a
-				// date class instance is not serializable.
-				// Using prisma, however, will instantiate a date instance so need to
-				// serialize those fields to strings if you want deep equality comparison.
-				createdAt: u.createdAt.toISOString(),
-				lastLogin: u.lastLogin.toISOString(),
-			};
-		}
 
 		it("onboards a valid user", async () => {
 			const { userId } = await getUserAndTeamIDs();
@@ -291,7 +311,7 @@ describe("API Tests", () => {
 			expect(response.body.avatarUrl).toBe(newAvatarUrl);
 		});
 
-		it("fetches a user by id", async () => {
+		it("gets a user by id", async () => {
 			const { userId } = await getUserAndTeamIDs();
 			const user = await prisma.user.findUnique({
 				where: {
@@ -331,6 +351,117 @@ describe("API Tests", () => {
 			expect(responseUsers.length).toBe(userIds.length);
 			for (const user of responseUsers) {
 				expect(userIds.includes(user.externalId)).toBe(true);
+			}
+		});
+
+		it("gets all teams the user is a part of", async () => {
+			const users = await prisma.user.findMany({
+				include: {
+					Teams: true,
+				},
+			});
+			if (!users) {
+				throw new Error("no users found in database");
+			}
+
+			const userWithManyTeams = users.find((u) => u.Teams.length > 1);
+			if (!userWithManyTeams) {
+				throw new Error("failed to find user that is part of multiple teams");
+			}
+			const teams = await prisma.team.findMany({
+				where: {
+					id: {
+						in: userWithManyTeams.Teams.map((t) => t.teamId),
+					},
+				},
+			});
+
+			const response = await request(app)
+				.post(endpoints.getUserTeams)
+				.send({ userId: userWithManyTeams.externalId });
+
+			if (!Array.isArray(response.body)) {
+				throw new Error("invalid response receivec");
+			}
+			for (const got of response.body) {
+				const want = teams.find((t) => t.id === got.id);
+				if (!want) {
+					throw new Error("failed to find team in response body");
+				}
+				expect(got).toMatchObject(serializeTeamDates(want));
+			}
+		});
+
+		it("gets all users in a workspace", async () => {
+			const workspace = await prisma.workspace.findMany({
+				include: {
+					Users: true,
+				},
+			});
+			if (workspace.length === 0) {
+				throw new Error("no workspaces found in database");
+			}
+			const workspaceWithUsers = workspace.find((w) => w.Users.length > 0);
+			if (!workspaceWithUsers) {
+				throw new Error("failed to find workspace with users");
+			}
+
+			const users = await prisma.user.findMany({
+				where: {
+					externalId: {
+						in: workspaceWithUsers.Users.map((u) => u.userId),
+					},
+				},
+			});
+
+			const response = await request(app)
+				.post(endpoints.getWorkspaceUsers)
+				.send({ workspaceId: workspaceWithUsers.id });
+
+			if (!Array.isArray(response.body)) {
+				throw new Error("invalid response received");
+			}
+			for (const got of response.body) {
+				const want = users.find((u) => u.externalId === got.externalId);
+				if (!want) {
+					throw new Error("failed to find user in response body");
+				}
+				expect(got).toMatchObject(serializeUserDates(want));
+			}
+		});
+
+		it("gets all user avatars in a workspace", async () => {
+			const workspace = await prisma.workspace.findMany({
+				include: {
+					Users: true,
+				},
+			});
+			if (workspace.length === 0) {
+				throw new Error("no workspaces found in database");
+			}
+			const workspaceWithUsers = workspace.find((w) => w.Users.length > 0);
+			if (!workspaceWithUsers) {
+				throw new Error("failed to find workspace with users");
+			}
+
+			const users = await prisma.user.findMany({
+				where: {
+					externalId: {
+						in: workspaceWithUsers.Users.map((u) => u.userId),
+					},
+				},
+			});
+
+			const response = await request(app)
+				.post(endpoints.getUserAvatars)
+				.send({ workspaceId: workspaceWithUsers.id });
+
+			if (!Array.isArray(response.body)) {
+				throw new Error("invalid response received");
+			}
+			for (const got of response.body) {
+				const want = users.find((u) => u.externalId === got.id);
+				expect(want?.avatarUrl).toBe(got.avatarUrl);
 			}
 		});
 
@@ -374,13 +505,19 @@ describe("API Tests", () => {
 		});
 
 		it("falls back to the first workspace if there is no specified default workspace", async () => {
-			const user = await prisma.user.findFirst({
+			const users = await prisma.user.findMany({
 				include: {
 					Workspaces: true,
 				},
 			});
-			if (!user) {
+			if (!users) {
 				throw new Error("no users in database");
+			}
+
+			// find a user who is in multiple workspaces
+			const user = users.find((u) => u.Workspaces.length > 1);
+			if (!user) {
+				throw new Error("failed to find user who is in multiple workspaces");
 			}
 
 			const shouldBeDefault = await prisma.workspace.findUnique({
@@ -398,7 +535,6 @@ describe("API Tests", () => {
 					id: user.id,
 				},
 				data: {
-					DefaultWorkspace: undefined,
 					defaultWorkspaceId: null,
 				},
 			});
@@ -411,7 +547,39 @@ describe("API Tests", () => {
 			expect(response.body).toMatchObject(shouldBeDefault);
 		});
 
-		// it("gets all user avatars in a team", async () => {});
+		it("properly sets the last viewed task", async () => {
+			const { userId, teamId } = await getUserAndTeamIDs();
+			const user = await prisma.user.findUnique({
+				where: {
+					externalId: userId,
+				},
+			});
+			if (!user) {
+				throw new Error("failed to find user");
+			}
+			const tasks = await prisma.task.findMany({
+				where: {
+					teamId,
+				},
+			});
+
+			const newLastViewed = tasks.find(
+				(task) => task.id !== user.lastViewedTaskId,
+			);
+			if (!newLastViewed) {
+				throw new Error("failed to find task different from last viewed");
+			}
+
+			const response = await request(app)
+				.post(endpoints.setLastViewedTask)
+				.send({ userId, taskId: newLastViewed.id });
+
+			expect(response.body.lastViewedTask).toMatchObject(
+				serializeTaskDates(newLastViewed),
+			);
+			expect(response.body.lastViewedTaskId).toBe(newLastViewed.id);
+		});
+
 		it("authorizes a user for a team they are a member of", async () => {
 			const { userId, teamId } = await getUserAndTeamIDs();
 			const team = await prisma.team.findUnique({
