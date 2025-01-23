@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	ContextMenuItem,
@@ -6,50 +8,41 @@ import {
 	ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { taskService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useTaskStore, useUserStore } from "@/store";
 import { getInitials } from "@/utils/formatting";
-import { TODO } from "@squared/context";
 import type { User } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 import { Check, UserSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ContextMenuProps } from "./interfaces";
 
 const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
-	const { users, user } = useUserStore((state) => state);
+	const { users } = useUserStore((state) => state);
 	const { updateTask } = useTaskStore((state) => state);
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const taskId = task.id;
 
 	useEffect(() => {
-		const foundUser = users.find((user) => user.id === task.assigneeId);
+		const foundUser = users.find((user) => user.externalId === task.assigneeId);
 		setCurrentUser(foundUser ?? null);
-	}, []);
+	}, [users, task.assigneeId]);
 
-	const handleSelectAssignee = async (userId: string | null) => {
-		if (!userId) {
-			return updateTask(
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					updaterId: user?.id || "",
-					assigneeId: null,
-				}),
-			);
-		}
-		const selectedUser = users.find((user) => user.id === userId);
+	const { mutate: updateAssignee } = useMutation({
+		mutationKey: ["updateTaskAssignee", taskId],
+		mutationFn: async (userId: string | null) => {
+			const res = await client.task.updateAssignee.$post({
+				taskId,
+				assigneeId: userId,
+			});
+			const updatedTask = await res.json();
+			updateTask(updatedTask);
+			return updatedTask;
+		},
+	});
 
-		if (selectedUser) {
-			if (task) {
-				updateTask(
-					await taskService.updateTask(TODO, {
-						id: taskId,
-						updaterId: user?.id || "",
-						assigneeId: selectedUser.id,
-					}),
-				);
-			}
-			// await getTaskEvents(taskId);
-		}
+	const handleSelectAssignee = (userId: string | null) => {
+		updateAssignee(userId);
 	};
 
 	return (
@@ -84,8 +77,8 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 						.map((user) => {
 							return (
 								<ContextMenuItem
-									key={user.id}
-									onClick={() => handleSelectAssignee(user.id)}
+									key={user.externalId}
+									onClick={() => handleSelectAssignee(user.externalId)}
 									className="flex justify-between"
 								>
 									<div className="flex">
@@ -95,7 +88,7 @@ const AssigneeSubContextMenu = ({ task }: ContextMenuProps) => {
 										</Avatar>
 										{user.name}
 									</div>
-									{task.assigneeId === user.id && (
+									{task.assigneeId === user.externalId && (
 										<Check className="w-4 h-4 ml-2" />
 									)}
 								</ContextMenuItem>

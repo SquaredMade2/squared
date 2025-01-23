@@ -109,7 +109,7 @@ export function getFilterAssignees(
 		? assigneeFilter.value
 		: [assigneeFilter.value];
 
-	const assignees = users.filter((u) => assigneeIds.includes(u.id));
+	const assignees = users.filter((u) => assigneeIds.includes(u.externalId));
 
 	// the "unassigned" user is just a user who is null
 	const hasUnassigned = assigneeIds.includes(null);

@@ -1,9 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { Priority, PrismaClient, Status } from "@squared/db";
 import type { Team, User, Workspace } from "@squared/db";
-import bcrypt from "bcryptjs";
-import "dotenv/config";
+import { Priority, PrismaClient, Status } from "@squared/db";
 import createCustomLogger from "@squared/logger";
+import "dotenv/config";
 
 const prisma = new PrismaClient({
 	datasources: {
@@ -15,22 +14,6 @@ const prisma = new PrismaClient({
 
 const logger = createCustomLogger("seed");
 
-const hashPassword = (password: string): Promise<string> => {
-	return new Promise((resolve, reject) => {
-		bcrypt.genSalt(10, (error, salt) => {
-			if (error) {
-				reject(error);
-			}
-			bcrypt.hash(password, salt, (error, hash) => {
-				if (error) {
-					reject(error);
-				}
-				resolve(hash);
-			});
-		});
-	});
-};
-
 async function seedDB() {
 	const workspaces = await Promise.all([
 		addWorkspace(),
@@ -41,7 +24,7 @@ async function seedDB() {
 	const user = await addMainUser();
 
 	for (const workspace of workspaces) {
-		await addUserToWorkspace(user, workspace);
+		await addUserToWorkspace(user, workspace, true);
 
 		const numTeams = faker.number.int({ min: 1, max: 2 });
 
@@ -52,7 +35,7 @@ async function seedDB() {
 			const users = [user];
 			for (let i = 0; i < numUsers; i++) {
 				const newUser = await addUser();
-				await addUserToWorkspace(newUser, workspace);
+				await addUserToWorkspace(newUser, workspace, false);
 				await addUserToTeam(newUser, team);
 				users.push(newUser);
 			}
@@ -66,7 +49,7 @@ async function seedDB() {
 				for (let c = 0; c < numComments; c++) {
 					const author =
 						users[faker.number.int({ min: 0, max: users.length - 1 })];
-					await addComment(author.id, task.id);
+					await addComment(author.externalId, task.id);
 				}
 			}
 		}
@@ -77,18 +60,15 @@ async function seedDB() {
 async function addMainUser() {
 	const name = process.env.SEED_NAME || faker.person.fullName();
 	const email = process.env.SEED_EMAIL || faker.internet.email();
-	const password = process.env.SEED_PASSWORD || faker.internet.password();
+	const externalId = process.env.CLERK_EXTERNAL_ID || faker.internet.password();
 	const username = name.replace(" ", "");
-
-	const hashedPassword = await hashPassword(password);
 
 	const user = await prisma.user.create({
 		data: {
 			name: name,
 			username,
 			email,
-			password: hashedPassword,
-			verified: true,
+			externalId,
 			onBoarding: false,
 			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
@@ -102,16 +82,14 @@ async function addUser() {
 	const fullName = `${firstName} ${lastName}`;
 	const username = faker.internet.username({ firstName, lastName });
 	const email = faker.internet.email({ firstName, lastName });
-	const password = process.env.SEED_PASSWORD || faker.internet.password();
-	const hashedPassword = await hashPassword(password);
+	const externalId = `user_${faker.internet.password()}`;
 
 	const user = await prisma.user.create({
 		data: {
 			name: fullName,
 			username,
 			email,
-			password: hashedPassword,
-			verified: true,
+			externalId,
 			onBoarding: false,
 			avatarUrl: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 100000)}`,
 		},
@@ -119,13 +97,18 @@ async function addUser() {
 	return user;
 }
 
-async function addUserToWorkspace(user: User, workspace: Workspace) {
+async function addUserToWorkspace(
+	user: User,
+	workspace: Workspace,
+	isFirstUser: boolean,
+) {
 	await prisma.workspace.update({
 		where: { id: workspace.id },
 		data: {
 			Users: {
 				create: {
-					userId: user.id,
+					userId: user.externalId,
+					role: isFirstUser ? "owner" : "member",
 				},
 			},
 		},
@@ -138,7 +121,7 @@ async function addUserToTeam(user: User, team: Team) {
 		data: {
 			Users: {
 				create: {
-					userId: user.id,
+					userId: user.externalId,
 				},
 			},
 		},
@@ -188,7 +171,7 @@ async function addTeam(workspace: Workspace, user: User) {
 			workspaceId: workspace.id,
 			Users: {
 				create: {
-					userId: user.id,
+					userId: user.externalId,
 				},
 			},
 		},
@@ -240,7 +223,7 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 
 	const task = await prisma.task.create({
 		data: {
-			authorId: user.id,
+			authorId: user.externalId,
 			title: taskTitle,
 			description: taskDescription,
 			status: taskStatus,
@@ -249,13 +232,13 @@ async function addTask(team: Team, workspace: Workspace, user: User) {
 			effortEstimate: taskEffortEstimate,
 			identifier: identifier,
 			teamId: team.id,
-			assigneeId: user.id,
+			assigneeId: user.externalId,
 			labels: randomLabelIds,
 			workspaceId: workspace.id,
 		},
 	});
 
-	await addNotification(user.id, task.id, workspace.id);
+	await addNotification(user.externalId, task.id, workspace.id);
 
 	return task;
 }
@@ -302,6 +285,6 @@ seedDB()
 		return prisma.$disconnect();
 	})
 	.catch((e) => {
-		logger.error("Error seeding database: %0", e);
+		logger.error("Error seeding database: %s", e);
 		return prisma.$disconnect();
 	});

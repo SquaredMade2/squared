@@ -48,10 +48,19 @@ export interface TaskRpc {
 		parentId: string;
 		newOrder: string[];
 	}) => Promise<Task[]>;
-	updateBlockedTasks({
-		blockingTaskIds,
+	updateBlockedOrBlockingTasks({
+		updatingIds,
 		taskId,
-	}: { blockingTaskIds: string[]; taskId: string }): Promise<Task>;
-	getBlockedByTasks: (args: { taskId: string }) => Promise<Task[]>;
+		key,
+	}: {
+		updatingIds: string[];
+		taskId: string;
+		key: "blockedBy" | "blocking";
+	}): Promise<Task[]>;
+	getTaskBlockedByAndBlocking: (args: { taskId: string }) => Promise<{
+		blockedBy: Task[];
+		blockingIds: string[];
+	}>;
+	getAllBlockedTaskIds: (args: { teamId: string }) => Promise<string[]>;
 	getSubtasks: (args: { parentId: string }) => Promise<Task[]>;
 }

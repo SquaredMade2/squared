@@ -8,6 +8,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { teamService, workspaceService } from "@/lib/services";
 import { useUserStore } from "@/store";
+import { parseError } from "@/utils/parseError";
 import { TODO } from "@squared/context";
 import { Ellipsis } from "lucide-react";
 import type { MemberWithRole } from "./data-table";
@@ -17,13 +18,13 @@ const RemoveMemberButton = ({
 	page,
 	pageId,
 	membersWithRoles,
-	setPageUsers,
+	refetch,
 }: {
 	userId: string;
 	page: string | undefined;
 	pageId: string | undefined;
 	membersWithRoles: MemberWithRole[] | undefined;
-	setPageUsers: ((users: MemberWithRole[]) => void) | undefined;
+	refetch: () => void;
 }) => {
 	const currentUser = useUserStore((state) => state.user);
 	const { toast } = useToast();
@@ -38,14 +39,14 @@ const RemoveMemberButton = ({
 					workspaceId: pageId,
 				});
 				toast({ title: "Member removed" });
-				membersWithRoles &&
-					setPageUsers &&
-					setPageUsers(
-						membersWithRoles.filter((pageUser) => pageUser.id !== userId),
-					);
+				membersWithRoles && refetch();
 			} catch (error) {
 				console.error(error);
-				toast({ title: "Member could not be removed" });
+				toast({
+					title: "Member could not be removed",
+					description: parseError(error, "unknown error"),
+					variant: "destructive",
+				});
 			}
 		} else {
 			try {
@@ -54,14 +55,14 @@ const RemoveMemberButton = ({
 					teamId: pageId,
 				});
 				toast({ title: "Member removed" });
-				membersWithRoles &&
-					setPageUsers &&
-					setPageUsers(
-						membersWithRoles.filter((pageUser) => pageUser.id !== userId),
-					);
+				membersWithRoles && refetch();
 			} catch (error) {
 				console.error(error);
-				toast({ title: "Member could not be removed" });
+				toast({
+					title: "Member could not be removed",
+					description: parseError(error, "unknown error"),
+					variant: "destructive",
+				});
 			}
 		}
 	};

@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Send meeting notification to Discord
         env:
-          DISCORD_MEETINGS_URL: ${{ secrets.DISCORD_MEETINGS_URL }}
+          DISCORD_MEETINGS_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           MESSAGE="@everyone There is a meeting scheduled today!"
 

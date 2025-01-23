@@ -21,7 +21,9 @@ export function useTaskDashboard() {
 		workspace,
 		error: workspaceError,
 	} = useWorkspaces();
-	const { tasks, setTasks, updateTask } = useTaskStore((state) => state);
+	const { tasks, setTasks, updateTask, setAllBlockedTaskIds } = useTaskStore(
+		(state) => state,
+	);
 	const user = useUserStore((state) => state.user);
 
 	const params = useParams();
@@ -47,6 +49,20 @@ export function useTaskDashboard() {
 		enabled: !!team && !teamLoading && !workspaceLoading,
 	});
 
+	const allBlockedTaskIdsQuery = useQuery({
+		queryKey: ["allBlockedTasksIds", team?.id],
+		queryFn: async () => {
+			if (!team) throw new Error("Team not found");
+			const res = await client.task.getAllBlockedTaskIds.$get({
+				teamId: team.id,
+			});
+			const allIds = await res.json();
+			setAllBlockedTaskIds(allIds);
+			return allIds;
+		},
+		enabled: !!team?.id,
+	});
+
 	const updateTaskMutation = useMutation({
 		mutationFn: async ({
 			taskId,
@@ -56,7 +72,6 @@ export function useTaskDashboard() {
 			const res = await client.task.updateStatus.$post({
 				taskId,
 				status,
-				updaterId: user.id,
 			});
 			const updatedTask = await res.json();
 			updateTask(updatedTask);
@@ -81,10 +96,21 @@ export function useTaskDashboard() {
 			taskId: draggedTask.id,
 			status: destination.droppableId as Status,
 		});
+		await queryClient.invalidateQueries({
+			queryKey: ["allBlockedTasksIds", team?.id],
+		});
 	};
 
-	const loading = teamLoading || workspaceLoading || isLoading;
-	const error = teamError || workspaceError || parseError(tasksError);
+	const loading =
+		teamLoading ||
+		workspaceLoading ||
+		allBlockedTaskIdsQuery.isLoading ||
+		isLoading;
+	const error =
+		teamError ||
+		workspaceError ||
+		allBlockedTaskIdsQuery.error ||
+		parseError(tasksError);
 
 	return {
 		loading,

@@ -9,20 +9,20 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
-import { eventService, taskService } from "@/lib/services";
-import { useEventStore, useTaskStore, useUserStore } from "@/store";
+import { eventService } from "@/lib/services";
+import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status, TaskEvent } from "@squared/db";
+import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
-	const user = useUserStore((state) => state.user);
 
 	if (!currentTask) return null;
 	const { id: taskId, status: sidebarStatus } = currentTask;
@@ -32,29 +32,31 @@ const StatusDropdown = () => {
 		updateItem(newStatus);
 	};
 
-	const updateItem = async (newStatus: Status) => {
-		try {
-			updateTask(
-				await taskService.updateTask(TODO, {
-					id: taskId,
-					updaterId: user?.id || "",
+	const { mutate: updateItem } = useMutation({
+		mutationKey: ["updateTask", taskId],
+		mutationFn: async (newStatus: Status) => {
+			const res = await client.task.updateStatus
+				.$post({
+					taskId,
 					status: newStatus,
-				}),
-			);
+				})
+				.then((res) => res.json());
 			setCurrentTask({ ...currentTask, status: newStatus });
-
 			const updatedEvents = await eventService.getTaskEvents(TODO, {
 				taskId: taskId,
 			});
 			// TODO: Will remove type coercion once commits are implemented
 			setEvents(updatedEvents as TaskEvent[]);
-		} catch {
+			return res;
+		},
+		onError: (error) => {
 			toast({
 				title: "Error updating status",
+				description: error.message,
 				variant: "destructive",
 			});
-		}
-	};
+		},
+	});
 
 	return (
 		<Select
@@ -73,7 +75,16 @@ const StatusDropdown = () => {
 			</SelectTrigger>
 			<SelectContent>
 				{statusOptions.map((status) => (
-					<SelectItem key={status} value={status}>
+					<SelectItem
+						key={status}
+						value={status}
+						disabled={
+							!!currentTaskBlockedBy.length &&
+							(status === "done" ||
+								status === "inReview" ||
+								status === "inProgress")
+						}
+					>
 						<div className="flex items-center justify-between w-full">
 							<div className="flex items-center">
 								<StatusIcon status={status} />

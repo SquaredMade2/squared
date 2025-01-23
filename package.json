@@ -9,6 +9,7 @@
     "db:backup": "cd ./packages/db && dotenv -e .env -- sh -c 'echo $POSTGRES_PRISMA_URL && pg_dump --file=../../database/$(date +%d-%m-%Y).bak --dbname=$(echo $POSTGRES_PRISMA_URL | sed \"s/[?&]pgbouncer=true//\")'",
     "db:gen": "turbo run db:gen",
     "db:deploy": "pnpm --filter=@squared/db db:deploy",
+    "db:migrate": "pnpm --filter=@squared/db migrate",
     "db:push": "pnpm --filter=@squared/db db:push",
     "docker:build": "docker compose build",
     "docker:db:init": "pnpm docker:db && pnpm docker:db:seed",
@@ -39,7 +40,7 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.4.1",
     "@types/node": "^22.5.2",
-    "dotenv-cli": "^7.4.2",
+    "dotenv-cli": "^8.0.0",
     "husky": "^9.1.5",
     "knip": "^5.29.1",
     "rimraf": "^6.0.1",
@@ -64,5 +65,5 @@
       ]
     }
   },
-  "packageManager": "pnpm@9.14.4"
+  "packageManager": "pnpm@9.15.4"
 }
