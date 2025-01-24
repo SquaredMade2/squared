@@ -6,8 +6,9 @@ import { useWorkspaceStore } from "@/store";
 import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import WorkspaceNotFoundPage from "./WorkspaceNotFoundPage";
 
 export default function Home() {
@@ -20,9 +21,9 @@ export default function Home() {
 	const setWorkspace = useWorkspaceStore((state) => state.setWorkspace);
 	const workspaceUrl = parseParams(params.workspace) ?? "";
 
-	useEffect(() => {
-		const fetchWorkspace = async () => {
-			setLoading(true);
+	useQuery({
+		queryKey: ["workspacePage", workspaceUrl],
+		queryFn: async () => {
 			if (!user) {
 				router.push("/sign-in");
 				return;
@@ -42,13 +43,15 @@ export default function Home() {
 				userId: user.id,
 				workspaceId: currentWorkspace.id,
 			});
-			if (allTeams) {
+			if (allTeams[0].identifier) {
+				console.log("FirstTeamIdentifier: ", allTeams[0].identifier);
 				router.push(`/${workspaceUrl}/team/${allTeams[0].identifier}/all`);
 			}
-			setLoading(false);
-		};
-		fetchWorkspace();
-	}, [router, user, workspaceUrl]);
+			return allTeams;
+		},
+		enabled: !!user && !!parseParams(workspaceUrl),
+		retry: true,
+	});
 
 	return (
 		<>
