@@ -20,6 +20,7 @@ import {
 	savedFilterType,
 	sprintStatus,
 	status,
+	workspaceRole,
 } from "./types";
 
 export const teamsTable = pgTable(
@@ -604,6 +605,7 @@ export const userWorkspacesTable = pgTable(
 	{
 		workspaceId: uuid().notNull(),
 		userId: text().notNull(),
+		role: workspaceRole().notNull(),
 	},
 	(table) => [
 		foreignKey({

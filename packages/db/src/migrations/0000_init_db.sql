@@ -6,6 +6,7 @@ CREATE TYPE "public"."RetrospectiveItemType" AS ENUM('wentWell', 'toImprove', 'a
 CREATE TYPE "public"."SavedFilterType" AS ENUM('TEAM', 'WORKSPACE');--> statement-breakpoint
 CREATE TYPE "public"."SprintStatus" AS ENUM('PLANNED', 'ACTIVE', 'COMPLETED');--> statement-breakpoint
 CREATE TYPE "public"."Status" AS ENUM('backlog', 'todo', 'inProgress', 'inReview', 'done', 'canceled', 'archived');--> statement-breakpoint
+CREATE TYPE "public"."WorkspaceRole" AS ENUM('owner', 'admin', 'member');--> statement-breakpoint
 CREATE TABLE "_BlockedTasks" (
 	"A" uuid NOT NULL,
 	"B" uuid NOT NULL,
@@ -170,6 +171,7 @@ CREATE TABLE "UserTeam" (
 CREATE TABLE "UserWorkspace" (
 	"workspaceId" uuid NOT NULL,
 	"userId" text NOT NULL,
+	"role" "WorkspaceRole" NOT NULL,
 	CONSTRAINT "UserWorkspace_pkey" PRIMARY KEY("workspaceId","userId")
 );
 --> statement-breakpoint

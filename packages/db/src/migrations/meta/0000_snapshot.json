@@ -1,5 +1,5 @@
 {
-  "id": "f1c6d863-1e07-40bc-92e7-b746c9a675a9",
+  "id": "84ed968f-433b-40fa-9399-7c2e72fd2425",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1571,6 +1571,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "WorkspaceRole",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -2012,6 +2019,15 @@
         "done",
         "canceled",
         "archived"
+      ]
+    },
+    "public.WorkspaceRole": {
+      "name": "WorkspaceRole",
+      "schema": "public",
+      "values": [
+        "owner",
+        "admin",
+        "member"
       ]
     }
   },

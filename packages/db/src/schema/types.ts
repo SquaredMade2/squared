@@ -37,6 +37,12 @@ export const status = pgEnum("Status", [
 	"archived",
 ]);
 
+export const workspaceRole = pgEnum("WorkspaceRole", [
+	"owner",
+	"admin",
+	"member",
+]);
+
 export type FilterValue =
 	| string
 	| number
@@ -77,6 +83,8 @@ export type Priority = (typeof priority.enumValues)[number];
 export const RetrospectiveItemType = objEnum(retrospectiveItemType.enumValues);
 export type RetrospectiveItemType =
 	(typeof retrospectiveItemType.enumValues)[number];
+export const WorkspaceRoleType = objEnum(workspaceRole.enumValues);
+export type WorkspaceRoleType = (typeof workspaceRole.enumValues)[number];
 export const SavedFilterType = objEnum(savedFilterType.enumValues);
 export type SavedFilterType = (typeof savedFilterType.enumValues)[number];
 export const SprintStatus = objEnum(sprintStatus.enumValues);
