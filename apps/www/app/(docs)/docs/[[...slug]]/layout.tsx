@@ -13,16 +13,21 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function Layout({
-	children,
-	params,
-}: Readonly<{
-	children: React.ReactNode;
-	params: { slug?: string[] };
-}>) {
-	const currentSlug = params.slug?.join("/") || "index";
+export default async function Layout(
+    props: Readonly<{
+        children: React.ReactNode;
+        params: { slug?: string[] };
+    }>
+) {
+    const params = await props.params;
 
-	return (
+    const {
+        children
+    } = props;
+
+    const currentSlug = params.slug?.join("/") || "index";
+
+    return (
 		<>
 			<NavBar />
 			<DocsLayout currentSlug={currentSlug}>{children}</DocsLayout>

@@ -27,7 +27,7 @@ export function useTaskDashboard() {
 	const user = useUserStore((state) => state.user);
 
 	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier);
+	const teamIdentifier = parseParams(params.identifier) ?? "";
 
 	const queryClient = useQueryClient();
 

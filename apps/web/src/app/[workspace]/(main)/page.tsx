@@ -3,6 +3,7 @@
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
 import { teamService, workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
+import { parseParams } from "@/utils/parseParams";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { useParams, useRouter } from "next/navigation";
@@ -17,10 +18,7 @@ export default function Home() {
 
 	const { user } = useUser();
 	const setWorkspace = useWorkspaceStore((state) => state.setWorkspace);
-	let workspaceUrl = params.workspace;
-	if (Array.isArray(workspaceUrl)) {
-		workspaceUrl = workspaceUrl[0];
-	}
+	const workspaceUrl = parseParams(params.workspace) ?? "";
 
 	useEffect(() => {
 		const fetchWorkspace = async () => {
