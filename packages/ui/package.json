@@ -477,7 +477,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm --prefix ./src/icons run build",
+    "build:ui": "node build.mjs",
     "build:stories": "storybook build",
     "check-types": "tsc --skipLibCheck --noEmit",
     "sb": "pnpm storybook",
