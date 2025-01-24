@@ -1,7 +1,6 @@
 import { hideOthers } from "aria-hidden";
 import { RemoveScroll } from "react-remove-scroll";
 
-import { toHaveNoViolations } from "jest-axe";
 import {
 	Children,
 	type ComponentPropsWithoutRef,
@@ -27,8 +26,6 @@ import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
 import { Slot } from "../slot";
 import { useControllableState } from "../use-controllable-state";
-
-expect.extend(toHaveNoViolations);
 
 /* -------------------------------------------------------------------------------------------------
  * Dialog
@@ -625,35 +622,35 @@ const Description = DialogDescription;
 const Close = DialogClose;
 
 export {
-	createDialogScope,
+	Close,
+	Content,
+	Description,
 	//
 	Dialog,
-	DialogTrigger,
-	DialogPortal,
-	DialogOverlay,
-	DialogContent,
-	DialogTitle,
-	DialogDescription,
 	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogOverlay,
+	DialogPortal,
+	DialogTitle,
+	DialogTrigger,
+	Overlay,
+	Portal,
 	//
 	Root,
-	Trigger,
-	Portal,
-	Overlay,
-	Content,
 	Title,
-	Description,
-	Close,
+	Trigger,
 	//
 	WarningProvider,
+	createDialogScope,
 };
 export type {
-	DialogProps,
-	DialogTriggerProps,
-	DialogPortalProps,
-	DialogOverlayProps,
-	DialogContentProps,
-	DialogTitleProps,
-	DialogDescriptionProps,
 	DialogCloseProps,
+	DialogContentProps,
+	DialogDescriptionProps,
+	DialogOverlayProps,
+	DialogPortalProps,
+	DialogProps,
+	DialogTitleProps,
+	DialogTriggerProps,
 };

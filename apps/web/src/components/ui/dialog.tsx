@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import * as DialogPrimitive from "@repo/ui/dialog";
+import * as DialogPrimitive from "@squaredmade/ui/dialog";
 import { X } from "lucide-react";
 import * as React from "react";
 

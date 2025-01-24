@@ -36,7 +36,7 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
-} from "@repo/ui/dropdown-menu";
+} from "@squaredmade/ui/dropdown-menu";
 import { TODO } from "@squared/context";
 import type { Effort } from "@squared/db";
 import { ChevronDown } from "lucide-react";

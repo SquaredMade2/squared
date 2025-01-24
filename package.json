@@ -5,7 +5,7 @@
   "scripts": {
     "api:gen": "pnpm run --filter=api gen",
     "build": "turbo run build",
-    "build:icons": "pnpm --filter=@squared/ui run build",
+    "build:icons": "pnpm --filter=@squaredmade/ui run build",
     "db:backup": "cd ./packages/db && dotenv -e .env -- sh -c 'echo $POSTGRES_PRISMA_URL && pg_dump --file=../../database/$(date +%d-%m-%Y).bak --dbname=$(echo $POSTGRES_PRISMA_URL | sed \"s/[?&]pgbouncer=true//\")'",
     "db:gen": "turbo run db:gen",
     "db:deploy": "pnpm --filter=@squared/db db:deploy",
@@ -27,7 +27,7 @@
     "lint:fix": "biome lint --write .",
     "reset": "turbo run reset && pnpm install",
     "start": "turbo run start",
-    "storybook": "pnpm run --filter=@squared/ui storybook",
+    "storybook": "pnpm run --filter=@squaredmade/ui storybook",
     "studio": "turbo run studio",
     "test": "turbo run test",
     "test:web": "turbo run test --filter=web",

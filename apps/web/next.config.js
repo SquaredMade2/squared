@@ -4,7 +4,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@repo/ui"],
+  transpilePackages: ["@squaredmade/ui"],
   productionBrowserSourceMaps: true,
   output: "standalone",
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],

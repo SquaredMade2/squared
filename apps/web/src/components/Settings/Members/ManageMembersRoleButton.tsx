@@ -9,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { useUserStore } from "@/store";
 import { parseError } from "@/utils/parseError";
-import { DropdownMenuGroup } from "@repo/ui/dropdown-menu";
+import { DropdownMenuGroup } from "@squaredmade/ui/dropdown-menu";
 import type { WorkspaceRole } from "@squared/db";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserCog } from "lucide-react";

@@ -1,7 +1,7 @@
 import { eventService, userService, workspaceService } from "@/lib/services";
 import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { TooltipContent } from "@repo/ui/tooltip";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
 import type { ColumnDef } from "@tanstack/react-table";
