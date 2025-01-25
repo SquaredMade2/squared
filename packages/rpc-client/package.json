@@ -25,7 +25,7 @@
     "@squared/context": "workspace:*"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@squared/typescript-config": "workspace:*",
     "@squared/builder": "workspace:*",
     "@types/node": "^22.10.10",
     "typescript": "^5.2.2"

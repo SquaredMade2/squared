@@ -19,9 +19,9 @@ This Turborepo includes the following:
 - `web`: a [Next.js](https://nextjs.org/) app
 - `api`: an [Express](https://expressjs.com/) server
 - `@squaredmade/ui`: a React component library
-- `@repo/logger`: Isomorphic logger (a small wrapper around console.log)
-- `@repo/eslint-config`: ESLint presets
-- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
+- `@squared/logger`: Isomorphic logger (a small wrapper around console.log)
+- `@squared/eslint-config`: ESLint presets
+- `@squared/typescript-config`: tsconfig.json's used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -41,7 +41,7 @@ COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.ym
 docker-compose -f docker-compose.yml up -d
 ```
 
-Open http://localhost:3000.
+Open <http://localhost:3000>.
 
 To shutdown all running containers:
 

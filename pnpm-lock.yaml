@@ -283,7 +283,7 @@ importers:
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@squared/db':
@@ -440,7 +440,7 @@ importers:
         specifier: ^3.23.8
         version: 3.24.1
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@types/node':
@@ -471,7 +471,7 @@ importers:
         specifier: ^2.7.0
         version: 2.8.1
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@squared/logger':
@@ -497,7 +497,7 @@ importers:
 
   packages/context:
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@squared/builder':
@@ -513,7 +513,7 @@ importers:
         specifier: ^6.0.0
         version: 6.2.1(prisma@6.2.1)
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       prisma:
@@ -522,7 +522,7 @@ importers:
 
   packages/fonts:
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -572,7 +572,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -603,7 +603,7 @@ importers:
         specifier: ^3.23.8
         version: 3.24.1
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@squared/builder':
@@ -637,7 +637,7 @@ importers:
         specifier: workspace:*
         version: link:../context
     devDependencies:
-      '@repo/typescript-config':
+      '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@squared/builder':
