@@ -3,10 +3,13 @@ import { RenameModal } from "@/components/Modals";
 import { useViewStore } from "@/store";
 import { Status } from "@squared/db";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import GroupColumn from "./GroupColumn";
+import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
 
 const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
+	const [showTasks, setShowTasks] = useState(true);
 	const { view, displayOptions } = useViewStore((state) => state);
 	const { groupTasksBy } = displayOptions;
 	const pathname = usePathname();
@@ -40,18 +43,35 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 		}
 	}
 
+	const isListView = view === "list";
+
 	return (
 		<>
 			<RenameModal />
-			<div className={view === "list" ? "block min-w-full" : "flex"}>
-				{groupedColumns.map((column: GroupedColumn) => (
-					<GroupColumn
-						key={column.group}
-						group={column.group}
-						tasks={column.tasks}
-						currentView={view}
-					/>
-				))}
+			<div className={isListView ? "block min-w-full" : "flex-col"}>
+				<div className="flex gap-2">
+					{groupedColumns.map((column: GroupedColumn) => (
+						<TaskColumnTitle
+							key={column.group}
+							title={column.group}
+							showTasks={showTasks}
+							setShowTasks={setShowTasks}
+							numberOfTasks={column.tasks.length}
+							isListView={isListView}
+						/>
+					))}
+				</div>
+				<div className="flex gap-2">
+					{groupedColumns.map((column: GroupedColumn) => (
+						<GroupColumn
+							key={column.group}
+							group={column.group}
+							showTasks={showTasks}
+							tasks={column.tasks}
+							currentView={view}
+						/>
+					))}
+				</div>
 			</div>
 		</>
 	);

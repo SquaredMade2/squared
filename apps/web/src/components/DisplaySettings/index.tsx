@@ -5,9 +5,9 @@ import {
 	type DisplayOptions,
 	type DisplayProperty,
 	type TaskGroup,
-	TaskGroupOptions,
 	type TaskOrder,
 	TaskOrderOptions,
+	TaskRowOptions,
 	type View,
 } from "@/store/views";
 import {
@@ -58,10 +58,11 @@ const TopNavBarDisplay = () => {
 	const setOptions = view === "grid" ? setGridViewOptions : setListViewOptions;
 
 	const { showEmptyGroups, displayProperties } = currentOptions;
-	const { taskOrder, groupTasksBy, showCompletedTasks } = displayOptions;
+	const { taskOrder, groupTasksBy, showCompletedTasks, groupRowsBy } =
+		displayOptions;
 
 	const orderByOptions: TaskOrder[] = TaskOrderOptions;
-	const groupByOptions: TaskGroup[] = TaskGroupOptions;
+	const groupByOptions: TaskGroup[] = TaskRowOptions;
 	const completedPeriodOptions: CompletedTaskPeriod[] =
 		CompletedTaskPeriodOptions;
 
@@ -186,6 +187,35 @@ const TopNavBarDisplay = () => {
 									</SelectTrigger>
 									<SelectContent>
 										{groupByOptions.map((option) => (
+											<SelectItem
+												key={option}
+												value={option}
+												className="text-xs"
+											>
+												{option}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="flex items-center justify-between mb-3">
+								<span className="text-xs text-foreground mr-4">Rows</span>
+								<Select
+									onValueChange={(value) =>
+										setOptions({ groupRowsBy: value as TaskGroup & "None" })
+									}
+									value={groupRowsBy}
+								>
+									<SelectTrigger>
+										<SelectValue>
+											<div className="w-full flex items-center justify-between">
+												<Layers className="size-4" />
+												<span className="mx-2 text-xs">{groupRowsBy}</span>
+											</div>
+										</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
+										{TaskRowOptions.map((option) => (
 											<SelectItem
 												key={option}
 												value={option}

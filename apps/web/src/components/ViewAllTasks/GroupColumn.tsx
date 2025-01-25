@@ -1,21 +1,23 @@
-import { useTaskStore, useUserStore, useViewStore } from "@/store";
-import { useFilterStore } from "@/store";
+import {
+	useFilterStore,
+	useTaskStore,
+	useUserStore,
+	useViewStore,
+} from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
 	compareNullableStrings,
 } from "@/utils/compareSorting";
-import { Droppable } from "@hello-pangea/dnd";
 import type {
 	DroppableProvided,
 	DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
 import TaskCard from "./TaskCard";
-import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
 const priorityOrder = [
 	Priority.noPriority,
@@ -35,8 +37,12 @@ const statusOrder = [
 	Status.archived,
 ];
 
-const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
-	const [showTasks, setShowTasks] = useState(true);
+const GroupColumn = ({
+	group,
+	tasks,
+	currentView: view,
+	showTasks,
+}: GroupColumnProps) => {
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
@@ -48,13 +54,13 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	const currentSavedFilter = pathname.split("/").includes("views")
 		? savedFilters.filter((filter) => {
-			const filterSlugArray = filter.id.split("-");
-			const filterSlug = filterSlugArray[0];
+				const filterSlugArray = filter.id.split("-");
+				const filterSlug = filterSlugArray[0];
 
-			const pathNameSlug = pathname.split("-").pop();
+				const pathNameSlug = pathname.split("-").pop();
 
-			return filterSlug === pathNameSlug;
-		})[0]
+				return filterSlug === pathNameSlug;
+			})[0]
 		: null;
 
 	const getParentTaskIds = () => {
@@ -120,7 +126,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const renderTask = (task: Task, index: number) => (
 		<div
 			key={task.id}
-			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-72"}`}
+			className={`mb-2 last:mb-0 ${isListView ? "w-full rounded-b-lg" : "w-full"}`}
 		>
 			<TaskCard
 				task={task}
@@ -148,8 +154,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
-					className={`mt-1 bg-secondary dark:bg-secondary/30 ${isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
-						}`}
+					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+						isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
+					}`}
 				>
 					{subtasks.map((subtask, subIndex) => (
 						<TaskCard
@@ -169,8 +176,9 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
 		<div
 			key={parentTask?.id}
-			className={`mt-1 bg-secondary dark:bg-secondary/30 ${isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
-				}`}
+			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
+				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
+			}`}
 		>
 			<span
 				className={`text-accent-foreground truncate max-w-[250px] inline-block ${isListView ? "ml-10" : "ml-2"}`}
@@ -269,17 +277,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	return (
 		<div
-			className={
-				isListView ? "mb-2 w-full" : "pb-2 pr-2 w-[300px] flex-shrink-0"
-			}
+			className={isListView ? "mb-2 w-full" : "pb-2 pr-2 w-72 flex-shrink-0"}
 		>
-			<TaskColumnTitle
-				title={group}
-				showTasks={showTasks}
-				setShowTasks={setShowTasks}
-				numberOfTasks={tasks.length}
-				isListView={isListView}
-			/>
 			<Droppable
 				droppableId={group}
 				type="TASK"
@@ -293,14 +292,15 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				) => (
 					<div
 						className={`
-							${view === "grid"
-								? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
-								: "flex flex-col z-30 w-full gap-2 items-center h-full"
+							${
+								view === "grid"
+									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
+									: "flex flex-col z-30 w-full gap-2 items-center h-full"
 							}
 							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
 							`}
 					>
-						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
+						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
 							<div className="w-full grow inline-flex">
 								<div
 									ref={dropProvided.innerRef}

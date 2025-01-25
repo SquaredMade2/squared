@@ -24,6 +24,7 @@ export const TaskGroupOptions = [
 	"Label",
 	// "Parent Task",
 ];
+export const TaskRowOptions = [...TaskGroupOptions, "None"];
 
 export type TaskGroup = (typeof TaskGroupOptions)[number];
 
@@ -52,6 +53,7 @@ export interface DisplayOptions {
 		orderAscending: boolean;
 	};
 	groupTasksBy: TaskGroup;
+	groupRowsBy: TaskGroup & "None";
 	showCompletedTasks: {
 		show: boolean;
 		period: CompletedTaskPeriod;
