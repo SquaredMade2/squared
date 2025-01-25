@@ -135,6 +135,7 @@ const config = {
 	},
 	plugins: [
 		require("tailwindcss-animate"),
+		require("tailwind-scrollbar"),
 		require("@squared/fonts/tailwind-plugin"),
 	],
 } satisfies Config;
