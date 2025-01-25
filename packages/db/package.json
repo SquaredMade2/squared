@@ -14,12 +14,14 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
+    "@prisma/client": "^6.2.1",
     "drizzle-orm": "^0.38.3",
     "pg": "^8.13.1",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@squared/typescript-config": "workspace:*",
+    "@types/pg": "^8.11.11",
     "@types/ws": "^8.5.13",
     "drizzle-kit": "^0.30.1"
   }
