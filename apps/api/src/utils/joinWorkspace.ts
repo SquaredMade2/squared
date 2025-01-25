@@ -125,6 +125,7 @@ export const joinWorkspace = async (
 			db.insert(userWorkspacesTable).values({
 				userId,
 				workspaceId: decoded.workspaceId,
+				role: "member",
 			}),
 			db.insert(userTeamsTable).values(
 				teams.map((team) => ({

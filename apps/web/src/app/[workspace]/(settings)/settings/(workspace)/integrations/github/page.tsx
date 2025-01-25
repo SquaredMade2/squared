@@ -1,16 +1,16 @@
 "use client";
 import SettingsTopNavBar from "@/components/Settings/SettingsTopNavBar";
 import { GithubIcon } from "@/components/Svg";
-import { userService } from "@/lib/services";
-import { useUserStore } from "@/store";
-import { TODO } from "@squared/context";
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@squaredmade/ui/card";
+} from "@/components/ui/card";
+import { userService } from "@/lib/services";
+import { useUserStore } from "@/store";
+import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

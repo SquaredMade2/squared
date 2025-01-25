@@ -1,10 +1,10 @@
-import type { Task } from "@squared/db";
-import { Button } from "@squaredmade/ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@squaredmade/ui/popover";
+} from "@/components/ui/popover";
+import type { Task } from "@squared/db";
 import { Ellipsis } from "lucide-react";
 import DeleteTaskModal from "../DeleteTaskModal";
 

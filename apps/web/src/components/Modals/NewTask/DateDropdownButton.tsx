@@ -4,15 +4,15 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as React from "react";
 
-import { useModalStore } from "@/store";
-import { cn } from "@/utils/cn";
-import { Button } from "@squaredmade/ui/button";
-import { Calendar } from "@squaredmade/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@squaredmade/ui/popover";
+} from "@/components/ui/popover";
+import { useModalStore } from "@/store";
+import { cn } from "@/utils/cn";
 import { useEffect } from "react";
 
 export function DateDropdownButton() {

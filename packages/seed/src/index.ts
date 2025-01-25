@@ -38,7 +38,7 @@ async function seedDB() {
 		const user = await addMainUser(tx);
 
 		for (const workspace of workspaces) {
-			await addUserToWorkspace(tx, user, workspace);
+			await addUserToWorkspace(tx, user, workspace, true);
 
 			const numTeams = faker.number.int({ min: 1, max: 2 });
 
@@ -49,7 +49,7 @@ async function seedDB() {
 				const users = [user];
 				for (let i = 0; i < numUsers; i++) {
 					const newUser = await addUser(tx);
-					await addUserToWorkspace(tx, newUser, workspace);
+					await addUserToWorkspace(tx, newUser, workspace, false);
 					await addUserToTeam(tx, newUser, team);
 					users.push(newUser);
 				}
@@ -120,10 +120,12 @@ async function addUserToWorkspace(
 	tx: TransactionClient,
 	user: User,
 	workspace: Workspace,
+	isFirstUser: boolean,
 ) {
 	await tx.insert(userWorkspacesTable).values({
 		userId: user.externalId,
 		workspaceId: workspace.id,
+		role: isFirstUser ? "owner" : "member",
 	});
 }
 

@@ -8,6 +8,7 @@ import {
 	type User,
 	type Workspace,
 	type WorkspaceLabel,
+	type WorkspaceRole,
 	and,
 	eq,
 	inArray,
@@ -90,6 +91,7 @@ export class WorkspaceService implements WorkspaceRpc {
 			await tx.insert(userWorkspacesTable).values({
 				userId: userId,
 				workspaceId: newWorkspace.id,
+				role: "owner",
 			});
 
 			const newLabels = await tx
@@ -425,6 +427,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		userId: string,
 		workspaceId: string,
 		teams: { id: string }[],
+		role: WorkspaceRole = "member",
 	) {
 		await this.db.transaction(async (tx) => {
 			await Promise.all([
@@ -434,6 +437,7 @@ export class WorkspaceService implements WorkspaceRpc {
 					.values({
 						userId,
 						workspaceId,
+						role,
 					}),
 
 				// Create user-team connections

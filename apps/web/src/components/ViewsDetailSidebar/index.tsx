@@ -10,6 +10,10 @@ import type { SavedFilter } from "@/store/filters";
 import { getInitials } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Task } from "@squared/db";
+import { Info, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import LabelBadge from "../LabelBadges";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -17,30 +21,12 @@ import {
 	AlertDialogContent,
 	AlertDialogFooter,
 	AlertDialogHeader,
-} from "@squaredmade/ui/alert-dialog";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@squaredmade/ui/avatar";
-import { Badge } from "@squaredmade/ui/badge";
-import { Button } from "@squaredmade/ui/button";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@squaredmade/ui/card";
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@squaredmade/ui/tabs";
-import { Info, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import LabelBadge from "../LabelBadges";
+} from "../ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface ViewsDetailSidebarProps {
 	filter: SavedFilter;

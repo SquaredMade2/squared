@@ -5,38 +5,35 @@ import { setupSwagger } from "../../swagger";
 import { toMutationHandler, toQueryHandler } from "./route";
 import type { Route } from "./route";
 
-
-import * as $bbf840 from "./integration/github/webhook";
 import * as $8b611e from "./integration/github/oauth";
+import * as $bbf840 from "./integration/github/webhook";
 
-export type AllRouteDeps =
-  & Parameters<typeof $bbf840.createRoute>[0]
-  & Parameters<typeof $8b611e.createRoute>[0]
+export type AllRouteDeps = Parameters<typeof $bbf840.createRoute>[0] &
+	Parameters<typeof $8b611e.createRoute>[0];
 
 export function createApiRouter(router: Router, deps: AllRouteDeps) {
+	{
+		type Params = {};
+		const r: Route<Params> = $bbf840.createRoute(deps);
 
-  {
-    type Params = {  };
-    const r: Route<Params> = $bbf840.createRoute(deps);
+		router.get("/api/integration/github/webhook", toQueryHandler(r.GET));
+		router.post("/api/integration/github/webhook", toMutationHandler(r.POST));
+		router.put("/api/integration/github/webhook", toMutationHandler(r.PUT));
+		router.delete("/api/integration/github/webhook", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/integration/github/webhook", toQueryHandler(r.GET));
-    router.post("/api/integration/github/webhook", toMutationHandler(r.POST));
-    router.put("/api/integration/github/webhook", toMutationHandler(r.PUT));
-    router.delete("/api/integration/github/webhook", toQueryHandler(r.DELETE));
-  }
+	{
+		type Params = {};
+		const r: Route<Params> = $8b611e.createRoute(deps);
 
-  {
-    type Params = {  };
-    const r: Route<Params> = $8b611e.createRoute(deps);
+		router.get("/api/integration/github/oauth", toQueryHandler(r.GET));
+		router.post("/api/integration/github/oauth", toMutationHandler(r.POST));
+		router.put("/api/integration/github/oauth", toMutationHandler(r.PUT));
+		router.delete("/api/integration/github/oauth", toQueryHandler(r.DELETE));
+	}
 
-    router.get("/api/integration/github/oauth", toQueryHandler(r.GET));
-    router.post("/api/integration/github/oauth", toMutationHandler(r.POST));
-    router.put("/api/integration/github/oauth", toMutationHandler(r.PUT));
-    router.delete("/api/integration/github/oauth", toQueryHandler(r.DELETE));
-  }
-
-  // Setup Swagger documentation
-   if (process.env.NODE_ENV !== 'test') {
-    setupSwagger(router);
-  }
+	// Setup Swagger documentation
+	if (process.env.NODE_ENV === "test") {
+		setupSwagger(router);
+	}
 }

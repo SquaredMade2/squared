@@ -17,7 +17,7 @@
     }
   },
   "scripts": {
-    "prepare": "pnpm run build",
+    "postinstall": "pnpm run build",
     "prebuild": "rimraf ./dist",
     "build": "squared-build src/index.ts/index.ts"
   },

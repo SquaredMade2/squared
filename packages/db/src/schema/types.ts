@@ -2,14 +2,18 @@ import { pgEnum } from "drizzle-orm/pg-core";
 import type { Task } from "./schema";
 
 export const activityType = pgEnum("ActivityType", ["TASK_EVENT", "COMMIT"]);
-export const effort = pgEnum("Effort", ["LINEAR", "FIBONACCI", "EXPONENTIAL"]);
+export const effortType = pgEnum("Effort", [
+	"LINEAR",
+	"FIBONACCI",
+	"EXPONENTIAL",
+]);
 export const notificationType = pgEnum("NotificationType", [
 	"ASSIGNED",
 	"PARTICIPATING",
 	"MENTIONED",
 	"CREATED",
 ]);
-export const priority = pgEnum("Priority", [
+export const priorityType = pgEnum("Priority", [
 	"noPriority",
 	"urgent",
 	"high",
@@ -22,12 +26,12 @@ export const retrospectiveItemType = pgEnum("RetrospectiveItemType", [
 	"actionItems",
 ]);
 export const savedFilterType = pgEnum("SavedFilterType", ["TEAM", "WORKSPACE"]);
-export const sprintStatus = pgEnum("SprintStatus", [
+export const sprintStatusType = pgEnum("SprintStatus", [
 	"PLANNED",
 	"ACTIVE",
 	"COMPLETED",
 ]);
-export const status = pgEnum("Status", [
+export const statusType = pgEnum("Status", [
 	"backlog",
 	"todo",
 	"inProgress",
@@ -37,7 +41,7 @@ export const status = pgEnum("Status", [
 	"archived",
 ]);
 
-export const workspaceRole = pgEnum("WorkspaceRole", [
+export const workspaceRoleType = pgEnum("WorkspaceRole", [
 	"owner",
 	"admin",
 	"member",
@@ -74,20 +78,20 @@ function objEnum<T extends string>(enumValues: readonly T[]) {
 
 export const Activity = objEnum(activityType.enumValues);
 export type Activity = (typeof activityType.enumValues)[number];
-export const Effort = objEnum(effort.enumValues);
-export type Effort = (typeof effort.enumValues)[number];
+export const Effort = objEnum(effortType.enumValues);
+export type Effort = (typeof effortType.enumValues)[number];
 export const NotificationType = objEnum(notificationType.enumValues);
 export type NotificationType = (typeof notificationType.enumValues)[number];
-export const Priority = objEnum(priority.enumValues);
-export type Priority = (typeof priority.enumValues)[number];
+export const Priority = objEnum(priorityType.enumValues);
+export type Priority = (typeof priorityType.enumValues)[number];
 export const RetrospectiveItemType = objEnum(retrospectiveItemType.enumValues);
 export type RetrospectiveItemType =
 	(typeof retrospectiveItemType.enumValues)[number];
-export const WorkspaceRoleType = objEnum(workspaceRole.enumValues);
-export type WorkspaceRoleType = (typeof workspaceRole.enumValues)[number];
+export const WorkspaceRole = objEnum(workspaceRoleType.enumValues);
+export type WorkspaceRole = (typeof workspaceRoleType.enumValues)[number];
 export const SavedFilterType = objEnum(savedFilterType.enumValues);
 export type SavedFilterType = (typeof savedFilterType.enumValues)[number];
-export const SprintStatus = objEnum(sprintStatus.enumValues);
-export type SprintStatus = (typeof sprintStatus.enumValues)[number];
-export const Status = objEnum(status.enumValues);
-export type Status = (typeof status.enumValues)[number];
+export const SprintStatus = objEnum(sprintStatusType.enumValues);
+export type SprintStatus = (typeof sprintStatusType.enumValues)[number];
+export const Status = objEnum(statusType.enumValues);
+export type Status = (typeof statusType.enumValues)[number];

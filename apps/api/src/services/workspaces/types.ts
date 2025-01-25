@@ -1,4 +1,4 @@
-import type { WorkspaceLabel } from "@squared/db";
+import type { WorkspaceLabel, WorkspaceRole } from "@squared/db";
 
 export type WorkspaceParams = {
 	url: string;
@@ -31,6 +31,7 @@ export interface WorkspaceRpc {
 	joinWorkspace: (args: {
 		token: string;
 		userId: string;
+		role?: WorkspaceRole;
 	}) => Promise<WorkspaceLabel | null>;
 	removeUserFromWorkspace: (args: {
 		workspaceId: string;

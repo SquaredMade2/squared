@@ -2,10 +2,12 @@ import {
 	type DBClient,
 	type Team,
 	type Workspace,
+	type WorkspaceRole,
 	and,
 	desc,
 	eq,
 	githubRepoInfoTable,
+	inArray,
 	teamsTable,
 	userTeamsTable,
 	userWorkspacesTable,
@@ -89,6 +91,35 @@ export class UserService implements UserRpc {
 			.then((user) => user[0]);
 	}
 
+	async getUserWorkspaceRole({
+		userId,
+		workspaceId,
+	}: {
+		userId: string;
+		workspaceId: string;
+	}): Promise<{ role: WorkspaceRole }> {
+		this.logger.info(
+			"Fetching user role for userId: %s in workspaceId: %s",
+			userId,
+			workspaceId,
+		);
+
+		const userWorkspace = await this.db
+			.select({ role: userWorkspacesTable.role })
+			.from(userWorkspacesTable)
+			.where(
+				and(
+					eq(userWorkspacesTable.userId, userId),
+					eq(userWorkspacesTable.workspaceId, workspaceId),
+				),
+			)
+			.limit(1)
+			.then((results) => results[0]);
+
+		if (!userWorkspace) throw new Error("User-Workspace connection not found");
+		return { role: userWorkspace.role };
+	}
+
 	async getWorkspaceUsers({ workspaceId }: { workspaceId: string }) {
 		this.logger.info("Fetching workspace users with id: %s", workspaceId);
 		return await this.db
@@ -100,6 +131,100 @@ export class UserService implements UserRpc {
 			)
 			.where(eq(userWorkspacesTable.workspaceId, workspaceId))
 			.then((users) => users.map((u) => u.User).filter((u) => !!u));
+	}
+
+	async getWorkspaceUsersWithRoles({ workspaceId }: { workspaceId: string }) {
+		this.logger.info("Fetching workspace users with id: %s", workspaceId);
+		const thingo = await this.db
+			.select()
+			.from(usersTable)
+			.leftJoin(
+				userWorkspacesTable,
+				eq(usersTable.externalId, userWorkspacesTable.userId),
+			)
+			.where(eq(userWorkspacesTable.workspaceId, workspaceId))
+			.limit(1)
+			.then((uw) => {
+				return uw.map((uuw) => {
+					return { ...uuw.User, role: uuw.UserWorkspace?.role ?? "member" };
+				});
+			});
+		return thingo;
+	}
+
+	async updateUsersRole({
+		callerId,
+		userId,
+		workspaceId,
+		newRole,
+	}: {
+		callerId: string;
+		userId: string;
+		workspaceId: string;
+		newRole: WorkspaceRole;
+	}) {
+		// Get both users current roles
+		const [callerRole, targetRole] = await this.db
+			.select()
+			.from(userWorkspacesTable)
+			.where(
+				and(
+					eq(userWorkspacesTable.workspaceId, workspaceId),
+					inArray(userWorkspacesTable.userId, [callerId, userId]),
+				),
+			);
+
+		if (!callerRole || !targetRole) {
+			throw new Error("One of the users was not found in workspace");
+		}
+
+		if (callerRole.role === "member") {
+			throw new Error("Members cannot modify roles");
+		}
+
+		if (
+			callerRole.role === "admin" &&
+			(targetRole.role === "owner" || targetRole.role === "admin")
+		) {
+			throw new Error("Admins cannot modify owner or other admin roles");
+		}
+
+		this.logger.info(
+			"User with id: %s is updating role for userId: %s to %s in workspace: %s",
+			callerId,
+			userId,
+			newRole,
+			workspaceId,
+		);
+
+		// Start a transaction to ensure both updates happen or neither happens
+		return await this.db.transaction(async (tx) => {
+			// Making sure there can only ever be one owner
+			if (newRole === "owner") {
+				await tx
+					.update(userWorkspacesTable)
+					.set({ role: "admin" })
+					.where(
+						and(
+							eq(userWorkspacesTable.workspaceId, workspaceId),
+							eq(userWorkspacesTable.role, "owner"),
+						),
+					);
+			}
+
+			const [result] = await tx
+				.update(userWorkspacesTable)
+				.set({ role: newRole })
+				.where(
+					and(
+						eq(userWorkspacesTable.userId, userId),
+						eq(userWorkspacesTable.workspaceId, workspaceId),
+					),
+				)
+				.returning();
+
+			return result;
+		});
 	}
 
 	async getTeamUsers({ teamId }: { teamId: string }) {

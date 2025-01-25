@@ -57,7 +57,6 @@ export default function TeamMembersPage() {
 				members={membersWithRoles}
 				team={team}
 				workspace={workspace}
-				admins={workspace?.admins || []}
 			/>
 		</MemberSettingsWrapper>
 	);

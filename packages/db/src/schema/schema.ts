@@ -13,14 +13,14 @@ import {
 } from "drizzle-orm/pg-core";
 import {
 	type FilterCondition,
-	effort,
+	effortType,
 	notificationType,
-	priority,
+	priorityType,
 	retrospectiveItemType,
 	savedFilterType,
-	sprintStatus,
-	status,
-	workspaceRole,
+	sprintStatusType,
+	statusType,
+	workspaceRoleType,
 } from "./types";
 
 export const teamsTable = pgTable(
@@ -35,7 +35,7 @@ export const teamsTable = pgTable(
 		cooldownDuration: integer().default(1).notNull(),
 		sprintStartDate: timestamp({ precision: 3 }).defaultNow().notNull(),
 		tasksPerSprint: integer().default(10).notNull(),
-		effort: effort().default("LINEAR").notNull(),
+		effort: effortType().default("LINEAR").notNull(),
 	},
 	(table) => [
 		uniqueIndex("Team_workspaceId_identifier_key").using(
@@ -101,7 +101,7 @@ export const sprintsTable = pgTable(
 		name: text().notNull(),
 		startDate: timestamp({ precision: 3 }).notNull(),
 		endDate: timestamp({ precision: 3 }).notNull(),
-		status: sprintStatus().notNull(),
+		status: sprintStatusType().notNull(),
 		teamId: uuid().notNull(),
 		createdAt: timestamp({ precision: 3 }).defaultNow().notNull(),
 		updatedAt: timestamp({ precision: 3 })
@@ -260,8 +260,8 @@ export const tasksTable = pgTable(
 		deleted: boolean().default(false).notNull(),
 		parentId: uuid(),
 		sprintId: uuid(),
-		status: status().default("backlog").notNull(),
-		priority: priority().default("noPriority").notNull(),
+		status: statusType().default("backlog").notNull(),
+		priority: priorityType().default("noPriority").notNull(),
 		order: integer().default(0).notNull(),
 		authorId: text().notNull(),
 		assigneeId: text(),
@@ -605,7 +605,7 @@ export const userWorkspacesTable = pgTable(
 	{
 		workspaceId: uuid().notNull(),
 		userId: text().notNull(),
-		role: workspaceRole().notNull(),
+		role: workspaceRoleType().notNull(),
 	},
 	(table) => [
 		foreignKey({

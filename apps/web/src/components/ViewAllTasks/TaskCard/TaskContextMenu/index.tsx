@@ -1,11 +1,11 @@
-import { useModalStore, useWorkspaceStore } from "@/store";
-import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import {
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
-} from "@squaredmade/ui/context-menu";
-import { useToast } from "@squaredmade/ui/hooks";
+} from "@/components/ui/context-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { useModalStore, useWorkspaceStore } from "@/store";
+import { formatUrl, sanitizeBranchName } from "@/utils/formatting";
 import {
 	// Calendar, Star, // Not used yet
 	Trash,

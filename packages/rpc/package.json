@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "prepare": "pnpm run build",
+    "postinstall": "pnpm run build",
     "prebuild": "rimraf dist",
     "prepublishOnly": "pnpm run build"
   },

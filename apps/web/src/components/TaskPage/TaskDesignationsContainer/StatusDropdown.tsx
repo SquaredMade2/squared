@@ -1,6 +1,14 @@
 "use client";
 
 import { StatusIcon } from "@/components/Icons";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { statusOptions } from "@/lib/constants";
 import { eventService } from "@/lib/services";
@@ -8,21 +16,12 @@ import { useEventStore, useTaskStore } from "@/store";
 import { formatStatus } from "@/utils/formatting";
 import { TODO } from "@squared/context";
 import type { Status, TaskEvent } from "@squared/db";
-import { useToast } from "@squaredmade/ui/hooks";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@squaredmade/ui/select";
 import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, currentTaskBlockedBy, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;
@@ -43,6 +42,7 @@ const StatusDropdown = () => {
 				})
 				.then((res) => res.json());
 			setCurrentTask({ ...currentTask, status: newStatus });
+			updateTask({ ...currentTask, status: newStatus });
 			const updatedEvents = await eventService.getTaskEvents(TODO, {
 				taskId: taskId,
 			});

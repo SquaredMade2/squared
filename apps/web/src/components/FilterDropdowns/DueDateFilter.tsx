@@ -1,15 +1,15 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { useFilterStore } from "@/store";
 import type { FilterCondition } from "@/store/filters";
-import { Button } from "@squaredmade/ui/button";
-import { Calendar } from "@squaredmade/ui/calendar";
+import { useEffect, useState } from "react";
 import {
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
-} from "@squaredmade/ui/dropdown-menu";
-import { useEffect, useState } from "react";
+} from "../ui/dropdown-menu";
 import type { FilterOption } from "./interfaces";
 
 const DueDateFilterDropDown = ({

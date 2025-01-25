@@ -1,11 +1,6 @@
 "use client";
 
 import SquaredLoader from "@/components/Loaders/SquaredLoader";
-import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { workspaceService } from "@/lib/services";
-import { useUserStore, useWorkspaceStore } from "@/store";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TODO } from "@squared/context";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,13 +11,9 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@squaredmade/ui/alert-dialog";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@squaredmade/ui/avatar";
-import { Button } from "@squaredmade/ui/button";
+} from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
@@ -31,9 +22,8 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@squaredmade/ui/form";
-import { useToast } from "@squaredmade/ui/hooks";
-import { Input } from "@squaredmade/ui/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -41,8 +31,14 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@squaredmade/ui/select";
-import { Separator } from "@squaredmade/ui/separator";
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { workspaceService } from "@/lib/services";
+import { useUserStore, useWorkspaceStore } from "@/store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -88,11 +84,22 @@ export default function WorkspaceSettings() {
 		},
 	});
 
-	const { watch } = form;
+	const { watch, setValue } = form;
+
+	const updateValues = () => {
+		if (workspace) {
+			setValue("name", workspace.name);
+      setValue("url", workspace.url.replace("https://app.squaredmade.com/", ""));
+		}
+	};
 
 	useEffect(() => {
 		if (!workspace) return;
 
+    //on a page refresh the form values are blank. This is a quick fix for it to reupdate the values.
+		if (form.getValues("name") !== workspace.name || form.getValues("url") !== workspace.url.replace("https://app.squaredmade.com/", "")) {
+			updateValues();
+		}
 		const subscription = watch((value) => {
 			if (
 				value.name !== workspace.name ||
@@ -184,6 +191,7 @@ export default function WorkspaceSettings() {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<FormField
 							control={form.control}
+              defaultValue = {""}
 							name="name"
 							render={({ field }) => (
 								<FormItem className="col-span-1">
@@ -197,6 +205,7 @@ export default function WorkspaceSettings() {
 						/>
 						<FormField
 							control={form.control}
+              defaultValue = {""}
 							name="url"
 							render={({ field }) => (
 								<FormItem className="col-span-1">

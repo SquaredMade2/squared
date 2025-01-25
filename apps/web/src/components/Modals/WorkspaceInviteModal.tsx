@@ -3,20 +3,20 @@
 import { workspaceService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { TODO } from "@squared/context";
-import { Avatar, AvatarFallback, AvatarImage } from "@squaredmade/ui/avatar";
-import { Button } from "@squaredmade/ui/button";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
-} from "@squaredmade/ui/dialog";
-import { useToast } from "@squaredmade/ui/hooks";
-import { Label } from "@squaredmade/ui/label";
-import { Separator } from "@squaredmade/ui/separator";
-import { Textarea } from "@squaredmade/ui/textarea";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
+} from "../ui/dialog";
+import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
+import { Textarea } from "../ui/textarea";
+import { useToast } from "../ui/use-toast";
 
 export const WorkspaceInviteModal = () => {
 	const { workspace } = useWorkspaceStore((state) => state);
