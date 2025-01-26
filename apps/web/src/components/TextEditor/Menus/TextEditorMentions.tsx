@@ -65,7 +65,7 @@ const TextEditorMentions = ({
 		>
 			<CommandList>
 				<CommandEmpty>No results found.</CommandEmpty>
-				<CommandGroup heading="Formatting">
+				<CommandGroup heading="Users">
 					{users
 						.filter((user) =>
 							user.name
@@ -80,6 +80,7 @@ const TextEditorMentions = ({
 									ref={(e) => handleUsersRef(e, index)}
 								>
 									<button
+										className={`${index === 0 && "bg-primary p-1 rounded-lg"}`}
 										type="submit"
 										onClick={() => handleMentionClick(user.name)}
 									>
