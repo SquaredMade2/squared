@@ -194,7 +194,7 @@ export class WorkspaceService implements WorkspaceRpc {
 		const workspaces = await this.db
 			.select({
 				workspace: workspacesTable,
-				labels: sql<Label[] | null>`json_agg(${labelsTable.name})`.as("labels"),
+				labels: sql<Label[] | null>`json_agg(${labelsTable})`.as("labels"),
 			})
 			.from(workspacesTable)
 			.leftJoin(labelsTable, eq(labelsTable.workspaceId, workspacesTable.id))

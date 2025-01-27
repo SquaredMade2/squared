@@ -23,7 +23,7 @@ export const createDb = ({ databaseUrl }: { databaseUrl?: string }) => {
 		databaseUrl:
 			databaseUrl ||
 			process.env.DATABASE_URL ||
-			"postgres://squared:squared@localhost:5432/store-manager?sslmode=disable",
+			"postgres://squared:squared@localhost:5432/squared-test?sslmode=disable",
 		localDb: process.env.LOCAL_DB || "true",
 		nodeEnv: process.env.NODE_ENV || "test",
 	};

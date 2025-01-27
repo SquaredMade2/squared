@@ -1,0 +1,17 @@
+{
+	"extends": "@squared/typescript-config/base",
+	"compilerOptions": {
+		"target": "ES2024",
+		"lib": ["es2024", "esnext.asynciterable"],
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"moduleResolution": "node16",
+		"module": "Node16"
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
+}
