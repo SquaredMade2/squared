@@ -211,6 +211,16 @@ export function InboxDataTable({
 	return (
 		<div className="w-full md:container">
 			<div className="items-center justify-start gap-4 py-4 hidden md:flex">
+				<Input
+					placeholder="Filter notifications..."
+					value={
+						(table.getColumn("taskTitle")?.getFilterValue() as string) ?? ""
+					}
+					onChange={(event) =>
+						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
+					}
+					className="bg-card"
+				/>
 				<div className="border border-border rounded-md bg-card dark:bg-transparent w-36 flex">
 					<Button
 						variant={showUnreadOnly ? "secondary" : "outline"}
@@ -227,16 +237,6 @@ export function InboxDataTable({
 						Unread
 					</Button>
 				</div>
-				<Input
-					placeholder="Filter notifications..."
-					value={
-						(table.getColumn("taskTitle")?.getFilterValue() as string) ?? ""
-					}
-					onChange={(event) =>
-						table.getColumn("taskTitle")?.setFilterValue(event.target.value)
-					}
-					className="bg-card"
-				/>
 			</div>
 			<div className="rounded-md border">
 				<Table>
