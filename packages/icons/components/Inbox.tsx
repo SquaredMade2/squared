@@ -1,45 +1,42 @@
+import type { FC } from "react";
 
-    // biome-ignore lint/correctness/noUnusedImports: React is needed to be included 
-    import * as React from 'react';
-    import type {FC} from 'react';
+interface InboxProps {
+	className?: string;
+	size?: number;
+	color?: string;
+	strokeWidth?: number;
+	absoluteStrokeWidth?: boolean;
+}
 
-    interface InboxProps {
-      className?: string;
-      size?: number;
-      color?: string;
-      strokeWidth?: number;
-      absoluteStrokeWidth?: boolean;
-    }
-    
-  export const Inbox: FC<InboxProps> = ({
-      className = "",
-      size = 24,
-      color = 'currentColor',
-      strokeWidth = 2,
-      absoluteStrokeWidth = false,
-    }) => {
-      const scale = size / 24;
-      const scaledStrokeWidth = absoluteStrokeWidth ? strokeWidth : strokeWidth / scale;
-    
-      return (
-        <svg
-          className={className}
-          width={size}
-          height={size}
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          stroke={color}
-          strokeWidth={scaledStrokeWidth}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-        <title>Inbox</title>
-          
-  <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
-  <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+export const Inbox: FC<InboxProps> = ({
+	className = "",
+	size = 24,
+	color = "currentColor",
+	strokeWidth = 2,
+	absoluteStrokeWidth = false,
+}) => {
+	const scale = size / 24;
+	const scaledStrokeWidth = absoluteStrokeWidth
+		? strokeWidth
+		: strokeWidth / scale;
 
-        </svg>
-      );
-    };
-    
+	return (
+		<svg
+			className={className}
+			width={size}
+			height={size}
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			stroke={color}
+			strokeWidth={scaledStrokeWidth}
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<title>Inbox</title>
+
+			<polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+			<path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+		</svg>
+	);
+};

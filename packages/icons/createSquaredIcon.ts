@@ -1,14 +1,8 @@
-export default function createSquaredIcon(
-	name: string,
-	svgContent: string ,
-) {
-  const match = svgContent?.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-  const svgElement = match ? match[1] : '';
+export default function createSquaredIcon(name: string, svgContent: string) {
+	const match = svgContent?.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+	const svgElement = match ? match[1] : "";
 
-	return `
-    // biome-ignore lint/correctness/noUnusedImports: React is needed to be included 
-    import * as React from 'react';
-    import type {FC} from 'react';
+	return `import type { FC } from 'react';
 
     interface ${name}Props {
       className?: string;
