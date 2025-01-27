@@ -5,8 +5,10 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { useUserStore } from "@/store/users";
+import { truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { CommandItem } from "cmdk";
+import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef } from "react";
 import type { TextEditorMentionsProps } from "../interfaces";
 
@@ -76,7 +78,7 @@ const TextEditorMentions = ({
 							return (
 								<CommandItem
 									key={user.id}
-									className="m-2"
+									className="flex flex-row m-2"
 									ref={(e) => handleUsersRef(e, index)}
 								>
 									<button
@@ -84,8 +86,20 @@ const TextEditorMentions = ({
 										type="submit"
 										onClick={() => handleMentionClick(user.name)}
 									>
-										{user.name}
+										{truncateString(user.name, 13)}
 									</button>
+									{index === 0 && (
+										<div className="flex flex-row items-center justify-start w-32 select-none">
+											<div className="flex flex-row ml-auto border-muted text-muted-foreground border-2 px-2 py-1 w-20 rounded-lg">
+												<CornerDownLeft
+													size={20}
+													color="hsl(217,5%, 44%)"
+													className="pr-1"
+												/>
+												Enter
+											</div>
+										</div>
+									)}
 								</CommandItem>
 							);
 						})}
