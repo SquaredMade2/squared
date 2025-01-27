@@ -15,7 +15,7 @@ import { useEventStore, useTaskStore, useTeamStore } from "@/store";
 import type { TaskEvent } from "@squared/db";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import { useState, type JSX } from "react";
+import { type JSX, useState } from "react";
 
 const EffortEstimateDropdown = () => {
 	const [open, setOpen] = useState(false);

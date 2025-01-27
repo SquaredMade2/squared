@@ -1,8 +1,8 @@
+import path from "node:path";
+import fs from "fs-extra";
 import { globSync } from "glob";
 import createSquaredIcon from "./createSquaredIcon";
 import handleComponentName from "./handleComponentName";
-import fs from "fs-extra";
-import path from "node:path";
 
 const inputDirectory = "./svgs";
 const outputDirectory = "./components";

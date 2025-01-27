@@ -53,16 +53,16 @@ const TaskCard = ({
 	);
 
 	return (
-        (<Draggable
+		<Draggable
 			draggableId={task.id}
 			index={index}
 			isDragDisabled={!!isDisabled}
 		>
-            {(dragProvided: DraggableProvided) => (
+			{(dragProvided: DraggableProvided) => (
 				<div
-					ref={ref => {
-                        dragProvided.innerRef(ref);
-                    }}
+					ref={(ref) => {
+						dragProvided.innerRef(ref);
+					}}
 					{...dragProvided.draggableProps}
 					{...dragProvided.dragHandleProps}
 				>
@@ -74,8 +74,8 @@ const TaskCard = ({
 					</ContextMenu>
 				</div>
 			)}
-        </Draggable>)
-    );
+		</Draggable>
+	);
 };
 
 export default TaskCard;

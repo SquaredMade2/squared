@@ -1,7 +1,7 @@
 "use client";
 
 import { useInView } from "framer-motion";
-import { useRef, type JSX } from "react";
+import { type JSX, useRef } from "react";
 
 export function InViewDiv({
 	children,

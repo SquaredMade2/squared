@@ -15,32 +15,32 @@ dialog                  popper                  switch                  visually
 direction               portal                  tabs`;
 
 try {
-    const exportsArray = exportsList
-    .split("\n")
-    .flatMap((e) => e.split(" "))
-    .filter(Boolean)
-    .sort();
-    
-    for (const e of exportsArray) {
-        build(`src/${e}/index.ts`, [
-            "@floating-ui/react-dom",
-            "aria-hidden",
-            "date-fns",
-            "react-remove-scroll",
-        ]);
-    }
+	const exportsArray = exportsList
+		.split("\n")
+		.flatMap((e) => e.split(" "))
+		.filter(Boolean)
+		.sort();
 
-    console.log('"exports": {');
+	for (const e of exportsArray) {
+		build(`src/${e}/index.ts`, [
+			"@floating-ui/react-dom",
+			"aria-hidden",
+			"date-fns",
+			"react-remove-scroll",
+		]);
+	}
 
-    for (const e of exportsArray) {
-        build(`src/${e}/index.ts`, [
-            "@floating-ui/react-dom",
-            "aria-hidden",
-            "date-fns",
-            "react-remove-scroll",
-        ]);
+	console.log('"exports": {');
 
-        console.log(`  "./${e}": {
+	for (const e of exportsArray) {
+		build(`src/${e}/index.ts`, [
+			"@floating-ui/react-dom",
+			"aria-hidden",
+			"date-fns",
+			"react-remove-scroll",
+		]);
+
+		console.log(`  "./${e}": {
     "import": {
       "types": "./dist/${e}/index.d.mts",
       "default": "./dist/${e}/index.mjs"
@@ -50,9 +50,9 @@ try {
       "default": "./dist/${e}/index.js"
     }
   },`);
-    }
+	}
 
-    console.log('}');
+	console.log("}");
 } catch (error) {
-    console.error(error);
+	console.error(error);
 }

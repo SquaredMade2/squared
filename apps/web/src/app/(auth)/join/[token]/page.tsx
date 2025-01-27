@@ -6,16 +6,18 @@ import { workspaceService } from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, use } from "react";
+import { use, useEffect, useRef } from "react";
 
-export default function TokenVerificationPage(props: { params: Promise<{ token: string }> }) {
-    const params = use(props.params);
-    const router = useRouter();
-    const { isLoaded, isSignedIn, user } = useUser();
-    const { toast } = useToast();
-    const hasRunRef = useRef(false);
+export default function TokenVerificationPage(props: {
+	params: Promise<{ token: string }>;
+}) {
+	const params = use(props.params);
+	const router = useRouter();
+	const { isLoaded, isSignedIn, user } = useUser();
+	const { toast } = useToast();
+	const hasRunRef = useRef(false);
 
-    useEffect(() => {
+	useEffect(() => {
 		if (!isLoaded) return;
 		if (!isSignedIn) {
 			return router.push(`/sign-in?token=${params.token}`);
@@ -53,7 +55,7 @@ export default function TokenVerificationPage(props: { params: Promise<{ token: 
 		}
 	}, [isLoaded, isSignedIn]);
 
-    return (
+	return (
 		<div className="w-full flex flex-col items-center justify-center gap-4 min-h-screen">
 			<SquaredLoader />
 			<p className="text-lg">Verifying invitation...</p>

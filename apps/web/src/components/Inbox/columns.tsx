@@ -1,9 +1,9 @@
 import { eventService, userService, workspaceService } from "@/lib/services";
 import { useEventStore, useUserStore, useWorkspaceStore } from "@/store";
 import { formatUrl, getInitials } from "@/utils/formatting";
-import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { TODO } from "@squared/context";
 import type { Notification, Task, Workspace } from "@squared/db";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import { BellOff, Bookmark, BookmarkMinus, Check, Trash2 } from "lucide-react";
