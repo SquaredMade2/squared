@@ -30,6 +30,7 @@ const LabelCombobox = () => {
 	const { setEvents } = useEventStore((event) => event);
 
 	if (!currentTask) return null;
+	console.log("Workspace: ", workspace);
 
 	const { id: taskId, labels } = currentTask;
 

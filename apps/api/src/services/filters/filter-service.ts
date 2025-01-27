@@ -17,8 +17,8 @@ export class FilterService implements FilterRpc {
 	private readonly db: DBClient;
 	private readonly logger: Logger;
 
-	constructor(prisma: DBClient) {
-		this.db = prisma;
+	constructor(db: DBClient) {
+		this.db = db;
 		this.logger = createCustomLogger("filters");
 	}
 

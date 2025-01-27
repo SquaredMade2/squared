@@ -17,8 +17,7 @@ RUN apk add --no-cache libc6-compat python3 make g++ openssl
 
 WORKDIR /app
 
-# Copy Prisma schema files separately to ensure they are available
-COPY packages/db/prisma ./packages/db/prisma
+# Copy the package.json and lockfile of the isolated subworkspace
 COPY --from=builder /app/apps/api /app/apps/api
 COPY --from=builder /app/packages/builder /app/packages/builder
 COPY --from=builder /app/packages/context /app/packages/context
@@ -31,11 +30,6 @@ COPY --from=builder /app/out/json/ .
 RUN npm install -g turbo pnpm ts-node tsconfig-paths
 
 RUN pnpm install
-
-# Generate Prisma client
-RUN apk add --no-cache openssl
-ENV PRISMA_BINARY_TARGET="linux-musl-openssl-3.0.x"
-RUN cd packages/db && pnpm run db:gen
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .

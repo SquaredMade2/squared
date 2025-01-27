@@ -26,7 +26,7 @@ export class EventService implements EventRpc {
 	private readonly db: DBClient;
 
 	constructor(db: DBClient) {
-		this.logger = createCustomLogger("tasks");
+		this.logger = createCustomLogger("events");
 		this.db = db;
 	}
 	async getTaskEvents({

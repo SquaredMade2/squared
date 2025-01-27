@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2024",
     "moduleResolution": "node",
     "module": "commonjs",
     "declaration": false,
@@ -17,7 +17,9 @@
     "outDir": "dist/",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     "listFiles": false,
     "noEmitHelpers": true,
@@ -30,5 +32,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

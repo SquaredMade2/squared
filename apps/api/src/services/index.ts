@@ -13,21 +13,21 @@ import { createUserRpcHandler } from "./users";
 import { UserService } from "./users/user-service";
 import { WorkspaceService, createWorkspaceRpcHandler } from "./workspaces";
 
-const prisma = createDb({
+const db = createDb({
 	databaseUrl: process.env.DATABASE_URL,
 });
 
 const secret = process.env.JWT_SECRET;
 
-const auth = new AuthService(prisma, secret);
-const comment = new CommentService(prisma);
-const event = new EventService(prisma);
-const filter = new FilterService(prisma);
-const sprint = new SprintService(prisma);
-const team = new TeamService(prisma);
-const task = new TaskService(prisma, event);
-const user = new UserService(prisma);
-const workspace = new WorkspaceService(prisma, secret);
+const auth = new AuthService(db, secret);
+const comment = new CommentService(db);
+const event = new EventService(db);
+const filter = new FilterService(db);
+const sprint = new SprintService(db);
+const team = new TeamService(db);
+const task = new TaskService(db, event);
+const user = new UserService(db);
+const workspace = new WorkspaceService(db, secret);
 
 export const services = {
 	auth,
