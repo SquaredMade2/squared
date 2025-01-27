@@ -279,7 +279,7 @@ export class EventService implements EventRpc {
 		// Handle assigneeId
 		if (key === "assigneeId" && typeof value === "string") {
 			const user = await this.userRepository.findUnique({
-				where: { id: value },
+				where: { externalId: value },
 				select: { name: true },
 			});
 			return user?.name ?? "Unknown User";
