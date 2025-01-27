@@ -305,13 +305,13 @@ export class EventService implements EventRpc {
 
 		if (key === "assigneeId" && typeof value === "string") {
 			// Handle assigneeId
-			const user = await this.db
+			const [user] = await this.db
 				.select({ name: usersTable.name })
 				.from(usersTable)
 				.where(eq(usersTable.externalId, value))
 				.limit(1);
 
-			return user[0]?.name ?? "Unknown User";
+			return user?.name ?? "Unknown User";
 		}
 
 		// Handle labels array

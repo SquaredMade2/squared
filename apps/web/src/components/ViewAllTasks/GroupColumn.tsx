@@ -48,13 +48,13 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	const currentSavedFilter = pathname.split("/").includes("views")
 		? savedFilters.filter((filter) => {
-				const filterSlugArray = filter.id.split("-");
-				const filterSlug = filterSlugArray[0];
+			const filterSlugArray = filter.id.split("-");
+			const filterSlug = filterSlugArray[0];
 
-				const pathNameSlug = pathname.split("-").pop();
+			const pathNameSlug = pathname.split("-").pop();
 
-				return filterSlug === pathNameSlug;
-			})[0]
+			return filterSlug === pathNameSlug;
+		})[0]
 		: null;
 
 	const getParentTaskIds = () => {
@@ -148,9 +148,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 			/>
 			{subtasks.length > 0 && displayOptions.showSubTasks && (
 				<div
-					className={`mt-1 bg-secondary dark:bg-secondary/30 ${
-						isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
-					}`}
+					className={`mt-1 bg-secondary dark:bg-secondary/30 ${isListView ? "w-full rounded-b-lg px-2 pb-2" : "w-72 rounded-lg p-2"
+						}`}
 				>
 					{subtasks.map((subtask, subIndex) => (
 						<TaskCard
@@ -170,9 +169,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 	const renderSubtasks = (parentTask: Task | undefined, subtasks: Task[]) => (
 		<div
 			key={parentTask?.id}
-			className={`mt-1 bg-secondary dark:bg-secondary/30 ${
-				isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
-			}`}
+			className={`mt-1 bg-secondary dark:bg-secondary/30 ${isListView ? "w-full rounded-b-lg px-2 py-2 " : "w-72 rounded-lg p-2"
+				}`}
 		>
 			<span
 				className={`text-accent-foreground truncate max-w-[250px] inline-block ${isListView ? "ml-10" : "ml-2"}`}
@@ -295,15 +293,14 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 				) => (
 					<div
 						className={`
-							${
-								view === "grid"
-									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
-									: "flex flex-col z-30 w-full gap-2 items-center h-full"
+							${view === "grid"
+								? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
+								: "flex flex-col z-30 w-full gap-2 items-center h-full"
 							}
 							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
 							`}
 					>
-						<div className="w-full overflow-auto">
+						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
 							<div className="w-full grow inline-flex">
 								<div
 									ref={dropProvided.innerRef}
