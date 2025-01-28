@@ -59,6 +59,7 @@ export const complexityScale = [
 
 export const CompletedTaskPeriodOptions: CompletedTaskPeriod[] = [
 	CompletedTaskPeriod.all,
+	CompletedTaskPeriod.pastDay,
 	CompletedTaskPeriod.pastWeek,
 	CompletedTaskPeriod.pastMonth,
 	CompletedTaskPeriod.none,
