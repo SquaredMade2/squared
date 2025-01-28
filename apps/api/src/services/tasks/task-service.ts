@@ -113,7 +113,7 @@ export class TaskService implements TaskRpc {
 			const highestTaskNumber = await tx
 				.select({
 					maxNumber: max(
-						sql`CAST(SUBSTRING_INDEX(${tasksTable.identifier}, '-', -1) AS UNSIGNED)`,
+						sql`CAST(SPLIT_PART(${tasksTable.identifier}, '-', 2) AS INTEGER)`,
 					),
 				})
 				.from(tasksTable)
