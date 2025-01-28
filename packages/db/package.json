@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@squared/typescript-config": "workspace:*",
+    "@types/node": "^22.10.10",
     "@types/ws": "^8.5.13",
     "drizzle-kit": "^0.30.1"
   }
