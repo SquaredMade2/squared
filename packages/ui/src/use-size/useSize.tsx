@@ -1,9 +1,8 @@
-import * as React from "react";
-
+import { useState } from "react";
 import { useLayoutEffect } from "../use-layout-effect";
 
 function useSize(element: HTMLElement | null) {
-	const [size, setSize] = React.useState<
+	const [size, setSize] = useState<
 		{ width: number; height: number } | undefined
 	>(undefined);
 

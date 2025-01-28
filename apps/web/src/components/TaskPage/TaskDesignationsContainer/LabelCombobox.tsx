@@ -33,7 +33,7 @@ const LabelCombobox = () => {
 
 	const { id: taskId, labels } = currentTask;
 
-	const allLabels = useMemo(() => workspace?.Labels || [], [workspace]);
+	const allLabels = useMemo(() => workspace?.labels || [], [workspace]);
 
 	const taskLabels = useMemo(
 		() => allLabels.filter((label) => labels.includes(label.id)),

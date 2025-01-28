@@ -9,7 +9,7 @@ type FilterStoreApi = ReturnType<typeof createFilterStore>;
 const FilterStoreContext = createContext<FilterStoreApi | undefined>(undefined);
 
 export const FilterStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<FilterStoreApi>();
+	const storeRef = useRef<FilterStoreApi>(undefined);
 
 	if (!storeRef.current) {
 		storeRef.current = createFilterStore();

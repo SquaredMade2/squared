@@ -9,7 +9,7 @@ type TaskStoreApi = ReturnType<typeof createTaskStore>;
 const TaskStoreContext = createContext<TaskStoreApi | undefined>(undefined);
 
 export const TaskStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<TaskStoreApi>();
+	const storeRef = useRef<TaskStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createTaskStore();
 	}

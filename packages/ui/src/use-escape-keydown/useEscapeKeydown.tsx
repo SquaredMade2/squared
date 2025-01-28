@@ -1,5 +1,4 @@
-import * as React from "react";
-
+import { useEffect } from "react";
 import { useCallbackRef } from "../use-callback-ref";
 
 /**
@@ -11,7 +10,7 @@ function useEscapeKeydown(
 ) {
 	const onEscapeKeyDown = useCallbackRef(onEscapeKeyDownProp);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
 				onEscapeKeyDown(event);

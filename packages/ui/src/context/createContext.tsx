@@ -1,3 +1,4 @@
+// Have to import entire library due to naming conflict with createContext from react
 import * as React from "react";
 
 function createContext<ContextValueType extends object | null>(
@@ -8,7 +9,9 @@ function createContext<ContextValueType extends object | null>(
 		defaultContext,
 	);
 
-	function Provider(props: ContextValueType & { children: React.ReactNode }) {
+	const Provider: React.FC<ContextValueType & { children: React.ReactNode }> = (
+		props,
+	) => {
 		const { children, ...context } = props;
 		// Only re-memoize when prop values change
 		const value = React.useMemo(
@@ -16,7 +19,9 @@ function createContext<ContextValueType extends object | null>(
 			Object.values(context),
 		) as ContextValueType;
 		return <Context.Provider value={value}>{children}</Context.Provider>;
-	}
+	};
+
+	Provider.displayName = `${rootComponentName}Provider`;
 
 	function useContext(consumerName: string) {
 		const context = React.useContext(Context);
@@ -28,7 +33,6 @@ function createContext<ContextValueType extends object | null>(
 		);
 	}
 
-	Provider.displayName = `${rootComponentName}Provider`;
 	return [Provider, useContext] as const;
 }
 
@@ -63,27 +67,29 @@ function createContextScope(
 		const index = defaultContexts.length;
 		defaultContexts = [...defaultContexts, defaultContext];
 
-		function Provider(
-			props: ContextValueType & {
+		const Provider: React.FC<
+			ContextValueType & {
 				scope: Scope<ContextValueType>;
 				children: React.ReactNode;
-			},
-		) {
+			}
+		> = (props) => {
 			const { scope, children, ...context } = props;
-			const Context = scope?.[scopeName][index] || BaseContext;
+			const Context = scope?.[scopeName]?.[index] || BaseContext;
 			// Only re-memoize when prop values change
 			const value = React.useMemo(
 				() => context,
 				Object.values(context),
 			) as ContextValueType;
 			return <Context.Provider value={value}>{children}</Context.Provider>;
-		}
+		};
+
+		Provider.displayName = `${rootComponentName}Provider`;
 
 		function useContext(
 			consumerName: string,
 			scope: Scope<ContextValueType | undefined>,
 		) {
-			const Context = scope?.[scopeName][index] || BaseContext;
+			const Context = scope?.[scopeName]?.[index] || BaseContext;
 			const context = React.useContext(Context);
 			if (context) return context;
 			if (defaultContext !== undefined) return defaultContext;
@@ -93,7 +99,6 @@ function createContextScope(
 			);
 		}
 
-		Provider.displayName = `${rootComponentName}Provider`;
 		return [Provider, useContext] as const;
 	}
 
@@ -109,12 +114,9 @@ function createContextScope(
 			const contexts = scope?.[scopeName] || scopeContexts;
 			return React.useMemo(
 				() => ({
-					[`__scope${scopeName}`]: {
-						...scope,
-						[scopeName]: contexts,
-					},
+					[`__scope${scopeName}`]: { ...scope, [scopeName]: contexts },
 				}),
-				[scope, contexts, scopeName],
+				[scope, contexts],
 			);
 		};
 	};
@@ -148,7 +150,7 @@ function composeContextScopes(...scopes: CreateScope[]) {
 					// eslint-disable-next-line react-hooks/rules-of-hooks
 					const scopeProps = useScope(overrideScopes);
 					const currentScope = scopeProps[`__scope${scopeName}`];
-					return Object.assign(nextScopes, currentScope);
+					return { ...nextScopes, ...currentScope };
 				},
 				{},
 			);

@@ -10,6 +10,8 @@ import { effortEstimateOptions } from "@/lib/constants";
 import { useModalStore, useTeamStore } from "@/store";
 import { Check } from "lucide-react";
 
+import type { JSX } from "react";
+
 export const EffortDropdownButton = () => {
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 	const effortEstimate = newTaskData.effortEstimate;

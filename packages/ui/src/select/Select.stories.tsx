@@ -1,9 +1,11 @@
-import * as React from "react";
+;
 import { css } from "../../stitches.config";
 import * as Select from "./Select";
 import { Label } from "../label";
 import * as Dialog from "../dialog";
 import { foodGroups } from "../../test-data/foods";
+import { useState, FormEvent, type ComponentProps, forwardRef, type ElementRef } from "react";
+import { Fragment } from "react/jsx-runtime";
 
 export default { title: "Components/Select" };
 
@@ -61,7 +63,7 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-	const [value, setValue] = React.useState("uk");
+	const [value, setValue] = useState("uk");
 	return (
 		<div style={{ display: "flex", gap: 20, padding: 50 }}>
 			{POSITIONS.map((position) => (
@@ -329,7 +331,7 @@ export const WithGroups = () => (
 								{foodGroups.map((foodGroup, index) => {
 									const hasLabel = foodGroup.label !== undefined;
 									return (
-										<React.Fragment key={index}>
+										<Fragment key={index}>
 											<Select.Group className={groupStyles()}>
 												{hasLabel && (
 													<Select.Label
@@ -357,7 +359,7 @@ export const WithGroups = () => (
 											{index < foodGroups.length - 1 && (
 												<Select.Separator className={separatorClass()} />
 											)}
-										</React.Fragment>
+										</Fragment>
 									);
 								})}
 							</Select.Viewport>
@@ -504,9 +506,9 @@ export const RightToLeft = () => (
 );
 
 export const WithinForm = () => {
-	const [data, setData] = React.useState({});
+	const [data, setData] = useState({});
 
-	function handleChange(event: React.FormEvent<HTMLFormElement>) {
+	function handleChange(event: FormEvent<HTMLFormElement>) {
 		const formData = new FormData(event.currentTarget);
 		setData(Object.fromEntries((formData as any).entries()));
 	}
@@ -567,9 +569,9 @@ export const WithinForm = () => {
 };
 
 export const DisabledWithinForm = () => {
-	const [data, setData] = React.useState({});
+	const [data, setData] = useState({});
 
-	function handleChange(event: React.FormEvent<HTMLFormElement>) {
+	function handleChange(event: FormEvent<HTMLFormElement>) {
 		const formData = new FormData(event.currentTarget);
 		setData(Object.fromEntries((formData as any).entries()));
 	}
@@ -635,9 +637,9 @@ export const DisabledWithinForm = () => {
 };
 
 export const RequiredWithinForm = () => {
-	const [data, setData] = React.useState({});
+	const [data, setData] = useState({});
 
-	function handleChange(event: React.FormEvent<HTMLFormElement>) {
+	function handleChange(event: FormEvent<HTMLFormElement>) {
 		const formData = new FormData(event.currentTarget);
 		setData(Object.fromEntries((formData as any).entries()));
 	}
@@ -875,10 +877,10 @@ export const ChromaticNoDefaultValue = () => (
 ChromaticNoDefaultValue.parameters = { chromatic: { disable: false } };
 
 export const Cypress = () => {
-	const [data, setData] = React.useState<{ size?: "S" | "M" | "L" }>({});
-	const [model, setModel] = React.useState<string | undefined>("");
+	const [data, setData] = useState<{ size?: "S" | "M" | "L" }>({});
+	const [model, setModel] = useState<string | undefined>("");
 
-	function handleChange(event: React.FormEvent<HTMLFormElement>) {
+	function handleChange(event: FormEvent<HTMLFormElement>) {
 		const formData = new FormData(event.currentTarget);
 		setData(Object.fromEntries((formData as any).entries()));
 	}
@@ -990,14 +992,14 @@ export const Cypress = () => {
 type PaddedElement = "content" | "viewport";
 
 interface ChromaticSelectProps
-	extends React.ComponentProps<typeof Select.Trigger> {
+	extends ComponentProps<typeof Select.Trigger> {
 	count?: number;
 	paddedElement?: PaddedElement;
 	selected: number;
 }
 
-const ChromaticSelect = React.forwardRef<
-	React.ElementRef<typeof Select.Trigger>,
+const ChromaticSelect = forwardRef<
+	ElementRef<typeof Select.Trigger>,
 	ChromaticSelectProps
 >(
 	(
@@ -1052,16 +1054,16 @@ const ChromaticSelect = React.forwardRef<
 	),
 );
 
-const SelectShort = React.forwardRef<
-	React.ElementRef<typeof ChromaticSelect>,
-	React.ComponentProps<typeof ChromaticSelect>
+const SelectShort = forwardRef<
+	ElementRef<typeof ChromaticSelect>,
+	ComponentProps<typeof ChromaticSelect>
 >(({ count = 9, ...props }, forwardedRef) => (
 	<ChromaticSelect count={count} {...props} ref={forwardedRef} />
 ));
 
-const SelectLong = React.forwardRef<
-	React.ElementRef<typeof ChromaticSelect>,
-	React.ComponentProps<typeof ChromaticSelect>
+const SelectLong = forwardRef<
+	ElementRef<typeof ChromaticSelect>,
+	ComponentProps<typeof ChromaticSelect>
 >(({ count = 50, ...props }, forwardedRef) => (
 	<ChromaticSelect count={count} {...props} ref={forwardedRef} />
 ));

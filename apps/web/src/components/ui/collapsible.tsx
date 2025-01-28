@@ -1,6 +1,6 @@
 "use client";
 
-import * as CollapsiblePrimitive from "@repo/ui/collapsible";
+import * as CollapsiblePrimitive from "@squaredmade/ui/collapsible";
 
 const Collapsible = CollapsiblePrimitive.Root;
 

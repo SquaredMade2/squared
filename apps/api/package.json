@@ -5,7 +5,7 @@
 	"main": "index.ts",
 	"scripts": {
 		"build": "pnpm run gen",
-		"check-types": "tsc --noEmit",
+		"check-types": "tsc --pretty --noEmit",
 		"dev": "nodemon src/api/index.ts",
 		"gen": "ts-node src/api/generate-index.ts",
 		"format:check": "biome format .",

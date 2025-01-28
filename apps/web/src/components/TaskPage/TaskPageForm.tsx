@@ -1,13 +1,7 @@
-import MentionInput from "@/components/MentionsInput";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
 import { eventService } from "@/lib/services";
-import {
-	useEventStore,
-	useTaskStore,
-	useUserStore,
-	useWorkspaceStore,
-} from "@/store";
+import { useEventStore, useTaskStore, useWorkspaceStore } from "@/store";
 import { formatUrl } from "@/utils/formatting";
 import { CustomMentionStyle } from "@/utils/mentionInputStyle";
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
@@ -16,13 +10,11 @@ import type { TaskEvent } from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
-import type { OnChangeHandlerFunc } from "react-mentions";
 import { StatusIcon } from "../Icons";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 export const TaskPageForm = () => {
-	const { users } = useUserStore((state) => state);
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const {
 		updateTask,
@@ -77,8 +69,10 @@ export const TaskPageForm = () => {
 		setUpdatedTitle(e.target.value);
 	};
 
-	const handleDescriptionChange: OnChangeHandlerFunc = (e) => {
-		setUpdatedDescription(e.target.value);
+	const handleDescriptionChange = (
+		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setUpdatedDescription(event.target.value);
 	};
 
 	const handleSubmit = async (e: FormEvent) => {
@@ -135,15 +129,14 @@ export const TaskPageForm = () => {
 					</div>
 				)}
 			</div>
-			<MentionInput
-				data={users}
-				onChange={handleDescriptionChange}
+			<Input
 				className="resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent p-2"
 				placeholder={"Add description..."}
+				onChange={handleDescriptionChange}
 				value={updatedDescription ?? ""}
 				name={"editDescription"}
 				onBlur={handleSubmit}
-				style={CustomMentionStyle(isDescriptionFocused)}
+				style={CustomMentionStyle(isDescriptionFocused) as React.CSSProperties}
 				onFocus={() => setIsDescriptionFocused(true)}
 			/>
 		</form>

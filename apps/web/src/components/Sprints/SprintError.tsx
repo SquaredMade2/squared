@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 
 interface SprintErrorProps {
-	error: string;
+	error: string | null;
 	workspaceUrl?: string;
 	teamIdentifier?: string;
 }

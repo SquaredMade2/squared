@@ -52,7 +52,7 @@ export default function LabelFilterDropDown({
 						.filter((filter) => filter.field === "labels")
 						.flatMap(
 							(filter) =>
-								workspace?.Labels?.filter((label) =>
+								workspace?.labels?.filter((label) =>
 									(filter.value as string[]).includes(label.id),
 								) ?? [],
 						),
@@ -73,7 +73,7 @@ export default function LabelFilterDropDown({
 	}, [currentFilterTypes]);
 
 	const filteredLabels =
-		workspace?.Labels?.filter((label) =>
+		workspace?.labels?.filter((label) =>
 			label.name.toLowerCase().includes(searchQuery.toLowerCase()),
 		) || [];
 

@@ -1,24 +1,7 @@
 import { execSync } from "node:child_process";
-import { PrismaClient } from "@squared/db";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.test" });
-
-const prisma = new PrismaClient();
-
-const waitForDatabase = async (retries = 5, delay = 2000) => {
-	for (let i = 0; i < retries; i++) {
-		try {
-			await prisma.$queryRaw`SELECT 1`;
-			console.log("Database is ready");
-			return;
-		} catch {
-			console.log(`Attempt ${i + 1}: Database not ready, retrying...`);
-			await new Promise((resolve) => setTimeout(resolve, delay));
-		}
-	}
-	throw new Error("Database connection failed after multiple attempts");
-};
 
 beforeAll(async () => {
 	try {
@@ -30,11 +13,8 @@ beforeAll(async () => {
 			stdio: "inherit",
 		});
 
-		// Wait for the database to be ready
-		await waitForDatabase();
-
 		// Run migrations
-		execSync("pnpm run --filter=@squared/db db:push", { stdio: "inherit" });
+		execSync("pnpm run --filter=@squared/db db:migrate", { stdio: "inherit" });
 
 		// Seed the database
 		execSync("pnpm run --filter=@squared/seed db:seed", { stdio: "inherit" });
@@ -46,8 +26,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
 	try {
-		await prisma.$disconnect();
-
 		// Stop the test database
 		execSync("pnpm run --filter=@squared/seed docker:db:down", {
 			stdio: "inherit",

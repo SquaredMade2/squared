@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import { css } from '../../stitches.config';
 import { Toggle } from './Toggle';
 
@@ -7,7 +7,7 @@ export default { title: 'Components/Toggle' };
 export const Styled = () => <Toggle className={rootClass()}>Toggle</Toggle>;
 
 export const Controlled = () => {
-  const [pressed, setPressed] = React.useState(true);
+  const [pressed, setPressed] = useState(true);
 
   return (
     <Toggle className={rootClass()} pressed={pressed} onPressedChange={setPressed}>

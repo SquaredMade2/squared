@@ -27,7 +27,7 @@ const TaskCard = ({
 	}, [task.assigneeId, users]);
 
 	const taskLabels =
-		workspace?.Labels.filter((label) => task.labels.includes(label.id)) || [];
+		workspace?.labels.filter((label) => task.labels.includes(label.id)) || [];
 
 	const renderTask = (taskToRender: Task, isSubtask = false) => (
 		<div className={`w-full ${isSubtask ? "mt-1" : ""}`}>
@@ -60,7 +60,9 @@ const TaskCard = ({
 		>
 			{(dragProvided: DraggableProvided) => (
 				<div
-					ref={(ref) => dragProvided.innerRef(ref)}
+					ref={(ref) => {
+						dragProvided.innerRef(ref);
+					}}
 					{...dragProvided.draggableProps}
 					{...dragProvided.dragHandleProps}
 				>

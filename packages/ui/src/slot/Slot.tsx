@@ -1,32 +1,40 @@
-import * as React from "react";
-
+import {
+	Children,
+	type ComponentProps,
+	type HTMLAttributes,
+	type ReactElement,
+	type ReactNode,
+	type Ref,
+	cloneElement,
+	forwardRef,
+	isValidElement,
+} from "react";
 import { composeRefs } from "../compose-refs";
 
 /* -------------------------------------------------------------------------------------------------
  * Slot
  * -----------------------------------------------------------------------------------------------*/
 
-interface SlotProps extends React.HTMLAttributes<HTMLElement> {
-	children?: React.ReactNode;
+interface SlotProps extends HTMLAttributes<HTMLElement> {
+	children?: ReactNode;
 }
 
-const Slot = React.forwardRef<HTMLElement, SlotProps>((props, forwardedRef) => {
+const Slot = forwardRef<HTMLElement, SlotProps>((props, forwardedRef) => {
 	const { children, ...slotProps } = props;
-	const childrenArray = React.Children.toArray(children);
+	const childrenArray = Children.toArray(children);
 	const slottable = childrenArray.find(isSlottable);
 
 	if (slottable) {
 		// the new element to render is the one passed as a child of `Slottable`
-		const newElement = slottable.props.children as React.ReactNode;
+		const newElement = slottable.props.children;
 
 		const newChildren = childrenArray.map((child) => {
 			if (child === slottable) {
 				// because the new element will be the one rendered, we are only interested
 				// in grabbing its children (`newElement.props.children`)
-				if (React.Children.count(newElement) > 1)
-					return React.Children.only(null);
-				return React.isValidElement(newElement)
-					? (newElement.props.children as React.ReactNode)
+				if (Children.count(newElement) > 1) return Children.only(null);
+				return isValidElement(newElement)
+					? (newElement.props as { children: ReactNode }).children
 					: null;
 			}
 			return child;
@@ -34,8 +42,8 @@ const Slot = React.forwardRef<HTMLElement, SlotProps>((props, forwardedRef) => {
 
 		return (
 			<SlotClone {...slotProps} ref={forwardedRef}>
-				{React.isValidElement(newElement)
-					? React.cloneElement(newElement, undefined, newChildren)
+				{isValidElement(newElement)
+					? cloneElement(newElement, undefined, newChildren)
 					: null}
 			</SlotClone>
 		);
@@ -55,29 +63,23 @@ Slot.displayName = "Slot";
  * -----------------------------------------------------------------------------------------------*/
 
 interface SlotCloneProps {
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
-const SlotClone = React.forwardRef<any, SlotCloneProps>(
-	(props, forwardedRef) => {
-		const { children, ...slotProps } = props;
+const SlotClone = forwardRef<any, SlotCloneProps>((props, forwardedRef) => {
+	const { children, ...slotProps } = props;
 
-		if (React.isValidElement(children)) {
-			const childrenRef = getElementRef(children);
-			return React.cloneElement(children, {
-				...mergeProps(slotProps, children.props),
-				// @ts-ignore
-				ref: forwardedRef
-					? composeRefs(forwardedRef, childrenRef)
-					: childrenRef,
-			});
-		}
+	if (isValidElement(children)) {
+		const childrenRef = getElementRef(children);
+		return cloneElement(children, {
+			...mergeProps(slotProps, children.props as AnyProps),
+			// @ts-ignore
+			ref: forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef,
+		});
+	}
 
-		return React.Children.count(children) > 1
-			? React.Children.only(null)
-			: null;
-	},
-);
+	return Children.count(children) > 1 ? Children.only(null) : null;
+});
 
 SlotClone.displayName = "SlotClone";
 
@@ -85,7 +87,7 @@ SlotClone.displayName = "SlotClone";
  * Slottable
  * -----------------------------------------------------------------------------------------------*/
 
-const Slottable = ({ children }: { children: React.ReactNode }) => {
+const Slottable = ({ children }: { children: ReactNode }) => {
 	return <>{children}</>;
 };
 
@@ -93,8 +95,10 @@ const Slottable = ({ children }: { children: React.ReactNode }) => {
 
 type AnyProps = Record<string, any>;
 
-function isSlottable(child: React.ReactNode): child is React.ReactElement {
-	return React.isValidElement(child) && child.type === Slottable;
+function isSlottable(
+	child: ReactNode,
+): child is ReactElement<ComponentProps<typeof Slottable>, typeof Slottable> {
+	return isValidElement(child) && child.type === Slottable;
 }
 
 function mergeProps(slotProps: AnyProps, childProps: AnyProps) {
@@ -140,7 +144,7 @@ function mergeProps(slotProps: AnyProps, childProps: AnyProps) {
 // https://github.com/facebook/react/pull/28348
 //
 // Access the ref using the method that doesn't yield a warning.
-function getElementRef(element: React.ReactElement) {
+function getElementRef(element: ReactElement) {
 	// React <=18 in DEV
 	let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
 	let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
@@ -152,19 +156,19 @@ function getElementRef(element: React.ReactElement) {
 	getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
 	mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
 	if (mayWarn) {
-		return element.props.ref;
+		return (element.props as { ref?: Ref<unknown> }).ref;
 	}
 
 	// Not DEV
-	return element.props.ref || (element as any).ref;
+	return (element.props as { ref?: Ref<unknown> }).ref || (element as any).ref;
 }
 
 const Root = Slot;
 
 export {
-	Slot,
-	Slottable,
 	//
 	Root,
+	Slot,
+	Slottable,
 };
 export type { SlotProps };

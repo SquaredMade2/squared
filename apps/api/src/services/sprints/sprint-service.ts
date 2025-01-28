@@ -1,9 +1,18 @@
-import type {
-	PrismaClient,
-	RetrospectiveItemType,
-	Sprint,
-	Task,
-	Team,
+import {
+	type DBClient,
+	type RetrospectiveItemType,
+	type Sprint,
+	type Task,
+	type Team,
+	type TransactionClient,
+	and,
+	desc,
+	eq,
+	ne,
+	retrospectiveItemsTable,
+	sprintsTable,
+	tasksTable,
+	teamsTable,
 } from "@squared/db";
 import createCustomLogger from "@squared/logger";
 import { addWeeks } from "date-fns";
@@ -20,13 +29,16 @@ import type {
 
 export class SprintService implements SprintRpc {
 	private logger;
-	constructor(private readonly db: PrismaClient) {
+	constructor(private readonly db: DBClient) {
 		this.logger = createCustomLogger("sprint-service");
 	}
 
 	async getSprints({ teamId }: { teamId: string }): Promise<Sprint[]> {
 		this.logger.info("Getting sprints for team", { teamId });
-		return this.db.sprint.findMany({ where: { teamId } });
+		return this.db
+			.select()
+			.from(sprintsTable)
+			.where(eq(sprintsTable.teamId, teamId));
 	}
 
 	async updateSprint({
@@ -36,103 +48,134 @@ export class SprintService implements SprintRpc {
 		sprintId: string;
 		sprintData: Pick<Sprint, "startDate" | "description" | "name" | "endDate">;
 	}): Promise<Sprint> {
-		return this.db.sprint.update({
-			where: { id: sprintId },
-			data: sprintData,
-		});
+		this.logger.info("Updating sprint", { sprintId });
+		const [updatedSprint] = await this.db
+			.update(sprintsTable)
+			.set(sprintData)
+			.where(eq(sprintsTable.id, sprintId))
+			.returning();
+
+		return updatedSprint;
 	}
 
 	async initializeSprints({ teamId }: { teamId: string }): Promise<number> {
 		this.logger.info("Initializing sprints for team", { teamId });
-		const team = await this.db.team.findUnique({ where: { id: teamId } });
+		return await this.db.transaction(async (tx) => {
+			const team = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.id, teamId))
+				.limit(1);
 
-		if (!team) {
-			return 0;
-		}
+			if (team.length === 0) {
+				return 0;
+			}
 
-		const sprints = await this.db.sprint.findMany({ where: { teamId } });
-		const pendingSprints = sprints.filter((s) => s.status === "PLANNED");
+			const allSprints = await tx
+				.select()
+				.from(sprintsTable)
+				.where(eq(sprintsTable.teamId, teamId));
 
-		if (pendingSprints.length > 0) {
-			await this.db.sprint.update({
-				where: { id: pendingSprints[0].id },
-				data: { status: "ACTIVE" },
-			});
-			return pendingSprints.length;
-		}
+			const pendingSprints = allSprints.filter((s) => s.status === "PLANNED");
 
-		const sprintDuration = team.sprintDuration;
+			if (pendingSprints.length > 0) {
+				await tx
+					.update(sprintsTable)
+					.set({ status: "ACTIVE" })
+					.where(eq(sprintsTable.id, pendingSprints[0].id));
+				return pendingSprints.length;
+			}
 
-		await this.db.sprint.create({
-			data: {
-				name: `Sprint ${sprints.length + 1}`,
+			const sprintDuration = team[0].sprintDuration;
+
+			await tx.insert(sprintsTable).values({
+				name: `Sprint ${allSprints.length + 1}`,
 				status: "ACTIVE",
-				startDate: new Date(), // Start from today
+				startDate: new Date(),
 				endDate: addWeeks(new Date(), sprintDuration),
 				teamId,
-			},
+			});
+
+			return 1;
 		});
-
-		return 1;
 	}
-
 	async startNextSprint({
 		teamId,
 		sprintData,
 	}: NextSprintPayload): Promise<SprintServiceResponse<Sprint>> {
 		this.logger.info("Starting next sprint for team", { teamId });
-		const team = await this.db.team.findUnique({ where: { id: teamId } });
+		return await this.db.transaction(async (tx) => {
+			const team = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.id, teamId))
+				.limit(1);
 
-		if (!team) {
-			return this.sendErrorResponse(404, "Team not found");
-		}
+			if (team.length === 0) {
+				return this.sendErrorResponse(404, "Team not found");
+			}
 
-		if (!team.sprintsEnabled) {
-			return this.sendErrorResponse(
-				400,
-				"Sprints are not enabled for this team",
-			);
-		}
+			if (!team[0].sprintsEnabled) {
+				return this.sendErrorResponse(
+					400,
+					"Sprints are not enabled for this team",
+				);
+			}
 
-		const teamSprints = await this.db.sprint.findMany({
-			where: { teamId },
-			orderBy: { startDate: "asc" },
+			const teamSprints = await tx
+				.select()
+				.from(sprintsTable)
+				.where(eq(sprintsTable.teamId, teamId))
+				.orderBy(desc(sprintsTable.startDate));
+
+			const currentSprint = teamSprints.find((s) => s.status === "ACTIVE");
+
+			await this.completeCurrentSprint(tx, teamSprints);
+
+			const newSprintData = await this.createSprint({
+				tx,
+				sprintData,
+				team: team[0],
+				teamSprints,
+				teamId,
+			});
+
+			if (currentSprint) {
+				await tx
+					.update(tasksTable)
+					.set({ sprintId: newSprintData.id })
+					.where(
+						and(
+							eq(tasksTable.sprintId, currentSprint.id),
+							ne(tasksTable.status, "done"),
+						),
+					);
+			}
+
+			return {
+				data: newSprintData,
+				message: `Successfully created sprint: ${newSprintData.name}`,
+				variant: "default",
+			};
 		});
-
-		const currentSprint = teamSprints.find((s) => s.status === "ACTIVE");
-
-		await this.completeCurrentSprint(teamSprints);
-
-		const newSprintData = await this.createSprint({
-			sprintData,
-			team,
-			teamSprints,
-			teamId,
-		});
-
-		await this.db.task.updateMany({
-			where: { sprintId: currentSprint?.id, status: { not: "done" } },
-			data: { sprintId: newSprintData.id },
-		});
-
-		return {
-			data: newSprintData,
-			message: `Successfully created sprint: ${newSprintData.name}`,
-			variant: "default",
-		};
 	}
 
 	async getSprintTasks({ sprintId }: { sprintId: string }): Promise<Task[]> {
 		this.logger.info("Getting tasks for sprint", { sprintId });
-		return this.db.task.findMany({ where: { sprintId } });
+		return this.db
+			.select()
+			.from(tasksTable)
+			.where(eq(tasksTable.sprintId, sprintId));
 	}
 
 	async endSprint({ sprintId }: { sprintId: string }): Promise<Sprint> {
 		this.logger.info("Ending sprint", { sprintId });
-		return this.db.sprint.update({
-			where: { id: sprintId },
-			data: { status: "COMPLETED" },
-		});
+		const [endedSprint] = await this.db
+			.update(sprintsTable)
+			.set({ status: "COMPLETED" })
+			.where(eq(sprintsTable.id, sprintId))
+			.returning();
+		return endedSprint;
 	}
 
 	async addRetrospectiveItem({
@@ -147,22 +190,23 @@ export class SprintService implements SprintRpc {
 			sprintId,
 		);
 
-		// Create retrospective item with the appropriate relation
-		return await this.db.retrospectiveItem.create({
-			data: {
+		const [newItem] = await this.db
+			.insert(retrospectiveItemsTable)
+			.values({
 				content,
 				type,
 				authorId,
 				...sprintRelationField,
-			},
-			select: {
-				id: true,
-				content: true,
-				type: true,
-				authorId: true,
-				likes: true,
-			},
-		});
+			})
+			.returning({
+				id: retrospectiveItemsTable.id,
+				content: retrospectiveItemsTable.content,
+				type: retrospectiveItemsTable.type,
+				authorId: retrospectiveItemsTable.authorId,
+				likes: retrospectiveItemsTable.likes,
+			});
+
+		return newItem;
 	}
 
 	async updateRetrospectiveItem({
@@ -183,22 +227,24 @@ export class SprintService implements SprintRpc {
 			actionItemsSprintId: null,
 			...sprintRelationField,
 		};
-		// Update the retrospective item with the appropriate relation and content
-		return await this.db.retrospectiveItem.update({
-			where: { id: retrospectiveItemId },
-			data: {
+
+		const [updatedItem] = await this.db
+			.update(retrospectiveItemsTable)
+			.set({
 				type,
 				content,
 				...resetFields,
-			},
-			select: {
-				id: true,
-				content: true,
-				type: true,
-				authorId: true,
-				likes: true,
-			},
-		});
+			})
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.returning({
+				id: retrospectiveItemsTable.id,
+				content: retrospectiveItemsTable.content,
+				type: retrospectiveItemsTable.type,
+				authorId: retrospectiveItemsTable.authorId,
+				likes: retrospectiveItemsTable.likes,
+			});
+
+		return updatedItem;
 	}
 
 	async likeRetrospectiveItem({
@@ -212,9 +258,12 @@ export class SprintService implements SprintRpc {
 			retrospectiveItemId,
 			userId,
 		});
-		const retroItem = await this.db.retrospectiveItem.findUnique({
-			where: { id: retrospectiveItemId },
-		});
+
+		const [retroItem] = await this.db
+			.select()
+			.from(retrospectiveItemsTable)
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.limit(1);
 
 		if (!retroItem) {
 			throw new Error("Retrospective item not found");
@@ -224,17 +273,19 @@ export class SprintService implements SprintRpc {
 			? retroItem.likes.filter((id) => id !== userId)
 			: [...retroItem.likes, userId];
 
-		return this.db.retrospectiveItem.update({
-			where: { id: retrospectiveItemId },
-			data: { likes: updatedLikes },
-			select: {
-				id: true,
-				content: true,
-				type: true,
-				authorId: true,
-				likes: true,
-			},
-		});
+		const [updatedItem] = await this.db
+			.update(retrospectiveItemsTable)
+			.set({ likes: updatedLikes })
+			.where(eq(retrospectiveItemsTable.id, retrospectiveItemId))
+			.returning({
+				id: retrospectiveItemsTable.id,
+				content: retrospectiveItemsTable.content,
+				type: retrospectiveItemsTable.type,
+				authorId: retrospectiveItemsTable.authorId,
+				likes: retrospectiveItemsTable.likes,
+			});
+
+		return updatedItem;
 	}
 
 	async getRetrospectiveItems({
@@ -242,15 +293,18 @@ export class SprintService implements SprintRpc {
 	}: { sprintId: string }): Promise<RetrospectiveData> {
 		this.logger.info("Getting retrospective items for sprint", { sprintId });
 		const [wentWell, toImprove, actionItems] = await Promise.all([
-			this.db.retrospectiveItem.findMany({
-				where: { wentWellSprintId: sprintId },
-			}),
-			this.db.retrospectiveItem.findMany({
-				where: { toImproveSprintId: sprintId },
-			}),
-			this.db.retrospectiveItem.findMany({
-				where: { actionItemsSprintId: sprintId },
-			}),
+			this.db
+				.select()
+				.from(retrospectiveItemsTable)
+				.where(eq(retrospectiveItemsTable.wentWellSprintId, sprintId)),
+			this.db
+				.select()
+				.from(retrospectiveItemsTable)
+				.where(eq(retrospectiveItemsTable.toImproveSprintId, sprintId)),
+			this.db
+				.select()
+				.from(retrospectiveItemsTable)
+				.where(eq(retrospectiveItemsTable.actionItemsSprintId, sprintId)),
 		]);
 
 		return { wentWell, toImprove, actionItems };
@@ -284,39 +338,51 @@ export class SprintService implements SprintRpc {
 		}
 	}
 
-	private async completeCurrentSprint(teamSprints: Sprint[]): Promise<void> {
-		const activeSprintIds = teamSprints
-			.filter((s) => s.status === "ACTIVE")
-			.map((s) => s.id);
-
-		await this.db.sprint.updateMany({
-			where: { id: { in: activeSprintIds } },
-			data: { status: "COMPLETED" },
-		});
+	private async completeCurrentSprint(
+		tx: TransactionClient,
+		teamSprints: Sprint[],
+	): Promise<void> {
+		const currentSprint = teamSprints.find((s) => s.status === "ACTIVE");
+		if (currentSprint) {
+			await tx
+				.update(sprintsTable)
+				.set({ status: "COMPLETED" })
+				.where(eq(sprintsTable.id, currentSprint.id));
+		}
 	}
 
 	private async createSprint({
+		tx,
 		team,
 		teamSprints,
 		teamId,
 		sprintData,
 	}: {
+		tx: TransactionClient;
 		team: Team;
 		teamSprints: Sprint[];
 		teamId: string;
 		sprintData: NextSprintPayload["sprintData"];
 	}): Promise<Sprint> {
-		const sprintDuration = team.sprintDuration;
+		const lastSprint = teamSprints[0];
+		const newSprintNumber =
+			(lastSprint ? Number.parseInt(lastSprint.name.split(" ")[1]) : 0) + 1;
+		const startDate = lastSprint ? new Date(lastSprint.endDate) : new Date();
+		const endDate = new Date(startDate);
+		endDate.setDate(endDate.getDate() + team.sprintDuration * 7);
 
-		return await this.db.sprint.create({
-			data: {
-				name: `Sprint ${teamSprints.length + 1}`,
-				startDate: new Date(),
-				endDate: addWeeks(new Date(), sprintDuration),
+		const [newSprint] = await tx
+			.insert(sprintsTable)
+			.values({
+				name: `Sprint ${newSprintNumber}`,
 				status: "ACTIVE",
+				startDate,
+				endDate,
 				teamId,
 				...sprintData,
-			},
-		});
+			})
+			.returning();
+
+		return newSprint;
 	}
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import * as TooltipPrimitive from "@repo/ui/tooltip";
+import * as TooltipPrimitive from "@squaredmade/ui/tooltip";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";

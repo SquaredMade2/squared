@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ParsedQs } from "qs";
 
-export type APIResponse<Type> = {
+type APIResponse<Type> = {
 	data: Type | Type[] | null;
 	message?: string;
 	variant: "default" | "destructive";

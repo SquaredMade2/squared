@@ -1,4 +1,5 @@
-import * as React from 'react';
+
+import { useState, type Dispatch, type SetStateAction, useCallback, useRef, useEffect } from 'react';
 import { css } from '../../stitches.config';
 import * as Progress from '../progress';
 
@@ -131,17 +132,17 @@ const indicatorAttrClass = css(indicatorPseudos, styles);
 
 type ProgressValue = number | null;
 function useProgressValueState(initialState: ProgressValue | (() => ProgressValue), max = 100) {
-  const [value, setValue] = React.useState<number | null>(initialState);
+  const [value, setValue] = useState<number | null>(initialState);
   const precentage = value != null ? Math.round((value / max) * 100) : null;
   return [value, precentage, setValue] as const;
 }
 
 function useIndeterminateToggle(
   value: ProgressValue,
-  setValue: React.Dispatch<React.SetStateAction<ProgressValue>>
+  setValue: Dispatch<SetStateAction<ProgressValue>>
 ) {
   const previousValueRef = usePreviousValueRef(value);
-  const toggleIndeterminate = React.useCallback(
+  const toggleIndeterminate = useCallback(
     function setIndeterminate() {
       setValue((val) => {
         if (val == null) {
@@ -156,8 +157,8 @@ function useIndeterminateToggle(
 }
 
 function usePreviousValueRef(value: ProgressValue) {
-  const previousValueRef = React.useRef<number>(value || 0);
-  React.useEffect(() => {
+  const previousValueRef = useRef<number>(value || 0);
+  useEffect(() => {
     if (value != null) {
       previousValueRef.current = value;
     }
