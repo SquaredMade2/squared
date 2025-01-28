@@ -44,7 +44,7 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 				];
 				break;
 			case "Label": {
-				const workspaceLabels = workspace?.Labels.map((l) => l.id) || [];
+				const workspaceLabels = workspace?.labels.map((l) => l.id) || [];
 				groupTitles = [...workspaceLabels, "No labels"];
 				break;
 			}

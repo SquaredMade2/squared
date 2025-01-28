@@ -1,4 +1,8 @@
-import * as React from "react";
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	forwardRef,
+} from "react";
 import { composeEventHandlers } from "../primitive";
 import { Primitive } from "../react-primitive";
 import { useControllableState } from "../use-controllable-state";
@@ -9,10 +13,8 @@ import { useControllableState } from "../use-controllable-state";
 
 const NAME = "Toggle";
 
-type ToggleElement = React.ElementRef<typeof Primitive.button>;
-type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.button
->;
+type ToggleElement = ElementRef<typeof Primitive.button>;
+type PrimitiveButtonProps = ComponentPropsWithoutRef<typeof Primitive.button>;
 interface ToggleProps extends PrimitiveButtonProps {
 	/**
 	 * The controlled state of the toggle.
@@ -30,38 +32,36 @@ interface ToggleProps extends PrimitiveButtonProps {
 	onPressedChange?(pressed: boolean): void;
 }
 
-const Toggle = React.forwardRef<ToggleElement, ToggleProps>(
-	(props, forwardedRef) => {
-		const {
-			pressed: pressedProp,
-			defaultPressed = false,
-			onPressedChange,
-			...buttonProps
-		} = props;
+const Toggle = forwardRef<ToggleElement, ToggleProps>((props, forwardedRef) => {
+	const {
+		pressed: pressedProp,
+		defaultPressed = false,
+		onPressedChange,
+		...buttonProps
+	} = props;
 
-		const [pressed = false, setPressed] = useControllableState({
-			prop: pressedProp,
-			onChange: onPressedChange,
-			defaultProp: defaultPressed,
-		});
+	const [pressed = false, setPressed] = useControllableState({
+		prop: pressedProp,
+		onChange: onPressedChange,
+		defaultProp: defaultPressed,
+	});
 
-		return (
-			<Primitive.button
-				type="button"
-				aria-pressed={pressed}
-				data-state={pressed ? "on" : "off"}
-				data-disabled={props.disabled ? "" : undefined}
-				{...buttonProps}
-				ref={forwardedRef}
-				onClick={composeEventHandlers(props.onClick, () => {
-					if (!props.disabled) {
-						setPressed(!pressed);
-					}
-				})}
-			/>
-		);
-	},
-);
+	return (
+		<Primitive.button
+			type="button"
+			aria-pressed={pressed}
+			data-state={pressed ? "on" : "off"}
+			data-disabled={props.disabled ? "" : undefined}
+			{...buttonProps}
+			ref={forwardedRef}
+			onClick={composeEventHandlers(props.onClick, () => {
+				if (!props.disabled) {
+					setPressed(!pressed);
+				}
+			})}
+		/>
+	);
+});
 
 Toggle.displayName = NAME;
 

@@ -1,4 +1,4 @@
-import pkg from '@squared/builder';
-const {build} = pkg;
+import pkg from "@squared/builder";
+const { build } = pkg;
 
-build("src/index.ts", ["axios", "@squared/context"])
+build("src/index.ts", ["axios", "@squared/context"]);

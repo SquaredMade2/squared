@@ -1,6 +1,6 @@
 "use client";
 
-import * as HoverCardPrimitive from "@repo/ui/hover-card";
+import * as HoverCardPrimitive from "@squaredmade/ui/hover-card";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";

@@ -1,10 +1,11 @@
-import * as React from "react";
+;
 
 import { Label as LabelPrimitive } from "../label";
 import * as SwitchPrimitive from "../switch";
 
 import { css } from "../../stitches.config";
 import { RECOMMENDED_CSS__LABEL__ROOT } from "../label/Label.stories";
+import { useState } from "react";
 
 export default { title: "Components/Switch" };
 
@@ -21,7 +22,7 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-	const [checked, setChecked] = React.useState(true);
+	const [checked, setChecked] = useState(true);
 
 	return (
 		<>
@@ -42,12 +43,12 @@ export const Controlled = () => {
 };
 
 export const WithinForm = () => {
-	const [data, setData] = React.useState({
+	const [data, setData] = useState({
 		optional: false,
 		required: false,
 		stopprop: false,
 	});
-	const [checked, setChecked] = React.useState(false);
+	const [checked, setChecked] = useState(false);
 
 	return (
 		<form

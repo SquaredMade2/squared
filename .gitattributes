@@ -1,5 +1,3 @@
-# Mark all files in "gen" folders as binary (no diff)
-**/gen/** -diff
-
-# Mark the specific file as binary (no diff)
-apps/api/src/api/generated-routes.ts -diff
+# Don't show generated files on PR
+**/gen/** linguist-generated=true
+apps/api/src/api/generated-routes.ts linguist-generated=true

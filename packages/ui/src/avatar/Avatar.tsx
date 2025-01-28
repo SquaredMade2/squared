@@ -1,10 +1,16 @@
-import * as React from "react";
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type HTMLAttributeReferrerPolicy,
+	forwardRef,
+	useEffect,
+	useState,
+} from "react";
 import { createContextScope } from "../context";
+import type { Scope } from "../context";
 import { Primitive } from "../react-primitive";
 import { useCallbackRef } from "../use-callback-ref";
 import { useLayoutEffect } from "../use-layout-effect";
-
-import type { Scope } from "../context";
 
 /* -------------------------------------------------------------------------------------------------
  * Avatar
@@ -26,15 +32,15 @@ type AvatarContextValue = {
 const [AvatarProvider, useAvatarContext] =
 	createAvatarContext<AvatarContextValue>(AVATAR_NAME);
 
-type AvatarElement = React.ElementRef<typeof Primitive.span>;
-type PrimitiveSpanProps = React.ComponentPropsWithoutRef<typeof Primitive.span>;
+type AvatarElement = ElementRef<typeof Primitive.span>;
+type PrimitiveSpanProps = ComponentPropsWithoutRef<typeof Primitive.span>;
 interface AvatarProps extends PrimitiveSpanProps {}
 
-const Avatar = React.forwardRef<AvatarElement, AvatarProps>(
+const Avatar = forwardRef<AvatarElement, AvatarProps>(
 	(props: ScopedProps<AvatarProps>, forwardedRef) => {
 		const { __scopeAvatar, ...avatarProps } = props;
 		const [imageLoadingStatus, setImageLoadingStatus] =
-			React.useState<ImageLoadingStatus>("idle");
+			useState<ImageLoadingStatus>("idle");
 		return (
 			<AvatarProvider
 				scope={__scopeAvatar}
@@ -55,13 +61,13 @@ Avatar.displayName = AVATAR_NAME;
 
 const IMAGE_NAME = "AvatarImage";
 
-type AvatarImageElement = React.ElementRef<typeof Primitive.img>;
-type PrimitiveImageProps = React.ComponentPropsWithoutRef<typeof Primitive.img>;
+type AvatarImageElement = ElementRef<typeof Primitive.img>;
+type PrimitiveImageProps = ComponentPropsWithoutRef<typeof Primitive.img>;
 interface AvatarImageProps extends PrimitiveImageProps {
 	onLoadingStatusChange?: (status: ImageLoadingStatus) => void;
 }
 
-const AvatarImage = React.forwardRef<AvatarImageElement, AvatarImageProps>(
+const AvatarImage = forwardRef<AvatarImageElement, AvatarImageProps>(
 	(props: ScopedProps<AvatarImageProps>, forwardedRef) => {
 		const {
 			__scopeAvatar,
@@ -101,30 +107,29 @@ AvatarImage.displayName = IMAGE_NAME;
 
 const FALLBACK_NAME = "AvatarFallback";
 
-type AvatarFallbackElement = React.ElementRef<typeof Primitive.span>;
+type AvatarFallbackElement = ElementRef<typeof Primitive.span>;
 interface AvatarFallbackProps extends PrimitiveSpanProps {
 	delayMs?: number;
 }
 
-const AvatarFallback = React.forwardRef<
-	AvatarFallbackElement,
-	AvatarFallbackProps
->((props: ScopedProps<AvatarFallbackProps>, forwardedRef) => {
-	const { __scopeAvatar, delayMs, ...fallbackProps } = props;
-	const context = useAvatarContext(FALLBACK_NAME, __scopeAvatar);
-	const [canRender, setCanRender] = React.useState(delayMs === undefined);
+const AvatarFallback = forwardRef<AvatarFallbackElement, AvatarFallbackProps>(
+	(props: ScopedProps<AvatarFallbackProps>, forwardedRef) => {
+		const { __scopeAvatar, delayMs, ...fallbackProps } = props;
+		const context = useAvatarContext(FALLBACK_NAME, __scopeAvatar);
+		const [canRender, setCanRender] = useState(delayMs === undefined);
 
-	React.useEffect(() => {
-		if (delayMs !== undefined) {
-			const timerId = window.setTimeout(() => setCanRender(true), delayMs);
-			return () => window.clearTimeout(timerId);
-		}
-	}, [delayMs]);
+		useEffect(() => {
+			if (delayMs !== undefined) {
+				const timerId = window.setTimeout(() => setCanRender(true), delayMs);
+				return () => window.clearTimeout(timerId);
+			}
+		}, [delayMs]);
 
-	return canRender && context.imageLoadingStatus !== "loaded" ? (
-		<Primitive.span {...fallbackProps} ref={forwardedRef} />
-	) : null;
-});
+		return canRender && context.imageLoadingStatus !== "loaded" ? (
+			<Primitive.span {...fallbackProps} ref={forwardedRef} />
+		) : null;
+	},
+);
 
 AvatarFallback.displayName = FALLBACK_NAME;
 
@@ -132,10 +137,10 @@ AvatarFallback.displayName = FALLBACK_NAME;
 
 function useImageLoadingStatus(
 	src?: string,
-	referrerPolicy?: React.HTMLAttributeReferrerPolicy,
+	referrerPolicy?: HTMLAttributeReferrerPolicy,
 ) {
 	const [loadingStatus, setLoadingStatus] =
-		React.useState<ImageLoadingStatus>("idle");
+		useState<ImageLoadingStatus>("idle");
 
 	useLayoutEffect(() => {
 		if (!src) {

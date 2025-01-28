@@ -22,8 +22,10 @@ export function useSprints(sprintId?: string) {
 	const workspaceQuery = useQuery({
 		queryKey: ["workspace", workspaceUrl],
 		queryFn: async () => {
+			const parsedWorkspaceUrl = parseParams(workspaceUrl);
+			if (!parsedWorkspaceUrl) throw new Error("Workspace not found");
 			const res = await client.workspace.getWorkspaceByUrl.$get({
-				workspaceUrl: parseParams(workspaceUrl),
+				workspaceUrl: parsedWorkspaceUrl,
 			});
 			const workspace = await res.json();
 			if (!workspace) throw new Error("Workspace not found");
@@ -36,9 +38,11 @@ export function useSprints(sprintId?: string) {
 	const teamQuery = useQuery({
 		queryKey: ["team", workspaceQuery.data?.id, teamIdentifier],
 		queryFn: async () => {
+			const parsedTeamIdentifier = parseParams(teamIdentifier);
 			if (!workspaceQuery.data) return;
+			if (!parsedTeamIdentifier) throw new Error("Team not found");
 			const res = await client.team.getTeamByIdentifier.$get({
-				identifier: parseParams(teamIdentifier),
+				identifier: parsedTeamIdentifier,
 				workspaceId: workspaceQuery.data.id,
 			});
 			const team = await res.json();

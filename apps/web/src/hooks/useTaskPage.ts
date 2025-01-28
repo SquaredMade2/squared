@@ -36,9 +36,11 @@ export function useTaskPage() {
 		queryKey: ["task", workspace?.id, taskIdentifier],
 		queryFn: async () => {
 			if (!workspace) throw new Error("Workspace not found");
+			const identifier = parseParams(taskIdentifier);
+			if (!identifier) throw new Error("Task identifier not found");
 			const res = await client.task.getTaskByIdentifier.$get({
 				workspaceId: workspace.id,
-				identifier: parseParams(taskIdentifier),
+				identifier,
 			});
 			const pageTask = await res.json();
 			if (pageTask) {
@@ -46,7 +48,7 @@ export function useTaskPage() {
 			}
 			return pageTask;
 		},
-		enabled: !!workspace && !workspaceLoading,
+		enabled: !!workspace && !workspaceLoading && !!taskIdentifier,
 	});
 
 	const subtasksQuery = useQuery({

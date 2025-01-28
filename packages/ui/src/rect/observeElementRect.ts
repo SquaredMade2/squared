@@ -1,4 +1,4 @@
-type Measurable = { getBoundingClientRect(): ClientRect };
+type Measurable = { getBoundingClientRect(): DOMRect };
 
 /**
  * Observes an element's rectangle on screen (getBoundingClientRect)
@@ -17,7 +17,7 @@ function observeElementRect(
 		// add the element to the map of observed elements with its first callback
 		// because this is the first time this element is observed
 		observedElements.set(elementToObserve, {
-			rect: {} as ClientRect,
+			rect: {} as DOMRect,
 			callbacks: [callback],
 		});
 
@@ -57,10 +57,10 @@ function observeElementRect(
 // ========================================================================
 // module internals
 
-type CallbackFn = (rect: ClientRect) => void;
+type CallbackFn = (rect: DOMRect) => void;
 
 type ObservedData = {
-	rect: ClientRect;
+	rect: DOMRect;
 	callbacks: Array<CallbackFn>;
 };
 
@@ -96,7 +96,7 @@ function runLoop() {
 /**
  * Returns whether 2 rects are equal in values
  */
-function rectEquals(rect1: ClientRect, rect2: ClientRect) {
+function rectEquals(rect1: DOMRect, rect2: DOMRect) {
 	return (
 		rect1.width === rect2.width &&
 		rect1.height === rect2.height &&

@@ -1,5 +1,14 @@
-import * as React from "react";
-
+import {
+	type AriaAttributes,
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type KeyboardEvent,
+	forwardRef,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { createCollection } from "../collection";
 import { useComposedRefs } from "../compose-refs";
 import type { Scope } from "../context";
@@ -30,7 +39,7 @@ type ScopedProps<P> = P & { __scopeRovingFocusGroup?: Scope };
 const [createRovingFocusGroupContext, createRovingFocusGroupScope] =
 	createContextScope(GROUP_NAME, [createCollectionScope]);
 
-type Orientation = React.AriaAttributes["aria-orientation"];
+type Orientation = AriaAttributes["aria-orientation"];
 type Direction = "ltr" | "rtl";
 
 interface RovingFocusGroupOptions {
@@ -64,7 +73,7 @@ const [RovingFocusProvider, useRovingFocusContext] =
 type RovingFocusGroupElement = RovingFocusGroupImplElement;
 interface RovingFocusGroupProps extends RovingFocusGroupImplProps {}
 
-const RovingFocusGroup = React.forwardRef<
+const RovingFocusGroup = forwardRef<
 	RovingFocusGroupElement,
 	RovingFocusGroupProps
 >((props: ScopedProps<RovingFocusGroupProps>, forwardedRef) => {
@@ -81,8 +90,8 @@ RovingFocusGroup.displayName = GROUP_NAME;
 
 /* -----------------------------------------------------------------------------------------------*/
 
-type RovingFocusGroupImplElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type RovingFocusGroupImplElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface RovingFocusGroupImplProps
 	extends Omit<PrimitiveDivProps, "dir">,
 		RovingFocusGroupOptions {
@@ -93,7 +102,7 @@ interface RovingFocusGroupImplProps
 	preventScrollOnEntryFocus?: boolean;
 }
 
-const RovingFocusGroupImpl = React.forwardRef<
+const RovingFocusGroupImpl = forwardRef<
 	RovingFocusGroupImplElement,
 	RovingFocusGroupImplProps
 >((props: ScopedProps<RovingFocusGroupImplProps>, forwardedRef) => {
@@ -109,7 +118,7 @@ const RovingFocusGroupImpl = React.forwardRef<
 		preventScrollOnEntryFocus = false,
 		...groupProps
 	} = props;
-	const ref = React.useRef<RovingFocusGroupImplElement>(null);
+	const ref = useRef<RovingFocusGroupImplElement>(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
 	const direction = useDirection(dir);
 	const [currentTabStopId = null, setCurrentTabStopId] = useControllableState({
@@ -117,13 +126,13 @@ const RovingFocusGroupImpl = React.forwardRef<
 		defaultProp: defaultCurrentTabStopId,
 		onChange: onCurrentTabStopIdChange,
 	});
-	const [isTabbingBackOut, setIsTabbingBackOut] = React.useState(false);
+	const [isTabbingBackOut, setIsTabbingBackOut] = useState(false);
 	const handleEntryFocus = useCallbackRef(onEntryFocus);
 	const getItems = useCollection(__scopeRovingFocusGroup);
-	const isClickFocusRef = React.useRef(false);
-	const [focusableItemsCount, setFocusableItemsCount] = React.useState(0);
+	const isClickFocusRef = useRef(false);
+	const [focusableItemsCount, setFocusableItemsCount] = useState(0);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const node = ref.current;
 		if (node) {
 			node.addEventListener(ENTRY_FOCUS, handleEntryFocus);
@@ -138,16 +147,16 @@ const RovingFocusGroupImpl = React.forwardRef<
 			dir={direction}
 			loop={loop}
 			currentTabStopId={currentTabStopId}
-			onItemFocus={React.useCallback(
+			onItemFocus={useCallback(
 				(tabStopId) => setCurrentTabStopId(tabStopId),
 				[setCurrentTabStopId],
 			)}
-			onItemShiftTab={React.useCallback(() => setIsTabbingBackOut(true), [])}
-			onFocusableItemAdd={React.useCallback(
+			onItemShiftTab={useCallback(() => setIsTabbingBackOut(true), [])}
+			onFocusableItemAdd={useCallback(
 				() => setFocusableItemsCount((prevCount) => prevCount + 1),
 				[],
 			)}
-			onFocusableItemRemove={React.useCallback(
+			onFocusableItemRemove={useCallback(
 				() => setFocusableItemsCount((prevCount) => prevCount - 1),
 				[],
 			)}
@@ -208,15 +217,15 @@ const RovingFocusGroupImpl = React.forwardRef<
 
 const ITEM_NAME = "RovingFocusGroupItem";
 
-type RovingFocusItemElement = React.ElementRef<typeof Primitive.span>;
-type PrimitiveSpanProps = React.ComponentPropsWithoutRef<typeof Primitive.span>;
+type RovingFocusItemElement = ElementRef<typeof Primitive.span>;
+type PrimitiveSpanProps = ComponentPropsWithoutRef<typeof Primitive.span>;
 interface RovingFocusItemProps extends PrimitiveSpanProps {
 	tabStopId?: string;
 	focusable?: boolean;
 	active?: boolean;
 }
 
-const RovingFocusGroupItem = React.forwardRef<
+const RovingFocusGroupItem = forwardRef<
 	RovingFocusItemElement,
 	RovingFocusItemProps
 >((props: ScopedProps<RovingFocusItemProps>, forwardedRef) => {
@@ -235,7 +244,7 @@ const RovingFocusGroupItem = React.forwardRef<
 
 	const { onFocusableItemAdd, onFocusableItemRemove } = context;
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (focusable) {
 			onFocusableItemAdd();
 			return () => onFocusableItemRemove();
@@ -339,7 +348,7 @@ function getDirectionAwareKey(key: string, dir?: Direction) {
 type FocusIntent = "first" | "last" | "prev" | "next";
 
 function getFocusIntent(
-	event: React.KeyboardEvent,
+	event: KeyboardEvent,
 	orientation?: Orientation,
 	dir?: Direction,
 ) {

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useUserStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
-import { TooltipContent } from "@repo/ui/tooltip";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { ThumbsUp } from "lucide-react";
 
 export const RetroItemCard = ({

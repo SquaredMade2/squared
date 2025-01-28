@@ -1,5 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
+const deploymentUrl = process.env.VERCEL_URL
+	? `https://${process.env.VERCEL_URL}`
+	: process.env.NEXT_PUBLIC_URL;
+
 export default clerkMiddleware(
 	async (auth, request) => {
 		if (!isPublicRoute(request)) {
@@ -7,8 +11,8 @@ export default clerkMiddleware(
 		}
 	},
 	() => ({
-		signInUrl: `${process.env.NEXT_PUBLIC_URL}/sign-in`,
-		signUpUrl: `${process.env.NEXT_PUBLIC_URL}/sign-up`,
+		signInUrl: `${deploymentUrl}/sign-in`,
+		signUpUrl: `${deploymentUrl}/sign-up`,
 	}),
 );
 

@@ -8,10 +8,9 @@
 			"coverage",
 			"generated",
 			".storybook",
-			"cypress",
 			"*.stories.tsx"
 		],
-		"include": ["src", "api", "www"]
+		"include": ["apps", "packages"]
 	},
 	"organizeImports": {
 		"enabled": true
@@ -52,9 +51,6 @@
 						"noExplicitAny": "off",
 						"noArrayIndexKey": "off"
 					},
-					"complexity": {
-						"noForEach": "off"
-					},
 					"style": {
 						"noNonNullAssertion": "off",
 						"noInferrableTypes": "off"
@@ -94,15 +90,12 @@
 			"$",
 			"_",
 			"externalVariable",
-			"cypress",
 			"it",
-			"cy",
 			"describe",
 			"beforeEach",
 			"jest",
 			"React",
-			"afterEach",
-			"Cypress"
+			"afterEach"
 		]
 	}
 }

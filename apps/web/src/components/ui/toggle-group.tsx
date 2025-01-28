@@ -1,6 +1,6 @@
 "use client";
 
-import * as ToggleGroupPrimitive from "@repo/ui/toggle-group";
+import * as ToggleGroupPrimitive from "@squaredmade/ui/toggle-group";
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 

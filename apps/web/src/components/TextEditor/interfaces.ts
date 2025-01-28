@@ -3,6 +3,8 @@ import type { Dispatch, MutableRefObject, SetStateAction } from "react";
 import type { BaseSelection, Node, NodeEntry } from "slate";
 import type { Editor } from "slate";
 
+import type { JSX } from "react";
+
 export interface TextEditorProps {
 	task: Task;
 }
@@ -49,7 +51,7 @@ export type CustomElementAttributes = Omit<
 	JSX.IntrinsicElements["div"],
 	"children"
 > & {
-	ref?: React.RefObject<HTMLDivElement>;
+	ref?: React.RefObject<HTMLDivElement | null>;
 	"data-slate-node"?: string;
 };
 

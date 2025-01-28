@@ -1,4 +1,11 @@
-import type { PrismaClient, Team } from "@squared/db";
+import {
+	type DBClient,
+	type Team,
+	and,
+	eq,
+	teamsTable,
+	userTeamsTable,
+} from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type {
@@ -9,10 +16,10 @@ import type {
 } from "./types";
 
 export class TeamService implements TeamRpc {
-	private readonly db: PrismaClient;
+	private readonly db: DBClient;
 	private readonly logger: Logger;
 
-	constructor(db: PrismaClient) {
+	constructor(db: DBClient) {
 		this.db = db;
 		this.logger = createCustomLogger("team");
 	}
@@ -24,37 +31,57 @@ export class TeamService implements TeamRpc {
 		userId,
 	}: CreateTeamParams): Promise<Team> {
 		this.logger.info("Creating team: %0", { name, identifier, workspaceId });
-		const existingTeam = await this.db.team.findFirst({
-			where: { identifier },
-		});
 
-		if (existingTeam) {
-			throw new Error("Team already exists");
-		}
+		return await this.db.transaction(async (tx) => {
+			// Check if team already exists
+			const existingTeam = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.identifier, identifier))
+				.limit(1);
 
-		const createdTeam = await this.db.team.create({
-			data: {
-				name,
-				identifier,
-				workspaceId,
-			},
-		});
+			if (existingTeam.length > 0) {
+				throw new Error("Team already exists");
+			}
 
-		await this.db.userTeam.create({
-			data: {
+			// Create the team
+			const [createdTeam] = await tx
+				.insert(teamsTable)
+				.values({
+					name,
+					identifier,
+					workspaceId,
+				})
+				.returning();
+
+			if (!createdTeam) {
+				throw new Error("Failed to create team");
+			}
+
+			// Create user-team association
+			await tx.insert(userTeamsTable).values({
 				userId,
 				teamId: createdTeam.id,
-			},
-		});
+			});
 
-		return createdTeam;
+			return createdTeam;
+		});
 	}
 
 	async updateTeam({ id, ...args }: UpdateTeamParams): Promise<Team> {
 		this.logger.info("Updating team: %s", id);
-		return await this.db.team.update({
-			where: { id },
-			data: args,
+		return await this.db.transaction(async (tx) => {
+			const [updatedTeam] = await tx
+				.update(teamsTable)
+				.set(args)
+				.where(eq(teamsTable.id, id))
+				.returning();
+
+			if (!updatedTeam) {
+				throw new Error("Team not found");
+			}
+
+			return updatedTeam;
 		});
 	}
 
@@ -62,31 +89,72 @@ export class TeamService implements TeamRpc {
 		id,
 		...args
 	}: UpdateTeamSprintsParams): Promise<Team> {
-		this.logger.info("Updating team: %s", id);
-		return await this.db.team.update({ where: { id }, data: args });
+		this.logger.info("Updating team sprints: %s", id);
+		return await this.db.transaction(async (tx) => {
+			const [updatedTeam] = await tx
+				.update(teamsTable)
+				.set(args)
+				.where(eq(teamsTable.id, id))
+				.returning();
+
+			if (!updatedTeam) {
+				throw new Error("Team not found");
+			}
+
+			return updatedTeam;
+		});
 	}
 
 	async deleteTeam({ teamId }: { teamId: string }): Promise<void> {
 		this.logger.info("Deleting team: %s", teamId);
-		await this.db.team.delete({
-			where: { id: teamId },
+		await this.db.transaction(async (tx) => {
+			const result = await tx
+				.delete(teamsTable)
+				.where(eq(teamsTable.id, teamId))
+				.returning();
+
+			if (result.length === 0) {
+				throw new Error("Team not found");
+			}
 		});
 	}
 
 	async getTeam({ teamId }: { teamId: string }): Promise<Team | null> {
 		this.logger.info("Finding team: %s", teamId);
-		return await this.db.team.findUnique({
-			where: { id: teamId },
+		return await this.db.transaction(async (tx) => {
+			const team = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.id, teamId))
+				.limit(1)
+				.then((results) => results[0] || null);
+
+			return team;
 		});
 	}
 
 	async getTeamByIdentifier({
 		identifier,
 		workspaceId,
-	}: { identifier: string; workspaceId: string }): Promise<Team | null> {
+	}: {
+		identifier: string;
+		workspaceId: string;
+	}): Promise<Team | null> {
 		this.logger.info("Finding team: %s", identifier);
-		return await this.db.team.findFirst({
-			where: { identifier, workspaceId },
+		return await this.db.transaction(async (tx) => {
+			const team = await tx
+				.select()
+				.from(teamsTable)
+				.where(
+					and(
+						eq(teamsTable.identifier, identifier),
+						eq(teamsTable.workspaceId, workspaceId),
+					),
+				)
+				.limit(1)
+				.then((results) => results[0] || null);
+
+			return team;
 		});
 	}
 
@@ -95,13 +163,17 @@ export class TeamService implements TeamRpc {
 		workspaceId,
 	}: { userId: string; workspaceId: string }): Promise<Team[]> {
 		this.logger.info("Finding teams for user: %s", userId);
-		const teamIds = await this.db.userTeam
-			.findMany({ where: { userId } })
-			.then((t) => t.map((ut) => ut.teamId));
-
-		return await this.db.team.findMany({
-			where: { workspaceId, id: { in: teamIds } },
-		});
+		return await this.db
+			.select()
+			.from(teamsTable)
+			.leftJoin(userTeamsTable, eq(teamsTable.id, userTeamsTable.teamId))
+			.where(
+				and(
+					eq(userTeamsTable.userId, userId),
+					eq(teamsTable.workspaceId, workspaceId),
+				),
+			)
+			.then((results) => results.map((t) => t.Team));
 	}
 
 	async getWorkspaceTeams({
@@ -109,21 +181,41 @@ export class TeamService implements TeamRpc {
 	}: { workspaceId: string }): Promise<Team[]> {
 		this.logger.info("Finding workspace teams");
 
-		return await this.db.team.findMany({
-			where: { workspaceId },
+		return await this.db.transaction(async (tx) => {
+			const teams = await tx
+				.select()
+				.from(teamsTable)
+				.where(eq(teamsTable.workspaceId, workspaceId));
+
+			return teams;
 		});
 	}
 
 	async removeUserFromTeam({
 		userId,
 		teamId,
-	}: { userId: string; teamId: string }): Promise<{ success: boolean }> {
+	}: {
+		userId: string;
+		teamId: string;
+	}): Promise<{ success: boolean }> {
 		this.logger.info("Removing user from team");
 
-		await this.db.userTeam.delete({
-			where: { userId_teamId: { userId, teamId } },
-		});
+		return await this.db.transaction(async (tx) => {
+			const result = await tx
+				.delete(userTeamsTable)
+				.where(
+					and(
+						eq(userTeamsTable.userId, userId),
+						eq(userTeamsTable.teamId, teamId),
+					),
+				)
+				.returning();
 
-		return { success: true };
+			if (result.length === 0) {
+				throw new Error("User-team association not found");
+			}
+
+			return { success: true };
+		});
 	}
 }
