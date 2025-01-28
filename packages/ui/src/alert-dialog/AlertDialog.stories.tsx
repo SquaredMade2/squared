@@ -1,6 +1,7 @@
-import * as React from "react";
+;
 import { css } from "../../stitches.config";
 import * as AlertDialog from ".";
+import { useState } from "react";
 
 export default { title: "Components/AlertDialog" };
 
@@ -30,8 +31,8 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-	const [open, setOpen] = React.useState(false);
-	const [housePurchased, setHousePurchased] = React.useState(false);
+	const [open, setOpen] = useState(false);
+	const [housePurchased, setHousePurchased] = useState(false);
 
 	return (
 		<div>

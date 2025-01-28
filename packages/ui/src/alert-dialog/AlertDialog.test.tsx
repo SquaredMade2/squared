@@ -1,8 +1,7 @@
+import type { ComponentProps } from "@stitches/core";
 import type { RenderResult } from "@testing-library/react";
 import { fireEvent, render } from "@testing-library/react";
 import { axe } from "jest-axe";
-// biome-ignore lint/style/useImportType: <explanation>
-import React from "react";
 import * as AlertDialog from ".";
 
 const OPEN_TEXT = "Open";
@@ -12,7 +11,7 @@ const TITLE_TEXT = "Warning";
 const DESC_TEXT = "This is a warning";
 const OVERLAY_TEST_ID = "test-overlay";
 
-const DialogTest = (props: React.ComponentProps<typeof AlertDialog.Root>) => (
+const DialogTest = (props: ComponentProps<typeof AlertDialog.Root>) => (
 	<AlertDialog.Root {...props}>
 		<AlertDialog.Trigger>{OPEN_TEXT}</AlertDialog.Trigger>
 		<AlertDialog.Overlay data-testid={OVERLAY_TEST_ID} />

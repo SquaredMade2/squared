@@ -26,7 +26,7 @@ export function useTaskDashboard() {
 	);
 
 	const params = useParams();
-	const teamIdentifier = parseParams(params.identifier);
+	const teamIdentifier = parseParams(params.identifier) ?? "";
 
 	const queryClient = useQueryClient();
 

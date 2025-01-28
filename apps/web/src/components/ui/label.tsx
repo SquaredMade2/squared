@@ -1,6 +1,6 @@
 "use client";
 
-import * as LabelPrimitive from "@repo/ui/label";
+import * as LabelPrimitive from "@squaredmade/ui/label";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 

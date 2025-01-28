@@ -1,10 +1,11 @@
-import * as React from "react";
+;
 
 import { DirectionProvider } from "../direction";
 import * as Menu from "../menu";
 
 import { css, keyframes } from "../../stitches.config";
 import { foodGroups } from "../../test-data/foods";
+import { Fragment, useEffect, useState, type ComponentProps, type FC } from "react";
 
 export default {
 	title: "Utilities/Menu",
@@ -49,14 +50,14 @@ export const Styled = () => (
 );
 
 export const Submenus = () => {
-	const [open1, setOpen1] = React.useState(false);
-	const [open2, setOpen2] = React.useState(false);
-	const [open3, setOpen3] = React.useState(false);
-	const [open4, setOpen4] = React.useState(false);
-	const [rtl, setRtl] = React.useState(false);
-	const [animated, setAnimated] = React.useState(false);
+	const [open1, setOpen1] = useState(false);
+	const [open2, setOpen2] = useState(false);
+	const [open3, setOpen3] = useState(false);
+	const [open4, setOpen4] = useState(false);
+	const [rtl, setRtl] = useState(false);
+	const [animated, setAnimated] = useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (rtl) {
 			document.documentElement.setAttribute("dir", "rtl");
 			return () => document.documentElement.removeAttribute("dir");
@@ -283,7 +284,7 @@ export const Typeahead = () => (
 					</p>
 					<select>
 						{foodGroups.map((foodGroup, index) => (
-							<React.Fragment key={index}>
+							<Fragment key={index}>
 								{foodGroup.foods.map((food) => (
 									<option
 										key={food.value}
@@ -293,7 +294,7 @@ export const Typeahead = () => (
 										{food.label}
 									</option>
 								))}
-							</React.Fragment>
+							</Fragment>
 						))}
 					</select>
 				</div>
@@ -340,7 +341,7 @@ export const Typeahead = () => (
 export const CheckboxItems = () => {
 	const options = ["Crows", "Ravens", "Magpies", "Jackdaws"];
 
-	const [selection, setSelection] = React.useState<string[]>([]);
+	const [selection, setSelection] = useState<string[]>([]);
 
 	const handleSelectAll = () => {
 		setSelection((currentSelection) =>
@@ -392,7 +393,7 @@ export const CheckboxItems = () => {
 
 export const RadioItems = () => {
 	const files = ["README.md", "index.js", "page.css"];
-	const [file, setFile] = React.useState(files[1]);
+	const [file, setFile] = useState(files[1]);
 
 	return (
 		<MenuWithAnchor>
@@ -431,15 +432,15 @@ export const RadioItems = () => {
 
 export const Animated = () => {
 	const files = ["README.md", "index.js", "page.css"];
-	const [file, setFile] = React.useState(files[1]);
-	const [open, setOpen] = React.useState(true);
+	const [file, setFile] = useState(files[1]);
+	const [open, setOpen] = useState(true);
 	const checkboxItems = [
-		{ label: "Bold", state: React.useState(false) },
-		{ label: "Italic", state: React.useState(true) },
-		{ label: "Underline", state: React.useState(false) },
+		{ label: "Bold", state: useState(false) },
+		{ label: "Italic", state: useState(true) },
+		{ label: "Underline", state: useState(false) },
 		{
 			label: "Strikethrough",
-			state: React.useState(false),
+			state: useState(false),
 			disabled: true,
 		},
 	];
@@ -489,15 +490,15 @@ export const Animated = () => {
 };
 
 type MenuProps = Omit<
-	React.ComponentProps<typeof Menu.Menu> &
-		React.ComponentProps<typeof Menu.MenuContent>,
+	ComponentProps<typeof Menu.Menu> &
+		ComponentProps<typeof Menu.MenuContent>,
 	| "trapFocus"
 	| "onCloseAutoFocus"
 	| "disableOutsidePointerEvents"
 	| "disableOutsideScroll"
 >;
 
-const MenuWithAnchor: React.FC<MenuProps> = (props) => {
+const MenuWithAnchor: FC<MenuProps> = (props) => {
 	const { open = true, children, ...contentProps } = props;
 	return (
 		<Menu.Menu open={open} onOpenChange={() => {}} modal={false}>
@@ -517,7 +518,7 @@ const MenuWithAnchor: React.FC<MenuProps> = (props) => {
 	);
 };
 
-const Submenu: React.FC<
+const Submenu: FC<
 	MenuProps & {
 		animated: boolean;
 		disabled?: boolean;

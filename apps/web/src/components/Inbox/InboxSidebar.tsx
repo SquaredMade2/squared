@@ -1,8 +1,8 @@
 import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Label } from "@repo/ui/label";
 import type { Notification, Workspace } from "@squared/db";
+import { Label } from "@squaredmade/ui/label";
 import {
 	BadgePlus,
 	Bookmark,

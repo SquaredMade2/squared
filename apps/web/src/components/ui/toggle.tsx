@@ -1,6 +1,6 @@
 "use client";
 
-import * as TogglePrimitive from "@repo/ui/toggle";
+import * as TogglePrimitive from "@squaredmade/ui/toggle";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Slot } from "@repo/ui/slot";
+import { Slot } from "@squaredmade/ui/slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 import * as React from "react";

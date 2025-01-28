@@ -19,7 +19,7 @@ export type RetroItem = Pick<
 
 export default function SprintRetrospectivePage() {
 	const params = useParams();
-	const sprintId = parseParams(params.sprintId);
+	const sprintId = parseParams(params.sprintId) ?? "";
 	const { user } = useUser();
 	const [data, setData] = useState<Record<RetrospectiveItemType, RetroItem[]>>({
 		wentWell: [],

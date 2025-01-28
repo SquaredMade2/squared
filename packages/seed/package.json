@@ -1,27 +1,27 @@
 {
-  "name": "@squared/seed",
-  "version": "0.0.0",
-  "private": true,
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "scripts": {
-    "check-types": "tsc --noEmit",
-    "db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
-    "docker:db": "docker compose -f docker-compose.yml up -d",
-    "docker:db:down": "docker compose -f docker-compose.yml down --volumes"
-  },
-  "dependencies": {
-    "@squared/db": "workspace:*",
-    "@squared/logger": "workspace:*",
-    "dotenv": "^16.4.1"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^9.0.0",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^22.4.1",
-    "bcryptjs": "^2.4.3",
-    "cross-env": "^7.0.3",
-    "ts-node": "^10.9.2"
-  }
+	"name": "@squared/seed",
+	"version": "0.0.0",
+	"private": true,
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"check-types": "tsc --noEmit",
+		"db:seed": "cross-env NODE_ENV=test ts-node src/index.ts",
+		"docker:db": "docker compose -f docker-compose.yml up -d",
+		"docker:db:down": "docker compose -f docker-compose.yml down --volumes"
+	},
+	"dependencies": {
+		"@squared/db": "workspace:*",
+		"@squared/logger": "workspace:*",
+		"dotenv": "^16.4.1"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^9.0.0",
+		"@types/bcryptjs": "^2.4.6",
+		"@types/node": "^22.4.1",
+		"bcryptjs": "^2.4.3",
+		"cross-env": "^7.0.3",
+		"ts-node": "^10.9.2"
+	}
 }

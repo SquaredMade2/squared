@@ -9,7 +9,7 @@ type ModalStoreApi = ReturnType<typeof createModalStore>;
 const ModalStoreContext = createContext<ModalStoreApi | undefined>(undefined);
 
 export const ModalStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<ModalStoreApi>();
+	const storeRef = useRef<ModalStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createModalStore();
 	}

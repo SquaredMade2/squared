@@ -9,7 +9,7 @@ type EventStoreApi = ReturnType<typeof createEventStore>;
 const EventStoreContext = createContext<EventStoreApi | undefined>(undefined);
 
 export const EventStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<EventStoreApi>();
+	const storeRef = useRef<EventStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createEventStore();
 	}

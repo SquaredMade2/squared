@@ -1,6 +1,6 @@
 "use client";
 
-import * as AvatarPrimitive from "@repo/ui/avatar";
+import * as AvatarPrimitive from "@squaredmade/ui/avatar";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";

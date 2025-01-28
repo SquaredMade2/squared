@@ -1,12 +1,12 @@
-import React from "react";
+import { useRef, useState, type RefObject } from "react";
 
 import { FocusScope } from "../focus-scope";
 
 export default { title: "Utilities/FocusScope" };
 
 export const Basic = () => {
-	const [trapped, setTrapped] = React.useState(false);
-	const [hasDestroyButton, setHasDestroyButton] = React.useState(true);
+	const [trapped, setTrapped] = useState(false);
+	const [hasDestroyButton, setHasDestroyButton] = useState(true);
 
 	return (
 		<>
@@ -56,8 +56,8 @@ export const Basic = () => {
 };
 
 export const Multiple = () => {
-	const [trapped1, setTrapped1] = React.useState(false);
-	const [trapped2, setTrapped2] = React.useState(false);
+	const [trapped1, setTrapped1] = useState(false);
+	const [trapped2, setTrapped2] = useState(false);
 
 	return (
 		<div
@@ -130,18 +130,18 @@ export const Multiple = () => {
 };
 
 // true => default focus, false => no focus, ref => focus element
-type FocusParam = boolean | React.RefObject<HTMLElement>;
+type FocusParam = boolean | RefObject<HTMLElement>;
 
 export const WithOptions = () => {
-	const [open, setOpen] = React.useState(false);
-	const [isEmptyForm, setIsEmptyForm] = React.useState(false);
+	const [open, setOpen] = useState(false);
+	const [isEmptyForm, setIsEmptyForm] = useState(false);
 
-	const [trapFocus, setTrapFocus] = React.useState(false);
-	const [focusOnMount, setFocusOnMount] = React.useState<FocusParam>(false);
-	const [focusOnUnmount, setFocusOnUnmount] = React.useState<FocusParam>(false);
+	const [trapFocus, setTrapFocus] = useState(false);
+	const [focusOnMount, setFocusOnMount] = useState<FocusParam>(false);
+	const [focusOnUnmount, setFocusOnUnmount] = useState<FocusParam>(false);
 
-	const ageFieldRef = React.useRef<HTMLInputElement>(null);
-	const nextButtonRef = React.useRef<HTMLButtonElement>(null);
+	const ageFieldRef = useRef<HTMLInputElement>(null);
+	const nextButtonRef = useRef<HTMLButtonElement>(null);
 
 	return (
 		<div style={{ fontFamily: "sans-serif", textAlign: "center" }}>
@@ -181,7 +181,7 @@ export const WithOptions = () => {
 							type="checkbox"
 							checked={focusOnMount !== true}
 							onChange={(event) =>
-								setFocusOnMount(event.target.checked ? ageFieldRef : true)
+								setFocusOnMount(event.target.checked ? (ageFieldRef as RefObject<HTMLElement>) : true)
 							}
 						/>{" "}
 						on "age" field?
@@ -214,7 +214,7 @@ export const WithOptions = () => {
 							type="checkbox"
 							checked={focusOnUnmount !== true}
 							onChange={(event) =>
-								setFocusOnUnmount(event.target.checked ? nextButtonRef : true)
+								setFocusOnUnmount(event.target.checked ? (nextButtonRef as RefObject<HTMLElement>) : true)
 							}
 						/>{" "}
 						on "next" button?

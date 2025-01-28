@@ -1,13 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import * as React from "react";
-
+import { useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
 import * as AccordionPrimitive from "../accordion";
 
 export default { title: "Components/AccordionPrimitive" };
 
 export const Single = () => {
-	const [valueOne, setValueOne] = React.useState("one");
+	const [valueOne, setValueOne] = useState("one");
 
 	return (
 		<>
@@ -184,7 +182,7 @@ export const Single = () => {
 };
 
 export const Multiple = () => {
-	const [value, setValue] = React.useState(["one", "two"]);
+	const [value, setValue] = useState(["one", "two"]);
 
 	return (
 		<>
@@ -304,11 +302,11 @@ export const Multiple = () => {
 
 export const Animated = () => {
 	const values = ["One", "Two", "Three", "Four"];
-	const [count, setCount] = React.useState(1);
-	const [hasDynamicContent, setHasDynamicContent] = React.useState(false);
-	const timerRef = React.useRef(0);
+	const [count, setCount] = useState(1);
+	const [hasDynamicContent, setHasDynamicContent] = useState(false);
+	const timerRef = useRef(0);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (hasDynamicContent) {
 			timerRef.current = window.setTimeout(() => {
 				setCount((prevCount) => {
@@ -443,7 +441,7 @@ export const Animated2D = () => {
 };
 
 export const AnimatedControlled = () => {
-	const [value, setValue] = React.useState(["one", "two", "three", "four"]);
+	const [value, setValue] = useState(["one", "two", "three", "four"]);
 	return (
 		<AccordionPrimitive.Root
 			type="multiple"
