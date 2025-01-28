@@ -3,46 +3,14 @@
 		"__TYPE__": "SharedSliceContent",
 		"variation": "default",
 		"primary": {
-			"header": {
-				"__TYPE__": "FieldContent",
-				"value": "bill",
-				"type": "Text"
-			},
-			"list": {
-				"__TYPE__": "GroupContentType",
+			"bullet_list": {
+				"__TYPE__": "StructuredTextContent",
 				"value": [
 					{
-						"__TYPE__": "GroupItemContent",
-						"value": [
-							[
-								"header",
-								{
-									"__TYPE__": "StructuredTextContent",
-									"value": [
-										{
-											"type": "paragraph",
-											"content": {
-												"text": "Esse Lorem elit velit ex ea sint. Sunt aliquip fugiat nisi deserunt nulla laboris. Eiusmod reprehenderit duis nisi minim esse laborum adipisicing est sit adipisicing magna adipisicing veniam."
-											}
-										}
-									]
-								}
-							],
-							[
-								"text",
-								{
-									"__TYPE__": "StructuredTextContent",
-									"value": [
-										{
-											"type": "paragraph",
-											"content": {
-												"text": "Ipsum ullamco laboris sint laboris tempor quis ex sint. Laboris esse incididunt exercitation amet aute veniam id officia exercitation ipsum. Non eu qui cillum amet veniam voluptate eiusmod excepteur."
-											}
-										}
-									]
-								}
-							]
-						]
+						"type": "paragraph",
+						"content": {
+							"text": "Veniam aute in minim."
+						}
 					}
 				]
 			}

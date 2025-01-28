@@ -4,83 +4,186 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type DocumentationDocumentDataSlicesSlice = HeaderSlice | BulletPointsSlice;
+type AccordionDocumentDataSlicesSlice = never;
 
 /**
- * Content for documentation documents
+ * Content for accordion documents
  */
-interface DocumentationDocumentData {
+interface AccordionDocumentData {
   /**
-   * Slice Zone field in *documentation*
+   * title field in *accordion*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: accordion.title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * order field in *accordion*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: accordion.order
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#number
+   */
+  order: prismic.NumberField;
+
+  /**
+   * parent field in *accordion*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: accordion.parent
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  parent: prismic.LinkField;
+
+  /**
+   * `slices` field in *accordion*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
-   * - **API ID Path**: documentation.slices[]
+   * - **API ID Path**: accordion.slices[]
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#slices
    */
-  slices: prismic.SliceZone<DocumentationDocumentDataSlicesSlice>;
+  slices: prismic.SliceZone<AccordionDocumentDataSlicesSlice>;
 }
 
 /**
- * documentation document from Prismic
+ * accordion document from Prismic
  *
- * - **API ID**: `documentation`
+ * - **API ID**: `accordion`
  * - **Repeatable**: `true`
  * - **Documentation**: https://prismic.io/docs/custom-types
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type DocumentationDocument<Lang extends string = string> =
+export type AccordionDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<
-    Simplify<DocumentationDocumentData>,
-    "documentation",
+    Simplify<AccordionDocumentData>,
+    "accordion",
     Lang
   >;
 
-type HomeDocumentDataSlicesSlice = HeroSlice | BulletPointsSlice;
+/**
+ * Item in *child accordion → accordion content*
+ */
+export interface ChildAccordionDocumentDataAccordionContentItem {
+  /**
+   * item slug url field in *child accordion → accordion content*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: child_accordion.accordion_content[].item_slug_url
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  item_slug_url: prismic.KeyTextField;
+
+  /**
+   * item label field in *child accordion → accordion content*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: child_accordion.accordion_content[].item_label
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  item_label: prismic.KeyTextField;
+}
 
 /**
- * Content for home documents
+ * Content for child accordion documents
  */
-interface HomeDocumentData {
+interface ChildAccordionDocumentData {
   /**
-   * Slice Zone field in *home*
+   * accordion trigger field in *child accordion*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: child_accordion.accordion_trigger
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  accordion_trigger: prismic.KeyTextField;
+
+  /**
+   * accordion content field in *child accordion*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: child_accordion.accordion_content[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  accordion_content: prismic.GroupField<
+    Simplify<ChildAccordionDocumentDataAccordionContentItem>
+  >;
+}
+
+/**
+ * child accordion document from Prismic
+ *
+ * - **API ID**: `child_accordion`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type ChildAccordionDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<ChildAccordionDocumentData>,
+    "child_accordion",
+    Lang
+  >;
+
+type DocDocumentDataSlicesSlice = BulletPointsSlice | HeaderSlice;
+
+/**
+ * Content for doc documents
+ */
+interface DocDocumentData {
+  /**
+   * Slice Zone field in *doc*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
-   * - **API ID Path**: home.slices[]
+   * - **API ID Path**: doc.slices[]
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#slices
    */
-  slices: prismic.SliceZone<HomeDocumentDataSlicesSlice> /**
-   * Meta Title field in *home*
+  slices: prismic.SliceZone<DocDocumentDataSlicesSlice> /**
+   * Meta Title field in *doc*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A title of the page used for social media and search engines
-   * - **API ID Path**: home.meta_title
+   * - **API ID Path**: doc.meta_title
    * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */;
   meta_title: prismic.KeyTextField;
 
   /**
-   * Meta Description field in *home*
+   * Meta Description field in *doc*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A brief summary of the page
-   * - **API ID Path**: home.meta_description
+   * - **API ID Path**: doc.meta_description
    * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   meta_description: prismic.KeyTextField;
 
   /**
-   * Meta Image field in *home*
+   * Meta Image field in *doc*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
-   * - **API ID Path**: home.meta_image
+   * - **API ID Path**: doc.meta_image
    * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#image
    */
@@ -88,199 +191,135 @@ interface HomeDocumentData {
 }
 
 /**
- * home document from Prismic
+ * doc document from Prismic
  *
- * - **API ID**: `home`
- * - **Repeatable**: `false`
+ * - **API ID**: `doc`
+ * - **Repeatable**: `true`
  * - **Documentation**: https://prismic.io/docs/custom-types
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type HomeDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, "home", Lang>;
+export type DocDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<DocDocumentData>, "doc", Lang>;
 
-type HomepageDocumentDataSlicesSlice = HeroSlice | BulletPointsSlice;
+type DocSidebarDocumentDataSlicesSlice = LinkSlice;
 
 /**
- * Content for homepage documents
+ * Content for doc sidebar documents
  */
-interface HomepageDocumentData {
+interface DocSidebarDocumentData {
   /**
-   * Slice Zone field in *homepage*
+   * Slice Zone field in *doc sidebar*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
-   * - **API ID Path**: homepage.slices[]
+   * - **API ID Path**: doc_sidebar.slices[]
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#slices
    */
-  slices: prismic.SliceZone<HomepageDocumentDataSlicesSlice>;
-}
-
-/**
- * homepage document from Prismic
- *
- * - **API ID**: `homepage`
- * - **Repeatable**: `false`
- * - **Documentation**: https://prismic.io/docs/custom-types
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type HomepageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
-    Simplify<HomepageDocumentData>,
-    "homepage",
-    Lang
-  >;
-
-/**
- * Item in *settings → navigation*
- */
-export interface SettingsDocumentDataNavigationItem {
-  /**
-   * link field in *settings → navigation*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: settings.navigation[].link
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  link: prismic.LinkField;
-
-  /**
-   * label field in *settings → navigation*
+  slices: prismic.SliceZone<DocSidebarDocumentDataSlicesSlice> /**
+   * Meta Title field in *doc sidebar*
    *
    * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: settings.navigation[].label
+   * - **Placeholder**: A title of the page used for social media and search engines
+   * - **API ID Path**: doc_sidebar.meta_title
+   * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  label: prismic.KeyTextField;
-}
-
-/**
- * Content for settings documents
- */
-interface SettingsDocumentData {
-  /**
-   * site title field in *settings*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: settings.site_title
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  site_title: prismic.KeyTextField;
+   */;
+  meta_title: prismic.KeyTextField;
 
   /**
-   * meta description field in *settings*
+   * Meta Description field in *doc sidebar*
    *
    * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: settings.meta_description
-   * - **Tab**: Main
+   * - **Placeholder**: A brief summary of the page
+   * - **API ID Path**: doc_sidebar.meta_description
+   * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#key-text
    */
   meta_description: prismic.KeyTextField;
 
   /**
-   * og image field in *settings*
+   * Meta Image field in *doc sidebar*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
-   * - **API ID Path**: settings.og_image
-   * - **Tab**: Main
+   * - **API ID Path**: doc_sidebar.meta_image
+   * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  og_image: prismic.ImageField<never>;
-
-  /**
-   * navigation field in *settings*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: settings.navigation[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  navigation: prismic.GroupField<Simplify<SettingsDocumentDataNavigationItem>>;
+  meta_image: prismic.ImageField<never>;
 }
 
 /**
- * settings document from Prismic
+ * doc sidebar document from Prismic
  *
- * - **API ID**: `settings`
+ * - **API ID**: `doc_sidebar`
  * - **Repeatable**: `false`
  * - **Documentation**: https://prismic.io/docs/custom-types
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type SettingsDocument<Lang extends string = string> =
+export type DocSidebarDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<
-    Simplify<SettingsDocumentData>,
-    "settings",
+    Simplify<DocSidebarDocumentData>,
+    "doc_sidebar",
     Lang
   >;
 
 export type AllDocumentTypes =
-  | DocumentationDocument
-  | HomeDocument
-  | HomepageDocument
-  | SettingsDocument;
+  | AccordionDocument
+  | ChildAccordionDocument
+  | DocDocument
+  | DocSidebarDocument;
 
 /**
- * Item in *Lists → Default → Primary → list*
+ * Default variation for Accordion Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
  */
-export interface BulletPointsSliceDefaultPrimaryListItem {
-  /**
-   * header field in *Lists → Default → Primary → list*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_points.default.primary.list[].header
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  header: prismic.RichTextField;
-
-  /**
-   * text field in *Lists → Default → Primary → list*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_points.default.primary.list[].text
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  text: prismic.RichTextField;
-}
+export type AccordionSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Record<string, never>,
+  never
+>;
 
 /**
- * Primary content in *Lists → Default → Primary*
+ * Slice variation for *Accordion*
+ */
+type AccordionSliceVariation = AccordionSliceDefault;
+
+/**
+ * Accordion Shared Slice
+ *
+ * - **API ID**: `accordion`
+ * - **Description**: Accordion
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type AccordionSlice = prismic.SharedSlice<
+  "accordion",
+  AccordionSliceVariation
+>;
+
+/**
+ * Primary content in *Lists → bullet → Primary*
  */
 export interface BulletPointsSliceDefaultPrimary {
   /**
-   * header field in *Lists → Default → Primary*
+   * bullet list field in *Lists → bullet → Primary*
    *
-   * - **Field Type**: Text
+   * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_points.default.primary.header
-   * - **Documentation**: https://prismic.io/docs/field#key-text
+   * - **API ID Path**: bullet_points.default.primary.bullet_list
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
-  header: prismic.KeyTextField;
-
-  /**
-   * list field in *Lists → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: bullet_points.default.primary.list[]
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  list: prismic.GroupField<Simplify<BulletPointsSliceDefaultPrimaryListItem>>;
+  bullet_list: prismic.RichTextField;
 }
 
 /**
- * Default variation for Lists Slice
+ * bullet variation for Lists Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
@@ -310,11 +349,11 @@ export type BulletPointsSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *Header → Default → Primary*
+ * Primary content in *Header → heading1 → Primary*
  */
 export interface HeaderSliceDefaultPrimary {
   /**
-   * title field in *Header → Default → Primary*
+   * title field in *Header → heading1 → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
@@ -324,7 +363,7 @@ export interface HeaderSliceDefaultPrimary {
   title: prismic.RichTextField;
 
   /**
-   * text field in *Header → Default → Primary*
+   * text field in *Header → heading1 → Primary*
    *
    * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
@@ -335,7 +374,7 @@ export interface HeaderSliceDefaultPrimary {
 }
 
 /**
- * Default variation for Header Slice
+ * heading1 variation for Header Slice
  *
  * - **API ID**: `default`
  * - **Description**: Default
@@ -348,9 +387,127 @@ export type HeaderSliceDefault = prismic.SharedSliceVariation<
 >;
 
 /**
+ * Primary content in *Header → heading2 → Primary*
+ */
+export interface HeaderSliceVeryLargePrimary {
+  /**
+   * title field in *Header → heading2 → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: header.veryLarge.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * text field in *Header → heading2 → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: header.veryLarge.primary.text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+}
+
+/**
+ * heading2 variation for Header Slice
+ *
+ * - **API ID**: `veryLarge`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type HeaderSliceVeryLarge = prismic.SharedSliceVariation<
+  "veryLarge",
+  Simplify<HeaderSliceVeryLargePrimary>,
+  never
+>;
+
+/**
+ * Primary content in *Header → heading3 → Primary*
+ */
+export interface HeaderSliceLargePrimary {
+  /**
+   * title field in *Header → heading3 → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: header.large.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * text field in *Header → heading3 → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: header.large.primary.text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+}
+
+/**
+ * heading3 variation for Header Slice
+ *
+ * - **API ID**: `large`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type HeaderSliceLarge = prismic.SharedSliceVariation<
+  "large",
+  Simplify<HeaderSliceLargePrimary>,
+  never
+>;
+
+/**
+ * Primary content in *Header → heading4 → Primary*
+ */
+export interface HeaderSliceMediumPrimary {
+  /**
+   * title field in *Header → heading4 → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: header.medium.primary.title
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * text field in *Header → heading4 → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: header.medium.primary.text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  text: prismic.RichTextField;
+}
+
+/**
+ * heading4 variation for Header Slice
+ *
+ * - **API ID**: `medium`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type HeaderSliceMedium = prismic.SharedSliceVariation<
+  "medium",
+  Simplify<HeaderSliceMediumPrimary>,
+  never
+>;
+
+/**
  * Slice variation for *Header*
  */
-type HeaderSliceVariation = HeaderSliceDefault;
+type HeaderSliceVariation =
+  | HeaderSliceDefault
+  | HeaderSliceVeryLarge
+  | HeaderSliceLarge
+  | HeaderSliceMedium;
 
 /**
  * Header Shared Slice
@@ -511,6 +668,133 @@ type HeroSliceVariation = HeroSliceDefault | HeroSliceImageRight;
  */
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
+/**
+ * Item in *Link → accordion → Primary → accordion content*
+ */
+export interface LinkSliceAccordionPrimaryAccordionContentItem {
+  /**
+   * item slug url field in *Link → accordion → Primary → accordion content*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.accordion.primary.accordion_content[].item_slug_url
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  item_slug_url: prismic.KeyTextField;
+
+  /**
+   * item label field in *Link → accordion → Primary → accordion content*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.accordion.primary.accordion_content[].item_label
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  item_label: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Link → Default → Primary*
+ */
+export interface LinkSliceDefaultPrimary {
+  /**
+   * label field in *Link → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.default.primary.label
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  label: prismic.LinkField;
+
+  /**
+   * slug field in *Link → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.default.primary.slug
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  slug: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Link Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type LinkSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<LinkSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Primary content in *Link → accordion → Primary*
+ */
+export interface LinkSliceAccordionPrimary {
+  /**
+   * accordion trigger field in *Link → accordion → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.accordion.primary.accordion_trigger
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  accordion_trigger: prismic.KeyTextField;
+
+  /**
+   * accordion content field in *Link → accordion → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.accordion.primary.accordion_content[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  accordion_content: prismic.GroupField<
+    Simplify<LinkSliceAccordionPrimaryAccordionContentItem>
+  >;
+
+  /**
+   * nested accordion field in *Link → accordion → Primary*
+   *
+   * - **Field Type**: Content Relationship
+   * - **Placeholder**: *None*
+   * - **API ID Path**: link.accordion.primary.nested_accordion
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  nested_accordion: prismic.ContentRelationshipField<"child_accordion">;
+}
+
+/**
+ * accordion variation for Link Slice
+ *
+ * - **API ID**: `accordion`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type LinkSliceAccordion = prismic.SharedSliceVariation<
+  "accordion",
+  Simplify<LinkSliceAccordionPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Link*
+ */
+type LinkSliceVariation = LinkSliceDefault | LinkSliceAccordion;
+
+/**
+ * Link Shared Slice
+ *
+ * - **API ID**: `link`
+ * - **Description**: Link
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type LinkSlice = prismic.SharedSlice<"link", LinkSliceVariation>;
+
 declare module "@prismicio/client" {
   interface CreateClient {
     (
@@ -532,34 +816,49 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
-      DocumentationDocument,
-      DocumentationDocumentData,
-      DocumentationDocumentDataSlicesSlice,
-      HomeDocument,
-      HomeDocumentData,
-      HomeDocumentDataSlicesSlice,
-      HomepageDocument,
-      HomepageDocumentData,
-      HomepageDocumentDataSlicesSlice,
-      SettingsDocument,
-      SettingsDocumentData,
-      SettingsDocumentDataNavigationItem,
+      AccordionDocument,
+      AccordionDocumentData,
+      AccordionDocumentDataSlicesSlice,
+      ChildAccordionDocument,
+      ChildAccordionDocumentData,
+      ChildAccordionDocumentDataAccordionContentItem,
+      DocDocument,
+      DocDocumentData,
+      DocDocumentDataSlicesSlice,
+      DocSidebarDocument,
+      DocSidebarDocumentData,
+      DocSidebarDocumentDataSlicesSlice,
       AllDocumentTypes,
+      AccordionSlice,
+      AccordionSliceVariation,
+      AccordionSliceDefault,
       BulletPointsSlice,
-      BulletPointsSliceDefaultPrimaryListItem,
       BulletPointsSliceDefaultPrimary,
       BulletPointsSliceVariation,
       BulletPointsSliceDefault,
       HeaderSlice,
       HeaderSliceDefaultPrimary,
+      HeaderSliceVeryLargePrimary,
+      HeaderSliceLargePrimary,
+      HeaderSliceMediumPrimary,
       HeaderSliceVariation,
       HeaderSliceDefault,
+      HeaderSliceVeryLarge,
+      HeaderSliceLarge,
+      HeaderSliceMedium,
       HeroSlice,
       HeroSliceDefaultPrimary,
       HeroSliceImageRightPrimary,
       HeroSliceVariation,
       HeroSliceDefault,
       HeroSliceImageRight,
+      LinkSlice,
+      LinkSliceDefaultPrimary,
+      LinkSliceAccordionPrimaryAccordionContentItem,
+      LinkSliceAccordionPrimary,
+      LinkSliceVariation,
+      LinkSliceDefault,
+      LinkSliceAccordion,
     };
   }
 }

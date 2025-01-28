@@ -1,5 +1,5 @@
-import  type { Content } from "@prismicio/client";
-import  {type SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import type { Content } from "@prismicio/client";
+import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
 
 /**
  * Props for `Header`.
@@ -11,16 +11,39 @@ export type HeaderProps = SliceComponentProps<Content.HeaderSlice>;
  */
 const Header = ({ slice }: HeaderProps) => {
 
-  console.log("i got to header here: ", slice.primary)
-  // console.log("HERE IS THE TITLE: ", slice.primary.title[0]?.text)
-  
-  return (
-    <>
-      <PrismicRichText field={slice.primary.title}/>
-      <PrismicRichText field={slice.primary.text} />
-      <hr className="my-4 border-t border-gray-300" />
-    </>
-  );
+	console.log("HEADER SLICE DESCRIPTION HERE: ", slice.primary.text)
+	console.log("HEADER SPAN HERE: ", slice.primary.text[0].spans)
+
+	return (
+		<div className="w-full pt-3">
+			<PrismicRichText
+				field={slice.primary.title}
+				components={{
+					heading1: ({ children }) => (
+						<h1 className="text-4xl font-bold my-3">
+							{children}
+						</h1>
+					),
+					heading2: ({ children }) => (
+						<h2 className="text-3xl font-bold my-3">{children}</h2>
+					),
+					heading3: ({ children }) => (
+						<h3 className="text-2xl font-bold my-3">{children}</h3>
+					),
+					heading4: ({ children }) => (
+						<h4 className="text-xl font-bold my-3">{children}</h4>
+					),
+				}}
+			/>
+			<PrismicRichText
+			
+				field={slice.primary.text}
+				components={{
+					paragraph: ({ children }) => <p className="text-muted-foreground [&>a]:text-blue-600 [&>a]:dark:text-blue-400">{children}</p>,
+				}}
+			/>
+		</div>
+	);
 };
 
 export default Header;

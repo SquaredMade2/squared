@@ -1,0 +1,47 @@
+{
+  "format": "custom",
+  "id": "child_accordion",
+  "label": "child accordion",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "UID"
+        }
+      },
+      "accordion_trigger": {
+        "type": "Text",
+        "config": {
+          "label": "accordion trigger",
+          "placeholder": ""
+        }
+      },
+      "accordion_content": {
+        "type": "Group",
+        "config": {
+          "label": "accordion content",
+          "repeat": true,
+          "fields": {
+            "item_slug_url": {
+              "type": "Text",
+              "config": {
+                "label": "item slug url",
+                "placeholder": ""
+              }
+            },
+            "item_label": {
+              "type": "Text",
+              "config": {
+                "label": "item label",
+                "placeholder": ""
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

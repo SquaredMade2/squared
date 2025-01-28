@@ -6,44 +6,19 @@
   "variations": [
     {
       "id": "default",
-      "name": "Default",
+      "name": "bullet",
       "docURL": "...",
       "version": "initial",
       "description": "Default",
       "imageUrl": "",
       "primary": {
-        "header": {
-          "type": "Text",
+        "bullet_list": {
+          "type": "StructuredText",
           "config": {
-            "label": "header",
-            "placeholder": ""
-          }
-        },
-        "list": {
-          "type": "Group",
-          "config": {
-            "label": "list",
-            "repeat": true,
-            "fields": {
-              "header": {
-                "type": "StructuredText",
-                "config": {
-                  "label": "header",
-                  "placeholder": "",
-                  "allowTargetBlank": true,
-                  "multi": "paragraph,strong,em,heading1,heading2,heading3,heading4,heading5,heading6"
-                }
-              },
-              "text": {
-                "type": "StructuredText",
-                "config": {
-                  "label": "text",
-                  "placeholder": "",
-                  "allowTargetBlank": true,
-                  "multi": "strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-                }
-              }
-            }
+            "label": "bullet list",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "list-item"
           }
         }
       },

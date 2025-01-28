@@ -1,7 +1,7 @@
 {
   "format": "page",
-  "id": "home",
-  "label": "home",
+  "id": "doc_sidebar",
+  "label": "doc sidebar",
   "repeatable": false,
   "status": true,
   "json": {
@@ -11,10 +11,7 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "hero": {
-              "type": "SharedSlice"
-            },
-            "bullet_points": {
+            "link": {
               "type": "SharedSlice"
             }
           }
