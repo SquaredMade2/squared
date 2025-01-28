@@ -21,8 +21,7 @@ export default function WelcomePage() {
 			email: string;
 			externalId: string;
 			username: string | null;
-		}) =>
-			client.authentication.register.$post(userData).then((res) => res.json()),
+		}) => client.auth.register.$post(userData).then((res) => res.json()),
 		onSuccess: ({ message }) => {
 			toast({ title: message });
 			router.push("/");

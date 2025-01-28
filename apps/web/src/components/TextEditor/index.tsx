@@ -1,8 +1,9 @@
-import { commentService } from "@/lib/services";
+import { client } from "@/lib/client";
 import { useCommentStore, useModalStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { handleFormatSlateToComment } from "@/utils/formatting";
-import { TODO } from "@squared/context";
+import { parseError } from "@/utils/parseError";
+import { useMutation } from "@tanstack/react-query";
 import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
 import type { BaseEditor, Descendant } from "slate";
 import { Editor, Element, Transforms, createEditor } from "slate";
@@ -53,9 +54,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 	const [editor] = useState(() => withReact(createEditor()));
 
 	// Functions
-
-	const addCommentToTask = async () => {
-		try {
+	const { mutate: addCommentToTask } = useMutation({
+		mutationKey: ["addComment", task?.id],
+		mutationFn: async () => {
 			if (currentUser && task) {
 				if (checkIfSlateEmpty(editor)) {
 					return;
@@ -67,7 +68,9 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					taskId: task.id,
 				};
 				setComments(
-					await commentService.addComment(TODO, { comment: newComment }),
+					await client.comment.addComment
+						.$post(newComment)
+						.then((res) => res.json()),
 				);
 				setEditorContent([]);
 				editor.children = [
@@ -87,10 +90,15 @@ const TextEditor = ({ task }: TextEditorProps) => {
 					variant: "destructive",
 				});
 			}
-		} catch (err) {
-			throw new Error(`Could not find user data and current task: ${err}`);
-		}
-	};
+		},
+		onError: (error) => {
+			toast({
+				title: "Error adding comment",
+				description: parseError(error),
+				variant: "destructive",
+			});
+		},
+	});
 
 	const injectLinkContent = (linkName: string, linkUrl: string) => {
 		if (!(linkName && linkUrl)) return;
@@ -308,5 +316,5 @@ const TextEditor = ({ task }: TextEditorProps) => {
 
 export default TextEditor;
 
-export { Leaf, TextEditorToolBar, HeaderElement, CodeLeaf };
 export * from "./interfaces";
+export { CodeLeaf, HeaderElement, Leaf, TextEditorToolBar };

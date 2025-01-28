@@ -7,16 +7,15 @@ import {
 } from "@/components/Inbox";
 import { SidebarNav } from "@/components/Sidebar";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { eventService, userService } from "@/lib/services";
+import { client } from "@/lib/client";
 import {
 	useEventStore,
 	useUserStore,
 	useViewStore,
 	useWorkspaceStore,
 } from "@/store";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
 import type { NotificationType } from "@squared/db";
+import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -37,20 +36,26 @@ export default function InboxPage() {
 	const [workspaceName, setWorkspaceName] = useState<string | null>(null);
 	const { setUserAvatars, user } = useUserStore((state) => state);
 	const { setLastVisitedPage } = useViewStore((state) => state);
-	const { user: clerkUser } = useUser();
 	const pathname = usePathname();
 
-	useEffect(() => {
-		const fetchNotifications = async () => {
-			if (clerkUser) {
-				const notifications = await eventService.getNotifications(TODO, {
-					userId: clerkUser.id,
-				});
-				setNotifications(notifications);
-			}
-		};
-		fetchNotifications();
-	}, [clerkUser, setNotifications]);
+	useQuery({
+		queryKey: ["notifications"],
+		queryFn: async () => {
+			if (!workspace) throw new Error("No workspace found");
+			const [avatars, notifications] = await Promise.all([
+				client.user.getWorkspaceAvatars
+					.$get({
+						workspaceId: workspace.id,
+					})
+					.then((res) => res.json()),
+				client.notification.getNotifications.$get({}).then((res) => res.json()),
+			]);
+			setNotifications(notifications);
+			setUserAvatars(avatars);
+			return notifications;
+		},
+		enabled: !!workspace,
+	});
 
 	useEffect(() => {
 		switch (filterType) {
@@ -102,17 +107,6 @@ export default function InboxPage() {
 	}, [filterType, notifications, workspace, user]);
 
 	useEffect(() => {
-		const fetchAvatars = async () => {
-			if (workspace) {
-				setUserAvatars(
-					await userService.getUserAvatars(TODO, { workspaceId: workspace.id }),
-				);
-			}
-		};
-		fetchAvatars();
-	}, [user, workspace]);
-
-	useEffect(() => {
 		if (pathname === "/inbox") {
 			setLastVisitedPage("inbox");
 		}
@@ -129,7 +123,6 @@ export default function InboxPage() {
 						<h1 className="text-2xl font-bold ml-4">Inbox</h1>
 					</div>
 					<div className="flex">
-						
 						<div className="flex flex-col gap-4 w-full">
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
