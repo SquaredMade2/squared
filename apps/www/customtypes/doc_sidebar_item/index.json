@@ -1,7 +1,7 @@
 {
   "format": "custom",
-  "id": "accordion",
-  "label": "accordion",
+  "id": "doc_sidebar_item",
+  "label": "doc sidebar item",
   "repeatable": true,
   "status": true,
   "json": {
@@ -36,10 +36,6 @@
           "allowText": true,
           "repeat": false
         }
-      },
-      "slices": {
-        "type": "Slices",
-        "fieldset": "Slice Zone"
       }
     }
   }

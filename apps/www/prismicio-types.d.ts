@@ -4,143 +4,6 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type AccordionDocumentDataSlicesSlice = never;
-
-/**
- * Content for accordion documents
- */
-interface AccordionDocumentData {
-  /**
-   * title field in *accordion*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: accordion.title
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  title: prismic.KeyTextField;
-
-  /**
-   * order field in *accordion*
-   *
-   * - **Field Type**: Number
-   * - **Placeholder**: *None*
-   * - **API ID Path**: accordion.order
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#number
-   */
-  order: prismic.NumberField;
-
-  /**
-   * parent field in *accordion*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: accordion.parent
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  parent: prismic.LinkField;
-
-  /**
-   * `slices` field in *accordion*
-   *
-   * - **Field Type**: Slice Zone
-   * - **Placeholder**: *None*
-   * - **API ID Path**: accordion.slices[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#slices
-   */
-  slices: prismic.SliceZone<AccordionDocumentDataSlicesSlice>;
-}
-
-/**
- * accordion document from Prismic
- *
- * - **API ID**: `accordion`
- * - **Repeatable**: `true`
- * - **Documentation**: https://prismic.io/docs/custom-types
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type AccordionDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithUID<
-    Simplify<AccordionDocumentData>,
-    "accordion",
-    Lang
-  >;
-
-/**
- * Item in *child accordion → accordion content*
- */
-export interface ChildAccordionDocumentDataAccordionContentItem {
-  /**
-   * item slug url field in *child accordion → accordion content*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: child_accordion.accordion_content[].item_slug_url
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  item_slug_url: prismic.KeyTextField;
-
-  /**
-   * item label field in *child accordion → accordion content*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: child_accordion.accordion_content[].item_label
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  item_label: prismic.KeyTextField;
-}
-
-/**
- * Content for child accordion documents
- */
-interface ChildAccordionDocumentData {
-  /**
-   * accordion trigger field in *child accordion*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: child_accordion.accordion_trigger
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  accordion_trigger: prismic.KeyTextField;
-
-  /**
-   * accordion content field in *child accordion*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: child_accordion.accordion_content[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  accordion_content: prismic.GroupField<
-    Simplify<ChildAccordionDocumentDataAccordionContentItem>
-  >;
-}
-
-/**
- * child accordion document from Prismic
- *
- * - **API ID**: `child_accordion`
- * - **Repeatable**: `true`
- * - **Documentation**: https://prismic.io/docs/custom-types
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type ChildAccordionDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithUID<
-    Simplify<ChildAccordionDocumentData>,
-    "child_accordion",
-    Lang
-  >;
-
 type DocDocumentDataSlicesSlice = BulletPointsSlice | HeaderSlice;
 
 /**
@@ -267,11 +130,64 @@ export type DocSidebarDocument<Lang extends string = string> =
     Lang
   >;
 
+/**
+ * Content for doc sidebar item documents
+ */
+interface DocSidebarItemDocumentData {
+  /**
+   * title field in *doc sidebar item*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: doc_sidebar_item.title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * order field in *doc sidebar item*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: *None*
+   * - **API ID Path**: doc_sidebar_item.order
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#number
+   */
+  order: prismic.NumberField;
+
+  /**
+   * parent field in *doc sidebar item*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: doc_sidebar_item.parent
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  parent: prismic.LinkField;
+}
+
+/**
+ * doc sidebar item document from Prismic
+ *
+ * - **API ID**: `doc_sidebar_item`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type DocSidebarItemDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<DocSidebarItemDocumentData>,
+    "doc_sidebar_item",
+    Lang
+  >;
+
 export type AllDocumentTypes =
-  | AccordionDocument
-  | ChildAccordionDocument
   | DocDocument
-  | DocSidebarDocument;
+  | DocSidebarDocument
+  | DocSidebarItemDocument;
 
 /**
  * Default variation for Accordion Slice
@@ -816,18 +732,14 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
-      AccordionDocument,
-      AccordionDocumentData,
-      AccordionDocumentDataSlicesSlice,
-      ChildAccordionDocument,
-      ChildAccordionDocumentData,
-      ChildAccordionDocumentDataAccordionContentItem,
       DocDocument,
       DocDocumentData,
       DocDocumentDataSlicesSlice,
       DocSidebarDocument,
       DocSidebarDocumentData,
       DocSidebarDocumentDataSlicesSlice,
+      DocSidebarItemDocument,
+      DocSidebarItemDocumentData,
       AllDocumentTypes,
       AccordionSlice,
       AccordionSliceVariation,
