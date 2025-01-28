@@ -1,6 +1,6 @@
 import SingleLink from "@/components/docs-link";
 import {
-	Accordion,
+	// Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
@@ -16,35 +16,35 @@ export type LinkProps = SliceComponentProps<Content.LinkSlice>;
 /**
  * Component for "Link" Slices.
  */
-interface LinkValues {
-	item_label: string;
-	item_slug_url: string;
-}
-const NestedAccordion = ({
-	trigger,
-	links,
-}: { trigger: string; links: LinkValues[] }) => {
-	return (
-		<Accordion type="multiple" className="w-full">
-			<AccordionItem value={trigger}>
-				<AccordionTrigger className="hover:no-underline py-3">
-					{trigger}
-				</AccordionTrigger>
-				<AccordionContent>
-					{links.map((item) => (
-						<SingleLink
-							key={item.item_slug_url}
-							text={item.item_label}
-							slug={item.item_slug_url}
-						/>
-					))}
-				</AccordionContent>
-			</AccordionItem>
-		</Accordion>
-	);
-};
+// interface LinkValues {
+// 	item_label: string;
+// 	item_slug_url: string;
+// }
+// const NestedAccordion = ({
+// 	trigger,
+// 	links,
+// }: { trigger: string; links: LinkValues[] }) => {
+// 	return (
+// 		<Accordion type="multiple" className="w-full">
+// 			<AccordionItem value={trigger}>
+// 				<AccordionTrigger className="hover:no-underline py-3">
+// 					{trigger}
+// 				</AccordionTrigger>
+// 				<AccordionContent>
+// 					{links.map((item) => (
+// 						<SingleLink
+// 							key={item.item_slug_url}
+// 							text={item.item_label}
+// 							slug={item.item_slug_url}
+// 						/>
+// 					))}
+// 				</AccordionContent>
+// 			</AccordionItem>
+// 		</Accordion>
+// 	);
+// };
 
-const LinkComponent = ({ slice }: LinkProps): JSX.Element => {
+const LinkComponent = ({ slice }: LinkProps) => {
 	return (
 		<>
 			{slice.variation === "default" && (
@@ -65,7 +65,7 @@ const LinkComponent = ({ slice }: LinkProps): JSX.Element => {
 					</AccordionTrigger>
 					<AccordionContent>
 						<div className="ml-4">
-							{slice.primary.nested_accordion.data && (
+							{/* {slice.primary.nested_accordion.data && (
 								<NestedAccordion
 									trigger={
 										slice.primary.nested_accordion.data
@@ -76,7 +76,7 @@ const LinkComponent = ({ slice }: LinkProps): JSX.Element => {
 											.accordion_content as LinkValues) || []
 									}
 								/>
-							)}
+							)} */}
 							{slice.primary.accordion_content.map((item) => (
 									<SingleLink
 										key={item.item_slug_url}

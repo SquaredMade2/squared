@@ -1,5 +1,5 @@
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+import type { Content } from "@prismicio/client";
+import type { SliceComponentProps } from "@prismicio/react";
 
 /**
  * Props for `Accordion`.
@@ -9,7 +9,7 @@ export type AccordionProps = SliceComponentProps<Content.AccordionSlice>;
 /**
  * Component for "Accordion" Slices.
  */
-const Accordion = ({ slice }: AccordionProps): JSX.Element => {
+const Accordion = ({ slice }: AccordionProps) => {
   return (
     <section
       data-slice-type={slice.slice_type}

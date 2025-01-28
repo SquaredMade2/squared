@@ -4,7 +4,7 @@ import { type SliceComponentProps, PrismicRichText } from "@prismicio/react";
 
 export type HeroProps = SliceComponentProps<Content.HeroSlice>;
 
-const Hero = ({ slice }: HeroProps): JSX.Element => {
+const Hero = ({ slice }: HeroProps) => {
   return (
     <section
       data-slice-type={slice.slice_type}

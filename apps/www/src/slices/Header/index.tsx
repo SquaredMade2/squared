@@ -11,9 +11,6 @@ export type HeaderProps = SliceComponentProps<Content.HeaderSlice>;
  */
 const Header = ({ slice }: HeaderProps) => {
 
-	console.log("HEADER SLICE DESCRIPTION HERE: ", slice.primary.text)
-	console.log("HEADER SPAN HERE: ", slice.primary.text[0].spans)
-
 	return (
 		<div className="w-full pt-3">
 			<PrismicRichText

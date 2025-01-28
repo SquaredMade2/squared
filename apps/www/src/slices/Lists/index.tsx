@@ -9,7 +9,7 @@ export type BulletPointsProps = SliceComponentProps<Content.BulletPointsSlice>;
 /**
  * Component for "BulletPoints" Slices.
  */
-const BulletPoints = ({ slice }: BulletPointsProps): JSX.Element => {
+const BulletPoints = ({ slice }: BulletPointsProps) => {
 
 	return (
 		<div>
