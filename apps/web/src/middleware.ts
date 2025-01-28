@@ -7,8 +7,8 @@ export default clerkMiddleware(
 		}
 	},
 	() => ({
-		signInUrl: `${process.env.NEXT_PUBLIC_URL}/sign-in`,
-		signUpUrl: `${process.env.NEXT_PUBLIC_URL}/sign-up`,
+		signInUrl: `${process.env.VERCEL_URL || process.env.NEXT_PUBLIC_URL}/sign-in`,
+		signUpUrl: `${process.env.VERCEL_URL || process.env.NEXT_PUBLIC_URL}/sign-up`,
 	}),
 );
 
