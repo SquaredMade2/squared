@@ -6,6 +6,7 @@ import {
 } from "@/store";
 import type { CompletedTaskPeriod, TaskGroup } from "@/store/views";
 import { Priority, Status, type Task } from "@squared/db";
+import { isAfter, startOfDay, subDays, subMonths } from "date-fns";
 
 export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 	const { tasks } = useTaskStore((state) => state);
@@ -91,20 +92,26 @@ export function useGroups(filterTasks: (tasks: Task[]) => Task[]) {
 		const now = new Date();
 
 		switch (period) {
+			case "Past day": {
+				const oneDayAgo = startOfDay(subDays(now, 1));
+				return tasks.filter((task) =>
+					isAfter(new Date(task.updatedAt), oneDayAgo),
+				);
+			}
 			case "Past week": {
-				const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-				return tasks.filter((task) => new Date(task.updatedAt) >= oneWeekAgo);
+				const oneWeekAgo = subDays(now, 7);
+				return tasks.filter((task) =>
+					isAfter(new Date(task.updatedAt), oneWeekAgo),
+				);
 			}
 			case "Past month": {
-				const oneMonthAgo = new Date(
-					now.getFullYear(),
-					now.getMonth() - 1,
-					now.getDate(),
+				const oneMonthAgo = subMonths(now, 1);
+				return tasks.filter((task) =>
+					isAfter(new Date(task.updatedAt), oneMonthAgo),
 				);
-				return tasks.filter((task) => new Date(task.updatedAt) >= oneMonthAgo);
 			}
 			case "None":
-				return [];
+				return []; // If period is 'None', return no tasks
 			default:
 				return tasks; // Return all tasks for "All" or unrecognized period
 		}
