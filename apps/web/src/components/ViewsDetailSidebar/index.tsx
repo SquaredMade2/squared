@@ -44,7 +44,7 @@ const ViewsDetailSidebar = ({
 	const { tasks } = useTaskStore((state) => state);
 	const { deleteSavedFilter } = useFilterStore((state) => state);
 	const filteredTasks = filterTasksWithFilter(tasks);
-	const allLabels = workspace?.Labels;
+	const allLabels = workspace?.labels;
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	const author = users.find((u) => u.externalId === filter.authorId);

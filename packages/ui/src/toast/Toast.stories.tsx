@@ -1,7 +1,8 @@
-import * as React from "react";
+;
 import * as Dialog from "../dialog";
 import { css, keyframes } from "../../stitches.config";
 import * as Toast from "../toast";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 
 export default { title: "Components/Toast" };
 
@@ -13,12 +14,12 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-	const [hasUpgrade, setHasUpgrade] = React.useState(false);
-	const [isSubscribed, setIsSubscribed] = React.useState(false);
-	const [savedCount, setSavedCount] = React.useState(0);
-	const [errorCount, setErrorCount] = React.useState(0);
+	const [hasUpgrade, setHasUpgrade] = useState(false);
+	const [isSubscribed, setIsSubscribed] = useState(false);
+	const [savedCount, setSavedCount] = useState(0);
+	const [errorCount, setErrorCount] = useState(0);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!hasUpgrade) {
 			const timer = window.setTimeout(() => setHasUpgrade(true), 10000);
 			return () => window.clearTimeout(timer);
@@ -61,7 +62,7 @@ export const Controlled = () => {
 };
 
 export const FromDialog = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<Toast.Provider>
 			<Dialog.Root>
@@ -99,10 +100,10 @@ export const FromDialog = () => {
 
 // biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 export const Promise = () => {
-	const [saving, setSaving] = React.useState(false);
-	const [open, setOpen] = React.useState(false);
+	const [saving, setSaving] = useState(false);
+	const [open, setOpen] = useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (saving) {
 			const timer = window.setTimeout(() => setSaving(false), 2000);
 			return () => window.clearTimeout(timer);
@@ -139,8 +140,8 @@ export const Promise = () => {
 };
 
 export const KeyChange = () => {
-	const [toastOneCount, setToastOneCount] = React.useState(0);
-	const [toastTwoCount, setToastTwoCount] = React.useState(0);
+	const [toastOneCount, setToastOneCount] = useState(0);
+	const [toastTwoCount, setToastTwoCount] = useState(0);
 
 	return (
 		<Toast.Provider>
@@ -175,7 +176,7 @@ export const KeyChange = () => {
 };
 
 export const PauseResumeProps = () => {
-	const [toastCount, setToastCount] = React.useState(0);
+	const [toastCount, setToastCount] = useState(0);
 
 	return (
 		<Toast.Provider>
@@ -192,13 +193,13 @@ export const PauseResumeProps = () => {
 	);
 };
 
-type Direction = React.ComponentProps<typeof Toast.Provider>["swipeDirection"];
+type Direction = ComponentProps<typeof Toast.Provider>["swipeDirection"];
 
 export const Animated = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	const [swipeDirection, setSwipeDirection] =
-		React.useState<Direction>("right");
-	const timerRef = React.useRef(0);
+		useState<Direction>("right");
+	const timerRef = useRef(0);
 	return (
 		<Toast.Provider
 			swipeDirection={swipeDirection}
@@ -243,7 +244,7 @@ export const Animated = () => {
 };
 
 export const Cypress = () => {
-	const [count, setCount] = React.useState(0);
+	const [count, setCount] = useState(0);
 
 	return (
 		<Toast.Provider>
@@ -297,7 +298,7 @@ export const Cypress = () => {
 
 const SNAPSHOT_DELAY = 300;
 export const Chromatic = () => {
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = useState(true);
 	return (
 		<>
 			<h1>Order</h1>
@@ -537,7 +538,7 @@ Chromatic.parameters = {
 /* -----------------------------------------------------------------------------------------------*/
 
 const ToastUpgradeAvailable = (
-	props: React.ComponentProps<typeof Toast.Root>,
+	props: ComponentProps<typeof Toast.Root>,
 ) => (
 	<Toast.Root className={rootClass()} {...props}>
 		<div className={headerClass()}>
@@ -560,7 +561,7 @@ const ToastUpgradeAvailable = (
 );
 
 const ToastSubscribeSuccess = (
-	props: React.ComponentProps<typeof Toast.Root>,
+	props: ComponentProps<typeof Toast.Root>,
 ) => (
 	<Toast.Root className={rootClass()} {...props}>
 		<div className={successHeaderClass()}>
@@ -575,8 +576,8 @@ const ToastSubscribeSuccess = (
 	</Toast.Root>
 );
 
-const ToastWithProgress = (props: React.ComponentProps<typeof Toast.Root>) => {
-	const [paused, setPaused] = React.useState(false);
+const ToastWithProgress = (props: ComponentProps<typeof Toast.Root>) => {
+	const [paused, setPaused] = useState(false);
 	const duration = 3000;
 
 	return (

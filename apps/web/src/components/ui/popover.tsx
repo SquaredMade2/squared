@@ -1,6 +1,6 @@
 "use client";
 
-import * as PopoverPrimitive from "@repo/ui/popover";
+import * as PopoverPrimitive from "@squaredmade/ui/popover";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";

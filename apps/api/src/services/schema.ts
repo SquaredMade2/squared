@@ -7,7 +7,10 @@ import type {
 	Task,
 	Team,
 	User,
+	UserWorkspace,
 	Workspace,
+	WorkspaceLabel,
+	WorkspaceRole,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
 import z from "zod";
@@ -99,6 +102,19 @@ export const workspaceSchema = createSchema<Workspace>()(
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
+		createdAt: z.date(),
+	}),
+);
+
+export const workspaceRoleEnum = createSchema<WorkspaceRole>()(
+	z.enum(["owner", "admin", "member"]),
+);
+
+export const userWorkspaceSchema = createSchema<UserWorkspace>()(
+	z.object({
+		userId: z.string(),
+		workspaceId: z.string(),
+		role: workspaceRoleEnum,
 	}),
 );
 
@@ -122,9 +138,7 @@ export const labelSchema = createSchema<Label>()(
 	}),
 );
 
-export const workspaceLabelSchema = createSchema<
-	Workspace & { Labels: Label[] }
->()(
+export const workspaceLabelSchema = createSchema<WorkspaceLabel>()(
 	z.object({
 		id: z.string(),
 		name: z.string(),
@@ -135,7 +149,8 @@ export const workspaceLabelSchema = createSchema<
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
-		Labels: z.array(labelSchema),
+		labels: z.array(labelSchema),
+		createdAt: z.date(),
 	}),
 );
 
@@ -155,6 +170,12 @@ export const userSchema = createSchema<User>()(
 		subscribedTasks: z.array(z.string()),
 		githubUsername: z.string().nullable(),
 		lastViewedTaskId: z.string().nullable(),
+	}),
+);
+
+export const userWithRoleSchema = userSchema.merge(
+	z.object({
+		role: workspaceRoleEnum,
 	}),
 );
 

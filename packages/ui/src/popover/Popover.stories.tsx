@@ -1,9 +1,10 @@
-import * as React from "react";
+;
 
 import * as PopoverPrimitive from "../popover";
 import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 
 import { css, keyframes } from "../../stitches.config";
+import { useRef, useState } from "react";
 
 export default { title: "Components/Popover" };
 
@@ -41,7 +42,7 @@ export const Styled = () => {
 
 // Original issue: https://github.com/THEjacob1000/squared-ui/issues/2128
 export const Boundary = () => {
-	const [boundary, setBoundary] = React.useState<HTMLDivElement | null>(null);
+	const [boundary, setBoundary] = useState<HTMLDivElement | null>(null);
 
 	return (
 		<div
@@ -164,7 +165,7 @@ export const Modality = () => {
 };
 
 export const Controlled = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<div
 			style={{
@@ -261,7 +262,7 @@ export const ForcedMount = () => {
 };
 
 export const Nested = () => {
-	const buttonRef = React.useRef<HTMLButtonElement>(null);
+	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	return (
 		<div

@@ -6,20 +6,22 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "prisma generate",
-    "db:gen": "prisma generate",
-    "db:deploy": "prisma migrate deploy",
-    "db:push": "prisma db push --skip-generate",
-    "db:reset": "npx prisma migrate reset --force",
-    "migrate": "prisma migrate dev --name",
-    "postinstall": "pnpm run db:gen",
-    "studio": "prisma studio"
+    "build": "drizzle-kit generate",
+    "db:gen": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.0"
+    "@neondatabase/serverless": "^0.10.4",
+    "drizzle-orm": "^0.38.3",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "prisma": "^6.0.0"
+    "@squared/typescript-config": "workspace:*",
+    "@types/node": "^22.10.10",
+    "@types/ws": "^8.5.13",
+    "drizzle-kit": "^0.30.1",
+    "tslib": "^2.7.0"
   }
 }

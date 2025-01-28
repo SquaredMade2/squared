@@ -24,7 +24,7 @@ export const LabelDropdownButton = () => {
 	const workspace = useWorkspaceStore((state) => state.workspace);
 	const { newTaskData, setNewTaskData } = useModalStore((state) => state);
 
-	const taskLabels = useMemo(() => workspace?.Labels || [], [workspace]);
+	const taskLabels = useMemo(() => workspace?.labels || [], [workspace]);
 	const newTaskLabels = useMemo(
 		() => taskLabels.filter((label) => newTaskData.labels?.includes(label.id)),
 		[taskLabels, newTaskData.labels],

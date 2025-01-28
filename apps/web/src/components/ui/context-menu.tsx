@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import * as ContextMenuPrimitive from "@repo/ui/context-menu";
+import * as ContextMenuPrimitive from "@squaredmade/ui/context-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 import * as React from "react";
 

@@ -1,8 +1,7 @@
-import * as React from "react";
-
 import * as Collapsible from "../collapsible";
 
 import { css, keyframes } from "../../stitches.config";
+import { useState } from "react";
 
 export default { title: "Components/Collapsible" };
 
@@ -18,7 +17,7 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
 	return (
 		<Collapsible.Collapsible
 			open={open}

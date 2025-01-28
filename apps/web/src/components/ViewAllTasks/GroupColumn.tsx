@@ -303,7 +303,7 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
 							`}
 					>
-						<div className="w-full overflow-auto">
+						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
 							<div className="w-full grow inline-flex">
 								<div
 									ref={dropProvided.innerRef}

@@ -1,11 +1,10 @@
-import * as React from "react";
-
+import * as ReactDOM from "react-dom/client";
 import * as DialogPrimitive from "../dialog";
 import * as DropdownMenuPrimitive from "../dropdown-menu";
 import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 import * as Tooltip from "../tooltip";
-import * as ReactDOM from "react-dom/client";
 
+import { useCallback, useRef, useState, type ElementRef } from "react";
 import { css } from "../../stitches.config";
 import { foodGroups } from "../../test-data/foods";
 import { TickIcon, classes } from "../menu/Menu.stories";
@@ -275,7 +274,7 @@ export const Modality = () => {
 };
 
 export const Submenus = () => {
-	const [rtl, setRtl] = React.useState(false);
+	const [rtl, setRtl] = useState(false);
 	return (
 		<div
 			style={{
@@ -613,10 +612,10 @@ export const NestedComposition = () => {
 
 export const SingleItemAsDialogTrigger = () => {
 	const dropdownTriggerRef =
-		React.useRef<React.ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
+		useRef<ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
 	const dropdownTriggerRef2 =
-		React.useRef<React.ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
-	const isDialogOpenRef = React.useRef(false);
+		useRef<ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
+	const isDialogOpenRef = useRef(false);
 
 	function handleModalDialogClose(event: Event) {
 		// focus dropdown trigger for accessibility so user doesn't lose their place in the document
@@ -725,14 +724,14 @@ export const SingleItemAsDialogTrigger = () => {
 };
 
 export const MultipleItemsAsDialogTriggers = () => {
-	const [deleteOpen, setDeleteOpen] = React.useState(false);
-	const [switchAccountsOpen, setSwitchAccountsOpen] = React.useState(false);
-	const [deleteOpen2, setDeleteOpen2] = React.useState(false);
-	const [switchAccountsOpen2, setSwitchAccountsOpen2] = React.useState(false);
+	const [deleteOpen, setDeleteOpen] = useState(false);
+	const [switchAccountsOpen, setSwitchAccountsOpen] = useState(false);
+	const [deleteOpen2, setDeleteOpen2] = useState(false);
+	const [switchAccountsOpen2, setSwitchAccountsOpen2] = useState(false);
 	const dropdownTriggerRef =
-		React.useRef<React.ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
+		useRef<ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
 	const dropdownTriggerRef2 =
-		React.useRef<React.ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
+		useRef<ElementRef<typeof DropdownMenuPrimitive.Trigger>>(null);
 
 	return (
 		<div
@@ -873,7 +872,7 @@ export const MultipleItemsAsDialogTriggers = () => {
 export const CheckboxItems = () => {
 	const options = ["Crows", "Ravens", "Magpies", "Jackdaws"];
 
-	const [selection, setSelection] = React.useState<string[]>([]);
+	const [selection, setSelection] = useState<string[]>([]);
 
 	const handleSelectAll = () => {
 		setSelection((currentSelection) =>
@@ -942,7 +941,7 @@ export const CheckboxItems = () => {
 
 export const RadioItems = () => {
 	const files = ["README.md", "index.js", "page.css"];
-	const [file, setFile] = React.useState(files[1]);
+	const [file, setFile] = useState(files[1]);
 
 	return (
 		<div style={{ textAlign: "center", padding: 50 }}>
@@ -1098,7 +1097,7 @@ export const WithTooltip = () => (
 );
 
 export const InPopupWindow = () => {
-	const handlePopupClick = React.useCallback(() => {
+	const handlePopupClick = useCallback(() => {
 		const popupWindow = window.open(
 			undefined,
 			undefined,
@@ -1162,17 +1161,17 @@ const SIDES = sidesArray as unknown as typeof SIDE_OPTIONS;
 
 export const Chromatic = () => {
 	const checkboxItems = [
-		{ label: "Bold", state: React.useState(false) },
-		{ label: "Italic", state: React.useState(true) },
-		{ label: "Underline", state: React.useState(false) },
+		{ label: "Bold", state: useState(false) },
+		{ label: "Italic", state: useState(true) },
+		{ label: "Underline", state: useState(false) },
 		{
 			label: "Strikethrough",
-			state: React.useState(false),
+			state: useState(false),
 			disabled: true,
 		},
 	];
 	const files = ["README.md", "index.js", "page.css"];
-	const [file, setFile] = React.useState(files[1]);
+	const [file, setFile] = useState(files[1]);
 
 	return (
 		<div style={{ padding: 200, paddingBottom: 800 }}>

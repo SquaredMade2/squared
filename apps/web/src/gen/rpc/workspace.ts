@@ -11,18 +11,19 @@ export type CreateWorkspaceRequest = {
 };
 
 export type CreateWorkspaceResponse = {
-	Labels: {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	createdAt: Date;
+	defaultView: string | null;
+	id: string;
+	labels: {
 		color: string;
 		description: string | null;
 		id: string;
 		name: string;
 		workspaceId: string;
 	}[];
-	admins: string[];
-	avatarUrl: string | null;
-	companySize: number | null;
-	defaultView: string | null;
-	id: string;
 	name: string;
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
@@ -34,18 +35,19 @@ export type GetWorkspaceRequest = {
 };
 
 export type GetWorkspaceResponse = {
-	Labels: {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	createdAt: Date;
+	defaultView: string | null;
+	id: string;
+	labels: {
 		color: string;
 		description: string | null;
 		id: string;
 		name: string;
 		workspaceId: string;
 	}[];
-	admins: string[];
-	avatarUrl: string | null;
-	companySize: number | null;
-	defaultView: string | null;
-	id: string;
 	name: string;
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
@@ -57,18 +59,19 @@ export type GetWorkspaceByUrlRequest = {
 };
 
 export type GetWorkspaceByUrlResponse = {
-	Labels: {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	createdAt: Date;
+	defaultView: string | null;
+	id: string;
+	labels: {
 		color: string;
 		description: string | null;
 		id: string;
 		name: string;
 		workspaceId: string;
 	}[];
-	admins: string[];
-	avatarUrl: string | null;
-	companySize: number | null;
-	defaultView: string | null;
-	id: string;
 	name: string;
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
@@ -85,18 +88,19 @@ export type UpdateWorkspaceRequest = {
 };
 
 export type UpdateWorkspaceResponse = {
-	Labels: {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	createdAt: Date;
+	defaultView: string | null;
+	id: string;
+	labels: {
 		color: string;
 		description: string | null;
 		id: string;
 		name: string;
 		workspaceId: string;
 	}[];
-	admins: string[];
-	avatarUrl: string | null;
-	companySize: number | null;
-	defaultView: string | null;
-	id: string;
 	name: string;
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
@@ -112,18 +116,19 @@ export type GetUserWorkspacesRequest = {
 };
 
 export type GetUserWorkspacesResponse = {
-	Labels: {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	createdAt: Date;
+	defaultView: string | null;
+	id: string;
+	labels: {
 		color: string;
 		description: string | null;
 		id: string;
 		name: string;
 		workspaceId: string;
 	}[];
-	admins: string[];
-	avatarUrl: string | null;
-	companySize: number | null;
-	defaultView: string | null;
-	id: string;
 	name: string;
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
@@ -136,18 +141,19 @@ export type JoinWorkspaceRequest = {
 };
 
 export type JoinWorkspaceResponse = {
-	Labels: {
+	admins: string[];
+	avatarUrl: string | null;
+	companySize: number | null;
+	createdAt: Date;
+	defaultView: string | null;
+	id: string;
+	labels: {
 		color: string;
 		description: string | null;
 		id: string;
 		name: string;
 		workspaceId: string;
 	}[];
-	admins: string[];
-	avatarUrl: string | null;
-	companySize: number | null;
-	defaultView: string | null;
-	id: string;
 	name: string;
 	tasksCreated: number;
 	universalTokenLinkId: string | null;
@@ -159,13 +165,17 @@ export type RemoveUserFromWorkspaceRequest = {
 	workspaceId: string;
 };
 
-export type SuccessFromWorkspaceResponse = {
+export type RemoveUserFromWorkspaceResponse = {
 	success: boolean;
 };
 
 export type InviteToWorkspaceRequest = {
 	email: string | string[];
 	workspaceId: string;
+};
+
+export type InviteToWorkspaceResponse = {
+	success: boolean;
 };
 
 /**
@@ -249,7 +259,7 @@ export class WorkspaceService extends RPCContextClient {
 	removeUserFromWorkspace(
 		ctx: Context,
 		req: RemoveUserFromWorkspaceRequest,
-	): Promise<SuccessFromWorkspaceResponse> {
+	): Promise<RemoveUserFromWorkspaceResponse> {
 		return this.request(ctx, "removeUserFromWorkspace", req);
 	}
 
@@ -259,7 +269,7 @@ export class WorkspaceService extends RPCContextClient {
 	inviteToWorkspace(
 		ctx: Context,
 		req: InviteToWorkspaceRequest,
-	): Promise<SuccessFromWorkspaceResponse> {
+	): Promise<InviteToWorkspaceResponse> {
 		return this.request(ctx, "inviteToWorkspace", req);
 	}
 }

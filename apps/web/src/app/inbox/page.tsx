@@ -129,16 +129,7 @@ export default function InboxPage() {
 						<h1 className="text-2xl font-bold ml-4">Inbox</h1>
 					</div>
 					<div className="flex">
-						<InboxSidebar
-							setFilterType={setFilterType}
-							filterType={filterType}
-							setWorkspace={setWorkspaceName}
-							readNotifications={notifications.filter(
-								(n) => !n.read || !n.dismissed,
-							)}
-							workspaces={workspaces}
-							workspace={workspaceName}
-						/>
+						
 						<div className="flex flex-col gap-4 w-full">
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
@@ -160,6 +151,16 @@ export default function InboxPage() {
 								filterType={filterType}
 							/>
 						</div>
+						<InboxSidebar
+							setFilterType={setFilterType}
+							filterType={filterType}
+							setWorkspace={setWorkspaceName}
+							readNotifications={notifications.filter(
+								(n) => !n.read || !n.dismissed,
+							)}
+							workspaces={workspaces}
+							workspace={workspaceName}
+						/>
 					</div>
 				</div>
 			</div>

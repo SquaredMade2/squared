@@ -1,34 +1,21 @@
-const withMDX = require('@next/mdx')();
-const { withSentryConfig } = require("@sentry/nextjs");
+const withMDX = require("@next/mdx")();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  transpilePackages: ["@repo/ui"],
-  productionBrowserSourceMaps: true,
-  output: "standalone",
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  images: {
-    domains: ["avatars.githubusercontent.com", "lh3.googleusercontent.com","api.dicebear.com", "utfs.io"],
-  },
-};
-
-// Combine MDX and Sentry configurations
-const mdxConfig = withMDX(nextConfig);
-
-const sentryWebpackPluginOptions = {
-  silent: true,
-  org: "squaredmade",
-  project: "javascript-nextjs",
-};
-
-const sentryOptions = {
-  widenClientFileUpload: true,
-  transpileClientSDK: true,
-  tunnelRoute: "/monitoring",
-  hideSourceMaps: true,
-  disableLogger: true,
+	reactStrictMode: true,
+	transpilePackages: ["@squaredmade/ui", "@prisma/client"],
+	productionBrowserSourceMaps: true,
+	output: "standalone",
+	pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
+	images: {
+		domains: [
+			"avatars.githubusercontent.com",
+			"lh3.googleusercontent.com",
+			"api.dicebear.com",
+			"utfs.io",
+		],
+	},
 };
 
 // Export the final configuration
-module.exports = withSentryConfig(mdxConfig, sentryWebpackPluginOptions, sentryOptions);
+module.exports = withMDX(nextConfig);

@@ -1,4 +1,4 @@
-import type { RetroItem } from "@/app/[workspace]/team/[identifier]/sprints/[sprintId]/retrospective/page";
+import type { RetroItem } from "@/app/[workspace]/(main)/team/[identifier]/sprints/[sprintId]/retrospective/page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useUserStore } from "@/store";
 import { Draggable } from "@hello-pangea/dnd";
-import { TooltipContent } from "@repo/ui/tooltip";
+import { TooltipContent } from "@squaredmade/ui/tooltip";
 import { ThumbsUp } from "lucide-react";
 
 export const RetroItemCard = ({

@@ -19,9 +19,14 @@ import NavBarTeams from "./NavBarTeams";
 interface TeamAccordionProps {
 	teams: Team[];
 	currentTeam: Team | null;
+	workspaceUrl?: string;
 }
 
-export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
+export function TeamAccordion({
+	teams,
+	currentTeam,
+	workspaceUrl,
+}: TeamAccordionProps) {
 	const pathname = usePathname();
 	const [openItems, setOpenItems] = useState<string[]>([]);
 
@@ -86,7 +91,7 @@ export function TeamAccordion({ teams, currentTeam }: TeamAccordionProps) {
 				isUserAdmin && <AddTeamButton />
 				*/}
 				<div className="ml-6">
-					<AddTeamButton />
+					<AddTeamButton workspaceUrl={workspaceUrl ?? ""} />
 				</div>
 			</ScrollArea>
 		</>

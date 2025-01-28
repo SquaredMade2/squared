@@ -24,8 +24,8 @@ import {
 import { transformingMentionInputs } from "@/utils/transformingMentionInputs";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccordionTrigger } from "@repo/ui/accordion";
 import { TODO } from "@squared/context";
+import { AccordionTrigger } from "@squaredmade/ui/accordion";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,7 +44,9 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
 	const { user } = useUser();
 	const { team } = useTeamStore((state) => state);
-	const { tasks, subtasks, createTask, setSubtasks } = useTaskStore((state) => state);
+	const { tasks, subtasks, createTask, setSubtasks } = useTaskStore(
+		(state) => state,
+	);
 
 	const { status, priority, dueDate, effortEstimate, labels } = newTaskData;
 
@@ -124,7 +126,7 @@ export const NewTaskCollapsible = ({ parentId }: { parentId: string }) => {
 			const createdTask = await taskService.createTask(TODO, newTask);
 			createdTask.order = subtasks.length + 1;
 			createTask(createdTask);
-      setSubtasks([...subtasks, createdTask]);
+			setSubtasks([...subtasks, createdTask]);
 			setWorkspace({
 				...workspace,
 				tasksCreated: workspace.tasksCreated + 1,

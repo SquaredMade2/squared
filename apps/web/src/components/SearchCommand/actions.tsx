@@ -1,7 +1,6 @@
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import type { Workspace } from "@/store/workspaces";
 import { useClerk } from "@clerk/nextjs";
-import type { Team } from "@squared/db";
+import type { Team, WorkspaceLabel } from "@squared/db";
 import {
 	ArrowLeftRight,
 	ArrowRight,
@@ -10,7 +9,7 @@ import {
 	Circle,
 	ClipboardCopy,
 	Copy,
-	Layers3,
+	Layers,
 	LogOut,
 	MoveDiagonal,
 	PanelLeft,
@@ -25,7 +24,7 @@ import type { SearchbarStructure } from "./interfaces";
 export class CommandSchema {
 	router: ReturnType<typeof useRouter>;
 	pathname: string;
-	workspace: Workspace | null;
+	workspace: WorkspaceLabel | null;
 	team: Team | null;
 	setShowNewTask: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;
@@ -109,7 +108,7 @@ export class CommandSchema {
 			},
 			View: {
 				createNewView: {
-					icon: <Layers3 className="size-4 mr-2" />,
+					icon: <Layers className="size-4 mr-2" />,
 					text: "Create new view",
 					function: () => {
 						this.clearFilter();
@@ -331,7 +330,7 @@ export class CommandSchema {
 					icon: <ArrowRight className="mr-2 h-4 w-4" />,
 					text: "Create new team...",
 					function: () => {
-						this.router.push("/settings/new-team");
+						this.router.push(`${this.workspace?.url}/settings/new-team`);
 					},
 					shortcut: [],
 				},
@@ -341,7 +340,7 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Workspace Settings",
 					function: () => {
-						this.router.push("/settings/workspace");
+						this.router.push(`${this.workspace?.url}/settings`);
 					},
 					shortcut: [],
 				},
@@ -349,7 +348,7 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Account Settings",
 					function: () => {
-						this.router.push("/settings/profile");
+						this.router.push(`${this.workspace?.url}/settings/profile`);
 					},
 					shortcut: [],
 				},
@@ -358,7 +357,9 @@ export class CommandSchema {
 					text: "Team Settings",
 					function: () => {
 						if (this.workspace && this.team) {
-							this.router.push(`/settings/teams/${this.team.identifier}`);
+							this.router.push(
+								`${this.workspace?.url}/settings/teams/${this.team.identifier}`,
+							);
 						} else {
 							console.error("Current workspace or team is null null");
 						}
@@ -369,7 +370,7 @@ export class CommandSchema {
 					icon: <Settings className="mr-2 h-4 w-4" />,
 					text: "Integration Settings",
 					function: () => {
-						this.router.push("/settings/integrations");
+						this.router.push(`${this.workspace?.url}/settings/integrations`);
 					},
 					shortcut: [],
 				},
