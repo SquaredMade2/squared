@@ -1,10 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware(async (auth, request) => {
-	if (!isPublicRoute(request)) {
-		await auth.protect();
-	}
-});
+export default clerkMiddleware(
+	async (auth, request) => {
+		if (!isPublicRoute(request)) {
+			await auth.protect();
+		}
+	},
+	() => ({
+		signInUrl: `${process.env.VERCEL_URL}/sign-in`,
+		signUpUrl: `${process.env.VERCEL_URL}/sign-up`,
+	}),
+);
 
 // Check if the current route is public (accessible without authentication)
 const isPublicRoute = createRouteMatcher([
