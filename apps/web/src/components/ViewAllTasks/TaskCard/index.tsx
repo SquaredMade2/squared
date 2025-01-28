@@ -60,7 +60,9 @@ const TaskCard = ({
 		>
 			{(dragProvided: DraggableProvided) => (
 				<div
-					ref={(ref) => dragProvided.innerRef(ref)}
+					ref={(ref) => {
+						dragProvided.innerRef(ref);
+					}}
 					{...dragProvided.draggableProps}
 					{...dragProvided.dragHandleProps}
 				>

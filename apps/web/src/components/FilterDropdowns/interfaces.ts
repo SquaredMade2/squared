@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 export type FilterOption = {
 	id: number;
 	name: string;

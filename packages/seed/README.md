@@ -119,7 +119,7 @@ Creates a notification related to a task for a specific user.
 
 ### Dependencies
 
-- **`@repo/db`**: Provides the Prisma client and database models.
+- **`@squared/db`**: Provides the Prisma client and database models.
 - **`dotenv`**: Loads environment variables from a `.env` file.
 - **`@faker-js/faker`**: Generates random data for seeding the database.
 - **`bcryptjs`**: Used for hashing passwords for users.

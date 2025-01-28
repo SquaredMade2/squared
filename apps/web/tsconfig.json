@@ -1,20 +1,15 @@
 {
-  "extends": "@squared/typescript-config/nextjs.json",
-  "compilerOptions": {
-    "outDir": "dist/",
-    "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    },
-    "moduleResolution": "bundler",
-    "module": "esnext",
-    "types": ["jest", "jest-extended"]
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [".next"]
+	"extends": "@squared/typescript-config/nextjs.json",
+	"compilerOptions": {
+		"outDir": "dist/",
+		"baseUrl": "src",
+		"paths": {
+			"@/*": ["*"]
+		},
+		"moduleResolution": "bundler",
+		"module": "esnext",
+		"types": ["jest", "jest-extended"]
+	},
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"exclude": [".next"]
 }

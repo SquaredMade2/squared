@@ -1,13 +1,14 @@
-import * as React from "react";
+;
 
 import { Presence } from "../presence";
 
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Utilities/Presence" };
 
 export const Basic = () => {
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = useState(true);
 
 	return (
 		<>
@@ -37,12 +38,12 @@ export const WithMultipleOpenAndCloseAnimations = () => (
 );
 
 export const WithDeferredMountAnimation = () => {
-	const ref = React.useRef<HTMLDivElement>(null);
-	const timerRef = React.useRef(0);
-	const [open, setOpen] = React.useState(false);
-	const [animate, setAnimate] = React.useState(false);
+	const ref = useRef<HTMLDivElement>(null);
+	const timerRef = useRef(0);
+	const [open, setOpen] = useState(false);
+	const [animate, setAnimate] = useState(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (open) {
 			timerRef.current = window.setTimeout(() => setAnimate(true), 150);
 		} else {
@@ -67,9 +68,9 @@ export const WithDeferredMountAnimation = () => {
 	);
 };
 
-function Animation(props: React.ComponentProps<"div">) {
-	const ref = React.useRef<HTMLDivElement>(null);
-	const [open, setOpen] = React.useState(false);
+function Animation(props: ComponentProps<"div">) {
+	const ref = useRef<HTMLDivElement>(null);
+	const [open, setOpen] = useState(false);
 
 	return (
 		<>

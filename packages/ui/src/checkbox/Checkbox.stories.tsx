@@ -1,8 +1,9 @@
-import * as React from 'react';
+
+import { useState } from 'react';
 import { css, keyframes } from '../../stitches.config';
+import * as Checkbox from '../checkbox';
 import { Label as LabelPrimitive } from '../label';
 import { RECOMMENDED_CSS__LABEL__ROOT } from '../label/Label.stories';
-import * as Checkbox from '../checkbox';
 
 export default { title: 'Components/Checkbox' };
 
@@ -56,7 +57,7 @@ export const Styled = () => (
 );
 
 export const Controlled = () => {
-  const [checked, setChecked] = React.useState<boolean | 'indeterminate'>(true);
+  const [checked, setChecked] = useState<boolean | 'indeterminate'>(true);
 
   return (
     <>
@@ -75,7 +76,7 @@ export const Controlled = () => {
 };
 
 export const Indeterminate = () => {
-  const [checked, setChecked] = React.useState<boolean | 'indeterminate'>('indeterminate');
+  const [checked, setChecked] = useState<boolean | 'indeterminate'>('indeterminate');
 
   return (
     <>
@@ -100,8 +101,8 @@ export const Indeterminate = () => {
 };
 
 export const WithinForm = () => {
-  const [data, setData] = React.useState({ optional: false, required: false, stopprop: false });
-  const [checked, setChecked] = React.useState<boolean | 'indeterminate'>('indeterminate');
+  const [data, setData] = useState({ optional: false, required: false, stopprop: false });
+  const [checked, setChecked] = useState<boolean | 'indeterminate'>('indeterminate');
 
   return (
     <form
@@ -173,7 +174,7 @@ export const WithinForm = () => {
 };
 
 export const Animated = () => {
-  const [checked, setChecked] = React.useState<boolean | 'indeterminate'>('indeterminate');
+  const [checked, setChecked] = useState<boolean | 'indeterminate'>('indeterminate');
 
   return (
     <>

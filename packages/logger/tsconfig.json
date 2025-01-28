@@ -1,12 +1,21 @@
 {
   "extends": "@squared/typescript-config/base.json",
   "compilerOptions": {
-    "lib": ["ES2015", "DOM"],
+    "lib": [
+      "ES2015",
+      "DOM"
+    ],
     "outDir": "./dist",
     "declaration": true,
     "rootDir": "./src",
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

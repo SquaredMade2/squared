@@ -1,9 +1,8 @@
 import "@testing-library/jest-dom";
-import type React from "react";
-
 import type { RenderResult } from "@testing-library/react";
 import { fireEvent, render } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
+import type { ComponentProps } from "react";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -14,7 +13,7 @@ expect.extend(toHaveNoViolations);
 const TRIGGER_TEXT = "Trigger";
 const CONTENT_TEXT = "Content";
 
-const CollapsibleTest = (props: React.ComponentProps<typeof Collapsible>) => (
+const CollapsibleTest = (props: ComponentProps<typeof Collapsible>) => (
 	<Collapsible {...props}>
 		<CollapsibleTrigger>{TRIGGER_TEXT}</CollapsibleTrigger>
 		<CollapsibleContent>{CONTENT_TEXT}</CollapsibleContent>

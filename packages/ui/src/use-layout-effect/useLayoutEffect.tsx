@@ -1,5 +1,4 @@
-import * as React from "react";
-
+import { useLayoutEffect as reactUseLayoutEffect } from "react";
 /**
  * On the server, React emits a warning when calling `useLayoutEffect`.
  * This is because neither `useLayoutEffect` nor `useEffect` run on the server.
@@ -7,6 +6,6 @@ import * as React from "react";
  *
  * See: https://reactjs.org/docs/hooks-reference.html#uselayouteffect
  */
-const useLayoutEffect = globalThis?.document ? React.useLayoutEffect : () => {};
+const useLayoutEffect = globalThis?.document ? reactUseLayoutEffect : () => {};
 
 export { useLayoutEffect };

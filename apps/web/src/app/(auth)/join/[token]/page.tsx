@@ -6,11 +6,12 @@ import { workspaceService } from "@/lib/services";
 import { useUser } from "@clerk/nextjs";
 import { TODO } from "@squared/context";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { use, useEffect, useRef } from "react";
 
-export default function TokenVerificationPage({
-	params,
-}: { params: { token: string } }) {
+export default function TokenVerificationPage(props: {
+	params: Promise<{ token: string }>;
+}) {
+	const params = use(props.params);
 	const router = useRouter();
 	const { isLoaded, isSignedIn, user } = useUser();
 	const { toast } = useToast();

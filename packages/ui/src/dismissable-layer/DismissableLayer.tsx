@@ -1,5 +1,13 @@
-import * as React from "react";
-
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	createContext,
+	forwardRef,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useComposedRefs } from "../compose-refs";
 import { composeEventHandlers } from "../primitive";
 import { Primitive, dispatchDiscreteCustomEvent } from "../react-primitive";
@@ -17,14 +25,14 @@ const FOCUS_OUTSIDE = "dismissableLayer.focusOutside";
 
 let originalBodyPointerEvents: string;
 
-const DismissableLayerContext = React.createContext({
+const DismissableLayerContext = createContext({
 	layers: new Set<DismissableLayerElement>(),
 	layersWithOutsidePointerEventsDisabled: new Set<DismissableLayerElement>(),
 	branches: new Set<DismissableLayerBranchElement>(),
 });
 
-type DismissableLayerElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type DismissableLayerElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface DismissableLayerProps extends PrimitiveDivProps {
 	/**
 	 * When `true`, hover/focus/click interactions will be disabled on elements outside
@@ -61,7 +69,7 @@ interface DismissableLayerProps extends PrimitiveDivProps {
 	onDismiss?: () => void;
 }
 
-const DismissableLayer = React.forwardRef<
+const DismissableLayer = forwardRef<
 	DismissableLayerElement,
 	DismissableLayerProps
 >((props, forwardedRef) => {
@@ -74,10 +82,10 @@ const DismissableLayer = React.forwardRef<
 		onDismiss,
 		...layerProps
 	} = props;
-	const context = React.useContext(DismissableLayerContext);
-	const [node, setNode] = React.useState<DismissableLayerElement | null>(null);
+	const context = useContext(DismissableLayerContext);
+	const [node, setNode] = useState<DismissableLayerElement | null>(null);
 	const ownerDocument = node?.ownerDocument ?? globalThis?.document;
-	const [, force] = React.useState({});
+	const [, force] = useState({});
 	const composedRefs = useComposedRefs(forwardedRef, (node) => setNode(node));
 	const layers = Array.from(context.layers);
 	const [highestLayerWithOutsidePointerEventsDisabled] = [
@@ -124,7 +132,7 @@ const DismissableLayer = React.forwardRef<
 		}
 	}, ownerDocument);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!node) return;
 		if (disableOutsidePointerEvents) {
 			if (context.layersWithOutsidePointerEventsDisabled.size === 0) {
@@ -151,7 +159,7 @@ const DismissableLayer = React.forwardRef<
 	 * and add it to the end again so the layering order wouldn't be _creation order_.
 	 * We only want them to be removed from context stacks when unmounted.
 	 */
-	React.useEffect(() => {
+	useEffect(() => {
 		return () => {
 			if (!node) return;
 			context.layers.delete(node);
@@ -160,7 +168,7 @@ const DismissableLayer = React.forwardRef<
 		};
 	}, [node, context]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const handleUpdate = () => force({});
 		document.addEventListener(CONTEXT_UPDATE, handleUpdate);
 		return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
@@ -202,18 +210,18 @@ DismissableLayer.displayName = DISMISSABLE_LAYER_NAME;
 
 const BRANCH_NAME = "DismissableLayerBranch";
 
-type DismissableLayerBranchElement = React.ElementRef<typeof Primitive.div>;
+type DismissableLayerBranchElement = ElementRef<typeof Primitive.div>;
 interface DismissableLayerBranchProps extends PrimitiveDivProps {}
 
-const DismissableLayerBranch = React.forwardRef<
+const DismissableLayerBranch = forwardRef<
 	DismissableLayerBranchElement,
 	DismissableLayerBranchProps
 >((props, forwardedRef) => {
-	const context = React.useContext(DismissableLayerContext);
-	const ref = React.useRef<DismissableLayerBranchElement>(null);
+	const context = useContext(DismissableLayerContext);
+	const ref = useRef<DismissableLayerBranchElement>(null);
 	const composedRefs = useComposedRefs(forwardedRef, ref);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const node = ref.current;
 		if (node) {
 			context.branches.add(node);
@@ -247,10 +255,10 @@ function usePointerDownOutside(
 	const handlePointerDownOutside = useCallbackRef(
 		onPointerDownOutside,
 	) as EventListener;
-	const isPointerInsideReactTreeRef = React.useRef(false);
-	const handleClickRef = React.useRef(() => {});
+	const isPointerInsideReactTreeRef = useRef(false);
+	const handleClickRef = useRef(() => {});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const handlePointerDown = (event: PointerEvent) => {
 			if (event.target && !isPointerInsideReactTreeRef.current) {
 				const eventDetail = { originalEvent: event };
@@ -332,9 +340,9 @@ function useFocusOutside(
 	ownerDocument: Document = globalThis?.document,
 ) {
 	const handleFocusOutside = useCallbackRef(onFocusOutside) as EventListener;
-	const isFocusInsideReactTreeRef = React.useRef(false);
+	const isFocusInsideReactTreeRef = useRef(false);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		const handleFocus = (event: FocusEvent) => {
 			if (event.target && !isFocusInsideReactTreeRef.current) {
 				const eventDetail = { originalEvent: event };

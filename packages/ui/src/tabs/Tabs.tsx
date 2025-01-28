@@ -1,4 +1,3 @@
-import * as React from "react";
 import { createContextScope } from "../context";
 import { useDirection } from "../direction";
 import { useId } from "../id";
@@ -9,6 +8,13 @@ import { createRovingFocusGroupScope } from "../roving-focus";
 import * as RovingFocusGroup from "../roving-focus";
 import { useControllableState } from "../use-controllable-state";
 
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	forwardRef,
+	useEffect,
+	useRef,
+} from "react";
 import type { Scope } from "../context";
 
 /* -------------------------------------------------------------------------------------------------
@@ -35,11 +41,11 @@ type TabsContextValue = {
 const [TabsProvider, useTabsContext] =
 	createTabsContext<TabsContextValue>(TABS_NAME);
 
-type TabsElement = React.ElementRef<typeof Primitive.div>;
-type RovingFocusGroupProps = React.ComponentPropsWithoutRef<
+type TabsElement = ElementRef<typeof Primitive.div>;
+type RovingFocusGroupProps = ComponentPropsWithoutRef<
 	typeof RovingFocusGroup.Root
 >;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface TabsProps extends PrimitiveDivProps {
 	/** The value for the selected tab, if controlled */
 	value?: string;
@@ -64,7 +70,7 @@ interface TabsProps extends PrimitiveDivProps {
 	activationMode?: "automatic" | "manual";
 }
 
-const Tabs = React.forwardRef<TabsElement, TabsProps>(
+const Tabs = forwardRef<TabsElement, TabsProps>(
 	(props: ScopedProps<TabsProps>, forwardedRef) => {
 		const {
 			__scopeTabs,
@@ -112,12 +118,12 @@ Tabs.displayName = TABS_NAME;
 
 const TAB_LIST_NAME = "TabsList";
 
-type TabsListElement = React.ElementRef<typeof Primitive.div>;
+type TabsListElement = ElementRef<typeof Primitive.div>;
 interface TabsListProps extends PrimitiveDivProps {
 	loop?: RovingFocusGroupProps["loop"];
 }
 
-const TabsList = React.forwardRef<TabsListElement, TabsListProps>(
+const TabsList = forwardRef<TabsListElement, TabsListProps>(
 	(props: ScopedProps<TabsListProps>, forwardedRef) => {
 		const { __scopeTabs, loop = true, ...listProps } = props;
 		const context = useTabsContext(TAB_LIST_NAME, __scopeTabs);
@@ -149,15 +155,13 @@ TabsList.displayName = TAB_LIST_NAME;
 
 const TRIGGER_NAME = "TabsTrigger";
 
-type TabsTriggerElement = React.ElementRef<typeof Primitive.button>;
-type PrimitiveButtonProps = React.ComponentPropsWithoutRef<
-	typeof Primitive.button
->;
+type TabsTriggerElement = ElementRef<typeof Primitive.button>;
+type PrimitiveButtonProps = ComponentPropsWithoutRef<typeof Primitive.button>;
 interface TabsTriggerProps extends PrimitiveButtonProps {
 	value: string;
 }
 
-const TabsTrigger = React.forwardRef<TabsTriggerElement, TabsTriggerProps>(
+const TabsTrigger = forwardRef<TabsTriggerElement, TabsTriggerProps>(
 	(props: ScopedProps<TabsTriggerProps>, forwardedRef) => {
 		const { __scopeTabs, value, disabled = false, ...triggerProps } = props;
 		const context = useTabsContext(TRIGGER_NAME, __scopeTabs);
@@ -219,7 +223,7 @@ TabsTrigger.displayName = TRIGGER_NAME;
 
 const CONTENT_NAME = "TabsContent";
 
-type TabsContentElement = React.ElementRef<typeof Primitive.div>;
+type TabsContentElement = ElementRef<typeof Primitive.div>;
 interface TabsContentProps extends PrimitiveDivProps {
 	value: string;
 
@@ -230,16 +234,16 @@ interface TabsContentProps extends PrimitiveDivProps {
 	forceMount?: true;
 }
 
-const TabsContent = React.forwardRef<TabsContentElement, TabsContentProps>(
+const TabsContent = forwardRef<TabsContentElement, TabsContentProps>(
 	(props: ScopedProps<TabsContentProps>, forwardedRef) => {
 		const { __scopeTabs, value, forceMount, children, ...contentProps } = props;
 		const context = useTabsContext(CONTENT_NAME, __scopeTabs);
 		const triggerId = makeTriggerId(context.baseId, value);
 		const contentId = makeContentId(context.baseId, value);
 		const isSelected = value === context.value;
-		const isMountAnimationPreventedRef = React.useRef(isSelected);
+		const isMountAnimationPreventedRef = useRef(isSelected);
 
-		React.useEffect(() => {
+		useEffect(() => {
 			const rAF = requestAnimationFrame(
 				// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
 				() => (isMountAnimationPreventedRef.current = false),

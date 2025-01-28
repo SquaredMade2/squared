@@ -1,4 +1,8 @@
-import * as React from "react";
+import {
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	forwardRef,
+} from "react";
 import { Primitive } from "../react-primitive";
 
 /* -------------------------------------------------------------------------------------------------
@@ -10,8 +14,8 @@ const DEFAULT_ORIENTATION = "horizontal";
 const ORIENTATIONS = ["horizontal", "vertical"] as const;
 
 type Orientation = (typeof ORIENTATIONS)[number];
-type SeparatorElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type SeparatorElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface SeparatorProps extends PrimitiveDivProps {
 	/**
 	 * Either `vertical` or `horizontal`. Defaults to `horizontal`.
@@ -24,7 +28,7 @@ interface SeparatorProps extends PrimitiveDivProps {
 	decorative?: boolean;
 }
 
-const Separator = React.forwardRef<SeparatorElement, SeparatorProps>(
+const Separator = forwardRef<SeparatorElement, SeparatorProps>(
 	(props, forwardedRef) => {
 		const {
 			decorative,

@@ -1,6 +1,5 @@
-import React from "react";
-import { DirectionProvider } from "../direction";
 import { css, keyframes } from "../../stitches.config";
+import { DirectionProvider } from "../direction";
 import * as Tabs from "../tabs";
 
 export default { title: "Components/Tabs" };

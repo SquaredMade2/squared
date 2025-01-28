@@ -11,7 +11,7 @@ const CommentStoreContext = createContext<CommentStoreApi | undefined>(
 );
 
 export const CommentStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<CommentStoreApi>();
+	const storeRef = useRef<CommentStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createCommentStore();
 	}
