@@ -264,7 +264,7 @@ func colorize(level LogLevel) string {
 }
 
 func sendToPapertrail(writer *syslog.Writer, log VercelLog, message string) error {
-	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format(time.RFC3339)
+	timestamp := time.Unix(0, log.Timestamp*int64(time.Millisecond)).Format("Jan 02 15:04:05")
 	logMessage := fmt.Sprintf("%s: %s", timestamp, message)
 
 	logFunc := getLogFunc(writer, log.Level)
