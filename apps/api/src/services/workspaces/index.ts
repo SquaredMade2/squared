@@ -4,7 +4,7 @@ import {
 	createServiceSchema,
 } from "@squared/rpc";
 import { z } from "zod";
-import { workspaceLabelSchema } from "../schema";
+import { workspaceLabelSchema, workspaceRoleEnum } from "../schema";
 import type { WorkspaceParams, WorkspaceRpc } from "./types";
 
 const workspaceParamsSchema = createSchema<WorkspaceParams>()(
@@ -61,6 +61,7 @@ export const workspaceRpcSchema = createServiceSchema<WorkspaceRpc>()({
 		input: z.object({
 			token: z.string(),
 			userId: z.string(),
+			role: workspaceRoleEnum.optional(),
 		}),
 		output: workspaceLabelSchema.nullable(),
 	},

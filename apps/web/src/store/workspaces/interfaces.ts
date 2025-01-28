@@ -1,19 +1,15 @@
-import type { Label, Workspace as WorkspaceType } from "@squared/db";
+import type { WorkspaceLabel } from "@squared/db";
 
 export type WorkspaceState = {
-	workspaces: Workspace[];
-	workspace: Workspace | null;
-};
-
-export type Workspace = WorkspaceType & {
-	Labels: Label[];
+	workspaces: WorkspaceLabel[];
+	workspace: WorkspaceLabel | null;
 };
 
 type WorkspaceActions = {
-	setWorkspace: (workspace: Workspace | null) => void;
-	setWorkspaces: (workspaces: Workspace[]) => void;
-	updateWorkspace: (workspace: Workspace) => void;
-	createWorkspace: (workspace: Workspace) => void;
+	setWorkspace: (workspace: WorkspaceLabel | null) => void;
+	setWorkspaces: (workspaces: WorkspaceLabel[]) => void;
+	updateWorkspace: (workspace: WorkspaceLabel) => void;
+	createWorkspace: (workspace: WorkspaceLabel) => void;
 	deleteWorkspace: (workspaceId: string) => void;
 };
 

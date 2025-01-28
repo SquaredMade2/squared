@@ -9,6 +9,7 @@ import type {
 	User,
 	UserWorkspace,
 	Workspace,
+	WorkspaceLabel,
 	WorkspaceRole,
 } from "@squared/db";
 import { createSchema } from "@squared/rpc";
@@ -101,6 +102,7 @@ export const workspaceSchema = createSchema<Workspace>()(
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
+		createdAt: z.date(),
 	}),
 );
 
@@ -136,9 +138,7 @@ export const labelSchema = createSchema<Label>()(
 	}),
 );
 
-export const workspaceLabelSchema = createSchema<
-	Workspace & { Labels: Label[] }
->()(
+export const workspaceLabelSchema = createSchema<WorkspaceLabel>()(
 	z.object({
 		id: z.string(),
 		name: z.string(),
@@ -149,7 +149,8 @@ export const workspaceLabelSchema = createSchema<
 		avatarUrl: z.string().nullable(),
 		admins: z.array(z.string()),
 		defaultView: z.string().nullable(),
-		Labels: z.array(labelSchema),
+		labels: z.array(labelSchema),
+		createdAt: z.date(),
 	}),
 );
 

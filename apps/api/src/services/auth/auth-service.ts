@@ -1,17 +1,15 @@
 import { joinWorkspace } from "@/utils/joinWorkspace";
-import type { PrismaClient } from "@squared/db";
+import { type DBClient, eq, usersTable } from "@squared/db";
 import type { Logger } from "@squared/logger";
 import createCustomLogger from "@squared/logger";
 import type { AuthRpc, Register, RegisterReturn } from "./types";
 
 export class AuthService implements AuthRpc {
-	private readonly db: PrismaClient;
-	private readonly JWT_SECRET: string;
+	private readonly db: DBClient;
 	private readonly logger: Logger;
-	constructor(db: PrismaClient, secret?: string) {
+	constructor(db: DBClient, secret?: string) {
 		this.db = db;
 		if (!secret) throw new Error("Invalid JWT Secret");
-		this.JWT_SECRET = secret;
 		this.logger = createCustomLogger("auth");
 	}
 	async register({
@@ -32,26 +30,25 @@ export class AuthService implements AuthRpc {
 		}
 
 		// Creating the user
-		const user = await this.db.user.create({
-			data: {
+		const [user] = await this.db
+			.insert(usersTable)
+			.values({
 				name,
 				username,
 				email,
 				externalId,
-			},
-		});
+			})
+			.returning();
 
 		if (inviteToken && user) {
 			this.logger.info("Joining workspace with invite token %s", inviteToken);
-			const { message, variant, status } = await joinWorkspace(
-				inviteToken,
-				user.id,
-				this.db,
-			);
+			const {
+				message,
+				variant,
+				status,
+				data: newUser,
+			} = await joinWorkspace(inviteToken, user.id, this.db);
 			if (status === 200) {
-				const newUser = await this.db.user.findUnique({
-					where: { id: user.id },
-				});
 				return { user: newUser, message, variant };
 			}
 			return { user, message, variant };
@@ -61,9 +58,10 @@ export class AuthService implements AuthRpc {
 	}
 
 	private async checkExistingUser(email: string) {
-		const user = await this.db.user.findUnique({
-			where: { email },
-		});
+		const [user] = await this.db
+			.select()
+			.from(usersTable)
+			.where(eq(usersTable.email, email));
 		if (user) {
 			this.logger.info("User %s already exists", email);
 			return user;
