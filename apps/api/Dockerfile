@@ -57,7 +57,7 @@ ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 ENV DATABASE_URL=${DATABASE_URL}
 
 RUN pnpm turbo build --filter=api...
-RUN pnpm db:deploy
+RUN pnpm db:migrate
 
 FROM base AS runner
 WORKDIR /app
