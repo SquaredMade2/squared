@@ -23,11 +23,17 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { workspaceService } from "@/lib/services";
-import { useWorkspaceStore } from "@/store";
+import { useUserStore, useWorkspaceStore } from "@/store";
 import { type TaskOrder, TaskOrderOptions, useViewStore } from "@/store/views";
+import {
+	compareNullableDates,
+	compareNullableNumbers,
+	compareNullableStrings,
+} from "@/utils/compareSorting";
 import { parseParams } from "@/utils/parseParams";
 import { TODO } from "@squared/context";
-import type { Priority, Sprint, Status, Task } from "@squared/db";
+import type { Sprint, Task } from "@squared/db";
+import { Priority, Status } from "@squared/db";
 import { ChevronDown } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -53,6 +59,24 @@ interface AssignTasksDialogProps {
 	setTargetSprint?: (sprintId: string) => void;
 }
 
+const priorityOrder = [
+	Priority.noPriority,
+	Priority.low,
+	Priority.medium,
+	Priority.high,
+	Priority.urgent,
+];
+
+const statusOrder = [
+	Status.backlog,
+	Status.todo,
+	Status.inProgress,
+	Status.inReview,
+	Status.done,
+	Status.canceled,
+	Status.archived,
+];
+
 export function AssignTasksDialog({
 	activeSprint,
 	upcomingSprints,
@@ -71,6 +95,7 @@ export function AssignTasksDialog({
 	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
 		activeSprint?.id,
 	);
+	const users = useUserStore((state) => state.users);
 
 	const { view, setGridViewOptions, setListViewOptions, displayOptions } =
 		useViewStore((state) => state);
@@ -215,6 +240,8 @@ export function AssignTasksDialog({
 		});
 	};
 
+	console.log(orderTasks(filteredTasks));
+
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
@@ -264,38 +291,8 @@ export function AssignTasksDialog({
 					</div>
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
 						<div className="flex items-center gap-2 w-full sm:w-auto">
-							{/* <DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="outline"
-										size="lg"
-										className="w-[120px] justify-between"
-									>
-										<span className="text-xs">{taskOrder.orderBy}</span>
-										<ChevronDown className="size-4" />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent className="w-[120px]">
-									{orderByOptions
-										.filter((option) => option !== groupTasksBy)
-										.map((option) => (
-											<DropdownMenuItem
-												key={option}
-												className="text-xs"
-												onSelect={() =>
-													setOptions({
-														taskOrder: { ...taskOrder, orderBy: option },
-													})
-												}
-											>
-												{option}
-											</DropdownMenuItem>
-										))}
-								</DropdownMenuContent>
-							</DropdownMenu> */}
-
-							<Select
-								// value={filterPriority}
+							{/* <Select
+								value={filterPriority}
 								onValueChange={(value) => {
 									setOptions({ taskOrder: { ...taskOrder, orderBy: value } });
 								}}
@@ -314,25 +311,36 @@ export function AssignTasksDialog({
 											);
 										})}
 								</SelectContent>
-							</Select>
-
-							{/* <Select
-								value={"Priority"}
-								// onValueChange={(value) => setFilterPriority(value as Priority)}
-							>
-								<SelectTrigger className="w-full sm:w-[150px]">
-									<SelectValue placeholder="priority" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="title">Title</SelectItem>
-									<SelectItem value="priority">Priority</SelectItem>
-									<SelectItem value="assignee">Assignee</SelectItem>
-									<SelectItem value="effort">Effort</SelectItem>
-									<SelectItem value="due date">Due Date</SelectItem>
-									<SelectItem value="updated">Updated</SelectItem>
-									<SelectItem value="created">Created</SelectItem>
-								</SelectContent>
 							</Select> */}
+							<div className="w-full sm:w-[150px]">
+								<Select
+									onValueChange={(value) =>
+										setOptions({
+											taskOrder: { ...taskOrder, orderBy: value },
+										})
+									}
+									value={taskOrder.orderBy}
+								>
+									<SelectTrigger>
+										<SelectValue className=" justify-between">
+											<span className="text-xs">{taskOrder.orderBy}</span>
+										</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
+										{orderByOptions
+											.filter((option) => option !== groupTasksBy)
+											.map((option) => (
+												<SelectItem
+													key={option}
+													value={option}
+													className="text-xs"
+												>
+													{option}
+												</SelectItem>
+											))}
+									</SelectContent>
+								</Select>
+							</div>
 
 							<Select
 								value={filterPriority}
@@ -408,6 +416,7 @@ export function AssignTasksDialog({
 											Select All
 										</Label>
 									</div>
+									{/* todo change from filtered tasks to orderTasks */}
 									{filteredTasks.map((task) => {
 										const taskLabels = workspace?.Labels.filter((label) =>
 											task.labels.includes(label.id),
