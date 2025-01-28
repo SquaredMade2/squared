@@ -5,6 +5,7 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { useUserStore } from "@/store/users";
+import { cn } from "@/utils/cn";
 import { truncateString } from "@/utils/formatting";
 import { injectMentionConfirm } from "@/utils/textEditorSelection";
 import { CommandItem } from "cmdk";
@@ -78,25 +79,21 @@ const TextEditorMentions = ({
 							return (
 								<CommandItem
 									key={user.id}
-									className="flex flex-row m-2"
+									className={cn(
+										`${index === 0 && "bg-accent text-accent-foreground"} relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground`,
+									)}
 									ref={(e) => handleUsersRef(e, index)}
+									onSelect={() => handleMentionClick(user.name)}
 								>
-									<button
-										className={`${index === 0 && "bg-primary p-1 rounded-lg"}`}
-										type="submit"
-										onClick={() => handleMentionClick(user.name)}
-									>
-										{truncateString(user.name, 13)}
-									</button>
+									{truncateString(user.name, 13)}
 									{index === 0 && (
 										<div className="flex flex-row items-center justify-start w-32 select-none">
-											<div className="flex flex-row ml-auto border-muted text-muted-foreground border-2 px-2 py-1 w-20 rounded-lg">
+											<div className="flex flex-row ml-auto text-muted-foreground border-2 px-2 py-1 w-10 rounded-lg">
 												<CornerDownLeft
 													size={20}
 													color="hsl(217,5%, 44%)"
 													className="pr-1"
 												/>
-												Enter
 											</div>
 										</div>
 									)}
