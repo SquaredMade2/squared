@@ -20,9 +20,8 @@ import { useMutation } from "@tanstack/react-query";
 
 const StatusDropdown = () => {
 	const { toast } = useToast();
-	const { currentTask, currentTaskBlockedBy, setCurrentTask } = useTaskStore(
-		(state) => state,
-	);
+	const { currentTask, currentTaskBlockedBy, setCurrentTask, updateTask } =
+		useTaskStore((state) => state);
 	const { setEvents } = useEventStore((state) => state);
 
 	if (!currentTask) return null;

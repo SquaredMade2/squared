@@ -474,12 +474,9 @@ importers:
       '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-<<<<<<< HEAD
-=======
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
->>>>>>> develop
       esbuild:
         specifier: ^0.24.0
         version: 0.24.2
@@ -514,7 +511,7 @@ importers:
         version: 0.10.4
       drizzle-orm:
         specifier: ^0.38.3
-        version: 0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(@types/react@18.3.12)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1)
+        version: 0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(@types/react@19.0.8)(pg@8.13.1)(prisma@6.2.1)(react@19.0.0)
       ws:
         specifier: ^8.18.0
         version: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -607,7 +604,7 @@ importers:
         version: link:../db
       drizzle-orm:
         specifier: ^0.38.3
-        version: 0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(@types/react@18.3.12)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1)
+        version: 0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(@types/react@19.0.8)(pg@8.13.1)(prisma@6.2.1)(react@19.0.0)
       pg:
         specifier: ^8.13.1
         version: 8.13.1
@@ -680,15 +677,12 @@ importers:
       '@squared/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-<<<<<<< HEAD
-=======
       '@types/node':
         specifier: ^22.10.10
         version: 22.10.10
       typescript:
         specifier: ^5.2.2
         version: 5.7.3
->>>>>>> develop
 
   packages/seed:
     dependencies:
@@ -1252,18 +1246,11 @@ packages:
   '@dabh/diagnostics@2.0.3':
     resolution: {integrity: sha512-hrlQOIi7hAfzsMqlGSFyVucrx38O+j6wiGOf//H2ecvIEqYN4ADBSS2iLMh5UFyDunCNniUIPk/q3riFv45xRA==}
 
-<<<<<<< HEAD
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
 
-  '@effect/platform@0.69.8':
-    resolution: {integrity: sha512-zhBhg0c1MHMMo+grOc/6wC2/3UETLroruwrYNZ89uDtXl6EOcP5alFP+vW3NToKDA2o0hRh22KNqq4aixA7xXg==}
-    peerDependencies:
-      effect: ^3.10.3
-=======
   '@emnapi/runtime@1.3.1':
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
->>>>>>> develop
 
   '@emotion/is-prop-valid@0.8.8':
     resolution: {integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==}
@@ -1963,16 +1950,11 @@ packages:
       '@types/react': 19.0.8
       react: '>=16'
 
-<<<<<<< HEAD
   '@neondatabase/serverless@0.10.4':
     resolution: {integrity: sha512-2nZuh3VUO9voBauuh+IGYRhGU/MskWHt1IuZvHcJw6GLjDgtqj/KViKo7SIrLdGLdot7vFbiRRw+BgEy3wT9HA==}
 
-  '@next/env@14.2.18':
-    resolution: {integrity: sha512-2vWLOUwIPgoqMJKG6dt35fVXVhgM09tw4tK3/Q34GFXDrfiHlG7iS33VA4ggnjWxjiz9KV5xzfsQzJX6vGAekA==}
-=======
   '@next/env@15.1.6':
     resolution: {integrity: sha512-d9AFQVPEYNr+aqokIiPLNK/MTyt3DWa/dpKveiAaVccUadFbhFEvY6FXYX2LJO2Hv7PHnLBu2oWwB4uBuHjr/w==}
->>>>>>> develop
 
   '@next/mdx@15.1.6':
     resolution: {integrity: sha512-jt9b9ayY8z3F/oQa2YCK7NugxY6ttAiJ8Eu29OTwwW5rcYMjXohIRaqsSrgFWhCFkJA6/EccKO+1ApocCZnn5A==}
@@ -2911,24 +2893,12 @@ packages:
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
-<<<<<<< HEAD
-  '@types/pg-pool@2.0.6':
-    resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
-
   '@types/pg@8.11.11':
     resolution: {integrity: sha512-kGT1qKM8wJQ5qlawUrEkXgvMSXoV213KfMGXcwfDwUIfUHXqXYXOfS1nE1LINRJVVVx5wCm70XnFlMHaIcQAfw==}
 
   '@types/pg@8.11.6':
     resolution: {integrity: sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==}
 
-  '@types/pg@8.6.1':
-    resolution: {integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==}
-
-  '@types/prop-types@15.7.13':
-    resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
-
-=======
->>>>>>> develop
   '@types/qs@6.9.18':
     resolution: {integrity: sha512-kK7dgTYDyGqS+e2Q4aK9X3D7q234CIZ1Bv0q/7Z5IwRDoADNU81xXJK/YVyLbLTZCoIwUoDoffFeF+p/eIklAA==}
 
@@ -4007,7 +3977,7 @@ packages:
       '@tidbcloud/serverless': '*'
       '@types/better-sqlite3': '*'
       '@types/pg': '*'
-      '@types/react': '>=18'
+      '@types/react': 19.0.8
       '@types/sql.js': '*'
       '@vercel/postgres': '>=0.8.0'
       '@xata.io/client': '*'
@@ -4508,18 +4478,9 @@ packages:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
 
-<<<<<<< HEAD
   get-tsconfig@4.8.1:
     resolution: {integrity: sha512-k9PN+cFBmaLWtVz29SkUoqU5O0slLuHJXt/2P+tMVFT+phsSGXGkp9t3rQIqdz0e+06EHNGs3oM6ZX1s2zHxRg==}
 
-  getos@3.2.1:
-    resolution: {integrity: sha512-U56CfOK17OKgTVqozZjUKNdkfEv6jk5WISBJ8SHoagjE6L69zOwl3Z+O8myjY9MEW3i2HPWQBt/LTbCgcC973Q==}
-
-  getpass@0.1.7:
-    resolution: {integrity: sha512-0fzj9JxOLfJ+XGLhR8ze3unN0KZCgZwiSSDz168VERjK8Wl8kVSdcu2kspd4s4wtAa1y/qrVRiAA0WclVsu0ng==}
-
-=======
->>>>>>> develop
   git-raw-commits@4.0.0:
     resolution: {integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==}
     engines: {node: '>=16'}
@@ -5926,13 +5887,6 @@ packages:
     resolution: {integrity: sha512-vE7JKRyES09KiunauX7nd2Q9/L7lhok4smP9RZTDeD4MVs72Dp2qNFVz39Nz5a0FVEW0BJR6C0DYrq6unoziZA==}
     engines: {node: '>= 14.16'}
 
-<<<<<<< HEAD
-  pend@1.2.0:
-    resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
-
-  performance-now@2.1.0:
-    resolution: {integrity: sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==}
-
   pg-cloudflare@1.1.1:
     resolution: {integrity: sha512-xWPagP/4B6BgFO+EKz3JONXv3YDgvkbVrGw2mTo3D6tVDQRh1e7cqVGvyR3BE+eQgAvx1XhW/iEASj4/jCWl3Q==}
 
@@ -5975,8 +5929,6 @@ packages:
   pgpass@1.0.5:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
 
-=======
->>>>>>> develop
   phenomenon@1.6.0:
     resolution: {integrity: sha512-7h9/fjPD3qNlgggzm88cY58l9sudZ6Ey+UmZsizfhtawO6E3srZQXywaNm2lBwT72TbpHYRPy7ytIHeBUD/G0A==}
 
@@ -6115,7 +6067,6 @@ packages:
     resolution: {integrity: sha512-6oz2beyjc5VMn/KV1pPw8fliQkhBXrVn1Z3TVyqZxU8kZpzEKhBdmCFqI6ZbmGtamQvQGuU1sgPTk8ZrXDD7jQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-<<<<<<< HEAD
   postgres-array@2.0.0:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
     engines: {node: '>=4'}
@@ -6151,8 +6102,6 @@ packages:
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
 
-=======
->>>>>>> develop
   prettier@3.4.2:
     resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
     engines: {node: '>=14'}
@@ -8185,13 +8134,9 @@ snapshots:
       enabled: 2.0.0
       kuler: 2.0.0
 
-<<<<<<< HEAD
   '@drizzle-team/brocli@0.10.2': {}
 
-  '@effect/platform@0.69.8(effect@3.10.3)':
-=======
   '@emnapi/runtime@1.3.1':
->>>>>>> develop
     dependencies:
       tslib: 2.8.1
     optional: true
@@ -8839,19 +8784,15 @@ snapshots:
       '@types/react': 19.0.8
       react: 18.3.1
 
-<<<<<<< HEAD
-  '@neondatabase/serverless@0.10.4':
-    dependencies:
-      '@types/pg': 8.11.6
-
-  '@next/env@14.2.18': {}
-=======
   '@mdx-js/react@3.1.0(@types/react@19.0.8)(react@19.0.0)':
     dependencies:
       '@types/mdx': 2.0.13
       '@types/react': 19.0.8
       react: 19.0.0
->>>>>>> develop
+
+  '@neondatabase/serverless@0.10.4':
+    dependencies:
+      '@types/pg': 8.11.6
 
   '@next/env@15.1.6': {}
 
@@ -9660,23 +9601,11 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-<<<<<<< HEAD
-      '@types/node': 22.10.7
-
-  '@types/connect@3.4.36':
-    dependencies:
-      '@types/node': 22.8.7
-
-  '@types/connect@3.4.38':
-    dependencies:
-      '@types/node': 22.8.7
-=======
       '@types/node': 22.10.10
 
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 22.10.10
->>>>>>> develop
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
@@ -9757,11 +9686,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-<<<<<<< HEAD
-      '@types/node': 22.8.7
-=======
       '@types/node': 22.10.10
->>>>>>> develop
 
   '@types/hast@2.3.10':
     dependencies:
@@ -9825,11 +9750,7 @@ snapshots:
 
   '@types/node@22.10.10':
     dependencies:
-<<<<<<< HEAD
-      '@types/node': 22.8.7
-=======
       undici-types: 6.20.0
->>>>>>> develop
 
   '@types/node@22.10.7':
     dependencies:
@@ -9845,11 +9766,6 @@ snapshots:
 
   '@types/parse-json@4.0.2': {}
 
-<<<<<<< HEAD
-  '@types/pg-pool@2.0.6':
-    dependencies:
-      '@types/pg': 8.11.11
-
   '@types/pg@8.11.11':
     dependencies:
       '@types/node': 22.8.7
@@ -9862,16 +9778,6 @@ snapshots:
       pg-protocol: 1.7.0
       pg-types: 4.0.2
 
-  '@types/pg@8.6.1':
-    dependencies:
-      '@types/node': 22.8.7
-      pg-protocol: 1.7.0
-      pg-types: 2.2.0
-
-  '@types/prop-types@15.7.13': {}
-
-=======
->>>>>>> develop
   '@types/qs@6.9.18': {}
 
   '@types/range-parser@1.2.7': {}
@@ -9899,11 +9805,7 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-<<<<<<< HEAD
-      '@types/node': 22.8.7
-=======
       '@types/node': 22.10.10
->>>>>>> develop
 
   '@types/serve-static@1.15.7':
     dependencies:
@@ -9932,13 +9834,6 @@ snapshots:
       '@types/express': 5.0.0
       '@types/serve-static': 1.15.7
 
-<<<<<<< HEAD
-  '@types/tedious@4.0.14':
-    dependencies:
-      '@types/node': 22.8.7
-
-=======
->>>>>>> develop
   '@types/tough-cookie@4.0.5': {}
 
   '@types/triple-beam@1.3.5': {}
@@ -9967,14 +9862,6 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-<<<<<<< HEAD
-  '@types/yauzl@2.10.3':
-    dependencies:
-      '@types/node': 22.8.7
-    optional: true
-
-=======
->>>>>>> develop
   '@ungap/structured-clone@1.2.0': {}
 
   '@vitest/expect@2.0.5':
@@ -11023,16 +10910,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(@types/react@18.3.12)(pg@8.13.1)(prisma@6.2.1)(react@18.3.1):
+  drizzle-orm@0.38.3(@neondatabase/serverless@0.10.4)(@opentelemetry/api@1.9.0)(@prisma/client@6.2.1(prisma@6.2.1))(@types/pg@8.11.11)(@types/react@19.0.8)(pg@8.13.1)(prisma@6.2.1)(react@19.0.0):
     optionalDependencies:
       '@neondatabase/serverless': 0.10.4
       '@opentelemetry/api': 1.9.0
       '@prisma/client': 6.2.1(prisma@6.2.1)
       '@types/pg': 8.11.11
-      '@types/react': 18.3.12
+      '@types/react': 19.0.8
       pg: 8.13.1
       prisma: 6.2.1
-      react: 18.3.1
+      react: 19.0.0
 
   dunder-proto@1.0.1:
     dependencies:
@@ -11156,7 +11043,7 @@ snapshots:
 
   esbuild-register@3.6.0(esbuild@0.19.12):
     dependencies:
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.0(supports-color@5.5.0)
       esbuild: 0.19.12
     transitivePeerDependencies:
       - supports-color
@@ -11620,21 +11507,10 @@ snapshots:
 
   get-stream@6.0.1: {}
 
-<<<<<<< HEAD
   get-tsconfig@4.8.1:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  getos@3.2.1:
-    dependencies:
-      async: 3.2.6
-
-  getpass@0.1.7:
-    dependencies:
-      assert-plus: 1.0.0
-
-=======
->>>>>>> develop
   git-raw-commits@4.0.0:
     dependencies:
       dargs: 8.1.0
@@ -12084,11 +11960,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-<<<<<<< HEAD
-      '@types/node': 22.8.7
-=======
       '@types/node': 22.10.10
->>>>>>> develop
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -12346,11 +12218,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-<<<<<<< HEAD
-      '@types/node': 22.8.7
-=======
       '@types/node': 22.10.10
->>>>>>> develop
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -12567,11 +12435,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-<<<<<<< HEAD
-      '@types/node': 22.8.7
-=======
       '@types/node': 22.10.10
->>>>>>> develop
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -13800,11 +13664,6 @@ snapshots:
 
   pathval@2.0.0: {}
 
-<<<<<<< HEAD
-  pend@1.2.0: {}
-
-  performance-now@2.1.0: {}
-
   pg-cloudflare@1.1.1:
     optional: true
 
@@ -13852,8 +13711,6 @@ snapshots:
     dependencies:
       split2: 4.2.0
 
-=======
->>>>>>> develop
   phenomenon@1.6.0: {}
 
   picocolors@1.0.1: {}
@@ -13984,7 +13841,6 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-<<<<<<< HEAD
   postgres-array@2.0.0: {}
 
   postgres-array@3.0.2: {}
@@ -14007,8 +13863,6 @@ snapshots:
 
   postgres-range@1.1.4: {}
 
-=======
->>>>>>> develop
   prettier@3.4.2: {}
 
   pretty-error@4.0.0:
