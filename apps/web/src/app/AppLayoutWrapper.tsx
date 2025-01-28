@@ -65,7 +65,6 @@ export default function ClientLayoutWrapper({
 								<SearchCommand />
 								<WorkspaceSwitcher />
 								<TaskSelector />
-
 								{children}
 							</>
 						)}

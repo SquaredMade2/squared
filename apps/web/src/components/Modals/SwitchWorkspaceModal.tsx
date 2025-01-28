@@ -16,12 +16,8 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { teamService } from "@/lib/services";
 import { useModalStore, useWorkspaceStore } from "@/store";
 import { cn } from "@/utils/cn";
-import { useUser } from "@clerk/nextjs";
-import { TODO } from "@squared/context";
-import { useQuery } from "@tanstack/react-query";
 import { Check, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import WorkspaceInitials from "../WorkspaceImage";
@@ -32,27 +28,9 @@ export function WorkspaceSwitcher() {
 	const { workspaces, workspace, setWorkspace } = useWorkspaceStore(
 		(state) => state,
 	);
-	const { user } = useUser();
 	const router = useRouter();
 
-	const { isPending } = useQuery({
-		queryKey: ["switchWorkspace", workspace?.url],
-		queryFn: async () => {
-			if (!workspace?.url) return;
-			const newTeams = user
-				? await teamService.getUserTeams(TODO, {
-						userId: user.id,
-						workspaceId: workspace.id,
-					})
-				: [];
-			setWorkspace(workspace);
-			router.push(`/${workspace?.url}/team/${newTeams[0]?.identifier}/all`);
-			return newTeams;
-		},
-		enabled: !!workspace?.url,
-	});
-
-	if (isPending) return null;
+	if (!workspace) return null;
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
