@@ -1,6 +1,8 @@
+import "dotenv/config";
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
+import * as schema from "./schema";
 
 const client = new Client({
 	connectionString: process.env.DATABASE_URL,
@@ -9,24 +11,56 @@ const client = new Client({
 	},
 });
 
-const db = drizzle({ client });
+const db = drizzle(client, { schema });
 
 async function clearDb(): Promise<void> {
-	const query = sql<string>`SELECT table_name
-      FROM information_schema.tables
-      WHERE table_schema = 'public'
-        AND table_type = 'BASE TABLE';
+	try {
+		await client.connect();
+		console.log("Connected to the database");
+
+		await client.query("BEGIN");
+
+		// Drop all tables
+		const dropTablesQuery = sql`
+      DO $$ DECLARE
+        r RECORD;
+      BEGIN
+        FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+          EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+        END LOOP;
+      END $$;
     `;
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const { rows: tables } = (await db.execute(query)) as unknown as any;
-	console.log("Tables: ", tables);
+		await db.execute(dropTablesQuery);
+		console.log("All tables have been dropped");
 
-	for (const table of tables) {
-		const query = sql.raw(`TRUNCATE TABLE ${table.table_name} CASCADE;`);
-		await db.execute(query); // Truncate (clear all the data) the table
+		// Drop all types
+		const dropTypesQuery = sql`
+      DO $$ DECLARE
+        r RECORD;
+      BEGIN
+        FOR r IN (SELECT typname FROM pg_type WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')) LOOP
+          EXECUTE 'DROP TYPE IF EXISTS ' || quote_ident(r.typname) || ' CASCADE';
+        END LOOP;
+      END $$;
+    `;
+
+		await db.execute(dropTypesQuery);
+		console.log("All custom types have been dropped");
+
+		await client.query("COMMIT");
+		console.log("All operations committed successfully");
+	} catch (error) {
+		await client.query("ROLLBACK");
+		console.error("Error clearing database:", error);
+	} finally {
+		await client.end();
+		console.log("Disconnected from the database");
 	}
-	console.log("Successfully Cleared Database");
 }
 
-clearDb();
+// Run the clearDb function
+clearDb().catch((error) => {
+	console.error("Unhandled error:", error);
+	process.exit(1);
+});

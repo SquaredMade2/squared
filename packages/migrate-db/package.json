@@ -3,10 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "echo 'Add dev script here'",
-    "build": "echo 'Add build script here'",
-    "test": "echo 'Add test script here'",
-    "lint": "echo 'Add lint script here'"
+    "clear": "ts-node src/clear.ts",
+    "migrate": "ts-node src/migrate.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",
@@ -18,6 +16,9 @@
     "@squared/typescript-config": "workspace:*",
     "@types/pg": "^8.11.11",
     "@types/ws": "^8.5.13",
-    "drizzle-kit": "^0.30.1"
+    "dotenv": "^16.4.1",
+    "drizzle-kit": "^0.30.1",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.7.0"
   }
 }
