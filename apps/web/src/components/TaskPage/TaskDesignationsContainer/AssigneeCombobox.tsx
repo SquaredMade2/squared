@@ -18,9 +18,10 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { client } from "@/lib/client";
-import { useTaskStore, useUserStore } from "@/store";
+import { useEventStore, useTaskStore, useUserStore } from "@/store";
 import { cn } from "@/utils/cn";
 import { getInitials } from "@/utils/formatting";
+import type {TaskEvent} from "@squared/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { useState } from "react";
@@ -28,6 +29,7 @@ import { useState } from "react";
 const AssigneeCombobox = () => {
 	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
+  const { setEvents } = useEventStore((state) => state);
 	const queryClient = useQueryClient();
 	const { users } = useUserStore((state) => state);
 	const { currentTask, setCurrentTask, updateTask } = useTaskStore(
@@ -45,9 +47,14 @@ const AssigneeCombobox = () => {
 			});
 			return res.json();
 		},
-		onSuccess: (updatedTask) => {
+		onSuccess: async (updatedTask) => {
 			updateTask(updatedTask);
 			setCurrentTask(updatedTask);
+      const eventRes = await client.event.getEvents.$get({
+        taskId: updatedTask.id,
+      });
+      const updatedEvents = await eventRes.json();
+      setEvents(updatedEvents as TaskEvent[]);
 			queryClient.invalidateQueries({
 				queryKey: ["taskEvents", currentTask?.id],
 			});
