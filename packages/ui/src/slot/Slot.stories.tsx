@@ -1,6 +1,12 @@
-;
 
-import { Component, forwardRef, type ComponentProps, type ComponentPropsWithoutRef, type ElementRef, type ReactNode } from "react";
+import {
+	Component,
+	type ComponentProps,
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	type ReactNode,
+	forwardRef,
+} from "react";
 import { Slot, Slottable } from "../slot";
 
 export default { title: "Utilities/Slot" };
@@ -363,22 +369,21 @@ const Button = forwardRef<
 	},
 );
 
-const MockIcon = forwardRef<
-	ElementRef<"span">,
-	ComponentProps<"span">
->(({ color = "tomato", ...props }, forwardedRef) => (
-	<span
-		ref={forwardedRef}
-		{...props}
-		style={{
-			display: "inline-block",
-			width: 10,
-			height: 10,
-			backgroundColor: color,
-			...props.style,
-		}}
-	/>
-));
+const MockIcon = forwardRef<ElementRef<"span">, ComponentProps<"span">>(
+	({ color = "tomato", ...props }, forwardedRef) => (
+		<span
+			ref={forwardedRef}
+			{...props}
+			style={{
+				display: "inline-block",
+				width: 10,
+				height: 10,
+				backgroundColor: color,
+				...props.style,
+			}}
+		/>
+	),
+);
 
 const MockTag = forwardRef(({ onDelete, ...props }: any, ref) => {
 	return (

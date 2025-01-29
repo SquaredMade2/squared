@@ -1,10 +1,9 @@
-;
 
 import * as PopoverPrimitive from "../popover";
 import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 
-import { css, keyframes } from "../../stitches.config";
 import { useRef, useState } from "react";
+import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Components/Popover" };
 

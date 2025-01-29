@@ -1,6 +1,13 @@
-;
 
-import { type ComponentProps, useState, type Dispatch, type SetStateAction, type ComponentPropsWithRef, useContext, createContext } from "react";
+import {
+	type ComponentProps,
+	type ComponentPropsWithRef,
+	type Dispatch,
+	type SetStateAction,
+	createContext,
+	useContext,
+	useState,
+} from "react";
 import { composeEventHandlers } from "../primitive";
 import * as RovingFocusGroup from "../roving-focus";
 
@@ -173,10 +180,7 @@ const ButtonGroupContext = createContext<{
 	setValue: Dispatch<SetStateAction<string | undefined>>;
 }>({} as any);
 
-type ButtonGroupProps = Omit<
-	ComponentPropsWithRef<"div">,
-	"defaultValue"
-> &
+type ButtonGroupProps = Omit<ComponentPropsWithRef<"div">, "defaultValue"> &
 	RovingFocusGroupProps & { defaultValue?: string };
 
 const ButtonGroup = ({ defaultValue, ...props }: ButtonGroupProps) => {
@@ -201,8 +205,7 @@ type ButtonProps = Omit<ComponentPropsWithRef<"button">, "value"> & {
 };
 
 const Button = (props: ButtonProps) => {
-	const { value: contextValue, setValue } =
-		useContext(ButtonGroupContext);
+	const { value: contextValue, setValue } = useContext(ButtonGroupContext);
 	const isSelected =
 		contextValue !== undefined &&
 		props.value !== undefined &&

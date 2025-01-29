@@ -1,10 +1,9 @@
-;
 
 import * as Popper from "../popper";
 import { Portal } from "../portal";
 
+import { useEffect, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
-import { useState, useEffect } from "react";
 
 export default { title: "Utilities/Popper" };
 

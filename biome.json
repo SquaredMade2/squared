@@ -1,15 +1,6 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
 	"files": {
-		"ignore": [
-			"node_modules",
-			".next",
-			"dist",
-			"coverage",
-			"generated",
-			".storybook",
-			"*.stories.tsx"
-		],
 		"include": [
 			"apps",
 			"packages"
@@ -18,12 +9,18 @@
 	"organizeImports": {
 		"enabled": true
 	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true,
 			"a11y": {
-				"useKeyWithClickEvents": "off"
+				"useKeyWithClickEvents": "off",
+				"useValidAnchor": "off"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "off",
@@ -52,7 +49,8 @@
 						"useButtonType": "off"
 					},
 					"suspicious": {
-						"noExplicitAny": "off"
+						"noExplicitAny": "off",
+						"noArrayIndexKey": "off"
 					},
 					"style": {
 						"noNonNullAssertion": "off"

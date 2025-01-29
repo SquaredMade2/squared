@@ -1,10 +1,9 @@
-;
 
 import { DirectionProvider } from "../direction";
 import * as ScrollAreaPrimitive from "../scroll-area";
 
-import { css, keyframes } from "../../stitches.config";
 import { useEffect, useState } from "react";
+import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Components/ScrollArea" };
 

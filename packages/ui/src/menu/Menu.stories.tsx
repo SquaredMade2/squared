@@ -1,11 +1,16 @@
-;
 
 import { DirectionProvider } from "../direction";
 import * as Menu from "../menu";
 
+import {
+	type ComponentProps,
+	type FC,
+	Fragment,
+	useEffect,
+	useState,
+} from "react";
 import { css, keyframes } from "../../stitches.config";
 import { foodGroups } from "../../test-data/foods";
-import { Fragment, useEffect, useState, type ComponentProps, type FC } from "react";
 
 export default {
 	title: "Utilities/Menu",
@@ -490,8 +495,7 @@ export const Animated = () => {
 };
 
 type MenuProps = Omit<
-	ComponentProps<typeof Menu.Menu> &
-		ComponentProps<typeof Menu.MenuContent>,
+	ComponentProps<typeof Menu.Menu> & ComponentProps<typeof Menu.MenuContent>,
 	| "trapFocus"
 	| "onCloseAutoFocus"
 	| "disableOutsidePointerEvents"

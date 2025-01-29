@@ -129,7 +129,6 @@ export default function InboxPage() {
 						<h1 className="ml-4 font-bold text-2xl">Inbox</h1>
 					</div>
 					<div className="flex">
-						
 						<div className="flex w-full flex-col gap-4">
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}

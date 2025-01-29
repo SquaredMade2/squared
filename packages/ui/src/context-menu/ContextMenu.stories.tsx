@@ -1,4 +1,3 @@
-;
 
 import * as ContextMenuPrimitive from "../context-menu";
 

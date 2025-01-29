@@ -264,8 +264,7 @@ function TestimonialColumn({
 						quote={testimonial.quote}
 						src={testimonial.src}
 						designation={testimonial.designation}
-						// biome-ignore lint/suspicious/noArrayIndexKey: Came with template
-						key={testimonialIndex}
+						key={testimonial.src}
 						className={containerClassName?.(
 							testimonialIndex % testimonials.length,
 						)}
