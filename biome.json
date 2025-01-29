@@ -49,25 +49,13 @@
 					"recommended": true,
 					"a11y": {
 						"useKeyWithClickEvents": "off",
-						"useButtonType": "off",
-						"noSvgWithoutTitle": "off",
-						"useValidAnchor": "off"
-					},
-					"correctness": {
-						"useExhaustiveDependencies": "off",
-						"noChildrenProp": "off",
-						"noConstructorReturn": "off"
+						"useButtonType": "off"
 					},
 					"suspicious": {
-						"noExplicitAny": "off",
-						"noArrayIndexKey": "off"
+						"noExplicitAny": "off"
 					},
 					"style": {
-						"noNonNullAssertion": "off",
-						"noInferrableTypes": "off"
-					},
-					"performance": {
-						"noAccumulatingSpread": "off"
+						"noNonNullAssertion": "off"
 					}
 				}
 			}
