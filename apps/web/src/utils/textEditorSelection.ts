@@ -96,18 +96,15 @@ export const injectMentionConfirm = (editor: EditorType, newText: string) => {
 	{ type: "paragraph", children: [{ text: "@something", mention: true }] },
 ];
 
-export const getMentionsFromSlate = (editorContent: CustomDescendant[]) => {
-	const mentions = [];
-	for (let i = 0; i < editorContent.length; i++) {
-		const currentBlock = editorContent[i];
-		if ("type" in currentBlock) {
-			for (let j = 0; j < currentBlock.children.length; j++) {
-				const currentLeaf = currentBlock.children[j];
-				if (currentLeaf.mentionConfirm && currentLeaf.text.length > 0) {
-					mentions.push(currentBlock.children[j].text.slice(1));
-				}
-			}
-		}
-	}
-	return mentions;
+export const getMentionsFromSlate = (editorContent: CustomDescendant[]): string[] => {
+  return editorContent
+    .flatMap((block) => 
+      'children' in block
+        ? (block as CustomElement).children
+        : []
+    )
+    .filter((leaf: CustomText) => 
+      leaf.mentionConfirm && leaf.text.length > 0
+    )
+    .map((leaf: CustomText) => leaf.text.slice(1));
 };
