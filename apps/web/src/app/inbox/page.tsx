@@ -120,17 +120,17 @@ export default function InboxPage() {
 
 	return (
 		<div className="flex w-full">
-			<div className="fixed inset-y-0 z-50 md:relative md:z-0 mt-px">
+			<div className="fixed inset-y-0 z-50 mt-px md:relative md:z-0">
 				<SidebarNav />
 			</div>
-			<div className="flex flex-col w-full">
+			<div className="flex w-full flex-col">
 				<div className="w-full px-4 md:px-8">
-					<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-						<h1 className="text-2xl font-bold ml-4">Inbox</h1>
+					<div className="mb-4 flex w-full items-center gap-4 border-border border-b py-4">
+						<h1 className="ml-4 font-bold text-2xl">Inbox</h1>
 					</div>
 					<div className="flex">
 						
-						<div className="flex flex-col gap-4 w-full">
+						<div className="flex w-full flex-col gap-4">
 							<MobileInboxSwitcher
 								setFilterType={setFilterType}
 								filterType={filterType}

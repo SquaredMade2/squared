@@ -17,7 +17,7 @@ export default function DeleteTaskModal({ task }: { task: Task }) {
 				className="gap-2"
 				variant="destructive"
 			>
-				<Trash className="w-4 h-4" />
+				<Trash className="h-4 w-4" />
 				Delete
 			</Button>
 

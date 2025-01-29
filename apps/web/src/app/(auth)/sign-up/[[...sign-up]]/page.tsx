@@ -23,10 +23,10 @@ const RegisterPage = () => {
 	}, [isLoaded, user, router]);
 
 	return (
-		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
+		<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader className="space-y-1">
-					<CardTitle className="text-2xl font-bold text-center">
+					<CardTitle className="text-center font-bold text-2xl">
 						Sign up for an account
 					</CardTitle>
 				</CardHeader>
@@ -52,11 +52,11 @@ const RegisterPage = () => {
 					/>
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-2">
-					<p className="text-sm text-muted-foreground">
+					<p className="text-muted-foreground text-sm">
 						Already a member?{" "}
 						<Button
 							variant="link"
-							className="p-0 ml-2"
+							className="ml-2 p-0"
 							onClick={() => router.push("/sign-in")}
 						>
 							Log in

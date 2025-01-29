@@ -24,7 +24,7 @@ export const StatusDropdownButton = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="max-w-full w-full">
+				<Button variant="outline" className="w-full max-w-full">
 					<span className="cursor-pointer">
 						<StatusIcon status={newTaskStatus || "todo"} />
 					</span>
@@ -42,7 +42,7 @@ export const StatusDropdownButton = () => {
 						<DropdownMenuItem
 							key={status}
 							onSelect={() => handleSelectStatus(status as Status)}
-							className="flex justify-between items-center px-2 py-1.5 cursor-pointer"
+							className="flex cursor-pointer items-center justify-between px-2 py-1.5"
 						>
 							<div className="flex items-center">
 								<StatusIcon status={status} />

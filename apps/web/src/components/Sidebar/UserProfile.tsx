@@ -31,16 +31,16 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 					variant="ghost"
 					className={`w-full justify-start ${state === "collapsed" && "px-1"}`}
 				>
-					<Avatar className="h-6 w-6 mr-2">
+					<Avatar className="mr-2 h-6 w-6">
 						<AvatarImage src={user?.imageUrl ?? ""} />
 						<AvatarFallback>{user?.firstName?.charAt(0) || "U"}</AvatarFallback>
 					</Avatar>
 					{state === "expanded" && (
 						<div className="flex-1 text-left">
-							<p className="text-sm font-medium leading-none">
+							<p className="font-medium text-sm leading-none">
 								{user?.fullName || "User"}
 							</p>
-							<p className="text-xs text-muted-foreground truncate">
+							<p className="truncate text-muted-foreground text-xs">
 								{user?.primaryEmailAddress?.emailAddress || "user@example.com"}
 							</p>
 						</div>

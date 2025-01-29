@@ -24,18 +24,18 @@ const TopNavBar = ({
 	}, [currentFilters]);
 
 	return (
-		<div className="flex flex-col flex-none justify-start items-start">
-			<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
-				<h1 className="text-xl font-bold ml-8">{pageTitle ?? "Tasks Page"}</h1>
+		<div className="flex flex-none flex-col items-start justify-start">
+			<div className="mb-4 flex w-full items-center gap-4 border-border border-b py-4">
+				<h1 className="ml-8 font-bold text-xl">{pageTitle ?? "Tasks Page"}</h1>
 			</div>
 			<div className="flex w-full justify-between">
-				<div className="flex gap-3 mb-4">
+				<div className="mb-4 flex gap-3">
 					<FilterDropDown />
 				</div>
 				<div className="flex gap-2">
 					<TopNavBarDisplay />
 					{currentFilters.length > 0 && !showSaveForm && (
-						<div className="gap-2 flex">
+						<div className="flex gap-2">
 							{pathname.includes("/views") ? (
 								<>
 									<Button
@@ -79,7 +79,7 @@ const TopNavBar = ({
 				</div>
 			</div>
 			{showSaveForm && (
-				<div className="w-full mt-4">
+				<div className="mt-4 w-full">
 					<SaveFilterForm
 						onCancel={() => setShowSaveForm(false)}
 						type={createNewFilter ? "new" : "edit"}

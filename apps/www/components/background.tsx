@@ -5,8 +5,8 @@ import { useId } from "react";
 
 export const Background = () => {
 	return (
-		<div className="absolute inset-0 h-full w-full pointer-events-none z-0">
-			<div className="absolute inset-0 h-full w-full bg-background pointer-events-none [mask-image:radial-gradient(ellipse_at_center,transparent,white)]" />
+		<div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
+			<div className="pointer-events-none absolute inset-0 h-full w-full bg-background [mask-image:radial-gradient(ellipse_at_center,transparent,white)]" />
 			{Array.from({ length: 6 }).map((_, index) => (
 				// biome-ignore lint/suspicious/noArrayIndexKey: <Came with template>
 				// biome-ignore lint/style/useTemplate: <Came with template>
@@ -25,7 +25,7 @@ export const Background = () => {
 
 const GridBlock = () => {
 	return (
-		<div className="flex flex-col items-start justify-center  w-60">
+		<div className="flex w-60 flex-col items-start justify-center">
 			<div className="flex items-center justify-center">
 				<Dot />
 				<SVG />
@@ -38,8 +38,8 @@ const GridBlock = () => {
 
 const Dot = () => {
 	return (
-		<div className="h-6 w-6 bg-white dark:bg-neutral-900 flex items-center justify-center rounded-full">
-			<div className="h-2 w-2 bg-neutral-200 dark:bg-neutral-700 rounded-full" />
+		<div className="flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-neutral-900">
+			<div className="h-2 w-2 rounded-full bg-neutral-200 dark:bg-neutral-700" />
 		</div>
 	);
 };

@@ -221,8 +221,8 @@ export default function SprintDashboardPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-4 space-y-8">
-			<h1 className="text-3xl font-bold ml-10">Sprint: {sprint.name}</h1>
+		<div className="container mx-auto space-y-8 p-4">
+			<h1 className="ml-10 font-bold text-3xl">Sprint: {sprint.name}</h1>
 			<div className="grid gap-6 md:grid-cols-2">
 				<Card>
 					<CardHeader>
@@ -234,7 +234,7 @@ export default function SprintDashboardPage() {
 					</CardHeader>
 					<CardContent>
 						<Progress value={calculateProgress()} className="w-full" />
-						<p className="mt-2 text-sm text-muted-foreground">
+						<p className="mt-2 text-muted-foreground text-sm">
 							{Math.round(calculateProgress())}% Complete
 						</p>
 					</CardContent>
@@ -246,12 +246,12 @@ export default function SprintDashboardPage() {
 					<CardContent>
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<h3 className="text-lg font-semibold">Total Tasks</h3>
-								<p className="text-3xl font-bold">{sprintTasks.length}</p>
+								<h3 className="font-semibold text-lg">Total Tasks</h3>
+								<p className="font-bold text-3xl">{sprintTasks.length}</p>
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold">Completed Tasks</h3>
-								<p className="text-3xl font-bold">
+								<h3 className="font-semibold text-lg">Completed Tasks</h3>
+								<p className="font-bold text-3xl">
 									{
 										sprintTasks.filter(
 											(task) =>
@@ -261,8 +261,8 @@ export default function SprintDashboardPage() {
 								</p>
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold">In Progress</h3>
-								<p className="text-3xl font-bold">
+								<h3 className="font-semibold text-lg">In Progress</h3>
+								<p className="font-bold text-3xl">
 									{
 										sprintTasks.filter(
 											(task) =>
@@ -273,8 +273,8 @@ export default function SprintDashboardPage() {
 								</p>
 							</div>
 							<div>
-								<h3 className="text-lg font-semibold">To Do</h3>
-								<p className="text-3xl font-bold">
+								<h3 className="font-semibold text-lg">To Do</h3>
+								<p className="font-bold text-3xl">
 									{sprintTasks.filter((task) => task.status === "todo").length}
 								</p>
 							</div>
@@ -367,7 +367,7 @@ export default function SprintDashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
-			<div className="flex justify-between items-center space-x-4">
+			<div className="flex items-center justify-between space-x-4">
 				<Button
 					onClick={() => handleButtonClick(false)}
 					variant="outline"
@@ -386,8 +386,8 @@ export default function SprintDashboardPage() {
 					Start Next Sprint
 				</Button>
 			</div>
-			<div className="flex justify-between items-center">
-				<h2 className="text-2xl font-semibold">Sprint Tasks</h2>
+			<div className="flex items-center justify-between">
+				<h2 className="font-semibold text-2xl">Sprint Tasks</h2>
 				<div className="space-x-4">
 					<AssignTasksDialog
 						activeSprint={sprint}

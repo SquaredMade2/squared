@@ -2,9 +2,9 @@ import SquaredLoader from "../Loaders/SquaredLoader";
 
 export const SprintLoading = () => {
 	return (
-		<div className="w-full h-full flex justify-center items-center">
-			<div className="text-center space-y-4 flex flex-col items-center">
-				<h2 className="text-2xl font-semibold tracking-tight">
+		<div className="flex h-full w-full items-center justify-center">
+			<div className="flex flex-col items-center space-y-4 text-center">
+				<h2 className="font-semibold text-2xl tracking-tight">
 					Loading Sprint
 				</h2>
 				<p className="text-muted-foreground">

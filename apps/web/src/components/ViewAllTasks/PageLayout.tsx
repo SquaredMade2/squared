@@ -36,20 +36,20 @@ export function TaskPageLayout({
 
 	if (loading) {
 		return (
-			<div className="w-full h-full flex items-center justify-center">
+			<div className="flex h-full w-full items-center justify-center">
 				<SquaredLoader />
 			</div>
 		);
 	}
 
 	return (
-		<div className="w-full flex flex-col h-screen overflow-hidden">
+		<div className="flex h-screen w-full flex-col overflow-hidden">
 			<div className="w-full px-2 sm:px-5">
 				<TopNavBar pageTitle={pageTitle} />
 			</div>
 			{!authorized ? (
-				<div className="flex items-center flex-col w-screen h-full bg-background">
-					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
+				<div className="flex h-full w-screen flex-col items-center bg-background">
+					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
 						<h1 className="text-2xl">Not Authorized</h1>
 						<p>
 							You are not authorized to access team with identifier{" "}
@@ -58,11 +58,11 @@ export function TaskPageLayout({
 					</div>
 				</div>
 			) : user && tasks.length === 0 ? (
-				<div className="w-full h-full flex flex-col items-center justify-center gap-4">
-					<div className="w-16 h-16 flex justify-center items-center bg-secondary rounded-full">
-						<Clipboard className="w-8 h-8 text-muted-foreground" />
+				<div className="flex h-full w-full flex-col items-center justify-center gap-4">
+					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+						<Clipboard className="h-8 w-8 text-muted-foreground" />
 					</div>
-					<h1 className="text-2xl font-bold">No tasks yet</h1>
+					<h1 className="font-bold text-2xl">No tasks yet</h1>
 					<p className="text-accent-foreground">
 						You haven't created any tasks. Start by adding a new task to your
 						dashboard.
@@ -74,12 +74,12 @@ export function TaskPageLayout({
 					<ScrollArea
 						className={`${
 							view === "list"
-								? "overflow-y-auto h-[calc(100vh-145px)]"
-								: "overflow-x-auto h-[calc(100vh-55px)]"
+								? "h-[calc(100vh-145px)] overflow-y-auto"
+								: "h-[calc(100vh-55px)] overflow-x-auto"
 						} px-2`}
 					>
 						<div
-							className={`flex mx-2 ${
+							className={`mx-2 flex ${
 								view === "grid" ? "flex-nowrap" : "flex-wrap"
 							}`}
 						>
@@ -91,8 +91,8 @@ export function TaskPageLayout({
 					</ScrollArea>
 				</div>
 			) : (
-				<div className="flex items-center flex-col w-screen h-full bg-background">
-					<div className="w-full h-full flex flex-col items-center justify-center text-foreground">
+				<div className="flex h-full w-screen flex-col items-center bg-background">
+					<div className="flex h-full w-full flex-col items-center justify-center text-foreground">
 						<h1 className="text-2xl">Team not found</h1>
 						<p>There is no team with identifier {`"${teamIdentifier}"`}</p>
 					</div>

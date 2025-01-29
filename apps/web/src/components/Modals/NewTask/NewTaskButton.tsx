@@ -24,7 +24,7 @@ export const NewTaskButton = () => {
 	return (
 		<Button
 			variant="outline"
-			className={`shadow-lg border-blue-500 hover:shadow-glow ${
+			className={`border-blue-500 shadow-lg hover:shadow-glow ${
 				isCollapsed ? "px-0" : ""
 			}`}
 			onClick={handleOpen}
@@ -32,13 +32,13 @@ export const NewTaskButton = () => {
 			<SquarePen className="size-5" />
 			{!isCollapsed && (
 				<>
-					<span className="px-2 w-auto">
+					<span className="w-auto px-2">
 						{Object.keys(newTaskData).length > 0 && !showNewTask
 							? "Resume editing"
 							: "New Task"}
 					</span>
 					{Object.keys(newTaskData).length > 0 && !showNewTask && (
-						<div className="w-1.5 h-1.5 rounded-md bg-accent border-border ml-2" />
+						<div className="ml-2 h-1.5 w-1.5 rounded-md border-border bg-accent" />
 					)}
 				</>
 			)}
