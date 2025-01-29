@@ -1,5 +1,11 @@
-import React from "react";
-
+import {
+	type AriaAttributes,
+	type ComponentPropsWithoutRef,
+	type ElementRef,
+	forwardRef,
+	useCallback,
+	useRef,
+} from "react";
 import { createCollapsibleScope } from "../collapsible";
 import * as CollapsiblePrimitive from "../collapsible";
 import { createCollection } from "../collection";
@@ -48,7 +54,7 @@ interface AccordionMultipleProps extends AccordionImplMultipleProps {
 	type: "multiple";
 }
 
-const Accordion = React.forwardRef<
+const Accordion = forwardRef<
 	AccordionElement,
 	AccordionSingleProps | AccordionMultipleProps
 >(
@@ -109,7 +115,7 @@ interface AccordionImplSingleProps extends AccordionImplProps {
 	collapsible?: boolean;
 }
 
-const AccordionImplSingle = React.forwardRef<
+const AccordionImplSingle = forwardRef<
 	AccordionImplSingleElement,
 	AccordionImplSingleProps
 >((props: ScopedProps<AccordionImplSingleProps>, forwardedRef) => {
@@ -132,7 +138,7 @@ const AccordionImplSingle = React.forwardRef<
 			scope={props.__scopeAccordion}
 			value={value ? [value] : []}
 			onItemOpen={setValue}
-			onItemClose={React.useCallback(
+			onItemClose={useCallback(
 				() => collapsible && setValue(""),
 				[collapsible, setValue],
 			)}
@@ -166,7 +172,7 @@ interface AccordionImplMultipleProps extends AccordionImplProps {
 	onValueChange?(value: string[]): void;
 }
 
-const AccordionImplMultiple = React.forwardRef<
+const AccordionImplMultiple = forwardRef<
 	AccordionImplMultipleElement,
 	AccordionImplMultipleProps
 >((props: ScopedProps<AccordionImplMultipleProps>, forwardedRef) => {
@@ -183,13 +189,13 @@ const AccordionImplMultiple = React.forwardRef<
 		onChange: onValueChange,
 	});
 
-	const handleItemOpen = React.useCallback(
+	const handleItemOpen = useCallback(
 		(itemValue: string) =>
 			setValue((prevValue = []) => [...prevValue, itemValue]),
 		[setValue],
 	);
 
-	const handleItemClose = React.useCallback(
+	const handleItemClose = useCallback(
 		(itemValue: string) =>
 			setValue((prevValue = []) =>
 				prevValue.filter((value) => value !== itemValue),
@@ -225,8 +231,8 @@ type AccordionImplContextValue = {
 const [AccordionImplProvider, useAccordionContext] =
 	createAccordionContext<AccordionImplContextValue>(ACCORDION_NAME);
 
-type AccordionImplElement = React.ElementRef<typeof Primitive.div>;
-type PrimitiveDivProps = React.ComponentPropsWithoutRef<typeof Primitive.div>;
+type AccordionImplElement = ElementRef<typeof Primitive.div>;
+type PrimitiveDivProps = ComponentPropsWithoutRef<typeof Primitive.div>;
 interface AccordionImplProps extends PrimitiveDivProps {
 	/**
 	 * Whether or not an accordion is disabled from user interaction.
@@ -238,123 +244,122 @@ interface AccordionImplProps extends PrimitiveDivProps {
 	 * The layout in which the Accordion operates.
 	 * @default vertical
 	 */
-	orientation?: React.AriaAttributes["aria-orientation"];
+	orientation?: AriaAttributes["aria-orientation"];
 	/**
 	 * The language read direction.
 	 */
 	dir?: Direction;
 }
 
-const AccordionImpl = React.forwardRef<
-	AccordionImplElement,
-	AccordionImplProps
->((props: ScopedProps<AccordionImplProps>, forwardedRef) => {
-	const {
-		__scopeAccordion,
-		disabled,
-		dir,
-		orientation = "vertical",
-		...accordionProps
-	} = props;
-	const accordionRef = React.useRef<AccordionImplElement>(null);
-	const composedRefs = useComposedRefs(accordionRef, forwardedRef);
-	const getItems = useCollection(__scopeAccordion);
-	const direction = useDirection(dir);
-	const isDirectionLTR = direction === "ltr";
+const AccordionImpl = forwardRef<AccordionImplElement, AccordionImplProps>(
+	(props: ScopedProps<AccordionImplProps>, forwardedRef) => {
+		const {
+			__scopeAccordion,
+			disabled,
+			dir,
+			orientation = "vertical",
+			...accordionProps
+		} = props;
+		const accordionRef = useRef<AccordionImplElement>(null);
+		const composedRefs = useComposedRefs(accordionRef, forwardedRef);
+		const getItems = useCollection(__scopeAccordion);
+		const direction = useDirection(dir);
+		const isDirectionLTR = direction === "ltr";
 
-	const handleKeyDown = composeEventHandlers(props.onKeyDown, (event) => {
-		if (!ACCORDION_KEYS.includes(event.key)) return;
-		const target = event.target as HTMLElement;
-		const triggerCollection = getItems().filter(
-			(item) => !item.ref.current?.disabled,
-		);
-		const triggerIndex = triggerCollection.findIndex(
-			(item) => item.ref.current === target,
-		);
-		const triggerCount = triggerCollection.length;
+		const handleKeyDown = composeEventHandlers(props.onKeyDown, (event) => {
+			if (!ACCORDION_KEYS.includes(event.key)) return;
+			const target = event.target as HTMLElement;
+			const triggerCollection = getItems().filter(
+				(item) => !item.ref.current?.disabled,
+			);
+			const triggerIndex = triggerCollection.findIndex(
+				(item) => item.ref.current === target,
+			);
+			const triggerCount = triggerCollection.length;
 
-		if (triggerIndex === -1) return;
+			if (triggerIndex === -1) return;
 
-		// Prevents page scroll while user is navigating
-		event.preventDefault();
+			// Prevents page scroll while user is navigating
+			event.preventDefault();
 
-		let nextIndex = triggerIndex;
-		const homeIndex = 0;
-		const endIndex = triggerCount - 1;
+			let nextIndex = triggerIndex;
+			const homeIndex = 0;
+			const endIndex = triggerCount - 1;
 
-		const moveNext = () => {
-			nextIndex = triggerIndex + 1;
-			if (nextIndex > endIndex) {
-				nextIndex = homeIndex;
-			}
-		};
+			const moveNext = () => {
+				nextIndex = triggerIndex + 1;
+				if (nextIndex > endIndex) {
+					nextIndex = homeIndex;
+				}
+			};
 
-		const movePrev = () => {
-			nextIndex = triggerIndex - 1;
-			if (nextIndex < homeIndex) {
-				nextIndex = endIndex;
-			}
-		};
+			const movePrev = () => {
+				nextIndex = triggerIndex - 1;
+				if (nextIndex < homeIndex) {
+					nextIndex = endIndex;
+				}
+			};
 
-		switch (event.key) {
-			case "Home":
-				nextIndex = homeIndex;
-				break;
-			case "End":
-				nextIndex = endIndex;
-				break;
-			case "ArrowRight":
-				if (orientation === "horizontal") {
-					if (isDirectionLTR) {
-						moveNext();
-					} else {
-						movePrev();
+			switch (event.key) {
+				case "Home":
+					nextIndex = homeIndex;
+					break;
+				case "End":
+					nextIndex = endIndex;
+					break;
+				case "ArrowRight":
+					if (orientation === "horizontal") {
+						if (isDirectionLTR) {
+							moveNext();
+						} else {
+							movePrev();
+						}
 					}
-				}
-				break;
-			case "ArrowDown":
-				if (orientation === "vertical") {
-					moveNext();
-				}
-				break;
-			case "ArrowLeft":
-				if (orientation === "horizontal") {
-					if (isDirectionLTR) {
-						movePrev();
-					} else {
+					break;
+				case "ArrowDown":
+					if (orientation === "vertical") {
 						moveNext();
 					}
-				}
-				break;
-			case "ArrowUp":
-				if (orientation === "vertical") {
-					movePrev();
-				}
-				break;
-		}
+					break;
+				case "ArrowLeft":
+					if (orientation === "horizontal") {
+						if (isDirectionLTR) {
+							movePrev();
+						} else {
+							moveNext();
+						}
+					}
+					break;
+				case "ArrowUp":
+					if (orientation === "vertical") {
+						movePrev();
+					}
+					break;
+			}
 
-		const clampedIndex = nextIndex % triggerCount;
-		triggerCollection[clampedIndex].ref.current?.focus();
-	});
+			const clampedIndex = nextIndex % triggerCount;
+			triggerCollection[clampedIndex].ref.current?.focus();
+		});
 
-	return (
-		<AccordionImplProvider
-			scope={__scopeAccordion}
-			disabled={disabled}
-			direction={dir}
-			orientation={orientation}
-		>
-			<Collection.Slot scope={__scopeAccordion}>
-				<Primitive.div
-					{...accordionProps}
-					data-orientation={orientation}
-					ref={composedRefs}
-					onKeyDown={disabled ? undefined : handleKeyDown}
-				/>
-			</Collection.Slot>
-		</AccordionImplProvider>
-	);
-});
+		return (
+			<AccordionImplProvider
+				scope={__scopeAccordion}
+				disabled={disabled}
+				direction={dir}
+				orientation={orientation}
+			>
+				<Collection.Slot scope={__scopeAccordion}>
+					<Primitive.div
+						{...accordionProps}
+						data-orientation={orientation}
+						ref={composedRefs}
+						onKeyDown={disabled ? undefined : handleKeyDown}
+					/>
+				</Collection.Slot>
+			</AccordionImplProvider>
+		);
+	},
+);
 
 /* -------------------------------------------------------------------------------------------------
  * AccordionItem
@@ -370,10 +375,8 @@ type AccordionItemContextValue = {
 const [AccordionItemProvider, useAccordionItemContext] =
 	createAccordionContext<AccordionItemContextValue>(ITEM_NAME);
 
-type AccordionItemElement = React.ElementRef<
-	typeof CollapsiblePrimitive.Collapsible
->;
-type CollapsibleProps = React.ComponentPropsWithoutRef<
+type AccordionItemElement = ElementRef<typeof CollapsiblePrimitive.Collapsible>;
+type CollapsibleProps = ComponentPropsWithoutRef<
 	typeof CollapsiblePrimitive.Collapsible
 >;
 interface AccordionItemProps
@@ -393,44 +396,43 @@ interface AccordionItemProps
 /**
  * `AccordionItem` contains all of the parts of a collapsible section inside of an `Accordion`.
  */
-const AccordionItem = React.forwardRef<
-	AccordionItemElement,
-	AccordionItemProps
->((props: ScopedProps<AccordionItemProps>, forwardedRef) => {
-	const { __scopeAccordion, value, ...accordionItemProps } = props;
-	const accordionContext = useAccordionContext(ITEM_NAME, __scopeAccordion);
-	const valueContext = useAccordionValueContext(ITEM_NAME, __scopeAccordion);
-	const collapsibleScope = useCollapsibleScope(__scopeAccordion);
-	const triggerId = useId();
-	const open = (value && valueContext.value.includes(value)) || false;
-	const disabled = accordionContext.disabled || props.disabled;
+const AccordionItem = forwardRef<AccordionItemElement, AccordionItemProps>(
+	(props: ScopedProps<AccordionItemProps>, forwardedRef) => {
+		const { __scopeAccordion, value, ...accordionItemProps } = props;
+		const accordionContext = useAccordionContext(ITEM_NAME, __scopeAccordion);
+		const valueContext = useAccordionValueContext(ITEM_NAME, __scopeAccordion);
+		const collapsibleScope = useCollapsibleScope(__scopeAccordion);
+		const triggerId = useId();
+		const open = (value && valueContext.value.includes(value)) || false;
+		const disabled = accordionContext.disabled || props.disabled;
 
-	return (
-		<AccordionItemProvider
-			scope={__scopeAccordion}
-			open={open}
-			disabled={disabled}
-			triggerId={triggerId}
-		>
-			<CollapsiblePrimitive.Collapsible
-				data-orientation={accordionContext.orientation}
-				data-state={getState(open)}
-				{...collapsibleScope}
-				{...accordionItemProps}
-				ref={forwardedRef}
-				disabled={disabled}
+		return (
+			<AccordionItemProvider
+				scope={__scopeAccordion}
 				open={open}
-				onOpenChange={(open) => {
-					if (open) {
-						valueContext.onItemOpen(value);
-					} else {
-						valueContext.onItemClose(value);
-					}
-				}}
-			/>
-		</AccordionItemProvider>
-	);
-});
+				disabled={disabled}
+				triggerId={triggerId}
+			>
+				<CollapsiblePrimitive.Collapsible
+					data-orientation={accordionContext.orientation}
+					data-state={getState(open)}
+					{...collapsibleScope}
+					{...accordionItemProps}
+					ref={forwardedRef}
+					disabled={disabled}
+					open={open}
+					onOpenChange={(open) => {
+						if (open) {
+							valueContext.onItemOpen(value);
+						} else {
+							valueContext.onItemClose(value);
+						}
+					}}
+				/>
+			</AccordionItemProvider>
+		);
+	},
+);
 
 AccordionItem.displayName = ITEM_NAME;
 
@@ -440,17 +442,15 @@ AccordionItem.displayName = ITEM_NAME;
 
 const HEADER_NAME = "AccordionHeader";
 
-type AccordionHeaderElement = React.ElementRef<typeof Primitive.h3>;
-type PrimitiveHeading3Props = React.ComponentPropsWithoutRef<
-	typeof Primitive.h3
->;
+type AccordionHeaderElement = ElementRef<typeof Primitive.h3>;
+type PrimitiveHeading3Props = ComponentPropsWithoutRef<typeof Primitive.h3>;
 interface AccordionHeaderProps extends PrimitiveHeading3Props {}
 
 /**
  * `AccordionHeader` contains the content for the parts of an `AccordionItem` that will be visible
  * whether or not its content is collapsed.
  */
-const AccordionHeader = React.forwardRef<
+const AccordionHeader = forwardRef<
 	AccordionHeaderElement,
 	AccordionHeaderProps
 >((props: ScopedProps<AccordionHeaderProps>, forwardedRef) => {
@@ -479,10 +479,10 @@ AccordionHeader.displayName = HEADER_NAME;
 
 const TRIGGER_NAME = "AccordionTrigger";
 
-type AccordionTriggerElement = React.ElementRef<
+type AccordionTriggerElement = ElementRef<
 	typeof CollapsiblePrimitive.CollapsibleTrigger
 >;
-type CollapsibleTriggerProps = React.ComponentPropsWithoutRef<
+type CollapsibleTriggerProps = ComponentPropsWithoutRef<
 	typeof CollapsiblePrimitive.CollapsibleTrigger
 >;
 interface AccordionTriggerProps extends CollapsibleTriggerProps {}
@@ -491,7 +491,7 @@ interface AccordionTriggerProps extends CollapsibleTriggerProps {}
  * `AccordionTrigger` is the trigger that toggles the collapsed state of an `AccordionItem`. It
  * should always be nested inside of an `AccordionHeader`.
  */
-const AccordionTrigger = React.forwardRef<
+const AccordionTrigger = forwardRef<
 	AccordionTriggerElement,
 	AccordionTriggerProps
 >((props: ScopedProps<AccordionTriggerProps>, forwardedRef) => {
@@ -530,10 +530,10 @@ AccordionTrigger.displayName = TRIGGER_NAME;
 
 const CONTENT_NAME = "AccordionContent";
 
-type AccordionContentElement = React.ElementRef<
+type AccordionContentElement = ElementRef<
 	typeof CollapsiblePrimitive.CollapsibleContent
 >;
-type CollapsibleContentProps = React.ComponentPropsWithoutRef<
+type CollapsibleContentProps = ComponentPropsWithoutRef<
 	typeof CollapsiblePrimitive.CollapsibleContent
 >;
 interface AccordionContentProps extends CollapsibleContentProps {}
@@ -541,7 +541,7 @@ interface AccordionContentProps extends CollapsibleContentProps {}
 /**
  * `AccordionContent` contains the collapsible content for an `AccordionItem`.
  */
-const AccordionContent = React.forwardRef<
+const AccordionContent = forwardRef<
 	AccordionContentElement,
 	AccordionContentProps
 >((props: ScopedProps<AccordionContentProps>, forwardedRef) => {

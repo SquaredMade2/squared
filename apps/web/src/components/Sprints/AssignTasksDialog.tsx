@@ -22,12 +22,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { workspaceService } from "@/lib/services";
 import { useWorkspaceStore } from "@/store";
-import { parseParams } from "@/utils/parseParams";
-import { TODO } from "@squared/context";
 import type { Priority, Sprint, Status, Task } from "@squared/db";
-import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PriorityIcon, StatusIcon } from "../Icons";
 import LabelBadge from "../LabelBadges";
@@ -61,9 +57,7 @@ export function AssignTasksDialog({
 	const [selectedSprintId, setSelectedSprintId] = useState<string | undefined>(
 		activeSprint?.id,
 	);
-	const params = useParams();
-	const workspaceUrl = parseParams(params.workspace);
-	const { workspace, setWorkspace } = useWorkspaceStore((state) => state);
+	const { workspace } = useWorkspaceStore((state) => state);
 
 	useEffect(() => {
 		if (activeSprint) {
@@ -72,16 +66,6 @@ export function AssignTasksDialog({
 			setSelectedSprintId(upcomingSprints[0].id);
 		}
 	}, [activeSprint, upcomingSprints]);
-
-	useEffect(() => {
-		const fetchWorkspace = async () => {
-			const currentWorkspace = await workspaceService.getWorkspaceByUrl(TODO, {
-				url: workspaceUrl,
-			});
-			setWorkspace(currentWorkspace);
-		};
-		fetchWorkspace();
-	}, [workspaceUrl]);
 
 	const handleTaskSelection = (task: Task) => {
 		setSelectedTasks(
@@ -235,7 +219,7 @@ export function AssignTasksDialog({
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="all">All Labels</SelectItem>
-									{workspace?.Labels.map((label) => (
+									{workspace?.labels.map((label) => (
 										<SelectItem key={label.id} value={label.id}>
 											{label.name}
 										</SelectItem>
@@ -270,7 +254,7 @@ export function AssignTasksDialog({
 										</Label>
 									</div>
 									{filteredTasks.map((task) => {
-										const taskLabels = workspace?.Labels.filter((label) =>
+										const taskLabels = workspace?.labels.filter((label) =>
 											task.labels.includes(label.id),
 										);
 										return (
@@ -335,7 +319,7 @@ export function AssignTasksDialog({
 									</div>
 									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 										{filteredTasks.map((task) => {
-											const taskLabels = workspace?.Labels.filter((label) =>
+											const taskLabels = workspace?.labels.filter((label) =>
 												task.labels.includes(label.id),
 											);
 											return (

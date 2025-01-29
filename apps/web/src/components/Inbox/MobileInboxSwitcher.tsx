@@ -10,8 +10,8 @@ import {
 	CommandSeparator,
 } from "@/components/ui/command";
 import type { GetNotificationsResponse } from "@/gen/rpc/event";
-import { DialogTitle } from "@repo/ui/dialog";
-import { VisuallyHidden } from "@repo/ui/visually-hidden";
+import { DialogTitle } from "@squaredmade/ui/dialog";
+import { VisuallyHidden } from "@squaredmade/ui/visually-hidden";
 import {
 	BadgePlus,
 	Bookmark,
@@ -148,7 +148,7 @@ export function MobileInboxSwitcher({
 	);
 
 	return (
-		<div className="w-full flex gap-2 md:hidden">
+		<div className="w-full flex gap-2 lg:hidden">
 			<Button
 				variant="secondary"
 				className="w-full justify-between"

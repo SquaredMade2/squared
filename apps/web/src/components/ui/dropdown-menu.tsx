@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/utils/cn";
-import * as DropdownMenuPrimitive from "@repo/ui/dropdown-menu";
+import * as DropdownMenuPrimitive from "@squaredmade/ui/dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 import * as React from "react";
 

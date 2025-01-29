@@ -1,6 +1,6 @@
 "use client";
 
-import * as TabsPrimitive from "@repo/ui/tabs";
+import * as TabsPrimitive from "@squaredmade/ui/tabs";
 import * as React from "react";
 
 import { cn } from "@/utils/cn";

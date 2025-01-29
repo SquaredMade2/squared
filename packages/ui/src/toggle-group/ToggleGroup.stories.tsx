@@ -1,14 +1,15 @@
-import * as React from 'react';
+
 import { DirectionProvider } from '../direction';
 import { css } from '../../stitches.config';
 import * as ToggleGroup from '../toggle-group';
+import { useState } from 'react';
 
 export default {
   title: 'Components/ToggleGroup',
 };
 
 export const Single = () => {
-  const [value, setValue] = React.useState<string>();
+  const [value, setValue] = useState<string>();
   return (
     <>
       <h1>Uncontrolled</h1>
@@ -69,7 +70,7 @@ export const Vertical = () => {
 };
 
 export const Multiple = () => {
-  const [value, setValue] = React.useState<string[]>([]);
+  const [value, setValue] = useState<string[]>([]);
   return (
     <>
       <h1>Uncontrolled</h1>

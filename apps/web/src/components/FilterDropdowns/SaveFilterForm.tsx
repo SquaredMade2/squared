@@ -100,7 +100,7 @@ export function SaveFilterForm({
 			if (workspace) {
 				const formatted = await Promise.all(
 					currentFilters.map((filter) =>
-						formatFilterName(filter, workspace.Labels, users),
+						formatFilterName(filter, workspace.labels, users),
 					),
 				);
 				setFormattedFilters(formatted);

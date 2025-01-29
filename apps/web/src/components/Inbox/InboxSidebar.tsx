@@ -1,8 +1,8 @@
 import type { NotificationFilter } from "@/app/inbox/page";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Label } from "@repo/ui/label";
 import type { Notification, Workspace } from "@squared/db";
+import { Label } from "@squaredmade/ui/label";
 import {
 	BadgePlus,
 	Bookmark,
@@ -126,7 +126,7 @@ export function InboxSidebar({
 	};
 
 	return (
-		<div className="w-72 border-r border-border h-full md:block hidden p-4 bg-card dark:bg-transparent">
+		<div className="w-72 border-l border-border h-screen lg:block hidden  p-4 bg-card dark:bg-transparent">
 			<nav>
 				<ul className="space-y-4">
 					<div className="space-y-2">

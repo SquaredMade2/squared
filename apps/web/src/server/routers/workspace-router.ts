@@ -6,7 +6,7 @@ import { privateProcedure } from "../procedures";
 export const workspaceRouter = router({
 	getAllWorkspaces: privateProcedure.query(async ({ c, ctx }) => {
 		const { workspaceService, user } = ctx;
-		return c.json(
+		return c.superjson(
 			await workspaceService.getUserWorkspaces(TODO, { userId: user.id }),
 		);
 	}),
@@ -15,7 +15,7 @@ export const workspaceRouter = router({
 		.query(async ({ c, ctx, input }) => {
 			const { workspaceService } = ctx;
 			const { workspaceUrl } = input;
-			return c.json(
+			return c.superjson(
 				await workspaceService.getWorkspaceByUrl(TODO, { url: workspaceUrl }),
 			);
 		}),
@@ -24,7 +24,7 @@ export const workspaceRouter = router({
 		.mutation(async ({ c, ctx, input }) => {
 			const { workspaceService } = ctx;
 			const { name, url } = input;
-			return c.json(
+			return c.superjson(
 				await workspaceService.createWorkspace(TODO, {
 					userId: ctx.user.id,
 					workspace: { name, url },

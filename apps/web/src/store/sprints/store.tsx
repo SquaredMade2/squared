@@ -9,7 +9,7 @@ type SprintStoreApi = ReturnType<typeof createSprintStore>;
 const SprintStoreContext = createContext<SprintStoreApi | undefined>(undefined);
 
 export const SprintStoreProvider = ({ children }: { children: ReactNode }) => {
-	const storeRef = useRef<SprintStoreApi>();
+	const storeRef = useRef<SprintStoreApi>(undefined);
 	if (!storeRef.current) {
 		storeRef.current = createSprintStore();
 	}

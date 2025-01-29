@@ -1,7 +1,6 @@
 import { useTeamStore, useViewStore, useWorkspaceStore } from "@/store";
-import type { Workspace } from "@/store/workspaces";
 import { useClerk } from "@clerk/nextjs";
-import type { Team } from "@squared/db";
+import type { Team, WorkspaceLabel } from "@squared/db";
 import {
 	ArrowLeftRight,
 	ArrowRight,
@@ -25,7 +24,7 @@ import type { SearchbarStructure } from "./interfaces";
 export class CommandSchema {
 	router: ReturnType<typeof useRouter>;
 	pathname: string;
-	workspace: Workspace | null;
+	workspace: WorkspaceLabel | null;
 	team: Team | null;
 	setShowNewTask: (input: boolean) => void;
 	setShowSwitchWorkspace: (input: boolean) => void;

@@ -42,6 +42,7 @@ const StatusDropdown = () => {
 				})
 				.then((res) => res.json());
 			setCurrentTask({ ...currentTask, status: newStatus });
+			updateTask({ ...currentTask, status: newStatus });
 			const updatedEvents = await eventService.getTaskEvents(TODO, {
 				taskId: taskId,
 			});

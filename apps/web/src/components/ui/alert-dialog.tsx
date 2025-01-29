@@ -1,6 +1,6 @@
 "use client";
 
-import * as AlertDialogPrimitive from "@repo/ui/alert-dialog";
+import * as AlertDialogPrimitive from "@squaredmade/ui/alert-dialog";
 import * as React from "react";
 
 import { buttonVariants } from "@/components/ui/button";

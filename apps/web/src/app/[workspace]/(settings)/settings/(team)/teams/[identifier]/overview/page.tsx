@@ -30,15 +30,15 @@ import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { teamService } from "@/lib/services";
 import { useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TODO } from "@squared/context";
+import type { Effort } from "@squared/db";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
-} from "@repo/ui/dropdown-menu";
-import { TODO } from "@squared/context";
-import type { Effort } from "@squared/db";
+} from "@squaredmade/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
