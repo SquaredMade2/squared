@@ -1,4 +1,3 @@
-
 import { DirectionProvider } from "../direction";
 import * as ScrollAreaPrimitive from "../scroll-area";
 

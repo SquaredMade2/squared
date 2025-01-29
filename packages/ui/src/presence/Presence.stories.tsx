@@ -1,4 +1,3 @@
-
 import { Presence } from "../presence";
 
 import { type ComponentProps, useEffect, useRef, useState } from "react";

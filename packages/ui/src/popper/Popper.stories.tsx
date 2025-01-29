@@ -1,4 +1,3 @@
-
 import * as Popper from "../popper";
 import { Portal } from "../portal";
 
