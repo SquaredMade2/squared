@@ -10,7 +10,10 @@
 			".storybook",
 			"*.stories.tsx"
 		],
-		"include": ["apps", "packages"]
+		"include": [
+			"apps",
+			"packages"
+		]
 	},
 	"organizeImports": {
 		"enabled": true
@@ -26,12 +29,20 @@
 				"useExhaustiveDependencies": "off",
 				"noUnusedVariables": "error",
 				"noUnusedImports": "error"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "info",
+					"fix": "safe"
+				}
 			}
 		}
 	},
 	"overrides": [
 		{
-			"include": ["packages/ui/**"],
+			"include": [
+				"packages/ui/**"
+			],
 			"linter": {
 				"enabled": true,
 				"rules": {
@@ -62,7 +73,9 @@
 			}
 		},
 		{
-			"include": ["apps/api/src/api/generated-routes.ts"],
+			"include": [
+				"apps/api/src/api/generated-routes.ts"
+			],
 			"linter": {
 				"rules": {
 					"complexity": {
@@ -72,7 +85,9 @@
 			}
 		},
 		{
-			"include": ["apps/web/src/server/__internals"],
+			"include": [
+				"apps/web/src/server/__internals"
+			],
 			"linter": {
 				"rules": {
 					"complexity": {
