@@ -4,6 +4,7 @@ import {
 	useUserStore,
 	useViewStore,
 } from "@/store";
+import { cn } from "@/utils/cn";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
@@ -291,19 +292,23 @@ const GroupColumn = ({
 					dropSnapshot: DroppableStateSnapshot,
 				) => (
 					<div
-						className={`
-							${
-								view === "grid"
-									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-72 h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
-									: "flex flex-col z-30 w-full gap-2 items-center h-full"
-							}
-							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
-							`}
+						className={cn(
+							isListView
+								? "flex flex-col z-30 w-full gap-2 items-start"
+								: "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-72 h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out",
+							dropSnapshot.isDraggingOver && "bg-[#242d42]",
+						)}
 					>
-						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3]  dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
-							<div className="w-full grow inline-flex">
+						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
+							<div
+								className={cn(
+									"w-full grow",
+									isListView ? "flex flex-col" : "inline-flex",
+								)}
+							>
 								<div
 									ref={dropProvided.innerRef}
+									{...dropProvided.droppableProps}
 									className="flex flex-col items-start w-full min-h-[60px]"
 								>
 									{showTasks && renderGroup(tasks)}

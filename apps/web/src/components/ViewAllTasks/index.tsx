@@ -1,9 +1,8 @@
-"use client";
-import { RenameModal } from "@/components/Modals";
 import { useViewStore } from "@/store";
 import { Status } from "@squared/db";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { RenameModal } from "../Modals";
 import GroupColumn from "./GroupColumn";
 import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupedColumn, ViewAllTasksProps } from "./interfaces";
@@ -51,25 +50,22 @@ const ViewAllTasks = ({ getGroupedColumns }: ViewAllTasksProps) => {
 			<div className={isListView ? "block min-w-full" : "flex flex-col"}>
 				<div className={isListView ? "flex flex-col" : "flex gap-2"}>
 					{groupedColumns.map((column: GroupedColumn) => (
-						<TaskColumnTitle
-							title={column.group}
-							showTasks={showTasks}
-							setShowTasks={setShowTasks}
-							numberOfTasks={column.tasks.length}
-							isListView={isListView}
-							key={column.group}
-						/>
-					))}
-				</div>
-				<div className={isListView ? "flex flex-col" : "flex gap-2"}>
-					{groupedColumns.map((column: GroupedColumn) => (
-						<GroupColumn
-							key={column.group}
-							group={column.group}
-							tasks={column.tasks}
-							currentView={view}
-							showTasks={showTasks}
-						/>
+						<div key={column.group} className={isListView ? "contents" : ""}>
+							<TaskColumnTitle
+								title={column.group}
+								showTasks={showTasks}
+								setShowTasks={setShowTasks}
+								numberOfTasks={column.tasks.length}
+								isListView={isListView}
+							/>
+							<GroupColumn
+								key={column.group}
+								group={column.group}
+								tasks={column.tasks}
+								currentView={view}
+								showTasks={showTasks}
+							/>
+						</div>
 					))}
 				</div>
 			</div>
