@@ -4,22 +4,15 @@ import {
 	useUserStore,
 	useViewStore,
 } from "@/store";
-import { cn } from "@/utils/cn";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
 	compareNullableStrings,
 } from "@/utils/compareSorting";
-import type {
-	DroppableProvided,
-	DroppableStateSnapshot,
-} from "@hello-pangea/dnd";
-import { Droppable } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { usePathname } from "next/navigation";
-import { GridColumnNewTaskButton } from "../Modals";
-import TaskCard from "./TaskCard";
-import type { GroupColumnProps } from "./interfaces";
+import TaskCard from "../TaskCard";
+
 const priorityOrder = [
 	Priority.noPriority,
 	Priority.low,
@@ -38,14 +31,12 @@ const statusOrder = [
 	Status.archived,
 ];
 
-const GroupColumn = ({
-	group,
+const Group = ({
 	tasks,
-	currentView: view,
-	showTasks,
-}: GroupColumnProps) => {
-	const isListView = view === "list";
+	isListView,
+}: { tasks: Task[]; isListView: boolean }) => {
 	const { displayOptions } = useViewStore((state) => state);
+
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
 	const { tasks: allTasks, allBlockedTaskIds } = useTaskStore((state) => state);
 	const users = useUserStore((state) => state.users);
@@ -198,130 +189,80 @@ const GroupColumn = ({
 			))}
 		</div>
 	);
+	const parentIdsForGroup = getParentTaskIds();
+	const subtaskParentIds = new Set(
+		tasks.filter((t) => t.parentId).map((t) => t.parentId),
+	);
 
-	const renderGroup = (tasks: Task[]) => {
-		const parentIdsForGroup = getParentTaskIds();
-		const subtaskParentIds = new Set(
-			tasks.filter((t) => t.parentId).map((t) => t.parentId),
-		);
-
-		const renderableItems = tasks
-			.map((task) => {
-				if (!task.parentId) {
-					const isParentTask = parentIdsForGroup.includes(task.id);
-					if (isParentTask) {
-						const subtasks = tasks.filter((t) => t.parentId === task.id);
-						return {
-							task,
-							render: (index: number) =>
-								renderTaskWithSubtasks(task, index, subtasks),
-						};
-					}
+	const renderableItems = tasks
+		.map((task) => {
+			if (!task.parentId) {
+				const isParentTask = parentIdsForGroup.includes(task.id);
+				if (isParentTask) {
+					const subtasks = tasks.filter((t) => t.parentId === task.id);
 					return {
 						task,
-						render: (index: number) => renderTask(task, index),
+						render: (index: number) =>
+							renderTaskWithSubtasks(task, index, subtasks),
 					};
 				}
-				return null;
-			})
-			.filter(Boolean);
-
-		const orphanedSubtaskGroups = Array.from(subtaskParentIds)
-			.map((id) => {
-				if (parentIdsForGroup.includes(id)) return null;
-				const parentTask = allTasks.find((t) => t.id === id);
-				const subtasks = tasks.filter((t) => t.parentId === id);
 				return {
-					task: parentTask,
-					render: () => renderSubtasks(parentTask, subtasks),
+					task,
+					render: (index: number) => renderTask(task, index),
 				};
-			})
-			.filter(Boolean);
-
-		const allItems = [...renderableItems, ...orphanedSubtaskGroups];
-		const sortedItems = orderTasks(
-			allItems
-				.map((item) => item?.task)
-				.filter((task): task is Task => task !== undefined),
-		);
-
-		if (currentSavedFilter) {
-			const sprintId = currentSavedFilter.sprintId;
-
-			// if no sprintId then render all tasks
-			if (!sprintId) {
-				return sortedItems.map((sortedTask, index) => {
-					const item = allItems.find((item) => {
-						return item?.task?.id === sortedTask.id;
-					});
-					return item?.render(index);
-				});
 			}
-			// else render items with matching sprintId
+			return null;
+		})
+		.filter(Boolean);
+
+	const orphanedSubtaskGroups = Array.from(subtaskParentIds)
+		.map((id) => {
+			if (parentIdsForGroup.includes(id)) return null;
+			const parentTask = allTasks.find((t) => t.id === id);
+			const subtasks = tasks.filter((t) => t.parentId === id);
+			return {
+				task: parentTask,
+				render: () => renderSubtasks(parentTask, subtasks),
+			};
+		})
+		.filter(Boolean);
+
+	const allItems = [...renderableItems, ...orphanedSubtaskGroups];
+	const sortedItems = orderTasks(
+		allItems
+			.map((item) => item?.task)
+			.filter((task): task is Task => task !== undefined),
+	);
+
+	if (currentSavedFilter) {
+		const sprintId = currentSavedFilter.sprintId;
+
+		// if no sprintId then render all tasks
+		if (!sprintId) {
 			return sortedItems.map((sortedTask, index) => {
 				const item = allItems.find((item) => {
-					return (
-						item?.task?.id === sortedTask.id && item?.task.sprintId === sprintId
-					);
+					return item?.task?.id === sortedTask.id;
 				});
 				return item?.render(index);
 			});
 		}
-
+		// else render items with matching sprintId
 		return sortedItems.map((sortedTask, index) => {
 			const item = allItems.find((item) => {
-				return item?.task?.id === sortedTask.id;
+				return (
+					item?.task?.id === sortedTask.id && item?.task.sprintId === sprintId
+				);
 			});
 			return item?.render(index);
 		});
-	};
+	}
 
-	return (
-		<div
-			className={isListView ? "mb-2 w-full" : "pb-2 pr-2 w-72 flex-shrink-0"}
-		>
-			<Droppable
-				droppableId={group}
-				type="TASK"
-				direction="vertical"
-				isCombineEnabled={true}
-				ignoreContainerClipping={true}
-			>
-				{(
-					dropProvided: DroppableProvided,
-					dropSnapshot: DroppableStateSnapshot,
-				) => (
-					<div
-						className={cn(
-							isListView
-								? "flex flex-col z-30 w-full gap-2 items-start"
-								: "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-72 h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out",
-							dropSnapshot.isDraggingOver && "bg-[#242d42]",
-						)}
-					>
-						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
-							<div
-								className={cn(
-									"w-full grow",
-									isListView ? "flex flex-col" : "inline-flex",
-								)}
-							>
-								<div
-									ref={dropProvided.innerRef}
-									{...dropProvided.droppableProps}
-									className="flex flex-col items-start w-full min-h-[60px]"
-								>
-									{showTasks && renderGroup(tasks)}
-									{dropProvided.placeholder}
-								</div>
-							</div>
-						</div>
-					</div>
-				)}
-			</Droppable>
-			{!isListView && <GridColumnNewTaskButton group={group} />}
-		</div>
-	);
+	return sortedItems.map((sortedTask, index) => {
+		const item = allItems.find((item) => {
+			return item?.task?.id === sortedTask.id;
+		});
+		return item?.render(index);
+	});
 };
 
-export default GroupColumn;
+export default Group;
