@@ -1,21 +1,23 @@
-import { useTaskStore, useUserStore, useViewStore } from "@/store";
-import { useFilterStore } from "@/store";
+import {
+	useFilterStore,
+	useTaskStore,
+	useUserStore,
+	useViewStore,
+} from "@/store";
 import {
 	compareNullableDates,
 	compareNullableNumbers,
 	compareNullableStrings,
 } from "@/utils/compareSorting";
-import { Droppable } from "@hello-pangea/dnd";
 import type {
 	DroppableProvided,
 	DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
+import { Droppable } from "@hello-pangea/dnd";
 import { Priority, Status, type Task } from "@squared/db";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { GridColumnNewTaskButton } from "../Modals";
 import TaskCard from "./TaskCard";
-import TaskColumnTitle from "./TaskColumnTitle";
 import type { GroupColumnProps } from "./interfaces";
 const priorityOrder = [
 	Priority.noPriority,
@@ -35,8 +37,12 @@ const statusOrder = [
 	Status.archived,
 ];
 
-const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
-	const [showTasks, setShowTasks] = useState(true);
+const GroupColumn = ({
+	group,
+	tasks,
+	currentView: view,
+	showTasks,
+}: GroupColumnProps) => {
 	const isListView = view === "list";
 	const { displayOptions } = useViewStore((state) => state);
 	const { orderBy, orderAscending } = displayOptions.taskOrder;
@@ -271,17 +277,8 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 
 	return (
 		<div
-			className={
-				isListView ? "mb-2 w-full" : "pb-2 pr-2 w-[300px] flex-shrink-0"
-			}
+			className={isListView ? "mb-2 w-full" : "pb-2 pr-2 w-72 flex-shrink-0"}
 		>
-			<TaskColumnTitle
-				title={group}
-				showTasks={showTasks}
-				setShowTasks={setShowTasks}
-				numberOfTasks={tasks.length}
-				isListView={isListView}
-			/>
 			<Droppable
 				droppableId={group}
 				type="TASK"
@@ -297,17 +294,17 @@ const GroupColumn = ({ group, tasks, currentView: view }: GroupColumnProps) => {
 						className={`
 							${
 								view === "grid"
-									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-full h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
+									? "grid grid-rows-[1fr 9fr] rounded-lg bg-card w-72 h-[calc(100vh-250px)] mb-2 flex-grow transition-all duration-500 ease-in-out"
 									: "flex flex-col z-30 w-full gap-2 items-center h-full"
 							}
 							${dropSnapshot.isDraggingOver && "bg-[#242d42]"}
 							`}
 					>
-						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3] scrollbar-thumb-[#DBE0E3] dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
+						<div className="w-full overflow-auto scrollbar-thin scrollbar-thumb-[#DBE0E3]  dark:scrollbar-thumb-[#2C2C3B] dark:scrollbar-[#2C2C3B] scrollbar-track-transparent dark:scrollbar-track-transparent">
 							<div className="w-full grow inline-flex">
 								<div
 									ref={dropProvided.innerRef}
-									className="flex flex-col items-start w-full min-w-[200px] min-h-[60px]"
+									className="flex flex-col items-start w-full min-h-[60px]"
 								>
 									{showTasks && renderGroup(tasks)}
 									{dropProvided.placeholder}
