@@ -60,7 +60,7 @@ const TopNavBarDisplay = () => {
 	const { showEmptyGroups, displayProperties } = currentOptions;
 	const { taskOrder, groupTasksBy, showCompletedTasks } = displayOptions;
 
-	const orderByOptions: TaskOrder[] = TaskOrderOptions;
+	const orderByOptions: TaskOrder[] = [...TaskOrderOptions];
 	const groupByOptions: TaskGroup[] = TaskGroupOptions;
 	const completedPeriodOptions: CompletedTaskPeriod[] =
 		CompletedTaskPeriodOptions;
@@ -76,7 +76,9 @@ const TopNavBarDisplay = () => {
 			setOptions({
 				taskOrder: {
 					...taskOrder,
-					orderBy: orderMap[groupTasksBy as "Priority" | "Status" | "Assignee"],
+					orderBy: orderMap[
+						groupTasksBy as "Priority" | "Status" | "Assignee"
+					] as TaskOrder,
 				},
 			});
 		}
@@ -203,7 +205,10 @@ const TopNavBarDisplay = () => {
 									<Select
 										onValueChange={(value) =>
 											setOptions({
-												taskOrder: { ...taskOrder, orderBy: value },
+												taskOrder: {
+													...taskOrder,
+													orderBy: value as TaskOrder,
+												},
 											})
 										}
 										value={taskOrder.orderBy}
