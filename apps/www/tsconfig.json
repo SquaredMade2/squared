@@ -6,7 +6,8 @@
     "paths": {
       "@/*": [
         "*"
-      ]
+      ],
+      "@squaredmade/ui/*": ["node_modules/@squaredmade/ui/*"]
     },
     "moduleResolution": "Bundler",
     "module": "ESNext",
