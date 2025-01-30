@@ -10,7 +10,6 @@ export type HeaderProps = SliceComponentProps<Content.HeaderSlice>;
  * Component for "Header" Slices.
  */
 const Header = ({ slice }: HeaderProps) => {
-	console.log("SLICE HERE", slice.primary.title, slice.primary.text)
 	return (
 		<div className="w-full pt-5">
 			<PrismicRichText

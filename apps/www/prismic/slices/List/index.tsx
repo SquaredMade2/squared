@@ -17,7 +17,6 @@ const List: FC<ListProps> = ({ slice }) => {
 				field={slice.primary.text}
 				components={{
 					list: ({ children }) => {
-						console.log(slice.variation);
 						if (slice.variation === "number")
 							return (
 								<ol className="list-decimal font-bold space-y-2 [&>a]:text-link">

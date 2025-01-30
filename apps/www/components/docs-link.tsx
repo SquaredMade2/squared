@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-export default function SingleLink({
+export default async function SingleLink({
 	slug,
 	text,
 }: { slug: string; text: string; }) {
-	const params: {uid: string} | null = useParams();
+	const params = useParams();
 
 	return (
 		<Link

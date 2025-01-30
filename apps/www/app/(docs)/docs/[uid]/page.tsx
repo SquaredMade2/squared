@@ -9,7 +9,7 @@ type Params = { uid: string };
 export default async function Page({ params }: { params: Params }) {
 	const { uid } = await params;
 	const client = createClient();
-	const page = await client.getByUID("doc", uid || "index").catch(() => notFound());
+	const page = await client.getByUID("doc", uid).catch(() => notFound());
 
 	return (
 		<div className="flex flex-col w-full max-w-4xl justify-self-center">
