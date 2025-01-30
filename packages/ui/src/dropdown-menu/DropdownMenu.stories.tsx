@@ -4,7 +4,7 @@ import * as DropdownMenuPrimitive from "../dropdown-menu";
 import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 import * as Tooltip from "../tooltip";
 
-import { useCallback, useRef, useState, type ElementRef } from "react";
+import { type ElementRef, useCallback, useRef, useState } from "react";
 import { css } from "../../stitches.config";
 import { foodGroups } from "../../test-data/foods";
 import { TickIcon, classes } from "../menu/Menu.stories";

@@ -61,9 +61,9 @@ const StatusDropdown = () => {
 			onValueChange={(value) => handleSelectStatus(value as Status)}
 			value={sidebarStatus}
 		>
-			<SelectTrigger className="md:grow justify-between hover:cursor-pointer bg-transparent w-fit h-8 md:h-10 px-4 py-2">
+			<SelectTrigger className="h-8 w-fit justify-between bg-transparent px-4 py-2 hover:cursor-pointer md:h-10 md:grow">
 				<SelectValue placeholder="Select status">
-					<div className="w-full flex items-center justify-between">
+					<div className="flex w-full items-center justify-between">
 						<StatusIcon status={sidebarStatus || "todo"} />
 						<span className="mx-2 text-nowrap">
 							{sidebarStatus ? formatStatus(sidebarStatus) : "Select status"}
@@ -83,7 +83,7 @@ const StatusDropdown = () => {
 								status === "inProgress")
 						}
 					>
-						<div className="flex items-center justify-between w-full">
+						<div className="flex w-full items-center justify-between">
 							<div className="flex items-center">
 								<StatusIcon status={status} />
 								<span className="ml-2">{formatStatus(status)}</span>

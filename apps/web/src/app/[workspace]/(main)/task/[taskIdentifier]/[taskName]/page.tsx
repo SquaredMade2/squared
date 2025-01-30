@@ -52,20 +52,20 @@ const TaskPage = () => {
 	}, [error]);
 
 	return (
-		<div className="w-full h-screen flex bg-background overflow-hidden">
+		<div className="flex h-screen w-full overflow-hidden bg-background">
 			{isLoading || !currentTask ? (
 				<LoadingTask />
 			) : (
-				<div className="w-full mdlg:w-full flex space-around scrollbar-thin-transparent overflow-auto max850:overflow-x-hidden">
-					<div className="w-full h-full p-1 md:pb-5 xl:px-10 ">
-						<div className="flex flex-col w-full relative">
-							<div className="w-full snap-start z-0 overflow-x-hidden">
-								<div className="flex gap-4 items-center mb-4 py-4 border-b border-border w-full">
+				<div className="space-around scrollbar-thin-transparent flex w-full overflow-auto max850:overflow-x-hidden mdlg:w-full">
+					<div className="h-full w-full p-1 md:pb-5 xl:px-10 ">
+						<div className="relative flex w-full flex-col">
+							<div className="z-0 w-full snap-start overflow-x-hidden">
+								<div className="mb-4 flex w-full items-center gap-4 border-border border-b py-4">
 									<TaskBreadcrumbs />
 								</div>
 							</div>
 							<MobileTaskSettings />
-							<div className="flex w-full relative">
+							<div className="relative flex w-full">
 								<ScrollArea className="h-[calc(100vh-5rem)] w-full">
 									<div className="mr-1 max850:mr-1 md:mr-5 xl:mr-10">
 										<TaskPageForm />
@@ -75,7 +75,7 @@ const TaskPage = () => {
 										<EventTabs />
 									</div>
 								</ScrollArea>
-								<div className="md:flex hidden flex-col gap-4">
+								<div className="hidden flex-col gap-4 md:flex">
 									<TaskSidebarTopRow />
 									<TaskDesignationsContainer />
 								</div>

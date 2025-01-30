@@ -21,7 +21,7 @@ export default function PricingPage() {
 	return (
 		<div className="relative overflow-hidden py-20 md:py-0">
 			<Background />
-			<Container className="flex flex-col items-center justify-between  pb-20">
+			<Container className="flex flex-col items-center justify-between pb-20">
 				<div className="relative z-20 py-10 md:pt-40">
 					<Heading as="h1">Simple pricing for your ease</Heading>
 					<Subheading className="text-center">

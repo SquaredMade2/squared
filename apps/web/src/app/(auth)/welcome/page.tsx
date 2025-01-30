@@ -51,7 +51,7 @@ export default function WelcomePage() {
 
 	if (!isUserLoaded || mutation.isPending) {
 		return (
-			<div className="flex justify-center items-center min-h-screen">
+			<div className="flex min-h-screen items-center justify-center">
 				<SquaredLoader />
 			</div>
 		);
@@ -59,24 +59,24 @@ export default function WelcomePage() {
 
 	if (mutation.isError) {
 		return (
-			<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-				<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
+			<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+				<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 					<CardHeader>
-						<CardTitle className="text-2xl font-bold text-center">
+						<CardTitle className="text-center font-bold text-2xl">
 							Oops! Something went wrong
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<p className="text-center text-muted-foreground mb-4">
+						<p className="mb-4 text-center text-muted-foreground">
 							We couldn't complete your registration. Please try again or
 							contact support.
 						</p>
-						<p className="text-destructive text-sm text-center">
+						<p className="text-center text-destructive text-sm">
 							{mutation.error instanceof Error
 								? mutation.error.message
 								: "An unknown error occurred"}
 						</p>
-						<Button onClick={() => mutation.reset()} className="w-full mt-4">
+						<Button onClick={() => mutation.reset()} className="mt-4 w-full">
 							Try Again
 						</Button>
 					</CardContent>
@@ -86,15 +86,15 @@ export default function WelcomePage() {
 	}
 
 	return (
-		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
+		<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader>
-					<CardTitle className="text-2xl font-bold text-center">
+					<CardTitle className="text-center font-bold text-2xl">
 						Welcome to Squared!
 					</CardTitle>
 				</CardHeader>
-				<CardContent className="justify-center flex flex-col items-center">
-					<p className="text-center text-muted-foreground mb-8">
+				<CardContent className="flex flex-col items-center justify-center">
+					<p className="mb-8 text-center text-muted-foreground">
 						We're setting up your account. You'll be redirected to your
 						dashboard shortly.
 					</p>

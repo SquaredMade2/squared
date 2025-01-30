@@ -85,21 +85,21 @@ export default function AssigneeFilterDropDown({
 					<CommandList>
 						<CommandEmpty>No users found.</CommandEmpty>
 						<ScrollArea
-							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"} pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
+							className={`w-full h-${filteredAssignees.length > 12 ? "96" : "fit"}pr-${filteredAssignees.length > 12 ? "6" : "0"}`}
 						>
 							<CommandGroup>
 								<CommandItem
 									key="unassigned"
 									onSelect={() => handleAssigneeChange(null)}
-									className="flex items-center space-x-2 cursor-pointer h-8"
+									className="flex h-8 cursor-pointer items-center space-x-2"
 								>
-									<div className="flex items-center flex-1 space-x-2">
+									<div className="flex flex-1 items-center space-x-2">
 										{selectedAssignees.some((l) => l === null) ? (
-											<Check className="w-4 h-4" />
+											<Check className="h-4 w-4" />
 										) : (
-											<div className="w-4 h-4" />
+											<div className="h-4 w-4" />
 										)}
-										<UserSearch className="size-5 mx-1 mr-2" />
+										<UserSearch className="mx-1 mr-2 size-5" />
 										<span className="w-2/3 truncate">Unassigned</span>
 									</div>
 								</CommandItem>
@@ -109,15 +109,15 @@ export default function AssigneeFilterDropDown({
 										<CommandItem
 											key={user.externalId}
 											onSelect={() => handleAssigneeChange(user)}
-											className="flex items-center space-x-2 cursor-pointer h-8"
+											className="flex h-8 cursor-pointer items-center space-x-2"
 										>
-											<div className="flex items-center flex-1 space-x-2">
+											<div className="flex flex-1 items-center space-x-2">
 												{selectedAssignees.some(
 													(l) => l?.id === user.externalId,
 												) ? (
-													<Check className="w-4 h-4" />
+													<Check className="h-4 w-4" />
 												) : (
-													<div className="w-4 h-4" />
+													<div className="h-4 w-4" />
 												)}
 												<Avatar className="size-6 text-xxs">
 													<AvatarImage src={user?.avatarUrl ?? ""} />

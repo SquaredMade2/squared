@@ -11,14 +11,14 @@ import Link from "next/link";
 
 const IntegrationSettings = () => {
 	return (
-		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">
-			<div className="lg:hidden mdsm:visible bg-background">
+		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
+			<div className="bg-background mdsm:visible lg:hidden">
 				<SettingsTopNavBar />
 			</div>
-			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-10">
+			<div className="flex h-full w-full flex-col items-center bg-background xs:px-10 pt-20 xs:pt-10 sm:items-start sm:px-4 md:items-center">
 				<div className="w-full md:px-20 lg:px-40 xl:px-80">
-					<div className="flex-col mb-8">
-						<h3 className="text-2xl text-foreground mb-3 font-medium">
+					<div className="mb-8 flex-col">
+						<h3 className="mb-3 font-medium text-2xl text-foreground">
 							Integrations
 						</h3>
 						<header className="text-muted-foreground text-sm">
@@ -28,12 +28,12 @@ const IntegrationSettings = () => {
 					<Link href={"/settings/integrations/github"}>
 						<Card className="hover:bg-secondary">
 							<CardHeader className="flex flex-row items-center">
-								<div className="flex justify-center items-center w-16 h-16 p-2 bg-white rounded-lg ml-4">
+								<div className="ml-4 flex h-16 w-16 items-center justify-center rounded-lg bg-white p-2">
 									<div className="w-[50px]">
 										<GithubIcon />
 									</div>
 								</div>
-								<div className="flex flex-col mx-5 space-y-1">
+								<div className="mx-5 flex flex-col space-y-1">
 									<CardTitle>Github</CardTitle>
 									<CardDescription>
 										Automate your pull request and commit workflows and keep

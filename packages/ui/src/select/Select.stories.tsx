@@ -1,11 +1,16 @@
-;
-import { css } from "../../stitches.config";
-import * as Select from "./Select";
-import { Label } from "../label";
-import * as Dialog from "../dialog";
-import { foodGroups } from "../../test-data/foods";
-import { useState, FormEvent, type ComponentProps, forwardRef, type ElementRef } from "react";
+import {
+	type ComponentProps,
+	type ElementRef,
+	type FormEvent,
+	forwardRef,
+	useState,
+} from "react";
 import { Fragment } from "react/jsx-runtime";
+import { css } from "../../stitches.config";
+import { foodGroups } from "../../test-data/foods";
+import * as Dialog from "../dialog";
+import { Label } from "../label";
+import * as Select from "./Select";
 
 export default { title: "Components/Select" };
 
@@ -991,8 +996,7 @@ export const Cypress = () => {
 
 type PaddedElement = "content" | "viewport";
 
-interface ChromaticSelectProps
-	extends ComponentProps<typeof Select.Trigger> {
+interface ChromaticSelectProps extends ComponentProps<typeof Select.Trigger> {
 	count?: number;
 	paddedElement?: PaddedElement;
 	selected: number;
@@ -1382,6 +1386,7 @@ const TickIcon = () => (
 		strokeLinejoin="round"
 		strokeWidth="3"
 	>
+		<title>Tick</title>
 		<path d="M2 20 L12 28 30 4" />
 	</svg>
 );

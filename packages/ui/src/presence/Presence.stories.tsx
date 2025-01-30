@@ -1,8 +1,6 @@
-;
-
 import { Presence } from "../presence";
 
-import { useEffect, useRef, useState, type ComponentProps } from "react";
+import { type ComponentProps, useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Utilities/Presence" };

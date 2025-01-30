@@ -1,45 +1,45 @@
-import type { StorybookConfig } from "@storybook/react-webpack5";
 import path from "node:path";
+import type { StorybookConfig } from "@storybook/react-webpack5";
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.stories.tsx"],
-  addons: [
-    getAbsolutePath("@storybook/addon-essentials"),
-    getAbsolutePath("@storybook/addon-storysource"),
-  ],
-  framework: {
-    name: getAbsolutePath("@storybook/react-webpack5"),
-    options: {
-      builder: {
-        useSWC: true,
-      },
-      // enable React strict mode
-      strictMode: true,
-    },
-  },
-  swc: () => ({
-    jsc: {
-      transform: {
-        react: {
-          // Do not require importing React into scope to use JSX
-          runtime: "automatic",
-        },
-      },
-    },
-  }),
+	stories: ["../src/**/*.stories.tsx"],
+	addons: [
+		getAbsolutePath("@storybook/addon-essentials"),
+		getAbsolutePath("@storybook/addon-storysource"),
+	],
+	framework: {
+		name: getAbsolutePath("@storybook/react-webpack5"),
+		options: {
+			builder: {
+				useSWC: true,
+			},
+			// enable React strict mode
+			strictMode: true,
+		},
+	},
+	swc: () => ({
+		jsc: {
+			transform: {
+				react: {
+					// Do not require importing React into scope to use JSX
+					runtime: "automatic",
+				},
+			},
+		},
+	}),
 
-  // we need to add aliases to webpack so it knows how to follow
-  // to the source of the packages rather than the built version (dist)
-  webpackFinal: async (config) => ({
-    ...config,
-    resolve: {
-      ...config.resolve,
-      alias: {
-        ...config.resolve?.alias,
-        ...convertTsConfigPathsToWebpackAliases(),
-      },
-    },
-  }),
+	// we need to add aliases to webpack so it knows how to follow
+	// to the source of the packages rather than the built version (dist)
+	webpackFinal: async (config) => ({
+		...config,
+		resolve: {
+			...config.resolve,
+			alias: {
+				...config.resolve?.alias,
+				...convertTsConfigPathsToWebpackAliases(),
+			},
+		},
+	}),
 };
 
 export default config;
@@ -49,22 +49,19 @@ export default config;
  * It is needed in projects that use pnpm PnP or are set up within a monorepo.
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 function getAbsolutePath(value: string): any {
-  return path.dirname(
-    require.resolve(path.join(value, "package.json"))
-  );
+	return path.dirname(require.resolve(path.join(value, "package.json")));
 }
 
 function convertTsConfigPathsToWebpackAliases() {
-  const rootDir = path.resolve(__dirname, "../");
-  const tsconfig = require("../tsconfig.json");
-  const tsconfigPaths: Array<string | string[]> = Object.entries(
-    tsconfig.compilerOptions.paths
-  );
+	const rootDir = path.resolve(__dirname, "../");
+	const tsconfig = require("../tsconfig.json");
+	const tsconfigPaths: Array<string | string[]> = Object.entries(
+		tsconfig.compilerOptions.paths,
+	);
 
-  return tsconfigPaths.reduce((aliases, [realPath, mappedPath]) => {
-    aliases[realPath] = path.join(rootDir, mappedPath[0]);
-    return aliases;
-  }, {});
+	return tsconfigPaths.reduce((aliases, [realPath, mappedPath]) => {
+		aliases[realPath] = path.join(rootDir, mappedPath[0]);
+		return aliases;
+	}, {});
 }
