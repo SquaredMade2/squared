@@ -169,7 +169,7 @@ export class WorkspaceService implements WorkspaceRpc {
 				eq(userWorkspacesTable.workspaceId, workspacesTable.id),
 			)
 			.where(eq(userWorkspacesTable.userId, userId))
-			.groupBy(workspacesTable.id);
+			.groupBy(userWorkspacesTable.workspaceId);
 
 		return workspaces.map((workspace) => workspace.Workspace);
 	}
