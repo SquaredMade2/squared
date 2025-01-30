@@ -36,19 +36,19 @@ const LabelCombobox = () => {
 	const allLabels = useMemo(() => workspace?.labels || [], [workspace]);
 
 	const taskLabels = useMemo(
-		() => allLabels.filter((label) => labels.includes(label.id)),
+		() => allLabels.filter((label) => labels.includes(label)),
 		[allLabels, labels],
 	);
 
 	const { mutate: updateLabels } = useMutation({
 		mutationKey: ["updateTaskLabels", taskId],
-		mutationFn: async (labelIds: string[]) => {
+		mutationFn: async (newLabels: Label[]) => {
 			const res = await client.task.updateLabels.$post({
 				taskId,
-				labelIds,
+				labels: newLabels,
 			});
 			const updatedTask = await res.json();
-			setCurrentTask({ ...currentTask, labels: labelIds });
+			setCurrentTask({ ...currentTask, labels: newLabels });
 
 			const eventsRes = await client.event.getEvents.$get({
 				taskId,
@@ -63,14 +63,11 @@ const LabelCombobox = () => {
 	const handleSelectLabels = (selectedLabel: Label) => {
 		if (!taskId) return;
 
-		const updatedLabels = taskLabels.some(
-			(label) => label.id === selectedLabel.id,
-		)
-			? taskLabels.filter((label) => label.id !== selectedLabel.id)
+		const updatedLabels = taskLabels.some((label) => label === selectedLabel)
+			? taskLabels.filter((label) => label !== selectedLabel)
 			: [...taskLabels, selectedLabel];
 
-		const labelIds = updatedLabels.map((label) => label.id);
-		updateLabels(labelIds);
+		updateLabels(updatedLabels);
 		setOpen(false);
 	};
 
@@ -92,7 +89,10 @@ const LabelCombobox = () => {
 		return (
 			<div className="flex items-center">
 				{taskLabels.map((label, index) => (
-					<div key={label.id} className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}>
+					<div
+						key={label.name}
+						className={`-mr-2.5 ${index > 0 ? "ml-1" : ""}`}
+					>
 						<LabelColor label={label} />
 					</div>
 				))}
@@ -131,7 +131,7 @@ const LabelCombobox = () => {
 							<CommandGroup>
 								{allLabels.map((label) => (
 									<CommandItem
-										key={label.id}
+										key={label.name}
 										value={label.name}
 										onSelect={() => handleSelectLabels(label)}
 										className="flex justify-between items-center px-2 py-1.5"
@@ -140,9 +140,9 @@ const LabelCombobox = () => {
 											<LabelColor label={label} />
 											<span className="ml-2">{label.name}</span>
 										</div>
-										{taskLabels.some(
-											(taskLabel) => taskLabel.id === label.id,
-										) && <Check className="size-4" />}
+										{taskLabels.some((taskLabel) => taskLabel === label) && (
+											<Check className="size-4" />
+										)}
 									</CommandItem>
 								))}
 							</CommandGroup>
@@ -153,7 +153,7 @@ const LabelCombobox = () => {
 			<div className="hidden md:block w-full mt-2">
 				<div className="mb-2 flex flex-wrap space-x-1 space-y-2 items-center ">
 					{taskLabels.map((label: Label, index: number) => (
-						<span key={label.id} className={index === 0 ? "mt-2" : ""}>
+						<span key={label.name} className={index === 0 ? "mt-2" : ""}>
 							<LabelBadge label={label} />
 						</span>
 					))}

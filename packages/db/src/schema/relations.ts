@@ -5,7 +5,6 @@ import {
 	commentsTable,
 	commitsTable,
 	githubRepoInfoTable,
-	labelsTable,
 	notificationsTable,
 	projectsTable,
 	retrospectiveItemsTable,
@@ -39,7 +38,6 @@ export const workspaceRelations = relations(workspacesTable, ({ many }) => ({
 	notifications: many(notificationsTable),
 	users: many(usersTable),
 	tasks: many(tasksTable),
-	labels: many(labelsTable),
 	universalTokenLinks: many(universalTokenLinksTable),
 	workspaceRepositories: many(workspaceRepositoriesTable),
 	projects: many(projectsTable),
@@ -182,13 +180,6 @@ export const commentRelations = relations(commentsTable, ({ one }) => ({
 	user: one(usersTable, {
 		fields: [commentsTable.authorId],
 		references: [usersTable.externalId],
-	}),
-}));
-
-export const labelRelations = relations(labelsTable, ({ one }) => ({
-	workspace: one(workspacesTable, {
-		fields: [labelsTable.workspaceId],
-		references: [workspacesTable.id],
 	}),
 }));
 

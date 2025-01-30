@@ -676,6 +676,6 @@ export type User = typeof usersTable.$inferSelect;
 export type UserTeam = typeof userTeamsTable.$inferSelect;
 export type UserWorkspace = typeof userWorkspacesTable.$inferSelect;
 export type Workspace = typeof workspacesTable.$inferSelect;
-export type WorkspaceLabel = Workspace & { labels: Label[] };
+export type Workspace = Workspace & { labels: Label[] };
 export type WorkspaceRepositories =
 	typeof workspaceRepositoriesTable.$inferSelect;

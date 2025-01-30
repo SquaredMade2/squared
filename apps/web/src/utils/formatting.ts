@@ -258,7 +258,7 @@ export const formatFilterName = async (
 			};
 		case "labels": {
 			const filteredLabels = labels.filter(
-				(l) => Array.isArray(filter.value) && filter.value.includes(l.id),
+				(l) => Array.isArray(filter.value) && filter.value.includes(l.name),
 			);
 			return {
 				name:
