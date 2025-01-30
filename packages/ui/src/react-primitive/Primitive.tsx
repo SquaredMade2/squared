@@ -57,7 +57,7 @@ const Primitive = NODES.reduce((primitive, node) => {
 
 	Node.displayName = `Primitive.${node}`;
 
-	return { ...primitive, [node]: Node };
+	return Object.assign(primitive, { [node]: Node });
 }, {} as Primitives);
 
 /* -------------------------------------------------------------------------------------------------

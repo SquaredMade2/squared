@@ -49,13 +49,13 @@ export const SprintCard = ({
 	return (
 		<Card
 			key={sprint.id}
-			className={`w-full mb-4 ${isActive ? "border-primary shadow-md" : ""}`}
+			className={`mb-4 w-full ${isActive ? "border-primary shadow-md" : ""}`}
 		>
 			<CardHeader className={isActive ? "bg-primary/5" : ""}>
 				<CardTitle className={isActive ? "text-primary" : ""}>
 					{sprint.name}
 					{isActive && (
-						<span className="ml-2 text-sm font-normal text-primary-foreground bg-primary rounded-full px-2 py-1">
+						<span className="ml-2 rounded-full bg-primary px-2 py-1 font-normal text-primary-foreground text-sm">
 							Active
 						</span>
 					)}
@@ -71,29 +71,29 @@ export const SprintCard = ({
 						value={calculateProgress(sprint)}
 						className={`w-full ${isActive ? "bg-primary/20" : ""}`}
 					/>
-					<p className="text-sm text-muted-foreground mt-2">
+					<p className="mt-2 text-muted-foreground text-sm">
 						{Math.round(calculateProgress(sprint))}% Complete
 					</p>
 				</div>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 					<div>
-						<h4 className="font-semibold mb-1">Completed Tasks</h4>
+						<h4 className="mb-1 font-semibold">Completed Tasks</h4>
 						<p>{completedTasks.length}</p>
 					</div>
 					{isActive && (
 						<div>
-							<h4 className="font-semibold mb-1">Carried Over Tasks</h4>
+							<h4 className="mb-1 font-semibold">Carried Over Tasks</h4>
 							<p>{carriedOverTasks.length}</p>
 						</div>
 					)}
 					{!isActive && (
 						<div>
-							<h4 className="font-semibold mb-1">Planned Tasks</h4>
+							<h4 className="mb-1 font-semibold">Planned Tasks</h4>
 							<p>{plannedTasks}</p>
 						</div>
 					)}
 					<div>
-						<h4 className="font-semibold mb-1">Total Tasks</h4>
+						<h4 className="mb-1 font-semibold">Total Tasks</h4>
 						<p>{sprintTasks.length}</p>
 					</div>
 				</div>

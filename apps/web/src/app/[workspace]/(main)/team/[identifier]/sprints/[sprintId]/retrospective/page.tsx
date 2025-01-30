@@ -203,11 +203,11 @@ export default function SprintRetrospectivePage() {
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<div className="container mx-auto py-10">
-				<div className="w-full flex flex-col h-screen overflow-hidden">
-					<div className="mb-4 py-4 border-b border-border w-full">
-						<h1 className="text-xl font-bold">Sprint Retrospective</h1>
+				<div className="flex h-screen w-full flex-col overflow-hidden">
+					<div className="mb-4 w-full border-border border-b py-4">
+						<h1 className="font-bold text-xl">Sprint Retrospective</h1>
 					</div>
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 						<RetroColumn
 							title="What Went Well"
 							type="wentWell"

@@ -1,7 +1,7 @@
 import * as Collapsible from "../collapsible";
 
-import { css, keyframes } from "../../stitches.config";
 import { useState } from "react";
+import { css, keyframes } from "../../stitches.config";
 
 export default { title: "Components/Collapsible" };
 

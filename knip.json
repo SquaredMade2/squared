@@ -1,72 +1,32 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
-  "workspaces": {
-    ".": {
-      "entry": [
-        "src/index.ts",
-        "scripts/{build,create}.ts"
-      ],
-      "project": [
-        "src/**/*.ts",
-        "scripts/**/*.ts"
-      ]
-    },
-    "apps/api": {
-      "entry": [
-        "src/api/index.ts",
-        "src/**/index.ts"
-      ],
-      "project": [
-        "**/*.ts"
-      ]
-    },
-    "apps/web": {
-      "entry": [
-        "src/index.ts",
-        "src/**/{page,route}.{ts,tsx}"
-      ],
-      "project": [
-        "**/*.{ts,tsx}"
-      ],
-      "ignore": [
-        "src/**/components/ui/**"
-      ]
-    },
-    "apps/www": {
-      "entry": [
-        "src/index.ts",
-        "src/**/*.{ts,tsx}"
-      ],
-      "project": [
-        "**/*.{ts,tsx}"
-      ]
-    },
-    "packages/ui": {
-      "entry": [
-        "src/**/*.tsx",
-        "src/**/*.stories.tsx"
-      ],
-      "project": [
-        "**/*.ts, **/*.tsx"
-      ]
-    },
-    "packages/*": {
-      "entry": [
-        "{index,cli}.ts"
-      ],
-      "project": [
-        "**/*.ts, **/*.tsx"
-      ]
-    }
-  },
-  "ignore": [
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/gen/**",
-    "**/ui/**"
-  ],
-  "ignoreDependencies": [
-    "turbo-ignore",
-    "husky"
-  ]
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"workspaces": {
+		".": {
+			"entry": ["src/index.ts", "scripts/{build,create}.ts"],
+			"project": ["src/**/*.ts", "scripts/**/*.ts"]
+		},
+		"apps/api": {
+			"entry": ["src/api/index.ts", "src/**/index.ts"],
+			"project": ["**/*.ts"]
+		},
+		"apps/web": {
+			"entry": ["src/index.ts", "src/**/{page,route}.{ts,tsx}"],
+			"project": ["**/*.{ts,tsx}"],
+			"ignore": ["src/**/components/ui/**"]
+		},
+		"apps/www": {
+			"entry": ["src/index.ts", "src/**/*.{ts,tsx}"],
+			"project": ["**/*.{ts,tsx}"]
+		},
+		"packages/ui": {
+			"entry": ["src/**/*.tsx", "src/**/*.stories.tsx"],
+			"project": ["**/*.ts, **/*.tsx"]
+		},
+		"packages/*": {
+			"entry": ["{index,cli}.ts"],
+			"project": ["**/*.ts, **/*.tsx"]
+		}
+	},
+	"ignore": ["**/node_modules/**", "**/dist/**", "**/gen/**", "**/ui/**"],
+	"ignoreDependencies": ["turbo-ignore", "husky"]
 }

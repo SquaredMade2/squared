@@ -43,7 +43,7 @@ export default function TeamMembersPage() {
 	if (teamLoading || workspaceLoading) {
 		return (
 			<MemberSettingsWrapper page="team">
-				<div className="w-full flex justify-center p-20">
+				<div className="flex w-full justify-center p-20">
 					<SquaredLoader />
 				</div>
 			</MemberSettingsWrapper>

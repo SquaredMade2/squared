@@ -195,8 +195,9 @@ export const NoPointerDownOutsideDismiss = () => (
 );
 
 export const WithPortalContainer = () => {
-	const [portalContainer, setPortalContainer] =
-		useState<HTMLDivElement | null>(null);
+	const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
+		null,
+	);
 	return (
 		<>
 			<DialogPrimitive.Root>
@@ -645,9 +646,13 @@ export const Cypress = () => {
 
 			<br />
 
-			<label>
+			<label htmlFor="count">
 				count up{" "}
-				<button type="button" onClick={() => setCount((count) => count + 1)}>
+				<button
+					type="button"
+					onClick={() => setCount((count) => count + 1)}
+					id="count"
+				>
 					{count}
 				</button>
 			</label>

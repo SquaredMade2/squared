@@ -1,8 +1,7 @@
-;
-import * as Dialog from "../dialog";
+import { type ComponentProps, useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
+import * as Dialog from "../dialog";
 import * as Toast from "../toast";
-import { useEffect, useRef, useState, type ComponentProps } from "react";
 
 export default { title: "Components/Toast" };
 
@@ -197,8 +196,7 @@ type Direction = ComponentProps<typeof Toast.Provider>["swipeDirection"];
 
 export const Animated = () => {
 	const [open, setOpen] = useState(false);
-	const [swipeDirection, setSwipeDirection] =
-		useState<Direction>("right");
+	const [swipeDirection, setSwipeDirection] = useState<Direction>("right");
 	const timerRef = useRef(0);
 	return (
 		<Toast.Provider
@@ -537,9 +535,7 @@ Chromatic.parameters = {
 
 /* -----------------------------------------------------------------------------------------------*/
 
-const ToastUpgradeAvailable = (
-	props: ComponentProps<typeof Toast.Root>,
-) => (
+const ToastUpgradeAvailable = (props: ComponentProps<typeof Toast.Root>) => (
 	<Toast.Root className={rootClass()} {...props}>
 		<div className={headerClass()}>
 			<Toast.Title className={titleClass()}>Upgrade available</Toast.Title>
@@ -560,9 +556,7 @@ const ToastUpgradeAvailable = (
 	</Toast.Root>
 );
 
-const ToastSubscribeSuccess = (
-	props: ComponentProps<typeof Toast.Root>,
-) => (
+const ToastSubscribeSuccess = (props: ComponentProps<typeof Toast.Root>) => (
 	<Toast.Root className={rootClass()} {...props}>
 		<div className={successHeaderClass()}>
 			<Toast.Title className={titleClass()}>Success!</Toast.Title>

@@ -40,12 +40,12 @@ export function SprintTabs({
 				>
 					{activeSprint && (
 						<>
-							<h3 className="text-lg font-semibold mb-2">Active Sprint</h3>
+							<h3 className="mb-2 font-semibold text-lg">Active Sprint</h3>
 							<SprintCard sprint={activeSprint} tasks={tasks} isActive />
 						</>
 					)}
 					{upcomingSprints.length > 0 && (
-						<h3 className="text-lg font-semibold mb-2">Upcoming Sprints</h3>
+						<h3 className="mb-2 font-semibold text-lg">Upcoming Sprints</h3>
 					)}
 					{upcomingSprints.map((sprint) => (
 						<SprintCard sprint={sprint} tasks={tasks} key={sprint.id} />

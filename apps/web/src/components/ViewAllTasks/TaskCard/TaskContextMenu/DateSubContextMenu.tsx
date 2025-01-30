@@ -38,7 +38,7 @@ const DateSubContextMenu = ({ task }: ContextMenuProps) => {
 		<ContextMenuSub open={dropdownOpen} onOpenChange={setDropdownOpen}>
 			<ContextMenuSubTrigger>
 				<div className="mr-2">
-					<CalendarIcon className="cursor-pointer size-4" />
+					<CalendarIcon className="size-4 cursor-pointer" />
 				</div>
 				Set due date...
 			</ContextMenuSubTrigger>
