@@ -1,10 +1,9 @@
 import { randomBytes } from "node:crypto";
 import * as context from "@squared/context";
+import type { Logger } from "@squared/logger";
 import type { ErrorRequestHandler, RequestHandler } from "express";
 import "tslib";
 import { z } from "zod";
-
-import type { Logger } from "@squared/logger";
 import {
 	type Method,
 	type MethodDetails,
@@ -15,7 +14,6 @@ import {
 	ValidationError,
 	requestContexts,
 } from "./rpc-types";
-
 export * from "./rpc-types";
 
 export class RpcError extends Error {
