@@ -22,17 +22,25 @@ SET labels = COALESCE(
     '[]'::JSONB
 );
 
--- Update the Task table to use the new label format
+-- Step 1: Add a temporary column for transformed labels in the Task table
+ALTER TABLE "Task" ADD COLUMN "labels_temp" JSONB DEFAULT '[]'::JSONB NOT NULL;
+
+-- Step 2: Populate the new column with the transformed data
 UPDATE "Task" t
-SET labels = COALESCE(
+SET labels_temp = COALESCE(
     (SELECT jsonb_agg(tlm.label_data)
      FROM temp_label_mapping tlm
      WHERE tlm.old_id = ANY(t.labels::UUID[])),
     '[]'::JSONB
 );
 
--- Alter the Task table column type
-ALTER TABLE "Task" ALTER COLUMN "labels" SET DATA TYPE JSONB;
+-- Step 3: Drop the old labels column
+ALTER TABLE "Task" DROP COLUMN "labels";
+
+-- Step 4: Rename the temporary column to labels
+ALTER TABLE "Task" RENAME COLUMN "labels_temp" TO "labels";
+
+-- Set the new default value for the labels column in the Task table
 ALTER TABLE "Task" ALTER COLUMN "labels" SET DEFAULT '[]'::JSONB;
 
 -- Drop the old Label table
@@ -41,4 +49,3 @@ DROP TABLE "Label" CASCADE;
 
 -- Clean up: drop the temporary table
 DROP TABLE temp_label_mapping;
-
