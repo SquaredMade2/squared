@@ -495,12 +495,12 @@ export interface ParagraphSliceDefaultPrimary {
   /**
    * text field in *Paragraph → Default → Primary*
    *
-   * - **Field Type**: Text
+   * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
    * - **API ID Path**: paragraph.default.primary.text
-   * - **Documentation**: https://prismic.io/docs/field#key-text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
-  text: prismic.KeyTextField;
+  text: prismic.RichTextField;
 }
 
 /**

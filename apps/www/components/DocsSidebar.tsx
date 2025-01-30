@@ -1,4 +1,4 @@
-import { createClient } from "@/src/prismicio";
+import { createClient } from "@/prismic/prismicio";
 import NestedLinks, { type PageItem } from "./nested-docsidebar-links";
 
 export const client = createClient();

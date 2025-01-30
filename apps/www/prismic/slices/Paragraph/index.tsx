@@ -1,5 +1,5 @@
 import type { Content } from "@prismicio/client";
-import type { SliceComponentProps } from "@prismicio/react";
+import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
 
 /**
  * Props for `Paragraph`.
@@ -11,9 +11,16 @@ export type ParagraphProps = SliceComponentProps<Content.ParagraphSlice>;
  */
 const Paragraph = ({ slice }: ParagraphProps) => {
 	return (
-		<p className="pt-2 text-muted-foreground [&>a]:text-link">
-			{slice.primary.text}
-		</p>
+		<PrismicRichText
+			field={slice.primary.text}
+			components={{
+				paragraph: ({ children }) => (
+					<p className="pt-2 text-muted-foreground [&>a]:text-link">
+						{children}
+					</p>
+				),
+			}}
+		/>
 	);
 };
 

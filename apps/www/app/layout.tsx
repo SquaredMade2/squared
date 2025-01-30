@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "@squared/fonts/src/styles.css";
 import { ThemeProvider } from "@/context/theme-provider";
-import { ViewTransitions } from "next-view-transitions";
+import { repositoryName} from "@/prismic/prismicio"
 import { PrismicPreview } from "@prismicio/next";
-import { repositoryName } from "@/src/prismicio";
+import { ViewTransitions } from "next-view-transitions";
 
 export const metadata: Metadata = {
 	title: "Squared",

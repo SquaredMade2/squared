@@ -10,9 +10,9 @@ export type HeaderProps = SliceComponentProps<Content.HeaderSlice>;
  * Component for "Header" Slices.
  */
 const Header = ({ slice }: HeaderProps) => {
-
+	console.log("SLICE HERE", slice.primary.title, slice.primary.text)
 	return (
-		<div className="w-full pt-3">
+		<div className="w-full pt-5">
 			<PrismicRichText
 				field={slice.primary.title}
 				components={{
@@ -36,7 +36,7 @@ const Header = ({ slice }: HeaderProps) => {
 			
 				field={slice.primary.text}
 				components={{
-					paragraph: ({ children }) => <p className="text-muted-foreground [&>a]:text-blue-600 [&>a]:dark:text-blue-400">{children}</p>,
+					paragraph: ({ children }) => <p className="text-muted-foreground [&>a]:text-primary">{children}</p>,
 				}}
 			/>
 		</div>
