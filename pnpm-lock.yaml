@@ -377,7 +377,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/fonts
       '@squaredmade/ui':
-        specifier: 2.0.0-rc.2
+        specifier: workspace:2.0.0-rc.2
         version: link:../../packages/ui
       '@tabler/icons-react':
         specifier: ^3.5.0
