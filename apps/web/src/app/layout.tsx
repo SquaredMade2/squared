@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className="text-sm min-h-[100vh]">
+			<body className="min-h-[100vh] text-sm">
 				<ClientLayoutWrapper>{children}</ClientLayoutWrapper>
 			</body>
 		</html>

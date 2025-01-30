@@ -97,7 +97,7 @@ export const TaskPageForm = () => {
 		<form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
 			<div className="space-y-2">
 				<Input
-					className="mt-2 text-foreground text-3xl font-bold bg-background rounded-lg focus:outline-none"
+					className="mt-2 rounded-lg bg-background font-bold text-3xl text-foreground focus:outline-none"
 					value={updatedTitle}
 					onChange={handleTitleChange}
 					onBlur={handleSubmit}
@@ -112,16 +112,16 @@ export const TaskPageForm = () => {
 					}}
 				/>
 				{parentTask && (
-					<div className="text-sm text-muted-foreground flex items-center gap-1">
+					<div className="flex items-center gap-1 text-muted-foreground text-sm">
 						Subtask of
-						<Button variant="ghost" className="py-0 px-1 gap-1">
+						<Button variant="ghost" className="gap-1 px-1 py-0">
 							<StatusIcon status={parentTask.status} />
 							<Link
 								href={`/${workspace?.url}/task/${parentTask?.identifier}/${formatUrl(parentTask.title)}`}
 								className="flex items-center"
 							>
 								{parentTask.identifier} -
-								<span className="text-foreground ml-1 cursor-pointer">
+								<span className="ml-1 cursor-pointer text-foreground">
 									{parentTask.title}
 								</span>
 							</Link>
@@ -130,7 +130,7 @@ export const TaskPageForm = () => {
 				)}
 			</div>
 			<Input
-				className="resize-none mt-2 mb-2 text-foreground bg-card rounded-lg border border-transparent p-2"
+				className="mt-2 mb-2 resize-none rounded-lg border border-transparent bg-card p-2 text-foreground"
 				placeholder={"Add description..."}
 				onChange={handleDescriptionChange}
 				value={updatedDescription ?? ""}

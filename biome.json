@@ -1,31 +1,31 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-	"files": {
-		"ignore": [
-			"node_modules",
-			".next",
-			"dist",
-			"coverage",
-			"generated",
-			".storybook",
-			"*.stories.tsx"
-		],
-		"include": ["apps", "packages"]
-	},
 	"organizeImports": {
 		"enabled": true
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true,
 			"a11y": {
-				"useKeyWithClickEvents": "off"
+				"useKeyWithClickEvents": "off",
+				"useValidAnchor": "off"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "off",
 				"noUnusedVariables": "error",
 				"noUnusedImports": "error"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "info",
+					"fix": "safe"
+				}
 			}
 		}
 	},
@@ -38,25 +38,14 @@
 					"recommended": true,
 					"a11y": {
 						"useKeyWithClickEvents": "off",
-						"useButtonType": "off",
-						"noSvgWithoutTitle": "off",
-						"useValidAnchor": "off"
-					},
-					"correctness": {
-						"useExhaustiveDependencies": "off",
-						"noChildrenProp": "off",
-						"noConstructorReturn": "off"
+						"useButtonType": "off"
 					},
 					"suspicious": {
 						"noExplicitAny": "off",
 						"noArrayIndexKey": "off"
 					},
 					"style": {
-						"noNonNullAssertion": "off",
-						"noInferrableTypes": "off"
-					},
-					"performance": {
-						"noAccumulatingSpread": "off"
+						"noNonNullAssertion": "off"
 					}
 				}
 			}

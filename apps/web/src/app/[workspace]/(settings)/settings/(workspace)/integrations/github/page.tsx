@@ -42,19 +42,19 @@ const GithubSettings: React.FC = () => {
 	};
 
 	return (
-		<div className="flex mdsm:flex-col relative bg-card h-screen min-h-screen xs:p-0 w-full">
-			<div className="lg:hidden mdsm:visible bg-background">
+		<div className="relative flex h-screen min-h-screen w-full bg-card xs:p-0 mdsm:flex-col">
+			<div className="bg-background mdsm:visible lg:hidden">
 				<SettingsTopNavBar />
 			</div>
-			<div className="flex flex-col h-full w-full items-center bg-background pt-20 md:items-center sm:items-start sm:px-4 xs:pt-10 xs:px-4">
+			<div className="flex h-full w-full flex-col items-center bg-background xs:px-4 pt-20 xs:pt-10 sm:items-start sm:px-4 md:items-center">
 				<div className="w-full md:px-20 lg:px-40 xl:px-80">
-					<div className="flex flex-row items-center mb-8 space-x-6">
-						<div className="flex flex-row justify-center items-center w-16 h-16 bg-white rounded-lg">
+					<div className="mb-8 flex flex-row items-center space-x-6">
+						<div className="flex h-16 w-16 flex-row items-center justify-center rounded-lg bg-white">
 							<div className="w-[50px]">
 								<GithubIcon />
 							</div>
 						</div>
-						<header className="text-2xl text-foreground font-medium">
+						<header className="font-medium text-2xl text-foreground">
 							Github
 						</header>
 					</div>
@@ -78,17 +78,17 @@ const GithubSettings: React.FC = () => {
 							</span>
 						</Card>
 					) : (
-						<Card className="flex justify-between items-center p-2">
+						<Card className="flex items-center justify-between p-2">
 							<CardHeader>
 								<CardTitle>Connect Personal Account</CardTitle>
 								<CardDescription>
 									Connect your personal account to use the integration feature
 								</CardDescription>
 							</CardHeader>
-							<div className="flex justify-center items-center p-6">
+							<div className="flex items-center justify-center p-6">
 								<Button
 									onClick={handleClick}
-									className="w-24 h-16 rounded-lg bg-secondary hover:bg-primary hover:text-foreground"
+									className="h-16 w-24 rounded-lg bg-secondary hover:bg-primary hover:text-foreground"
 									variant="outline"
 								>
 									Connect

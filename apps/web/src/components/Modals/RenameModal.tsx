@@ -71,13 +71,13 @@ export const RenameModal = () => {
 		<Dialog open={showRename} onOpenChange={setShowRename}>
 			<DialogContent>
 				<form onSubmit={handleSubmit}>
-					<div className="px-5 flex flex-col gap-4">
+					<div className="flex flex-col gap-4 px-5">
 						<DialogHeader>
 							<DialogTitle>Title</DialogTitle>
 						</DialogHeader>
 						<Input
 							type="text"
-							className="focus:outline-none py-5 block text-lg w-full"
+							className="block w-full py-5 text-lg focus:outline-none"
 							value={inputValue}
 							onFocus={(e) => e.target.select()}
 							spellCheck="false"
@@ -91,7 +91,7 @@ export const RenameModal = () => {
 								Title must be at least 2 characters
 							</span>
 						)}
-						<div className="w-full border-border border" />
+						<div className="w-full border border-border" />
 						<DialogFooter>
 							<Button>
 								<span className="mr-2.5">

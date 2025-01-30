@@ -31,8 +31,8 @@ const Page = async (props: PageProps) => {
 	return (
 		<div className="markdown-content">
 			<h1>{metadata.title}</h1>
-			<p className="text-gray-600 mb-4">{metadata.description}</p>
-			<hr className="my-4 border-t border-gray-300" />
+			<p className="mb-4 text-gray-600">{metadata.description}</p>
+			<hr className="my-4 border-gray-300 border-t" />
 			<MDXRemote source={content} />
 		</div>
 	);

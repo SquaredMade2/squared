@@ -1,7 +1,6 @@
-;
-import * as Dialog from "../dialog";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { css, keyframes } from "../../stitches.config";
+import * as Dialog from "../dialog";
 import * as HoverCard from "../hover-card";
 import { ALIGN_OPTIONS, SIDE_OPTIONS } from "../popper";
 

@@ -24,15 +24,15 @@ export const SkeletonTwo = () => {
 		setAnimating(false);
 	};
 	return (
-		<div className="relative h-full w-full mt-4">
-			<div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-white via-white dark:from-black dark:via-black to-transparent w-full pointer-events-none" />
-			<div className="p-4 border border-neutral-200 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 rounded-[32px] h-full z-20">
-				<div className="p-2 bg-white dark:bg-black dark:border-neutral-700 border border-neutral-200 rounded-[24px] h-full">
-					<div className="w-20 rounded-full bg-neutral-200/80 dark:bg-neutral-800/80 mx-auto h-6" />
+		<div className="relative mt-4 h-full w-full">
+			<div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 w-full bg-gradient-to-t from-white via-white to-transparent dark:from-black dark:via-black" />
+			<div className="z-20 h-full rounded-[32px] border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
+				<div className="h-full rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+					<div className="mx-auto h-6 w-20 rounded-full bg-neutral-200/80 dark:bg-neutral-800/80" />
 					<div
 						onMouseEnter={handleAnimation}
 						ref={scope}
-						className="content mt-4 w-[90%] mx-auto"
+						className="content mx-auto mt-4 w-[90%]"
 					>
 						<UserMessage>
 							David changed the status of TES-Add-More-Color-Themes to Done
@@ -62,14 +62,14 @@ export const SkeletonTwo = () => {
 
 const UserMessage = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div className="message bg-neutral-100 dark:bg-neutral-800 dark:text-white text-black p-2 sm:p-4 text-[10px] sm:text-xs my-4 rounded-md">
+		<div className="message my-4 rounded-md bg-neutral-100 p-2 text-[10px] text-black sm:p-4 sm:text-xs dark:bg-neutral-800 dark:text-white">
 			{children}
 		</div>
 	);
 };
 const AIMessage = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div className="message bg-black text-white dark:bg-white dark:text-black p-2 sm:p-4 text-[10px] sm:text-xs my-4 rounded-md">
+		<div className="message my-4 rounded-md bg-black p-2 text-[10px] text-white sm:p-4 sm:text-xs dark:bg-white dark:text-black">
 			{children}
 		</div>
 	);

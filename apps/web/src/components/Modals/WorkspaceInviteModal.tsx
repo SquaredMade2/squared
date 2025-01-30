@@ -62,7 +62,7 @@ export const WorkspaceInviteModal = () => {
 		<Dialog open={showWorkspaceInvite} onOpenChange={setShowWorkspaceInvite}>
 			<DialogContent>
 				<DialogHeader>
-					<div className="flex gap-2 items-center text-lg">
+					<div className="flex items-center gap-2 text-lg">
 						<Avatar>
 							<AvatarImage src={workspace?.avatarUrl ?? undefined} />
 							<AvatarFallback className="capitalize">

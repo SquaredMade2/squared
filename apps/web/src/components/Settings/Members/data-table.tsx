@@ -98,24 +98,24 @@ export function DataTable({ columns, data }: DataTableProps) {
 		<div className="flex flex-col items-start gap-4">
 			<div>
 				<h4 className="font-semibold">Manage Members</h4>
-				<p className="text-xs text-muted-foreground">
+				<p className="text-muted-foreground text-xs">
 					On the Free plan all members in a workspace are administrators.
 					Upgrade to a paid plan to add the ability to assign or remove
 					administrator roles.{" "}
-					<span className="text-primary underline-offset-4 hover:underline cursor-pointer">
+					<span className="cursor-pointer text-primary underline-offset-4 hover:underline">
 						Go to Plans →
 					</span>
 				</p>
 			</div>
 			<div className="w-full">
-				<div className="flex items-center py-4 w-full justify-between">
+				<div className="flex w-full items-center justify-between py-4">
 					<Input
 						placeholder="Search by name or email"
 						value={searchTerm}
 						onChange={handleSearch}
 						className="max-w-xs"
 					/>
-					<div className="flex justify-center items-center gap-2">
+					<div className="flex items-center justify-center gap-2">
 						<Button onClick={handleWorkspaceInvite}>Invite People</Button>
 					</div>
 				</div>
@@ -149,7 +149,7 @@ export function DataTable({ columns, data }: DataTableProps) {
 						)}
 					</TableBody>
 				</Table>
-				<div className="flex flex-col justify-end items-center py-4 w-full gap-2 md:flex-row">
+				<div className="flex w-full flex-col items-center justify-end gap-2 py-4 md:flex-row">
 					<p className="text-muted-foreground">
 						Download your member data in a CSV format for use elsewhere. This
 						includes names, emails, roles, and much more!

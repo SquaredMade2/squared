@@ -48,19 +48,19 @@ const FilterButton = ({
 }: FilterButtonProps) => (
 	<Button
 		variant="ghost"
-		className={`w-full justify-between relative ${isSelected && "bg-accent"}`}
+		className={`relative w-full justify-between ${isSelected && "bg-accent"}`}
 		onClick={onClick}
 	>
-		<div className="flex gap-2 items-center">
+		<div className="flex items-center gap-2">
 			{isSelected && (
-				<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+				<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
 			)}
 			<Icon className="size-5" />
 			{label}
 		</div>
 		{unreadCount !== undefined && unreadCount > 0 && (
 			<div
-				className={`rounded-full w-7 ${isSelected ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
+				className={`w-7 rounded-full ${isSelected ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
 			>
 				{unreadCount}
 			</div>
@@ -76,18 +76,18 @@ const WorkspaceFilterButton = ({
 }: WorkspaceFilterButtonProps) => (
 	<Button
 		variant="ghost"
-		className={`w-full justify-between relative ${isSelected && "bg-accent"}`}
+		className={`relative w-full justify-between ${isSelected && "bg-accent"}`}
 		onClick={onClick}
 	>
 		<div>
 			{isSelected && (
-				<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-md" />
+				<div className="absolute top-0 bottom-0 left-0 w-1 rounded-l-md bg-primary" />
 			)}
 			{workspace.name}
 		</div>
 		{unreadCount > 0 && (
 			<div
-				className={`rounded-full w-7 ${isSelected ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
+				className={`w-7 rounded-full ${isSelected ? "bg-primary/20" : "bg-muted"} p-1 text-xxs`}
 			>
 				{unreadCount}
 			</div>
@@ -126,7 +126,7 @@ export function InboxSidebar({
 	};
 
 	return (
-		<div className="w-72 border-l border-border h-screen lg:block hidden  p-4 bg-card dark:bg-transparent">
+		<div className="hidden h-screen w-72 border-border border-l bg-card p-4 lg:block dark:bg-transparent">
 			<nav>
 				<ul className="space-y-4">
 					<div className="space-y-2">
@@ -149,7 +149,7 @@ export function InboxSidebar({
 					</div>
 					<Separator />
 					<div className="space-y-2">
-						<Label className="text-muted-foreground ml-4">Filters</Label>
+						<Label className="ml-4 text-muted-foreground">Filters</Label>
 						{filters.slice(3).map((filter) => (
 							<li key={filter.type}>
 								<FilterButton
@@ -165,7 +165,7 @@ export function InboxSidebar({
 					</div>
 					<Separator />
 					<div className="space-y-2">
-						<Label className="text-muted-foreground ml-4">Workspaces</Label>
+						<Label className="ml-4 text-muted-foreground">Workspaces</Label>
 						{workspaces.map((w) => (
 							<li key={w.id}>
 								<WorkspaceFilterButton

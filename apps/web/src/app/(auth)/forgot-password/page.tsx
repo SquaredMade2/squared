@@ -106,10 +106,10 @@ const ForgotPasswordPage = () => {
 	}
 
 	return (
-		<div className="w-full min-h-screen flex justify-center items-center bg-gradient-to-b from-background to-secondary/20 dark:from-background dark:to-secondary/10 p-4">
-			<Card className="w-full max-w-md shadow-lg dark:shadow-primary/5 bg-gradient-to-b from-primary/10 to-background">
+		<div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4 dark:from-background dark:to-secondary/10">
+			<Card className="w-full max-w-md bg-gradient-to-b from-primary/10 to-background shadow-lg dark:shadow-primary/5">
 				<CardHeader className="space-y-1">
-					<CardTitle className="text-2xl font-bold text-center">
+					<CardTitle className="text-center font-bold text-2xl">
 						{!successfulCreation
 							? "Forgot Password"
 							: secondFactor
@@ -155,11 +155,11 @@ const ForgotPasswordPage = () => {
 					) : (
 						<form onSubmit={reset} className="space-y-4">
 							<div className="space-y-2">
-								<div className="w-full flex justify-between mt-2">
+								<div className="mt-2 flex w-full justify-between">
 									<Label htmlFor="code">Reset Code</Label>
 									<Button
 										variant="link"
-										className="p-0 m-0 h-fit"
+										className="m-0 h-fit p-0"
 										type="button"
 										onClick={() => setSuccessfulCreation(false)}
 									>
@@ -194,13 +194,13 @@ const ForgotPasswordPage = () => {
 										variant="ghost"
 										size="icon"
 										aria-label="Toggle Password"
-										className="absolute right-0 top-0 text-muted-foreground"
+										className="absolute top-0 right-0 text-muted-foreground"
 										onClick={() => setHidePassword(!hidePassword)}
 									>
 										{hidePassword ? (
-											<EyeIcon className="w-6 h-6" />
+											<EyeIcon className="h-6 w-6" />
 										) : (
-											<EyeOffIcon className="w-6 h-6" />
+											<EyeOffIcon className="h-6 w-6" />
 										)}
 									</Button>
 								</div>
@@ -221,13 +221,13 @@ const ForgotPasswordPage = () => {
 										variant="ghost"
 										size="icon"
 										aria-label="Toggle Password"
-										className="absolute right-0 top-0 text-muted-foreground"
+										className="absolute top-0 right-0 text-muted-foreground"
 										onClick={() => setHideConfirmPassword(!hideConfirmPassword)}
 									>
 										{hideConfirmPassword ? (
-											<EyeIcon className="w-6 h-6" />
+											<EyeIcon className="h-6 w-6" />
 										) : (
-											<EyeOffIcon className="w-6 h-6" />
+											<EyeOffIcon className="h-6 w-6" />
 										)}
 									</Button>
 								</div>
@@ -237,10 +237,10 @@ const ForgotPasswordPage = () => {
 							</Button>
 						</form>
 					)}
-					{error && <p className="text-destructive text-sm mt-2">{error}</p>}
+					{error && <p className="mt-2 text-destructive text-sm">{error}</p>}
 				</CardContent>
 				<CardFooter className="flex flex-col justify-center gap-2">
-					<p className="text-sm text-muted-foreground">
+					<p className="text-muted-foreground text-sm">
 						Remember your password?{" "}
 						<Button
 							variant="link"

@@ -1,7 +1,7 @@
 {
-    "git": {
-        "deploymentEnabled": {
-            "skipVercel": false
-        }
-    }
+	"git": {
+		"deploymentEnabled": {
+			"skipVercel": false
+		}
+	}
 }
