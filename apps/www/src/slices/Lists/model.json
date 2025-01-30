@@ -18,7 +18,7 @@
             "label": "bullet list",
             "placeholder": "",
             "allowTargetBlank": true,
-            "single": "list-item"
+            "single": "list-item,hyperlink"
           }
         }
       },

@@ -8,8 +8,9 @@ type Params = { uid: string };
 
 export default async function Page({ params }: { params: Params }) {
 	const { uid } = await params;
+	console.log('HERE IS THE UID PARAMS', uid)
 	const client = createClient();
-	const page = await client.getByUID("doc", uid).catch(() => notFound());
+	const page = await client.getByUID("doc", uid || "index").catch(() => notFound());
 
 	return (
 		<div className="flex flex-col w-full max-w-[50vw] justify-self-center">
@@ -39,5 +40,5 @@ export async function generateStaticParams() {
 
 	return pages.map((page) => {
 		return { uid: page.uid };
-	});
+	})
 }

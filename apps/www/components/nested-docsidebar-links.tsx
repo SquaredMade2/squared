@@ -51,7 +51,7 @@ export default function NestedLinks({ pages }: SidebarProps) {
 						params?.uid === page.uid &&
 							"font-medium text-blue-600 dark:text-blue-400",
 					)}
-					href={`/docs/${page.uid}`}
+					href={`/docs/${page.uid !== "index" && page.uid}`}
 				>
 					{page.data.title}
 				</Link>
