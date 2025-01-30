@@ -51,7 +51,7 @@ export function UserProfile({ onLogout }: UserProfileProps) {
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
-					<Link href={`/${workspace?.url}/settings/account/profile`}>
+					<Link href={`/${workspace?.url}/settings/profile`}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Profile Settings</span>
 					</Link>
