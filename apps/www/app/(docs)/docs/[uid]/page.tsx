@@ -7,8 +7,9 @@ import { notFound } from "next/navigation";
 type Params = { uid: string };
 
 export default async function Page({ params }: { params: Params }) {
+	const { uid } = await params;
 	const client = createClient();
-	const page = await client.getByUID("doc", params.uid).catch(() => notFound());
+	const page = await client.getByUID("doc", uid).catch(() => notFound());
 
 	return (
 		<div className="flex flex-col w-full max-w-[50vw] justify-self-center">
@@ -22,8 +23,9 @@ export async function generateMetadata({
 }: {
 	params: Params;
 }): Promise<Metadata> {
+	const { uid } = await params;
 	const client = createClient();
-	const page = await client.getByUID("doc", params.uid).catch(() => notFound());
+	const page = await client.getByUID("doc", uid).catch(() => notFound());
 
 	return {
 		title: page.data.meta_title,

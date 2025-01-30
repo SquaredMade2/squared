@@ -17,6 +17,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "paragraph": {
+              "type": "SharedSlice"
+            },
             "bullet_points": {
               "type": "SharedSlice"
             },

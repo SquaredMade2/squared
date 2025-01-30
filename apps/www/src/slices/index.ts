@@ -6,6 +6,6 @@ export const components = {
   accordion: dynamic(() => import("./Accordion")),
   bullet_points: dynamic(() => import("./Lists")),
   header: dynamic(() => import("./Header")),
-  hero: dynamic(() => import("./Hero")),
   link: dynamic(() => import("./Link")),
+  paragraph: dynamic(() => import("./Paragraph")),
 };

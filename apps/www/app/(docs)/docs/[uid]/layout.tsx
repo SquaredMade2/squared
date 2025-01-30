@@ -1,7 +1,6 @@
 import { DocsLayout } from "@/components/DocsLayout";
 import { Footer } from "@/components/footer";
 import { NavBar } from "@/components/navbar";
-// app/docs/layout.tsx
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,16 +18,13 @@ export default async function Layout(
 		params: { slug?: string[] };
 	}>,
 ) {
-	const params = await props.params;
 
 	const { children } = props;
-
-	const currentSlug = params.slug?.join("/") || "index";
 
 	return (
 		<>
 			<NavBar />
-			<DocsLayout currentSlug={currentSlug}>{children}</DocsLayout>
+			<DocsLayout>{children}</DocsLayout>
 			<Footer />
 		</>
 	);

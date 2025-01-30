@@ -3,13 +3,12 @@ import { DocsSidebar } from "./DocsSidebar";
 
 interface DocsLayoutProps {
 	children: ReactNode;
-	currentSlug: string;
 }
 
-export function DocsLayout({ children, currentSlug }: DocsLayoutProps) {
+export function DocsLayout({ children }: DocsLayoutProps) {
 	return (
 		<div className="flex pt-20">
-			<DocsSidebar currentSlug={currentSlug} />
+			<DocsSidebar  />
 			<main className="flex-1 p-4">{children}</main>
 		</div>
 	);

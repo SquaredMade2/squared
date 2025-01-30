@@ -1,19 +1,19 @@
-import rehypePrism from "@mapbox/rehype-prism";
+// import rehypePrism from "@mapbox/rehype-prism";
 import nextMDX from "@next/mdx";
-import remarkGfm from "remark-gfm";
+// import remarkGfm from "remark-gfm";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	images: { domains: ["i.pravatar.cc", "images.unsplash.com"] },
-	pageExtensions: ["ts", "tsx", "mdx"],
+	pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
 	output: "standalone",
 };
 
 const withMDX = nextMDX({
 	extension: /\.mdx?$/,
 	options: {
-		remarkPlugins: [remarkGfm],
-		rehypePlugins: [rehypePrism],
+		// remarkPlugins: [remarkGfm],
+		// rehypePlugins: [rehypePrism],
 	},
 });
 
