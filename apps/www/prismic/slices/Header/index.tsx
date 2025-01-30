@@ -36,7 +36,7 @@ const Header = ({ slice }: HeaderProps) => {
 			
 				field={slice.primary.text}
 				components={{
-					paragraph: ({ children }) => <p className="text-muted-foreground [&>a]:text-primary">{children}</p>,
+					paragraph: ({ children }) => <p className="text-muted-foreground [&>a]:text-link">{children}</p>,
 				}}
 			/>
 		</div>
