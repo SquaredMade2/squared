@@ -203,6 +203,7 @@ jobs:
           NODE_ENV: test
           LOCAL_DB: true
           RUNNING_TESTS: true
+          LOCAL_DB: true
       - name: Build API
         run: pnpm --filter=api build
 
